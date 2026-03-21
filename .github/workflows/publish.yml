@@ -64,7 +64,7 @@ jobs:
 
       - name: Push to Itch.io Staging
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5-staging
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5-preview
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
 
