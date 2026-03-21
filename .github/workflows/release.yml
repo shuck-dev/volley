@@ -1,10 +1,8 @@
-name: Preview Deploy
+name: Production Release
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
   GODOT_VERSION: "4.6.1"
@@ -38,8 +36,8 @@ jobs:
       - name: Run Tests
         run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
 
-  deploy-preview:
-    name: Deploy to Preview
+  deploy-production:
+    name: Deploy to Production
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -60,7 +58,7 @@ jobs:
           unzip butler.zip
           chmod +x butler
 
-      - name: Push to Itch.io Preview
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5-preview
+      - name: Push to Itch.io Production
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5 --userversion ${{ github.event.release.tag_name }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
