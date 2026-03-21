@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'designs/**/*.md'
+      - '.github/workflows/sync-docs.yml'
+  workflow_dispatch:
 
 jobs:
   sync:
