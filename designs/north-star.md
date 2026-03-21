@@ -37,6 +37,14 @@ Your paddle has one goal: beat the world volley record. This is the throughline 
 - **Partner training** - unlock and level up partners
 - **Record chasing** - milestones, streaks, challenges that push toward the world record
 
+## Idle design principles
+- **Numbers go up.** The core fantasy of an idle game is watching progress accumulate. FP per minute, streak records, lifetime volleys. These should always be visible and always climbing.
+- **Come back to good news.** When the player returns after being away, they should find rewards waiting. Offline FP, partner training progress, something that says "glad you're back."
+- **Don't make it a chore.** Avoid the login-spend-logout trap. Active play should feel rewarding, not mandatory. Jumping in to take control should be fun, not a resource optimization task.
+- **Layer systems over time.** Start simple (volley, earn, upgrade) and introduce new mechanics gradually. Partners, streaks, challenges, each layer adds depth without overwhelming early players.
+- **Pinch points, not paywalls.** Progression should slow naturally as upgrades get expensive. This creates satisfying breakthrough moments when the player finally affords that next tier. Never gate progress behind anything except playing.
+- **Multiple paths forward.** Players should have choices about what to upgrade next. Different strategies (faster paddle vs bigger paddle vs better partner) keep decisions interesting and encourage experimentation.
+
 ## Desktop widget design
 - Small, unobtrusive window that sits on the desktop
 - Runs idle in the background, paddles play on their own
@@ -45,6 +53,12 @@ Your paddle has one goal: beat the world volley record. This is the throughline 
 
 ## Endgame
 Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. Post-record: prestige system, new records, harder challenges.
+
+## Soft launch thinking
+- Launch early in a limited way (itch.io preview channel) to test the economy and gather feedback
+- Player feedback is critical for tuning the FP curve and upgrade pacing
+- Iterate fast on what feels too slow or too fast before a wider release
+- Strong theming and art are what make an idle game stand out in a sea of clickers. Invest in the personality.
 
 ## Difficulty philosophy
 - The game is hard to control at the start. Your paddle is slow, small, and clumsy. Keeping a streak going takes real effort.

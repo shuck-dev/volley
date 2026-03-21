@@ -70,7 +70,7 @@ jobs:
           function getInitiative(filePath) {
             const parts = filePath.split('/');
             if (parts.length >= 2) {
-              return parts[1].replace(/^\d+-/, '');
+              return parts[1];
             }
             return 'general';
           }
