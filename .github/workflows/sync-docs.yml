@@ -40,8 +40,10 @@ jobs:
           const { Client } = require('@notionhq/client');
           const { markdownToBlocks } = require('@tryfabric/martian');
 
-          const notion = new Client({ auth: process.env.NOTION_TOKEN, notionVersion: '2022-06-28' });
-          const databaseId = process.env.NOTION_DATABASE_ID;
+          const notion = new Client({ auth: process.env.NOTION_TOKEN });
+          // Format database ID as UUID if needed
+          const rawId = process.env.NOTION_DATABASE_ID.replace(/-/g, '');
+          const databaseId = `${rawId.slice(0,8)}-${rawId.slice(8,12)}-${rawId.slice(12,16)}-${rawId.slice(16,20)}-${rawId.slice(20)}`;
 
           async function syncFile(filePath) {
             const content = fs.readFileSync(filePath, 'utf-8');
