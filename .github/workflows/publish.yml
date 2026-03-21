@@ -4,20 +4,11 @@ on:
   workflow_dispatch:
 
 env:
-  GODOT_VERSION: "4.3"
+  GODOT_VERSION: "4.6.1"
 
 jobs:
-  approve:
-    name: Approve for Release
-    runs-on: ubuntu-latest
-    environment: release
-    steps:
-      - name: Approved
-        run: echo "Approved for export and publish"
-
   export:
     name: Export Web
-    needs: approve
     runs-on: ubuntu-latest
     outputs:
       build_directory: ${{ steps.export.outputs.build_directory }}

@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  GODOT_VERSION: "4.3"
+  GODOT_VERSION: "4.6.1"
 
 jobs:
   test:
@@ -21,6 +21,9 @@ jobs:
           unzip godot.zip
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Import Project
+        run: godot --headless --path . --import
 
       - name: Run Tests
         run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
