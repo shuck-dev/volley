@@ -69,7 +69,7 @@ jobs:
 
           function getInitiative(filePath) {
             const parts = filePath.split('/');
-            if (parts.length >= 2) {
+            if (parts.length >= 3) {
               return parts[1];
             }
             return 'general';
