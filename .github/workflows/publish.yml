@@ -1,14 +1,48 @@
 name: Publish Game Test to Itch.io
 
 on:
+  push:
+    branches:
+      - main
+  release:
+    types: [published]
   workflow_dispatch:
 
 env:
   GODOT_VERSION: "4.6.1"
+  ITCH_PROJECT: Speedyoshi/game-test
 
 jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/godot
+          key: godot-${{ env.GODOT_VERSION }}
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          unzip godot.zip
+          chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
+          sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Import Project
+        run: godot --headless --path . --import
+
+      - name: Run Tests
+        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
+
   export-and-publish:
     name: Export and Publish
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -28,7 +62,14 @@ jobs:
           unzip butler.zip
           chmod +x butler
 
-      - name: Push to Itch.io
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" Speedyoshi/game-test:html5
+      - name: Push to Itch.io Staging
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5-staging
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
+      - name: Push to Itch.io Production
+        if: github.event_name == 'release'
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5 --userversion ${{ github.event.release.tag_name }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

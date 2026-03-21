@@ -11,12 +11,13 @@
 # }
 var stubs = {}
 
+
 func _normalize_stub_target(target):
 	var to_return = null
-	if(typeof(target) == TYPE_OBJECT or GutUtils.is_native_class(target)):
+	if typeof(target) == TYPE_OBJECT or GutUtils.is_native_class(target):
 		to_return = target
-	if(typeof(target) == TYPE_STRING):
-		if(FileAccess.file_exists(target)):
+	if typeof(target) == TYPE_STRING:
+		if FileAccess.file_exists(target):
 			to_return = load(target)
 		else:
 			to_return = null
@@ -29,16 +30,16 @@ func _get_entries_matching_target(target):
 	var done = false
 	var current = trav
 
-	while(trav != null and !done):
-		if(GutUtils.is_singleton_double(trav)):
+	while trav != null and !done:
+		if GutUtils.is_singleton_double(trav):
 			trav = trav.__gutdbl.get_singleton()
 			match_on.push_front(trav)
-		elif(GutUtils.is_instance(trav)):
+		elif GutUtils.is_instance(trav):
 			trav = trav.get_script()
 			match_on.push_front(trav)
 		else:
 			trav = trav.get_base_script()
-			if(trav != null):
+			if trav != null:
 				match_on.push_front(trav)
 			else:
 				var type_name = current.get_instance_base_type()
@@ -46,7 +47,7 @@ func _get_entries_matching_target(target):
 				match_on.push_front(trav)
 				done = true
 
-		if(trav == null):
+		if trav == null:
 			done = true
 		else:
 			current = trav
@@ -61,10 +62,10 @@ func clear():
 func add_stub(stub_params):
 	var key = _normalize_stub_target(stub_params.stub_target)
 
-	if(!stubs.has(key)):
+	if !stubs.has(key):
 		stubs[key] = {}
 
-	if(!stubs[key].has(stub_params.stub_method)):
+	if !stubs[key].has(stub_params.stub_method):
 		stubs[key][stub_params.stub_method] = []
 
 	stubs[key][stub_params.stub_method].append(stub_params)
@@ -76,13 +77,13 @@ func get_all_stubs(thing, method):
 
 	var matches = []
 	for entry in match_on:
-		if(stubs.has(entry) and stubs[entry].has(method)):
+		if stubs.has(entry) and stubs[entry].has(method):
 			matches.append_array(stubs[entry][method])
 	return matches
 
 
 func to_s():
-	var text = ''
+	var text = ""
 	for thing in stubs:
 		text += str("-- ", thing, " --\n")
 		for method in stubs[thing]:
@@ -90,7 +91,7 @@ func to_s():
 			for i in range(stubs[thing][method].size()):
 				text += "\t\t" + stubs[thing][method][i].to_s() + "\n"
 
-	if(text == ''):
-		text = 'No Stubs';
+	if text == "":
+		text = "No Stubs"
 
 	return text

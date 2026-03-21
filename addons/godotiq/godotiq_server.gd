@@ -13,8 +13,8 @@ const STATE_TIMEOUT_MS := 5000
 var _exec_counter: int = 0
 
 var _tcp_server: TCPServer
-var _peers: Dictionary = {}          # peer_id -> WebSocketPeer
-var _peer_tcp: Dictionary = {}       # peer_id -> StreamPeerTCP (prevent GC)
+var _peers: Dictionary = {}  # peer_id -> WebSocketPeer
+var _peer_tcp: Dictionary = {}  # peer_id -> StreamPeerTCP (prevent GC)
 var _pending_game_requests: Dictionary = {}  # req_key ("peer:id") -> {peer_id, request_id, method, timeout_at}
 var _pending_screenshot = null  # Deferred editor screenshot capture data
 var _pending_run = null  # Poll for scene play confirmation {peer_id, id, timeout_at, started_at}
@@ -63,7 +63,9 @@ func _ready() -> void:
 	_port = _load_port_from_config()
 	_bridge_token = _load_or_create_bridge_token()
 	if _bridge_token.is_empty():
-		push_error("GodotIQ: Bridge token unavailable. Requests will be rejected until res://.godotiq/bridge_token can be created.")
+		push_error(
+			"GodotIQ: Bridge token unavailable. Requests will be rejected until res://.godotiq/bridge_token can be created."
+		)
 	_tcp_server = TCPServer.new()
 	var err := _tcp_server.listen(_port, "127.0.0.1")
 	if err == OK:
@@ -100,7 +102,13 @@ func _check_for_update() -> void:
 		http.queue_free()
 
 
-func _on_update_check_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+func _on_update_check_completed(
+	result: int,
+	response_code: int,
+	_headers: PackedStringArray,
+	body: PackedByteArray,
+	http: HTTPRequest
+) -> void:
 	http.queue_free()
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
 		return
@@ -111,11 +119,17 @@ func _on_update_check_completed(result: int, response_code: int, _headers: Packe
 	if _is_newer_version(remote_version, ADDON_VERSION):
 		print("GodotIQ: Update available — v%s (current: v%s)" % [remote_version, ADDON_VERSION])
 		if status_label:
-			status_label.text = "GodotIQ v%s — Update available: v%s (pip install --upgrade godotiq && godotiq install-addon .)" % [ADDON_VERSION, remote_version]
+			status_label.text = (
+				"GodotIQ v%s — Update available: v%s (pip install --upgrade godotiq && godotiq install-addon .)"
+				% [ADDON_VERSION, remote_version]
+			)
 		# Show one-time popup dialog
 		var dialog := AcceptDialog.new()
 		dialog.title = "GodotIQ Update Available"
-		dialog.dialog_text = "GodotIQ v%s is available (you have v%s).\n\nRun in terminal:\npip install --upgrade godotiq && godotiq install-addon ." % [remote_version, ADDON_VERSION]
+		dialog.dialog_text = (
+			"GodotIQ v%s is available (you have v%s).\n\nRun in terminal:\npip install --upgrade godotiq && godotiq install-addon ."
+			% [remote_version, ADDON_VERSION]
+		)
 		dialog.ok_button_text = "Got it"
 		dialog.confirmed.connect(dialog.queue_free)
 		dialog.canceled.connect(dialog.queue_free)
@@ -260,8 +274,16 @@ func _process(_delta: float) -> void:
 		var s: Dictionary = _pending_screenshot
 		_pending_screenshot = null
 		_do_editor_screenshot(
-			s["peer_id"], s["id"], s["viewport_3d"],
-			s["camera"], s["original_transform"], true, s["scale"], s["quality"], s["fmt"], s.get("region", [])
+			s["peer_id"],
+			s["id"],
+			s["viewport_3d"],
+			s["camera"],
+			s["original_transform"],
+			true,
+			s["scale"],
+			s["quality"],
+			s["fmt"],
+			s.get("region", [])
 		)
 
 	# 4a. Process deferred scene open -> play
@@ -284,8 +306,15 @@ func _process(_delta: float) -> void:
 		var r: Dictionary = _pending_run
 		if EditorInterface.is_playing_scene():
 			_pending_run = null
-			var waited: float = (Time.get_ticks_msec() - r.get("started_at", Time.get_ticks_msec())) / 1000.0
-			var resp := {"action": "play", "success": true, "scene": r.get("scene", ""), "waited_seconds": waited}
+			var waited: float = (
+				(Time.get_ticks_msec() - r.get("started_at", Time.get_ticks_msec())) / 1000.0
+			)
+			var resp := {
+				"action": "play",
+				"success": true,
+				"scene": r.get("scene", ""),
+				"waited_seconds": waited
+			}
 			if r.get("main_scene_empty", false):
 				resp["main_scene_empty"] = true
 				resp["hint"] = "No main_scene set. Use set_main_scene to configure."
@@ -295,9 +324,15 @@ func _process(_delta: float) -> void:
 			send_response(r["peer_id"], r["id"], resp)
 		elif Time.get_ticks_msec() > r["timeout_at"]:
 			_pending_run = null
-			var timeout_secs: float = (r["timeout_at"] - r.get("started_at", r["timeout_at"])) / 1000.0
-			_send_error(r["peer_id"], r["id"], "RUN_TIMEOUT",
-				"Scene did not start within %.1f seconds" % timeout_secs)
+			var timeout_secs: float = (
+				(r["timeout_at"] - r.get("started_at", r["timeout_at"])) / 1000.0
+			)
+			_send_error(
+				r["peer_id"],
+				r["id"],
+				"RUN_TIMEOUT",
+				"Scene did not start within %.1f seconds" % timeout_secs
+			)
 
 	# 5. Check timed-out game requests
 	var now := Time.get_ticks_msec()
@@ -392,12 +427,17 @@ func _dispatch(peer_id: int, id: String, method: String, params: Dictionary) -> 
 
 # --- Editor-side handlers ---
 
+
 func _handle_ping(peer_id: int, id: String) -> void:
-	send_response(peer_id, id, {
-		"editor_version": Engine.get_version_info().get("string", "unknown"),
-		"game_running": _game_running,
-		"addon_version": ADDON_VERSION,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"editor_version": Engine.get_version_info().get("string", "unknown"),
+			"game_running": _game_running,
+			"addon_version": ADDON_VERSION,
+		}
+	)
 
 
 func _handle_editor_context(peer_id: int, id: String) -> void:
@@ -410,12 +450,16 @@ func _handle_editor_context(peer_id: int, id: String) -> void:
 	if selection:
 		for node in selection.get_selected_nodes():
 			selected.append(str(node.get_path()))
-	send_response(peer_id, id, {
-		"open_scenes": open_scenes,
-		"selected_nodes": selected,
-		"game_running": _game_running,
-		"project_path": ProjectSettings.globalize_path("res://"),
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"open_scenes": open_scenes,
+			"selected_nodes": selected,
+			"game_running": _game_running,
+			"project_path": ProjectSettings.globalize_path("res://"),
+		}
+	)
 
 
 func _set_main_scene_internal(scene_path: String) -> bool:
@@ -463,7 +507,9 @@ func _find_scene_by_name(scene_name: String) -> Dictionary:
 	return {"path": "", "matches": matches}
 
 
-func _collect_tscn_matches(dir: EditorFileSystemDirectory, scene_name: String, matches: Array[String]) -> void:
+func _collect_tscn_matches(
+	dir: EditorFileSystemDirectory, scene_name: String, matches: Array[String]
+) -> void:
 	for i in dir.get_file_count():
 		var file_path: String = dir.get_file_path(i)
 		if file_path.ends_with(".tscn"):
@@ -502,12 +548,17 @@ func _handle_run(peer_id: int, id: String, params: Dictionary) -> void:
 			# Search by name
 			var result := _find_scene_by_name(sp)
 			if result["matches"].size() > 1:
-				_send_error(peer_id, id, "AMBIGUOUS_SCENE",
-					"Multiple scenes match '%s': %s" % [sp, str(result["matches"])])
+				_send_error(
+					peer_id,
+					id,
+					"AMBIGUOUS_SCENE",
+					"Multiple scenes match '%s': %s" % [sp, str(result["matches"])]
+				)
 				return
 			if result["path"] == "":
-				_send_error(peer_id, id, "SCENE_NOT_FOUND",
-					"No .tscn file found matching name: %s" % sp)
+				_send_error(
+					peer_id, id, "SCENE_NOT_FOUND", "No .tscn file found matching name: %s" % sp
+				)
 				return
 			resolved_path = result["path"]
 
@@ -655,16 +706,28 @@ func _handle_scene_tree(peer_id: int, id: String, params: Dictionary) -> void:
 	var tree: Array = []
 	var returned_nodes := _walk_tree(start_node, scene_root, depth, 0, filter_type, include, tree)
 
-	send_response(peer_id, id, {
-		"root": str(start_node.name),
-		"scene_path": scene_root.scene_file_path,
-		"total_nodes": total_nodes,
-		"returned_nodes": returned_nodes,
-		"tree": tree,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"root": str(start_node.name),
+			"scene_path": scene_root.scene_file_path,
+			"total_nodes": total_nodes,
+			"returned_nodes": returned_nodes,
+			"tree": tree,
+		}
+	)
 
 
-func _walk_tree(node: Node, scene_root: Node, max_depth: int, current_depth: int, filter_type: String, include: Array, out_nodes: Array) -> int:
+func _walk_tree(
+	node: Node,
+	scene_root: Node,
+	max_depth: int,
+	current_depth: int,
+	filter_type: String,
+	include: Array,
+	out_nodes: Array
+) -> int:
 	var count := 0
 	var matches_filter := filter_type == "" or node.is_class(filter_type)
 
@@ -677,7 +740,9 @@ func _walk_tree(node: Node, scene_root: Node, max_depth: int, current_depth: int
 			if node is Node3D:
 				var n3d: Node3D = node
 				node_dict["p"] = [n3d.position.x, n3d.position.y, n3d.position.z]
-				node_dict["r"] = [n3d.rotation_degrees.x, n3d.rotation_degrees.y, n3d.rotation_degrees.z]
+				node_dict["r"] = [
+					n3d.rotation_degrees.x, n3d.rotation_degrees.y, n3d.rotation_degrees.z
+				]
 				node_dict["s"] = [n3d.scale.x, n3d.scale.y, n3d.scale.z]
 			elif node is Node2D:
 				var n2d: Node2D = node
@@ -707,7 +772,9 @@ func _walk_tree(node: Node, scene_root: Node, max_depth: int, current_depth: int
 	if current_depth < max_depth and node.get_child_count() > 0:
 		var child_nodes: Array = []
 		for child in node.get_children():
-			count += _walk_tree(child, scene_root, max_depth, current_depth + 1, filter_type, include, child_nodes)
+			count += _walk_tree(
+				child, scene_root, max_depth, current_depth + 1, filter_type, include, child_nodes
+			)
 		if matches_filter and child_nodes.size() > 0:
 			node_dict["children"] = child_nodes
 		elif not matches_filter:
@@ -788,10 +855,14 @@ func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 				if prop_name != "" and expected != null:
 					var actual = node_ref.get(prop_name)
 					if actual is Vector3:
-						result["verified"] = (actual as Vector3).is_equal_approx(expected as Vector3)
+						result["verified"] = (actual as Vector3).is_equal_approx(
+							expected as Vector3
+						)
 						result["actual_value"] = [actual.x, actual.y, actual.z]
 					elif actual is Vector2:
-						result["verified"] = (actual as Vector2).is_equal_approx(expected as Vector2)
+						result["verified"] = (actual as Vector2).is_equal_approx(
+							expected as Vector2
+						)
 						result["actual_value"] = [actual.x, actual.y]
 					else:
 						result["verified"] = actual == expected
@@ -801,11 +872,16 @@ func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 			if is_instance_valid(node):
 				node.notify_property_list_changed()
 
-		_godotiq_action_history.append({
-			"action": action_name,
-			"operations": results.size(),
-			"timestamp": Time.get_ticks_msec(),
-		})
+		(
+			_godotiq_action_history
+			. append(
+				{
+					"action": action_name,
+					"operations": results.size(),
+					"timestamp": Time.get_ticks_msec(),
+				}
+			)
+		)
 		if _godotiq_action_history.size() > MAX_HISTORY_SIZE:
 			_godotiq_action_history = _godotiq_action_history.slice(
 				_godotiq_action_history.size() - MAX_HISTORY_SIZE
@@ -817,12 +893,16 @@ func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 		result.erase("_prop_name")
 		result.erase("_expected")
 
-	send_response(peer_id, id, {
-		"results": results,
-		"scene_modified": any_succeeded,
-		"undo_available": any_succeeded,
-		"action_name": action_name,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"results": results,
+			"scene_modified": any_succeeded,
+			"undo_available": any_succeeded,
+			"action_name": action_name,
+		}
+	)
 
 
 func _execute_node_op(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -865,15 +945,30 @@ func _op_move(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "move", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "move",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	var pos: Array = op_data.get("position", op_data.get("value", [0, 0, 0]))
 	if not (pos is Array) or pos.size() < 2:
-		return {"op": "move", "node": node_name, "status": "error", "error": "position must be an array of at least 2 numbers"}
+		return {
+			"op": "move",
+			"node": node_name,
+			"status": "error",
+			"error": "position must be an array of at least 2 numbers"
+		}
 	var new_pos_value  # Variant: Vector3 or Vector2
 	if node is Node3D:
 		if pos.size() < 3:
-			return {"op": "move", "node": node_name, "status": "error", "error": "Node3D position requires [x, y, z]"}
+			return {
+				"op": "move",
+				"node": node_name,
+				"status": "error",
+				"error": "Node3D position requires [x, y, z]"
+			}
 		var old_pos := (node as Node3D).position
 		new_pos_value = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
 		ur.add_do_property(node, "position", new_pos_value)
@@ -889,56 +984,114 @@ func _op_move(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 		ur.add_do_property(node, "position", new_pos_value)
 		ur.add_undo_property(node, "position", old_pos)
 	else:
-		return {"op": "move", "node": node_name, "status": "error", "error": "Node does not support position"}
+		return {
+			"op": "move",
+			"node": node_name,
+			"status": "error",
+			"error": "Node does not support position"
+		}
 
-	return {"op": "move", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "position", "_expected": new_pos_value}
+	return {
+		"op": "move",
+		"node": node_name,
+		"status": "ok",
+		"_node_ref": node,
+		"_prop_name": "position",
+		"_expected": new_pos_value
+	}
 
 
 func _op_rotate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "rotate", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "rotate",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	if not (node is Node3D):
-		return {"op": "rotate", "node": node_name, "status": "error", "error": "Rotate only supports Node3D"}
+		return {
+			"op": "rotate",
+			"node": node_name,
+			"status": "error",
+			"error": "Rotate only supports Node3D"
+		}
 
 	var rot: Array = op_data.get("rotation", op_data.get("value", [0, 0, 0]))
 	if not (rot is Array) or rot.size() < 3:
-		return {"op": "rotate", "node": node_name, "status": "error", "error": "rotation requires [x, y, z]"}
+		return {
+			"op": "rotate",
+			"node": node_name,
+			"status": "error",
+			"error": "rotation requires [x, y, z]"
+		}
 	var n3d: Node3D = node
 	var old_rot := n3d.rotation_degrees
 	var new_rot := Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
 	ur.add_do_property(node, "rotation_degrees", new_rot)
 	ur.add_undo_property(node, "rotation_degrees", old_rot)
-	return {"op": "rotate", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "rotation_degrees", "_expected": new_rot}
+	return {
+		"op": "rotate",
+		"node": node_name,
+		"status": "ok",
+		"_node_ref": node,
+		"_prop_name": "rotation_degrees",
+		"_expected": new_rot
+	}
 
 
 func _op_scale(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "scale", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "scale",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	if not (node is Node3D):
-		return {"op": "scale", "node": node_name, "status": "error", "error": "Scale only supports Node3D"}
+		return {
+			"op": "scale",
+			"node": node_name,
+			"status": "error",
+			"error": "Scale only supports Node3D"
+		}
 
 	var sc: Array = op_data.get("scale", op_data.get("value", [1, 1, 1]))
 	if not (sc is Array) or sc.size() < 3:
-		return {"op": "scale", "node": node_name, "status": "error", "error": "scale requires [x, y, z]"}
+		return {
+			"op": "scale", "node": node_name, "status": "error", "error": "scale requires [x, y, z]"
+		}
 	var n3d: Node3D = node
 	var old_scale := n3d.scale
 	var new_scale := Vector3(float(sc[0]), float(sc[1]), float(sc[2]))
 	ur.add_do_property(node, "scale", new_scale)
 	ur.add_undo_property(node, "scale", old_scale)
-	return {"op": "scale", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "scale", "_expected": new_scale}
+	return {
+		"op": "scale",
+		"node": node_name,
+		"status": "ok",
+		"_node_ref": node,
+		"_prop_name": "scale",
+		"_expected": new_scale
+	}
 
 
 func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "set_property", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "set_property",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	var property: String = str(op_data.get("property", ""))
 	var value = op_data.get("value")
@@ -949,7 +1102,12 @@ func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 
 	var old_value = node.get(base_property)
 	if old_value == null:
-		return {"op": "set_property", "node": node_name, "status": "error", "error": "Property not found: %s" % property}
+		return {
+			"op": "set_property",
+			"node": node_name,
+			"status": "error",
+			"error": "Property not found: %s" % property
+		}
 
 	if parts.size() > 1:
 		# Sub-path: modify only the component
@@ -958,32 +1116,54 @@ func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 		if ref_value is Vector3:
 			var v := Vector3(ref_value.x, ref_value.y, ref_value.z)
 			match sub_path:
-				"x": v.x = float(value)
-				"y": v.y = float(value)
-				"z": v.z = float(value)
+				"x":
+					v.x = float(value)
+				"y":
+					v.y = float(value)
+				"z":
+					v.z = float(value)
 			value = v
 		elif ref_value is Vector2:
 			var v := Vector2(ref_value.x, ref_value.y)
 			match sub_path:
-				"x": v.x = float(value)
-				"y": v.y = float(value)
+				"x":
+					v.x = float(value)
+				"y":
+					v.y = float(value)
 			value = v
 		elif ref_value is Color:
 			var c := Color(ref_value.r, ref_value.g, ref_value.b, ref_value.a)
 			match sub_path:
-				"r": c.r = float(value)
-				"g": c.g = float(value)
-				"b": c.b = float(value)
-				"a": c.a = float(value)
+				"r":
+					c.r = float(value)
+				"g":
+					c.g = float(value)
+				"b":
+					c.b = float(value)
+				"a":
+					c.a = float(value)
 			value = c
 		else:
-			return {"op": "set_property", "node": node_name, "status": "error", "error": "Sub-path not supported for type: %s" % typeof(ref_value)}
+			return {
+				"op": "set_property",
+				"node": node_name,
+				"status": "error",
+				"error": "Sub-path not supported for type: %s" % typeof(ref_value)
+			}
 	else:
 		value = _convert_value(value, old_value)
 
 	ur.add_do_property(node, base_property, value)
 	ur.add_undo_property(node, base_property, old_value)
-	return {"op": "set_property", "node": node_name, "status": "ok", "property": property, "_node_ref": node, "_prop_name": base_property, "_expected": value}
+	return {
+		"op": "set_property",
+		"node": node_name,
+		"status": "ok",
+		"property": property,
+		"_node_ref": node,
+		"_prop_name": base_property,
+		"_expected": value
+	}
 
 
 func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -999,11 +1179,19 @@ func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	if scene_path != "":
 		var packed = ResourceLoader.load(scene_path)
 		if packed == null or not (packed is PackedScene):
-			return {"op": "add_child", "status": "error", "error": "Failed to load scene: %s" % scene_path}
+			return {
+				"op": "add_child",
+				"status": "error",
+				"error": "Failed to load scene: %s" % scene_path
+			}
 		new_node = packed.instantiate()
 	elif type_name != "":
 		if not ClassDB.class_exists(type_name) or not ClassDB.can_instantiate(type_name):
-			return {"op": "add_child", "status": "error", "error": "Cannot instantiate type: %s" % type_name}
+			return {
+				"op": "add_child",
+				"status": "error",
+				"error": "Cannot instantiate type: %s" % type_name
+			}
 		new_node = ClassDB.instantiate(type_name)
 	else:
 		return {"op": "add_child", "status": "error", "error": "Must provide 'scene' or 'type'"}
@@ -1020,7 +1208,9 @@ func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var pos = op_data.get("position", null)
 	if pos is Array and pos.size() >= 2:
 		if new_node is Node3D and pos.size() >= 3:
-			ur.add_do_property(new_node, "position", Vector3(float(pos[0]), float(pos[1]), float(pos[2])))
+			ur.add_do_property(
+				new_node, "position", Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
+			)
 		elif new_node is Node2D or new_node is Control:
 			ur.add_do_property(new_node, "position", Vector2(float(pos[0]), float(pos[1])))
 
@@ -1031,10 +1221,20 @@ func _op_delete(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "delete", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "delete",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	if node == scene_root:
-		return {"op": "delete", "node": node_name, "status": "error", "error": "Cannot delete scene root"}
+		return {
+			"op": "delete",
+			"node": node_name,
+			"status": "error",
+			"error": "Cannot delete scene root"
+		}
 
 	var parent := node.get_parent()
 	ur.add_do_method(parent, "remove_child", node)
@@ -1048,7 +1248,12 @@ func _op_duplicate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "duplicate", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "duplicate",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	var dup := node.duplicate()
 	var dup_name: String = str(op_data.get("name", str(node.name) + "_copy"))
@@ -1066,12 +1271,22 @@ func _op_reparent(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "reparent", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "reparent",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	var new_parent_name: String = str(op_data.get("new_parent", ""))
 	var new_parent := _find_node_by_name_or_path(new_parent_name, scene_root)
 	if new_parent == null:
-		return {"op": "reparent", "node": node_name, "status": "error", "error": "New parent not found: %s" % new_parent_name}
+		return {
+			"op": "reparent",
+			"node": node_name,
+			"status": "error",
+			"error": "New parent not found: %s" % new_parent_name
+		}
 
 	var old_parent := node.get_parent()
 	ur.add_do_method(old_parent, "remove_child", node)
@@ -1087,13 +1302,25 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "set_anchors", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "set_anchors",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 
 	if not (node is Control):
-		return {"op": "set_anchors", "node": node_name, "status": "error", "error": "Node is not a Control: %s" % node_name}
+		return {
+			"op": "set_anchors",
+			"node": node_name,
+			"status": "error",
+			"error": "Node is not a Control: %s" % node_name
+		}
 
 	var ctrl: Control = node as Control
-	var old_anchors: Array = [ctrl.anchor_left, ctrl.anchor_top, ctrl.anchor_right, ctrl.anchor_bottom]
+	var old_anchors: Array = [
+		ctrl.anchor_left, ctrl.anchor_top, ctrl.anchor_right, ctrl.anchor_bottom
+	]
 	var new_anchors: Array = []
 
 	var preset_name: String = str(op_data.get("preset", ""))
@@ -1119,7 +1346,12 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 		}
 
 		if not preset_map.has(preset_name):
-			return {"op": "set_anchors", "node": node_name, "status": "error", "error": "Unknown preset: %s" % preset_name}
+			return {
+				"op": "set_anchors",
+				"node": node_name,
+				"status": "error",
+				"error": "Unknown preset: %s" % preset_name
+			}
 
 		var preset_val: int = preset_map[preset_name]
 		ctrl.set_anchors_preset(preset_val)
@@ -1133,11 +1365,21 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	elif op_data.has("anchors"):
 		var anchors: Array = op_data["anchors"]
 		if not (anchors is Array) or anchors.size() < 4:
-			return {"op": "set_anchors", "node": node_name, "status": "error", "error": "anchors requires [left, top, right, bottom]"}
+			return {
+				"op": "set_anchors",
+				"node": node_name,
+				"status": "error",
+				"error": "anchors requires [left, top, right, bottom]"
+			}
 		new_anchors = [float(anchors[0]), float(anchors[1]), float(anchors[2]), float(anchors[3])]
 
 	else:
-		return {"op": "set_anchors", "node": node_name, "status": "error", "error": "Provide 'preset' name or 'anchors' [left, top, right, bottom]"}
+		return {
+			"op": "set_anchors",
+			"node": node_name,
+			"status": "error",
+			"error": "Provide 'preset' name or 'anchors' [left, top, right, bottom]"
+		}
 
 	ur.add_do_property(ctrl, "anchor_left", new_anchors[0])
 	ur.add_do_property(ctrl, "anchor_top", new_anchors[1])
@@ -1148,7 +1390,9 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	ur.add_undo_property(ctrl, "anchor_right", old_anchors[2])
 	ur.add_undo_property(ctrl, "anchor_bottom", old_anchors[3])
 
-	var result: Dictionary = {"op": "set_anchors", "node": node_name, "status": "ok", "anchors": new_anchors}
+	var result: Dictionary = {
+		"op": "set_anchors", "node": node_name, "status": "ok", "anchors": new_anchors
+	}
 	if preset_name != "":
 		result["preset"] = preset_name
 	return result
@@ -1159,9 +1403,19 @@ func _op_rename(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var new_name: String = str(op_data.get("new_name", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "rename", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "rename",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 	if new_name.is_empty():
-		return {"op": "rename", "node": node_name, "status": "error", "error": "new_name must not be empty"}
+		return {
+			"op": "rename",
+			"node": node_name,
+			"status": "error",
+			"error": "new_name must not be empty"
+		}
 	var old_name: String = node.name
 	ur.add_do_property(node, "name", new_name)
 	ur.add_undo_property(node, "name", old_name)
@@ -1173,9 +1427,19 @@ func _op_get_property(op_data: Dictionary, scene_root: Node) -> Dictionary:
 	var property_name: String = str(op_data.get("property", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
-		return {"op": "get_property", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
+		return {
+			"op": "get_property",
+			"node": node_name,
+			"status": "error",
+			"error": "Node not found: %s" % node_name
+		}
 	if property_name.is_empty():
-		return {"op": "get_property", "node": node_name, "status": "error", "error": "property must not be empty"}
+		return {
+			"op": "get_property",
+			"node": node_name,
+			"status": "error",
+			"error": "property must not be empty"
+		}
 
 	# Check property exists via property list
 	var found := false
@@ -1184,10 +1448,21 @@ func _op_get_property(op_data: Dictionary, scene_root: Node) -> Dictionary:
 			found = true
 			break
 	if not found:
-		return {"op": "get_property", "node": node_name, "status": "error", "error": "Property not found: %s" % property_name}
+		return {
+			"op": "get_property",
+			"node": node_name,
+			"status": "error",
+			"error": "Property not found: %s" % property_name
+		}
 
 	var value = node.get(property_name)
-	return {"op": "get_property", "node": node_name, "status": "ok", "property": property_name, "value": _value_to_json(value)}
+	return {
+		"op": "get_property",
+		"node": node_name,
+		"status": "ok",
+		"property": property_name,
+		"value": _value_to_json(value)
+	}
 
 
 func _value_to_json(value) -> Variant:
@@ -1200,7 +1475,12 @@ func _value_to_json(value) -> Variant:
 	if value is Vector3:
 		return [snapped(value.x, 0.001), snapped(value.y, 0.001), snapped(value.z, 0.001)]
 	if value is Color:
-		return [snapped(value.r, 0.001), snapped(value.g, 0.001), snapped(value.b, 0.001), snapped(value.a, 0.001)]
+		return [
+			snapped(value.r, 0.001),
+			snapped(value.g, 0.001),
+			snapped(value.b, 0.001),
+			snapped(value.a, 0.001)
+		]
 	if value is Array:
 		var arr: Array = []
 		for item in value:
@@ -1214,8 +1494,14 @@ func _value_to_json(value) -> Variant:
 	if value is Transform3D:
 		var b: Basis = value.basis
 		return {
-			"origin": [snapped(value.origin.x, 0.001), snapped(value.origin.y, 0.001), snapped(value.origin.z, 0.001)],
-			"basis": [
+			"origin":
+			[
+				snapped(value.origin.x, 0.001),
+				snapped(value.origin.y, 0.001),
+				snapped(value.origin.z, 0.001)
+			],
+			"basis":
+			[
 				[snapped(b.x.x, 0.001), snapped(b.x.y, 0.001), snapped(b.x.z, 0.001)],
 				[snapped(b.y.x, 0.001), snapped(b.y.y, 0.001), snapped(b.y.z, 0.001)],
 				[snapped(b.z.x, 0.001), snapped(b.z.y, 0.001), snapped(b.z.z, 0.001)],
@@ -1246,10 +1532,7 @@ func _to_vector2(value, fallback: Vector2 = Vector2.ZERO) -> Vector2:
 	if value is Vector2i:
 		return Vector2(value.x, value.y)
 	if value is Dictionary:
-		return Vector2(
-			float(value.get("x", fallback.x)),
-			float(value.get("y", fallback.y))
-		)
+		return Vector2(float(value.get("x", fallback.x)), float(value.get("y", fallback.y)))
 	if value is Array and value.size() >= 2:
 		return Vector2(float(value[0]), float(value[1]))
 	return fallback
@@ -1313,13 +1596,17 @@ func _handle_undo_history(peer_id: int, id: String, _params: Dictionary) -> void
 			can_redo = scene_ur.has_redo()
 			current_action = scene_ur.get_current_action_name()
 
-	send_response(peer_id, id, {
-		"can_undo": can_undo,
-		"can_redo": can_redo,
-		"current_action": current_action,
-		"godotiq_actions": _godotiq_action_history,
-		"total_godotiq_actions": _godotiq_action_history.size(),
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"can_undo": can_undo,
+			"can_redo": can_redo,
+			"current_action": current_action,
+			"godotiq_actions": _godotiq_action_history,
+			"total_godotiq_actions": _godotiq_action_history.size(),
+		}
+	)
 
 
 func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
@@ -1332,11 +1619,15 @@ func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
 
 	# Safety: must contain func run():
 	if code.find("func run():") == -1 and code.find("func run() ->") == -1:
-		send_response(peer_id, id, {
-			"status": "BLOCKED",
-			"result": "",
-			"error": "Code must contain 'func run():' or 'func run() -> Type:'",
-		})
+		send_response(
+			peer_id,
+			id,
+			{
+				"status": "BLOCKED",
+				"result": "",
+				"error": "Code must contain 'func run():' or 'func run() -> Type:'",
+			}
+		)
 		return
 
 	# Safety: blocked patterns
@@ -1354,11 +1645,15 @@ func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
 	]
 	for pattern in blocked_patterns:
 		if code.find(pattern) != -1:
-			send_response(peer_id, id, {
-				"status": "BLOCKED",
-				"result": "",
-				"error": "Blocked pattern found: %s" % pattern,
-			})
+			send_response(
+				peer_id,
+				id,
+				{
+					"status": "BLOCKED",
+					"result": "",
+					"error": "Blocked pattern found: %s" % pattern,
+				}
+			)
 			return
 
 	# Compile the script — capture errors via Logger if available
@@ -1376,7 +1671,8 @@ func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
 		var resp := {
 			"status": "COMPILE_ERROR",
 			"result": "",
-			"error": "Compilation failed (error %d: %s). Check GDScript syntax." % [err, error_string(err)],
+			"error":
+			"Compilation failed (error %d: %s). Check GDScript syntax." % [err, error_string(err)],
 		}
 		if _has_logger:
 			var captured := _get_script_errors()
@@ -1412,11 +1708,15 @@ func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
 	obj.queue_free()
 
 	if not exec_error.is_empty():
-		send_response(peer_id, id, {
-			"status": "ERROR",
-			"result": "",
-			"error": exec_error,
-		})
+		send_response(
+			peer_id,
+			id,
+			{
+				"status": "ERROR",
+				"result": "",
+				"error": exec_error,
+			}
+		)
 		return
 
 	var result_str: String = ""
@@ -1425,11 +1725,15 @@ func _handle_exec_editor(peer_id: int, id: String, params: Dictionary) -> void:
 	else:
 		result_str = "null"
 
-	send_response(peer_id, id, {
-		"status": "OK",
-		"result": result_str,
-		"error": "",
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"status": "OK",
+			"result": result_str,
+			"error": "",
+		}
+	)
 
 
 func _exec_editor_via_file(code: String) -> Dictionary:
@@ -1507,13 +1811,17 @@ func _handle_save_scene(peer_id: int, id: String, _params: Dictionary) -> void:
 
 	var node_count := _count_nodes(scene_root)
 
-	send_response(peer_id, id, {
-		"saved": true,
-		"scene_path": scene_path,
-		"scene_name": scene_root.name,
-		"file_size_kb": file_size_kb,
-		"node_count": node_count,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"saved": true,
+			"scene_path": scene_path,
+			"scene_name": scene_root.name,
+			"file_size_kb": file_size_kb,
+			"node_count": node_count,
+		}
+	)
 
 
 func _count_nodes(root: Node) -> int:
@@ -1534,7 +1842,9 @@ func _handle_editor_screenshot(peer_id: int, id: String, params: Dictionary) -> 
 
 	var viewport_3d := EditorInterface.get_editor_viewport_3d(0)
 	if viewport_3d == null:
-		_send_error(peer_id, id, "NO_VIEWPORT", "Editor 3D viewport not available. Is a 3D scene open?")
+		_send_error(
+			peer_id, id, "NO_VIEWPORT", "Editor 3D viewport not available. Is a 3D scene open?"
+		)
 		return
 
 	var camera := viewport_3d.get_camera_3d()
@@ -1555,24 +1865,45 @@ func _handle_editor_screenshot(peer_id: int, id: String, params: Dictionary) -> 
 			if params.has("camera_target"):
 				var tgt_arr: Array = params["camera_target"]
 				if tgt_arr.size() >= 3:
-					var target_pos := Vector3(float(tgt_arr[0]), float(tgt_arr[1]), float(tgt_arr[2]))
+					var target_pos := Vector3(
+						float(tgt_arr[0]), float(tgt_arr[1]), float(tgt_arr[2])
+					)
 					if new_pos.distance_to(target_pos) > 0.001:
 						camera.look_at(target_pos)
 
 	if camera_moved:
 		# Defer capture to next frame so viewport re-renders with new camera
 		_pending_screenshot = {
-			"peer_id": peer_id, "id": id, "viewport_3d": viewport_3d,
-			"camera": camera, "original_transform": original_transform,
-			"scale": scale, "quality": quality, "fmt": fmt, "region": region,
+			"peer_id": peer_id,
+			"id": id,
+			"viewport_3d": viewport_3d,
+			"camera": camera,
+			"original_transform": original_transform,
+			"scale": scale,
+			"quality": quality,
+			"fmt": fmt,
+			"region": region,
 		}
 		return
 
 	# No camera move — capture current viewport texture immediately
-	_do_editor_screenshot(peer_id, id, viewport_3d, camera, original_transform, false, scale, quality, fmt, region)
+	_do_editor_screenshot(
+		peer_id, id, viewport_3d, camera, original_transform, false, scale, quality, fmt, region
+	)
 
 
-func _do_editor_screenshot(peer_id: int, id: String, viewport_3d: SubViewport, camera: Camera3D, original_transform: Transform3D, restore_camera: bool, scale: float, quality: float, fmt: String, region: Array = []) -> void:
+func _do_editor_screenshot(
+	peer_id: int,
+	id: String,
+	viewport_3d: SubViewport,
+	camera: Camera3D,
+	original_transform: Transform3D,
+	restore_camera: bool,
+	scale: float,
+	quality: float,
+	fmt: String,
+	region: Array = []
+) -> void:
 	var img := viewport_3d.get_texture().get_image()
 	if img == null:
 		if restore_camera and camera != null:
@@ -1627,13 +1958,17 @@ func _do_editor_screenshot(peer_id: int, id: String, viewport_3d: SubViewport, c
 	if restore_camera and camera != null:
 		camera.global_transform = original_transform
 
-	send_response(peer_id, id, {
-		"image": base64_str,
-		"width": img.get_width(),
-		"height": img.get_height(),
-		"format": actual_format,
-		"viewport": "editor",
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"image": base64_str,
+			"width": img.get_width(),
+			"height": img.get_height(),
+			"format": actual_format,
+			"viewport": "editor",
+		}
+	)
 
 
 func _handle_camera(peer_id: int, id: String, params: Dictionary) -> void:
@@ -1659,20 +1994,27 @@ func _handle_camera(peer_id: int, id: String, params: Dictionary) -> void:
 			var basis: Basis = camera.global_transform.basis
 			var fwd: Vector3 = -basis.z
 
-			send_response(peer_id, id, {
-				"action": "get_position",
-				"position": [snapped(pos.x, 0.01), snapped(pos.y, 0.01), snapped(pos.z, 0.01)],
-				"rotation_degrees": [snapped(rot.x, 0.01), snapped(rot.y, 0.01), snapped(rot.z, 0.01)],
-				"forward": [snapped(fwd.x, 0.01), snapped(fwd.y, 0.01), snapped(fwd.z, 0.01)],
-				"fov": camera.fov,
-			})
+			send_response(
+				peer_id,
+				id,
+				{
+					"action": "get_position",
+					"position": [snapped(pos.x, 0.01), snapped(pos.y, 0.01), snapped(pos.z, 0.01)],
+					"rotation_degrees":
+					[snapped(rot.x, 0.01), snapped(rot.y, 0.01), snapped(rot.z, 0.01)],
+					"forward": [snapped(fwd.x, 0.01), snapped(fwd.y, 0.01), snapped(fwd.z, 0.01)],
+					"fov": camera.fov,
+				}
+			)
 
 		"look_at":
 			var pos_arr: Array = params.get("position", [])
 			var tgt_arr: Array = params.get("target", [])
 
 			if pos_arr.size() < 3:
-				_send_error(peer_id, id, "MISSING_PARAM", "action 'look_at' requires 'position' [x,y,z]")
+				_send_error(
+					peer_id, id, "MISSING_PARAM", "action 'look_at' requires 'position' [x,y,z]"
+				)
 				return
 
 			var new_pos := Vector3(float(pos_arr[0]), float(pos_arr[1]), float(pos_arr[2]))
@@ -1686,17 +2028,34 @@ func _handle_camera(peer_id: int, id: String, params: Dictionary) -> void:
 			var final_pos: Vector3 = camera.global_position
 			var final_rot: Vector3 = camera.global_rotation_degrees
 
-			send_response(peer_id, id, {
-				"action": "look_at",
-				"position": [snapped(final_pos.x, 0.01), snapped(final_pos.y, 0.01), snapped(final_pos.z, 0.01)],
-				"rotation_degrees": [snapped(final_rot.x, 0.01), snapped(final_rot.y, 0.01), snapped(final_rot.z, 0.01)],
-				"note": "Camera position is temporary — editor interpolation may reset it on user interaction.",
-			})
+			send_response(
+				peer_id,
+				id,
+				{
+					"action": "look_at",
+					"position":
+					[
+						snapped(final_pos.x, 0.01),
+						snapped(final_pos.y, 0.01),
+						snapped(final_pos.z, 0.01)
+					],
+					"rotation_degrees":
+					[
+						snapped(final_rot.x, 0.01),
+						snapped(final_rot.y, 0.01),
+						snapped(final_rot.z, 0.01)
+					],
+					"note":
+					"Camera position is temporary — editor interpolation may reset it on user interaction.",
+				}
+			)
 
 		"focus_node":
 			var node_name: String = params.get("node", "")
 			if node_name.is_empty():
-				_send_error(peer_id, id, "MISSING_PARAM", "action 'focus_node' requires 'node' name")
+				_send_error(
+					peer_id, id, "MISSING_PARAM", "action 'focus_node' requires 'node' name"
+				)
 				return
 
 			var scene_root := EditorInterface.get_edited_scene_root()
@@ -1706,7 +2065,9 @@ func _handle_camera(peer_id: int, id: String, params: Dictionary) -> void:
 
 			var target_node: Node = _find_node_by_name_or_path(node_name, scene_root)
 			if target_node == null:
-				_send_error(peer_id, id, "NODE_NOT_FOUND", "Node '%s' not found in scene" % node_name)
+				_send_error(
+					peer_id, id, "NODE_NOT_FOUND", "Node '%s' not found in scene" % node_name
+				)
 				return
 
 			var selection := EditorInterface.get_selection()
@@ -1718,17 +2079,27 @@ func _handle_camera(peer_id: int, id: String, params: Dictionary) -> void:
 				var p: Vector3 = (target_node as Node3D).global_position
 				node_pos = [snapped(p.x, 0.01), snapped(p.y, 0.01), snapped(p.z, 0.01)]
 
-			send_response(peer_id, id, {
-				"action": "focus_node",
-				"node": str(target_node.name),
-				"node_position": node_pos,
-				"selected": true,
-				"note": "Previous editor selection was replaced.",
-				"hint": "Use editor_screenshot with camera_position near node_position to see it.",
-			})
+			send_response(
+				peer_id,
+				id,
+				{
+					"action": "focus_node",
+					"node": str(target_node.name),
+					"node_position": node_pos,
+					"selected": true,
+					"note": "Previous editor selection was replaced.",
+					"hint":
+					"Use editor_screenshot with camera_position near node_position to see it.",
+				}
+			)
 
 		_:
-			_send_error(peer_id, id, "UNKNOWN_ACTION", "Unknown camera action: '%s'. Use get_position, look_at, or focus_node." % action)
+			_send_error(
+				peer_id,
+				id,
+				"UNKNOWN_ACTION",
+				"Unknown camera action: '%s'. Use get_position, look_at, or focus_node." % action
+			)
 
 
 # --- Build scene handler ---
@@ -1761,8 +2132,15 @@ func _handle_build_scene(peer_id: int, id: String, params: Dictionary) -> void:
 		if parent_str != "":
 			parent = _find_node_by_name_or_path(parent_str, scene_root)
 			if parent == null:
-				_send_error(peer_id, id, "PARENT_NOT_FOUND",
-					"Parent node not found: %s (root node is '%s', use relative paths from root children)" % [original_parent_str, root_name])
+				_send_error(
+					peer_id,
+					id,
+					"PARENT_NOT_FOUND",
+					(
+						"Parent node not found: %s (root node is '%s', use relative paths from root children)"
+						% [original_parent_str, root_name]
+					)
+				)
 				return
 
 	# Expand pattern into flat node specs
@@ -1800,24 +2178,33 @@ func _handle_build_scene(peer_id: int, id: String, params: Dictionary) -> void:
 
 	if created > 0:
 		undo_redo.commit_action()
-		_godotiq_action_history.append({
-			"action": action_name,
-			"operations": created,
-			"timestamp": Time.get_ticks_msec(),
-		})
+		(
+			_godotiq_action_history
+			. append(
+				{
+					"action": action_name,
+					"operations": created,
+					"timestamp": Time.get_ticks_msec(),
+				}
+			)
+		)
 		if _godotiq_action_history.size() > MAX_HISTORY_SIZE:
 			_godotiq_action_history = _godotiq_action_history.slice(
 				_godotiq_action_history.size() - MAX_HISTORY_SIZE
 			)
 
-	send_response(peer_id, id, {
-		"created": created,
-		"node_names": node_names,
-		"errors": errors,
-		"total_requested": original_size,
-		"parent": parent.name,
-		"truncated": truncated,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"created": created,
+			"node_names": node_names,
+			"errors": errors,
+			"total_requested": original_size,
+			"parent": parent.name,
+			"truncated": truncated,
+		}
+	)
 	EditorInterface.get_resource_filesystem().scan()
 
 
@@ -1837,7 +2224,9 @@ func _expand_build_pattern(params: Dictionary) -> Array:
 		for item in items:
 			if item is Dictionary and item.has("position"):
 				var pos: Array = item["position"]
-				item["position"] = [float(pos[0]) + off_x, float(pos[1]) + off_y, float(pos[2]) + off_z]
+				item["position"] = [
+					float(pos[0]) + off_x, float(pos[1]) + off_y, float(pos[2]) + off_z
+				]
 			if item is Dictionary and not item.has("name"):
 				item["name"] = "%s_%d" % [_build_spec_name_prefix(item), index]
 			index += 1
@@ -1906,12 +2295,18 @@ func _expand_build_grid(grid: Dictionary, offset: Array = [0, 0, 0]) -> Array:
 
 			if not spec.has("position"):
 				if axis == "xy":
-					spec["position"] = [ox + col * spacing + off_x, oy + row * spacing + off_y, oz + off_z]
+					spec["position"] = [
+						ox + col * spacing + off_x, oy + row * spacing + off_y, oz + off_z
+					]
 				else:  # "xz" default
-					spec["position"] = [ox + col * spacing + off_x, oy + off_y, oz + row * spacing + off_z]
+					spec["position"] = [
+						ox + col * spacing + off_x, oy + off_y, oz + row * spacing + off_z
+					]
 			else:
 				var pos: Array = spec["position"]
-				spec["position"] = [float(pos[0]) + off_x, float(pos[1]) + off_y, float(pos[2]) + off_z]
+				spec["position"] = [
+					float(pos[0]) + off_x, float(pos[1]) + off_y, float(pos[2]) + off_z
+				]
 
 			result.append(spec)
 	return result
@@ -1942,7 +2337,11 @@ func _expand_build_line(line: Dictionary, offset: Array = [0, 0, 0]) -> Array:
 
 	# Place first node at start point with rotation from first segment
 	var first_pt: Array = points[0]
-	var first_spec: Dictionary = {"name": "%s_%d" % [prefix, index], "position": [float(first_pt[0]) + off_x, float(first_pt[1]) + off_y, float(first_pt[2]) + off_z]}
+	var first_spec: Dictionary = {
+		"name": "%s_%d" % [prefix, index],
+		"position":
+		[float(first_pt[0]) + off_x, float(first_pt[1]) + off_y, float(first_pt[2]) + off_z]
+	}
 	if scene_path != "":
 		first_spec["scene"] = scene_path
 	if type_name != "":
@@ -1960,7 +2359,9 @@ func _expand_build_line(line: Dictionary, offset: Array = [0, 0, 0]) -> Array:
 
 	for i in range(points.size() - 1):
 		var start := Vector3(float(points[i][0]), float(points[i][1]), float(points[i][2]))
-		var end := Vector3(float(points[i + 1][0]), float(points[i + 1][1]), float(points[i + 1][2]))
+		var end := Vector3(
+			float(points[i + 1][0]), float(points[i + 1][1]), float(points[i + 1][2])
+		)
 		var seg_dir := (end - start).normalized()
 		var seg_len := (end - start).length()
 
@@ -1990,12 +2391,16 @@ func _expand_build_line(line: Dictionary, offset: Array = [0, 0, 0]) -> Array:
 
 	# Endpoint inclusion: check if last placed node is near the final point
 	var final_pt: Array = points[points.size() - 1]
-	var final_pos := Vector3(float(final_pt[0]) + off_x, float(final_pt[1]) + off_y, float(final_pt[2]) + off_z)
+	var final_pos := Vector3(
+		float(final_pt[0]) + off_x, float(final_pt[1]) + off_y, float(final_pt[2]) + off_z
+	)
 	var place_endpoint := true
 	if result.size() > 0:
 		var last_spec: Dictionary = result[result.size() - 1]
 		var last_pos_arr: Array = last_spec.get("position", [0, 0, 0])
-		var last_pos := Vector3(float(last_pos_arr[0]), float(last_pos_arr[1]), float(last_pos_arr[2]))
+		var last_pos := Vector3(
+			float(last_pos_arr[0]), float(last_pos_arr[1]), float(last_pos_arr[2])
+		)
 		if last_pos.distance_to(final_pos) < spacing * 0.1:
 			place_endpoint = false
 
@@ -2009,7 +2414,11 @@ func _expand_build_line(line: Dictionary, offset: Array = [0, 0, 0]) -> Array:
 		if type_name != "":
 			end_spec["type"] = type_name
 		if align_to_path and points.size() >= 2:
-			var last_seg_start := Vector3(float(points[points.size() - 2][0]), float(points[points.size() - 2][1]), float(points[points.size() - 2][2]))
+			var last_seg_start := Vector3(
+				float(points[points.size() - 2][0]),
+				float(points[points.size() - 2][1]),
+				float(points[points.size() - 2][2])
+			)
 			var last_dir := (final_pos - last_seg_start).normalized()
 			if last_dir.length() > 0.001:
 				end_spec["rotation"] = [0, rad_to_deg(atan2(last_dir.x, last_dir.z)), 0]
@@ -2053,13 +2462,19 @@ func _create_build_node(spec: Dictionary, parent: Node, scene_root: Node, ur) ->
 	if new_node is Node3D:
 		var pos = spec.get("position", null)
 		if pos is Array and pos.size() >= 3:
-			ur.add_do_property(new_node, "position", Vector3(float(pos[0]), float(pos[1]), float(pos[2])))
+			ur.add_do_property(
+				new_node, "position", Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
+			)
 		var rot = spec.get("rotation", null)
 		if rot is Array and rot.size() >= 3:
-			ur.add_do_property(new_node, "rotation_degrees", Vector3(float(rot[0]), float(rot[1]), float(rot[2])))
+			ur.add_do_property(
+				new_node, "rotation_degrees", Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
+			)
 		var scl = spec.get("scale", null)
 		if scl is Array and scl.size() >= 3:
-			ur.add_do_property(new_node, "scale", Vector3(float(scl[0]), float(scl[1]), float(scl[2])))
+			ur.add_do_property(
+				new_node, "scale", Vector3(float(scl[0]), float(scl[1]), float(scl[2]))
+			)
 	elif new_node is Node2D or new_node is Control:
 		var pos = spec.get("position", null)
 		if pos is Array and pos.size() >= 2:
@@ -2079,7 +2494,10 @@ func _create_build_node(spec: Dictionary, parent: Node, scene_root: Node, ur) ->
 
 # --- Game-side forwarding ---
 
-func _handle_game_forward(peer_id: int, id: String, msg_type: String, params: Dictionary, timeout_ms: int) -> void:
+
+func _handle_game_forward(
+	peer_id: int, id: String, msg_type: String, params: Dictionary, timeout_ms: int
+) -> void:
 	if not _game_running:
 		_send_error(peer_id, id, "GAME_NOT_RUNNING", "No game session is running")
 		return
@@ -2126,7 +2544,10 @@ func handle_game_response(response_type: String, data: Array) -> void:
 		else:
 			for req_id in _pending_game_requests:
 				var entry_by_request_id: Dictionary = _pending_game_requests[req_id]
-				if entry_by_request_id["method"] == response_type and entry_by_request_id["request_id"] == response_request_id:
+				if (
+					entry_by_request_id["method"] == response_type
+					and entry_by_request_id["request_id"] == response_request_id
+				):
 					matched_id = req_id
 					break
 
@@ -2147,6 +2568,7 @@ func handle_game_response(response_type: String, data: Array) -> void:
 
 # --- Game lifecycle callbacks ---
 
+
 func on_game_started() -> void:
 	_game_running = true
 	send_event("game_started", {})
@@ -2164,21 +2586,34 @@ func on_game_stopped() -> void:
 
 # --- Pre-flight checks ---
 
+
 func _preflight_scene_check(params: Dictionary) -> Dictionary:
 	var root := EditorInterface.get_edited_scene_root()
 	if root == null:
-		return {"ok": false, "error": "No scene is open in the editor. Call godotiq_exec to open a scene first: EditorInterface.open_scene_from_path('res://YourScene.tscn')"}
+		return {
+			"ok": false,
+			"error":
+			"No scene is open in the editor. Call godotiq_exec to open a scene first: EditorInterface.open_scene_from_path('res://YourScene.tscn')"
+		}
 	var requested_scene: String = ""
 	if params.has("scene"):
 		requested_scene = str(params["scene"])
 	elif params.has("target_scene"):
 		requested_scene = str(params["target_scene"])
 	if requested_scene != "" and root.scene_file_path != requested_scene:
-		return {"ok": false, "error": "Scene '%s' is open but you requested '%s'. Save and switch scenes first: call godotiq_save_scene() then godotiq_exec('EditorInterface.open_scene_from_path(\"%s\")')" % [root.scene_file_path, requested_scene, requested_scene]}
+		return {
+			"ok": false,
+			"error":
+			(
+				"Scene '%s' is open but you requested '%s'. Save and switch scenes first: call godotiq_save_scene() then godotiq_exec('EditorInterface.open_scene_from_path(\"%s\")')"
+				% [root.scene_file_path, requested_scene, requested_scene]
+			)
+		}
 	return {"ok": true}
 
 
 # --- Editor state helpers ---
+
 
 func _record_error(msg: String) -> void:
 	_recent_errors.append(msg)
@@ -2200,6 +2635,7 @@ func _get_editor_state() -> Dictionary:
 
 # --- Transport helpers ---
 
+
 func send_response(peer_id: int, id: String, result: Dictionary) -> void:
 	result["_editor_state"] = _get_editor_state()
 	var msg := JSON.stringify({"id": id, "status": "ok", "result": result})
@@ -2207,12 +2643,17 @@ func send_response(peer_id: int, id: String, result: Dictionary) -> void:
 
 
 func _send_error(peer_id: int, id: String, code: String, message: String) -> void:
-	var msg := JSON.stringify({
-		"id": id,
-		"status": "error",
-		"error": {"code": code, "message": message},
-		"_editor_state": _get_editor_state(),
-	})
+	var msg := (
+		JSON
+		. stringify(
+			{
+				"id": id,
+				"status": "error",
+				"error": {"code": code, "message": message},
+				"_editor_state": _get_editor_state(),
+			}
+		)
+	)
 	_send_text(peer_id, msg)
 
 
@@ -2233,6 +2674,7 @@ func _send_text(peer_id: int, text: String) -> void:
 
 
 # --- check_errors ---
+
 
 func _handle_check_errors(peer_id: int, id: String, params: Dictionary):
 	if _checking_errors:
@@ -2272,7 +2714,9 @@ func _handle_check_errors(peer_id: int, id: String, params: Dictionary):
 		for entry in logger_entries:
 			if not logger_by_file.has(entry.file):
 				logger_by_file[entry.file] = []
-			logger_by_file[entry.file].append({"file": entry.file, "line": entry.line, "error": entry.message})
+			logger_by_file[entry.file].append(
+				{"file": entry.file, "line": entry.line, "error": entry.message}
+			)
 		# For files with Logger entries, use those instead of basic errors
 		for file_path in basic_errors:
 			if logger_by_file.has(file_path):
@@ -2294,12 +2738,16 @@ func _handle_check_errors(peer_id: int, id: String, params: Dictionary):
 			seen[key] = true
 			deduped.append(err)
 	_checking_errors = false
-	send_response(peer_id, id, {
-		"errors": deduped,
-		"total": deduped.size(),
-		"scripts_checked": checked,
-		"scope": scope,
-	})
+	send_response(
+		peer_id,
+		id,
+		{
+			"errors": deduped,
+			"total": deduped.size(),
+			"scripts_checked": checked,
+			"scope": scope,
+		}
+	)
 
 
 func _check_loaded_script(path: String, script_res) -> Dictionary:
@@ -2355,6 +2803,7 @@ func _get_scene_script_paths(root: Node) -> Array[String]:
 
 
 # --- Cleanup ---
+
 
 func _exit_tree() -> void:
 	if _has_logger and _error_logger:

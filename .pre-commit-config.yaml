@@ -1,6 +1,17 @@
 repos:
-  - repo: https://github.com/Scony/godot-gdscript-toolkit
-    rev: 4.3.1
+  - repo: local
     hooks:
       - id: gdformat
+        name: gdformat
+        entry: gdformat
+        language: system
+        types: [file]
+        files: '\.gd$'
+        exclude: '^addons/'
       - id: gdlint
+        name: gdlint
+        entry: gdlint
+        language: system
+        types: [file]
+        files: '\.gd$'
+        exclude: '^addons/'
