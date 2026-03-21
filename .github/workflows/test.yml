@@ -1,0 +1,26 @@
+name: Test Game Test
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GODOT_VERSION: "4.3"
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download Godot
+        run: |
+          curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          unzip godot.zip
+          chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
+          sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Run Tests
+        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit

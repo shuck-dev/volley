@@ -1,33 +1,14 @@
 name: Publish Game Test to Itch.io
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   GODOT_VERSION: "4.3"
 
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Godot
-        run: |
-          curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
-          unzip godot.zip
-          chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
-          sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
-
-      - name: Run Tests
-        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
-
   approve:
     name: Approve for Release
-    needs: test
     runs-on: ubuntu-latest
     environment: release
     steps:
@@ -41,7 +22,7 @@ jobs:
     outputs:
       build_directory: ${{ steps.export.outputs.build_directory }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Export Web
         id: export
@@ -56,11 +37,13 @@ jobs:
     needs: export
     runs-on: ubuntu-latest
     steps:
-      - name: Publish to Itch.io
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.3
+      - name: Download Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+
+      - name: Push to Itch.io
+        run: ./butler push "${{ needs.export.outputs.build_directory }}" Speedyoshi/game-test:html5
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
-          CHANNEL: html5
-          ITCH_GAME: game-test
-          ITCH_USER: Speedyoshi
-          PACKAGE: ${{ needs.export.outputs.build_directory }}
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
