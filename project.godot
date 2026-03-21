@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Paddle Friends"
+config/name="Volley Vendetta"
 run/main_scene="uid://brd0mbrfgqjxr"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"

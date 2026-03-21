@@ -45,17 +45,18 @@ jobs:
           const rawId = process.env.NOTION_DATABASE_ID.replace(/-/g, '');
           const databaseId = `${rawId.slice(0,8)}-${rawId.slice(8,12)}-${rawId.slice(12,16)}-${rawId.slice(16,20)}-${rawId.slice(20)}`;
 
-          // Ensure the database has a "File" rich_text property
+          // Ensure the database has "File" and "Initiative" properties
           async function ensureFileProperty() {
             const db = await notion.databases.retrieve({ database_id: databaseId });
-            if (!db.properties['File']) {
+            const updates = {};
+            if (!db.properties['File']) updates['File'] = { rich_text: {} };
+            if (!db.properties['Initiative']) updates['Initiative'] = { select: {} };
+            if (Object.keys(updates).length > 0) {
               await notion.databases.update({
                 database_id: databaseId,
-                properties: {
-                  'File': { rich_text: {} }
-                }
+                properties: updates
               });
-              console.log('Created "File" property on database');
+              console.log('Created missing properties on database');
             }
             // Find the title property name
             for (const [name, prop] of Object.entries(db.properties)) {
@@ -66,10 +67,19 @@ jobs:
 
           let titleProp;
 
+          function getInitiative(filePath) {
+            const parts = filePath.split('/');
+            if (parts.length >= 2) {
+              return parts[1].replace(/^\d+-/, '');
+            }
+            return 'general';
+          }
+
           async function syncFile(filePath) {
             const content = fs.readFileSync(filePath, 'utf-8');
             const title = content.match(/^#\s+(.+)/m)?.[1] || filePath;
             const blocks = markdownToBlocks(content);
+            const initiative = getInitiative(filePath);
 
             // Check if page already exists
             const existing = await notion.databases.query({
@@ -89,11 +99,12 @@ jobs:
               }
               // Add updated blocks
               await notion.blocks.children.append({ block_id: pageId, children: blocks });
-              // Update title
+              // Update title and initiative
               await notion.pages.update({
                 page_id: pageId,
                 properties: {
-                  [titleProp]: { title: [{ text: { content: title } }] }
+                  [titleProp]: { title: [{ text: { content: title } }] },
+                  'Initiative': { select: { name: initiative } }
                 }
               });
               console.log(`Updated: ${filePath}`);
@@ -103,7 +114,8 @@ jobs:
                 parent: { database_id: databaseId },
                 properties: {
                   [titleProp]: { title: [{ text: { content: title } }] },
-                  'File': { rich_text: [{ text: { content: filePath } }] }
+                  'File': { rich_text: [{ text: { content: filePath } }] },
+                  'Initiative': { select: { name: initiative } }
                 },
                 children: blocks
               });
