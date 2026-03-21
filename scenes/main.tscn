@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://brd0mbrfgqjxr"]
+
+[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
+size = Vector2(31.010721, 880.5864)
+
+[node name="Node2D" type="Node2D" unique_id=75800363]
+
+[node name="Top Wall" type="StaticBody2D" parent="." unique_id=1297110620]
+rotation = 1.5707964
+physics_material_override = ExtResource("1_0wfyh")
+metadata/_edit_group_ = true
+
+[node name="ColorRect" type="ColorRect" parent="Top Wall" unique_id=1483069279]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1, 24.649014)
+metadata/_edit_use_anchors_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Top Wall" unique_id=2125011239]
+position = Vector2(20.074709, 492.9507)
+scale = Vector2(1.2850581, 1.1197083)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="Bottom Wall" type="StaticBody2D" parent="." unique_id=743283118]
+position = Vector2(-984, 986)
+rotation = -1.5707964
+physics_material_override = ExtResource("1_0wfyh")
+metadata/_edit_group_ = true
+
+[node name="ColorRect" type="ColorRect" parent="Bottom Wall" unique_id=1810122737]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1, 24.649014)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bottom Wall" unique_id=1261402091]
+position = Vector2(20.074709, 492.9507)
+scale = Vector2(1.2850581, 1.1197083)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="Right Wall" type="StaticBody2D" parent="." unique_id=1091055427]
+physics_material_override = ExtResource("1_0wfyh")
+metadata/_edit_group_ = true
+
+[node name="ColorRect" type="ColorRect" parent="Right Wall" unique_id=679820908]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1, 24.649014)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Right Wall" unique_id=2042401507]
+position = Vector2(20.074709, 492.9507)
+scale = Vector2(1.2850581, 1.1197083)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="Left Wall" type="StaticBody2D" parent="." unique_id=288656821]
+position = Vector2(-1024, 0)
+physics_material_override = ExtResource("1_0wfyh")
+metadata/_edit_group_ = true
+
+[node name="ColorRect" type="ColorRect" parent="Left Wall" unique_id=252694040]
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(1, 24.649014)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Left Wall" unique_id=1455034467]
+position = Vector2(20.074709, 492.9507)
+scale = Vector2(1.2850581, 1.1197083)
+shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
+position = Vector2(-488, 480)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1872813521]
+position = Vector2(-456, 488)
+scale = Vector2(2.4363225, 44.82483)
+zoom = Vector2(0.505, 0.505)

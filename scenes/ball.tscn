@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c4d57kq6juqi0"]
+
+[ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/ball.gd" id="1_7s4qf"]
+[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_cxlvu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n1dj2"]
+
+[node name="Ball" type="RigidBody2D" unique_id=1842167380]
+physics_material_override = ExtResource("1_cxlvu")
+gravity_scale = 0.0
+script = ExtResource("1_7s4qf")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=157323213]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=160689379]
+scale = Vector2(1.8799996, 1.8799996)
+shape = SubResource("CircleShape2D_n1dj2")
