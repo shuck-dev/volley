@@ -124,36 +124,39 @@ jobs:
           if [ "$TOTAL_SECONDS" -eq 0 ]; then
             BODY="**Cost Report** — No time tracked in TrackingTime for this issue."
           else
-            BODY="**Cost Report**\n- Time tracked: **${HOURS}h**\n- Hourly cost: **${CURRENCY}${HOURLY_COST}**\n- Total cost: **${CURRENCY}${COST}**"
+            BODY=$(printf "**Cost Report**\n- Time tracked: **%sh**\n- Hourly cost: **%s%s**\n- Total cost: **%s%s**" "$HOURS" "$CURRENCY" "$HOURLY_COST" "$CURRENCY" "$COST")
           fi
 
           echo "Posting to $ISSUE_ID: $BODY"
 
           # Check for existing cost comment to update
+          QUERY=$(jq -n --arg uuid "$LINEAR_ISSUE_UUID" '{query: ("{ issue(id: \"" + $uuid + "\") { comments { nodes { id body } } } }")}')
           COMMENTS=$(curl -s -X POST \
             "https://api.linear.app/graphql" \
             -H "Authorization: $LINEAR_API_KEY" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"{ issue(id: \\\"$LINEAR_ISSUE_UUID\\\") { comments { nodes { id body } } } }\"}")
+            -d "$QUERY")
 
           EXISTING_COMMENT_ID=$(echo "$COMMENTS" | jq -r '.data.issue.comments.nodes[] | select(.body | startswith("**Cost Report**")) | .id' | head -1)
 
-          FORMATTED_BODY=$(printf "$BODY")
-
           if [ -n "$EXISTING_COMMENT_ID" ]; then
             # Update existing comment
+            MUTATION=$(jq -n --arg id "$EXISTING_COMMENT_ID" --arg body "$BODY" \
+              '{query: ("mutation { commentUpdate(id: \"" + $id + "\", input: { body: \"" + ($body | gsub("\n"; "\\n")) + "\" }) { success } }")}')
             curl -s -X POST \
               "https://api.linear.app/graphql" \
               -H "Authorization: $LINEAR_API_KEY" \
               -H "Content-Type: application/json" \
-              -d "{\"query\":\"mutation { commentUpdate(id: \\\"$EXISTING_COMMENT_ID\\\", input: { body: \\\"$FORMATTED_BODY\\\" }) { success } }\"}"
+              -d "$MUTATION"
             echo "Updated existing cost comment"
           else
             # Create new comment
+            MUTATION=$(jq -n --arg uuid "$LINEAR_ISSUE_UUID" --arg body "$BODY" \
+              '{query: ("mutation { commentCreate(input: { issueId: \"" + $uuid + "\", body: \"" + ($body | gsub("\n"; "\\n")) + "\" }) { success } }")}')
             curl -s -X POST \
               "https://api.linear.app/graphql" \
               -H "Authorization: $LINEAR_API_KEY" \
               -H "Content-Type: application/json" \
-              -d "{\"query\":\"mutation { commentCreate(input: { issueId: \\\"$LINEAR_ISSUE_UUID\\\", body: \\\"$FORMATTED_BODY\\\" }) { success } }\"}"
+              -d "$MUTATION"
             echo "Created new cost comment"
           fi
