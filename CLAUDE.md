@@ -148,7 +148,7 @@ Discover tier on first Pro tool call. If Community, you get a preview + locked s
 
 **Node paths:** Relative to scene root (`"Sun"` not `"Main/Sun"`).
 
-**GDScript conventions:** `snake_case.gd`, `PascalCase` classes, `snake_case` functions/vars. Always type hints. `@onready` for node refs. `is_instance_valid()` for null checks. Explicit types over `:=`.
+**GDScript conventions:** `snake_case.gd`, `PascalCase` classes, `snake_case` functions/vars. Always type hints. `@onready` for node refs. `is_instance_valid()` for null checks. Prefer `:=` for inferred typing over explicit types.
 
 **Error recovery:** `GAME_NOT_RUNNING` → `run(play)` | `NODE_NOT_FOUND` → `scene_tree(brief)` | `ADDON_NOT_CONNECTED` → enable addon | `TIMEOUT` → `state_inspect` then `stop`+retry | `SCRIPT_ERRORS` → `check_errors` then fix | `BLOCKED` → check validation, adjust | `PARENT_NOT_FOUND` → create parent first
 
