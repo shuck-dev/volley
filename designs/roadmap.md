@@ -53,7 +53,7 @@ timeline
 The core loop works and it feels good to play for 10 minutes. Placeholder art is fine.
 
 1. **HUD Pass** (2pts, Feature) - volley counter with reset on miss, high score display, VolleyTracker refactor
-2. **Ball Scaling** (1pt, Feature) - ball speeds up during a streak, creating natural difficulty curve
+2. **Ball Scaling** (1pt, Feature) - ball speeds up during a streak, creating natural difficulty curve, paddle hit sound
 3. **Progression System** (10pts, Spike) - earn FP from volleys, 3 upgrades (paddle speed, size, ball start speed), save/load persistence
 4. **Idle Play** (3pts, Spike) - paddles play on their own when player isn't touching controls
 5. **First Partner Unlock** (5pts, Spike) - spend FP to recruit your first partner, replaces the wall as an upgrade milestone

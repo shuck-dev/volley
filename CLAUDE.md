@@ -98,3 +98,48 @@ Discovered when you first call a Pro tool. If Community: share the preview, name
 After background task completion: read every modified file, `check_errors(scope="project")`, `validate` new scripts, launch and verify with `screenshot` + `state_inspect`. Prefer sequential execution for overlapping files.
 
 <!-- GODOTIQ RULES END -->
+
+---
+
+## Linear Ticket Writing Guidelines
+
+- **Stories** are created as Linear **Issues** (features). **Epics** are created as Linear **Projects**.
+- Each ticket is either a **User Story** or a **System Story**.
+
+### User Story Format
+
+```
+As a [role]
+I want [capability]
+So that [benefit]
+
+**Acceptance Criteria:**
+- [ ] ...
+- [ ] ...
+```
+
+### System Story Format
+
+```
+[ACTION-VERB] [statement of what the system does]
+So that [benefit or reason]
+
+**Acceptance Criteria:**
+- [ ] ...
+- [ ] ...
+```
+
+### Guidelines
+
+- Each clause (`As a...`, `I want...`, `So that...`, `ACTION-VERB...`) goes on its own line.
+- Acceptance criteria should be short, testable checklist items that define "done".
+- Use **User Story** when the work is driven by a player or end-user need.
+- Use **System Story** when the work is internal, automated, or infrastructure-driven (e.g., "MIGRATE session storage to Redis / So that latency stays under 50ms").
+
+### Linear API Access
+
+- API key is available via `$LINEAR_API_KEY` environment variable.
+- Use the Linear GraphQL API at `https://api.linear.app/graphql` with `Authorization: $LINEAR_API_KEY` header.
+- Use `curl` to interact with the API directly.
+- **All new tickets must be assigned to the next upcoming cycle.** Query the team's cycles to find the next one and set `cycleId` on issue creation. Set status to **Todo** (`3db79f36-2f0e-4952-91fe-dea458d1a69f`). Label as **Feature** (`b19a1a7b-af6b-4897-a52f-eb2e2e07083e`) unless otherwise specified.
+- **Assign tech and design tickets to Josh Hartley** (`19ea3ec5-a428-44f7-b085-a10fd3dd2cef`).
