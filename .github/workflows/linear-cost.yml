@@ -116,15 +116,27 @@ jobs:
           LINEAR_ISSUE_UUID="${{ steps.linear_issue.outputs.uuid }}"
           TOTAL_SECONDS="${{ steps.time.outputs.total_seconds }}"
 
-          # Calculate hours and cost
+          # Calculate cost
           HOURS=$(echo "scale=2; $TOTAL_SECONDS / 3600" | bc)
           COST=$(echo "scale=2; $HOURS * $HOURLY_COST" | bc)
+
+          # Format time as human-readable
+          H=$((TOTAL_SECONDS / 3600))
+          M=$(((TOTAL_SECONDS % 3600) / 60))
+          S=$((TOTAL_SECONDS % 60))
+          if [ "$H" -gt 0 ]; then
+            TIME_FMT="${H}h ${M}m"
+          elif [ "$M" -gt 0 ]; then
+            TIME_FMT="${M}m ${S}s"
+          else
+            TIME_FMT="${S}s"
+          fi
 
           # Format for display
           if [ "$TOTAL_SECONDS" -eq 0 ]; then
             BODY="**Cost Report** — No time tracked in TrackingTime for this issue."
           else
-            BODY=$(printf "**Cost Report**\n- Time tracked: **%sh**\n- Hourly cost: **%s%s**\n- Total cost: **%s%s**" "$HOURS" "$CURRENCY" "$HOURLY_COST" "$CURRENCY" "$COST")
+            BODY=$(printf "**Cost Report**\n- Time tracked: **%s**\n- Total cost: **%s%s**" "$TIME_FMT" "$CURRENCY" "$COST")
           fi
 
           echo "Posting to $ISSUE_ID: $BODY"
