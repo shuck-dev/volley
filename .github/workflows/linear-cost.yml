@@ -39,23 +39,49 @@ jobs:
           echo "issue_id=$ISSUE_ID" >> "$GITHUB_OUTPUT"
           echo "Found Linear issue: $ISSUE_ID"
 
-      - name: Fetch time from TrackingTime
+      - name: Get issue title from Linear
         if: steps.extract.outputs.issue_id
+        id: linear_issue
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          ISSUE_ID="${{ steps.extract.outputs.issue_id }}"
+
+          ISSUE_DATA=$(curl -s -X POST \
+            "https://api.linear.app/graphql" \
+            -H "Authorization: $LINEAR_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"{ issues(filter: { number: { eq: ${ISSUE_ID##*-} }, team: { key: { eq: \\\"${ISSUE_ID%%-*}\\\" } } }) { nodes { id title } } }\"}")
+
+          TITLE=$(echo "$ISSUE_DATA" | jq -r '.data.issues.nodes[0].title // empty')
+          UUID=$(echo "$ISSUE_DATA" | jq -r '.data.issues.nodes[0].id // empty')
+
+          if [ -z "$TITLE" ]; then
+            echo "Could not find Linear issue $ISSUE_ID"
+            exit 1
+          fi
+
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          echo "uuid=$UUID" >> "$GITHUB_OUTPUT"
+          echo "Found: $TITLE ($UUID)"
+
+      - name: Fetch time from TrackingTime
+        if: steps.linear_issue.outputs.title
         id: time
         env:
           TT_AUTH: ${{ secrets.TRACKINGTIME_AUTH }}
           TT_ACCOUNT_ID: ${{ vars.TRACKINGTIME_ACCOUNT_ID }}
         run: |
-          ISSUE_ID="${{ steps.extract.outputs.issue_id }}"
+          TITLE="${{ steps.linear_issue.outputs.title }}"
 
-          # Get all tasks and filter by Linear issue ID
+          # Get all tasks and filter by issue title
           TASKS=$(curl -s \
             "https://app.trackingtime.co/api/v4/$TT_ACCOUNT_ID/tasks" \
             -H "Authorization: Basic $TT_AUTH" \
             -H "User-Agent: LinearCostTracker/1.0")
 
-          # Extract task IDs where name contains the Linear issue ID
-          TASK_IDS=$(echo "$TASKS" | jq -r --arg id "$ISSUE_ID" '.data[]? | select(.name | contains($id)) | .id')
+          # Extract task IDs where name matches the Linear issue title
+          TASK_IDS=$(echo "$TASKS" | jq -r --arg title "$TITLE" '.data[]? | select(.name == $title) | .id')
 
           if [ -z "$TASK_IDS" ]; then
             echo "No TrackingTime tasks found for $ISSUE_ID"
@@ -82,11 +108,12 @@ jobs:
           echo "Total tracked: ${TOTAL_SECONDS}s"
 
       - name: Calculate cost and post to Linear
-        if: steps.extract.outputs.issue_id
+        if: steps.linear_issue.outputs.uuid
         env:
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
         run: |
           ISSUE_ID="${{ steps.extract.outputs.issue_id }}"
+          LINEAR_ISSUE_UUID="${{ steps.linear_issue.outputs.uuid }}"
           TOTAL_SECONDS="${{ steps.time.outputs.total_seconds }}"
 
           # Calculate hours and cost
@@ -101,21 +128,6 @@ jobs:
           fi
 
           echo "Posting to $ISSUE_ID: $BODY"
-
-          # Find the Linear issue by identifier
-          ISSUE_DATA=$(curl -s -X POST \
-            "https://api.linear.app/graphql" \
-            -H "Authorization: $LINEAR_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"{ issues(filter: { number: { eq: ${ISSUE_ID##*-} }, team: { key: { eq: \\\"${ISSUE_ID%%-*}\\\" } } }) { nodes { id } } }\"}")
-
-          echo "Linear response: $ISSUE_DATA"
-          LINEAR_ISSUE_UUID=$(echo "$ISSUE_DATA" | jq -r '.data.issues.nodes[0].id // empty')
-
-          if [ -z "$LINEAR_ISSUE_UUID" ]; then
-            echo "Could not find Linear issue $ISSUE_ID"
-            exit 1
-          fi
 
           # Check for existing cost comment to update
           COMMENTS=$(curl -s -X POST \
