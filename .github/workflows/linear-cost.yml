@@ -48,18 +48,14 @@ jobs:
         run: |
           ISSUE_ID="${{ steps.extract.outputs.issue_id }}"
 
-          # Search for tasks matching the Linear issue ID
-          TASKS=$(curl -s -X POST \
-            "https://app.trackingtime.co/api/v4/$TT_ACCOUNT_ID/tasks/search" \
+          # Get all tasks and filter by Linear issue ID
+          TASKS=$(curl -s \
+            "https://app.trackingtime.co/api/v4/$TT_ACCOUNT_ID/tasks" \
             -H "Authorization: Basic $TT_AUTH" \
-            -H "Content-Type: application/json" \
-            -H "User-Agent: LinearCostTracker/1.0" \
-            -d "[{\"task_name\":\"$ISSUE_ID\"}]")
+            -H "User-Agent: LinearCostTracker/1.0")
 
-          echo "Task search response: $TASKS"
-
-          # Extract task IDs from response
-          TASK_IDS=$(echo "$TASKS" | jq -r '.data[]?.id // empty')
+          # Extract task IDs where name contains the Linear issue ID
+          TASK_IDS=$(echo "$TASKS" | jq -r --arg id "$ISSUE_ID" '.data[]? | select(.name | contains($id)) | .id')
 
           if [ -z "$TASK_IDS" ]; then
             echo "No TrackingTime tasks found for $ISSUE_ID"
