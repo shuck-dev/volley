@@ -10,16 +10,7 @@ func _init(server: Node) -> void:
 	_append_callable = server._append_script_error
 
 
-func _log_error(
-	function: String,
-	file: String,
-	line: int,
-	code: String,
-	rationale: String,
-	editor_notify: bool,
-	error_type: int,
-	script_backtraces: Array
-) -> void:
+func _log_error(function: String, file: String, line: int, code: String, rationale: String, editor_notify: bool, error_type: int, script_backtraces: Array) -> void:
 	if not capture_all and not (file.ends_with(".gd") or file.ends_with(".tscn")):
 		return
 	var entry := {

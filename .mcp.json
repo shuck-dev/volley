@@ -4,8 +4,8 @@
       "command": "uvx",
       "args": ["godotiq"],
       "env": {
-        "GODOTIQ_PROJECT_ROOT": "/mnt/c/Users/volca/Documents/gamedev/game-test",
-        "GODOTIQ_ADDON_HOST": "172.21.208.1"
+        "GODOTIQ_PROJECT_ROOT": "/mnt/c/Users/volca/Documents/gamedev/volley-vendetta",
+        "GODOTIQ_ADDON_HOST": "172.30.160.1"
       }
     }
   }
