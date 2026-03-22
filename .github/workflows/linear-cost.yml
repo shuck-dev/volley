@@ -118,7 +118,7 @@ jobs:
 
           # Calculate cost
           HOURS=$(echo "scale=2; $TOTAL_SECONDS / 3600" | bc)
-          COST=$(echo "scale=2; $HOURS * $HOURLY_COST" | bc)
+          COST=$(printf "%.2f" "$(echo "scale=4; $HOURS * $HOURLY_COST" | bc)")
 
           # Format time as human-readable
           H=$((TOTAL_SECONDS / 3600))
