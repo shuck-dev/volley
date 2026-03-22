@@ -105,7 +105,7 @@ jobs:
           # Find the Linear issue by identifier
           ISSUE_DATA=$(curl -s -X POST \
             "https://api.linear.app/graphql" \
-            -H "Authorization: Bearer $LINEAR_API_KEY" \
+            -H "Authorization: $LINEAR_API_KEY" \
             -H "Content-Type: application/json" \
             -d "{\"query\":\"{ issues(filter: { number: { eq: ${ISSUE_ID##*-} }, team: { key: { eq: \\\"${ISSUE_ID%%-*}\\\" } } }) { nodes { id } } }\"}")
 
@@ -120,7 +120,7 @@ jobs:
           # Check for existing cost comment to update
           COMMENTS=$(curl -s -X POST \
             "https://api.linear.app/graphql" \
-            -H "Authorization: Bearer $LINEAR_API_KEY" \
+            -H "Authorization: $LINEAR_API_KEY" \
             -H "Content-Type: application/json" \
             -d "{\"query\":\"{ issue(id: \\\"$LINEAR_ISSUE_UUID\\\") { comments { nodes { id body } } } }\"}")
 
@@ -132,7 +132,7 @@ jobs:
             # Update existing comment
             curl -s -X POST \
               "https://api.linear.app/graphql" \
-              -H "Authorization: Bearer $LINEAR_API_KEY" \
+              -H "Authorization: $LINEAR_API_KEY" \
               -H "Content-Type: application/json" \
               -d "{\"query\":\"mutation { commentUpdate(id: \\\"$EXISTING_COMMENT_ID\\\", input: { body: \\\"$FORMATTED_BODY\\\" }) { success } }\"}"
             echo "Updated existing cost comment"
@@ -140,7 +140,7 @@ jobs:
             # Create new comment
             curl -s -X POST \
               "https://api.linear.app/graphql" \
-              -H "Authorization: Bearer $LINEAR_API_KEY" \
+              -H "Authorization: $LINEAR_API_KEY" \
               -H "Content-Type: application/json" \
               -d "{\"query\":\"mutation { commentCreate(input: { issueId: \\\"$LINEAR_ISSUE_UUID\\\", body: \\\"$FORMATTED_BODY\\\" }) { success } }\"}"
             echo "Created new cost comment"
