@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ce8nc6smq3t8v"]
 
 [ext_resource type="Script" uid="uid://nx7sebwh4a1a" path="res://scripts/paddle.gd" id="1_3xiby"]
+[ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_31swd"]
 size = Vector2(40, 200)
@@ -8,8 +9,9 @@ size = Vector2(40, 200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(40, 200)
 
-[node name="Paddle" type="RigidBody2D" unique_id=1552130604]
+[node name="Paddle" type="RigidBody2D" unique_id=1552130604 node_paths=PackedStringArray("hit_sound")]
 script = ExtResource("1_3xiby")
+hit_sound = NodePath("HitSound")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="Sprite2D" parent="." unique_id=955212656]
@@ -18,4 +20,5 @@ texture = SubResource("PlaceholderTexture2D_31swd")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1850417808]
 shape = SubResource("RectangleShape2D_ut3sq")
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1902798866]
+[node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]
+stream = ExtResource("2_sfxr")

@@ -19,9 +19,14 @@ config/icon="res://icon.svg"
 
 GodotIQRuntime="*uid://5f55jejx8ekg"
 
+[debug]
+
+file_logging/enable_file_logging=true
+file_logging/log_path="res://logs/godot.log"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg")
 
 [input]
 
