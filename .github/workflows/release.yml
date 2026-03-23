@@ -79,14 +79,15 @@ jobs:
       - name: Trigger cost updates for each issue
         if: steps.prs.outputs.issue_ids
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-          HOURLY_COST: "21.35"
-          CURRENCY: "£"
         run: |
           while IFS= read -r ISSUE_ID; do
-            echo "Updating cost for $ISSUE_ID..."
-            gh workflow run linear-cost.yml -f issue_id="$ISSUE_ID" --ref main
+            # Only process Linear issues (SH-123 format)
+            if [[ "$ISSUE_ID" =~ ^SH-[0-9]+$ ]]; then
+              echo "Updating cost for $ISSUE_ID..."
+              gh workflow run linear-cost.yml -f issue_id="$ISSUE_ID" --ref main
+            fi
           done <<< "${{ steps.prs.outputs.issue_ids }}"
 
   deploy-production:
