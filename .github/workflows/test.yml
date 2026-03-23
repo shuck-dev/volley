@@ -34,4 +34,6 @@ jobs:
         run: godot --headless --path . --import
 
       - name: Run Tests
-        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
+        run: |
+          mkdir -p logs
+          godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
