@@ -10,9 +10,17 @@ var _volley_count := 0
 func _ready() -> void:
 	print("game ready")
 	paddle.paddle_hit.connect(_on_paddle_hit)
+	ball.missed.connect(_on_ball_missed)
 
 
 func _on_paddle_hit() -> void:
 	_volley_count += 1
 	hud.update_volley_count(_volley_count)
 	ball.increase_speed()
+
+
+func _on_ball_missed() -> void:
+	_volley_count = 0
+	hud.update_volley_count(_volley_count)
+	ball.reset_speed()
+	paddle.reset_streak()

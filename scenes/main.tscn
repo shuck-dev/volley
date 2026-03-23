@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/game.gd" id="1_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="2_tefeu"]
 [ext_resource type="PackedScene" uid="uid://ce8nc6smq3t8v" path="res://scenes/paddle.tscn" id="3_jyhfs"]
+[ext_resource type="Script" path="res://scripts/back_wall.gd" id="5_tefeu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
@@ -73,17 +74,18 @@ position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
 
-[node name="Left Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
+[node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
 position = Vector2(-568, -488)
 physics_material_override = ExtResource("1_0wfyh")
+script = ExtResource("5_tefeu")
 metadata/_edit_group_ = true
 
-[node name="ColorRect" type="ColorRect" parent="Bounds/Left Wall" unique_id=252694040]
+[node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
 offset_right = 40.0
 offset_bottom = 40.0
 scale = Vector2(1, 24.649014)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Left Wall" unique_id=1455034467]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
 position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
