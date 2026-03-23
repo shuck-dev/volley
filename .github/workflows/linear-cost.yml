@@ -28,7 +28,7 @@ jobs:
             ISSUE_ID="${{ github.event.inputs.issue_id }}"
           else
             BRANCH="${{ github.event.pull_request.head.ref }}"
-            ISSUE_ID=$(echo "$BRANCH" | grep -oE 'SH-[0-9]+' | head -1)
+            ISSUE_ID=$(echo "$BRANCH" | grep -oiE '[A-Z]+-[0-9]+' | head -1 | tr '[:lower:]' '[:upper:]')
           fi
 
           if [ -z "$ISSUE_ID" ]; then
