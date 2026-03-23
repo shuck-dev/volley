@@ -1,5 +1,7 @@
 {
-  "dirs": ["res://tests/"],
+  "dirs": ["res://tests/", "res://tests/unit/", "res://tests/integration/"],
   "should_exit": true,
-  "should_exit_on_failure": true
+  "should_exit_on_failure": true,
+  "pre_run_script": "res://tests/hooks/pre_run_hook.gd",
+  "post_run_script": "res://tests/hooks/post_run_hook.gd"
 }

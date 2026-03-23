@@ -36,7 +36,9 @@ jobs:
         run: godot --headless --path . --import
 
       - name: Run Tests
-        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
+        run: |
+          mkdir -p logs
+          godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
 
   deploy-preview:
     name: Deploy to Preview
@@ -44,6 +46,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
+      - name: Strip dev addons
+        run: |
+          sed -i '/GodotIQRuntime=/d' project.godot
+          sed -i 's|"res://addons/godotiq/plugin.cfg", ||g' project.godot
+          sed -i 's|"res://addons/gut/plugin.cfg", ||g' project.godot
+          sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
+          rm -rf addons/coverage
 
       - name: Export Web
         id: export

@@ -9,6 +9,16 @@ exports/
 # Import cache
 *.import
 
+# Temp files
+*.tmp
+
+# Logs
+logs/
+
+# Editor/tool config
+.claude/
+.vscode/
+
 # OS junk
 .DS_Store
 Thumbs.db
