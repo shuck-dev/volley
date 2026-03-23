@@ -43,6 +43,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Strip dev addons
+        run: |
+          sed -i '/GodotIQRuntime=/d' project.godot
+          sed -i 's|"res://addons/godotiq/plugin.cfg", ||g' project.godot
+          sed -i 's|"res://addons/gut/plugin.cfg", ||g' project.godot
+          sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
+
       - name: Export Web
         id: export
         uses: firebelley/godot-export@v7.0.0

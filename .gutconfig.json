@@ -1,5 +1,5 @@
 {
-  "dirs": ["res://tests/"],
+  "dirs": ["res://tests/", "res://tests/unit/", "res://tests/integration/"],
   "should_exit": true,
   "should_exit_on_failure": true
 }
