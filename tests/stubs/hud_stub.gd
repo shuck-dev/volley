@@ -1,4 +1,4 @@
-extends Node
+extends CanvasLayer
 
 var last_count := -1
 

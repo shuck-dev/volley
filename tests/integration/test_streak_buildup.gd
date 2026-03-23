@@ -6,12 +6,11 @@ extends GutTest
 var _game: Node2D
 var _ball: RigidBody2D
 var _paddle: RigidBody2D
-var _hud: Node
+var _hud: CanvasLayer
 
 
 func before_each() -> void:
 	_ball = load("res://scripts/ball.gd").new()
-	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 
 	_paddle = load("res://scripts/paddle.gd").new()
 	var sound := AudioStreamPlayer.new()
@@ -24,7 +23,11 @@ func before_each() -> void:
 	_game.ball = _ball
 	_game.paddle = _paddle
 	_game.hud = _hud
+	add_child_autofree(_ball)
+	add_child_autofree(_paddle)
+	add_child_autofree(_hud)
 	add_child_autofree(_game)
+	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 
 

@@ -27,7 +27,7 @@ func test_pitch_increases_on_first_hit() -> void:
 
 func test_second_hit_during_cooldown_does_not_change_pitch() -> void:
 	_paddle.on_ball_hit()
-	var pitch_after_first := _paddle.hit_sound.pitch_scale
+	var pitch_after_first: float = _paddle.hit_sound.pitch_scale
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, pitch_after_first, 0.001)
 
