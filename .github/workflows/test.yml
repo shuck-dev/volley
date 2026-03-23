@@ -34,6 +34,24 @@ jobs:
         run: godot --headless --path . --import
 
       - name: Run Tests
+        env:
+          COVERAGE_FILE: coverage.json
         run: |
           mkdir -p logs
-          godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
+          godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit | tee test_output.txt
+
+      - name: Coverage Summary
+        if: always()
+        run: |
+          echo '## Test Coverage' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          grep -A 100 'Coverage' test_output.txt >> $GITHUB_STEP_SUMMARY || echo 'No coverage output found' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.json
+          if-no-files-found: ignore
