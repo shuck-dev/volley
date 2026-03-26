@@ -6,7 +6,7 @@ extends GutTest
 var _game: Node2D
 var _ball: RigidBody2D
 var _paddle: RigidBody2D
-var _hud: CanvasLayer
+var _last_count := -1
 
 
 func before_each() -> void:
@@ -17,16 +17,13 @@ func before_each() -> void:
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
 
-	_hud = load("res://tests/stubs/hud_stub.gd").new()
-
 	_game = load("res://scripts/game.gd").new()
 	_game.ball = _ball
 	_game.paddle = _paddle
-	_game.hud = _hud
 	add_child_autofree(_ball)
 	add_child_autofree(_paddle)
-	add_child_autofree(_hud)
 	add_child_autofree(_game)
+	_game.volley_count_changed.connect(func(c): _last_count = c)
 	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 
@@ -57,7 +54,7 @@ func test_hud_reflects_hit_count() -> void:
 	await _hit()
 	await _hit()
 	await _hit()
-	assert_eq(_hud.last_count, 3)
+	assert_eq(_last_count, 3)
 
 # NOTE: the path from physics body_entered → _on_body_entered → on_ball_hit/missed.emit
 # is not covered by these tests. That dispatch requires real physics and is intentionally
