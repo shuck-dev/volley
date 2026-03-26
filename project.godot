@@ -22,7 +22,6 @@ GodotIQRuntime="*uid://5f55jejx8ekg"
 [debug]
 
 file_logging/enable_file_logging=true
-file_logging/log_path="res://logs/godot.log"
 
 [editor_plugins]
 

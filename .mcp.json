@@ -8,7 +8,7 @@
       "command": "uvx",
       "args": ["godotiq"],
       "env": {
-        "GODOTIQ_PROJECT_ROOT": "/mnt/c/Users/volca/Documents/gamedev/volley-vendetta",
+        "GODOTIQ_PROJECT_ROOT": "/home/josh/gamedev/volley-vendetta",
         "GODOTIQ_ADDON_HOST": "172.30.160.1"
       }
     }
