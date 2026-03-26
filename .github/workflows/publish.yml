@@ -44,6 +44,7 @@ jobs:
     name: Deploy to Preview
     needs: test
     runs-on: ubuntu-latest
+    environment: preview
     steps:
       - uses: actions/checkout@v5
 
