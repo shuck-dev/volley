@@ -9,7 +9,7 @@ size = Vector2(40, 200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(40, 200)
 
-[node name="Paddle" type="RigidBody2D" unique_id=1552130604 node_paths=PackedStringArray("hit_sound")]
+[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound")]
 script = ExtResource("1_3xiby")
 hit_sound = NodePath("HitSound")
 metadata/_edit_group_ = true

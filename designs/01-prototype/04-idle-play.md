@@ -28,9 +28,6 @@ Make the game play itself so it feels alive on your desktop, and reward the play
 - The auto-play AI should reflect the paddle's current upgrade level. A slow, small paddle plays worse on its own.
 - Offline rewards need the save/load system from Progression System to work.
 
-## Implementation notes
-- **Paddle node type:** The paddle is currently a `RigidBody2D` for natural wobble on hit. AI control on a `RigidBody2D` is unpredictable. When implementing auto-play, switch the paddle to `CharacterBody2D` and simulate wobble with a tween on hit. One paddle type for both player and AI — don't try to swap node types dynamically.
-
 ## Dependencies
 - Progression System (FP economy, save/load)
 - Ball Scaling (streak difficulty feeds into auto-play length)

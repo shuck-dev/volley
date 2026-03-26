@@ -36,13 +36,11 @@ Build the framework for persistent progression: earn FP from volleys, spend it o
 |---|---|---|
 | Paddle Speed | Increases `PADDLE_SPEED` | Reach the ball in time |
 | Paddle Size | Increases paddle collision rect | Easier to connect |
-| Paddle Stability | Increases `linear_damp` / reduces wobble on hit | More control = longer streaks |
 
 **Design decisions needed:**
 - Max levels per upgrade (suggestion: 5-10)
 - Base cost and scaling curve (suggestion: base 10 FP, 1.5x per level)
 - Effect per level (e.g. +50 paddle speed per level)
-- Whether stability has a cap (some wobble should always remain for feel)
 
 **Tech:** Upgrades are `UpgradeDefinition` resources — data only, no code per upgrade. `UpgradeManager` applies effects by modifying `GameRules` values at runtime. Adding new upgrades later means adding data, not code.
 
@@ -98,7 +96,6 @@ GameRules
   - Changes from const to functions that query UpgradeManager
   - get_paddle_speed() -> float
   - get_paddle_size() -> float
-  - get_paddle_stability() -> float
 
 game.gd
   - Owns UpgradeManager (autoload candidate for later)
