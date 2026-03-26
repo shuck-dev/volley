@@ -23,7 +23,7 @@ func before_each() -> void:
 	add_child_autofree(_ball)
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
-	_game.personal_best_changed.connect(func(b): _last_personal_best = b)
+	_game.personal_best_changed.connect(func(best): _last_personal_best = best)
 	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 

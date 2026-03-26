@@ -23,7 +23,7 @@ func before_each() -> void:
 	add_child_autofree(_ball)
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
-	_game.volley_count_changed.connect(func(c): _last_count = c)
+	_game.volley_count_changed.connect(func(count): _last_count = count)
 	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 

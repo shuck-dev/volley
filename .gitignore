@@ -18,6 +18,7 @@ logs/
 # Editor/tool config
 .claude/
 .vscode/
+.mcp.json
 
 # OS junk
 .DS_Store
