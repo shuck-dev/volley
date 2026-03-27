@@ -36,11 +36,13 @@ Build the framework for persistent progression: earn FP from volleys, spend it o
 |---|---|---|
 | Paddle Speed | Increases `PADDLE_SPEED` | Reach the ball in time |
 | Paddle Size | Increases paddle collision rect | Easier to connect |
+| Ball Start Speed | Decreases `BALL_SPEED_MIN` | More time to react at streak start |
 
-**Design decisions needed:**
-- Max levels per upgrade (suggestion: 5-10)
-- Base cost and scaling curve (suggestion: base 10 FP, 1.5x per level)
-- Effect per level (e.g. +50 paddle speed per level)
+**Starting values (tune during Make Fun pass):**
+- Max levels per upgrade: 5
+- Base cost: 25 FP, scaling ~1.6x per level (rounded to clean integers)
+- Cost per level: 25 → 40 → 65 → 100 → 160 FP
+- Effect per level: e.g. +50 paddle speed, +8px paddle size, -25 ball start speed
 
 **Tech:** Upgrades are `UpgradeDefinition` resources — data only, no code per upgrade. `UpgradeManager` applies effects by modifying `GameRules` values at runtime. Adding new upgrades later means adding data, not code.
 
@@ -112,7 +114,5 @@ game.gd
 - **In-game:** Close game, reopen → FP, upgrades, high score all restored
 
 ## Open questions
-- What's the right cost curve? Need playtesting to tune.
-- Should the shop pause the game or overlay it?
-- How many levels per upgrade before it feels "done"?
+- Cost curve starts at 25/40/65/100/160 — tune during Make Fun pass
 - Should there be a visual/audio cue when upgrading? (Probably deferred to UI Polish)

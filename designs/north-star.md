@@ -1,10 +1,12 @@
 # Volley Vendetta - North Star
 
 ## One-liner
-A cozy desktop idle game where your paddle trains to beat the world volley record, one bounce at a time.
+A cozy desktop idle game where your paddle trains to beat the world volley record, one bounce at a time. Or something like that.
 
 ## Vibe
 Cozy on the surface, quietly competitive underneath. The game lives on your desktop while you work, gently bouncing away. Your paddle has a dream they won't shut up about: becoming the world volley champion. Warm and encouraging but with a scrappy underdog energy. Wholesome training arc as a desktop widget.
+
+The vibe should feel slightly too deliberate. Like a room that's been tidied just before you arrived.
 
 ## Target audience
 Casual players who want something pleasant running in the background during work. Low attention, high charm.
@@ -18,6 +20,8 @@ Casual players who want something pleasant running in the background during work
 
 ## The dream
 Your paddle has one goal: beat the world volley record. This is the throughline for the whole game. Every upgrade, every partner, every session inches closer to that number. When you finally hit it, something special happens.
+
+The record is a specific number. It was always a specific number. It's worth asking why.
 
 ## Characters
 
@@ -52,7 +56,9 @@ Your paddle has one goal: beat the world volley record. This is the throughline 
 - Minimal UI, just the essentials visible, details on hover or click
 
 ## Endgame
-Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. Post-record: prestige system, new records, harder challenges.
+Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. When you hit it, the game changes — not just mechanically. Post-record: the player knows something the paddle doesn't. See `02-early-access/04-world-and-narrative.md` for the full narrative layer.
+
+Post-snap: prestige system, new records, harder challenges. But the framing is different now.
 
 ## Soft launch thinking
 - Launch early in a limited way (itch.io preview channel) to test the economy and gather feedback
@@ -78,3 +84,4 @@ Beat the world volley record. The number should feel impossibly far at first and
 - Characters are earnest and a little silly
 - Competition is self-driven, not hostile
 - Celebrate small wins, every streak matters
+- The warmth is genuine — it just isn't the whole story
