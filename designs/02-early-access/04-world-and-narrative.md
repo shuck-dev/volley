@@ -86,13 +86,21 @@ Across acts, the milestone collection UI subtly changes. Same numbers, but the b
 
 ## The snap
 
-When the world record is beaten, the expected celebration doesn't arrive.
+When the volley count reaches record-1, the expected celebration doesn't arrive. The record is never beaten in Act 1 — the game stops you one short.
 
 ### Respecting the player's workspace
 
 This is an idle desktop game. It lives in a small window and doesn't demand attention. The Break is the one moment where that contract changes, and the game needs to ask permission first.
 
 On cut to black, a dialogue appears: **continue** or **save and quit**. No indication of what's coming. The player doesn't know the game is about to go fullscreen. If they continue, the window dynamically expands to fill the screen. This has never happened before and is never explained. If they save and quit, they pick up from the same point next time.
+
+### Resistance before the cut
+
+As the count approaches the record, something resists. Not a game mechanic — something external to the game's logic. The ball slows. Not gradually, not like a physics change. Deliberately. Like something is pushing back against the number being reached. The cozy music continues. The UI is still warm. But the ball moves like it's moving through something.
+
+This is not explained. There is no visual effect, no partner comment, no UI acknowledgement. The resistance is just there. If the player has been paying attention to the stage 3 clues, it won't feel like a bug. If they haven't, it might.
+
+The volley count reaches record-1. The ball is almost stopped. Then:
 
 ### The sequence
 
@@ -120,7 +128,9 @@ The game has three acts, each ending in a prestige. Each prestige resets the mec
 
 The cozy pong game. The paddle has a dream. Partners help. Upgrades make you better. Clues build but the surface holds. The rival stands between you and milestones. You have to beat them to progress.
 
-**Ends with:** The Break. Beat the world record, cut to black, the truth is revealed.
+**Target:** record-1. The dream is to beat the world record, but the game stops you one short. The player doesn't know this is coming.
+
+**Ends with:** The Break. The ball slows against external resistance, the count reaches record-1, cut to black, the truth is revealed.
 
 **Prestige framing:** The game resets. You start again. But now you know.
 
@@ -134,7 +144,9 @@ The saviour emerges gradually. A partner who starts making the paddle question t
 
 As the saving grace takes hold, the rival starts to soften. Not all at once. They see the saviour getting through and it shifts their frustration toward something closer to hope. By the end of Act 2 the rival is ready to stop fighting.
 
-**Ends with:** Beating the record again, but this time the reaction is different. Acknowledgement instead of revelation. The paddle is starting to understand.
+**Target:** the exact record. The resistance is gone. The number the game was always pointing at. Reaching it now feels different — the player knows what it means.
+
+**Ends with:** The count hits the record exactly. No cut to black this time. Acknowledgement instead of revelation. The paddle is starting to understand.
 
 **Prestige framing:** Something shifts. The weight is lighter. The game is ready to move forward.
 
@@ -142,7 +154,11 @@ As the saving grace takes hold, the rival starts to soften. Not all at once. The
 
 The game stops pretending. The cozy layer is thinner. The paddle's dialogue is honest. The rival is no longer an obstacle. They're alongside you now.
 
-This act is about reaching the record one final time, but what you're beating isn't the number. The demons are whatever The Event was. The milestones in this act should feel like processing, not achieving. The saviour has done their work. Now the paddle has to do the rest.
+This act is about exceeding the record — going past the number that was always the ceiling. The milestones in this act should feel like processing, not achieving. The saviour has done their work. Now the paddle has to do the rest.
+
+**Target:** past the record. Not a specific number. Just further than it. The record stops being a ceiling and becomes a threshold the paddle has crossed.
+
+**Ends with:** The record falls for the last time. No cut to black. The game stays. Something resolves.
 
 **Ends with:** The record falls for the last time. No cut to black. The game stays. Something resolves.
 

@@ -2,31 +2,34 @@
 
 ```mermaid
 timeline
-    title Sound Roadmap (10pts/month)
+    title Sound Roadmap
 
-    v0.5 Early Access ~ 0.5 months (5pts)
-        : Audio Basic (2pts)
-        : Music Basic (3pts)
+    v0.4-0.5 Beta ~ 0.6 months (6pts)
+        : Audio Basic
+        : Music Basic
 
     Content Updates ~ 0.8 months (8pts)
-        : Audio & Music Full (8pts)
+        : Audio & Music Full
 
-    The Break ~ 0.3 months (3pts)
-        : The Break Audio (3pts)
+    Post-Break ~ 0.6 months (6pts)
+        : The Break Audio
+        : Peace Audio
 ```
 
-## v0.5 Early Access - 5pts
+**Total: ~2.0 months (20pts)**
 
-1. **Audio Basic** (2pts) - essential hit sounds, miss sounds, streak milestone
-2. **Music Basic** (3pts) - main menu theme and one gameplay loop
+## v0.4-0.5 Beta
 
-## Content Updates - 8pts
+**Audio Basic** covers the essential hit sounds, miss sounds, and the streak milestone audio cue. These are the sounds the player hears most; they need to feel satisfying from the first session.
 
-3. **Audio & Music Full** (8pts) - fanfares, audio polish, character motifs per partner, remaining tracks
+**Music Basic** delivers the main menu theme and one gameplay loop. The gameplay loop will play for a long time at a stretch, so it needs to work as background texture without demanding attention.
 
-## The Break - 3pts
+## Content Updates
 
-4. **The Break Audio** (3pts) - the audio treatment of the snap moment; silence, shift, or something that makes the player feel the world change
+**Audio & Music Full** completes the sound design: fanfares, audio polish, character motifs per partner, and the remaining music tracks. Each partner should have something in the audio that reflects their personality. By the end of this phase the game should feel sonically finished.
 
----
-**Total: 16pts**
+## Post-Break
+
+**The Break Audio** designs the audio treatment for the snap moment. Whether that's silence, a register shift, or something that makes the player feel the world change is a creative decision that follows from The Break Design brief. The audio here does more emotional work than anything else in the game.
+
+**Peace Audio** covers the music and sound shift for the post-game state. The warmth of the main game is still present but settled, not constructed. Should feel earned rather than designed. A new piece or a recontextualisation of existing music.
