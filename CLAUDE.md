@@ -1,134 +1,120 @@
 <!-- GODOTIQ RULES START -->
-<!-- godotiq-rules-version: 0.4.0 -->
 # GodotIQ — AI-Assisted Godot Development
 
 You have GodotIQ MCP tools. ALWAYS prefer these over raw file operations.
 
-- **DO NOT** read `.tscn`, `.gd`, `.tres` files directly — GodotIQ parses them with cross-references and spatial data.
-- **DO NOT** grep for signal connections — use `dependency_graph` and `signal_map`.
-- **DO NOT** guess positions/scales — use `placement` and `suggest_scale`.
+**DO NOT** read `.tscn`, `.gd`, `.tres` files directly — GodotIQ parses them into structured data with cross-references, spatial transforms, signal wiring, and impact analysis that raw text cannot provide.
+
+**DO NOT** grep for signal connections or function callers — use `godotiq_dependency_graph` and `godotiq_signal_map`.
+
+**DO NOT** manually calculate positions or guess scales — use `godotiq_placement` and `godotiq_suggest_scale`.
 
 ---
 
-## Building 3D Scenes
+## CRITICAL: Build in .tscn, NOT in code
 
-### Core Principles
+Add nodes directly to the .tscn file using `godotiq_node_ops`/`godotiq_build_scene`. Do NOT write GDScript that generates nodes at runtime.
 
-1. **Build in .tscn, NOT in code.** Static world (terrain, decorations, structures) goes in `.tscn` via `node_ops`/`build_scene`. Runtime code is for game logic only (movement, damage, scoring).
-2. **Prefer .tscn scenes for game objects.** Build Tower.tscn with mesh + collision + script, then instance it. Don't create empty Node3D with `set_script()`.
-3. **Use `build_scene` for bulk creation** — one call replaces dozens of `node_ops`. Modes: `grid` (tile maps), `scatter` (handpicked), `line` (paths), `nodes` (mixed). Max 256 nodes/call.
-4. **No rebuild from scratch.** Fix individual nodes with `node_ops`, don't delete and recreate entire groups.
-5. **UI in .tscn too.** Control nodes (Container, Label, Button) in `.tscn` files. Runtime styling/data binding in script is fine.
+Game LOGIC goes in code (movement, damage, score). The WORLD (terrain, decorations, structures) goes in .tscn. Prefer `.tscn` scenes for game objects (Tower.tscn with MeshInstance3D + Area3D + script) over runtime `Node3D` creation with `set_script()`.
 
-### Screenshots & Verification
-
-- **Describe what you see** in screenshots. Note lighting, gaps, floating objects, scale issues.
-- **Cross-verify** visual observations with `spatial_audit` or `state_inspect`.
-- **Evidence-based completion:** Every fix needs screenshot + `state_inspect`/`spatial_audit` confirming values. Describe specifically what confirms correctness.
-- **Escalation:** Only ask user after 3 genuinely different fix strategies fail on the same issue.
-
-### Creation Workflow
-
-1. **Setup:** `build_scene(nodes=[...])` for containers, camera, lights → `save_scene` → verify
-2. **Terrain:** `build_scene(grid={...})` → `save_scene` → verify
-3. **Decorations:** `build_scene(scatter={...})` → `save_scene` → verify
-4. **Key objects:** `placement` for positions → `scatter` to place
-5. **Scripts:** `script_ops` for game logic only
-6. **Verify:** `spatial_audit` + `signal_map` + `save_scene`
-
-### Tile Grid Rules
-
-- Use `asset_registry` for tile dimensions — don't guess spacing.
-- Override keys are `"row,col"` (row=Z, col=X, matrix notation).
-- Test rotations: place ONE tile at 0°, screenshot, establish baseline, then calculate others.
-- Never scale tiles beyond 1.02 to hide gaps — fix spacing/rotation instead.
+**No Rebuild from Scratch** — never delete and rebuild entire node groups to fix a few. Use `node_ops` to modify nodes surgically. Rebuilding is the absolute last resort.
 
 ---
 
-## Token Efficiency
+## Screenshots and Visual Inspection
 
-- **ALWAYS use `detail="brief"`** unless you need more. `asset_registry(detail="full")` can produce 140K chars.
-- **Always filter:** `focus`+`radius` on scene_map, `path_filter` on asset_registry, `scope="file:..."` on signal_map.
-- **Screenshot sparingly** — use `state_inspect` for data checks. Limit screenshots to 2-3/session.
+When you receive a screenshot, **DESCRIBE what you see** — note lighting, gaps, floating objects, missing textures, scale issues. Cross-verify with `spatial_audit`, `state_inspect`, or `explore`. Never say "I can't see it — what do you see?"
 
----
-
-## Efficiency Rules
-
-1. **Act immediately.** Don't deliberate — call the tool. Max 2 paragraphs between tool calls.
-2. **Batch operations.** One `build_scene` > many `node_ops`. One `exec editor` loop > many individual calls.
-3. **Don't repeat tool calls.** Cache results from `project_summary`, `asset_registry`, etc.
-4. **Check `_editor_state`** in every response — handle `recent_errors` and verify `open_scene`.
-5. **One script, one validate.** Validate each `.gd` immediately after writing.
-6. **Group modifications, verify once.** Batch changes → one `save_scene` → one verification cycle.
+**Autonomous verification:** Every fix/feature must include a screenshot + `state_inspect`/`spatial_audit` confirming expected values. Describe specifically what you observe. Only escalate to the user after **3 consecutive failed attempts** with genuinely different strategies.
 
 ---
 
-## Mandatory Workflows
+## Creation Workflow — `build_scene`
 
-### Session Start
-`godotiq_project_summary(detail="brief")` — call FIRST, every session.
+For many nodes, use `godotiq_build_scene` instead of individual `node_ops` calls.
 
-### Before Editing Any File
-`file_context(file, detail="brief")` → `impact_check(file, action, target)`. NEVER modify `.gd` without `file_context` first.
+**Phase 1** — Setup structure with `nodes` mode (containers, camera, lights).
+**Phase 2** — Build terrain with `grid` mode. Use `overrides` for special tiles.
+- Always use `asset_registry` to get tile dimensions before building — don't guess spacing.
+- Override keys are `"row,col"` format (row = Z axis, col = X axis).
+- Never scale tiles beyond 1.02 to hide gaps — fix root cause (wrong spacing/rotation/model).
 
-### 3D Scene Work
-`scene_map` → `placement` → `build_scene`/`node_ops(validate=true)` → `save_scene` → verify with `explore`/`spatial_audit`.
+**Phase 3** — Add decorations with `scatter` mode.
+**Phase 4** — Use `godotiq_placement` to find safe positions, then scatter.
+**Phase 5** — Use `godotiq_script_ops` for game logic ONLY.
+**Phase 6** — `spatial_audit` + `signal_map` + `save_scene` + explore to verify.
 
-### After Code Changes
-`validate(target=file, detail="brief")` (Pro) or `check_errors` (Community).
-
-### Testing & Debugging
-`run(action="play")` → `state_inspect` (cheap) → `verify_motion` (for movement) → `screenshot` (expensive, describe what you see) → `run(action="stop")`.
+Key: **Everything static in .tscn** | **One build_scene per logical group** | **Max 256 nodes/call** | **Grid** for repetitive, **scatter** for handpicked, **line** for paths.
 
 ---
 
-## Final QA (MANDATORY before declaring "done")
+## Test-Driven Completion
 
-0. **Visual sweep** — `explore(mode="tour")`, analyze screenshots, fix issues
-1. **Spatial coherence** — `spatial_audit(detail="brief")` → 0 critical/warnings
-2. **Grid connectivity** — check `warnings` from `build_scene` grid responses
-3. **Code quality** — `validate` every modified `.gd`
-4. **Signal wiring** — `signal_map(find="orphans")` → 0 orphans
+Done means every player-facing feature works during gameplay — not just that code compiles. After any feature, ask: "Would every feature work if a player tried it right now?" Test with `godotiq_run`, `godotiq_state_inspect`, `godotiq_input`.
+
+---
+
+## MANDATORY: Final QA
+
+Before declaring done, run ALL checks:
+
+0. **Visual sweep** — `godotiq_explore(mode="tour")` if 3D content was modified. Fix anything spotted.
+1. **Spatial coherence** — `godotiq_spatial_audit(detail="brief")`. 0 critical issues, 0 warnings.
+2. **Grid connectivity** — check `warnings` field in build_scene response for isolated tiles/path gaps.
+3. **Code quality** — `godotiq_validate(target="res://path/file.gd", detail="brief")` for each modified .gd.
+4. **Signal wiring** — `godotiq_signal_map(detail="brief", find="orphans")`. 0 orphan signals.
 5. **Gameplay test:**
-   - `check_errors(scope="scene")` first
-   - `run(action="play")` → `state_inspect` initial state
-   - `ui_map` → `input` (tap/click each element) → `state_inspect` after each
-   - Wait for a cycle → verify state changes
-   - Check `_editor_state.recent_errors`
-   - `run(action="stop")` → report
-6. **Report** — summarize what was built and QA results
-
-### Test-Driven Completion
-"Done" means every player-facing feature works during gameplay, not just compiles. Test with `run`, `state_inspect`, `input`.
-
-### Testing Input Systems
-Use `godotiq_input` (`tap`, `click_at`, `click_at_world`) to simulate real player interactions. Don't use `exec` to set properties directly — it skips the input pipeline.
+   - `godotiq_check_errors(scope="scene")` → fix errors → `godotiq_run(action="play")`
+   - `state_inspect` to verify initial state
+   - `ui_map` + `godotiq_input` to click every interactive element, verify changes with `state_inspect`
+   - Wait for a full cycle: `godotiq_input(commands=[{"wait_ms": 10000}])`
+   - Check `_editor_state.recent_errors` for runtime errors
+   - `godotiq_run(action="stop")`
+6. **Report** — summarize what was built and QA results.
 
 ---
 
-## Known Godot Quirks
+## Testing Player Input Systems
 
-1. **Always use `godotiq_run(action="play")`** — `play_main_scene()` is unreliable.
-2. **Script cache:** `script_ops` auto-reloads; if using `exec`, call `EditorInterface.get_resource_filesystem().scan()`.
-3. **New class_name scripts:** Use `load("res://path.gd").new()` instead of `ClassName.new()` for scripts created this session.
-4. **Asset loading:** Adaptive timeout handles this. On timeout, try `state_inspect` before retrying. Call `run(action="stop")` before retry.
-5. **Verifying movement:** Use `verify_motion` or double `state_inspect` with `wait_ms` between. Screenshots can't prove motion.
+Use `godotiq_input` to simulate real player interactions — not `exec` to set properties directly (bypasses input pipeline, hides bugs).
+
+- UI buttons: `{"tap": "NodeName"}`
+- Screen click: `{"click_at": [640, 360]}`
+- World click: `{"click_at_world": [5.0, 0.0, 3.0]}`
+- Right click: `{"click_at": [640, 360], "button": "right"}`
+
+Workflow: `ui_map` → `input` → `state_inspect` to verify. If nothing changed when it should, that's a bug — fix it.
+
+---
+
+## UI Construction
+
+Build UI as `.tscn` scenes with Control nodes. Use `build_scene` to create the node tree. Runtime styling (`add_theme_stylebox_override`, data binding) is fine. Always test with screenshot + `ui_map` before declaring complete.
+
+---
+
+## Token Efficiency (CRITICAL)
+
+**Always use `detail="brief"`** — `asset_registry()` default can produce 140,000 chars and crash the session.
+
+**Always filter** — `focus` + `radius` on scene_map; `path_filter` on asset_registry; `scope="file:path.gd"` on signal_map.
+
+**Screenshot sparingly** — use `state_inspect` for data values; screenshots only when visual confirmation is needed.
 
 ---
 
 ## Community vs Pro Tier
 
-Discover tier on first Pro tool call. If Community, you get a preview + locked sections.
+Community (free, 22 tools): raw operations. Pro ($19, 36 tools): spatial analysis, code understanding, flow tracing.
 
-**Handling:** Share the preview, name what's locked (once), fall back to free tools silently. Never stop working because a Pro tool is locked.
+On Community response: share the preview, name what's locked, fall back to free tools silently. Mention upgrade once — never apologize or stop working.
 
 | Pro Tool | Free Fallback |
-|----------|---------------|
+|----------|--------------|
 | `project_summary` | `file_ops(op="tree")` + read `project.godot` |
 | `file_context` | `script_ops(op="read")` |
 | `scene_map` | `scene_tree` (has transforms, no distances) |
-| `dependency_graph` | `script_ops(op="read")` + check imports |
+| `dependency_graph` | `script_ops(op="read")` + manual import check |
 | `signal_map` | `file_ops(op="search", pattern="signal ")` |
 | `validate` | `check_errors` (compilation only) |
 | `impact_check` | `file_ops(op="search")` for references |
@@ -136,21 +122,169 @@ Discover tier on first Pro tool call. If Community, you get a preview + locked s
 | `spatial_audit` | `screenshot` + manual inspection |
 | `placement` | Estimate + `node_ops(validate=true)` |
 | `asset_registry` | `file_ops(op="list")` + `file_ops(op="search")` |
-| `suggest_scale` | Check similar nodes via `scene_tree` |
+| `suggest_scale` | Check similar nodes with `scene_tree` |
 | `animation_audit` | `animation_info` + manual review |
 | `explore` | `screenshot` + `scene_map` |
 
 ---
 
-## Quick Reference
+## Efficiency Rules
 
-**Spatial validation:** `validate: true` on move/scale/add_child in `node_ops`. Atomic — if ANY blocked, NONE execute.
+1. **Act immediately** — call the tool, don't deliberate. Adjust based on the response.
+2. **Batch operations** — `build_scene` over many `node_ops`; `script_ops` patch over full rewrites.
+3. **Don't repeat tool calls** — cache results from `project_summary`/`asset_registry` in context.
+4. **Check `_editor_state`** — every response includes `open_scene`, `game_running`, `recent_errors`. Read it.
+5. **One script, one validate** — validate immediately after each .gd write, not at the end.
+6. **Max 2 paragraphs between tool calls** — explain in 1-2 sentences, then act.
+7. **Group modifications, verify once** — batch all changes → `save_scene` → one screenshot.
+8. **Runtime verification: one cycle** — `wait_ms` first, then `state_inspect` + screenshot. Don't poll.
+9. **Loops for repetitive ops** — `exec editor` loop over 20 nodes beats 20 `node_ops` calls.
 
-**Node paths:** Relative to scene root (`"Sun"` not `"Main/Sun"`).
+---
 
-**GDScript conventions:** `snake_case.gd`, `PascalCase` classes, `snake_case` functions/vars. Always type hints. `@onready` for node refs. `is_instance_valid()` for null checks. Prefer `:=` for inferred typing over explicit types.
+## Known Godot Quirks
 
-**Error recovery:** `GAME_NOT_RUNNING` → `run(play)` | `NODE_NOT_FOUND` → `scene_tree(brief)` | `ADDON_NOT_CONNECTED` → enable addon | `TIMEOUT` → `state_inspect` then `stop`+retry | `SCRIPT_ERRORS` → `check_errors` then fix | `BLOCKED` → check validation, adjust | `PARENT_NOT_FOUND` → create parent first
+1. **play_main_scene() is unreliable** — always use `godotiq_run(action="play")` (uses `play_current_scene()` internally).
+2. **Script cache staleness** — `exec`-created scripts may need manual reload: `EditorInterface.get_resource_filesystem().scan()`.
+3. **class_name in new scripts** — use `load("res://path.gd").new()` instead of `ClassName.new()` for scripts created this session.
+4. **Asset loading time** — GLB-heavy projects take 10-15s. GodotIQ uses adaptive timeout. On timeout, wait and try `state_inspect` before retrying. Call `run(action="stop")` before retrying.
+5. **Screenshots can't prove motion** — use `godotiq_verify_motion(node=..., property_name="position", duration=2.0)` or two `state_inspect` readings with `wait_ms` between them.
+6. **Setting main scene** — GodotIQ auto-sets `main_scene` on first run; response includes `"main_scene_set": true`.
+
+---
+
+## Mandatory Workflows
+
+### 1. Session Start
+```
+godotiq_project_summary(detail="brief")   → call FIRST, every session
+```
+
+### 2. Before Editing ANY File
+```
+godotiq_file_context(file, detail="brief")    → public API, dependencies
+godotiq_impact_check(file, action, target)    → what breaks
+```
+NEVER modify a .gd file without calling `file_context` first.
+
+### 3. 3D Scene Work
+```
+godotiq_scene_map(scene, focus=area, radius=N, detail="brief")
+godotiq_placement(near=ref, constraints={...})
+godotiq_build_scene(grid=..., parent="Terrain")
+godotiq_node_ops(operations=[...], validate=true)
+godotiq_save_scene()
+→ Self-verify with explore/spatial_audit
+```
+ALWAYS use `validate: true` on move/scale/add_child.
+
+### 4. After Scene Changes (Visual QA)
+```
+godotiq_explore(mode="tour")   → analyze each screenshot, fix issues, re-verify
+godotiq_explore(mode="inspect", positions=[...])   → for specific positions
+```
+
+### 5. After Any Code Change
+```
+godotiq_validate(target=file, detail="brief")   → Pro: conventions + errors. Community: check_errors only.
+```
+
+### 6. Multi-File Refactoring
+```
+godotiq_impact_check(...)              → BEFORE changing
+godotiq_validate(target="project")    → baseline
+→ make changes
+godotiq_validate(target="project")    → verify no regressions
+godotiq_check_errors(scope="project")
+godotiq_signal_map(find="orphans")
+```
+
+### 7. Testing & Debugging
+```
+godotiq_run(action="play")
+godotiq_state_inspect(queries)                   → PREFERRED for data (cheap)
+godotiq_verify_motion(node="Enemy")              → PREFERRED for movement
+godotiq_screenshot(scale=0.3, quality=0.3)       → EXPENSIVE, describe what you see
+godotiq_run(action="stop")
+```
+
+---
+
+## Tool Reference
+
+### UNDERSTAND
+- **`project_summary`** — call FIRST every session. `detail="brief"` always.
+- **`file_context`** — call BEFORE editing. Public API, dependencies, signals.
+- **`scene_map`** — spatial layout. Always use `focus` + `radius`.
+- **`dependency_graph`** — full dep tree. Call before refactoring.
+- **`signal_map`** — project-wide signal wiring. Find orphans.
+- **`impact_check`** — predicts breakage before changes.
+- **`validate`** — naming, type hints, orphan signals, compilation.
+- **`trace_flow`** — execution chain from trigger through codebase.
+- **`spatial_audit`** — floating objects, scale mismatches, z-fighting, overlaps.
+- **`check_errors`** — GDScript compilation errors. `scope="scene"` or `"project"`.
+- **`asset_registry`** — asset inventory. Always use `path_filter`.
+- **`suggest_scale`** — scale recommendation based on similar assets.
+- **`placement`** — Marker3D slot matching + grid search with constraints.
+- **`animation_info`** — tracks, length, looping, state machine.
+- **`animation_audit`** — broken tracks, missing transitions.
+
+### EDIT
+- **`scene_tree`** — live editor tree. `detail="brief"`, `depth=2`.
+- **`node_ops`** — move, rotate, scale, set_property, add_child, delete, duplicate, reparent. `validate: true` for spatial ops.
+- **`build_scene`** — batch creation: grid/line/scatter/nodes. Max 256/call. `node_names` in response may differ from requested.
+- **`script_ops`** — read/write/patch GDScript. Patch mode is safest. Auto-reloads script after write.
+- **`file_ops`** — filesystem ops. Respects protected files.
+- **`save_scene`** — persist to disk. Call after `node_ops`.
+- **`undo_history`** — review changes.
+- **`editor_context`** — open scenes, selected nodes, game state.
+
+### PLAY & DEBUG
+- **`run`** — start/stop game. Auto-opens scene, adaptive timeout, auto-sets main_scene.
+- **`state_inspect`** — runtime property queries. Preferred over screenshot for data.
+- **`verify_motion`** — proves movement/animation. Returns MOVING or STATIC verdict.
+- **`screenshot`** — viewport capture. Describe what you see. EXPENSIVE.
+- **`explore`** — drone camera inspection. `mode="tour"` (auto) or `mode="inspect"` (specific positions). `scale=0.3, quality=0.4`. 80K char budget.
+- **`perf_snapshot`** — FPS, draw calls, memory.
+- **`ui_map`** — all UI elements. Call before `input`.
+- **`input`** — simulate player input: actions, keys, taps, clicks.
+- **`exec`** — run GDScript. `func run():` required. `context="editor"` or `"game"`.
+- **`nav_query`** — live pathfinding.
+- **`watch`** — persistent property monitoring.
+- **`camera`** — editor 3D camera control.
+- **`ping`** — health check, tier, version.
+
+---
+
+## Spatial Validation
+
+`validate: true` on node_ops checks: wall proximity (<0.2m blocked), node overlap (<0.05m blocked), sibling outlier, scale outlier. Atomic: if ANY op is BLOCKED, NO ops execute.
+
+## Node Paths
+
+Relative to scene root: `"Sun"` not `"Main/Sun"`, `"Entities/Worker_1"` not `"Main/Entities/Worker_1"`.
+
+## GDScript Conventions
+
+- Files: `snake_case.gd` | Classes: `PascalCase` | Functions/vars: `snake_case`
+- Always type hints: `var count: int = 0`, `func get_name() -> String:`
+- `@onready` for node refs: `@onready var label: Label = $UI/Label`
+- Null check: `if is_instance_valid(node):`
+- Prefer explicit types over `:=` inference
+
+## Error Recovery
+
+- `GAME_NOT_RUNNING` → `godotiq_run(action="play")`
+- `NODE_NOT_FOUND` → `godotiq_scene_tree(detail="brief")`
+- `ADDON_NOT_CONNECTED` → Enable GodotIQ addon in Godot editor
+- `TIMEOUT` → wait, try `state_inspect`; if truly stuck: `run(action="stop")` then retry
+- `SCRIPT_ERRORS` → `check_errors(scope="scene")`, fix, then run
+- `BLOCKED` → check `validation` array, adjust position/scale
+- `NO_SCENE` → open a scene in Godot editor first
+- `PARENT_NOT_FOUND` → verify parent path; create parent first if needed
+- `NO_NODES` → ensure exactly one mode (grid/line/scatter/nodes) with valid data
+- Partial success → check `errors` array, retry only failed items
+- Node count limit → split into multiple `build_scene` calls
 
 <!-- GODOTIQ RULES END -->
 
@@ -158,7 +292,7 @@ Discover tier on first Pro tool call. If Community, you get a preview + locked s
 
 ## Linear Ticket Writing Guidelines
 
-- **Stories** are created as Linear **Issues** (features). **Epics** are created as Linear **Projects**.
+- **Stories** are Linear **Issues**. **Epics** are Linear **Projects**.
 - Each ticket is either a **User Story** or a **System Story**.
 
 ### User Story Format
