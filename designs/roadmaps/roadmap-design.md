@@ -2,37 +2,42 @@
 
 ```mermaid
 timeline
-    title Design Roadmap (10pts/month)
+    title Design Roadmap
 
-    v0.5 Early Access ~ 1.5 months (15pts)
-        : UX Design (3pts)
-        : Game Design (3pts)
-        : Milestone Design (3pts)
-        : Onboarding Design (3pts)
-        : Balance Pass (3pts)
+    v0.4-0.5 Beta ~ 1.5 months (15pts)
+        : UX Design
+        : Game Design
+        : Milestone Design
+        : Onboarding Design
+        : Balance Pass
 
-    The Break ~ 0.5 months (5pts)
-        : The Break Design (5pts)
-
-    v1 Full Release ~ 0.3 months (3pts)
-        : Prestige Design (3pts)
+    Post-Break ~ 1.8 months (18pts)
+        : The Break Design
+        : Prestige Design
+        : Saviour Design
+        : Act 3 Mechanics Design
 ```
 
-## v0.5 Early Access - 15pts
+**Total: ~3.3 months (33pts)**
 
-1. **UX Design** (3pts) - flows, navigation, idle transitions, upgrade shop UX
-2. **Game Design** (3pts) - partner abilities, upgrade effects, progression pacing
-3. **Milestone Design** (3pts) - define the full badge set, triggers, rewards, and collection UX; feeds Art and Tech
-4. **Onboarding Design** (3pts) - first-run experience; how the game introduces itself, the paddle, and the dream without a tutorial
-5. **Balance Pass** (3pts) - upgrade costs, ball scaling curve, time to world record
+## v0.4-0.5 Beta
 
-## The Break - 5pts
+**UX Design** defines how the player moves through the game: flows, navigation, idle transitions, and the upgrade shop UX. The game lives in a small window and runs in the background; the UX needs to respect that contract at every touchpoint.
 
-6. **The Break Design** (5pts) - define the moment, the one specific thing revealed, the art direction brief; and design the post-Break state for a player who now knows the truth
+**Game Design** specifies partner abilities, upgrade effects, and progression pacing. This feeds directly into tech implementation, so it needs to be concrete enough to build from, not a mood board.
 
-## v1 Full Release - 3pts
+**Milestone Design** defines the full badge set: what triggers each one, what it rewards, and how the collection UI works. The milestone numbers are not arbitrary; they must encode something meaningful to The Event, so this work depends on The Event being decided first.
 
-7. **Prestige Design** (3pts) - full design of the prestige system; reset loop, multipliers, what changes and what doesn't
+**Onboarding Design** designs the first-run experience: how the game introduces itself, the paddle, and the dream without a tutorial. The player should understand what to do and why it matters without being told directly.
 
----
-**Total: 23pts**
+**Balance Pass** tunes upgrade costs, the ball scaling curve, and the time-to-world-record. This is the last Beta design task because it can only be done once the full upgrade tree and partner abilities are specced.
+
+## Post-Break
+
+**The Break Design** is the prerequisite for everything else in the Post-Break phase. It defines the specific thing revealed, the art direction brief for the reveal image, and the design of the post-Break state for a player who now knows the truth. No other Post-Break discipline can begin until this is complete.
+
+**Prestige Design** specifies the full prestige system: what resets, what carries over, what multipliers apply, and how the post-prestige state differs across the three acts. The prestige loop is the mechanical spine of Acts 2 and 3, so the design needs to account for the narrative differentiation between acts, not just the mechanical reset.
+
+**Saviour Design** defines who the saviour is and how they work mechanically. They emerge in Act 2 and make the paddle see the truth without explaining it directly. Could be a new partner or an existing one who changes register. Must be decided before Act 2 Writing begins.
+
+**Act 3 Mechanics Design** answers the open question: what does going past the record look like mechanically? Same loop with different framing, a new win condition, or something else entirely. Must be resolved before Act 3 Writing and tech work can begin.
