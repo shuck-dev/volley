@@ -1,7 +1,6 @@
 class_name Upgrade
 extends Resource
 
-@export var id: String
 @export var display_name: String
 @export var description: String
 @export var effect_key: String  # "paddle_speed", "paddle_size", "ball_speed_min"
