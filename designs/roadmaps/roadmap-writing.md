@@ -2,41 +2,59 @@
 
 ```mermaid
 timeline
-    title Writing Roadmap (10pts/month)
+    title Writing Roadmap
 
-    v0.5 Early Access ~ 1.3 months (13pts)
-        : World and Narrative (5pts)
-        : The Event (3pts)
-        : Copy Pass (5pts)
+    v0.2-0.3 Alpha ~ 0.8 months (8pts)
+        : World and Narrative
+        : The Event
 
-    Content Updates ~ 1.3 months (13pts)
-        : World Record (5pts)
-        : Dialogue & Copy (3pts)
-        : Partner Bios & Recruitment Text (3pts)
-        : Milestone Badge Flavour Text (2pts)
+    v0.4-0.5 Beta ~ 0.5 months (5pts)
+        : Copy Pass
 
-    The Break ~ 1.0 months (10pts)
-        : Narrative Scripting (5pts)
-        : The Break Writing (5pts)
+    Content Updates ~ 1.9 months (19pts)
+        : World Record
+        : Narrative Scripting
+        : Dialogue & Copy
+        : Partner Bios & Recruitment Text
+        : Milestone Badge Flavour Text
+
+    Post-Break ~ 2.6 months (26pts)
+        : The Break Writing
+        : Act 2 Writing
+        : Act 3 Writing
+        : Peace Writing
 ```
 
-## v0.5 Early Access - 13pts
+**Total: ~5.8 months (58pts)**
 
-1. **World and Narrative** (5pts) - lore, characters, setting, tone; establish the underlying narrative layer and clue ladder
-2. **The Event** (3pts) - decide what actually happened; the real thing the game-world is a fiction for. Everything in The Break depends on this answer. Must be resolved before partner signal lines or the clue ladder can be written.
-3. **Copy Pass** (5pts) - onboarding text, upgrade descriptions, and welcome back messages; all short-form copy that sets tone across the early game
+## v0.2-0.3 Alpha
 
-## Content Updates - 13pts
+**World and Narrative** establishes the underlying layer: lore, characters, setting, tone, and the shape of the clue ladder. This is the foundational document that everything else in writing references. It doesn't produce in-game text; it produces the truth the in-game text has to conceal and reveal. Must be done before Art Direction begins.
 
-4. **World Record** (5pts) - name, personality, backstory and abilities for 3-5 partners; establish the world record number
-5. **Dialogue & Copy** (3pts) - general in-game text, UI copy, partner idle reactions
-6. **Partner Bios & Recruitment Text** (3pts) - the moment you unlock a partner; name, bio, recruitment line per partner
-7. **Milestone Badge Flavour Text** (2pts) - badge names and a line each; feeds Art and Tech milestone items
+**The Event** is the single most important writing decision in the game: what actually happened. The world record number, the partner identities, the signal lines, the milestone numbers, the reveal image; none of it can be finalised until this is decided. Everything downstream in writing is blocked until it lands. Should be resolved before Character Art begins so the artist knows who these people actually are.
 
-## The Break - 10pts
+## v0.4-0.5 Beta
 
-8. **Narrative Scripting** (5pts) - signal-layer dialogue per partner; the clue ladder executed in actual lines, written after World Record design lands
-9. **The Break Writing** (5pts) - the reveal moment copy and the post-Break framing; what the player reads when the world changes and what they carry forward
+**Copy Pass** writes the short-form copy that sets tone across the early game: onboarding text, upgrade descriptions, and welcome back messages. This is the player's first extended contact with the game's voice and should feel warm, earnest, and slightly too considered.
 
----
-**Total: 36pts**
+## Content Updates
+
+**World Record** writes the name, personality, backstory, and abilities for three to five partners, and establishes the world record number. The record number must encode The Event; it is not a round number and it is not arbitrary.
+
+**Narrative Scripting** executes the clue ladder in actual lines: signal-layer dialogue per partner across all three stages, written once the World Record design has landed and the full partner roster is known. These lines live inside the Content Updates phase so they can be woven into partner dialogue as it is written, rather than retrofitted later.
+
+**Dialogue & Copy** covers general in-game text, UI copy, and partner idle reactions, the ambient voice of the game between meaningful moments.
+
+**Partner Bios & Recruitment Text** writes the unlock moment for each partner: name, bio, and the recruitment line the player sees when they first bring someone in. This is where partner personality is introduced.
+
+**Milestone Badge Flavour Text** names each badge and gives it a line. In Act 1 these read as sports achievement text. After The Break they should mean something different without being changed. The writing needs to carry both readings.
+
+## Post-Break
+
+**The Break Writing** covers the reveal moment copy and the post-Break framing: what the player reads when the world changes, and what they carry forward. This is the highest-stakes writing in the game. The urge to over-explain will be strong. Resist it. One specific truth, clearly committed to, no hedging.
+
+**Act 2 Writing** covers the full dialogue pass for Act 2: partners becoming less subtle, the rival softening, and the saviour emerging. The cozy framing is still present but straining. Lines should work as surface dialogue on first read and mean something different in context.
+
+**Act 3 Writing** covers the Act 3 dialogue pass: the paddle honest, the rival as ally, milestones reframed as processing rather than achievement. Also includes Act 3 variants of milestone badge flavour text, which should carry the same words but land differently now the player knows the truth.
+
+**Peace Writing** covers partner dialogue for the post-game state: warmer, quieter, settled. The earnestness is still there but no longer straining. Should feel like a version of the game that could only exist because of what came before.

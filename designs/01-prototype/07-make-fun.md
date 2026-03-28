@@ -5,7 +5,7 @@ Run the complete prototype as a player and validate that the core loops are actu
 
 **Points:** 3 (tuning and iteration)
 **Dependencies:** All prototype features complete (HUD Pass, Ball Scaling, Progression System, Idle Play, First Partner Unlock, Desktop Experience)
-**Unlocks:** v0.5 Early Access (the prototype is declared done and fun is considered proven enough to share)
+**Unlocks:** v0.4-0.5 Beta (the prototype is declared done and fun is considered proven enough to share)
 
 ---
 
