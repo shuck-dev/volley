@@ -31,24 +31,24 @@ func before_each() -> void:
 func _build_streak(hits: int) -> void:
 	for i in hits:
 		_paddle.on_ball_hit()
-		await get_tree().create_timer(0.25).timeout
+		_paddle.tracker.process(HitTracker.COOLDOWN)
 
 
 func test_ball_speed_resets_after_miss() -> void:
-	await _build_streak(2)
+	_build_streak(2)
 	_ball.missed.emit()
 	assert_almost_eq(_ball.speed, GameRules.BALL_SPEED_MIN, 0.01)
 
 
 func test_hud_resets_after_miss() -> void:
-	await _build_streak(2)
+	_build_streak(2)
 	_ball.missed.emit()
 	assert_eq(_last_count, 0)
 
 
 func test_pitch_resets_on_first_hit_after_miss() -> void:
-	await _build_streak(2)
+	_build_streak(2)
 	_ball.missed.emit()
-	await get_tree().create_timer(0.25).timeout
+	_paddle.tracker.process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.05, 0.001)

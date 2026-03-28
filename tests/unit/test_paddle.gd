@@ -34,7 +34,7 @@ func test_second_hit_during_cooldown_does_not_change_pitch() -> void:
 
 func test_pitch_increases_after_cooldown_expires() -> void:
 	_paddle.on_ball_hit()
-	await get_tree().create_timer(0.25).timeout
+	_paddle.tracker.process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.10, 0.001)
 
@@ -44,9 +44,9 @@ func test_pitch_increases_after_cooldown_expires() -> void:
 
 func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 	_paddle.on_ball_hit()
-	await get_tree().create_timer(0.25).timeout
+	_paddle.tracker.process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	_paddle.reset_streak()
-	await get_tree().create_timer(0.25).timeout
+	_paddle.tracker.process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.05, 0.001)

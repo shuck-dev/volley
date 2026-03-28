@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Run Claude Code Review
         id: claude-review
@@ -28,5 +28,25 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           plugin_marketplaces: 'https://github.com/anthropics/claude-code.git'
           plugins: 'code-review@claude-code-plugins'
-          prompt: '/code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
+          prompt: |
+            /code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+
+            In addition to standard code review, pay special attention to:
+
+            **Godot Best Practices:**
+            - Proper use of type hints on all variables and function signatures
+            - Correct use of @onready vs _ready() for node references
+            - Signal usage patterns (prefer signals over direct coupling)
+            - Node tree structure (prefer scene composition over runtime node creation)
+            - Proper use of is_instance_valid() for null safety
+            - snake_case for files/functions/variables, PascalCase for classes
+
+            **Code Simplification:**
+            - Unnecessary complexity or over-engineering
+            - Code that could be simplified with built-in Godot methods
+            - Duplicated logic that should be extracted
+            - Overly verbose patterns that have simpler alternatives
+
+            Be opinionated. Leave comments even for minor improvements. If the code is clean, still look for simplification opportunities.
+          show_full_output: true
           claude_args: '--allowedTools "Bash(git diff),Bash(git log),Bash(git show),Read,Glob,Grep"'
