@@ -10,14 +10,6 @@ var _last_count := -1
 
 
 func before_each() -> void:
-	var ball_speed_upgrade := Upgrade.new()
-	ball_speed_upgrade.effect_key = UpgradeManager.BALL_SPEED_MIN_KEY
-	ball_speed_upgrade.base_value = GameRules.BALL_SPEED_MIN
-	ball_speed_upgrade.effect_per_level = 0.0
-	ball_speed_upgrade.max_level = 5
-	ball_speed_upgrade.base_cost = 100
-	UpgradeManager.upgrades.assign([ball_speed_upgrade])
-
 	_ball = load("res://scripts/entities/ball.gd").new()
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
@@ -34,10 +26,6 @@ func before_each() -> void:
 	_game.volley_count_changed.connect(func(count): _last_count = count)
 	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
-
-
-func after_each() -> void:
-	UpgradeManager.upgrades.clear()
 
 
 func _build_streak(hits: int) -> void:

@@ -6,12 +6,7 @@ var speed := GameRules.BALL_SPEED_MIN
 
 
 func _ready() -> void:
-	lock_rotation = true
-	linear_damp = 0.0
-	linear_velocity = Vector2(400.0, 200.0).normalized() * speed
-	contact_monitor = true
-	max_contacts_reported = 1
-	body_entered.connect(_on_body_entered)
+	_ball_setup()
 
 
 func _physics_process(_delta: float) -> void:
@@ -37,3 +32,12 @@ func increase_speed() -> void:
 func reset_speed() -> void:
 	speed = GameRules.BALL_SPEED_MIN
 	linear_velocity = linear_velocity.normalized() * speed
+
+
+func _ball_setup() -> void:
+	lock_rotation = true
+	linear_damp = 0.0
+	linear_velocity = Vector2(400.0, 200.0).normalized() * speed
+	contact_monitor = true
+	max_contacts_reported = 1
+	body_entered.connect(_on_body_entered)
