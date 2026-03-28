@@ -4,7 +4,7 @@ var _paddle: CharacterBody2D
 
 
 func before_each() -> void:
-	_paddle = load("res://scripts/paddle.gd").new()
+	_paddle = load("res://scripts/entities/paddle.gd").new()
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound

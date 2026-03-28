@@ -13,7 +13,7 @@ func before_each() -> void:
 	_ball_stub = load("res://tests/stubs/ball_stub.gd").new()
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
-	_game = load("res://scripts/game.gd").new()
+	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball_stub
 	_game.paddle = _paddle_stub
 	add_child_autofree(_ball_stub)

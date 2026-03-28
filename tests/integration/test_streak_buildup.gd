@@ -9,14 +9,14 @@ var _paddle: CharacterBody2D
 
 
 func before_each() -> void:
-	_ball = load("res://scripts/ball.gd").new()
+	_ball = load("res://scripts/entities/ball.gd").new()
 
-	_paddle = load("res://scripts/paddle.gd").new()
+	_paddle = load("res://scripts/entities/paddle.gd").new()
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
 
-	_game = load("res://scripts/game.gd").new()
+	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball
 	_game.paddle = _paddle
 	add_child_autofree(_ball)

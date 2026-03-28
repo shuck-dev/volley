@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ce8nc6smq3t8v"]
 
-[ext_resource type="Script" uid="uid://nx7sebwh4a1a" path="res://scripts/paddle.gd" id="1_3xiby"]
+[ext_resource type="Script" uid="uid://nx7sebwh4a1a" path="res://scripts/entities/paddle.gd" id="1_3xiby"]
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_31swd"]

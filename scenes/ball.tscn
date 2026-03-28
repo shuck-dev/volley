@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c4d57kq6juqi0"]
 
-[ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/ball.gd" id="1_7s4qf"]
+[ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/entities/ball.gd" id="1_7s4qf"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_cxlvu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n1dj2"]

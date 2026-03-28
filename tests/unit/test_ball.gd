@@ -4,7 +4,7 @@ var _ball: RigidBody2D
 
 
 func before_each() -> void:
-	_ball = load("res://scripts/ball.gd").new()
+	_ball = load("res://scripts/entities/ball.gd").new()
 	add_child_autofree(_ball)
 	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
 

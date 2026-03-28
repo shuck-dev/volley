@@ -6,7 +6,7 @@ const EXCLUDE_PATHS = [
 	"res://tests/*",
 	# Require full scene with nodes — not unit-testable
 	"res://scripts/hud/*",
-	"res://scripts/back_wall.gd",
+	"res://scripts/entities/back_wall.gd",
 ]
 
 
