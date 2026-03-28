@@ -1,7 +1,7 @@
 extends GutTest
 
-# Verifies friendship point tracking — FP is a lifetime accumulator that
-# increments on every hit and persists across misses (it is never reset).
+# Verifies friendship point tracking — FP is a currency that
+# increments on each hit and persists across misses (shop mechanics will decrease it).
 
 var _game: Node2D
 var _ball_stub: RigidBody2D

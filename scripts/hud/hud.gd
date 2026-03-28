@@ -2,7 +2,7 @@ extends CanvasLayer
 
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
-@export var friendship_label: Label
+@export var friendship_total_label: Label
 
 
 func update_volley_count(count: int) -> void:
@@ -14,4 +14,4 @@ func update_personal_volley_best(best: int) -> void:
 
 
 func update_friendship_total(friendship_total: int) -> void:
-	friendship_label.text = "FP: %d" % friendship_total
+	friendship_total_label.text = "FP: %d" % friendship_total

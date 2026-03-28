@@ -10,7 +10,7 @@ signal friendship_total_changed(friendship_total: int)
 
 var _volley_count := 0
 var _personal_volley_best := 0
-var _friendship_count := 0
+var _friendship_total := 0
 
 
 func _ready() -> void:
@@ -20,14 +20,14 @@ func _ready() -> void:
 
 func _on_paddle_hit() -> void:
 	_volley_count += 1
-	_friendship_count += 1
+	_friendship_total += 1
 
 	if _volley_count > _personal_volley_best:
 		_personal_volley_best = _volley_count
 		personal_best_changed.emit(_personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
-	friendship_total_changed.emit(_friendship_count)
+	friendship_total_changed.emit(_friendship_total)
 	ball.increase_speed()
 
 
