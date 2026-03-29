@@ -4,7 +4,11 @@ const PADDLE_SPEED_KEY := "paddle_speed"
 const PADDLE_SIZE_KEY := "paddle_size"
 const BALL_SPEED_MIN_KEY := "ball_speed_min"
 
-var upgrades: Array[Upgrade]
+var upgrades: Array[Upgrade] = [
+	preload("res://resources/upgrades/paddle_speed.tres"),
+	preload("res://resources/upgrades/paddle_size.tres"),
+	preload("res://resources/upgrades/ball_speed_min.tres"),
+]
 var _progression: ProgressionData
 
 
