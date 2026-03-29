@@ -19,7 +19,6 @@ repos:
         name: gut tests
         entry: godot --headless -s addons/gut/gut_cmdln.gd
         language: system
-        always_run: true
         pass_filenames: false
         files: '\.gd$'
         exclude: '^addons/'
