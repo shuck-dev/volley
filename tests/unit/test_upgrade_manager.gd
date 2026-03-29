@@ -108,7 +108,7 @@ func test_purchase_deducts_cost_from_balance() -> void:
 	_manager._progression.friendship_point_balance = 300
 	_manager.purchase(SPEED_KEY)
 	# cost at level 0 = 100, remaining = 200
-	assert_eq(_manager._progression.friendship_point_balance, 200)
+	assert_eq(_manager.get_friendship_point_balance(), 200)
 
 
 func test_purchase_returns_false_at_max_level() -> void:
