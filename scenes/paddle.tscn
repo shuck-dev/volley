@@ -9,15 +9,17 @@ size = Vector2(40, 200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(40, 200)
 
-[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound")]
+[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite")]
 script = ExtResource("1_3xiby")
 hit_sound = NodePath("HitSound")
+collision = NodePath("Collision")
+sprite = NodePath("Sprite")
 metadata/_edit_group_ = true
 
-[node name="ColorRect" type="Sprite2D" parent="." unique_id=955212656]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=955212656]
 texture = SubResource("PlaceholderTexture2D_31swd")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1850417808]
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=1850417808]
 shape = SubResource("RectangleShape2D_ut3sq")
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]

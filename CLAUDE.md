@@ -270,11 +270,15 @@ Relative to scene root: `"Sun"` not `"Main/Sun"`, `"Entities/Worker_1"` not `"Ma
 - Always type hints: `var count: int = 0`, `func get_name() -> String:`
 - `@onready` for node refs: `@onready var label: Label = $UI/Label`
 - Null check: `if is_instance_valid(node):`
-- Prefer explicit types over `:=` inference
+- Prefer `:=` when the type is obvious from the assignment; use explicit types when ambiguous (e.g. `var health: float = 0`)
 
 ## Test Conventions
 
 - Section separator comments (e.g. `# --- save ---`) go directly above the first function in that section, no blank line between
+- Inject mock `SaveStorage` via `double(SaveStorage).new()` to avoid filesystem I/O in tests
+- Use explicit type for doubles: `var mock: SaveStorage = double(SaveStorage).new()` (`:=` can't infer)
+- Inject `_progression` before `add_child` to avoid autoload dependencies in unit tests
+- Use `call_deferred` for initial signal emits to ensure listeners are ready
 
 ## Error Recovery
 
