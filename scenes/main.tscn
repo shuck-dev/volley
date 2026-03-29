@@ -92,6 +92,6 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Paddle" parent="." unique_id=1694017550 instance=ExtResource("3_jyhfs")]
 position = Vector2(-416, 8)
 
-[connection signal="friendship_point_balance_changed" from="." to="HUD" method="update_friendship_point_balance"]
+[connection signal="ball_at_max_speed_changed" from="." to="HUD" method="update_max_speed"]
 [connection signal="personal_volley_best_changed" from="." to="HUD" method="update_personal_volley_best"]
 [connection signal="volley_count_changed" from="." to="HUD" method="update_volley_count"]

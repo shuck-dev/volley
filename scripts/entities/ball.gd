@@ -1,6 +1,7 @@
 extends RigidBody2D
 
 signal missed
+signal at_max_speed_changed(is_at_max: bool)
 
 var speed := GameRules.BALL_SPEED_MIN
 
@@ -27,11 +28,18 @@ func increase_speed() -> void:
 		return
 	speed = min(speed + GameRules.BALL_SPEED_INCREMENT, GameRules.BALL_SPEED_MAX)
 	linear_velocity = linear_velocity.normalized() * speed
+	_emit_max_speed_if_changed()
 
 
 func reset_speed() -> void:
 	speed = GameRules.BALL_SPEED_MIN
 	linear_velocity = linear_velocity.normalized() * speed
+	at_max_speed_changed.emit(false)
+
+
+func _emit_max_speed_if_changed() -> void:
+	var is_at_max: bool = speed >= GameRules.BALL_SPEED_MAX
+	at_max_speed_changed.emit(is_at_max)
 
 
 func _ball_setup() -> void:

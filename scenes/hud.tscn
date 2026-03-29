@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://dumhl1skwhd7q"]
 
 [ext_resource type="Script" uid="uid://cjue0o73mhyck" path="res://scripts/hud/hud.gd" id="1_ahhtf"]
+[ext_resource type="Script" uid="uid://dn87va1j2avek" path="res://scripts/hud/dev_upgrade_panel.gd" id="2_oo0fn"]
 
-[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label")]
+[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "max_speed_label")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
 friendship_point_balance_label = NodePath("FriendshipTotalLabel")
+max_speed_label = NodePath("MaxBallSpeedLabel")
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=162178436]
 anchors_preset = 5
@@ -44,3 +46,20 @@ grow_horizontal = 2
 size_flags_horizontal = 4
 text = "FP: 0"
 horizontal_alignment = 1
+
+[node name="MaxBallSpeedLabel" type="Label" parent="." unique_id=1631319870]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -63.0
+offset_top = 62.0
+offset_right = 63.0
+offset_bottom = 85.000015
+grow_horizontal = 2
+text = "Max Ball Speed!!"
+horizontal_alignment = 1
+
+[node name="DevUI" type="VBoxContainer" parent="." unique_id=2133504667]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_oo0fn")

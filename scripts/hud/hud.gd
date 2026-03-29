@@ -3,6 +3,13 @@ extends CanvasLayer
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
 @export var friendship_point_balance_label: Label
+@export var max_speed_label: Label
+
+
+func _ready() -> void:
+	UpgradeManager.friendship_point_balance_changed.connect(update_friendship_point_balance)
+	update_friendship_point_balance(UpgradeManager.get_friendship_point_balance())
+	max_speed_label.visible = false
 
 
 func update_volley_count(count: int) -> void:
@@ -15,3 +22,7 @@ func update_personal_volley_best(best: int) -> void:
 
 func update_friendship_point_balance(friendship_point_balance: int) -> void:
 	friendship_point_balance_label.text = "FP: %d" % friendship_point_balance
+
+
+func update_max_speed(is_at_max: bool) -> void:
+	max_speed_label.visible = is_at_max

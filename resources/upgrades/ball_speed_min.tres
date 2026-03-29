@@ -8,5 +8,5 @@ display_name = "Minimum Ball Speed"
 description = "Min ball speed description"
 key = "ball_speed_min"
 effect_per_level = 100.0
-base_value = 400.0
+base_value = 100.0
 base_cost = 25
