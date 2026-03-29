@@ -1,12 +1,13 @@
 extends GutTest
 
-# Tests for UpgradeManager — get_level, get_value, calculate_cost, can_purchase, purchase.
+# Tests for UpgradeManager: get_level, get_value, calculate_cost, can_purchase, purchase.
 # Uses a manually constructed UpgradeManager (not the autoload) with a test upgrade injected.
 
 const SPEED_KEY := "test_speed"
 
 var _manager: Node
 var _upgrade: Upgrade
+var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
@@ -18,21 +19,22 @@ func before_each() -> void:
 	_upgrade.base_cost = 100
 	_upgrade.cost_scaling = 2.0
 
+	_mock_storage = double(SaveStorage).new()
+	stub(_mock_storage.write).to_return(true)
+	stub(_mock_storage.read).to_return("")
+
 	_manager = load("res://scripts/progression/upgrade_manager.gd").new()
+	_manager._progression = ProgressionData.new(_mock_storage)
 	add_child_autofree(_manager)
 	_manager.upgrades.assign([_upgrade])
 
 
 # --- get_level ---
-
-
 func test_get_level_returns_zero_before_any_purchase() -> void:
 	assert_eq(_manager.get_level(SPEED_KEY), 0)
 
 
 # --- get_value ---
-
-
 func test_get_value_returns_base_value_at_level_zero() -> void:
 	assert_eq(_manager.get_value(SPEED_KEY), 200.0)
 
@@ -44,8 +46,6 @@ func test_get_value_increases_by_effect_per_level_after_purchase() -> void:
 
 
 # --- calculate_cost ---
-
-
 func test_calculate_cost_returns_base_cost_at_level_zero() -> void:
 	assert_eq(_manager.calculate_cost(SPEED_KEY), 100)
 
@@ -58,8 +58,6 @@ func test_calculate_cost_scales_after_first_purchase() -> void:
 
 
 # --- can_purchase ---
-
-
 func test_can_purchase_false_when_balance_too_low() -> void:
 	_manager._progression.friendship_point_balance = 0
 	assert_false(_manager.can_purchase(SPEED_KEY))
@@ -79,8 +77,6 @@ func test_can_purchase_false_when_at_max_level() -> void:
 
 
 # --- purchase ---
-
-
 func test_purchase_returns_false_when_balance_too_low() -> void:
 	_manager._progression.friendship_point_balance = 0
 	assert_false(_manager.purchase(SPEED_KEY))

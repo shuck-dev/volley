@@ -15,3 +15,10 @@ repos:
         types: [file]
         files: '\.gd$'
         exclude: '^addons/'
+      - id: gut-tests
+        name: gut tests
+        entry: godot --headless -s addons/gut/gut_cmdln.gd
+        language: system
+        pass_filenames: false
+        files: '\.gd$'
+        exclude: '^addons/'

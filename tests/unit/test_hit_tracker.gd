@@ -8,8 +8,6 @@ func before_each() -> void:
 
 
 # --- try_hit ---
-
-
 func test_try_hit_returns_true_when_ready() -> void:
 	assert_true(_tracker.try_hit())
 
@@ -44,8 +42,6 @@ func test_streak_increments_after_cooldown_expires() -> void:
 
 
 # --- reset ---
-
-
 func test_reset_clears_streak() -> void:
 	_tracker.try_hit()
 	_tracker.reset()

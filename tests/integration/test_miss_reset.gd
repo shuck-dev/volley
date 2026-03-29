@@ -1,7 +1,7 @@
 extends GutTest
 
 # Verifies that a miss after a streak resets all observable state atomically.
-# Uses real instances wired via signals — no private method calls.
+# Uses real instances wired via signals, no private method calls.
 
 var _game: Node2D
 var _ball: RigidBody2D

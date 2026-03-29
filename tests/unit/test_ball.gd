@@ -10,8 +10,6 @@ func before_each() -> void:
 
 
 # --- increase_speed ---
-
-
 func test_increase_speed_adds_increment() -> void:
 	_ball.increase_speed()
 	assert_almost_eq(_ball.speed, GameRules.BALL_SPEED_MIN + GameRules.BALL_SPEED_INCREMENT, 0.01)
@@ -30,8 +28,6 @@ func test_increase_speed_does_not_exceed_max_near_ceiling() -> void:
 
 
 # --- reset_speed ---
-
-
 func test_reset_speed_returns_to_min() -> void:
 	_ball.speed = GameRules.BALL_SPEED_MAX
 	_ball.reset_speed()

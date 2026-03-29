@@ -4,12 +4,19 @@ const PADDLE_SPEED_KEY := "paddle_speed"
 const PADDLE_SIZE_KEY := "paddle_size"
 const BALL_SPEED_MIN_KEY := "ball_speed_min"
 
-var upgrades: Array[Upgrade]
+var upgrades: Array[Upgrade] = [
+	preload("res://resources/upgrades/paddle_speed.tres"),
+	preload("res://resources/upgrades/paddle_size.tres"),
+	preload("res://resources/upgrades/ball_speed_min.tres"),
+]
+
 var _progression: ProgressionData
 
 
-func _ready():
-	_progression = ProgressionData.new()
+func _ready() -> void:
+	# Allows direct injection of progression for tests
+	if _progression == null:
+		_progression = SaveManager.get_progression_data()
 
 
 ## Returns total cost of [Upgrade] based on current level
@@ -34,6 +41,7 @@ func purchase(upgrade_key: String) -> bool:
 	if _can_purchase(upgrade):
 		_progression.friendship_point_balance -= _calculate_cost(upgrade)
 		_increment_level(upgrade.effect_key)
+		SaveManager.save()
 		return true
 
 	return false

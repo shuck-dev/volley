@@ -1,7 +1,7 @@
 extends GutTest
 
 # Verifies ball speed escalates correctly across a growing rally.
-# Uses real instances wired via signals — no private method calls.
+# Uses real instances wired via signals, no private method calls.
 
 var _game: Node2D
 var _ball: RigidBody2D

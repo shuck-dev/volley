@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://cjue0o73mhyck" path="res://scripts/hud/hud.gd" id="1_ahhtf"]
 
-[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_total_label")]
+[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
-friendship_total_label = NodePath("FriendshipTotalLabel")
+friendship_point_balance_label = NodePath("FriendshipTotalLabel")
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=162178436]
 anchors_preset = 5

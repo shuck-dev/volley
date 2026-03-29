@@ -12,8 +12,6 @@ func before_each() -> void:
 
 
 # --- on_ball_hit ---
-
-
 func test_on_ball_hit_emits_paddle_hit_signal() -> void:
 	watch_signals(_paddle)
 	_paddle.on_ball_hit()
@@ -40,8 +38,6 @@ func test_pitch_increases_after_cooldown_expires() -> void:
 
 
 # --- reset_streak ---
-
-
 func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 	_paddle.on_ball_hit()
 	_paddle.tracker.process(HitTracker.COOLDOWN)

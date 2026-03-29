@@ -272,6 +272,10 @@ Relative to scene root: `"Sun"` not `"Main/Sun"`, `"Entities/Worker_1"` not `"Ma
 - Null check: `if is_instance_valid(node):`
 - Prefer explicit types over `:=` inference
 
+## Test Conventions
+
+- Section separator comments (e.g. `# --- save ---`) go directly above the first function in that section, no blank line between
+
 ## Error Recovery
 
 - `GAME_NOT_RUNNING` → `godotiq_run(action="play")`
