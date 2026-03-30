@@ -38,12 +38,12 @@ What to observe:
 - Does 10 minutes feel too long, too short, or right?
 
 ### Session B — Upgrade loop (until first wall hit)
-Start from Session A save. Buy the first upgrade, play until the streak noticeably outpaces the upgrade, buy again.
+Start from Session A save. Buy the first item, play until the streak noticeably outpaces the improvement, buy again.
 
 What to observe:
-- Does each upgrade feel impactful or marginal?
-- Is the FP curve right? (Too fast = upgrades feel trivial. Too slow = player gives up before buying anything.)
-- Do the three upgrade choices (speed, size, ball start speed) feel meaningfully different?
+- Does each item feel impactful or marginal?
+- Is the FP curve right? (Too fast = items feel trivial. Too slow = player gives up before buying anything.)
+- Do the available item choices feel meaningfully different from each other?
 - Is there a moment where the player thinks "I know what I want next"?
 
 ### Session C — Idle and return
@@ -71,9 +71,9 @@ These are the numbers most likely to need adjustment. Change one at a time, repl
 | Variable | File | What it affects | Warning signs |
 |---|---|---|---|
 | Ball speed increment per hit | `ball.gd` / `GameRules` | Tension ramp, natural streak ceiling | Too fast: streaks always end at ~10. Too slow: ball never feels threatening. |
-| FP per hit (base) | `game.gd` | Time to first upgrade | Too high: upgrades feel trivial. Too low: player quits before buying anything. |
-| Upgrade cost scaling multiplier | `UpgradeDefinition` | Progression pacing | Too steep: second upgrade takes forever. Too flat: all upgrades gone in one session. |
-| Upgrade effect per level | `UpgradeDefinition` | Upgrade impact | Too small: player can't feel the difference. Too large: game becomes trivial fast. |
+| FP per hit (base) | `game.gd` | Time to first item purchase | Too high: items feel trivial. Too low: player quits before buying anything. |
+| Item FP costs | `ItemDefinition` | Progression pacing | Too cheap: all items gone in one session. Too expensive: player never progresses. |
+| Item effect values | `ItemDefinition` / `ItemEffect` | Upgrade impact | Too small: player can't feel the difference. Too large: game becomes trivial fast. |
 | Idle FP rate (% of active) | `idle_play.gd` | Reason to play actively | Too high: active play not worth it. Too low: idle feels pointless. |
 | Offline earnings cap (hours) | `progression_data.gd` | Return reward size | Too high: feels broken. Too low: returning after a day feels bad. |
 | Auto-play miss rate | AI constants | Idle streak length | Too accurate: idle earns too much. Too clumsy: idle feels broken. |
@@ -86,7 +86,7 @@ The prototype is done when all three play goals are met:
 
 - [ ] A player unfamiliar with the game (or you, after a week away) can pick it up and have a satisfying 10-minute active session without guidance
 - [ ] Leaving the game for 2+ hours and returning produces a moment that feels good, not neutral
-- [ ] The upgrade loop completes naturally in a 20-minute session (spend FP, feel improvement, hit a new wall, want to upgrade again)
+- [ ] The upgrade loop completes naturally in a 20-minute session (spend FP on an item, feel improvement, hit a new wall, want to buy again)
 
 If any criterion fails after tuning, identify the root cause and fix it before declaring the prototype done. This is the gate before v0.5.
 

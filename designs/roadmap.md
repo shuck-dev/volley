@@ -89,6 +89,7 @@ timeline
 
     Future Updates
         : New Partners
+        : New Items
         : Achievements
         : Cosmetics
         : Tray Support
