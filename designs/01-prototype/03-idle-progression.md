@@ -1,118 +1,83 @@
 # Progression System
 
 ## Goal
-Build the framework for persistent progression: earn FP from volleys, spend it on upgrades that make the paddle better, and save/load across sessions. This is the economic backbone everything else plugs into.
+Build the framework for persistent progression: earn FP from volleys, spend it on items that make the paddle better, and save/load across sessions. This is the economic backbone everything else plugs into.
 
 **Points:** 10 (Spike)
 **Dependencies:** HUD Pass (volley tracking, high score), Ball Scaling (ball speed feeds into upgrade effects)
-**Unlocks:** Idle Play (FP economy, save/load), First Partner Unlock (FP spending), Balance Pass (tuning)
+**Unlocks:** Idle Play (FP economy, save/load), Upgrade Mechanics (item effects apply via this system), Upgrade Shop (FP spending)
 
 ## Current state
-- `GameRules` has 3 constants: `BALL_SPEED_MIN`, `BALL_SPEED_MAX`, `PADDLE_SPEED` — no way to modify at runtime
-- No FP system, no save/load, no upgrades
-- No upgrade UI
+
+The attribute-based upgrade system is implemented: `UpgradeManager` owns `UpgradeDefinition` resources for paddle speed, paddle size, and ball start speed. Each has multiple levels with FP costs and per-level effect values. `GameRules` returns base values modified by purchased upgrade levels. FP earning, HUD display, save/load, and high score persistence are all working.
+
+**Rework required:** The `UpgradeDefinition` / levelled attribute model is superseded by the item system (see `05-upgrade-mechanics.md`). `UpgradeManager` will be replaced by `ItemManager`. `GameRules` will query item effects instead of upgrade levels. The three starter upgrades will be removed and replaced with Act 1 items. This rework is part of the Upgrade Mechanics ticket, not this one.
 
 ## Scope
 
 ### In scope
 1. Friendship points (FP) earning
-2. Three starter upgrades: paddle speed, paddle size, ball start speed
-3. Upgrade system framework (data-driven, extensible)
-4. Save/load persistence
-5. FP display in HUD
-6. Upgrade shop UI (simple panel)
-7. High score persistence (currently session-only from HUD Pass)
+2. Save/load persistence
+3. FP display in HUD
+4. High score persistence
+
+### Out of scope
+- Item definitions and effects (Upgrade Mechanics)
+- Shop UI and rotation (Upgrade Shop)
+- Streak bonuses and FP multipliers (Balance Pass)
 
 ## Features
 
 ### 1. Friendship points (FP)
-**Design:** FP is the single currency. Earned from volleys — 1 FP per paddle hit for prototype. Streak bonuses and multipliers are deferred to Balance Pass. FP should always be visible in the HUD so numbers are always going up.
+**Design:** FP is the single currency. Earned from volleys: 1 FP per paddle hit for prototype. Streak bonuses and multipliers are deferred to Balance Pass. FP should always be visible in the HUD so numbers are always going up.
 **Tech:** FP tracked in `ProgressionData`. `game.gd` awards FP on `paddle_hit` signal. HUD displays current FP total.
 
-### 2. Starter upgrades
-**Design:** Three upgrades that the player can feel immediately. Each has multiple levels with increasing cost. The player should have a meaningful choice about what to upgrade next.
-
-| Upgrade | Effect | Why it matters |
-|---|---|---|
-| Paddle Speed | Increases `PADDLE_SPEED` | Reach the ball in time |
-| Paddle Size | Increases paddle collision rect | Easier to connect |
-| Ball Start Speed | Decreases `BALL_SPEED_MIN` | More time to react at streak start |
-
-**Starting values (tune during Make Fun pass):**
-- Max levels per upgrade: 5
-- Base cost: 25 FP, scaling ~1.6x per level (rounded to clean integers)
-- Cost per level: 25 → 40 → 65 → 100 → 160 FP
-- Effect per level: e.g. +50 paddle speed, +8px paddle size, -25 ball start speed
-
-**Tech:** Upgrades are `UpgradeDefinition` resources — data only, no code per upgrade. `UpgradeManager` applies effects by modifying `GameRules` values at runtime. Adding new upgrades later means adding data, not code.
-
-### 3. Upgrade system framework
-**Tech:** Data-driven system where each upgrade definition specifies which `GameRules` value it modifies and by how much. `GameRules` changes from constants to a class that returns base values modified by purchased upgrades.
-
-This framework is built to support future systems:
-- **Power-ups:** temporary modifiers using the same `effect_key` system
-- **Partner abilities:** permanent effects that stack with upgrades
-- **Prestige:** reset upgrades for a multiplier
-
-### 4. Save/load
+### 2. Save/load
 **Design:** Game saves automatically. Load on startup. The player should never lose progress. No manual save/load UI needed for prototype.
-**Tech:** Save to `user://` filesystem using Godot's `FileAccess`. Data: FP balance, purchased upgrade levels, high score. Save triggers: on upgrade purchase, periodically (every 30s), on quit. JSON format for debuggability.
+**Tech:** Save to `user://` filesystem using Godot's `FileAccess`. Data: FP balance, purchased items, high score. Save triggers: on item purchase, periodically (every 30s), on quit. JSON format for debuggability.
 
-### 5. FP display in HUD
+### 3. FP display in HUD
 **Design:** FP count visible at all times in the HUD. Should feel like a number that's always climbing. Position near the volley counter so the player connects "hits = FP".
-**Tech:** `hud.gd` gets `update_fp(amount: int)` method. `game.gd` calls it when FP changes.
+**Tech:** `hud.gd` exposes `update_friendship_point_balance(amount: int)`. `game.gd` calls it when FP changes.
 
-### 6. Upgrade shop UI
-**Design:** Simple panel accessible from a HUD button. Shows all upgrades with: name, current level, effect description, cost. Purchase button greys out when can't afford. Closing the shop returns to gameplay. No pause needed — the game keeps running behind it.
-**Tech:** New scene `scenes/upgrade_shop.tscn` with a `VBoxContainer` of upgrade rows. Reads from `UpgradeManager` for data, calls `purchase()` on buy. Updates FP display on purchase.
+### 4. High score persistence
+**Design:** High score (best volley streak) persists across sessions. Previously session-only from HUD Pass.
+**Tech:** Stored in `ProgressionData`, saved and loaded with the rest of progression state.
 
 ## Architecture
 
 ```
-ProgressionData (scripts/progression_data.gd)
-  - fp: int
-  - upgrades: Dictionary  # { upgrade_id: level }
+ProgressionData (scripts/progression/progression_data.gd)
+  - friendship_point_balance: int
+  - owned_item_ids: Array[String]
   - high_score: int
   - save() -> void
   - load() -> void
 
-UpgradeDefinition (scripts/upgrade_definition.gd)  [Resource]
-  - id: String
-  - display_name: String
-  - description: String
-  - max_level: int
-  - base_cost: int
-  - cost_scaling: float
-  - effect_key: String  # which GameRules value it modifies
-  - effect_per_level: float
-
-UpgradeManager (scripts/upgrade_manager.gd)
-  - definitions: Array[UpgradeDefinition]
-  - progression: ProgressionData
-  - can_purchase(id: String) -> bool
-  - purchase(id: String) -> void
-  - get_cost(id: String) -> int  # current cost at current level
+ItemManager (scripts/items/item_manager.gd)  [Autoload]
+  - definitions: Array[ItemDefinition]
+  - purchase(item_id: String) -> void
+  - can_purchase(item_id: String) -> bool
+  - is_owned(item_id: String) -> bool
   - get_modified_value(key: String, base: float) -> float
+  - signal friendship_point_balance_changed(balance: int)
 
 GameRules
-  - Changes from const to functions that query UpgradeManager
-  - get_paddle_speed() -> float
+  - get_paddle_speed() -> float   # queries ItemManager for stat modifiers
   - get_paddle_size() -> float
+  - get_ball_speed_min() -> float
 
 game.gd
-  - Owns UpgradeManager (autoload candidate for later)
-  - Awards FP on paddle hit
+  - Awards FP on paddle_hit signal
   - Updates HUD on FP change
 ```
 
 ## Test plan
-- **Unit:** ProgressionData save/load round-trip, UpgradeManager purchase logic, cost scaling, can't over-purchase, can't go negative FP
-- **Unit:** GameRules returns modified values after upgrades
-- **In-game:** FP increments on hit, displayed in HUD, persists across restart
-- **In-game:** Buy upgrade → feel the difference immediately (paddle faster/bigger/steadier)
-- **In-game:** Upgrade cost increases per level, can't buy when broke
-- **In-game:** Close game, reopen → FP, upgrades, high score all restored
+- **Unit:** ProgressionData save/load round-trip, FP balance persists across restart, high score persists across restart
+- **Unit:** ItemManager purchase logic, can't purchase when insufficient FP, owned items apply stat modifiers via GameRules
+- **In-game:** FP increments on hit, displayed in HUD
+- **In-game:** Close game, reopen: FP, owned items, and high score all restored
 
 ## Open questions
-- Cost curve starts at 25/40/65/100/160 — tune during Make Fun pass
-- Should there be a visual/audio cue when upgrading? (Probably deferred to UI Polish)
+- FP per hit starts at 1 for prototype. Tune during Make Fun pass.
+- Save interval of 30s is a starting point. Adjust if it causes perceptible hitches.

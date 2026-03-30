@@ -56,7 +56,7 @@ The record is a specific number. It was always a specific number. It's worth ask
 - Minimal UI, just the essentials visible, details on hover or click
 
 ## Endgame
-Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. When you hit it, the game changes — not just mechanically. Post-record: the player knows something the paddle doesn't. See `02-early-access/04-world-and-narrative.md` for the full narrative layer.
+Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. When you hit it, the game changes — not just mechanically. Post-record: the player knows something the paddle doesn't. See `02-beta/04-world-and-narrative.md` for the full narrative layer.
 
 Post-snap: prestige system, new records, harder challenges. But the framing is different now.
 
