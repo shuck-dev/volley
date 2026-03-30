@@ -10,6 +10,7 @@ var tracker := HitTracker.new()
 
 var _upgrade_manager: Node
 var _lane_x := 0.0
+var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
 var _sprite_natural_height := 0.0
 
@@ -18,6 +19,7 @@ func _ready() -> void:
 	if _upgrade_manager == null:
 		_upgrade_manager = UpgradeManager
 	_lane_x = position.x
+	_paddle_speed = _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY)
 	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
 
 	if collision != null:
@@ -34,7 +36,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	tracker.process(delta)
 	var direction := Input.get_axis("paddle_up", "paddle_down")
-	velocity = Vector2(0.0, direction * _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY))
+	velocity = Vector2(0.0, direction * _paddle_speed)
 	move_and_slide()
 	position.x = _lane_x
 
@@ -55,6 +57,8 @@ func reset_streak() -> void:
 func _on_upgrade_level_changed(upgrade_key: String) -> void:
 	if upgrade_key == UpgradeManager.PADDLE_SIZE_KEY:
 		_apply_size()
+	elif upgrade_key == UpgradeManager.PADDLE_SPEED_KEY:
+		_paddle_speed = _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY)
 
 
 func _apply_size() -> void:
