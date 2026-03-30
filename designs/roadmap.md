@@ -4,14 +4,16 @@
 timeline
     title Volley Vendetta Roadmap (disciplines run in parallel per phase)
 
-    Prototype ~ 3.1 months (31pts)
+    Prototype ~ 4.5 months (44pts)
         : HUD Pass
         : Ball Scaling
         : Progression System
-        : Upgrade Mechanics
+        : Upgrade Shop
+        : The Tinkerer
         : Idle Play
         : First Partner Unlock
         : Desktop Experience
+        : Make Fun Pass
 
     Open Source Release ~ 2 days (8pts)
         : Migrate Repo to Org

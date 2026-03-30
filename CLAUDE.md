@@ -358,5 +358,5 @@ So that [benefit or reason]
 ### Linear API Access
 
 - API key: `$LINEAR_API_KEY`. Endpoint: `https://api.linear.app/graphql`.
-- **All new tickets** → next upcoming cycle. Status: **Todo** (`3db79f36-2f0e-4952-91fe-dea458d1a69f`). Label: **Feature** (`b19a1a7b-af6b-4897-a52f-eb2e2e07083e`).
+- **All new tickets** → Status: **Backlog** (`d41fb73e-32af-40b2-a7e5-5052900ab0fc`). Label: **Feature** (`b19a1a7b-af6b-4897-a52f-eb2e2e07083e`). Do NOT assign to a cycle. Do NOT use Triage — that is for external/incoming tickets only. Josh promotes tickets to Ready and adds them to cycles himself.
 - **Assign tech/design tickets to Josh Hartley** (`19ea3ec5-a428-44f7-b085-a10fd3dd2cef`).
