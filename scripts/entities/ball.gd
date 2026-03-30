@@ -15,7 +15,7 @@ func _ready() -> void:
 	if _upgrade_manager == null:
 		_upgrade_manager = UpgradeManager
 	_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-	_max_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+	_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
 	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
 	_ball_setup()
 
@@ -47,11 +47,13 @@ func reset_speed() -> void:
 
 func _on_upgrade_level_changed(upgrade_key: String) -> void:
 	if upgrade_key == UpgradeManager.BALL_SPEED_MIN_KEY:
+		var previous_min_speed := _min_speed
 		_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-		speed = maxf(speed, _min_speed)
+		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+		speed += _min_speed - previous_min_speed
 		_apply_speed()
 	elif upgrade_key == UpgradeManager.BALL_SPEED_MAX_KEY:
-		_max_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
 		speed = minf(speed, _max_speed)
 		_apply_speed()
 

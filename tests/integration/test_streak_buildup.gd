@@ -53,11 +53,15 @@ func test_ball_speed_increases_across_three_hits() -> void:
 	_paddle.on_ball_hit()
 	_paddle.tracker.process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
+	var effective_max: float = (
+		_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
+		+ _manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+	)
 	var expected := minf(
 		(
 			_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
 			+ 3.0 * GameRules.BALL_SPEED_INCREMENT
 		),
-		_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+		effective_max
 	)
 	assert_almost_eq(_ball.speed, expected, 0.01)
