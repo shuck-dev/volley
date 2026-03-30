@@ -13,6 +13,13 @@ timeline
         : First Partner Unlock
         : Desktop Experience
 
+    Open Source Release ~ 2 days (8pts)
+        : Migrate Repo to Org
+        : Transfer itch.io Project
+        : Fix Preview Build Channel Releases
+        : Add Open Source Files
+        : Scrub Private Data from History
+
     v0.2-0.3 Alpha ~ 3.1 months (36pts)
         : Asset Integration
         : World and Narrative
@@ -96,13 +103,20 @@ timeline
         : Mac Support
 ```
 
-**Total: ~15.7 months** (art, sound, writing, tech+design running in parallel per phase) (art, sound, writing, tech+design running in parallel per phase)
+**Total: ~16.2 months** (art, sound, writing, tech+design running in parallel per phase)
 
 ## Prototype
 
 All tech. The core loop working and feeling good: the volley, the FP economy, upgrades that feel satisfying, idle play, and a first partner to recruit. Shipped as a borderless desktop window on Linux, with Windows also working. Placeholder art throughout.
 
 Done when you can leave it running, come back, upgrade, and get further than last time.
+
+
+## Open Source Release
+
+Move the project off personal accounts before art and writing contributors join. GitHub repo transfers to a Shuck Games org, itch.io project transfers to the org account, open-source files are added (LICENSE, README, CONTRIBUTING), the git history is audited and scrubbed of any personal or private data, and the preview build channel release pipeline is fixed so CI publishes correctly after the transfer.
+
+Done when the repo and itch page are publicly accessible under the org, the history is clean, and automated preview builds are landing on the correct channel.
 
 
 ## v0.2-0.3 Alpha
