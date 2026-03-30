@@ -6,11 +6,32 @@ extends GutTest
 var _game: Node2D
 var _ball: RigidBody2D
 var _paddle: CharacterBody2D
+var _manager: Node
+var _mock_storage: SaveStorage
 var _last_count := -1
 
 
 func before_each() -> void:
+	_mock_storage = double(SaveStorage).new()
+	stub(_mock_storage.write).to_return(true)
+	stub(_mock_storage.read).to_return("")
+
+	_manager = load("res://scripts/progression/upgrade_manager.gd").new()
+	_manager._progression = ProgressionData.new(_mock_storage)
+	(
+		_manager
+		. upgrades
+		. assign(
+			[
+				preload("res://resources/upgrades/ball_speed_min.tres"),
+				preload("res://resources/upgrades/ball_speed_max.tres"),
+			]
+		)
+	)
+	add_child_autofree(_manager)
+
 	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball._upgrade_manager = _manager
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
 	var sound := AudioStreamPlayer.new()
@@ -25,7 +46,7 @@ func before_each() -> void:
 	add_child_autofree(_game)
 	_game.volley_count_changed.connect(func(count): _last_count = count)
 	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(GameRules.BALL_SPEED_MIN, 0.0)
+	_ball.linear_velocity = Vector2(_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY), 0.0)
 
 
 func _build_streak(hits: int) -> void:
@@ -37,7 +58,7 @@ func _build_streak(hits: int) -> void:
 func test_ball_speed_resets_after_miss() -> void:
 	_build_streak(2)
 	_ball.missed.emit()
-	assert_almost_eq(_ball.speed, GameRules.BALL_SPEED_MIN, 0.01)
+	assert_almost_eq(_ball.speed, _manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY), 0.01)
 
 
 func test_hud_resets_after_miss() -> void:
