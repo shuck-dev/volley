@@ -29,7 +29,9 @@ The shop is not available from game start. It unlocks when the player hits a spe
 
 The shop shows 5 item slots at a time. The player sees the item name, description, and FP cost. There is no mechanical description. The player discovers what an item does by owning it.
 
-Items can be purchased directly from the shop. Purchased items are added to the player's inventory immediately and their effects apply from that moment. Items are one-time purchases: each item can only be owned once.
+Items can be purchased directly from the shop. Purchased items are added to the player's inventory immediately and their effects apply from that moment. Each item can only be purchased once. Owned items are excluded from the rotation.
+
+When a player destroys an item, a second chance version of that item enters the current act's pool -- same effects, a variant of the original name, same sprite with a shader applied (see Upgrade Mechanics: Item Variants). In Act 1 it re-enters the shop rotation normally. In Act 2 it surfaces through rummaging, which is narratively appropriate: you destroyed something and then find something like it while going through old boxes. If the second chance version is also destroyed, that item is removed from all pools permanently.
 
 The shop is accessible from the HUD at any time. The game continues running behind it. No pause.
 
@@ -37,12 +39,12 @@ The shop is accessible from the HUD at any time. The game continues running behi
 
 ## Shop refresh
 
-The shop refreshes on two triggers, whichever comes first:
+The shop refreshes when both triggers have fired:
 
-1. **Session start.** The rotation refreshes when the player opens the game. Coming back always brings new stock.
-2. **Timer.** A background timer refreshes the rotation after a set interval while the game is running. Tune interval during Make Fun pass.
+1. **Session start.** A refresh is queued when the player opens the game.
+2. **Timer.** A background timer fires after a set interval while the game is running. Tune interval during Make Fun pass.
 
-This means an active session sees rotation change on a timer, and an idle player who returns finds a fresh shop without needing to wait for the timer.
+Both conditions must be satisfied before the rotation changes. Opening and immediately closing the game does not grant a new rotation -- the timer must also have elapsed. This prevents the player from farming new stock by restarting. An idle player who returns after the timer has run will see new stock as soon as they open the game.
 
 ---
 
@@ -87,6 +89,14 @@ As the shopkeeper becomes more distant across Act 1, the pick slot is the first 
 Every three rotation cycles, at least one slot must contain an item the player does not own that belongs to a synergy pair they have not yet discovered (if any such items are available in the current pool). Silent guarantee against long periods with no synergy progress visible.
 
 This floor activates only if the normal rotation would otherwise produce a cycle with no synergy-relevant items. It is not visible to the player.
+
+### Layer 5: Safety net item
+
+One item per act pool is designated as the safety net item. It never appears in normal rotation. It surfaces only when both conditions are true simultaneously: the player owns no items and the available pool is otherwise empty (all items owned, destroyed, or unavailable). It is a last resort, not a shortcut. Once purchased it leaves the safety net slot and the player is back in the normal system.
+
+The safety net item should be cheap and mechanically neutral -- something that gets the player moving again without being a meaningful upgrade.
+
+When the pool is empty and the player has 2 or fewer items (but not yet zero), the Tinkerer or Shopkeeper delivers a condition-based hint nudging the player toward clearing their remaining items. See The Shopkeeper and the Tinkerer: Scorched Earth Hint.
 
 ---
 

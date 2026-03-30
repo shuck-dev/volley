@@ -22,7 +22,7 @@ This also enables synergies (deferred to Beta) and world causality to extend the
 ### In scope
 1. Item data model (extensible template)
 2. 24 Act 1 items (other pools deferred to Post-Break phase)
-3. A single description per item
+3. A default description per item, with optional per-act overrides
 4. Items affect AI paddle identically to player paddle
 5. FP cost per item purchase and per level upgrade (scale-based)
 6. Item levelling (3 levels: base, upgraded, max) via the Tinkerer
@@ -51,19 +51,31 @@ Each item is a resource with the following fields. The effect system must be ext
 ItemDefinition (scripts/items/item_definition.gd) [Resource]
   - id: String
   - display_name: String
-  - purchase_cost: int           # FP cost to buy from the shop
-  - level_cost_scale: float      # multiplier applied to purchase_cost per level upgrade
-  - max_level: int               # always 3 for prototype
-  - pool: String                 # availability gate: "act1", "act2", "act3", "peace"
-  - description: String          # single description, same across all acts
-  - tinkerer_dialogues: Array[String]  # what the Tinkerer says per upgrade [lvl2, max]
+  - purchase_cost: int                  # FP cost to buy from the shop
+  - level_cost_scale: float             # multiplier applied to purchase_cost per level upgrade
+  - max_level: int                      # always 3 for prototype
+  - pool: String                        # availability gate: "act1", "act2", "act3", "peace"
+  - description: String                 # default description shown in the shop
+  - description_overrides: Dictionary   # act -> String; overrides description for that act only
+  - tinkerer_destroy_dialogue: String   # what the Tinkerer says when this item is destroyed
+  - variants: Dictionary                # variant name -> ItemVariant; only "second_chance" required
   - effects: Array[ItemEffect]
-  - synergy_ids: Array[String]   # ids of items this can synergise with (Beta)
+  - synergy_ids: Array[String]          # ids of items this can synergise with (Beta)
+
+ItemVariant (scripts/items/item_variant.gd) [Resource]
+  - display_name: String
+  - shader_variant: String   # shader applied to the base sprite (e.g. "desaturated", "constructed")
+
+OwnedItem (scripts/items/owned_item.gd) [Resource]
+  - item_id: String              # references ItemDefinition.id
+  - level: int
+  - variant: String              # "original", "second_chance", or "synth"
 
 ItemEffect (scripts/items/item_effect.gd) [Resource]
   - effect_type: String          # "stat_modifier", "world_causality" (future), etc.
   - effect_key: String           # which value is modified (e.g. "paddle_speed")
   - value_per_level: float       # effect magnitude added per level (level * value_per_level)
+                                 # negative values are valid and represent drawbacks
 ```
 
 Level upgrade costs are calculated from `purchase_cost * level_cost_scale` for level 2 and `purchase_cost * level_cost_scale^2` for max. Consistent with the existing scale-based system.
@@ -84,7 +96,9 @@ AI difficulty is tuned separately (miss rate, reaction time) and is not affected
 
 ## Item descriptions
 
-Each item has a single description. It does not change between acts. Narrative development across acts is carried by new items entering the pool at each act, not by existing items changing text. This concentrates the writing where it has the most impact: new items arrive with fresh meaning, and the Tinkerer's levelling dialogue carries the per-item signal layer.
+Each item has a default description that is shown across all acts unless an override is set for the current act. Most items will never need an override -- narrative development across acts is primarily carried by new items entering the pool, not existing items changing text.
+
+Per-act overrides exist for cases where an item's meaning shifts enough after The Break that the original description would land differently than intended. These are the exception, not the rule.
 
 Descriptions are written signal-layer first: the surface read is written to nearly but not quite bury the deeper meaning. The player who notices will notice. The player who doesn't will still feel something.
 
@@ -109,6 +123,39 @@ Prototype scope covers Act 1 items only (24 items, 10 synergies). All other pool
 Synergy partners do not have to be in the same pool, but both items must be owned and at max level before a synergy attempt can be made.
 
 New items and synergy pairs can be added in post-v1 updates without structural changes to the item system. Additional items slot into existing pools or introduce new ones; new synergy pairs extend the existing discovery space. This is the intended expansion path after v1.
+
+---
+
+## Cursed items
+
+Some items have a net negative effect at base level -- they make the paddle worse. They exist because they are the most powerful synergy catalysts. Owning one imposes a real cost; the synergy that unlocks from it is worth taking the hit for.
+
+A cursed item is not a trap. Its description signals the drawback, obliquely. The shop does not flag items as cursed. The player discovers the effect by owning it.
+
+**Design principles for cursed items:**
+
+- The drawback must be felt immediately and consistently -- not edge-case, not subtle
+- The synergy payoff must be strong enough to make the decision genuine: some players will destroy the item (see Tinkerer: item destruction); others will commit
+- Levelling a cursed item increases both the drawback and the potential payoff, maintaining the tension
+- A player stuck with only cursed items and an empty pool may receive the scorched earth hint (see The Shopkeeper and the Tinkerer: Scorched Earth Hint), nudging them toward destruction to trigger the safety net
+
+Cursed items are not marked as a category in any UI. The player builds a mental model through play.
+
+---
+
+## Item variants
+
+Each owned item has a variant that affects its visual and narrative identity but not its gameplay effect. All variants share the same effects, level scaling, and synergy eligibility.
+
+**Original**: the item as purchased from the shop or acquired normally. Default state.
+
+**Second chance**: when a player destroys an item, that item re-enters the rotation pool in a second chance form -- a variant of the original name (close enough to recognise if paying attention), same sprite with a shader applied. It carries the same effects and behaves identically for gameplay purposes. The second chance form is a found thing, not the real thing. If the player destroys the second chance version, that item is permanently unavailable for the rest of that run.
+
+**Synth**: created by the Tinkerer during Peace via synthesis (see The Shopkeeper and the Tinkerer). Same sprite with a different shader, generic name, no narrative history. Same gameplay effect as the original. Synth items are not flagged explicitly in UI beyond the shader -- the player recognises them as copies.
+
+**Synergy quality**: in all acts before Peace, a synergy involving at least one synth item yields a synth-quality synergy result. Two non-synth items (original or second chance) are required to produce an original-quality result. In Peace, this distinction is removed -- synth items are treated identically to originals for all purposes including synergies. Synthesis in Peace is a completion mechanic, not a narrative one.
+
+**Coexisting variants**: in Peace, synthesis can produce a synth copy of an item the player already owns in another variant. A player may hold one non-synth copy and one synth copy of the same item simultaneously. Effects from both copies apply additively. How the inventory displays two variants of the same item is a UX design decision.
 
 ---
 

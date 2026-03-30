@@ -20,11 +20,19 @@ The Shopkeeper runs the item shop in Act 1. The player buys items from their pro
 
 Both the Shopkeeper and the Tinkerer are unlocked via milestones, not available from game start. The shop unlocks first. The Tinkerer unlocks later. The player encounters one new mechanic at a time. The exact milestones are a narrative and balance decision (see Milestone Design).
 
-The Tinkerer does two things across different phases:
+The Tinkerer does four things across different phases:
 
-**Act 1 onward (post-unlock): Item levelling.** The player brings an owned item to the Tinkerer and pays FP to level it up. Items have 3 levels: base (purchased), upgraded, and max. Each level increases the item's effect magnitude. The Tinkerer's dialogue when levelling a specific item is where their character comes through -- small, specific, telling. Each item is a memento they know something about.
+**Act 1 onward (post-unlock): Item levelling.** The player brings an owned item to the Tinkerer and pays FP to level it up. Items have 3 levels: base (purchased), upgraded, and max. Each level increases the item's effect magnitude. The Tinkerer does not comment on levelling beyond confirming the work is done.
+
+**Act 1 onward (post-unlock): Item destruction.** The player can ask the Tinkerer to destroy an owned item. This removes it from the inventory immediately, reverting all its effects. The player receives a partial FP refund: the exact amount is a balance decision (base cost and any levelling costs are partially recovered). Destroying an item removes the original permanently. What the player destroyed cannot be recovered. However, a second chance version of that item quietly re-enters the pool -- different name, same sprite with a shader applied, stored as a variant within the same item definition, same effect. The Tinkerer does not tell the player this. The player notices it or they don't. If the second chance version is also destroyed, the item is gone for the rest of the run.
+
+The Tinkerer has one line per item for destruction. They know what each item is. They say what they know and let the player decide.
+
+**Peace onward: Item synthesis.** The Tinkerer can construct a synth version of any item the player does not currently own -- including items that were permanently destroyed. Synth items have the same gameplay effect as the original but carry no narrative history: same sprite with a shader applied, generic name, visibly constructed. Synthesis exists to keep the idle loop alive and let the player complete their collection. Synth items are mechanically identical to originals for all purposes including synergies. Synthesis costs FP; the exact amount is a balance decision.
 
 **Beta onward: Synergies.** The player brings two max-level items; the Tinkerer attempts to combine them. Both must be at max level. If a synergy exists, they produce it for a fee. If not, the attempt is free, and the Tinkerer may offer a consolation item depending on relationship level. The max-level requirement means the player has committed deeply to both items before the combination is attempted.
+
+The Tinkerer has one line per failed synergy pair. Their two dialogue triggers across the whole game are destruction and failed synergy. Everything else they do is silent.
 
 ---
 
@@ -34,7 +42,7 @@ The Shopkeeper's projection is present, enthusiastic, and slightly too eager to 
 
 Their dialogue on entry shifts across the act. Early: warm and easy, the kind of comfortable that comes from not yet knowing things have changed. As the act progresses: still warm, but with something underneath. They mention things in passing that don't quite fit the surface-layer framing. A reference to time. A name. The faintest sense that they are managing something.
 
-The Tinkerer is available from the start of Act 1 for levelling. They are more guarded than the Shopkeeper, more precise. They do not make small talk. Their entry dialogue is brief and task-focused. The dialogue they say when levelling a specific item is where their character comes through. Over time, through repeated visits, they become incrementally more open: not warmer exactly, just more present.
+The Tinkerer is available from the start of Act 1 for levelling and destruction. They are more guarded than the Shopkeeper, more precise. They do not make small talk. Levelling is silent. The only time they speak about a specific item is when the player destroys one.
 
 ### Shop closing escalation across Act 1
 
@@ -81,19 +89,31 @@ New synergies in Act 3 are brought to the Shopkeeper or Tinkerer once won back. 
 
 ## The Tinkerer's relationship system
 
-Relationship level with the Tinkerer is tracked separately from FP. It increases through:
-- Visits to the workshop (including failed synergy attempts)
-- Successful synergies
-- Specific story beats
+Relationship level with the Tinkerer is tracked separately from FP. It increases through any visit: levelling, destruction, synergy attempts (successful or failed), and specific story beats. It does not decrease.
 
-It does not decrease.
+Relationship has three tiers. Each tier unlocks a deeper register of entry dialogue -- what the Tinkerer says when the player arrives, before any action is taken. This is the only thing relationship gates. The Tinkerer does not become more helpful mechanically; they become more present.
 
-Relationship level gates:
-- Consolation items on failed synergy attempts (unlocks at a specific threshold)
-- Dialogue depth on entry (the Tinkerer says more as the relationship grows)
-- Potentially: access to certain synergy attempts that require trust (content decision)
+Tier thresholds are a content decision made when entry dialogue is written. The consolation item on failed synergy attempts is a separate mechanic and is not relationship-gated -- it appears when the Tinkerer has something relevant to give based on what items were brought. The player notices the pattern.
 
-The consolation item is not guaranteed on every failure. It appears when the Tinkerer has something relevant to give, a function of both relationship level and what items were brought. The Tinkerer does not explain this. The player notices the pattern.
+### Scorched earth hint
+
+When the player has 2 or fewer items and the available pool contains nothing they can acquire, a condition-based entry line fires. The Tinkerer delivers it if their relationship tier is high enough; otherwise the Shopkeeper delivers it instead. If both are at sufficient tier, the Tinkerer's version takes priority.
+
+The line does not reference the safety net or destruction directly. It reads as character -- something careful and oblique from the Tinkerer, something warmer and more direct from the Shopkeeper. A player paying attention understands what's being suggested. A player who doesn't will eventually get there through time and FP accumulation from volleying.
+
+This fires once per qualifying state, not on every visit while the condition holds.
+
+---
+
+## Item destruction as narrative delivery
+
+When a player destroys an item, the Tinkerer's response is the content. They know what the item is. They know what it meant. Their destruction dialogue is the heaviest single-item writing in the game -- heavier than levelling lines, heavier than synergy failure.
+
+The surface read: the Tinkerer explains they've dismantled it and returns what FP they can recover. Underneath: something about what it meant to hold onto it, or what it means to let it go.
+
+Cursed items get specific destruction dialogue that acknowledges the weight of what the player was carrying. The Tinkerer does not celebrate the decision or mourn it. They simply mark it.
+
+Destruction dialogue is written for every item: one line each. It is guaranteed to fire exactly once per item, and only for players who made a deliberate choice. The audience is always attentive.
 
 ---
 
@@ -105,7 +125,7 @@ Failure dialogue is written signal-layer first. On the surface the Tinkerer expl
 
 With ~490 failure lines covering notable pairs, a player attempting combinations with ~12 owned items will hit custom failure dialogue roughly 43% of the time. The Tinkerer speaks most often when the player tries combinations that have meaning -- thematic pairs, items with shared history. This is not coincidence.
 
-Entry dialogue (what the Tinkerer says on arrival) is the relationship vehicle. It changes based on relationship level and act, not specific items. The player builds a picture of the Tinkerer through accumulation, not single moments.
+The Tinkerer's character is built through two types of line only: what they say when something is destroyed, and what they say when two things don't combine. Both are sparse. Both are written signal-layer first.
 
 ---
 
