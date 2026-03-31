@@ -115,6 +115,7 @@ on_hit
 on_personal_best
 on_streak_start
 on_streak_multiple
+on_streak_milestone
 on_edge_hit
 on_max_speed_reached
 on_ball_behind_paddle

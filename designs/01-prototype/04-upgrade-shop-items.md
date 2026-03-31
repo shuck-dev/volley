@@ -39,6 +39,7 @@ Only triggers used by owned items need to be implemented.
 | `on_edge_hit` | Ball hits the extreme edge of the paddle |
 | `on_max_speed_reached` | Ball hits the speed ceiling for the first time this rally |
 | `on_ball_behind_paddle` | Ball passes behind a paddle toward the miss wall |
+| `on_streak_milestone(n)` | Streak reaches threshold n, once per rally |
 
 <details>
 <summary>Ideas</summary>
@@ -46,7 +47,6 @@ Only triggers used by owned items need to be implemented.
 | Trigger | Fires when |
 |---|---|
 | **Rally** | |
-| `on_streak_milestone(n)` | Streak reaches threshold n, once per rally |
 | `on_streak_lost_above(n)` | Missed while streak was above n |
 | `on_consecutive_misses(n)` | Player has missed n times in a row |
 | `on_long_rally(seconds)` | Rally has been running for n seconds |
@@ -88,10 +88,10 @@ Optional. If omitted the outcome always fires when the trigger does. Multiple co
 
 #### Active
 
-| Condition | Description |
-|---|---|
-| `game_state_is(state)` | A named item-driven game state is currently active |
-| `game_state_is_not(state)` | A named item-driven game state is not currently active |
+| Condition | Description | Parameters |
+|---|---|---|
+| `game_state_is(state)` | A named item-driven game state is currently active | `state` |
+| `game_state_is_not(state)` | A named item-driven game state is not currently active | `state` |
 | `delay_random(min, max)` | Outcome fires after a random delay within the range. If the trigger resets (e.g. miss) before the delay expires, the outcome never fires | `min_seconds`, `max_seconds` |
 | `degradation_at(n)` | Item's hidden degradation counter has reached n | `n` |
 
@@ -163,7 +163,6 @@ Optional. If omitted the outcome always fires when the trigger does. Multiple co
 | `modify_stat_until_hit(n)` | Add a delta to a stat key until n more hits register | `key`, `delta`, `hits` |
 | `set_stat_temporary` | Override a stat key to a specific value for a duration | `key`, `value`, `duration_seconds` |
 | **Ball control** | | |
-| `set_ball_speed` | Immediately set ball to a specific speed | `value` |
 | `boost_ball_speed` | One-off speed burst on top of current speed | `delta` |
 | **FP economy** | | |
 | `award_friendship_points_flat` | Award a flat FP amount | `amount` |
@@ -218,7 +217,7 @@ All values items can target via `modify_stat` or `modify_stat_temporary`.
 
 ### Signals
 
-Emitted by ItemManager for presentation layer consumers (HUD, entities, audio, VFX). Payloads contain only what downstream consumers need — current game state is queryable directly.
+Emitted by EffectManager for presentation layer consumers (HUD, entities, audio, VFX). Payloads contain only what downstream consumers need — current game state is queryable directly.
 
 #### Active
 
@@ -444,6 +443,7 @@ Effect 1
 Effect 2
   trigger: on_hit
   outcome: award_friendship_points(scale_by: ball_speed)
+  tuning: on_hit fires every hit, so FP generation rate climbs sharply at high ball speeds. Cap or diminishing returns may be needed to keep FP economy balanced.
 
 Effect 3 (level 3 only)
   trigger: on_ball_behind_paddle
@@ -645,6 +645,6 @@ Base cost: 85 FP | Scaling: 1.5
 - `friendship_points_per_hit` must be exposed as a query. Currently hardcoded as `1` in `game.gd:_on_paddle_hit()`.
 - `ball_speed_increment` must be exposed as a query. Currently hardcoded as `GameRules.BALL_SPEED_INCREMENT` in `ball.gd:increase_speed()`.
 - Causality items require ItemManager to subscribe to game signals and evaluate owned items on each trigger. Temporary outcomes need an expiry model (timer or per-frame tick).
-- Named game states (for `set_game_state`, `game_state_is`) need a lightweight state registry in ItemManager or a dedicated GameStateManager.
+- Named game states (for `set_game_state`, `game_state_is`) need a lightweight state registry in EffectState.
 - Multi-ball requires a ball spawner and a reference list of active balls in the scene. `clear_extra_balls` removes all but the original.
 - `GameRules.BALL_SPEED_MIN` (400.0) and `GameRules.BALL_SPEED_MAX` (700.0) are unused. Remove in SH-41.
