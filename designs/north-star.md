@@ -55,10 +55,20 @@ The record is a specific number. It was always a specific number. It's worth ask
 - Player can jump in anytime to take control
 - Minimal UI, just the essentials visible, details on hover or click
 
+## Act structure and game modes
+
+Act 1 is the idle game described above: volley, earn FP, upgrade, recruit partners, chase the record. The desktop widget, the cozy surface, the scrappy underdog arc. This is the game the player thinks they are playing.
+
+Act 2 and Act 3 change the game mode. Still ball and paddle, but the objective shifts to serve what the narrative requires. The rival is the mode carrier: passive in Act 1, an active blocker in Act 2 (battle mode), an active helper in Act 3 (enemy mode). Peace unlocks all modes freely, including simultaneous instances.
+
+The exact mechanics of each mode are a Post-Break design decision. The constraint is that every mode must feel like a natural expression of what the story is doing, not a genre detour. FP is Act 1's incentive. Later acts may have different ones.
+
+The idle framing is Act 1's framing, not the game's framing. The game is about what the ball and paddle mean.
+
 ## Endgame
 Beat the world volley record. The number should feel impossibly far at first and slowly become real through upgrades and partners. When you hit it, the game changes — not just mechanically. Post-record: the player knows something the paddle doesn't. See `02-beta/04-world-and-narrative.md` for the full narrative layer.
 
-Post-snap: prestige system, new records, harder challenges. But the framing is different now.
+Post-Break: the framing is different. What Act 2 and Act 3 require from the mechanics follows from what the story needs.
 
 ## Soft launch thinking
 - Launch early in a limited way (itch.io preview channel) to test the economy and gather feedback

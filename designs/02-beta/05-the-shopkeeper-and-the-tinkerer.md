@@ -20,6 +20,8 @@ The Shopkeeper runs the item shop in Act 1. The player buys items from their pro
 
 Both the Shopkeeper and the Tinkerer are unlocked via milestones, not available from game start. The shop unlocks first. The Tinkerer unlocks later. The player encounters one new mechanic at a time. The exact milestones are a narrative and balance decision (see Milestone Design).
 
+**Prototype:** The full milestone system is a Beta feature. For prototype, both unlocks are hardcoded FP thresholds. The shop unlocks first (default: 50 FP); the Tinkerer unlocks later (default: 150 FP). Both thresholds are tuning targets for the Make Fun pass.
+
 The Tinkerer does four things across different phases:
 
 **Act 1 onward (post-unlock): Item levelling.** The player brings an owned item to the Tinkerer and pays FP to level it up. Items have 3 levels: base (purchased), upgraded, and max. Each level increases the item's effect magnitude. The Tinkerer does not comment on levelling beyond confirming the work is done.

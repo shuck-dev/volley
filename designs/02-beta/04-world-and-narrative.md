@@ -126,7 +126,7 @@ The game has three acts, each ending in a prestige. Each prestige resets the mec
 
 ### Act 1: The Game (innocence)
 
-The cozy pong game. The paddle has a dream. Partners help. Upgrades make you better. Clues build but the surface holds. The rival stands between you and milestones. You have to beat them to progress.
+The idle volley game. The paddle has a dream. Partners help. Upgrades make you better. Clues build but the surface holds. The rival is present but passive — they want you to quit, not to beat you.
 
 **Target:** record-1. The dream is to beat the world record, but the game stops you one short. The player doesn't know this is coming.
 
@@ -138,7 +138,7 @@ The cozy pong game. The paddle has a dream. Partners help. Upgrades make you bet
 
 The paddle doesn't acknowledge The Break. It resets cheerfully, ready to go again. But the game knows the player has seen the truth, and it starts changing in response.
 
-The clues are no longer subtle. Partners say things that are harder to read as surface-layer. The cozy framing is still there but it's wearing thin. The rival is still angry, still blocking milestones. They haven't changed. They're frustrated that The Break happened and nothing is different yet. Their aggression in Act 2 is sharper because they expected the truth to fix things, and it didn't.
+The clues are no longer subtle. Partners say things that are harder to read as surface-layer. The cozy framing is still there but it's wearing thin. The rival becomes an active blocker — battle mode. They enter the game directly, contesting you, forcing the confrontation the paddle is still refusing. Their aggression in Act 2 is sharper because they expected the truth to fix things, and it didn't.
 
 The saviour emerges gradually. A partner who starts making the paddle question things. Not by explaining, but by being present in a way that cuts through the fiction. They make the paddle begin to see what the player already knows. By the end of Act 2, the saviour has brought the paddle close enough to the truth that the transition to Act 3 feels earned.
 
@@ -152,7 +152,7 @@ As the saving grace takes hold, the rival starts to soften. Not all at once. The
 
 ### Act 3: The Demons (confrontation)
 
-The game stops pretending. The cozy layer is thinner. The paddle's dialogue is honest. The rival is no longer an obstacle. They're alongside you now.
+The game stops pretending. The cozy layer is thinner. The paddle's dialogue is honest. The rival is no longer an obstacle. They are alongside you now, in enemy mode — adversarial in form, helping in intent. They push you past what you could not reach on your own.
 
 This act is about exceeding the record — going past the number that was always the ceiling. The milestones in this act should feel like processing, not achieving. The saviour has done their work. Now the paddle has to do the rest.
 
@@ -164,19 +164,22 @@ This act is about exceeding the record — going past the number that was always
 
 ### Post-game: Peace
 
-The prestige loop continues freely. No narrative weight, no clues, no tension. The game is what it always appeared to be: a cozy idle pong game.
+The prestige loop continues freely. No narrative weight, no clues, no tension. The player can swap between idle, battle, and enemy modes at will, or run instances simultaneously. The rival is a training partner now. The game is what it always appeared to be, and it is also everything it actually was.
 
-But it should not feel like Act 1 again. Something visible should be different. A shift in the colour palette, the music, the way partners talk. Warmer but quieter. The earnestness is still there but it's settled, not straining. The player should feel that this version of the game could only exist because of what came before. The warmth is earned now, not constructed.
+It should not feel like Act 1 again. Something visible should be different. A shift in the colour palette, the music, the way partners talk. Warmer but quieter. The earnestness is still there but it's settled, not straining. The player should feel that this version of the game could only exist because of what came before. The warmth is earned now, not constructed.
 
 ---
 
 ## The rival
 
-The rival is the milestone gatekeeper. To reach key milestones, you must beat them. Their arc runs across all three acts:
+The rival is the milestone gatekeeper. To reach key milestones, you must contend with them. Their arc runs across all three acts and their role changes the game mode in each.
 
-- **Act 1:** Competitive obstacle. Their aggression reads as sports rivalry on the surface, but underneath they've figured out the truth before anyone else. Their frustration isn't about losing. It's about wanting The Break to happen so the fiction ends.
-- **Act 2:** Still angry. The Break happened and nothing changed. The paddle is still pretending. The rival's frustration in Act 2 is directed at the fact that the truth didn't fix anything. As the saviour starts getting through to the paddle, the rival begins to shift. Their anger gives way slowly. By the end of Act 2 they're not an enemy anymore, but they're not fully an ally yet either.
-- **Act 3:** Ally. The fight is no longer between you and them. Their dialogue should feel like solidarity. They've been waiting for this.
+- **Act 1:** Passive. They are present but do not directly interfere with play. Their aggression reads as sports rivalry on the surface, but underneath they have figured out the truth before anyone else. They want the paddle to quit — not to defeat them, but because stopping means The Break has to happen. They are waiting for it.
+- **Act 2:** Active blocker. The Break happened and nothing changed. Their frustration becomes direct: they enter the game as an obstacle. This is battle mode — a direct contest between you and the rival. They are not trying to help you. They are trying to force a confrontation the paddle is still refusing to have. As the saviour gets through, the rival starts to shift. Their aggression becomes less certain. By the end of Act 2 they are no longer an enemy, but not yet an ally.
+- **Act 3:** Active helper. The rival is alongside you. They are still formidable, still adversarial in form, but now they are using that against you in your favour — pushing, testing, making you exceed yourself. This is enemy mode: the rival plays the role of opposition while actually helping you break past what you could not reach alone.
+- **Peace:** The modes are yours. The player can swap between idle, battle, and enemy modes freely, or run instances simultaneously. The rival is a training partner now. The framing has resolved.
+
+The exact mechanics of battle mode and enemy mode are a Post-Break design decision. The constraint is the same as all act modes: ball and paddle, different objective.
 
 ---
 

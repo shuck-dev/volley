@@ -25,6 +25,8 @@ How the player acquires items changes with each act. The shop is an Act 1 mechan
 
 The shop is not available from game start. It unlocks when the player hits a specific milestone. Before that point the player earns FP but has nowhere to spend it, which creates anticipation. The exact milestone is a narrative and balance decision (see Milestone Design).
 
+**Prototype:** The full milestone system is a Beta feature. For prototype, the shop unlocks at a hardcoded FP threshold. The threshold is a tuning target for the Make Fun pass; the default starting point is 50 FP. The shop panel is hidden and the HUD button is absent until this threshold is crossed.
+
 ## Shop display (Act 1)
 
 The shop shows 5 item slots at a time. The player sees the item name, description, and FP cost. There is no mechanical description. The player discovers what an item does by owning it.
