@@ -23,7 +23,7 @@ The paddle moves via `Input.get_axis("paddle_up", "paddle_down")` in `paddle.gd`
 
 ### Out of scope
 - AI difficulty scaling by upgrade level (deferred to Make Fun pass)
-- Welcome back popup UI polish (deferred to HUD pass)
+- Welcome back UI polish: animation, layout, milestone callouts (deferred to HUD pass)
 
 ## Features
 
@@ -75,7 +75,7 @@ When the game launches, check how long the player was away and award FP for that
 
 **On load:** if `last_quit_at > 0`, calculate `seconds_away = now - last_quit_at`. Cap at `MAX_OFFLINE_SECONDS` (8 hours = 28800). Award `floor(seconds_away / 60.0 * idle_fp_per_minute)` FP. Reset `last_quit_at` to 0. Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal from `SaveManager` so the HUD can show a summary.
 
-**Welcome back display:** a simple label in the HUD showing "Welcome back! +N FP" that fades out after a few seconds. No dedicated popup needed for prototype.
+**Welcome back display:** print a one-line message to the HUD: "Welcome back! +N FP". No animation, no popup. The polished version (fade, layout, milestone callouts) is deferred to a later HUD pass.
 
 ## Architecture
 
