@@ -36,6 +36,9 @@ func before_each() -> void:
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
+	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
+	_paddle.tracker = tracker
+	_paddle.add_child(tracker)
 
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball
@@ -49,9 +52,9 @@ func before_each() -> void:
 
 func test_ball_speed_increases_across_three_hits() -> void:
 	_paddle.on_ball_hit()
-	_paddle.tracker.process(HitTracker.COOLDOWN)
+	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
-	_paddle.tracker.process(HitTracker.COOLDOWN)
+	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	var effective_max: float = (
 		_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)

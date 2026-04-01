@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AutoPlayConfig" format=3 uid="uid://bgop07op1bnc7"]
+
+[ext_resource type="Script" uid="uid://3c00drtnmx8p" path="res://scripts/core/autoplay_config.gd" id="1_kp36d"]
+
+[resource]
+script = ExtResource("1_kp36d")
+center_drift_smoothing = 0.05

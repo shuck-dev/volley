@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://nx7sebwh4a1a" path="res://scripts/entities/paddle.gd" id="1_3xiby"]
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
+[ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_31swd"]
 size = Vector2(40, 200)
@@ -9,11 +10,12 @@ size = Vector2(40, 200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(40, 200)
 
-[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite")]
+[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker")]
 script = ExtResource("1_3xiby")
 hit_sound = NodePath("HitSound")
 collision = NodePath("Collision")
 sprite = NodePath("Sprite")
+tracker = NodePath("HitTracker")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=955212656]
@@ -24,3 +26,6 @@ shape = SubResource("RectangleShape2D_ut3sq")
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]
 stream = ExtResource("2_sfxr")
+
+[node name="HitTracker" type="Node" parent="." unique_id=1264478833]
+script = ExtResource("3_mo4dg")

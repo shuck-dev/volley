@@ -5,6 +5,7 @@ var _tracker: HitTracker
 
 func before_each() -> void:
 	_tracker = HitTracker.new()
+	add_child_autofree(_tracker)
 
 
 # --- try_hit ---
@@ -30,13 +31,13 @@ func test_try_hit_during_cooldown_does_not_increment_streak() -> void:
 
 func test_try_hit_allowed_after_cooldown_expires() -> void:
 	_tracker.try_hit()
-	_tracker.process(HitTracker.COOLDOWN)
+	_tracker._process(HitTracker.COOLDOWN)
 	assert_true(_tracker.try_hit())
 
 
 func test_streak_increments_after_cooldown_expires() -> void:
 	_tracker.try_hit()
-	_tracker.process(HitTracker.COOLDOWN)
+	_tracker._process(HitTracker.COOLDOWN)
 	_tracker.try_hit()
 	assert_eq(_tracker.streak, 2)
 

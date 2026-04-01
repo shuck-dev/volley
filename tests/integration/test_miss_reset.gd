@@ -37,6 +37,9 @@ func before_each() -> void:
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
+	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
+	_paddle.tracker = tracker
+	_paddle.add_child(tracker)
 
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball
@@ -52,7 +55,7 @@ func before_each() -> void:
 func _build_streak(hits: int) -> void:
 	for i in hits:
 		_paddle.on_ball_hit()
-		_paddle.tracker.process(HitTracker.COOLDOWN)
+		_paddle.tracker._process(HitTracker.COOLDOWN)
 
 
 func test_ball_speed_resets_after_miss() -> void:
@@ -70,6 +73,6 @@ func test_hud_resets_after_miss() -> void:
 func test_pitch_resets_on_first_hit_after_miss() -> void:
 	_build_streak(2)
 	_ball.missed.emit()
-	_paddle.tracker.process(HitTracker.COOLDOWN)
+	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.05, 0.001)

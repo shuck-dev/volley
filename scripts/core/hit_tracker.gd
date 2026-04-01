@@ -1,5 +1,5 @@
 class_name HitTracker
-extends RefCounted
+extends Node
 
 const COOLDOWN := 0.2
 
@@ -7,7 +7,7 @@ var streak := 0
 var _cooldown := 0.0
 
 
-func process(delta: float) -> void:
+func _process(delta: float) -> void:
 	if _cooldown > 0.0:
 		_cooldown -= delta
 

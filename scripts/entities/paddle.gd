@@ -1,14 +1,15 @@
 extends CharacterBody2D
 
+@warning_ignore("unused_signal")
 signal paddle_hit
 
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
 @export var sprite: Sprite2D
-
-var tracker := HitTracker.new()
+@export var tracker: HitTracker
 
 var _upgrade_manager: Node
+
 var _lane_x := 0.0
 var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
@@ -18,6 +19,7 @@ var _sprite_natural_height := 0.0
 func _ready() -> void:
 	if _upgrade_manager == null:
 		_upgrade_manager = UpgradeManager
+
 	_lane_x = position.x
 	_paddle_speed = _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY)
 	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
@@ -33,8 +35,7 @@ func _ready() -> void:
 	_apply_size()
 
 
-func _physics_process(delta: float) -> void:
-	tracker.process(delta)
+func _physics_process(_delta: float) -> void:
 	var direction := Input.get_axis("paddle_up", "paddle_down")
 	velocity = Vector2(0.0, direction * _paddle_speed)
 	move_and_slide()
@@ -52,6 +53,16 @@ func on_ball_hit() -> void:
 
 func reset_streak() -> void:
 	tracker.reset()
+
+
+func drive(velocity_y: float) -> void:
+	velocity = Vector2(0.0, velocity_y)
+	move_and_slide()
+	position.x = _lane_x
+
+
+func get_speed() -> float:
+	return _paddle_speed
 
 
 func _on_upgrade_level_changed(upgrade_key: String) -> void:
