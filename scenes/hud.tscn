@@ -60,7 +60,7 @@ grow_horizontal = 2
 text = "Max Ball Speed!!"
 horizontal_alignment = 1
 
-[node name="AutoLabel" type="Label" parent="." unique_id=1111111111]
+[node name="AutoLabel" type="Label" parent="." unique_id=1460641188]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5

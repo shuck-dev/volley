@@ -101,6 +101,15 @@ func test_fp_accumulator_carries_over_when_autoplay_ends() -> void:
 	assert_eq(_last_friendship_point_balance, 1)
 
 
+func test_fp_accumulator_resets_on_miss() -> void:
+	_game._is_autoplay_active = true
+	_hit()
+	_ball_stub.missed.emit()
+	_game._is_autoplay_active = false
+	_hit()
+	assert_eq(_last_friendship_point_balance, 1)
+
+
 # --- auto_play_changed signal ---
 func test_auto_play_changed_emits_true_when_autoplay_enabled() -> void:
 	watch_signals(_game)

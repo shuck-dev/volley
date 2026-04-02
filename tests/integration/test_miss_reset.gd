@@ -41,9 +41,14 @@ func before_each() -> void:
 	_paddle.tracker = tracker
 	_paddle.add_child(tracker)
 
+	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
+	add_child_autofree(autoplay_controller_stub)
+
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball
 	_game.paddle = _paddle
+	_game.autoplay_controller = autoplay_controller_stub
+	_game.autoplay_config = AutoPlayConfig.new()
 	add_child_autofree(_ball)
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
