@@ -84,4 +84,5 @@ func _ball_setup() -> void:
 	linear_velocity = Vector2(_min_speed, _min_speed * 0.5).normalized() * speed
 	contact_monitor = true
 	max_contacts_reported = 1
-	body_entered.connect(_on_body_entered)
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)

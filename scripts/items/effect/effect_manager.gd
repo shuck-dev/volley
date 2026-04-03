@@ -21,6 +21,7 @@ func unregister_source(source: ItemDefinition) -> void:
 
 
 func register_source(source: ItemDefinition, level: int) -> void:
+	_effect_state.remove_modifiers_by_source(source.get_key())
 	for effect in source.get_effects_for_level(level):
 		if effect.trigger.type == &"always":
 			_apply_always_effect(effect, source.get_key(), level)
