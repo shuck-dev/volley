@@ -6,19 +6,21 @@ signal personal_volley_best_changed(best: int)
 signal ball_at_max_speed_changed(is_at_max: bool)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
-@export var ball: RigidBody2D
-@export var paddle: CharacterBody2D
+@export var ball: Ball
+@export var paddle: Paddle
 @export var autoplay_controller: AutoplayController
 @export var autoplay_config: AutoPlayConfig
 
-var _volley_count: int = 0
+var _volley_count := 0
 var _progression: ProgressionData
 var _upgrade_manager: Node
-var _is_autoplay_active: bool = false
-var _friendship_point_accumulator: float = 0.0
+var _is_autoplay_active := false
+var _friendship_point_accumulator := 0.0
 
 
 func _ready() -> void:
+	assert(autoplay_controller != null, "game.gd: autoplay_controller export must be assigned")
+	assert(autoplay_config != null, "game.gd: autoplay_config export must be assigned")
 	# Allows direct injection of progression/upgrade_manager for tests
 	if _progression == null:
 		_progression = SaveManager.get_progression_data()

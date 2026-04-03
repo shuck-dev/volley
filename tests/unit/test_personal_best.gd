@@ -4,8 +4,8 @@ extends GutTest
 # and does not update when a streak falls short of the existing record.
 
 var _game: Node2D
-var _ball_stub: RigidBody2D
-var _paddle_stub: Node
+var _ball_stub: Ball
+var _paddle_stub: Paddle
 var _last_personal_volley_best := -1
 
 

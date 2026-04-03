@@ -1,6 +1,6 @@
 extends GutTest
 
-var _paddle: CharacterBody2D
+var _paddle: Paddle
 
 
 func before_each() -> void:

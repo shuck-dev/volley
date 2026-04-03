@@ -8,8 +8,8 @@ const FAR_BEYOND_SNAP_THRESHOLD := 9999.0  # Guarantees max speed in speed-cap t
 const BALL_APPROACHING := Vector2(-100.0, 0.0)  # Ball moving toward paddle (negative x)
 
 var _controller: AutoplayController
-var _paddle: CharacterBody2D
-var _ball: RigidBody2D
+var _paddle: Paddle
+var _ball: Ball
 var _config: AutoPlayConfig
 
 

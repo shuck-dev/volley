@@ -3,7 +3,7 @@ extends GutTest
 # Tests for ball speed behaviour driven by upgrade manager values.
 # Injects a real UpgradeManager with mock storage to avoid autoload dependency.
 
-var _ball: RigidBody2D
+var _ball: Ball
 var _manager: Node
 var _mock_storage: SaveStorage
 

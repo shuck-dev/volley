@@ -4,8 +4,8 @@ extends GutTest
 # increments on each hit and persists across misses (shop mechanics will decrease it).
 
 var _game: Node2D
-var _ball_stub: RigidBody2D
-var _paddle_stub: Node
+var _ball_stub: Ball
+var _paddle_stub: Paddle
 var _upgrade_manager: Node
 var _last_friendship_point_balance := -1
 

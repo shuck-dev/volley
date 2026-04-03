@@ -4,8 +4,8 @@ extends GutTest
 # Uses real instances wired via signals, no private method calls.
 
 var _game: Node2D
-var _ball: RigidBody2D
-var _paddle: CharacterBody2D
+var _ball: Ball
+var _paddle: Paddle
 var _manager: Node
 var _mock_storage: SaveStorage
 
