@@ -106,10 +106,14 @@ jobs:
 
             if (existing.results.length > 0) {
               const pageId = existing.results[0].id;
-              // Delete existing blocks
-              const children = await notion.blocks.children.list({ block_id: pageId });
-              for (const block of children.results) {
-                await notion.blocks.delete({ block_id: block.id });
+              // Delete existing blocks (paginated, Notion returns max 100 per list call)
+              let hasMore = true;
+              while (hasMore) {
+                const children = await notion.blocks.children.list({ block_id: pageId });
+                for (const block of children.results) {
+                  await notion.blocks.delete({ block_id: block.id });
+                }
+                hasMore = children.has_more;
               }
               // Add updated blocks
               await appendBlocksInChunks(pageId, blocks);
