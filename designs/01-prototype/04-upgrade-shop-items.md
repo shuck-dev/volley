@@ -354,9 +354,9 @@ Lost ball + gunpowder | Worn ball dusted lightly in gunpowder, slightly singed a
 
 | State | Description |
 |---|---|
-| Default | "Nobody trained it." |
-| After frenzy triggers once | "Fast. Too fast." |
-| Post-Break | "It was always going to do that." |
+| Default | "Nobody trained it" |
+| After frenzy triggers once | "Fast. Too fast" |
+| Post-Break | "It was always going to do that" |
 
 | Level | Extra balls (cap) | Frenzy trigger |
 |---|---|---|
@@ -392,8 +392,8 @@ Referee card + shifting colour | Battered card, creased at the corners, colour d
 
 | State | Description |
 |---|---|
-| Default | "Looks official." |
-| After first colour change | "That wasn't green." |
+| Default | "Looks official" |
+| After first colour change | "That wasn't green" |
 | Post-Break | "Why wasn't I there?" |
 
 Every n-th hit, the card flips to a random colour. Each colour sets the FP-per-hit multiplier until the next flip. Every flip also deflects the ball to a random angle. The player learns colours through play, not a legend.
@@ -423,9 +423,9 @@ Medicine ball + dense metal | Small, impossibly heavy, dull grey surface with no
 
 | State | Description |
 |---|---|
-| Default | "Don't try to move it." |
+| Default | "Don't try to move it" |
 | After first gravity-warped hit | "Why does my hand look weird?" |
-| Post-Break | "Still there." |
+| Post-Break | "Still there" |
 
 A gravity well sits on the court, curving ball trajectory toward it. Hits on faster balls earn bonus FP. At max level, the well surges when the ball passes behind a paddle.
 
@@ -460,9 +460,9 @@ Training cone + melted base | Court | Standard orange cone, base slightly warped
 
 | State | Description |
 |---|---|
-| Default | "There's always one left over." |
-| After equipping 4th kit item | "Wasn't supposed to need it." |
-| Post-Break | "Nobody noticed it was missing." |
+| Default | "There's always one left over" |
+| After equipping 4th kit item | "Wasn't supposed to need it" |
+| Post-Break | "Nobody noticed it was missing" |
 
 Court item. Appears on the court in the background. Grants +1 kit slot. The bonus slot appears on the floor next to the kit bag in the kit UI, visually distinct from the base bag slots.
 
@@ -484,9 +484,9 @@ Betting slip + race already ran | Crumpled slip, printed odds faded, creased fro
 
 | State | Description |
 |---|---|
-| Default | "Haven't checked yet." |
-| After first roll resolves | "It was already decided." |
-| Post-Break | "Held onto it this whole time." |
+| Default | "Haven't checked yet" |
+| After first roll resolves | "It was already decided" |
+| Post-Break | "Held onto it this whole time" |
 
 Each rally starts a hidden timer (random delay). If the timer fires before you miss, the slip rolls and an effect triggers. If you miss first, the race never finishes. Higher levels add outcomes to the table and tighten the delay window. All outcomes are equally weighted.
 
@@ -524,16 +524,16 @@ Mirror + no end | Small rectangular locker mirror, scratched frame. Looks normal
 | State | Description |
 |---|---|
 | Default | "How deep does it go?" |
-| Power revealed | "It's fine." |
-| Post-Break | "Counted every one." |
+| Power revealed | "It's fine" |
+| Post-Break | "Counted every one" |
 
 **Broken:**
 
 | State | Description |
 |---|---|
-| Default (just broke) | "Too late." |
-| Power revealed (curse felt, or Tinkerer levels it) | "Sharper than before." |
-| Post-Break | "Some things don't heal." |
+| Default (just broke) | "Too late" |
+| Power revealed (curse felt, or Tinkerer levels it) | "Sharper than before" |
+| Post-Break | "Some things don't heal" |
 
 Passive FP multiplier that scales with hidden crack count. Each miss adds a crack. The player never sees the number. More cracks = more fractal reflections = higher multiplier. At 100 cracks the mirror breaks and becomes a cursed item with a slight debuff (tuning target). The broken state persists until dealt with.
 
@@ -573,9 +573,9 @@ Friendship bracelet + double knotted | Woven bracelet, faded colours, knotted tw
 
 | State | Description |
 |---|---|
-| Default | "Made two." |
-| After magnetism pull felt | "Closer than before." |
-| Post-Break | "Still wearing it." |
+| Default | "Made two" |
+| After magnetism pull felt | "Closer than before" |
+| Post-Break | "Still wearing it" |
 
 Buffs both paddles equally. The connection strengthens with each level.
 
@@ -615,8 +615,8 @@ Whistle + out of tune | Standard coach's whistle, brass tarnished, plays a note 
 
 | State | Description |
 |---|---|
-| Default | "Sounds wrong." |
-| After first ceiling raise | "Don't stop. Won't stop." |
+| Default | "Sounds wrong" |
+| After first ceiling raise | "Don't stop. Won't stop" |
 | Post-Break | "Was anyone listening?" |
 
 The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down unpredictably. When the ball reaches max speed, the ceiling raises and speed keeps climbing.
@@ -638,6 +638,118 @@ Effect 2
 ```
 
 Base cost: 85 FP | Scaling: 1.5
+
+---
+
+## Simple stat items
+
+Passive stat modifiers. No triggers, no conditions, no twist. These exist so the shop has straightforward purchases available early: the player picks one, feels the difference immediately, and understands the economy before encountering causality items.
+
+These are not build-around items. They are reliable, boring, and useful. The kind of thing you buy because you need it, not because it excites you. They round out a kit without competing for attention.
+
+---
+
+### Ankle Weights
+
+Leg weights + worn elastic | Scuffed ankle weights, elastic fraying, sand shifting inside. They've been used every day for a long time.
+
+| State | Description |
+|---|---|
+| Default | "Heavy steps" |
+| Power revealed | "Didn't notice the difference until I took them off" |
+| Post-Break | "Still wearing them" |
+
+Increases paddle movement speed per level. Max level 10.
+
+| Level | Effect |
+|---|---|
+| 1-10 | +50 paddle speed per level |
+
+```
+Effect 1
+  trigger: always
+  outcome: modify_stat(paddle_speed, +50 per level)
+```
+
+Base cost: 30 FP | Scaling: 1.5
+
+---
+
+### Grip Tape
+
+Sports tape + sticky residue | Roll of white grip tape, half used, end stuck to itself. Leaves marks on everything it touches.
+
+| State | Description |
+|---|---|
+| Default | "Covers more than you think" |
+| Power revealed | "Hard to miss now" |
+| Post-Break | "Held it together" |
+
+Increases paddle collision size per level. Max level 10.
+
+| Level | Effect |
+|---|---|
+| 1-10 | +10 paddle size per level |
+
+```
+Effect 1
+  trigger: always
+  outcome: modify_stat(paddle_size, +10 per level)
+```
+
+Base cost: 30 FP | Scaling: 1.5
+
+---
+
+### Warm-Up Ball
+
+Practice ball + always warm | Bright orange practice ball, slightly soft, always warm to the touch no matter how long it sits.
+
+| State | Description |
+|---|---|
+| Default | "Already moving" |
+| Power revealed | "Starts fast. Stays fast" |
+| Post-Break | "Never cooled down" |
+
+Raises the ball's starting speed per level. Max level 10.
+
+| Level | Effect |
+|---|---|
+| 1-10 | +30 ball speed min per level |
+
+```
+Effect 1
+  trigger: always
+  outcome: modify_stat(ball_speed_min, +30 per level)
+```
+
+Base cost: 40 FP | Scaling: 1.6
+
+---
+
+### Court Lines
+
+Chalk line + no end | Piece of court chalk, worn to a nub. The lines it draws keep going past where you stopped.
+
+| State | Description |
+|---|---|
+| Default | "Wider than it looks" |
+| Power revealed | "The ceiling keeps moving" |
+| Post-Break | "Drew them everywhere" |
+
+Raises the ball speed ceiling by increasing the max range above the minimum. Max level 10.
+
+| Level | Effect |
+|---|---|
+| 1-10 | +50 ball speed max range per level |
+
+```
+Effect 1
+  trigger: always
+  outcome: modify_stat(ball_speed_max_range, +50 per level)
+```
+
+Base cost: 40 FP | Scaling: 1.6
 
 ---
 

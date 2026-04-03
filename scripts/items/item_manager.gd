@@ -4,7 +4,7 @@ signal friendship_point_balance_changed(balance: int)
 signal item_level_changed(item_key: String)
 
 var items: Array[ItemDefinition] = [
-	preload("res://resources/items/paddle_speed.tres"),
+	preload("res://resources/items/ankle_weights.tres"),
 	preload("res://resources/items/paddle_size.tres"),
 	preload("res://resources/items/ball_speed_min.tres"),
 	preload("res://resources/items/ball_speed_max_range.tres"),

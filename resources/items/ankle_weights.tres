@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://7akht7ns7bj2"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dovsoid31plx3"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
-[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_x81hg"]
+[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_sgvbu"]
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 
@@ -10,7 +10,7 @@
 script = ExtResource("4_outcome")
 type = &"modify_stat"
 parameters = {
-&"operation": 0,
+&"operation": &"add",
 &"stat_key": &"paddle_speed",
 &"value": 50.0
 }
@@ -27,10 +27,11 @@ max_active_level = null
 
 [resource]
 script = ExtResource("1_item")
-key = "paddle_speed"
-type = &"court"
-display_name = "Paddle Speed"
-descriptions = Array[String](["Speed Description"])
-base_cost = 25
+key = "ankle_weights"
+type = &"kit"
+display_name = "Ankle Weights"
+descriptions = Array[String](["Heavy steps", "Didn't notice the difference until I took them off", "Still wearing them"])
+base_cost = 30
+cost_scaling = 1.5
 max_level = 10
 effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])

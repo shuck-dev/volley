@@ -10,7 +10,7 @@
 script = ExtResource("4_outcome")
 type = &"modify_stat"
 parameters = {
-&"operation": 0,
+&"operation": &"add",
 &"stat_key": &"paddle_size",
 &"value": 100.0
 }

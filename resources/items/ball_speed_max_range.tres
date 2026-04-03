@@ -10,7 +10,7 @@
 script = ExtResource("4_outcome")
 type = &"modify_stat"
 parameters = {
-&"operation": 0,
+&"operation": &"add",
 &"stat_key": &"ball_speed_max_range",
 &"value": 100.0
 }

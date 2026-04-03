@@ -33,6 +33,6 @@ func _apply_always_effect(effect: Effect, source_key: String, level: int) -> voi
 			var modifier := StatModifier.new()
 			modifier.source_key = source_key
 			modifier.stat_key = outcome.parameters[&"stat_key"]
-			modifier.operation = outcome.parameters[&"operation"]
+			modifier.operation = StatModifier.OPERATION_BY_NAME[outcome.parameters[&"operation"]]
 			modifier.value = outcome.parameters[&"value"] * level
 			_effect_state.add_modifier(modifier)

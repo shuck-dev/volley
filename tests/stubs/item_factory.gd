@@ -8,7 +8,7 @@ static func create_manager(
 	gut_test: GutTest,
 	item_key: String = "test_speed",
 	stat_key: StringName = &"paddle_speed",
-	operation: StatModifier.Operation = StatModifier.Operation.ADD,
+	operation: StringName = &"add",
 	value: float = 50.0,
 ) -> Node:
 	var item := create(item_key, stat_key, operation, value)
@@ -24,7 +24,7 @@ static func create_manager(
 
 
 static func create(
-	item_key: String, stat_key: StringName, operation: StatModifier.Operation, value: float
+	item_key: String, stat_key: StringName, operation: StringName, value: float
 ) -> ItemDefinition:
 	var trigger := Trigger.new()
 	trigger.type = &"always"
