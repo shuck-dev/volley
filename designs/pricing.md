@@ -11,9 +11,9 @@
 - **v1 scope:** v1 ships with the full core loop, 3–5 partners, milestones, prestige, and The Break twist. That's a complete, polished package, not a thin idle clicker.
 - **Steam context:** Steam's discovery algorithm rewards strong launch week sales volume. A lower price gets more wishlists converting, which feeds visibility.
 
-### The case for $9.99
+### A note on pricing
 
-If The Break lands as a genuinely memorable moment and beta reviews reflect that, $9.99 is defensible and better for overall revenue per unit. Watch the itch.io beta response before committing.
+All prices here are estimates. The final launch price will be set after the itch.io beta and informed by player response to The Break and overall polish. The goal is to be as accessible as possible, and the real number may well land lower than what's listed here.
 
 ---
 

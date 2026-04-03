@@ -46,3 +46,7 @@
 - Future updates (power-ups, new partners, cosmetics, etc.) not costed — scope undefined
 - Outreach (5pts in v1) has no discipline assignment
 - 4 hours per point assumes half a focused working day per point
+
+## A note on these figures
+
+All figures here are estimates based on current scope and velocity assumptions. The real cost will likely be lower: scope gets cut, velocity improves, and not every point takes a full half-day. These numbers represent a reasonable ceiling, not a target.
