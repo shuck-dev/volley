@@ -1,11 +1,13 @@
-class_name ItemManager
 extends Node
 
 signal friendship_point_balance_changed(balance: int)
 signal item_level_changed(item_key: String)
 
 var items: Array[ItemDefinition] = [
-# preload("res://resources/items/paddle_speed.tres"),
+	preload("res://resources/items/paddle_speed.tres"),
+	preload("res://resources/items/paddle_size.tres"),
+	preload("res://resources/items/ball_speed_min.tres"),
+	preload("res://resources/items/ball_speed_max.tres"),
 ]
 
 var _progression: ProgressionData
@@ -41,7 +43,7 @@ func is_game_state_active(state: StringName) -> bool:
 
 ## Returns current level of an item (0 if not owned)
 func get_level(item_key: String) -> int:
-	return _progression.upgrade_levels.get(item_key, 0)
+	return _progression.item_levels.get(item_key, 0)
 
 
 ## Returns total cost of an item at its current level
@@ -100,7 +102,7 @@ func remove_level(item_key: String) -> void:
 func _set_level(item_key: String, level: int) -> void:
 	var item := _get_item(item_key)
 	_effect_manager.unregister_source(item)
-	_progression.upgrade_levels[item_key] = level
+	_progression.item_levels[item_key] = level
 	if level > 0:
 		_effect_manager.register_source(item, level)
 	item_level_changed.emit(item_key)

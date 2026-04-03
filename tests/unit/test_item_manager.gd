@@ -1,20 +1,22 @@
 extends GutTest
 
+const ItemManagerScript := preload("res://scripts/items/item_manager.gd")
+
 
 class TestPurchase:
 	extends GutTest
 	const TEST_KEY := "test_speed"
-	var _manager: ItemManager
+	var _manager: Node
 
 	func before_each() -> void:
 		var item := ItemFactory.create(TEST_KEY, &"paddle_speed", StatModifier.Operation.ADD, 50.0)
 		var mock_storage: SaveStorage = double(SaveStorage).new()
 		stub(mock_storage.write).to_return(true)
 		stub(mock_storage.read).to_return("")
-		_manager = ItemManager.new()
+		_manager = ItemManagerScript.new()
 		_manager._progression = ProgressionData.new(mock_storage)
 		_manager._effect_manager = EffectManager.new()
-		_manager.items = [item]
+		_manager.items.assign([item])
 		add_child_autofree(_manager)
 
 	func test_get_level_returns_zero_before_any_purchase() -> void:
@@ -76,17 +78,17 @@ class TestPurchase:
 class TestStats:
 	extends GutTest
 	const TEST_KEY := "test_speed"
-	var _manager: ItemManager
+	var _manager: Node
 
 	func before_each() -> void:
 		var item := ItemFactory.create(TEST_KEY, &"paddle_speed", StatModifier.Operation.ADD, 50.0)
 		var mock_storage: SaveStorage = double(SaveStorage).new()
 		stub(mock_storage.write).to_return(true)
 		stub(mock_storage.read).to_return("")
-		_manager = ItemManager.new()
+		_manager = ItemManagerScript.new()
 		_manager._progression = ProgressionData.new(mock_storage)
 		_manager._effect_manager = EffectManager.new()
-		_manager.items = [item]
+		_manager.items.assign([item])
 		add_child_autofree(_manager)
 
 	func test_get_stat_returns_base_value_before_any_purchase() -> void:
@@ -113,17 +115,17 @@ class TestStats:
 class TestFriendshipPoints:
 	extends GutTest
 	const TEST_KEY := "test_speed"
-	var _manager: ItemManager
+	var _manager: Node
 
 	func before_each() -> void:
 		var item := ItemFactory.create(TEST_KEY, &"paddle_speed", StatModifier.Operation.ADD, 50.0)
 		var mock_storage: SaveStorage = double(SaveStorage).new()
 		stub(mock_storage.write).to_return(true)
 		stub(mock_storage.read).to_return("")
-		_manager = ItemManager.new()
+		_manager = ItemManagerScript.new()
 		_manager._progression = ProgressionData.new(mock_storage)
 		_manager._effect_manager = EffectManager.new()
-		_manager.items = [item]
+		_manager.items.assign([item])
 		add_child_autofree(_manager)
 
 	func test_add_friendship_points_increases_balance() -> void:
@@ -149,17 +151,17 @@ class TestFriendshipPoints:
 class TestRemoveLevel:
 	extends GutTest
 	const TEST_KEY := "test_speed"
-	var _manager: ItemManager
+	var _manager: Node
 
 	func before_each() -> void:
 		var item := ItemFactory.create(TEST_KEY, &"paddle_speed", StatModifier.Operation.ADD, 50.0)
 		var mock_storage: SaveStorage = double(SaveStorage).new()
 		stub(mock_storage.write).to_return(true)
 		stub(mock_storage.read).to_return("")
-		_manager = ItemManager.new()
+		_manager = ItemManagerScript.new()
 		_manager._progression = ProgressionData.new(mock_storage)
 		_manager._effect_manager = EffectManager.new()
-		_manager.items = [item]
+		_manager.items.assign([item])
 		add_child_autofree(_manager)
 
 	func test_remove_level_decrements_level() -> void:

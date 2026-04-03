@@ -7,7 +7,7 @@ var _game: Node2D
 var _ball_stub: Ball
 var _paddle_stub: Paddle
 var _autoplay_controller_stub: AutoplayController
-var _upgrade_manager: Node
+var _item_manager: Node
 var _last_friendship_point_balance := -1
 
 
@@ -19,9 +19,10 @@ func before_each() -> void:
 	stub(mock_storage.write).to_return(true)
 	stub(mock_storage.read).to_return("")
 
-	_upgrade_manager = load("res://scripts/progression/upgrade_manager.gd").new()
-	_upgrade_manager._progression = ProgressionData.new(mock_storage)
-	add_child_autofree(_upgrade_manager)
+	_item_manager = load("res://scripts/items/item_manager.gd").new()
+	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager._effect_manager = EffectManager.new()
+	add_child_autofree(_item_manager)
 
 	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(_autoplay_controller_stub)
@@ -35,11 +36,11 @@ func before_each() -> void:
 	_game.autoplay_controller = _autoplay_controller_stub
 	_game.autoplay_config = autoplay_config
 	_game._progression = ProgressionData.new(mock_storage)
-	_game._upgrade_manager = _upgrade_manager
+	_game._item_manager = _item_manager
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
-	_upgrade_manager.friendship_point_balance_changed.connect(
+	_item_manager.friendship_point_balance_changed.connect(
 		func(total: int) -> void: _last_friendship_point_balance = total
 	)
 	_ball_stub.gravity_scale = 0.0

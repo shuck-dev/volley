@@ -6,18 +6,18 @@ signal at_max_speed_changed(is_at_max: bool)
 
 var speed: float = 0.0
 
-var _upgrade_manager: Node
+var _item_manager
 var _min_speed: float
 var _max_speed: float
 var _was_at_max_speed := false
 
 
 func _ready() -> void:
-	if _upgrade_manager == null:
-		_upgrade_manager = UpgradeManager
-	_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-	_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
-	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
+	if _item_manager == null:
+		_item_manager = ItemManager
+	_min_speed = _item_manager.get_stat(&"ball_speed_min")
+	_max_speed = _item_manager.get_stat(&"ball_speed_max")
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_ball_setup()
 
 
@@ -46,15 +46,15 @@ func reset_speed() -> void:
 	_apply_speed()
 
 
-func _on_upgrade_level_changed(upgrade_key: String) -> void:
-	if upgrade_key == UpgradeManager.BALL_SPEED_MIN_KEY:
+func _on_item_level_changed(item_key: String) -> void:
+	if item_key == "ball_speed_min":
 		var previous_min_speed := _min_speed
-		_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+		_min_speed = _item_manager.get_stat(&"ball_speed_min")
+		_max_speed = _item_manager.get_stat(&"ball_speed_max")
 		speed += _min_speed - previous_min_speed
 		_apply_speed()
-	elif upgrade_key == UpgradeManager.BALL_SPEED_MAX_KEY:
-		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+	elif item_key == "ball_speed_max":
+		_max_speed = _item_manager.get_stat(&"ball_speed_max")
 		speed = minf(speed, _max_speed)
 		_apply_speed()
 

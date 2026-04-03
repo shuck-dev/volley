@@ -53,5 +53,5 @@ func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 
 # --- _apply_size ---
 func test_apply_size_does_nothing_when_collision_not_assigned() -> void:
-	UpgradeManager.upgrade_level_changed.emit(UpgradeManager.PADDLE_SIZE_KEY)
+	_paddle._item_manager.item_level_changed.emit("paddle_size")
 	assert_null(_paddle.collision)

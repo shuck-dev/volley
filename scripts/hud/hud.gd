@@ -8,8 +8,8 @@ extends CanvasLayer
 
 
 func _ready() -> void:
-	UpgradeManager.friendship_point_balance_changed.connect(update_friendship_point_balance)
-	update_friendship_point_balance(UpgradeManager.get_friendship_point_balance())
+	ItemManager.friendship_point_balance_changed.connect(update_friendship_point_balance)
+	update_friendship_point_balance(ItemManager.get_friendship_point_balance())
 	max_speed_label.visible = false
 	auto_label.visible = false
 
