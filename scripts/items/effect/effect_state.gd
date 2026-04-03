@@ -7,10 +7,6 @@ var _multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
 
 
-func register_base_value(key: StringName, value: float) -> void:
-	_base_values[key] = value
-
-
 func get_stat(key: StringName) -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
 
@@ -38,6 +34,11 @@ func add_modifier(modifier: StatModifier) -> void:
 func remove_modifiers_by_source(source_key: String) -> void:
 	_add_modifiers = _add_modifiers.filter(_exclude_source.bind(source_key))
 	_multiply_modifiers = _multiply_modifiers.filter(_exclude_source.bind(source_key))
+
+
+func register_base_values(values: Dictionary) -> void:
+	for key in values:
+		_base_values[key] = values[key]
 
 
 func _exclude_source(modifier: StatModifier, source_key: String) -> bool:

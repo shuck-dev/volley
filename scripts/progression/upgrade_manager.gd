@@ -19,7 +19,6 @@ var _progression: ProgressionData
 
 
 func _ready() -> void:
-	# Allows direct injection of progression for tests
 	if _progression == null:
 		_progression = SaveManager.get_progression_data()
 

@@ -5,7 +5,7 @@ var _state: EffectState
 
 func before_each() -> void:
 	_state = EffectState.new()
-	_state.register_base_value(&"speed", 100.0)
+	_state.register_base_values({&"speed": 100.0, &"size": 50.0})
 
 
 func _make_modifier(
@@ -54,7 +54,6 @@ func test_add_is_applied_before_multiply() -> void:
 
 
 func test_modifier_for_one_stat_does_not_affect_another() -> void:
-	_state.register_base_value(&"size", 50.0)
 	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
 	assert_eq(_state.get_stat(&"size"), 50.0)
 
