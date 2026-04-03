@@ -4,8 +4,8 @@ extends GutTest
 # and does not update when a streak falls short of the existing record.
 
 var _game: Node2D
-var _ball_stub: RigidBody2D
-var _paddle_stub: Node
+var _ball_stub: Ball
+var _paddle_stub: Paddle
 var _last_personal_volley_best := -1
 
 
@@ -17,9 +17,14 @@ func before_each() -> void:
 	stub(mock_storage.write).to_return(true)
 	stub(mock_storage.read).to_return("")
 
+	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
+	add_child_autofree(autoplay_controller_stub)
+
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball_stub
 	_game.paddle = _paddle_stub
+	_game.autoplay_controller = autoplay_controller_stub
+	_game.autoplay_config = AutoPlayConfig.new()
 	_game._progression = ProgressionData.new(mock_storage)
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)

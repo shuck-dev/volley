@@ -4,8 +4,9 @@ extends GutTest
 # increments on each hit and persists across misses (shop mechanics will decrease it).
 
 var _game: Node2D
-var _ball_stub: RigidBody2D
-var _paddle_stub: Node
+var _ball_stub: Ball
+var _paddle_stub: Paddle
+var _autoplay_controller_stub: AutoplayController
 var _upgrade_manager: Node
 var _last_friendship_point_balance := -1
 
@@ -22,9 +23,17 @@ func before_each() -> void:
 	_upgrade_manager._progression = ProgressionData.new(mock_storage)
 	add_child_autofree(_upgrade_manager)
 
+	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()
+	add_child_autofree(_autoplay_controller_stub)
+
+	var autoplay_config: AutoPlayConfig = AutoPlayConfig.new()
+	autoplay_config.friendship_point_rate = 0.5
+
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball_stub
 	_game.paddle = _paddle_stub
+	_game.autoplay_controller = _autoplay_controller_stub
+	_game.autoplay_config = autoplay_config
 	_game._progression = ProgressionData.new(mock_storage)
 	_game._upgrade_manager = _upgrade_manager
 	add_child_autofree(_ball_stub)
@@ -66,3 +75,51 @@ func test_fp_accumulates_across_multiple_rallies() -> void:
 	_hit()
 	_ball_stub.missed.emit()
 	assert_eq(_last_friendship_point_balance, 5)
+
+
+# --- auto-play FP rate ---
+func test_fp_earns_at_half_rate_during_autoplay() -> void:
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	_hit()
+	_hit()
+	assert_eq(_last_friendship_point_balance, 1)
+
+
+func test_fp_fractional_remainder_carries_over_between_autoplay_hits() -> void:
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	_hit()
+	_hit()
+	_hit()
+	_hit()
+	assert_eq(_last_friendship_point_balance, 2)
+
+
+func test_fp_accumulator_carries_over_when_autoplay_ends() -> void:
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	_hit()
+	_autoplay_controller_stub.autoplay_toggled.emit(false)
+	_hit()
+	assert_eq(_last_friendship_point_balance, 1)
+
+
+func test_fp_accumulator_resets_on_miss() -> void:
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	_hit()
+	_ball_stub.missed.emit()
+	_autoplay_controller_stub.autoplay_toggled.emit(false)
+	_hit()
+	assert_eq(_last_friendship_point_balance, 1)
+
+
+# --- auto_play_changed signal ---
+func test_auto_play_changed_emits_true_when_autoplay_enabled() -> void:
+	watch_signals(_game)
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	assert_signal_emitted_with_parameters(_game, "auto_play_changed", [true, 0.5])
+
+
+func test_auto_play_changed_emits_false_when_autoplay_disabled() -> void:
+	_autoplay_controller_stub.autoplay_toggled.emit(true)
+	watch_signals(_game)
+	_autoplay_controller_stub.autoplay_toggled.emit(false)
+	assert_signal_emitted_with_parameters(_game, "auto_play_changed", [false, 0.5])

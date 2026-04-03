@@ -1,6 +1,6 @@
 extends GutTest
 
-var _paddle: CharacterBody2D
+var _paddle: Paddle
 
 
 func before_each() -> void:
@@ -53,5 +53,5 @@ func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 
 # --- _apply_size ---
 func test_apply_size_does_nothing_when_collision_not_assigned() -> void:
-	_paddle._apply_size()
-	assert_null(_paddle._collision_shape)
+	UpgradeManager.upgrade_level_changed.emit(UpgradeManager.PADDLE_SIZE_KEY)
+	assert_null(_paddle.collision)

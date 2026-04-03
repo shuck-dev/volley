@@ -1,12 +1,9 @@
-extends Node
-
-@warning_ignore("unused_signal")
-signal paddle_hit
+extends Paddle
 
 
 func reset_streak() -> void:
 	pass
 
 
-func set_ball(_ball: RigidBody2D) -> void:
+func set_ball(_ball: Ball) -> void:
 	pass

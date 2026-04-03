@@ -33,7 +33,7 @@ func _create_paddle() -> CharacterBody2D:
 	collision.shape = RectangleShape2D.new()
 	collision.shape.size = Vector2(20.0, 80.0)
 
-	var paddle: CharacterBody2D = load("res://scripts/entities/paddle.gd").new()
+	var paddle: Paddle = load("res://scripts/entities/paddle.gd").new()
 	var sound := AudioStreamPlayer.new()
 	paddle.add_child(sound)
 	paddle.add_child(collision)

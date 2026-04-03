@@ -12,10 +12,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "paddle")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "paddle", "autoplay_controller")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
 paddle = NodePath("Paddle")
+autoplay_controller = NodePath("AutoplayController")
+autoplay_config = ExtResource("8_85g3d")
 
 [node name="HUD" parent="." unique_id=794024698 instance=ExtResource("2_tefeu")]
 
@@ -100,6 +102,7 @@ paddle = NodePath("../Paddle")
 ball = NodePath("../Ball")
 config = ExtResource("8_85g3d")
 
+[connection signal="auto_play_changed" from="." to="HUD" method="update_auto_play"]
 [connection signal="ball_at_max_speed_changed" from="." to="HUD" method="update_max_speed"]
 [connection signal="personal_volley_best_changed" from="." to="HUD" method="update_personal_volley_best"]
 [connection signal="volley_count_changed" from="." to="HUD" method="update_volley_count"]

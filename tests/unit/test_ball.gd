@@ -3,7 +3,7 @@ extends GutTest
 # Tests for ball speed behaviour driven by upgrade manager values.
 # Injects a real UpgradeManager with mock storage to avoid autoload dependency.
 
-var _ball: RigidBody2D
+var _ball: Ball
 var _manager: Node
 var _mock_storage: SaveStorage
 
@@ -98,14 +98,15 @@ func test_min_speed_upgrade_increases_speed_above_new_min() -> void:
 
 
 func test_min_speed_upgrade_also_raises_max_speed() -> void:
-	var max_before_upgrade: float = _effective_max_speed()
-	var min_before_upgrade: float = _manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase(UpgradeManager.BALL_SPEED_MIN_KEY)
-	var min_after_upgrade: float = _manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-	var min_delta: float = min_after_upgrade - min_before_upgrade
-	var expected_max: float = max_before_upgrade + min_delta
-	assert_almost_eq(_ball._max_speed, expected_max, 0.01)
+	var expected_max: float = _effective_max_speed()
+	# Set speed just below the new ceiling; increase_speed() should clamp to it.
+	# If _max_speed was not updated, speed would already exceed the old ceiling and
+	# increase_speed() would return early, leaving speed != expected_max.
+	_ball.speed = expected_max - 1.0
+	_ball.increase_speed()
+	assert_almost_eq(_ball.speed, expected_max, 0.01)
 
 
 func test_max_speed_upgrade_clamps_speed_when_above_new_max() -> void:

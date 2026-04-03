@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_kp36d")
+reaction_delay_frames = 10
 center_drift_smoothing = 0.05
