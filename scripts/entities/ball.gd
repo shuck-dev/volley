@@ -5,12 +5,14 @@ signal missed
 signal at_max_speed_changed(is_at_max: bool)
 
 var speed: float = 0.0
+var paddles: Array[Node2D] = []
 
 var _item_manager: Node
 var _min_speed: float
 var _max_speed: float
 var _speed_increment: float
 var _was_at_max_speed := false
+var _effect_processor: BallEffectProcessor
 
 
 func _ready() -> void:
@@ -20,13 +22,16 @@ func _ready() -> void:
 	_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 	_speed_increment = _item_manager.get_stat(&"ball_speed_increment")
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_setup_effect_processor()
 	_ball_setup()
 
 
-func _physics_process(_delta: float) -> void:
-	# Enforce tracked speed every frame to resist physics drift.
-	if linear_velocity != Vector2.ZERO:
-		linear_velocity = linear_velocity.normalized() * speed
+func _physics_process(delta: float) -> void:
+	if linear_velocity == Vector2.ZERO:
+		return
+	if _effect_processor != null:
+		_effect_processor.process_frame(delta)
+	linear_velocity = linear_velocity.normalized() * speed
 
 
 func _on_body_entered(body: Node) -> void:
@@ -34,6 +39,8 @@ func _on_body_entered(body: Node) -> void:
 		missed.emit()
 	elif body.has_method("on_ball_hit"):
 		body.on_ball_hit()
+		if _effect_processor != null:
+			_effect_processor.process_hit()
 
 
 func increase_speed() -> void:
@@ -59,8 +66,6 @@ func _on_item_level_changed(_item_key: String) -> void:
 
 
 func _apply_speed() -> void:
-	# If the ball is stationary (pre-launch), normalized() returns Vector2.ZERO
-	# and velocity stays zero. Speed is still updated and takes effect on launch.
 	linear_velocity = linear_velocity.normalized() * speed
 	_emit_max_speed_if_changed()
 
@@ -70,6 +75,13 @@ func _emit_max_speed_if_changed() -> void:
 	if is_at_max != _was_at_max_speed:
 		_was_at_max_speed = is_at_max
 		at_max_speed_changed.emit(is_at_max)
+
+
+func _setup_effect_processor() -> void:
+	_effect_processor = BallEffectProcessor.new()
+	_effect_processor.name = "BallEffectProcessor"
+	_effect_processor._item_manager = _item_manager
+	add_child(_effect_processor)
 
 
 func _ball_setup() -> void:

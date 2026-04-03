@@ -26,6 +26,7 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
+	ball.paddles = [paddle]
 	paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.missed.connect(_on_ball_missed)
 	ball.at_max_speed_changed.connect(ball_at_max_speed_changed.emit)

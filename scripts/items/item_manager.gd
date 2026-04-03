@@ -21,6 +21,7 @@ func _ready() -> void:
 		_progression = SaveManager.get_progression_data()
 	if _effect_manager == null:
 		_effect_manager = EffectManager.new()
+		_effect_manager.name = "EffectManager"
 
 	add_child(_effect_manager)
 	_register_existing_items()
