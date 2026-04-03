@@ -6,18 +6,20 @@ signal at_max_speed_changed(is_at_max: bool)
 
 var speed: float = 0.0
 
-var _upgrade_manager: Node
+var _item_manager: Node
 var _min_speed: float
 var _max_speed: float
+var _speed_increment: float
 var _was_at_max_speed := false
 
 
 func _ready() -> void:
-	if _upgrade_manager == null:
-		_upgrade_manager = UpgradeManager
-	_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-	_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
-	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
+	if _item_manager == null:
+		_item_manager = ItemManager
+	_min_speed = _item_manager.get_stat(&"ball_speed_min")
+	_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
+	_speed_increment = _item_manager.get_stat(&"ball_speed_increment")
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_ball_setup()
 
 
@@ -37,7 +39,7 @@ func _on_body_entered(body: Node) -> void:
 func increase_speed() -> void:
 	if speed >= _max_speed:
 		return
-	speed = min(speed + GameRules.BALL_SPEED_INCREMENT, _max_speed)
+	speed = min(speed + _speed_increment, _max_speed)
 	_apply_speed()
 
 
@@ -46,17 +48,19 @@ func reset_speed() -> void:
 	_apply_speed()
 
 
-func _on_upgrade_level_changed(upgrade_key: String) -> void:
-	if upgrade_key == UpgradeManager.BALL_SPEED_MIN_KEY:
+func _on_item_level_changed(item_key: String) -> void:
+	if item_key == "ball_speed_min":
 		var previous_min_speed := _min_speed
-		_min_speed = _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MIN_KEY)
-		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+		_min_speed = _item_manager.get_stat(&"ball_speed_min")
+		_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 		speed += _min_speed - previous_min_speed
 		_apply_speed()
-	elif upgrade_key == UpgradeManager.BALL_SPEED_MAX_KEY:
-		_max_speed = _min_speed + _upgrade_manager.get_value(UpgradeManager.BALL_SPEED_MAX_KEY)
+	elif item_key == "ball_speed_max_range":
+		_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 		speed = minf(speed, _max_speed)
 		_apply_speed()
+	elif item_key == "ball_speed_increment":
+		_speed_increment = _item_manager.get_stat(&"ball_speed_increment")
 
 
 func _apply_speed() -> void:
@@ -77,7 +81,8 @@ func _ball_setup() -> void:
 	speed = _min_speed
 	lock_rotation = true
 	linear_damp = 0.0
-	linear_velocity = Vector2(400.0, 200.0).normalized() * speed
+	linear_velocity = Vector2(_min_speed, _min_speed * 0.5).normalized() * speed
 	contact_monitor = true
 	max_contacts_reported = 1
-	body_entered.connect(_on_body_entered)
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)

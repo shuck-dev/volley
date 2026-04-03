@@ -1,7 +1,13 @@
 class_name GameRules
 extends RefCounted
 
-const BALL_SPEED_MIN := 400.0
-const BALL_SPEED_MAX := 700.0
-const BALL_SPEED_INCREMENT := 15.0
-const PADDLE_SPEED := 500.0
+const BASE_STATS: Dictionary = {
+	&"paddle_speed": 500.0,
+	&"paddle_size": 50.0,
+	&"ball_speed_min": 400.0,
+	&"ball_speed_max_range": 300.0,
+	&"ball_speed_increment": 15.0,
+	&"friendship_points_per_hit": 1.0,
+	&"ball_magnetism": 0.0,
+	&"return_angle_influence": 0.0,
+}

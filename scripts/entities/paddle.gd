@@ -9,7 +9,7 @@ signal paddle_hit
 @export var sprite: Sprite2D
 @export var tracker: HitTracker
 
-var _upgrade_manager: Node
+var _item_manager: Node
 
 var _lane_x := 0.0
 var _paddle_speed: float = 0.0
@@ -18,12 +18,12 @@ var _sprite_natural_height := 0.0
 
 
 func _ready() -> void:
-	if _upgrade_manager == null:
-		_upgrade_manager = UpgradeManager
+	if _item_manager == null:
+		_item_manager = ItemManager
 
 	_lane_x = position.x
-	_paddle_speed = _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY)
-	_upgrade_manager.upgrade_level_changed.connect(_on_upgrade_level_changed)
+	_paddle_speed = _item_manager.get_stat(&"paddle_speed")
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 
 	if collision != null:
 		_collision_shape = RectangleShape2D.new()
@@ -66,18 +66,18 @@ func get_speed() -> float:
 	return _paddle_speed
 
 
-func _on_upgrade_level_changed(upgrade_key: String) -> void:
-	if upgrade_key == UpgradeManager.PADDLE_SIZE_KEY:
+func _on_item_level_changed(item_key: String) -> void:
+	if item_key == "paddle_size":
 		_apply_size()
-	elif upgrade_key == UpgradeManager.PADDLE_SPEED_KEY:
-		_paddle_speed = _upgrade_manager.get_value(UpgradeManager.PADDLE_SPEED_KEY)
+	elif item_key == "paddle_speed":
+		_paddle_speed = _item_manager.get_stat(&"paddle_speed")
 
 
 func _apply_size() -> void:
 	if _collision_shape == null:
 		return
 
-	var new_size: float = _upgrade_manager.get_value(UpgradeManager.PADDLE_SIZE_KEY)
+	var new_size: float = _item_manager.get_stat(&"paddle_size")
 
 	_collision_shape.size.y = new_size
 

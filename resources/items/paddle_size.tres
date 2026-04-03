@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://dh6exgrq8t55e"]
+
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_8g1ms"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+
+[sub_resource type="Resource" id="outcome_1"]
+script = ExtResource("4_outcome")
+type = &"modify_stat"
+parameters = {
+&"operation": 0,
+&"stat_key": &"paddle_size",
+&"value": 100.0
+}
+
+[sub_resource type="Resource" id="trigger_1"]
+script = ExtResource("3_trigger")
+type = &"always"
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_1")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
+max_active_level = null
+
+[resource]
+script = ExtResource("1_item")
+key = "paddle_size"
+type = &"court"
+display_name = "Paddle Size"
+descriptions = Array[String](["Paddle size description"])
+base_cost = 25
+max_level = 10
+effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])

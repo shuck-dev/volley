@@ -7,44 +7,44 @@ func _ready() -> void:
 	if not OS.is_debug_build():
 		hide()
 		return
-	for upgrade in UpgradeManager.upgrades:
+	for item in ItemManager.items:
 		var row := HBoxContainer.new()
 		add_child(row)
 
 		var buy_button := Button.new()
-		buy_button.pressed.connect(_on_upgrade_pressed.bind(upgrade.key))
+		buy_button.pressed.connect(_on_item_pressed.bind(item.key))
 		buy_button.focus_mode = Control.FOCUS_NONE
 		buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(buy_button)
-		_buttons[upgrade.key] = buy_button
+		_buttons[item.key] = buy_button
 
 		var remove_button := Button.new()
 		remove_button.text = "-"
-		remove_button.pressed.connect(_on_remove_level_pressed.bind(upgrade.key))
+		remove_button.pressed.connect(_on_remove_level_pressed.bind(item.key))
 		remove_button.focus_mode = Control.FOCUS_NONE
 		row.add_child(remove_button)
 	_refresh_buttons()
 	_setup_friendship_point_controls()
 
-	UpgradeManager.upgrade_level_changed.connect(_refresh_buttons.unbind(1))
-	UpgradeManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
+	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
+	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
 
 
-func _on_upgrade_pressed(upgrade_key: String) -> void:
-	UpgradeManager.purchase(upgrade_key)
+func _on_item_pressed(item_key: String) -> void:
+	ItemManager.purchase(item_key)
 
 
-func _on_remove_level_pressed(upgrade_key: String) -> void:
-	UpgradeManager.remove_level(upgrade_key)
+func _on_remove_level_pressed(item_key: String) -> void:
+	ItemManager.remove_level(item_key)
 
 
 func _refresh_buttons() -> void:
-	for upgrade in UpgradeManager.upgrades:
-		var button: Button = _buttons[upgrade.key]
-		var level := UpgradeManager.get_level(upgrade.key)
-		var cost := UpgradeManager.calculate_cost(upgrade.key)
-		button.text = "%s Lv%d [%d FP]" % [upgrade.display_name, level, cost]
-		button.disabled = not UpgradeManager.can_purchase(upgrade.key)
+	for item in ItemManager.items:
+		var button: Button = _buttons[item.key]
+		var level := ItemManager.get_level(item.key)
+		var cost := ItemManager.calculate_cost(item.key)
+		button.text = "%s Lv%d [%d FP]" % [item.display_name, level, cost]
+		button.disabled = not ItemManager.can_purchase(item.key)
 
 
 func _setup_friendship_point_controls() -> void:
@@ -78,8 +78,8 @@ func _setup_friendship_point_controls() -> void:
 
 
 func _on_friendship_point_balance_booster_pressed(input: SpinBox) -> void:
-	UpgradeManager.add_friendship_points(int(input.value))
+	ItemManager.add_friendship_points(int(input.value))
 
 
 func _on_remove_friendship_point_pressed(input: SpinBox) -> void:
-	UpgradeManager.subtract_friendship_points(int(input.value))
+	ItemManager.subtract_friendship_points(int(input.value))

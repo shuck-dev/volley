@@ -13,7 +13,7 @@ signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
 var _volley_count := 0
 var _progression: ProgressionData
-var _upgrade_manager: Node
+var _item_manager: Node
 var _is_autoplay_active := false
 var _friendship_point_accumulator := 0.0
 
@@ -21,11 +21,10 @@ var _friendship_point_accumulator := 0.0
 func _ready() -> void:
 	assert(autoplay_controller != null, "game.gd: autoplay_controller export must be assigned")
 	assert(autoplay_config != null, "game.gd: autoplay_config export must be assigned")
-	# Allows direct injection of progression/upgrade_manager for tests
 	if _progression == null:
 		_progression = SaveManager.get_progression_data()
-	if _upgrade_manager == null:
-		_upgrade_manager = UpgradeManager
+	if _item_manager == null:
+		_item_manager = ItemManager
 
 	paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.missed.connect(_on_ball_missed)
@@ -56,7 +55,7 @@ func _accumulate_friendship_points() -> void:
 	_friendship_point_accumulator += points_to_add
 	var whole_points: int = int(_friendship_point_accumulator)
 	if whole_points > 0:
-		_upgrade_manager.add_friendship_points(whole_points)
+		_item_manager.add_friendship_points(whole_points)
 		_friendship_point_accumulator -= float(whole_points)
 
 

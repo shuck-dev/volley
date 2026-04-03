@@ -550,6 +550,7 @@ True power is in synergy with other items (future design).
 ```
 Effect 1
   trigger: always
+  condition: degradation_below(100)
   outcome: multiply_stat(friendship_points_per_hit, scale_by: crack_count)
 
 Effect 2
@@ -559,7 +560,7 @@ Effect 2
 Effect 3 (broken state)
   trigger: always
   condition: degradation_at(100)
-  outcome: modify_stat(friendship_points_per_hit, -debuff) [replaces Effect 1]
+  outcome: modify_stat(friendship_points_per_hit, -debuff)
 ```
 
 Base cost: 90 FP | Scaling: 1.5

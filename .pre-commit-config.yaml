@@ -10,9 +10,9 @@ repos:
     hooks:
       - id: gdformat
         name: gdformat
-        entry: bash -c 'gdformat "$@" && git add "$@"' --
+        entry: bash -c 'files=$(git diff --cached --name-only --diff-filter=d -- "*.gd" | grep -v "^addons/"); [ -z "$files" ] && exit 0; echo "$files" | xargs gdformat || exit 1; echo "$files" | xargs git add'
         language: system
-        types: [file]
+        pass_filenames: false
         files: '\.gd$'
         exclude: '^addons/'
       - id: gdlint
