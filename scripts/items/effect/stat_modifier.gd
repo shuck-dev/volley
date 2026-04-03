@@ -3,7 +3,7 @@ extends RefCounted
 
 enum Operation { ADD, MULTIPLY }
 
-# Where it it come from?
+# Where did it come from?
 var source_key: String
 # What stat is being modified?
 var stat_key: StringName

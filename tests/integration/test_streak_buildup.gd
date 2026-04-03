@@ -24,7 +24,7 @@ func before_each() -> void:
 		. assign(
 			[
 				preload("res://resources/items/ball_speed_min.tres"),
-				preload("res://resources/items/ball_speed_max.tres"),
+				preload("res://resources/items/ball_speed_max_range.tres"),
 			]
 		)
 	)
@@ -63,8 +63,11 @@ func test_ball_speed_increases_across_three_hits() -> void:
 	_paddle.on_ball_hit()
 	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
-	var effective_max: float = _manager.get_stat(&"ball_speed_max")
+	var effective_max: float = (
+		_manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_max_range")
+	)
 	var expected := minf(
-		_manager.get_stat(&"ball_speed_min") + 3.0 * GameRules.BALL_SPEED_INCREMENT, effective_max
+		_manager.get_stat(&"ball_speed_min") + 3.0 * _manager.get_stat(&"ball_speed_increment"),
+		effective_max
 	)
 	assert_almost_eq(_ball.speed, expected, 0.01)

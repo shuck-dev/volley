@@ -7,7 +7,7 @@ var items: Array[ItemDefinition] = [
 	preload("res://resources/items/paddle_speed.tres"),
 	preload("res://resources/items/paddle_size.tres"),
 	preload("res://resources/items/ball_speed_min.tres"),
-	preload("res://resources/items/ball_speed_max.tres"),
+	preload("res://resources/items/ball_speed_max_range.tres"),
 ]
 
 var _progression: ProgressionData

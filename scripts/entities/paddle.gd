@@ -9,7 +9,7 @@ signal paddle_hit
 @export var sprite: Sprite2D
 @export var tracker: HitTracker
 
-var _item_manager
+var _item_manager: Node
 
 var _lane_x := 0.0
 var _paddle_speed: float = 0.0

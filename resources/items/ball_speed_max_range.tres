@@ -11,7 +11,7 @@ script = ExtResource("4_outcome")
 type = &"modify_stat"
 parameters = {
 &"operation": 0,
-&"stat_key": &"ball_speed_max",
+&"stat_key": &"ball_speed_max_range",
 &"value": 100.0
 }
 
@@ -27,7 +27,7 @@ max_active_level = null
 
 [resource]
 script = ExtResource("1_item")
-key = "ball_speed_max"
+key = "ball_speed_max_range"
 type = &"court"
 display_name = "Ball Speed Range"
 descriptions = Array[String](["Ball speed range description"])

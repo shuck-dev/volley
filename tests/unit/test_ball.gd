@@ -22,7 +22,7 @@ func before_each() -> void:
 		. assign(
 			[
 				preload("res://resources/items/ball_speed_min.tres"),
-				preload("res://resources/items/ball_speed_max.tres"),
+				preload("res://resources/items/ball_speed_max_range.tres"),
 			]
 		)
 	)
@@ -34,34 +34,40 @@ func before_each() -> void:
 	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
 
 
+func _effective_max_speed() -> float:
+	return _manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_max_range")
+
+
 # --- increase_speed ---
 func test_increase_speed_adds_increment() -> void:
 	_ball.increase_speed()
-	var expected: float = _manager.get_stat(&"ball_speed_min") + GameRules.BALL_SPEED_INCREMENT
+	var expected: float = (
+		_manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_increment")
+	)
 	assert_almost_eq(_ball.speed, expected, 0.01)
 
 
 func test_increase_speed_clamps_at_max() -> void:
-	_ball.speed = _manager.get_stat(&"ball_speed_max")
+	_ball.speed = _effective_max_speed()
 	_ball.increase_speed()
-	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_max"), 0.01)
+	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
 
 
 func test_increase_speed_does_not_exceed_max_near_ceiling() -> void:
-	_ball.speed = _manager.get_stat(&"ball_speed_max") - 1.0
+	_ball.speed = _effective_max_speed() - 1.0
 	_ball.increase_speed()
-	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_max"), 0.01)
+	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
 
 
 # --- reset_speed ---
 func test_reset_speed_returns_to_min() -> void:
-	_ball.speed = _manager.get_stat(&"ball_speed_max")
+	_ball.speed = _effective_max_speed()
 	_ball.reset_speed()
 	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_min"), 0.01)
 
 
 func test_reset_speed_preserves_direction() -> void:
-	_ball.linear_velocity = Vector2(0.0, _manager.get_stat(&"ball_speed_max"))
+	_ball.linear_velocity = Vector2(0.0, _effective_max_speed())
 	_ball.reset_speed()
 	assert_almost_eq(_ball.linear_velocity.x, 0.0, 0.01)
 	assert_gt(_ball.linear_velocity.y, 0.0)
@@ -92,14 +98,14 @@ func test_min_speed_purchase_increases_speed_above_new_min() -> void:
 func test_min_speed_purchase_also_raises_max_speed() -> void:
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("ball_speed_min")
-	var expected_max: float = _manager.get_stat(&"ball_speed_max")
+	var expected_max: float = _effective_max_speed()
 	_ball.speed = expected_max - 1.0
 	_ball.increase_speed()
 	assert_almost_eq(_ball.speed, expected_max, 0.01)
 
 
 func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
-	_ball.speed = _manager.get_stat(&"ball_speed_max")
+	_ball.speed = _effective_max_speed()
 	_manager._progression.friendship_point_balance = 10000
-	_manager.purchase("ball_speed_max")
-	assert_true(_ball.speed <= _manager.get_stat(&"ball_speed_max"))
+	_manager.purchase("ball_speed_max_range")
+	assert_true(_ball.speed <= _effective_max_speed())

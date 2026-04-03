@@ -268,7 +268,7 @@ EffectState is key-agnostic. Game systems register base values at startup. New k
 | `paddle_speed` | 500.0 | px/s |
 | `paddle_size` | 50.0 | px |
 | `ball_speed_min` | 400.0 | px/s |
-| `ball_speed_max` | 700.0 | px/s |
+| `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
 | `friendship_points_per_hit` | 1.0 | FP |
 | `ball_magnetism` | 0.0 | force |

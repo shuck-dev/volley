@@ -13,7 +13,7 @@ signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
 var _volley_count := 0
 var _progression: ProgressionData
-var _item_manager
+var _item_manager: Node
 var _is_autoplay_active := false
 var _friendship_point_accumulator := 0.0
 
