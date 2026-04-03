@@ -48,6 +48,9 @@ func _on_paddle_hit() -> void:
 	ball.increase_speed()
 
 
+## Fractional accumulation;
+## remainder from a reduced autoplay rate carries between hits and resets on miss
+## a missed rally never pays out
 func _accumulate_friendship_points() -> void:
 	var points_to_add: float = autoplay_config.friendship_point_rate if _is_autoplay_active else 1.0
 	_friendship_point_accumulator += points_to_add
