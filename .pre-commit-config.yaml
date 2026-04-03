@@ -1,3 +1,5 @@
+default_install_hook_types: [pre-commit, prepare-commit-msg]
+
 repos:
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.24.3
@@ -26,3 +28,10 @@ repos:
         pass_filenames: false
         files: '\.gd$'
         exclude: '^addons/'
+      - id: ticket-prefix
+        name: Prepend Linear ticket number to commit message
+        language: script
+        entry: scripts/git/prepend_ticket_prefix.sh
+        stages: [prepare-commit-msg]
+        pass_filenames: false
+        always_run: true
