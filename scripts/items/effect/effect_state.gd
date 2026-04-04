@@ -1,6 +1,14 @@
 class_name EffectState
 extends RefCounted
 
+## Layered sine waves at co-prime frequencies for organic, non-repeating oscillation.
+const PRIMARY_FREQUENCY := 1.7
+const SECONDARY_FREQUENCY := 3.1
+const TERTIARY_FREQUENCY := 5.3
+const PRIMARY_WEIGHT := 0.6
+const SECONDARY_WEIGHT := 0.3
+const TERTIARY_WEIGHT := 0.1
+
 var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _multiply_modifiers: Array[StatModifier] = []
@@ -98,7 +106,11 @@ func process_frame(delta: float) -> void:
 func _calculate_oscillation_offset(oscillation: Dictionary) -> float:
 	var time: float = oscillation.time
 	var wave_range: float = oscillation.wave_range
-	var offset: float = sin(time * 1.7) * 0.6 + sin(time * 3.1) * 0.3 + sin(time * 5.3) * 0.1
+	var offset: float = (
+		sin(time * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
+		+ sin(time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
+		+ sin(time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
+	)
 	return offset * wave_range
 
 

@@ -71,7 +71,7 @@ func _apply_always_effect(effect: Effect, source_key: String, level: int) -> voi
 				. add_oscillation(
 					source_key,
 					outcome.parameters[&"stat_key"],
-					outcome.parameters[&"wave_range"] * level,
+					outcome.scaled_value(&"wave_range", level),
 				)
 			)
 
@@ -83,7 +83,7 @@ func _apply_event_effect(effect: Effect, source_key: String, level: int) -> void
 			modifier.source_key = source_key
 			modifier.stat_key = outcome.parameters[&"stat_key"]
 			modifier.operation = StatModifier.OPERATION_BY_NAME[outcome.parameters[&"operation"]]
-			modifier.value = outcome.parameters[&"value"] * level
+			modifier.value = outcome.scaled_value(&"value", level)
 			_effect_state.add_until_miss_modifier(modifier)
 
 
@@ -92,5 +92,5 @@ func _add_permanent_modifier(outcome: Outcome, source_key: String, level: int) -
 	modifier.source_key = source_key
 	modifier.stat_key = outcome.parameters[&"stat_key"]
 	modifier.operation = StatModifier.OPERATION_BY_NAME[outcome.parameters[&"operation"]]
-	modifier.value = outcome.parameters[&"value"] * level
+	modifier.value = outcome.scaled_value(&"value", level)
 	_effect_state.add_modifier(modifier)

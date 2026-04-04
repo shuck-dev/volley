@@ -154,17 +154,10 @@ func _build_placeholder() -> void:
 		child.queue_free()
 	resized.connect(queue_redraw)
 
-	var items: Array[ItemDefinition] = [
-		preload("res://resources/items/ankle_weights.tres"),
-		preload("res://resources/items/grip_tape.tres"),
-		preload("res://resources/items/training_ball.tres"),
-		preload("res://resources/items/court_lines.tres"),
-		preload("res://resources/items/double_knot.tres"),
-		preload("res://resources/items/spare.tres"),
-		preload("res://resources/items/cadence.tres"),
-	]
-
-	for item in items:
+	for path in _find_item_resources():
+		var item: ItemDefinition = load(path)
+		if item == null:
+			continue
 		var label := Label.new()
 		label.text = "%s Lv0 [%d FP]" % [item.display_name, item.base_cost]
 		label.add_theme_font_size_override("font_size", 11)
@@ -176,3 +169,14 @@ func _build_placeholder() -> void:
 	footer.add_theme_font_size_override("font_size", 11)
 	footer.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
 	add_child(footer)
+
+
+func _find_item_resources() -> Array[String]:
+	var paths: Array[String] = []
+	var directory := DirAccess.open("res://resources/items")
+	if directory == null:
+		return paths
+	for file_name in directory.get_files():
+		if file_name.ends_with(".tres"):
+			paths.append("res://resources/items/%s" % file_name)
+	return paths

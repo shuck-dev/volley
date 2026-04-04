@@ -20,6 +20,19 @@ Every item effect is: **trigger + condition + outcome**.
 
 A passive stat modifier is a causality effect with trigger `always`. There is no separate system.
 
+### Level scaling
+
+Each outcome has a `level_scaling` property (default 1.0) that controls how its value grows across item levels. The formula is:
+
+```
+effective_value = base_value * (1.0 + level_scaling * (level - 1))
+```
+
+Level 1 always applies the base value. `level_scaling` controls growth per additional level:
+- `1.0` (default): linear scaling (x1, x2, x3)
+- `0.5`: half growth (x1, x1.5, x2)
+- `0.0`: no scaling, same value at all levels
+
 ---
 
 ### Triggers
@@ -193,8 +206,8 @@ All values items can target via `modify_stat` or `modify_stat_temporary`.
 |---|---|---|---|
 | `paddle_speed` | Paddle movement speed | 500.0 | px/s |
 | `paddle_size` | Paddle collision height | 50.0 | px |
-| `ball_speed_min` | Ball starting/reset speed | 500.0 | px/s |
-| `ball_speed_max_range` | Speed ceiling offset added to min | 600.0 | px/s |
+| `ball_speed_min` | Ball starting/reset speed | 400.0 | px/s |
+| `ball_speed_max_range` | Speed ceiling offset added to min | 300.0 | px/s |
 | `ball_speed_increment` | Speed increase per paddle hit | 15.0 | px/s |
 | `friendship_points_per_hit` | FP awarded per paddle hit | 1 | FP |
 | `ball_magnetism` | Pull strength toward paddle when ball is near | 0.0 | force |
@@ -753,11 +766,17 @@ Base cost: 40 FP | Scaling: 1.6
 
 ---
 
-## Notes for SH-41 (Item system core)
+## Implementation notes
 
-- `friendship_points_per_hit` must be exposed as a query. Currently hardcoded as `1` in `game.gd:_on_paddle_hit()`.
-- `ball_speed_increment` must be exposed as a query. Currently hardcoded as `GameRules.BALL_SPEED_INCREMENT` in `ball.gd:increase_speed()`.
-- Causality items require ItemManager to subscribe to game signals and evaluate owned items on each trigger. Temporary outcomes need an expiry model (timer or per-frame tick).
-- Named game states (for `set_game_state`, `game_state_is`) need a lightweight state registry in EffectState.
+### Implemented (SH-41, SH-43)
+
+- All stat keys exposed via `GameRules.BASE_STATS` and queried through `ItemManager.get_stat()`.
+- Event dispatch: `ItemManager.process_event()` fires registered effects with matching triggers. Game.gd wires ball signals (`at_max_speed_changed`, `missed`) to dispatch `on_max_speed_reached` and `on_miss`.
+- Named game states tracked in `EffectState` via `set_state()`/`clear_state()`/`is_state_active()`.
+- Ball reads speed limits every physics frame via `BallEffectProcessor._sync_speed_limits()`, enabling dynamic stat changes (oscillation, ceiling raises) to take effect immediately.
+- `GameRules.BALL_SPEED_MIN` and `BALL_SPEED_MAX` constants removed; replaced by stat-driven values.
+
+### Remaining
+
+- Causality items need temporary outcome expiry (timer or per-frame tick) for `multiply_stat_temporary`.
 - Multi-ball requires a ball spawner and a reference list of active balls in the scene. `clear_extra_balls` removes all but the original.
-- `GameRules.BALL_SPEED_MIN` (400.0) and `GameRules.BALL_SPEED_MAX` (700.0) are unused. Remove in SH-41.
