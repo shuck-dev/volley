@@ -17,7 +17,7 @@ func get_stat(key: StringName) -> float:
 
 	for oscillation in _oscillations:
 		if oscillation.stat_key == key:
-			result += oscillation.get_offset()
+			result += oscillation.get_offset(self)
 
 	for modifier in _add_modifiers:
 		if modifier.stat_key == key:
@@ -32,6 +32,26 @@ func get_stat(key: StringName) -> float:
 			result *= modifier.value
 
 	for modifier in _until_miss_multiply_modifiers:
+		if modifier.stat_key == key:
+			result *= modifier.value
+
+	return result
+
+
+func get_permanent_stat(key: StringName) -> float:
+	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
+
+	var result: float = _base_values[key]
+
+	for oscillation in _oscillations:
+		if oscillation.stat_key == key:
+			result += oscillation.get_offset(self)
+
+	for modifier in _add_modifiers:
+		if modifier.stat_key == key:
+			result += modifier.value
+
+	for modifier in _multiply_modifiers:
 		if modifier.stat_key == key:
 			result *= modifier.value
 

@@ -12,6 +12,7 @@ const TERTIARY_WEIGHT := 0.1
 var source_key: String
 var stat_key: StringName
 var amplitude: float
+var range_stat_key: StringName
 var _time := 0.0
 
 
@@ -19,10 +20,10 @@ func advance(delta: float) -> void:
 	_time += delta
 
 
-func get_offset() -> float:
-	var offset: float = (
+func get_offset(effect_state: EffectState) -> float:
+	var wave: float = (
 		sin(_time * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
 		+ sin(_time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
 		+ sin(_time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
 	)
-	return offset * amplitude
+	return wave * amplitude * effect_state.get_permanent_stat(range_stat_key)

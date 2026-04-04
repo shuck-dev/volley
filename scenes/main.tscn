@@ -103,6 +103,6 @@ ball = NodePath("../Ball")
 config = ExtResource("8_85g3d")
 
 [connection signal="auto_play_changed" from="." to="HUD" method="update_auto_play"]
-[connection signal="ball_at_max_speed_changed" from="." to="HUD" method="update_max_speed"]
+[connection signal="ball_speed_updated" from="." to="HUD" method="update_speed"]
 [connection signal="personal_volley_best_changed" from="." to="HUD" method="update_personal_volley_best"]
 [connection signal="volley_count_changed" from="." to="HUD" method="update_volley_count"]

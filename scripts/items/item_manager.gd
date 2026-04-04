@@ -50,6 +50,11 @@ func get_stat(key: StringName) -> float:
 	return _effect_manager.get_stat(key)
 
 
+## Returns the stat value excluding temporary (until-miss) modifiers
+func get_permanent_stat(key: StringName) -> float:
+	return _effect_manager.get_permanent_stat(key)
+
+
 ## Returns whether a named game state is currently active
 func is_game_state_active(state: StringName) -> bool:
 	return _effect_manager.is_game_state_active(state)

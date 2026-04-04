@@ -39,6 +39,7 @@ func _make_oscillation_effect(amplitude: float) -> Effect:
 	var outcome := OscillateStatOutcome.new()
 	outcome.stat_key = &"ball_speed_offset"
 	outcome.amplitude = amplitude
+	outcome.range_stat_key = &"ball_speed_max_range"
 
 	var trigger := Trigger.new()
 	trigger.type = &"always"
@@ -175,7 +176,7 @@ func test_unregister_removes_event_effects() -> void:
 
 # --- oscillate_stat ---
 func test_oscillate_stat_changes_value_over_time() -> void:
-	var effect := _make_oscillation_effect(20.0)
+	var effect := _make_oscillation_effect(0.1)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -191,11 +192,13 @@ func test_oscillate_stat_changes_value_over_time() -> void:
 
 
 func test_oscillate_stat_stays_within_amplitude() -> void:
-	var amplitude := 20.0
+	var amplitude := 0.25
 	var effect := _make_oscillation_effect(amplitude)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
+	var range_value: float = GameRules.BASE_STATS[&"ball_speed_max_range"]
+	var effective_amplitude: float = amplitude * range_value
 	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
 	var min_observed := base_value
 	var max_observed := base_value
@@ -207,41 +210,46 @@ func test_oscillate_stat_stays_within_amplitude() -> void:
 		max_observed = maxf(max_observed, current_value)
 
 	assert_true(
-		min_observed >= base_value - amplitude,
-		"Min observed %f should be >= %f" % [min_observed, base_value - amplitude],
+		min_observed >= base_value - effective_amplitude,
+		"Min observed %f should be >= %f" % [min_observed, base_value - effective_amplitude],
 	)
 	assert_true(
-		max_observed <= base_value + amplitude,
-		"Max observed %f should be <= %f" % [max_observed, base_value + amplitude],
+		max_observed <= base_value + effective_amplitude,
+		"Max observed %f should be <= %f" % [max_observed, base_value + effective_amplitude],
 	)
 
 
 func test_oscillate_stat_scales_range_by_level() -> void:
-	var amplitude := 20.0
+	var amplitude := 0.25
 	var effect := _make_oscillation_effect(amplitude)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 2)
 
+	var range_value: float = GameRules.BASE_STATS[&"ball_speed_max_range"]
+	var effective_amplitude: float = amplitude * 2.0 * range_value
 	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
-	var scaled_range: float = amplitude * 2.0
 
 	for frame_index in range(300):
 		_manager.process_frame(0.016)
 		var current_value: float = _manager.get_stat(&"ball_speed_offset")
 		assert_true(
 			(
-				current_value >= base_value - scaled_range
-				and current_value <= base_value + scaled_range
+				current_value >= base_value - effective_amplitude
+				and current_value <= base_value + effective_amplitude
 			),
 			(
 				"Value %f should be within level-2 range [%f, %f]"
-				% [current_value, base_value - scaled_range, base_value + scaled_range]
+				% [
+					current_value,
+					base_value - effective_amplitude,
+					base_value + effective_amplitude
+				]
 			),
 		)
 
 
 func test_unregister_stops_oscillation() -> void:
-	var effect := _make_oscillation_effect(20.0)
+	var effect := _make_oscillation_effect(0.1)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 

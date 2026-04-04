@@ -117,7 +117,7 @@ func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 
 # --- speed offset oscillation ---
 func test_oscillation_never_drops_below_min_speed() -> void:
-	var effect := _make_oscillation_effect(500.0)
+	var effect := _make_oscillation_effect(2.0)
 	var item := ItemDefinition.new()
 	item.key = "big_oscillation"
 	item.max_level = 1
@@ -139,6 +139,7 @@ func _make_oscillation_effect(amplitude: float) -> Effect:
 	var outcome := OscillateStatOutcome.new()
 	outcome.stat_key = &"ball_speed_offset"
 	outcome.amplitude = amplitude
+	outcome.range_stat_key = &"ball_speed_max_range"
 
 	var trigger := Trigger.new()
 	trigger.type = &"always"

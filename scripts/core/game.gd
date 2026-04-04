@@ -4,6 +4,9 @@ extends Node2D
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
 signal ball_at_max_speed_changed(is_at_max: bool)
+signal ball_speed_updated(
+	current_speed: float, min_speed: float, max_speed: float, permanent_max_speed: float
+)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
 @export var ball: Ball
@@ -38,6 +41,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_item_manager.process_frame(delta)
+	var permanent_min: float = _item_manager.get_permanent_stat(&"ball_speed_min")
+	var permanent_max_range: float = _item_manager.get_permanent_stat(&"ball_speed_max_range")
+	ball_speed_updated.emit(
+		ball.speed, ball._min_speed, ball._max_speed, permanent_min + permanent_max_range
+	)
 
 
 func _on_paddle_hit() -> void:

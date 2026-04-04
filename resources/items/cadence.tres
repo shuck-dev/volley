@@ -11,7 +11,8 @@
 [sub_resource type="Resource" id="oscillate_outcome"]
 script = ExtResource("5_osc")
 stat_key = &"ball_speed_offset"
-amplitude = 250.0
+amplitude = 0.25
+range_stat_key = &"ball_speed_max_range"
 
 [sub_resource type="Resource" id="always_trigger"]
 script = ExtResource("3_trigger")

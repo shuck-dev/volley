@@ -13,6 +13,10 @@ func get_stat(key: StringName) -> float:
 	return _effect_state.get_stat(key)
 
 
+func get_permanent_stat(key: StringName) -> float:
+	return _effect_state.get_permanent_stat(key)
+
+
 func is_game_state_active(state: StringName) -> bool:
 	return _effect_state.is_state_active(state)
 
