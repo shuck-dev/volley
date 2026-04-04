@@ -29,11 +29,15 @@ func _ready() -> void:
 	ball.paddles = [paddle]
 	paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.missed.connect(_on_ball_missed)
-	ball.at_max_speed_changed.connect(ball_at_max_speed_changed.emit)
+	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
 
 	autoplay_controller.autoplay_toggled.connect(_on_auto_play_changed)
 
 	personal_volley_best_changed.emit(_progression.personal_volley_best)
+
+
+func _process(delta: float) -> void:
+	_item_manager.process_frame(delta)
 
 
 func _on_paddle_hit() -> void:
@@ -48,6 +52,26 @@ func _on_paddle_hit() -> void:
 	ball.increase_speed()
 
 
+func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
+	ball_at_max_speed_changed.emit(is_at_max)
+	if is_at_max:
+		_item_manager.process_event(&"on_max_speed_reached")
+
+
+func _on_ball_missed() -> void:
+	_item_manager.process_event(&"on_miss")
+	_volley_count = 0
+	_friendship_point_accumulator = 0.0
+	volley_count_changed.emit(_volley_count)
+	ball.reset_speed()
+	paddle.reset_streak()
+
+
+func _on_auto_play_changed(is_active: bool) -> void:
+	_is_autoplay_active = is_active
+	auto_play_changed.emit(is_active, autoplay_config.friendship_point_rate)
+
+
 ## Fractional accumulation;
 ## remainder from a reduced autoplay rate carries between hits and resets on miss
 ## a missed rally never pays out
@@ -58,16 +82,3 @@ func _accumulate_friendship_points() -> void:
 	if whole_points > 0:
 		_item_manager.add_friendship_points(whole_points)
 		_friendship_point_accumulator -= float(whole_points)
-
-
-func _on_auto_play_changed(is_active: bool) -> void:
-	_is_autoplay_active = is_active
-	auto_play_changed.emit(is_active, autoplay_config.friendship_point_rate)
-
-
-func _on_ball_missed() -> void:
-	_volley_count = 0
-	_friendship_point_accumulator = 0.0
-	volley_count_changed.emit(_volley_count)
-	ball.reset_speed()
-	paddle.reset_streak()

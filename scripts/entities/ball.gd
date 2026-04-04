@@ -21,7 +21,6 @@ func _ready() -> void:
 	_min_speed = _item_manager.get_stat(&"ball_speed_min")
 	_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 	_speed_increment = _item_manager.get_stat(&"ball_speed_increment")
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_setup_effect_processor()
 	_ball_setup()
 
@@ -31,6 +30,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if _effect_processor != null:
 		_effect_processor.process_frame(delta)
+		_emit_max_speed_if_changed()
 	linear_velocity = linear_velocity.normalized() * speed
 
 
@@ -52,16 +52,6 @@ func increase_speed() -> void:
 
 func reset_speed() -> void:
 	speed = _min_speed
-	_apply_speed()
-
-
-func _on_item_level_changed(_item_key: String) -> void:
-	var previous_min_speed := _min_speed
-	_min_speed = _item_manager.get_stat(&"ball_speed_min")
-	_max_speed = _min_speed + _item_manager.get_stat(&"ball_speed_max_range")
-	_speed_increment = _item_manager.get_stat(&"ball_speed_increment")
-	speed += _min_speed - previous_min_speed
-	speed = minf(speed, _max_speed)
 	_apply_speed()
 
 

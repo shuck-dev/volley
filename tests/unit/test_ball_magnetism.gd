@@ -24,10 +24,11 @@ func before_each() -> void:
 
 # --- magnetism ---
 func test_no_magnetism_before_purchase() -> void:
+	var test_speed: float = _manager.get_stat(&"ball_speed_min")
 	_ball.global_position = Vector2(0, 0)
 	_paddle.global_position = Vector2(0, 100)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = 100.0
+	_ball.linear_velocity = Vector2(test_speed, 0)
+	_ball.speed = test_speed
 
 	_ball._physics_process(0.1)
 
@@ -38,10 +39,11 @@ func test_magnetism_bends_toward_paddle() -> void:
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 
+	var test_speed: float = _manager.get_stat(&"ball_speed_min")
 	_ball.global_position = Vector2(0, 0)
 	_paddle.global_position = Vector2(0, 100)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = 100.0
+	_ball.linear_velocity = Vector2(test_speed, 0)
+	_ball.speed = test_speed
 
 	_ball._physics_process(0.1)
 
@@ -52,11 +54,12 @@ func test_magnetism_preserves_speed() -> void:
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 
+	var test_speed: float = _manager.get_stat(&"ball_speed_min")
 	_ball.global_position = Vector2(0, 0)
 	_paddle.global_position = Vector2(0, 100)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = 100.0
+	_ball.linear_velocity = Vector2(test_speed, 0)
+	_ball.speed = test_speed
 
 	_ball._physics_process(0.1)
 
-	assert_almost_eq(_ball.linear_velocity.length(), 100.0, 0.01)
+	assert_almost_eq(_ball.linear_velocity.length(), test_speed, 0.01)

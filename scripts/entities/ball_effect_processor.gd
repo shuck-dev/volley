@@ -14,6 +14,17 @@ func _ready() -> void:
 
 func process_frame(delta: float) -> void:
 	_apply_magnetism(delta)
+	_sync_speed_limits()
+
+
+func _sync_speed_limits() -> void:
+	var new_min: float = _item_manager.get_stat(&"ball_speed_min")
+	if not is_equal_approx(new_min, _ball._min_speed):
+		_ball.speed += new_min - _ball._min_speed
+		_ball._min_speed = new_min
+	_ball._max_speed = _ball._min_speed + _item_manager.get_stat(&"ball_speed_max_range")
+	_ball._speed_increment = _item_manager.get_stat(&"ball_speed_increment")
+	_ball.speed = clampf(_ball.speed, _ball._min_speed, _ball._max_speed)
 
 
 func process_hit() -> void:

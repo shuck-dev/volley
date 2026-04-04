@@ -4,7 +4,10 @@ extends RefCounted
 var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _multiply_modifiers: Array[StatModifier] = []
+var _until_miss_add_modifiers: Array[StatModifier] = []
+var _until_miss_multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
+var _oscillations: Array[Dictionary] = []
 
 
 func get_stat(key: StringName) -> float:
@@ -12,11 +15,23 @@ func get_stat(key: StringName) -> float:
 
 	var result: float = _base_values[key]
 
+	for oscillation in _oscillations:
+		if oscillation.stat_key == key:
+			result += _calculate_oscillation_offset(oscillation)
+
 	for modifier in _add_modifiers:
 		if modifier.stat_key == key:
 			result += modifier.value
 
+	for modifier in _until_miss_add_modifiers:
+		if modifier.stat_key == key:
+			result += modifier.value
+
 	for modifier in _multiply_modifiers:
+		if modifier.stat_key == key:
+			result *= modifier.value
+
+	for modifier in _until_miss_multiply_modifiers:
 		if modifier.stat_key == key:
 			result *= modifier.value
 
@@ -31,14 +46,60 @@ func add_modifier(modifier: StatModifier) -> void:
 			_multiply_modifiers.append(modifier)
 
 
+func add_until_miss_modifier(modifier: StatModifier) -> void:
+	match modifier.operation:
+		StatModifier.Operation.ADD:
+			_until_miss_add_modifiers.append(modifier)
+		StatModifier.Operation.MULTIPLY:
+			_until_miss_multiply_modifiers.append(modifier)
+
+
+func clear_until_miss_modifiers() -> void:
+	_until_miss_add_modifiers.clear()
+	_until_miss_multiply_modifiers.clear()
+
+
 func remove_modifiers_by_source(source_key: String) -> void:
 	_add_modifiers = _add_modifiers.filter(_exclude_source.bind(source_key))
 	_multiply_modifiers = _multiply_modifiers.filter(_exclude_source.bind(source_key))
+	_until_miss_add_modifiers = _until_miss_add_modifiers.filter(_exclude_source.bind(source_key))
+	_until_miss_multiply_modifiers = _until_miss_multiply_modifiers.filter(
+		_exclude_source.bind(source_key)
+	)
+	_oscillations = _oscillations.filter(
+		func(oscillation: Dictionary) -> bool: return oscillation.source_key != source_key
+	)
 
 
 func register_base_values(values: Dictionary) -> void:
 	for key in values:
 		_base_values[key] = values[key]
+
+
+func add_oscillation(source_key: String, stat_key: StringName, wave_range: float) -> void:
+	(
+		_oscillations
+		. append(
+			{
+				"source_key": source_key,
+				"stat_key": stat_key,
+				"wave_range": wave_range,
+				"time": 0.0,
+			}
+		)
+	)
+
+
+func process_frame(delta: float) -> void:
+	for oscillation in _oscillations:
+		oscillation.time += delta
+
+
+func _calculate_oscillation_offset(oscillation: Dictionary) -> float:
+	var time: float = oscillation.time
+	var wave_range: float = oscillation.wave_range
+	var offset: float = sin(time * 1.7) * 0.6 + sin(time * 3.1) * 0.3 + sin(time * 5.3) * 0.1
+	return offset * wave_range
 
 
 func _exclude_source(modifier: StatModifier, source_key: String) -> bool:

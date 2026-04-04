@@ -10,6 +10,7 @@ var items: Array[ItemDefinition] = [
 	preload("res://resources/items/court_lines.tres"),
 	preload("res://resources/items/double_knot.tres"),
 	preload("res://resources/items/spare.tres"),
+	preload("res://resources/items/cadence.tres"),
 ]
 
 var _progression: ProgressionData
@@ -32,6 +33,16 @@ func _register_existing_items() -> void:
 		var level: int = get_level(item.key)
 		if level > 0:
 			_effect_manager.register_source(item, level)
+
+
+## Dispatches a game event to the effect system for causality processing
+func process_event(event_type: StringName) -> void:
+	_effect_manager.process_event(event_type)
+
+
+## Advances continuous effects like oscillation
+func process_frame(delta: float) -> void:
+	_effect_manager.process_frame(delta)
 
 
 ## Returns the resolved stat value after all active modifiers

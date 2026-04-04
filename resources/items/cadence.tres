@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://ctbfhpklfixn7"]
+
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_382b0"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+
+[sub_resource type="Resource" id="oscillate_outcome"]
+script = ExtResource("4_outcome")
+type = &"oscillate_stat"
+parameters = {
+&"stat_key": &"ball_speed_min",
+&"wave_range": 15.0
+}
+
+[sub_resource type="Resource" id="always_trigger"]
+script = ExtResource("3_trigger")
+type = &"always"
+
+[sub_resource type="Resource" id="oscillate_effect"]
+script = ExtResource("2_effect")
+trigger = SubResource("always_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("oscillate_outcome")])
+max_active_level = null
+
+[sub_resource type="Resource" id="ceiling_outcome"]
+script = ExtResource("4_outcome")
+type = &"modify_stat_until_miss"
+parameters = {
+&"operation": &"add",
+&"stat_key": &"ball_speed_max_range",
+&"value": 25.0
+}
+
+[sub_resource type="Resource" id="max_speed_trigger"]
+script = ExtResource("3_trigger")
+type = &"on_max_speed_reached"
+
+[sub_resource type="Resource" id="ceiling_effect"]
+script = ExtResource("2_effect")
+trigger = SubResource("max_speed_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("ceiling_outcome")])
+max_active_level = null
+
+[resource]
+script = ExtResource("1_item")
+key = "cadence"
+type = &"kit"
+display_name = "Cadence"
+descriptions = Array[String](["Sounds wrong", "Don't stop. Won't stop", "Was anyone listening?"])
+base_cost = 85
+cost_scaling = 1.5
+effects = Array[ExtResource("2_effect")]([SubResource("oscillate_effect"), SubResource("ceiling_effect")])

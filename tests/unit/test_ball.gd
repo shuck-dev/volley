@@ -73,12 +73,13 @@ func test_reset_speed_preserves_direction() -> void:
 	assert_gt(_ball.linear_velocity.y, 0.0)
 
 
-# --- item level changes ---
-func test_min_speed_purchase_instantly_increases_speed() -> void:
+# --- item level changes (applied on next physics frame via effect processor) ---
+func test_min_speed_purchase_increases_speed() -> void:
 	var speed_before_purchase: float = _ball.speed
 	var min_before_purchase: float = _manager.get_stat(&"ball_speed_min")
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
+	_ball._physics_process(0.016)
 	var min_after_purchase: float = _manager.get_stat(&"ball_speed_min")
 	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
 	assert_almost_eq(_ball.speed, expected_speed, 0.01)
@@ -90,6 +91,7 @@ func test_min_speed_purchase_increases_speed_above_new_min() -> void:
 	var min_before_purchase: float = _manager.get_stat(&"ball_speed_min")
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
+	_ball._physics_process(0.016)
 	var min_after_purchase: float = _manager.get_stat(&"ball_speed_min")
 	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
 	assert_almost_eq(_ball.speed, expected_speed, 0.01)
@@ -98,6 +100,7 @@ func test_min_speed_purchase_increases_speed_above_new_min() -> void:
 func test_min_speed_purchase_also_raises_max_speed() -> void:
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
+	_ball._physics_process(0.016)
 	var expected_max: float = _effective_max_speed()
 	_ball.speed = expected_max - 1.0
 	_ball.increase_speed()
@@ -108,4 +111,5 @@ func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 	_ball.speed = _effective_max_speed()
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("court_lines")
+	_ball._physics_process(0.016)
 	assert_true(_ball.speed <= _effective_max_speed())
