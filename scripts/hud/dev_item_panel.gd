@@ -1,9 +1,14 @@
+@tool
 extends VBoxContainer
 
 var _buttons: Dictionary = {}
 
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		_build_placeholder()
+		return
+
 	if not OS.is_debug_build():
 		hide()
 		return
@@ -138,3 +143,36 @@ func _on_friendship_point_balance_booster_pressed(input: SpinBox) -> void:
 
 func _on_remove_friendship_point_pressed(input: SpinBox) -> void:
 	ItemManager.subtract_friendship_points(int(input.value))
+
+
+func _draw() -> void:
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+
+
+func _build_placeholder() -> void:
+	for child in get_children():
+		child.queue_free()
+	resized.connect(queue_redraw)
+
+	var items: Array[ItemDefinition] = [
+		preload("res://resources/items/ankle_weights.tres"),
+		preload("res://resources/items/grip_tape.tres"),
+		preload("res://resources/items/training_ball.tres"),
+		preload("res://resources/items/court_lines.tres"),
+		preload("res://resources/items/double_knot.tres"),
+		preload("res://resources/items/spare.tres"),
+		preload("res://resources/items/cadence.tres"),
+	]
+
+	for item in items:
+		var label := Label.new()
+		label.text = "%s Lv0 [%d FP]" % [item.display_name, item.base_cost]
+		label.add_theme_font_size_override("font_size", 11)
+		label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+		add_child(label)
+
+	var footer := Label.new()
+	footer.text = "Add/Remove FP"
+	footer.add_theme_font_size_override("font_size", 11)
+	footer.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
+	add_child(footer)

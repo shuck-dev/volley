@@ -11,7 +11,7 @@ script = ExtResource("4_outcome")
 type = &"oscillate_stat"
 parameters = {
 &"stat_key": &"ball_speed_min",
-&"wave_range": 15.0
+&"wave_range": 500.0
 }
 
 [sub_resource type="Resource" id="always_trigger"]
