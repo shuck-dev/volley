@@ -1,7 +1,7 @@
 extends GutTest
 
 # Verifies the event-based causality system: event dispatch, modify_stat_until_miss,
-# and oscillate_stat outcomes. These are the building blocks for items like Cadence.
+# and oscillate_stat outcomes.
 
 var _manager: EffectManager
 
@@ -19,15 +19,29 @@ func _make_item(item_key: String, effects: Array[Effect]) -> ItemDefinition:
 	return item
 
 
-func _make_effect(
-	trigger_type: StringName, outcome_type: StringName, parameters: Dictionary
-) -> Effect:
-	var trigger := Trigger.new()
-	trigger.type = trigger_type
+func _make_until_miss_effect(stat_key: StringName, operation: StringName, value: float) -> Effect:
+	var outcome := ModifyStatUntilMissOutcome.new()
+	outcome.stat_key = stat_key
+	outcome.operation = operation
+	outcome.value = value
 
-	var outcome := Outcome.new()
-	outcome.type = outcome_type
-	outcome.parameters = parameters
+	var trigger := Trigger.new()
+	trigger.type = &"on_max_speed_reached"
+
+	var effect := Effect.new()
+	effect.trigger = trigger
+	effect.outcomes = [outcome]
+	effect.min_active_level = 1
+	return effect
+
+
+func _make_oscillation_effect(amplitude: float) -> Effect:
+	var outcome := OscillateStatOutcome.new()
+	outcome.stat_key = &"ball_speed_offset"
+	outcome.amplitude = amplitude
+
+	var trigger := Trigger.new()
+	trigger.type = &"always"
 
 	var effect := Effect.new()
 	effect.trigger = trigger
@@ -38,15 +52,7 @@ func _make_effect(
 
 # --- event dispatch ---
 func test_process_event_fires_matching_trigger() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -59,15 +65,7 @@ func test_process_event_fires_matching_trigger() -> void:
 
 
 func test_process_event_ignores_non_matching_trigger() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -80,15 +78,7 @@ func test_process_event_ignores_non_matching_trigger() -> void:
 
 
 func test_event_effect_not_applied_on_register() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -99,15 +89,7 @@ func test_event_effect_not_applied_on_register() -> void:
 
 
 func test_process_event_scales_value_by_level() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 2)
 
@@ -121,15 +103,7 @@ func test_process_event_scales_value_by_level() -> void:
 
 # --- modify_stat_until_miss ---
 func test_modify_stat_until_miss_stacks_on_repeated_events() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -144,15 +118,7 @@ func test_modify_stat_until_miss_stacks_on_repeated_events() -> void:
 
 
 func test_miss_event_clears_until_miss_modifiers() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 	_manager.process_event(&"on_max_speed_reached")
@@ -167,24 +133,20 @@ func test_miss_event_clears_until_miss_modifiers() -> void:
 
 
 func test_miss_preserves_permanent_modifiers() -> void:
-	var always_effect := _make_effect(
-		&"always",
-		&"modify_stat",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 50.0,
-		}
-	)
-	var event_effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var always_outcome := ModifyStatOutcome.new()
+	always_outcome.stat_key = &"ball_speed_max_range"
+	always_outcome.operation = &"add"
+	always_outcome.value = 50.0
+
+	var always_trigger := Trigger.new()
+	always_trigger.type = &"always"
+
+	var always_effect := Effect.new()
+	always_effect.trigger = always_trigger
+	always_effect.outcomes = [always_outcome]
+	always_effect.min_active_level = 1
+
+	var event_effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [always_effect, event_effect])
 	_manager.register_source(item, 1)
 	_manager.process_event(&"on_max_speed_reached")
@@ -198,15 +160,7 @@ func test_miss_preserves_permanent_modifiers() -> void:
 
 
 func test_unregister_removes_event_effects() -> void:
-	var effect := _make_effect(
-		&"on_max_speed_reached",
-		&"modify_stat_until_miss",
-		{
-			&"stat_key": &"ball_speed_max_range",
-			&"operation": &"add",
-			&"value": 30.0,
-		}
-	)
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 	_manager.process_event(&"on_max_speed_reached")
@@ -221,80 +175,59 @@ func test_unregister_removes_event_effects() -> void:
 
 # --- oscillate_stat ---
 func test_oscillate_stat_changes_value_over_time() -> void:
-	var effect := _make_effect(
-		&"always",
-		&"oscillate_stat",
-		{
-			&"stat_key": &"ball_speed_min",
-			&"wave_range": 20.0,
-		}
-	)
+	var effect := _make_oscillation_effect(20.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	var base_value: float = GameRules.BASE_STATS[&"ball_speed_min"]
+	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
 	var found_different := false
 	for frame_index in range(60):
 		_manager.process_frame(0.016)
-		if not is_equal_approx(_manager.get_stat(&"ball_speed_min"), base_value):
+		if not is_equal_approx(_manager.get_stat(&"ball_speed_offset"), base_value):
 			found_different = true
 			break
 
 	assert_true(found_different, "Oscillation should change stat value within 60 frames")
 
 
-func test_oscillate_stat_stays_within_wave_range() -> void:
-	var wave_range := 20.0
-	var effect := _make_effect(
-		&"always",
-		&"oscillate_stat",
-		{
-			&"stat_key": &"ball_speed_min",
-			&"wave_range": wave_range,
-		}
-	)
+func test_oscillate_stat_stays_within_amplitude() -> void:
+	var amplitude := 20.0
+	var effect := _make_oscillation_effect(amplitude)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	var base_value: float = GameRules.BASE_STATS[&"ball_speed_min"]
+	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
 	var min_observed := base_value
 	var max_observed := base_value
 
 	for frame_index in range(300):
 		_manager.process_frame(0.016)
-		var current_value: float = _manager.get_stat(&"ball_speed_min")
+		var current_value: float = _manager.get_stat(&"ball_speed_offset")
 		min_observed = minf(min_observed, current_value)
 		max_observed = maxf(max_observed, current_value)
 
 	assert_true(
-		min_observed >= base_value - wave_range,
-		"Min observed %f should be >= %f" % [min_observed, base_value - wave_range],
+		min_observed >= base_value - amplitude,
+		"Min observed %f should be >= %f" % [min_observed, base_value - amplitude],
 	)
 	assert_true(
-		max_observed <= base_value + wave_range,
-		"Max observed %f should be <= %f" % [max_observed, base_value + wave_range],
+		max_observed <= base_value + amplitude,
+		"Max observed %f should be <= %f" % [max_observed, base_value + amplitude],
 	)
 
 
 func test_oscillate_stat_scales_range_by_level() -> void:
-	var wave_range := 20.0
-	var effect := _make_effect(
-		&"always",
-		&"oscillate_stat",
-		{
-			&"stat_key": &"ball_speed_min",
-			&"wave_range": wave_range,
-		}
-	)
+	var amplitude := 20.0
+	var effect := _make_oscillation_effect(amplitude)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 2)
 
-	var base_value: float = GameRules.BASE_STATS[&"ball_speed_min"]
-	var scaled_range: float = wave_range * 2.0
+	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
+	var scaled_range: float = amplitude * 2.0
 
 	for frame_index in range(300):
 		_manager.process_frame(0.016)
-		var current_value: float = _manager.get_stat(&"ball_speed_min")
+		var current_value: float = _manager.get_stat(&"ball_speed_offset")
 		assert_true(
 			(
 				current_value >= base_value - scaled_range
@@ -308,14 +241,7 @@ func test_oscillate_stat_scales_range_by_level() -> void:
 
 
 func test_unregister_stops_oscillation() -> void:
-	var effect := _make_effect(
-		&"always",
-		&"oscillate_stat",
-		{
-			&"stat_key": &"ball_speed_min",
-			&"wave_range": 20.0,
-		}
-	)
+	var effect := _make_oscillation_effect(20.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
@@ -324,4 +250,7 @@ func test_unregister_stops_oscillation() -> void:
 
 	_manager.unregister_source(item)
 
-	assert_eq(_manager.get_stat(&"ball_speed_min"), GameRules.BASE_STATS[&"ball_speed_min"])
+	assert_eq(
+		_manager.get_stat(&"ball_speed_offset"),
+		GameRules.BASE_STATS[&"ball_speed_offset"],
+	)

@@ -115,8 +115,8 @@ func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 	assert_true(_ball.speed <= _effective_max_speed())
 
 
-# --- min speed floor ---
-func test_min_speed_never_goes_negative_from_oscillation() -> void:
+# --- speed offset oscillation ---
+func test_oscillation_never_drops_below_min_speed() -> void:
 	var effect := _make_oscillation_effect(500.0)
 	var item := ItemDefinition.new()
 	item.key = "big_oscillation"
@@ -126,21 +126,22 @@ func test_min_speed_never_goes_negative_from_oscillation() -> void:
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("big_oscillation")
 
+	var min_speed: float = _manager.get_stat(&"ball_speed_min")
 	for frame_index in range(300):
 		_ball._physics_process(0.016)
 		assert_true(
-			_ball.speed >= 0.0,
-			"Ball speed should never be negative, was %f" % _ball.speed,
+			_ball.speed >= min_speed,
+			"Ball speed %f should never drop below min %f" % [_ball.speed, min_speed],
 		)
 
 
-func _make_oscillation_effect(wave_range: float) -> Effect:
+func _make_oscillation_effect(amplitude: float) -> Effect:
+	var outcome := OscillateStatOutcome.new()
+	outcome.stat_key = &"ball_speed_offset"
+	outcome.amplitude = amplitude
+
 	var trigger := Trigger.new()
 	trigger.type = &"always"
-
-	var outcome := Outcome.new()
-	outcome.type = &"oscillate_stat"
-	outcome.parameters = {&"stat_key": &"ball_speed_min", &"wave_range": wave_range}
 
 	var effect := Effect.new()
 	effect.trigger = trigger

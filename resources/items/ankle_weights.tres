@@ -5,15 +5,12 @@
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_sgvbu"]
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://c506qegvo1tad" path="res://scripts/items/effect/outcomes/modify_stat_outcome.gd" id="5_mod"]
 
 [sub_resource type="Resource" id="outcome_1"]
-script = ExtResource("4_outcome")
-type = &"modify_stat"
-parameters = {
-&"operation": &"add",
-&"stat_key": &"paddle_speed",
-&"value": 50.0
-}
+script = ExtResource("5_mod")
+stat_key = &"paddle_speed"
+value = 50.0
 
 [sub_resource type="Resource" id="trigger_1"]
 script = ExtResource("3_trigger")

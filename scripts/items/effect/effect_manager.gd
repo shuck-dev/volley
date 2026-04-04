@@ -21,7 +21,7 @@ func process_event(event_type: StringName) -> void:
 	for registered in _event_effects:
 		var effect: Effect = registered.effect
 		if effect.trigger.type == event_type:
-			_apply_event_effect(effect, registered.source_key, registered.level)
+			_apply_effect(effect, registered.source_key, registered.level)
 
 	if event_type == &"on_miss":
 		_effect_state.clear_until_miss_modifiers()
@@ -47,7 +47,7 @@ func register_source(source: ItemDefinition, level: int) -> void:
 	)
 	for effect in source.get_effects_for_level(level):
 		if effect.trigger.type == &"always":
-			_apply_always_effect(effect, source_key, level)
+			_apply_effect(effect, source_key, level)
 		else:
 			(
 				_event_effects
@@ -61,36 +61,6 @@ func register_source(source: ItemDefinition, level: int) -> void:
 			)
 
 
-func _apply_always_effect(effect: Effect, source_key: String, level: int) -> void:
+func _apply_effect(effect: Effect, source_key: String, level: int) -> void:
 	for outcome in effect.outcomes:
-		if outcome.type == &"modify_stat":
-			_add_permanent_modifier(outcome, source_key, level)
-		elif outcome.type == &"oscillate_stat":
-			(
-				_effect_state
-				. add_oscillation(
-					source_key,
-					outcome.parameters[&"stat_key"],
-					outcome.scaled_value(&"wave_range", level),
-				)
-			)
-
-
-func _apply_event_effect(effect: Effect, source_key: String, level: int) -> void:
-	for outcome in effect.outcomes:
-		if outcome.type == &"modify_stat_until_miss":
-			var modifier := StatModifier.new()
-			modifier.source_key = source_key
-			modifier.stat_key = outcome.parameters[&"stat_key"]
-			modifier.operation = StatModifier.OPERATION_BY_NAME[outcome.parameters[&"operation"]]
-			modifier.value = outcome.scaled_value(&"value", level)
-			_effect_state.add_until_miss_modifier(modifier)
-
-
-func _add_permanent_modifier(outcome: Outcome, source_key: String, level: int) -> void:
-	var modifier := StatModifier.new()
-	modifier.source_key = source_key
-	modifier.stat_key = outcome.parameters[&"stat_key"]
-	modifier.operation = StatModifier.OPERATION_BY_NAME[outcome.parameters[&"operation"]]
-	modifier.value = outcome.scaled_value(&"value", level)
-	_effect_state.add_modifier(modifier)
+		outcome.apply(_effect_state, source_key, level)

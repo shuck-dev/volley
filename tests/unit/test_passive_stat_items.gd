@@ -18,11 +18,13 @@ func _create_manager(item: ItemDefinition) -> Node:
 
 
 func _stat_key(item: ItemDefinition) -> StringName:
-	return item.effects[0].outcomes[0].parameters[&"stat_key"]
+	var outcome: ModifyStatOutcome = item.effects[0].outcomes[0]
+	return outcome.stat_key
 
 
 func _value_per_level(item: ItemDefinition) -> float:
-	return item.effects[0].outcomes[0].parameters[&"value"]
+	var outcome: ModifyStatOutcome = item.effects[0].outcomes[0]
+	return outcome.value
 
 
 # --- loads ---

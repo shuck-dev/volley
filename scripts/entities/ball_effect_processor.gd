@@ -3,6 +3,7 @@ extends Node
 
 var _ball: Ball
 var _item_manager: Node
+var _speed_offset := 0.0
 
 
 func _ready() -> void:
@@ -18,12 +19,17 @@ func process_frame(delta: float) -> void:
 
 
 func _sync_speed_limits() -> void:
-	var new_min: float = maxf(0.0, _item_manager.get_stat(&"ball_speed_min"))
+	var new_min: float = _item_manager.get_stat(&"ball_speed_min")
 	if not is_equal_approx(new_min, _ball._min_speed):
 		_ball.speed += new_min - _ball._min_speed
 		_ball._min_speed = new_min
 	_ball._max_speed = _ball._min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 	_ball._speed_increment = _item_manager.get_stat(&"ball_speed_increment")
+
+	var new_offset: float = _item_manager.get_stat(&"ball_speed_offset")
+	_ball.speed += new_offset - _speed_offset
+	_speed_offset = new_offset
+
 	_ball.speed = clampf(_ball.speed, _ball._min_speed, _ball._max_speed)
 
 

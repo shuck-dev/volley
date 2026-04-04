@@ -26,16 +26,13 @@ static func create_manager(
 static func create(
 	item_key: String, stat_key: StringName, operation: StringName, value: float
 ) -> ItemDefinition:
+	var outcome := ModifyStatOutcome.new()
+	outcome.stat_key = stat_key
+	outcome.operation = operation
+	outcome.value = value
+
 	var trigger := Trigger.new()
 	trigger.type = &"always"
-
-	var outcome := Outcome.new()
-	outcome.type = &"modify_stat"
-	outcome.parameters = {
-		&"stat_key": stat_key,
-		&"operation": operation,
-		&"value": value,
-	}
 
 	var effect := Effect.new()
 	effect.trigger = trigger

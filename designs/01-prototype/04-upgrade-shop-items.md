@@ -161,7 +161,7 @@ Optional. If omitted the outcome always fires when the trigger does. Multiple co
 | `increment_degradation` | Add to an item's hidden degradation counter | `amount` |
 | `share_stats_with_partner` | Partner receives all stat buffs the player has | none |
 | `momentum_boost` | Temporary buff to both paddles | `stats[]`, `duration_seconds` |
-| `oscillate_stat` | Continuously ramp a stat up and down in unpredictable waves | `key`, `wave_range` |
+| `oscillate_stat` | Continuously ramp a stat up and down in unpredictable waves | `key`, `amplitude` |
 | `modify_stat_until_miss` | Add a delta to a stat key until the next miss. Stacks if triggered multiple times | `key`, `delta` |
 | `roll_table` | Pick a random outcome from a set of equally weighted effects and execute it | `outcomes[]` |
 | `set_ball_speed` | Immediately set ball to a specific speed | `value` |
@@ -212,8 +212,11 @@ All values items can target via `modify_stat` or `modify_stat_temporary`.
 | `friendship_points_per_hit` | FP awarded per paddle hit | 1 | FP |
 | `ball_magnetism` | Pull strength toward paddle when ball is near | 0.0 | force |
 | `return_angle_influence` | Bias toward favorable return angles on hit | 0.0 | factor (0-1) |
+| `ball_speed_offset` | Applied as a delta to current ball speed each frame, clamped to min/max | 0.0 | px/s |
 
-`ball_speed_max_range` is not the absolute ceiling. Ceiling = `ball_speed_min + ball_speed_max_range`. At base values: 1100 px/s.
+`ball_speed_max_range` is not the absolute ceiling. Ceiling = `ball_speed_min + ball_speed_max_range`. At base values: 700 px/s.
+
+`ball_speed_offset` is the target for oscillation effects (e.g. Cadence). It modulates current speed directly without affecting the min floor, so min speed upgrades are always respected.
 
 <details>
 <summary>Ideas</summary>
@@ -643,7 +646,7 @@ The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down 
 ```
 Effect 1
   trigger: always
-  outcome: oscillate_stat(ball_speed_min, wave_range scales with level)
+  outcome: oscillate_stat(ball_speed_offset, amplitude scales with level)
 
 Effect 2
   trigger: on_max_speed_reached

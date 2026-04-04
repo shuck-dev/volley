@@ -1,32 +1,29 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://b1c7gn25bcnit"]
 
-[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="1_v87fe"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_qurvf"]
-[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="3_kl6nh"]
-[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="4_dhubj"]
-[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="5_1nqqe"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://c506qegvo1tad" path="res://scripts/items/effect/outcomes/modify_stat_outcome.gd" id="5_mod"]
 
-[sub_resource type="Resource" id="Resource_1vb6c"]
-script = ExtResource("3_kl6nh")
-type = &"modify_stat"
-parameters = {
-&"operation": &"add",
-&"stat_key": &"paddle_size",
-&"value": 10.0
-}
+[sub_resource type="Resource" id="outcome_1"]
+script = ExtResource("5_mod")
+stat_key = &"paddle_size"
+value = 10.0
 
-[sub_resource type="Resource" id="Resource_w4055"]
-script = ExtResource("4_dhubj")
+[sub_resource type="Resource" id="trigger_1"]
+script = ExtResource("3_trigger")
 type = &"always"
 
-[sub_resource type="Resource" id="Resource_jktcp"]
-script = ExtResource("1_v87fe")
-trigger = SubResource("Resource_w4055")
-outcomes = Array[ExtResource("3_kl6nh")]([SubResource("Resource_1vb6c")])
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_1")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
 max_active_level = null
 
 [resource]
-script = ExtResource("5_1nqqe")
+script = ExtResource("1_item")
 key = "grip_tape"
 type = &"kit"
 display_name = "Grip Tape"
@@ -34,4 +31,4 @@ descriptions = Array[String](["Covers more than you think", "Hard to miss now", 
 base_cost = 30
 cost_scaling = 1.5
 max_level = 10
-effects = Array[ExtResource("1_v87fe")]([SubResource("Resource_jktcp")])
+effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])

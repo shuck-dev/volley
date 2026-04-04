@@ -5,14 +5,13 @@
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://buncwlrnw4fu2" path="res://scripts/items/effect/outcomes/oscillate_stat_outcome.gd" id="5_osc"]
+[ext_resource type="Script" uid="uid://bcksl8dhxerhh" path="res://scripts/items/effect/outcomes/modify_stat_until_miss_outcome.gd" id="6_miss"]
 
 [sub_resource type="Resource" id="oscillate_outcome"]
-script = ExtResource("4_outcome")
-type = &"oscillate_stat"
-parameters = {
-&"stat_key": &"ball_speed_min",
-&"wave_range": 500.0
-}
+script = ExtResource("5_osc")
+stat_key = &"ball_speed_offset"
+amplitude = 250.0
 
 [sub_resource type="Resource" id="always_trigger"]
 script = ExtResource("3_trigger")
@@ -25,13 +24,9 @@ outcomes = Array[ExtResource("4_outcome")]([SubResource("oscillate_outcome")])
 max_active_level = null
 
 [sub_resource type="Resource" id="ceiling_outcome"]
-script = ExtResource("4_outcome")
-type = &"modify_stat_until_miss"
-parameters = {
-&"operation": &"add",
-&"stat_key": &"ball_speed_max_range",
-&"value": 25.0
-}
+script = ExtResource("6_miss")
+stat_key = &"ball_speed_max_range"
+value = 25.0
 
 [sub_resource type="Resource" id="max_speed_trigger"]
 script = ExtResource("3_trigger")

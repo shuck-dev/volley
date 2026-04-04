@@ -1,7 +1,7 @@
 extends GutTest
 
 # Verifies Cadence item: ball speed oscillation and ceiling raise on max speed reached.
-# Effect 1: always -> oscillate_stat(ball_speed_min)
+# Effect 1: always -> oscillate_stat(ball_speed_offset)
 # Effect 2: on_max_speed_reached -> modify_stat_until_miss(ball_speed_max_range)
 
 var _item: ItemDefinition
@@ -40,15 +40,15 @@ func test_cost_scaling_matches_design() -> void:
 func test_oscillation_active_after_purchase() -> void:
 	_purchase()
 
-	var base_value: float = GameRules.BASE_STATS[&"ball_speed_min"]
+	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
 	var found_different := false
 	for frame_index in range(60):
 		_manager._effect_manager.process_frame(0.016)
-		if not is_equal_approx(_manager.get_stat(&"ball_speed_min"), base_value):
+		if not is_equal_approx(_manager.get_stat(&"ball_speed_offset"), base_value):
 			found_different = true
 			break
 
-	assert_true(found_different, "ball_speed_min should oscillate after purchasing Cadence")
+	assert_true(found_different, "ball_speed_offset should oscillate after purchasing Cadence")
 
 
 func test_oscillation_inactive_before_purchase() -> void:
@@ -56,8 +56,8 @@ func test_oscillation_inactive_before_purchase() -> void:
 		_manager._effect_manager.process_frame(0.016)
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_min"),
-		GameRules.BASE_STATS[&"ball_speed_min"],
+		_manager.get_stat(&"ball_speed_offset"),
+		GameRules.BASE_STATS[&"ball_speed_offset"],
 	)
 
 

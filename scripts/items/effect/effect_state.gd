@@ -1,21 +1,13 @@
 class_name EffectState
 extends RefCounted
 
-## Layered sine waves at co-prime frequencies for organic, non-repeating oscillation.
-const PRIMARY_FREQUENCY := 1.7
-const SECONDARY_FREQUENCY := 3.1
-const TERTIARY_FREQUENCY := 5.3
-const PRIMARY_WEIGHT := 0.6
-const SECONDARY_WEIGHT := 0.3
-const TERTIARY_WEIGHT := 0.1
-
 var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _multiply_modifiers: Array[StatModifier] = []
 var _until_miss_add_modifiers: Array[StatModifier] = []
 var _until_miss_multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
-var _oscillations: Array[Dictionary] = []
+var _oscillations: Array[StatOscillation] = []
 
 
 func get_stat(key: StringName) -> float:
@@ -25,7 +17,7 @@ func get_stat(key: StringName) -> float:
 
 	for oscillation in _oscillations:
 		if oscillation.stat_key == key:
-			result += _calculate_oscillation_offset(oscillation)
+			result += oscillation.get_offset()
 
 	for modifier in _add_modifiers:
 		if modifier.stat_key == key:
@@ -75,7 +67,7 @@ func remove_modifiers_by_source(source_key: String) -> void:
 		_exclude_source.bind(source_key)
 	)
 	_oscillations = _oscillations.filter(
-		func(oscillation: Dictionary) -> bool: return oscillation.source_key != source_key
+		func(oscillation: StatOscillation) -> bool: return oscillation.source_key != source_key
 	)
 
 
@@ -84,34 +76,13 @@ func register_base_values(values: Dictionary) -> void:
 		_base_values[key] = values[key]
 
 
-func add_oscillation(source_key: String, stat_key: StringName, wave_range: float) -> void:
-	(
-		_oscillations
-		. append(
-			{
-				"source_key": source_key,
-				"stat_key": stat_key,
-				"wave_range": wave_range,
-				"time": 0.0,
-			}
-		)
-	)
+func add_oscillation(oscillation: StatOscillation) -> void:
+	_oscillations.append(oscillation)
 
 
 func process_frame(delta: float) -> void:
 	for oscillation in _oscillations:
-		oscillation.time += delta
-
-
-func _calculate_oscillation_offset(oscillation: Dictionary) -> float:
-	var time: float = oscillation.time
-	var wave_range: float = oscillation.wave_range
-	var offset: float = (
-		sin(time * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
-		+ sin(time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
-		+ sin(time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
-	)
-	return offset * wave_range
+		oscillation.advance(delta)
 
 
 func _exclude_source(modifier: StatModifier, source_key: String) -> bool:

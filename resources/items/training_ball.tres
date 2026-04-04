@@ -1,36 +1,33 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bid1gsm7ld4jm"]
 
-[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="1_u4hrd"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_ijjqn"]
-[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="3_5blea"]
-[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="4_gakro"]
-[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="5_sehlm"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://c506qegvo1tad" path="res://scripts/items/effect/outcomes/modify_stat_outcome.gd" id="5_mod"]
 
-[sub_resource type="Resource" id="Resource_oaec6"]
-script = ExtResource("3_5blea")
-type = &"modify_stat"
-parameters = {
-&"operation": &"add",
-&"stat_key": &"ball_speed_min",
-&"value": 30.0
-}
+[sub_resource type="Resource" id="outcome_1"]
+script = ExtResource("5_mod")
+stat_key = &"ball_speed_min"
+value = 30.0
 
-[sub_resource type="Resource" id="Resource_12h00"]
-script = ExtResource("4_gakro")
+[sub_resource type="Resource" id="trigger_1"]
+script = ExtResource("3_trigger")
 type = &"always"
 
-[sub_resource type="Resource" id="Resource_anxro"]
-script = ExtResource("1_u4hrd")
-trigger = SubResource("Resource_12h00")
-outcomes = Array[ExtResource("3_5blea")]([SubResource("Resource_oaec6")])
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_1")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
 max_active_level = null
 
 [resource]
-script = ExtResource("5_sehlm")
+script = ExtResource("1_item")
 key = "training_ball"
 type = &"kit"
 display_name = "Training Ball"
 descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Never cooled down"])
 base_cost = 40
 max_level = 10
-effects = Array[ExtResource("1_u4hrd")]([SubResource("Resource_anxro")])
+effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])

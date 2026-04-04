@@ -120,21 +120,11 @@ func _build_effect_lines(item: ItemDefinition) -> Array[String]:
 			var max_level: int = effective_max if effective_max != null else item.max_level
 			level_range = " (Lv%d-%d)" % [effect.min_active_level, max_level]
 		for outcome: Outcome in effect.outcomes:
-			var line := _describe_outcome(effect, outcome)
+			var line := "%s %s" % [effect.trigger.type, outcome.describe()]
 			if not level_range.is_empty():
 				line += level_range
 			lines.append(line)
 	return lines
-
-
-func _describe_outcome(effect: Effect, outcome: Outcome) -> String:
-	if outcome.type == &"modify_stat":
-		var stat: StringName = outcome.parameters[&"stat_key"]
-		var value: float = outcome.parameters[&"value"]
-		var operation: StringName = outcome.parameters[&"operation"]
-		var prefix := "+" if operation == &"add" and value > 0 else ""
-		return "%s %s%s %s" % [effect.trigger.type, prefix, value, stat]
-	return "%s: %s" % [effect.trigger.type, outcome.type]
 
 
 func _on_friendship_point_balance_booster_pressed(input: SpinBox) -> void:

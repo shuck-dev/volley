@@ -19,16 +19,13 @@ func _make_item(item_key: String, effects: Array[Effect]) -> ItemDefinition:
 func _make_always_modify_stat_effect(
 	stat_key: StringName, operation: StringName, value: float
 ) -> Effect:
+	var outcome := ModifyStatOutcome.new()
+	outcome.stat_key = stat_key
+	outcome.operation = operation
+	outcome.value = value
+
 	var trigger := Trigger.new()
 	trigger.type = &"always"
-
-	var outcome := Outcome.new()
-	outcome.type = &"modify_stat"
-	outcome.parameters = {
-		&"stat_key": stat_key,
-		&"operation": operation,
-		&"value": value,
-	}
 
 	var effect := Effect.new()
 	effect.trigger = trigger
@@ -120,16 +117,13 @@ func test_unregister_source_keeps_other_items() -> void:
 
 # --- non-always triggers ---
 func test_register_source_ignores_non_always_triggers() -> void:
+	var outcome := ModifyStatOutcome.new()
+	outcome.stat_key = &"paddle_speed"
+	outcome.operation = &"add"
+	outcome.value = 50.0
+
 	var trigger := Trigger.new()
 	trigger.type = &"on_hit"
-
-	var outcome := Outcome.new()
-	outcome.type = &"modify_stat"
-	outcome.parameters = {
-		&"stat_key": &"paddle_speed",
-		&"operation": &"add",
-		&"value": 50.0,
-	}
 
 	var effect := Effect.new()
 	effect.trigger = trigger
