@@ -52,8 +52,8 @@ func get_stat(key: StringName) -> float:
 
 
 ## Returns the stat value excluding temporary (until-miss) modifiers
-func get_permanent_stat(key: StringName) -> float:
-	return _effect_manager.get_permanent_stat(key)
+func get_base_stat(key: StringName) -> float:
+	return _effect_manager.get_base_stat(key)
 
 
 ## Returns the summed percentage offset for a stat (e.g. 0.8 means +80%)

@@ -78,23 +78,38 @@ func _make_stat_label() -> Label:
 
 
 func _refresh() -> void:
+	_refresh_speed_label()
+	for stat_key: StringName in _labels:
+		_refresh_stat_label(stat_key)
+
+
+func _refresh_speed_label() -> void:
 	if _speed_label != null and _speed_bar != null:
 		_speed_label.text = "ball_speed: %.1f" % _speed_bar._current_speed
-	for stat_key: StringName in _labels:
-		var current_value: float = ItemManager.get_stat(stat_key)
-		var base_value: float = GameRules.BASE_STATS[stat_key]
-		var label: Label = _labels[stat_key]
-		if is_equal_approx(current_value, base_value):
-			label.text = "%s: %.1f" % [stat_key, current_value]
-			label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
-		else:
-			var diff: float = current_value - base_value
-			var sign_prefix: String = "+" if diff > 0 else ""
-			var percentage_offset: float = ItemManager.get_percentage_offset(stat_key)
-			var text := "%s: %.1f (%s%.1f)" % [stat_key, current_value, sign_prefix, diff]
-			if not is_zero_approx(percentage_offset):
-				var pct_prefix: String = "+" if percentage_offset > 0 else ""
-				text += " [%s%.0f%%]" % [pct_prefix, percentage_offset * 100]
-			label.text = text
-			var color := Color(1.0, 0.5, 0.5) if diff < 0 else Color(0.6, 1.0, 0.6)
-			label.add_theme_color_override("font_color", color)
+
+
+func _refresh_stat_label(stat_key: StringName) -> void:
+	var current_value: float = ItemManager.get_stat(stat_key)
+	var base_value: float = GameRules.BASE_STATS[stat_key]
+	var label: Label = _labels[stat_key]
+	if is_equal_approx(current_value, base_value):
+		label.text = "%s: %.1f" % [stat_key, current_value]
+		label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+		return
+
+	var diff: float = current_value - base_value
+	var sign_prefix: String = "+" if diff > 0 else ""
+	label.text = _format_modified_stat(stat_key, current_value, sign_prefix, diff)
+	var color := Color(1.0, 0.5, 0.5) if diff < 0 else Color(0.6, 1.0, 0.6)
+	label.add_theme_color_override("font_color", color)
+
+
+func _format_modified_stat(
+	stat_key: StringName, current_value: float, sign_prefix: String, diff: float
+) -> String:
+	var text := "%s: %.1f (%s%.1f)" % [stat_key, current_value, sign_prefix, diff]
+	var percentage_offset: float = ItemManager.get_percentage_offset(stat_key)
+	if not is_zero_approx(percentage_offset):
+		var pct_prefix: String = "+" if percentage_offset > 0 else ""
+		text += " [%s%.0f%%]" % [pct_prefix, percentage_offset * 100]
+	return text

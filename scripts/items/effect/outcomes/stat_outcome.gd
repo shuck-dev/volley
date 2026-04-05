@@ -31,5 +31,5 @@ func describe() -> String:
 func _effective_value(effect_state: EffectState, level: int) -> float:
 	var base_value: float = scaled_value(value, level)
 	if range_stat_key:
-		return base_value * effect_state.get_permanent_stat(range_stat_key)
+		return base_value * effect_state.get_base_stat(range_stat_key)
 	return base_value

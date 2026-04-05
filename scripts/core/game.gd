@@ -5,7 +5,7 @@ signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
 signal ball_at_max_speed_changed(is_at_max: bool)
 signal ball_speed_updated(
-	current_speed: float, min_speed: float, max_speed: float, permanent_max_speed: float
+	current_speed: float, min_speed: float, max_speed: float, base_max_speed: float
 )
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
@@ -29,7 +29,7 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
-	ball.paddles = [paddle]
+	ball.effect_processor.paddles = [paddle]
 	paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.missed.connect(_on_ball_missed)
 	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
@@ -41,11 +41,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_item_manager.process_frame(delta)
-	var permanent_min: float = _item_manager.get_permanent_stat(&"ball_speed_min")
-	var permanent_max_range: float = _item_manager.get_permanent_stat(&"ball_speed_max_range")
-	ball_speed_updated.emit(
-		ball.speed, ball._min_speed, ball._max_speed, permanent_min + permanent_max_range
-	)
+	var base_min: float = _item_manager.get_base_stat(&"ball_speed_min")
+	var base_max_range: float = _item_manager.get_base_stat(&"ball_speed_max_range")
+	ball_speed_updated.emit(ball.speed, ball.min_speed, ball.max_speed, base_min + base_max_range)
 
 
 func _on_paddle_hit() -> void:

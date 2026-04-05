@@ -54,7 +54,7 @@ func _purchase_cadence() -> void:
 
 
 func _hit_until_max_speed() -> void:
-	while _ball.speed < _ball._max_speed:
+	while _ball.speed < _ball.max_speed:
 		_paddle.on_ball_hit()
 		_paddle.tracker._process(HitTracker.COOLDOWN)
 

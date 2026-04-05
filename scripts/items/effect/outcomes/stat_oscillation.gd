@@ -26,4 +26,4 @@ func get_offset(effect_state: EffectState) -> float:
 		+ sin(_time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
 		+ sin(_time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
 	)
-	return wave * amplitude * effect_state.get_permanent_stat(range_stat_key)
+	return wave * amplitude * effect_state.get_base_stat(range_stat_key)

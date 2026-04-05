@@ -13,8 +13,8 @@ func get_stat(key: StringName) -> float:
 	return _effect_state.get_stat(key)
 
 
-func get_permanent_stat(key: StringName) -> float:
-	return _effect_state.get_permanent_stat(key)
+func get_base_stat(key: StringName) -> float:
+	return _effect_state.get_base_stat(key)
 
 
 func get_percentage_offset(key: StringName) -> float:
@@ -32,7 +32,7 @@ func process_event(event_type: StringName) -> void:
 			_apply_effect(effect, registered.source_key, registered.level)
 
 	if event_type == &"on_miss":
-		_effect_state.clear_until_miss_modifiers()
+		_effect_state.clear_temporary_modifiers()
 
 
 func process_frame(delta: float) -> void:
@@ -40,19 +40,12 @@ func process_frame(delta: float) -> void:
 
 
 func unregister_source(source: ItemDefinition) -> void:
-	var source_key: String = source.get_key()
-	_effect_state.remove_modifiers_by_source(source_key)
-	_event_effects = _event_effects.filter(
-		func(registered: Dictionary) -> bool: return registered.source_key != source_key
-	)
+	_clear_source(source.get_key())
 
 
 func register_source(source: ItemDefinition, level: int) -> void:
 	var source_key: String = source.get_key()
-	_effect_state.remove_modifiers_by_source(source_key)
-	_event_effects = _event_effects.filter(
-		func(registered: Dictionary) -> bool: return registered.source_key != source_key
-	)
+	_clear_source(source_key)
 	for effect in source.get_effects_for_level(level):
 		if effect.trigger.type == &"always":
 			_apply_effect(effect, source_key, level)
@@ -67,6 +60,13 @@ func register_source(source: ItemDefinition, level: int) -> void:
 					}
 				)
 			)
+
+
+func _clear_source(source_key: String) -> void:
+	_effect_state.remove_modifiers_by_source(source_key)
+	_event_effects = _event_effects.filter(
+		func(registered: Dictionary) -> bool: return registered.source_key != source_key
+	)
 
 
 func _apply_effect(effect: Effect, source_key: String, level: int) -> void:

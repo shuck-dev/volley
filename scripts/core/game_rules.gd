@@ -11,7 +11,7 @@ const BASE_STATS: Dictionary = {
 	&"friendship_points_per_hit": 1.0,
 	&"ball_magnetism": 0.0,
 	&"return_angle_influence": 0.0,
-	&"kit_slots": 3.0,
+	&"kit_slots": 3.0,  # float: effect system operates on floats; cast to int at point of use
 	&"ball_speed_offset": 0.0,
 	&"arena_height": 986.0,
 }

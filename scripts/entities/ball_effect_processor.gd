@@ -1,6 +1,8 @@
 class_name BallEffectProcessor
 extends Node
 
+var paddles: Array[Node2D] = []
+
 var _ball: Ball
 var _item_manager: Node
 var _speed_offset := 0.0
@@ -20,17 +22,17 @@ func process_frame(delta: float) -> void:
 
 func _sync_speed_limits() -> void:
 	var new_min: float = _item_manager.get_stat(&"ball_speed_min")
-	if not is_equal_approx(new_min, _ball._min_speed):
-		_ball.speed += new_min - _ball._min_speed
-		_ball._min_speed = new_min
-	_ball._max_speed = _ball._min_speed + _item_manager.get_stat(&"ball_speed_max_range")
-	_ball._speed_increment = _item_manager.get_stat(&"ball_speed_increment")
+	if not is_equal_approx(new_min, _ball.min_speed):
+		_ball.speed += new_min - _ball.min_speed
+		_ball.min_speed = new_min
+	_ball.max_speed = _ball.min_speed + _item_manager.get_stat(&"ball_speed_max_range")
+	_ball.speed_increment = _item_manager.get_stat(&"ball_speed_increment")
 
 	var new_offset: float = _item_manager.get_stat(&"ball_speed_offset")
 	_ball.speed += new_offset - _speed_offset
 	_speed_offset = new_offset
 
-	_ball.speed = clampf(_ball.speed, _ball._min_speed, _ball._max_speed)
+	_ball.speed = clampf(_ball.speed, _ball.min_speed, _ball.max_speed)
 
 
 func process_hit() -> void:
@@ -39,12 +41,12 @@ func process_hit() -> void:
 
 func _apply_magnetism(delta: float) -> void:
 	var magnetism: float = _item_manager.get_stat(&"ball_magnetism")
-	if magnetism <= 0.0 or _ball.paddles.is_empty():
+	if magnetism <= 0.0 or paddles.is_empty():
 		return
 
 	var closest_paddle: Node2D = null
 	var closest_distance := INF
-	for paddle in _ball.paddles:
+	for paddle in paddles:
 		if not is_instance_valid(paddle):
 			continue
 		var distance: float = _ball.global_position.distance_to(paddle.global_position)

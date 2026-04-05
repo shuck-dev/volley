@@ -13,9 +13,10 @@ func apply(effect_state: EffectState, source_key: String, level: int) -> void:
 	modifier.stat_key = stat_key
 	modifier.operation = StatModifier.OPERATION_BY_NAME[operation]
 	modifier.value = scaled_value(value, level)
+	modifier.temporary = true
 	if range_stat_key:
 		modifier.range_stat_key = range_stat_key
-	effect_state.add_until_miss_modifier(modifier)
+	effect_state.add_modifier(modifier)
 
 
 func describe() -> String:
@@ -28,5 +29,5 @@ func describe() -> String:
 func _effective_value(effect_state: EffectState, level: int) -> float:
 	var base_value: float = scaled_value(value, level)
 	if range_stat_key:
-		return base_value * effect_state.get_permanent_stat(range_stat_key)
+		return base_value * effect_state.get_base_stat(range_stat_key)
 	return base_value

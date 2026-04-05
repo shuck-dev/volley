@@ -19,7 +19,7 @@ func before_each() -> void:
 
 	_paddle = Node2D.new()
 	add_child_autofree(_paddle)
-	_ball.paddles = [_paddle]
+	_ball.effect_processor.paddles = [_paddle]
 
 
 # --- magnetism ---

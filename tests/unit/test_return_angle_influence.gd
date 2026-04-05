@@ -25,7 +25,7 @@ func test_no_influence_before_level_two() -> void:
 	_ball.linear_velocity = Vector2(100, 80)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball._effect_processor.process_hit()
+	_ball.effect_processor.process_hit()
 
 	assert_almost_eq(_ball.linear_velocity.y, 80.0, 0.01)
 
@@ -39,7 +39,7 @@ func test_influence_reduces_vertical_component() -> void:
 	_ball.speed = _ball.linear_velocity.length()
 	var original_y: float = _ball.linear_velocity.y
 
-	_ball._effect_processor.process_hit()
+	_ball.effect_processor.process_hit()
 
 	assert_lt(
 		absf(_ball.linear_velocity.y),
@@ -57,7 +57,7 @@ func test_influence_preserves_speed() -> void:
 	_ball.speed = _ball.linear_velocity.length()
 	var original_speed: float = _ball.speed
 
-	_ball._effect_processor.process_hit()
+	_ball.effect_processor.process_hit()
 
 	assert_almost_eq(_ball.linear_velocity.length(), original_speed, 0.01)
 
@@ -70,7 +70,7 @@ func test_influence_preserves_horizontal_direction() -> void:
 	_ball.linear_velocity = Vector2(100, 80)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball._effect_processor.process_hit()
+	_ball.effect_processor.process_hit()
 
 	assert_gt(
 		_ball.linear_velocity.x,
