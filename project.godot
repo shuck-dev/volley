@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 GodotIQRuntime="*uid://5f55jejx8ekg"
 SaveManager="*uid://dk8i5dnut5fu0"
 ItemManager="*uid://csp168hb63ubx"
+ProgressionManager="*res://scripts/progression/progression_manager.gd"
 
 [debug]
 

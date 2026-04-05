@@ -4,6 +4,7 @@ extends RefCounted
 var friendship_point_balance := 0
 var item_levels: Dictionary[String, int]
 var personal_volley_best := 0
+var clearance_unlocked := false
 
 var _storage: SaveStorage
 
@@ -29,6 +30,7 @@ func load_from_disk() -> bool:
 	friendship_point_balance = loaded.friendship_point_balance
 	item_levels = loaded.item_levels
 	personal_volley_best = loaded.personal_volley_best
+	clearance_unlocked = loaded.clearance_unlocked
 
 	return true
 
@@ -38,7 +40,8 @@ func to_dict() -> Dictionary:
 	return {
 		"friendship_point_balance": friendship_point_balance,
 		"item_levels": item_levels,
-		"personal_volley_best": personal_volley_best
+		"personal_volley_best": personal_volley_best,
+		"clearance_unlocked": clearance_unlocked,
 	}
 
 
@@ -48,6 +51,7 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.friendship_point_balance = data.get("friendship_point_balance", 0)
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
+	progression.clearance_unlocked = data.get("clearance_unlocked", false)
 
 	return progression
 

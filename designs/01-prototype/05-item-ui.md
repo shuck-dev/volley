@@ -21,9 +21,9 @@ Items are diegetic objects. They exist as physical cards or objects in the world
 
 ## In-panel drag-and-drop
 
-The clear-out, kit, and locker all use Control node drag-and-drop within a single UI panel. This is standard Godot UI: draggable Control nodes dropped onto slot targets. No spike needed.
+The clearance, kit, and locker all use Control node drag-and-drop within a single UI panel. This is standard Godot UI: draggable Control nodes dropped onto slot targets. No spike needed.
 
-- Clear-out: drag items from the friend's things into the box to take them
+- Clearance: drag items from the friend's things into the box to take them
 - Kit/locker: drag items between kit slots and locker slots to equip/unequip
 
 ---
@@ -45,6 +45,19 @@ This is the scope of SH-51.
 - What happens visually when a slot is full (swap vs reject)?
 - How does item level and degradation state show on the card?
 - Can items be dragged during a rally, or only between rounds?
+
+---
+
+## Drag-and-drop feel
+
+Diegetic drag-and-drop needs to feel physical. A juice/tweening library from AssetLib (e.g. Godot Juice) would help with:
+
+- Item pickup: slight scale pop and shadow shift when grabbed
+- Hover over valid slot: slot glow or pulse
+- Drop: satisfying snap with a small bounce settle
+- Reject (invalid drop): item rubber-bands back to origin
+
+These are not cosmetic. Without tactile feedback, dragging a Control node feels like moving a rectangle. With it, it feels like picking up an object. Evaluate during the Make Fun pass whether the built-in Tween is sufficient or a library is worth pulling in.
 
 ---
 
