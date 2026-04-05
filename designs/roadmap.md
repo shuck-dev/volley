@@ -25,6 +25,7 @@ timeline
     v0.2-0.3 Alpha ~ 3.1 months (36pts)
         : Asset Integration
         : Tile Layout
+        : Multiplayer Foundation
         : World and Narrative
         : The Event
         : Art Direction
@@ -61,6 +62,8 @@ timeline
         : Reaction Portrait Panel
         : Reaction Portrait Panel (tech)
         : Background & Foreground (tech)
+        : Local Multiplayer
+        : Online Multiplayer
         : Milestone Badge Art
         : Milestones
         : Menus & Settings

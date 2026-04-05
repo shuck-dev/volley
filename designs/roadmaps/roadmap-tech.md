@@ -16,6 +16,7 @@ timeline
     v0.2-0.3 Alpha ~ 0.5 months (5pts)
         : Asset Integration
         : Tile Layout
+        : Multiplayer Foundation
 
     v0.4-0.5 Beta ~ 1.1 months (11pts)
         : Character Systems
@@ -28,6 +29,8 @@ timeline
         : Visual Effects
         : Reaction Portrait Panel
         : Background & Foreground
+        : Local Multiplayer
+        : Online Multiplayer
         : Milestones
         : Menus & Settings
         : UI Polish
@@ -67,7 +70,9 @@ timeline
 
 **Asset Integration** replaces all placeholder art with the assets delivered by Art: character sprites and expressions, idle/hit/miss animations, arena, and ball. Depends on Character Art and Character Animation being delivered first. Done when no placeholder assets remain in the running game.
 
-**Tile Layout** implements the full tiling window layout for fullscreen and portable mode. The game is the primary tile; secondary tiles (shop, kit/locker, compendium) declare their preferred size and the layout compresses the game viewport to accommodate them. Inspired by Hyprland's dwindle layout: split direction based on aspect ratio, multiple tiles as siblings. Includes tweened transitions and responsive game viewport scaling. Prototype uses a simplified version (one tile, fixed ratio, no tween); this project delivers the real thing.
+**Tile Layout** implements the full tiling window layout for fullscreen and portable mode. The game is the primary scene; secondary scenes (shop, kit/locker, compendium) declare their preferred size and the layout compresses the game SubViewport to accommodate them. Inspired by Hyprland's dwindle layout: split direction based on aspect ratio, multiple scenes as siblings. Includes tweened transitions and responsive viewport scaling. Prototype uses a simplified version (one scene, fixed ratio, no tween); this project delivers the real thing.
+
+**Multiplayer Foundation** refactors state mutations into a command/event pattern and abstracts input sources per player. All gameplay state changes (paddle hit, ball miss, FP earned, item purchased) become explicit commands that can be logged, replicated, and rolled back. Input is read from an injected source (local keyboard, remote network) rather than the global Input singleton. Single-player runs the same path with zero overhead. This foundation enables local and online multiplayer modes to ship in Content Updates without retrofitting the entire codebase.
 
 ## v0.4-0.5 Beta
 
