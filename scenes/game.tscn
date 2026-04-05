@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://ctjs62ui6cpso"]
 
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
@@ -18,6 +18,17 @@ ball = NodePath("Ball")
 paddle = NodePath("Paddle")
 autoplay_controller = NodePath("AutoplayController")
 autoplay_config = ExtResource("8_85g3d")
+
+[node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(4000, 4000)
+
+[node name="BackgroundColor" type="ColorRect" parent="ArenaBackground" unique_id=2003900130]
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="HUD" parent="." unique_id=794024698 instance=ExtResource("2_tefeu")]
 

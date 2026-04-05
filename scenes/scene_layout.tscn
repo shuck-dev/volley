@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cls4btpupspbw"]
 
 [ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/scene_layout.gd" id="1_qaugd"]
-[ext_resource type="PackedScene" path="res://scenes/game.tscn" id="2_01afa"]
+[ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/game.tscn" id="2_01afa"]
 
 [node name="SceneLayout" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_viewport_container", "secondary_container")]
 layout_mode = 3
