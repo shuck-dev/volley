@@ -51,6 +51,7 @@ jobs:
             const updates = {};
             if (!db.properties['File']) updates['File'] = { rich_text: {} };
             if (!db.properties['Initiative']) updates['Initiative'] = { select: {} };
+            if (!db.properties['Order']) updates['Order'] = { number: {} };
             if (Object.keys(updates).length > 0) {
               await notion.databases.update({
                 database_id: databaseId,
@@ -89,11 +90,18 @@ jobs:
             return 'general';
           }
 
+          function getOrder(filePath) {
+            const filename = filePath.split('/').pop();
+            const match = filename.match(/^(\d+)/);
+            return match ? parseInt(match[1], 10) : null;
+          }
+
           async function syncFile(filePath) {
             const content = fs.readFileSync(filePath, 'utf-8');
             const title = content.match(/^#\s+(.+)/m)?.[1] || filePath;
             const blocks = markdownToBlocks(content);
             const initiative = getInitiative(filePath);
+            const order = getOrder(filePath);
 
             // Check if page already exists
             const existing = await notion.databases.query({
@@ -117,26 +125,30 @@ jobs:
               }
               // Add updated blocks
               await appendBlocksInChunks(pageId, blocks);
-              // Update title and initiative
+              // Update title, initiative, and order
+              const updateProps = {
+                [titleProp]: { title: [{ text: { content: title } }] },
+                'Initiative': { select: { name: initiative } }
+              };
+              if (order !== null) updateProps['Order'] = { number: order };
               await notion.pages.update({
                 page_id: pageId,
-                properties: {
-                  [titleProp]: { title: [{ text: { content: title } }] },
-                  'Initiative': { select: { name: initiative } }
-                }
+                properties: updateProps
               });
               console.log(`Updated: ${filePath}`);
             } else {
               // Create new page
               const firstChunk = blocks.slice(0, 100);
               const remaining = blocks.slice(100);
+              const createProps = {
+                [titleProp]: { title: [{ text: { content: title } }] },
+                'File': { rich_text: [{ text: { content: filePath } }] },
+                'Initiative': { select: { name: initiative } }
+              };
+              if (order !== null) createProps['Order'] = { number: order };
               const page = await notion.pages.create({
                 parent: { database_id: databaseId },
-                properties: {
-                  [titleProp]: { title: [{ text: { content: title } }] },
-                  'File': { rich_text: [{ text: { content: filePath } }] },
-                  'Initiative': { select: { name: initiative } }
-                },
+                properties: createProps,
                 children: firstChunk
               });
               if (remaining.length > 0) {
@@ -154,6 +166,30 @@ jobs:
 
             for (const file of changedFiles) {
               await syncFile(file);
+            }
+
+            // Set default view sort to Order ascending
+            // NOTE: Views API is not part of Notion's stable public API; may break without notice
+            try {
+              const dbViews = await notion.request({
+                path: `databases/${databaseId}/views`,
+                method: 'GET'
+              });
+              if (dbViews.results && dbViews.results.length > 0) {
+                const viewId = dbViews.results[0].id;
+                await notion.request({
+                  path: `views/${viewId}`,
+                  method: 'PUT',
+                  body: {
+                    viewSortsRequest: [
+                      { property: 'Order', direction: 'ascending' }
+                    ]
+                  }
+                });
+                console.log('Set default view sort to Order ascending');
+              }
+            } catch (err) {
+              console.warn('Could not set view sort:', err.message);
             }
           }
 
