@@ -9,15 +9,12 @@ signal ball_speed_updated(
 )
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 
-const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
-
 @export var ball: Ball
 @export var paddle: Paddle
 @export var autoplay_controller: AutoplayController
 @export var autoplay_config: AutoPlayConfig
 
 var _volley_count := 0
-var _shop_scene: Node
 var _progression: ProgressionData
 var _item_manager: Node
 var _is_autoplay_active := false
@@ -82,14 +79,6 @@ func _on_ball_missed() -> void:
 func _on_auto_play_changed(is_active: bool) -> void:
 	_is_autoplay_active = is_active
 	auto_play_changed.emit(is_active, autoplay_config.friendship_point_rate)
-
-
-func _on_shop_button_pressed() -> void:
-	if _shop_scene == null:
-		_shop_scene = ShopScene.instantiate()
-		add_child(_shop_scene)
-	else:
-		_shop_scene.visible = not _shop_scene.visible
 
 
 ## Fractional accumulation;

@@ -24,7 +24,7 @@ timeline
 
     v0.2-0.3 Alpha ~ 3.1 months (36pts)
         : Asset Integration
-        : Tile Layout
+        : Scene Layout
         : Multiplayer Foundation
         : World and Narrative
         : The Event

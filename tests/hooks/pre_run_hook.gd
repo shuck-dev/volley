@@ -7,6 +7,7 @@ const EXCLUDE_PATHS = [
 	"res://tests/*",
 	# Require full scene with nodes, not unit-testable
 	"res://scripts/hud/*",
+	"res://scripts/core/scene_layout.gd",
 	"res://scripts/entities/back_wall.gd",
 	# Abstract base class, only used for mocking
 	"res://scripts/progression/save_storage.gd",

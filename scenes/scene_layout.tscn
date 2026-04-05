@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://cls4btpupspbw"]
+
+[ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/scene_layout.gd" id="1_qaugd"]
+[ext_resource type="PackedScene" path="res://scenes/game.tscn" id="2_01afa"]
+
+[node name="SceneLayout" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_viewport_container", "secondary_container")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qaugd")
+game_viewport_container = NodePath("HBoxContainer/GameViewportContainer")
+secondary_container = NodePath("HBoxContainer/SecondaryContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1712174179]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="HBoxContainer" unique_id=790069220]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="GameViewport" type="SubViewport" parent="HBoxContainer/GameViewportContainer" unique_id=839532013]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Game" parent="HBoxContainer/GameViewportContainer/GameViewport" unique_id=75800363 instance=ExtResource("2_01afa")]
+
+[node name="SecondaryContainer" type="Control" parent="HBoxContainer" unique_id=669083198]
+visible = false
+layout_mode = 2

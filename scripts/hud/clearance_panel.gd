@@ -1,6 +1,7 @@
 class_name ClearancePanel
 extends PanelContainer
 
+@export var preferred_width: int = 400
 @export var friendship_label: Label
 
 

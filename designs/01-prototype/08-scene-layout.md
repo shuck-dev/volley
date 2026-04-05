@@ -1,4 +1,4 @@
-# Tile Layout
+# Scene Layout
 
 ## Goal
 
@@ -85,10 +85,10 @@ For prototype, the tiling system is simplified to unblock the shop and kit/locke
 
 ### Architecture
 
-A `TileLayout` Control node sits at the root of the scene tree, above the game. It manages two regions: the primary SubViewportContainer (game) and a secondary slot for scenes.
+A `SceneLayout` Control node sits at the root of the scene tree, above the game. It manages two regions: the primary SubViewportContainer (game) and a secondary slot for scenes.
 
 ```
-TileLayout (Control)
+SceneLayout (Control)
   GameViewportContainer (SubViewportContainer)
     GameViewport (SubViewport)
       Game (the current main scene contents: ball, paddle, HUD, walls)
@@ -102,12 +102,12 @@ The game runs inside a SubViewport from the start, even in prototype. This is th
 
 - **One secondary scene at a time.** Opening a new scene closes the current one.
 - **Horizontal split only.** Game on the left, secondary scene on the right. No vertical or dwindle logic.
-- **Secondary scene declares preferred width.** The TileLayout reads it and sizes the split accordingly. No negotiation or minimum-size fallbacks.
+- **Secondary scene declares preferred width.** The SceneLayout reads it and sizes the split accordingly. No negotiation or minimum-size fallbacks.
 - **No tween.** Layout changes are instant. Tweened transitions are a Make Fun pass item.
 - **HUD stays in the game SubViewport.** The HUD CanvasLayer is inside the SubViewport, so it scales with the game.
 - **Game in SubViewport.** The game scene moves into a SubViewport. This is the foundational change that makes everything else work.
 
-### TileLayout responsibilities
+### SceneLayout responsibilities
 
 - Holds the GameViewportContainer and SecondaryContainer as children
 - Exposes `open_secondary(scene: PackedScene)` and `close_secondary()`
@@ -123,18 +123,18 @@ Each secondary scene (shop, kit, compendium) exports:
 @export var preferred_width: int = 400
 ```
 
-The TileLayout reads this after instantiation to set the split. In Alpha, this expands to preferred height, minimum sizes, and dynamic negotiation.
+The SceneLayout reads this after instantiation to set the split. In Alpha, this expands to preferred height, minimum sizes, and dynamic negotiation.
 
 ### What changes for existing code
 
-- **main.tscn** restructures: the current root Node2D (Game) moves inside a SubViewport. The new root is TileLayout.
+- **main.tscn** restructures: the current root Node2D (Game) moves inside a SubViewport. The new root is SceneLayout.
 - **game.gd** is unchanged. It does not know about the layout.
 - **hud.gd** is unchanged. The HUD CanvasLayer is inside the SubViewport and renders relative to the game.
-- **Shop button signal** routes through TileLayout instead of game.gd. The HUD emits `shop_button_pressed`, TileLayout listens and calls `open_secondary(ShopScene)`.
+- **Shop button signal** routes through SceneLayout instead of game.gd. The HUD emits `shop_button_pressed`, SceneLayout listens and calls `open_secondary(ShopScene)`.
 
 ### What this sets up for Alpha
 
-The prototype TileLayout is intentionally a subset of the full system:
+The prototype SceneLayout is intentionally a subset of the full system:
 
 | Prototype | Alpha |
 |-----------|-------|
