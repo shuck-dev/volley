@@ -145,3 +145,17 @@ class TestRemoveLevel:
 		watch_signals(_manager)
 		_manager.remove_level(TEST_KEY)
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
+
+	func test_remove_level_refunds_friendship_points() -> void:
+		_manager._progression.friendship_point_balance = 1000
+		var balance_before_purchase: int = _manager._progression.friendship_point_balance
+		_manager.purchase(TEST_KEY)
+		var cost_paid: int = (
+			balance_before_purchase - _manager._progression.friendship_point_balance
+		)
+		_manager.remove_level(TEST_KEY)
+		assert_eq(
+			_manager._progression.friendship_point_balance,
+			balance_before_purchase,
+			"removing a level should refund the cost paid",
+		)

@@ -7,6 +7,7 @@ var _percentage_modifiers: Array[StatModifier] = []
 var _multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
 var _oscillations: Array[StatOscillation] = []
+var _resolving_keys: Array[StringName] = []
 
 
 func get_stat(key: StringName) -> float:
@@ -22,12 +23,18 @@ func get_stat(key: StringName) -> float:
 
 func get_base_stat(key: StringName) -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
+	assert(
+		key not in _resolving_keys,
+		"EffectState: circular dependency resolving stat: " + key,
+	)
+	_resolving_keys.append(key)
 
 	var result: float = _base_values[key]
 	result += _sum_oscillations(key)
 	result += _sum_modifiers(key, _add_modifiers, true)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true)
 	result *= _product_modifiers(key, _multiply_modifiers, true)
+	_resolving_keys.erase(key)
 	return result
 
 
