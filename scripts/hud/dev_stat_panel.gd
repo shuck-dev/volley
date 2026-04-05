@@ -62,7 +62,7 @@ func _build_live_labels() -> void:
 
 func _add_header() -> void:
 	var header := Label.new()
-	header.text = "--- Stats ---"
+	header.text = "--- DEBUG: Stats ---"
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_theme_font_size_override("font_size", 12)
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))

@@ -12,6 +12,7 @@ func _ready() -> void:
 	if not OS.is_debug_build():
 		hide()
 		return
+	_add_header()
 	for item in ItemManager.items:
 		var container := VBoxContainer.new()
 		add_child(container)
@@ -139,10 +140,20 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
 
 
+func _add_header() -> void:
+	var header := Label.new()
+	header.text = "--- DEBUG: Items ---"
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.add_theme_font_size_override("font_size", 12)
+	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
+	add_child(header)
+
+
 func _build_placeholder() -> void:
 	for child in get_children():
 		child.queue_free()
 	resized.connect(queue_redraw)
+	_add_header()
 
 	for path in _find_item_resources():
 		var item: ItemDefinition = load(path)
