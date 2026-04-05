@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://hvh6q02lrntj"]
+
+[ext_resource type="Script" uid="uid://chtpmloao3llh" path="res://scripts/hud/clearance_panel.gd" id="1_lx5au"]
+
+[node name="Shop" type="PanelContainer" unique_id=638185813 node_paths=PackedStringArray("friendship_label")]
+script = ExtResource("1_lx5au")
+friendship_label = NodePath("MarginContainer/VBoxContainer/FriendshipLabel")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2034980290]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=623787695]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1859763187]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Friend's Clearance"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=1569990766]
+layout_mode = 2
+
+[node name="FriendshipLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1105592349]
+layout_mode = 2
+text = "Friendship: 0"
+horizontal_alignment = 1
