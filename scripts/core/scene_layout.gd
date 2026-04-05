@@ -24,7 +24,6 @@ func open_secondary(scene: PackedScene) -> void:
 	close_secondary()
 
 	_secondary_viewport_container = SubViewportContainer.new()
-	_secondary_viewport_container.stretch = true
 	_secondary_viewport_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	secondary_container.add_child(_secondary_viewport_container)
 
@@ -34,11 +33,18 @@ func open_secondary(scene: PackedScene) -> void:
 	_secondary_viewport_container.add_child(viewport)
 
 	_secondary_scene = scene.instantiate()
-	viewport.add_child(_secondary_scene)
 
 	var preferred_width: Variant = _secondary_scene.get("preferred_width")
-	secondary_container.custom_minimum_size.x = preferred_width if preferred_width != null else 400
+	var panel_width: int = preferred_width if preferred_width != null else 400
+	secondary_container.custom_minimum_size.x = panel_width
 	secondary_container.visible = true
+
+	## Set viewport size explicitly using the known window height.
+	## stretch=true will sync to the correct size once layout settles.
+	var window_height: int = int(get_viewport().get_visible_rect().size.y)
+	viewport.size = Vector2i(panel_width, window_height)
+
+	viewport.add_child(_secondary_scene)
 
 
 func close_secondary() -> void:

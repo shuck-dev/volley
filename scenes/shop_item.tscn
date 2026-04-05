@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://pk4rev1g2m1n"]
+
+[ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
+
+[node name="ShopItem" type="Node2D" unique_id=1911337108]
+script = ExtResource("1_lrx6i")
+
+[node name="Background" type="ColorRect" parent="." unique_id=94100835]
+offset_right = 70.0
+offset_bottom = 55.0
+color = Color(0, 0, 0, 1)
+
+[node name="NameLabel" type="Label" parent="." unique_id=1635246451]
+offset_top = -16.0
+offset_right = 70.0
+theme_override_font_sizes/font_size = 10
+text = "Item Name"
+clip_text = true
+
+[node name="CostLabel" type="Label" parent="." unique_id=582885755]
+offset_left = 8.0
+offset_top = 57.0
+offset_right = 70.0
+offset_bottom = 71.0
+theme_override_font_sizes/font_size = 9
+text = "0 FP"
+horizontal_alignment = 1
+clip_text = true
