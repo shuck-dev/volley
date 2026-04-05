@@ -77,22 +77,29 @@ classDiagram
     class EffectManager {
         -effect_state: EffectState
         +get_stat(key: StringName) float
+        +get_base_stat(key: StringName) float
+        +get_percentage_offset(key: StringName) float
         +is_game_state_active(state: StringName) bool
         +register_source(source: ItemDefinition, level: int)
         +unregister_source(source: ItemDefinition)
-        -apply_always_effect(effect: Effect, source_key: String)
+        -clear_source(source_key: String)
+        -apply_effect(effect: Effect, source_key: String, level: int)
     }
 
     class EffectState {
         <<internal>>
         -base_values: Dictionary[StringName, float]
         -add_modifiers: Array[StatModifier]
+        -percentage_modifiers: Array[StatModifier]
         -multiply_modifiers: Array[StatModifier]
         -active_states: Dictionary[StringName, String]
         +register_base_values(values: Dictionary)
         +get_stat(key: StringName) float
+        +get_base_stat(key: StringName) float
+        +get_percentage_offset(key: StringName) float
         +add_modifier(modifier: StatModifier)
         +remove_modifiers_by_source(source_key: String)
+        +clear_temporary_modifiers()
         +set_state(state: StringName, source_key: String)
         +clear_state(state: StringName)
         +is_state_active(state: StringName) bool
@@ -104,6 +111,8 @@ classDiagram
         +stat_key: StringName
         +operation: Operation
         +value: float
+        +range_stat_key: StringName
+        +temporary: bool
     }
 
     ItemManager "1" --> "0..*" ItemDefinition
@@ -127,8 +136,8 @@ classDiagram
 | `Outcome` | What happens when the effect fires (modify_stat, spawn_ball, etc.). Type is a StringName |
 | `ItemManager` | Ownership and economy: tracks what the player owns, levels, FP balance. Delegates stat effects to EffectManager on level change |
 | `EffectManager` | Evaluation engine and public stat API: registers/unregisters effect sources, dispatches outcomes by trigger type, delegates stat queries to internal EffectState |
-| `EffectState` | Internal to EffectManager: holds base values (from GameRules.BASE_STATS), flat modifier arrays, and named game states. Not a separate autoload |
-| `StatModifier` | A single additive or multiplicative change to a stat, stored in flat typed arrays |
+| `EffectState` | Internal to EffectManager: holds base values (from GameRules.BASE_STATS), modifier arrays (one per operation type), oscillations, and named game states. Not a separate autoload. `get_stat` includes temporary modifiers, `get_base_stat` excludes them |
+| `StatModifier` | A single stat change: additive, percentage, or multiplicative. `temporary` flag marks modifiers cleared on miss. `range_stat_key` defers value resolution to query time |
 
 **Instance state note:** `ItemDefinition` is a pure data template, no level or state on the resource itself. Level is stored per-player in `ProgressionData` (keyed by item key). `ItemManager` calls `EffectManager.unregister_source` then `register_source` on every level change, passing the new level to `get_effects_for_level()`. Degradation is tracked per-item-key in `EffectState` and manipulated via the `increment_degradation` outcome and `degradation_at` condition. Broken state is derived: `degradation >= 100`.
 
@@ -198,16 +207,23 @@ set_ball_speed
 ### ModifierOp
 
 ```
-add
-multiply
+add                  # flat delta, applied first
+percentage           # summed additively, applied as (1 + total) multiplier after add
+multiply             # applied sequentially after percentage
 ```
+
+### Temporary modifiers
+
+Modifiers with `temporary = true` are excluded from `get_base_stat` and cleared by `clear_temporary_modifiers`. The outcome sets the flag; EffectState does not know why a modifier is temporary.
+
+Currently used by `stat_until_miss` outcomes (cleared on miss via EffectManager).
 
 ### ExpiryCondition
 
 ```
 while_owned          # removed when source unequipped/destroyed
 duration             # timer, removed after N seconds
-until_miss           # cleared on next miss, stackable
+until_miss           # temporary flag, cleared on next miss, stackable
 until_state_exits    # cleared when a named game state ends
 until_next_trigger   # cleared when the same effect fires again
 ```
@@ -230,7 +246,7 @@ sequenceDiagram
     EffectManager->>EffectState: add/remove modifiers, set/clear states
     EffectManager->>Game: execute actions (spawn_ball, deflect, etc.)
     EffectManager-->>Game: emit presentation signals
-    EffectState->>EffectState: clear_until_miss_modifiers()
+    EffectState->>EffectState: clear_temporary_modifiers()
 ```
 
 ### Outcome routing
@@ -252,12 +268,16 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    Base[Base value] --> Add[Sum add modifiers] --> Multiply[Apply multiply modifiers] --> Clamp[Clamp to valid range] --> Final[Final value]
+    Base[Base value] --> Add[Sum add modifiers] --> Pct["Apply percentage (1 + sum)"] --> Multiply[Apply multiply modifiers] --> Clamp[Clamp to valid range] --> Final[Final value]
 ```
 
 `EffectManager.get_stat(key)` is called every frame or on-demand by game systems. The game never reads raw base values directly. All gameplay code queries EffectManager, which delegates to the internal EffectState.
 
-**Resolution order matters.** Additive modifiers apply first, then multiplicative. This means a +50 add and a x2 multiply on a base of 500 gives (500 + 50) * 2 = 1100, not 500 * 2 + 50 = 1050.
+**Resolution order matters.** Three stages: add, then percentage, then multiply. Percentage modifiers are summed additively into a single multiplier before applying, so two +50% modifiers give +100% (x2.0), not x2.25. This prevents exponential stacking.
+
+Example: base 50, +10 add, +140% percentage, x2 multiply = (50 + 10) * (1 + 1.4) * 2 = 60 * 2.4 * 2 = 288.
+
+**`get_base_stat`** excludes temporary modifiers (e.g. until-miss buffs). Used by proportional modifiers (`range_stat_key`) to resolve against stable values.
 
 ### Prototype stat keys
 
@@ -267,14 +287,18 @@ EffectState is key-agnostic. Game systems register base values at startup. New k
 |---|---|---|
 | `paddle_speed` | 500.0 | px/s |
 | `paddle_size` | 50.0 | px |
+| `paddle_size_min` | 50.0 | px |
 | `ball_speed_min` | 400.0 | px/s |
 | `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
 | `friendship_points_per_hit` | 1.0 | FP |
 | `ball_magnetism` | 0.0 | force |
 | `return_angle_influence` | 0.0 | factor (0-1) |
+| `kit_slots` | 3.0 | count (cast to int at use) |
+| `ball_speed_offset` | 0.0 | px/s |
+| `arena_height` | 986.0 | px |
 
-All base values are defined in `GameRules.BASE_STATS` and registered by `EffectManager` on `_ready()`.
+All base values are defined in `GameRules.BASE_STATS` and registered by `EffectManager` on `_ready()`. `paddle_size` is clamped to `[paddle_size_min, arena_height]` by the paddle entity.
 
 ### Prototype named states
 
