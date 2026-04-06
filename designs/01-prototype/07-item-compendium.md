@@ -33,7 +33,7 @@ Each compendium entry displays:
 All three description variants, labelled by state:
 - Default
 - Power revealed
-- Narrative revealed (Post-Break for Act 1 items)
+- Narrative revealed (post-break for pre-break items)
 
 Description variants the player has not yet encountered in-game are hidden behind a placeholder (e.g. "???"). Reaching max level does not automatically reveal all variants; each variant unlocks independently through play. This preserves the discovery moment for Post-Break text even if the player maxes the item early.
 

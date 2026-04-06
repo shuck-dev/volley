@@ -10,7 +10,7 @@ Items are gameplay-first. The effect is immediately perceptible - the player fig
 
 The Tinkerer carries the narrative meaning of each item. The item itself just does its thing.
 
-FP is Act 1's incentive currency. Act 2 (battle mode) and Act 3 (enemy mode) introduce different objectives, so items designed for those acts may target different incentives entirely. Act 1 prototype items are FP-focused, but the framework must not assume FP is always the reward worth designing around. Items that carry across acts should stay useful under different objective conditions.
+FP is the pre-break incentive currency. Post-break phases may introduce different objectives, so items designed for those phases may target different incentives entirely. Pre-break prototype items are FP-focused, but the framework must not assume FP is always the reward worth designing around. Items that carry across phases should stay useful under different objective conditions.
 
 ---
 
@@ -307,7 +307,7 @@ Descriptions are short — a fragment of thought from the main character's mind.
 
 Because descriptions are short they can change dynamically. Variant text is keyed to item state and swapped silently in the UI — no announcement, no tooltip. The player notices the text has shifted and understands why through play.
 
-Every item has exactly 3 variants: default, item power revealed (triggers once the player has witnessed the effect), and narrative revealed (Post-Break for Act 1 items; tied to the relevant story beat for Act 2 and Act 3 items).
+Every item has exactly 3 variants: default, item power revealed (triggers once the player has witnessed the effect), and narrative revealed (post-break for pre-break items; tied to the relevant story beat for post-break items).
 
 Item card format:
 ```

@@ -11,7 +11,7 @@ Build the framework for persistent progression: earn FP from volleys, spend it o
 
 The attribute-based upgrade system is implemented: `UpgradeManager` owns `UpgradeDefinition` resources for paddle speed, paddle size, and ball start speed. Each has multiple levels with FP costs and per-level effect values. `GameRules` returns base values modified by purchased upgrade levels. FP earning, HUD display, save/load, and high score persistence are all working.
 
-**Rework required:** The `UpgradeDefinition` / levelled attribute model is superseded by the item system (see `05-upgrade-mechanics.md`). `UpgradeManager` will be replaced by `ItemManager`. `GameRules` will query item effects instead of upgrade levels. The three starter upgrades will be removed and replaced with Act 1 items. This rework is part of the Upgrade Mechanics ticket, not this one.
+**Rework required:** The `UpgradeDefinition` / levelled attribute model is superseded by the item system (see `05-upgrade-mechanics.md`). `UpgradeManager` will be replaced by `ItemManager`. `GameRules` will query item effects instead of upgrade levels. The three starter upgrades will be removed and replaced with pre-break items. This rework is part of the Upgrade Mechanics ticket, not this one.
 
 ## Scope
 

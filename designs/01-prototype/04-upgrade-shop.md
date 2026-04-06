@@ -1,23 +1,11 @@
 # Upgrade Shop
 
 ## Goal
-Design and implement the player-facing shop: a rotating selection of items the player can browse and purchase with FP. The rotation system ensures the right items appear at the right moments without feeling scripted, and the shop's visible state changes as the shopkeeper's relationship with the player deteriorates across Act 1.
+Design and implement the player-facing shop: a rotating selection of items the player can browse and purchase with FP. The rotation system ensures the right items appear at the right moments without feeling scripted.
 
 **Points:** 5
 **Dependencies:** Upgrade Mechanics (item data model), Progression System (FP economy)
 **Unlocks:** The Shopkeeper and the Tinkerer (character integration), UX Design (shop UI pass)
-
----
-
-## Act structure overview
-
-How the player acquires items changes with each act. The shop is an Act 1 mechanic. Acts 2 and 3 have their own acquisition systems (see The Shopkeeper and the Tinkerer).
-
-| Act | Acquisition method |
-|---|---|
-| Act 1 | Shop: rotating items purchased with FP |
-| Act 2 | Rummaging: searching old boxes in the basement for items |
-| Act 3 | Partners: significant items gifted by partners, still purchased with FP |
 
 ---
 
@@ -27,7 +15,7 @@ The shop is not available from game start. It unlocks when the player hits a spe
 
 **Prototype:** The full milestone system is a Beta feature. For prototype, the shop unlocks at a hardcoded FP threshold. The threshold is a tuning target for the Make Fun pass; the default starting point is 50 FP. The shop panel is hidden and the HUD button is absent until this threshold is crossed.
 
-## Shop display (Act 1)
+## Shop display
 
 The shop shows 5 item slots at a time. The player sees the item name, description, and FP cost. There is no mechanical description. The player discovers what an item does by owning it.
 
@@ -64,9 +52,9 @@ One mitigation: levelling items at the Tinkerer is the primary ongoing FP sink. 
 
 The shop rotation is not random: it is shaped by four layers that work together silently.
 
-### Layer 1: Act-gated pools
+### Layer 1: Phase-gated pools
 
-Items belong to one of four pools: `"act1"`, `"act2"`, `"act3"`, `"peace"`. Each pool unlocks at the start of its act. The rotation can only draw from unlocked pools. New pools entering the rotation makes the shop feel changed without the change being explicitly announced.
+Items belong to phase-gated pools (e.g. `"pre_break"`, `"post_break"`, `"post_game"`). Each pool unlocks at the start of its phase. The rotation can only draw from unlocked pools. New pools entering the rotation makes the shop feel changed without the change being explicitly announced.
 
 ### Layer 2: Paired gravity
 
@@ -84,7 +72,7 @@ Use the pick slot for:
 - Items that carry the heaviest signal layer and benefit from appearing at a specific story beat
 - One half of a synergy pair the player should have access to
 
-As the shopkeeper becomes more distant across Act 1, the pick slot is the first thing that changes. The shopkeeper stops curating. The slot enters the general rotation. This is the earliest mechanical sign that something is shifting.
+As the shopkeeper becomes more distant across pre-break, the pick slot is the first thing that changes. The shopkeeper stops curating. The slot enters the general rotation. This is the earliest mechanical sign that something is shifting.
 
 ### Layer 4: Discovery floor
 
@@ -94,7 +82,7 @@ This floor activates only if the normal rotation would otherwise produce a cycle
 
 ### Layer 5: Safety net item
 
-One item per act pool is designated as the safety net item. It never appears in normal rotation. It surfaces only when both conditions are true simultaneously: the player owns no items and the available pool is otherwise empty (all items owned, destroyed, or unavailable). It is a last resort, not a shortcut. Once purchased it leaves the safety net slot and the player is back in the normal system.
+One item per phase pool is designated as the safety net item. It never appears in normal rotation. It surfaces only when both conditions are true simultaneously: the player owns no items and the available pool is otherwise empty (all items owned, destroyed, or unavailable). It is a last resort, not a shortcut. Once purchased it leaves the safety net slot and the player is back in the normal system.
 
 The safety net item should be cheap and mechanically neutral -- something that gets the player moving again without being a meaningful upgrade.
 
@@ -112,39 +100,6 @@ The real pacing lever is the rotation, not the ratio.
 
 ---
 
-## Shop closing (Act 1)
+## Narrative design
 
-As the shopkeeper's projection becomes more distant, the shop degrades and eventually closes. The sequence is tied to story beats, not timers:
-
-1. **Pick slot goes quiet.** The shopkeeper stops curating. The slot enters general rotation. Still 5 items; the selection just feels less intentional.
-2. **Pool shallows.** Fewer new items appear. Repeats increase.
-3. **Slot count drops.** 5 → 4 → 3 slots displayed.
-4. **Closed.** The shop is inaccessible.
-
-The deterioration should be felt before it completes. When it finally closes it should not feel surprising.
-
----
-
-## Act 2: Rummaging
-
-The shop is closed. The player discovers Act 2 items by rummaging through old boxes left in the basement. The narrative framing: these are things from before the friendship ended, things the main character's projection of the friend left behind. Going through them is clinging to the past.
-
-Mechanically: the player initiates a rummage action (once per session, or on a timer -- mirrors the shop refresh model). Each rummage surfaces one item from the Act 2 pool for potential purchase. The item can be bought with FP or passed over. Passing does not mean it is gone; it may surface again in a future rummage.
-
-The Tinkerer is still available throughout Act 2 for levelling and synergy attempts.
-
----
-
-## Act 3: Partner gifts
-
-The shop remains closed. Partners give the player significant items as the act progresses -- not as drops, but as deliberate gifts tied to relationship moments. These items are still purchased with FP (the partner gives you the item, you pay what it is worth to you and to them). The exchange is relational, not transactional.
-
-New synergies discovered in Act 3 are brought to the Shopkeeper or Tinkerer once they have been won back. The act of bringing the item to them is part of the reconciliation, not separate from it.
-
----
-
-## Open questions
-
-- Rummage timer interval: once per session is the minimum. Does a background timer also apply as with the shop? (Probably yes, for consistency.)
-- What does the shop UI look like when it has fewer than 5 slots due to closing? (Gaps visible, or reflow? UX Design pass decision.)
-- How are partner gifts triggered in Act 3: milestone-gated, relationship-level-gated, or both?
+Shop closing, post-break item acquisition (rummaging), and post-game item acquisition (partner gifts) are covered in `02-alpha/07-shop-narrative.md`. These are narrative rework territory.

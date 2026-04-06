@@ -54,7 +54,7 @@ The signal bleeds through in three places:
 
 **Partners.** Partners are who you are actually training with. They see your kit. They notice what you carry. Partner dialogue is where most of the locker signal layer lives -- a partner noticing you still wear something, recognising something in your bag, remarking on how much you have accumulated after a long run together. Surface: they know your gear. Signal: they can see how much you have held onto and what it means. The Tinkerer and Shopkeeper carry their own weight elsewhere; the locker belongs to the partner relationships.
 
-**The Shopkeeper, once.** Late Act 1, as the projection starts losing coherence, the Shopkeeper notices something in the locker. One line. Something like "I saw you kept that. You don't have to use it." Surface: friendly observation. Signal: the projection is aware of what the player is holding onto. After The Break the player looks back and understands what that line meant.
+**The Shopkeeper, once.** Late in pre-break, as the projection starts losing coherence, the Shopkeeper notices something in the locker. One line. Something like "I saw you kept that. You don't have to use it." Surface: friendly observation. Signal: the projection is aware of what the player is holding onto. After the break the player looks back and understands what that line meant.
 
 After The Break: the warmth from the locker was always real. It just was not the friend's warmth. It was the main character's memory of it, still generating something in the absence.
 

@@ -21,8 +21,8 @@ This also enables synergies (deferred to Beta) and world causality to extend the
 
 ### In scope
 1. Item data model (extensible template)
-2. 24 Act 1 items (other pools deferred to Post-Break phase)
-3. A default description per item, with optional per-act overrides
+2. 24 pre-break items (other pools deferred to post-break)
+3. A default description per item, with optional per-phase overrides
 4. Items affect AI paddle identically to player paddle
 5. FP cost per item purchase and per level upgrade (scale-based)
 6. Item levelling (3 levels: base, upgraded, max) via the Tinkerer
@@ -110,15 +110,14 @@ Descriptions are written signal-layer first: the surface read is written to near
 
 | Pool | Items | Synergies | Notes |
 |---|---|---|---|
-| Act 1 | 24 | 10 | Available from game start |
-| Act 2 | 14 | 8 | Unlocks at The Break |
-| Act 3 | 8 | 5 | Unlocks at Act 2 prestige |
-| Peace | 4 | 2 | Unlocks at Act 3 resolution |
+| Pre-break | 24 | 10 | Available from game start |
+| Post-break | 14 | 8 | Unlocks at the break |
+| Post-game | 12 | 7 | Unlocks at post-game |
 | **Total** | **50** | **25** | |
 
-Act 2, 3, and Peace items and their exact distribution are content decisions made during the Post-Break phase, once The Event is decided. The figures above are targets, not constraints.
+Post-break and post-game items and their exact distribution are content decisions made during Beta, once the narrative is locked. The figures above are targets, not constraints.
 
-Prototype scope covers Act 1 items only (24 items, 10 synergies). All other pools are authored in the Post-Break phase.
+Prototype scope covers 8 pre-break items. The full pre-break set (24 items, 10 synergies) ships in Alpha. Post-break and post-game pools ship in Beta.
 
 Synergy partners do not have to be in the same pool, but both items must be owned and at max level before a synergy attempt can be made.
 
@@ -167,4 +166,4 @@ Before implementation, a design spike is needed to define:
 - One concrete world causality item design to validate the model
 - An agreed extensible template covering both stat modifiers and world causality so the data model supports both from the start
 
-This spike should produce a doc or appendix used as the reference when authoring all items. It does not need to define all 50 items, only the schema they conform to and the one prototype world causality example. Prototype scope is 24 Act 1 items.
+This spike should produce a doc or appendix used as the reference when authoring all items. It does not need to define all 50 items, only the schema they conform to and the one prototype world causality example. Prototype scope is 8 pre-break items. The full pre-break set (24 items) ships in Alpha.
