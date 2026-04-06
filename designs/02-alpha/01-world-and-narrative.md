@@ -102,17 +102,28 @@ These are hard to ignore. The cozy framing is straining.
 
 ## Post-break: the tonal shift
 
-The clue ladder is a pre-break concept. Post-break, the player knows the truth. There's nothing left to clue them toward.
+The shift is immediate. Prestige triggers after the break and the player returns to a world that has already changed. From the first volley:
 
-What changes is the register. Partners aren't hiding anything anymore. Their barks swap to post-break line sets where the surface layer and signal layer collapse into one: everything is signal now, but delivered with the same warmth. Martha's "There you are" becomes "I wasn't sure you'd come back." The words are different. The voice is the same.
+- Partner barks are post-break line sets. The real people bleeding through. Martha's "There you are" becomes "I wasn't sure you'd come back."
+- The shop is closed. The shopkeeper is gone (the main character's fiction, not reality).
+- The rival's behaviour has shifted.
+- The music is different. The visuals have shifted.
 
-The game's arc post-break is not about discovery. It's about what it feels like to keep playing now that you know. The escalation, if there is one, follows the paddle's journey through:
+The main character is the only thing that hasn't changed. They reset cheerfully, still chasing the record. Denial. The world knows, the partners know, the player knows. The paddle doesn't.
 
-1. **Denial.** The paddle resets cheerfully. The barks have shifted but the paddle hasn't acknowledged anything. The player sees the change; the paddle doesn't.
-2. **Acknowledgement.** The paddle begins to respond to what the player already knows. Barks get quieter. The game feels less like performing and more like existing.
-3. **Resolution.** Post-game (Peace). The paddle has processed it. The barks are settled. The warmth is earned, not constructed. Regret is a future alternate version of this stage: what if the paddle never processed it?
+The journey from denial to the call is driven by the voices around the main character:
 
-How the game mechanically drives this arc (rival behaviour, progression targets, partner interactions) is an open design question. The tonal shift through bark line sets is the baseline. Everything else builds on it.
+- **Existing partners** (unlocked pre-break) shift to post-break barks immediately. They're gentle. They've been here the whole time and they're not pushing. Martha says "I wasn't sure you'd come back," not "face the truth." They're waiting.
+- **New partners** (unlocked during post-break) arrive already carrying the weight. They don't have the pre-break warmth because they never had it. They're more direct. They reference things more openly. They don't play along with the denial.
+- **The rival** shifts from gatekeeper to something else. They know. They've always known.
+
+As the player unlocks more post-break partners, the voices around the main character become harder to ignore. Early post-break partners are patient. Later ones push. The density of people who won't pretend builds as the player progresses.
+
+Same authoring discipline as the pre-break clue ladder: each partner is written for the progression moment they appear at. The partner unlock order carries the arc from denial to acceptance.
+
+The player volleys, earns, and rummages for new items. But the core post-break progression is badge activation: placing narrative items into milestone badges and completing the challenges inside them. Each completed badge is a step from denial toward acceptance. The shop is closed, but the items the player already carries are the path forward.
+
+The record is reachable now. The resistance is gone. Once all badges are processed, reaching the number means the main character is ready. The rival returns as the final partner and the journey to the record is the last stretch.
 
 ---
 
@@ -130,7 +141,19 @@ Milestones are presented as competition levels at escalating scales:
 
 The milestones are gameplay progression. The world record is the only number that carries narrative weight: it's the shopkeeper's phone number. The milestones along the way are just the journey toward it.
 
-Across phases, the milestone badge flavour text shifts. In pre-break a badge might say "County Champion". In post-break the same badge might say something quieter that only lands if you know the truth.
+### Pre-break badges
+
+Badges are earned as empty accomplishments. "County Champion." Numbers that feel oddly specific but don't mean anything to the player yet.
+
+### Post-break badge activation
+
+Post-break, the badges open up. Each badge has a slot for a narrative item. The player places a narrative item into a badge, activating a challenge: a different game mode, ball and paddle with a different objective, tied to the item's narrative weight. Completing the challenge processes the milestone.
+
+The player chooses which narrative item goes into which badge and in what order. They decide which memories to face and when. This gives the player agency in the post-break arc: they're not on rails. Different players face different challenges in different orders based on what they picked up in the shop and how they choose to engage with it.
+
+The player is literally filling their achievements with meaning. Pre-break the badges were hollow. Post-break the player puts something into them and they become real.
+
+The narrative items keep their normal effects throughout. The challenge is an additional phase-gated outcome on the same item, handled by the existing effect system.
 
 ---
 
@@ -211,14 +234,19 @@ Regret is: I know I could make the call. I just can't.
 
 ## The rival
 
-The rival is the milestone gatekeeper. They appear mid pre-break and their role changes across phases.
+The rival is the dead friend. The main character built this world and couldn't leave them out, but couldn't face having them as a partner either. So the friend becomes the obstacle. The thing in the way. That's grief: the person you lost becomes the thing you can't get past.
 
-- **Pre-break:** Appears halfway through progression. They gate key milestones through battle mode. Their aggression reads as sports rivalry on the surface, but they have figured out the truth before anyone else. They want the paddle to stop because stopping means the break has to happen. They are waiting for it.
-- **Post-break:** Their role shifts. The break happened and the paddle hasn't acknowledged it. The exact nature of the rival's post-break behaviour is an open design question tied to The Event and the post-break narrative arc.
-- **Peace:** The rival is a training partner. Battle mode is freely available. The framing has resolved.
-- **Regret (future update):** The rival's role in Regret is an open design question. They could refuse to train with you, or train with you but with a different energy.
+The rival's aggression isn't really aggression. It's the main character's memory of the friend, pushing them the way the friend always did. The reckless friend who never let the main character coast. In the pong world that energy becomes competition because that's the only language the game has.
 
-Battle mode mechanics are a design decision for Alpha. The constraint: ball and paddle, different objective.
+The rival appears mid pre-break and their role changes across phases.
+
+- **Pre-break:** Appears halfway through progression. Gates key milestones through battle mode. Their energy reads as sports rivalry on the surface: the reckless, competitive friend who never let the main character coast. Underneath, they carry an urgency that doesn't fit the game. They want the paddle to stop.
+- **Post-break:** Gone. The main character saw the friend alive in the break scene. The fiction can't hold. The rival disappears from the pong world. Battle mode is gone with them. The absence is felt.
+- **Late post-break:** They return as the final partner. Not an opponent. A partner. On your side. The main character is finally ready to have the friend alongside them. Their barks are the most direct in the game but in the pong world's language. "Stop stalling." "You've been here before." "Just finish it." Present, not pretending.
+- **Peace:** The friend is a partner. The framing has resolved. They're just there.
+- **Regret (future update):** Open design question.
+
+Battle mode is regular pong but against the rival instead of with a partner. Both sides have items and effects. No special rules, no different objectives. Just pong against someone who's trying to win. Pre-break, the rival gates milestones through battle mode. Post-break, the badge challenges use the same mode but the opponent and conditions vary based on the narrative item placed in the badge.
 
 ---
 
@@ -270,7 +298,7 @@ The game is personal, emotional, and sad. It earns that sadness and doesn't wall
 ## Open questions
 
 - **The break scene.** What's in the hometown? What can the player interact with? How do they find the phone number? How long should the scene be?
-- **Post-break mechanics.** How does the game guide the paddle toward making the call? What does the rival do? Do partners behave differently mechanically?
+- **Badge challenges.** What does each challenge look like? How do narrative items map to different game modes? How many badges need processing before the rival returns?
 - **The call.** What does the moment of reaching the record in post-break look like? Is there a second playable scene? What does the shopkeeper say, if anything?
 - **Post-game identity.** What makes Peace visually and tonally distinct? What does the shopkeeper's return look like in the pong world?
 - **The shopkeeper in the pong world.** Pre-break, the shopkeeper runs the shop. Post-break, the shop is closed. In Peace, they're back. What are they in each phase mechanically?
