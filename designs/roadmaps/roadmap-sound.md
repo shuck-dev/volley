@@ -12,7 +12,7 @@ timeline
 
     Beta
         : The Break Audio
-        : Post-Game Audio
+        : Peace
 ```
 
 ## Prototype
@@ -27,4 +27,4 @@ timeline
 
 **The Break Audio** designs the audio treatment for the snap moment. Whether that's silence, a register shift, or something that makes the player feel the world change.
 
-**Post-Game Audio** covers the music and sound shift for post-game. The warmth of the main game is still present but settled.
+**Peace** covers the music and sound shift for post-game. The warmth of the main game is still present but settled.

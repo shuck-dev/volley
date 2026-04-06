@@ -11,16 +11,18 @@ timeline
 
     Beta
         : The Break Writing
-        : Post-Break Writing
-        : Post-Game Writing
+        : Post-Break
+        : Peace
 
     Content Updates
         : Copy Pass
 ```
 
+Writing lands alongside the content it supports. Partner writing ships with each partner. Item writing ships with each item. There are no standalone writing deliverables that exist in isolation from the thing they describe.
+
 ## Alpha
 
-**World and Narrative** establishes the underlying layer: lore, characters, setting, tone, and the shape of the clue ladder. This is the foundational document that everything else in writing references.
+**World and Narrative** establishes the underlying layer: lore, characters, setting, tone, and the shape of the clue ladder. Includes the high-level break design so Beta can implement without waiting. This is the foundational document that everything else in writing references.
 
 **Partner Writing** ships with each pre-break partner: name, personality, backstory, barks (pre-break line sets), and bio. Each partner's ordinary name directly references a person who affected the main character in their reality. Post-break partners and post-break line sets ship in Beta.
 
@@ -30,9 +32,9 @@ timeline
 
 **The Break Writing** covers the reveal moment. One specific truth, clearly committed to. The highest-stakes writing in the game.
 
-**Post-Break Writing** covers the shifted bark line sets and any changed copy for the post-break phase. Same voices, different weight.
+**Post-Break** covers the shifted bark line sets, post-break partner and item writing, and any changed copy. Same voices, different weight.
 
-**Post-Game Writing** covers partner barks and copy for the post-game state: warmer, quieter, settled.
+**Peace** covers partner barks and copy for the post-game state: warmer, quieter, settled.
 
 ## Content Updates
 

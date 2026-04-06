@@ -23,17 +23,16 @@ timeline
         : Pre-Break Partner Roster
         : Menus & Settings
         : Milestones
+        : Compendium
 
     Beta
         : Break Implementation
         : Prestige System
         : Phase System
-        : Post-Break Phase
-        : Post-Game Phase
+        : Post-Break
+        : Peace
 
     Content Updates
-        : New Partners
-        : New Items
         : Vending Machine
         : Visual Effects
         : UI Polish
@@ -81,6 +80,8 @@ timeline
 
 **Milestones** implements streak and record milestones, badges, the collection UI, and rewards.
 
+**Compendium** implements the reference screen for mastered items and partners.
+
 ## Beta
 
 **Break Implementation** wires the full break sequence together: the resistance mechanic, the cut to black, the fullscreen expansion, the reveal sequence, and the return to the game window.
@@ -89,15 +90,11 @@ timeline
 
 **Phase System** tracks which phase the player is in and routes the correct barks, art, and target number accordingly.
 
-**Post-Break Phase** implements the post-break state: shifted bark line sets, visual changes, the game continuing with the player knowing the truth.
+**Post-Break** implements the post-break state: shifted bark line sets, visual changes, post-break items and partners, the game continuing with the player knowing the truth.
 
-**Post-Game Phase** implements the post-game state: free play, palette change, music shift, continuous prestige.
+**Peace** implements the post-game state: free play, palette change, music shift, continuous prestige. The story is over and the game is yours.
 
 ## Content Updates
-
-**New Partners** adds partners beyond the Alpha roster.
-
-**New Items** adds items beyond the Alpha set.
 
 **Vending Machine** implements consumable item purchases.
 

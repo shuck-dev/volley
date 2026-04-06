@@ -17,6 +17,7 @@ timeline
         : First Pass Assets
         : Onboarding
         : Make Fun Pass
+        : itch.io Page
         : Open Source Release
 
     Alpha
@@ -28,19 +29,19 @@ timeline
         : Audio & Music
         : Menus & Settings
         : Milestones
+        : Compendium
         : Balance Pass
 
     Beta
         : The Break
         : Prestige System
         : Phase System
-        : Post-Break Phase
-        : Post-Game Phase
+        : Post-Break
+        : Peace
         : Steam Store Page (wishlists)
+        : Discord Community
 
     Content Updates
-        : New Partners
-        : New Items
         : Vending Machine
         : Visual Effects
         : UI Polish
@@ -86,28 +87,28 @@ Prestige resets the mechanical loop (streak, ball speed, items) but preserves pr
 
 The public demo on itch.io. The core loop working, looking, and sounding good enough to share with strangers. First-pass art and sound throughout. Everything a player needs to understand what the game is and want more.
 
-Contains: the volley, the FP economy, the shop, the tinkerer, locker and kit, idle play, Martha, scene layout, desktop experience, first-pass assets, onboarding, and a make fun pass to tune it all. Ends with the open source release: repo and itch.io transferred to the Shuck Games org, history scrubbed, preview builds working.
+Contains: the volley, the FP economy, the shop, the tinkerer, locker and kit, idle play, Martha, desktop experience, first-pass assets, onboarding, and a make fun pass to tune it all. Ends with the open source release: repo and itch.io transferred to the Shuck Games org, history scrubbed, preview builds working.
 
 Done when you'd give it to someone who's never heard of the game and they'd play it for an afternoon.
 
 
 ## Alpha
 
-Pre-break up and running. Writing locks the narrative and characters. Art direction sets the visual rules, then real art replaces first-pass assets as each piece of content ships. Arena design works out all arenas. The full item set and partner roster ship here, each partner bringing their own art, animation, and barks. Audio and music fill out the world. Balance pass tunes it all. Writing lands alongside the content it supports rather than as separate deliverables.
+Pre-break up and running. Writing locks the narrative and characters. Art direction sets the visual rules, then real art replaces first-pass assets as each piece of content ships. Arena design works out all arenas. The pre-break item set and partner roster ship here, each partner bringing their own art, animation, and barks. Audio and music fill out the world. Milestones land. World and Narrative includes the high-level break design so Beta can implement without waiting. Balance pass tunes it all. Writing lands alongside the content it supports rather than as separate deliverables.
 
-Done when the pre-break game is finished: real art, real sound, full roster, full item set, and the clue ladder in place.
+Done when the pre-break game is finished: real art, real sound, pre-break roster, pre-break item set, milestones, the clue ladder in place, and the break designed.
 
 
 ## Beta
 
-The overall game structure, all phases working. The break lands. The prestige system and phase system are built. Post-break and post-game exist as playable states. The full arc from pre-break through to post-game is playable.
+The overall game structure, all phases working. The break design from Alpha is implemented. The prestige system and phase system are built. Post-break and post-game exist as playable states. The full arc from pre-break through to post-game is playable.
 
 Done when a player can experience every phase of the game from start to post-game.
 
 
 ## Content Updates
 
-Supplementary content that enriches the main game. New partners, new items, milestones, visual effects, reaction portraits, background and foreground layers, menus and settings, UI polish, and UX refinement. These add depth and breadth but the game is structurally complete without them.
+Supplementary content that enriches the main game. Visual effects, UI polish, UX refinement, vending machine, and a copy pass. These add depth and breadth but the game is structurally complete without them.
 
 Done when the game feels full, polished, and ready for a wider audience.
 
