@@ -10,63 +10,115 @@ A plucky little paddle has a dream: beat the world volley record. It trains, rec
 
 Something is wrong.
 
-The game is a fiction inside a fiction. The "world" of Volley Vendetta, the arena, the partners, the record, is a constructed reality. It's too warm, too safe, too perfectly framed around one very specific goal. Real worlds don't work like that.
+The game is a fiction inside a fiction. The world of Volley Vendetta, the arena, the partners, the record, is a constructed reality. It's too warm, too safe, too perfectly framed around one very specific goal. Real worlds don't work like that.
 
-The paddle is a stand-in for someone. The world record is a displacement. The partners are not who they appear to be. The narrative belongs entirely to the characters inside the game. The player is an observer who gradually realises the world they're looking at isn't what it claims to be.
+The paddle is a stand-in for someone. The world record is a displacement. The partners are not who they appear to be. They are memories of real people who affected the main character in their reality. Each partner has an ordinary human name because they are based on real people.
 
-The reality behind the game is not our world. It's a real world that belongs to these characters. It could be set on Earth, but it's their Earth, their lives, their story. The player discovers it, they don't inhabit it.
+The reality behind the game is not our world. It's a real world that belongs to these characters. Set somewhere in Britain, ordinary, lived-in. The player discovers it, they don't inhabit it.
 
-**The truth is left ambiguous only until The Break.** Before the record falls, clues plant the question without answering it. Players will form theories, and the game should let multiple readings feel plausible. But when The Break arrives, the game commits to one specific answer and reveals it.
+The truth is left ambiguous only until the break. Before the record falls, clues plant the question without answering it. At the break, the game commits to one specific answer and reveals it.
 
-Candidate truths (one will be chosen during The Event design):
-- The paddle is someone who retreated from the real world, and the game is their constructed safe place. We're watching from inside their imagination.
-- The "world record" is a real number, a personal record, a date, a distance, that means something specific and painful to whoever set the goal.
-- The partners are imagined versions of real people who once believed in someone, and were lost.
+---
 
-Before The Break, clues should make the player feel that *something* is underneath without telling them what. At The Break, the game tells them what.
+## The Event
+
+The main character's best friend is dead. They blame themselves for not seeing it coming, for not stopping it, even though they didn't cause it. The friend did something reckless, something habitual, something that looked like just who he was until the day it killed him. The main character replays it endlessly: the moments they could have spoken up, the signs they think they missed.
+
+The grief made them push people away. The shopkeeper was someone who tried to help and got shut out. The main character told themselves the shopkeeper moved away because that's easier than admitting they stopped going. The shopkeeper didn't move. They're still there. The main character just can't face them.
+
+The game never specifies what the reckless thing was. The player doesn't need to know. What matters is the emotional shape: someone is gone, someone blames themselves, and the guilt made them push away someone who is still there. The constructed world of the game is where they hide from all of it.
+
+This is deliberately open. The game is specific about the feelings (guilt, grief, the pushing away, the inability to reach out) and vague about the facts (what happened, how, why). Anyone who has carried guilt over a loss should be able to see their own story in it. There is no "true" event. Everyone has their own.
+
+### The world record number
+
+The world record is the shopkeeper's phone number. The number of someone the main character pushed away and could still call but won't. Every volley the player has hit was counting toward a number that still works, for a person who is still there.
+
+The game stops the player at record-1. They can almost get there. They can almost pick up the phone. But they can't, because making that call means admitting what they did.
+
+### Milestones
+
+Milestones are just progression. They don't encode specific meanings. The world record is the only number that matters narratively.
+
+### What the break shows
+
+The break is a playable scene. The player walks through the main character's hometown before the end. 2D, walk and interact, keyboard controls. Same visual language as the pong world but developed further: more detail, more depth. The pong world was always a simplification of this place.
+
+Everything is still okay in this scene. Martha is behind the counter at the newsagent. The friend is alive, somewhere in the town. The other partners are around, living their lives. The shopkeeper is there. The player has been playing with these people as pong partners. Now they see them as people.
+
+The shopkeeper's phone number is somewhere in the scene. On a note, in a phone, on a shopfront. The player recognises it as the world record. The game has been about this the whole time.
+
+The scene doesn't show the death. It shows what was lost. A town where everyone was still around.
+
+### What the player feels
+
+A player who has lost someone will recognise the guilt, the pushing people away, the inability to reach out. They'll map their own story onto it. The game meets them where they are.
+
+A player who hasn't will feel that something real is underneath the cozy surface. They may not fully understand it, but they'll feel its weight. That's enough.
 
 ---
 
 ## The clue ladder
 
-Clues escalate across three stages. Early game: a feeling, nothing you could point to. Mid game: moments you can't quite explain away. Late game: the surface starts cracking.
+Clues escalate across pre-break play. The ladder is not a system. It's an authoring discipline: each piece of content is written for the progression moment it appears at.
 
-### Stage 1: Something is slightly off (early prototype through first partner unlock)
+- **Partners** are the main vehicle. Martha is early game, pure warmth, no clues. Each subsequent partner is authored at a heavier clue intensity matching when they unlock in progression. The last pre-break partner carries stage 3 weight.
+- **The rival** escalates independently through bark context conditions tied to progression (e.g. how close the player is to the record).
+- **Item descriptions** carry clues at the intensity appropriate to when they appear. The shop has a separate narrative pool for the shopkeeper's pick slot, hand-ordered to pace clue-heavy items. The main pool is gameplay items. The player doesn't know the difference.
+- **The shop closing** is itself a clue. When the shopkeeper stops curating the pick slot, the narrative items stop appearing. The player loses something they didn't know they had.
 
-These feel like flavour. Players won't register them as clues on first play. Nothing said, nothing narrated, just things that are slightly wrong structurally. Show, don't tell.
+No phase swaps or system triggers needed. The partner unlock order, shop rotation, rival progression, and pick slot pacing naturally deliver the escalation.
 
-The earnestness is the first clue. Not in a winking, self-aware way. The game genuinely cares too much about what it's about. The upgrade descriptions have a weight to them that a pong game hasn't earned. The partners talk like people who matter to each other, not like NPCs. It's not breaking the fourth wall. It's that the wall was built with too much care.
+### Stage 1: Something is slightly off (early progression, first partners)
 
-**These clues cannot be written until The Event is decided.** The examples below are placeholder directions, not final content.
+These feel like flavour. Players won't register them as clues on first play. Nothing said, nothing narrated, just things that are slightly wrong structurally.
 
-- The world record number is oddly specific. Not a round number, not a Guinness-style record. It feels like something someone actually measured once.
+The earnestness is the first clue. Not in a winking, self-aware way. The game genuinely cares too much about what it's about. The item descriptions have a weight to them that a pong game hasn't earned. The partners talk like people who matter to each other, not like NPCs. It's not breaking the fourth wall. It's that the wall was built with too much care.
+
+- The world record number looks like a phone number. Not a round number. It feels like something someone actually wrote down once.
 - Partner names are ordinary human names, not sports or game nicknames. They feel like people you could know.
-- Small environmental details that don't quite fit a sports game. Things in the background that belong to a different kind of story.
+- Small details that don't quite fit a sports game. Things that belong to a different kind of story.
 
-### Stage 2: Something is definitely wrong (mid-game, mid-progression)
+### Stage 2: Something is definitely wrong (rival appears, more partners unlocked)
 
-These are noticeable on replay but easy to rationalise the first time.
+These are noticeable on replay but easy to rationalise the first time. The rival's arrival is itself a stage 2 moment: someone shows up who doesn't play nice, and their aggression doesn't quite make sense for a cozy pong game.
 
 - A partner says something that couldn't be in-game knowledge. A reference to time passing in their world, a name that isn't their own, a memory that predates the game.
-- One partner's dialogue occasionally shifts register. Warmer, more direct, less "game character". As if a real person is briefly bleeding through.
-- An upgrade description uses language that doesn't fit its mechanical effect ("stamina, because you never knew when to stop").
-- A milestone congratulates on a number that, if the world record number encodes a duration, is suspiciously close to a real one in their world.
+- One partner's barks occasionally shift register. More direct, less warm. The real person bleeding through, not the version the main character constructed.
+- An item description uses language that doesn't fit its mechanical effect.
+- A milestone congratulates on a number that is suspiciously specific.
+- The rival treats the game like it matters in a way that goes beyond competition.
 
-### Stage 3: The surface is cracking (late game, approaching the record)
+### Stage 3: The surface is cracking (approaching the record, final milestones)
 
 These are hard to ignore. The cozy framing is straining.
 
-- Partner dialogue becomes more urgent and less characteristic. "Please" where they'd normally be breezy. "Not yet" on a milestone that should be celebrated.
+- Partner barks become more urgent and less characteristic. "Please" where they'd normally be breezy. "Not yet" on a milestone that should be celebrated.
 - The ball occasionally moves wrong in a way that can't be blamed on physics. Too slow, too deliberate. Like something is resisting.
 - Visual artifacts: a single frame where the art style is different. Not a bug. When the player looks again it's gone.
 - The world record gets very close and the game's tone doesn't match. The music is still cozy, the UI is still warm, but something underneath is pulling the other way.
-- The paddle's idle quips shift from scrappy underdog energy to something quieter: "I just want to know if I can do it."
 
 ---
 
-## Milestones as competition levels
+## Post-break: the tonal shift
 
-Milestones aren't round numbers. They represent records at escalating levels of competition, like events that would actually take place at each scale:
+The clue ladder is a pre-break concept. Post-break, the player knows the truth. There's nothing left to clue them toward.
+
+What changes is the register. Partners aren't hiding anything anymore. Their barks swap to post-break line sets where the surface layer and signal layer collapse into one: everything is signal now, but delivered with the same warmth. Martha's "There you are" becomes "I wasn't sure you'd come back." The words are different. The voice is the same.
+
+The game's arc post-break is not about discovery. It's about what it feels like to keep playing now that you know. The escalation, if there is one, follows the paddle's journey through:
+
+1. **Denial.** The paddle resets cheerfully. The barks have shifted but the paddle hasn't acknowledged anything. The player sees the change; the paddle doesn't.
+2. **Acknowledgement.** The paddle begins to respond to what the player already knows. Barks get quieter. The game feels less like performing and more like existing.
+3. **Resolution.** Post-game (Peace). The paddle has processed it. The barks are settled. The warmth is earned, not constructed. Regret is a future alternate version of this stage: what if the paddle never processed it?
+
+How the game mechanically drives this arc (rival behaviour, progression targets, partner interactions) is an open design question. The tonal shift through bark line sets is the baseline. Everything else builds on it.
+
+---
+
+## Milestones
+
+Milestones are presented as competition levels at escalating scales:
 
 - Local community
 - County
@@ -76,110 +128,97 @@ Milestones aren't round numbers. They represent records at escalating levels of 
 - International
 - World
 
-Each milestone number is significant to the story. They aren't random and they aren't clean game-designed thresholds. They're numbers that mean something in the characters' world, chosen once The Event is decided.
+The milestones are gameplay progression. The world record is the only number that carries narrative weight: it's the shopkeeper's phone number. The milestones along the way are just the journey toward it.
 
-The player won't know this in Act 1. The numbers just feel like real records at each level. After The Break, the reveal image gives enough context that a player who remembers the numbers might start connecting them on their own. The game never explains the connection.
-
-Across acts, the milestone collection UI subtly changes. Same numbers, but the badge art or flavour text shifts to reflect what the number actually means. In Act 1 a badge might say "County Champion". In Act 3 the same badge might say something quieter that only lands if you know the truth. By Peace, the milestones sit comfortably as both things at once: game achievements and pieces of a real story.
+Across phases, the milestone badge flavour text shifts. In pre-break a badge might say "County Champion". In post-break the same badge might say something quieter that only lands if you know the truth.
 
 ---
 
-## The snap
+## The break
 
-When the volley count reaches record-1, the expected celebration doesn't arrive. The record is never beaten in Act 1 — the game stops you one short.
-
-### Respecting the player's workspace
-
-This is an idle desktop game. It lives in a small window and doesn't demand attention. The Break is the one moment where that contract changes, and the game needs to ask permission first.
-
-On cut to black, a dialogue appears: **continue** or **save and quit**. No indication of what's coming. The player doesn't know the game is about to go fullscreen. If they continue, the window dynamically expands to fill the screen. This has never happened before and is never explained. If they save and quit, they pick up from the same point next time.
+The break is not a game phase. It is a narrative moment: the sequence that happens between pre-break and post-break.
 
 ### Resistance before the cut
 
-As the count approaches the record, something resists. Not a game mechanic — something external to the game's logic. The ball slows. Not gradually, not like a physics change. Deliberately. Like something is pushing back against the number being reached. The cozy music continues. The UI is still warm. But the ball moves like it's moving through something.
+As the volley count approaches the record, something resists. Not a game mechanic, something external to the game's logic. The ball slows. Not gradually, not like a physics change. Deliberately. Like something is pushing back against the number being reached. The cozy music continues. The UI is still warm. But the ball moves like it's moving through something.
 
-This is not explained. There is no visual effect, no partner comment, no UI acknowledgement. The resistance is just there. If the player has been paying attention to the stage 3 clues, it won't feel like a bug. If they haven't, it might.
+This is not explained. There is no visual effect, no partner comment, no UI acknowledgement. The resistance is just there.
 
 The volley count reaches record-1. The ball is almost stopped. Then:
+
+### Respecting the player's workspace
+
+This is an idle desktop game. It lives in a small window and doesn't demand attention. The break is the one moment where that contract changes, and the game needs to ask permission first.
+
+On cut to black, a dialogue appears: **continue** or **save and quit**. No indication of what's coming. If they continue, the window dynamically expands to fill the screen. This has never happened before and is never explained. If they save and quit, they pick up from the same point next time.
 
 ### The sequence
 
 1. **Cut to black.** No transition, no fade. Instant. The game is gone. Dialogue: continue or save and quit.
 2. **Fullscreen.** The game takes over the display.
-3. **Sound fades in.** Not music. An ambient sound, something real, something that places you somewhere in their world. The sound tells you where you are before you can see it.
-4. **Picture fades in.** Slowly. A single image in a different art style. Not pixel art, something raw. This is the reveal. What you see answers the question the game has been planting.
-5. **Music.** A piece that has never played before. It recontextualises the warmth of the main game. Not sad, not triumphant. True.
+3. **Sound fades in.** Not music. An ambient sound from the hometown. The sound tells you where you are before you can see it.
+4. **The scene fades in.** The main character's hometown. Same visual language as the pong world but developed: more detail, more depth. The pong world was always a simplification of this place.
+5. **The player walks.** 2D, walk and interact, keyboard controls. Martha is behind the counter. The friend is alive. The other partners are around. The shopkeeper is there. Everyone the player has been playing pong with, as people.
+6. **The milestones.** Hidden around the town as ordinary details: a house number, a bus timetable, a price tag, a score on an arcade machine. Things the main character saw every day and fixated on because they were counting everything. The player might notice them, might not.
+7. **The number.** Somewhere in the scene, the shopkeeper's phone number. The player recognises it as the world record.
+7. **Music.** A piece that has never played before.
 
-The player sits with this for as long as they need. Then the game returns to its window. The prestige loop begins. The player now knows something the paddle doesn't.
-
-### What is revealed
-
-The world record number itself. The number the player has been chasing is the truth: a date, a count, a distance, something that meant something real in the characters' world. The image that fades in makes the connection undeniable. The number stops being a game statistic and becomes something personal to whoever the paddle represents.
-
-The exact meaning depends on The Event design. It should be one thing only. The urge to over-explain will be strong. Resist it. But the urge to stay vague must also be resisted. This is the moment the game trusts the player with the truth.
+The player explores for as long as they want. When they're done, credits 1 rolls. The game returns to its window. Prestige triggers. The player now knows something the paddle doesn't.
 
 ---
 
-## The three acts
+## Game phases
 
-The game has three acts, each ending in a prestige. Each prestige resets the mechanical loop but changes the narrative framing. After The Break, the game knows the player has seen the truth and responds accordingly.
+Three playable phases, each ending in a prestige. Post-game prestige is continuous.
 
-### Act 1: The Game (innocence)
+### Pre-break
 
-The idle volley game. The paddle has a dream. Partners help. Upgrades make you better. Clues build but the surface holds. The rival is present but passive — they want you to quit, not to beat you.
+The idle volley game. The paddle has a dream. Partners help. Items make you better. Clues build but the surface holds.
+
+The rival appears mid pre-break as a milestone gatekeeper, introducing battle mode. On the surface their aggression reads as sports rivalry, but underneath they have figured out the truth before anyone else. They want the paddle to quit, not to defeat them, because stopping means the break has to happen.
 
 **Target:** record-1. The dream is to beat the world record, but the game stops you one short. The player doesn't know this is coming.
 
-**Ends with:** The Break. The ball slows against external resistance, the count reaches record-1, cut to black, the truth is revealed.
+**Ends with:** The break sequence. Prestige follows.
 
-**Prestige framing:** The game resets. You start again. But now you know.
+### Post-break
 
-### Act 2: The Rejection (denial)
+The game continues. The paddle doesn't acknowledge the break. It resets cheerfully, ready to go again. But the game knows the player has seen the truth, and it starts changing in response.
 
-The paddle doesn't acknowledge The Break. It resets cheerfully, ready to go again. But the game knows the player has seen the truth, and it starts changing in response.
+Partner barks shift to their post-break line sets. The same voices, different weight. The shop is closed: the main character told themselves the shopkeeper moved away, but the player knows they didn't. The shopkeeper is still there. The phone number still works.
 
-The clues are no longer subtle. Partners say things that are harder to read as surface-layer. The cozy framing is still there but it's wearing thin. The rival becomes an active blocker — battle mode. They enter the game directly, contesting you, forcing the confrontation the paddle is still refusing. Their aggression in Act 2 is sharper because they expected the truth to fix things, and it didn't.
+The post-break arc is about whether the main character can face what they did: not just the friend's death, but pushing the shopkeeper away. The game guides the paddle toward making the call.
 
-The saviour emerges gradually. A partner who starts making the paddle question things. Not by explaining, but by being present in a way that cuts through the fiction. They make the paddle begin to see what the player already knows. By the end of Act 2, the saviour has brought the paddle close enough to the truth that the transition to Act 3 feels earned.
+**Target:** the record itself. In pre-break the game stopped the player one short. In post-break the resistance is gone. Reaching the number means the main character is ready to dial.
 
-As the saving grace takes hold, the rival starts to soften. Not all at once. They see the saviour getting through and it shifts their frustration toward something closer to hope. By the end of Act 2 the rival is ready to stop fighting.
+**Ends with:** The main character makes the call. Full credits roll. Prestige follows.
 
-**Target:** the exact record. The resistance is gone. The number the game was always pointing at. Reaching it now feels different — the player knows what it means.
+### Post-game
 
-**Ends with:** The count hits the record exactly. No cut to black this time. Acknowledgement instead of revelation. The paddle is starting to understand.
+Two post-game states. The player reaches Peace through the main game. Regret is a future update the player can choose to enter after experiencing Peace.
 
-**Prestige framing:** Something shifts. The weight is lighter. The game is ready to move forward.
+**Peace:** The call was made. The prestige loop continues freely. No narrative weight, no tension. The rival is a training partner. The shopkeeper is back, somehow, in whatever form that takes in this world. Something visible should be different from pre-break. Warmer but quieter. The player should feel that this version of the game could only exist because of what came before.
 
-### Act 3: The Demons (confrontation)
+Peace is: I lost someone, I pushed someone away, and I found the courage to reach out.
 
-The game stops pretending. The cozy layer is thinner. The paddle's dialogue is honest. The rival is no longer an obstacle. They are alongside you now, in enemy mode — adversarial in form, helping in intent. They push you past what you could not reach on your own.
+**Regret (future update):** The player chooses to re-enter the game from the perspective of someone who never made the call. The shopkeeper's number is still the record. The phone still works. But the main character can't bring themselves to dial. Partners are still warm but they can tell you're not present. The game plays the same mechanically. The difference is in how everything feels.
 
-This act is about exceeding the record — going past the number that was always the ceiling. The milestones in this act should feel like processing, not achieving. The saviour has done their work. Now the paddle has to do the rest.
+Regret has its own partners, items, and effects. It's not a tonal reskin; it's an alternate endgame with its own content and its own reason to play.
 
-**Target:** past the record. Not a specific number. Just further than it. The record stops being a ceiling and becomes a threshold the paddle has crossed.
-
-**Ends with:** The record falls for the last time. No cut to black. The game stays. Something resolves.
-
-**Ends with:** The record falls for the last time. No cut to black. The game stays. Something resolves.
-
-### Post-game: Peace
-
-The prestige loop continues freely. No narrative weight, no clues, no tension. The player can swap between idle, battle, and enemy modes at will, or run instances simultaneously. The rival is a training partner now. The game is what it always appeared to be, and it is also everything it actually was.
-
-It should not feel like Act 1 again. Something visible should be different. A shift in the colour palette, the music, the way partners talk. Warmer but quieter. The earnestness is still there but it's settled, not straining. The player should feel that this version of the game could only exist because of what came before. The warmth is earned now, not constructed.
+Regret is: I know I could make the call. I just can't.
 
 ---
 
 ## The rival
 
-The rival is the milestone gatekeeper. To reach key milestones, you must contend with them. Their arc runs across all three acts and their role changes the game mode in each.
+The rival is the milestone gatekeeper. They appear mid pre-break and their role changes across phases.
 
-- **Act 1:** Passive. They are present but do not directly interfere with play. Their aggression reads as sports rivalry on the surface, but underneath they have figured out the truth before anyone else. They want the paddle to quit — not to defeat them, but because stopping means The Break has to happen. They are waiting for it.
-- **Act 2:** Active blocker. The Break happened and nothing changed. Their frustration becomes direct: they enter the game as an obstacle. This is battle mode — a direct contest between you and the rival. They are not trying to help you. They are trying to force a confrontation the paddle is still refusing to have. As the saviour gets through, the rival starts to shift. Their aggression becomes less certain. By the end of Act 2 they are no longer an enemy, but not yet an ally.
-- **Act 3:** Active helper. The rival is alongside you. They are still formidable, still adversarial in form, but now they are using that against you in your favour — pushing, testing, making you exceed yourself. This is enemy mode: the rival plays the role of opposition while actually helping you break past what you could not reach alone.
-- **Peace:** The modes are yours. The player can swap between idle, battle, and enemy modes freely, or run instances simultaneously. The rival is a training partner now. The framing has resolved.
+- **Pre-break:** Appears halfway through progression. They gate key milestones through battle mode. Their aggression reads as sports rivalry on the surface, but they have figured out the truth before anyone else. They want the paddle to stop because stopping means the break has to happen. They are waiting for it.
+- **Post-break:** Their role shifts. The break happened and the paddle hasn't acknowledged it. The exact nature of the rival's post-break behaviour is an open design question tied to The Event and the post-break narrative arc.
+- **Peace:** The rival is a training partner. Battle mode is freely available. The framing has resolved.
+- **Regret (future update):** The rival's role in Regret is an open design question. They could refuse to train with you, or train with you but with a different energy.
 
-The exact mechanics of battle mode and enemy mode are a Post-Break design decision. The constraint is the same as all act modes: ball and paddle, different objective.
+Battle mode mechanics are a design decision for Alpha. The constraint: ball and paddle, different objective.
 
 ---
 
@@ -187,51 +226,52 @@ The exact mechanics of battle mode and enemy mode are a Post-Break design decisi
 
 Partners are the primary delivery mechanism for narrative clues. Each one can carry a thread.
 
-### Design principles for partner dialogue
+### Design principles for partner barks
 
-- Each partner has a "surface layer" voice (their game persona) and a "signal layer" voice (what bleeds through occasionally).
-- Signal layer lines should be written first and the surface layer constructed to nearly, but not quite, bury them.
-- No partner should have more than 2-3 signal lines total in Act 1. Scarcity makes them land. Acts 2 and 3 can be more direct.
-- Signal lines should work as surface-layer dialogue on first read and mean something different on second.
+- Every partner has an ordinary human name. The name references a real person from the main character's life.
+- Partners express personality through barks, effects, and art. See `01-prototype/12-bark-system.md` for the system design.
+- Pre-break barks are written as the character. Genuine, in-world. But the writer knows the truth, and the best lines work both ways: the character means it literally, the real person behind them means something else. No hidden messages, just careful writing that lands differently after the break.
+- Post-break barks are written as the person behind the character. Same voice, the mask is off.
+- Silence is the default. Most triggers produce no bark. Which triggers a partner responds to is characterisation.
+- Lines must work standalone and read as spoken, not written.
 
 ### The partner who knew them
 
 One partner should feel like they knew whoever the paddle represents before the game existed. Their warmth is too specific. Their encouragement references things they couldn't know from inside the game. They're not cheerful in a game-character way. They're cheerful in the way someone is cheerful when they're worried about you.
 
-Signal lines might reference: the time before this world existed, something that was given up, the fact that they're still here.
-
 ### The partner who is also confused
 
 One partner should occasionally act as if the rules of the game are strange to them too. Not breaking the fourth wall, more like someone who expected something different and is quietly adjusting. They make the best of the situation. Their signal lines aren't about the paddle. They're about themselves, figuring out where they are.
 
-### The saviour
+### Martha
 
-Emerges in Act 2. Could be a new partner or an existing one who changes. They don't explain the truth directly. They make the paddle see it for itself. Their presence is the reason Act 2 doesn't feel like punishment and the reason Act 3 is possible. Without the saviour, the paddle would stay in denial forever.
-
-The saviour's approach isn't confrontational. They're patient. They might be the one who knew the paddle before, finally dropping the pretence. Or they might be someone new who simply doesn't participate in the fiction the way everyone else does.
+The first partner. The cashier at the local newsagent. See `01-prototype/11-first-partner-unlock.md` for her full design, effects, and barks. Martha is the baseline: uncomplicated, warm, safe to remember. The partners that come after won't be.
 
 ---
 
 ## Tone boundaries
 
-The twist should never be:
-- Scary or distressing
-- Explained directly in dialogue
-- Played for sadness as a goal in itself
-- Used to undermine the genuine warmth of the game
+The game is personal, emotional, and sad. It earns that sadness and doesn't wallow in it. The break lands and the game moves forward.
 
-The cozy idle game and the unreliable fiction underneath it should coexist. Players who never notice the clues should finish the game feeling good. Players who do notice should feel like they discovered something. Not that the game was lying to them, but that it trusted them with something true.
+**The narrative should never:**
+- Be scary or distressing
+- Explain itself directly
+- Use sadness as a goal rather than a consequence
+- Undermine the experience of playing the game as an idle game
 
-The snap is not a bad ending. It is a true one. And the game continues past it, into rejection, confrontation, and eventually peace.
+**The narrative should always:**
+- Respect players who don't engage with it. The game works without the story.
+- Reward players who do. Attention should feel valued, not required.
+- Let the warmth be real. The cozy surface is not a trick. Learning the truth doesn't retroactively ruin the fun.
+- Move forward. The break happens, the game continues, the player and the paddle both keep going.
 
 ---
 
-## Open questions for world building expansion
+## Open questions
 
-- What is the world record number? It IS the reveal. It must encode the truth. A date? A count of days? Must be chosen once The Event is decided.
-- What happened? The Event, the specific truth the record number encodes. Must be decided before anything else narrative can be written. This is the single most important decision in the game.
-- Who is the saviour? A new partner in Act 2, or an existing partner who changes?
-- What does "fighting the demons" look like mechanically in Act 3? Same pong loop but different framing? New mechanics? Different win condition?
-- What resolves at the end of Act 3? The paddle understands? The game simply stops needing to pretend?
-- What makes post-game Peace visually and tonally distinct from Act 1? Colour shift? Different music? Changed partner dialogue?
-- What are the specific milestone numbers at each competition level? Each must encode something meaningful to The Event. Can only be chosen once The Event is decided. Leading candidates are time (days since/between events) or people (counts that meant something). Time escalates most naturally with gameplay. Could also mix both: mostly days, with one or two milestones that break the pattern and turn out to be people. That inconsistency becomes a clue.
+- **The break scene.** What's in the hometown? What can the player interact with? How do they find the phone number? How long should the scene be?
+- **Post-break mechanics.** How does the game guide the paddle toward making the call? What does the rival do? Do partners behave differently mechanically?
+- **The call.** What does the moment of reaching the record in post-break look like? Is there a second playable scene? What does the shopkeeper say, if anything?
+- **Post-game identity.** What makes Peace visually and tonally distinct? What does the shopkeeper's return look like in the pong world?
+- **The shopkeeper in the pong world.** Pre-break, the shopkeeper runs the shop. Post-break, the shop is closed. In Peace, they're back. What are they in each phase mechanically?
+- **Regret.** What partners, items, and effects are unique to Regret? How does it mechanically feel different from Peace? What makes a player want to spend time there?

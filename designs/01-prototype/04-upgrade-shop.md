@@ -66,13 +66,11 @@ In prototype, this layer is implemented but has no visible effect until synergy 
 
 ### Layer 3: Shopkeeper's pick slot
 
-One of the five slots is reserved as the shopkeeper's pick. This slot is filled by authored selection rather than the weighted random pool. It is the primary channel for ensuring narratively significant items surface at the right moment.
+One of the five slots is reserved as the shopkeeper's pick. This slot draws from a separate narrative pool rather than the main gameplay pool. Narrative items are hand-ordered and paced to match the clue ladder: lighter items early, heavier items as progression deepens.
 
-Use the pick slot for:
-- Items that carry the heaviest signal layer and benefit from appearing at a specific story beat
-- One half of a synergy pair the player should have access to
+The main pool is gameplay items: stat modifiers, causality effects. The narrative pool is items with descriptions that carry clue weight, things that feel personal, things the shopkeeper is deliberately putting in front of the player. The player doesn't know the difference. They just notice that one slot sometimes has something that feels different.
 
-As the shopkeeper becomes more distant across pre-break, the pick slot is the first thing that changes. The shopkeeper stops curating. The slot enters the general rotation. This is the earliest mechanical sign that something is shifting.
+As the shopkeeper becomes more distant across pre-break, the pick slot is the first thing that changes. The shopkeeper stops curating. The slot enters the main pool rotation. The narrative items stop appearing. The player loses something they didn't know they had.
 
 ### Layer 4: Discovery floor
 
