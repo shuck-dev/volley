@@ -99,6 +99,5 @@ None of these characters should be written as tragic. They are doing what people
 
 ## Open questions for writing pass
 
-- Who is the Tinkerer in the main character's reality? What's their relationship to the shopkeeper?
 - What does the shopkeeper's return in Peace look like in the pong world?
 - How many entry dialogue beats does the shopkeeper have across pre-break?

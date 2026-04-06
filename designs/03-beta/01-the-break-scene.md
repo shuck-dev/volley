@@ -28,7 +28,7 @@ On cut to black, a dialogue appears: **continue** or **save and quit**. No indic
 2. **Fullscreen.** The game takes over the display.
 3. **Sound fades in.** Not music. An ambient sound from the hometown. The sound tells you where you are before you can see it.
 4. **The scene fades in.** The main character's hometown. Same visual language as the pong world but developed: more detail, more depth. The pong world was always a simplification of this place.
-5. **The player walks.** 2D, walk and interact, keyboard controls. Martha is behind the counter. The friend is alive. The other partners are around. The shopkeeper is there. Everyone the player has been playing pong with, as people.
+5. **The player walks.** 2D, walk and interact, keyboard controls. This is a memory: the town before the friend died. Martha is behind the counter. The friend is here. The other partners are around. The shopkeeper is there. Everyone the player has been playing pong with, as people.
 6. **The milestones.** Hidden around the town as ordinary details: a house number, a bus timetable, a price tag, a score on an arcade machine. Things the main character saw every day and fixated on because they were counting everything. The player might notice them, might not.
 7. **The number.** Somewhere in the scene, the shopkeeper's phone number. The player recognises it as the world record.
 8. **Music.** A piece that has never played before.
