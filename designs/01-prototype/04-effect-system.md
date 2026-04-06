@@ -170,6 +170,8 @@ on_streak_milestone
 on_edge_hit
 on_max_speed_reached
 on_ball_behind_paddle
+on_timer
+on_return_after_idle
 ```
 
 ### ConditionType
@@ -202,6 +204,7 @@ momentum_boost
 oscillate_stat
 roll_table
 set_ball_speed
+halve_streak
 ```
 
 ### ModifierOp
@@ -256,7 +259,7 @@ Each outcome type routes to a different system. EffectManager handles the dispat
 ```mermaid
 flowchart LR
     Outcome --> EffectState["<b>EffectState</b><br/>modify_stat<br/>multiply_stat_temporary<br/>modify_stat_until_miss<br/>oscillate_stat<br/>share_stats_with_partner<br/>momentum_boost<br/>set_game_state<br/>increment_degradation"]
-    Outcome --> GameActions["<b>Game</b><br/>spawn_ball<br/>clear_extra_balls<br/>deflect_ball<br/>spawn_gravity_well<br/>intensify_gravity_well<br/>set_ball_speed"]
+    Outcome --> GameActions["<b>Game</b><br/>spawn_ball<br/>clear_extra_balls<br/>deflect_ball<br/>spawn_gravity_well<br/>intensify_gravity_well<br/>set_ball_speed<br/>halve_streak"]
     Outcome --> ItemManager["<b>ItemManager</b><br/>expand_kit_slots"]
     Outcome --> Economy["<b>ItemManager</b><br/>award_friendship_points"]
     Outcome --> Self["<b>EffectManager</b><br/>roll_table (re-enters evaluation)"]

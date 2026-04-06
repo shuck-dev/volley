@@ -44,7 +44,7 @@ Only triggers used by owned items need to be implemented.
 | Trigger | Fires when |
 |---|---|
 | `always` | Passively, while the item is owned |
-| `on_miss` | Ball contacts a miss wall |
+| `on_miss` | Ball contacts a miss wall. Payload includes `miss_side` (`"player"` or `"partner"`) |
 | `on_personal_best` | Streak exceeds the player's personal best |
 | `on_hit` | Any paddle hit registers |
 | `on_streak_multiple(n)` | Every n-th hit repeatedly (at n, 2n, 3n...) |
@@ -53,6 +53,8 @@ Only triggers used by owned items need to be implemented.
 | `on_max_speed_reached` | Ball hits the speed ceiling for the first time this rally |
 | `on_ball_behind_paddle` | Ball passes behind a paddle toward the miss wall |
 | `on_streak_milestone(n)` | Streak reaches threshold n, once per rally |
+| `on_timer` | Fires periodically while the game is running. Interval configured per effect |
+| `on_return_after_idle` | Player returns focus to the game after being away or idle |
 
 <details>
 <summary>Ideas</summary>
@@ -165,6 +167,7 @@ Optional. If omitted the outcome always fires when the trigger does. Multiple co
 | `stat_until_miss` | Add a delta to a stat key until the next miss. Stacks if triggered multiple times. Optional `range_stat_key` makes the value a ratio | `key`, `value`, `operation`, `range_stat_key` (optional) |
 | `roll_table` | Pick a random outcome from a set of equally weighted effects and execute it | `outcomes[]` |
 | `set_ball_speed` | Immediately set ball to a specific speed | `value` |
+| `halve_streak` | On miss, set streak to `floor(current / 2)` instead of zero. Ball speed recalculates to match the halved streak through normal stat resolution, respecting all active modifiers. Runs after temporary modifier cleanup | none |
 
 <details>
 <summary>Ideas</summary>

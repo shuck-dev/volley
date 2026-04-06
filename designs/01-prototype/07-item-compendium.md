@@ -14,7 +14,9 @@ The compendium does not explain items the player has not yet mastered. It is a r
 
 ## Unlock condition
 
-An item's compendium entry unlocks permanently when the item reaches level 3 (max). The entry persists even if the item is later destroyed at the Tinkerer. Destruction removes the item from the kit/locker; it does not erase the player's knowledge of it.
+**Items:** An item's compendium entry unlocks permanently when the item reaches level 3 (max). The entry persists even if the item is later destroyed at the Tinkerer. Destruction removes the item from the kit/locker; it does not erase the player's knowledge of it.
+
+**Partners:** A partner's compendium entry unlocks permanently when the player reaches a volley threshold with that partner active. The threshold is the same for every partner. Partners do not have levels; mastery comes from time spent together. The threshold is a tuning target; it should feel like a natural milestone, not a grind. The compendium tracks volley total per partner silently in `ProgressionData`.
 
 ---
 
