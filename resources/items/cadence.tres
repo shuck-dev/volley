@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://buncwlrnw4fu2" path="res://scripts/items/effect/outcomes/oscillate_stat_outcome.gd" id="5_osc"]
 [ext_resource type="Script" uid="uid://d1al3xboi8anu" path="res://scripts/items/effect/outcomes/stat_until_miss_outcome.gd" id="6_miss"]
-[ext_resource type="Texture2D" uid="uid://bkjrpaaq03o7e" path="res://assets/items/cadence.png" id="icon_tex"]
 
 [sub_resource type="Resource" id="oscillate_outcome"]
 script = ExtResource("5_osc")
@@ -40,12 +39,15 @@ trigger = SubResource("max_speed_trigger")
 outcomes = Array[ExtResource("4_outcome")]([SubResource("ceiling_outcome")])
 max_active_level = null
 
+[sub_resource type="Resource" id="Resource_sfi2x"]
+metadata/__load_path__ = "res://assets/items/cadence.png"
+
 [resource]
 script = ExtResource("1_item")
 key = "cadence"
 type = &"kit"
 display_name = "Cadence"
-icon = ExtResource("icon_tex")
+icon = SubResource("Resource_sfi2x")
 descriptions = Array[String](["Sounds wrong", "Don't stop. Won't stop", "Was anyone listening?"])
 base_cost = 85
 cost_scaling = 1.5

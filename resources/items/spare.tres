@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
-[ext_resource type="Texture2D" uid="uid://d0514v21r2xng" path="res://assets/items/spare.png" id="icon_tex"]
 
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_stat")
@@ -23,12 +22,15 @@ trigger = SubResource("trigger_1")
 outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
 max_active_level = null
 
+[sub_resource type="Resource" id="Resource_n4uck"]
+metadata/__load_path__ = "res://assets/items/spare.png"
+
 [resource]
 script = ExtResource("1_item")
 key = "spare"
 type = &"court"
 display_name = "Spare"
-icon = ExtResource("icon_tex")
+icon = SubResource("Resource_n4uck")
 descriptions = Array[String](["There's always one left over", "Wasn't supposed to need it", "Nobody noticed it was missing"])
 base_cost = 150
 max_level = 1

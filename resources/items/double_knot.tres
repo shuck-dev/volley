@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
-[ext_resource type="Texture2D" uid="uid://c35xeiu45d15x" path="res://assets/items/double_knot.png" id="icon_tex"]
 
 [sub_resource type="Resource" id="magnetism_outcome"]
 script = ExtResource("5_stat")
@@ -39,12 +38,15 @@ outcomes = Array[ExtResource("4_outcome")]([SubResource("angle_outcome")])
 min_active_level = 2
 max_active_level = null
 
+[sub_resource type="Resource" id="Resource_buo8s"]
+metadata/__load_path__ = "res://assets/items/double_knot.png"
+
 [resource]
 script = ExtResource("1_item")
 key = "double_knot"
 type = &"kit"
 display_name = "Double Knot"
-icon = ExtResource("icon_tex")
+icon = SubResource("Resource_buo8s")
 descriptions = Array[String](["Made two", "Closer than before", "Still wearing it"])
 base_cost = 120
 effects = Array[ExtResource("2_effect")]([SubResource("magnetism_effect"), SubResource("angle_effect")])
