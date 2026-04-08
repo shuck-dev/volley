@@ -13,12 +13,15 @@ var preferred_width: int:
 	get:
 		return config.preferred_width if config != null else DEFAULT_CONFIG.preferred_width
 
+var _item_manager: Node
 var _item_container: Node2D
 
 
 func _ready() -> void:
-	ItemManager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
-	_update_friendship_label(ItemManager.get_friendship_point_balance())
+	if _item_manager == null:
+		_item_manager = ItemManager
+	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
+	_update_friendship_label(_item_manager.get_friendship_point_balance())
 	var shop_camera: Camera2D = $Camera2D
 	shop_camera.make_current()
 	_spawn_items()
@@ -39,6 +42,7 @@ func _spawn_items() -> void:
 	for index: int in visible_items.size():
 		var definition: ItemDefinition = visible_items[index]
 		var item: ShopItem = ShopItemScene.instantiate()
+		item._item_manager = _item_manager
 		item.setup(definition)
 		item.position = Vector2(ITEM_MARGIN + index * spacing, COUNTERTOP_Y)
 		_item_container.add_child(item)
@@ -48,8 +52,8 @@ func _get_visible_items() -> Array[ItemDefinition]:
 	## For prototype, show the first N unpurchased items up to SLOTS.
 	## The rotation system replaces this in production.
 	var available: Array[ItemDefinition] = []
-	for definition: ItemDefinition in ItemManager.items:
-		if ItemManager.get_level(definition.key) < definition.max_level:
+	for definition: ItemDefinition in _item_manager.items:
+		if _item_manager.get_level(definition.key) < definition.max_level:
 			available.append(definition)
 		if available.size() >= config.display_slots:
 			break

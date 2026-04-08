@@ -6,6 +6,7 @@ extends Node2D
 @export var tooltip: ShopTooltip
 
 var item_definition: ItemDefinition
+var _item_manager: Node
 var _hovered := false
 
 
@@ -14,9 +15,11 @@ func setup(definition: ItemDefinition) -> void:
 
 
 func _ready() -> void:
+	if _item_manager == null:
+		_item_manager = ItemManager
 	_build_visuals()
-	ItemManager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
-	ItemManager.item_level_changed.connect(_on_item_level_changed)
+	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	hit_area.mouse_entered.connect(_on_hover_enter)
 	hit_area.mouse_exited.connect(_on_hover_exit)
 
@@ -48,16 +51,16 @@ func _on_hover_exit() -> void:
 
 
 func _get_cost_text() -> String:
-	var current_level: int = ItemManager.get_level(item_definition.key)
+	var current_level: int = _item_manager.get_level(item_definition.key)
 	if current_level >= item_definition.max_level:
 		return "Taken"
-	return "%d FP" % ItemManager.calculate_cost(item_definition.key)
+	return "%d FP" % _item_manager.calculate_cost(item_definition.key)
 
 
 func _get_flavor_text() -> String:
 	if item_definition.descriptions.is_empty():
 		return ""
-	var current_level: int = ItemManager.get_level(item_definition.key)
+	var current_level: int = _item_manager.get_level(item_definition.key)
 	var index: int = clamp(current_level, 0, item_definition.descriptions.size() - 1)
 	return item_definition.descriptions[index]
 
