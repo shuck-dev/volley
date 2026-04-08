@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://hvh6q02lrntj"]
+
+[ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop_panel.gd" id="1_lx5au"]
+
+[node name="Shop" type="Node2D" unique_id=1850332803 node_paths=PackedStringArray("friendship_label")]
+script = ExtResource("1_lx5au")
+friendship_label = NodePath("ShopHUD/MarginContainer/VBoxContainer/FriendshipLabel")
+
+[node name="ShopBackground" type="Parallax2D" parent="." unique_id=1299881117]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(4000, 4000)
+
+[node name="BackgroundColor" type="ColorRect" parent="ShopBackground" unique_id=1151335308]
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+color = Color(0, 0.17536254, 0.021551412, 1)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=56947295]
+anchor_mode = 0
+
+[node name="ShopHUD" type="CanvasLayer" parent="." unique_id=1505006512]
+
+[node name="MarginContainer" type="MarginContainer" parent="ShopHUD" unique_id=2136650968]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopHUD/MarginContainer" unique_id=1261800149]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderLabel" type="Label" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=1211093288]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Friend's Clearance"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=817067460]
+layout_mode = 2
+
+[node name="FriendshipLabel" type="Label" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=655009048]
+layout_mode = 2
+text = "Friendship: 0"
+horizontal_alignment = 1
+
+[node name="Table" type="Node2D" parent="." unique_id=585037634]
+
+[node name="TableFront" type="ColorRect" parent="Table" unique_id=1949802055]
+offset_left = 10.0
+offset_top = 320.0
+offset_right = 490.0
+offset_bottom = 450.0
+color = Color(0.35, 0.2, 0.1, 1)
+
+[node name="TableTop" type="ColorRect" parent="Table" unique_id=954984958]
+offset_left = 10.0
+offset_top = 280.0
+offset_right = 490.0
+offset_bottom = 320.0
+color = Color(0.55, 0.35, 0.2, 1)
+
+[node name="TableEdge" type="ColorRect" parent="Table" unique_id=1518714397]
+offset_left = 10.0
+offset_top = 318.0
+offset_right = 490.0
+offset_bottom = 322.0
+color = Color(0.65, 0.45, 0.25, 1)

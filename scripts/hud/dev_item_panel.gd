@@ -55,6 +55,7 @@ func _ready() -> void:
 
 	_refresh_buttons()
 	_setup_friendship_point_controls()
+	_setup_clear_save_control()
 
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
@@ -134,6 +135,20 @@ func _on_friendship_point_balance_booster_pressed(input: SpinBox) -> void:
 
 func _on_remove_friendship_point_pressed(input: SpinBox) -> void:
 	ItemManager.subtract_friendship_points(int(input.value))
+
+
+func _setup_clear_save_control() -> void:
+	var clear_save_button := Button.new()
+	clear_save_button.text = "Clear Save"
+	clear_save_button.focus_mode = Control.FOCUS_NONE
+	clear_save_button.pressed.connect(_on_clear_save_pressed)
+	add_child(clear_save_button)
+
+
+func _on_clear_save_pressed() -> void:
+	SaveManager.clear_save()
+	ItemManager.reload_from_progression()
+	get_tree().reload_current_scene()
 
 
 func _draw() -> void:

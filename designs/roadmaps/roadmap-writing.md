@@ -36,6 +36,12 @@ Writing lands alongside the content it supports. Partner writing ships with each
 
 **Peace** covers partner barks and copy for the post-game state: warmer, quieter, settled.
 
+## Dialogue system tooling
+
+The game has heavy dialogue requirements: Tinkerer destruction lines (one per item), synergy failure lines (~490 pairs), Shopkeeper entry dialogue that shifts across Act 1, partner banter, and the signal-layer clue ladder. Before Narrative Scripting begins, evaluate **Dialogic** (AssetLib) as the dialogue runtime. It handles branching dialogue, character portraits, timeline-based sequences, and conditional line selection, which maps well to the tier-gated and condition-based dialogue described in The Shopkeeper and the Tinkerer design. The alternative is a bespoke system, which may be simpler for this game's mostly single-line-per-trigger pattern but would need to be built.
+
+---
+
 ## Content Updates
 
 **Copy Pass** covers general in-game text, UI copy, and any remaining written content that needs polish.

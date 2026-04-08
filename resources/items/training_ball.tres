@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bid1gsm7ld4jm"]
 
+[ext_resource type="PackedScene" uid="uid://cu2ck5x67gono" path="res://scenes/items/training_ball.tscn" id="1_5blea"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_ijjqn"]
@@ -27,6 +28,7 @@ script = ExtResource("1_item")
 key = "training_ball"
 type = &"kit"
 display_name = "Training Ball"
+art = ExtResource("1_5blea")
 descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Never cooled down"])
 base_cost = 40
 max_level = 10

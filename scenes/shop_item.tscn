@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://pk4rev1g2m1n"]
+
+[ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
+[ext_resource type="PackedScene" uid="uid://bo7g4jvqblgue" path="res://scenes/tooltip.tscn" id="3_6gmg1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6gmg1"]
+size = Vector2(70, 77)
+
+[node name="ShopItem" type="Node2D" unique_id=1911337108 node_paths=PackedStringArray("art", "hit_area", "tooltip")]
+script = ExtResource("1_lrx6i")
+art = NodePath("Art")
+hit_area = NodePath("HitArea")
+tooltip = NodePath("Tooltip")
+
+[node name="Background" type="ColorRect" parent="." unique_id=94100835]
+visible = false
+offset_right = 70.0
+offset_bottom = 55.0
+color = Color(0.45, 0.3, 0.18, 1)
+
+[node name="HitArea" type="Area2D" parent="." unique_id=347546149]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="HitArea" unique_id=2065736581]
+shape = SubResource("RectangleShape2D_6gmg1")
+
+[node name="Tooltip" parent="." unique_id=577699881 instance=ExtResource("3_6gmg1")]
+
+[node name="Art" type="Node2D" parent="." unique_id=766346342]

@@ -159,3 +159,48 @@ class TestRemoveLevel:
 			balance_before_purchase,
 			"removing a level should refund the cost paid",
 		)
+
+
+class TestReloadFromProgression:
+	extends GutTest
+	const TEST_KEY := "test_speed"
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+
+	func test_reload_emits_friendship_balance_changed() -> void:
+		watch_signals(_manager)
+		_manager.reload_from_progression()
+		assert_signal_emitted(_manager, "friendship_point_balance_changed")
+
+	func test_reload_emits_item_level_changed_for_each_item() -> void:
+		watch_signals(_manager)
+		_manager.reload_from_progression()
+		assert_signal_emit_count(_manager, "item_level_changed", _manager.items.size())
+
+	func test_reload_reregisters_effects_from_current_levels() -> void:
+		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		assert_eq(_manager.get_stat(&"paddle_speed"), base_speed, "no level, no effect")
+		# Simulate progression data being rewritten externally (e.g. dev clear-save)
+		_manager._progression.item_levels[TEST_KEY] = 1
+		_manager.reload_from_progression()
+		assert_eq(
+			_manager.get_stat(&"paddle_speed"),
+			base_speed + 50.0,
+			"reload should re-register effects matching the restored level"
+		)
+
+	func test_reload_unregisters_previously_registered_effects_when_level_is_zero() -> void:
+		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		_manager._progression.friendship_point_balance = 1000
+		_manager.purchase(TEST_KEY)
+		assert_eq(_manager.get_stat(&"paddle_speed"), base_speed + 50.0)
+		# Simulate progression data being rewritten externally
+		_manager._progression.item_levels.clear()
+		_manager.reload_from_progression()
+		assert_eq(
+			_manager.get_stat(&"paddle_speed"),
+			base_speed,
+			"reload should drop effects that no longer have a level"
+		)

@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://b7d0q7vnlaev1"]
+
+[ext_resource type="Texture2D" uid="uid://drtfo01yai5lj" path="res://assets/items/ankle_weights.png" id="1_sh7fj"]
+
+[node name="AnkleWeights" type="Node2D" unique_id=476489850]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=396174257]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_sh7fj")

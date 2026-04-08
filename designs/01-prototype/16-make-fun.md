@@ -92,6 +92,17 @@ If any criterion fails after tuning, identify the root cause and fix it before d
 
 ---
 
+## Juice and game feel
+
+Idle games live or die on feedback loops. Every player action that matters should produce a visible, audible, or physical response. The make fun pass is the right time to evaluate whether the prototype needs a dedicated juice library from AssetLib.
+
+**Candidates:**
+- **Godot Juice** or similar tweening/effects library: screen shake on miss, bounce/pop on hit, particle burst on streak milestones, satisfying snap when items drop into slots. GDFXR covers sound; this covers motion and visual punctuation.
+
+The goal is not polish (that is v0.5 work). The goal is confirming that the feedback loop *feels* like something. If a hit and a miss produce the same visual response, the player has no reason to care about streaks. A small amount of juice during the make fun pass is enough to validate whether the core loop has the right feel before committing to full audio and animation work in Beta.
+
+---
+
 ## What this pass is not
 
 - Not a bug fix sprint (bugs blocking play goals are in scope; everything else is not)

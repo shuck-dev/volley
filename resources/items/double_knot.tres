@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
+[ext_resource type="PackedScene" uid="uid://wmhxhrs26yl" path="res://scenes/items/double_knot.tscn" id="6_art"]
 
 [sub_resource type="Resource" id="magnetism_outcome"]
 script = ExtResource("5_stat")
@@ -43,6 +44,7 @@ script = ExtResource("1_item")
 key = "double_knot"
 type = &"kit"
 display_name = "Double Knot"
+art = ExtResource("6_art")
 descriptions = Array[String](["Made two", "Closer than before", "Still wearing it"])
 base_cost = 120
 effects = Array[ExtResource("2_effect")]([SubResource("magnetism_effect"), SubResource("angle_effect")])

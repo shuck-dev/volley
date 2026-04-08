@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Volley Vendetta"
-run/main_scene="uid://brd0mbrfgqjxr"
+run/main_scene="uid://cls4btpupspbw"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -20,14 +20,20 @@ config/icon="res://icon.svg"
 GodotIQRuntime="*uid://5f55jejx8ekg"
 SaveManager="*uid://dk8i5dnut5fu0"
 ItemManager="*uid://csp168hb63ubx"
+ProgressionManager="*res://scripts/progression/progression_manager.gd"
 
 [debug]
 
 file_logging/enable_file_logging=true
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/item_preview/plugin.cfg")
 
 [input]
 

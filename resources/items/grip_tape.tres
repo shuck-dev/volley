@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
+[ext_resource type="PackedScene" uid="uid://cc42y3b7oihf0" path="res://scenes/items/grip_tape.tscn" id="6_art"]
 
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_stat")
@@ -28,6 +29,7 @@ script = ExtResource("1_item")
 key = "grip_tape"
 type = &"kit"
 display_name = "Grip Tape"
+art = ExtResource("6_art")
 descriptions = Array[String](["Covers more than you think", "Hard to miss now", "Held it together"])
 base_cost = 30
 cost_scaling = 1.5

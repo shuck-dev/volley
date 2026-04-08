@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://wmhxhrs26yl"]
+
+[ext_resource type="Texture2D" uid="uid://df2jumxc32fx7" path="res://assets/items/double_knot.png" id="1_m5flf"]
+
+[node name="DoubleKnot" type="Node2D" unique_id=669137189]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1708013409]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_m5flf")

@@ -36,6 +36,17 @@ func _register_existing_items() -> void:
 			_effect_manager.register_source(item, level)
 
 
+## Resyncs effect registrations and emits signals after progression data has been
+## reset externally (e.g. dev clear-save).
+func reload_from_progression() -> void:
+	for item in items:
+		_effect_manager.unregister_source(item)
+	_register_existing_items()
+	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+	for item in items:
+		item_level_changed.emit(item.key)
+
+
 ## Dispatches a game event to the effect system for causality processing
 func process_event(event_type: StringName) -> void:
 	_effect_manager.process_event(event_type)
@@ -101,9 +112,11 @@ func get_friendship_point_balance() -> int:
 	return _progression.friendship_point_balance
 
 
-## Adds friendship points and emits balance changed signal
+## Only earning path. Increments `total_friendship_points_earned` so the shop
+## unlock check stays correct across spending. Refunds use `_refund_friendship_points`.
 func add_friendship_points(points: int) -> void:
 	_progression.friendship_point_balance += points
+	_progression.total_friendship_points_earned += points
 	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
 
 
@@ -122,10 +135,16 @@ func remove_level(item_key: String) -> void:
 	if current_level > 0:
 		var item := _get_item(item_key)
 		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
-		_progression.friendship_point_balance += refund
-		friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+		_refund_friendship_points(refund)
 		_set_level(item_key, current_level - 1)
 		SaveManager.save()
+
+
+## Returns points to the balance without counting them as newly earned.
+## Used for undo flows (dev level removal, future kit swaps); not a public API.
+func _refund_friendship_points(points: int) -> void:
+	_progression.friendship_point_balance += points
+	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
 
 
 func _set_level(item_key: String, level: int) -> void:

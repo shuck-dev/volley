@@ -27,6 +27,12 @@ func save() -> void:
 	_progression.save_to_disk()
 
 
+## Deletes the save file and resets the in-memory progression. Dev-only helper.
+func clear_save() -> void:
+	_progression.clear()
+	_progression.save_to_disk()
+
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save()

@@ -2,10 +2,22 @@ class_name ProgressionData
 extends RefCounted
 
 var friendship_point_balance := 0
+var total_friendship_points_earned := 0
 var item_levels: Dictionary[String, int]
 var personal_volley_best := 0
+var shop_unlocked := false
 
 var _storage: SaveStorage
+
+
+## Resets progression fields to defaults. Deliberately leaves `_storage` alone:
+## this is a data reset, not a storage disconnect; the caller decides whether to save.
+func clear() -> void:
+	friendship_point_balance = 0
+	total_friendship_points_earned = 0
+	item_levels = {}
+	personal_volley_best = 0
+	shop_unlocked = false
 
 
 ## Saves game data to storeage (disk)
@@ -27,8 +39,10 @@ func load_from_disk() -> bool:
 
 	var loaded := from_dict(data)
 	friendship_point_balance = loaded.friendship_point_balance
+	total_friendship_points_earned = loaded.total_friendship_points_earned
 	item_levels = loaded.item_levels
 	personal_volley_best = loaded.personal_volley_best
+	shop_unlocked = loaded.shop_unlocked
 
 	return true
 
@@ -37,8 +51,10 @@ func load_from_disk() -> bool:
 func to_dict() -> Dictionary:
 	return {
 		"friendship_point_balance": friendship_point_balance,
+		"total_friendship_points_earned": total_friendship_points_earned,
 		"item_levels": item_levels,
-		"personal_volley_best": personal_volley_best
+		"personal_volley_best": personal_volley_best,
+		"shop_unlocked": shop_unlocked,
 	}
 
 
@@ -46,8 +62,10 @@ func to_dict() -> Dictionary:
 static func from_dict(data: Dictionary) -> ProgressionData:
 	var progression := ProgressionData.new()
 	progression.friendship_point_balance = data.get("friendship_point_balance", 0)
+	progression.total_friendship_points_earned = data.get("total_friendship_points_earned", 0)
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
+	progression.shop_unlocked = data.get("shop_unlocked", false)
 
 	return progression
 

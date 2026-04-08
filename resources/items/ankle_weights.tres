@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
+[ext_resource type="PackedScene" uid="uid://b7d0q7vnlaev1" path="res://scenes/items/ankle_weights.tscn" id="6_art"]
 
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_stat")
@@ -27,6 +28,7 @@ script = ExtResource("1_item")
 key = "ankle_weights"
 type = &"kit"
 display_name = "Ankle Weights"
+art = ExtResource("6_art")
 descriptions = Array[String](["Heavy steps", "Didn't notice the difference until I took them off", "Still wearing them"])
 base_cost = 30
 cost_scaling = 1.5

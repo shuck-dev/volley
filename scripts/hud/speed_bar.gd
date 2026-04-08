@@ -72,9 +72,9 @@ func _draw_permanent_max_marker(permanent_ratio: float) -> void:
 
 
 func update_speed(
-	current_speed: float, min_speed: float, max_speed: float, permanent_max_speed: float
+	new_speed: float, min_speed: float, max_speed: float, permanent_max_speed: float
 ) -> void:
-	self.current_speed = current_speed
+	current_speed = new_speed
 	_min_speed = min_speed
 	_max_speed = max_speed
 	_permanent_max_speed = permanent_max_speed

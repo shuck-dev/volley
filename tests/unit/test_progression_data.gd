@@ -82,3 +82,20 @@ func test_from_dict_missing_keys_use_defaults() -> void:
 	assert_eq(restored.friendship_point_balance, 0)
 	assert_eq(restored.item_levels, {})
 	assert_eq(restored.personal_volley_best, 0)
+
+
+# --- total_friendship_points_earned ---
+func test_total_friendship_points_earned_default_zero() -> void:
+	assert_eq(_data.total_friendship_points_earned, 0)
+
+
+func test_total_friendship_points_earned_round_trips() -> void:
+	_data.total_friendship_points_earned = 1234
+	var restored := ProgressionData.from_dict(_data.to_dict())
+	assert_eq(restored.total_friendship_points_earned, 1234)
+
+
+func test_clear_resets_total_friendship_points_earned() -> void:
+	_data.total_friendship_points_earned = 500
+	_data.clear()
+	assert_eq(_data.total_friendship_points_earned, 0)

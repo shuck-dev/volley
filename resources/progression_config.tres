@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="ProgressionConfig" format=3 uid="uid://du1tcvqlioofl"]
+
+[ext_resource type="Script" uid="uid://b5i7hf17lwdyt" path="res://scripts/progression/progression_config.gd" id="1_hfk6j"]
+
+[resource]
+script = ExtResource("1_hfk6j")

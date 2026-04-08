@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cu2ck5x67gono"]
+
+[ext_resource type="Texture2D" uid="uid://cw56x7wx234p6" path="res://assets/items/training_ball.png" id="1_gm3nh"]
+
+[node name="TrainingBall" type="Node2D" unique_id=883382438]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1357155184]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_gm3nh")

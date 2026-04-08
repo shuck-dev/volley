@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cc42y3b7oihf0"]
+
+[ext_resource type="Texture2D" uid="uid://b27dhpxfdxnho" path="res://assets/items/grip_tape.png" id="1_grjhd"]
+
+[node name="GripTape" type="Node2D" unique_id=1734850718]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1937718390]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_grjhd")

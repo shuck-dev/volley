@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cjeo8rbb424de"]
+
+[ext_resource type="Texture2D" uid="uid://cvrcke651f3aj" path="res://assets/items/wrist_brace.png" id="1_4mhtd"]
+
+[node name="WristBrace" type="Node2D" unique_id=1696072668]
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=978513024]
+scale = Vector2(2.5, 2.5)
+texture = ExtResource("1_4mhtd")

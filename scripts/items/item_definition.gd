@@ -4,6 +4,7 @@ extends Resource
 @export var key: String
 @export var type: StringName = &""
 @export var display_name: String
+@export var art: PackedScene
 @export var descriptions: Array[String]
 @export var base_cost: int
 @export var cost_scaling := 1.6
