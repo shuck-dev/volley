@@ -98,11 +98,17 @@ func _get_flavor_text() -> String:
 
 
 func _on_mouse_entered() -> void:
+	tooltip.follow_mouse(get_global_mouse_position())
 	tooltip.visible = true
 
 
 func _on_mouse_exited() -> void:
 	tooltip.hide_tooltip()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		tooltip.follow_mouse(get_global_mouse_position())
 
 
 func _on_friendship_point_balance_changed(_balance: int) -> void:
