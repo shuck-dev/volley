@@ -85,26 +85,31 @@ class TestShopItemTakenState:
 		add_child_autofree(item)
 		return item
 
-	func test_visible_by_default_when_unowned() -> void:
+	func test_art_visible_by_default_when_unowned() -> void:
 		var item: ShopItem = _make_item(_definition)
-		assert_true(item.visible)
+		assert_true(item.art_viewport_container.visible)
 
-	func test_hides_itself_when_its_item_is_taken() -> void:
+	func test_hides_art_when_its_item_is_taken() -> void:
 		var item: ShopItem = _make_item(_definition)
 		_item_manager.take(_definition.key)
-		assert_false(item.visible)
+		assert_false(item.art_viewport_container.visible)
 
-	func test_stays_visible_when_a_different_item_is_taken() -> void:
+	func test_root_stays_visible_when_taken_so_slot_keeps_its_gap() -> void:
+		var item: ShopItem = _make_item(_definition)
+		_item_manager.take(_definition.key)
+		assert_true(item.visible)
+
+	func test_art_stays_visible_when_a_different_item_is_taken() -> void:
 		var item: ShopItem = _make_item(_definition)
 		var other: ItemDefinition = ItemFactory.create("other_key", &"paddle_speed", &"add", 10.0)
 		_item_manager.items.append(other)
 		_item_manager.take(other.key)
-		assert_true(item.visible)
+		assert_true(item.art_viewport_container.visible)
 
-	func test_starts_hidden_when_definition_is_already_owned() -> void:
+	func test_starts_with_hidden_art_when_definition_is_already_owned() -> void:
 		_item_manager.take(_definition.key)
 		var item: ShopItem = _make_item(_definition)
-		assert_false(item.visible)
+		assert_false(item.art_viewport_container.visible)
 
 
 class TestShopPanelLayout:

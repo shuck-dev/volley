@@ -81,11 +81,19 @@ func _fit_to_art(art_instance: ItemArt) -> void:
 
 
 func _refresh_owned_visibility() -> void:
-	visible = _item_manager.get_level(item_definition.key) == 0
+	## Hide only the art so the slot keeps its place in the row. Lifting an item
+	## should not shift its neighbours.
+	var owned: bool = _item_manager.get_level(item_definition.key) >= 1
+	art_viewport_container.visible = not owned
+	if owned:
+		tooltip.hide_tooltip()
 
 
 func _refresh_display_case() -> void:
-	display_case.visible = not can_be_taken()
+	## The display case is the unaffordable indicator. Owned slots are empty
+	## (no case, no art), not "behind glass".
+	var owned: bool = _item_manager.get_level(item_definition.key) >= 1
+	display_case.visible = not owned and not can_be_taken()
 
 
 func _get_cost_text() -> String:
@@ -101,6 +109,8 @@ func _get_flavor_text() -> String:
 
 
 func _on_mouse_entered() -> void:
+	if _item_manager.get_level(item_definition.key) >= 1:
+		return
 	tooltip.follow_mouse(get_global_mouse_position())
 	tooltip.visible = true
 
