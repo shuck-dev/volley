@@ -22,6 +22,7 @@ SaveManager="*uid://dk8i5dnut5fu0"
 ItemManager="*uid://csp168hb63ubx"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
 DragManager="*res://scripts/core/drag_manager.gd"
+ConfigHotReload="*res://addons/config_hot_reload/config_hot_reload.gd"
 
 [debug]
 
@@ -34,7 +35,11 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/item_preview/plugin.cfg")
+enabled=PackedStringArray("res://addons/config_hot_reload/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/item_preview/plugin.cfg")
+
+[global_group]
+
+hot_reloadable_config="Auto-reloads Resource exports from disk in debug builds"
 
 [input]
 

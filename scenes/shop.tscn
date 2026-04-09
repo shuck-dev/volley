@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop_panel.gd" id="1_lx5au"]
 [ext_resource type="PackedScene" uid="uid://d4grgci0n0c1y" path="res://scenes/clearance_box.tscn" id="2_1l46r"]
-[ext_resource type="Script" uid="uid://ccdufgyq2v4bm" path="res://scripts/shop/clearance_box.gd" id="3_032fp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajvqh"]
 bg_color = Color(0.12, 0.1, 0.08, 0.85)
@@ -28,7 +27,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row")]
+[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row") groups=["hot_reloadable_config"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -107,8 +106,6 @@ color = Color(0.65, 0.45, 0.25, 1)
 
 [node name="ItemsRow" type="HBoxContainer" parent="Margin/Contents/TableCenter/TableSection" unique_id=1216891793]
 layout_mode = 0
-anchor_right = 1.0
-offset_bottom = 40.0
 theme_override_constants/separation = 24
 alignment = 1
 
@@ -116,10 +113,8 @@ alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ClearanceBox" type="PanelContainer" parent="Margin/Contents" unique_id=1891333944 instance=ExtResource("2_1l46r")]
-custom_minimum_size = Vector2(0, 96)
+[node name="ClearanceBox" parent="Margin/Contents" unique_id=1891333944 instance=ExtResource("2_1l46r")]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ajvqh")
-script = ExtResource("3_032fp")
 idle_stylebox = SubResource("StyleBoxFlat_ajvqh")
 hover_stylebox = SubResource("StyleBoxFlat_v4bpy")

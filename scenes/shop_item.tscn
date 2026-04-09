@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://pk4rev1g2m1n"]
 
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
-[ext_resource type="Script" uid="uid://dqi21u2ks283c" path="res://scripts/shop/shop_tooltip.gd" id="2_btjjm"]
+[ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_6gmg1"]
 [ext_resource type="PackedScene" uid="uid://bo7g4jvqblgue" path="res://scenes/tooltip.tscn" id="3_6gmg1"]
 
 [node name="ShopItem" type="Control" unique_id=185153743 node_paths=PackedStringArray("tooltip", "art_viewport", "art_viewport_container", "display_case")]
@@ -24,15 +24,20 @@ transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 4
 
-[node name="DisplayCase" type="Control" parent="." unique_id=771800492]
+[node name="DisplayCase" type="Control" parent="." unique_id=286875101]
+visible = false
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 
-[node name="Tooltip" type="Control" parent="." unique_id=147463810 node_paths=PackedStringArray("name_label", "cost_label", "flavor_label") instance=ExtResource("3_6gmg1")]
-anchors_preset = 0
+[node name="DisplayCaseTexture" type="TextureRect" parent="DisplayCase" unique_id=1986134027]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
 mouse_filter = 2
-script = ExtResource("2_btjjm")
-name_label = NodePath("Panel/VBoxContainer/HBoxContainer/NameLabel")
-cost_label = NodePath("Panel/VBoxContainer/HBoxContainer/CostLabel")
-flavor_label = NodePath("Panel/VBoxContainer/FlavorLabel")
+texture = ExtResource("2_6gmg1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Tooltip" parent="." unique_id=147463810 instance=ExtResource("3_6gmg1")]
+layout_mode = 0

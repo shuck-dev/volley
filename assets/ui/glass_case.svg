@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="glassFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eaf4ff" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#a8c8e6" stop-opacity="0.22"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="54" width="44" height="6" rx="1" ry="1"
+        fill="#6b4a2b" stroke="#4a3420" stroke-width="1"/>
+  <rect x="12" y="55" width="40" height="1" fill="#8b6a45"/>
+  <path d="M 14,54 L 14,22 Q 14,10 32,10 Q 50,10 50,22 L 50,54 Z"
+        fill="url(#glassFill)"
+        stroke="#f4f8ff" stroke-opacity="0.72" stroke-width="2"/>
+  <circle cx="32" cy="8" r="2.5"
+          fill="url(#glassFill)"
+          stroke="#f4f8ff" stroke-opacity="0.75" stroke-width="1.5"/>
+  <path d="M 20,18 Q 18,34 21,50"
+        stroke="#ffffff" stroke-opacity="0.5" stroke-width="2"
+        fill="none" stroke-linecap="round"/>
+  <path d="M 26,14 Q 24,24 26,34"
+        stroke="#ffffff" stroke-opacity="0.28" stroke-width="1.2"
+        fill="none" stroke-linecap="round"/>
+</svg>

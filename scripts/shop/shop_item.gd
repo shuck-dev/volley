@@ -1,15 +1,21 @@
 class_name ShopItem
 extends Control
 
+signal case_tapped
+
 const ItemDraggingScene: PackedScene = preload("res://scenes/items/item_dragging.tscn")
 
 @export var tooltip: ShopTooltip
 @export var art_viewport: SubViewport
 @export var art_viewport_container: SubViewportContainer
 @export var display_case: Control
+@export var tink_sound: AudioStreamPlayer
 
 var item_definition: ItemDefinition
+var config: ShopConfig
 var _item_manager: Node
+var _bounds_size: Vector2
+var _dragging: bool = false
 
 
 func setup(definition: ItemDefinition) -> void:
@@ -30,6 +36,7 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+	display_case.gui_input.connect(_on_display_case_gui_input)
 
 
 func can_be_taken() -> bool:
@@ -66,7 +73,13 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_DRAG_END and item_definition != null:
+	if item_definition == null:
+		return
+	if what == NOTIFICATION_DRAG_BEGIN:
+		_dragging = true
+		tooltip.hide_tooltip()
+	elif what == NOTIFICATION_DRAG_END:
+		_dragging = false
 		DragManager.hide_preview()
 		_refresh_owned_visibility()
 
@@ -89,6 +102,29 @@ func _fit_to_art(art_instance: ItemArt) -> void:
 	art_viewport.size = Vector2i(bounds.size.ceil())
 	art_viewport_container.custom_minimum_size = bounds.size
 	custom_minimum_size = bounds.size
+	_bounds_size = bounds.size
+	_size_display_case(_bounds_size)
+
+
+## Re-applies config-driven layout. Called by ShopPanel on dev-time hot reload.
+func refresh_from_config() -> void:
+	if _bounds_size == Vector2.ZERO:
+		return
+	_size_display_case(_bounds_size)
+
+
+## Extends the display case beyond the item rect proportionally so the cloche
+## has headroom for its dome and margin around the contents.
+func _size_display_case(item_size: Vector2) -> void:
+	var padding: Vector3 = config.display_case_padding if config != null else Vector3(0.5, 1.0, 0.3)
+	var case_scale: float = config.display_case_scale if config != null else 1.0
+	var horizontal_padding: float = item_size.x * padding.x * case_scale
+	var top_padding: float = item_size.y * padding.y * case_scale
+	var bottom_padding: float = item_size.y * padding.z * case_scale
+	display_case.offset_left = -horizontal_padding
+	display_case.offset_top = -top_padding
+	display_case.offset_right = horizontal_padding
+	display_case.offset_bottom = bottom_padding
 
 
 func _refresh_owned_visibility() -> void:
@@ -118,7 +154,7 @@ func _get_flavor_text() -> String:
 
 
 func _on_mouse_entered() -> void:
-	if _item_manager.get_level(item_definition.key) >= 1:
+	if _dragging or _item_manager.get_level(item_definition.key) >= 1:
 		return
 	tooltip.follow_mouse(get_global_mouse_position())
 	tooltip.visible = true
@@ -129,8 +165,20 @@ func _on_mouse_exited() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	if _dragging:
+		return
 	if event is InputEventMouseMotion:
 		tooltip.follow_mouse(get_global_mouse_position())
+
+
+func _on_display_case_gui_input(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	if not event.pressed or event.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if tink_sound != null:
+		tink_sound.play()
+	case_tapped.emit()
 
 
 func _on_friendship_point_balance_changed(_balance: int) -> void:

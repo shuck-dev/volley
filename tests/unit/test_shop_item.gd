@@ -124,6 +124,60 @@ class TestShopItemTakenState:
 		assert_false(item.art_viewport_container.visible)
 
 
+class TestDisplayCaseTap:
+	extends GutTest
+
+	var _definition: ItemDefinition
+	var _item_manager: Node
+
+	func before_each() -> void:
+		_item_manager = ItemFactory.create_manager(self)
+		_definition = _item_manager.items[0]
+
+	func _make_item() -> ShopItem:
+		var item: ShopItem = ShopItemScene.instantiate()
+		item._item_manager = _item_manager
+		item.setup(_definition)
+		add_child_autofree(item)
+		return item
+
+	func _left_click() -> InputEventMouseButton:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = true
+		return event
+
+	func test_left_click_on_display_case_emits_case_tapped() -> void:
+		var item: ShopItem = _make_item()
+		watch_signals(item)
+		item._on_display_case_gui_input(_left_click())
+		assert_signal_emitted(item, "case_tapped")
+
+	func test_right_click_does_not_emit_case_tapped() -> void:
+		var item: ShopItem = _make_item()
+		watch_signals(item)
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_RIGHT
+		event.pressed = true
+		item._on_display_case_gui_input(event)
+		assert_signal_not_emitted(item, "case_tapped")
+
+	func test_button_release_does_not_emit_case_tapped() -> void:
+		var item: ShopItem = _make_item()
+		watch_signals(item)
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = false
+		item._on_display_case_gui_input(event)
+		assert_signal_not_emitted(item, "case_tapped")
+
+	func test_non_mouse_input_does_not_emit_case_tapped() -> void:
+		var item: ShopItem = _make_item()
+		watch_signals(item)
+		item._on_display_case_gui_input(InputEventKey.new())
+		assert_signal_not_emitted(item, "case_tapped")
+
+
 class TestShopPanelLayout:
 	extends GutTest
 

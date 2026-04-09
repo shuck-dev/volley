@@ -20,7 +20,23 @@ func _ready() -> void:
 		_item_manager = ItemManager
 	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
 	_update_friendship_label(_item_manager.get_friendship_point_balance())
+	_apply_layout_config()
 	_spawn_items()
+
+
+## Called by ConfigHotReload after `config` has been re-assigned from a reloaded .tres.
+func on_config_reloaded() -> void:
+	_apply_layout_config()
+	for child: Node in items_row.get_children():
+		if child is ShopItem:
+			child.config = config
+			child.refresh_from_config()
+
+
+func _apply_layout_config() -> void:
+	if config == null or items_row == null:
+		return
+	items_row.position = config.items_row_position
 
 
 func _spawn_items() -> void:
@@ -28,6 +44,7 @@ func _spawn_items() -> void:
 		var item: ShopItem = ShopItemScene.instantiate()
 		item.name = "ShopItem_%s" % definition.key
 		item._item_manager = _item_manager
+		item.config = config
 		item.setup(definition)
 		items_row.add_child(item)
 
