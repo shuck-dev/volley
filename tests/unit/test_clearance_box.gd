@@ -5,7 +5,6 @@ const ClearanceBoxScene: PackedScene = preload("res://scenes/clearance_box.tscn"
 
 class TestCanAccept:
 	extends GutTest
-	const TEST_KEY := "test_speed"
 
 	var _box: ClearanceBox
 	var _definition: ItemDefinition
@@ -78,7 +77,6 @@ class TestAccept:
 
 class TestCanDropData:
 	extends GutTest
-	const TEST_KEY := "test_speed"
 
 	var _box: ClearanceBox
 	var _definition: ItemDefinition

@@ -49,9 +49,7 @@ func _spawn_items() -> void:
 	for definition: ItemDefinition in _get_visible_items():
 		var item: ShopItem = ShopItemScene.instantiate()
 		item.name = "ShopItem_%s" % definition.key
-		item._item_manager = _item_manager
-		item.config = config
-		item.setup(definition)
+		item.configure(_item_manager, config, definition)
 		items_row.add_child(item)
 	_position_pick_indicator.call_deferred()
 

@@ -14,8 +14,7 @@ func show_item(definition: ItemDefinition) -> void:
 	var art_instance: ItemArt = definition.art.instantiate()
 	art_viewport.add_child(art_instance)
 	var bounds: Rect2 = art_instance.bounding_rect
-	if bounds.size == Vector2.ZERO:
-		return
+	assert(bounds.size != Vector2.ZERO, "ItemArt %s has no bounding_rect" % definition.key)
 	art_instance.position -= bounds.position
 	art_viewport.size = Vector2i(bounds.size.ceil())
 	art_viewport_container.custom_minimum_size = bounds.size

@@ -1,5 +1,7 @@
 extends Node
 
+## All drag previews route through show_preview; set_drag_preview clips to source Viewport.
+
 @export var preview_layer_index: int = 100
 
 var _layer: CanvasLayer
@@ -28,8 +30,9 @@ func hide_preview() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _preview != null and event is InputEventMouseMotion:
-		_update_preview_position()
+	if _preview == null or not (event is InputEventMouseMotion):
+		return
+	_preview.global_position = event.position
 
 
 func _update_preview_position() -> void:

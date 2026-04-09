@@ -13,7 +13,6 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 	_set_idle()
-	mouse_exited.connect(_set_idle)
 
 
 func can_accept(definition: ItemDefinition) -> bool:

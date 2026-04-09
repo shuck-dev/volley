@@ -26,6 +26,13 @@ func setup(definition: ItemDefinition) -> void:
 	item_definition = definition
 
 
+## Public injection entry point so Shop._spawn_items does not touch private fields.
+func configure(item_manager: Node, item_config: ShopConfig, definition: ItemDefinition) -> void:
+	_item_manager = item_manager
+	config = item_config
+	setup(definition)
+
+
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
@@ -56,8 +63,7 @@ func build_drag_payload() -> ItemDefinition:
 func build_drag_preview() -> Control:
 	var dragging: ItemDragging = ItemDraggingScene.instantiate()
 	dragging.show_item(item_definition)
-	## Wrap so we can offset the preview to centre on the cursor. Mouse-ignore
-	## so the wrapper does not block the drop protocol from reaching the box.
+	## Wrapper offsets the child to centre it on cursor; mouse-ignore so it does not block drops.
 	var wrapper := Control.new()
 	wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	wrapper.add_child(dragging)
@@ -113,8 +119,10 @@ func _fit_to_art(art_instance: ItemArt) -> void:
 ## Extends the display case beyond the item rect proportionally so the cloche
 ## has headroom for its dome and margin around the contents.
 func _size_display_case(item_size: Vector2) -> void:
-	var padding: Vector3 = config.display_case_padding if config != null else Vector3(0.5, 1.0, 0.3)
-	var case_scale: float = config.display_case_scale if config != null else 1.0
+	if config == null:
+		return
+	var padding: Vector3 = config.display_case_padding
+	var case_scale: float = config.display_case_scale
 	var horizontal_padding: float = item_size.x * padding.x * case_scale
 	var top_padding: float = item_size.y * padding.y * case_scale
 	var bottom_padding: float = item_size.y * padding.z * case_scale
