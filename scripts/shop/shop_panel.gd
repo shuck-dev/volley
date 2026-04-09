@@ -1,22 +1,18 @@
-# todo: SH-66 Control rewrite pending. This whole file becomes Control-rooted
-# with a ClearanceBox drop target. See designs/01-prototype/04-clearance-drag-drop.md.
 class_name ShopPanel
-extends Node2D
+extends Control
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
-const COUNTERTOP_Y: float = 290.0
-const ITEM_MARGIN: float = 50.0
 
 @export var config: ShopConfig = DEFAULT_CONFIG
 @export var friendship_label: Label
+@export var items_row: HBoxContainer
 
 var preferred_width: int:
 	get:
 		return config.preferred_width if config != null else DEFAULT_CONFIG.preferred_width
 
 var _item_manager: Node
-var _item_container: Node2D
 
 
 func _ready() -> void:
@@ -28,28 +24,15 @@ func _ready() -> void:
 
 
 func _spawn_items() -> void:
-	_item_container = Node2D.new()
-	_item_container.name = "ItemContainer"
-	add_child(_item_container)
-
-	var visible_items: Array[ItemDefinition] = _get_visible_items()
-	if visible_items.is_empty():
-		return
-
-	var available_width: float = config.preferred_width - ITEM_MARGIN * 2.0
-	var spacing: float = available_width / maxf(visible_items.size() - 1, 1)
-
-	for index: int in visible_items.size():
-		var definition: ItemDefinition = visible_items[index]
+	for definition: ItemDefinition in _get_visible_items():
 		var item: ShopItem = ShopItemScene.instantiate()
 		item._item_manager = _item_manager
 		item.setup(definition)
-		item.position = Vector2(ITEM_MARGIN + index * spacing, COUNTERTOP_Y)
-		_item_container.add_child(item)
+		items_row.add_child(item)
 
 
 func _get_visible_items() -> Array[ItemDefinition]:
-	## For prototype, show the first N unpurchased items up to SLOTS.
+	## For prototype, show the first N unpurchased items up to display_slots.
 	## The rotation system replaces this in production.
 	var available: Array[ItemDefinition] = []
 	for definition: ItemDefinition in _item_manager.items:

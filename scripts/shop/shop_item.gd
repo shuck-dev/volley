@@ -3,6 +3,7 @@ extends Control
 
 @export var tooltip: ShopTooltip
 @export var art_viewport: SubViewport
+@export var art_viewport_container: SubViewportContainer
 @export var display_case: Control
 
 var item_definition: ItemDefinition
@@ -58,10 +59,22 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 
 func _build_visuals() -> void:
 	if item_definition.art != null:
-		var art_instance: Node = item_definition.art.instantiate()
+		var art_instance: ItemArt = item_definition.art.instantiate()
 		art_viewport.add_child(art_instance)
+		_fit_to_art(art_instance)
 	tooltip.show_item(item_definition.display_name, _get_cost_text(), _get_flavor_text())
 	tooltip.hide_tooltip()
+
+
+func _fit_to_art(art_instance: ItemArt) -> void:
+	var bounds: Rect2 = art_instance.bounding_rect
+	if bounds.size == Vector2.ZERO:
+		return
+	## Shift the art so its visible top-left lands at the viewport origin.
+	art_instance.position -= bounds.position
+	art_viewport.size = Vector2i(bounds.size.ceil())
+	art_viewport_container.custom_minimum_size = bounds.size
+	custom_minimum_size = bounds.size
 
 
 func _refresh_owned_visibility() -> void:

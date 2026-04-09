@@ -122,8 +122,7 @@ class TestShopPanelLayout:
 		add_child_autofree(_panel)
 
 	func test_spawns_visible_items() -> void:
-		var container: Node2D = _panel.get_node("ItemContainer")
-		assert_gt(container.get_child_count(), 0)
+		assert_gt(_panel.items_row.get_child_count(), 0)
 
 	func test_friendship_label_shows_current_balance() -> void:
 		var expected_balance: int = _item_manager.get_friendship_point_balance()

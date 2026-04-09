@@ -2,28 +2,25 @@
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop_panel.gd" id="1_lx5au"]
 
-[node name="Shop" type="Node2D" unique_id=1850332803 node_paths=PackedStringArray("friendship_label")]
-script = ExtResource("1_lx5au")
-friendship_label = NodePath("ShopHUD/MarginContainer/VBoxContainer/FriendshipLabel")
-
-[node name="ShopBackground" type="Parallax2D" parent="." unique_id=1299881117]
-scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(4000, 4000)
-
-[node name="BackgroundColor" type="ColorRect" parent="ShopBackground" unique_id=1151335308]
-offset_left = -2000.0
-offset_top = -2000.0
-offset_right = 2000.0
-offset_bottom = 2000.0
-color = Color(0, 0.17536254, 0.021551412, 1)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=56947295]
-anchor_mode = 0
-
-[node name="ShopHUD" type="CanvasLayer" parent="." unique_id=1505006512]
-
-[node name="MarginContainer" type="MarginContainer" parent="ShopHUD" unique_id=2136650968]
+[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row")]
+layout_mode = 3
 anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lx5au")
+friendship_label = NodePath("Margin/Contents/Header/FriendshipLabel")
+items_row = NodePath("Margin/Contents/TableCenter/TableSection/ItemsRow")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1583417568]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0.175, 0.022, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1708954788]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme_override_constants/margin_left = 16
@@ -31,43 +28,74 @@ theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ShopHUD/MarginContainer" unique_id=1261800149]
+[node name="Contents" type="VBoxContainer" parent="Margin" unique_id=862724006]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 16
 
-[node name="HeaderLabel" type="Label" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=1211093288]
+[node name="Header" type="HBoxContainer" parent="Margin/Contents" unique_id=1503992517]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+
+[node name="TitleLabel" type="Label" parent="Margin/Contents/Header" unique_id=1241544830]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Friend's Clearance"
-horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=817067460]
-layout_mode = 2
-
-[node name="FriendshipLabel" type="Label" parent="ShopHUD/MarginContainer/VBoxContainer" unique_id=655009048]
+[node name="FriendshipLabel" type="Label" parent="Margin/Contents/Header" unique_id=907123611]
 layout_mode = 2
 text = "Friendship: 0"
-horizontal_alignment = 1
+horizontal_alignment = 2
 
-[node name="Table" type="Node2D" parent="." unique_id=585037634]
+[node name="TableCenter" type="VBoxContainer" parent="Margin/Contents" unique_id=399104311]
+layout_mode = 2
+size_flags_vertical = 3
 
-[node name="TableFront" type="ColorRect" parent="Table" unique_id=1949802055]
-offset_left = 10.0
-offset_top = 320.0
-offset_right = 490.0
-offset_bottom = 450.0
+[node name="TopSpacer" type="Control" parent="Margin/Contents/TableCenter" unique_id=1347984760]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TableSection" type="Control" parent="Margin/Contents/TableCenter" unique_id=932737774]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Front" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=1531604011]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -130.0
 color = Color(0.35, 0.2, 0.1, 1)
 
-[node name="TableTop" type="ColorRect" parent="Table" unique_id=954984958]
-offset_left = 10.0
-offset_top = 280.0
-offset_right = 490.0
-offset_bottom = 320.0
+[node name="Top" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=749707731]
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 40.0
 color = Color(0.55, 0.35, 0.2, 1)
 
-[node name="TableEdge" type="ColorRect" parent="Table" unique_id=1518714397]
-offset_left = 10.0
-offset_top = 318.0
-offset_right = 490.0
-offset_bottom = 322.0
+[node name="Edge" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=1825022169]
+layout_mode = 0
+anchor_right = 1.0
+offset_top = 38.0
+offset_bottom = 42.0
 color = Color(0.65, 0.45, 0.25, 1)
+
+[node name="ItemsRow" type="HBoxContainer" parent="Margin/Contents/TableCenter/TableSection" unique_id=1216891793]
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 40.0
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="BottomSpacer" type="Control" parent="Margin/Contents/TableCenter" unique_id=1491435643]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ClearanceBox" type="PanelContainer" parent="Margin/Contents" unique_id=852628338]
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Contents/ClearanceBox" unique_id=2118258260]
+layout_mode = 2
+text = "Take"
+horizontal_alignment = 1
+vertical_alignment = 1

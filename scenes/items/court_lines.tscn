@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://c7nst71ac032l"]
 
+[ext_resource type="Script" path="res://scripts/items/item_art.gd" id="1_8cvip"]
 [ext_resource type="Texture2D" uid="uid://cg3rfwbnh5fw8" path="res://assets/items/court_lines.png" id="1_qsd35"]
 
 [node name="CourtLines" type="Node2D" unique_id=377291046]
+script = ExtResource("1_8cvip")
+bounding_rect = Rect2(-20, -20, 40, 40)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1907624641]
 scale = Vector2(2.5, 2.5)

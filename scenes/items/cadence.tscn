@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://cw0env2emxen"]
 
+[ext_resource type="Script" path="res://scripts/items/item_art.gd" id="1_ing1t"]
 [ext_resource type="Texture2D" uid="uid://1y3uu6hmaau7" path="res://assets/items/cadence.png" id="1_jn5c6"]
 
 [node name="Cadence" type="Node2D" unique_id=2082102038]
+script = ExtResource("1_ing1t")
+bounding_rect = Rect2(-20, -20, 40, 40)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1560477975]
 scale = Vector2(2.5, 2.5)

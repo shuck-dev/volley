@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://bwv0urakudmk3"]
 
 [ext_resource type="Texture2D" uid="uid://d1jl6q4qusbc" path="res://assets/items/spare.png" id="1_6lkkp"]
+[ext_resource type="Script" path="res://scripts/items/item_art.gd" id="1_psi8t"]
 
 [node name="Spare" type="Node2D" unique_id=575291975]
+script = ExtResource("1_psi8t")
+bounding_rect = Rect2(-20, -20, 40, 40)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1536553425]
 scale = Vector2(2.5, 2.5)

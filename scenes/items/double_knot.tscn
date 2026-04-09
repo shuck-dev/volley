@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://wmhxhrs26yl"]
 
 [ext_resource type="Texture2D" uid="uid://df2jumxc32fx7" path="res://assets/items/double_knot.png" id="1_m5flf"]
+[ext_resource type="Script" path="res://scripts/items/item_art.gd" id="1_uk78h"]
 
 [node name="DoubleKnot" type="Node2D" unique_id=669137189]
+script = ExtResource("1_uk78h")
+bounding_rect = Rect2(-20, -20, 40, 40)
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1708013409]
 scale = Vector2(2.5, 2.5)
