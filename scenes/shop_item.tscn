@@ -1,12 +1,11 @@
 [gd_scene format=3 uid="uid://pk4rev1g2m1n"]
 
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
-[ext_resource type="Texture2D" uid="uid://hii0sc5nvjjx" path="res://assets/ui/friend_pick_note.svg" id="2_1d7d6"]
 [ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_6gmg1"]
 [ext_resource type="PackedScene" uid="uid://bo7g4jvqblgue" path="res://scenes/tooltip.tscn" id="3_6gmg1"]
 [ext_resource type="AudioStream" uid="uid://68yphdm8dqjs" path="res://assets/sfx/glass_tap.sfxr" id="4_xcw7k"]
 
-[node name="ShopItem" type="Control" unique_id=185153743 node_paths=PackedStringArray("tooltip", "art_viewport", "art_viewport_container", "display_case", "pick_frame", "tink_sound")]
+[node name="ShopItem" type="Control" unique_id=185153743 node_paths=PackedStringArray("tooltip", "art_viewport", "art_viewport_container", "display_case", "tink_sound")]
 layout_mode = 3
 anchors_preset = 0
 size_flags_vertical = 4
@@ -15,30 +14,7 @@ tooltip = NodePath("Tooltip")
 art_viewport = NodePath("ArtViewportContainer/ArtViewport")
 art_viewport_container = NodePath("ArtViewportContainer")
 display_case = NodePath("DisplayCase")
-pick_frame = NodePath("PickFrame")
 tink_sound = NodePath("TinkSound")
-
-[node name="PickFrame" type="Panel" parent="." unique_id=783273251]
-visible = false
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-
-[node name="Note" type="TextureRect" parent="PickFrame" unique_id=1049290338]
-layout_mode = 0
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -2.0
-offset_top = -20.0
-offset_right = 22.0
-offset_bottom = 2.0
-rotation = -0.10471976
-pivot_offset = Vector2(12, 11)
-mouse_filter = 2
-texture = ExtResource("2_1d7d6")
-expand_mode = 1
-stretch_mode = 5
 
 [node name="ArtViewportContainer" type="SubViewportContainer" parent="." unique_id=1445583585]
 layout_mode = 0

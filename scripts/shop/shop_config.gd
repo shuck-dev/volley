@@ -9,3 +9,5 @@ extends Resource
 @export var display_case_padding: Vector3 = Vector3(0.5, 1.0, 0.3)
 ## Uniform scale applied to the display case padding. 1.0 is tight, 2.0 is roomier.
 @export var display_case_scale: float = 1.0
+## Friend's pick note position relative to the pick slot's top-left corner.
+@export var pick_note_position: Vector2 = Vector2(-4, 22)

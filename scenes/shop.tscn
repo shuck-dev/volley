@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop_panel.gd" id="1_lx5au"]
 [ext_resource type="PackedScene" uid="uid://d4grgci0n0c1y" path="res://scenes/clearance_box.tscn" id="2_1l46r"]
+[ext_resource type="Texture2D" uid="uid://hii0sc5nvjjx" path="res://assets/ui/friend_pick_note.svg" id="2_032fp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajvqh"]
 bg_color = Color(0.12, 0.1, 0.08, 0.85)
@@ -27,7 +28,7 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row", "pick_indicator") groups=["hot_reloadable_config"]]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,6 +38,7 @@ grow_vertical = 2
 script = ExtResource("1_lx5au")
 friendship_label = NodePath("Margin/Contents/Header/FriendshipLabel")
 items_row = NodePath("Margin/Contents/TableCenter/TableSection/ItemsRow")
+pick_indicator = NodePath("Margin/Contents/TableCenter/TableSection/PickIndicator")
 
 [node name="Background" type="ColorRect" parent="." unique_id=1583417568]
 layout_mode = 0
@@ -108,6 +110,24 @@ color = Color(0.65, 0.45, 0.25, 1)
 layout_mode = 0
 theme_override_constants/separation = 24
 alignment = 1
+
+[node name="PickIndicator" type="Control" parent="Margin/Contents/TableCenter/TableSection" unique_id=1204799705]
+visible = false
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="NoteTexture" type="TextureRect" parent="Margin/Contents/TableCenter/TableSection/PickIndicator" unique_id=218050015]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -20.0
+offset_right = 22.0
+offset_bottom = 2.0
+rotation = -0.10471976
+pivot_offset = Vector2(12, 11)
+mouse_filter = 2
+texture = ExtResource("2_032fp")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="BottomSpacer" type="Control" parent="Margin/Contents/TableCenter" unique_id=1491435643]
 layout_mode = 2

@@ -9,12 +9,14 @@ const ItemDraggingScene: PackedScene = preload("res://scenes/items/item_dragging
 @export var art_viewport: SubViewport
 @export var art_viewport_container: SubViewportContainer
 @export var display_case: Control
-@export var pick_frame: Panel
 @export var tink_sound: AudioStreamPlayer
 
 var item_definition: ItemDefinition
-var config: ShopConfig
-var is_pick: bool = false
+var config: ShopConfig:
+	set(value):
+		config = value
+		if _bounds_size != Vector2.ZERO:
+			_size_display_case(_bounds_size)
 var _item_manager: Node
 var _bounds_size: Vector2
 var _dragging: bool = false
@@ -34,7 +36,6 @@ func _ready() -> void:
 	_build_visuals()
 	_refresh_owned_visibility()
 	_refresh_display_case()
-	_refresh_pick_frame()
 	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	mouse_entered.connect(_on_mouse_entered)
@@ -109,13 +110,6 @@ func _fit_to_art(art_instance: ItemArt) -> void:
 	_size_display_case(_bounds_size)
 
 
-## Re-applies config-driven layout. Called by ShopPanel on dev-time hot reload.
-func refresh_from_config() -> void:
-	if _bounds_size == Vector2.ZERO:
-		return
-	_size_display_case(_bounds_size)
-
-
 ## Extends the display case beyond the item rect proportionally so the cloche
 ## has headroom for its dome and margin around the contents.
 func _size_display_case(item_size: Vector2) -> void:
@@ -142,10 +136,6 @@ func _refresh_display_case() -> void:
 	## Display case marks unaffordable items; owned slots are empty, not behind glass.
 	var owned: bool = _item_manager.get_level(item_definition.key) >= 1
 	display_case.visible = not owned and not can_be_taken()
-
-
-func _refresh_pick_frame() -> void:
-	pick_frame.visible = is_pick
 
 
 func _get_cost_text() -> String:
