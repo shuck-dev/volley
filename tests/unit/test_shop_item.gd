@@ -178,12 +178,12 @@ class TestDisplayCaseTap:
 		assert_signal_not_emitted(item, "case_tapped")
 
 
-class TestShopPanelLayout:
+class TestShopLayout:
 	extends GutTest
 
 	const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 
-	var _panel: ShopPanel
+	var _panel: Shop
 	var _item_manager: Node
 
 	func before_each() -> void:

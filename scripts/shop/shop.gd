@@ -1,4 +1,4 @@
-class_name ShopPanel
+class_name Shop
 extends Control
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")

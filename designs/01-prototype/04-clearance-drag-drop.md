@@ -77,7 +77,7 @@ The display case has only two states in prototype: present or absent. It snaps i
 ### shop.tscn (restructured)
 
 ```
-Shop (Control, script = shop_panel.gd)
+Shop (Control, script = shop.gd)
 ├── Background (ColorRect)
 ├── Contents (VBoxContainer with margin padding)
 │   ├── Header (HBoxContainer)
@@ -92,7 +92,7 @@ The Parallax2D background and Camera2D are removed. The Node2D `Table` is remove
 
 The rightmost slot is visually distinguished as the friend's pick slot: a subtly different frame or background stylebox on the `ShopItem`. The rotation system that actually fills this slot with authored picks is out of scope for SH-66 (the prototype spawning logic continues to treat it as any other slot), but the visual cue lands now so the player sees one slot as more considered than the others from day one.
 
-The current `ShopPanel` script on the Node2D root is rewritten to extend Control instead. Its responsibilities remain: spawn items, update the friendship label, react to balance changes. It also flags the middle spawned item as the pick slot so the `ShopItem` applies the distinguished styling.
+The current `Shop` script on the Node2D root is rewritten to extend Control instead. Its responsibilities remain: spawn items, update the friendship label, react to balance changes. It also flags the middle spawned item as the pick slot so the `ShopItem` applies the distinguished styling.
 
 ### shop_item.tscn (restructured)
 
@@ -171,7 +171,7 @@ Extends `PanelContainer`. Thin forwarders over the stable contract:
 
 The box never calls `ItemManager` directly from the Godot virtual methods; everything routes through `accept()` so tests and the future drag manager can drive it without a Viewport.
 
-### shop_panel.gd (rewrite to extend Control)
+### shop.gd (rewrite to extend Control)
 
 Unchanged in behaviour: spawns items, updates friendship label, exposes `preferred_width` for `SceneLayout`. Now extends Control and positions children via the `Contents` VBoxContainer instead of manual world-space positioning.
 
@@ -181,7 +181,7 @@ Unchanged in behaviour: spawns items, updates friendship label, exposes `preferr
 
 On a successful drop, `ClearanceBox.accept()` calls `ItemManager.take(key)`. That method deducts FP, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
 
-UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop_panel` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `ClearanceBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
+UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `ClearanceBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
 
 ---
 
@@ -309,7 +309,7 @@ This is a rewrite of the shop's interior, not a fresh feature. Files affected:
 **Rewritten:**
 - `res://scenes/shop.tscn` (Node2D root → Control root)
 - `res://scenes/shop_item.tscn` (Node2D with Sprite2D → Control with SubViewport)
-- `res://scripts/shop/shop_panel.gd` (extends Control)
+- `res://scripts/shop/shop.gd` (extends Control)
 - `res://scripts/shop/shop_item.gd` (extends Control, new drag API)
 
 **New:**
@@ -338,7 +338,7 @@ This is a rewrite of the shop's interior, not a fresh feature. Files affected:
 
 These live in the doc for context but are not in scope for this ticket:
 
-- Rotation system (act-gated pools, paired gravity, friend's pick, discovery floor, safety net item). The prototype keeps the placeholder "first five unpurchased items" logic that already exists in `shop_panel.gd`.
+- Rotation system (act-gated pools, paired gravity, friend's pick, discovery floor, safety net item). The prototype keeps the placeholder "first five unpurchased items" logic that already exists in `shop.gd`.
 - Item destruction and second-chance variants.
 - Cross-window drag for desktop experience.
 - The clearance winding-down phase (slot count drops, pick slot goes quiet).

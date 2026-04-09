@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://hvh6q02lrntj"]
 
-[ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop_panel.gd" id="1_lx5au"]
+[ext_resource type="Script" path="res://scripts/shop/shop.gd" id="1_lx5au"]
 [ext_resource type="PackedScene" uid="uid://d4grgci0n0c1y" path="res://scenes/clearance_box.tscn" id="2_1l46r"]
 [ext_resource type="Texture2D" uid="uid://hii0sc5nvjjx" path="res://assets/ui/friend_pick_note.svg" id="2_032fp"]
 
