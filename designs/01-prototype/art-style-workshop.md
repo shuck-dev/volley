@@ -9,7 +9,7 @@ A working document for establishing the visual language of Volley! This is not a
 Volley! is a game about someone who built a world to hide from grief. The art must support two worlds:
 
 1. **The Constructed World**: warm, curated, safe. A small pong arena that someone made to feel okay.
-2. **The Real World**: ordinary, lived-in, grounded. A place that feels like someone actually grew up there.
+2. **The Real World**: ordinary, familiar, difficult. A place someone grew up and lost someone in.
 
 These are not two art styles. They share line work, shapes, and proportions, but they differ in how much comfort they offer. The constructed world is a simplification of the real one: cleaner, softer edges, more saturated colour, more deliberate composition. The real world has more texture, more weight, more life that was not arranged for anyone's comfort. The shift between them should feel like waking up, not like changing the channel.
 
@@ -179,13 +179,6 @@ Chunky, readable sprite work that makes bullet-hell chaos legible. Every enemy, 
 
 Study: readability at small scale. If you squint and it is still clear, it works.
 
-**Saltsea Chronicles** (Die Gute Fabrik)
-Art Director: Nils Deneken.
-
-Risograph-print-inspired, storybook illustration style. Solid colours doing enormous work. No complex rendering; palette and composition carry everything.
-
-Study: solid colour as a tool, not a limitation. Confident colour choices read as intentional, not under-produced.
-
 **Poco** (Whalefall)
 2D/3D hybrid with hand-painted backgrounds and cartoony 3D animation. Vibrant, varied colour palette applied to cluttered environments filled with forgotten objects.
 
@@ -212,8 +205,6 @@ Five works that between them define the territory Volley! lives in. The other re
 
 **Omori** is the north star for the dual-world structure. Headspace and reality coexisting in the same game, the same characters carrying across both, the shift recontextualising everything. The closest existing example of what Volley! is doing. How a constructed safe world and a grounded real world can share character designs and visual DNA while feeling fundamentally different through colour, rendering, and how much they are willing to show.
 
-**Saltsea Chronicles** is the north star for colour and rendering approach. Solid colours, confident and intentional, carrying emotion without complex rendering. This is the proof that restraint reads as a choice, not a limitation. The colour confidence that makes simple shapes feel considered rather than unfinished.
-
 **Odd Taxi** is the north star for narrative-visual strategy. Simple surface, enormous depth underneath. Art that looks approachable and warm at first glance, and only reveals what it is carrying when you pay attention. The visual restraint is not a constraint; it is the point.
 
 ---
@@ -238,7 +229,7 @@ Good Will Hunting's sense of place. Odd Taxi's ordinary lives. Oddworld's comman
 
 Communicates through shape and colour. Unmistakable at any size. If two things could be confused at a glance, one of them needs to change.
 
-Enter the Gungeon's readability. Saltsea's confident solid colours. Ranking of Kings' simple silhouettes carrying enormous emotion. The feeling that everything announces itself clearly.
+Enter the Gungeon's readability. Ranking of Kings' simple silhouettes carrying enormous emotion. Cuphead's unified identity across every element. The feeling that everything announces itself clearly.
 
 ### Diegetic
 
@@ -264,11 +255,11 @@ Not pixel art. Not painterly realism. Not vector-clean. A style that puts effort
 
 The references pull in two directions that are not conflicts; they are the two ends of the spectrum between worlds.
 
-**Vibrancy vs. restraint.** Porco Rosso and Poco are vivid and saturated. Odd Taxi and Saltsea are muted and restrained. Both are right, because the game has two worlds. The constructed world leans toward vibrancy: saturated colour, soft lighting, deliberate composition. The real world leans toward restraint: quieter palette, natural light, less arrangement. The underlying style is the same; the saturation, edge quality, and composition shift between them.
+**Vibrancy vs. restraint.** Porco Rosso and Poco are vivid and saturated. Odd Taxi is muted and restrained. Both are right, because the game has two worlds. The constructed world leans toward vibrancy: saturated colour, soft lighting, deliberate composition. The real world leans toward restraint: quieter palette, natural light, less arrangement. The underlying style is the same; the saturation, edge quality, and composition shift between them.
 
 **Clean vs. loose.** Ranking of Kings has clean, consistent character designs. Eizouken prioritises sketchy energy over model consistency. The answer is both: clean enough to be distinct at small scale, loose enough to breathe. Lines should have life in them, not be mechanically precise, but silhouettes must hold at any size. Ranking of Kings is the anchor; Eizouken is the permission to let things move.
 
-**Simple characters vs. rich worlds.** Saltsea and Ranking of Kings point toward simplicity. Cast n Chill and Rain World point toward layered, detailed environments. If characters are too simple and backgrounds too rich, characters float on top of the world instead of living in it. But Ranking of Kings and Porco Rosso both solve this: simple characters against rich, painted backgrounds, connected through shared light, colour, and grounding. Characters belong to a space when the light hits them the same way it hits everything else. The resolution is not uniform complexity; it is that characters are simple, environments have depth, and they share the same light and palette so they feel like the same place. This also maps to the registers: the constructed world's environments are more composed and curated (closer to Saltsea), while the real world's have more texture and life (closer to Cast n Chill). Characters stay at the same level of simplicity across both; the world around them shifts.
+**Simple characters vs. rich worlds.** Ranking of Kings points toward character simplicity. Cast n Chill and Rain World point toward layered, detailed environments. If characters are too simple and backgrounds too rich, characters float on top of the world instead of living in it. But Ranking of Kings and Porco Rosso both solve this: simple characters against rich, painted backgrounds, connected through shared light, colour, and grounding. Characters belong to a space when the light hits them the same way it hits everything else. The resolution is not uniform complexity; it is that characters are simple, environments have depth, and they share the same light and palette so they feel like the same place. This also maps to the two worlds: the constructed world's environments are more composed and curated, while the real world's have more texture and life (closer to Cast n Chill). Characters stay at the same level of simplicity across both; the world around them shifts.
 
 ### The Two Registers
 
