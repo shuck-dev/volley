@@ -6,7 +6,7 @@ A working document for establishing the visual language of Volley! This is not a
 
 ## The Core Question
 
-Volley! is a game about someone who built a world to hide from grief. The art must support two registers:
+Volley! is a game about someone who built a world to hide from grief. The art must support two worlds:
 
 1. **The Constructed World**: warm, curated, safe. A small pong arena that someone made to feel okay.
 2. **The Real World**: ordinary, lived-in, grounded. A place that feels like someone actually grew up there.
@@ -77,16 +77,48 @@ Study: the animation philosophy. Fewer frames, better chosen. Each animation sta
 **Star Fetchers** (Svavelstickan)
 Developer/Artist: LK (Svavelstickan).
 
-Kinetic, anime-influenced animation with fluid character movement. Personality comes from how characters move, not from how much detail they have. A small team (possibly solo) achieving expressive results through animation priority.
+Kinetic, anime-influenced animation with fluid character movement. Personality comes from how characters move, not from how much detail they have.
 
-Study: proof that a small production can achieve fluid, characterful animation by focusing effort on movement rather than rendering detail.
+Study: fluid, characterful animation achieved by focusing effort on movement rather than rendering detail.
+
+**Cuphead** (Studio MDHR, 2017)
+Directors: Chad and Jared Moldenhauer. Lead Animator: Jake Clark.
+
+Hand-drawn frames, bold shapes, confident colour, enormous personality from animation. Every enemy, every background, every UI element feels like it was drawn by the same hand. The commitment to a specific visual identity is total: nothing breaks the fiction, including the UI. A small-ish team producing characterful hand-drawn art at full game scale.
+
+Study: production commitment to a unified hand-drawn identity. Every element belonging to the same world. Diegetic UI that feels like part of the fiction. Not the retro pastiche framing, but the discipline of carrying a single visual voice through every asset in the game.
+
+### Sports as Feeling
+
+The game riffs off sports anime and sports competition. These references show how a single moment of contact can carry emotional weight through animation and visual style.
+
+**Haikyuu!!** (2014-2020)
+Director: Susumu Mitsunaka. Studio: Production I.G.
+
+Volleyball impacts, reaction shots, the emotional weight of a single point. Time stretches at the moment of contact. The build-up, the hit, the team reaction: a rally becomes a story. Probably the most directly relevant reference for how a volley should feel.
+
+Study: how anticipation, contact, and follow-through turn a simple action into an emotional beat. The reaction shots that give a point meaning beyond the score.
+
+**Ping Pong: The Animation** (2014)
+Director: Masaaki Yuasa. Studio: TATSUNOKO.
+
+Yuasa again. Abstracted, expressive sports animation where the style bends to match the emotion of the moment. A rally is not just a rally; it is a conversation between two people expressed through movement. The rendering shifts during intense exchanges: lines loosen, perspectives warp, the ball becomes a feeling rather than an object.
+
+Study: how the visual style itself responds to emotional intensity. Abstraction at peak moments. The proof that a pong-like exchange between two paddles can carry real weight.
 
 ### Style Shifts Without Breaking Coherence
+
+**Omori** (2020)
+Developer: OMOCAT.
+
+The most direct structural parallel. Headspace is a bright, pastel, hand-drawn safe world the protagonist built to avoid confronting trauma. Reality is muted, grainier, heavier. The two worlds share character designs but differ in colour, rendering, and how much they are willing to show. The shift between them is not a surprise twist; it is a slow reveal that recontextualises everything the player has already seen.
+
+Study: the closest existing example of what Volley! is doing with its two worlds. How the constructed world's warmth and the real world's weight coexist in the same game. How character designs carry across both without needing to be redrawn. How the shift lands because the player has spent time in the safe version first.
 
 **To Be Hero X** (2025)
 Director: Li Haoling. Studios: BeDream / PB Animation / Studio LAN / Paper Plane.
 
-Different visual styles and media within a single work, used as emotional punctuation. When the register changes, you feel it before you understand it.
+Different visual styles and media within a single work, used as emotional punctuation. When the world shifts, you feel it before you understand it.
 
 Study: shifting palette, line weight, and rendering approach within a single work without losing coherence, as long as the emotional core holds.
 
@@ -95,7 +127,7 @@ Directors: Daniel Kwan, Daniel Scheinert (the Daniels). Cinematographer: Larkin 
 
 Coherence across wildly different visual modes because the emotional core is consistent. Seiple used varied lighting and colour grading to distinguish each universe. Kisvarday built mundane-to-fantastical environments on a limited budget.
 
-Study: different visual registers can coexist as long as they feel like they belong to the same person. The emotional throughline is what holds it together.
+Study: different visual worlds can coexist as long as they feel like they belong to the same person. The emotional throughline is what holds it together.
 
 ### Deep Worlds from Considered Details
 
@@ -172,11 +204,13 @@ Study: rhythm as visual principle. A game loop has a rhythm. Reactions that feel
 
 ## Primary References
 
-Four works that between them define the territory Volley! lives in. The other references sharpen specific qualities; these four set the direction.
+Five works that between them define the territory Volley! lives in. The other references sharpen specific qualities; these five set the direction.
 
 **Ranking of Kings** is the character and animation north star. Simple designs with enormous emotional range, expressive through body language rather than detail. This is how characters should be built: clean enough to read at any size, animated well enough to carry feeling without dialogue. If the art had to look like one thing, it would look closest to this.
 
 **Porco Rosso** is the north star for the constructed world's feeling. Oga's light, Miyazaki's nostalgia, the sense of a place someone loved rendered from memory. The warmth of the constructed world should feel like Porco Rosso's Adriatic: genuine, beautiful, and quietly protecting someone from something.
+
+**Omori** is the north star for the dual-world structure. Headspace and reality coexisting in the same game, the same characters carrying across both, the shift recontextualising everything. The closest existing example of what Volley! is doing. How a constructed safe world and a grounded real world can share character designs and visual DNA while feeling fundamentally different through colour, rendering, and how much they are willing to show.
 
 **Saltsea Chronicles** is the north star for colour and rendering approach. Solid colours, confident and intentional, carrying emotion without complex rendering. This is the proof that restraint reads as a choice, not a limitation. The colour confidence that makes simple shapes feel considered rather than unfinished.
 
@@ -186,7 +220,7 @@ Four works that between them define the territory Volley! lives in. The other re
 
 ## The Volley! Commandments
 
-Five principles that govern every piece of art in the game. These are not style rules; they are qualities. Any asset, any screen, any register. Inspired by Oddworld's approach of defining non-negotiable qualities and trusting artists to find their way there.
+Five principles that govern every piece of art in the game. These are not style rules; they are qualities. Any asset, any screen, either world. Inspired by Oddworld's approach of defining non-negotiable qualities and trusting artists to find their way there.
 
 ### Intentional
 
@@ -224,13 +258,13 @@ Eizouken's animation philosophy. Star Fetchers' fluid characters. Ranking of Kin
 
 **Hand-drawn illustration with bold shapes, limited but confident colour, and expression through animation rather than detail.**
 
-Not pixel art. Not painterly realism. Not vector-clean. A style where a small team can produce expressive results by putting effort into animation and colour rather than rendering complexity.
+Not pixel art. Not painterly realism. Not vector-clean. A style that puts effort into animation and colour rather than rendering complexity.
 
 ### Resolving the Tensions
 
-The references pull in two directions that are not conflicts; they are the two ends of the register spectrum.
+The references pull in two directions that are not conflicts; they are the two ends of the spectrum between worlds.
 
-**Vibrancy vs. restraint.** Porco Rosso and Poco are vivid and saturated. Odd Taxi and Saltsea are muted and restrained. Both are right, because the game has two registers. The constructed world leans toward vibrancy: saturated colour, soft lighting, deliberate composition. The real world leans toward restraint: quieter palette, natural light, less arrangement. The underlying style is the same; the saturation, edge quality, and composition shift between them.
+**Vibrancy vs. restraint.** Porco Rosso and Poco are vivid and saturated. Odd Taxi and Saltsea are muted and restrained. Both are right, because the game has two worlds. The constructed world leans toward vibrancy: saturated colour, soft lighting, deliberate composition. The real world leans toward restraint: quieter palette, natural light, less arrangement. The underlying style is the same; the saturation, edge quality, and composition shift between them.
 
 **Clean vs. loose.** Ranking of Kings has clean, consistent character designs. Eizouken prioritises sketchy energy over model consistency. The answer is both: clean enough to be distinct at small scale, loose enough to breathe. Lines should have life in them, not be mechanically precise, but silhouettes must hold at any size. Ranking of Kings is the anchor; Eizouken is the permission to let things move.
 
@@ -240,4 +274,4 @@ The references pull in two directions that are not conflicts; they are the two e
 
 The constructed world uses this style with saturated colour, clean edges, soft lighting, and considered composition: every element placed with care. The real world shares the same shapes and proportions but loosens the lines, desaturates the palette, lets the light fall where it falls, and leaves things where they actually are rather than where someone arranged them.
 
-The Break is the moment the player sees both registers and understands that the first was always a simplification of the second.
+The Break is the moment the player sees both worlds and understands that the first was always a simplification of the second.

@@ -20,6 +20,9 @@ logs/
 .vscode/
 .mcp.json
 
+# Mood board reference images (copyrighted material, local only)
+designs/01-prototype/mood-boards/
+
 # OS junk
 .DS_Store
 Thumbs.db
