@@ -12,7 +12,7 @@ extends Node
 var _enabled := false
 
 # --- reaction delay ---
-var _position_buffer: Array
+var _position_buffer: Array[float]
 var _position_buffer_index := 0
 
 # --- noise ---
