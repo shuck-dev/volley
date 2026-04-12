@@ -55,6 +55,18 @@ func remove_modifiers_by_source(source_key: String) -> void:
 	)
 
 
+func get_temporary_total(stat_key: StringName, source_key: String) -> float:
+	var total := 0.0
+	for modifier in _add_modifiers:
+		if (
+			modifier.temporary
+			and modifier.stat_key == stat_key
+			and modifier.source_key == source_key
+		):
+			total += modifier.value
+	return total
+
+
 func clear_temporary_modifiers() -> void:
 	var keep_permanent := func(modifier: StatModifier) -> bool: return not modifier.temporary
 	_add_modifiers = _add_modifiers.filter(keep_permanent)
