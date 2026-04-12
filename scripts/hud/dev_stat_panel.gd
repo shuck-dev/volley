@@ -19,6 +19,7 @@ func _ready() -> void:
 
 	_speed_bar = get_parent().get_node_or_null("SpeedBar")
 	_build_live_labels()
+	_add_version_label()
 	_refresh()
 
 
@@ -58,6 +59,28 @@ func _build_live_labels() -> void:
 		var label := _make_stat_label()
 		add_child(label)
 		_labels[stat_key] = label
+
+
+func _add_version_label() -> void:
+	var label := _make_stat_label()
+	label.text = _read_version()
+	label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	add_child(label)
+
+
+func _read_version() -> String:
+	if FileAccess.file_exists("res://version.txt"):
+		var file := FileAccess.open("res://version.txt", FileAccess.READ)
+		if file != null:
+			return file.get_as_text().strip_edges()
+	if OS.has_feature("editor"):
+		var output: Array = []
+		if (
+			OS.execute("git", ["describe", "--always", "--dirty"], output) == OK
+			and output.size() > 0
+		):
+			return output[0].strip_edges()
+	return "unknown"
 
 
 func _add_header() -> void:

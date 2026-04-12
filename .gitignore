@@ -12,6 +12,9 @@ exports/
 # Temp files
 *.tmp
 
+# Generated at build time
+version.txt
+
 # Logs
 logs/
 

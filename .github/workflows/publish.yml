@@ -48,6 +48,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Write version
+        run: git describe --always > version.txt
+
       - name: Strip dev addons
         run: |
           sed -i '/GodotIQRuntime=/d' project.godot
