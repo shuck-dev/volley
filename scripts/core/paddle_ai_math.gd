@@ -4,6 +4,8 @@ extends RefCounted
 ## Pure math functions for paddle AI: ball intercept prediction and noise sampling.
 
 
+## Predicts where the ball will cross target_x, reflecting off arena walls.
+## Returns the y-position of the intercept. Clamped to arena bounds.
 static func predict_intercept(
 	ball_position: Vector2,
 	ball_velocity: Vector2,
@@ -31,6 +33,8 @@ static func predict_intercept(
 	return clampf(simulated_y, arena_top, arena_bottom)
 
 
+## Returns a random offset in pixels from a normal distribution,
+## clamped to twice noise_range. Returns 0 if noise_range is zero.
 static func random_offset(noise_range: float) -> float:
 	if noise_range <= 0.0:
 		return 0.0
