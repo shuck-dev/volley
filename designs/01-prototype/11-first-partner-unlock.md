@@ -474,7 +474,9 @@ Extract a shared interface from the current `Paddle` class. Both the player padd
 
 ### Partner AI processor
 
-A dedicated node that drives the partner paddle. Separate from `AutoplayController`. All partners share the same AI; no per-partner tuning. It calls `drive()` on the partner paddle each physics frame.
+A `PartnerAIController` (see `17-partner-ai.md`) drives the partner paddle. It extends the shared `PaddleAIController` interface and uses a `PaddleAIConfig` resource for tuning. Separate from `AutoplayController`; always active.
+
+Martha's AI config starting values are tuning targets for the Make Fun pass. See `17-partner-ai.md` for the config resource fields, miss philosophy, and how partner competence scales with the player through stat sharing (`18-partner-upgrade-strategy.md`).
 
 ### Effect registration
 
@@ -506,4 +508,4 @@ The partner unlock flow (triggered from recruit HUD) calls a method on `game.gd`
 
 ## Open questions
 
-- When the partner misses, should there be a consequence beyond streak reset? Could Martha's miss feel different from the player's miss? Both sides reset the streak for prototype, but this is worth exploring.
+- When the partner misses, should there be a consequence beyond streak reset? Could Martha's miss feel different from the player's miss? For prototype, Martha's `halve_streak` effect applies to both player and partner misses equally. Differentiated miss consequences are worth exploring in later phases.

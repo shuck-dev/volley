@@ -20,3 +20,5 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 14 | [Item Compendium](14-item-compendium.md) |
 | 15 | [Deferred Item Work](15-deferred-item-work.md) |
 | 16 | [Make Fun Pass](16-make-fun.md) |
+| 17 | [Partner AI](17-partner-ai.md) |
+| 18 | [Partner Upgrade Strategy](18-partner-upgrade-strategy.md) |

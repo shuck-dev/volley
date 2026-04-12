@@ -12,7 +12,7 @@ An idle pong game on your desktop with a hidden story about grief disguised as a
 
 A window, always there, gently bouncing away while you work. Two characters volley a ball back and forth. The player controls one (or not), the other is a partner. You train, buy items, recruit partners, and inch toward the world record one bounce at a time.
 
-The main character in reality is mid-30s less athletic then they used to be. They lost their best friend and don't know how to deal with it. So they built a world. A fantasy the main character retreated into because reality was too much.
+The main character in reality is mid-30s less athletic than they used to be. They lost their best friend and don't know how to deal with it. So they built a world. A fantasy the main character retreated into because reality was too much.
 
 The people who appear as partners are based on real people from the main character's life. People who were kind to them, people who tried to help, people they remember. In the constructed world they are a heightened version of themselves. Reality is set in a fictional town, something like what if the UK was actually warm and kinda mediterranean?
 
