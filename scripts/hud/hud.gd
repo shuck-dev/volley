@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal shop_button_pressed
 
+const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
+
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
 @export var friendship_point_balance_label: Label

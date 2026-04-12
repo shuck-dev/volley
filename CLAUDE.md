@@ -271,6 +271,8 @@ Relative to scene root: `"Sun"` not `"Main/Sun"`, `"Entities/Worker_1"` not `"Ma
 - `@export` for node refs: `@export var label: Label` wired in the editor. Prefer over `@onready var label := $Label` because `@onready` breaks silently on rename.
 - Null check: `if is_instance_valid(node):`
 - Prefer `:=` when the type is obvious from the assignment; use explicit types when ambiguous (e.g. `var health: float = 0`)
+- Declaration order: `class_name` > `extends` > `signal` > `const` > `@export var` > `var` > `func`. GDLint enforces this.
+- Autoloads cannot reference custom `class_name` types directly (parse order issue in headless mode). Use `const ClassName = preload("res://path.gd")` instead.
 
 ## Test Conventions
 

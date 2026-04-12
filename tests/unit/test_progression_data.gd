@@ -112,11 +112,13 @@ func test_partner_fields_round_trip() -> void:
 	_data.unlocked_partners = [&"martha"] as Array[StringName]
 	_data.active_partner = &"martha"
 	_data.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
+	_data.recruit_offered_partners = [&"martha"] as Array[StringName]
 
 	var restored := ProgressionData.from_dict(_data.to_dict())
 	assert_eq(restored.unlocked_partners, [&"martha"] as Array[StringName])
 	assert_eq(restored.active_partner, "martha")
 	assert_eq(restored.partner_volley_totals, {&"martha": 150} as Dictionary[StringName, int])
+	assert_eq(restored.recruit_offered_partners, [&"martha"] as Array[StringName])
 
 
 func test_partner_fields_missing_from_dict_use_defaults() -> void:
