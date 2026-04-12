@@ -4,6 +4,8 @@ signal shop_unlocked_changed(is_unlocked: bool)
 signal partner_recruit_available(partner: PartnerDefinition)
 signal partner_recruited(partner_key: StringName)
 
+# preload workaround for autoload class_name ordering (godotengine/godot#75582)
+@warning_ignore("shadowed_global_identifier")
 const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
 const DEFAULT_CONFIG: ProgressionConfig = preload("res://resources/progression_config.tres")
 

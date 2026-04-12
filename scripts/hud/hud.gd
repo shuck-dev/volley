@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal shop_button_pressed
 
+# preload workaround for autoload class_name ordering (godotengine/godot#75582)
+@warning_ignore("shadowed_global_identifier")
 const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
 
 @export var counter_label: Label
