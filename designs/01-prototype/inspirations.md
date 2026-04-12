@@ -78,3 +78,6 @@ The closest format comparison. Small persistent window, plays while you work. Wa
 
 **Neko Atsume**
 Simple, minimal art with a check-in-occasionally play pattern and hidden emotional warmth.
+
+**Pong** (1972, Atari / Allan Alcorn)
+The original. Two paddles, one ball, nothing else. The purest expression of what a volley is. Volley! starts here and asks: what if this simple exchange carried emotional weight?
