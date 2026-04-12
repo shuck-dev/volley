@@ -99,3 +99,55 @@ func test_clear_resets_total_friendship_points_earned() -> void:
 	_data.total_friendship_points_earned = 500
 	_data.clear()
 	assert_eq(_data.total_friendship_points_earned, 0)
+
+
+# --- partner fields ---
+func test_partner_fields_default_empty() -> void:
+	assert_eq(_data.unlocked_partners, [] as Array[StringName])
+	assert_eq(_data.active_partner, &"")
+	assert_eq(_data.partner_volley_totals, {} as Dictionary[StringName, int])
+
+
+func test_partner_fields_round_trip() -> void:
+	_data.unlocked_partners = [&"martha"] as Array[StringName]
+	_data.active_partner = &"martha"
+	_data.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
+
+	var restored := ProgressionData.from_dict(_data.to_dict())
+	assert_eq(restored.unlocked_partners, [&"martha"] as Array[StringName])
+	assert_eq(restored.active_partner, "martha")
+	assert_eq(restored.partner_volley_totals, {&"martha": 150} as Dictionary[StringName, int])
+
+
+func test_partner_fields_missing_from_dict_use_defaults() -> void:
+	var restored := ProgressionData.from_dict({})
+	assert_eq(restored.unlocked_partners, [] as Array[StringName])
+	assert_eq(restored.active_partner, &"")
+	assert_eq(restored.partner_volley_totals, {} as Dictionary[StringName, int])
+
+
+func test_clear_resets_partner_fields() -> void:
+	_data.unlocked_partners = [&"martha"] as Array[StringName]
+	_data.active_partner = &"martha"
+	_data.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
+	_data.clear()
+	assert_eq(_data.unlocked_partners, [] as Array[StringName])
+	assert_eq(_data.active_partner, &"")
+	assert_eq(_data.partner_volley_totals, {} as Dictionary[StringName, int])
+
+
+func test_partner_save_and_load_round_trip() -> void:
+	_data.unlocked_partners = [&"martha"] as Array[StringName]
+	_data.active_partner = &"martha"
+	_data.partner_volley_totals = {&"martha": 500} as Dictionary[StringName, int]
+
+	var saved_json := JSON.stringify(_data.to_dict())
+	stub(_mock_storage.write).to_return(true)
+	_data.save_to_disk()
+
+	var loaded := ProgressionData.new(_mock_storage)
+	stub(_mock_storage.read).to_return(saved_json)
+	loaded.load_from_disk()
+	assert_eq(loaded.unlocked_partners, [&"martha"] as Array[StringName])
+	assert_eq(loaded.active_partner, "martha")
+	assert_eq(loaded.partner_volley_totals, {&"martha": 500} as Dictionary[StringName, int])

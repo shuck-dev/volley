@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://cq0lcy64wmraf" path="res://scripts/hud/dev_stat_panel.gd" id="3_5ysmq"]
 [ext_resource type="Script" uid="uid://cp16q4n8se0mu" path="res://scripts/hud/speed_bar.gd" id="4_6fi6k"]
 
-[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "shop_button")]
+[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "shop_button", "recruit_panel", "recruit_label", "recruit_button", "recruit_sound")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
@@ -13,6 +13,10 @@ friendship_point_balance_label = NodePath("FriendshipTotalLabel")
 speed_bar = NodePath("SpeedBar")
 auto_label = NodePath("AutoLabel")
 shop_button = NodePath("ShopButton")
+recruit_panel = NodePath("RecruitPanel")
+recruit_label = NodePath("RecruitPanel/RecruitLabel")
+recruit_button = NodePath("RecruitPanel/RecruitButton")
+recruit_sound = NodePath("RecruitSound")
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=162178436]
 anchors_preset = 5
@@ -110,3 +114,19 @@ offset_bottom = -5.0
 grow_vertical = 0
 focus_mode = 0
 text = "Clearance"
+
+[node name="RecruitPanel" type="VBoxContainer" parent="." unique_id=461867846]
+offset_left = 6.0
+offset_top = 940.0
+offset_right = 123.0
+offset_bottom = 998.0
+
+[node name="RecruitLabel" type="Label" parent="RecruitPanel" unique_id=696668452]
+layout_mode = 2
+text = "Recruit Martha"
+
+[node name="RecruitButton" type="Button" parent="RecruitPanel" unique_id=1354068619]
+layout_mode = 2
+text = "100 FP"
+
+[node name="RecruitSound" type="AudioStreamPlayer" parent="." unique_id=859252379]

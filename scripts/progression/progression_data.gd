@@ -6,6 +6,9 @@ var total_friendship_points_earned := 0
 var item_levels: Dictionary[String, int]
 var personal_volley_best := 0
 var shop_unlocked := false
+var unlocked_partners: Array[StringName] = []
+var active_partner: StringName = &""
+var partner_volley_totals: Dictionary[StringName, int] = {}
 
 var _storage: SaveStorage
 
@@ -18,6 +21,9 @@ func clear() -> void:
 	item_levels = {}
 	personal_volley_best = 0
 	shop_unlocked = false
+	unlocked_partners = []
+	active_partner = ""
+	partner_volley_totals = {}
 
 
 ## Saves game data to storeage (disk)
@@ -43,6 +49,9 @@ func load_from_disk() -> bool:
 	item_levels = loaded.item_levels
 	personal_volley_best = loaded.personal_volley_best
 	shop_unlocked = loaded.shop_unlocked
+	unlocked_partners = loaded.unlocked_partners
+	active_partner = loaded.active_partner
+	partner_volley_totals = loaded.partner_volley_totals
 
 	return true
 
@@ -55,6 +64,9 @@ func to_dict() -> Dictionary:
 		"item_levels": item_levels,
 		"personal_volley_best": personal_volley_best,
 		"shop_unlocked": shop_unlocked,
+		"unlocked_partners": unlocked_partners,
+		"active_partner": active_partner,
+		"partner_volley_totals": partner_volley_totals,
 	}
 
 
@@ -66,6 +78,11 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
 	progression.shop_unlocked = data.get("shop_unlocked", false)
+	progression.unlocked_partners = _to_typed_string_name_array(data.get("unlocked_partners", []))
+	progression.active_partner = StringName(data.get("active_partner", ""))
+	progression.partner_volley_totals = _to_typed_string_name_dict(
+		data.get("partner_volley_totals", {})
+	)
 
 	return progression
 
@@ -73,6 +90,20 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 ## Used for mocking
 func _init(storage: SaveStorage = null) -> void:
 	_storage = storage if storage != null else FileSaveStorage.new()
+
+
+static func _to_typed_string_name_array(raw: Array) -> Array[StringName]:
+	var typed: Array[StringName] = []
+	for value in raw:
+		typed.append(StringName(str(value)))
+	return typed
+
+
+static func _to_typed_string_name_dict(raw: Dictionary) -> Dictionary[StringName, int]:
+	var typed: Dictionary[StringName, int] = {}
+	for key in raw:
+		typed[StringName(str(key))] = int(raw[key])
+	return typed
 
 
 ## Parsed untyped [Dictionary] into typed [Dictionary]
