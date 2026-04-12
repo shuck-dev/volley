@@ -4,19 +4,22 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/game.gd" id="1_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="2_tefeu"]
-[ext_resource type="PackedScene" uid="uid://ce8nc6smq3t8v" path="res://scenes/paddle.tscn" id="3_jyhfs"]
-[ext_resource type="Script" uid="uid://dv6cu2cx1qqfv" path="res://scripts/entities/back_wall.gd" id="5_tefeu"]
+[ext_resource type="PackedScene" uid="uid://ce8nc6smq3t8v" path="res://scenes/player_paddle.tscn" id="3_jyhfs"]
+[ext_resource type="Script" path="res://scripts/entities/miss_zone.gd" id="5_tefeu"]
+[ext_resource type="PackedScene" path="res://scenes/partner_paddle.tscn" id="9_ptnr"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "paddle", "autoplay_controller")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "paddle", "autoplay_controller", "partner_paddle", "right_wall")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
 paddle = NodePath("Paddle")
 autoplay_controller = NodePath("AutoplayController")
+partner_paddle = NodePath("PartnerPaddle")
+right_wall = NodePath("Bounds/Right Wall")
 
 [node name="HUD" parent="." unique_id=794024698 instance=ExtResource("2_tefeu")]
 
@@ -64,6 +67,7 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
 position = Vector2(456, -488)
 physics_material_override = ExtResource("1_0wfyh")
+script = ExtResource("5_tefeu")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
@@ -100,6 +104,12 @@ script = ExtResource("7_tipki")
 paddle = NodePath("../Paddle")
 ball = NodePath("../Ball")
 config = ExtResource("8_85g3d")
+
+[node name="PartnerPaddle" parent="." instance=ExtResource("9_ptnr")]
+position = Vector2(416, 8)
+
+[node name="PartnerAIController" parent="PartnerPaddle" index="4" node_paths=PackedStringArray("ball")]
+ball = NodePath("../../Ball")
 
 [connection signal="auto_play_changed" from="." to="HUD" method="update_auto_play"]
 [connection signal="ball_speed_updated" from="." to="HUD" method="update_speed"]

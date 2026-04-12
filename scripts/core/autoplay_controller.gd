@@ -11,7 +11,11 @@ func toggle() -> void:
 
 
 func _ball_approaching() -> bool:
-	return ball.linear_velocity.x < 0.0
+	return ball.linear_velocity.x < 0.0 and ball.position.x > paddle.position.x
+
+
+func _is_ball_behind() -> bool:
+	return ball.position.x < paddle.position.x
 
 
 func _get_paddle_speed() -> float:

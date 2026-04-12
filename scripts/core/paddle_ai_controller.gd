@@ -1,13 +1,14 @@
 class_name PaddleAIController
 extends Node
 
-## Abstract base for paddle AI controllers. Owns the shared prediction,
-## reaction delay, noise, tracking, and drift algorithm. Subclasses override
-## _ball_approaching() and _get_paddle_speed() to specialise behaviour.
+## Abstract base for paddle AI controllers. Owns the shared tracking,
+## reaction delay, and drift algorithm. Subclasses override
+## _ball_approaching(), _get_paddle_speed(), and _is_ball_behind().
 
 @export var paddle: CharacterBody2D
-@export var ball: RigidBody2D
 @export var config: PaddleAIConfig
+
+var ball: RigidBody2D
 
 var _enabled := false
 
@@ -28,7 +29,9 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
-	if _ball_approaching():
+	if _is_ball_behind():
+		_dodge()
+	elif _ball_approaching():
 		_track()
 	else:
 		_drift_to_center()
@@ -50,51 +53,19 @@ func _get_paddle_speed() -> float:
 	return 0.0
 
 
-## Override point for subclasses that need a different prediction strategy.
-func _predict_intercept() -> float:
-	var ball_position: Vector2 = ball.position
-	var ball_velocity: Vector2 = ball.linear_velocity
-	var target_x: float = paddle.position.x
-
-	var velocity_x_abs: float = abs(ball_velocity.x)
-	if velocity_x_abs < 1.0:
-		return ball_position.y
-
-	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
-	var arena_top: float = -arena_half
-	var arena_bottom: float = arena_half
-
-	var time_to_reach: float = abs(target_x - ball_position.x) / velocity_x_abs
-	var simulated_y: float = ball_position.y + ball_velocity.y * time_to_reach
-
-	# Reflect off walls until within bounds
-	for _step in range(20):
-		if simulated_y >= arena_top and simulated_y <= arena_bottom:
-			break
-		if simulated_y < arena_top:
-			simulated_y = arena_top + (arena_top - simulated_y)
-		elif simulated_y > arena_bottom:
-			simulated_y = arena_bottom - (simulated_y - arena_bottom)
-
-	return clampf(simulated_y, arena_top, arena_bottom)
-
-
-## Override point for subclasses that need a different noise distribution.
-func _sample_noise() -> float:
-	if config.noise <= 0.0:
-		return 0.0
-	# Box-Muller: normal distribution clamped at 2 sigma to prevent outliers
-	var u1: float = randf_range(0.001, 1.0)
-	var u2: float = randf_range(0.0, 1.0)
-	var normal: float = sqrt(-2.0 * log(u1)) * cos(TAU * u2)
-	return clampf(normal * config.noise, -config.noise * 2.0, config.noise * 2.0)
+## Override: is the ball behind this paddle (missed, heading to wall).
+func _is_ball_behind() -> bool:
+	assert(false, "PaddleAIController._is_ball_behind() is abstract")
+	return false
 
 
 func _track() -> void:
 	_maybe_resample_noise()
 
-	var predicted_intercept_y: float = _predict_intercept()
-	var noisy_target: float = predicted_intercept_y + _noise_offset
+	var predicted_y: float = PaddleAIMath.predict_intercept(
+		ball.position, ball.linear_velocity, paddle.position.x
+	)
+	var noisy_target: float = predicted_y + _noise_offset
 
 	var delayed_target: float = _apply_reaction_delay(noisy_target)
 	var difference: float = delayed_target - paddle.position.y
@@ -106,6 +77,18 @@ func _track() -> void:
 	else:
 		target_velocity = sign(difference) * max_speed
 
+	var smoothed_velocity: float = lerpf(
+		paddle.velocity.y, target_velocity, config.velocity_smoothing
+	)
+	paddle.drive(smoothed_velocity)
+
+
+func _dodge() -> void:
+	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
+	var target_y: float = arena_half if ball.position.y < 0.0 else -arena_half
+	var difference: float = target_y - paddle.position.y
+	var max_speed: float = _get_paddle_speed() * config.speed_scale
+	var target_velocity: float = sign(difference) * max_speed
 	var smoothed_velocity: float = lerpf(
 		paddle.velocity.y, target_velocity, config.velocity_smoothing
 	)
@@ -134,5 +117,5 @@ func _apply_reaction_delay(target_y: float) -> float:
 func _maybe_resample_noise() -> void:
 	var current_direction_x: float = ball.linear_velocity.x
 	if sign(current_direction_x) != sign(_last_ball_direction_x):
-		_noise_offset = _sample_noise()
+		_noise_offset = PaddleAIMath.random_offset(config.noise)
 	_last_ball_direction_x = current_direction_x

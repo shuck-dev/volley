@@ -268,7 +268,7 @@ Relative to scene root: `"Sun"` not `"Main/Sun"`, `"Entities/Worker_1"` not `"Ma
 
 - Files: `snake_case.gd` | Classes: `PascalCase` | Functions/vars: `snake_case`
 - Always type hints: `var count: int = 0`, `func get_name() -> String:`
-- `@onready` for node refs: `@onready var label: Label = $UI/Label`
+- `@export` for node refs: `@export var label: Label` wired in the editor. Prefer over `@onready var label := $Label` because `@onready` breaks silently on rename.
 - Null check: `if is_instance_valid(node):`
 - Prefer `:=` when the type is obvious from the assignment; use explicit types when ambiguous (e.g. `var health: float = 0`)
 

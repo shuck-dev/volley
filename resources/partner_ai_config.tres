@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PaddleAIConfig" format=3 uid="uid://81y01va0025a"]
+
+[ext_resource type="Script" uid="uid://dsbidvfwhhbk" path="res://scripts/core/paddle_ai_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+reaction_delay_frames = 8
+speed_scale = 0.7
+noise = 20.0

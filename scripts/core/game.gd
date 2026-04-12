@@ -13,8 +13,10 @@ signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal shop_button_pressed
 
 @export var ball: Ball
-@export var paddle: Paddle
+@export var player_paddle: Paddle
 @export var autoplay_controller: AutoplayController
+@export var partner_paddle: PartnerPaddle
+@export var right_wall: StaticBody2D
 @export var hud: CanvasLayer
 
 var _volley_count := 0
@@ -34,8 +36,15 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
-	ball.effect_processor.paddles = [paddle]
-	paddle.paddle_hit.connect(_on_paddle_hit)
+	autoplay_controller.ball = ball
+	player_paddle.paddle_hit.connect(_on_paddle_hit)
+	ball.effect_processor.paddles = [player_paddle]
+
+	if partner_paddle != null:
+		partner_paddle.paddle_hit.connect(_on_paddle_hit)
+		ball.effect_processor.paddles.append(partner_paddle)
+		partner_paddle.set_ball(ball)
+
 	ball.missed.connect(_on_ball_missed)
 	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
 
@@ -86,7 +95,9 @@ func _on_ball_missed() -> void:
 	_friendship_point_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
 	ball.reset_speed()
-	paddle.reset_streak()
+	player_paddle.reset_streak()
+	if partner_paddle != null:
+		partner_paddle.reset_streak()
 
 
 func _on_auto_play_changed(is_active: bool) -> void:

@@ -36,13 +36,6 @@ func _ready() -> void:
 	_apply_size()
 
 
-func _physics_process(_delta: float) -> void:
-	var direction := Input.get_axis("paddle_up", "paddle_down")
-	velocity = Vector2(0.0, direction * _paddle_speed)
-	move_and_slide()
-	position.x = _lane_x
-
-
 func on_ball_hit() -> void:
 	if not tracker.try_hit():
 		return

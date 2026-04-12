@@ -66,7 +66,7 @@ func test_toggle_re_enables_paddle_physics_process_when_deactivated() -> void:
 
 # --- auto-play movement ---
 func test_autoplay_moves_paddle_toward_ball_when_ball_is_below() -> void:
-	_ball.position = Vector2(0.0, 200.0)
+	_ball.position = Vector2(100.0, 200.0)
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2(0.0, 0.0)
 	_controller.toggle()
@@ -76,7 +76,7 @@ func test_autoplay_moves_paddle_toward_ball_when_ball_is_below() -> void:
 
 
 func test_autoplay_moves_paddle_toward_ball_when_ball_is_above() -> void:
-	_ball.position = Vector2(0.0, -200.0)
+	_ball.position = Vector2(100.0, -200.0)
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2(0.0, 0.0)
 	_controller.toggle()
@@ -86,7 +86,7 @@ func test_autoplay_moves_paddle_toward_ball_when_ball_is_above() -> void:
 
 
 func test_autoplay_speed_never_exceeds_configured_scale() -> void:
-	_ball.position = Vector2(0.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2(0.0, 0.0)
 	_controller.toggle()
@@ -104,7 +104,7 @@ func test_autoplay_speed_never_exceeds_configured_scale() -> void:
 
 # --- ring buffer delay ---
 func test_autoplay_does_not_react_to_new_ball_position_within_delay_frames() -> void:
-	_ball.position = Vector2.ZERO
+	_ball.position = Vector2(100.0, 0.0)
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2.ZERO
 	_controller.toggle()
@@ -112,14 +112,14 @@ func test_autoplay_does_not_react_to_new_ball_position_within_delay_frames() -> 
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 
-	_ball.position = Vector2(0.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
 	_paddle.position = Vector2.ZERO
 	_controller._physics_process(PHYSICS_DELTA)
 	assert_almost_eq(_paddle.velocity.y, 0.0, 0.01)
 
 
 func test_autoplay_tracks_new_ball_position_after_delay() -> void:
-	_ball.position = Vector2.ZERO
+	_ball.position = Vector2(100.0, 0.0)
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2.ZERO
 	_controller.toggle()
@@ -127,7 +127,7 @@ func test_autoplay_tracks_new_ball_position_after_delay() -> void:
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 
-	_ball.position = Vector2(0.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 

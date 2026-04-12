@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d4grgci0n0c1y"]
 
-[ext_resource type="Script" path="res://scripts/shop/clearance_box.gd" id="1_nu5fe"]
+[ext_resource type="Script" uid="uid://ccdufgyq2v4bm" path="res://scripts/shop/clearance_box.gd" id="1_nu5fe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ajvqh"]
 bg_color = Color(0.12, 0.1, 0.08, 0.85)

@@ -22,7 +22,7 @@ func before_each() -> void:
 
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball_stub
-	_game.paddle = _paddle_stub
+	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = autoplay_controller_stub
 	_game._progression_config = ProgressionConfig.new()
 	_game._progression = ProgressionData.new(mock_storage)

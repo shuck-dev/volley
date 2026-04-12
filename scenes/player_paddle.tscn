@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b6gnqv6ik6buu"]
+[gd_scene format=3 uid="uid://pglvgky7ryvi"]
 
 [ext_resource type="Script" uid="uid://bt3s0lxh80g0b" path="res://scripts/entities/player_paddle.gd" id="1_mo4dg"]
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
@@ -10,7 +10,7 @@ size = Vector2(40, 200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(40, 200)
 
-[node name="Paddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker")]
 script = ExtResource("1_mo4dg")
 hit_sound = NodePath("HitSound")
 collision = NodePath("Collision")

@@ -4,19 +4,22 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/game.gd" id="1_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="2_tefeu"]
-[ext_resource type="PackedScene" uid="uid://ce8nc6smq3t8v" path="res://scenes/paddle.tscn" id="3_jyhfs"]
-[ext_resource type="Script" uid="uid://dv6cu2cx1qqfv" path="res://scripts/entities/back_wall.gd" id="5_tefeu"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
+[ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
+[ext_resource type="PackedScene" uid="uid://c8vg5tk3iklpe" path="res://scenes/partner_paddle.tscn" id="9_ptnr"]
+[ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="10_miss"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "paddle", "autoplay_controller", "hud")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "right_wall", "hud")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
-paddle = NodePath("Paddle")
+player_paddle = NodePath("PlayerPaddle")
 autoplay_controller = NodePath("AutoplayController")
+partner_paddle = NodePath("PartnerPaddle")
+right_wall = NodePath("Bounds/Right Wall")
 hud = NodePath("HUD")
 
 [node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
@@ -76,6 +79,7 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
 position = Vector2(456, -488)
 physics_material_override = ExtResource("1_0wfyh")
+script = ExtResource("10_miss")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
@@ -91,7 +95,7 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
 position = Vector2(-568, -488)
 physics_material_override = ExtResource("1_0wfyh")
-script = ExtResource("5_tefeu")
+script = ExtResource("10_miss")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
@@ -104,14 +108,16 @@ position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
 
-[node name="Paddle" parent="." unique_id=1694017550 instance=ExtResource("3_jyhfs")]
-position = Vector2(-416, 8)
-
-[node name="AutoplayController" type="Node" parent="." unique_id=280970194 node_paths=PackedStringArray("paddle", "ball")]
+[node name="AutoplayController" type="Node" parent="." unique_id=280970194 node_paths=PackedStringArray("paddle")]
 script = ExtResource("7_tipki")
-paddle = NodePath("../Paddle")
-ball = NodePath("../Ball")
+paddle = NodePath("../PlayerPaddle")
 config = ExtResource("8_85g3d")
+
+[node name="PartnerPaddle" parent="." unique_id=493074535 instance=ExtResource("9_ptnr")]
+position = Vector2(304, 8)
+
+[node name="PlayerPaddle" parent="." unique_id=1437655624 instance=ExtResource("9_0tnpc")]
+position = Vector2(-416, 8)
 
 [connection signal="auto_play_changed" from="." to="HUD" method="update_auto_play"]
 [connection signal="ball_speed_updated" from="." to="HUD" method="update_speed"]

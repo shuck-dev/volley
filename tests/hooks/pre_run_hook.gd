@@ -8,7 +8,11 @@ const EXCLUDE_PATHS = [
 	# Require full scene with nodes, not unit-testable
 	"res://scripts/hud/*",
 	"res://scripts/core/scene_layout.gd",
-	"res://scripts/entities/back_wall.gd",
+	# One-method duck-typing stubs, exercised through ball collision tests
+	"res://scripts/entities/miss_zone.gd",
+	# Thin wrappers, require full scene tree
+	"res://scripts/entities/partner_paddle.gd",
+	"res://scripts/entities/player_paddle.gd",
 	# Abstract base class, only used for mocking
 	"res://scripts/progression/save_storage.gd",
 	# Autoload, not unit-testable

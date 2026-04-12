@@ -37,7 +37,7 @@ func before_each() -> void:
 
 	_game = load("res://scripts/core/game.gd").new()
 	_game.ball = _ball
-	_game.paddle = _paddle
+	_game.player_paddle = _paddle
 	_game.autoplay_controller = autoplay_controller_stub
 	_game._progression_config = ProgressionConfig.new()
 	_game._item_manager = _manager
