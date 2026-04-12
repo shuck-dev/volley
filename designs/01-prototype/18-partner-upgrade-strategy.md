@@ -35,7 +35,9 @@ The existing `share_stats_with_partner` outcome type in the effect system handle
 
 The AI config's three knobs (`reaction_delay_frames`, `speed_scale`, `noise`) remain fixed per partner. What changes is the speed ceiling the partner operates within. A partner with `speed_scale = 0.70` and a shared paddle speed of 600 px/s moves at 420 px/s effective, up from 350 px/s at base. The AI algorithm is unchanged; the input values shift.
 
-Stat sharing is additive: the partner's base stat + a share of the player's upgrade delta, not the player's full stat value. This preserves the partner's identity; a partner with `speed_scale = 0.70` is always slightly slower than the player, even with full sharing.
+Stat sharing is additive: the partner's base stat + a share of the player's upgrade delta, not the player's full stat value. `speed_scale` is applied after sharing.
+
+Example: base paddle speed is 500, the player upgrades to 600 (delta of 100). With full stat sharing, the partner's effective base becomes 500 + 100 = 600. With `speed_scale = 0.70`, the partner moves at 600 x 0.70 = 420 px/s. Without sharing, the partner would be 500 x 0.70 = 350 px/s. The partner is always slightly slower than the player (who moves at the full 600), preserving their identity while closing the gap.
 
 ## Progression stages
 
@@ -57,3 +59,5 @@ Stat sharing applies to the active partner, not a specific one. Switching partne
 Court items (purchased once, always active, no kit slot cost) are a separate category. They provide within-cycle benefits and reset on prestige like all other items. The shop gains a 6th slot drawing from a dedicated court item pool, so the player always has a court item available to buy without crowding the main rotation.
 
 Court items are not the delivery mechanism for permanent upgrades. That role belongs to the prestige system.
+
+The 6th slot is a shop system change that affects rotation logic, UI layout, and economy balance. It needs its own design work, likely as part of the Tinkerer prestige spike (SH-81) or a separate shop revision ticket.

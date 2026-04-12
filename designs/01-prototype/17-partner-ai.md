@@ -41,8 +41,8 @@ The AI projects the ball's trajectory forward, reflecting off top/bottom walls, 
 
 Combine predictive interception with configurable imperfection:
 
-- **Target noise:** Add a random offset (normal distribution) to the predicted intercept point. The AI aims for "roughly the right spot." Tuning the standard deviation controls skill level.
-- **Recalculation interval:** The AI only recomputes its prediction every N frames. Between recalculations it moves toward the old target. This creates natural-looking overshoots and corrections.
+- **Target noise:** Add a random offset (normal distribution) to the predicted intercept point. The AI aims for "roughly the right spot." Tuning the standard deviation controls skill level. Noise is sampled once per ball flight and held, so the AI commits to a slightly wrong position rather than jittering.
+- **Prediction updates:** The intercept point is recalculated every frame to stay current, but the noise offset persists until the ball changes direction (wall bounce or paddle hit). This means tracking is responsive while errors are sustained.
 - **Speed cap + smoothing:** Same as tier 1, layered on top.
 
 **Strengths:** Visually convincing. Miss variety: sometimes the AI is slightly off position, sometimes heading the wrong way, sometimes just too slow. Each miss looks different.
@@ -105,7 +105,7 @@ classDiagram
 | Class | Role |
 |---|---|
 | `PaddleAIConfig` | Shared tuning resource. Different `.tres` instances for autoplay vs partner. No separate config type for autoplay. |
-| `PaddleAIController` | Abstract base defining the AI contract. Owns the shared algorithm (prediction, reaction delay, noise, tracking, drift). Not instantiated directly. Subclasses override virtual methods marked `*` to specify direction, speed source, and center position. |
+| `PaddleAIController` | Abstract base defining the AI contract. Owns the shared algorithm (prediction, reaction delay, noise, tracking, drift). Not instantiated directly. Methods marked `*` are abstract (subclasses must override). Methods without `*` (`_predict_intercept`, `_sample_noise`) have working defaults but can be overridden by future subclasses for different behaviour. |
 | `AutoplayController` | Player idle mode. Adds toggle mechanic and input handling. Ball approaching = leftward. Speed source = paddle's upgraded speed via `ItemManager.get_stat()`. |
 | `PartnerAIController` | Partner character. Always enabled, no additional state. Ball approaching = rightward. Speed source = unupgraded base via `ItemManager.get_base_stat()`. |
 | `Paddle` | Existing paddle class. Both controllers call `drive(velocity_y)` to move it each frame. |
@@ -135,14 +135,10 @@ flowchart TD
     Enabled -->|no| Skip[Do nothing]
     Enabled -->|yes| Direction{Is the ball coming toward this paddle?}
 
-    Direction -->|yes| Interval{Time to recalculate prediction?}
-    Interval -->|yes| Predict["Project the ball forward to the paddle's lane,<br/>reflecting off top and bottom walls"]
-    Predict --> Noise["Sample a random offset from a normal distribution"]
-    Noise --> Store[Store the predicted position plus noise as the new target]
-    Store --> Buffer
-    Interval -->|no| Buffer
-
-    Buffer["Push the target into the reaction delay buffer<br/>and read back the oldest entry"] --> Snap{Is the paddle already close enough to the target?}
+    Direction -->|yes| Predict["Project the ball forward to the paddle's lane,<br/>reflecting off top and bottom walls"]
+    Predict --> AddNoise["Add the current noise offset to the predicted position<br/>(noise is sampled once per ball flight, not every frame)"]
+    AddNoise --> Buffer["Push the noisy target into the reaction delay buffer<br/>and read back the oldest entry"]
+    Buffer --> Snap{Is the paddle already close enough to the target?}
     Snap -->|yes| Zero[Stop moving]
     Snap -->|no| Cap["Move toward the target at capped speed"]
     Zero --> Lerp["Smooth the velocity change to avoid jitter"]
@@ -175,7 +171,7 @@ Everything else is an internal implementation detail with sensible fixed values:
 - **Velocity smoothing:** Fixed lerp factor (0.08). Prevents jitter without being a tuning knob. If it needs to change, it changes in code, not per-config.
 - **Center drift:** Fixed at 25% of tracking speed with gentle smoothing. Affects the paddle when the ball is on the other side of the court. The player isn't watching.
 - **Snap threshold:** Fixed at 8 px. Technical detail to prevent oscillation. Below visual detection.
-- **Prediction recalculation:** Every frame, but noise is sampled once per prediction and held until the next recalculation of the intercept point (i.e. when the ball changes direction after a wall bounce or paddle hit). This means the AI commits to a slightly wrong position for the duration of a ball flight, producing visible "wrong spot" misses. Re-sampling noise every frame would average out and produce no visible error.
+- **Prediction recalculation:** Every frame. The intercept point updates continuously so the AI tracks a moving target responsively. Noise is sampled once per ball flight (reset when the ball changes direction after a wall bounce or paddle hit) and added to each frame's prediction. This means the AI commits to a slightly wrong position for the duration of a flight, producing visible "wrong spot" misses. Re-sampling noise every frame would average out and produce no visible error.
 
 ### Autoplay preset
 
