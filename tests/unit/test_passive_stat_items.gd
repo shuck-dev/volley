@@ -27,7 +27,7 @@ func _stat_key(item: ItemDefinition) -> StringName:
 func _value_per_level(item: ItemDefinition) -> float:
 	var outcome: StatOutcome = item.effects[0].outcomes[0]
 	if outcome.range_stat_key:
-		return outcome.value * GameRules.BASE_STATS[outcome.range_stat_key]
+		return outcome.value * GameRules.base_stats[outcome.range_stat_key]
 	return outcome.value
 
 
@@ -45,7 +45,7 @@ func test_no_effect_before_purchase() -> void:
 		var stat := _stat_key(item)
 		assert_eq(
 			manager.get_stat(stat),
-			GameRules.BASE_STATS[stat],
+			GameRules.base_stats[stat],
 			"%s should not modify %s before purchase" % [item.key, stat],
 		)
 
@@ -60,7 +60,7 @@ func test_applies_stat_at_level_one() -> void:
 		manager.purchase(item.key)
 		assert_almost_eq(
 			manager.get_stat(stat),
-			GameRules.BASE_STATS[stat] + delta,
+			GameRules.base_stats[stat] + delta,
 			0.01,
 			"%s should add %s to %s at level 1" % [item.key, delta, stat],
 		)
@@ -78,7 +78,7 @@ func test_stacks_linearly_across_levels() -> void:
 		manager.purchase(item.key)
 		assert_almost_eq(
 			manager.get_stat(stat),
-			GameRules.BASE_STATS[stat] + (delta * 3),
+			GameRules.base_stats[stat] + (delta * 3),
 			0.01,
 			"%s should stack linearly at level 3" % item.key,
 		)
@@ -91,7 +91,7 @@ func test_grip_tape_increases_paddle_size_on_purchase() -> void:
 	manager.purchase(_grip_tape.key)
 	assert_gt(
 		manager.get_stat(&"paddle_size"),
-		GameRules.BASE_STATS[&"paddle_size"],
+		GameRules.base_stats[&"paddle_size"],
 		"grip_tape should increase paddle_size above base",
 	)
 
@@ -117,7 +117,7 @@ func test_equal_percentage_modifiers_cancel_out() -> void:
 	manager.purchase(_wrist_brace.key)
 	assert_almost_eq(
 		manager.get_stat(&"paddle_size"),
-		GameRules.BASE_STATS[&"paddle_size"],
+		GameRules.base_stats[&"paddle_size"],
 		0.01,
 		"equal percentage modifiers should cancel to base",
 	)
@@ -136,7 +136,7 @@ func test_wrist_brace_reduces_paddle_size_on_purchase() -> void:
 	manager.purchase(_wrist_brace.key)
 	assert_lt(
 		manager.get_stat(&"paddle_size"),
-		GameRules.BASE_STATS[&"paddle_size"],
+		GameRules.base_stats[&"paddle_size"],
 		"wrist_brace should reduce paddle_size below base",
 	)
 
@@ -147,7 +147,7 @@ func test_wrist_brace_increases_ball_speed_increment_on_purchase() -> void:
 	manager.purchase(_wrist_brace.key)
 	assert_gt(
 		manager.get_stat(&"ball_speed_increment"),
-		GameRules.BASE_STATS[&"ball_speed_increment"],
+		GameRules.base_stats[&"ball_speed_increment"],
 		"wrist_brace should increase ball_speed_increment above base",
 	)
 

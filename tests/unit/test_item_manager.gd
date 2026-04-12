@@ -74,24 +74,24 @@ class TestStats:
 		_manager = ItemFactory.create_manager(self)
 
 	func test_get_stat_returns_base_value_before_any_purchase() -> void:
-		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.BASE_STATS[&"paddle_speed"])
+		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
 
 	func test_purchase_applies_stat_modifier() -> void:
 		_manager._progression.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.BASE_STATS[&"paddle_speed"] + 50.0)
+		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 50.0)
 
 	func test_multiple_purchases_stack_modifiers() -> void:
 		_manager._progression.friendship_point_balance = 10000
 		_manager.purchase(TEST_KEY)
 		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.BASE_STATS[&"paddle_speed"] + 100.0)
+		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 100.0)
 
 	func test_remove_level_reverts_stat_modifier() -> void:
 		_manager._progression.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
-		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.BASE_STATS[&"paddle_speed"])
+		assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
 
 
 class TestFriendshipPoints:
@@ -232,7 +232,7 @@ class TestTake:
 		assert_signal_emitted(_manager, "friendship_point_balance_changed")
 
 	func test_take_does_not_apply_stat_effects() -> void:
-		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		var base_speed: float = GameRules.base_stats[&"paddle_speed"]
 		_manager._progression.friendship_point_balance = 100
 		_manager.take(TEST_KEY)
 		assert_eq(
@@ -261,7 +261,7 @@ class TestReloadFromProgression:
 		assert_signal_emit_count(_manager, "item_level_changed", _manager.items.size())
 
 	func test_reload_reregisters_effects_from_current_levels() -> void:
-		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		var base_speed: float = GameRules.base_stats[&"paddle_speed"]
 		assert_eq(_manager.get_stat(&"paddle_speed"), base_speed, "no level, no effect")
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
 		_manager._progression.item_levels[TEST_KEY] = 1
@@ -273,7 +273,7 @@ class TestReloadFromProgression:
 		)
 
 	func test_reload_unregisters_previously_registered_effects_when_level_is_zero() -> void:
-		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		var base_speed: float = GameRules.base_stats[&"paddle_speed"]
 		_manager._progression.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
 		assert_eq(_manager.get_stat(&"paddle_speed"), base_speed + 50.0)

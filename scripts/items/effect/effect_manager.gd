@@ -6,7 +6,7 @@ var _event_effects: Array[Dictionary] = []
 
 
 func _ready() -> void:
-	_effect_state.register_base_values(GameRules.BASE_STATS)
+	_effect_state.register_base_values(GameRules.base_stats)
 
 
 func get_stat(key: StringName) -> float:

@@ -69,7 +69,7 @@ class TestAccept:
 		assert_signal_not_emitted(_box, "item_taken")
 
 	func test_accept_does_not_apply_stat_effects() -> void:
-		var base_speed: float = GameRules.BASE_STATS[&"paddle_speed"]
+		var base_speed: float = GameRules.base_stats[&"paddle_speed"]
 		_item_manager._progression.friendship_point_balance = 1000
 		_box.accept(_definition)
 		assert_eq(_item_manager.get_stat(&"paddle_speed"), base_speed)

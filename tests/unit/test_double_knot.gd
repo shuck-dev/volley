@@ -18,7 +18,7 @@ func test_return_angle_influence_inactive_at_level_one() -> void:
 	_manager.purchase("double_knot")
 	assert_eq(
 		_manager.get_stat(&"return_angle_influence"),
-		GameRules.BASE_STATS[&"return_angle_influence"],
+		GameRules.base_stats[&"return_angle_influence"],
 	)
 
 
@@ -28,5 +28,5 @@ func test_return_angle_influence_active_at_level_two() -> void:
 	_manager.purchase("double_knot")
 	assert_gt(
 		_manager.get_stat(&"return_angle_influence"),
-		GameRules.BASE_STATS[&"return_angle_influence"],
+		GameRules.base_stats[&"return_angle_influence"],
 	)

@@ -29,5 +29,5 @@ func test_adds_kit_slot_on_purchase() -> void:
 	_manager.purchase("spare")
 	assert_eq(
 		_manager.get_stat(&"kit_slots"),
-		GameRules.BASE_STATS[&"kit_slots"] + 1.0,
+		GameRules.base_stats[&"kit_slots"] + 1.0,
 	)

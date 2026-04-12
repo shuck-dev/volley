@@ -7,9 +7,9 @@ const BAR_BACKGROUND_COLOR := Color(0.15, 0.15, 0.15, 0.6)
 const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 
 var current_speed := 0.0
-var _min_speed: float = GameRules.BASE_STATS[&"ball_speed_min"]
+var _min_speed: float = GameRules.base_stats[&"ball_speed_min"]
 var _max_speed: float = (
-	GameRules.BASE_STATS[&"ball_speed_min"] + GameRules.BASE_STATS[&"ball_speed_max_range"]
+	GameRules.base_stats[&"ball_speed_min"] + GameRules.base_stats[&"ball_speed_max_range"]
 )
 var _permanent_max_speed: float = _max_speed
 

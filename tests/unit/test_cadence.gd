@@ -40,7 +40,7 @@ func test_cost_scaling_matches_design() -> void:
 func test_oscillation_active_after_purchase() -> void:
 	_purchase()
 
-	var base_value: float = GameRules.BASE_STATS[&"ball_speed_offset"]
+	var base_value: float = GameRules.base_stats[&"ball_speed_offset"]
 	var found_different := false
 	for frame_index in range(60):
 		_manager._effect_manager.process_frame(0.016)
@@ -57,7 +57,7 @@ func test_oscillation_inactive_before_purchase() -> void:
 
 	assert_eq(
 		_manager.get_stat(&"ball_speed_offset"),
-		GameRules.BASE_STATS[&"ball_speed_offset"],
+		GameRules.base_stats[&"ball_speed_offset"],
 	)
 
 
@@ -69,13 +69,13 @@ func test_ceiling_raises_on_max_speed_reached() -> void:
 
 	assert_gt(
 		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.BASE_STATS[&"ball_speed_max_range"],
+		GameRules.base_stats[&"ball_speed_max_range"],
 	)
 
 
 func test_ceiling_raise_stacks() -> void:
 	_purchase()
-	var base_range: float = GameRules.BASE_STATS[&"ball_speed_max_range"]
+	var base_range: float = GameRules.base_stats[&"ball_speed_max_range"]
 
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var after_first: float = _manager.get_stat(&"ball_speed_max_range")
@@ -96,7 +96,7 @@ func test_ceiling_raise_clears_on_miss() -> void:
 
 	assert_eq(
 		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.BASE_STATS[&"ball_speed_max_range"],
+		GameRules.base_stats[&"ball_speed_max_range"],
 	)
 
 
@@ -105,14 +105,14 @@ func test_higher_level_raises_ceiling_more() -> void:
 	_manager.purchase("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var level_one_raise: float = (
-		_manager.get_stat(&"ball_speed_max_range") - GameRules.BASE_STATS[&"ball_speed_max_range"]
+		_manager.get_stat(&"ball_speed_max_range") - GameRules.base_stats[&"ball_speed_max_range"]
 	)
 
 	_manager._effect_manager.process_event(&"on_miss")
 	_manager.purchase("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var level_two_raise: float = (
-		_manager.get_stat(&"ball_speed_max_range") - GameRules.BASE_STATS[&"ball_speed_max_range"]
+		_manager.get_stat(&"ball_speed_max_range") - GameRules.base_stats[&"ball_speed_max_range"]
 	)
 
 	assert_gt(level_two_raise, level_one_raise)

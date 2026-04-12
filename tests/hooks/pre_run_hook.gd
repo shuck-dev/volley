@@ -13,6 +13,8 @@ const EXCLUDE_PATHS = [
 	"res://scripts/progression/save_storage.gd",
 	# Autoload, not unit-testable
 	"res://scripts/progression/save_manager.gd",
+	# Pure data resource, exercised through GameRules.base_stats
+	"res://scripts/core/base_stats_config.gd",
 ]
 
 

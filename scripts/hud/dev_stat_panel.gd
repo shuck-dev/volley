@@ -43,9 +43,9 @@ func _build_placeholder_labels() -> void:
 		child.queue_free()
 
 	_add_header()
-	for stat_key: StringName in GameRules.BASE_STATS:
+	for stat_key: StringName in GameRules.base_stats:
 		var label := _make_stat_label()
-		label.text = "%s: %.1f" % [stat_key, GameRules.BASE_STATS[stat_key]]
+		label.text = "%s: %.1f" % [stat_key, GameRules.base_stats[stat_key]]
 		add_child(label)
 
 
@@ -54,7 +54,7 @@ func _build_live_labels() -> void:
 	_speed_label = _make_stat_label()
 	_speed_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
 	add_child(_speed_label)
-	for stat_key: StringName in GameRules.BASE_STATS:
+	for stat_key: StringName in GameRules.base_stats:
 		var label := _make_stat_label()
 		add_child(label)
 		_labels[stat_key] = label
@@ -90,7 +90,7 @@ func _refresh_speed_label() -> void:
 
 func _refresh_stat_label(stat_key: StringName) -> void:
 	var current_value: float = ItemManager.get_stat(stat_key)
-	var base_value: float = GameRules.BASE_STATS[stat_key]
+	var base_value: float = GameRules.base_stats[stat_key]
 	var label: Label = _labels[stat_key]
 	if is_equal_approx(current_value, base_value):
 		label.text = "%s: %.1f" % [stat_key, current_value]
