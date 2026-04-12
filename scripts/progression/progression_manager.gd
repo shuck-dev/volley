@@ -97,6 +97,7 @@ func _check_shop_unlock() -> void:
 
 
 func _check_partner_unlocks() -> void:
+	var newly_offered := false
 	for partner in partners:
 		if partner.key in _progression.unlocked_partners:
 			continue
@@ -104,5 +105,7 @@ func _check_partner_unlocks() -> void:
 			continue
 		if _progression.total_friendship_points_earned >= partner.unlock_threshold:
 			_progression.recruit_offered_partners.append(partner.key)
-			_save_manager.save()
+			newly_offered = true
 			partner_recruit_available.emit(partner)
+	if newly_offered:
+		_save_manager.save()
