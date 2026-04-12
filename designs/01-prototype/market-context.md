@@ -90,13 +90,6 @@ Volley! does not look like any of these.
   - Rusty's is pixel art and lo-fi, focused on mechanical satisfaction
   - Volley! layers considered art direction, expressive animation, and narrative on top of the same "play while you work" format
 
-Closest visual neighbours (outside the idle space):
-
-- **Omori**: dual-world, hand-drawn, emotional
-- **Cuphead**: committed hand-drawn identity across every element
-- **Ranking of Kings**: simple characters with enormous expression through animation
-- None of these are idle, none live on your desktop
-
 ## Why This Matters for the Artist
 
 - There is no established visual language for "idle desktop pong game with emotional depth"

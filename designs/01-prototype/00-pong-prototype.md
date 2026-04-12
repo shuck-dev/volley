@@ -1,7 +1,7 @@
 # Volley! - Prototype Design
 
 ## Overview
-Idle pong game. Two paddles volley a ball back and forth. Score counts volleys (paddle hits). No win condition for now — just keep the rally going. Player controls one paddle, second paddle is a wall for now (AI in future).
+Idle pong game. Two paddles volley a ball back and forth. Score counts volleys (paddle hits). No win condition for now, just keep the rally going. Player controls one paddle, second paddle is a wall for now (AI in future).
 
 ## Features (build order)
 
