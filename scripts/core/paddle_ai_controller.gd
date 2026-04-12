@@ -10,7 +10,6 @@ extends Node
 @export var config: PaddleAIConfig
 
 var _enabled := false
-var _item_manager: Node
 
 # --- reaction delay ---
 var _position_buffer: Array
@@ -24,8 +23,6 @@ var _last_ball_direction_x := 0.0
 func _ready() -> void:
 	_position_buffer.resize(config.reaction_delay_frames)
 	_position_buffer.fill(0.0)
-	if _item_manager == null:
-		_item_manager = ItemManager
 
 
 func _physics_process(_delta: float) -> void:
@@ -63,7 +60,7 @@ func _predict_intercept() -> float:
 	if velocity_x_abs < 1.0:
 		return ball_position.y
 
-	var arena_half: float = _item_manager.get_stat(&"arena_height") / 2.0
+	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
 	var arena_top: float = -arena_half
 	var arena_bottom: float = arena_half
 
@@ -71,7 +68,7 @@ func _predict_intercept() -> float:
 	var simulated_y: float = ball_position.y + ball_velocity.y * time_to_reach
 
 	# Reflect off walls until within bounds
-	for reflection_step in range(20):
+	for _step in range(20):
 		if simulated_y >= arena_top and simulated_y <= arena_bottom:
 			break
 		if simulated_y < arena_top:
