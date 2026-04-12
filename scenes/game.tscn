@@ -13,13 +13,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "right_wall", "hud")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "hud")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
 player_paddle = NodePath("PlayerPaddle")
 autoplay_controller = NodePath("AutoplayController")
 partner_paddle = NodePath("PartnerPaddle")
-right_wall = NodePath("Bounds/Right Wall")
 hud = NodePath("HUD")
 
 [node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
