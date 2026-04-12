@@ -116,6 +116,24 @@ func test_noise_offset_holds_during_same_flight() -> void:
 	assert_eq(first_offset, second_offset, "noise should hold during same flight")
 
 
+func test_noise_resamples_during_drift_when_direction_changes() -> void:
+	_config.noise = 50.0
+	_ball.position = Vector2(100.0, 0.0)
+	_ball.linear_velocity = BALL_MOVING_AWAY
+	_run_frames(3)
+	var offset_during_drift: float = _controller._noise_offset
+
+	_ball.linear_velocity = BALL_APPROACHING_PARTNER
+	_run_frames(1)
+	var offset_after_reversal: float = _controller._noise_offset
+
+	assert_ne(
+		offset_during_drift,
+		offset_after_reversal,
+		"noise should resample even when direction changes during drift",
+	)
+
+
 # --- speed cap ---
 func test_speed_never_exceeds_configured_scale() -> void:
 	_ball.position = Vector2(100.0, 9999.0)

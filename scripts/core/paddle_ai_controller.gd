@@ -26,9 +26,11 @@ func _ready() -> void:
 	_position_buffer.fill(0.0)
 
 
+## ball must be set before enabling. Game.gd injects it during _ready().
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
+	assert(ball != null, "PaddleAIController: ball must be set before enabling")
 	_maybe_resample_noise()
 	if _is_ball_behind():
 		_dodge()

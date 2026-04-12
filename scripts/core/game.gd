@@ -16,7 +16,6 @@ signal shop_button_pressed
 @export var player_paddle: Paddle
 @export var autoplay_controller: AutoplayController
 @export var partner_paddle: PartnerPaddle
-@export var right_wall: StaticBody2D
 @export var hud: CanvasLayer
 
 var _volley_count := 0

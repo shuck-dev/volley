@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b6gnqv6ik6buu"]
+[gd_scene format=3 uid="uid://wea7e7hci3d"]
 
 [ext_resource type="Script" uid="uid://bt3s0lxh80g0b" path="res://scripts/entities/player_paddle.gd" id="1_mo4dg"]
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
