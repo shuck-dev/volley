@@ -66,7 +66,7 @@ func test_drifts_toward_center_when_ball_moving_away() -> void:
 	_ball.position = Vector2(100.0, 0.0)
 	_ball.linear_velocity = BALL_MOVING_AWAY
 	_paddle.position = Vector2(PADDLE_X, 200.0)
-	_paddle._lane_x = PADDLE_X
+
 	_run_frames(10)
 	assert_lt(_paddle.velocity.y, 0.0, "should drift up toward center")
 
@@ -76,13 +76,44 @@ func test_dodges_away_from_ball_when_ball_is_behind() -> void:
 	_ball.position = Vector2(PADDLE_X + 50.0, 10.0)
 	_ball.linear_velocity = BALL_APPROACHING_PARTNER
 	_paddle.position = Vector2(PADDLE_X, 0.0)
-	_paddle._lane_x = PADDLE_X
+
 	_run_frames(5)
 	assert_lt(
 		_paddle.velocity.y,
 		0.0,
 		"should dodge away from ball (ball at y=10, dodge to negative edge)",
 	)
+
+
+# --- noise resampling ---
+func test_noise_offset_changes_when_ball_reverses_direction() -> void:
+	_config.noise = 50.0
+	_ball.position = Vector2(100.0, 200.0)
+	_ball.linear_velocity = BALL_APPROACHING_PARTNER
+	_run_frames(3)
+	var first_offset: float = _controller._noise_offset
+
+	_ball.linear_velocity = BALL_MOVING_AWAY
+	_run_frames(1)
+	_ball.linear_velocity = BALL_APPROACHING_PARTNER
+	_run_frames(1)
+	var second_offset: float = _controller._noise_offset
+
+	# With noise=50, two independent samples matching is negligible
+	assert_ne(first_offset, second_offset, "noise should resample on direction change")
+
+
+func test_noise_offset_holds_during_same_flight() -> void:
+	_config.noise = 50.0
+	_ball.position = Vector2(100.0, 200.0)
+	_ball.linear_velocity = BALL_APPROACHING_PARTNER
+	_run_frames(3)
+	var first_offset: float = _controller._noise_offset
+
+	_run_frames(10)
+	var second_offset: float = _controller._noise_offset
+
+	assert_eq(first_offset, second_offset, "noise should hold during same flight")
 
 
 # --- speed cap ---

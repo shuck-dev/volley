@@ -29,6 +29,7 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
+	_maybe_resample_noise()
 	if _is_ball_behind():
 		_dodge()
 	elif _ball_approaching():
@@ -60,8 +61,6 @@ func _is_ball_behind() -> bool:
 
 
 func _track() -> void:
-	_maybe_resample_noise()
-
 	var predicted_y: float = PaddleAIMath.predict_intercept(
 		ball.position, ball.linear_velocity, paddle.position.x
 	)
