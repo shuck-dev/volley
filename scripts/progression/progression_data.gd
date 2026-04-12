@@ -6,6 +6,7 @@ var total_friendship_points_earned := 0
 var item_levels: Dictionary[String, int]
 var personal_volley_best := 0
 var shop_unlocked := false
+var recruit_offered_partners: Array[StringName] = []
 var unlocked_partners: Array[StringName] = []
 var active_partner: StringName = &""
 var partner_volley_totals: Dictionary[StringName, int] = {}
@@ -21,6 +22,7 @@ func clear() -> void:
 	item_levels = {}
 	personal_volley_best = 0
 	shop_unlocked = false
+	recruit_offered_partners = []
 	unlocked_partners = []
 	active_partner = ""
 	partner_volley_totals = {}
@@ -49,6 +51,7 @@ func load_from_disk() -> bool:
 	item_levels = loaded.item_levels
 	personal_volley_best = loaded.personal_volley_best
 	shop_unlocked = loaded.shop_unlocked
+	recruit_offered_partners = loaded.recruit_offered_partners
 	unlocked_partners = loaded.unlocked_partners
 	active_partner = loaded.active_partner
 	partner_volley_totals = loaded.partner_volley_totals
@@ -64,6 +67,7 @@ func to_dict() -> Dictionary:
 		"item_levels": item_levels,
 		"personal_volley_best": personal_volley_best,
 		"shop_unlocked": shop_unlocked,
+		"recruit_offered_partners": recruit_offered_partners,
 		"unlocked_partners": unlocked_partners,
 		"active_partner": active_partner,
 		"partner_volley_totals": partner_volley_totals,
@@ -78,6 +82,9 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
 	progression.shop_unlocked = data.get("shop_unlocked", false)
+	progression.recruit_offered_partners = _to_typed_string_name_array(
+		data.get("recruit_offered_partners", [])
+	)
 	progression.unlocked_partners = _to_typed_string_name_array(data.get("unlocked_partners", []))
 	progression.active_partner = StringName(data.get("active_partner", ""))
 	progression.partner_volley_totals = _to_typed_string_name_dict(
