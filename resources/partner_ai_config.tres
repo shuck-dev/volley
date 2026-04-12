@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1")
 reaction_delay_frames = 8
-speed_scale = 0.7
-noise = 20.0
+speed_scale = 1.2
+noise = 10.0
