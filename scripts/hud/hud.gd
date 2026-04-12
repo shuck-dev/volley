@@ -2,6 +2,8 @@ extends CanvasLayer
 
 signal shop_button_pressed
 
+const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
+
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
 @export var friendship_point_balance_label: Label
@@ -60,7 +62,7 @@ func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
 	shop_button.visible = is_unlocked
 
 
-func _on_partner_recruit_available(partner: Variant) -> void:
+func _on_partner_recruit_available(partner: PartnerDefinition) -> void:
 	if recruit_panel == null:
 		return
 	_pending_partner_key = partner.key

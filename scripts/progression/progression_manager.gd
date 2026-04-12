@@ -1,13 +1,13 @@
 extends Node
 
 signal shop_unlocked_changed(is_unlocked: bool)
-signal partner_recruit_available(partner: PartnerDef)
+signal partner_recruit_available(partner: PartnerDefinition)
 signal partner_recruited(partner_key: StringName)
 
-const PartnerDef = preload("res://scripts/partners/partner_definition.gd")
+const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
 const DEFAULT_CONFIG: ProgressionConfig = preload("res://resources/progression_config.tres")
 
-var partners: Array[PartnerDef] = [
+var partners: Array[PartnerDefinition] = [
 	preload("res://resources/partners/martha.tres"),
 ]
 
@@ -48,7 +48,7 @@ func is_shop_unlocked() -> bool:
 	return _progression.shop_unlocked
 
 
-func get_partner(partner_key: StringName) -> PartnerDef:
+func get_partner(partner_key: StringName) -> PartnerDefinition:
 	for partner in partners:
 		if partner.key == partner_key:
 			return partner
@@ -60,7 +60,7 @@ func is_partner_unlocked(partner_key: StringName) -> bool:
 
 
 func can_recruit_partner(partner_key: StringName) -> bool:
-	var partner: PartnerDef = get_partner(partner_key)
+	var partner: PartnerDefinition = get_partner(partner_key)
 	if partner == null:
 		return false
 	return (
@@ -73,7 +73,7 @@ func can_recruit_partner(partner_key: StringName) -> bool:
 func recruit_partner(partner_key: StringName) -> bool:
 	if not can_recruit_partner(partner_key):
 		return false
-	var partner: PartnerDef = get_partner(partner_key)
+	var partner: PartnerDefinition = get_partner(partner_key)
 	_item_manager.subtract_friendship_points(partner.unlock_cost)
 	_progression.unlocked_partners.append(partner_key)
 	_progression.active_partner = partner_key
