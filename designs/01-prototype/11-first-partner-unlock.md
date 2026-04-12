@@ -476,28 +476,7 @@ Extract a shared interface from the current `Paddle` class. Both the player padd
 
 A `PartnerAIController` (see `17-partner-ai.md`) drives the partner paddle. It extends the shared `PaddleAIController` interface and uses a `PaddleAIConfig` resource for tuning. Separate from `AutoplayController`; always active.
 
-Martha's AI config:
-
-| Field | Value | Rationale |
-|---|---|---|
-| `reaction_delay_frames` | 8 | Slightly faster reactions than autoplay (12), compensating for lower speed and noise. |
-| `speed_scale` | 0.70 | 350 px/s effective at base paddle speed. Comfortable at 400, struggles at 550+, overwhelmed at 700. |
-| `noise` | 20.0 | About 40% of paddle height (50 px). Most predictions within a paddle-width, occasional larger errors. |
-
-### Martha's miss profile
-
-Martha arrives when the player has few or no upgrades. Her config is tuned for principle 1 from `17-partner-ai.md`: she is never the bottleneck at speeds the player can comfortably handle.
-
-At base game speeds (no upgrades), the player's paddle is 500 px/s. Martha's effective speed is 350 px/s. Both struggle at similar ball speeds:
-
-- **0-10 hits (400-550 px/s):** Reliable. 20 px noise is less than half the paddle height, so even noisy predictions land within the paddle.
-- **10-15 hits (550-625 px/s):** Occasional misses on sharp wall-bounce angles. The player is also struggling at these speeds. Maybe 1 in 12.
-- **15-20 hits (625-700 px/s):** Both player and Martha are at their limits. Misses from either side are expected. Maybe 1 in 6.
-- **20+ hits (700 px/s):** Ball at max speed. Streaks end naturally for both sides.
-
-Martha's miss curve overlaps with the player's own difficulty curve. She doesn't miss easy balls. She misses the same balls the player finds hard. Combined with `halve_streak` (misses drop to half instead of zero) and +25% FP per hit, Martha is always a net positive economically, even when her misses cap the streak lower than the wall would.
-
-Martha doesn't need stat-sharing upgrades because the player hasn't outgrown her. By the time the player's upgrades create a meaningful gap, they have access to the stat-sharing court items described in `18-partner-upgrade-strategy.md`.
+Martha's AI config starting values are tuning targets for the Make Fun pass. See `17-partner-ai.md` for the config resource fields, miss philosophy, and how partner competence scales with the player through stat sharing (`18-partner-upgrade-strategy.md`).
 
 ### Effect registration
 

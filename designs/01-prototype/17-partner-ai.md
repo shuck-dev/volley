@@ -73,7 +73,6 @@ classDiagram
         +set_enabled(value: bool)
         +enabled_changed signal
         #_ball_approaching() bool*
-        #_get_center_y() float*
         #_get_paddle_speed() float*
         #_predict_intercept() float
         #_sample_noise() float
@@ -122,10 +121,11 @@ Abstract base class (GDScript has no formal interfaces). Defines the contract vi
 | Method | Purpose | Autoplay | Partner |
 |---|---|---|---|
 | `_ball_approaching()` | Which direction counts as "coming toward me" | `ball.velocity.x < 0` | `ball.velocity.x > 0` |
-| `_get_center_y()` | Where "center" is for drift | `0.0` | `0.0` |
 | `_get_paddle_speed()` | Movement speed ceiling | `paddle.get_speed()` (upgraded via ItemManager) | `ItemManager.get_base_stat("paddle_speed")` (unupgraded base from GameRules) |
 | `_predict_intercept()` | Ball trajectory prediction | Default (linear + wall reflect) | Default (or override for curve-aware) |
 | `_sample_noise()` | Noise distribution on target | Default (normal distribution) | Default (or override for biased) |
+
+Center drift target is fixed at `0.0` (court center) for all subclasses. Not a virtual method.
 
 ### Per-frame decision flow
 
@@ -175,7 +175,7 @@ Everything else is an internal implementation detail with sensible fixed values:
 - **Velocity smoothing:** Fixed lerp factor (0.08). Prevents jitter without being a tuning knob. If it needs to change, it changes in code, not per-config.
 - **Center drift:** Fixed at 25% of tracking speed with gentle smoothing. Affects the paddle when the ball is on the other side of the court. The player isn't watching.
 - **Snap threshold:** Fixed at 8 px. Technical detail to prevent oscillation. Below visual detection.
-- **Prediction recalculation:** Every frame. Recalculating less often was considered as a fourth knob, but it overlaps with reaction delay (both create temporal lag). One temporal knob is enough.
+- **Prediction recalculation:** Every frame, but noise is sampled once per prediction and held until the next recalculation of the intercept point (i.e. when the ball changes direction after a wall bounce or paddle hit). This means the AI commits to a slightly wrong position for the duration of a ball flight, producing visible "wrong spot" misses. Re-sampling noise every frame would average out and produce no visible error.
 
 ### Autoplay preset
 
