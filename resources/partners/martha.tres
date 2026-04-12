@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PartnerDefinition" format=3 uid="uid://jiptnum1hrf6"]
+
+[ext_resource type="Script" uid="uid://54ib2u5vr2ld" path="res://scripts/partners/partner_definition.gd" id="1_def"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+
+[resource]
+script = ExtResource("1_def")
+key = &"martha"
+display_name = "Martha"
+unlock_threshold = 100
+unlock_cost = 100

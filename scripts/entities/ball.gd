@@ -33,7 +33,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	if body.has_method("on_ball_missed"):
+	if body.has_method("is_miss_zone") and body.is_miss_zone():
 		missed.emit()
 	elif body.has_method("on_ball_hit"):
 		body.on_ball_hit()

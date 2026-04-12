@@ -16,6 +16,7 @@ signal shop_button_pressed
 @export var player_paddle: Paddle
 @export var autoplay_controller: AutoplayController
 @export var partner_paddle: PartnerPaddle
+@export var right_wall: StaticBody2D
 @export var hud: CanvasLayer
 
 var _volley_count := 0
@@ -39,10 +40,12 @@ func _ready() -> void:
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.effect_processor.paddles = [player_paddle]
 
-	if partner_paddle != null:
-		partner_paddle.paddle_hit.connect(_on_paddle_hit)
-		ball.effect_processor.paddles.append(partner_paddle)
-		partner_paddle.set_ball(ball)
+	if _progression.active_partner != &"":
+		_activate_partner()
+	else:
+		_deactivate_partner()
+
+	ProgressionManager.partner_recruited.connect(_on_partner_recruited)
 
 	ball.missed.connect(_on_ball_missed)
 	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
@@ -102,6 +105,31 @@ func _on_ball_missed() -> void:
 func _on_auto_play_changed(is_active: bool) -> void:
 	_is_autoplay_active = is_active
 	auto_play_changed.emit(is_active, _progression_config.autoplay_friendship_point_rate)
+
+
+func _on_partner_recruited(_partner_key: StringName) -> void:
+	_activate_partner()
+
+
+func _activate_partner() -> void:
+	if partner_paddle == null:
+		return
+	partner_paddle.visible = true
+	partner_paddle.set_deferred(&"process_mode", Node.PROCESS_MODE_INHERIT)
+	partner_paddle.paddle_hit.connect(_on_paddle_hit)
+	ball.effect_processor.paddles.append(partner_paddle)
+	partner_paddle.set_ball(ball)
+	if right_wall != null and right_wall.has_method(&"is_miss_zone"):
+		right_wall.active = true
+
+
+func _deactivate_partner() -> void:
+	if partner_paddle == null:
+		return
+	partner_paddle.visible = false
+	partner_paddle.set_deferred(&"process_mode", Node.PROCESS_MODE_DISABLED)
+	if right_wall != null and right_wall.has_method(&"is_miss_zone"):
+		right_wall.active = false
 
 
 ## Fractional accumulation;

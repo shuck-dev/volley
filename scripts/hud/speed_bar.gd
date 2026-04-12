@@ -7,16 +7,18 @@ const BAR_BACKGROUND_COLOR := Color(0.15, 0.15, 0.15, 0.6)
 const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 
 var current_speed := 0.0
-var _min_speed: float = GameRules.base_stats[&"ball_speed_min"]
-var _max_speed: float = (
-	GameRules.base_stats[&"ball_speed_min"] + GameRules.base_stats[&"ball_speed_max_range"]
-)
+var _min_speed: float = 400.0
+var _max_speed: float = 700.0
 var _permanent_max_speed: float = _max_speed
 
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		current_speed = 550.0
+		return
+	_min_speed = GameRules.base_stats[&"ball_speed_min"]
+	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
+	_permanent_max_speed = _max_speed
 
 
 func _draw() -> void:
