@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cq0lcy64wmraf" path="res://scripts/hud/dev_stat_panel.gd" id="3_5ysmq"]
 [ext_resource type="Script" uid="uid://cp16q4n8se0mu" path="res://scripts/hud/speed_bar.gd" id="4_6fi6k"]
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="5_uo2fv"]
+[ext_resource type="PackedScene" uid="uid://c3e4rkpxtudc0" path="res://scenes/hud_scale_setting.tscn" id="6_047uy"]
 
 [node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "shop_button")]
 script = ExtResource("1_ahhtf")
@@ -121,3 +122,11 @@ offset_top = -101.0
 offset_right = 123.0
 offset_bottom = -43.0
 grow_vertical = 0
+
+[node name="HudScaleSetting" parent="." unique_id=1159505156 instance=ExtResource("6_047uy")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -227.0
+offset_bottom = 31.0
+grow_horizontal = 0

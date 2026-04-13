@@ -3,7 +3,6 @@
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/game.gd" id="1_tbgi4"]
-[ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="2_tefeu"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
@@ -13,14 +12,13 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "right_wall", "hud")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "right_wall")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
 player_paddle = NodePath("PlayerPaddle")
 autoplay_controller = NodePath("AutoplayController")
 partner_paddle = NodePath("PartnerPaddle")
 right_wall = NodePath("Bounds/Right Wall")
-hud = NodePath("HUD")
 
 [node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
 scroll_scale = Vector2(0, 0)
@@ -32,8 +30,6 @@ offset_top = -2000.0
 offset_right = 2000.0
 offset_bottom = 2000.0
 color = Color(0.12, 0.15, 0.25, 1)
-
-[node name="HUD" parent="." unique_id=794024698 instance=ExtResource("2_tefeu")]
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
 position = Vector2(-32, -8)
@@ -118,8 +114,3 @@ position = Vector2(304, 8)
 
 [node name="PlayerPaddle" parent="." unique_id=1437655624 instance=ExtResource("9_0tnpc")]
 position = Vector2(-416, 8)
-
-[connection signal="auto_play_changed" from="." to="HUD" method="update_auto_play"]
-[connection signal="ball_speed_updated" from="." to="HUD" method="update_speed"]
-[connection signal="personal_volley_best_changed" from="." to="HUD" method="update_personal_volley_best"]
-[connection signal="volley_count_changed" from="." to="HUD" method="update_volley_count"]

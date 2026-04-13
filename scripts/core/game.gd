@@ -8,16 +8,12 @@ signal ball_speed_updated(
 	current_speed: float, min_speed: float, max_speed: float, base_max_speed: float
 )
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
-## Bubbled up from the HUD so ancestors (e.g. SceneLayout) do not need to reach
-## into this scene's internals to hear it.
-signal shop_button_pressed
 
 @export var ball: Ball
 @export var player_paddle: Paddle
 @export var autoplay_controller: AutoplayController
 @export var partner_paddle: PartnerPaddle
 @export var right_wall: MissZone
-@export var hud: CanvasLayer
 
 var _volley_count := 0
 var _progression: ProgressionData
@@ -56,9 +52,6 @@ func _ready() -> void:
 	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
 
 	autoplay_controller.autoplay_toggled.connect(_on_auto_play_changed)
-
-	if hud != null:
-		hud.shop_button_pressed.connect(shop_button_pressed.emit)
 
 	personal_volley_best_changed.emit(_progression.personal_volley_best)
 
