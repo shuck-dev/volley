@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://kyv43r8jy2b"]
+
+[ext_resource type="Script" uid="uid://cvqhvm88n4nog" path="res://scripts/hud/recruit_panel.gd" id="1"]
+
+[node name="RecruitPanel" type="VBoxContainer" unique_id=1288823691 node_paths=PackedStringArray("recruit_label", "recruit_button", "recruit_sound")]
+offset_right = 117.0
+offset_bottom = 58.0
+script = ExtResource("1")
+recruit_label = NodePath("RecruitLabel")
+recruit_button = NodePath("RecruitButton")
+recruit_sound = NodePath("RecruitSound")
+
+[node name="RecruitLabel" type="Label" parent="." unique_id=2108189181]
+layout_mode = 2
+text = "Recruit"
+
+[node name="RecruitButton" type="Button" parent="." unique_id=444370657]
+layout_mode = 2
+text = "0 FP"
+
+[node name="RecruitSound" type="AudioStreamPlayer" parent="." unique_id=1828611794]

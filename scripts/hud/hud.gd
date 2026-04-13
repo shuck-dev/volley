@@ -2,22 +2,12 @@ extends CanvasLayer
 
 signal shop_button_pressed
 
-# preload workaround for autoload class_name ordering (godotengine/godot#75582)
-@warning_ignore("shadowed_global_identifier")
-const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
-
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
 @export var friendship_point_balance_label: Label
 @export var speed_bar: Control
 @export var auto_label: Label
 @export var shop_button: Button
-@export var recruit_panel: Control
-@export var recruit_label: Label
-@export var recruit_button: Button
-@export var recruit_sound: AudioStreamPlayer
-
-var _pending_partner_key: StringName = &""
 
 
 func _ready() -> void:
@@ -28,12 +18,6 @@ func _ready() -> void:
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
 	shop_button.visible = ProgressionManager.is_shop_unlocked()
 	shop_button.pressed.connect(shop_button_pressed.emit)
-
-	if recruit_panel != null:
-		recruit_panel.visible = false
-		recruit_button.pressed.connect(_on_recruit_pressed)
-		ProgressionManager.partner_recruit_available.connect(_on_partner_recruit_available)
-		ProgressionManager.partner_recruited.connect(_on_partner_recruited)
 
 
 func update_volley_count(count: int) -> void:
@@ -62,25 +46,3 @@ func update_auto_play(is_active: bool, friendship_point_rate: float) -> void:
 
 func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
 	shop_button.visible = is_unlocked
-
-
-func _on_partner_recruit_available(partner: PartnerDefinition) -> void:
-	if recruit_panel == null:
-		return
-	_pending_partner_key = partner.key
-	recruit_label.text = "Recruit %s" % partner.display_name
-	recruit_button.text = "%d FP" % partner.unlock_cost
-	recruit_panel.visible = true
-
-
-func _on_recruit_pressed() -> void:
-	if _pending_partner_key != &"":
-		ProgressionManager.recruit_partner(_pending_partner_key)
-
-
-func _on_partner_recruited(_partner_key: StringName) -> void:
-	if recruit_panel != null:
-		recruit_panel.visible = false
-	if recruit_sound != null and recruit_sound.stream != null:
-		recruit_sound.play()
-	_pending_partner_key = &""
