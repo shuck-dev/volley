@@ -33,11 +33,18 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	if body is MissZone and body.is_miss_zone():
-		missed.emit()
-	elif body.has_method("on_ball_hit"):
+	if body.has_method("on_ball_hit"):
 		body.on_ball_hit()
 		effect_processor.process_hit()
+
+
+func register_miss_zone(zone: MissZone) -> void:
+	zone.body_entered.connect(_on_miss_zone_body_entered)
+
+
+func _on_miss_zone_body_entered(body: Node) -> void:
+	if body == self:
+		missed.emit()
 
 
 func increase_speed() -> void:
