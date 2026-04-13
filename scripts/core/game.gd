@@ -10,11 +10,13 @@ signal ball_speed_updated(
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
 
+const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
+
 @export var ball: Ball
 @export var player_paddle_scene: PackedScene
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
-@export var right_wall: MissZone
+@export var right_wall: StaticBody2D
 @export var partner_spawn: Marker2D
 
 var player_paddle: Paddle
@@ -22,6 +24,7 @@ var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
 var _active_partner_definition: Resource
+var _partner_miss_zone: MissZone
 var _progression: ProgressionData
 var _progression_config: ProgressionConfig
 var _item_manager: Node
@@ -47,6 +50,9 @@ func _ready() -> void:
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.effect_processor.paddles = [player_paddle]
+
+	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
+		ball.register_miss_zone(zone)
 
 	if _progression.active_partner != &"":
 		_activate_partner()
@@ -147,7 +153,9 @@ func _activate_partner() -> void:
 	_item_manager.register_partner(partner_definition)
 
 	if right_wall != null:
-		right_wall.active = true
+		_partner_miss_zone = MissZoneScene.instantiate()
+		right_wall.add_child(_partner_miss_zone)
+		ball.register_miss_zone(_partner_miss_zone)
 
 	partner_changed.emit()
 
@@ -164,8 +172,9 @@ func _deactivate_partner() -> void:
 	partner_paddle = null
 	_active_partner_definition = null
 
-	if right_wall != null:
-		right_wall.active = false
+	if _partner_miss_zone != null:
+		_partner_miss_zone.queue_free()
+		_partner_miss_zone = null
 
 	partner_changed.emit()
 

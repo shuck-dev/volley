@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
-[ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="10_miss"]
+[ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
@@ -75,7 +75,6 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
 position = Vector2(456, -488)
 physics_material_override = ExtResource("1_0wfyh")
-script = ExtResource("10_miss")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
@@ -91,7 +90,6 @@ shape = SubResource("RectangleShape2D_sgp6g")
 [node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
 position = Vector2(-568, -488)
 physics_material_override = ExtResource("1_0wfyh")
-script = ExtResource("10_miss")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
@@ -103,6 +101,10 @@ scale = Vector2(1, 24.649014)
 position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
+
+[node name="MissZone" parent="Bounds/Back Wall" instance=ExtResource("10_miss_zone")]
+position = Vector2(20, 493)
+scale = Vector2(1.28, 1.12)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")

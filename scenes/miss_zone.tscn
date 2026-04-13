@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_miss"]
+size = Vector2(40, 1103)
+
+[node name="MissZone" type="Area2D" groups=["miss_zones"]]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_miss")
