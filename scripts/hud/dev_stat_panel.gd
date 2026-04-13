@@ -87,7 +87,6 @@ func _add_header() -> void:
 	var header := Label.new()
 	header.text = "--- DEBUG: Stats ---"
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_font_size_override("font_size", 12)
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
 	add_child(header)
 
@@ -95,7 +94,6 @@ func _add_header() -> void:
 func _make_stat_label() -> Label:
 	var label := Label.new()
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 11)
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	return label
 

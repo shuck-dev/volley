@@ -23,3 +23,4 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 17 | [Partner AI](17-partner-ai.md) |
 | 18 | [Partner Upgrade Strategy](18-partner-upgrade-strategy.md) |
 | 19 | [Minified Paddle](19-minified-paddle.md) |
+| 20 | [HUD Scaling](20-hud-scaling.md) |

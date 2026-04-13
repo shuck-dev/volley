@@ -1,3 +1,4 @@
+# todo: move UI elements into the secondary UI viewport for independent scaling
 class_name Shop
 extends Control
 

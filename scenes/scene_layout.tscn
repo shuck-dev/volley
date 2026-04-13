@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/scene_layout.gd" id="1_qaugd"]
 [ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/game.tscn" id="2_01afa"]
 
-[node name="SceneLayout" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_viewport", "game_root", "secondary_container")]
+[node name="SceneLayout" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_content_viewport", "game_root", "game_ui_viewport", "secondary_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,8 +11,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qaugd")
-game_viewport = NodePath("HBoxContainer/GameViewportContainer/GameViewport")
-game_root = NodePath("HBoxContainer/GameViewportContainer/GameViewport/Game")
+game_content_viewport = NodePath("HBoxContainer/GameSlot/GameContentContainer/GameContentViewport")
+game_root = NodePath("HBoxContainer/GameSlot/GameContentContainer/GameContentViewport/Game")
+game_ui_viewport = NodePath("HBoxContainer/GameSlot/GameUIContainer/GameUIViewport")
 secondary_container = NodePath("HBoxContainer/SecondaryContainer")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1712174179]
@@ -20,17 +21,40 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="GameViewportContainer" type="SubViewportContainer" parent="HBoxContainer" unique_id=790069220]
+[node name="GameSlot" type="Control" parent="HBoxContainer" unique_id=1093701823]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="GameContentContainer" type="SubViewportContainer" parent="HBoxContainer/GameSlot" unique_id=1941316480]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 stretch = true
 
-[node name="GameViewport" type="SubViewport" parent="HBoxContainer/GameViewportContainer" unique_id=839532013]
+[node name="GameContentViewport" type="SubViewport" parent="HBoxContainer/GameSlot/GameContentContainer" unique_id=2030652017]
 handle_input_locally = false
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Game" parent="HBoxContainer/GameViewportContainer/GameViewport" unique_id=75800363 instance=ExtResource("2_01afa")]
+[node name="Game" parent="HBoxContainer/GameSlot/GameContentContainer/GameContentViewport" unique_id=75800363 instance=ExtResource("2_01afa")]
+
+[node name="GameUIContainer" type="SubViewportContainer" parent="HBoxContainer/GameSlot" unique_id=501572691]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="GameUIViewport" type="SubViewport" parent="HBoxContainer/GameSlot/GameUIContainer" unique_id=804846951]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
 
 [node name="SecondaryContainer" type="Control" parent="HBoxContainer" unique_id=669083198]
 visible = false

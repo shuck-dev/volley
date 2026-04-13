@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://c3e4rkpxtudc0"]
+
+[ext_resource type="Script" uid="uid://cgexu7vuh76r8" path="res://scripts/hud/hud_scale_setting.gd" id="1"]
+
+[node name="HudScaleSetting" type="HBoxContainer" unique_id=1159505156 node_paths=PackedStringArray("scale_label", "scale_slider", "apply_button")]
+script = ExtResource("1")
+scale_label = NodePath("ScaleLabel")
+scale_slider = NodePath("ScaleSlider")
+apply_button = NodePath("ApplyButton")
+
+[node name="ScaleLabel" type="Label" parent="." unique_id=359276927]
+layout_mode = 2
+text = "UI: 100%"
+
+[node name="ScaleSlider" type="HSlider" parent="." unique_id=1967231711]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+focus_mode = 0
+
+[node name="ApplyButton" type="Button" parent="." unique_id=883460573]
+layout_mode = 2
+focus_mode = 0
+text = "Apply"
