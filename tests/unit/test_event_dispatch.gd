@@ -3,6 +3,9 @@ extends GutTest
 # Verifies the event-based causality system: event dispatch, modify_stat_until_miss,
 # and oscillate_stat outcomes.
 
+@warning_ignore("shadowed_global_identifier")
+const HalveStreakOutcome = preload("res://scripts/items/effect/outcomes/halve_streak_outcome.gd")
+
 var _manager: EffectManager
 
 
@@ -246,6 +249,76 @@ func test_oscillate_stat_scales_range_by_level() -> void:
 				]
 			),
 		)
+
+
+# --- game action return path ---
+func test_process_event_returns_empty_array_when_no_game_actions() -> void:
+	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
+	var item := _make_item("test_item", [effect])
+	_manager.register_source(item, 1)
+
+	var actions: Array[StringName] = _manager.process_event(&"on_max_speed_reached")
+
+	assert_eq(actions.size(), 0)
+
+
+func test_process_event_returns_game_action_from_outcome() -> void:
+	var outcome := GameActionOutcome.new()
+	outcome.action_key = &"test_action"
+
+	var trigger := Trigger.new()
+	trigger.type = &"on_miss"
+
+	var effect := Effect.new()
+	effect.trigger = trigger
+	effect.outcomes = [outcome]
+	effect.min_active_level = 1
+
+	var item := _make_item("test_item", [effect])
+	_manager.register_source(item, 1)
+
+	var actions: Array[StringName] = _manager.process_event(&"on_miss")
+
+	assert_true(actions.has(&"test_action"))
+
+
+# --- halve_streak outcome ---
+func test_halve_streak_returns_action_on_miss() -> void:
+	var outcome := HalveStreakOutcome.new()
+
+	var trigger := Trigger.new()
+	trigger.type = &"on_miss"
+
+	var effect := Effect.new()
+	effect.trigger = trigger
+	effect.outcomes = [outcome]
+	effect.min_active_level = 1
+
+	var item := _make_item("halve_source", [effect])
+	_manager.register_source(item, 1)
+
+	var actions: Array[StringName] = _manager.process_event(&"on_miss")
+
+	assert_true(actions.has(&"halve_streak"))
+
+
+func test_halve_streak_not_returned_for_other_events() -> void:
+	var outcome := HalveStreakOutcome.new()
+
+	var trigger := Trigger.new()
+	trigger.type = &"on_miss"
+
+	var effect := Effect.new()
+	effect.trigger = trigger
+	effect.outcomes = [outcome]
+	effect.min_active_level = 1
+
+	var item := _make_item("halve_source", [effect])
+	_manager.register_source(item, 1)
+
+	var actions: Array[StringName] = _manager.process_event(&"on_hit")
+
+	assert_false(actions.has(&"halve_streak"))
 
 
 func test_unregister_stops_oscillation() -> void:

@@ -25,25 +25,35 @@ func is_game_state_active(state: StringName) -> bool:
 	return _effect_state.is_state_active(state)
 
 
-func process_event(event_type: StringName) -> void:
+func process_event(event_type: StringName) -> Array[StringName]:
+	var game_actions: Array[StringName] = []
 	for registered in _event_effects:
 		var effect: Effect = registered.effect
 		if effect.trigger.type == event_type:
+			_collect_game_actions(effect, game_actions)
 			_apply_effect(effect, registered.source_key, registered.level)
 
 	if event_type == &"on_miss":
 		_effect_state.clear_temporary_modifiers()
+
+	return game_actions
 
 
 func process_frame(delta: float) -> void:
 	_effect_state.process_frame(delta)
 
 
-func unregister_source(source: ItemDefinition) -> void:
+func unregister_source(source: Resource) -> void:
+	assert(source.has_method("get_key"), "Effect source must implement get_key()")
 	_clear_source(source.get_key())
 
 
-func register_source(source: ItemDefinition, level: int) -> void:
+func register_source(source: Resource, level: int) -> void:
+	assert(source.has_method("get_key"), "Effect source must implement get_key()")
+	assert(
+		source.has_method("get_effects_for_level"),
+		"Effect source must implement get_effects_for_level()"
+	)
 	var source_key: String = source.get_key()
 	_clear_source(source_key)
 	for effect in source.get_effects_for_level(level):
@@ -56,6 +66,12 @@ func register_source(source: ItemDefinition, level: int) -> void:
 			)
 			var entry := {"effect": effect, "source_key": source_key, "level": level}
 			_event_effects.append(entry)
+
+
+func _collect_game_actions(effect: Effect, actions: Array[StringName]) -> void:
+	for outcome in effect.outcomes:
+		if outcome is GameActionOutcome:
+			actions.append(outcome.action_key)
 
 
 func _has_temporary_outcome_on_miss(effect: Effect) -> bool:

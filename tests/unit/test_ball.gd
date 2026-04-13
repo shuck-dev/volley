@@ -116,6 +116,28 @@ func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 	assert_true(_ball.speed <= _effective_max_speed())
 
 
+# --- set_speed_for_streak ---
+func test_set_speed_for_streak_zero_equals_min_speed() -> void:
+	_ball.set_speed_for_streak(0)
+	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_min"), 0.01)
+
+
+func test_set_speed_for_streak_matches_incremental_hits() -> void:
+	for hit_index in range(5):
+		_ball.increase_speed()
+	var expected_speed: float = _ball.speed
+
+	_ball.reset_speed()
+	_ball.set_speed_for_streak(5)
+
+	assert_almost_eq(_ball.speed, expected_speed, 0.01)
+
+
+func test_set_speed_for_streak_caps_at_max() -> void:
+	_ball.set_speed_for_streak(9999)
+	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
+
+
 # --- speed offset oscillation ---
 func test_oscillation_never_drops_below_min_speed() -> void:
 	var effect := _make_oscillation_effect(2.0)

@@ -112,6 +112,33 @@ func test_fp_accumulator_resets_on_miss() -> void:
 	assert_eq(_last_friendship_point_balance, 1)
 
 
+# --- friendship_points_per_hit stat ---
+func test_fp_per_hit_uses_effect_system_stat() -> void:
+	var item := ItemFactory.create("fp_doubler", &"friendship_points_per_hit", &"percentage", 1.0)
+	_item_manager.items.assign([item])
+	_item_manager.add_friendship_points(item.base_cost)
+	_item_manager.purchase(item.key)
+
+	_hit()
+	_hit()
+
+	assert_eq(_last_friendship_point_balance, 4)
+
+
+func test_fp_per_hit_with_quarter_bonus() -> void:
+	var item := ItemFactory.create("fp_quarter", &"friendship_points_per_hit", &"percentage", 0.25)
+	_item_manager.items.assign([item])
+	_item_manager.add_friendship_points(item.base_cost)
+	_item_manager.purchase(item.key)
+
+	_hit()
+	_hit()
+	_hit()
+	_hit()
+
+	assert_eq(_last_friendship_point_balance, 5)
+
+
 # --- auto_play_changed signal ---
 func test_auto_play_changed_emits_true_when_autoplay_enabled() -> void:
 	watch_signals(_game)

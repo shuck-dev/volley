@@ -41,15 +41,27 @@ func _register_existing_items() -> void:
 func reload_from_progression() -> void:
 	for item in items:
 		_effect_manager.unregister_source(item)
+	for partner in ProgressionManager.partners:
+		_effect_manager.unregister_source(partner)
 	_register_existing_items()
 	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
 	for item in items:
 		item_level_changed.emit(item.key)
 
 
+## Registers a partner's effects with the effect system
+func register_partner(partner: Resource) -> void:
+	_effect_manager.register_source(partner, 1)
+
+
+## Unregisters a partner's effects from the effect system
+func unregister_partner(partner: Resource) -> void:
+	_effect_manager.unregister_source(partner)
+
+
 ## Dispatches a game event to the effect system for causality processing
-func process_event(event_type: StringName) -> void:
-	_effect_manager.process_event(event_type)
+func process_event(event_type: StringName) -> Array[StringName]:
+	return _effect_manager.process_event(event_type)
 
 
 ## Advances continuous effects like oscillation

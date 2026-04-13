@@ -6,19 +6,19 @@
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
-[ext_resource type="PackedScene" uid="uid://c8vg5tk3iklpe" path="res://scenes/partner_paddle.tscn" id="9_ptnr"]
 [ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="10_miss"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
 size = Vector2(31.010721, 880.5864)
 
-[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_paddle", "autoplay_controller", "partner_paddle", "right_wall")]
+[node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
-player_paddle = NodePath("PlayerPaddle")
+player_paddle_scene = ExtResource("9_0tnpc")
+player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
-partner_paddle = NodePath("PartnerPaddle")
 right_wall = NodePath("Bounds/Right Wall")
+partner_spawn = NodePath("PartnerSpawn")
 
 [node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
 scroll_scale = Vector2(0, 0)
@@ -76,6 +76,7 @@ shape = SubResource("RectangleShape2D_sgp6g")
 position = Vector2(456, -488)
 physics_material_override = ExtResource("1_0wfyh")
 script = ExtResource("10_miss")
+active = false
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
@@ -104,13 +105,12 @@ position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
 
-[node name="AutoplayController" type="Node" parent="." unique_id=280970194 node_paths=PackedStringArray("paddle")]
+[node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
-paddle = NodePath("../PlayerPaddle")
 config = ExtResource("8_85g3d")
 
-[node name="PartnerPaddle" parent="." unique_id=493074535 instance=ExtResource("9_ptnr")]
+[node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
 position = Vector2(304, 8)
 
-[node name="PlayerPaddle" parent="." unique_id=1437655624 instance=ExtResource("9_0tnpc")]
+[node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-416, 8)

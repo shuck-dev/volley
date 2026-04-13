@@ -1,5 +1,8 @@
 extends GutTest
 
+@warning_ignore("shadowed_global_identifier")
+const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
+
 var _manager: EffectManager
 
 
@@ -113,6 +116,33 @@ func test_unregister_source_keeps_other_items() -> void:
 	_manager.unregister_source(item_a)
 
 	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 30.0)
+
+
+func _make_partner(partner_key: StringName, effects: Array[Effect]) -> PartnerDefinition:
+	var partner := PartnerDefinition.new()
+	partner.key = partner_key
+	partner.effects = effects
+	return partner
+
+
+# --- partner as effect source ---
+func test_register_source_accepts_partner_definition() -> void:
+	var effect := _make_always_modify_stat_effect(&"paddle_speed", &"add", 50.0)
+	var partner := _make_partner(&"test_partner", [effect])
+
+	_manager.register_source(partner, 1)
+
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 50.0)
+
+
+func test_unregister_source_accepts_partner_definition() -> void:
+	var effect := _make_always_modify_stat_effect(&"paddle_speed", &"add", 50.0)
+	var partner := _make_partner(&"test_partner", [effect])
+
+	_manager.register_source(partner, 1)
+	_manager.unregister_source(partner)
+
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
 
 
 # --- non-always triggers ---

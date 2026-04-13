@@ -7,6 +7,7 @@ signal shop_button_pressed
 @export var friendship_point_balance_label: Label
 @export var speed_bar: Control
 @export var auto_label: Label
+@export var fp_bonus_label: Label
 @export var shop_button: Button
 
 
@@ -14,6 +15,7 @@ func _ready() -> void:
 	ItemManager.friendship_point_balance_changed.connect(update_friendship_point_balance)
 	update_friendship_point_balance(ItemManager.get_friendship_point_balance())
 	auto_label.visible = false
+	_update_fp_bonus()
 
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
 	shop_button.visible = ProgressionManager.is_shop_unlocked()
@@ -42,6 +44,21 @@ func update_auto_play(is_active: bool, friendship_point_rate: float) -> void:
 	auto_label.visible = is_active
 	if is_active:
 		auto_label.text = "AUTO (%.0f%% Friendship Points)" % (friendship_point_rate * 100)
+
+
+func update_fp_bonus() -> void:
+	_update_fp_bonus()
+
+
+func _update_fp_bonus() -> void:
+	if fp_bonus_label == null:
+		return
+	var percentage_offset: float = ItemManager.get_percentage_offset(&"friendship_points_per_hit")
+	if percentage_offset > 0.0:
+		fp_bonus_label.text = "+%.0f%% FP" % (percentage_offset * 100)
+		fp_bonus_label.visible = true
+	else:
+		fp_bonus_label.visible = false
 
 
 func _on_shop_unlocked_changed(is_unlocked: bool) -> void:

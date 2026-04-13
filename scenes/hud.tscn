@@ -7,13 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="5_uo2fv"]
 [ext_resource type="PackedScene" uid="uid://c3e4rkpxtudc0" path="res://scenes/hud_scale_setting.tscn" id="6_047uy"]
 
-[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "shop_button")]
+[node name="HUD" type="CanvasLayer" unique_id=794024698 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "fp_bonus_label", "shop_button")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
 friendship_point_balance_label = NodePath("FriendshipTotalLabel")
 speed_bar = NodePath("SpeedBar")
 auto_label = NodePath("AutoLabel")
+fp_bonus_label = NodePath("FPBonusLabel")
 shop_button = NodePath("ShopButton")
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=162178436]
@@ -130,3 +131,15 @@ anchor_right = 1.0
 offset_left = -227.0
 offset_bottom = 31.0
 grow_horizontal = 0
+
+[node name="FPBonusLabel" type="Label" parent="." unique_id=1612202386]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 115.0
+offset_right = 195.0
+offset_bottom = 28.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.91, 0.36, 0.46, 1)
+text = "+25% FP"
