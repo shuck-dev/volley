@@ -41,6 +41,8 @@ func _register_existing_items() -> void:
 func reload_from_progression() -> void:
 	for item in items:
 		_effect_manager.unregister_source(item)
+	for partner in ProgressionManager.partners:
+		_effect_manager.unregister_source(partner)
 	_register_existing_items()
 	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
 	for item in items:
