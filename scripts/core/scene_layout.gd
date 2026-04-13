@@ -13,8 +13,9 @@ const DEFAULT_SECONDARY_WIDTH: int = 400
 @export var game_ui_viewport: SubViewport
 @export var secondary_container: Control
 
-var _secondary_viewport_container: SubViewportContainer
+var _secondary_slot: Control
 var _secondary_scene: Node
+var _secondary_ui_container: SubViewportContainer
 var _secondary_ui_viewport: SubViewport
 var _ui_scale_config := UIScaleConfig.new()
 var _hud: CanvasLayer
@@ -52,7 +53,6 @@ func open_secondary(scene: PackedScene) -> void:
 	# Content viewport
 	var content_container := SubViewportContainer.new()
 	content_container.set_anchors_preset(Control.PRESET_FULL_RECT)
-	content_container.stretch = true
 
 	var content_viewport := SubViewport.new()
 	content_viewport.name = "SecondaryContentViewport"
@@ -60,10 +60,11 @@ func open_secondary(scene: PackedScene) -> void:
 	content_viewport.physics_object_picking = true
 	content_container.add_child(content_viewport)
 
-	# UI viewport
+	# UI viewport (hidden until UI is added)
 	var ui_container := SubViewportContainer.new()
 	ui_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	ui_container.mouse_filter = Control.MOUSE_FILTER_PASS
+	ui_container.visible = false
 
 	var ui_viewport := SubViewport.new()
 	ui_viewport.name = "SecondaryUIViewport"
@@ -77,7 +78,9 @@ func open_secondary(scene: PackedScene) -> void:
 	slot.add_child(content_container)
 	slot.add_child(ui_container)
 	secondary_container.add_child(slot)
-	_secondary_viewport_container = content_container
+	_secondary_slot = slot
+	_secondary_ui_container = ui_container
+	_secondary_ui_viewport = ui_viewport
 
 	_secondary_scene = scene.instantiate()
 
@@ -86,14 +89,14 @@ func open_secondary(scene: PackedScene) -> void:
 	secondary_container.custom_minimum_size.x = panel_width
 	secondary_container.visible = true
 
+	# Set viewport size explicitly using the known window height.
+	# stretch=true will sync to the correct size once layout settles.
 	var window_height: int = int(get_viewport().get_visible_rect().size.y)
 	content_viewport.size = Vector2i(panel_width, window_height)
 	ui_viewport.size = Vector2i(panel_width, window_height)
 
 	content_viewport.add_child(_secondary_scene)
-	_secondary_ui_viewport = ui_viewport
 
-	_apply_viewport_scale(ui_viewport, &"secondary")
 	ui_viewport.size_changed.connect(
 		func() -> void: _apply_viewport_scale(ui_viewport, &"secondary")
 	)
@@ -103,18 +106,18 @@ func open_secondary(scene: PackedScene) -> void:
 
 	# Guard against a concurrent close_secondary() or open_secondary() call
 	# that replaced or freed this container during the await.
-	if is_instance_valid(content_container) and content_container == _secondary_viewport_container:
+	if is_instance_valid(slot) and slot == _secondary_slot:
 		content_container.stretch = true
 		ui_container.stretch = true
+		_apply_viewport_scale(ui_viewport, &"secondary")
 
 
 func close_secondary() -> void:
-	if _secondary_viewport_container != null and is_instance_valid(_secondary_viewport_container):
-		var slot := _secondary_viewport_container.get_parent()
-		if slot != null:
-			slot.queue_free()
-	_secondary_viewport_container = null
+	if _secondary_slot != null and is_instance_valid(_secondary_slot):
+		_secondary_slot.queue_free()
+	_secondary_slot = null
 	_secondary_scene = null
+	_secondary_ui_container = null
 	_secondary_ui_viewport = null
 	if secondary_container != null:
 		secondary_container.visible = false
