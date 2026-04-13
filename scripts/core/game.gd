@@ -21,6 +21,7 @@ var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
+var _active_partner_definition: Resource
 var _progression: ProgressionData
 var _progression_config: ProgressionConfig
 var _item_manager: Node
@@ -87,7 +88,7 @@ func _on_paddle_hit() -> void:
 func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
 	ball_at_max_speed_changed.emit(is_at_max)
 	if is_at_max:
-		_item_manager.process_event(&"on_max_speed_reached")
+		var actions: Array[StringName] = _item_manager.process_event(&"on_max_speed_reached")
 
 
 func _on_ball_missed() -> void:
@@ -126,10 +127,14 @@ func _on_partner_recruited(_partner_key: StringName) -> void:
 func _activate_partner() -> void:
 	if partner_spawn == null:
 		return
-	var partner_definition = ProgressionManager.get_partner(_progression.active_partner)
+	if partner_paddle != null:
+		_deactivate_partner()
+
+	var partner_definition: Resource = ProgressionManager.get_partner(_progression.active_partner)
 	if partner_definition == null or partner_definition.paddle_scene == null:
 		return
 
+	_active_partner_definition = partner_definition
 	partner_paddle = partner_definition.paddle_scene.instantiate()
 	partner_paddle.position = partner_spawn.position
 	add_child(partner_paddle)
@@ -149,14 +154,14 @@ func _activate_partner() -> void:
 func _deactivate_partner() -> void:
 	if partner_paddle == null:
 		return
-	var partner_definition = ProgressionManager.get_partner(_progression.active_partner)
-	if partner_definition != null:
-		_item_manager.unregister_partner(partner_definition)
+	if _active_partner_definition != null:
+		_item_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
 	ball.effect_processor.paddles.erase(partner_paddle)
 	partner_paddle.queue_free()
 	partner_paddle = null
+	_active_partner_definition = null
 
 	if right_wall != null:
 		right_wall.active = false
@@ -170,7 +175,7 @@ func _deactivate_partner() -> void:
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
 	var base_points: float = _item_manager.get_stat(&"friendship_points_per_hit")
-	var points_to_add: float = base_points * rate if _is_autoplay_active else base_points
+	var points_to_add: float = (base_points * rate) if _is_autoplay_active else base_points
 	_friendship_point_accumulator += points_to_add
 	var whole_points: int = int(_friendship_point_accumulator)
 	if whole_points > 0:
