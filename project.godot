@@ -42,6 +42,10 @@ enabled=PackedStringArray("res://addons/config_hot_reload/plugin.cfg", "res://ad
 
 hot_reloadable_config="Auto-reloads Resource exports from disk in debug builds"
 
+[gui]
+
+theme/custom="res://resources/default_theme.tres"
+
 [input]
 
 paddle_up={

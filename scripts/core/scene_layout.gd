@@ -30,6 +30,7 @@ func _ready() -> void:
 	# Defer scale application until after stretch has resized the viewport.
 	await get_tree().process_frame
 	_apply_viewport_scale(game_ui_viewport, &"game")
+	game_ui_viewport.size_changed.connect(_on_game_ui_viewport_resized)
 
 
 func _setup_hud() -> void:
@@ -93,6 +94,9 @@ func open_secondary(scene: PackedScene) -> void:
 	_secondary_ui_viewport = ui_viewport
 
 	_apply_viewport_scale(ui_viewport, &"secondary")
+	ui_viewport.size_changed.connect(
+		func() -> void: _apply_viewport_scale(ui_viewport, &"secondary")
+	)
 
 	# Enable stretch after layout settles so the SVC forwards input correctly.
 	await get_tree().process_frame
@@ -141,6 +145,10 @@ func _apply_viewport_scale(viewport: SubViewport, viewport_key: StringName) -> v
 	)
 	viewport.size_2d_override = scaled_size
 	viewport.size_2d_override_stretch = true
+
+
+func _on_game_ui_viewport_resized() -> void:
+	_apply_viewport_scale(game_ui_viewport, &"game")
 
 
 func _on_shop_button_pressed() -> void:
