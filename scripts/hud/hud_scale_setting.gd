@@ -8,7 +8,11 @@ var _ui_scale_config: UIScaleConfig
 
 
 func _ready() -> void:
-	_ui_scale_config = UIScaleConfig.new()
+	var scene_layout := _find_scene_layout()
+	if scene_layout != null:
+		_ui_scale_config = scene_layout.get_ui_scale_config()
+	else:
+		_ui_scale_config = UIScaleConfig.new()
 
 	scale_slider.min_value = UIScaleConfig.MIN_SCALE
 	scale_slider.max_value = UIScaleConfig.MAX_SCALE
@@ -45,15 +49,7 @@ func _update_label(value: float) -> void:
 
 
 func _find_scene_layout() -> SceneLayout:
-	var node := get_tree().root
-	return _find_node_of_type(node)
-
-
-func _find_node_of_type(node: Node) -> SceneLayout:
-	if node is SceneLayout:
-		return node
-	for child in node.get_children():
-		var result := _find_node_of_type(child)
-		if result != null:
-			return result
+	for child in get_tree().root.get_children():
+		if child is SceneLayout:
+			return child
 	return null
