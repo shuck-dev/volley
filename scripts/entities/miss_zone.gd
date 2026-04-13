@@ -5,7 +5,7 @@ extends StaticBody2D
 ## The ball detects this via has_method("on_ball_missed").
 ## Set active to false to make the wall bounce instead of triggering a miss.
 
-var active := true
+@export var active := true
 
 
 func is_miss_zone() -> bool:
