@@ -40,6 +40,11 @@ func _setup_hud() -> void:
 
 	_hud.shop_button_pressed.connect(_on_shop_button_pressed)
 
+	var scale_setting := _hud.get_node_or_null("HudScaleSetting")
+	if scale_setting != null:
+		scale_setting.set_ui_scale_config(_ui_scale_config)
+		scale_setting.scale_applied.connect(func(_value: float) -> void: apply_global_scale())
+
 	if game_root != null:
 		game_root.volley_count_changed.connect(_hud.update_volley_count)
 		game_root.personal_volley_best_changed.connect(_hud.update_personal_volley_best)
@@ -60,7 +65,9 @@ func open_secondary(scene: PackedScene) -> void:
 	content_viewport.physics_object_picking = true
 	content_container.add_child(content_viewport)
 
-	# UI viewport (hidden until UI is added)
+	# todo: move secondary scene UI elements (shop buttons, prices, drag targets)
+	# into this viewport so they scale independently from content.
+	# See designs/01-prototype/20-hud-scaling.md
 	var ui_container := SubViewportContainer.new()
 	ui_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	ui_container.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -98,7 +105,9 @@ func open_secondary(scene: PackedScene) -> void:
 	content_viewport.add_child(_secondary_scene)
 
 	ui_viewport.size_changed.connect(
-		func() -> void: _apply_viewport_scale(ui_viewport, &"secondary")
+		func() -> void:
+			if is_instance_valid(ui_viewport):
+				_apply_viewport_scale(ui_viewport, &"secondary")
 	)
 
 	# Enable stretch after layout settles so the SVC forwards input correctly.

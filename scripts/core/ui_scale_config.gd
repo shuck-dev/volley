@@ -19,7 +19,7 @@ func get_global_scale() -> float:
 
 
 func set_global_scale(value: float) -> void:
-	_config.set_value("ui_scale", "global", value)
+	_config.set_value("ui_scale", "global", clampf(value, MIN_SCALE, MAX_SCALE))
 	_config.save(SAVE_PATH)
 
 
@@ -30,7 +30,7 @@ func get_viewport_scale(viewport_key: StringName) -> float:
 
 
 func set_viewport_override(viewport_key: StringName, value: float) -> void:
-	_config.set_value("ui_scale", viewport_key, value)
+	_config.set_value("ui_scale", viewport_key, clampf(value, MIN_SCALE, MAX_SCALE))
 	_config.save(SAVE_PATH)
 
 

@@ -1,5 +1,7 @@
 extends HBoxContainer
 
+signal scale_applied(value: float)
+
 @export var scale_label: Label
 @export var scale_slider: HSlider
 @export var apply_button: Button
@@ -8,10 +10,7 @@ var _ui_scale_config: UIScaleConfig
 
 
 func _ready() -> void:
-	var scene_layout := _find_scene_layout()
-	if scene_layout != null:
-		_ui_scale_config = scene_layout.get_ui_scale_config()
-	else:
+	if _ui_scale_config == null:
 		_ui_scale_config = UIScaleConfig.new()
 
 	scale_slider.min_value = UIScaleConfig.MIN_SCALE
@@ -27,6 +26,10 @@ func _ready() -> void:
 	apply_button.pressed.connect(_on_apply_pressed)
 
 
+func set_ui_scale_config(config: UIScaleConfig) -> void:
+	_ui_scale_config = config
+
+
 func _on_scale_changed(value: float) -> void:
 	_update_label(value)
 	var current_scale := _ui_scale_config.get_global_scale()
@@ -36,20 +39,9 @@ func _on_scale_changed(value: float) -> void:
 func _on_apply_pressed() -> void:
 	var value := scale_slider.value
 	_ui_scale_config.set_global_scale(value)
-
-	var scene_layout := _find_scene_layout()
-	if scene_layout != null:
-		scene_layout.apply_global_scale()
-
+	scale_applied.emit(value)
 	apply_button.disabled = true
 
 
 func _update_label(value: float) -> void:
 	scale_label.text = "UI: %d%%" % roundi(value * 100)
-
-
-func _find_scene_layout() -> SceneLayout:
-	for child in get_tree().root.get_children():
-		if child is SceneLayout:
-			return child
-	return null

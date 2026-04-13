@@ -49,7 +49,6 @@ func _ready() -> void:
 			for line in effect_lines:
 				var label := Label.new()
 				label.text = line
-
 				label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
 				details.add_child(label)
 
@@ -159,7 +158,6 @@ func _add_header() -> void:
 	var header := Label.new()
 	header.text = "--- DEBUG: Items ---"
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
 	add_child(header)
 
@@ -176,13 +174,11 @@ func _build_placeholder() -> void:
 			continue
 		var label := Label.new()
 		label.text = "%s Lv0 [%d FP]" % [item.display_name, item.base_cost]
-
 		label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 		add_child(label)
 
 	var footer := Label.new()
 	footer.text = "Add/Remove FP"
-
 	footer.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
 	add_child(footer)
 
