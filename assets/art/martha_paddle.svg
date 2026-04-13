@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 260" width="100" height="260">
+  <!-- Paddle body, centered horizontally -->
+  <rect x="30" y="30" width="40" height="200" rx="4" fill="#ffffff"/>
+  <!-- Bow, sitting on top-right of paddle head, rotated 25 degrees -->
+  <g transform="translate(62, 38) rotate(25)">
+    <!-- Left loop -->
+    <ellipse cx="-18" cy="0" rx="18" ry="12" fill="#e85d75" stroke="#c4425a" stroke-width="1.2"/>
+    <!-- Right loop -->
+    <ellipse cx="18" cy="0" rx="18" ry="12" fill="#e85d75" stroke="#c4425a" stroke-width="1.2"/>
+    <!-- Center knot -->
+    <ellipse cx="0" cy="0" rx="7" ry="8.5" fill="#c4425a" stroke="#a3304a" stroke-width="1.2"/>
+    <!-- Left tail -->
+    <path d="M-6 7 Q-14 20 -22 20 Q-16 15 -10 10" fill="#d14e66" stroke="#a3304a" stroke-width="0.8"/>
+    <!-- Right tail -->
+    <path d="M6 7 Q14 20 22 20 Q16 15 10 10" fill="#d14e66" stroke="#a3304a" stroke-width="0.8"/>
+  </g>
+</svg>

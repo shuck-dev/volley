@@ -52,6 +52,11 @@ func reset_speed() -> void:
 	_apply_speed()
 
 
+func set_speed_for_streak(count: int) -> void:
+	speed = min(min_speed + count * speed_increment, max_speed)
+	_apply_speed()
+
+
 func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
 	linear_velocity = linear_velocity.normalized() * speed

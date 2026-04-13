@@ -8,12 +8,17 @@ signal ball_speed_updated(
 	current_speed: float, min_speed: float, max_speed: float, base_max_speed: float
 )
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
+signal partner_changed
 
 @export var ball: Ball
-@export var player_paddle: Paddle
+@export var player_paddle_scene: PackedScene
+@export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
-@export var partner_paddle: PartnerPaddle
 @export var right_wall: MissZone
+@export var partner_spawn: Marker2D
+
+var player_paddle: Paddle
+var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
 var _progression: ProgressionData
@@ -32,19 +37,18 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
+	if player_paddle == null:
+		player_paddle = player_paddle_scene.instantiate()
+		player_paddle.position = player_spawn.position
+		add_child(player_paddle)
+
 	autoplay_controller.ball = ball
+	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.effect_processor.paddles = [player_paddle]
 
-	if partner_paddle != null:
-		partner_paddle.paddle_hit.connect(_on_paddle_hit)
-		ball.effect_processor.paddles.append(partner_paddle)
-		partner_paddle.set_ball(ball)
-
 	if _progression.active_partner != &"":
 		_activate_partner()
-	else:
-		_deactivate_partner()
 
 	ProgressionManager.partner_recruited.connect(_on_partner_recruited)
 
@@ -90,11 +94,21 @@ func _on_ball_missed() -> void:
 	# process_event before reset_speed: temporary modifiers clear first,
 	# then reset uses the post-clear min_speed. Reversing this order would
 	# reset to a stale min before modifiers are removed.
-	_item_manager.process_event(&"on_miss")
-	_volley_count = 0
+	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
+
+	if actions.has(&"halve_streak"):
+		_volley_count = _volley_count / 2
+	else:
+		_volley_count = 0
+
 	_friendship_point_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
-	ball.reset_speed()
+
+	if actions.has(&"halve_streak") and _volley_count > 0:
+		ball.set_speed_for_streak(_volley_count)
+	else:
+		ball.reset_speed()
+
 	player_paddle.reset_streak()
 	if partner_paddle != null:
 		partner_paddle.reset_streak()
@@ -110,21 +124,44 @@ func _on_partner_recruited(_partner_key: StringName) -> void:
 
 
 func _activate_partner() -> void:
-	if partner_paddle == null:
+	if partner_spawn == null:
 		return
-	partner_paddle.visible = true
-	partner_paddle.process_mode = Node.PROCESS_MODE_INHERIT
+	var partner_definition = ProgressionManager.get_partner(_progression.active_partner)
+	if partner_definition == null or partner_definition.paddle_scene == null:
+		return
+
+	partner_paddle = partner_definition.paddle_scene.instantiate()
+	partner_paddle.position = partner_spawn.position
+	add_child(partner_paddle)
+
+	partner_paddle.paddle_hit.connect(_on_paddle_hit)
+	ball.effect_processor.paddles.append(partner_paddle)
+	partner_paddle.set_ball(ball)
+
+	_item_manager.register_partner(partner_definition)
+
 	if right_wall != null:
 		right_wall.active = true
+
+	partner_changed.emit()
 
 
 func _deactivate_partner() -> void:
 	if partner_paddle == null:
 		return
-	partner_paddle.visible = false
-	partner_paddle.process_mode = Node.PROCESS_MODE_DISABLED
+	var partner_definition = ProgressionManager.get_partner(_progression.active_partner)
+	if partner_definition != null:
+		_item_manager.unregister_partner(partner_definition)
+
+	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
+	ball.effect_processor.paddles.erase(partner_paddle)
+	partner_paddle.queue_free()
+	partner_paddle = null
+
 	if right_wall != null:
 		right_wall.active = false
+
+	partner_changed.emit()
 
 
 ## Fractional accumulation;
@@ -132,7 +169,8 @@ func _deactivate_partner() -> void:
 ## a missed rally never pays out
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
-	var points_to_add: float = rate if _is_autoplay_active else 1.0
+	var base_points: float = _item_manager.get_stat(&"friendship_points_per_hit")
+	var points_to_add: float = base_points * rate if _is_autoplay_active else base_points
 	_friendship_point_accumulator += points_to_add
 	var whole_points: int = int(_friendship_point_accumulator)
 	if whole_points > 0:

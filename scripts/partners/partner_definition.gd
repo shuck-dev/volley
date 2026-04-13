@@ -9,4 +9,13 @@ const Effect = preload("res://scripts/items/effect/effect.gd")
 @export var display_name: String
 @export var unlock_threshold: int
 @export var unlock_cost: int
+@export var paddle_scene: PackedScene
 @export var effects: Array[Effect]
+
+
+func get_key() -> String:
+	return key
+
+
+func get_effects_for_level(_level: int) -> Array[Effect]:
+	return effects

@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://8akg3yefpm2r"]
+
+[ext_resource type="Script" uid="uid://bqd7j26158kap" path="res://scripts/entities/partner_paddle.gd" id="1_script"]
+[ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
+[ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_tracker"]
+[ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
+[ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
+[ext_resource type="Texture2D" uid="uid://c833m4yxk2atr" path="res://assets/art/martha_bow.svg" id="6_bow"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_martha"]
+size = Vector2(40, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
+size = Vector2(40, 100)
+
+[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker")]
+script = ExtResource("1_script")
+controller = NodePath("PartnerAIController")
+hit_sound = NodePath("HitSound")
+collision = NodePath("Collision")
+sprite = NodePath("Sprite")
+tracker = NodePath("HitTracker")
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=2081878131]
+texture = SubResource("PlaceholderTexture2D_martha")
+
+[node name="Bow" type="Sprite2D" parent="." unique_id=708370465]
+position = Vector2(14, -40)
+rotation = 0.436
+texture = ExtResource("6_bow")
+
+[node name="Collision" type="CollisionShape2D" parent="." unique_id=746316974]
+shape = SubResource("RectangleShape2D_martha")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=658437194]
+stream = ExtResource("2_sfxr")
+
+[node name="HitTracker" type="Node" parent="." unique_id=494973318]
+script = ExtResource("3_tracker")
+
+[node name="PartnerAIController" type="Node" parent="." unique_id=1117076276 node_paths=PackedStringArray("paddle")]
+script = ExtResource("4_ai")
+paddle = NodePath("..")
+config = ExtResource("5_config")

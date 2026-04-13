@@ -1,7 +1,6 @@
-[gd_resource type="Theme" format=3]
+[gd_resource type="Theme" format=3 uid="uid://bdtrqmxb4jgvu"]
 
 [resource]
 default_font_size = 20
-
-VBoxContainer/constants/separation = 4
 HBoxContainer/constants/separation = 4
+VBoxContainer/constants/separation = 4

@@ -5,10 +5,10 @@
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_31swd"]
-size = Vector2(40, 200)
+size = Vector2(40, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
-size = Vector2(40, 200)
+size = Vector2(40, 100)
 
 [node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker")]
 script = ExtResource("1_mo4dg")

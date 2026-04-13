@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40" width="64" height="40">
+  <!-- Left loop -->
+  <ellipse cx="12" cy="16" rx="12" ry="10" fill="#e85d75" stroke="#c4425a" stroke-width="1.5"/>
+  <!-- Right loop -->
+  <ellipse cx="52" cy="16" rx="12" ry="10" fill="#e85d75" stroke="#c4425a" stroke-width="1.5"/>
+  <!-- Center knot -->
+  <ellipse cx="32" cy="16" rx="7" ry="8" fill="#c4425a" stroke="#a3304a" stroke-width="1.5"/>
+  <!-- Left tail -->
+  <path d="M25 21 Q18 34 8 36 Q13 30 19 24" fill="#d14e66" stroke="#a3304a" stroke-width="1"/>
+  <!-- Right tail -->
+  <path d="M39 21 Q46 34 56 36 Q51 30 45 24" fill="#d14e66" stroke="#a3304a" stroke-width="1"/>
+</svg>

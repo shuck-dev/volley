@@ -50,6 +50,7 @@ func _setup_hud() -> void:
 		game_root.personal_volley_best_changed.connect(_hud.update_personal_volley_best)
 		game_root.ball_speed_updated.connect(_hud.update_speed)
 		game_root.auto_play_changed.connect(_hud.update_auto_play)
+		game_root.partner_changed.connect(_hud.update_fp_bonus)
 
 
 func open_secondary(scene: PackedScene) -> void:
