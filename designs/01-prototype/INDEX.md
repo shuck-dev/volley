@@ -12,13 +12,17 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 05 | [Upgrade Shop Mechanics](05-upgrade-shop-mechanics.md) |
 | 06 | [Upgrade Shop Items](06-upgrade-shop-items.md) |
 | 07 | [Effect System](07-effect-system.md) |
-| 08 | [Items, the Court, and the Kit](08-kit-and-locker.md) |
-| 08a | [Items on the Court: Technical Addendum](08a-kit-and-locker-tech.md) |
-| 08c | [World as One Place](08c-world-as-places.md) |
-| 08d | [The Bot](08d-bot.md) |
-| 08e | [The Shop as a Place](08e-shop-as-place.md) |
-| 08f | [The Tinkerer at Work](08f-tinkerer-at-work.md) |
-| 08g | [Item Roles](08g-item-roles.md) |
+| 08 | [World as One Place](08-world.md) |
+| 08 | [Items, the Court, and the Kit](08-items.md) |
+| 08 | [ItemManager: Data Model and Runtime](08-item-manager.md) |
+| 08 | [Item Roles](08-roles.md) |
+| 08 | [Fixtures](08-fixtures.md) |
+| 08 | [The Kit Room and Passive FP](08-kit.md) |
+| 08 | [Balls on the Court](08-balls.md) |
+| 08 | [Shipments](08-shipments.md) |
+| 08 | [The Shop as a Place](08-shop.md) |
+| 08 | [The Tinkerer at Work](08-tinkerer.md) |
+| 08 | [The Bot](08-bot.md) |
 | 09 | [Item UI](09-item-ui.md) |
 | 10 | [Idle Play](10-idle-play.md) |
 | 11 | [First Partner Unlock](11-first-partner-unlock.md) |

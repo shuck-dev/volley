@@ -1,8 +1,8 @@
-# Item Roles: Technical Doc
+# Item Roles
 
-How items find their physical place on the court. Defines the role system, the authoring contract between `ItemDefinition` and `court.tscn`, the capacity rules per role, and the resolution from "this item moves onto the court" to "this prop sits at this world position."
+How items find their physical place on the court. Defines role kinds, the authoring contract between `ItemDefinition` and `court.tscn`, capacity rules, and the resolution from "this item moves onto the court" to "this prop sits at this world position."
 
-**Dependencies:** Items on the Court (`08`, `08a`), World as One Place (`08c`).
+**Dependencies:** Items (`08-items.md`), World (`08-world.md`), ItemManager (`08-item-manager.md`), Fixtures (`08-fixtures.md`).
 
 ---
 
@@ -19,22 +19,40 @@ Roles are not themselves items. They do not appear in `item_levels`, they have n
 
 ---
 
+## Role catalogue
+
+The prototype authors these roles:
+
+| Role | Holds | Capacity kind | Fixture? |
+|---|---|---|---|
+| `paddle_handle` | Grip wraps (Grip Tape, Double Knot) | exclusive | Visible grip prop on the paddle |
+| `paddle_head` | Head-affixed items | exclusive | Visible prop on the paddle head |
+| `paddle_body` | Hanging weights, charms, attached objects | additive_small (cap 3) | Visible prop(s) on the paddle body |
+| `paddle_intrinsic` | Paddle upgrades with no prop (speed, size, reach) | additive | None — invisible stats |
+| `ball` | Ball items (Training Ball, The Stray) | additive | Each item spawns a ball (see `08-balls.md`) |
+| `ball_intrinsic` | Ball upgrades with no prop (start speed, bounce) | additive | None — invisible stats |
+| `court_surface` | Markings, lines, floor treatments | additive | Surface decal at its authored marker |
+| `court_side` | Standing props (bot dock, jukebox, Spare) | additive | Authored-position prop |
+
+Physical slots show a visible prop on the court when their item is active. Intrinsic slots register effects without spawning a prop; the paddle simply is faster, larger, or more precise.
+
+---
+
 ## Role kinds
 
-Three capacity rules cover the prototype needs. Each is a registry entry:
+Three capacity rules cover the prototype needs.
 
-| Kind | Behaviour | Example roles |
-|---|---|---|
-| `exclusive` | Holds one item at a time. Moving a new item in evicts the current occupant back to the kit. | `paddle_handle`, `paddle_head` |
-| `additive` | Accepts any number of items. Each occupant registers its effects and (if it has a fixture) spawns its prop. | `ball`, `court_surface`, `court_side`, `paddle_intrinsic`, `ball_intrinsic` |
-| `additive_small` | Accepts up to a per-role configured maximum. Entry beyond that evicts the oldest occupant back to the kit. | `paddle_body` (cap of 3, say) |
+| Kind | Behaviour |
+|---|---|
+| `exclusive` | Holds one item at a time. Moving a new item in evicts the current occupant back to the kit (swap). |
+| `additive` | Accepts any number of items. Each occupant registers its effects and (if it has a fixture) spawns its prop. |
+| `additive_small` | Accepts up to a per-role configured maximum. Entry beyond that evicts the oldest occupant back to the kit. |
 
 Adding a new role kind means adding an entry to the registry. No data-model change.
 
 ### Registry on `ItemManager`
 
 ```gdscript
-# Illustrative
 const _ROLE_REGISTRY: Dictionary[StringName, Dictionary] = {
     &"paddle_handle":    {"kind": &"exclusive"},
     &"paddle_head":      {"kind": &"exclusive"},
@@ -55,7 +73,7 @@ Config-driven, hot-reloadable. The registry is the single source of truth for "w
 
 A role exists when two things are true:
 
-1. A marker node in `court.tscn` named `Role_<role_name>` (or inside a known group, see below) declares a position.
+1. A marker node in `court.tscn` under `Roles/` declares a position.
 2. An entry in the role registry declares its capacity rule.
 
 Both are prerequisites: an item with a `role` that has no marker has nowhere to go; a marker with no registry entry has no rule for what fits.
@@ -66,7 +84,6 @@ All role markers live under a single `Roles` node in `court.tscn`, grouped by pa
 
 ```
 court.tscn
-├── ...
 └── Roles
     ├── Paddle
     │   ├── Handle           (Marker2D, one position)
@@ -101,14 +118,12 @@ When `ItemManager.move_to_court(item_key)` succeeds, the path from "item owned" 
 
 1. `ItemManager` adds the item to `on_court[role]` per role kind (exclusive replaces, additive appends, additive-small appends and evicts oldest if over cap).
 2. `ItemManager` registers the item's effects with `EffectManager`.
-3. `FixtureManager` (subscribed to `court_changed`) checks whether the item has a `fixture`.
-4. If yes, `FixtureManager` asks `ItemManager` for the authored position for this item at this role (helper: `get_role_position(role, item_key) -> Vector2`).
-5. `FixtureManager` spawns the fixture's `prop_scene` and places it at that position (setting the prop's `global_position`).
-6. If no fixture, steps 4-5 are skipped. The item is still active (effects registered) but has no visible prop.
+3. `FixtureManager` (subscribed to `court_changed`) checks whether the item has a `fixture` (see `08-fixtures.md`).
+4. If yes, `FixtureManager` asks `ItemManager` for the authored position via `get_role_position(role, item_key) -> Vector2`.
+5. `FixtureManager` spawns the fixture's `prop_scene` and sets its `global_position`.
+6. If no fixture, steps 4–5 are skipped. The item is still active (effects registered) but has no visible prop.
 
 ### `get_role_position` logic
-
-Given the role registry kind and the marker layout:
 
 ```gdscript
 func get_role_position(role: StringName, item_key: String) -> Vector2:
@@ -150,29 +165,16 @@ Exclusive roles resolve to their single marker. Additive roles resolve to the ch
 
 ---
 
-## Drag-and-drop interaction with roles
+## Drag-and-drop interaction
 
-Drag-and-drop lives in the kit and court surfaces (see `08a` section 8 and `08c`). From the role system's perspective:
+Drag-and-drop lives in the kit and court surfaces. From the role system's perspective:
 
-- **Kit → court:** the player picks up an item in the kit room and carries it to the court. On arrival at the court, `ItemManager.move_to_court(item_key)` runs; the item snaps to its authored role.
-- **Court → kit:** the player picks up an active item from its court position and carries it to the kit room. `ItemManager.move_to_kit(item_key)` fires on placement in the appropriate zone.
+- **Kit → court:** the player picks up an item in the kit room and carries it to the court. On arrival, `move_to_court(item_key)` runs; the item snaps to its authored role.
+- **Court → kit:** the player picks up an active item from its court position and carries it to the kit room. `move_to_kit(item_key)` fires on placement.
 - **Court → court (swap):** carrying a kit item to an occupied exclusive role fires `swap_at_role(role, new_key)`; the previous occupant returns to the kit room.
-- **Visual feedback during carry:** the authored markers for the item's target role highlight as the player approaches the court with the item in hand. A `RoleHighlighter` helper listens to carry-start events and lights the target markers.
+- **Visual feedback during carry:** authored markers for the item's target role highlight as the player approaches the court with the item in hand. A `RoleHighlighter` helper listens to carry-start events and lights the target markers.
 
-Drops onto the wrong area (e.g. dragging a `paddle_handle` item onto the court surface) fall back to the item's authored role automatically. The player cannot place an item at the wrong role, because the role is baked into the item. The drop gesture is "bring this onto the court"; the role is "where on the court."
-
----
-
-## Fixture coordination
-
-Fixtures (see `08a` section 4) sit at role-resolved positions.
-
-- `FixtureManager` listens to `court_changed` and spawns/frees props on role occupancy.
-- Spawn position is always resolved via `ItemManager.get_role_position(role, item_key)`.
-- The prop's `global_position` is set on spawn; the prop does not reposition itself afterward (unless its own animation moves it, e.g. the bot paddle moving in to play).
-- On free, the prop is `queue_free`'d; the role position becomes available for the next occupant.
-
-Fixtures and roles are loosely coupled. A fixture does not know about its role directly; it only knows where it was spawned. A role does not know about fixtures; it only knows occupancy. `FixtureManager` is the glue.
+Drops onto the wrong area fall back to the item's authored role automatically. The player cannot place an item at the wrong role, because the role is baked into the item. The drop gesture is "bring this onto the court"; the role is "where on the court."
 
 ---
 
@@ -181,20 +183,20 @@ Fixtures and roles are loosely coupled. A fixture does not know about its role d
 Roles hold **items**. Character places (the shop, the workshop) hold **characters**. They look similar (both live at authored positions in `court.tscn`, both are gated by some condition) but they are on different lifecycles and use different authoring:
 
 - Roles: authored under `Roles/`, gated by item occupancy, managed by `ItemManager` + `FixtureManager`.
-- Character places: authored as top-level child scenes of `court.tscn`, gated by `unlocked_characters`, shown/hidden directly.
+- Character places: authored as top-level child scenes of `court.tscn`, gated by `unlocked_characters` (see `08-world.md`), shown/hidden directly.
 
-An item at a `court_side` role can sit *near* the shop place; they are neighbours in `court.tscn`, but neither is parented under the other. This separation keeps the two systems independent.
+An item at a `court_side` role can sit *near* the shop place; they are neighbours in `court.tscn`, but neither is parented under the other.
 
 ---
 
 ## Authoring a new role kind
 
-Adding a new role kind (e.g. a `net` kind with its own capacity rule) is a four-step authoring change:
+Adding a new role kind (e.g. a `net` kind) is a four-step change:
 
 1. Add the registry entry: `&"net": {"kind": &"exclusive"}` (or whichever kind fits).
-2. Add the marker node(s) in `court.tscn` under `Roles/Net` (or wherever makes sense).
+2. Add the marker node(s) in `court.tscn` under `Roles/Net`.
 3. Declare items that target it: `role = &"net"` on the relevant `ItemDefinition`s.
-4. If the capacity rule is genuinely new (not one of exclusive/additive/additive-small), add a branch to `ItemManager`'s move logic and the `get_role_position` resolver.
+4. If the capacity rule is genuinely new, add a branch to `ItemManager`'s move logic and the `get_role_position` resolver.
 
 Most new roles will fit an existing capacity rule, so step 4 is rarely needed.
 
@@ -206,20 +208,18 @@ Unit-testable without a Viewport:
 
 - Occupancy behaviour per role kind (exclusive swap, additive append, additive-small eviction).
 - `get_role_position` returns the right marker for each kind.
-- `court_changed` fires the correct signals on each transition.
+- `court_changed` fires on each transition.
 - Role cooldown timing per role.
 - Missing-marker error cases (item declares a role that has no authored marker) surface cleanly.
-
-End-to-end drag tests are manual, matching the shop pattern.
 
 ---
 
 ## Open design decisions
 
-1. **Debug visualisation.** Should a dev-only overlay draw each role marker and its current occupant? Leaning: yes, behind a keypress. Valuable during art and layout passes.
-2. **Role priority on the paddle.** If the paddle ever has multiple head roles (a paddle_head_left and paddle_head_right), how does an item choose? Leaning: author each as its own named role; do not auto-pick.
-3. **Overflow visual for additive roles.** If `court_side` authors three positions but the player tries to place a fourth, what happens? Leaning: registry enforces `additive` as unbounded; practical cap is position count; overflow items get stacked at the last authored position. Alpha can refine.
-4. **Role cooldown: per role or per item?** Currently per role (rapid moves into the same role are limited). Keep that, even when the items are different. The cooldown models "the paddle was just handled" more than "this specific item."
+1. **Debug visualisation.** Should a dev-only overlay draw each role marker and its current occupant? Leaning: yes, behind a keypress.
+2. **Role priority on the paddle.** If the paddle ever has multiple head roles, how does an item choose? Leaning: author each as its own named role; do not auto-pick.
+3. **Overflow visual for additive roles.** If `court_side` authors three positions but the player tries to place a fourth, what happens? Leaning: overflow items stack at the last authored position. Alpha can refine.
+4. **Role cooldown: per role or per item?** Per role. The cooldown models "the paddle was just handled" more than "this specific item."
 
 ---
 
@@ -231,8 +231,5 @@ Not filing yet.
 2. `ItemDefinition.role` field + authoring pass across existing items.
 3. `Roles/` node hierarchy in `court.tscn` with markers for the initial role set.
 4. `ItemManager.get_role_position(role, item_key)` resolver.
-5. `FixtureManager` integration: spawn at resolved position, free on role vacancy.
-6. Drag-visual role highlighter (`RoleHighlighter` helper that listens to drag start and lights the target markers).
-7. Dev-only role overlay for debug.
-
-Overlap with the Locker and Kit and the Desktop Experience projects will need reconciling.
+5. Drag-visual role highlighter.
+6. Dev-only role overlay for debug.

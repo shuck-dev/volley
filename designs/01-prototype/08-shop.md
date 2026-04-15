@@ -1,24 +1,24 @@
 # The Shop as a Place
 
-The shop is the friend's corner of the court: a table of small items, a catalog of bigger ones, a shipping counter where orders leave for the player's shipment mat. This document covers the shop's layout within `court.tscn` and the interactions it supports. The world that contains it is in `08c-world-as-places.md`; the item system it feeds is in `08a-kit-and-locker-tech.md`.
+The shop is the friend's corner of the court: a table of small items, a catalog of bigger ones, a shipping counter where orders leave for the player's shipment mat.
 
-**Dependencies:** World as One Place (`08c`), Items on the Court (`08`, `08a`), Shop Drag-and-Drop (`04-shop-drag-drop.md`), Upgrade Shop Mechanics (`05-upgrade-shop-mechanics.md`).
+**Dependencies:** World (`08-world.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`), Shipments (`08-shipments.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`), Upgrade Shop Mechanics (`05-upgrade-shop-mechanics.md`).
 
 ---
 
 ## The shop place in the court
 
-The shop is a child scene of `court.tscn`, gated by the friend's unlock (`&"friend"` in `unlocked_characters`; see `08c`). Before the friend arrives, the shop is hidden and the court has a visibly empty corner. When the friend unlocks, the scene plays the arrival beat once and from then on the shop is a permanent part of the diorama.
+The shop is a child scene of `court.tscn`, gated by the friend's unlock (`&"friend"` in `unlocked_characters`; see `08-world.md`). Before the friend arrives, the shop is hidden and the court has a visibly empty corner. When the friend unlocks, the scene plays the arrival beat once and from then on the shop is a permanent part of the diorama.
 
 ```
 ShopPlace (child of court.tscn, hidden until friend unlocked)
 ├── FriendCharacter
-├── ShopTable (pool-gated small items)
-│   └── ShopItem instances (rotated by the shop mechanic in `05`)
-├── ClearanceBox (existing Control-based drop target from `04-shop-drag-drop.md`)
-├── ShopCatalog (browseable surface for bigger items)
+├── ShopTable                 (pool-gated small items)
+│   └── ShopItem instances    (rotated by the shop mechanic in 05)
+├── ClearanceBox              (existing Control-based drop target from 04-shop-drag-drop.md)
+├── ShopCatalog               (browseable surface for bigger items)
 │   └── CatalogEntry instances (one per catalog-eligible item)
-└── ShippingCounter (where sealed orders leave for the shipment mat)
+└── ShippingCounter           (where sealed orders leave for the shipment mat)
 ```
 
 Everything above is visible in the diorama at all times once the friend is unlocked. Drag input works across the whole scene; the shop is not a focus mode.
@@ -72,9 +72,9 @@ Returning to the catalog after leaving mid-browse opens to the last page viewed.
 
 1. Player selects an item from the catalog.
 2. FP is deducted on confirm. Catalog orders seal at purchase, not at a second gesture.
-3. `ShipmentManager.create(contents, duration_seconds)` starts a shipment with the item as contents.
+3. `ShipmentManager.create(contents, duration_seconds)` starts a shipment (see `08-shipments.md`).
 4. The friend walks the sealed box to the shipping counter (one-shot animation). The box leaves the counter; the shipment is in flight.
-5. After the shipping time, the box lands on the shipment mat near the kit room entrance (see `08c`). The player opens the box and carries the item into the kit room.
+5. After the shipping time, the box lands on the shipment mat near the kit room entrance. The player opens the box and carries the item into the kit room.
 
 Multiple catalog orders can be in flight at once. Each is its own shipment; they do not queue at the shipping counter.
 
@@ -89,19 +89,6 @@ Even for items that have a role and a fixture (a bot, a jukebox), the order flow
 A small visible surface at the shop where sealed orders sit briefly before leaving for the shipment mat. Used for the visual beat of the friend sealing an order; players see their purchase physically handed off.
 
 Not interactive. Sealed orders appear here for a second or two (as a delivery animation lead-in), then vanish as the shipment begins its wall-clock countdown.
-
----
-
-## Shipments (from this shop)
-
-Catalog orders run through the `ShipmentManager` system defined in `08c`. Summary for shop context:
-
-- Orders seal on purchase confirm, not on a second gesture.
-- The friend handles the wait: stewardship, not distance. She packs, writes a note, decides when to let it go, carries it to the counter.
-- Wall-clock timing persists across quitting; shipments tick while the game is closed.
-- Arrival is on the shipment mat, near the kit room entrance. The friend walks in with the box, sets it down, returns.
-
-Per-item ETA can be overridden via `ItemDefinition.shipment_seconds_override` (or similar) when a specific catalog item should ship slower or faster than the default. Gives narrative knobs: the bot's first delivery could be longer as a beat.
 
 ---
 
@@ -135,6 +122,8 @@ There is no dedicated shop UI layer. Every interaction is a world-space drag or 
 3. **Drag-the-catalog-entry-to-counter gesture.** Nice diegetic detail, low priority for prototype. Tap-to-order ships first.
 4. **Visual treatment of sold-out or unavailable items in the catalog.** Greyed, removed entirely, or an "out of stock" note? Leaning greyed with a note; the friend is apologetic about what she cannot offer.
 5. **Does the friend react to browsing?** Dialogue lines when the player opens the catalog, when they linger on an item, when they close without buying. Reserved for Alpha; prototype has her standing quietly at the shop.
+6. **Does the friend remember what you browsed?** Returning mid-browse opens to the last page, or resets? [Last page; the friend holds your spot.]
+7. **Multiple catalog orders in flight?** One at a time, queued at the shipping counter, or parallel? [Parallel; each order is its own shipment.]
 
 ---
 
@@ -147,6 +136,3 @@ Not filing yet.
 3. Catalog authoring: `catalog_only` flag (or cost threshold) on `ItemDefinition`, one authored catalog item (the bot).
 4. Catalog browse interaction: open inline, paginate, tap to order, confirm dialog, FP deduction.
 5. Catalog ordering plumbing: call into `ShipmentManager`, friend-to-counter animation, shipment in flight.
-6. Per-item shipment time override field on `ItemDefinition`.
-
-Overlap with the Upgrade Shop project and the Locker and Kit project will need reconciling when the work is filed.

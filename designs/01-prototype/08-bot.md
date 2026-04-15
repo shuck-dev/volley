@@ -1,8 +1,8 @@
 # The Bot
 
-An item with `role = &"court_side"` and a fixture that is a paddle-driver: it takes over the court when the player goes idle (space-bar handoff). The bot rides on the standard item + fixture plumbing defined in `08a`, so the whole system is one authored `.tres` plus one prop scene.
+An item with `role = &"court_side"` and a fixture that is a paddle-driver: it takes over the court when the player goes idle (space-bar handoff). The bot rides on the standard item and fixture plumbing, so the whole system is one authored `.tres` plus one prop scene.
 
-**Dependencies:** Items on the Court (`08`, `08a`), World as One Place (`08c`), Idle Play (`10`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Fixtures (`08-fixtures.md`), World (`08-world.md`), Shop (`08-shop.md`), Idle Play (`10-idle-play.md`).
 
 ---
 
@@ -10,7 +10,7 @@ An item with `role = &"court_side"` and a fixture that is a paddle-driver: it ta
 
 The bot is an upgrade the player earns. **The starting game ships bot-free by design.** Idle play is covered by the generic default paddle from day one, so the player always has a way to step back from the controls. Owning a bot is the moment idle play becomes *good*: a second paddle with its own look, authored behaviour, stats that scale with levels.
 
-The first bot purchase is a narrative beat: where idle used to be a placeholder, now there is a paddle on the court with its own character. Upgrading the bot at the tinkerer (see `08c`) continues that arc; each level sharpens how the bot plays in your absence.
+The first bot purchase is a narrative beat: where idle used to be a placeholder, now there is a paddle on the court with its own character. Upgrading the bot at the tinkerer continues that arc; each level sharpens how the bot plays in your absence.
 
 Mechanically, owning a bot turns every idle moment into productive, character-rich play. The rally keeps going, FP keeps climbing, and the court feels inhabited even when the player is not driving.
 
@@ -36,20 +36,20 @@ A second bot variant is a second `.tres` pointing at a different prop scene (vis
 
 ## Lifecycle
 
-Driven entirely by the standard item path. The bot is a catalog purchase at the shop; it arrives by shipment like any catalog item (see `08c`).
+Driven entirely by the standard item path. The bot is a catalog purchase at the shop; it arrives by shipment like any catalog item (see `08-shop.md`, `08-shipments.md`).
 
 - Order the bot from the friend's catalog → the order ships → the box lands on the shipment mat → opening the box sets `item_levels[bot_key] = 1`; the player carries the bot into the kit room where it occupies a floor space slot.
 - Player carries the bot from the kit room to the court. `ItemManager.move_to_court(bot_key)` places it at the `court_side` role; `FixtureManager` spawns `bot_dock.tscn` at the `BotDock` marker.
 - Player carries the bot back to the kit room. `move_to_kit` unregisters effects; `FixtureManager` frees the prop.
 - Destroy at the Tinkerer → permanent removal, same teardown.
 
-The bot follows the same court/kit rule every item follows: on the court it is active (the dock stands, the paddle plays on idle); in the kit it is at rest (generates passive FP like any other item).
+The bot follows the same court/kit rule every item follows: on the court it is active (the dock stands, the paddle plays on idle); in the kit it is at rest (generates passive FP like any other item; see `08-kit.md`).
 
 ---
 
 ## When the bot plays
 
-The bot dock prop (`bot_dock.tscn`) owns its own active/parked state. It listens to the idle-play signal (see `10`): when the player goes idle, the bot takes over; when the player reclaims control, the bot parks.
+The bot dock prop (`bot_dock.tscn`) owns its own active/parked state. It listens to the idle-play signal (see `10-idle-play.md`): when the player goes idle, the bot takes over; when the player reclaims control, the bot parks.
 
 On active, the prop spawns a driven paddle entity at the bot's court position. On parked, it frees that paddle. Activation is the prop's responsibility, not the item system's.
 
@@ -99,11 +99,11 @@ extends Resource
 
 Everything the bot needs already rides on the standard item pathway:
 
-- Ownership, persistence, destruction, kit passive FP: `ItemManager` and `08a` handle these.
+- Ownership, persistence, destruction, kit passive FP: `ItemManager` and the kit system handle these.
 - Activation and deactivation: `FixtureManager` spawns and frees the prop as the bot moves between the court and the kit.
 - Stats: the existing effect system carries them through the standard `effects` array.
 - Physical presence on the court: the fixture's prop scene is that presence.
-- Runtime play/park logic: the prop scene's own state machine owns it, keeping all fixture runtime state local (see `08a` section 4).
+- Runtime play/park logic: the prop scene's own state machine owns it.
 
 The only bot-specific additions are the handoff animation and the player's choice to bring the bot onto the court. Both live on the court scene and the bot prop, so the item system stays one clean category.
 
@@ -113,13 +113,13 @@ The only bot-specific additions are the handoff animation and the player's choic
 
 Nothing bot-specific at the item layer. `item_levels[bot_key]` holds the owned level, same as every other item. Runtime state on the prop (current active/parked state) is transient and recomputed from the idle-play signal on scene ready.
 
-If a future feature wants "the player paused the bot manually" (e.g. a toggle on the dock prop to disable it during play), that flag lives on `ProgressionData` as a dedicated field (`bot_manually_paused: bool`) and is read by the prop. Not needed for prototype.
+If a future feature wants "the player paused the bot manually" (a toggle on the dock prop to disable it during play), that flag lives on `ProgressionData` as a dedicated field (`bot_manually_paused: bool`) and is read by the prop. Not needed for prototype.
 
 ---
 
 ## Open design questions
 
-1. **Bot paddle visible when the player plays?** Does the bot paddle sit courtside as a watching prop while the player is active, or is it off-scene until it plays? Leaning: off-scene. The bot appears only when it plays; keeps the handoff meaningful rather than making the bot permanent court furniture.
+1. **Bot paddle visible when the player plays?** Does the bot paddle sit courtside as a watching prop while the player is active, or is it off-scene until it plays? Leaning: off-scene. The bot appears only when it plays; keeps the handoff meaningful.
 2. **Bot earnings modifier vs player earnings?** Should FP earned while the bot is playing be at a modifier (e.g. 0.7x) compared to player-earned FP? Leaning: slightly less at level 1, parity at max level. Gives bot levelling a mechanical reward beyond stat improvements.
 3. **Endurance in prototype scope?** Ship `endurance` as a flat stat (no drop-off) and enable the drop-off logic later, or cut it from prototype? Leaning: ship flat; the schema is ready for later tuning.
 4. **Multiple bots in Alpha?** Keep at one for Alpha, or allow multiple (defender, returner, night-shift)? Leaning: one in Alpha; multiple opens authoring and tuning volume we do not need yet.
@@ -134,6 +134,6 @@ Not filing yet.
 2. Bot paddle entity (reads stats, drives input, listens for ball events).
 3. Bot dock prop state machine: activate/park on the idle-play signal.
 4. Handoff animation between player paddle and bot paddle.
-5. Bot earnings modifier config (if decision 2 lands yes).
+5. Bot earnings modifier config (if question 2 lands yes).
 
-No new item-system tickets; all of that cost folds into the court-item + `Fixture` ticket in `08a` section 4.
+No new item-system tickets; those fold into the cross-cutting tickets in `08-fixtures.md`.

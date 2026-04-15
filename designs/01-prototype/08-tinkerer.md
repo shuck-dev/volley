@@ -1,14 +1,14 @@
 # The Tinkerer at Work
 
-The tinkerer is a character with a workbench on the court. The player drops items off; the tinkerer works on them at their own pace; finished items land on a done tray for the player to collect. This document covers the workshop's layout and the tinkerer's state machine. The world that contains it is in `08c-world-as-places.md`; the item system it modifies is in `08a-kit-and-locker-tech.md`.
+The tinkerer is a character with a workbench on the court. The player drops items off; the tinkerer works on them at their own pace; finished items land on a done tray for the player to collect. This doc owns the workshop's layout and the tinkerer's state machine, plus the mechanics of item destruction (the narrative sits in `08-items.md`).
 
-**Dependencies:** World as One Place (`08c`), Items on the Court (`08`, `08a`).
+**Dependencies:** World (`08-world.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`).
 
 ---
 
 ## The workshop place in the court
 
-The workshop is a child scene of `court.tscn`, gated by the tinkerer's unlock (`&"tinkerer"` in `unlocked_characters`; see `08c`). Before the tinkerer arrives, the workshop is hidden. When the tinkerer unlocks, the arrival beat plays once and the workshop becomes a permanent part of the diorama.
+The workshop is a child scene of `court.tscn`, gated by the tinkerer's unlock (`&"tinkerer"` in `unlocked_characters`; see `08-world.md`). Before the tinkerer arrives, the workshop is hidden. When the tinkerer unlocks, the arrival beat plays once and the workshop becomes a permanent part of the diorama.
 
 ```
 WorkshopPlace (child of court.tscn, hidden until tinkerer unlocked)
@@ -112,9 +112,20 @@ On load, the tinkerer resumes the state they were in, with the remaining duratio
 ### Commission kinds
 
 - **Level up:** work completes, `item_levels[item_key]` increments by one, item returns to the kit room.
-- **Destroy:** work completes, item is added to `destroyed_items`, `item_levels[item_key]` goes to zero, partial FP refund is added, any secret unlock resolves (see `08-kit-and-locker.md`).
+- **Destroy:** work completes, item is added to `destroyed_items`, `item_levels[item_key]` goes to zero, partial FP refund is added, any secret unlock resolves (see destruction mechanics below).
 
 Both use the same state machine and queue; only the completion effect differs.
+
+---
+
+## Destruction mechanics
+
+The narrative of destruction lives in `08-items.md`. The mechanics:
+
+- Only the tinkerer performs destruction. It is a `kind: &"destroy"` commission, enqueued the same way as a level-up commission.
+- On completion: `destroyed_items` appends the item key, `item_levels[item_key] = 0`, partial FP refund is added to the balance.
+- Secret unlocks fire here: if the destroyed item has an authored secret-unlock, it enters the conditional shop pool (see `04-upgrade-shop.md`).
+- The tinkerer's destruction dialogue holds its tongue on secret unlocks. The reward is the discovery.
 
 ---
 
@@ -141,7 +152,7 @@ A beloved item the tinkerer procrastinates on (more time in `procrastinating` wh
 
 ## Why not a shipment
 
-Shipments are a delivery metaphor: the friend packs, the friend delivers. That fits the catalog cleanly. The tinkerer does different work, in view, at their own place. The player picks up finished items from the workbench; the tinkerer is not a delivery person. A state machine on the tinkerer character expresses that honestly and keeps the shipment system single-purpose (catalog delivery from the shop; see `08e`).
+Shipments (see `08-shipments.md`) are a delivery metaphor: the friend packs, the friend delivers. That fits the catalog cleanly. The tinkerer does different work, in view, at their own place. The player picks up finished items from the workbench; the tinkerer is not a delivery person. A state machine on the tinkerer character expresses that honestly and keeps the shipment system single-purpose.
 
 ---
 
@@ -172,11 +183,12 @@ All audio is placeholder for prototype; the art/audio pass refines.
 
 ## Open design decisions
 
-1. **Should the player see which commission is current?** A label on the workbench, a silhouette at the tinkerer's hands, or no indicator at all (the player trusts the order). Leaning: a subtle indicator (the item sits visibly at the workbench during its working time; procrastinating leaves it untouched to the side).
-2. **Can the player poke the tinkerer?** A small interaction where tapping the tinkerer nudges them toward `working` (or procrastinating further, chance-based). Leaning: not for prototype; it undercuts the character's autonomy. Reserved for Alpha as an authoring hook.
+1. **Should the player see which commission is current?** A label on the workbench, a silhouette at the tinkerer's hands, or no indicator at all. Leaning: a subtle indicator (the item sits visibly at the workbench during its working time; procrastinating leaves it untouched to the side).
+2. **Can the player poke the tinkerer?** A small interaction where tapping the tinkerer nudges them toward `working` (or procrastinating further, chance-based). Leaning: not for prototype; it undercuts the character's autonomy.
 3. **Queue capacity.** Unlimited, or a small cap (like 3) so the player can't dump everything and walk away? Leaning: small cap. Makes the queue a real decision.
 4. **Destruction delay length.** Currently a multiplier on `tinker_destroy_seconds`. Should destroying a beloved item visibly take longer via procrastination spikes? Authoring knob, Alpha territory.
 5. **Tinkerer's mood affecting output.** A bad-mood run where commissions come out slightly off. Deep Alpha territory; flagged here so the state machine has the right shape to support it later.
+6. **Tinkerer level-up ETA.** Per level vs per item? [Per item, via `ItemDefinition.tinker_level_seconds`; authors tune it alongside cost scaling.]
 
 ---
 
@@ -192,5 +204,3 @@ Not filing yet.
 6. Done tray UI: highlight on completion, pickup gesture, `item_levels` / `destroyed_items` update at pickup.
 7. Wall-clock catch-up: advance state machine and queue on resume, cap at offline limit, fire arrived signals for completed commissions.
 8. Per-item `tinker_level_seconds` and `tinker_destroy_seconds` on `ItemDefinition`.
-
-Overlap with The Tinkerer project will need reconciling when the work is filed.
