@@ -1,8 +1,10 @@
 # Fixtures
 
-An item with a physical prop on the court carries a `Fixture` resource. Stat-only items leave `fixture` null.
+Court items (role = `court`) with a physical prop carry a `Fixture` resource. `FixtureManager` spawns and frees the prop as the item moves between the floor and a court marker.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), World (`08-world.md`).
+Ball items and equipment items do not use fixtures; their parent scenes (ball rack and court for balls; gear rack and paddle for equipment) host their props directly.
+
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Venue (`08-venue.md`).
 
 ---
 
@@ -11,41 +13,35 @@ An item with a physical prop on the court carries a `Fixture` resource. Stat-onl
 ```gdscript
 # ItemDefinition
 @export var role: StringName       # ball, court, or equipment
-@export var fixture: Fixture       # optional
+@export var fixture: Fixture       # optional; used only for court items
 
 class_name Fixture
 extends Resource
 
 @export var prop_scene: PackedScene
-@export var dock_marker: StringName    # override; used by bot dock
+@export var dock_marker: StringName    # override; e.g. the bot dock
 ```
 
-Runtime state, signals, and system overrides live on the prop scene's root script. The `Fixture` is just "what to spawn."
+Runtime state, signals, and system overrides live on the prop scene's root script.
 
 ---
 
-## Where fixtures parent
+## Position
 
-By role:
-
-- **`ball`** — ball fixtures are balls themselves; spawn under the arena's ball manager at the ball-spawn origin.
-- **`court`** — court fixtures spawn at the next free marker under `Roles/Court` (see `08-roles.md`).
-- **`equipment`** — equipment fixtures parent under the matching attachment node on `paddle.tscn` (`Handle`, `Head`, etc.).
-
-`dock_marker` forces a named marker regardless of role resolution.
+Court fixtures spawn at the next free marker under `Roles/Court` (see `08-roles.md`). `dock_marker` forces a named marker regardless of occupancy order.
 
 ---
 
 ## FixtureManager
 
-Lives on the court scene. Subscribes to `ItemManager.court_changed`; spawns and frees props to match.
+Lives on the court scene. Subscribes to `ItemManager.court_changed`; spawns and frees court props to match `on_court[&"court"]`.
 
 ```gdscript
 class_name FixtureManager
 extends Node
 
 func _on_court_changed() -> void:
-    for item_key in _expected_spawned_keys():
+    for item_key in _expected_court_spawned_keys():
         if not _spawned.has(item_key):
             _spawn(item_key)
     for item_key in _spawned.keys():
@@ -53,20 +49,18 @@ func _on_court_changed() -> void:
             _free(item_key)
 ```
 
-On free: `queue_free`. The position becomes available for the next occupant.
+On free: `queue_free`. The marker becomes available for the next occupant.
 
 ---
 
 ## Prop conventions
 
-Every fixture prop's root script:
+Every court fixture prop's root script:
 
 - Adds itself to the `&"fixture"` group on `_ready`.
 - Owns its own state (jukebox `is_playing`, bot dock `is_active`).
 - Hooks runtime systems it overrides directly.
 - Unhooks cleanly on `queue_free`.
-
-Fixtures and roles are loosely coupled: fixtures know where they spawned, roles know occupancy, `FixtureManager` is the glue.
 
 ---
 
@@ -75,6 +69,7 @@ Fixtures and roles are loosely coupled: fixtures know where they spawned, roles 
 | | Character areas | Item fixtures |
 |---|---|---|
 | Examples | Shop, Workshop | Bot dock, jukebox |
+| Role | n/a | `court` only |
 | Gating | `unlocked_characters` | Item on the court |
 | Lifecycle | Top-level child scenes, hidden until unlock | Spawned and freed by `FixtureManager` |
 
@@ -85,4 +80,4 @@ Fixtures and roles are loosely coupled: fixtures know where they spawned, roles 
 Not filing yet.
 
 1. `Fixture` resource, `FixtureManager`, prop group convention.
-2. Per-fixture prop scenes alongside each item (see `08-bot.md`).
+2. Per-fixture prop scenes alongside each court item (see `08-bot.md`).

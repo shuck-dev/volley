@@ -1,8 +1,8 @@
 # Item Roles
 
-Every item declares one of three roles. The role decides where on the court it goes and how it's positioned.
+Every item declares one of three roles. The role decides where it goes on the court, who owns its prop, and what gesture the player uses to move it.
 
-**Dependencies:** Items (`08-items.md`), World (`08-world.md`), ItemManager (`08-item-manager.md`), Fixtures (`08-fixtures.md`).
+**Dependencies:** Items (`08-items.md`), Venue (`08-venue.md`), ItemManager (`08-item-manager.md`), Fixtures (`08-fixtures.md`).
 
 ---
 
@@ -11,10 +11,10 @@ Every item declares one of three roles. The role decides where on the court it g
 | Role | Holds | Example items |
 |---|---|---|
 | `ball` | Items that add a ball to the game | Training Ball, The Stray |
-| `court` | Props on or around the court surface | Dead Weight, Spare, Court Lines, bot dock, jukebox, The Call |
-| `equipment` | Items the character wears or attaches to the paddle | Grip Tape, Double Knot, Wrist Brace, Ankle Weights, Cadence, Seven Years |
+| `court` | Props on or around the court surface (always on court once acquired; removed only by Tinkerer) | Dead Weight, Spare, Court Lines, bot dock, jukebox, The Call |
+| `equipment` | Items the main character wears or attaches to the paddle | Grip Tape, Double Knot, Wrist Brace, Ankle Weights, Cadence, Seven Years |
 
-Stat-only items (no visible prop) still declare a role — a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`.
+Stat-only items (no visible prop) still declare a role: a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`.
 
 All three roles are additive: any number of items can share a role. Within-role conflicts (two grip wraps on the handle) are an open question deferred to when a second conflicting item ships.
 
@@ -28,15 +28,19 @@ const _ROLE_REGISTRY: Dictionary[StringName, StringName] = {
 
 ---
 
-## Positioning
+## Who hosts each role's prop
 
-Each role resolves positions differently:
+- **`ball`**: the ball rack hosts balls at rest; the court's ball manager hosts them in play. `BallReconciler` moves balls between the two in response to `court_changed` (see `08-balls.md`).
+- **`equipment`**: the gear rack hosts equipment at rest; `paddle.tscn`'s attachment nodes (`Handle`, `Head`, etc.) host them when equipped. Parenting follows the scene; no fixture manager involvement.
+- **`court`**: always on the court from acquisition. `FixtureManager` spawns the prop at the next free marker under `Roles/Court/` (see `08-fixtures.md`). Court items have no kit state; when dragged to the Tinkerer they sit in the workshop queue until returned to the court or destroyed.
 
-- **`ball`** — ball fixtures spawn from the arena's single ball-spawn origin. `BallReconciler` (see `08-balls.md`) reconciles live balls against `on_court[&"ball"]`.
-- **`equipment`** — equipment fixtures parent under named attachment nodes on `paddle.tscn` (e.g. `Handle`, `Head`). Position comes from the paddle's composition.
-- **`court`** — court fixtures spawn at authored markers under `Roles/Court/` in `court.tscn`. Each occupant takes the next marker; overflow stacks on the last.
+Only `court` uses `FixtureManager`. Ball and equipment props move between two authored parents.
 
-Only `court` needs authored world-space markers.
+---
+
+## Court marker resolution
+
+Court items need authored world-space markers; ball and equipment do not.
 
 ```gdscript
 func get_court_position(item_key: String) -> Vector2:
@@ -46,6 +50,8 @@ func get_court_position(item_key: String) -> Vector2:
     return markers[position_index].global_position
 ```
 
+Each court occupant takes the next marker; overflow stacks on the last.
+
 ---
 
 ## Placement flow
@@ -54,7 +60,7 @@ On `move_to_court(item_key)`:
 
 1. Append to `on_court[role]`.
 2. Register effects with `EffectManager`.
-3. If the item has a fixture, `FixtureManager` spawns it (see `08-fixtures.md` for where each role's fixture parents).
+3. If `role == &"court"`, `FixtureManager` spawns the prop. For `ball` and `equipment`, the parent scene handles prop placement directly.
 4. Emit `court_changed`.
 
 Stat-only items skip step 3.
@@ -63,13 +69,16 @@ Stat-only items skip step 3.
 
 ## Drag-and-drop
 
-The player carries items between the kit and the court; the role is baked into the item, so a drop on the court always routes to the item's role. A `RoleHighlighter` lights target markers during carry.
+The player drags items between the kit and the court. Gesture details (live drag vs. step-off required) live in `08-kit.md`. The role system's part:
+
+- The role is baked into the item, so a drop on the appropriate target always routes the move.
+- A `RoleHighlighter` lights the target surface during drag (the court for ball, court markers for court-role props, the main character for equipment).
 
 ---
 
 ## Character areas vs item roles
 
-Character areas (shop, workshop) are child scenes of `court.tscn` gated by `unlocked_characters`. Roles are authored under `Roles/`, gated by item occupancy. They can sit near each other but are never parented under each other.
+Character areas (shop, workshop) are child scenes of `venue.tscn` gated by `unlocked_characters`. Roles are authored under `Roles/`, gated by item occupancy. They can sit near each other but are never parented under each other.
 
 ---
 
@@ -97,7 +106,7 @@ Not filing yet.
 
 1. Role registry on `ItemManager`.
 2. `ItemDefinition.role` field; authoring pass across existing items.
-3. `Roles/Court` markers in `court.tscn`.
+3. `Roles/Court` markers in `venue.tscn`.
 4. `get_court_position` resolver.
-5. `RoleHighlighter` for carry feedback.
+5. `RoleHighlighter` for drag feedback.
 6. Dev-only role overlay.

@@ -2,14 +2,14 @@
 
 The friend's corner of the court: a table of small items, a catalog of bigger ones, a shipping counter.
 
-**Dependencies:** World (`08-world.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`), Shipments (`08-shipments.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`), Upgrade Shop Mechanics (`05-upgrade-shop-mechanics.md`).
+**Dependencies:** Venue (`08-venue.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`), Shipments (`08-shipments.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`), Upgrade Shop Mechanics (`05-upgrade-shop-mechanics.md`).
 
 ---
 
 ## Scene
 
 ```
-Shop (child of court.tscn, hidden until friend unlocked)
+Shop (child of venue.tscn, hidden until friend unlocked)
 ├── FriendCharacter
 ├── ShopTable                 (pool-gated small items)
 │   └── ShopItem instances
@@ -27,8 +27,7 @@ Gated by `&"friend"` in `unlocked_characters`. Everything is visible at all time
 
 Small items sit on the table. Pool rotation is in `05-upgrade-shop-mechanics.md`.
 
-- Drag a `ShopItem` onto the `ClearanceBox` → `ItemManager.take(key)` → item enters the kit.
-- Or carry it directly to the kit: same `take()` call, different path.
+- Drag a `ShopItem` onto the `ClearanceBox`, or directly onto the matching inactive area (`BallRack` for balls, `GearRack` for equipment) → `ItemManager.take(key)` → item is owned and inactive.
 
 Acquisition is immediate. No shipping.
 
@@ -43,9 +42,9 @@ Bigger items: the bot, jukebox, training wall, paddle upgrades.
 - Tap the catalog → opens inline (no camera move). Pages show art, name, description, price. Returning reopens on the last page.
 - Confirm → FP deducted → `ShipmentManager.create(contents, duration_seconds)` starts a shipment.
 - Friend walks the sealed box to the shipping counter; the box vanishes as the wall-clock countdown begins.
-- On arrival, the box lands on the shipment mat; the player opens it and carries the item to the kit.
+- On arrival, the box lands on the shipment mat. The player drags the item from the box: ball items into `BallRack`, equipment items into `GearRack`, court items (e.g. the bot) directly onto the court.
 
-Multiple orders can be in flight at once. Catalog purchases never go directly to the court — order → ship → kit → carry.
+Multiple orders can be in flight at once.
 
 Membership is authored per item via `catalog_only: bool` on `ItemDefinition`.
 

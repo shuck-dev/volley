@@ -1,8 +1,8 @@
 # The Bot
 
-A `court` item whose fixture is a paddle-driver. Takes over the arena when the player goes idle.
+A `court` item whose fixture is a paddle-driver. Takes over the court when the player goes idle.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Fixtures (`08-fixtures.md`), World (`08-world.md`), Shop (`08-shop.md`), Idle Play (`10-idle-play.md`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Fixtures (`08-fixtures.md`), Venue (`08-venue.md`), Shop (`08-shop.md`), Idle Play (`10-idle-play.md`).
 
 ---
 
@@ -32,12 +32,11 @@ A second bot variant is another `.tres` with a different prop scene or `BotBehav
 
 Pure standard-item path:
 
-- Order from the friend's catalog → ships → box lands on the shipment mat → `item_levels[bot_key] = 1` → carry to the kit floor.
-- Carry kit → court: `move_to_court(bot_key)` at the `court` role; `FixtureManager` spawns `bot_dock.tscn` at `BotDock`.
-- Carry court → kit: `move_to_kit` unregisters effects; fixture frees.
-- Destroy at the Tinkerer: permanent removal.
+- Order from the friend's catalog, ships, box lands on the shipment mat, `item_levels[bot_key] = 1`.
+- Player drags the bot from the box directly onto the court. `move_to_court(bot_key)` fires at the `court` role; `FixtureManager` spawns `bot_dock.tscn` at `BotDock`.
+- Court items never leave the court except through the Tinkerer. Drag the bot to the workshop drop-off basket for level-up (returns to a court marker when done) or destruction (permanent removal).
 
-On the court: dock stands, paddle plays on idle. In the kit: at rest, generates passive FP (see `08-kit.md`).
+The bot does not generate passive FP; only kit items do.
 
 ---
 

@@ -3,7 +3,7 @@
 ## Goal
 Implementation design for the Act 1 shop interaction: a Control-based drag and drop flow where the player moves items from the friend's things into a box to take them. Covers the structural shape of `shop.tscn`, the draggable `ShopItem` Control, the `ClearanceBox` drop target, and the new `ItemManager.take()` acquisition primitive that marks an item as owned without registering its effects.
 
-**Dependencies:** Upgrade Shop (04-upgrade-shop), Item UI (05-item-ui), World (08-world)
+**Dependencies:** Upgrade Shop (04-upgrade-shop), Item UI (05-item-ui), Venue (08-venue)
 
 **Unlocks:** SH-32 acceptance criteria 6, 7, 8 (drag-and-drop, drag gating, purchase on drop). Tracked in SH-66.
 

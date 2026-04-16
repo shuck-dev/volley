@@ -2,14 +2,14 @@
 
 A character with a workbench. The player drops items off; the tinkerer works at their own pace; finished items land on a done tray. Destruction mechanics live here (narrative: `08-items.md`).
 
-**Dependencies:** World (`08-world.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`).
+**Dependencies:** Venue (`08-venue.md`), Items (`08-items.md`), ItemManager (`08-item-manager.md`).
 
 ---
 
 ## Scene
 
 ```
-Workshop (child of court.tscn, hidden until tinkerer unlocked)
+Workshop (child of venue.tscn, hidden until tinkerer unlocked)
 ├── TinkererCharacter      (root script runs the state machine)
 ├── Workbench              (current commission sits here while being worked on)
 ├── DoneTray               (finished commissions await pickup)
@@ -24,9 +24,9 @@ Gated by `&"tinkerer"` in `unlocked_characters`.
 
 | State | Progresses work? |
 |---|---|
-| `resting` | No — tea, staring out the window |
-| `procrastinating` | No — reading, tidying, chatting |
-| `working` | Yes — at the workbench |
+| `resting` | No; tea, staring out the window |
+| `procrastinating` | No; reading, tidying, chatting |
+| `working` | Yes; at the workbench |
 
 Transitions are authored weighted durations, not player-triggered. State durations come from authored ranges; transition weights pick the next state.
 
@@ -73,14 +73,14 @@ On load: resume the state with remaining duration.
 
 ## Player flow
 
-1. Carry an item from the kit to the drop-off basket. Drop → `ItemCommission` enqueued.
+1. Player drags an item onto the drop-off basket (from `BallRack`, `GearRack`, or the court). `ItemCommission` enqueued.
 2. Tinkerer rotates through states on their own.
 3. On completion, the item lands on the done tray; a soft chime from the workshop side.
-4. Player picks up from the tray → `item_levels` updates.
+4. Player drags from the done tray: ball and equipment items to `BallRack`/`GearRack`, court items onto the court. `item_levels` updates at drop.
 
 ### Commission kinds
 
-- **Level up:** `item_levels[item_key]` += 1, item returns to the kit.
+- **Level up:** `item_levels[item_key]` += 1. Ball and equipment items return inactive (to `BallRack` or `GearRack`); court items return to a free `Roles/Court` marker.
 - **Destroy:** `item_levels[item_key] = 0`, append to `destroyed_items`, partial FP refund, any secret unlock enters the shop pool (see `04-upgrade-shop.md`). The tinkerer's dialogue holds its tongue on secret unlocks.
 
 ---
@@ -124,7 +124,7 @@ All audio placeholder for prototype.
 
 ## Open questions
 
-1. **Indicate the current commission?** Leaning: subtle — the item sits visibly at the workbench during `working`, off to the side otherwise.
+1. **Indicate the current commission?** Leaning: subtle; the item sits visibly at the workbench during `working`, off to the side otherwise.
 2. **Queue capacity.** Leaning small cap (e.g. 3).
 3. **Player can poke the tinkerer?** Leaning no for prototype.
 4. **Procrastination spikes for beloved items.** Alpha territory.

@@ -12,7 +12,8 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 05 | [Upgrade Shop Mechanics](05-upgrade-shop-mechanics.md) |
 | 06 | [Upgrade Shop Items](06-upgrade-shop-items.md) |
 | 07 | [Effect System](07-effect-system.md) |
-| 08 | [The Court](08-world.md) |
+| 08 | [The Venue](08-venue.md) |
+| 08 | [Court Bounds and Miss](08-court-bounds.md) |
 | 08 | [Items, the Court, and the Kit](08-items.md) |
 | 08 | [ItemManager: Data Model and Runtime](08-item-manager.md) |
 | 08 | [Item Roles](08-roles.md) |

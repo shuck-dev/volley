@@ -2,7 +2,7 @@
 
 Runtime layer behind `08-items.md`. Role logic lives in `08-roles.md`, fixtures in `08-fixtures.md`, kit passive FP in `08-kit.md`, balls in `08-balls.md`.
 
-**Dependencies:** Effect System (`07`), Items (`08-items.md`), World (`08-world.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`).
+**Dependencies:** Effect System (`07`), Items (`08-items.md`), Venue (`08-venue.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`).
 
 ---
 
@@ -30,8 +30,6 @@ func is_on_court(item_key: String) -> bool
 func role_occupants(role: StringName) -> Array[String]
 ```
 
-Court/kit state stays on `ItemManager` (not a new autoload) because effect registration, save triggers, and balance arithmetic already live there.
-
 ---
 
 ## Move to court, move to kit
@@ -41,18 +39,23 @@ func move_to_court(item_key: String) -> bool
 func move_to_kit(item_key: String) -> bool
 ```
 
+Both are called by drag-and-drop handlers (see `08-kit.md` for the player-side flow per role).
+
 ### Move-to-court
 
 1. Reject if destroyed, not owned, already on the court, or role cooldown is active.
-2. Charge `court_swap_friendship_cost`; reject if insufficient.
-3. Append to `on_court[role]`.
-4. `_effect_manager.register_source(item, level)`.
-5. `FixtureManager` spawns the fixture if the item has one (see `08-fixtures.md`).
-6. Start the role cooldown. Save. Emit `court_changed`.
+2. Append to `on_court[role]`.
+3. `_effect_manager.register_source(item, level)`.
+4. If `role == &"court"`, `FixtureManager` spawns the prop (see `08-fixtures.md`). For `ball` and `equipment`, the parent scene (ball rack or paddle) hosts the prop directly; no fixture manager involvement.
+5. Start the role cooldown. Save. Emit `court_changed`.
+
+Activation has no FP cost; the friction is the animation (on equipment) and the role cooldown.
 
 ### Move-to-kit
 
-Reverse: unregister effects, free fixture, remove from `on_court`, start role cooldown. No FP cost.
+Applies to `ball` and `equipment` only. Reverse of move-to-court: unregister effects, remove from `on_court`, start role cooldown.
+
+Court items never call `move_to_kit`. They leave the court only by entering the Tinkerer's queue (see `08-tinkerer.md`); on return from a level-up commission, `move_to_court` re-seats them.
 
 ### `_set_level` refactor
 
@@ -64,14 +67,13 @@ Dev panel uses `purchase_and_place(key)` to preserve the one-click flow.
 
 ### SH-93
 
-Closes when `move_to_court` lands. `ClearanceBox.accept` stays inert by design; the player places the item from the kit.
+Closes when `move_to_court` lands. `ClearanceBox.accept` stays inert by design; the player drags the item from `BallRack` or `GearRack` to activate it.
 
 ---
 
-## Swap cost and role cooldown
+## Role cooldown
 
 ```
-court.swap_friendship_cost: int = 0
 court.swap_cooldown_seconds: float = 0.0
 ```
 
@@ -79,7 +81,7 @@ Hot-reloadable via `ConfigHotReload`.
 
 Per-role cooldown lives in memory only (`_role_cooldowns_until: Dictionary[StringName, float]`).
 
-UI: thin fill on the role marker while cooling; FP cost shown on the drag preview.
+UI: thin fill on the target surface while cooling.
 
 ---
 
@@ -109,4 +111,4 @@ Not filing yet.
 
 1. Court/kit data model, derived queries, signals.
 2. `move_to_court` / `move_to_kit`, `_set_level` refactor, dev-panel update, SH-93 close-out.
-3. Swap cost + per-role cooldown config.
+3. Per-role cooldown config.

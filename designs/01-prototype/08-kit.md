@@ -1,40 +1,61 @@
 # The Kit
 
-The kit is the at-rest store. Not one room: three areas (`BallRack`, `GearCase`, `Floor`) sit as siblings at the player's end of `court.tscn`. Together they are "the kit."
+The kit is every item the player owns. This doc covers where inactive items sit, how the player moves items between inactive and active, and the passive FP they generate while inactive.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), World (`08-world.md`).
-
----
-
-## Areas
-
-- **Ball rack** — ball items at rest.
-- **Gear case** — equipment (grip wraps, braces, ankle weights, charms, tools).
-- **Floor** — larger court props (Spare cone, Dead Weight, bot dock when idle).
-
-Items on the court are not present in the kit; items in the kit are at rest.
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Venue (`08-venue.md`).
 
 ---
 
-## Player flow
+## Storage for inactive items
 
-- **Kit → court:** pick up an item from its area, carry it to the court. `move_to_court(key)` fires on arrival; the FP cost is charged and the item snaps to its role.
-- **Court → kit:** pick up an active item, carry it to the matching kit area (ball → rack, equipment → case, court prop → floor). `move_to_kit(key)` fires on drop.
+Two areas sit as siblings at the player's end of `venue.tscn`. Each is both the parent for its items at rest and the drop target for deactivation.
 
-The carry preview shows the FP cost and any role cooldown. Cooldown overlays appear on the target role marker as the player approaches.
+- **BallRack**: inactive ball items. The court's ball manager reads from here.
+- **GearRack**: inactive equipment. Items here are dragged onto the main character to equip.
+
+Court items have no inactive state; they are always active on the court.
+
+---
+
+## Activate and deactivate
+
+The player drives every transition by drag-and-drop. The gesture depends on the role.
+
+### Ball (`BallRack` and court)
+
+Live drag, rally keeps going:
+
+- **Activate:** drag a ball from `BallRack` onto the court. Ball enters play immediately.
+- **Deactivate:** drag a live ball off the court back onto `BallRack`. Ball leaves play.
+
+### Court (always active)
+
+No deactivation. On shipment arrival, the player drags the item from the box straight onto the court; it snaps to the next free `Roles/Court` marker. Removal is via the Tinkerer only (destroy or level-up; see `08-tinkerer.md`).
+
+### Equipment (`GearRack` and main character)
+
+Requires the main character to step off:
+
+1. Player calls a timeout. Main character walks off the court to an authored equip pose. The rally plays out without a defender and ends on the next miss. (Later, if the bot is owned and active, it takes over the court via the standard idle-play handoff so the rally continues. Not in prototype scope until the bot ships.)
+2. Player drags from `GearRack` onto the main character to equip, or from the character back to `GearRack` to deactivate.
+3. Player ends the timeout. Main character walks back on and resumes play at the next serve.
+
+### Drag preview
+
+During any drag, the preview shows any active role cooldown. Cooldown overlays appear on the target surface (court for ball, court marker for court, main character for equipment). Activation has no FP cost; the animation beat on equip and the cooldown are the friction.
 
 ---
 
 ## Passive FP
 
-Every owned kit item generates FP over time. Rate scales with item cost and level. A well-stocked kit sustains the economy when the loadout is locked in.
+Inactive items generate FP over time. Rate scales with item cost and level. A well-stocked set of inactive items sustains the economy when the loadout is locked in. Active items (including all court items) do not generate passive FP.
 
 **Signal layer** (the player never has to notice):
 
-- **Partners.** Partner dialogue recognises what's in the kit — "you kept that?" — across long runs. The kit belongs to the partner relationships.
+- **Partners.** Partner dialogue recognises what's inactive in the kit ("you kept that?") across long runs. The inactive items belong to the partner relationships.
 - **The friend, once.** Late in pre-break: one line. "I saw you kept that. You don't have to use it."
 
-After The Break: the warmth from the kit was always real. The main character's memory still generating something in the absence.
+After The Break: the warmth was always real. The main character's memory still generating something in the absence.
 
 ---
 
@@ -43,7 +64,7 @@ After The Break: the warmth from the kit was always real. The main character's m
 ### Cadence
 
 ```
-rate_per_second = sum over kit items of _kit_rate_for(item)
+rate_per_second = sum over inactive items of _kit_rate_for(item)
 kit_accumulated_points += rate_per_second * delta
 ```
 
@@ -80,6 +101,7 @@ Kit-driven `add_friendship_points` skips autosave; a 30-second timer flushes. Us
 - Rate arithmetic (fixed delta, expected points).
 - Offline catch-up and cap.
 - Save throttling.
+- Active items (including all court items) contribute zero.
 
 ---
 
@@ -87,5 +109,6 @@ Kit-driven `add_friendship_points` skips autosave; a 30-second timer flushes. Us
 
 Not filing yet.
 
-1. Kit areas in `court.tscn`: ball rack, gear case, floor; navigation; carry-to-court; cooldown and cost display.
-2. Passive FP (cadence, formula, offline catch-up, save throttling).
+1. `BallRack` and `GearRack` in `venue.tscn`; drag targets wired per role.
+2. Timeout gesture: main character walks off on timeout call, back on at timeout end.
+3. Passive FP (cadence, formula, offline catch-up, save throttling).

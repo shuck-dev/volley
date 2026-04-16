@@ -2,7 +2,7 @@
 
 Catalog orders from the friend's shop arrive as shipments on the shipment mat. The tinkerer does not use shipments (see `08-tinkerer.md`).
 
-**Dependencies:** World (`08-world.md`), Shop (`08-shop.md`).
+**Dependencies:** Venue (`08-venue.md`), Shop (`08-shop.md`).
 
 ---
 
@@ -29,9 +29,9 @@ Wall-clock timing: shipments tick while the game is closed. On resume, any shipm
 
 ## Arrival
 
-The box lands on the `ShipmentMat` in `court.tscn`. The friend walks in from the shop, sets the box down, returns. Prototype uses a placeholder animation.
+The box lands on the `ShipmentMat` in `venue.tscn`. The friend walks in from the shop, sets the box down, returns. Prototype uses a placeholder animation.
 
-The wait is stewardship, not travel — the friend packs, adds a note, decides when to let it go. Per-order timing can carry meaning (a quick send-off vs. a slower, considered one).
+The wait is stewardship, not travel: the friend packs, adds a note, decides when to let it go. Per-order timing can carry meaning (a quick send-off vs. a slower, considered one).
 
 ---
 
