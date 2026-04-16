@@ -1,9 +1,7 @@
 class_name ShopItem
 extends RigidBody2D
 
-## Physics-based shop item. Mouse-drag lifts the body kinematically; release
-## restores gravity. The shop watches its ShopArea for body_exited and triggers
-## the actual purchase; see scripts/shop/shop.gd.
+## Physics-based shop item: mouse-drag kinematically freezes, release restores gravity.
 
 @export var art_holder: Node2D
 @export var collision_shape: CollisionShape2D

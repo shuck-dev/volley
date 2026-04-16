@@ -1,8 +1,6 @@
 extends GutTest
 
-# Integration for the diegetic shop purchase flow: spawn the Shop with a fresh
-# ItemManager, physically move a ShopItem out of the ShopArea, verify the
-# cascade (ownership, balance deduction, taken flag).
+# Integration: spawn Shop, exit ShopArea, verify ownership + balance cascade.
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
@@ -98,6 +96,5 @@ func test_exiting_shop_area_when_already_taken_does_nothing() -> void:
 
 # --- helpers ---
 func _drag_item_out_of_shop_area(item: ShopItem) -> void:
-	# body_exited firing is wired by Shop to purchase. Emitting the signal
-	# directly avoids depending on physics-frame timing in tests.
+	# Emit the signal directly to avoid physics-frame timing in tests.
 	_shop.shop_area.body_exited.emit(item)

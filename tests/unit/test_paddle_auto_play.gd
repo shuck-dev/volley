@@ -1,16 +1,19 @@
 extends GutTest
 
-# Tests for AutoplayController: toggle behaviour, signal, ring-buffer delay, and
-# speed cap. Input handling (space key) is covered by integration/gameplay tests.
+# Tests AutoplayController: toggle, signal, ring-buffer delay, speed cap.
 
 const PHYSICS_DELTA := 0.016  # One frame at 60fps
-const FAR_BEYOND_SNAP_THRESHOLD := 9999.0  # Guarantees max speed in speed-cap tests
 const BALL_APPROACHING := Vector2(-100.0, 0.0)  # Ball moving toward paddle (negative x)
 
 var _controller: AutoplayController
 var _paddle: Paddle
 var _ball: Ball
 var _config: PaddleAIConfig
+
+
+static func ball_below_paddle() -> float:
+	# Quarter-arena below paddle: always in-arena, always saturates speed.
+	return GameRules.base_stats[&"arena_height"] * 0.25
 
 
 func before_each() -> void:
@@ -86,7 +89,7 @@ func test_autoplay_moves_paddle_toward_ball_when_ball_is_above() -> void:
 
 
 func test_autoplay_speed_never_exceeds_configured_scale() -> void:
-	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, ball_below_paddle())
 	_ball.linear_velocity = BALL_APPROACHING
 	_paddle.position = Vector2(0.0, 0.0)
 	_controller.toggle()
@@ -112,7 +115,7 @@ func test_autoplay_does_not_react_to_new_ball_position_within_delay_frames() -> 
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 
-	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, ball_below_paddle())
 	_paddle.position = Vector2.ZERO
 	_controller._physics_process(PHYSICS_DELTA)
 	assert_almost_eq(_paddle.velocity.y, 0.0, 0.01)
@@ -127,7 +130,7 @@ func test_autoplay_tracks_new_ball_position_after_delay() -> void:
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 
-	_ball.position = Vector2(100.0, FAR_BEYOND_SNAP_THRESHOLD)
+	_ball.position = Vector2(100.0, ball_below_paddle())
 	for i in range(_config.reaction_delay_frames):
 		_controller._physics_process(PHYSICS_DELTA)
 

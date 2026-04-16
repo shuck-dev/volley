@@ -12,9 +12,9 @@ gravity_scale = 0.0
 script = ExtResource("1_7s4qf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=160689379]
-scale = Vector2(1.8799996, 1.8799996)
+scale = Vector2(1.2, 1.2)
 shape = SubResource("CircleShape2D_n1dj2")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=429755372]
-scale = Vector2(0.31666666, 0.31666666)
+scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_f7cbr")

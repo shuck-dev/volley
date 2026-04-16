@@ -7,10 +7,10 @@
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_partner"]
-size = Vector2(40, 200)
+size = Vector2(36, 180)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_partner"]
-size = Vector2(40, 200)
+size = Vector2(36, 180)
 
 [node name="PartnerPaddle" type="CharacterBody2D" unique_id=775348359 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker")]
 script = ExtResource("1_unscj")

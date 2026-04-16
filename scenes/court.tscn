@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgp6g"]
-size = Vector2(31.010721, 880.5864)
+size = Vector2(36, 1172)
 
 [node name="Node2D" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn")]
 script = ExtResource("1_tbgi4")
@@ -32,83 +32,74 @@ offset_bottom = 2000.0
 color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
-position = Vector2(-32, -8)
+position = Vector2(-29, -8)
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
-position = Vector2(456, -488)
+position = Vector2(586, -586)
 rotation = 1.5707964
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1, 24.649014)
+offset_right = 36.0
+offset_bottom = 1172.0
 metadata/_edit_use_anchors_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
-position = Vector2(20.074709, 492.9507)
-scale = Vector2(1.2850581, 1.1197083)
+position = Vector2(18, 586)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="Bottom Wall" type="StaticBody2D" parent="Bounds" unique_id=743283118]
-position = Vector2(-528, 498)
+position = Vector2(-586, 586)
 rotation = -1.5707964
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Bottom Wall" unique_id=1810122737]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1, 24.649014)
+offset_right = 36.0
+offset_bottom = 1172.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom Wall" unique_id=1261402091]
-position = Vector2(20.074709, 492.9507)
-scale = Vector2(1.2850581, 1.1197083)
+position = Vector2(18, 586)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(456, -488)
+position = Vector2(550, -586)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1, 24.649014)
+offset_right = 36.0
+offset_bottom = 1172.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
-position = Vector2(20.074709, 492.9507)
-scale = Vector2(1.2850581, 1.1197083)
+position = Vector2(18, 586)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
-position = Vector2(-568, -488)
+position = Vector2(-586, -586)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
-offset_right = 40.0
-offset_bottom = 40.0
-scale = Vector2(1, 24.649014)
+offset_right = 36.0
+offset_bottom = 1172.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
-position = Vector2(20.074709, 492.9507)
-scale = Vector2(1.2850581, 1.1197083)
+position = Vector2(18, 586)
 shape = SubResource("RectangleShape2D_sgp6g")
 
 [node name="MissZone" parent="Bounds/Back Wall" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
-position = Vector2(20, 493)
-scale = Vector2(1.28, 1.12)
+position = Vector2(18, 586)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
 config = ExtResource("8_85g3d")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
-position = Vector2(304, 8)
+position = Vector2(273, 8)
 
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
-position = Vector2(-416, 8)
+position = Vector2(-375, 8)
