@@ -35,29 +35,36 @@ jobs:
 
           find wiki -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
 
+          copy_with_rewrite() {
+            local src="$1" dest="$2" dir="$3"
+            # Rewrite markdown link targets so they resolve in the flattened wiki:
+            #   - strip .md extension
+            #   - flatten internal slashes to dashes
+            #   - prefix bare relative links with the source file's folder
+            # [^):] in the character class excludes "://" so http URLs are untouched.
+            DIR="$dir" perl -pe '
+              s{\]\(([^):\s]+)\.md(\#[^)]*)?\)}{
+                my ($p, $a) = ($1, $2 // "");
+                my @dir = split m{/}, ($ENV{DIR} // "");
+                my @parts = split m{/}, $p;
+                while (@parts && $parts[0] eq "..") { shift @parts; pop @dir; }
+                my $joined = join("-", @dir, @parts);
+                "]($joined$a)"
+              }ge' "$src" > "$dest"
+          }
+
           for src in designs/**/*.md; do
             rel="${src#designs/}"
-            # Top-level INDEX.md becomes Home.md; _Sidebar.md passes through.
             [ "$rel" = "INDEX.md" ] && continue
-            # Wiki only renders top-level .md files, so flatten nested paths
-            # with dashes: "01-prototype/foo.md" -> "01-prototype-foo.md".
             flat="${rel//\//-}"
-            cp "$src" "wiki/$flat"
+            dir="$(dirname "$rel")"
+            [ "$dir" = "." ] && dir=""
+            copy_with_rewrite "$src" "wiki/$flat" "$dir"
           done
 
           if [ -f designs/INDEX.md ]; then
-            cp designs/INDEX.md wiki/Home.md
+            copy_with_rewrite designs/INDEX.md wiki/Home.md ""
           fi
-
-          # Rewrite markdown link targets: strip .md extensions and flatten
-          # internal slashes to match the flattened filenames. Only touches
-          # relative links (the [^):] class excludes "://" in URLs).
-          find wiki -name '*.md' -print0 | xargs -0 perl -i -pe '
-            s{\]\(([^):\s]+)\.md(\#[^)]*)?\)}{
-              my ($p, $a) = ($1, $2 // "");
-              $p =~ s|/|-|g;
-              "]($p$a)"
-            }ge'
 
       - name: Commit and push
         working-directory: wiki
