@@ -32,16 +32,16 @@ func role_occupants(role: StringName) -> Array[String]
 
 ---
 
-## Move to court, move to kit
+## Activate and deactivate
 
 ```gdscript
-func move_to_court(item_key: String) -> bool
-func move_to_kit(item_key: String) -> bool
+func activate(item_key: String) -> bool
+func deactivate(item_key: String) -> bool
 ```
 
 Both are called by drag-and-drop handlers (see `08-kit.md` for the player-side flow per role).
 
-### Move-to-court
+### Activate
 
 1. Reject if destroyed, not owned, or already on the court.
 2. Append to `on_court[role]`.
@@ -51,23 +51,23 @@ Both are called by drag-and-drop handlers (see `08-kit.md` for the player-side f
 
 Activation has no FP cost; the friction is the animation beat on equipment.
 
-### Move-to-kit
+### Deactivate
 
-Applies to `ball` and `equipment` only. Reverse of move-to-court: unregister effects, remove from `on_court`.
+Applies to `ball` and `equipment` only. Reverse of activate: unregister effects, remove from `on_court`.
 
-Court items never call `move_to_kit`. They leave the court only by entering the Tinkerer's queue (see `08-tinkerer.md`); on return from a level-up commission, `move_to_court` re-seats them.
+Court items never call `deactivate`. They leave the court only by entering the Tinkerer's queue (see `08-tinkerer.md`); on return from a level-up commission, `activate` re-seats them.
 
 ### `_set_level` refactor
 
 - `purchase()` writes `item_levels` only. If the item is on the court, re-register its effects at the new level.
 - `take()` stays inert.
-- `move_to_court` is the only path that registers effects.
+- `activate` is the only path that registers effects.
 
 Dev panel uses `purchase_and_place(key)` to preserve the one-click flow.
 
 ### SH-93
 
-Closes when `move_to_court` lands. `ClearanceBox.accept` stays inert by design; the player drags the item from `BallRack` or `GearRack` to activate it.
+Closes when `activate` lands. `TakeBox.accept` stays inert by design; the player drags the item from `BallRack` or `GearRack` to activate it.
 
 ---
 
@@ -83,7 +83,7 @@ Existing `friendship_point_balance_changed` and `item_level_changed` are unchang
 
 ## Testing
 
-- `move_to_court` / `move_to_kit` state transitions and FP debits.
+- `activate` / `deactivate` state transitions and FP debits.
 - Role occupancy (append, remove, overflow stack).
 - Kit passive FP (see `08-kit.md`).
 - Ball reconciliation (see `08-balls.md`).
@@ -95,4 +95,4 @@ Existing `friendship_point_balance_changed` and `item_level_changed` are unchang
 Not filing yet.
 
 1. Court/kit data model, derived queries, signals.
-2. `move_to_court` / `move_to_kit`, `_set_level` refactor, dev-panel update, SH-93 close-out.
+2. `activate` / `deactivate`, `_set_level` refactor, dev-panel update, SH-93 close-out.

@@ -89,7 +89,7 @@ On load: resume the state with remaining duration.
 
 On resume: walk the state machine forward by the elapsed delta. For each `working` step on a head-of-queue commission, add its duration to `work_done_seconds`. Complete commissions that cross the threshold; advance the queue.
 
-Cap at `tinkerer_offline_cap_seconds`. Fire `commission_completed` on scene ready for anything that finished offline so the done tray lights up at once.
+Cap at `offline_cap_seconds` (see `08-venue.md`). Fire `commission_completed` on scene ready for anything that finished offline so the done tray lights up at once.
 
 Because work only progresses during `working`, wall-clock completion is always longer than `work_required_seconds`. A fast item might finish in ten minutes; a meaningful one might take a day.
 

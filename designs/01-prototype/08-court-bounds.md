@@ -42,9 +42,7 @@ Rested balls stay put across rallies, saves, and scene reloads.
 
 ## Helper upgrade (future)
 
-A helper is a `court` role item that automatically fetches rested balls and returns them to the rack. Same authoring shape as the bot (item + fixture + prop scene): it walks to each rested ball, picks it up, and drops it onto the rack. Without a helper, the player does this themselves.
-
-Not in prototype scope; flagged here so the ball-fetch behaviour has an obvious upgrade path. Sits alongside the bot in later projects.
+A `court` role item that automatically fetches rested balls and returns them to the rack. Not in prototype scope.
 
 ---
 

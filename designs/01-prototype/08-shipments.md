@@ -45,7 +45,7 @@ Shipments in flight continue ticking through a milestone; the box arrives on the
 
 ```
 shipment_friend_catalog_seconds: int = 30     # default catalog-to-court time
-shipment_offline_cap_seconds: int = 28800     # 8h, matches kit catch-up cap
+offline_cap_seconds: int = 28800               # shared venue constant; see 08-venue.md
 ```
 
 Per-item override: `ItemDefinition.shipment_seconds_override` (e.g. the bot ships slower as a narrative beat).

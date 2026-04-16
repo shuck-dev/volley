@@ -95,6 +95,18 @@ Migration redresses `venue.tscn` rather than relocating characters. Shipments an
 
 ---
 
+## Offline catch-up
+
+All wall-clock systems (kit passive FP, shipments, tinkerer commissions) share a single offline cap constant:
+
+```
+offline_cap_seconds: int = 28800   # 8 hours
+```
+
+On resume, each system advances by `min(elapsed, offline_cap_seconds)`. Defined once here so future systems use the same value.
+
+---
+
 ## Out of scope
 
 - Windowed desktop mode: `SH-51` territory. Desktop is secondary.

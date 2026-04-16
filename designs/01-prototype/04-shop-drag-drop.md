@@ -1,13 +1,13 @@
 # Shop Drag and Drop
 
 ## Goal
-Implementation design for the Act 1 shop interaction: a Control-based drag and drop flow where the player moves items from the friend's things into a box to take them. Covers the structural shape of `shop.tscn`, the draggable `ShopItem` Control, the `ClearanceBox` drop target, and the new `ItemManager.take()` acquisition primitive that marks an item as owned without registering its effects.
+Implementation design for the Act 1 shop interaction: a Control-based drag and drop flow where the player moves items from the friend's things into a box to take them. Covers the structural shape of `shop.tscn`, the draggable `ShopItem` Control, the `TakeBox` drop target, and the new `ItemManager.take()` acquisition primitive that marks an item as owned without registering its effects.
 
 **Dependencies:** Upgrade Shop (04-upgrade-shop), Item UI (05-item-ui), Venue (08-venue)
 
 **Unlocks:** SH-32 acceptance criteria 6, 7, 8 (drag-and-drop, drag gating, purchase on drop). Tracked in SH-66.
 
-**Status:** This document describes the **target** state. The shop as shipped in SH-32 is still Node2D-rooted with a Parallax2D background and a Camera2D. The Control restructure, the `ClearanceBox`, the drag-and-drop wiring, the `take` method, the display case overlay, and the friend's pick slot styling are all the responsibility of SH-66. Nothing described below has been built yet.
+**Status:** This document describes the **target** state. The shop as shipped in SH-32 is still Node2D-rooted with a Parallax2D background and a Camera2D. The Control restructure, the `TakeBox`, the drag-and-drop wiring, the `take` method, the display case overlay, and the friend's pick slot styling are all the responsibility of SH-66. Nothing described below has been built yet.
 
 ---
 
@@ -34,7 +34,7 @@ The original item stays in its slot during the drag. It does not lift off or dis
 The drag preview is a small rendering of the item's art scene, centred under the cursor, slightly translucent. It is built by the same SubViewport rendering path used by the inspector plugin and the `ShopItem` Control itself.
 
 ### Drop target
-A single `ClearanceBox` Control receives drops. It is the only valid drop target in the scene. Dropping on any other Control, or outside all Controls, cancels the drag silently (Godot default behaviour).
+A single `TakeBox` Control receives drops. It is the only valid drop target in the scene. Dropping on any other Control, or outside all Controls, cancels the drag silently (Godot default behaviour).
 
 The box has three visual states:
 - **Idle**: neutral border and label ("Take")
@@ -85,10 +85,10 @@ Shop (Control, script = shop.gd)
 │   │   └── FriendshipLabel (right-aligned)
 │   ├── ItemsRow (HBoxContainer)
 │   │   └── ShopItem instances
-│   └── ClearanceBox (PanelContainer, script = clearance_box.gd)
+│   └── TakeBox (PanelContainer, script = take_box.gd)
 ```
 
-The Parallax2D background and Camera2D are removed. The Node2D `Table` is removed. The shop fills whatever Control space `SceneLayout` allocates to it. A `ColorRect` stands in as a plain backdrop until art replaces it. The `ClearanceBox` sits below the items row for prototype, spanning the full width so the player drags downward into it; exact placement is subject to change on the art pass.
+The Parallax2D background and Camera2D are removed. The Node2D `Table` is removed. The shop fills whatever Control space `SceneLayout` allocates to it. A `ColorRect` stands in as a plain backdrop until art replaces it. The `TakeBox` sits below the items row for prototype, spanning the full width so the player drags downward into it; exact placement is subject to change on the art pass.
 
 The rightmost slot is visually distinguished as the friend's pick slot: a subtly different frame or background stylebox on the `ShopItem`. The rotation system that actually fills this slot with authored picks is out of scope for SH-66 (the prototype spawning logic continues to treat it as any other slot), but the visual cue lands now so the player sees one slot as more considered than the others from day one.
 
@@ -111,10 +111,10 @@ There are no labels on the `ShopItem` itself. Name, cost, and flavour text only 
 
 The current Node2D-based `ShopItem` (Sprite2D + Area2D + hover tooltip) is replaced entirely. Hover detection moves from `Area2D.mouse_entered` to Control's native `mouse_entered` / `mouse_exited` signals.
 
-### clearance_box.tscn (new)
+### take_box.tscn (new)
 
 ```
-ClearanceBox (PanelContainer, script = clearance_box.gd)
+TakeBox (PanelContainer, script = take_box.gd)
 ├── Label ("Take")
 ```
 
@@ -136,7 +136,7 @@ func can_be_taken() -> bool
 func build_drag_payload() -> ItemDefinition
 func build_drag_preview() -> Control
 
-# ClearanceBox
+# TakeBox
 func can_accept(definition: ItemDefinition) -> bool
 func accept(definition: ItemDefinition) -> void
 ```
@@ -160,7 +160,7 @@ A small throwaway Control used as the drag preview that follows the cursor durin
 
 This scene is shared across any drag source that shows an item being carried: `ShopItem` today, future `LockerItem` and `KitItem` tomorrow. Keeping it out of `shop_item.gd` avoids duplication when the kit/locker ticket adds its own drag sources.
 
-### clearance_box.gd (new)
+### take_box.gd (new)
 
 Extends `PanelContainer`. Thin forwarders over the stable contract:
 
@@ -179,9 +179,9 @@ Unchanged in behaviour: spawns items, updates friendship label, exposes `preferr
 
 ## Take flow on drop
 
-On a successful drop, `ClearanceBox.accept()` calls `ItemManager.take(key)`. That method deducts FP, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
+On a successful drop, `TakeBox.accept()` calls `ItemManager.take(key)`. That method deducts FP, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
 
-UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `ClearanceBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
+UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
 
 ---
 
@@ -223,7 +223,7 @@ There is no flag to make it cross windows. The protocol itself is the wrong abst
 
 A `DragManager` autoload that tracks drag state in screen coordinates, renders the preview in a borderless `Window` that follows `DisplayServer.mouse_get_position()`, and maintains a registry of drop targets keyed by screen-space rects. Drop targets register themselves with `can_accept` and `accept` callables, and the manager picks the right target on mouse release based on screen position.
 
-### What changes in `ShopItem` and `ClearanceBox`
+### What changes in `ShopItem` and `TakeBox`
 
 Because the current design uses the forwarding pattern, the swap is mechanical: delete the Godot virtual methods, replace with `_gui_input` for drag start and `DragManager.register_drop_target` calls in `_ready`. The stable contract (`can_be_taken`, `build_drag_payload`, `build_drag_preview`, `can_accept`, `accept`) does not change. Nothing in the purchase flow, affordability logic, display case, signals, tests, or scene structure moves.
 
@@ -238,15 +238,15 @@ Because the current design uses the forwarding pattern, the swap is mechanical: 
 
 The same stable contract handles the future locker↔kit drag flow. A `LockerItem` drag source implements `can_be_taken()` as "player owns it, not destroyed, not already in kit" and `build_drag_payload()` as "return the `ItemDefinition`". A `KitSlot` drop target implements `can_accept(definition)` as "slot eligible for this item type, slot empty or swappable" and `accept(definition)` as "call `ItemManager.equip_to_kit(key, slot_index)`". A `LockerSlot` drop target mirrors that for moving items back out of the kit.
 
-Nothing in `ShopItem` or `ClearanceBox` changes when the kit/locker ticket lands. The shared `item_dragging.tscn` is reused as the drag preview for every source. Source context (which slot did this come from?) does not need to live on the payload because `ItemManager` is the source of truth for current state: a drop target calls `equip_to_kit(key, slot)` and `ItemManager` handles any displacement or swap internally based on where it currently knows the item is.
+Nothing in `ShopItem` or `TakeBox` changes when the kit/locker ticket lands. The shared `item_dragging.tscn` is reused as the drag preview for every source. Source context (which slot did this come from?) does not need to live on the payload because `ItemManager` is the source of truth for current state: a drop target calls `equip_to_kit(key, slot)` and `ItemManager` handles any displacement or swap internally based on where it currently knows the item is.
 
-The only assumption this relies on is that `ItemManager` grows an `equip_to_kit` / `move_to_locker` pair (kit/locker ticket scope) and that those methods are state-aware enough to handle the full displacement logic without needing context from the drag source.
+The only assumption this relies on is that `ItemManager` grows an `equip_to_kit` / `deactivate` pair (kit/locker ticket scope) and that those methods are state-aware enough to handle the full displacement logic without needing context from the drag source.
 
 ---
 
 ## Extensibility: direct-to-kit and direct-to-locker takes
 
-Once the kit and locker UI exist alongside the shop, the player can drag a `ShopItem` straight onto a `KitSlot` or `LockerSlot` instead of routing through `ClearanceBox`. The `ClearanceBox` drop target stays as an explicit "deposit" affordance for players who prefer that gesture, or for layouts where the kit/locker UI is not currently visible, but it stops being the only path.
+Once the kit and locker UI exist alongside the shop, the player can drag a `ShopItem` straight onto a `KitSlot` or `LockerSlot` instead of routing through `TakeBox`. The `TakeBox` drop target stays as an explicit "deposit" affordance for players who prefer that gesture, or for layouts where the kit/locker UI is not currently visible, but it stops being the only path.
 
 ### Why this works without changing `ShopItem`
 
@@ -265,7 +265,7 @@ func accept(definition: ItemDefinition) -> void:
     ItemManager.equip_to_kit(definition.key, slot_index)
 ```
 
-`LockerSlot.accept()` is even simpler: if not owned, call `take`; if already owned (dragged from kit), call `move_to_locker`. There is no separate "from shop" code path; the slot just reads current state from `ItemManager` and does the right thing.
+`LockerSlot.accept()` is even simpler: if not owned, call `take`; if already owned (dragged from kit), call `deactivate`. There is no separate "from shop" code path; the slot just reads current state from `ItemManager` and does the right thing.
 
 ### Affordability gating
 
@@ -277,7 +277,7 @@ func can_acquire(item_key: String) -> bool:
     return get_level(item_key) == 0 and _progression.friendship_point_balance >= calculate_cost(item_key)
 ```
 
-`ClearanceBox.can_accept`, `KitSlot.can_accept`, and `LockerSlot.can_accept` all call this when the item is unowned. The `ClearanceBox` keeps its existing behaviour because `can_acquire` is exactly its current check, just named.
+`TakeBox.can_accept`, `KitSlot.can_accept`, and `LockerSlot.can_accept` all call this when the item is unowned. The `TakeBox` keeps its existing behaviour because `can_acquire` is exactly its current check, just named.
 
 ### Friend's pick slot interaction
 
@@ -286,13 +286,13 @@ The friend's pick slot is a property of the source (`ShopItem`), not the payload
 ### What this does not introduce
 
 - No new payload fields, no source context on the drag.
-- No changes to the stable contract on `ShopItem` or `ClearanceBox`.
+- No changes to the stable contract on `ShopItem` or `TakeBox`.
 - No changes to `take`. It is the single acquisition primitive used by every target that needs to pull from the shop.
 - No atomicity requirement between `take` and `equip_to_kit`. If the equip step fails after a successful take, the item is owned but unequipped, which is a valid resting state and matches what the player would see if they had used the box. The kit/locker UI surfaces this state as "in the locker"; that framing is the kit/locker ticket's concern, not `take`'s.
 
 ### Out of scope until the kit/locker ticket lands
 
-`KitSlot`, `LockerSlot`, `equip_to_kit`, `move_to_locker`, and `can_acquire` are all kit/locker ticket scope. SH-66 only ships `ClearanceBox` and `take`. This section exists so the kit/locker ticket can wire direct takes in without renegotiating the contract.
+`KitSlot`, `LockerSlot`, `equip_to_kit`, `deactivate`, and `can_acquire` are all kit/locker ticket scope. SH-66 only ships `TakeBox` and `take`. This section exists so the kit/locker ticket can wire direct takes in without renegotiating the contract.
 
 ---
 
@@ -313,11 +313,11 @@ This is a rewrite of the shop's interior, not a fresh feature. Files affected:
 - `res://scripts/shop/shop_item.gd` (extends Control, new drag API)
 
 **New:**
-- `res://scenes/clearance_box.tscn`
-- `res://scripts/shop/clearance_box.gd`
+- `res://scenes/take_box.tscn`
+- `res://scripts/shop/take_box.gd`
 - `res://scenes/items/item_dragging.tscn` (shared drag preview, reused by future locker/kit sources)
 - `res://scripts/items/item_dragging.gd`
-- `res://tests/unit/test_clearance_box.gd`
+- `res://tests/unit/test_take_box.gd`
 - A "tink" sound effect asset for cased-item clicks (format and location per existing audio conventions)
 
 **Updated:**

@@ -28,7 +28,7 @@ Inactive: effects stop, the item generates passive FP.
 Role decides whether an item can be inactive:
 
 - **Ball and equipment** can be either active or inactive. Inactive ones sit on the `BallRack` or in the `GearCase`.
-- **Court** items are always active once acquired. They go straight from shipment onto the court and stay there until destroyed at the Tinkerer.
+- **Court** items are always active once acquired. They go straight from shipment onto the court and stay there until destroyed at the Tinkerer. The one exception is the Tinkerer's commission queue: during a level-up commission, the item is temporarily off the court (neither active nor destroyed) and returns to a court marker on completion.
 
 ---
 

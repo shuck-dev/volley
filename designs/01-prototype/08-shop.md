@@ -13,7 +13,7 @@ Shop (child of venue.tscn, hidden until friend unlocked)
 ├── FriendCharacter
 ├── ShopTable                 (pool-gated small items)
 │   └── ShopItem instances
-├── ClearanceBox              (drop target from 04-shop-drag-drop.md)
+├── TakeBox              (drop target from 04-shop-drag-drop.md)
 ├── ShopCatalog               (browseable bigger items)
 │   └── CatalogEntry instances
 └── ShippingCounter           (sealed orders leaving for the shipment mat)
@@ -27,7 +27,7 @@ Gated by `&"friend"` in `unlocked_characters`. Everything is visible at all time
 
 Small items sit on the table. Pool rotation is in `05-upgrade-shop-mechanics.md`.
 
-- Drag a `ShopItem` onto the `ClearanceBox`, or directly onto the matching inactive area (`BallRack` for balls, `GearRack` for equipment) → `ItemManager.take(key)` → item is owned and inactive.
+- Drag a `ShopItem` onto the `TakeBox`, or directly onto the matching inactive area (`BallRack` for balls, `GearRack` for equipment) → `ItemManager.take(key)` → item is owned and inactive.
 
 Acquisition is immediate. No shipping.
 
@@ -64,7 +64,7 @@ Owned by `05-upgrade-shop-mechanics.md`. The table rotates through the pool; the
 
 ## Interaction surfaces
 
-- Drag table → `ClearanceBox` or kit.
+- Drag table → `TakeBox` or kit.
 - Tap catalog → inline browse → tap to order.
 - Tap friend → greeting dialogue (dialogue system, later).
 
@@ -82,7 +82,7 @@ Owned by `05-upgrade-shop-mechanics.md`. The table rotates through the pool; the
 
 Not filing yet.
 
-1. Shop child scene: table, `ClearanceBox`, catalog stub, shipping counter, friend placement.
+1. Shop child scene: table, `TakeBox`, catalog stub, shipping counter, friend placement.
 2. Friend unlock beat, `unlocked_characters` gate, show/hide.
 3. `catalog_only` flag on `ItemDefinition`; author one catalog item (the bot).
 4. Catalog browse: inline open, paginate, tap to order, confirm, FP deduct.

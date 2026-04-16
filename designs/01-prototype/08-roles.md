@@ -16,7 +16,13 @@ Every item declares one of three roles. The role decides where it goes on the co
 
 Stat-only items (no visible prop) still declare a role: a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`.
 
-Ball and court roles are additive: any number of items can share the role. Equipment has a per-type cap: each item type (e.g. grip wrap, wrist brace) declares a maximum number that can be equipped at once. `move_to_court` rejects the item if equipping it would exceed the cap for its type.
+Ball and court roles are additive: any number of items can share the role. Equipment has a per-type cap authored on `ItemDefinition`:
+
+```gdscript
+@export var equip_type_cap: int = 1
+```
+
+Each item type (e.g. grip wrap, wrist brace) declares a maximum number that can be equipped at once. `activate` rejects the item if equipping it would exceed the cap for its type.
 
 ```gdscript
 const _ROLE_REGISTRY: Dictionary[StringName, StringName] = {
@@ -56,7 +62,7 @@ Each court occupant takes the next marker; overflow stacks on the last.
 
 ## Placement flow
 
-On `move_to_court(item_key)`:
+On `activate(item_key)`:
 
 1. Append to `on_court[role]`.
 2. Register effects with `EffectManager`.
@@ -93,7 +99,7 @@ Character areas (shop, workshop) are child scenes of `venue.tscn` gated by `unlo
 
 ## Resolved questions
 
-1. **Within-role conflicts.** Equipment uses a per-type cap. Each item type declares how many can be equipped simultaneously; `move_to_court` enforces it.
+1. **Within-role conflicts.** Equipment uses a per-type cap. Each item type declares how many can be equipped simultaneously; `activate` enforces it.
 2. **Debug overlay.** Yes, behind a keypress. Shows role markers, current occupants, and equipment type caps.
 
 ---

@@ -24,7 +24,7 @@ classDiagram
         +max_level: int
         +effects: Effect[]
         +fixture: Fixture
-        +bag_rate_override: float
+        +kit_rate_override: float
         +get_effects_for_level(level: int) Effect[]
         +get_key() String
     }
@@ -130,7 +130,7 @@ classDiagram
 
 | Class | Role |
 |---|---|
-| `ItemDefinition` | Pure data template (Resource): display info, cost formula, effect definitions, authored `role`, optional `fixture`. See `08a` for court/bag mechanics |
+| `ItemDefinition` | Pure data template (Resource): display info, cost formula, effect definitions, authored `role`, optional `fixture`. See `08-items.md` for activate/deactivate mechanics |
 | `Partner` | NPC companion that provides effects scaled by relationship level |
 | `Effect` | A single trigger + conditions + outcomes rule, gated by min/max active level |
 | `Trigger` | When the effect fires (always, on_miss, on_hit, etc.). Type is a StringName, not an enum |
@@ -338,12 +338,12 @@ Standard items have a simple lifecycle. Degrading items (Seven Years) have an ex
 ```mermaid
 stateDiagram-v2
     [*] --> Owned
-    Owned --> Court: move_to_court
-    Owned --> Bag: move_to_bag / default
-    Court --> Bag: move_to_bag
-    Bag --> Court: move_to_court
+    Owned --> Court: activate
+    Owned --> Inactive: deactivate / default
+    Court --> Inactive: deactivate
+    Inactive --> Court: activate
     Court --> Destroyed: Tinkerer
-    Bag --> Destroyed: Tinkerer
+    Inactive --> Destroyed: Tinkerer
     Destroyed --> [*]
 
     state Court {
@@ -385,8 +385,8 @@ stateDiagram-v2
 
 ```mermaid
 flowchart TD
-    MoveToCourt[Player moves item to court] --> Register[EffectManager.register_source]
-    MoveToBag[Player moves item to bag] --> Unregister[EffectManager.unregister_source]
+    Activate[Player activates item] --> Register[EffectManager.register_source]
+    Deactivate[Player deactivates item] --> Unregister[EffectManager.unregister_source]
     Partner[Partner joins session] --> Register
     PartnerLeave[Partner leaves] --> Unregister
 
@@ -395,7 +395,7 @@ flowchart TD
     Unregister --> Cleanup[EffectState.remove_modifiers_by_source]
 ```
 
-Every item follows the same rule: effects register when it moves onto the court and unregister when it returns to the bag. No type-specific branching.
+Every item follows the same rule: effects register on activate and unregister on deactivate. No type-specific branching.
 
 ---
 
@@ -480,7 +480,7 @@ Effects, items, and partners are `.tres` resource files. Authored in data, loade
 
 - `EffectManager` subscribes to game signals (`ball_missed`, `paddle_hit`, `streak_changed`, etc.) and translates them into `on_game_event` calls with the matching TriggerType.
 - `always` trigger effects are evaluated once on registration and re-evaluated when the source changes (level up, degradation change).
-- `ItemManager.move_to_court` calls `register_source`; `move_to_bag` calls `unregister_source`. Partners register on join and unregister on leave. One registration path for every effect source.
+- `ItemManager.activate` calls `register_source`; `deactivate` calls `unregister_source`. Partners register on join and unregister on leave. One registration path for every effect source.
 - `EffectManager.get_stat()` is the single source of truth for all gameplay values. Game systems must never hardcode stats.
 - Degradation is a stat in EffectState, keyed per item (e.g. `degradation:seven_years`). The `increment_degradation` outcome is `modify_stat` on this key. The `degradation_at` and `degradation_below` conditions check it via `get_stat`.
 - Partner effects use the same Effect resources. The only difference is the source: `Partner` provides `relationship_level` as the level parameter to `get_effects_for_level()`.

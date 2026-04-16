@@ -88,7 +88,7 @@ kit_rate_coefficient: float = 0.0005   # config key
 
 ### Offline catch-up
 
-On `_ready`, if `kit_last_tick_unix > 0`, award `elapsed * rate` in a single lump. Cap at `kit_offline_cap_seconds` (default 8 hours). `kit_last_tick_unix` is updated on every save.
+On `_ready`, if `kit_last_tick_unix > 0`, award `elapsed * rate` in a single lump. Cap at `offline_cap_seconds` (see `08-venue.md`). `kit_last_tick_unix` is updated on every save.
 
 ### Save throttling
 

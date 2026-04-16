@@ -33,7 +33,7 @@ A second bot variant is another `.tres` with a different prop scene or `BotBehav
 Pure standard-item path:
 
 - Order from the friend's catalog, ships, box lands on the shipment mat, `item_levels[bot_key] = 1`.
-- Player drags the bot from the box directly onto the court. `move_to_court(bot_key)` fires at the `court` role; `FixtureManager` spawns `bot_dock.tscn` at `BotDock`.
+- Player drags the bot from the box directly onto the court. `activate(bot_key)` fires at the `court` role; `FixtureManager` spawns `bot_dock.tscn` at `BotDock`.
 - Court items never leave the court except through the Tinkerer. Drag the bot to the workshop drop-off basket for level-up (returns to a court marker when done) or destruction (permanent removal).
 
 The bot does not generate passive FP; only kit items do.
