@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/court.tscn" id="2_01afa"]
 [ext_resource type="PackedScene" uid="uid://hvh6q02lrntj" path="res://scenes/shop.tscn" id="3_shop"]
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="4_hud"]
+[ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
 
 [node name="Venue" type="Control" unique_id=1553404037 node_paths=PackedStringArray("game_root", "secondary_container", "shop", "hud")]
 layout_mode = 3
@@ -37,3 +38,4 @@ layout_mode = 1
 
 [node name="Camera" type="Camera2D" parent="." unique_id=344118203]
 zoom = Vector2(0.52, 0.52)
+script = ExtResource("5_wttuf")
