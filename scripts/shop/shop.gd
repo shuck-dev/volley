@@ -29,6 +29,7 @@ func _ready() -> void:
 	_update_friendship_label(_item_manager.get_friendship_point_balance())
 	_spawn_items()
 	_apply_config()
+	items_row.sort_children.connect(_position_pick_indicator)
 
 
 ## Re-applies shop-level layout values. Child items receive their config during

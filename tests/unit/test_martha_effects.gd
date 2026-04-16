@@ -31,7 +31,7 @@ func before_each() -> void:
 	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(_autoplay_controller_stub)
 
-	_game = load("res://scripts/core/game.gd").new()
+	_game = load("res://scripts/core/court.gd").new()
 	_game.ball = _ball_stub
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = _autoplay_controller_stub

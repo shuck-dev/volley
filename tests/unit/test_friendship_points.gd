@@ -30,7 +30,7 @@ func before_each() -> void:
 	var progression_config: ProgressionConfig = ProgressionConfig.new()
 	progression_config.autoplay_friendship_point_rate = 0.5
 
-	_game = load("res://scripts/core/game.gd").new()
+	_game = load("res://scripts/core/court.gd").new()
 	_game.ball = _ball_stub
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = _autoplay_controller_stub

@@ -44,7 +44,7 @@ hot_reloadable_config="Auto-reloads Resource exports from disk in debug builds"
 
 [gui]
 
-theme/custom="res://resources/default_theme.tres"
+theme/custom="res://resources/themes/default_theme.tres"
 
 [input]
 
@@ -73,4 +73,3 @@ toggle_autoplay={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-anti_aliasing/quality/msaa_2d=2

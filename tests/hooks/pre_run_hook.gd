@@ -7,7 +7,7 @@ const EXCLUDE_PATHS = [
 	"res://tests/*",
 	# Require full scene with nodes, not unit-testable
 	"res://scripts/hud/*",
-	"res://scripts/core/scene_layout.gd",
+	"res://scripts/core/venue.gd",
 	# One-method duck-typing stubs, exercised through ball collision tests
 	"res://scripts/entities/miss_zone.gd",
 	# Thin wrappers, require full scene tree

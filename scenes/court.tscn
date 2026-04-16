@@ -2,7 +2,7 @@
 
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
-[ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/game.gd" id="1_tbgi4"]
+[ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
@@ -20,11 +20,11 @@ autoplay_controller = NodePath("AutoplayController")
 right_wall = NodePath("Bounds/Right Wall")
 partner_spawn = NodePath("PartnerSpawn")
 
-[node name="ArenaBackground" type="Parallax2D" parent="." unique_id=1053024008]
+[node name="CourtBackground" type="Parallax2D" parent="." unique_id=1053024008]
 scroll_scale = Vector2(0, 0)
 repeat_size = Vector2(4000, 4000)
 
-[node name="BackgroundColor" type="ColorRect" parent="ArenaBackground" unique_id=2003900130]
+[node name="BackgroundColor" type="ColorRect" parent="CourtBackground" unique_id=2003900130]
 offset_left = -2000.0
 offset_top = -2000.0
 offset_right = 2000.0
