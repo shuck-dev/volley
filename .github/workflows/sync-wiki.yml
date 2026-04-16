@@ -53,7 +53,7 @@ jobs:
           # so [text](foo.md) and [text](dir/foo.md#anchor) resolve as wiki pages
           # instead of serving raw file content.
           find wiki -name '*.md' -print0 | xargs -0 sed -i -E \
-            's#\]\(([^)[:space:]]+)\.md(#[^)]*)?\)#](\1\2)#g'
+            's|\]\(([^)[:space:]]+)\.md(#[^)]*)?\)|](\1\2)|g'
 
       - name: Commit and push
         working-directory: wiki
