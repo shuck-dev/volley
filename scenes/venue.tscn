@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/court.tscn" id="2_01afa"]
 [ext_resource type="PackedScene" uid="uid://hvh6q02lrntj" path="res://scenes/shop.tscn" id="3_shop"]
 
-[node name="Venue" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_root", "game_ui_viewport", "secondary_container")]
+[node name="Venue" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_root", "game_ui_viewport", "secondary_container", "shop")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +15,7 @@ script = ExtResource("1_qaugd")
 game_root = NodePath("Court")
 game_ui_viewport = NodePath("UILayer/HBoxContainer/GameSlot/GameUIContainer/GameUIViewport")
 secondary_container = NodePath("UILayer/HBoxContainer/SecondaryContainer")
+shop = NodePath("UILayer/HBoxContainer/SecondaryContainer/Shop")
 
 [node name="Court" parent="." unique_id=75800363 instance=ExtResource("2_01afa")]
 

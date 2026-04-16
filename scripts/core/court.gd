@@ -105,7 +105,7 @@ func _on_ball_missed() -> void:
 	var should_halve: bool = actions.has(&"halve_streak")
 
 	if should_halve:
-		_volley_count = _volley_count / 2
+		_volley_count = floori(_volley_count / 2.0)
 	else:
 		_volley_count = 0
 
