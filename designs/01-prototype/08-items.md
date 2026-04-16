@@ -1,41 +1,41 @@
 # Items, the Court, and the Kit
 
-The player-facing model for items. Every owned thing is an item. Items are either on the court (active, working, visible) or in the kit (at rest, generating passive FP). That is the whole mechanic.
+Every owned thing is an item. Items are either on the court (active) or in the kit (at rest, generating passive FP).
 
-Other 08 docs are details:
+Details live in sibling docs:
 
-- Where items physically go on the court: `08-roles.md`.
-- What a physical prop is: `08-fixtures.md`.
-- The kit room, passive FP, and offline catch-up: `08-kit.md`.
-- The ball role specifically: `08-balls.md`.
-- Runtime data and code: `08-item-manager.md`.
-
----
-
-## One concept: items
-
-All owned things are items. Every item has a physical place it belongs on the court, authored as its `role` (see `08-roles.md`). Placing an item on the court activates it; its effects register, and its visible form (if any) appears at its slot. Putting an item in the kit at-rests it; its effects stop and it begins generating passive FP instead.
-
-No separate "kit" or "equipment" category, no counted slots, no type split between kit items and court items. One rule for all of them: on the court = active; in the kit = at rest.
+- Where on the court: `08-roles.md`
+- Physical props: `08-fixtures.md`
+- Kit areas and passive FP: `08-kit.md`
+- Ball items: `08-balls.md`
+- Runtime code: `08-item-manager.md`
 
 ---
 
-## The court and the kit
+## The rule
 
-The court is the physical world where items live when active. Items occupy authored places: some on the paddle, some as the ball, some at court-side spots (the bot dock, the jukebox stand, etc.), some as court surface treatments. Each item knows where it goes; the player does not choose a slot, they choose which items come out.
+On the court = active: effects register, prop (if any) appears at its role.
 
-The kit is the at-rest store. Any item not currently on the court lives in the kit room (see `08-kit.md`): a shared gear room at the player's end of the venue, always present, always accessible. Balls sit in a ball rack; paddle gear and small items are on the gear shelving; larger props occupy the floor space. The player goes there to pick up items and bring them to the court, or to put things back after pulling them off.
+In the kit = at rest: effects stop, the item generates passive FP.
 
-Moving an item from the kit room onto the court costs FP and triggers a per-role cooldown. Both values are Make Fun Pass tuning targets. The cost keeps the loadout a real decision; the cooldown prevents spam.
+No separate equipment category, no counted slots. One rule for everything.
 
 ---
 
-## Destruction and secret items
+## Court and kit
 
-Any item can be destroyed at the Tinkerer (mechanics: `08-tinkerer.md`). Destroying specific items unlocks secret items that cannot be obtained any other way. This is unsignposted. The Tinkerer's destruction dialogue holds its tongue. Most players will never find these.
+The court is where items live when active. Each item has an authored role (`ball`, `court`, or `equipment`) that decides where it goes. The player chooses which items come out, not where they sit.
 
-Secret items are for die-hards: players who destroy things out of curiosity, who pay close attention to what the Tinkerer says, who experiment beyond the obvious loop. The reward is the discovery.
+The kit is the at-rest store: three areas (ball rack, gear case, floor) at the player's end (see `08-kit.md`). Balls sit on the rack; equipment in the case; large court props on the floor.
 
-Most item destructions unlock nothing beyond the partial FP refund and the Tinkerer's dialogue. Secret unlocks are rare by design: one per specific item at most, and not every item has one.
+Moving an item from the kit to the court costs FP and triggers a per-role cooldown. Both are tuning knobs.
 
-Secret items entering the pool conditionally require the shop rotation system to support trigger-gated pool entries. See `04-upgrade-shop.md`.
+---
+
+## Destruction
+
+Items are destroyed at the Tinkerer for a partial FP refund (mechanics: `08-tinkerer.md`).
+
+Destroying specific items unlocks secret items that are otherwise unobtainable. Unsignposted. Most players never find them. One secret per eligible item at most; not every item has one.
+
+Secret items entering the shop pool require trigger-gated pool entries (see `04-upgrade-shop.md`).

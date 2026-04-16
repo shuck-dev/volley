@@ -12,15 +12,15 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 05 | [Upgrade Shop Mechanics](05-upgrade-shop-mechanics.md) |
 | 06 | [Upgrade Shop Items](06-upgrade-shop-items.md) |
 | 07 | [Effect System](07-effect-system.md) |
-| 08 | [World as One Place](08-world.md) |
+| 08 | [The Court](08-world.md) |
 | 08 | [Items, the Court, and the Kit](08-items.md) |
 | 08 | [ItemManager: Data Model and Runtime](08-item-manager.md) |
 | 08 | [Item Roles](08-roles.md) |
 | 08 | [Fixtures](08-fixtures.md) |
-| 08 | [The Kit Room and Passive FP](08-kit.md) |
+| 08 | [The Kit](08-kit.md) |
 | 08 | [Balls on the Court](08-balls.md) |
 | 08 | [Shipments](08-shipments.md) |
-| 08 | [The Shop as a Place](08-shop.md) |
+| 08 | [The Shop](08-shop.md) |
 | 08 | [The Tinkerer at Work](08-tinkerer.md) |
 | 08 | [The Bot](08-bot.md) |
 | 09 | [Item UI](09-item-ui.md) |
