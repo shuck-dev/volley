@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://cls4btpupspbw"]
 
-[ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/scene_layout.gd" id="1_qaugd"]
-[ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/game.tscn" id="2_01afa"]
+[ext_resource type="Script" path="res://scripts/core/venue.gd" id="1_qaugd"]
+[ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/court.tscn" id="2_01afa"]
 
-[node name="SceneLayout" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_content_viewport", "game_root", "game_ui_viewport", "secondary_container")]
+[node name="Venue" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_content_viewport", "game_root", "game_ui_viewport", "secondary_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qaugd")
 game_content_viewport = NodePath("HBoxContainer/GameSlot/GameContentContainer/GameContentViewport")
-game_root = NodePath("HBoxContainer/GameSlot/GameContentContainer/GameContentViewport/Game")
+game_root = NodePath("HBoxContainer/GameSlot/GameContentContainer/GameContentViewport/Court")
 game_ui_viewport = NodePath("HBoxContainer/GameSlot/GameUIContainer/GameUIViewport")
 secondary_container = NodePath("HBoxContainer/SecondaryContainer")
 
@@ -39,7 +39,7 @@ handle_input_locally = false
 size = Vector2i(1920, 1080)
 render_target_update_mode = 4
 
-[node name="Game" parent="HBoxContainer/GameSlot/GameContentContainer/GameContentViewport" unique_id=75800363 instance=ExtResource("2_01afa")]
+[node name="Court" parent="HBoxContainer/GameSlot/GameContentContainer/GameContentViewport" unique_id=75800363 instance=ExtResource("2_01afa")]
 
 [node name="GameUIContainer" type="SubViewportContainer" parent="HBoxContainer/GameSlot" unique_id=501572691]
 layout_mode = 1

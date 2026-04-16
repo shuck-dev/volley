@@ -1,4 +1,4 @@
-class_name Game
+class_name Court
 extends Node2D
 
 signal volley_count_changed(count: int)
@@ -33,7 +33,7 @@ var _friendship_point_accumulator := 0.0
 
 
 func _ready() -> void:
-	assert(autoplay_controller != null, "game.gd: autoplay_controller export must be assigned")
+	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
 	if _progression == null:
 		_progression = SaveManager.get_progression_data()
 	if _progression_config == null:

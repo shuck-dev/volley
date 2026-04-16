@@ -1,6 +1,6 @@
 extends GutTest
 
-# Verifies that game.gd dispatches ball events to the effect system.
+# Verifies that court.gd dispatches ball events to the effect system.
 # Uses Cadence as the test item since it consumes both on_max_speed_reached and on_miss.
 
 var _game: Node2D
@@ -35,7 +35,7 @@ func before_each() -> void:
 	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(autoplay_controller_stub)
 
-	_game = load("res://scripts/core/game.gd").new()
+	_game = load("res://scripts/core/court.gd").new()
 	_game.ball = _ball
 	_game.player_paddle = _paddle
 	_game.autoplay_controller = autoplay_controller_stub

@@ -1,4 +1,4 @@
-class_name SceneLayout
+class_name Venue
 extends Control
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
