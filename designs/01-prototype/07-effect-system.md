@@ -16,13 +16,15 @@ Effects are data, not code. No per-item scripts. Every effect is a combination o
 classDiagram
     class ItemDefinition {
         +key: String
-        +type: StringName
+        +role: StringName
         +display_name: String
         +descriptions: String[]
         +base_cost: int
         +cost_scaling: float
         +max_level: int
         +effects: Effect[]
+        +fixture: Fixture
+        +kit_rate_override: float
         +get_effects_for_level(level: int) Effect[]
         +get_key() String
     }
@@ -128,7 +130,7 @@ classDiagram
 
 | Class | Role |
 |---|---|
-| `ItemDefinition` | Pure data template (Resource): display info, cost formula, and effect definitions |
+| `ItemDefinition` | Pure data template (Resource): display info, cost formula, effect definitions, authored `role`, optional `fixture`. See `08-items.md` for activate/deactivate mechanics |
 | `Partner` | NPC companion that provides effects scaled by relationship level |
 | `Effect` | A single trigger + conditions + outcomes rule, gated by min/max active level |
 | `Trigger` | When the effect fires (always, on_miss, on_hit, etc.). Type is a StringName, not an enum |
@@ -197,7 +199,6 @@ deflect_ball
 spawn_gravity_well
 intensify_gravity_well
 award_friendship_points
-expand_kit_slots
 increment_degradation
 share_stats_with_partner
 momentum_boost
@@ -206,6 +207,8 @@ roll_table
 set_ball_speed
 halve_streak
 ```
+
+`expand_kit_slots` is removed under the new model (`08-items.md`). Kit slots as counted capacity no longer exist; authored item roles (see `08-roles.md`) with per-role capacity rules replace them. Items that once expanded slots (e.g. Spare) become stat or fixture items.
 
 ### ModifierOp
 
@@ -224,7 +227,7 @@ Currently used by `stat_until_miss` outcomes (cleared on miss via EffectManager)
 ### ExpiryCondition
 
 ```
-while_owned          # removed when source unequipped/destroyed
+while_on_court       # removed when the source leaves the court or is destroyed
 duration             # timer, removed after N seconds
 until_miss           # temporary flag, cleared on next miss, stackable
 until_state_exits    # cleared when a named game state ends
@@ -260,7 +263,6 @@ Each outcome type routes to a different system. EffectManager handles the dispat
 flowchart LR
     Outcome --> EffectState["<b>EffectState</b><br/>modify_stat<br/>multiply_stat_temporary<br/>modify_stat_until_miss<br/>oscillate_stat<br/>share_stats_with_partner<br/>momentum_boost<br/>set_game_state<br/>increment_degradation"]
     Outcome --> GameActions["<b>Game</b><br/>spawn_ball<br/>clear_extra_balls<br/>deflect_ball<br/>spawn_gravity_well<br/>intensify_gravity_well<br/>set_ball_speed<br/>halve_streak"]
-    Outcome --> ItemManager["<b>ItemManager</b><br/>expand_kit_slots"]
     Outcome --> Economy["<b>ItemManager</b><br/>award_friendship_points"]
     Outcome --> Self["<b>EffectManager</b><br/>roll_table (re-enters evaluation)"]
 ```
@@ -297,7 +299,6 @@ EffectState is key-agnostic. Game systems register base values at startup. New k
 | `friendship_points_per_hit` | 1.0 | FP |
 | `ball_magnetism` | 0.0 | force |
 | `return_angle_influence` | 0.0 | factor (0-1) |
-| `kit_slots` | 3.0 | count (cast to int at use) |
 | `ball_speed_offset` | 0.0 | px/s |
 | `arena_height` | 986.0 | px |
 
@@ -337,15 +338,15 @@ Standard items have a simple lifecycle. Degrading items (Seven Years) have an ex
 ```mermaid
 stateDiagram-v2
     [*] --> Owned
-    Owned --> Kit: equip
-    Owned --> Locker: unequip / default
-    Kit --> Locker: swap out
-    Locker --> Kit: swap in
-    Kit --> Destroyed: Tinkerer
-    Locker --> Destroyed: Tinkerer
+    Owned --> Court: activate
+    Owned --> Inactive: deactivate / default
+    Court --> Inactive: deactivate
+    Inactive --> Court: activate
+    Court --> Destroyed: Tinkerer
+    Inactive --> Destroyed: Tinkerer
     Destroyed --> [*]
 
-    state Kit {
+    state Court {
         [*] --> Level1
         Level1 --> Level2: upgrade
         Level2 --> Level3: upgrade
@@ -384,8 +385,8 @@ stateDiagram-v2
 
 ```mermaid
 flowchart TD
-    Equip[Player equips item to kit] --> Register[EffectManager.register_source]
-    Unequip[Player moves item to locker] --> Unregister[EffectManager.unregister_source]
+    Activate[Player activates item] --> Register[EffectManager.register_source]
+    Deactivate[Player deactivates item] --> Unregister[EffectManager.unregister_source]
     Partner[Partner joins session] --> Register
     PartnerLeave[Partner leaves] --> Unregister
 
@@ -394,7 +395,7 @@ flowchart TD
     Unregister --> Cleanup[EffectState.remove_modifiers_by_source]
 ```
 
-Court items register on purchase and stay registered unless lockered or destroyed. Kit items register/unregister on swap.
+Every item follows the same rule: effects register on activate and unregister on deactivate. No type-specific branching.
 
 ---
 
@@ -479,7 +480,7 @@ Effects, items, and partners are `.tres` resource files. Authored in data, loade
 
 - `EffectManager` subscribes to game signals (`ball_missed`, `paddle_hit`, `streak_changed`, etc.) and translates them into `on_game_event` calls with the matching TriggerType.
 - `always` trigger effects are evaluated once on registration and re-evaluated when the source changes (level up, degradation change).
-- Court items call `register_source` on purchase automatically. Kit items call it on equip.
+- `ItemManager.activate` calls `register_source`; `deactivate` calls `unregister_source`. Partners register on join and unregister on leave. One registration path for every effect source.
 - `EffectManager.get_stat()` is the single source of truth for all gameplay values. Game systems must never hardcode stats.
 - Degradation is a stat in EffectState, keyed per item (e.g. `degradation:seven_years`). The `increment_degradation` outcome is `modify_stat` on this key. The `degradation_at` and `degradation_below` conditions check it via `get_stat`.
 - Partner effects use the same Effect resources. The only difference is the source: `Partner` provides `relationship_level` as the level parameter to `get_effects_for_level()`.
