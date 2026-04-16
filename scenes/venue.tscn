@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/venue.gd" id="1_qaugd"]
 [ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/court.tscn" id="2_01afa"]
+[ext_resource type="PackedScene" uid="uid://hvh6q02lrntj" path="res://scenes/shop.tscn" id="3_shop"]
 
 [node name="Venue" type="Control" unique_id=695286340 node_paths=PackedStringArray("game_root", "game_ui_viewport", "secondary_container")]
 layout_mode = 3
@@ -49,3 +50,6 @@ render_target_update_mode = 4
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Shop" parent="UILayer/HBoxContainer/SecondaryContainer" unique_id=444828137 instance=ExtResource("3_shop")]
+layout_mode = 1
