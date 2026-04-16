@@ -34,3 +34,6 @@ grow_vertical = 2
 
 [node name="Shop" parent="SecondaryContainer" unique_id=62253598 instance=ExtResource("3_shop")]
 layout_mode = 1
+
+[node name="Camera" type="Camera2D" parent="." unique_id=344118203]
+zoom = Vector2(0.52, 0.52)

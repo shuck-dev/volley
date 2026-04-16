@@ -34,9 +34,6 @@ color = Color(0.12, 0.15, 0.25, 1)
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
 position = Vector2(-32, -8)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1872813521]
-zoom = Vector2(0.52, 0.52)
-
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
@@ -102,7 +99,7 @@ position = Vector2(20.074709, 492.9507)
 scale = Vector2(1.2850581, 1.1197083)
 shape = SubResource("RectangleShape2D_sgp6g")
 
-[node name="MissZone" parent="Bounds/Back Wall" instance=ExtResource("10_miss_zone")]
+[node name="MissZone" parent="Bounds/Back Wall" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
 position = Vector2(20, 493)
 scale = Vector2(1.28, 1.12)
 
