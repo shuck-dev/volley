@@ -8,7 +8,6 @@ const HudScene: PackedScene = preload("res://scenes/hud.tscn")
 ## Individual scenes override by declaring `@export var preferred_width: int`.
 const DEFAULT_SECONDARY_WIDTH: int = 400
 
-@export var game_content_viewport: SubViewport
 @export var game_root: Node
 @export var game_ui_viewport: SubViewport
 @export var secondary_container: Control
@@ -22,8 +21,6 @@ var _hud: CanvasLayer
 
 
 func _ready() -> void:
-	if game_content_viewport != null:
-		game_content_viewport.transparent_bg = false
 	secondary_container.visible = false
 
 	_setup_hud()

@@ -1,6 +1,8 @@
 @tool
 extends VBoxContainer
 
+const DEBUG_FONT_SIZE: int = 14
+
 var _labels: Dictionary = {}
 var _speed_label: Label
 var _speed_bar: Control
@@ -88,6 +90,7 @@ func _add_header() -> void:
 	header.text = "--- DEBUG: Stats ---"
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
+	header.add_theme_font_size_override("font_size", DEBUG_FONT_SIZE)
 	add_child(header)
 
 
@@ -95,6 +98,7 @@ func _make_stat_label() -> Label:
 	var label := Label.new()
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+	label.add_theme_font_size_override("font_size", DEBUG_FONT_SIZE)
 	return label
 
 

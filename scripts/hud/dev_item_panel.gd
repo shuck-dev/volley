@@ -1,12 +1,15 @@
 @tool
 extends VBoxContainer
 
+const DEBUG_FONT_SIZE: int = 14
+
 var _buttons: Dictionary = {}
 
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		_build_placeholder()
+		_apply_debug_font_size(self)
 		return
 
 	if not OS.is_debug_build():
@@ -58,6 +61,8 @@ func _ready() -> void:
 
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
+
+	_apply_debug_font_size(self)
 
 
 func _on_item_pressed(item_key: String) -> void:
@@ -160,6 +165,13 @@ func _add_header() -> void:
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
 	add_child(header)
+
+
+func _apply_debug_font_size(node: Node) -> void:
+	if node is Control:
+		node.add_theme_font_size_override("font_size", DEBUG_FONT_SIZE)
+	for child in node.get_children():
+		_apply_debug_font_size(child)
 
 
 func _build_placeholder() -> void:
