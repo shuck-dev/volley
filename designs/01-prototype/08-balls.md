@@ -12,10 +12,18 @@ Each item with `role = &"ball"` puts one ball on the court. Training Ball + The 
 
 ### Player interaction
 
-- **Into play:** player drags a ball from the `BallRack` onto the court. `move_to_court(key)` fires; `BallReconciler` spawns it from the court's ball-spawn origin.
-- **Out of play:** player drags a live ball off the court back onto the `BallRack`. `move_to_kit(key)` fires; `BallReconciler` despawns it.
+The player can drag a ball to two destinations:
+
+- **To the ball rack:** ball becomes inactive and waits on the rack for later use.
+- **Directly into the court:** ball enters play immediately. `move_to_court(key)` fires; `BallReconciler` spawns it from the court's ball-spawn origin.
+
+Removing a live ball works the same way: drag it off the court back onto the `BallRack`. `move_to_kit(key)` fires; `BallReconciler` despawns it.
 
 Both gestures happen live, without pausing. The main character keeps playing whatever balls remain.
+
+### Auto-serve from the ball rack
+
+When no balls are in play on the court, the main character walks to the ball rack, picks up the next available ball, and attempts a serve. This keeps the rally cycle going without requiring the player to manually drag a ball in. If the rack is empty (all balls are already on the court or none are owned), the character idles until a ball becomes available.
 
 ---
 

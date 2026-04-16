@@ -16,7 +16,7 @@ Every item declares one of three roles. The role decides where it goes on the co
 
 Stat-only items (no visible prop) still declare a role: a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`.
 
-All three roles are additive: any number of items can share a role. Within-role conflicts (two grip wraps on the handle) are an open question deferred to when a second conflicting item ships.
+Ball and court roles are additive: any number of items can share the role. Equipment has a per-type cap: each item type (e.g. grip wrap, wrist brace) declares a maximum number that can be equipped at once. `move_to_court` rejects the item if equipping it would exceed the cap for its type.
 
 ```gdscript
 const _ROLE_REGISTRY: Dictionary[StringName, StringName] = {
@@ -87,16 +87,14 @@ Character areas (shop, workshop) are child scenes of `venue.tscn` gated by `unlo
 - Occupancy: append, remove, overflow stacking on the last court marker.
 - `get_court_position` returns the right marker per index.
 - `court_changed` fires on each transition.
-- Role cooldown timing.
 - A court item with no authored marker surfaces a clean error.
 
 ---
 
-## Open questions
+## Resolved questions
 
-1. **Within-role conflicts** (two grip wraps, two handle-hung weights). Options: `conflicts_with` list, tags, or per-item sub-slot keys. Decide when a second conflicting item ships.
-2. **Debug overlay** for role markers and occupants. Leaning yes, behind a keypress.
-3. **Role cooldown: per role or per item?** Per role.
+1. **Within-role conflicts.** Equipment uses a per-type cap. Each item type declares how many can be equipped simultaneously; `move_to_court` enforces it.
+2. **Debug overlay.** Yes, behind a keypress. Shows role markers, current occupants, and equipment type caps.
 
 ---
 

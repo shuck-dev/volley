@@ -62,11 +62,11 @@ Temporary balls (frenzy, etc.) clear on their authored expiry regardless of wher
 
 ---
 
-## Open questions
+## Resolved questions
 
-1. **Ball-ground interaction during play.** Does hitting the ground end the rally (volleyball-style), or does the ball bounce off it (pong-style)? Existing game feel; this doc does not change it.
-2. **Visual density with many rested balls.** If the player misses repeatedly without fetching, the floor clutters up. Is there a cap, a natural decay, or is clutter the point? Leaning: clutter is the point; fetching is work, and the helper upgrade is the reward for owning enough items.
-3. **Where rested balls can legally sit.** Can they come to rest inside the shop, the kit areas, the workshop? Leaning: no; invisible barriers keep them in the empty floor space between the court and the other areas.
+1. **Ball-ground interaction during play.** The ball bounces off the ground (pong-style). Hitting the floor does not end the rally.
+2. **Visual density with many rested balls.** The player will never own enough balls for visual clutter to become a problem. No cap or decay needed.
+3. **Where rested balls can legally sit.** Balls can go anywhere in the venue. They always render in the mid or foreground relative to the shop background, so they stay visible regardless of where they land.
 
 ---
 

@@ -42,7 +42,7 @@ Requires the main character to step off:
 
 ### Drag preview
 
-During any drag, the preview shows any active role cooldown. Cooldown overlays appear on the target surface (court for ball, court marker for court, main character for equipment). Activation has no FP cost; the animation beat on equip and the cooldown are the friction.
+During any drag, the preview shows the item being moved. Activation has no FP cost; the animation beat on equip is the friction.
 
 ---
 

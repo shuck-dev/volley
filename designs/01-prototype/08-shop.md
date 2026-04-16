@@ -70,11 +70,11 @@ Owned by `05-upgrade-shop-mechanics.md`. The table rotates through the pool; the
 
 ---
 
-## Open questions
+## Resolved questions
 
-1. **Catalog UX.** Book, cards, framed stand? Leaning book or cards.
-2. **Sold-out visuals.** Leaning greyed with a note from the friend.
-3. **Does the friend react to browsing?** Alpha territory.
+1. **Catalog UX.** A pull-up menu styled as a physical catalog. Purchased items get a "sold" stamp or circle, the way you would mark off a Scholastic book order form.
+2. **Sold-out visuals.** The sold stamp on the catalog entry doubles as the sold-out state. No separate greyed treatment needed.
+3. **Does the friend react to browsing?** Sometimes, when it fits. Alpha scope.
 
 ---
 

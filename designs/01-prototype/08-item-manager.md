@@ -43,17 +43,17 @@ Both are called by drag-and-drop handlers (see `08-kit.md` for the player-side f
 
 ### Move-to-court
 
-1. Reject if destroyed, not owned, already on the court, or role cooldown is active.
+1. Reject if destroyed, not owned, or already on the court.
 2. Append to `on_court[role]`.
 3. `_effect_manager.register_source(item, level)`.
 4. If `role == &"court"`, `FixtureManager` spawns the prop (see `08-fixtures.md`). For `ball` and `equipment`, the parent scene (ball rack or paddle) hosts the prop directly; no fixture manager involvement.
-5. Start the role cooldown. Save. Emit `court_changed`.
+5. Save. Emit `court_changed`.
 
-Activation has no FP cost; the friction is the animation (on equipment) and the role cooldown.
+Activation has no FP cost; the friction is the animation beat on equipment.
 
 ### Move-to-kit
 
-Applies to `ball` and `equipment` only. Reverse of move-to-court: unregister effects, remove from `on_court`, start role cooldown.
+Applies to `ball` and `equipment` only. Reverse of move-to-court: unregister effects, remove from `on_court`.
 
 Court items never call `move_to_kit`. They leave the court only by entering the Tinkerer's queue (see `08-tinkerer.md`); on return from a level-up commission, `move_to_court` re-seats them.
 
@@ -71,25 +71,10 @@ Closes when `move_to_court` lands. `ClearanceBox.accept` stays inert by design; 
 
 ---
 
-## Role cooldown
-
-```
-court.swap_cooldown_seconds: float = 0.0
-```
-
-Hot-reloadable via `ConfigHotReload`.
-
-Per-role cooldown lives in memory only (`_role_cooldowns_until: Dictionary[StringName, float]`).
-
-UI: thin fill on the target surface while cooling.
-
----
-
 ## Signals
 
 ```
 signal court_changed
-signal role_cooldown_changed(role: StringName)
 ```
 
 Existing `friendship_point_balance_changed` and `item_level_changed` are unchanged.
@@ -111,4 +96,3 @@ Not filing yet.
 
 1. Court/kit data model, derived queries, signals.
 2. `move_to_court` / `move_to_kit`, `_set_level` refactor, dev-panel update, SH-93 close-out.
-3. Per-role cooldown config.

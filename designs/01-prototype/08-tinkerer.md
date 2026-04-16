@@ -122,13 +122,13 @@ All audio placeholder for prototype.
 
 ---
 
-## Open questions
+## Resolved questions
 
-1. **Indicate the current commission?** Leaning: subtle; the item sits visibly at the workbench during `working`, off to the side otherwise.
-2. **Queue capacity.** Leaning small cap (e.g. 3).
-3. **Player can poke the tinkerer?** Leaning no for prototype.
-4. **Procrastination spikes for beloved items.** Alpha territory.
-5. **Tinkerer mood affects output.** Deep Alpha.
+1. **Indicate the current commission.** The item sits on the workbench, inactive for the player. It is visible but not interactable until the commission completes.
+2. **Queue capacity.** One commission at a time, possibly upgradeable later.
+3. **Player can poke the tinkerer.** Yes: produces a sound effect and a small visual reaction. No gameplay effect.
+4. **Procrastination spikes.** The tinkerer procrastinates more on items they do not want to work on, lengthening the real wait.
+5. **Tinkerer mood affects output.** Alpha scope.
 
 ---
 

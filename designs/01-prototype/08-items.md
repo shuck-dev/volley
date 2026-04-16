@@ -34,7 +34,7 @@ Role decides whether an item can be inactive:
 
 ## Moving between states
 
-The player drives every transition by drag-and-drop. Activation triggers a per-role cooldown (tuning knob). See `08-kit.md` for the flow per role.
+The player drives every transition by drag-and-drop. See `08-kit.md` for the flow per role.
 
 ---
 
