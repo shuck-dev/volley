@@ -44,7 +44,7 @@ hot_reloadable_config="Auto-reloads Resource exports from disk in debug builds"
 
 [gui]
 
-theme/custom="res://resources/default_theme.tres"
+theme/custom="res://resources/themes/default_theme.tres"
 
 [input]
 
