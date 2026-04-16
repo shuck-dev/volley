@@ -328,7 +328,7 @@ You will discover the tier when you first call a Pro tool. If the user has Pro, 
   "preview": { "total_nodes": 267, "nodes": [...first 3...] },
   "locked_sections": ["full node list (264 more)", "distance matrix", "spatial relationships"],
   "message": "Mapped 267 nodes. Showing 3 of 267. Full spatial layout requires Pro.",
-  "upgrade": "godotiq.com/pro"
+  "upgrade": "https://godotiq.com/pro"
 }
 ~~~
 

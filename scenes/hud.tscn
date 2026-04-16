@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dumhl1skwhd7q"]
+[gd_scene format=3 uid="uid://dumhl1skwhd7q"]
 
 [ext_resource type="Script" uid="uid://cjue0o73mhyck" path="res://scripts/hud/hud.gd" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://bpo6xjafeebkl" path="res://scripts/hud/dev_item_panel.gd" id="2_oo0fn"]
@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="5_uo2fv"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
-[node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "fp_bonus_label", "shop_button")]
+[node name="Hud" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "fp_bonus_label")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
@@ -15,9 +15,8 @@ friendship_point_balance_label = NodePath("FriendshipTotalLabel")
 speed_bar = NodePath("SpeedBar")
 auto_label = NodePath("AutoLabel")
 fp_bonus_label = NodePath("FPBonusLabel")
-shop_button = NodePath("ShopButton")
 
-[node name="CurrentVolleyCountLabel" type="Label" parent="."]
+[node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=697957388]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -30,7 +29,7 @@ theme_override_font_sizes/font_size = 32
 text = "Volleys: 0"
 horizontal_alignment = 1
 
-[node name="PersonalVolleyBestLabel" type="Label" parent="."]
+[node name="PersonalVolleyBestLabel" type="Label" parent="." unique_id=144870421]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -42,7 +41,7 @@ size_flags_horizontal = 4
 text = "PB: 0"
 horizontal_alignment = 1
 
-[node name="FriendshipTotalLabel" type="Label" parent="."]
+[node name="FriendshipTotalLabel" type="Label" parent="." unique_id=793530722]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -54,7 +53,7 @@ size_flags_horizontal = 4
 text = "FP: 0"
 horizontal_alignment = 1
 
-[node name="AutoLabel" type="Label" parent="."]
+[node name="AutoLabel" type="Label" parent="." unique_id=461917251]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -67,7 +66,7 @@ size_flags_horizontal = 4
 text = "AUTO (X% Friendship Points)"
 horizontal_alignment = 1
 
-[node name="DevItemUI" type="VBoxContainer" parent="."]
+[node name="DevItemUI" type="VBoxContainer" parent="." unique_id=1055282224]
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 40.0
@@ -75,7 +74,7 @@ offset_bottom = 40.0
 theme = ExtResource("7_debug")
 script = ExtResource("2_oo0fn")
 
-[node name="DevStatPanel" type="VBoxContainer" parent="."]
+[node name="DevStatPanel" type="VBoxContainer" parent="." unique_id=425250304]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -92,7 +91,7 @@ theme_override_constants/separation = 2
 alignment = 1
 script = ExtResource("3_5ysmq")
 
-[node name="SpeedBar" type="Control" parent="."]
+[node name="SpeedBar" type="Control" parent="." unique_id=1816608571]
 layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
@@ -104,19 +103,7 @@ offset_bottom = 72.0
 grow_horizontal = 2
 script = ExtResource("4_6fi6k")
 
-[node name="ShopButton" type="Button" parent="."]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = -36.0
-offset_right = 141.0
-offset_bottom = -5.0
-grow_vertical = 0
-focus_mode = 0
-text = "Clearance"
-
-[node name="RecruitPanel" parent="." instance=ExtResource("5_uo2fv")]
+[node name="RecruitPanel" parent="." unique_id=314858689 instance=ExtResource("5_uo2fv")]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -126,7 +113,7 @@ offset_right = 123.0
 offset_bottom = -43.0
 grow_vertical = 0
 
-[node name="FPBonusLabel" type="Label" parent="."]
+[node name="FPBonusLabel" type="Label" parent="." unique_id=1668256323]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5

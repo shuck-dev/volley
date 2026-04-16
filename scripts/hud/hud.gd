@@ -1,15 +1,12 @@
 class_name Hud
 extends CanvasLayer
 
-signal shop_button_pressed
-
 @export var counter_label: Label
 @export var personal_volley_best_label: Label
 @export var friendship_point_balance_label: Label
 @export var speed_bar: Control
 @export var auto_label: Label
 @export var fp_bonus_label: Label
-@export var shop_button: Button
 
 
 func _ready() -> void:
@@ -17,10 +14,6 @@ func _ready() -> void:
 	update_friendship_point_balance(ItemManager.get_friendship_point_balance())
 	auto_label.visible = false
 	_update_fp_bonus()
-
-	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
-	shop_button.visible = ProgressionManager.is_shop_unlocked()
-	shop_button.pressed.connect(shop_button_pressed.emit)
 
 
 func update_volley_count(count: int) -> void:
@@ -60,7 +53,3 @@ func _update_fp_bonus() -> void:
 		fp_bonus_label.visible = true
 	else:
 		fp_bonus_label.visible = false
-
-
-func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
-	shop_button.visible = is_unlocked

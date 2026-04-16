@@ -22,6 +22,8 @@ logs/
 .claude/
 .vscode/
 .mcp.json
+.cursorrules
+.windsurfrules
 
 # Mood board reference images (copyrighted material, local only)
 designs/01-prototype/mood-boards/
