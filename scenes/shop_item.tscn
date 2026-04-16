@@ -1,49 +1,18 @@
-[gd_scene format=3 uid="uid://pk4rev1g2m1n"]
+[gd_scene load_steps=3 format=3 uid="uid://pk4rev1g2m1n"]
 
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
-[ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_6gmg1"]
-[ext_resource type="PackedScene" uid="uid://bo7g4jvqblgue" path="res://scenes/tooltip.tscn" id="3_6gmg1"]
-[ext_resource type="AudioStream" uid="uid://68yphdm8dqjs" path="res://assets/sfx/glass_tap.sfxr" id="4_xcw7k"]
 
-[node name="ShopItem" type="Control" unique_id=185153743 node_paths=PackedStringArray("tooltip", "art_viewport", "art_viewport_container", "display_case", "tink_sound")]
-layout_mode = 3
-anchors_preset = 0
-size_flags_vertical = 4
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_item"]
+size = Vector2(40, 40)
+
+[node name="ShopItem" type="RigidBody2D" node_paths=PackedStringArray("art_holder", "collision_shape")]
+input_pickable = true
+freeze_mode = 1
 script = ExtResource("1_lrx6i")
-tooltip = NodePath("Tooltip")
-art_viewport = NodePath("ArtViewportContainer/ArtViewport")
-art_viewport_container = NodePath("ArtViewportContainer")
-display_case = NodePath("DisplayCase")
-tink_sound = NodePath("TinkSound")
+art_holder = NodePath("ArtHolder")
+collision_shape = NodePath("CollisionShape2D")
 
-[node name="ArtViewportContainer" type="SubViewportContainer" parent="." unique_id=1445583585]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_item")
 
-[node name="ArtViewport" type="SubViewport" parent="ArtViewportContainer" unique_id=1908306061]
-transparent_bg = true
-handle_input_locally = false
-render_target_update_mode = 4
-
-[node name="DisplayCase" type="Control" parent="." unique_id=286875101]
-visible = false
-anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-
-[node name="DisplayCaseTexture" type="TextureRect" parent="DisplayCase" unique_id=1986134027]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-texture = ExtResource("2_6gmg1")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="Tooltip" parent="." unique_id=147463810 instance=ExtResource("3_6gmg1")]
-layout_mode = 0
-
-[node name="TinkSound" type="AudioStreamPlayer" parent="." unique_id=2031309670]
-stream = ExtResource("4_xcw7k")
-volume_db = -4.0
+[node name="ArtHolder" type="Node2D" parent="."]

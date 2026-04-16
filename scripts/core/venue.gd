@@ -5,15 +5,13 @@ extends Control
 # disabled stretch + responsive UI or diegetic + msdf is the long-term fix.
 
 @export var game_root: Node
-@export var secondary_container: Control
-@export var shop: Control
+@export var shop: Node2D
 @export var hud: Hud
 
 
 func _ready() -> void:
-	if shop != null:
-		secondary_container.custom_minimum_size.x = shop.preferred_width
-	secondary_container.visible = ProgressionManager.is_shop_unlocked()
+	get_viewport().physics_object_picking = true
+	shop.visible = ProgressionManager.is_shop_unlocked()
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
 
 	if game_root != null:
@@ -25,4 +23,4 @@ func _ready() -> void:
 
 
 func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
-	secondary_container.visible = is_unlocked
+	shop.visible = is_unlocked

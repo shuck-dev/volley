@@ -1,115 +1,59 @@
-[gd_scene format=3 uid="uid://hvh6q02lrntj"]
+[gd_scene load_steps=4 format=3 uid="uid://hvh6q02lrntj"]
 
-[ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_lx5au"]
-[ext_resource type="PackedScene" uid="uid://d4grgci0n0c1y" path="res://scenes/clearance_box.tscn" id="2_1l46r"]
-[ext_resource type="Texture2D" uid="uid://hii0sc5nvjjx" path="res://assets/ui/friend_pick_note.svg" id="2_032fp"]
+[ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_shop"]
 
-[node name="Shop" type="Control" unique_id=1880597484 node_paths=PackedStringArray("friendship_label", "items_row", "pick_indicator") groups=["hot_reloadable_config"]]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("1_lx5au")
-friendship_label = NodePath("Margin/Contents/Header/FriendshipLabel")
-items_row = NodePath("Margin/Contents/TableCenter/TableSection/ItemsRow")
-pick_indicator = NodePath("Margin/Contents/TableCenter/TableSection/PickIndicator")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
+size = Vector2(400, 20)
 
-[node name="Background" type="ColorRect" parent="." unique_id=1583417568]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0.175, 0.022, 1)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
+size = Vector2(500, 400)
 
-[node name="Margin" type="MarginContainer" parent="." unique_id=1708954788]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+[node name="Shop" type="Node2D" node_paths=PackedStringArray("shop_area", "friendship_label", "items_anchor") groups=["hot_reloadable_config"]]
+script = ExtResource("1_shop")
+shop_area = NodePath("ShopArea")
+friendship_label = NodePath("FriendshipLabel")
+items_anchor = NodePath("ItemsAnchor")
 
-[node name="Contents" type="VBoxContainer" parent="Margin" unique_id=862724006]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="Header" type="HBoxContainer" parent="Margin/Contents" unique_id=1503992517]
-layout_mode = 2
-
-[node name="TitleLabel" type="Label" parent="Margin/Contents/Header" unique_id=1241544830]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Friend's Clearance"
-
-[node name="FriendshipLabel" type="Label" parent="Margin/Contents/Header" unique_id=907123611]
-layout_mode = 2
+[node name="FriendshipLabel" type="Label" parent="."]
+offset_left = -100.0
+offset_top = -220.0
+offset_right = 100.0
+offset_bottom = -180.0
 text = "Friendship: 0"
-horizontal_alignment = 2
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="TableCenter" type="VBoxContainer" parent="Margin/Contents" unique_id=399104311]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="ShopArea" type="Area2D" parent="."]
+position = Vector2(0, -80)
 
-[node name="TopSpacer" type="Control" parent="Margin/Contents/TableCenter" unique_id=1347984760]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea"]
+shape = SubResource("RectangleShape2D_area")
 
-[node name="TableSection" type="Control" parent="Margin/Contents/TableCenter" unique_id=932737774]
-custom_minimum_size = Vector2(0, 170)
-layout_mode = 2
-size_flags_horizontal = 3
+[node name="Table" type="StaticBody2D" parent="."]
 
-[node name="Front" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=1531604011]
-layout_mode = 0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -130.0
-color = Color(0.35, 0.2, 0.1, 1)
+[node name="TableShape" type="CollisionShape2D" parent="Table"]
+shape = SubResource("RectangleShape2D_table")
 
-[node name="Top" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=749707731]
-layout_mode = 0
-anchor_right = 1.0
-offset_bottom = 40.0
+[node name="TableTop" type="ColorRect" parent="Table"]
+offset_left = -200.0
+offset_top = -10.0
+offset_right = 200.0
+offset_bottom = 10.0
 color = Color(0.55, 0.35, 0.2, 1)
 
-[node name="Edge" type="ColorRect" parent="Margin/Contents/TableCenter/TableSection" unique_id=1825022169]
-layout_mode = 0
-anchor_right = 1.0
-offset_top = 38.0
-offset_bottom = 42.0
+[node name="TableEdge" type="ColorRect" parent="Table"]
+offset_left = -200.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 14.0
 color = Color(0.65, 0.45, 0.25, 1)
 
-[node name="ItemsRow" type="HBoxContainer" parent="Margin/Contents/TableCenter/TableSection" unique_id=1216891793]
-layout_mode = 0
-theme_override_constants/separation = 24
-alignment = 1
+[node name="TableFront" type="ColorRect" parent="Table"]
+offset_left = -200.0
+offset_top = 14.0
+offset_right = 200.0
+offset_bottom = 144.0
+color = Color(0.35, 0.2, 0.1, 1)
 
-[node name="PickIndicator" type="Control" parent="Margin/Contents/TableCenter/TableSection" unique_id=1204799705]
-visible = false
-anchors_preset = 0
-mouse_filter = 2
-
-[node name="NoteTexture" type="TextureRect" parent="Margin/Contents/TableCenter/TableSection/PickIndicator" unique_id=218050015]
-layout_mode = 0
-offset_left = -2.0
-offset_top = -20.0
-offset_right = 22.0
-offset_bottom = 2.0
-rotation = -0.10471976
-pivot_offset = Vector2(12, 11)
-mouse_filter = 2
-texture = ExtResource("2_032fp")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="BottomSpacer" type="Control" parent="Margin/Contents/TableCenter" unique_id=1491435643]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ClearanceBox" parent="Margin/Contents" unique_id=1891333944 instance=ExtResource("2_1l46r")]
-layout_mode = 2
-idle_stylebox = null
-hover_stylebox = null
+[node name="ItemsAnchor" type="Node2D" parent="."]
+position = Vector2(0, -30)

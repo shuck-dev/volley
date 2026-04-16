@@ -21,7 +21,6 @@ GodotIQRuntime="*uid://5f55jejx8ekg"
 SaveManager="*uid://dk8i5dnut5fu0"
 ItemManager="*uid://csp168hb63ubx"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
-DragManager="*res://scripts/core/drag_manager.gd"
 ConfigHotReload="*res://addons/config_hot_reload/config_hot_reload.gd"
 
 [debug]
