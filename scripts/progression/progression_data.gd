@@ -27,12 +27,8 @@ func clear() -> void:
 	partner_volley_totals = {}
 
 
-## Saves to storage; rejects malformed JSON so backups stay intact.
 func save_to_disk() -> bool:
-	var content := JSON.stringify(to_dict())
-	if JSON.parse_string(content) == null:
-		return false
-	return _storage.write(content)
+	return _storage.write(JSON.stringify(to_dict()))
 
 
 ## Loads from storage, falling back to rolling backups if primary fails to parse.

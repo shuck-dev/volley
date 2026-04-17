@@ -2,6 +2,7 @@ class_name FileSaveStorage
 extends SaveStorage
 
 const TEMP_SUFFIX := ".tmp"
+const INCOMING_SUFFIX := ".incoming"
 const MAX_BACKUPS := 3
 
 var _path: String
@@ -11,8 +12,10 @@ func _init(path: String = "user://save_data.json") -> void:
 	_path = path
 
 
-## Atomic write with rolling backups. The temp file is fully written and flushed
-## before the primary is touched, so a failed write leaves the previous save in place.
+## Atomic write with rolling backups. The temp file is fully written and flushed,
+## the primary is parked to an incoming slot, the new save is committed, and only
+## then does the backup chain rotate: a failure before commit leaves the previous
+## save and all existing backups untouched.
 func write(content: String) -> bool:
 	var temp_path: String = _path + TEMP_SUFFIX
 	var file := FileAccess.open(temp_path, FileAccess.WRITE)
@@ -26,16 +29,25 @@ func write(content: String) -> bool:
 		DirAccess.remove_absolute(temp_path)
 		return false
 
-	_rotate_backups()
+	var incoming_path: String = _path + INCOMING_SUFFIX
+	var primary_parked: bool = false
 	if FileAccess.file_exists(_path):
-		var backup_error: int = DirAccess.rename_absolute(_path, _backup_path(1))
-		if backup_error != OK:
+		var park_error: int = DirAccess.rename_absolute(_path, incoming_path)
+		if park_error != OK:
 			DirAccess.remove_absolute(temp_path)
 			return false
-	var rename_error: int = DirAccess.rename_absolute(temp_path, _path)
-	if rename_error != OK:
+		primary_parked = true
+
+	var commit_error: int = DirAccess.rename_absolute(temp_path, _path)
+	if commit_error != OK:
 		DirAccess.remove_absolute(temp_path)
+		if primary_parked:
+			DirAccess.rename_absolute(incoming_path, _path)
 		return false
+
+	if primary_parked:
+		_rotate_backups()
+		DirAccess.rename_absolute(incoming_path, _backup_path(1))
 	return true
 
 

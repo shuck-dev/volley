@@ -49,6 +49,8 @@ func unblock_writes() -> void:
 		_autosave_timer.start()
 
 
+# save() honours the write-block here: a quit mid-clear would otherwise overwrite
+# the freshly cleared save with stale in-memory state.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save()
