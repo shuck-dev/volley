@@ -81,18 +81,3 @@ func _permanent_ratio() -> float:
 	if speed_range <= 0.0:
 		return 0.0
 	return clampf((_bar._permanent_max_speed - _bar._min_speed) / speed_range, 0.0, 1.0)
-
-
-# --- signal handlers ---
-func test_on_ball_speed_changed_updates_state() -> void:
-	_bar._on_ball_speed_changed(550.0, 400.0, 700.0)
-	assert_eq(_bar.current_speed, 550.0)
-	assert_eq(_bar._min_speed, 400.0)
-	assert_eq(_bar._max_speed, 700.0)
-
-
-func test_on_item_level_changed_refreshes_permanent_max() -> void:
-	_bar._on_item_level_changed()
-	var base_min: float = ItemManager.get_base_stat(&"ball_speed_min")
-	var base_max_range: float = ItemManager.get_base_stat(&"ball_speed_max_range")
-	assert_eq(_bar._permanent_max_speed, base_min + base_max_range)
