@@ -1,8 +1,7 @@
 class_name DraggableBehavior
 extends RefCounted
 
-## Mixin helper: call `process(control, event)` from a Control's `_gui_input`.
-## Returns true when the event was consumed for dragging.
+## Mixin: call `process(control, event)` in `_gui_input`; returns true when consumed.
 
 var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO

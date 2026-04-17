@@ -11,10 +11,7 @@ func _init(path: String = "user://save_data.json") -> void:
 	_path = path
 
 
-## Writes atomically with rolling backups. Rotates existing backups, demotes
-## the current primary to the newest backup, then writes new content to a
-## temp file and renames it into place. A partial or interrupted write leaves
-## the prior backups intact.
+## Atomic write with rolling backups; partial writes leave prior backups intact.
 func write(content: String) -> bool:
 	_rotate_backups()
 	if FileAccess.file_exists(_path):
@@ -37,8 +34,7 @@ func read() -> String:
 	return _read_path(_path)
 
 
-## Newest backup first, oldest last. Empty entries are omitted so callers can
-## iterate and try to parse each candidate.
+## Newest-first backup contents; empty entries omitted.
 func read_fallbacks() -> Array[String]:
 	var contents: Array[String] = []
 	for backup_index in range(1, MAX_BACKUPS + 1):
@@ -55,8 +51,7 @@ func _read_path(path: String) -> String:
 	return file.get_as_text()
 
 
-## Shifts backup slots one step older and drops the oldest. Called before
-## renaming the current primary into slot 1 so slot 1 is always free.
+## Shifts backups one step older and drops the oldest so slot 1 is free.
 func _rotate_backups() -> void:
 	var oldest: String = _backup_path(MAX_BACKUPS)
 	if FileAccess.file_exists(oldest):
@@ -67,8 +62,7 @@ func _rotate_backups() -> void:
 			DirAccess.rename_absolute(current_path, _backup_path(backup_index + 1))
 
 
-## Inserts ".<index>" before the extension. e.g. "user://save_data.json"
-## with index 1 -> "user://save_data.1.json".
+## Inserts ".<index>" before the extension: save_data.json -> save_data.1.json.
 func _backup_path(backup_index: int) -> String:
 	var base: String = _path.get_basename()
 	var extension: String = _path.get_extension()

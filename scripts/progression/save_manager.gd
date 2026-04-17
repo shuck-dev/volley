@@ -31,10 +31,7 @@ func save() -> void:
 	_progression.save_to_disk()
 
 
-## Resets progression and writes the cleared state to disk. Blocks further
-## saves and stops the autosave timer so nothing can overwrite the cleared
-## file during the scene-reload window. Caller must invoke unblock_writes()
-## once the new scene has finished loading.
+## Clears progression and blocks writes until unblock_writes(); caller restores after scene reload.
 func clear_save() -> void:
 	_write_blocked = true
 	if _autosave_timer != null:

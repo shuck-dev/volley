@@ -1,7 +1,6 @@
 extends PanelContainer
 
-## Debug overlay: live per-ShopItem state rendered as a proper grid table.
-## Draggable; visible only in debug builds.
+## Debug overlay: live per-ShopItem state as a grid table. Debug builds only.
 
 const COLUMN_COUNT := 5
 const HEADERS: PackedStringArray = ["key", "level", "cost", "balance", "status"]
@@ -30,10 +29,7 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-## Warns when a left-click lands on a ShopItem's collision AABB but physics
-## picking never delivered input_event to that body on the same frame.
-## Catches regressions where a Control or filter intercepts the event before
-## physics picking can fire.
+## Warns when a click lands on a ShopItem AABB but physics picking never fires on it.
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
 		return

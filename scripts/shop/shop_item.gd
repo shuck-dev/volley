@@ -30,8 +30,7 @@ func can_be_taken() -> bool:
 	return _item_manager.can_acquire(item_definition.key)
 
 
-## Physical pickup permission: owned items stay draggable as world objects;
-## unowned items must be affordable to lift.
+## Pickup permission: owned items stay draggable, unowned must be affordable.
 func can_be_dragged() -> bool:
 	if _taken:
 		return true
@@ -134,8 +133,7 @@ func _refresh_case_overlay() -> void:
 	_refresh_freeze()
 
 
-# Locked (cased) items freeze kinematically so they can't be bashed around.
-# Active drags manage freeze directly via _start_drag/_end_drag.
+# Cased items freeze kinematically; drag lifecycle controls freeze directly.
 func _refresh_freeze() -> void:
 	if _dragging:
 		return

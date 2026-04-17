@@ -14,8 +14,7 @@ var partner_volley_totals: Dictionary[StringName, int] = {}
 var _storage: SaveStorage
 
 
-## Resets progression fields to defaults. Deliberately leaves `_storage` alone:
-## this is a data reset, not a storage disconnect; the caller decides whether to save.
+## Resets progression fields to defaults; caller decides whether to persist.
 func clear() -> void:
 	friendship_point_balance = 0
 	total_friendship_points_earned = 0
@@ -28,9 +27,7 @@ func clear() -> void:
 	partner_volley_totals = {}
 
 
-## Saves game data to storage. Validates the serialised content is parseable
-## JSON before hitting disk so a malformed payload never replaces the existing
-## save (the backup file written by FileSaveStorage stays intact).
+## Saves to storage; rejects malformed JSON so backups stay intact.
 func save_to_disk() -> bool:
 	var content := JSON.stringify(to_dict())
 	if JSON.parse_string(content) == null:
@@ -38,8 +35,7 @@ func save_to_disk() -> bool:
 	return _storage.write(content)
 
 
-## Loads game data from storage, falling back to rolling backups if the
-## primary save is missing or unparseable.
+## Loads from storage, falling back to rolling backups if primary fails to parse.
 func load_from_disk() -> bool:
 	if _try_load_content(_storage.read()):
 		return true
