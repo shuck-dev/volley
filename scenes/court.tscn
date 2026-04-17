@@ -182,7 +182,7 @@ text = "+0% FP"
 script = ExtResource("18_fpb")
 court = NodePath("..")
 
-[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("court")]
+[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -150.0
@@ -190,7 +190,7 @@ offset_top = -634.0
 offset_right = 150.0
 offset_bottom = -624.0
 script = ExtResource("11_2768l")
-court = NodePath("..")
+ball = NodePath("../Ball")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
 offset_left = -900.0

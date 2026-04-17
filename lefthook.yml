@@ -21,18 +21,22 @@ pre-commit:
     gitleaks:
       run: gitleaks protect --staged --redact --no-banner
     codespell:
-      exclude: "^addons/"
+      exclude:
+        - "addons/**"
       run: codespell {staged_files}
     gdformat:
       glob: "*.gd"
-      exclude: "^addons/"
+      exclude:
+        - "addons/**"
       run: gdformat {staged_files}
       stage_fixed: true
     gdlint:
       glob: "*.gd"
-      exclude: "^addons/"
+      exclude:
+        - "addons/**"
       run: gdlint {staged_files}
     gut:
       glob: "*.gd"
-      exclude: "^addons/"
+      exclude:
+        - "addons/**"
       run: ./scripts/ci/run_gut.sh
