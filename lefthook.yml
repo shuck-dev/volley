@@ -1,0 +1,23 @@
+prepare-commit-msg:
+  commands:
+    ticket-prefix:
+      run: ./prepend_ticket_prefix.sh {1} {2}
+
+pre-commit:
+  piped: true
+  commands:
+    gitleaks:
+      run: gitleaks protect --staged --redact --verbose
+    gdformat:
+      glob: "*.gd"
+      exclude: "^addons/"
+      run: gdformat {staged_files}
+      stage_fixed: true
+    gdlint:
+      glob: "*.gd"
+      exclude: "^addons/"
+      run: gdlint {staged_files}
+    gut:
+      glob: "*.gd"
+      exclude: "^addons/"
+      run: godot --headless -s addons/gut/gut_cmdln.gd

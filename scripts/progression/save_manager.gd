@@ -31,7 +31,9 @@ func save() -> void:
 	_progression.save_to_disk()
 
 
-## Clears progression and blocks writes until unblock_writes(); caller restores after scene reload.
+## Clears progression and blocks writes so the scene reload that follows cannot
+## autosave stale state back to disk. Callers must invoke unblock_writes() (via
+## call_deferred after reload_current_scene) to resume normal saving.
 func clear_save() -> void:
 	_write_blocked = true
 	if _autosave_timer != null:

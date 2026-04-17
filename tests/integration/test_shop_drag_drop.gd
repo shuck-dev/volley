@@ -94,6 +94,24 @@ func test_exiting_shop_area_when_already_owned_does_nothing() -> void:
 	assert_eq(_item_manager.get_friendship_point_balance(), balance_before)
 
 
+# --- physics input wiring ---
+# Regression guard: every ShopItem must have its input_event signal routed to
+# the drag handler. The shipping bug was that a scaled parent silently broke
+# physics picking, so a quiet test for "all items respond" is worth keeping.
+func test_each_shop_item_responds_to_input_event_signal() -> void:
+	var viewport: Viewport = _shop.get_viewport()
+	for child in _shop.items_anchor.get_children():
+		if not child is ShopItem:
+			continue
+		var item: ShopItem = child
+		var before: int = item.get_last_input_frame()
+		var press := InputEventMouseButton.new()
+		press.button_index = MOUSE_BUTTON_LEFT
+		press.pressed = true
+		item.input_event.emit(viewport, press, 0)
+		assert_ne(item.get_last_input_frame(), before, "input_event not wired for %s" % item.name)
+
+
 # --- helpers ---
 func _drag_item_out_of_shop_area(item: ShopItem) -> void:
 	# Emit the signal directly to avoid physics-frame timing in tests.

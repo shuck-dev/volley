@@ -38,8 +38,8 @@ func can_be_dragged() -> bool:
 
 
 func mark_owned() -> void:
+	# _refresh_case_overlay runs via item_level_changed after ItemManager.take().
 	_owned = true
-	_refresh_case_overlay()
 
 
 func is_owned() -> bool:
@@ -67,6 +67,8 @@ func _physics_process(_delta: float) -> void:
 	global_position = get_global_mouse_position() + _drag_offset
 
 
+# Release is handled here rather than in _on_input_event so a fast drag that
+# outruns the body's collision shape still delivers mouse-up and ends the drag.
 func _input(event: InputEvent) -> void:
 	if not _dragging:
 		return

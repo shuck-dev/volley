@@ -25,12 +25,17 @@ func _ready() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if _drag.process(self, event):
+	if _drag.try_start(self, event):
 		accept_event()
 
 
 ## Warns when a click lands on a ShopItem AABB but physics picking never fires on it.
 func _input(event: InputEvent) -> void:
+	if _drag.update(self, event):
+		get_viewport().set_input_as_handled()
+		return
+	if not visible:
+		return
 	if not (event is InputEventMouseButton):
 		return
 	var mouse_button: InputEventMouseButton = event

@@ -11,18 +11,27 @@ func _init(path: String = "user://save_data.json") -> void:
 	_path = path
 
 
-## Atomic write with rolling backups; partial writes leave prior backups intact.
+## Atomic write with rolling backups. The temp file is fully written and flushed
+## before the primary is touched, so a failed write leaves the previous save in place.
 func write(content: String) -> bool:
-	_rotate_backups()
-	if FileAccess.file_exists(_path):
-		DirAccess.rename_absolute(_path, _backup_path(1))
-
 	var temp_path: String = _path + TEMP_SUFFIX
 	var file := FileAccess.open(temp_path, FileAccess.WRITE)
 	if file == null:
 		return false
 	file.store_string(content)
+	file.flush()
+	var write_error: Error = file.get_error()
 	file.close()
+	if write_error != OK and write_error != ERR_FILE_EOF:
+		DirAccess.remove_absolute(temp_path)
+		return false
+
+	_rotate_backups()
+	if FileAccess.file_exists(_path):
+		var backup_error: int = DirAccess.rename_absolute(_path, _backup_path(1))
+		if backup_error != OK:
+			DirAccess.remove_absolute(temp_path)
+			return false
 	var rename_error: int = DirAccess.rename_absolute(temp_path, _path)
 	if rename_error != OK:
 		DirAccess.remove_absolute(temp_path)

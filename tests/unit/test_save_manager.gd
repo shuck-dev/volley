@@ -79,3 +79,11 @@ func test_unblock_writes_restarts_autosave_timer() -> void:
 	_save_manager.clear_save()
 	_save_manager.unblock_writes()
 	assert_false(_save_manager._autosave_timer.is_stopped())
+
+
+# If the autosave timer somehow fires while blocked (e.g. a deferred timeout
+# queued before clear_save stopped it), the write guard must still suppress it.
+func test_autosave_timeout_while_blocked_does_not_write() -> void:
+	_save_manager.clear_save()
+	_save_manager._autosave_timer.timeout.emit()
+	assert_call_count(_mock_storage, "write", 1)
