@@ -19,14 +19,14 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
-var _volley_count: int = 0
+var _volley_count := 0
 var _active_partner_definition: Resource
 var _partner_miss_zone: MissZone
 var _progression: ProgressionData
 var _progression_config: ProgressionConfig
 var _item_manager: Node
-var _is_autoplay_active: bool = false
-var _friendship_point_accumulator: float = 0.0
+var _is_autoplay_active := false
+var _friendship_point_accumulator := 0.0
 
 
 func _ready() -> void:
