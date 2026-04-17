@@ -29,6 +29,14 @@ func can_be_taken() -> bool:
 	return _item_manager.can_acquire(item_definition.key)
 
 
+## Physical pickup permission: owned items stay draggable as world objects;
+## unowned items must be affordable to lift.
+func can_be_dragged() -> bool:
+	if _taken:
+		return true
+	return can_be_taken()
+
+
 func mark_taken() -> void:
 	_taken = true
 	_refresh_case_overlay()
@@ -92,7 +100,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
-	if mouse_button.pressed and can_be_taken() and not _dragging:
+	if mouse_button.pressed and can_be_dragged() and not _dragging:
 		_start_drag()
 
 

@@ -49,6 +49,19 @@ class TestShopItemContract:
 		_item.mark_taken()
 		assert_true(_item.is_taken())
 
+	func test_can_be_dragged_mirrors_can_be_taken_when_not_taken() -> void:
+		_item_manager._progression.friendship_point_balance = 1000
+		assert_true(_item.can_be_dragged())
+
+	func test_can_be_dragged_returns_false_when_unaffordable_and_not_taken() -> void:
+		_item_manager._progression.friendship_point_balance = 0
+		assert_false(_item.can_be_dragged())
+
+	func test_can_be_dragged_returns_true_after_mark_taken_even_when_unaffordable() -> void:
+		_item_manager._progression.friendship_point_balance = 0
+		_item.mark_taken()
+		assert_true(_item.can_be_dragged())
+
 
 class TestShopItemArt:
 	extends GutTest
