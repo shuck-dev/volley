@@ -128,5 +128,15 @@ func _refresh_case_overlay() -> void:
 	# Taken items have left the shop's price-gate; case stays off regardless.
 	if _taken:
 		case_overlay.visible = false
+		_refresh_freeze()
 		return
 	case_overlay.visible = not can_be_taken()
+	_refresh_freeze()
+
+
+# Locked (cased) items freeze kinematically so they can't be bashed around.
+# Active drags manage freeze directly via _start_drag/_end_drag.
+func _refresh_freeze() -> void:
+	if _dragging:
+		return
+	freeze = not _taken and not can_be_taken()
