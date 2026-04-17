@@ -55,9 +55,7 @@ func _on_body_exited_shop_area(body: Node2D) -> void:
 	var shop_item: ShopItem = body
 	if shop_item.is_owned():
 		return
-	if not _item_manager.take(shop_item.item_definition.key):
-		return
-	shop_item.mark_owned()
+	_item_manager.take(shop_item.item_definition.key)
 
 
 func _update_friendship_label(balance: int) -> void:

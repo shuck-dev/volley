@@ -88,7 +88,7 @@ func test_exiting_shop_area_when_unaffordable_does_not_purchase() -> void:
 
 func test_exiting_shop_area_when_already_owned_does_nothing() -> void:
 	var item: ShopItem = _shop_item("grip_tape")
-	item.mark_owned()
+	_item_manager.take("grip_tape")
 	var balance_before: int = _item_manager.get_friendship_point_balance()
 	await _drag_item_out_of_shop_area(item)
 	assert_eq(_item_manager.get_friendship_point_balance(), balance_before)

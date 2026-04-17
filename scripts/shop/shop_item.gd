@@ -13,7 +13,6 @@ var _item_manager: Node
 var _art_instance: ItemArt
 var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO
-var _owned: bool = false
 var _last_input_frame: int = -1
 
 
@@ -25,26 +24,22 @@ func configure(item_manager: Node, definition: ItemDefinition) -> void:
 
 
 func can_be_owned() -> bool:
-	if _owned or item_definition == null or _item_manager == null:
+	if item_definition == null or _item_manager == null:
 		return false
 	return _item_manager.can_acquire(item_definition.key)
 
 
 ## Pickup permission: owned items stay draggable, unowned must be affordable.
 func can_be_dragged() -> bool:
-	if _owned:
+	if is_owned():
 		return true
 	return can_be_owned()
 
 
-# Explicit refresh: item_level_changed fires in take() before this runs. todo: SH-109.
-func mark_owned() -> void:
-	_owned = true
-	_refresh_case_overlay()
-
-
 func is_owned() -> bool:
-	return _owned
+	if item_definition == null or _item_manager == null:
+		return false
+	return _item_manager.get_level(item_definition.key) > 0
 
 
 func is_dragging() -> bool:
@@ -68,8 +63,7 @@ func _physics_process(_delta: float) -> void:
 	global_position = get_global_mouse_position() + _drag_offset
 
 
-# Release is handled here rather than in _on_input_event so a fast drag that
-# outruns the body's collision shape still delivers mouse-up and ends the drag.
+# Release handled here so a fast drag that outruns collision still ends the drag.
 func _input(event: InputEvent) -> void:
 	if not _dragging:
 		return
@@ -127,8 +121,7 @@ func _on_item_level_changed(item_key: String) -> void:
 func _refresh_case_overlay() -> void:
 	if case_overlay == null:
 		return
-	# Owned items have left the shop's price-gate; case stays off regardless.
-	if _owned:
+	if is_owned():
 		case_overlay.visible = false
 		_refresh_freeze()
 		return
@@ -140,4 +133,4 @@ func _refresh_case_overlay() -> void:
 func _refresh_freeze() -> void:
 	if _dragging:
 		return
-	freeze = not _owned and not can_be_owned()
+	freeze = not is_owned() and not can_be_owned()

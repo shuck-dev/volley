@@ -37,16 +37,17 @@ class TestShopItemContract:
 		_item_manager.take(_definition.key)
 		assert_false(_item.can_be_owned())
 
-	func test_can_be_owned_returns_false_after_mark_owned() -> void:
+	func test_can_be_owned_returns_false_after_take() -> void:
 		_item_manager._progression.friendship_point_balance = 1000
-		_item.mark_owned()
+		_item_manager.take(_definition.key)
 		assert_false(_item.can_be_owned())
 
 	func test_is_owned_defaults_to_false() -> void:
 		assert_false(_item.is_owned())
 
-	func test_mark_owned_sets_owned_flag() -> void:
-		_item.mark_owned()
+	func test_is_owned_returns_true_after_take() -> void:
+		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.take(_definition.key)
 		assert_true(_item.is_owned())
 
 	func test_can_be_dragged_mirrors_can_be_owned_when_not_owned() -> void:
@@ -57,15 +58,15 @@ class TestShopItemContract:
 		_item_manager._progression.friendship_point_balance = 0
 		assert_false(_item.can_be_dragged())
 
-	func test_can_be_dragged_returns_true_after_mark_owned_even_when_unaffordable() -> void:
+	func test_can_be_dragged_returns_true_when_owned_even_if_unaffordable() -> void:
+		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.take(_definition.key)
 		_item_manager._progression.friendship_point_balance = 0
-		_item.mark_owned()
 		assert_true(_item.can_be_dragged())
 
 	func test_purchase_hides_case_overlay_and_unfreezes_body() -> void:
 		_item_manager._progression.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
-		_item.mark_owned()
 		assert_false(_item.case_overlay.visible)
 		assert_false(_item.freeze)
 
