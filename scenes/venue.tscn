@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://hvh6q02lrntj" path="res://scenes/shop.tscn" id="3_shop"]
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/hud.tscn" id="4_hud"]
 [ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
+[ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(4000, 40)
@@ -49,22 +50,8 @@ color = Color(0.15, 0.1, 0.08, 1)
 [node name="Shop" parent="." unique_id=1688593906 instance=ExtResource("3_shop")]
 position = Vector2(1500, 3.13)
 
-[node name="Workshop" type="Node2D" parent="." unique_id=348325752]
+[node name="Workshop" type="Node2D" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
 z_index = 100
 z_as_relative = false
 position = Vector2(-1500, 0)
 metadata/_edit_group_ = true
-
-[node name="Marker" type="ColorRect" parent="Workshop" unique_id=264609764]
-offset_right = 500.0
-offset_bottom = 400.0
-mouse_filter = 2
-color = Color(0.6, 0.3, 0.8, 0.6)
-
-[node name="Name" type="Label" parent="Workshop" unique_id=1317991923]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 187.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 36
-text = "Workshop"

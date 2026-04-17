@@ -5,7 +5,10 @@
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
+[ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
+[ext_resource type="PackedScene" uid="uid://mws700v36gko" path="res://scenes/gear_rack.tscn" id="9_c7axm"]
+[ext_resource type="PackedScene" uid="uid://3l88siilc0hu" path="res://scenes/shipment_mat.tscn" id="10_5mv5b"]
 [ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
@@ -111,62 +114,20 @@ position = Vector2(500, 0)
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-500, 0)
 
-[node name="BallRack" type="Node2D" parent="." unique_id=76219608]
+[node name="BallRack" type="Node2D" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
 z_index = 100
 z_as_relative = false
 position = Vector2(-1065, 0)
 metadata/_edit_group_ = true
 
-[node name="Marker" type="ColorRect" parent="BallRack" unique_id=1282644591]
-offset_right = 300.0
-offset_bottom = 200.0
-mouse_filter = 2
-color = Color(0.9, 0.5, 0.2, 0.6)
-
-[node name="Name" type="Label" parent="BallRack" unique_id=113811230]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 157.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 36
-text = "BallRack"
-
-[node name="GearRack" type="Node2D" parent="." unique_id=1094395299]
+[node name="GearRack" type="Node2D" parent="." unique_id=445509089 instance=ExtResource("9_c7axm")]
 z_index = 100
 z_as_relative = false
 position = Vector2(760, 0)
 metadata/_edit_group_ = true
 
-[node name="Marker" type="ColorRect" parent="GearRack" unique_id=1976222616]
-offset_right = 300.0
-offset_bottom = 200.0
-mouse_filter = 2
-color = Color(0.3, 0.5, 0.9, 0.6)
-
-[node name="Name" type="Label" parent="GearRack" unique_id=958211432]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 176.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 36
-text = "GearRack"
-
-[node name="ShipmentMat" type="Node2D" parent="." unique_id=2113871279]
+[node name="ShipmentMat" type="Node2D" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
 z_index = 100
 z_as_relative = false
 position = Vector2(760, 438)
 metadata/_edit_group_ = true
-
-[node name="Marker" type="ColorRect" parent="ShipmentMat" unique_id=707478382]
-offset_right = 400.0
-offset_bottom = 150.0
-mouse_filter = 2
-color = Color(0.6, 0.4, 0.25, 0.6)
-
-[node name="Name" type="Label" parent="ShipmentMat" unique_id=1119738064]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 246.0
-offset_bottom = 60.0
-theme_override_font_sizes/font_size = 36
-text = "ShipmentMat"

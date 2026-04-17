@@ -6,6 +6,11 @@ extends Camera2D
 @export var right_anchor: Node2D
 
 
+func _ready() -> void:
+	# Clamp math assumes the camera centres its frame on position.
+	assert(anchor_mode == ANCHOR_MODE_DRAG_CENTER)
+
+
 func _process(delta: float) -> void:
 	var direction: float = Input.get_axis(&"camera_left", &"camera_right")
 	if direction != 0.0:

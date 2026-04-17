@@ -119,10 +119,12 @@ func test_clamp_is_noop_without_anchors() -> void:
 	assert_eq(_camera.global_position.x, FAR_OUTSIDE_X)
 
 
-func test_clamp_still_bounds_motion_when_anchors_are_swapped() -> void:
+func test_clamp_reaches_a_stable_resting_position_when_anchors_are_swapped() -> void:
 	# Swapped anchors are a misconfiguration, not a crash; the clamp should still
-	# prevent the camera from flying out to an arbitrary far position.
+	# settle at a stable position rather than drifting or flying out.
 	_set_bounds(RIGHT_ANCHOR_X, LEFT_ANCHOR_X)
 	_camera.global_position.x = FAR_OUTSIDE_X
 	_camera._process(0.0)
-	assert_lt(abs(_camera.global_position.x), FAR_OUTSIDE_X)
+	var resting_x: float = _camera.global_position.x
+	_camera._process(0.0)
+	assert_eq(_camera.global_position.x, resting_x)
