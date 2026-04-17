@@ -1,12 +1,15 @@
-[gd_scene format=3 uid="uid://deubg24cn1abl"]
+[gd_scene format=3 uid="uid://dumhl1skwhd7q"]
 
+[ext_resource type="Script" uid="uid://cjue0o73mhyck" path="res://scripts/hud/dev_hud.gd" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://bpo6xjafeebkl" path="res://scripts/hud/dev_item_panel.gd" id="2_oo0fn"]
 [ext_resource type="Script" uid="uid://cq0lcy64wmraf" path="res://scripts/hud/dev_stat_panel.gd" id="3_5ysmq"]
 [ext_resource type="Script" uid="uid://cwuynn50ikjek" path="res://scripts/hud/dev_menu.gd" id="3_devmenu"]
 [ext_resource type="Script" uid="uid://cobj86hrkbj2r" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button")]
+script = ExtResource("1_ahhtf")
+clearance_button = NodePath("ClearanceButton")
 
 [node name="DevItemUI" type="VBoxContainer" parent="." unique_id=1055282224]
 offset_left = 10.0

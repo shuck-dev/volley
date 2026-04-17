@@ -7,7 +7,7 @@ var _bar: Control
 
 
 func before_each() -> void:
-	_bar = load("res://scripts/hud/speed_bar.gd").new()
+	_bar = load("res://scripts/court/speed_bar.gd").new()
 	_bar.size = Vector2(200, 10)
 	add_child_autofree(_bar)
 

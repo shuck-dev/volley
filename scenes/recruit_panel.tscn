@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://kyv43r8jy2b"]
 
-[ext_resource type="Script" uid="uid://cvqhvm88n4nog" path="res://scripts/hud/recruit_panel.gd" id="1"]
+[ext_resource type="Script" uid="uid://cvqhvm88n4nog" path="res://scripts/court/recruit_panel.gd" id="1"]
 
 [node name="RecruitPanel" type="VBoxContainer" unique_id=1288823691 node_paths=PackedStringArray("recruit_label", "recruit_button", "recruit_sound")]
 script = ExtResource("1")
