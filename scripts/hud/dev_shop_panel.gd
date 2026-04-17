@@ -30,9 +30,10 @@ func _gui_input(event: InputEvent) -> void:
 		accept_event()
 
 
-## Debug canary: warn if a left-click lands on a ShopItem's collision AABB
-## but no drag starts. Catches regressions where a Control or filter intercepts
-## the event before physics picking can fire.
+## Warns when a left-click lands on a ShopItem's collision AABB but physics
+## picking never delivered input_event to that body on the same frame.
+## Catches regressions where a Control or filter intercepts the event before
+## physics picking can fire.
 func _input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton):
 		return
@@ -45,14 +46,16 @@ func _input(event: InputEvent) -> void:
 	var overlapped: ShopItem = _find_item_under(world)
 	if overlapped == null:
 		return
+	var before: int = overlapped.last_input_frame()
 	await get_tree().physics_frame
-	if not overlapped.is_dragging():
-		push_warning(
-			(
-				"DevShopPanel: click over %s at %s did not start a drag; input pipeline may be blocked"
-				% [overlapped.name, world]
-			)
+	await get_tree().physics_frame
+	if overlapped.last_input_frame() == before:
+		var message := (
+			"[shop] click over %s at %s did not reach the body; input pipeline may be blocked"
+			% [overlapped.name, world]
 		)
+		print(message)
+		push_warning(message)
 
 
 func _find_item_under(world: Vector2) -> ShopItem:

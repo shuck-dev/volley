@@ -14,6 +14,7 @@ var _art_instance: ItemArt
 var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO
 var _taken: bool = false
+var _last_input_frame: int = -1
 
 
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
@@ -92,8 +93,13 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
+	_last_input_frame = Engine.get_physics_frames()
 	if mouse_button.pressed and can_be_dragged() and not _dragging:
 		_start_drag()
+
+
+func last_input_frame() -> int:
+	return _last_input_frame
 
 
 func _start_drag() -> void:
