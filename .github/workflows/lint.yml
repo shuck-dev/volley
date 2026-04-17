@@ -1,0 +1,36 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install gdtoolkit
+        run: pipx install "gdtoolkit==4.*"
+
+      - name: Install codespell
+        run: pipx install codespell
+
+      - name: Install gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz | tar -xz
+          sudo mv gitleaks /usr/local/bin/
+
+      - name: gdformat
+        run: find scripts tests -name '*.gd' | xargs gdformat --check
+
+      - name: gdlint
+        run: find scripts tests -name '*.gd' | xargs gdlint
+
+      - name: codespell
+        run: codespell
+
+      - name: gitleaks
+        run: gitleaks detect --redact --verbose --no-banner

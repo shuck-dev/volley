@@ -3,11 +3,19 @@ prepare-commit-msg:
     ticket-prefix:
       run: ./prepend_ticket_prefix.sh {1} {2}
 
+commit-msg:
+  commands:
+    format:
+      run: ./scripts/ci/check_commit_message.sh {1}
+
 pre-commit:
   piped: true
   commands:
     gitleaks:
       run: gitleaks protect --staged --redact --verbose
+    codespell:
+      exclude: "^addons/"
+      run: codespell {staged_files}
     gdformat:
       glob: "*.gd"
       exclude: "^addons/"
@@ -17,7 +25,8 @@ pre-commit:
       glob: "*.gd"
       exclude: "^addons/"
       run: gdlint {staged_files}
+
+pre-push:
+  commands:
     gut:
-      glob: "*.gd"
-      exclude: "^addons/"
       run: godot --headless -s addons/gut/gut_cmdln.gd

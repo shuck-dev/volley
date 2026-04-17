@@ -183,7 +183,7 @@ func _status_for(shop_item: ShopItem) -> String:
 	if shop_item.is_owned():
 		return "owned"
 	if shop_item.can_be_owned():
-		return "dragable"
+		return "draggable"
 	var definition: ItemDefinition = shop_item.item_definition
 	if definition != null and ItemManager.get_level(definition.key) >= definition.max_level:
 		return "maxed"

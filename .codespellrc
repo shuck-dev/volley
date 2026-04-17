@@ -1,0 +1,6 @@
+[codespell]
+# British English project: skip the en-GB -> en-US dictionary and stick to
+# common-typo corrections only.
+builtin = clear,rare,informal,usage,code,names
+skip = ./.git,./.godot,./addons,./builds,./exports,./logs,./designs/01-prototype/mood-boards,*.uid,*.import,*.tres,*.tscn,*.svg,*.png,*.jpg,*.jpeg,*.webp,*.ogg,*.wav,*.mp3,*.ttf,*.otf
+ignore-words-list = thew,wit,sme,kinda,sting,singed,browseable,followings,artic
