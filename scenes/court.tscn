@@ -32,6 +32,7 @@ offset_left = -2000.0
 offset_top = -2000.0
 offset_right = 2000.0
 offset_bottom = 2000.0
+mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
@@ -47,6 +48,7 @@ metadata/_edit_group_ = true
 [node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
 offset_right = 36.0
 offset_bottom = 1472.0
+mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
@@ -62,6 +64,7 @@ metadata/_edit_group_ = true
 [node name="ColorRect" type="ColorRect" parent="Bounds/Bottom Wall" unique_id=1810122737]
 offset_right = 36.0
 offset_bottom = 1472.0
+mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom Wall" unique_id=1261402091]
 position = Vector2(18, 736)
@@ -75,6 +78,7 @@ metadata/_edit_group_ = true
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
 offset_right = 36.0
 offset_bottom = 1172.0
+mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
 position = Vector2(18, 586)
@@ -88,6 +92,7 @@ metadata/_edit_group_ = true
 [node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
 offset_right = 36.0
 offset_bottom = 1172.0
+mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
 position = Vector2(18, 586)

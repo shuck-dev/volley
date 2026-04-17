@@ -4,5 +4,3 @@
 
 [resource]
 script = ExtResource("1_6e5sw")
-display_slots = 5
-item_spacing = 80.0

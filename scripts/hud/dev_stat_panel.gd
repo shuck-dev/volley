@@ -4,6 +4,7 @@ extends VBoxContainer
 var _labels: Dictionary = {}
 var _speed_label: Label
 var _speed_bar: Control
+var _drag := DraggableBehavior.new()
 
 
 func _ready() -> void:
@@ -17,10 +18,16 @@ func _ready() -> void:
 		hide()
 		return
 
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	_speed_bar = get_parent().get_node_or_null("SpeedBar")
 	_build_live_labels()
 	_add_version_label()
 	_refresh()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if _drag.process(self, event):
+		accept_event()
 
 
 func _process(_delta: float) -> void:

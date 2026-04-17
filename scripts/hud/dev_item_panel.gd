@@ -2,6 +2,7 @@
 extends VBoxContainer
 
 var _buttons: Dictionary = {}
+var _drag := DraggableBehavior.new()
 
 
 func _ready() -> void:
@@ -12,6 +13,7 @@ func _ready() -> void:
 	if not OS.is_debug_build():
 		hide()
 		return
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	_add_header()
 	for item in ItemManager.items:
 		var container := VBoxContainer.new()
@@ -58,6 +60,11 @@ func _ready() -> void:
 
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
+
+
+func _gui_input(event: InputEvent) -> void:
+	if _drag.process(self, event):
+		accept_event()
 
 
 func _on_item_pressed(item_key: String) -> void:

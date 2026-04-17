@@ -1,20 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://hvh6q02lrntj"]
+[gd_scene format=3 uid="uid://hvh6q02lrntj"]
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_shop"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
-size = Vector2(400, 20)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(500, 400)
 
-[node name="Shop" type="Node2D" node_paths=PackedStringArray("shop_area", "friendship_label", "items_anchor") groups=["hot_reloadable_config"]]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
+size = Vector2(400, 20)
+
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "friendship_label", "items_anchor") groups=["hot_reloadable_config"]]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 friendship_label = NodePath("FriendshipLabel")
 items_anchor = NodePath("ItemsAnchor")
 
-[node name="FriendshipLabel" type="Label" parent="."]
+[node name="FriendshipLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
 offset_top = -220.0
 offset_right = 100.0
@@ -23,37 +23,41 @@ text = "Friendship: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ShopArea" type="Area2D" parent="."]
+[node name="ShopArea" type="Area2D" parent="." unique_id=477736559]
 position = Vector2(0, -80)
+input_pickable = false
 
-[node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea"]
+[node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea" unique_id=922703322]
 shape = SubResource("RectangleShape2D_area")
 
-[node name="Table" type="StaticBody2D" parent="."]
+[node name="Table" type="StaticBody2D" parent="." unique_id=1043709126]
 
-[node name="TableShape" type="CollisionShape2D" parent="Table"]
+[node name="TableShape" type="CollisionShape2D" parent="Table" unique_id=2025432732]
 shape = SubResource("RectangleShape2D_table")
 
-[node name="TableTop" type="ColorRect" parent="Table"]
+[node name="TableTop" type="ColorRect" parent="Table" unique_id=1403131502]
 offset_left = -200.0
 offset_top = -10.0
 offset_right = 200.0
 offset_bottom = 10.0
+mouse_filter = 2
 color = Color(0.55, 0.35, 0.2, 1)
 
-[node name="TableEdge" type="ColorRect" parent="Table"]
+[node name="TableEdge" type="ColorRect" parent="Table" unique_id=1312702625]
 offset_left = -200.0
 offset_top = 10.0
 offset_right = 200.0
 offset_bottom = 14.0
+mouse_filter = 2
 color = Color(0.65, 0.45, 0.25, 1)
 
-[node name="TableFront" type="ColorRect" parent="Table"]
+[node name="TableFront" type="ColorRect" parent="Table" unique_id=2008724073]
 offset_left = -200.0
 offset_top = 14.0
 offset_right = 200.0
 offset_bottom = 144.0
+mouse_filter = 2
 color = Color(0.35, 0.2, 0.1, 1)
 
-[node name="ItemsAnchor" type="Node2D" parent="."]
+[node name="ItemsAnchor" type="Node2D" parent="." unique_id=681031275]
 position = Vector2(0, -30)

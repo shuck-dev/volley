@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://cjue0o73mhyck" path="res://scripts/hud/hud.gd" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://bpo6xjafeebkl" path="res://scripts/hud/dev_item_panel.gd" id="2_oo0fn"]
 [ext_resource type="Script" uid="uid://cq0lcy64wmraf" path="res://scripts/hud/dev_stat_panel.gd" id="3_5ysmq"]
+[ext_resource type="Script" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
+[ext_resource type="Script" path="res://scripts/hud/dev_menu.gd" id="3_devmenu"]
 [ext_resource type="Script" uid="uid://cp16q4n8se0mu" path="res://scripts/hud/speed_bar.gd" id="4_6fi6k"]
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="5_uo2fv"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
@@ -74,6 +76,28 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme = ExtResource("7_debug")
 script = ExtResource("2_oo0fn")
+
+[node name="DevShopPanel" type="PanelContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -380.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 180.0
+grow_horizontal = 0
+theme = ExtResource("7_debug")
+script = ExtResource("3_shoppnl")
+items_anchor_path = NodePath("../../Shop/ItemsAnchor")
+
+[node name="DevMenu" type="PanelContainer" parent="."]
+offset_left = 10.0
+offset_top = 520.0
+offset_right = 210.0
+offset_bottom = 620.0
+theme = ExtResource("7_debug")
+script = ExtResource("3_devmenu")
+managed_panels = [NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel")]
 
 [node name="DevStatPanel" type="VBoxContainer" parent="." unique_id=425250304]
 anchors_preset = 3

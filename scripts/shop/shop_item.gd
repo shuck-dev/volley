@@ -47,6 +47,18 @@ func _ready() -> void:
 	_item_manager.friendship_point_balance_changed.connect(_on_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_refresh_case_overlay()
+	_add_debug_marker()
+
+
+func _add_debug_marker() -> void:
+	if not OS.is_debug_build():
+		return
+	var marker := ColorRect.new()
+	marker.color = Color(1, 0, 1, 0.6)
+	marker.size = Vector2(4, 4)
+	marker.position = Vector2(-2, -2)
+	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(marker)
 
 
 func _physics_process(_delta: float) -> void:
@@ -106,5 +118,9 @@ func _on_item_level_changed(item_key: String) -> void:
 
 func _refresh_case_overlay() -> void:
 	if case_overlay == null:
+		return
+	# Taken items have left the shop's price-gate; case stays off regardless.
+	if _taken:
+		case_overlay.visible = false
 		return
 	case_overlay.visible = not can_be_taken()
