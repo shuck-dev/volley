@@ -59,7 +59,7 @@ func test_clear_save_writes_cleared_state() -> void:
 func test_save_is_noop_after_clear_save_until_unblocked() -> void:
 	_save_manager.clear_save()
 	_save_manager.save()
-	assert_call_count(_mock_storage, "write", 1)
+	assert_called_count(_mock_storage.write, 1)
 
 
 # clear_save writes once, then unblock + save writes a second time.
@@ -67,7 +67,7 @@ func test_unblock_writes_resumes_saves() -> void:
 	_save_manager.clear_save()
 	_save_manager.unblock_writes()
 	_save_manager.save()
-	assert_call_count(_mock_storage, "write", 2)
+	assert_called_count(_mock_storage.write, 2)
 
 
 func test_clear_save_stops_autosave_timer() -> void:
@@ -86,4 +86,4 @@ func test_unblock_writes_restarts_autosave_timer() -> void:
 func test_autosave_timeout_while_blocked_does_not_write() -> void:
 	_save_manager.clear_save()
 	_save_manager._autosave_timer.timeout.emit()
-	assert_call_count(_mock_storage, "write", 1)
+	assert_called_count(_mock_storage.write, 1)
