@@ -24,27 +24,40 @@ func clear() -> void:
 	shop_unlocked = false
 	recruit_offered_partners = []
 	unlocked_partners = []
-	active_partner = ""
+	active_partner = &""
 	partner_volley_totals = {}
 
 
-## Saves game data to storeage (disk)
+## Saves game data to storage. Validates the serialised content is parseable
+## JSON before hitting disk so a malformed payload never replaces the existing
+## save (the backup file written by FileSaveStorage stays intact).
 func save_to_disk() -> bool:
-	return _storage.write(JSON.stringify(to_dict()))
+	var content := JSON.stringify(to_dict())
+	if JSON.parse_string(content) == null:
+		return false
+	return _storage.write(content)
 
 
-## Loads game data from storage (disk)
+## Loads game data from storage, falling back to rolling backups if the
+## primary save is missing or unparseable.
 func load_from_disk() -> bool:
-	var content := _storage.read()
+	if _try_load_content(_storage.read()):
+		return true
+	var fallbacks: Variant = _storage.read_fallbacks()
+	if fallbacks is Array:
+		for content: Variant in fallbacks:
+			if content is String and _try_load_content(content):
+				return true
+	return false
 
+
+func _try_load_content(content: String) -> bool:
 	if content == "":
 		return false
-
-	var data: Dictionary = JSON.parse_string(content)
-
-	if data == null:
+	var parsed: Variant = JSON.parse_string(content)
+	if not parsed is Dictionary:
 		return false
-
+	var data: Dictionary = parsed
 	var loaded := from_dict(data)
 	friendship_point_balance = loaded.friendship_point_balance
 	total_friendship_points_earned = loaded.total_friendship_points_earned
@@ -55,7 +68,6 @@ func load_from_disk() -> bool:
 	unlocked_partners = loaded.unlocked_partners
 	active_partner = loaded.active_partner
 	partner_volley_totals = loaded.partner_volley_totals
-
 	return true
 
 

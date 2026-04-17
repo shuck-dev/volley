@@ -45,3 +45,37 @@ func test_autosave_timer_triggers_save() -> void:
 func test_quit_notification_triggers_save() -> void:
 	_save_manager.notification(NOTIFICATION_WM_CLOSE_REQUEST)
 	assert_called(_mock_storage, "write")
+
+
+# --- clear_save / write-guard ---
+func test_clear_save_writes_cleared_state() -> void:
+	_progression.friendship_point_balance = 500
+	_save_manager.clear_save()
+	var cleared_json := JSON.stringify(_progression.to_dict())
+	assert_called(_mock_storage, "write", [cleared_json])
+
+
+# clear_save writes once; a follow-up save() while blocked must not write again.
+func test_save_is_noop_after_clear_save_until_unblocked() -> void:
+	_save_manager.clear_save()
+	_save_manager.save()
+	assert_call_count(_mock_storage, "write", 1)
+
+
+# clear_save writes once, then unblock + save writes a second time.
+func test_unblock_writes_resumes_saves() -> void:
+	_save_manager.clear_save()
+	_save_manager.unblock_writes()
+	_save_manager.save()
+	assert_call_count(_mock_storage, "write", 2)
+
+
+func test_clear_save_stops_autosave_timer() -> void:
+	_save_manager.clear_save()
+	assert_true(_save_manager._autosave_timer.is_stopped())
+
+
+func test_unblock_writes_restarts_autosave_timer() -> void:
+	_save_manager.clear_save()
+	_save_manager.unblock_writes()
+	assert_false(_save_manager._autosave_timer.is_stopped())

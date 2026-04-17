@@ -14,6 +14,7 @@ text = "Recruit"
 
 [node name="RecruitButton" type="Button" parent="." unique_id=444370657]
 layout_mode = 2
+focus_mode = 0
 text = "0 FP"
 
 [node name="RecruitSound" type="AudioStreamPlayer" parent="." unique_id=1828611794]

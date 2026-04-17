@@ -1,18 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://pk4rev1g2m1n"]
+[gd_scene load_steps=4 format=3 uid="uid://pk4rev1g2m1n"]
 
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
+[ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_case"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_item"]
 size = Vector2(40, 40)
 
-[node name="ShopItem" type="RigidBody2D" node_paths=PackedStringArray("art_holder", "collision_shape")]
+[node name="ShopItem" type="RigidBody2D" node_paths=PackedStringArray("art_holder", "collision_shape", "case_overlay")]
 input_pickable = true
 freeze_mode = 1
 script = ExtResource("1_lrx6i")
 art_holder = NodePath("ArtHolder")
 collision_shape = NodePath("CollisionShape2D")
+case_overlay = NodePath("CaseOverlay")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_item")
 
 [node name="ArtHolder" type="Node2D" parent="."]
+
+[node name="CaseOverlay" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("2_case")

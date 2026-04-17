@@ -5,6 +5,7 @@ extends RigidBody2D
 
 @export var art_holder: Node2D
 @export var collision_shape: CollisionShape2D
+@export var case_overlay: Node2D
 
 var item_definition: ItemDefinition
 
@@ -19,6 +20,7 @@ func configure(item_manager: Node, definition: ItemDefinition) -> void:
 	_item_manager = item_manager
 	item_definition = definition
 	_build_art()
+	_refresh_case_overlay()
 
 
 func can_be_taken() -> bool:
@@ -29,6 +31,7 @@ func can_be_taken() -> bool:
 
 func mark_taken() -> void:
 	_taken = true
+	_refresh_case_overlay()
 
 
 func is_taken() -> bool:
@@ -41,6 +44,9 @@ func _ready() -> void:
 	input_pickable = true
 	freeze_mode = FREEZE_MODE_KINEMATIC
 	input_event.connect(_on_input_event)
+	_item_manager.friendship_point_balance_changed.connect(_on_balance_changed)
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_refresh_case_overlay()
 
 
 func _physics_process(_delta: float) -> void:
@@ -87,3 +93,18 @@ func _start_drag() -> void:
 func _end_drag() -> void:
 	_dragging = false
 	freeze = false
+
+
+func _on_balance_changed(_balance: int) -> void:
+	_refresh_case_overlay()
+
+
+func _on_item_level_changed(item_key: String) -> void:
+	if item_definition != null and item_key == item_definition.key:
+		_refresh_case_overlay()
+
+
+func _refresh_case_overlay() -> void:
+	if case_overlay == null:
+		return
+	case_overlay.visible = not can_be_taken()

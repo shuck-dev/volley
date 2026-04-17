@@ -145,9 +145,11 @@ func _setup_clear_save_control() -> void:
 
 
 func _on_clear_save_pressed() -> void:
+	print("[dev] clear save button pressed")
 	SaveManager.clear_save()
 	ItemManager.reload_from_progression()
 	get_tree().reload_current_scene()
+	SaveManager.unblock_writes.call_deferred()
 
 
 func _draw() -> void:

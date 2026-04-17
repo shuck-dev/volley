@@ -54,7 +54,7 @@ func _ready() -> void:
 	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
 		ball.register_miss_zone(zone)
 
-	if _progression.active_partner != &"":
+	if ProgressionManager.is_partner_unlocked(_progression.active_partner):
 		_activate_partner()
 
 	ProgressionManager.partner_recruited.connect(_on_partner_recruited)

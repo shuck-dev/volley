@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="5_uo2fv"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
-[node name="Hud" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "fp_bonus_label")]
+[node name="Hud" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("counter_label", "personal_volley_best_label", "friendship_point_balance_label", "speed_bar", "auto_label", "fp_bonus_label", "clearance_button")]
 script = ExtResource("1_ahhtf")
 counter_label = NodePath("CurrentVolleyCountLabel")
 personal_volley_best_label = NodePath("PersonalVolleyBestLabel")
@@ -15,6 +15,7 @@ friendship_point_balance_label = NodePath("FriendshipTotalLabel")
 speed_bar = NodePath("SpeedBar")
 auto_label = NodePath("AutoLabel")
 fp_bonus_label = NodePath("FPBonusLabel")
+clearance_button = NodePath("ClearanceButton")
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=697957388]
 anchors_preset = 5
@@ -112,6 +113,18 @@ offset_top = -101.0
 offset_right = 123.0
 offset_bottom = -43.0
 grow_vertical = 0
+
+[node name="ClearanceButton" type="Button" parent="." unique_id=1837706863]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = -36.0
+offset_right = 141.0
+offset_bottom = -5.0
+grow_vertical = 0
+focus_mode = 0
+text = "Clearance"
 
 [node name="FPBonusLabel" type="Label" parent="." unique_id=1668256323]
 anchors_preset = 5

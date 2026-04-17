@@ -50,6 +50,14 @@ func is_shop_unlocked() -> bool:
 	return _progression.shop_unlocked
 
 
+func unlock_shop() -> void:
+	if _progression.shop_unlocked:
+		return
+	_progression.shop_unlocked = true
+	SaveManager.save()
+	shop_unlocked_changed.emit(true)
+
+
 func get_partner(partner_key: StringName) -> PartnerDefinition:
 	for partner in partners:
 		if partner.key == partner_key:

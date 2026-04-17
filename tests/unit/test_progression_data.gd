@@ -153,3 +153,18 @@ func test_partner_save_and_load_round_trip() -> void:
 	assert_eq(loaded.unlocked_partners, [&"martha"] as Array[StringName])
 	assert_eq(loaded.active_partner, "martha")
 	assert_eq(loaded.partner_volley_totals, {&"martha": 500} as Dictionary[StringName, int])
+
+
+func test_cleared_data_round_trip_keeps_partner_fields_empty() -> void:
+	_data.unlocked_partners = [&"martha"] as Array[StringName]
+	_data.active_partner = &"martha"
+	_data.partner_volley_totals = {&"martha": 500} as Dictionary[StringName, int]
+	_data.clear()
+
+	var cleared_json := JSON.stringify(_data.to_dict())
+	var loaded := ProgressionData.new(_mock_storage)
+	stub(_mock_storage.read).to_return(cleared_json)
+	loaded.load_from_disk()
+	assert_eq(loaded.unlocked_partners, [] as Array[StringName])
+	assert_eq(loaded.active_partner, &"")
+	assert_eq(loaded.partner_volley_totals, {} as Dictionary[StringName, int])

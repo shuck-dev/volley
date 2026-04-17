@@ -7,6 +7,7 @@ extends CanvasLayer
 @export var speed_bar: Control
 @export var auto_label: Label
 @export var fp_bonus_label: Label
+@export var clearance_button: Button
 
 
 func _ready() -> void:
@@ -14,6 +15,10 @@ func _ready() -> void:
 	update_friendship_point_balance(ItemManager.get_friendship_point_balance())
 	auto_label.visible = false
 	_update_fp_bonus()
+
+	clearance_button.visible = not ProgressionManager.is_shop_unlocked()
+	clearance_button.pressed.connect(_on_clearance_button_pressed)
+	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
 
 
 func update_volley_count(count: int) -> void:
@@ -53,3 +58,11 @@ func _update_fp_bonus() -> void:
 		fp_bonus_label.visible = true
 	else:
 		fp_bonus_label.visible = false
+
+
+func _on_clearance_button_pressed() -> void:
+	ProgressionManager.unlock_shop()
+
+
+func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
+	clearance_button.visible = not is_unlocked
