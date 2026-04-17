@@ -3,6 +3,7 @@ extends RigidBody2D
 
 signal missed
 signal at_max_speed_changed(is_at_max: bool)
+signal speed_changed(speed: float, min_speed: float, max_speed: float)
 
 var speed: float = 0.0
 var min_speed: float
@@ -27,8 +28,13 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
+	var prev_speed: float = speed
+	var prev_min: float = min_speed
+	var prev_max: float = max_speed
 	effect_processor.process_frame(delta)
 	_emit_max_speed_if_changed()
+	if speed != prev_speed or min_speed != prev_min or max_speed != prev_max:
+		speed_changed.emit(speed, min_speed, max_speed)
 	linear_velocity = linear_velocity.normalized() * speed
 
 
@@ -69,6 +75,7 @@ func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
 	linear_velocity = linear_velocity.normalized() * speed
 	_emit_max_speed_if_changed()
+	speed_changed.emit(speed, min_speed, max_speed)
 
 
 func _emit_max_speed_if_changed() -> void:

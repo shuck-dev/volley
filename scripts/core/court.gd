@@ -4,9 +4,6 @@ extends Node2D
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
 signal ball_at_max_speed_changed(is_at_max: bool)
-signal ball_speed_updated(
-	current_speed: float, min_speed: float, max_speed: float, base_max_speed: float
-)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
 
@@ -22,14 +19,14 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
-var _volley_count: int = 0
+var _volley_count := 0
 var _active_partner_definition: Resource
 var _partner_miss_zone: MissZone
 var _progression: ProgressionData
 var _progression_config: ProgressionConfig
 var _item_manager: Node
-var _is_autoplay_active: bool = false
-var _friendship_point_accumulator: float = 0.0
+var _is_autoplay_active := false
+var _friendship_point_accumulator := 0.0
 
 
 func _ready() -> void:
@@ -74,9 +71,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	_item_manager.process_frame(delta)
-	var base_min: float = _item_manager.get_base_stat(&"ball_speed_min")
-	var base_max_range: float = _item_manager.get_base_stat(&"ball_speed_max_range")
-	ball_speed_updated.emit(ball.speed, ball.min_speed, ball.max_speed, base_min + base_max_range)
 
 
 func _on_paddle_hit() -> void:

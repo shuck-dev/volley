@@ -19,6 +19,10 @@ const EXCLUDE_PATHS = [
 	"res://scripts/progression/save_manager.gd",
 	# Pure data resource, exercised through GameRules.base_stats
 	"res://scripts/core/base_stats_config.gd",
+	# Abstract base class; subclasses override apply() and describe()
+	"res://scripts/items/effect/outcome.gd",
+	# Drawing-heavy @tool Control; _draw paths are untouched in headless tests
+	"res://scripts/court/speed_bar.gd",
 ]
 
 

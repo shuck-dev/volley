@@ -6,7 +6,7 @@ const BAR_OVERFLOW_COLOR := Color(1.0, 0.5, 0.2)
 const BAR_BACKGROUND_COLOR := Color(0.15, 0.15, 0.15, 0.6)
 const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 
-@export var court: Court
+@export var ball: Ball
 
 var current_speed: float = 0.0
 var _min_speed: float = 400.0
@@ -21,7 +21,23 @@ func _ready() -> void:
 	_min_speed = GameRules.base_stats[&"ball_speed_min"]
 	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
 	_permanent_max_speed = _max_speed
-	court.ball_speed_updated.connect(update_speed)
+	if ball != null:
+		ball.speed_changed.connect(_on_ball_speed_changed)
+	ItemManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
+
+
+func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float) -> void:
+	current_speed = new_speed
+	_min_speed = min_speed
+	_max_speed = max_speed
+	queue_redraw()
+
+
+func _on_item_level_changed() -> void:
+	var base_min: float = ItemManager.get_base_stat(&"ball_speed_min")
+	var base_max_range: float = ItemManager.get_base_stat(&"ball_speed_max_range")
+	_permanent_max_speed = base_min + base_max_range
+	queue_redraw()
 
 
 func _draw() -> void:

@@ -30,6 +30,9 @@ logs/
 lefthook-local.yml
 scripts/local/
 
+# Editor-only dev addons (per-dev preference, no runtime/CI impact)
+addons/signal_lens/
+
 # Mood board reference images (copyrighted material, local only)
 designs/01-prototype/mood-boards/
 

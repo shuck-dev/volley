@@ -133,4 +133,4 @@ func _refresh_case_overlay() -> void:
 func _refresh_freeze() -> void:
 	if _dragging:
 		return
-	freeze = not is_owned() and not can_be_owned()
+	set_deferred("freeze", not is_owned() and not can_be_owned())
