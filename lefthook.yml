@@ -3,6 +3,7 @@ output:
   - success
   - failure
   - execution_out
+  - skips
 
 prepare-commit-msg:
   commands:
@@ -35,4 +36,6 @@ pre-commit:
 pre-push:
   commands:
     gut:
+      glob: "*.gd"
+      exclude: "^addons/"
       run: ./scripts/ci/run_gut.sh
