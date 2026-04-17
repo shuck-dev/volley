@@ -21,8 +21,7 @@ func _ready() -> void:
 	_min_speed = GameRules.base_stats[&"ball_speed_min"]
 	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
 	_permanent_max_speed = _max_speed
-	if court != null:
-		court.ball_speed_updated.connect(update_speed)
+	court.ball_speed_updated.connect(update_speed)
 
 
 func _draw() -> void:
