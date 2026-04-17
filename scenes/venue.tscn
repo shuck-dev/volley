@@ -30,8 +30,8 @@ scale = Vector2(0.6, 0.6)
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1084046387 node_paths=PackedStringArray("left_anchor", "right_anchor")]
 script = ExtResource("5_wttuf")
-left_anchor = NodePath("../Workshop")
-right_anchor = NodePath("../Shop")
+left_anchor = NodePath("../LeftEdge")
+right_anchor = NodePath("../RightEdge")
 
 [node name="VenueFloor" type="StaticBody2D" parent="." unique_id=984529763]
 position = Vector2(0, 410)
@@ -50,8 +50,11 @@ color = Color(0.15, 0.1, 0.08, 1)
 [node name="Shop" parent="." unique_id=1688593906 instance=ExtResource("3_shop")]
 position = Vector2(1500, 3.13)
 
-[node name="Workshop" type="Node2D" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
-z_index = 100
-z_as_relative = false
+[node name="Workshop" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
 position = Vector2(-1500, 0)
-metadata/_edit_group_ = true
+
+[node name="LeftEdge" type="Marker2D" parent="." unique_id=679568217]
+position = Vector2(-1700, 0)
+
+[node name="RightEdge" type="Marker2D" parent="." unique_id=858790739]
+position = Vector2(1920, 0)
