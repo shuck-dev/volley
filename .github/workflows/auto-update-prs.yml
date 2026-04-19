@@ -71,8 +71,12 @@ jobs:
             # one dirty PR never blocks the sweep for the rest.
             if gh pr update-branch "$PR"; then
               echo "PR #${PR} updated."
+              # Clear the conflict label if it was applied previously; the branch
+              # is now clean against main.
+              gh pr edit "$PR" --remove-label has-conflicts 2>/dev/null || true
             else
-              echo "::warning::PR #${PR} could not be auto-updated (likely merge conflict or protected state); leaving it for the author."
+              echo "::warning::PR #${PR} could not be auto-updated (likely merge conflict); labelling has-conflicts."
+              gh pr edit "$PR" --add-label has-conflicts 2>/dev/null || true
             fi
 
             echo "::endgroup::"
