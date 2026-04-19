@@ -91,3 +91,28 @@ Examples:
 - `cue/127-menu-loop`
 
 Use `./new-branch.sh SH-N` to create a branch from a Linear ticket; it reads the ticket's label and sets the prefix automatically.
+
+---
+
+## PR workflow labels
+
+Separate from intent labels, a small set of GitHub labels are applied automatically to **pull requests** by the CI and review tooling. They describe the PR's state at a glance in the repo's PR list.
+
+### Review state
+
+- **`pre-checked`**: specialist reviewers from `.claude/agents/` passed the PR with no judgment items. Safe to promote to human review.
+- **`action-required`**: at least one specialist reviewer posted a line-anchored judgment comment. The PR needs a response or change before merging.
+
+Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`.
+
+### Merge state
+
+- **`has-conflicts`**: the auto-update workflow (`.github/workflows/auto-update-prs.yml`) tried to merge `main` into this branch and failed. Someone needs to resolve the conflict manually. Removed automatically on the next successful update.
+
+### Dependency updates
+
+- **`dependencies`**: the PR updates a third-party package. Applied by Dependabot.
+- **`github-actions`**: the dependency is a GitHub Action.
+- **`python`**: the dependency is a Python package from `requirements-dev.txt`.
+
+Pinned in `.github/dependabot.yml` per ecosystem.
