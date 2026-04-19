@@ -209,9 +209,9 @@ Five works that between them define the territory Volley! lives in. The other re
 
 ---
 
-## The Volley! Commandments
+## The Volley! Marks
 
-Five principles that govern every piece of art in the game. These are not style rules; they are qualities. Any asset, any screen, either world. Inspired by Oddworld's approach of defining non-negotiable qualities and trusting artists to find their way there.
+Six Marks that every piece of art in the game carries. Not style rules, not commandments: Shuck is a sanctuary for craft and the work is held up against the Marks rather than commanded by them. Inspired by Oddworld's approach of naming non-negotiable qualities and trusting artists to find their way there, softened for a studio that prefers invitation to instruction.
 
 ### Intentional
 
@@ -242,6 +242,12 @@ Black Hole Fishing's catalogue-as-shop. Cast n Chill's layered environments that
 Feels alive. Movement carries personality. Still frames should feel like they are about to move.
 
 Eizouken's animation philosophy. Star Fetchers' fluid characters. Ranking of Kings' emotional body language. Poco's vibrant clutter. The feeling that the world is not waiting for the player; it is already going.
+
+### Shifting
+
+Designed for more than one state. The constructed register and the real register do not look the same, and both are Volley!. An asset that only works in one register is not yet an asset; an asset that cannot be told apart across them is not yet Volley! either.
+
+Omori's Headspace and Faraway Town as the same cast at different weights. Wanderstop's cozy surface opening into the story underneath. Slay the Princess's art changing with player belief. The feeling that the art is listening to the story.
 
 ---
 

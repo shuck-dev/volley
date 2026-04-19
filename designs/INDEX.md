@@ -1,15 +1,13 @@
 # Design Documents
 
-## Top-level
+The design thinking behind Volley!, organised by subject. Each folder has its own INDEX listing the docs inside.
+
+## Start here
+
 | Doc | Description |
 |---|---|
-| [Roadmap](roadmap.md) | Main roadmap across all phases |
-| [North Star](north-star.md) | What the game is and why it matters |
-| [Costing](costing.md) | Project cost estimates |
-| [Pricing](pricing.md) | Pricing strategy |
-
-## Roadmaps
-Discipline-specific breakdowns of the main roadmap. See [roadmaps/INDEX.md](roadmaps/INDEX.md).
+| [North Star](north-star.md) | What the game is, who it's for, and why it matters |
+| [Roadmap](roadmap.md) | The main roadmap across all phases |
 
 ## By phase
 
@@ -19,3 +17,26 @@ Discipline-specific breakdowns of the main roadmap. See [roadmaps/INDEX.md](road
 | Alpha | [02-alpha/](02-alpha/INDEX.md) | Pre-break content-complete |
 | Beta | [03-beta/](03-beta/INDEX.md) | Full game structure, all phases playable |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content |
+
+## By discipline
+
+| Folder | Description |
+|---|---|
+| [art/](art/INDEX.md) | The art bible, direction, style workshop, and inspirations |
+| [roadmaps/](roadmaps/INDEX.md) | Discipline-specific roadmap breakdowns |
+
+## Process
+
+| Doc | Description |
+|---|---|
+| [Ticket Writing](process/ticket-writing.md) | How we write Linear and GitHub issues |
+| [Labels](process/labels.md) | The label taxonomy and what each label means |
+
+## Research
+
+See [research/INDEX.md](research/INDEX.md) for the full list.
+
+| Doc | Description |
+|---|---|
+| [Visual Positioning](research/visual-positioning.md) | Where Volley! sits visually among its neighbours |
+| [Early Clone Games](research/early-clone-games.md) | Why Breakout's clone lineage outlasted Pong's |

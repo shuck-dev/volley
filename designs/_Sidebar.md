@@ -3,8 +3,6 @@
 **Top-level**
 - [Roadmap](roadmap)
 - [North Star](north-star)
-- [Costing](costing)
-- [Pricing](pricing)
 
 **By phase**
 - [Prototype](01-prototype-INDEX)
@@ -12,8 +10,16 @@
 - [Beta](03-beta-INDEX)
 - [Content Updates](04-content-INDEX)
 
-**Other**
+**Art**
+- [Art](art-INDEX)
+
+**Process**
+- [Ticket Writing](process-ticket-writing)
+- [Labels](process-labels)
+
+**Research**
+- [Early Clone Games](research-early-clone-games)
+- [Visual Positioning](research-visual-positioning)
+
+**Roadmaps**
 - [Roadmaps](roadmaps-INDEX)
-- [Marketing Strategy](marketing-strategy)
-- [Funding & Grants](funding-and-grants)
-- [Research: Early Clone Games](research-early-clone-games)

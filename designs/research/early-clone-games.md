@@ -203,6 +203,39 @@ On itch.io, the "pong" tag returns 2,547 games, while "breakout" returns 1,836 [
 
 ---
 
+## The Idle Genre as a Clone Lineage (2010s–2020s)
+
+The idle and incremental genre is another case where a foundational title spawned an entire category of clones. The arc parallels the Pong-to-Breakout story at a smaller scale and a faster tempo, and ends in a category that has become commercially serious in the space of a decade and a half.
+
+### Origins and the foundational clone step
+
+The term "idle" originates with *Progress Quest* (2002), an RPG that plays itself. The category as a commercial force dates to 2010, when **Ian Bogost** released *Cow Clicker* on Facebook as a parody of the extractive mechanics of social games [25]. *Cow Clicker* went viral in a way Bogost intended to critique. *Cookie Clicker* (Julien Thiennot, 2013) followed [26], and Bogost has publicly named it as the direct inheritor of what *Cow Clicker* was parodying [25]. The progression from parody to genre-defining commercial hit in three years is the idle equivalent of the Breakout-to-Arkanoid amplifier move: a foundational concept, then a release that demonstrated how wide the design space really was.
+
+The critical conversation around the category matured alongside it. The A.V. Club piece "Idle Threat: What Incremental Games Say about Our Relationship to Work" [27] framed idles as commentary on late-capitalist labour conditions. Sebastian Deterding's paper "Progress Wars: Idle Games and the Demarcation of 'Real' Games" [28] took the category seriously as a form of play. Frank Lantz's *Universal Paperclips* (2017) sits inside that conversation as the genre's most self-aware statement, dramatising Nick Bostrom's paperclip-maximiser thought experiment through text and buttons. Lantz has called his own work "playable philosophy."
+
+### The commercial arc
+
+Market research places the global idle-games market at **$2.5 billion in 2024**, projected to grow at a 10.8% CAGR through the early 2030s [29]. A separate Growth Market Reports estimate gives a higher 2024 figure of **$3.4 billion**, forecasting **$9.7 billion by 2033** at a 12.5% CAGR [30]. The two estimates differ on scale; both agree on direction.
+
+Steam release data is more concrete. The number of idle games released on Steam grew **30% year-on-year in 2023** and **68% year-on-year in 2024** [29]. In an analysis of 2025 Steam indie hits (releases over 1,000 reviews), idle and incremental placed fifth by volume with **27 hits**, behind narrative (51), simulation (43), horror (39), and RPG (28) [31]. A category treated as marginal a decade ago now reaches hit volume comparable to the established indie genres.
+
+### Variation as the clone pattern
+
+The idle-genre clone arc is analytically similar to Breakout's: a core loop that rewards variation, and a design space that keeps opening as each new release pushes on a different axis.
+
+| Axis of variation | Example releases |
+|---|---|
+| Theme and progression curve | NGU Idle, Melvor Idle, Clicker Heroes, AdVenture Capitalist, Leaf Blower Revolution |
+| Format compression (text-only) | A Dark Room, Universal Paperclips, Candy Box, Kittens Game, Antimatter Dimensions |
+| Mobile cozy illustration | Cats and Soup, Tsuki Adventure, Neko Atsume |
+| Minimalist incrementals | Gnorp Apologue, SPACEPLAN, A Game About Feeding A Black Hole |
+| Desktop-resident hybrids | Rusty's Retirement (550K+ copies by mid-2025), Desktopia, Desktop Meadow |
+| Diegetic-metaphor interfaces | Godville (newspaper), Black Hole Fishing (fishing magazine as shop) |
+
+The category behaves like Breakout's descendants rather than Pong's. Each new release is a variation on the core loop rather than a reproduction of a prior release. The design space rewards the cloners for trying something new.
+
+---
+
 ## Other Early Clone Phenomena (Context)
 
 ### Space Invaders (1978)
@@ -315,3 +348,10 @@ The distinction between reproduction and variation is the key to understanding w
 - [22] "World Flipper End of Service." Noisy Pixel. https://noisypixel.net/world-flipper-end-of-service-japan-february-2024/
 - [23] "Shooter Gallery: The Space Invaders Clone Show." Retro Game Deconstruction Zone. https://www.retrogamedeconstructionzone.com/2020/04/shooter-gallery-1-clone-show.html
 - [24] "History of Pac-Man clones and bootlegs." Pac-Man Wiki. https://pacman.fandom.com/wiki/History_of_Pac-Man_clones_and_bootlegs
+- [25] Bogost, Ian. "Cow Clicker." https://bogost.com/writing/blog/cow_clicker_1/
+- [26] "Cookie Clicker Wasn't Meant to Be Fun. Why Is It So Popular 8 Years Later?" Vice. https://www.vice.com/en/article/cookie-clicker-wasnt-meant-to-be-fun-why-is-it-so-popular-8-years-later/
+- [27] "Idle Threat: What Incremental Games Say about Our Relationship to Work." The A.V. Club. https://www.avclub.com/idle-threat-what-incremental-games-say-about-our-relationship-to-work
+- [28] Deterding, Sebastian. "Progress Wars: Idle Games and the Demarcation of 'Real' Games." (Academic paper, available on ResearchGate.) https://www.researchgate.net/profile/Sebastian-Deterding/publication/303310595
+- [29] "Idle Games Market Research Report." Dataintelo. https://dataintelo.com/report/idle-games-market
+- [30] "Idle Games Market Research Report." Growth Market Reports. https://growthmarketreports.com/report/idle-games-market
+- [31] "2025 Indie Game Trends: Narrative, Co-op & TikTok Dominate." Accio. https://www.accio.com/business/2025-indie-game-trends

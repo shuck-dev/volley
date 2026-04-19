@@ -8,7 +8,7 @@ output:
 prepare-commit-msg:
   commands:
     ticket-prefix:
-      run: ./prepend_ticket_prefix.sh {1} {2}
+      run: ./scripts/ci/prepend_ticket_prefix.sh {1} {2}
 
 commit-msg:
   commands:

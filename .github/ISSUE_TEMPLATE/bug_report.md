@@ -1,6 +1,6 @@
 ---
-name: Bug Report
-about: Report a defect or unexpected behaviour
+name: Bug
+about: Restore intended behaviour where the system has drifted
 labels: bug
 ---
 
