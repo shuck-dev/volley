@@ -100,6 +100,9 @@ ESCALATE [SH-XX] <agent>: <one-line summary>
 
 ## Releases
 
+**Cadence: weekly, Tuesdays around 09:00 UK time.** Josh cuts the real release then. Mid-week hotfix releases happen only when a shipped release is broken. Work that lands after Tuesday rides to the following week's tag.
+
+
 When Josh asks for a release:
 
 1. **Version format is `super.major.minor`** (e.g. `v0.2.0`). Bump `major` for a significant batch of work, `super` only at v1 launch, `minor` for small fixes on top of an existing major.
