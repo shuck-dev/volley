@@ -189,6 +189,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
 | claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
+| sh-121-agent | SH-121 | sh-121-dependabot-config | .github/dependabot.yml | 2026-04-19 | Dependabot weekly for github-actions + pip, PRs assigned to J-Melon |
 
 ## Done (recent)
 
@@ -209,6 +210,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-121] sh-121-agent: claimed, added .github/dependabot.yml for github-actions + pip, weekly, assignee J-Melon
 [SH-52] sh-52-agent: done, commit 05e0f47, 345/345 tests pass, lefthook green, not pushed
 [init] scratchpad created, ready for claims
 ```
