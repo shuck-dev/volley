@@ -1,4 +1,4 @@
-# Final-line candidates for "The Case for Open-Source Game Development"
+# Final-line candidates for "The Case for Open Development"
 
 ## What the line has to do
 - Land the inclusio: return the reader to the developer alone with the empty repository who commits anyway. The image opens Section 14 ("Somewhere right now, a developer is sitting alone with an empty repository") and echoes the lone-developer-at-midnight image that opens Section 1 ("Somewhere tonight, a developer is finishing a Steam page no one will read").

@@ -3,4 +3,4 @@
 # common-typo corrections only.
 builtin = clear,rare,informal,usage,code,names
 skip = ./.git,./.godot,./addons,./builds,./exports,./logs,./designs/art/mood-boards,./designs/private,./scripts/dev,*.uid,*.import,*.tres,*.tscn,*.svg,*.png,*.jpg,*.jpeg,*.webp,*.ogg,*.wav,*.mp3,*.ttf,*.otf
-ignore-words-list = thew,wit,sme,kinda,sting,singed,browseable,followings,artic,lod,demagog,thq,dota,pre-empt,pre-empting,pre-empts,master,damon,tim,airscape,devault,bloc
+ignore-words-list = thew,wit,sme,kinda,sting,singed,browseable,followings,artic,lod,demagog,thq,dota,pre-empt,pre-empting,pre-empts,master,damon,tim,airscape,devault,bloc,ons

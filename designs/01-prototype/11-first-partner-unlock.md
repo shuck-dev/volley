@@ -16,7 +16,7 @@ There is no concept of a partner, no second paddle, and no partner unlock tier.
 
 ## Martha
 
-Martha was the cashier at the local newsagent. Somewhere in Britain, a small shop, the kind you pop into most days. She always had a smile waiting. They'd chat about nothing: the weather, something in the paper, a thing she saw on telly. Maybe they hung out once or twice outside the shop, but it never became a regular thing. She was a fixture, not a friend exactly, but someone who made the day a little warmer.
+Martha is a Black woman who was the cashier at the local newsagent. A small shop on the high street of the town the main character grew up in: a coastal place drawn from the British seaside and southern Spain, the kind of shop you pop into most days. She always had a smile waiting. They'd chat about nothing: the weather, something in the paper, a thing she saw on telly. Maybe they hung out once or twice outside the shop, but it never became a regular thing. She was a fixture, not a friend exactly, but someone who made the day a little warmer.
 
 The main character brings Martha into the game first because she's the lowest-risk memory. No history to untangle, no falling out, no guilt. Just someone who was reliably kind to them. Recruiting Martha is the paddle reaching for warmth without having to face anything painful.
 
@@ -505,6 +505,18 @@ The partner unlock flow (triggered from recruit HUD) calls a method on `game.gd`
 - Partner effects apply to stat queries while active and are removed when not
 - Recruit prompt appears when FP threshold is reached
 - Partner intro sound plays on recruit
+
+## Lineage
+
+Every partner in Volley! is named for a character from a science fiction author's work. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (collected in *Bloodchild and Other Stories*, 2005). Butler's Martha is a Black woman writer summoned by God and handed the burden of changing humanity for the better, with one rule: people must still be able to find some happiness in whatever change she chooses. The story is about creative responsibility and the impossibility of fixing people without diminishing them.
+
+The connection is not narrative; Volley!'s Martha does not bear that weight, and the player's relationship with her is the inverse — she is the small kindness the main character returns to, not the cosmic figure who has to choose for them. The link is a quieter one: Butler's Martha is the patron saint of the character. Black, ordinary in her presence, named for a writer who wrote about the weight of being kind in a world that asks more of you than it should.
+
+The principle generalises. Each future partner takes a name from a character in a science fiction author's work, with a bias toward authors writing outside the dominant tradition (women, writers of colour, queer writers, writers from outside the Anglo-American centre). The lineage gives the cast a coherent literary backbone the player never has to know about. It earns the names. It puts Volley! in conversation with the writers who carried the human-scale story through a genre too often given to spectacle.
+
+This lineage does not need to be visible on the surface of the game. It informs each character internally: how they carry themselves, what kind of warmth or weight they bring, why their name belongs to them. A small note in the partner's character file — author, work, character — is enough to anchor the design.
+
+Candidate authors for future partners (non-exhaustive): Le Guin, Jemisin, Tiptree/Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor.
 
 ## Open questions
 

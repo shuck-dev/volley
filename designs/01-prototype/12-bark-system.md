@@ -1,5 +1,7 @@
 # Bark System
 
+> **Status:** Deferred. The bark system is on hold pending a decision on whether to cancel it outright. The remainder of this document describes the design as it stood; do not implement against it without confirming the feature is back in scope.
+
 ## Goal
 
 A lightweight system for partners to surface short, unprompted lines during play. Barks are not dialogue: no conversation, no player response, no branching. They are things a partner says to themselves, to the player, or to no one in particular. They appear briefly and fade.

@@ -46,6 +46,22 @@ Net: where the essay reads as too polished and too careful, loosen by about one 
 - Vary length. A long sentence that establishes context, then a short one that lands the point.
 - Read every paragraph aloud in your head. If it stumbles, cut.
 
+### Punctuation as voice
+
+Punctuation is not only grammar; it is breath, hesitation, weight, and pace. Choose each mark for what it does to the reader's ear, not by reflex.
+
+- **Period.** Closure. Hardness. Land on the loaded word and stop.
+- **Comma.** Breath, parenthetical, list. Overuse muddies; underuse rushes. Three or more commas in a sentence usually means it is two sentences pretending.
+- **Semicolon.** Two complete thoughts in tight relation. The held breath between them.
+- **Colon.** The reveal. Names what is to come.
+- **Ellipsis.** Hesitation, trailing-off, the moment of held dread before the reveal. Use sparingly: at most twice across the whole essay, and only where the felt pause matters more than the clean delivery.
+- **Parentheses.** The aside, the qualifier you do not want to halt the main sentence for. Cut or integrate where the main flow can carry it.
+- **Question mark.** Real questions only. Convert rhetorical questions to declarative.
+- **Dash.** En dash for number ranges (1939–1945) only. No em dashes anywhere.
+- **Exclamation mark.** Forbidden, except where it is part of a proper noun (the game name *Volley!*).
+
+A comma joining two independent clauses is a splice; upgrade to semicolon, period, or rewrite. The closing sentence of a paragraph should land on a period unless the kicker genuinely needs the trailing pause; do not let commas dribble away the loaded word.
+
 ## Forbidden tics
 
 - **No em dashes.** Use a colon, a semicolon, a comma, or a full stop.

@@ -18,7 +18,7 @@ The game is a fiction inside a fiction. The world of Volley!, the arena, the par
 
 The paddle is a stand-in for someone. The world record is a displacement. The partners are not who they appear to be. They are memories of real people who affected the main character in their reality. Each partner has an ordinary human name because they are based on real people.
 
-The reality behind the game is not our world. It's a real world that belongs to these characters. Set somewhere in Britain, ordinary, lived-in. The player discovers it, they don't inhabit it.
+The reality behind the game is not our world. It's a real world that belongs to these characters. Set in a small coastal town that does not exist on any map, drawn from the British seaside and southern Spain in equal measure: terraced houses next to whitewashed walls, a high street that smells of both rain and citrus, light that shifts between northern grey and Mediterranean glare. Ordinary, lived-in. The player discovers it, they don't inhabit it.
 
 The truth is left ambiguous only until the break. Before the record falls, clues plant the question without answering it. At the break, the game commits to one specific answer and reveals it.
 

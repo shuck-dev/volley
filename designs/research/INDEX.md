@@ -6,7 +6,7 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 
 | Doc | Purpose |
 |---|---|
-| [The Case for Open-source Game Development](the-case-for-open-source-game-development.md) | The published essay. ~13,000 words across fourteen sections plus bibliography. The case for open development as the most reliable practice for a new indie to be seen, with implications past games. |
+| [The Case for Open Development](the-case-for-open-development.md) | The published essay. ~13,000 words across fourteen sections plus bibliography. The case for open development as the most reliable practice for a new indie to be seen, with implications past games. |
 | [STYLE.md](STYLE.md) | The style guide every editor (human or agent) reads before touching the essay. Voice, forbidden tics, citation rules, narrative momentum, AI prose tells. |
 
 ## Sister research
