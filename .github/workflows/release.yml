@@ -12,6 +12,10 @@ concurrency:
 
 env:
   GODOT_VERSION: "4.6.2"
+  GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"
+  GODOT_TEMPLATES_SHA256: "942366dc4e27e7686a99da4d3cfb1b8ae8d3eb9444f6d8217eef16245b599ef2"
+  BUTLER_VERSION: "15.26.1"
+  BUTLER_SHA256: "b724504bccf259eb01668e1d20b97f6e376d965761e306a75530e19225c510e3"
   ITCH_PROJECT: Speedyoshi/volley
 
 jobs:
@@ -26,7 +30,7 @@ jobs:
 
       - name: Cache Godot
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /usr/local/bin/godot
           key: godot-${{ env.GODOT_VERSION }}
@@ -35,12 +39,13 @@ jobs:
         if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          echo "${GODOT_LINUX_SHA256}  godot.zip" | sha256sum -c -
           unzip godot.zip
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Cache Godot import artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
@@ -75,8 +80,15 @@ jobs:
           sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
           rm -rf addons/coverage
 
+      - name: Verify pinned Godot artifacts
+        run: |
+          curl -L -o /tmp/godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          echo "${GODOT_LINUX_SHA256}  /tmp/godot.zip" | sha256sum -c -
+          curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
+          echo "${GODOT_TEMPLATES_SHA256}  /tmp/templates.tpz" | sha256sum -c -
+
       - name: Cache Godot import artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
@@ -102,7 +114,8 @@ jobs:
 
       - name: Download Butler
         run: |
-          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/${{ env.BUTLER_VERSION }}/archive/default
+          echo "${BUTLER_SHA256}  butler.zip" | sha256sum -c -
           unzip butler.zip
           chmod +x butler
 

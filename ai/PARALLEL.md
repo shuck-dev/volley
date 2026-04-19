@@ -23,7 +23,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
    - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). One idea per comment. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
      ```
-     gh api -X POST repos/J-Melon/volley-vendetta/pulls/<N>/comments \
+     gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
        -f body="..." \
        -f commit_id="<sha of your latest push>" \
        -f path="<file>" \
@@ -191,6 +191,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
 | claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
+| sh-118-agent | SH-118 | sh-118-pin-supply-chain | .github/workflows/{test,publish,release}.yml | 2026-04-19 | Pin Godot + export templates + butler to SHA256; folds in SH-119 |
 | sh-126-agent | SH-126 | sh-126-pip-audit | lefthook.yml, requirements-dev.txt | 2026-04-19 | Add pip-audit pre-commit hook, fires only when requirements-dev.txt staged |
 | sh-121-agent | SH-121 | sh-121-dependabot-config | .github/dependabot.yml | 2026-04-19 | Dependabot weekly for github-actions + pip, PRs assigned to J-Melon |
 | agent-a812569c | SH-135 | sh-135-release-ci-speed-pass | .github/workflows/release.yml | 2026-04-19 | CI speed pass on release.yml (concurrency, job-level permissions, `.godot/` import cache, timeout-minutes); SH-131 follow-up punted from release.yml due to SH-132 contention; overlaps SH-116 on same file — whichever lands second merges main in |
@@ -221,6 +222,7 @@ Newest at top. One line per event.
 
 ```
 [SH-146] agent-a5879155: claimed, branch sh-146-slsa-provenance; add attest-build-provenance step + id-token/attestations perms on deploy-production; overlaps SH-116/SH-135 same file
+[SH-118] sh-118-agent: claimed; pinning Godot 4.6.2 binary+templates and butler 15.26.1 to SHA256 across test/publish/release workflows (also closes SH-119)
 [SH-147] agent-a92fe95a: claimed, branch sh-147-release-drafter; added .github/release-drafter.yml (Conventional-Commit categories, autolabeler, narrative template) + .github/workflows/release-drafter.yml (SHA-pinned release-drafter@v7.2.0, contents: write + pull-requests: read)
 [SH-145] agent-a2c0e37b: claimed, branch sh-145-pr-template; added .github/pull_request_template.md (minimal: ticket, what, why, risks)
 [SH-149] sh-149-agent: claimed, branch sh-149-merge-queue; deleted auto-update-prs.yml, added `merge_group:` trigger to lint+test, updated PARALLEL.md + labels.md for merge-queue flow

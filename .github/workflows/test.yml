@@ -15,6 +15,7 @@ permissions:
 
 env:
   GODOT_VERSION: "4.6.2"
+  GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"
 
 jobs:
   test:
@@ -26,7 +27,7 @@ jobs:
 
       - name: Cache Godot
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /usr/local/bin/godot
           key: godot-${{ env.GODOT_VERSION }}
@@ -35,12 +36,13 @@ jobs:
         if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           curl -L -o godot.zip https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64.zip
+          echo "${GODOT_LINUX_SHA256}  godot.zip" | sha256sum -c -
           unzip godot.zip
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Cache Godot import artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
