@@ -121,6 +121,14 @@ Pre-publish handoff checklist (agent runs this before telling Josh "ready"):
 
 Release workflow (`.github/workflows/release.yml`) fires on publish. It exports the Linux preset and pushes to `Speedyoshi/volley:linux` with `--userversion <tag>`. Preview continues to mirror `main` on `html5-preview` independently.
 
+**Release candidates.** For risky or pipeline-touching releases, cut a `-rc.N` prerelease first (`gh release create v0.2.0-rc.1 --draft --prerelease`). GitHub hides prereleases from "latest"; itch treats the userversion as a normal archived build. If the rc ships clean, **delete the rc release and its tag once the real release is published** so the Releases page stays tidy:
+
+```
+gh release delete v0.2.0-rc.1 --yes --cleanup-tag
+```
+
+If the rc fails, iterate (`rc.2`, `rc.3`) until green, then publish the real tag. Never leave `rc.N` tags hanging around after the corresponding real release is live.
+
 ---
 
 ## Godot edge cases to watch for
