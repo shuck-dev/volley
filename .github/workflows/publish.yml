@@ -21,6 +21,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
 
@@ -59,6 +60,7 @@ jobs:
     name: Deploy to Preview
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: preview
     steps:
       - uses: actions/checkout@v5
