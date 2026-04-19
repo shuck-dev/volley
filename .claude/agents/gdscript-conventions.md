@@ -23,9 +23,4 @@ You review `.gd` diffs for Volley-specific GDScript conventions that `gdlint` do
 
 ## Output
 
-Two buckets:
-
-- **Mechanical fixes.** Rewrite the line in-place if the fix is obvious and risk-free (e.g. `@onready` to `@export` for a simple node ref; adding types to an obvious function).
-- **Judgment calls.** Broader structural suggestions.
-
-Post mechanical as commits, judgment as line-anchored review comments. After review, the orchestrator applies `pre-checked` (clean) or `action-required` (judgment comments posted) on the PR.
+Mechanical fixes (e.g. `@onready` → `@export` for a simple node ref; adding types to an obvious function) as commits. Broader structural suggestions as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.

@@ -98,12 +98,25 @@ Use `./new-branch.sh SH-N` to create a branch from a Linear ticket; it reads the
 
 Separate from intent labels, a small set of GitHub labels are applied automatically to **pull requests** by the CI and review tooling. They describe the PR's state at a glance in the repo's PR list.
 
-### Review state
+### AI review state
 
-- **`pre-checked`**: specialist reviewers from `.claude/agents/` passed the PR with no judgment items. Safe to promote to human review.
-- **`action-required`**: at least one specialist reviewer posted a line-anchored judgment comment. The PR needs a response or change before merging.
+- **`ai-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
+- **`action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
 
-Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`.
+Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `ai-approved` is an advisory signal, not a merge decision.
+
+### Human review state
+
+- **`human-approved`**: Josh has reviewed and signed off. Required for merge.
+
+### Merge gate
+
+Two required status checks drive the merge gate:
+
+- **`human-approved`**: succeeds only when the `human-approved` label is present.
+- **`no-action-required`**: succeeds only when the `action-required` label is absent.
+
+Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
 
 ### Merge state
 

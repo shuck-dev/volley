@@ -10,24 +10,31 @@ categories:
   - title: "Features"
     labels:
       - "feature"
-    # Fallback: catch Conventional Commit `feat:` prefixes even if the PR
-    # lacks a matching label.
   - title: "Fixes"
     labels:
       - "bug"
-  - title: "Maintenance"
+  - title: "Art"
     labels:
-      - "chore"
-      - "docs"
-      - "refactor"
-      - "test"
-      - "style"
-      - "perf"
-      - "ci"
-      - "build"
+      - "asset"
+      - "revision"
+  - title: "Music"
+    labels:
+      - "cue"
+      - "rework"
+  - title: "Writing"
+    labels:
+      - "draft"
+      - "rewrite"
+  - title: "Audio"
+    labels:
+      - "sfx"
+  - title: "Design"
+    labels:
+      - "tune"
 
-# Map Conventional Commit prefixes in PR titles onto the categories above so
-# the categoriser works without requiring every PR to carry a matching label.
+# Map Conventional Commit `feat:` / `fix:` prefixes onto the intent labels so
+# external contributors who write Conventional Commit titles still land in the
+# right category.
 autolabeler:
   - label: "feature"
     title:
@@ -39,36 +46,6 @@ autolabeler:
       - "/^fix(\\(.+\\))?:/i"
       - "/^fix(\\(.+\\))?!:/i"
       - "/^SH-\\d+ fix(\\(.+\\))?:/i"
-  - label: "chore"
-    title:
-      - "/^chore(\\(.+\\))?:/i"
-      - "/^SH-\\d+ chore(\\(.+\\))?:/i"
-  - label: "docs"
-    title:
-      - "/^docs(\\(.+\\))?:/i"
-      - "/^SH-\\d+ docs(\\(.+\\))?:/i"
-  - label: "refactor"
-    title:
-      - "/^refactor(\\(.+\\))?:/i"
-      - "/^SH-\\d+ refactor(\\(.+\\))?:/i"
-  - label: "test"
-    title:
-      - "/^test(\\(.+\\))?:/i"
-      - "/^SH-\\d+ test(\\(.+\\))?:/i"
-  - label: "style"
-    title:
-      - "/^style(\\(.+\\))?:/i"
-      - "/^SH-\\d+ style(\\(.+\\))?:/i"
-  - label: "perf"
-    title:
-      - "/^perf(\\(.+\\))?:/i"
-      - "/^SH-\\d+ perf(\\(.+\\))?:/i"
-  - label: "chore"
-    title:
-      - "/^ci(\\(.+\\))?:/i"
-      - "/^SH-\\d+ ci(\\(.+\\))?:/i"
-      - "/^build(\\(.+\\))?:/i"
-      - "/^SH-\\d+ build(\\(.+\\))?:/i"
 
 change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
 change-title-escapes: '\<*_&'

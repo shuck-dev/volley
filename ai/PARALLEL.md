@@ -21,7 +21,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
    If zero match, skip review. Each specialist splits findings the same way:
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
-   - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). One idea per comment. After all matching specialists finish: if every one returned clean, apply the `pre-checked` label (`gh pr edit <N> --add-label pre-checked`). If any judgment comments landed, apply `action-required` instead. Don't post `LGTM` or any other summary comment. Template for line-anchored comments:
+   - **Everything else**: post as short line-anchored review comments so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). **Keep it short: one idea per comment, two sentences max.** If it needs more context, open an issue and link to it from the comment. After all matching specialists finish: if every one returned clean, apply the `ai-approved` label (`gh pr edit <N> --add-label ai-approved`). If any comments landed, apply `action-required` instead. Don't post `LGTM` or any other summary comment. Template for line-anchored comments:
      ```
      gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
        -f body="..." \
@@ -30,7 +30,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
        -F line=<line> \
        -f side=RIGHT
      ```
-   Hand off to Josh only after both have landed. Do not flag judgment items in chat; the PR view is the single source of truth.
+   Hand off to Josh only after both have landed. Do not flag review comments in chat; the PR view is the single source of truth.
 5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `./scripts/ci/run_gut.sh`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
 6. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 

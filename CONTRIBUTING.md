@@ -53,6 +53,14 @@ Reference the issue in the PR body with `closes #123` so GitHub links them and c
 
 Small, friendly PR reviews are the norm. If something needs rework we will say why and suggest a direction.
 
+### How review and merge work
+
+A set of AI reviewers read your PR first. Small fixes land as commits on your branch. Anything else shows up as a short comment on the line it's about. The PR gets one of two labels: `ai-approved` if the reviewers had nothing to say, or `action-required` if they left comments. These are just a heads-up, not a decision.
+
+A maintainer then reads the PR and adds `human-approved` to sign off. The PR merges on its own once it has `human-approved` and no open reviewer comments. If you push new commits, `human-approved` comes off so the next push gets a fresh look.
+
+Full list of labels in [`designs/process/labels.md`](designs/process/labels.md).
+
 ## Asking questions
 
 The GitHub issue thread is the right place. Decisions live there, future contributors can find them, and maintainers read everything. No question is too small.
