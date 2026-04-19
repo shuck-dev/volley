@@ -30,7 +30,7 @@ Applies to every ticket, every discipline.
 
 **Acceptance criteria are testable observations.** Each line is something a reviewer can check by looking at the game, the asset, or the player's behaviour. Avoid method names, file paths, and references to current code. Someone picking up the ticket a month later, or a contributor who has never opened the project, should still be able to tell when it is done.
 
-**Link the context a stranger needs.** Link the design doc, the [art bible](https://github.com/J-Melon/volley-vendetta/blob/main/designs/art/bible.md), the parent artifact, the bug's originating feature. Do not say "see the kit design"; paste an absolute GitHub URL like `https://github.com/J-Melon/volley-vendetta/blob/main/designs/01-prototype/08-kit.md`. Absolute URLs survive both Linear and GitHub; repo-relative paths only resolve on GitHub and break when the ticket mirrors across.
+**Link the context a stranger needs.** Link the design doc, the [art bible](https://github.com/shuck-dev/volley/blob/main/designs/art/bible.md), the parent artifact, the bug's originating feature. Do not say "see the kit design"; paste an absolute GitHub URL like `https://github.com/shuck-dev/volley/blob/main/designs/01-prototype/08-kit.md`. Absolute URLs survive both Linear and GitHub; repo-relative paths only resolve on GitHub and break when the ticket mirrors across.
 
 **Name the scope boundary.** A good ticket says what is in and what is out. "Walk-off, equip pose, walk-on. Not in scope: the drag-and-drop tech (#141), the character concepts (#95)." Scope boundaries protect a new contributor from accidentally expanding the work and from cutting too deep. Use `#N` GitHub issue references when cross-linking tickets; GitHub renders them as links, and Linear's GitHub integration resolves them when the ticket mirrors.
 
@@ -105,7 +105,7 @@ Labels: `spike`, `feature`, `bug`.
 
 Labels: `study`, `asset`, `revision`.
 
-The discipline-level reference is the [art bible](https://github.com/J-Melon/volley-vendetta/blob/main/designs/art/bible.md): a living document of silhouette rules, palette, line, mood, era, faction. Tickets lean on the bible rather than repeating it. Chris Solarski (*Drawing Basics and Video Game Art*, 2012) and Riot's public art team posts set the pattern.
+The discipline-level reference is the [art bible](https://github.com/shuck-dev/volley/blob/main/designs/art/bible.md): a living document of silhouette rules, palette, line, mood, era, faction. Tickets lean on the bible rather than repeating it. Chris Solarski (*Drawing Basics and Video Game Art*, 2012) and Riot's public art team posts set the pattern.
 
 **Study** (explore). Concept work. Carries: function in world, silhouette and read at distance, mood words, reference board, constraints (palette band, era, faction). "Done" is when the study answers the direction question the art director asked, per Samwise Didier (Blizzard, GDC) and Jaime Jones (Bungie, GDC 2018). Polish is not the point; coverage of options is.
 
