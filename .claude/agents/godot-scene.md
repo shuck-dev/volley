@@ -23,4 +23,4 @@ You review Godot scene and resource diffs. `gdlint` does not read `.tscn`, so ev
 
 ## Output
 
-Most findings will be judgment calls since scene edits are hard to auto-rewrite. Post as line-anchored review comments anchored to the `[node name="X"]` or `[ext_resource]` line. Silent `LGTM` if nothing to flag.
+Most findings will be judgment calls since scene edits are hard to auto-rewrite. Post as line-anchored review comments anchored to the `[node name="X"]` or `[ext_resource]` line. After review, the orchestrator applies `pre-checked` (clean) or `action-required` (judgment comments posted) on the PR.
