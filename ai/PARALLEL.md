@@ -16,7 +16,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 ## Ground rules
 
 - **One ticket, one agent, one branch.** Never two agents in the same `.gd`/`.tscn` file at once. Check the Active table's "Files touched" column before starting.
-- **Rebase on main before opening PR.** Josh merges, you don't (per feedback rule).
+- **Never rebase — merge main in.** To update a branch with main, use `git merge main`, never `git rebase`. If a rebase is genuinely required (rare — e.g. cleaning history before first push), stop and ask Josh first. Josh merges PRs; agents don't.
 - **Run `ggut` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline** — prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
 - **Git aliases and helpers** — prefer `gcb` (checkout -b), `gst`, `gaa`, `gpsup` (push -u origin HEAD). For commits use the conventional-commit functions: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. Raw `git commit -s` only when you need a multi-line body.
