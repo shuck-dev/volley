@@ -71,10 +71,10 @@ concurrency:
   group: daily-cycle
   cancel-in-progress: false
 
+# Workflow-level default is least-privilege. The `dispatch-claude` job
+# overrides with the write scopes it needs to branch / push / open PRs.
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  contents: read
 
 jobs:
   pick-ticket:
