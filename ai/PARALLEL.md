@@ -13,6 +13,8 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `ggut`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
 6. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 
+**Optional: follow-up review.** If Josh asks for another review on an existing PR, dispatch a fresh code-reviewer and post its findings as a PR comment using `gh pr comment <N> --body "..."`. Do **not** auto-apply fixes; Josh may respond inline or mark comments resolved. Initial review fixes still auto-commit per step 4; only follow-up reviews are comment-only.
+
 ---
 
 ## Ground rules
