@@ -25,5 +25,10 @@ jobs:
     steps:
       - name: Draft release notes
         uses: release-drafter/release-drafter@5de93583980a40bd78603b6dfdcda5b4df377b32 # v7.2.0
+        with:
+          # On pull_request events, only autolabel — don't try to upsert a
+          # draft release (target_commitish won't resolve for PR refs).
+          # Drafting happens exclusively on push to main.
+          disable-releaser: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
