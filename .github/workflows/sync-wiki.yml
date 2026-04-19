@@ -13,10 +13,14 @@ concurrency:
   group: sync-wiki
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     name: Mirror designs to wiki
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5

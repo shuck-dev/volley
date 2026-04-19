@@ -6,6 +6,13 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: preview-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 env:
   GODOT_VERSION: "4.6.2"
   GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"
@@ -18,6 +25,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
 
@@ -37,6 +45,14 @@ jobs:
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
       - name: Import Project
         run: godot --headless --path . --import
 
@@ -49,12 +65,21 @@ jobs:
     name: Deploy to Preview
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: preview
     steps:
       - uses: actions/checkout@v5
 
       - name: Write version
         run: git describe --always > version.txt
+
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
 
       - name: Strip dev addons
         run: |

@@ -191,6 +191,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 |---|---|---|---|---|---|
 | claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
 | sh-118-agent | SH-118 | sh-118-pin-supply-chain | .github/workflows/{test,publish,release}.yml | 2026-04-19 | Pin Godot + export templates + butler to SHA256; folds in SH-119 |
+| sh-121-agent | SH-121 | sh-121-dependabot-config | .github/dependabot.yml | 2026-04-19 | Dependabot weekly for github-actions + pip, PRs assigned to J-Melon |
 | agent-a812569c | SH-135 | sh-135-release-ci-speed-pass | .github/workflows/release.yml | 2026-04-19 | CI speed pass on release.yml (concurrency, job-level permissions, `.godot/` import cache, timeout-minutes); SH-131 follow-up punted from release.yml due to SH-132 contention; overlaps SH-116 on same file — whichever lands second merges main in |
 | claude-ci | SH-131 | sh-131-ci-speed | .github/workflows/{test,lint,publish,sync-wiki}.yml | 2026-04-19 | CI speed pass: concurrency, permissions, import cache; skipping release.yml to avoid collision with SH-116 |
 | sh-117-agent | SH-117 | sh-117-security-md | SECURITY.md, README.md | 2026-04-19 | Add SECURITY.md at repo root (scope, reporting, timeline, safe harbour); link from README |
@@ -215,6 +216,7 @@ Newest at top. One line per event.
 
 ```
 [SH-118] sh-118-agent: claimed; pinning Godot 4.6.2 binary+templates and butler 15.26.1 to SHA256 across test/publish/release workflows (also closes SH-119)
+[SH-121] sh-121-agent: claimed, added .github/dependabot.yml for github-actions + pip, weekly, assignee J-Melon
 [SH-135] agent-a812569c: claimed; CI speed pass on release.yml (concurrency, permissions, .godot/ cache, timeout-minutes); overlaps SH-116 same file, no behaviour change
 [SH-117] sh-117-agent: claimed, branch sh-117-security-md; wrote SECURITY.md + README Security link; cycle set to Bobo
 [SH-131] claude-ci: claimed, branch sh-131-ci-speed; scope = test/lint/publish/sync-wiki; release.yml skipped (SH-116 active)
