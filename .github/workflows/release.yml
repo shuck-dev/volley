@@ -53,7 +53,7 @@ jobs:
           sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
           rm -rf addons/coverage
 
-      - name: Export Linux
+      - name: Export all platforms
         id: export
         uses: firebelley/godot-export@v7.0.0
         with:
@@ -68,7 +68,17 @@ jobs:
           unzip butler.zip
           chmod +x butler
 
-      - name: Push to Itch.io Production
+      - name: Push Linux to Itch.io
         run: ./butler push "${{ steps.export.outputs.build_directory }}/Linux" ${{ env.ITCH_PROJECT }}:linux --userversion ${{ github.event.release.tag_name }}
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
+      - name: Push Windows to Itch.io
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Windows" ${{ env.ITCH_PROJECT }}:windows --userversion ${{ github.event.release.tag_name }}
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
+      - name: Push macOS to Itch.io
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/macOS" ${{ env.ITCH_PROJECT }}:osx --userversion ${{ github.event.release.tag_name }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
