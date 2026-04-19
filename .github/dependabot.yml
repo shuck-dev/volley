@@ -8,6 +8,10 @@ updates:
       - J-Melon
     reviewers:
       - J-Melon
+    labels:
+      - dependencies
+      - github-actions
+    rebase-strategy: disabled
 
   - package-ecosystem: pip
     directory: /
@@ -17,3 +21,7 @@ updates:
       - J-Melon
     reviewers:
       - J-Melon
+    labels:
+      - dependencies
+      - python
+    rebase-strategy: disabled

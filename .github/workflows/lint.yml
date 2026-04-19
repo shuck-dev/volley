@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+  merge_group:
 
 concurrency:
   group: lint-${{ github.ref }}
@@ -36,7 +37,7 @@ jobs:
 
       - name: Cache gitleaks
         id: cache-gitleaks
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.local/bin/gitleaks
           key: gitleaks-${{ env.GITLEAKS_VERSION }}

@@ -23,7 +23,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
    - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). One idea per comment. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
      ```
-     gh api -X POST repos/J-Melon/volley-vendetta/pulls/<N>/comments \
+     gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
        -f body="..." \
        -f commit_id="<sha of your latest push>" \
        -f path="<file>" \
@@ -44,8 +44,10 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 - **Worktree cleanup on merge.** Once a PR is merged, the corresponding worktree and branch are removed: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. Leaving stale worktrees costs disk and invites later agents to resurrect abandoned changes. Cleanup is the agent's responsibility before reporting the PR as done if the agent is still alive; otherwise Josh or the next orchestrator sweeps periodically with `git worktree list` and `git worktree prune`.
 - **Never rebase; merge main in.** To update a branch with main, use `git merge main`, never `git rebase`. If a rebase is genuinely required (rare, e.g. cleaning history before first push), stop and ask Josh first. Josh merges PRs; agents don't.
 - **Run `./scripts/ci/run_gut.sh` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
+- **Merge queue serialises main.** GitHub's native merge queue is enabled on `main`: once Josh clicks "Merge when ready", the queue pulls the PR into a short-lived `merge_group` ref, re-runs `lint` and `test` against `main + PR`, and only then fast-forwards main. That replaces the old `auto-update-prs.yml` sweep — do not re-add it, and do not chain any workflow to "on push to main" expecting a post-merge sync step. The pre-PR `git merge origin/main` in rule 3 still matters because it catches conflicts locally; the queue only catches mechanical staleness, not semantic conflicts. The `has-conflicts` label still exists for manual triage, but nothing applies it automatically now.
 - **Godot tool discipline**: prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
 - **[Conventional Commits](https://www.conventionalcommits.org/)** for commit messages (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`, `perf:`, `ci:`, `build:`, `revert:`). The repo's `commit-msg` hook enforces `[SH-<ticket> ]<type>: <subject>`. Git aliases and helpers in Josh's local shell: `gcb` (`git checkout -b`), `gst`, `gaa`, `gpsup` (`git push -u origin HEAD`). Convenience shell functions for conventional-commit messages: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. These are personal environment; public surfaces (PR bodies, commit messages, repo docs) spell out the canonical command. Raw `git commit -s` is fine when a multi-line body is needed.
+- **Engineer PRs to merge in any order.** Each PR should stand alone against current main. Combine related changes that share a file rather than splitting them. Avoid "depends on #X" unless the dependency is structural. Josh merges in whatever order suits him; implicit ordering creates friction every time the queue is triaged.
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 
 ---
@@ -190,13 +192,17 @@ If you hit an edge case not on this list, append it here before closing your tic
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
 | claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
+| sh-118-agent | SH-118 | sh-118-pin-supply-chain | .github/workflows/{test,publish,release}.yml | 2026-04-19 | Pin Godot + export templates + butler to SHA256; folds in SH-119 |
 | sh-126-agent | SH-126 | sh-126-pip-audit | lefthook.yml, requirements-dev.txt | 2026-04-19 | Add pip-audit pre-commit hook, fires only when requirements-dev.txt staged |
 | sh-121-agent | SH-121 | sh-121-dependabot-config | .github/dependabot.yml | 2026-04-19 | Dependabot weekly for github-actions + pip, PRs assigned to J-Melon |
 | agent-a812569c | SH-135 | sh-135-release-ci-speed-pass | .github/workflows/release.yml | 2026-04-19 | CI speed pass on release.yml (concurrency, job-level permissions, `.godot/` import cache, timeout-minutes); SH-131 follow-up punted from release.yml due to SH-132 contention; overlaps SH-116 on same file — whichever lands second merges main in |
 | claude-ci | SH-131 | sh-131-ci-speed | .github/workflows/{test,lint,publish,sync-wiki}.yml | 2026-04-19 | CI speed pass: concurrency, permissions, import cache; skipping release.yml to avoid collision with SH-116 |
 | sh-117-agent | SH-117 | sh-117-security-md | SECURITY.md, README.md | 2026-04-19 | Add SECURITY.md at repo root (scope, reporting, timeline, safe harbour); link from README |
+| agent-a5879155 | SH-146 | sh-146-slsa-provenance | .github/workflows/release.yml | 2026-04-19 | Add SLSA build provenance attestation for Linux/Windows/macOS artifacts; overlaps SH-116/SH-135 on same file — last to land merges main in |
+| sh-149-agent | SH-149 | sh-149-merge-queue | .github/workflows/{auto-update-prs,lint,test}.yml, ai/PARALLEL.md, designs/process/labels.md | 2026-04-19 | Delete PR sweep workflow, add `merge_group:` trigger to lint/test, doc the merge queue flow |
 | agent-a92fe95a | SH-147 | sh-147-release-drafter | .github/release-drafter.yml, .github/workflows/release-drafter.yml | 2026-04-19 | Add release-drafter to auto-draft release notes (config + workflow, SHA-pinned @v7.2.0, Conventional Commit categories); Josh still picks tag + body at publish |
 | agent-a2c0e37b | SH-145 | sh-145-pr-template | .github/pull_request_template.md | 2026-04-19 | Minimal PR template: ticket ID, what, why, risks; no test plan |
+| agent-ae2182d2 | SH-134 | sh-134-headless-daily-cycle | .github/workflows/daily-cycle.yml | 2026-04-19 | Weekday 05:17 UTC cron: pick eligible Linear-cycle ticket, dispatch headless Claude per ai/PARALLEL.md; stops at PR handoff, no merge, no runtime; fails closed on missing secrets / halt file |
 
 ## Done (recent)
 
@@ -217,8 +223,12 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-134] agent-ae2182d2: claimed, branch sh-134-headless-daily-cycle; added .github/workflows/daily-cycle.yml (cron 17 5 * * 1-5 + dispatch, Linear GraphQL eligibility filter, fail-closed on missing secrets / halt file, 60min job + 40-turn Claude caps, ntfy telemetry); PR #255 open; ci-and-workflows specialist dispatched
+[SH-146] agent-a5879155: claimed, branch sh-146-slsa-provenance; add attest-build-provenance step + id-token/attestations perms on deploy-production; overlaps SH-116/SH-135 same file
+[SH-118] sh-118-agent: claimed; pinning Godot 4.6.2 binary+templates and butler 15.26.1 to SHA256 across test/publish/release workflows (also closes SH-119)
 [SH-147] agent-a92fe95a: claimed, branch sh-147-release-drafter; added .github/release-drafter.yml (Conventional-Commit categories, autolabeler, narrative template) + .github/workflows/release-drafter.yml (SHA-pinned release-drafter@v7.2.0, contents: write + pull-requests: read)
 [SH-145] agent-a2c0e37b: claimed, branch sh-145-pr-template; added .github/pull_request_template.md (minimal: ticket, what, why, risks)
+[SH-149] sh-149-agent: claimed, branch sh-149-merge-queue; deleted auto-update-prs.yml, added `merge_group:` trigger to lint+test, updated PARALLEL.md + labels.md for merge-queue flow
 [SH-126] sh-126-agent: claimed, added pip-audit pre-commit hook gated on requirements-dev.txt glob; lefthook run pre-commit green, clean audit
 [SH-121] sh-121-agent: claimed, added .github/dependabot.yml for github-actions + pip, weekly, assignee J-Melon
 [SH-135] agent-a812569c: claimed; CI speed pass on release.yml (concurrency, permissions, .godot/ cache, timeout-minutes); overlaps SH-116 same file, no behaviour change
