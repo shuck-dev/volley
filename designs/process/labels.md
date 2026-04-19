@@ -107,7 +107,7 @@ Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARA
 
 ### Merge state
 
-- **`has-conflicts`**: the auto-update workflow (`.github/workflows/auto-update-prs.yml`) tried to merge `main` into this branch and failed. Someone needs to resolve the conflict manually. Removed automatically on the next successful update.
+- **`has-conflicts`**: applied manually when a branch needs to merge `main` in but conflicts block the merge. Remove once the conflict is resolved. Previously applied by the auto-update sweep workflow; that workflow is gone now that GitHub's native merge queue handles pre-merge rebasing on `main`.
 
 ### Dependency updates
 
