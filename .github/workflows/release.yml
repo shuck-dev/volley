@@ -38,58 +38,6 @@ jobs:
           mkdir -p logs
           godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
 
-  update-release-costs:
-    name: Update Cost Reports
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Get all PRs merged in this release
-        id: prs
-        env:
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-        run: |
-          # Get the previous tag (or first commit if no previous tag)
-          PREV_TAG=$(git tag --sort=-version:refname --merged HEAD | sed -n '2p')
-          if [ -z "$PREV_TAG" ]; then
-            PREV_TAG=$(git rev-list --max-parents=0 HEAD)
-          fi
-
-          CURRENT_TAG="${{ github.event.release.tag_name }}"
-          echo "Comparing $PREV_TAG...$CURRENT_TAG"
-
-          # Get all merged PR commits with issue IDs in branch name
-          COMMITS=$(git log "$PREV_TAG..$CURRENT_TAG" --oneline --merges --grep='Merge pull request')
-          ISSUE_IDS=$(echo "$COMMITS" | grep -oiE '[A-Z]+-[0-9]+' | sort -u | tr '[:lower:]' '[:upper:]')
-
-          if [ -z "$ISSUE_IDS" ]; then
-            echo "No issues found in release"
-            echo "issue_ids=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Issues in release: $ISSUE_IDS"
-          echo "issue_ids<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$ISSUE_IDS" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
-
-      - name: Trigger cost updates for each issue
-        if: steps.prs.outputs.issue_ids
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-        run: |
-          while IFS= read -r ISSUE_ID; do
-            # Only process Linear issues (SH-123 format)
-            if [[ "$ISSUE_ID" =~ ^SH-[0-9]+$ ]]; then
-              echo "Updating cost for $ISSUE_ID..."
-              gh workflow run linear-cost.yml -f issue_id="$ISSUE_ID" --ref main
-            fi
-          done <<< "${{ steps.prs.outputs.issue_ids }}"
-
   deploy-production:
     name: Deploy to Production
     needs: test
