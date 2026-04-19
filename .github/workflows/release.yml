@@ -4,6 +4,12 @@ on:
   release:
     types: [published]
 
+# Releases are idempotent by tag; queue same-tag runs rather than cancelling a
+# build mid-flight.
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
 env:
   GODOT_VERSION: "4.6.2"
   ITCH_PROJECT: Speedyoshi/volley
@@ -12,6 +18,9 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -30,6 +39,14 @@ jobs:
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
       - name: Import Project
         run: godot --headless --path . --import
 
@@ -42,6 +59,9 @@ jobs:
     name: Deploy to Production
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
 
@@ -52,6 +72,14 @@ jobs:
           sed -i 's|"res://addons/gut/plugin.cfg", ||g' project.godot
           sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
           rm -rf addons/coverage
+
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
 
       - name: Export all platforms
         id: export
