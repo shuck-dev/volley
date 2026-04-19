@@ -9,8 +9,9 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 1. **Claim a ticket.** Branch first (`git checkout -b sh-XX-...`), then add a row to the Active table with agent name, ticket ID, branch, and start timestamp. Commit the claim on the branch so it ships with the PR, not on main.
 2. **Log progress.** Append one line per meaningful step to the Activity Log at the bottom. Keep it terse: `[SH-XX] <agent>: <what happened>`.
 3. **Sync before opening, and sync again before any later push.** Before `gh pr create`, run `git fetch origin main && git merge origin/main` into your branch, resolve conflicts, re-run `ggut`, then push. After the PR exists, do the same check whenever you resume work, after a reviewer asks for changes, and before Josh is asked to merge: other PRs may have landed on main and made this branch stale. `git rev-list --count HEAD..origin/main` gives you the "behind by N" count; zero means you're up to date. This catches conflicts locally instead of surfacing them in the PR view for Josh to chase.
-4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch a code-reviewer sub-agent against the PR, apply every suggested fix as commits on the PR branch, push, then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
-5. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
+4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch a code-reviewer sub-agent against the PR, apply every suggested fix as commits on the PR branch, push.
+5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `ggut`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
+6. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 
 ---
 
