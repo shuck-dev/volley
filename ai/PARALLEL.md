@@ -195,6 +195,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 | agent-a812569c | SH-135 | sh-135-release-ci-speed-pass | .github/workflows/release.yml | 2026-04-19 | CI speed pass on release.yml (concurrency, job-level permissions, `.godot/` import cache, timeout-minutes); SH-131 follow-up punted from release.yml due to SH-132 contention; overlaps SH-116 on same file — whichever lands second merges main in |
 | claude-ci | SH-131 | sh-131-ci-speed | .github/workflows/{test,lint,publish,sync-wiki}.yml | 2026-04-19 | CI speed pass: concurrency, permissions, import cache; skipping release.yml to avoid collision with SH-116 |
 | sh-117-agent | SH-117 | sh-117-security-md | SECURITY.md, README.md | 2026-04-19 | Add SECURITY.md at repo root (scope, reporting, timeline, safe harbour); link from README |
+| agent-a2c0e37b | SH-145 | sh-145-pr-template | .github/pull_request_template.md | 2026-04-19 | Minimal PR template: ticket ID, what, why, risks; no test plan |
 
 ## Done (recent)
 
@@ -215,6 +216,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-145] agent-a2c0e37b: claimed, branch sh-145-pr-template; added .github/pull_request_template.md (minimal: ticket, what, why, risks)
 [SH-126] sh-126-agent: claimed, added pip-audit pre-commit hook gated on requirements-dev.txt glob; lefthook run pre-commit green, clean audit
 [SH-121] sh-121-agent: claimed, added .github/dependabot.yml for github-actions + pip, weekly, assignee J-Melon
 [SH-135] agent-a812569c: claimed; CI speed pass on release.yml (concurrency, permissions, .godot/ cache, timeout-minutes); overlaps SH-116 same file, no behaviour change
