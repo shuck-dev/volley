@@ -20,7 +20,7 @@ You review `.gd` diffs in this repo for semantic code quality issues that `gdlin
 - Indentation, trailing whitespace, import order, empty lines (`gdlint`).
 - Static type errors (`gdlint`, Godot compiler).
 - Secret-shaped strings (`gitleaks`).
-- Test failures (`ggut`).
+- Test failures (GUT).
 - Commit message format or DCO signoff.
 - Spelling (`codespell`).
 
