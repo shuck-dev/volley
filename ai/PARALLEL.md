@@ -6,7 +6,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
 ## How to use this doc
 
-1. **Claim a ticket** — add a row to the Active table with your agent name, ticket ID, and start timestamp.
+1. **Claim a ticket** — branch first (`git checkout -b sh-XX-...`), then add a row to the Active table with agent name, ticket ID, branch, and start timestamp. Commit the claim on the branch so it ships with the PR, not on main.
 2. **Log progress** — append one line per meaningful step to the Activity Log at the bottom. Keep it terse: `[SH-XX] <agent> — <what happened>`.
 3. **Finish** — move the row from Active to Done, note the commit SHA and PR number.
 4. **Block or spin** — if you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
@@ -17,8 +17,9 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
 - **One ticket, one agent, one branch.** Never two agents in the same `.gd`/`.tscn` file at once. Check the Active table's "Files touched" column before starting.
 - **Rebase on main before opening PR.** Josh merges, you don't (per feedback rule).
-- **Run `ggut` + pre-commit after every code change.** Iterate until green.
+- **Run `ggut` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline** — prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
+- **Git aliases and helpers** — prefer `gcb` (checkout -b), `gst`, `gaa`, `gpsup` (push -u origin HEAD). For commits use the conventional-commit functions: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. Raw `git commit -s` only when you need a multi-line body.
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 
 ---
@@ -86,6 +87,7 @@ Compatibility traps that have bitten this project or are documented in Godot 4. 
 
 - **`ggut` flakes on tests using `await get_tree().process_frame`** inside `_ready`. Prefer `await get_tree().create_timer(0.0).timeout`.
 - **`gdlint` vs `ggut`** — gdlint catches style issues ggut misses; both are pre-commit gates.
+- **`ggut` does not recurse subdirs.** If `tests/unit/` or `tests/integration/` have subfolders, set `"include_subdirs": true` in `.gutconfig.json` or gut only runs top-level files. Symptom: test count drops after a reorg.
 - **GodotIQ `run(action="play")` timeouts** — expected with heavy loads; wait, `state_inspect`, then `run(stop)` before retry. Don't kill-and-respawn.
 
 If you hit an edge case not on this list, append it here before closing your ticket.
@@ -102,7 +104,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 
 | Agent | Ticket | PR | Merged | Notes |
 |---|---|---|---|---|
-| _(none)_ | | | | |
+| sh-52-agent | SH-52 | (commit 05e0f47, branch sh-52-organize-unit-tests, not pushed) | pending | Organized 35 unit tests into 9 domain subfolders; enabled gut include_subdirs; 345 tests pass |
 
 ## Blocked / escalated
 
@@ -117,5 +119,6 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-52] sh-52-agent — done, commit 05e0f47, 345/345 tests pass, lefthook green, not pushed
 [init] scratchpad created — ready for claims
 ```
