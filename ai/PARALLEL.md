@@ -45,6 +45,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 - **Run `ggut` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline**: prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
 - **Git aliases and helpers**: prefer `gcb` (checkout -b), `gst`, `gaa`, `gpsup` (push -u origin HEAD). For commits use the conventional-commit functions: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. These are oh-my-zsh functions and may not exist in other shells; fall back to raw `git` (with `-s` for sign-off) if unavailable. Raw `git commit -s` is also fine when you need a multi-line body.
+- **Engineer PRs to merge in any order.** Each PR should stand alone against current main. Combine related changes that share a file rather than splitting them. Avoid "depends on #X" unless the dependency is structural. Josh merges in whatever order suits him; implicit ordering creates friction every time the queue is triaged.
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 
 ---
