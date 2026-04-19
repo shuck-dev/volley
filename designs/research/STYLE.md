@@ -16,6 +16,30 @@ The essay is for everyone: developers, players, journalists, open-source maintai
 - **Universal, not tribal.** There is no us-against-them. We are all human. Adversaries are mistaken, not enemies. Kill them with kindness.
 - **Persuasive, not manipulative in the ugly sense.** Use simile, metaphor, rhythm, and emotive language to make the reader feel the stakes. Earn every emotional beat with a fact.
 
+## Voice calibration: the author's natural register
+
+The above is the target voice for the published essay. The list below is the texture of the author's own writing, taken from a corpus of his earlier prose. The published voice should sit at roughly 80% of the target voice and 20% of the texture below. The mix lets the essay read as a person, not a polished document.
+
+What to bring across:
+
+- **Declarative confidence with the occasional twist setup.** The author's signature move is to state a clean claim, then immediately turn it. "Robots will not steal our jobs. Unless, they're given help." Use the move sparingly; it loses force on the third repeat in a section.
+- **The "what most people don't realise" register.** The writer naming the thing the headlines miss, calmly. Not contrarian for its own sake; informed and unsurprised.
+- **First-person flickers outside the explicit first-person section.** A small "I" beat in a section that otherwise sits in third person can land if the moment is genuinely the author's, not a rhetorical flourish.
+- **Direct attribution and direct calling-of-names.** Power gets named by the thing it does, not softened. "The US has a tendency for not playing by the rules" register. Confident, plain, never aggressive.
+- **Concrete texture details that have no business being in the prose except that they ground it.** A specific brand, a specific moustache, a specific number nobody would have rounded. The essay already does this through citations; one or two paragraphs may earn an extra texture beat.
+- **British English throughout.** Already conformant.
+
+What not to bring across:
+
+- **Manifesto sign-offs.** "For the safety and preservation of humanity, it needs to be done." The author's older work reaches for this; the published essay should not.
+- **Schematic transitions.** "Furthermore", "Additionally", "Therefore X. Therefore Y." Already cut by editorial passes; do not reintroduce.
+- **Em dashes.** The older work uses them; the style guide forbids them.
+- **"Fortunately" / "Unfortunately" as section openers.** Voice marker but rhetorical filler.
+- **Absurdist comedy at any volume.** The author can write it; the essay is not the place.
+- **Over-rhetorical closes.** The current close is restrained. Do not gild it.
+
+Net: where the essay reads as too polished and too careful, loosen by about one tenth. Not by half.
+
 ## Sentences
 
 - Short over long. Concrete over abstract. Active over passive. A sentence that needs a comma to breathe is fine; one that needs three is two sentences pretending.
@@ -32,6 +56,20 @@ The essay is for everyone: developers, players, journalists, open-source maintai
 - **No first-person plural unless earned.** "We" is the reader and the writer together, not the author and an imaginary team.
 - **No hedging stack.** "It might possibly perhaps be the case that" is one word: "is", or cut.
 - **No "small game", "small project", "tiny indie"** when describing Volley! or Shuck. The work is the work.
+
+## AI prose tells (the words and constructions to cut)
+
+This pass is not about hiding that the essay was drafted with an AI assistant. The essay says so openly in section 11 and the argument depends on saying so. The pass is about humanising the prose: cutting the residue that reads as model-shaped rather than person-shaped, so the writing carries the voice of the person who wrote it instead of the average of the corpus the model was trained on. The aim is recognisability, not concealment.
+
+Large language models leave a residue. Editors, linguists, and the maintainers of `Wikipedia:Signs of AI writing` have catalogued it; the Berens lab's *Delving into LLM-assisted writing in biomedical publications through excess vocabulary* (Kobak, Márquez González, Horvát, Lause, *Science Advances*, 2025) puts numbers on the shift; Reuters Institute, *How AI-generated prose diverges from human writing* (2024), names the rhythm and the empty hedge. Run this checklist on every draft.
+
+**Vocabulary to cut on sight.** delve, delves, delving; tapestry; landscape (metaphorical); navigate (metaphorical); realm; underscore, underscores; pivotal; crucial; essential; robust; comprehensive; leverage; harness; foster; cultivate (metaphorical); embrace (metaphorical); myriad; plethora; intricate; nuanced; multifaceted; holistic; transformative; vibrant; seamless; ever-evolving; meticulous; commendable; boast; primarily as filler; ultimately as a connector.
+
+**Constructions to rewrite or cut.** "It is important to note that"; "It is worth noting that"; "Not just X, but Y"; "More than just X"; "X is a testament to Y"; "X speaks to Y"; "X lies at the intersection of Y"; "stands as", "serves as", "plays a role in"; "paints a picture"; "sets the stage for"; "the cornerstone of", "a hallmark of", "a beacon of"; "ushering in"; "stands the test of time"; "in essence"; "X keeps Y honest"; "X keeps Y accountable"; the false-balance "Some would argue X. Others would argue Y."; the closing moral ("the work matters", "the choice is ours"); the paragraph that restates its own thesis to finish.
+
+**Structural and punctuation tells.** Tricolons stacked across consecutive paragraphs; adjective stacks where one modifier would carry the load; the colon-as-header used four or more times in one section; the single-word fragment ("Quietly.", "None.") used more than twice; the em dash anywhere (the guide forbids it); the Oxford comma drifting mid-essay; "however" used as a soft pivot more than once per section.
+
+Sources: Berens lab, *Delving into LLM-assisted writing*, *Science Advances*, 2025; *Wikipedia:Signs of AI writing*; Reuters Institute, *How AI-generated prose diverges from human writing* (Lewandowsky and Ecker, 2024); *ChatGPT Is Changing the Words We Use in Conversation*, *Scientific American*, 2024.
 
 ## Citations
 
@@ -124,6 +162,27 @@ Gary Provost's canonical passage (*100 Ways to Improve Your Writing*, 1985) is t
 
 Read every paragraph aloud. Where the breath stumbles, cut.
 
+### Prose rhythm: where the ear lands
+
+Aristotle, in the *Rhetoric*, was the first to insist prose has rhythm — well-rhythmed, but not metrical like verse. Cicero translated the Greek *rhuthmos* as *numerus* and built Roman oratory on the principle that the close of a clause carries the weight. Modern craft writers say the same in plainer terms. Ursula K. Le Guin (*Steering the Craft*, 2015): "The sound of the language is where it all begins. The test of a sentence is, Does it sound right?" Verlyn Klinkenborg (*Several Short Sentences About Writing*, 2012): "Pay attention to rhythm, first and last." Constance Hale (*Sin and Syntax*, 1999) frames the music chapter around the choice between Anglo-Saxon shun and Latinate avoid. William Zinsser (*On Writing Well*) and Roy Peter Clark (*Writing Tools*) both put the loaded word at the end of the sentence.
+
+The principles, as a checklist editors can run on every paragraph:
+
+- **End-stress.** The last word of a sentence is the most prominent. Engineer it. Land on the noun or verb you want the reader to keep, not on a connector or a pronoun.
+- **Anglo-Saxon for force, Latinate for nuance.** Short Old English words (kick, lost, found, work, bread) hit. Long Romance words (recognition, displacement, consolidation) qualify. Use the first when the sentence must land; the second when it must shade.
+- **Plosive endings hit hardest.** Words ending in /t/, /d/, /k/, /p/, /b/, /g/ stop the ear cleanly. Fricative endings (/s/, /f/, /sh/) drift. Nasal endings (/m/, /n/, /ng/) hum on. Choose the consonant the sentence asks for.
+- **Vary length.** Long sets up, short lands. Three medium sentences in a row deaden a paragraph. A long-long-short pattern reads twice.
+- **Read every paragraph aloud.** The ear catches what the eye misses. Where the breath stumbles, cut. Where it speeds up at the wrong moment, slow down.
+
+Avoid:
+
+- **Prepositional close.** A sentence ending in *for, with, from, of, to* dribbles. Reorder.
+- **Weak-pronoun close.** *It, this, that, them* at the end is a wasted slot. Find the noun.
+- **Adverbial drift.** "In the end", "at the end of the day", "ultimately": filler closes that make the sentence shrug.
+- **Hedge stack at the close.** "May possibly be the case in some sense" empties the kicker. One word, or none.
+
+Sources: Aristotle, *Rhetoric* III.8; Cicero, *Orator* and *De Oratore*, on *numerus*; Le Guin, *Steering the Craft* (Houghton Mifflin Harcourt, 2015); Klinkenborg, *Several Short Sentences About Writing* (Knopf, 2012); Hale, *Sin and Syntax* (Three Rivers Press, 1999); Zinsser, *On Writing Well* (Harper, 2006); Clark, *Writing Tools* (Little, Brown, 2006).
+
 ### Paragraphs end on the loaded sentence
 
 The last sentence of a paragraph is the one the reader will remember. Engineer it. Do not waste it on a transition; transitions go in the first sentence of the next paragraph.
@@ -163,6 +222,21 @@ Direct quotes go in quotation marks with citations. Summaries do not. Never para
 ### Comedy is a precision instrument
 
 A joke must come from a real observation, not wordplay. Never more than one per section. Never in places where the register must stay clean (heavy emotional material, the close, sections about real people's hardships). The test: does the smile move in the same direction as the argument? If not, cut. Default is no joke.
+
+### British dry wit as a sparingly-used register
+
+When humour is warranted, the move is British understatement, not American punchline. The wit is in what the sentence declines to say. Concrete handles, with the practitioners who exemplify each:
+
+- **Litotes and the deadpan factual sentence.** Orwell's essays are the model: a plain claim that lands hard because of what it leaves implied. "Not the worst" does more work than "good".
+- **Bathos: the drop from grand register to mundane.** Alan Bennett (LRB diaries) and Clive James (TV criticism, *Cultural Amnesia*) move from portentous to domestic in a single clause.
+- **Mock-formal politeness around damning observations.** Adam Curtis's narration; *The Economist* house style; *Private Eye*'s editorial register. Treat the absurd with the gravity of a select committee.
+- **The held comma and the pause.** Bennett and Jenny Diski (LRB) build the joke into the punctuation, not the words.
+- **The aside that turns out to be the point.** Hitchens, Diski, Stewart Lee's prose criticism. A parenthetical that quietly carries the load of the paragraph.
+- **Self-deprecation as a stalking horse.** Charlie Brooker's early *Screen Burn* columns: the writer absorbs the first hit, then names what is in front of everyone.
+
+Sources: Mary Beard, "What's so funny?" *TLS*, 2014, on litotes and English wit; Robert McCrum on Alan Bennett's "under-statement, the cunningly judged pause" (*Observer*, 2016); Christopher Hitchens, *Letters to a Young Contrarian* (Basic Books, 2001), on irony as the gymnasium of dissent.
+
+Where it lands in this essay: case sections (03 through 10) and fears (13), where the absurdity is already in the material. Where it would jar: AI (11), humanity (12), and the close (14). Default remains no addition.
 
 ### Footnotes and references
 
