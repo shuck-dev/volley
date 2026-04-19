@@ -15,8 +15,11 @@ permissions:
   contents: read
 
 jobs:
+  # Runs only on push to main. Maintains the draft release body so each merge
+  # lands in the "What changed" section without anyone rewriting it by hand.
   update_release_draft:
     name: Update release draft
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -25,10 +28,23 @@ jobs:
     steps:
       - name: Draft release notes
         uses: release-drafter/release-drafter@5de93583980a40bd78603b6dfdcda5b4df377b32 # v7.2.0
-        with:
-          # On pull_request events, only autolabel — don't try to upsert a
-          # draft release (target_commitish won't resolve for PR refs).
-          # Drafting happens exclusively on push to main.
-          disable-releaser: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Runs only on pull_request. Maps Conventional Commit prefixes in the PR
+  # title onto category labels so the drafter groups merges correctly on main.
+  # Split from the drafter job because v7 of release-drafter errors out when
+  # upserting a release against a PR ref.
+  autolabel_pull_request:
+    name: Autolabel pull request
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Apply labels from PR title
+        uses: release-drafter/release-drafter/autolabeler@5de93583980a40bd78603b6dfdcda5b4df377b32 # v7.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
