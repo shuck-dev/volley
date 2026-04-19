@@ -32,8 +32,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
      ```
    Hand off to Josh only after both have landed. Do not flag judgment items in chat; the PR view is the single source of truth.
 5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `./scripts/ci/run_gut.sh`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
-6. **Sweep open PRs after a merge.** Whenever a PR lands on `main`, walk every other open PR, merge `origin/main` into its branch, resolve any conflicts, push. Every PR Josh sees should be `CLEAN` and 0 commits behind; never let him hit Update branch in the GitHub UI. Do this for PRs in worktrees too (cd in, merge, push). Script it when the queue is large (see SH-139 for the automated workflow follow-up).
-7. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
+6. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 
 **Optional: follow-up review.** If Josh asks for another review on an existing PR, dispatch a fresh code-reviewer and post each finding as a line-anchored review comment using the `gh api .../pulls/<N>/comments` template above. If the reviewer returns nothing, post nothing. Do **not** auto-apply fixes; Josh may respond inline or mark comments resolved. Initial review fixes still auto-commit per step 4; only follow-up reviews are comment-only.
 
