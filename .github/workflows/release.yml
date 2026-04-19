@@ -4,6 +4,12 @@ on:
   release:
     types: [published]
 
+# Releases are idempotent by tag; queue same-tag runs rather than cancelling a
+# build mid-flight.
+concurrency:
+  group: release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
 env:
   GODOT_VERSION: "4.6.2"
   GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"
@@ -16,6 +22,9 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
 
@@ -35,6 +44,14 @@ jobs:
           chmod +x Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
       - name: Import Project
         run: godot --headless --path . --import
 
@@ -47,6 +64,9 @@ jobs:
     name: Deploy to Production
     needs: test
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v5
 
@@ -64,6 +84,14 @@ jobs:
           echo "${GODOT_LINUX_SHA256}  /tmp/godot.zip" | sha256sum -c -
           curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz
           echo "${GODOT_TEMPLATES_SHA256}  /tmp/templates.tpz" | sha256sum -c -
+
+      - name: Cache Godot import artifacts
+        uses: actions/cache@v4
+        with:
+          path: .godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
 
       - name: Export all platforms
         id: export
