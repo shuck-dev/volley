@@ -53,6 +53,23 @@ Reference the issue in the PR body with `closes #123` so GitHub links them and c
 
 Small, friendly PR reviews are the norm. If something needs rework we will say why and suggest a direction.
 
+### How review and merge work
+
+Review happens in two layers.
+
+**Specialist reviewers.** When a PR opens, a set of automated specialist reviewers (configured in `.claude/agents/`) scan the diff for the areas they cover: GDScript conventions, signal wiring, scene files, CI workflows, docs style, and so on. Small mechanical fixes (an obvious typo, a missing type hint, a misplaced comma) land as commits on your branch. Anything that needs a judgement call posts as a short line-anchored comment in the Files changed tab, following the [Conventional Comments](https://conventionalcomments.org/) format. The PR then picks up one of two labels:
+
+- **`ai-approved`** if every specialist returned clean.
+- **`action-required`** if any specialist left a comment. The label lifts automatically once every review thread on the PR is marked Resolved.
+
+These labels are advisory. The specialists do not merge anything and they do not substitute for human review.
+
+**Human review.** A maintainer (currently Josh) then reads the PR, runs the game if the change affects behaviour, and signs off by applying the **`human-approved`** label. That label is the real gate.
+
+**Merge.** Auto-merge fires when two required status checks are green: `human-approved` (the label is present) and `no-action-required` (there are no unresolved specialist comments). Pushing new commits after sign-off clears `human-approved`, so what ships is always what was last approved.
+
+The full label taxonomy lives in [`designs/process/labels.md`](designs/process/labels.md).
+
 ## Asking questions
 
 The GitHub issue thread is the right place. Decisions live there, future contributors can find them, and maintainers read everything. No question is too small.
