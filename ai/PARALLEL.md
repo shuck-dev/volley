@@ -191,6 +191,8 @@ If you hit an edge case not on this list, append it here before closing your tic
 |---|---|---|---|---|---|
 | claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
 | sh-121-agent | SH-121 | sh-121-dependabot-config | .github/dependabot.yml | 2026-04-19 | Dependabot weekly for github-actions + pip, PRs assigned to J-Melon |
+| claude-ci | SH-131 | sh-131-ci-speed | .github/workflows/{test,lint,publish,sync-wiki}.yml | 2026-04-19 | CI speed pass: concurrency, permissions, import cache; skipping release.yml to avoid collision with SH-116 |
+| sh-117-agent | SH-117 | sh-117-security-md | SECURITY.md, README.md | 2026-04-19 | Add SECURITY.md at repo root (scope, reporting, timeline, safe harbour); link from README |
 
 ## Done (recent)
 
@@ -212,6 +214,8 @@ Newest at top. One line per event.
 
 ```
 [SH-121] sh-121-agent: claimed, added .github/dependabot.yml for github-actions + pip, weekly, assignee J-Melon
+[SH-117] sh-117-agent: claimed, branch sh-117-security-md; wrote SECURITY.md + README Security link; cycle set to Bobo
+[SH-131] claude-ci: claimed, branch sh-131-ci-speed; scope = test/lint/publish/sync-wiki; release.yml skipped (SH-116 active)
 [SH-52] sh-52-agent: done, commit 05e0f47, 345/345 tests pass, lefthook green, not pushed
 [init] scratchpad created, ready for claims
 ```
