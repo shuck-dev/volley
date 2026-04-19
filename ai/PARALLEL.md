@@ -23,7 +23,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
    - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). One idea per comment. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
      ```
-     gh api -X POST repos/J-Melon/volley-vendetta/pulls/<N>/comments \
+     gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
        -f body="..." \
        -f commit_id="<sha of your latest push>" \
        -f path="<file>" \
