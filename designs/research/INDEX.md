@@ -22,6 +22,6 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 | Folder | Contents |
 |---|---|
 | `drafts/` | Section files for the essay (00 title through 15 sources). Concatenate via the script in any meta doc to regenerate the published file. |
-| `critiques/` | Hostile-reader reviews of the essay across multiple rounds. |
+| `critiques/` | Critical reviews of the essay across multiple rounds. |
 | `notes/` | Per-angle research notes the essay was built from. |
 | `meta/` | Internal planning docs: structure proposal, fact-check log, book-extension notes. |

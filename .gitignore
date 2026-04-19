@@ -40,10 +40,9 @@ designs/art/mood-boards/
 # Private design docs: internal-only, synced to Notion rather than the public repo.
 designs/private/
 
-# Essay process residue: section drafts and discriminator critiques.
-# Final essays and persistent research notes stay tracked.
+# Essay process residue: section drafts only.
+# Final essays, persistent research notes, critical reviews, and meta planning docs stay tracked.
 designs/research/drafts/
-designs/research/critiques/
 
 # OS junk
 .DS_Store
