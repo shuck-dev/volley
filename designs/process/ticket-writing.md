@@ -36,7 +36,7 @@ Applies to every ticket, every discipline.
 
 **Leave room for conversation, but publish the conversation.** Borrowed from Ron Jeffries' Three Cs (card, conversation, confirmation): the ticket is a promise of a conversation. For a contributor, the conversation has to happen in the ticket thread or the linked design doc; verbal context does not reach them. Over-specifying still kills iteration, so leave room, and document decisions in comments as they happen.
 
-**Titles are short and punchy.** Symptoms, qualifiers, and context belong in the body. "Timeout and Equip" reads better than "Implement the timeout system so the main character can equip items".
+**Titles are short and punchy.** Aim for 50 characters or fewer. Symptoms, qualifiers, file paths, and context belong in the body. "Timeout and Equip" reads better than "Implement the timeout system so the main character can equip items".
 
 **INVEST as a sanity check.** Independent, Negotiable, Valuable, Estimable, Small, Testable (Bill Wake, 2003). Use it to spot tickets that should be split, merged, or rewritten. Independence matters extra for open-source: a contributor should be able to ship the ticket without a long chain of dependencies pulling them into unrelated systems.
 
