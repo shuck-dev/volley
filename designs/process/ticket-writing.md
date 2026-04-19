@@ -295,6 +295,8 @@ Internal to Shuck. Covers cycles, estimates, priority, and typed relationships t
 
 **Confirm before filing.** Draft the ticket, list candidates, wait for approval before creating in Linear. Don't file proactively to close perceived gaps; only file when the cycle needs the work.
 
+**Project names are Title Case, two words max per level.** "Art Foundation", "Game Feel", not "Security hygiene pass". Nested hierarchies follow the same rule per level, e.g. "Desktop Experience > Tech". If the concept needs more words, pick a tighter noun or split it into sibling projects.
+
 ---
 
 ## Sources
