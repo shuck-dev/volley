@@ -30,4 +30,4 @@ The game expands with its audience.
 
 ---
 
-For active tickets and day-to-day work, see the [GitHub issues](https://github.com/J-Melon/volley-vendetta/issues).
+For active tickets and day-to-day work, see the [GitHub issues](https://github.com/shuck-dev/volley/issues).

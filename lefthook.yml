@@ -40,3 +40,6 @@ pre-commit:
       exclude:
         - "addons/**"
       run: ./scripts/ci/run_gut.sh
+    pip-audit:
+      glob: "requirements-dev.txt"
+      run: pip-audit --requirement requirements-dev.txt --strict

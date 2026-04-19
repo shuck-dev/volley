@@ -30,7 +30,7 @@ jobs:
 
       - name: Cache Godot
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /usr/local/bin/godot
           key: godot-${{ env.GODOT_VERSION }}
@@ -45,7 +45,7 @@ jobs:
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Cache Godot import artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
@@ -86,7 +86,7 @@ jobs:
           echo "${GODOT_TEMPLATES_SHA256}  /tmp/templates.tpz" | sha256sum -c -
 
       - name: Cache Godot import artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
