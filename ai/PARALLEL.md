@@ -78,6 +78,31 @@ ESCALATE [SH-XX] <agent>: <one-line summary>
 
 ---
 
+## Releases
+
+When Josh asks for a release:
+
+1. **Version format is `super.major.minor`** (e.g. `v0.2.0`). Bump `major` for a significant batch of work, `super` only at v1 launch, `minor` for small fixes on top of an existing major.
+2. **Draft with `gh release create <tag> --draft`**, never publish. Josh publishes himself once he has reviewed.
+3. **Draft notes are narrative, not a file-level changelog.** Open with what the release represents, follow with a grouped "What changed" summary, then:
+   - **Play section**: link to the itch.io page first; build-from-source note second.
+   - **Save warning**: if the save format changed since the previous release, point the player at the in-game **Clear Save** button (in the dev panel) rather than filesystem paths. This project deliberately does not ship save-format migrations.
+   - **Thanks**: short line to contributors.
+   - **Full changelog link**: `/compare/v<old>...v<new>`.
+4. **Draft release URLs show `untagged-<hash>`** in the path until publish; the git tag is only created on publish. Expected, not a bug.
+
+Pre-publish handoff checklist (agent runs this before telling Josh "ready"):
+
+- All PRs related to the release are merged; no staleness on main.
+- CI on `main` at the release SHA is green.
+- Workflow Godot version matches the editor version the presets were authored against (grep `GODOT_VERSION:` across `.github/workflows/`).
+- Manual itch-side state confirmed (or flagged for Josh): the `html5-preview` upload still has "play in browser" ticked.
+- Draft title and body reflect the current shape of the release (re-read the `compare/` link to catch late additions).
+
+Release workflow (`.github/workflows/release.yml`) fires on publish. It exports the Linux preset and pushes to `Speedyoshi/volley:linux` with `--userversion <tag>`. Preview continues to mirror `main` on `html5-preview` independently.
+
+---
+
 ## Godot edge cases to watch for
 
 Compatibility traps that have bitten this project or are documented in Godot 4. Check against these before declaring a ticket done:
