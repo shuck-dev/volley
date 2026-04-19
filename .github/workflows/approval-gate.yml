@@ -1,0 +1,61 @@
+name: Approval Gate
+
+on:
+  pull_request_target:
+    types: [opened, reopened, labeled, unlabeled, synchronize]
+
+permissions:
+  checks: write
+  pull-requests: read
+
+concurrency:
+  group: approval-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: Post approval checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Evaluate labels and post check runs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = new Set(pr.labels.map(label => label.name));
+            const sha = pr.head.sha;
+
+            const humanApproved = labels.has('human-approved');
+            const actionRequired = labels.has('action-required');
+
+            const checks = [
+              {
+                name: 'human-approved',
+                conclusion: humanApproved ? 'success' : 'failure',
+                title: humanApproved ? 'Josh signed off' : 'Waiting on human-approved label',
+                summary: humanApproved
+                  ? 'The `human-approved` label is present.'
+                  : 'Apply the `human-approved` label once you have reviewed the PR.',
+              },
+              {
+                name: 'no-action-required',
+                conclusion: actionRequired ? 'failure' : 'success',
+                title: actionRequired ? 'AI reviewer flagged judgment items' : 'No action-required label',
+                summary: actionRequired
+                  ? 'Resolve the `action-required` items and remove the label before merging.'
+                  : 'The `action-required` label is absent.',
+              },
+            ];
+
+            for (const check of checks) {
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: check.name,
+                head_sha: sha,
+                status: 'completed',
+                conclusion: check.conclusion,
+                output: { title: check.title, summary: check.summary },
+              });
+            }

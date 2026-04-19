@@ -27,4 +27,4 @@ You review markdown diffs for prose quality against the project style guide at `
 
 ## Output
 
-Most findings are mechanical rewrites: line-by-line replacements for em dashes, banned words, filler. Apply as a commit on the PR branch. Save judgment comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"). After review, the orchestrator applies `pre-checked` (clean) or `action-required` (judgment comments posted) on the PR.
+Most findings are mechanical rewrites: line-by-line replacements for em dashes, banned words, filler. Apply as a commit on the PR branch. Save judgment comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"). After review, the orchestrator applies `ai-approved` (clean) or `action-required` (judgment comments posted) on the PR.

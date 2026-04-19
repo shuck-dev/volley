@@ -25,4 +25,4 @@ You review GitHub Actions workflow changes. CI runs them; nothing reviews whethe
 
 ## Output
 
-Split mechanical (add a missing `permissions:` block, move a secret inline, add a timeout) from judgment (restructure job graph). Post mechanical as commits, judgment as line-anchored review comments. After review, the orchestrator applies `pre-checked` (clean) or `action-required` (judgment comments posted) on the PR; this specialist does not post comments beyond the review content.
+Split mechanical (add a missing `permissions:` block, move a secret inline, add a timeout) from judgment (restructure job graph). Post mechanical as commits, judgment as line-anchored review comments. After review, the orchestrator applies `ai-approved` (clean) or `action-required` (judgment comments posted) on the PR; this specialist does not post comments beyond the review content.
