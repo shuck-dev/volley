@@ -10,7 +10,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
    **Cycle placement on pick-up.** Active work lives in the cycle. If you're claiming an existing Backlog ticket that has no `cycle` set, move it into the currently active cycle via the Linear MCP: call `mcp__linear__list_cycles` with `teamId` + `isActive: true` to get the active cycle id, then `mcp__linear__save_issue` with `id: <ticket>` and `cycleId: <id>`. New/unclaimed tickets stay cycle-less per the usual Josh convention; pick-up is what triggers the cycle move. If there's no active cycle (gap between cycles), skip the move and leave the ticket cycle-less until the next cycle opens.
 2. **Log progress.** Append one line per meaningful step to the Activity Log at the bottom. Keep it terse: `[SH-XX] <agent>: <what happened>`.
-3. **Sync before opening, and sync again before any later push.** Before `gh pr create`, run `git fetch origin main && git merge origin/main` into your branch, resolve conflicts, re-run `ggut`, then push. After the PR exists, do the same check whenever you resume work, after a reviewer asks for changes, and before Josh is asked to merge: other PRs may have landed on main and made this branch stale. `git rev-list --count HEAD..origin/main` gives you the "behind by N" count; zero means you're up to date. This catches conflicts locally instead of surfacing them in the PR view for Josh to chase.
+3. **Sync before opening, and sync again before any later push.** Before `gh pr create`, run `git fetch origin main && git merge origin/main` into your branch, resolve conflicts, re-run `./scripts/ci/run_gut.sh`, then push. After the PR exists, do the same check whenever you resume work, after a reviewer asks for changes, and before Josh is asked to merge: other PRs may have landed on main and made this branch stale. `git rev-list --count HEAD..origin/main` gives you the "behind by N" count; zero means you're up to date. This catches conflicts locally instead of surfacing them in the PR view for Josh to chase.
 4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch the **matching specialist reviewers** from `.claude/agents/` in parallel (as background agents), by changed path:
    - `**/*.gd` → `code-quality`, `gdscript-conventions`, `test-coverage`
    - `**/*.tscn` or `**/*.tres` → `godot-scene`
@@ -31,7 +31,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
        -f side=RIGHT
      ```
    Hand off to Josh only after both have landed. Do not flag judgment items in chat; the PR view is the single source of truth.
-5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `ggut`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
+5. **Re-sync before handoff.** Before reporting the PR to Josh for merge, run `git rev-list --count HEAD..origin/main`. If non-zero, merge `origin/main` in, re-run `./scripts/ci/run_gut.sh`, push. Then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
 6. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 
 **Optional: follow-up review.** If Josh asks for another review on an existing PR, dispatch a fresh code-reviewer and post each finding as a line-anchored review comment using the `gh api .../pulls/<N>/comments` template above. If the reviewer returns nothing, post nothing. Do **not** auto-apply fixes; Josh may respond inline or mark comments resolved. Initial review fixes still auto-commit per step 4; only follow-up reviews are comment-only.
@@ -43,7 +43,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 - **One ticket, one agent, one branch, one worktree.** Never two agents in the same `.gd`/`.tscn` file at once. Check the Active table's "Files touched" column before starting. Every sub-agent dispatched to modify the repo must use `isolation: "worktree"` on the Agent call, so each lands in its own `git worktree add ../volley-sh-N sh-N-branch` checkout. Sharing the main working tree causes the stash-shuffle failure mode seen when multiple agents edit workflow files or `ai/PARALLEL.md` in parallel. The main tree stays for interactive / single-agent work.
 - **Worktree cleanup on merge.** Once a PR is merged, the corresponding worktree and branch are removed: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. Leaving stale worktrees costs disk and invites later agents to resurrect abandoned changes. Cleanup is the agent's responsibility before reporting the PR as done if the agent is still alive; otherwise Josh or the next orchestrator sweeps periodically with `git worktree list` and `git worktree prune`.
 - **Never rebase; merge main in.** To update a branch with main, use `git merge main`, never `git rebase`. If a rebase is genuinely required (rare, e.g. cleaning history before first push), stop and ask Josh first. Josh merges PRs; agents don't.
-- **Run `ggut` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
+- **Run `./scripts/ci/run_gut.sh` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline**: prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
 - **Git aliases and helpers**: prefer `gcb` (checkout -b), `gst`, `gaa`, `gpsup` (push -u origin HEAD). For commits use the conventional-commit functions: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. These are oh-my-zsh functions and may not exist in other shells; fall back to raw `git` (with `-s` for sign-off) if unavailable. Raw `git commit -s` is also fine when you need a multi-line body.
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
@@ -56,7 +56,7 @@ Three tiers of Godot access. Pick the lowest tier that answers your question. Hi
 
 | Tier | What it covers | Parallelism | Needs an editor? |
 |---|---|---|---|
-| **0 — Static** | `ggut`, `validate`, `file_context`, `signal_map`, `impact_check`, edits to `.gd`, grep, read | High. N agents in parallel. | No. Headless forks. |
+| **0 — Static** | `./scripts/ci/run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, edits to `.gd`, grep, read | High. N agents in parallel. | No. Headless forks. |
 | **1 — Scene edits** | `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit` | Serial on the live editor, or parallel via git worktrees (each worktree = its own `.godot/` cache and editor). | Yes, per worktree. |
 | **2 — Runtime** | `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot` | Single-agent, exclusive editor. | Yes, exclusive. |
 
@@ -176,9 +176,9 @@ Compatibility traps that have bitten this project or are documented in Godot 4. 
 
 ### Tooling / CI
 
-- **`ggut` flakes on tests using `await get_tree().process_frame`** inside `_ready`. Prefer `await get_tree().create_timer(0.0).timeout`.
-- **`gdlint` vs `ggut`**: gdlint catches style issues ggut misses; both are pre-commit gates.
-- **`ggut` does not recurse subdirs.** If `tests/unit/` or `tests/integration/` have subfolders, set `"include_subdirs": true` in `.gutconfig.json` or gut only runs top-level files. Symptom: test count drops after a reorg.
+- **GUT flakes on tests using `await get_tree().process_frame`** inside `_ready`. Prefer `await get_tree().create_timer(0.0).timeout`.
+- **`gdlint` vs GUT**: gdlint catches style issues GUT misses; both are pre-commit gates.
+- **GUT does not recurse subdirs.** If `tests/unit/` or `tests/integration/` have subfolders, set `"include_subdirs": true` in `.gutconfig.json` or GUT only runs top-level files. Symptom: test count drops after a reorg.
 - **GodotIQ `run(action="play")` timeouts**: expected with heavy loads; wait, `state_inspect`, then `run(stop)` before retry. Don't kill-and-respawn.
 
 If you hit an edge case not on this list, append it here before closing your ticket.
