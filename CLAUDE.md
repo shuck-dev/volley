@@ -180,6 +180,8 @@ So that [benefit or reason]
 - Each clause on its own line. Acceptance criteria: short, testable checklist items.
 - **User Story** for player/end-user needs. **System Story** for internal/infrastructure work.
 - **Bug Report** for defects — use steps to reproduce and clear expected vs actual.
+- **Issue titles ≤50 chars.** Push symptoms, qualifiers, file paths into the body.
+- **Project names are Title Case, two words max per level.** "Security Hygiene", not "Security hygiene pass".
 
 ### Linear API Access
 
