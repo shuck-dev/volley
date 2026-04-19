@@ -9,9 +9,16 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 1. **Claim a ticket.** Branch first (`git checkout -b sh-XX-...`), then add a row to the Active table with agent name, ticket ID, branch, and start timestamp. Commit the claim on the branch so it ships with the PR, not on main.
 2. **Log progress.** Append one line per meaningful step to the Activity Log at the bottom. Keep it terse: `[SH-XX] <agent>: <what happened>`.
 3. **Sync before opening, and sync again before any later push.** Before `gh pr create`, run `git fetch origin main && git merge origin/main` into your branch, resolve conflicts, re-run `ggut`, then push. After the PR exists, do the same check whenever you resume work, after a reviewer asks for changes, and before Josh is asked to merge: other PRs may have landed on main and made this branch stale. `git rev-list --count HEAD..origin/main` gives you the "behind by N" count; zero means you're up to date. This catches conflicts locally instead of surfacing them in the PR view for Josh to chase.
-4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch a code-reviewer sub-agent against the PR. Split the findings:
+4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch the **matching specialist reviewers** from `.claude/agents/` in parallel (as background agents), by changed path:
+   - `**/*.gd` → `code-quality`, `gdscript-conventions`, `test-coverage`
+   - `**/*.tscn` or `**/*.tres` → `godot-scene`
+   - diff contains `connect(`, `emit(`, `tree_exit`, or a new autoload → `signals-lifecycle`
+   - `.github/**` → `ci-and-workflows`
+   - `**/*.md` → `docs-and-writing`
+
+   If zero match, skip review. Each specialist splits findings the same way:
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
-   - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. If there are zero judgment calls, post nothing and hand off silently. Template:
+   - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
      ```
      gh api -X POST repos/J-Melon/volley-vendetta/pulls/<N>/comments \
        -f body="..." \

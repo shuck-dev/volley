@@ -19,7 +19,8 @@ version.txt
 logs/
 
 # Editor/tool config
-.claude/
+.claude/*
+!.claude/agents/
 .vscode/
 .mcp.json
 .cursorrules
