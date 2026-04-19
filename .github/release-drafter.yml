@@ -1,0 +1,86 @@
+name-template: "$NEXT_PATCH_VERSION"
+tag-template: "$NEXT_PATCH_VERSION"
+
+# Josh picks the real tag and title at publish time; these templates only
+# exist because release-drafter requires them. The draft body is what matters.
+version-resolver:
+  default: patch
+
+categories:
+  - title: "Features"
+    labels:
+      - "feature"
+    # Fallback: catch Conventional Commit `feat:` prefixes even if the PR
+    # lacks a matching label.
+  - title: "Fixes"
+    labels:
+      - "bug"
+  - title: "Maintenance"
+    labels:
+      - "chore"
+      - "docs"
+      - "refactor"
+      - "test"
+      - "style"
+      - "perf"
+      - "ci"
+      - "build"
+
+# Map Conventional Commit prefixes in PR titles onto the categories above so
+# the categoriser works without requiring every PR to carry a matching label.
+autolabeler:
+  - label: "feature"
+    title:
+      - "/^feat(\\(.+\\))?:/i"
+      - "/^feat(\\(.+\\))?!:/i"
+      - "/^SH-\\d+ feat(\\(.+\\))?:/i"
+  - label: "bug"
+    title:
+      - "/^fix(\\(.+\\))?:/i"
+      - "/^fix(\\(.+\\))?!:/i"
+      - "/^SH-\\d+ fix(\\(.+\\))?:/i"
+  - label: "chore"
+    title:
+      - "/^chore(\\(.+\\))?:/i"
+      - "/^SH-\\d+ chore(\\(.+\\))?:/i"
+  - label: "docs"
+    title:
+      - "/^docs(\\(.+\\))?:/i"
+      - "/^SH-\\d+ docs(\\(.+\\))?:/i"
+  - label: "refactor"
+    title:
+      - "/^refactor(\\(.+\\))?:/i"
+      - "/^SH-\\d+ refactor(\\(.+\\))?:/i"
+  - label: "test"
+    title:
+      - "/^test(\\(.+\\))?:/i"
+      - "/^SH-\\d+ test(\\(.+\\))?:/i"
+  - label: "style"
+    title:
+      - "/^style(\\(.+\\))?:/i"
+      - "/^SH-\\d+ style(\\(.+\\))?:/i"
+  - label: "perf"
+    title:
+      - "/^perf(\\(.+\\))?:/i"
+      - "/^SH-\\d+ perf(\\(.+\\))?:/i"
+  - label: "chore"
+    title:
+      - "/^ci(\\(.+\\))?:/i"
+      - "/^SH-\\d+ ci(\\(.+\\))?:/i"
+      - "/^build(\\(.+\\))?:/i"
+      - "/^SH-\\d+ build(\\(.+\\))?:/i"
+
+change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
+change-title-escapes: '\<*_&'
+
+exclude-labels:
+  - "skip-changelog"
+
+template: |
+  One-line opener goes here; Josh rewrites this at publish time to capture what the release represents.
+
+  ## What changed
+
+  $CHANGES
+
+  **Full changelog:** https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
