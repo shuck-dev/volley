@@ -16,7 +16,7 @@ You review whether new production code ships with tests, and whether those tests
 
 ## Out of scope
 
-- Test pass/fail (`ggut` in CI).
+- Test pass/fail (GUT in CI via `./scripts/ci/run_gut.sh`).
 - Formatting, style, naming (that's code-quality or gdscript-conventions).
 - Coverage percentage as a number (the project targets 75%+, enforced elsewhere).
 
