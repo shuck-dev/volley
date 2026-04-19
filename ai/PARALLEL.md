@@ -198,6 +198,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 | agent-a812569c | SH-135 | sh-135-release-ci-speed-pass | .github/workflows/release.yml | 2026-04-19 | CI speed pass on release.yml (concurrency, job-level permissions, `.godot/` import cache, timeout-minutes); SH-131 follow-up punted from release.yml due to SH-132 contention; overlaps SH-116 on same file — whichever lands second merges main in |
 | claude-ci | SH-131 | sh-131-ci-speed | .github/workflows/{test,lint,publish,sync-wiki}.yml | 2026-04-19 | CI speed pass: concurrency, permissions, import cache; skipping release.yml to avoid collision with SH-116 |
 | sh-117-agent | SH-117 | sh-117-security-md | SECURITY.md, README.md | 2026-04-19 | Add SECURITY.md at repo root (scope, reporting, timeline, safe harbour); link from README |
+| agent-a5879155 | SH-146 | sh-146-slsa-provenance | .github/workflows/release.yml | 2026-04-19 | Add SLSA build provenance attestation for Linux/Windows/macOS artifacts; overlaps SH-116/SH-135 on same file — last to land merges main in |
 | sh-149-agent | SH-149 | sh-149-merge-queue | .github/workflows/{auto-update-prs,lint,test}.yml, ai/PARALLEL.md, designs/process/labels.md | 2026-04-19 | Delete PR sweep workflow, add `merge_group:` trigger to lint/test, doc the merge queue flow |
 | agent-a92fe95a | SH-147 | sh-147-release-drafter | .github/release-drafter.yml, .github/workflows/release-drafter.yml | 2026-04-19 | Add release-drafter to auto-draft release notes (config + workflow, SHA-pinned @v7.2.0, Conventional Commit categories); Josh still picks tag + body at publish |
 | agent-a2c0e37b | SH-145 | sh-145-pr-template | .github/pull_request_template.md | 2026-04-19 | Minimal PR template: ticket ID, what, why, risks; no test plan |
@@ -221,6 +222,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-146] agent-a5879155: claimed, branch sh-146-slsa-provenance; add attest-build-provenance step + id-token/attestations perms on deploy-production; overlaps SH-116/SH-135 same file
 [SH-118] sh-118-agent: claimed; pinning Godot 4.6.2 binary+templates and butler 15.26.1 to SHA256 across test/publish/release workflows (also closes SH-119)
 [SH-147] agent-a92fe95a: claimed, branch sh-147-release-drafter; added .github/release-drafter.yml (Conventional-Commit categories, autolabeler, narrative template) + .github/workflows/release-drafter.yml (SHA-pinned release-drafter@v7.2.0, contents: write + pull-requests: read)
 [SH-145] agent-a2c0e37b: claimed, branch sh-145-pr-template; added .github/pull_request_template.md (minimal: ticket, what, why, risks)

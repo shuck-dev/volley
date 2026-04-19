@@ -67,6 +67,8 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v5
 
@@ -101,6 +103,14 @@ jobs:
           godot_export_templates_download_url: "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-stable/Godot_v${{ env.GODOT_VERSION }}-stable_export_templates.tpz"
           relative_project_path: ./
           cache: true
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
+        with:
+          subject-path: |
+            ${{ steps.export.outputs.build_directory }}/Linux/volley.x86_64
+            ${{ steps.export.outputs.build_directory }}/Windows/volley.exe
+            ${{ steps.export.outputs.build_directory }}/macOS/volley.zip
 
       - name: Download Butler
         run: |
