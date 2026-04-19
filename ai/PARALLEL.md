@@ -16,6 +16,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
    - `**/*.tscn` or `**/*.tres` → `godot-scene`
    - diff contains `connect(`, `emit(`, `tree_exit`, or a new autoload → `signals-lifecycle`
    - `.github/**` → `ci-and-workflows`
+   - `export_presets.cfg`, `project.godot`, or `**/*.import` → `asset-pipeline`
    - `**/*.md` → `docs-and-writing`
 
    If zero match, skip review. Each specialist splits findings the same way:
