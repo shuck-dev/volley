@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Ticket writing guide
-    url: https://github.com/J-Melon/volley-vendetta/blob/main/designs/process/ticket-writing.md
+    url: https://github.com/shuck-dev/volley/blob/main/designs/process/ticket-writing.md
     about: How our tickets are structured, what the labels mean, and how to read them.
   - name: Contributing guide
-    url: https://github.com/J-Melon/volley-vendetta/blob/main/CONTRIBUTING.md
+    url: https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md
     about: How to claim, submit, and test your work.
