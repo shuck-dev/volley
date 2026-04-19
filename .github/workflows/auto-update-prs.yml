@@ -1,0 +1,79 @@
+name: Auto-update open PRs with main
+
+# Keeps every open PR targeting main in sync after each merge, so reviewers
+# (and Josh) never have to babysit a "N commits behind" banner. Triggers on
+# pushes to main; iterates open non-draft PRs, skips any already up to date,
+# and logs-and-skips PRs that conflict rather than failing the run.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: auto-update-prs
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Sweep open PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Update each open PR with main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # Non-draft PRs targeting main. isDraft filter keeps WIP branches out.
+          mapfile -t PR_NUMBERS < <(
+            gh pr list \
+              --state open \
+              --base main \
+              --json number,isDraft,headRefName \
+              --jq '.[] | select(.isDraft == false) | .number'
+          )
+
+          if [ "${#PR_NUMBERS[@]}" -eq 0 ]; then
+            echo "No open non-draft PRs targeting main; nothing to do."
+            exit 0
+          fi
+
+          echo "Found ${#PR_NUMBERS[@]} open PR(s) to check: ${PR_NUMBERS[*]}"
+
+          for PR in "${PR_NUMBERS[@]}"; do
+            echo "::group::PR #${PR}"
+
+            HEAD_REF=$(gh pr view "$PR" --json headRefName --jq '.headRefName')
+
+            # behind_by tells us whether main has moved on past this branch.
+            # Zero means the PR already contains every commit on main; skip.
+            BEHIND=$(gh api "repos/${GH_REPO}/compare/main...${HEAD_REF}" \
+              --jq '.behind_by' 2>/dev/null || echo "unknown")
+
+            if [ "$BEHIND" = "0" ]; then
+              echo "PR #${PR} (${HEAD_REF}) is 0 behind main; skipping."
+              echo "::endgroup::"
+              continue
+            fi
+
+            echo "PR #${PR} (${HEAD_REF}) is ${BEHIND} behind main; updating."
+
+            # gh pr update-branch is a thin wrapper over the update-branch
+            # REST endpoint; it fails fast on conflicts, which we swallow so
+            # one dirty PR never blocks the sweep for the rest.
+            if gh pr update-branch "$PR"; then
+              echo "PR #${PR} updated."
+            else
+              echo "::warning::PR #${PR} could not be auto-updated (likely merge conflict or protected state); leaving it for the author."
+            fi
+
+            echo "::endgroup::"
+          done

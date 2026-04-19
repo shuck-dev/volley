@@ -21,7 +21,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
    If zero match, skip review. Each specialist splits findings the same way:
    - **Mechanical fixes** (typos, dead code, obvious bugs, style violations, missing null checks): apply as commits on the PR branch and push.
-   - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
+   - **Judgment calls** (design tradeoffs, naming debates, architectural suggestions): post each as a line-anchored review comment so Josh can mark them Resolved in the Files changed tab. **Follow [Conventional Comments](https://conventionalcomments.org/)**: prefix each with one of `praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:` (optionally with decorators like `(non-blocking)`). One idea per comment. If a specialist has zero judgment calls, it stays silent individually; only the final handoff leaves `LGTM` if every matching specialist returned clean. Template:
      ```
      gh api -X POST repos/J-Melon/volley-vendetta/pulls/<N>/comments \
        -f body="..." \
@@ -45,7 +45,7 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 - **Never rebase; merge main in.** To update a branch with main, use `git merge main`, never `git rebase`. If a rebase is genuinely required (rare, e.g. cleaning history before first push), stop and ask Josh first. Josh merges PRs; agents don't.
 - **Run `./scripts/ci/run_gut.sh` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline**: prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
-- **Git aliases and helpers**: prefer `gcb` (checkout -b), `gst`, `gaa`, `gpsup` (push -u origin HEAD). For commits use the conventional-commit functions: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. These are oh-my-zsh functions and may not exist in other shells; fall back to raw `git` (with `-s` for sign-off) if unavailable. Raw `git commit -s` is also fine when you need a multi-line body.
+- **[Conventional Commits](https://www.conventionalcommits.org/)** for commit messages (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`, `style:`, `perf:`, `ci:`, `build:`, `revert:`). The repo's `commit-msg` hook enforces `[SH-<ticket> ]<type>: <subject>`. Git aliases and helpers in Josh's local shell: `gcb` (`git checkout -b`), `gst`, `gaa`, `gpsup` (`git push -u origin HEAD`). Convenience shell functions for conventional-commit messages: `gcf "msg"` (feat), `gcx` (fix), `gcd` (docs), `gcr` (refactor), `gct` (test), `gch` (chore). All auto-signoff. These are personal environment; public surfaces (PR bodies, commit messages, repo docs) spell out the canonical command. Raw `git commit -s` is fine when a multi-line body is needed.
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 
 ---
