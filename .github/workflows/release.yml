@@ -105,7 +105,7 @@ jobs:
           sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
           rm -rf addons/coverage
 
-      - name: Export Web
+      - name: Export Linux
         id: export
         uses: firebelley/godot-export@v7.0.0
         with:
@@ -121,6 +121,6 @@ jobs:
           chmod +x butler
 
       - name: Push to Itch.io Production
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5 --userversion ${{ github.event.release.tag_name }}
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/Linux" ${{ env.ITCH_PROJECT }}:linux --userversion ${{ github.event.release.tag_name }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

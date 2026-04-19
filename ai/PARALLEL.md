@@ -131,7 +131,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
-| _(none)_ | | | | | |
+| claude-main | SH-116 | sh-116-linux-release-channel | .github/workflows/release.yml | 2026-04-19 | Switch prod release to Linux preset + `linux` channel; preview stays web; waiting on Josh's Linux export preset commit to land on main |
 
 ## Done (recent)
 
