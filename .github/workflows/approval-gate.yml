@@ -18,11 +18,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
-      - name: Evaluate labels and post check runs
+      - name: Strip human-approved on new commits
+        if: github.event.action == 'synchronize'
         uses: actions/github-script@v8
         with:
           script: |
             const pr = context.payload.pull_request;
+            if (pr.labels.some(label => label.name === 'human-approved')) {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                name: 'human-approved',
+              });
+            }
+
+      - name: Evaluate labels and post check runs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
             const labels = new Set(pr.labels.map(label => label.name));
             const sha = pr.head.sha;
 
@@ -41,7 +60,7 @@ jobs:
               {
                 name: 'no-action-required',
                 conclusion: actionRequired ? 'failure' : 'success',
-                title: actionRequired ? 'AI reviewer flagged judgment items' : 'No action-required label',
+                title: actionRequired ? 'AI reviewer left items to resolve' : 'No action-required label',
                 summary: actionRequired
                   ? 'Resolve the `action-required` items and remove the label before merging.'
                   : 'The `action-required` label is absent.',

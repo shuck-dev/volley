@@ -26,4 +26,4 @@ You review Godot project-config and import-pipeline diffs. `gdlint` does not tou
 
 ## Output
 
-Most findings are judgment calls: preset parity questions, "this exclude may catch a runtime path", platform-flag tradeoffs. Post as line-anchored review comments per `ai/PARALLEL.md` template. Mechanical fixes only for obvious cases: flipping `codesign=1` with empty identity to `0`, adding a missing comma in an exclude list. Silent `LGTM` if clean.
+Mechanical fixes (flipping `codesign=1` with empty identity to `0`, adding a missing comma in an exclude list) as commits. Everything else (preset parity questions, runtime-path excludes, platform-flag tradeoffs) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.

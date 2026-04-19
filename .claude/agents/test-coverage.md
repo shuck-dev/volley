@@ -22,4 +22,4 @@ You review whether new production code ships with tests, and whether those tests
 
 ## Output
 
-Most findings are judgment calls: "this new feature has no test for X" or "the assertion here checks implementation, not behaviour". Post as line-anchored review comments, or on the test file if asserting about test quality. Mechanical fix only if you can add a small missing test inline without extra context. Silent `LGTM` if clean.
+Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.

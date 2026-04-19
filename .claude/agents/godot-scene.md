@@ -23,4 +23,4 @@ You review Godot scene and resource diffs. `gdlint` does not read `.tscn`, so ev
 
 ## Output
 
-Most findings will be judgment calls since scene edits are hard to auto-rewrite. Post as line-anchored review comments anchored to the `[node name="X"]` or `[ext_resource]` line. After review, the orchestrator applies `ai-approved` (clean) or `action-required` (judgment comments posted) on the PR.
+Scene edits are hard to auto-rewrite, so expect comments over commits. Post short line-anchored review comments on the `[node name="X"]` or `[ext_resource]` line, following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.

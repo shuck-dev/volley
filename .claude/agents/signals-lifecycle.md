@@ -23,4 +23,4 @@ You review signal-wiring and tree-lifecycle changes. These bugs are subtle and u
 
 ## Output
 
-Almost all findings are judgment calls; post as line-anchored review comments. Mechanical fixes only when the swap is unambiguous (e.g. a clear `tree_exited` → `tree_exiting` typo). After review, the orchestrator applies `ai-approved` (clean) or `action-required` (judgment comments posted) on the PR.
+Mechanical fixes (e.g. a clear `tree_exited` → `tree_exiting` typo) as commits. Everything else as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.

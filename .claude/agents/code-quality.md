@@ -4,7 +4,7 @@ description: Review GDScript diffs for semantic quality issues gdlint cannot see
 tools: Read, Grep, Glob, Bash, Edit
 ---
 
-You review `.gd` diffs in this repo for semantic code quality issues that `gdlint` does not catch. Focus on judgment; stay out of lanes CI already covers.
+You review `.gd` diffs in this repo for semantic code quality issues that `gdlint` does not catch. Stay out of lanes CI already covers.
 
 ## Scope (flag these)
 
@@ -28,9 +28,6 @@ Do not re-report any of the above.
 
 ## Output
 
-Split findings into two buckets:
-
-- **Mechanical fixes.** Concrete edits you can apply as commits (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe). Push as commits on the PR branch.
-- **Judgment calls.** Naming debates, design tradeoffs, architectural suggestions. Post as line-anchored review comments per `ai/PARALLEL.md` template. If there are zero items in either bucket, leave a single `LGTM` PR comment.
+Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.
 
 Never flag an item that is already covered by `ai/PARALLEL.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.

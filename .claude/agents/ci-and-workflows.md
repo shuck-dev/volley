@@ -25,4 +25,4 @@ You review GitHub Actions workflow changes. CI runs them; nothing reviews whethe
 
 ## Output
 
-Split mechanical (add a missing `permissions:` block, move a secret inline, add a timeout) from judgment (restructure job graph). Post mechanical as commits, judgment as line-anchored review comments. After review, the orchestrator applies `ai-approved` (clean) or `action-required` (judgment comments posted) on the PR; this specialist does not post comments beyond the review content.
+Mechanical fixes (add a missing `permissions:` block, move a secret inline, add a timeout) as commits. Broader suggestions (e.g. restructure job graph) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output; this specialist does not post comments beyond the review content.
