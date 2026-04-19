@@ -8,8 +8,9 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
 1. **Claim a ticket.** Branch first (`git checkout -b sh-XX-...`), then add a row to the Active table with agent name, ticket ID, branch, and start timestamp. Commit the claim on the branch so it ships with the PR, not on main.
 2. **Log progress.** Append one line per meaningful step to the Activity Log at the bottom. Keep it terse: `[SH-XX] <agent>: <what happened>`.
-3. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch a code-reviewer sub-agent against the PR, apply every suggested fix as commits on the PR branch, push, then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
-4. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
+3. **Sync before opening.** Before `gh pr create`, `git fetch origin main && git merge origin/main` into your branch. Resolve any conflicts, re-run `ggut`, push. This catches conflicts locally where you can fix them, instead of surfacing them in the PR view for Josh to chase.
+4. **Finish.** Move the row from Active to Done, note the commit SHA and PR number. After `gh pr create`, dispatch a code-reviewer sub-agent against the PR, apply every suggested fix as commits on the PR branch, push, then report. Don't wait for human approval of the auto-fixes; Josh reviews after.
+5. **Block or spin.** If you loop on the same issue twice, escalate to Josh immediately (see Escalation). Do not try a third variant silently.
 
 ---
 
