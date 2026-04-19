@@ -202,6 +202,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 | sh-149-agent | SH-149 | sh-149-merge-queue | .github/workflows/{auto-update-prs,lint,test}.yml, ai/PARALLEL.md, designs/process/labels.md | 2026-04-19 | Delete PR sweep workflow, add `merge_group:` trigger to lint/test, doc the merge queue flow |
 | agent-a92fe95a | SH-147 | sh-147-release-drafter | .github/release-drafter.yml, .github/workflows/release-drafter.yml | 2026-04-19 | Add release-drafter to auto-draft release notes (config + workflow, SHA-pinned @v7.2.0, Conventional Commit categories); Josh still picks tag + body at publish |
 | agent-a2c0e37b | SH-145 | sh-145-pr-template | .github/pull_request_template.md | 2026-04-19 | Minimal PR template: ticket ID, what, why, risks; no test plan |
+| agent-ae2182d2 | SH-134 | sh-134-headless-daily-cycle | .github/workflows/daily-cycle.yml | 2026-04-19 | Weekday 05:17 UTC cron: pick eligible Linear-cycle ticket, dispatch headless Claude per ai/PARALLEL.md; stops at PR handoff, no merge, no runtime; fails closed on missing secrets / halt file |
 
 ## Done (recent)
 
@@ -222,6 +223,7 @@ If you hit an edge case not on this list, append it here before closing your tic
 Newest at top. One line per event.
 
 ```
+[SH-134] agent-ae2182d2: claimed, branch sh-134-headless-daily-cycle; added .github/workflows/daily-cycle.yml (cron 17 5 * * 1-5 + dispatch, Linear GraphQL eligibility filter, fail-closed on missing secrets / halt file, 60min job + 40-turn Claude caps, ntfy telemetry); PR #255 open; ci-and-workflows specialist dispatched
 [SH-146] agent-a5879155: claimed, branch sh-146-slsa-provenance; add attest-build-provenance step + id-token/attestations perms on deploy-production; overlaps SH-116/SH-135 same file
 [SH-118] sh-118-agent: claimed; pinning Godot 4.6.2 binary+templates and butler 15.26.1 to SHA256 across test/publish/release workflows (also closes SH-119)
 [SH-147] agent-a92fe95a: claimed, branch sh-147-release-drafter; added .github/release-drafter.yml (Conventional-Commit categories, autolabeler, narrative template) + .github/workflows/release-drafter.yml (SHA-pinned release-drafter@v7.2.0, contents: write + pull-requests: read)
