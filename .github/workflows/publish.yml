@@ -68,6 +68,7 @@ jobs:
           relative_project_path: ./
           cache: true
           export_debug: true
+          presets_to_export: Web
 
       - name: Download Butler
         run: |
