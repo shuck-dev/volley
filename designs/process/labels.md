@@ -101,7 +101,7 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 ### AI review state
 
 - **`ai-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
-- **`action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved.
+- **`action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
 
 Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `ai-approved` is an advisory signal, not a merge decision.
 
