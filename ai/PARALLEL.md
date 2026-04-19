@@ -39,7 +39,8 @@ Live scratchpad for parallel agent work on individual Linear tickets. One agent 
 
 ## Ground rules
 
-- **One ticket, one agent, one branch.** Never two agents in the same `.gd`/`.tscn` file at once. Check the Active table's "Files touched" column before starting.
+- **One ticket, one agent, one branch, one worktree.** Never two agents in the same `.gd`/`.tscn` file at once. Check the Active table's "Files touched" column before starting. Every sub-agent dispatched to modify the repo must use `isolation: "worktree"` on the Agent call, so each lands in its own `git worktree add ../volley-sh-N sh-N-branch` checkout. Sharing the main working tree causes the stash-shuffle failure mode seen when multiple agents edit workflow files or `ai/PARALLEL.md` in parallel. The main tree stays for interactive / single-agent work.
+- **Worktree cleanup on merge.** Once a PR is merged, the corresponding worktree and branch are removed: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. Leaving stale worktrees costs disk and invites later agents to resurrect abandoned changes. Cleanup is the agent's responsibility before reporting the PR as done if the agent is still alive; otherwise Josh or the next orchestrator sweeps periodically with `git worktree list` and `git worktree prune`.
 - **Never rebase; merge main in.** To update a branch with main, use `git merge main`, never `git rebase`. If a rebase is genuinely required (rare, e.g. cleaning history before first push), stop and ask Josh first. Josh merges PRs; agents don't.
 - **Run `ggut` after every code change.** Iterate until green. Do not invoke lefthook manually; the pre-commit hook fires automatically on `git commit` against staged files. If the commit fails, fix and re-commit.
 - **Godot tool discipline**: prefer GodotIQ MCP tools over raw file ops; never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`.
