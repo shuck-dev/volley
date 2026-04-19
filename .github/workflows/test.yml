@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  GODOT_VERSION: "4.6.1"
+  GODOT_VERSION: "4.6.2"
 
 jobs:
   test:
