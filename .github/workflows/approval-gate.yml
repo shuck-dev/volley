@@ -71,15 +71,31 @@ jobs:
             ];
 
             for (const check of checks) {
-              await github.rest.checks.create({
+              const existing = await github.rest.checks.listForRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                name: check.name,
-                head_sha: sha,
+                ref: sha,
+                check_name: check.name,
+              });
+              const payload = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
                 status: 'completed',
                 conclusion: check.conclusion,
                 output: { title: check.title, summary: check.summary },
-              });
+              };
+              if (existing.data.check_runs.length > 0) {
+                await github.rest.checks.update({
+                  ...payload,
+                  check_run_id: existing.data.check_runs[0].id,
+                });
+              } else {
+                await github.rest.checks.create({
+                  ...payload,
+                  name: check.name,
+                  head_sha: sha,
+                });
+              }
             }
 
   clear-on-resolve:
