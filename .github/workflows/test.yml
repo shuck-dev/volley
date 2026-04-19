@@ -9,6 +9,9 @@ concurrency:
   group: tests-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   GODOT_VERSION: "4.6.2"
 

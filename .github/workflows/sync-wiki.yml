@@ -13,6 +13,9 @@ concurrency:
   group: sync-wiki
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     name: Mirror designs to wiki

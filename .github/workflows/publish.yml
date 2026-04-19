@@ -10,6 +10,9 @@ concurrency:
   group: preview-deploy
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   GODOT_VERSION: "4.6.2"
   ITCH_PROJECT: Speedyoshi/volley

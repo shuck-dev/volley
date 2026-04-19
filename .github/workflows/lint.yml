@@ -9,6 +9,9 @@ concurrency:
   group: lint-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   GITLEAKS_VERSION: "8.28.0"
 
