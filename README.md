@@ -22,6 +22,10 @@ Volley! is developed in the open and contributions are warmly welcome, whether t
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to pick up a ticket, run the project, and submit your work, and [`designs/process/ticket-writing.md`](designs/process/ticket-writing.md) for how tickets are structured.
 
+## Security
+
+Found a security issue? See [SECURITY.md](SECURITY.md) for how to report it privately.
+
 ## License
 
 - **Code**: [MIT](LICENSE).
