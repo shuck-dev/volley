@@ -5,6 +5,13 @@ on:
     branches:
       - main
 
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 env:
   GITLEAKS_VERSION: "8.28.0"
 
@@ -12,6 +19,7 @@ jobs:
   lint:
     name: Run Lint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
