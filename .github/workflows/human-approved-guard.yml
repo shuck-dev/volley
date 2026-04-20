@@ -1,4 +1,4 @@
-name: Human-approved label guard
+name: Approver Check
 
 on:
   pull_request_target:
