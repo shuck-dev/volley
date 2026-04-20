@@ -1,27 +1,22 @@
 name: DCO
 
-# ---------------------------------------------------------------------------
-# Developer Certificate of Origin (https://developercertificate.org/) enforcement.
+# Inline DCO check instead of the DCO GitHub App (https://github.com/apps/dco).
+# The app is the widely-used turnkey option, but bringing this in-tree:
 #
-# Every commit in every PR must carry a `Signed-off-by: Name <email>` trailer
-# matching the commit's author. `git commit -s` adds it automatically.
+# - Zero extra install surface. No GitHub App to authorise, no permissions
+#   to review, no external maintainer who can push an update that changes
+#   behaviour without a PR. Everything DCO does here is visible in the diff.
+# - Consistent with the SHA-pinned action strategy elsewhere in this repo;
+#   the app is a black box, the bash is auditable.
+# - We control the check-run name ("DCO"), the failure message, and the
+#   match rule. The app's error text is generic; this one points at the
+#   exact remediation command.
+# - One fewer third-party account in the trust chain if the upstream app
+#   ever stops being maintained.
 #
-# Why bother:
-# - Legal: each contributor is attesting that they have the right to
-#   submit the code under the repo's licence, and that the contribution is
-#   their own or appropriately licensed. The sign-off is the documented
-#   record of that attestation. Adopted by the Linux kernel, CNCF, and
-#   most major open-source Foundations; it is the de facto standard.
-# - Provenance: if a copyright claim ever lands, the signed-off-by chain
-#   is the evidence trail. Without it, every commit becomes a one-way
-#   trust statement with no audit.
-# - Forces a deliberate action: `-s` is cheap but it is a conscious
-#   certification, not an implicit one. Catches the "I pasted this from
-#   StackOverflow" case where the contributor never thought about origin.
-#
-# This workflow replaces the previously-aspirational (but unenforced)
-# DCO hygiene Josh had in memory. Now the ruleset can require it.
-# ---------------------------------------------------------------------------
+# Trade-off: we maintain the bash. It is ~15 lines and the spec is fixed
+# (match `Signed-off-by: <author-name> <author-email>` against commit
+# author). Low-churn.
 
 on:
   pull_request:
