@@ -1,0 +1,87 @@
+name: DCO
+
+# ---------------------------------------------------------------------------
+# Developer Certificate of Origin (https://developercertificate.org/) enforcement.
+#
+# Every commit in every PR must carry a `Signed-off-by: Name <email>` trailer
+# matching the commit's author. `git commit -s` adds it automatically.
+#
+# Why bother:
+# - Legal: each contributor is attesting that they have the right to
+#   submit the code under the repo's licence, and that the contribution is
+#   their own or appropriately licensed. The sign-off is the documented
+#   record of that attestation. Adopted by the Linux kernel, CNCF, and
+#   most major open-source Foundations; it is the de facto standard.
+# - Provenance: if a copyright claim ever lands, the signed-off-by chain
+#   is the evidence trail. Without it, every commit becomes a one-way
+#   trust statement with no audit.
+# - Forces a deliberate action: `-s` is cheap but it is a conscious
+#   certification, not an implicit one. Catches the "I pasted this from
+#   StackOverflow" case where the contributor never thought about origin.
+#
+# This workflow replaces the previously-aspirational (but unenforced)
+# DCO hygiene Josh had in memory. Now the ruleset can require it.
+# ---------------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: dco-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  dco:
+    name: DCO
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out PR commits
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Need the full PR history so we can inspect every commit, not
+          # just the merge-head GitHub creates for pull_request events.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify Signed-off-by on every PR commit
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # `git log BASE..HEAD` lists exactly the commits the PR adds to the
+          # base branch, skipping any main commits already present.
+          commits=$(git log --format='%H' "${BASE_SHA}..${HEAD_SHA}")
+          if [[ -z "$commits" ]]; then
+              echo "No new commits in PR; nothing to check."
+              exit 0
+          fi
+          missing=0
+          while IFS= read -r sha; do
+              author_name=$(git log -1 --format='%an' "$sha")
+              author_email=$(git log -1 --format='%ae' "$sha")
+              expected="Signed-off-by: ${author_name} <${author_email}>"
+              # Search the full commit message (subject + body) for the
+              # exact Signed-off-by line matching the commit's author.
+              if git log -1 --format='%B' "$sha" | grep -Fxq "$expected"; then
+                  printf '  ok    %s  %s\n' "${sha:0:7}" "$(git log -1 --format='%s' "$sha")"
+              else
+                  printf '  MISS  %s  %s\n' "${sha:0:7}" "$(git log -1 --format='%s' "$sha")"
+                  printf '        expected: %s\n' "$expected"
+                  missing=$((missing + 1))
+              fi
+          done <<< "$commits"
+
+          if (( missing > 0 )); then
+              echo ""
+              echo "::error::${missing} commit(s) missing Signed-off-by. Run \`git commit --amend -s\` on each and force-push, or use \`git rebase -i --signoff\` for a range."
+              exit 1
+          fi
+          echo ""
+          echo "All commits signed off."
