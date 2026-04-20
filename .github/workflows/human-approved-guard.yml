@@ -11,8 +11,8 @@ permissions:
 
 jobs:
   verify-sender:
-    name: Strip @human-approved if applied by non-maintainer
-    if: github.event.label.name == '@human-approved'
+    name: Strip 👮 human-approved if applied by non-maintainer
+    if: github.event.label.name == '👮 human-approved'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -25,19 +25,19 @@ jobs:
             const actor = context.payload.sender && context.payload.sender.login;
             const allowed = process.env.ALLOWED_USER;
             if (actor === allowed) {
-              core.info(`@human-approved applied by ${actor}; keeping.`);
+              core.info(`👮 human-approved applied by ${actor}; keeping.`);
               return;
             }
-            core.warning(`@human-approved applied by ${actor}; removing.`);
+            core.warning(`👮 human-approved applied by ${actor}; removing.`);
             await github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              name: '@human-approved',
+              name: '👮 human-approved',
             });
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `The \`@human-approved\` label is reserved for @${allowed}. Removing the label applied by @${actor}.`,
+              body: `The \`👮 human-approved\` label is reserved for @${allowed}. Removing the label applied by @${actor}.`,
             });
