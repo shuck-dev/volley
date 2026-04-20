@@ -9,8 +9,8 @@ updates:
     reviewers:
       - J-Melon
     labels:
-      - dependencies
-      - github-actions
+      - zaphod-dep
+      - zaphod-dep-action
     rebase-strategy: disabled
 
   - package-ecosystem: pip
@@ -22,6 +22,6 @@ updates:
     reviewers:
       - J-Melon
     labels:
-      - dependencies
-      - python
+      - zaphod-dep
+      - zaphod-dep-pip
     rebase-strategy: disabled
