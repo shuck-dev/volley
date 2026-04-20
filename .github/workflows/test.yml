@@ -23,11 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Cache Godot
         id: cache-godot
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: /usr/local/bin/godot
           key: godot-${{ env.GODOT_VERSION }}
@@ -42,7 +42,7 @@ jobs:
           sudo mv Godot_v${{ env.GODOT_VERSION }}-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Cache Godot import artifacts
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload Coverage
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           path: coverage.json
