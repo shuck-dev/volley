@@ -50,3 +50,5 @@ designs/research/drafts/
 Thumbs.db
 
 # live-update smoke PR touch, safe to revert
+
+# smoke-test marker for workflow exercise PR; revert
