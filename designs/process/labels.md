@@ -107,13 +107,13 @@ Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARA
 
 ### Human review state
 
-- **`@human-approved`**: Josh has reviewed and signed off. Required for merge.
+- **`👮 human-approved`**: Josh has reviewed and signed off. Required for merge.
 
 ### Merge gate
 
 Two required status checks drive the merge gate:
 
-- **`Human Approved`**: succeeds only when the `@human-approved` label is present.
+- **`Human Approved`**: succeeds only when the `👮 human-approved` label is present.
 - **`AI Review Passed`**: succeeds only when the `🤖 action-required` label is absent.
 
 Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
