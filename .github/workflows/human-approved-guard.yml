@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: Check sender and strip label if unauthorised
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           MAINTAINER: J-Melon
         with:
