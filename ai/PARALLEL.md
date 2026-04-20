@@ -22,7 +22,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
    - **Mechanical fixes** (typos, dead code, obvious bugs, style): commit on the PR branch.
    - **Everything else**: short line-anchored review comments following [Conventional Comments](https://conventionalcomments.org/) (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:`, with decorators like `(non-blocking)`). **One idea per comment, two sentences max.** If it needs more context, open an issue and link from the comment.
 
-   After all specialists finish: clean → `gh pr edit <N> --add-label '🤖 ai-approved'`. Any comments → `--add-label '🤖 action-required'` instead. No `LGTM` or summary comments. Line-anchored comment template:
+   After all specialists finish: clean → `gh pr edit <N> --add-label '~ai-approved'`. Any comments → `--add-label '~action-required'` instead. No `LGTM` or summary comments. Line-anchored comment template:
 
    ```
    gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \

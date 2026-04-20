@@ -38,12 +38,12 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            if (pr.labels.some(label => label.name === '👮 human-approved')) {
+            if (pr.labels.some(label => label.name === '✨ human-approved')) {
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                name: '👮 human-approved',
+                name: '✨ human-approved',
               });
             }
 
@@ -85,8 +85,8 @@ jobs:
             // commit so the queue sees them.
             const targetSha = sha || pr.head.sha;
 
-            const humanApproved = labels.has('👮 human-approved');
-            const actionRequired = labels.has('🤖 action-required');
+            const humanApproved = labels.has('✨ human-approved');
+            const actionRequired = labels.has('~action-required');
 
             // Three-state UX for Human Approved:
             //
@@ -112,12 +112,12 @@ jobs:
                 name: 'Human Approved',
                 pending: !humanApproved,
                 pendingTitle: 'Needs human review',
-                pendingSummary: 'Apply the `👮 human-approved` label once you have reviewed the PR.',
+                pendingSummary: 'Apply the `✨ human-approved` label once you have reviewed the PR.',
                 conclusion: humanApproved ? 'success' : 'action_required',
                 title: humanApproved ? 'Josh signed off' : 'Approval was withdrawn',
                 summary: humanApproved
-                  ? 'The `👮 human-approved` label is present.'
-                  : 'The `👮 human-approved` label was previously applied and has been removed (likely by a new commit). Re-apply it after re-reviewing.',
+                  ? 'The `✨ human-approved` label is present.'
+                  : 'The `✨ human-approved` label was previously applied and has been removed (likely by a new commit). Re-apply it after re-reviewing.',
               },
               {
                 name: 'AI Review Passed',
@@ -125,7 +125,7 @@ jobs:
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
-                  ? 'Resolve the `🤖 action-required` items and remove the label before merging.'
+                  ? 'Resolve the `~action-required` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
               },
             ];
