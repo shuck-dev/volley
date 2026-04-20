@@ -18,7 +18,7 @@ env:
 
 jobs:
   lint:
-    name: Run Lint
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
