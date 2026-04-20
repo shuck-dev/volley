@@ -86,7 +86,7 @@ jobs:
             const targetSha = sha || pr.head.sha;
 
             const humanApproved = labels.has('✨ human-approved');
-            const actionRequired = labels.has('~action-required');
+            const actionRequired = labels.has('zz action-required');
 
             // Three-state UX for Human Approved:
             //
@@ -125,7 +125,7 @@ jobs:
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
-                  ? 'Resolve the `~action-required` items and remove the label before merging.'
+                  ? 'Resolve the `zz action-required` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
               },
             ];

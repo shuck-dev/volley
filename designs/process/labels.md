@@ -100,10 +100,10 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 
 ### AI review state
 
-- **`~ai-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
-- **`~action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
+- **`zz ai-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
+- **`zz action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
 
-Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `~ai-approved` is an advisory signal, not a merge decision.
+Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `zz ai-approved` is an advisory signal, not a merge decision.
 
 ### Human review state
 
@@ -114,7 +114,7 @@ Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARA
 Two required status checks drive the merge gate:
 
 - **`Human Approved`**: succeeds only when the `✨ human-approved` label is present.
-- **`AI Review Passed`**: succeeds only when the `~action-required` label is absent.
+- **`AI Review Passed`**: succeeds only when the `zz action-required` label is absent.
 
 Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
 

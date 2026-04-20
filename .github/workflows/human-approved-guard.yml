@@ -14,8 +14,8 @@ jobs:
     name: Strip restricted label if applied by unauthorised actor
     if: >-
       github.event.label.name == '✨ human-approved' ||
-      github.event.label.name == '~action-required' ||
-      github.event.label.name == '~ai-approved'
+      github.event.label.name == 'zz action-required' ||
+      github.event.label.name == 'zz ai-approved'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -33,8 +33,8 @@ jobs:
             const maintainer = process.env.MAINTAINER;
             const policy = {
               '✨ human-approved': new Set([maintainer]),
-              '~action-required': new Set([maintainer, 'github-actions[bot]']),
-              '~ai-approved': new Set([maintainer, 'github-actions[bot]']),
+              'zz action-required': new Set([maintainer, 'github-actions[bot]']),
+              'zz ai-approved': new Set([maintainer, 'github-actions[bot]']),
             };
             const allowed = policy[labelName];
             if (!allowed) {
