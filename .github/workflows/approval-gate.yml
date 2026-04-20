@@ -1,5 +1,9 @@
 name: Approval Gate
 
+# `pull_request_review_thread` is NOT a valid workflow trigger in GitHub
+# Actions (it's a webhook event only). Previous attempts to use it silently
+# broke the workflow — GitHub's schema rejected the file, producing
+# startup-failure runs that never posted check runs. Do not add it back.
 on:
   workflow_dispatch:
     inputs:
@@ -9,21 +13,22 @@ on:
         type: string
   pull_request_target:
     types: [opened, reopened, labeled, unlabeled, synchronize]
-  pull_request_review_thread:
-    types: [resolved, unresolved]
+  # merge_group fires when GitHub creates the gh-readonly-queue/... branch
+  # for a queued PR. Without this, the Approval Gate check runs never
+  # appear on the integration commit and the merge queue stalls on them.
+  merge_group:
 
 permissions:
   checks: write
   pull-requests: write
 
 concurrency:
-  group: approval-gate-${{ github.event.pull_request.number || github.event.inputs.pr }}
+  group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
   cancel-in-progress: false
 
 jobs:
   gate:
     name: Post approval checks
-    if: github.event_name != 'pull_request_review_thread'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -46,22 +51,39 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            const number = context.payload.pull_request
-              ? context.payload.pull_request.number
-              : (context.payload.inputs && context.payload.inputs.pr)
-                ? Number(context.payload.inputs.pr)
-                : null;
+            // Derive the PR number from whichever event fired. merge_group
+            // carries the PR number inside head_ref like
+            // refs/heads/gh-readonly-queue/main/pr-123-<sha>.
+            let number = null;
+            let sha = null;
+            if (context.payload.pull_request) {
+              number = context.payload.pull_request.number;
+            } else if (context.payload.merge_group) {
+              const ref = context.payload.merge_group.head_ref || '';
+              const match = ref.match(/pr-(\d+)-/);
+              if (match) {
+                number = Number(match[1]);
+              }
+              sha = context.payload.merge_group.head_sha;
+            } else if (context.payload.inputs && context.payload.inputs.pr) {
+              number = Number(context.payload.inputs.pr);
+            }
+
             if (!number) {
               core.info('No PR number in payload; nothing to gate.');
               return;
             }
+
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: number,
             });
             const labels = new Set(pr.labels.map(label => label.name));
-            const sha = pr.head.sha;
+            // On pull_request_target / workflow_dispatch: attach checks to
+            // the PR head sha. On merge_group: attach to the integration
+            // commit so the queue sees them.
+            const targetSha = sha || pr.head.sha;
 
             const humanApproved = labels.has('human-approved');
             const actionRequired = labels.has('action-required');
@@ -89,7 +111,7 @@ jobs:
               const existing = await github.rest.checks.listForRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: sha,
+                ref: targetSha,
                 check_name: check.name,
               });
               const payload = {
@@ -108,57 +130,7 @@ jobs:
                 await github.rest.checks.create({
                   ...payload,
                   name: check.name,
-                  head_sha: sha,
+                  head_sha: targetSha,
                 });
               }
             }
-
-  clear-on-resolve:
-    name: Clear action-required when all threads resolved
-    if: github.event_name == 'pull_request_review_thread'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-      - name: Strip action-required if no unresolved threads remain
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            const query = `
-              query($owner: String!, $repo: String!, $number: Int!) {
-                repository(owner: $owner, name: $repo) {
-                  pullRequest(number: $number) {
-                    reviewThreads(first: 100) {
-                      nodes { isResolved }
-                      pageInfo { hasNextPage }
-                    }
-                  }
-                }
-              }`;
-            const result = await github.graphql(query, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              number: pr.number,
-            });
-            const threads = result.repository.pullRequest.reviewThreads;
-            if (threads.pageInfo.hasNextPage) {
-              core.setFailed('PR has more than 100 review threads; paginate this query.');
-              return;
-            }
-            const unresolved = threads.nodes.filter(thread => !thread.isResolved).length;
-            if (unresolved > 0) {
-              core.info(`${unresolved} unresolved thread(s); leaving action-required in place.`);
-              return;
-            }
-            const hasLabel = pr.labels.some(label => label.name === 'action-required');
-            if (!hasLabel) {
-              core.info('action-required label not present; nothing to do.');
-              return;
-            }
-            await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              name: 'action-required',
-            });
-            core.info('All threads resolved; removed action-required label.');
