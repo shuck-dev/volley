@@ -1,0 +1,82 @@
+name: DCO
+
+# Inline DCO check instead of the DCO GitHub App (https://github.com/apps/dco).
+# The app is the widely-used turnkey option, but bringing this in-tree:
+#
+# - Zero extra install surface. No GitHub App to authorise, no permissions
+#   to review, no external maintainer who can push an update that changes
+#   behaviour without a PR. Everything DCO does here is visible in the diff.
+# - Consistent with the SHA-pinned action strategy elsewhere in this repo;
+#   the app is a black box, the bash is auditable.
+# - We control the check-run name ("DCO"), the failure message, and the
+#   match rule. The app's error text is generic; this one points at the
+#   exact remediation command.
+# - One fewer third-party account in the trust chain if the upstream app
+#   ever stops being maintained.
+#
+# Trade-off: we maintain the bash. It is ~15 lines and the spec is fixed
+# (match `Signed-off-by: <author-name> <author-email>` against commit
+# author). Low-churn.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: dco-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  dco:
+    name: DCO
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out PR commits
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Need the full PR history so we can inspect every commit, not
+          # just the merge-head GitHub creates for pull_request events.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Verify Signed-off-by on every PR commit
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # `git log BASE..HEAD` lists exactly the commits the PR adds to the
+          # base branch, skipping any main commits already present.
+          commits=$(git log --format='%H' "${BASE_SHA}..${HEAD_SHA}")
+          if [[ -z "$commits" ]]; then
+              echo "No new commits in PR; nothing to check."
+              exit 0
+          fi
+          missing=0
+          while IFS= read -r sha; do
+              author_name=$(git log -1 --format='%an' "$sha")
+              author_email=$(git log -1 --format='%ae' "$sha")
+              expected="Signed-off-by: ${author_name} <${author_email}>"
+              # Search the full commit message (subject + body) for the
+              # exact Signed-off-by line matching the commit's author.
+              if git log -1 --format='%B' "$sha" | grep -Fxq "$expected"; then
+                  printf '  ok    %s  %s\n' "${sha:0:7}" "$(git log -1 --format='%s' "$sha")"
+              else
+                  printf '  MISS  %s  %s\n' "${sha:0:7}" "$(git log -1 --format='%s' "$sha")"
+                  printf '        expected: %s\n' "$expected"
+                  missing=$((missing + 1))
+              fi
+          done <<< "$commits"
+
+          if (( missing > 0 )); then
+              echo ""
+              echo "::error::${missing} commit(s) missing Signed-off-by. Run \`git commit --amend -s\` on each and force-push, or use \`git rebase -i --signoff\` for a range."
+              exit 1
+          fi
+          echo ""
+          echo "All commits signed off."
