@@ -88,21 +88,24 @@ jobs:
             const humanApproved = labels.has('👮 human-approved');
             const actionRequired = labels.has('🤖 action-required');
 
+            // Each entry either resolves the check to a definitive state
+            // (success / failure) when we know the answer, or leaves it
+            // "in progress" so the PR UI shows a yellow pending dot rather
+            // than a red X when the human hasn't labelled yet. The ruleset
+            // still blocks merge on anything that isn't success.
             const checks = [
               {
-                // action_required renders as an orange ! rather than a red X,
-                // signalling "needs human input" instead of "CI broke".
-                // Still blocks the ruleset (only success passes), which is
-                // exactly what we want until the label is applied.
                 name: 'Human Approved',
-                conclusion: humanApproved ? 'success' : 'action_required',
-                title: humanApproved ? 'Josh signed off' : 'Waiting on human-approved label',
+                pending: !humanApproved,
+                conclusion: 'success',
+                title: humanApproved ? 'Josh signed off' : 'Waiting on 👮 human-approved label',
                 summary: humanApproved
                   ? 'The `👮 human-approved` label is present.'
                   : 'Apply the `👮 human-approved` label once you have reviewed the PR.',
               },
               {
                 name: 'AI Review Passed',
+                pending: false,
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
@@ -118,13 +121,20 @@ jobs:
                 ref: targetSha,
                 check_name: check.name,
               });
-              const payload = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                status: 'completed',
-                conclusion: check.conclusion,
-                output: { title: check.title, summary: check.summary },
-              };
+              const payload = check.pending
+                ? {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    status: 'in_progress',
+                    output: { title: check.title, summary: check.summary },
+                  }
+                : {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    status: 'completed',
+                    conclusion: check.conclusion,
+                    output: { title: check.title, summary: check.summary },
+                  };
               if (existing.data.check_runs.length > 0) {
                 await github.rest.checks.update({
                   ...payload,
