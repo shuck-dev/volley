@@ -31,7 +31,6 @@ Three levers, in order of preference:
 1. **`blocks` between tickets.** Use this when a specific deliverable in one project gates a specific deliverable in another. The dependency is explicit and survives re-planning.
 2. **Cycles.** Josh places a project's tickets into the active cycle when they're ready to ship. Unstarted projects stay in Backlog.
 3. **Priority.** Use within a project to order tickets that share a cycle. Avoid using priority across projects as a substitute for `blocks`.
-
 ## Project dates
 
 `startDate` and `targetDate` on a Linear project express the initiative's timeline: when that project needs to land for the initiative to hit its own deadline. Josh owns those dates. Agents do not set or change them, on any project, including new ones.
