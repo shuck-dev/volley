@@ -2,7 +2,7 @@ name: Approval Gate
 
 # `pull_request_review_thread` is NOT a valid workflow trigger in GitHub
 # Actions (it's a webhook event only). Previous attempts to use it silently
-# broke the workflow — GitHub's schema rejected the file, producing
+# broke the workflow; GitHub's schema rejected the file, producing
 # startup-failure runs that never posted check runs. Do not add it back.
 on:
   workflow_dispatch:
@@ -93,7 +93,7 @@ jobs:
             // 1. Label absent on a fresh PR → post status=queued with custom
             //    text "Needs human review". Yellow pending dot in the UI,
             //    blocks merge, and the message is ours rather than GitHub's
-            //    default "Expected — Waiting for status to be reported".
+            //    default GitHub waiting copy.
             //    `queued` is more honest than `in_progress`: the gate is
             //    scheduled but isn't actually running, it's idle waiting
             //    for input.

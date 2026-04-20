@@ -105,7 +105,7 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 
 Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `zaphod-approved` is an advisory signal, not a merge decision.
 
-> **About the name.** "Zaphod" is the pan-galactic president from *The Hitchhiker's Guide to the Galaxy* — a two-headed alien whose extra head was added "to do all the lying, swearing and lounging about." The repo's AI reviewer is a chorus of specialists from `.claude/agents/`, so labelling their collective output under one figure with multiple heads fits. The leading `z` is also a sort hack: GitHub's label picker uses the Unicode Collation Algorithm, which treats most punctuation and emoji as primary-ignorable, so the only reliable way to push a label to the bottom of the picker is a text prefix that sorts late alphabetically. `z*` does that; `zaphod-*` happens to do that AND name the labels.
+> **About the name.** "Zaphod" is the pan-galactic president from *The Hitchhiker's Guide to the Galaxy*: a two-headed alien whose extra head was added "to do all the lying, swearing and lounging about." The repo's AI reviewer is a chorus of specialists from `.claude/agents/`, so labelling their collective output under one figure with multiple heads fits. The leading `z` is also a sort hack: GitHub's label picker uses the Unicode Collation Algorithm, which treats most punctuation and emoji as primary-ignorable, so the only reliable way to push a label to the bottom of the picker is a text prefix that sorts late alphabetically. `z*` does that; `zaphod-*` happens to do that AND name the labels.
 
 ### Human review state
 

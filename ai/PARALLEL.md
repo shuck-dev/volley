@@ -32,7 +32,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 6. **Hand off.** Re-sync against main, then report the PR to Josh. Don't flag comments in chat; the PR is the source of truth.
 7. **Block or spin.** Loop on the same issue twice → escalate (see below). Do not try a third variant silently.
 
-**Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups — Josh responds inline or marks threads Resolved.
+**Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
 ---
 
@@ -42,7 +42,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 - **Worktree cleanup on merge.** After a PR merges: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. Alive agent is responsible; otherwise periodic `git worktree list && git worktree prune`.
 - **Never rebase; merge main in.** Use `git merge main`, never `git rebase`. If a rebase is genuinely needed, stop and ask Josh. Josh merges PRs, not agents.
 - **No amending, no force-push.** Add a new commit on top instead of `--amend`. Don't `push --force` or `--force-with-lease`. Intermediate noise is fine; squash-merge collapses it. Only amend/force when Josh explicitly asks.
-- **Fresh branch after a PR merges.** Never pile commits onto a branch whose PR already merged. If `git push` says `remote: Create a pull request for '<branch>'` on a branch you thought was live, origin deleted it — stop and cut a fresh branch off `origin/main`.
+- **Fresh branch after a PR merges.** Never pile commits onto a branch whose PR already merged. If `git push` says `remote: Create a pull request for '<branch>'` on a branch you thought was live, origin deleted it; stop and cut a fresh branch off `origin/main`.
 - **`./scripts/ci/run_gut.sh` after every code change.** Iterate until green. Lefthook fires on `git commit`; don't invoke it manually.
 - **Merge queue serialises main.** Clicking "Merge when ready" pulls the PR into a `merge_group` ref, re-runs lint+test against `main + PR`, then fast-forwards main. The pre-PR `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
 - **Godot tool discipline.** Prefer GodotIQ MCP tools over raw file ops. Never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`. Godot 4 quirks live in [`godot-quirks.md`](godot-quirks.md).
@@ -58,9 +58,9 @@ Pick the lowest tier that answers the question.
 
 | Tier | Scope | Parallelism | Editor? |
 |---|---|---|---|
-| **0 — Static** | `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, `.gd` edits, grep, read | High, headless | No |
-| **1 — Scene edits** | `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit` | Serial, or parallel via worktrees | Yes, per worktree |
-| **2 — Runtime** | `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot` | Single-agent, exclusive | Yes, exclusive |
+| **0: Static** | `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, `.gd` edits, grep, read | High, headless | No |
+| **1: Scene edits** | `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit` | Serial, or parallel via worktrees | Yes, per worktree |
+| **2: Runtime** | `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot` | Single-agent, exclusive | Yes, exclusive |
 
 **Default Tier 0.** Josh's no-playtest rule.
 
