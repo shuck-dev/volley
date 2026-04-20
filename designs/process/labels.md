@@ -100,21 +100,23 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 
 ### AI review state
 
-- **`zz ai-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
-- **`zz action-required`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
+- **`zaphod-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
+- **`zaphod-blocked`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
 
-Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `zz ai-approved` is an advisory signal, not a merge decision.
+Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARALLEL.md`. These reflect AI reviewer output only; `zaphod-approved` is an advisory signal, not a merge decision.
+
+> **About the name.** "Zaphod" is the pan-galactic president from *The Hitchhiker's Guide to the Galaxy* — a two-headed alien whose extra head was added "to do all the lying, swearing and lounging about." The repo's AI reviewer is a chorus of specialists from `.claude/agents/`, so labelling their collective output under one figure with multiple heads fits. The leading `z` is also a sort hack: GitHub's label picker uses the Unicode Collation Algorithm, which treats most punctuation and emoji as primary-ignorable, so the only reliable way to push a label to the bottom of the picker is a text prefix that sorts late alphabetically. `z*` does that; `zaphod-*` happens to do that AND name the labels.
 
 ### Human review state
 
-- **`✨ human-approved`**: Josh has reviewed and signed off. Required for merge.
+- **`approved-human`**: Josh has reviewed and signed off. Required for merge.
 
 ### Merge gate
 
 Two required status checks drive the merge gate:
 
-- **`Human Approved`**: succeeds only when the `✨ human-approved` label is present.
-- **`AI Review Passed`**: succeeds only when the `zz action-required` label is absent.
+- **`Human Approved`**: succeeds only when the `approved-human` label is present.
+- **`AI Review Passed`**: succeeds only when the `zaphod-blocked` label is absent.
 
 Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
 
