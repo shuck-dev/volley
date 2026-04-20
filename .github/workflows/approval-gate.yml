@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Strip human-approved on new commits
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const pr = context.payload.pull_request;
@@ -40,7 +40,7 @@ jobs:
             }
 
       - name: Evaluate labels and post check runs
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const number = context.payload.pull_request
