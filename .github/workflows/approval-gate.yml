@@ -88,29 +88,41 @@ jobs:
             const humanApproved = labels.has('👮 human-approved');
             const actionRequired = labels.has('🤖 action-required');
 
-            // Each entry either resolves the check to a definitive state
-            // (success / failure) when we know the answer, or leaves it
-            // "in progress" so the PR UI shows a yellow pending dot rather
-            // than a red X when the human hasn't labelled yet. The ruleset
-            // still blocks merge on anything that isn't success.
+            // Three-state UX for Human Approved:
+            //
+            // 1. Label absent on a fresh PR (no prior check) → DON'T POST.
+            //    The ruleset surfaces this as the native "Expected — Waiting
+            //    for status to be reported" pending state. Most accurate
+            //    representation: the gate hasn't reached a verdict yet.
+            // 2. Label applied → success (green ✓).
+            // 3. Label was applied and is now absent (e.g. the synchronize
+            //    handler stripped it on a new commit) → action_required.
+            //    Loud red/orange signal so a previously-approved PR doesn't
+            //    silently fall back to "waiting" without anyone noticing
+            //    the approval went away.
+            //
+            // AI Review Passed has a meaningful default state on every PR
+            // (no action-required label = passing), so it always posts.
             const checks = [
               {
                 name: 'Human Approved',
-                pending: !humanApproved,
-                conclusion: 'success',
+                shouldPost: 'human-approved',
+                conclusion: humanApproved ? 'success' : 'action_required',
                 title: humanApproved ? 'Josh signed off' : 'Waiting on 👮 human-approved label',
                 summary: humanApproved
                   ? 'The `👮 human-approved` label is present.'
                   : 'Apply the `👮 human-approved` label once you have reviewed the PR.',
+                conditionMet: humanApproved,
               },
               {
                 name: 'AI Review Passed',
-                pending: false,
+                shouldPost: 'always',
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
                   ? 'Resolve the `🤖 action-required` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
+                conditionMet: !actionRequired,
               },
             ];
 
@@ -121,21 +133,24 @@ jobs:
                 ref: targetSha,
                 check_name: check.name,
               });
-              const payload = check.pending
-                ? {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    status: 'in_progress',
-                    output: { title: check.title, summary: check.summary },
-                  }
-                : {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    status: 'completed',
-                    conclusion: check.conclusion,
-                    output: { title: check.title, summary: check.summary },
-                  };
-              if (existing.data.check_runs.length > 0) {
+              const hasExisting = existing.data.check_runs.length > 0;
+
+              // The "skip first post" rule: if the condition isn't met yet
+              // and we've never posted on this commit, leave the slot empty
+              // so the ruleset shows native "Expected — Waiting".
+              if (!check.conditionMet && !hasExisting && check.shouldPost === 'human-approved') {
+                core.info(`Skipping first post of ${check.name}; ruleset will show "Expected — Waiting".`);
+                continue;
+              }
+
+              const payload = {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                status: 'completed',
+                conclusion: check.conclusion,
+                output: { title: check.title, summary: check.summary },
+              };
+              if (hasExisting) {
                 await github.rest.checks.update({
                   ...payload,
                   check_run_id: existing.data.check_runs[0].id,
