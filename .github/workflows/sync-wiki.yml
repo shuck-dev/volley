@@ -1,4 +1,4 @@
-name: Sync Design Docs to GitHub Wiki
+name: Sync Design to Wiki
 
 on:
   push:
