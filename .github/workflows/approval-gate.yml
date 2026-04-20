@@ -38,12 +38,12 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            if (pr.labels.some(label => label.name === 'human-approved')) {
+            if (pr.labels.some(label => label.name === '@human-approved')) {
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                name: 'human-approved',
+                name: '@human-approved',
               });
             }
 
@@ -85,8 +85,8 @@ jobs:
             // commit so the queue sees them.
             const targetSha = sha || pr.head.sha;
 
-            const humanApproved = labels.has('human-approved');
-            const actionRequired = labels.has('action-required');
+            const humanApproved = labels.has('@human-approved');
+            const actionRequired = labels.has('🤖 action-required');
 
             const checks = [
               {
@@ -98,15 +98,15 @@ jobs:
                 conclusion: humanApproved ? 'success' : 'action_required',
                 title: humanApproved ? 'Josh signed off' : 'Waiting on human-approved label',
                 summary: humanApproved
-                  ? 'The `human-approved` label is present.'
-                  : 'Apply the `human-approved` label once you have reviewed the PR.',
+                  ? 'The `@human-approved` label is present.'
+                  : 'Apply the `@human-approved` label once you have reviewed the PR.',
               },
               {
                 name: 'AI Review Passed',
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
-                  ? 'Resolve the `action-required` items and remove the label before merging.'
+                  ? 'Resolve the `🤖 action-required` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
               },
             ];
