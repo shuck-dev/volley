@@ -48,3 +48,5 @@ designs/research/drafts/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# live-update smoke PR touch, safe to revert
