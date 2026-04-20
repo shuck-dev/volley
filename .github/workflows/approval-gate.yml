@@ -2,7 +2,7 @@ name: Approval Gate
 
 # `pull_request_review_thread` is NOT a valid workflow trigger in GitHub
 # Actions (it's a webhook event only). Previous attempts to use it silently
-# broke the workflow — GitHub's schema rejected the file, producing
+# broke the workflow; GitHub's schema rejected the file, producing
 # startup-failure runs that never posted check runs. Do not add it back.
 on:
   workflow_dispatch:
@@ -34,21 +34,21 @@ jobs:
     steps:
       - name: Strip human-approved on new commits
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const pr = context.payload.pull_request;
-            if (pr.labels.some(label => label.name === '👮 human-approved')) {
+            if (pr.labels.some(label => label.name === 'approved-human')) {
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                name: '👮 human-approved',
+                name: 'approved-human',
               });
             }
 
       - name: Evaluate labels and post check runs
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             // Derive the PR number from whichever event fired. merge_group
@@ -85,23 +85,39 @@ jobs:
             // commit so the queue sees them.
             const targetSha = sha || pr.head.sha;
 
-            const humanApproved = labels.has('👮 human-approved');
-            const actionRequired = labels.has('🤖 action-required');
+            const humanApproved = labels.has('approved-human');
+            const actionRequired = labels.has('zaphod-blocked');
 
-            // Each entry either resolves the check to a definitive state
-            // (success / failure) when we know the answer, or leaves it
-            // "in progress" so the PR UI shows a yellow pending dot rather
-            // than a red X when the human hasn't labelled yet. The ruleset
-            // still blocks merge on anything that isn't success.
+            // Three-state UX for Human Approved:
+            //
+            // 1. Label absent on a fresh PR → post status=queued with custom
+            //    text "Needs human review". Yellow pending dot in the UI,
+            //    blocks merge, and the message is ours rather than GitHub's
+            //    default GitHub waiting copy.
+            //    `queued` is more honest than `in_progress`: the gate is
+            //    scheduled but isn't actually running, it's idle waiting
+            //    for input.
+            // 2. Label applied → success (green ✓).
+            // 3. Label was applied and is now absent (e.g. the synchronize
+            //    handler stripped it on a new commit) → action_required.
+            //    Loud red/orange signal so a previously-approved PR doesn't
+            //    silently fall back to yellow without anyone noticing the
+            //    approval went away.
+            //
+            // AI Review Passed has a meaningful default on every PR (no
+            // action-required label = passing), so it always posts a
+            // completed check with a definitive conclusion.
             const checks = [
               {
                 name: 'Human Approved',
                 pending: !humanApproved,
-                conclusion: 'success',
-                title: humanApproved ? 'Josh signed off' : 'Waiting on 👮 human-approved label',
+                pendingTitle: 'Needs human review',
+                pendingSummary: 'Apply the `approved-human` label once you have reviewed the PR.',
+                conclusion: humanApproved ? 'success' : 'action_required',
+                title: humanApproved ? 'Josh signed off' : 'Approval was withdrawn',
                 summary: humanApproved
-                  ? 'The `👮 human-approved` label is present.'
-                  : 'Apply the `👮 human-approved` label once you have reviewed the PR.',
+                  ? 'The `approved-human` label is present.'
+                  : 'The `approved-human` label was previously applied and has been removed (likely by a new commit). Re-apply it after re-reviewing.',
               },
               {
                 name: 'AI Review Passed',
@@ -109,7 +125,7 @@ jobs:
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
-                  ? 'Resolve the `🤖 action-required` items and remove the label before merging.'
+                  ? 'Resolve the `zaphod-blocked` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
               },
             ];
@@ -121,21 +137,40 @@ jobs:
                 ref: targetSha,
                 check_name: check.name,
               });
-              const payload = check.pending
-                ? {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    status: 'in_progress',
-                    output: { title: check.title, summary: check.summary },
-                  }
-                : {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    status: 'completed',
-                    conclusion: check.conclusion,
-                    output: { title: check.title, summary: check.summary },
-                  };
-              if (existing.data.check_runs.length > 0) {
+              const hasExisting = existing.data.check_runs.length > 0;
+
+              let payload;
+              if (check.pending && !hasExisting) {
+                // First post on this commit, condition not yet met → queued
+                // with custom text. Subsequent events on the same commit
+                // either resolve it (success / action_required) or stay in
+                // queued via update.
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'queued',
+                  output: { title: check.pendingTitle, summary: check.pendingSummary },
+                };
+              } else if (check.pending && hasExisting) {
+                // Existing check + condition no longer met → un-approve
+                // path, surface as action_required with the un-approve copy.
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'completed',
+                  conclusion: check.conclusion,
+                  output: { title: check.title, summary: check.summary },
+                };
+              } else {
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'completed',
+                  conclusion: check.conclusion,
+                  output: { title: check.title, summary: check.summary },
+                };
+              }
+              if (hasExisting) {
                 await github.rest.checks.update({
                   ...payload,
                   check_run_id: existing.data.check_runs[0].id,
