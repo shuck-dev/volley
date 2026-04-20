@@ -53,7 +53,7 @@ jobs:
 
             const checks = [
               {
-                name: 'human-approved',
+                name: 'Human Approved',
                 conclusion: humanApproved ? 'success' : 'failure',
                 title: humanApproved ? 'Josh signed off' : 'Waiting on human-approved label',
                 summary: humanApproved
@@ -61,12 +61,12 @@ jobs:
                   : 'Apply the `human-approved` label once you have reviewed the PR.',
               },
               {
-                name: 'no-action-required',
+                name: 'AI Review Passed',
                 conclusion: actionRequired ? 'failure' : 'success',
-                title: actionRequired ? 'AI reviewer left items to resolve' : 'No action-required label',
+                title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
                   ? 'Resolve the `action-required` items and remove the label before merging.'
-                  : 'The `action-required` label is absent.',
+                  : 'No unresolved AI reviewer comments.',
               },
             ];
 
