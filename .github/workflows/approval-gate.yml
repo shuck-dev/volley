@@ -90,39 +90,43 @@ jobs:
 
             // Three-state UX for Human Approved:
             //
-            // 1. Label absent on a fresh PR (no prior check) → DON'T POST.
-            //    The ruleset surfaces this as the native "Expected — Waiting
-            //    for status to be reported" pending state. Most accurate
-            //    representation: the gate hasn't reached a verdict yet.
+            // 1. Label absent on a fresh PR → post status=queued with custom
+            //    text "Needs human review". Yellow pending dot in the UI,
+            //    blocks merge, and the message is ours rather than GitHub's
+            //    default "Expected — Waiting for status to be reported".
+            //    `queued` is more honest than `in_progress`: the gate is
+            //    scheduled but isn't actually running, it's idle waiting
+            //    for input.
             // 2. Label applied → success (green ✓).
             // 3. Label was applied and is now absent (e.g. the synchronize
             //    handler stripped it on a new commit) → action_required.
             //    Loud red/orange signal so a previously-approved PR doesn't
-            //    silently fall back to "waiting" without anyone noticing
-            //    the approval went away.
+            //    silently fall back to yellow without anyone noticing the
+            //    approval went away.
             //
-            // AI Review Passed has a meaningful default state on every PR
-            // (no action-required label = passing), so it always posts.
+            // AI Review Passed has a meaningful default on every PR (no
+            // action-required label = passing), so it always posts a
+            // completed check with a definitive conclusion.
             const checks = [
               {
                 name: 'Human Approved',
-                shouldPost: 'human-approved',
+                pending: !humanApproved,
+                pendingTitle: 'Needs human review',
+                pendingSummary: 'Apply the `👮 human-approved` label once you have reviewed the PR.',
                 conclusion: humanApproved ? 'success' : 'action_required',
-                title: humanApproved ? 'Josh signed off' : 'Waiting on 👮 human-approved label',
+                title: humanApproved ? 'Josh signed off' : 'Approval was withdrawn',
                 summary: humanApproved
                   ? 'The `👮 human-approved` label is present.'
-                  : 'Apply the `👮 human-approved` label once you have reviewed the PR.',
-                conditionMet: humanApproved,
+                  : 'The `👮 human-approved` label was previously applied and has been removed (likely by a new commit). Re-apply it after re-reviewing.',
               },
               {
                 name: 'AI Review Passed',
-                shouldPost: 'always',
+                pending: false,
                 conclusion: actionRequired ? 'failure' : 'success',
                 title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
                 summary: actionRequired
                   ? 'Resolve the `🤖 action-required` items and remove the label before merging.'
                   : 'No unresolved AI reviewer comments.',
-                conditionMet: !actionRequired,
               },
             ];
 
@@ -135,21 +139,37 @@ jobs:
               });
               const hasExisting = existing.data.check_runs.length > 0;
 
-              // The "skip first post" rule: if the condition isn't met yet
-              // and we've never posted on this commit, leave the slot empty
-              // so the ruleset shows native "Expected — Waiting".
-              if (!check.conditionMet && !hasExisting && check.shouldPost === 'human-approved') {
-                core.info(`Skipping first post of ${check.name}; ruleset will show "Expected — Waiting".`);
-                continue;
+              let payload;
+              if (check.pending && !hasExisting) {
+                // First post on this commit, condition not yet met → queued
+                // with custom text. Subsequent events on the same commit
+                // either resolve it (success / action_required) or stay in
+                // queued via update.
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'queued',
+                  output: { title: check.pendingTitle, summary: check.pendingSummary },
+                };
+              } else if (check.pending && hasExisting) {
+                // Existing check + condition no longer met → un-approve
+                // path, surface as action_required with the un-approve copy.
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'completed',
+                  conclusion: check.conclusion,
+                  output: { title: check.title, summary: check.summary },
+                };
+              } else {
+                payload = {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  status: 'completed',
+                  conclusion: check.conclusion,
+                  output: { title: check.title, summary: check.summary },
+                };
               }
-
-              const payload = {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                status: 'completed',
-                conclusion: check.conclusion,
-                output: { title: check.title, summary: check.summary },
-              };
               if (hasExisting) {
                 await github.rest.checks.update({
                   ...payload,
