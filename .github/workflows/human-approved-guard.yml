@@ -11,33 +11,52 @@ permissions:
 
 jobs:
   verify-sender:
-    name: Strip @human-approved if applied by non-maintainer
-    if: github.event.label.name == '@human-approved'
+    name: Strip restricted label if applied by unauthorised actor
+    if: >-
+      github.event.label.name == '@human-approved' ||
+      github.event.label.name == '🤖 action-required' ||
+      github.event.label.name == '🤖 ai-approved'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
       - name: Check sender and strip label if unauthorised
         uses: actions/github-script@v7
         env:
-          ALLOWED_USER: J-Melon
+          MAINTAINER: J-Melon
         with:
           script: |
-            const actor = context.payload.sender && context.payload.sender.login;
-            const allowed = process.env.ALLOWED_USER;
-            if (actor === allowed) {
-              core.info(`@human-approved applied by ${actor}; keeping.`);
+            // Each restricted label has its own allow-list. @human-approved
+            // is Josh-only. The bot labels can be applied by Josh OR by
+            // github-actions workflow runs (sender.login is then
+            // 'github-actions[bot]').
+            const labelName = context.payload.label.name;
+            const maintainer = process.env.MAINTAINER;
+            const policy = {
+              '@human-approved': new Set([maintainer]),
+              '🤖 action-required': new Set([maintainer, 'github-actions[bot]']),
+              '🤖 ai-approved': new Set([maintainer, 'github-actions[bot]']),
+            };
+            const allowed = policy[labelName];
+            if (!allowed) {
+              core.info(`No policy for ${labelName}; leaving it alone.`);
               return;
             }
-            core.warning(`@human-approved applied by ${actor}; removing.`);
+            const actor = context.payload.sender && context.payload.sender.login;
+            if (allowed.has(actor)) {
+              core.info(`${labelName} applied by ${actor}; keeping.`);
+              return;
+            }
+            core.warning(`${labelName} applied by ${actor}; removing.`);
             await github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              name: '@human-approved',
+              name: labelName,
             });
+            const allowedList = Array.from(allowed).map(u => `@${u}`).join(' or ');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
-              body: `The \`@human-approved\` label is reserved for @${allowed}. Removing the label applied by @${actor}.`,
+              body: `The \`${labelName}\` label is reserved for ${allowedList}. Removing the label applied by @${actor}.`,
             });
