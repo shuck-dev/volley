@@ -297,6 +297,8 @@ Internal to Shuck. Covers cycles, estimates, priority, and typed relationships t
 
 **Projects are the layer above tickets.** Naming, sizing, splitting, and ordering of Linear projects live in [`project-management.md`](project-management.md).
 
+**Use Linear's native relations and links.** Wire design-doc URLs as Linear Link attachments (`links` field on the issue). Wire dependent-ticket relationships as `blocks` / `blockedBy`. Wire informational references to other tickets as `relatedTo`. Do not duplicate any of those as a markdown "References:" block in the description. The description is the spec; the relations panel and link attachments carry the pointers.
+
 ---
 
 ## Sources
