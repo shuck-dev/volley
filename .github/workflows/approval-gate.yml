@@ -90,8 +90,12 @@ jobs:
 
             const checks = [
               {
+                // action_required renders as an orange ! rather than a red X,
+                // signalling "needs human input" instead of "CI broke".
+                // Still blocks the ruleset (only success passes), which is
+                // exactly what we want until the label is applied.
                 name: 'Human Approved',
-                conclusion: humanApproved ? 'success' : 'failure',
+                conclusion: humanApproved ? 'success' : 'action_required',
                 title: humanApproved ? 'Josh signed off' : 'Waiting on human-approved label',
                 summary: humanApproved
                   ? 'The `human-approved` label is present.'
