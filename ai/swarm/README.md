@@ -136,7 +136,7 @@ Two shapes work:
 
 Known pair triggers today:
 
-- **Failing tests and implementation** — GUT runs in lefthook pre-commit; red tests block commits. `test-author` pairs with an implementer.
+- **Failing tests and implementation**: GUT runs in lefthook pre-commit; red tests block commits. `test-author` pairs with an implementer.
 - Any future "docs with code" gate would pair `docs-tender` with the implementer.
 - Integration-scenario-author may pair with an implementer on the same worktree when the scenario is as load-bearing as the unit tests for the same commit.
 
