@@ -110,6 +110,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Marvin | SH-141 | sh-141-auto-dispatch-agent-to-resolve-pr-merge-conflicts | .github/workflows/resolve-pr-conflicts.yml | 2026-04-21 | headless conflict-resolver workflow |
 
 ## Done (recent)
 
@@ -129,5 +130,6 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-141] Marvin: claim; adding resolve-pr-conflicts workflow (complements SH-139 sweep)
 [init] scratchpad reset on cycle #3 open
 ```

@@ -1,0 +1,275 @@
+name: Resolve PR merge conflicts
+
+# ---------------------------------------------------------------------------
+# SH-141: auto-dispatch a headless Claude Code agent to resolve PR merge
+# conflicts when the auto-update sweep (SH-139) cannot fast-forward a branch.
+#
+# Complements `auto-update-prs.yml`: that workflow labels conflicting PRs with
+# `has-conflicts` / `action-required`; this one subscribes to that signal and
+# spins up a bounded Claude session whose brief is "resolve the merge from
+# main, commit, push; escalate anything ambiguous".
+#
+# Triggers:
+#   - `pull_request_target: labeled` when a PR gains `has-conflicts` or
+#     `action-required`. `pull_request_target` runs in the base repo context,
+#     so the `GITHUB_TOKEN` and secrets are available; the checked-out code is
+#     the PR branch, which the agent then merges main into.
+#   - `workflow_dispatch` with a PR number, for manual re-tries.
+#
+# Eligibility (all must hold, fail closed):
+#   - PR is open and not a draft.
+#   - PR author / assignee is Josh (`J-Melon`), matching the ticket's "only
+#     runs on issues assigned to Josh" guardrail.
+#   - PR carries `has-conflicts` or `action-required`.
+#   - Daily run count under the cost ceiling (see below).
+#   - Both `CLAUDE_CODE_OAUTH_TOKEN` and `GITHUB_TOKEN` are available.
+#
+# Safety rails:
+#   - Permissions: `contents: write`, `pull-requests: write`. No `actions:
+#     write`, no `id-token`, no packages. Cannot force-push to main (branch
+#     protection enforces that); the brief also forbids `push --force`.
+#   - Agent brief forbids dropping commits, rewriting history, or resolving
+#     anything beyond additive PARALLEL.md collisions and trivial textual
+#     overlaps. Everything else: agent posts a comment + keeps the
+#     `action-required` label on, and exits.
+#   - Concurrency: one conflict-resolution run per PR at a time; a second
+#     label event while one is active is cancelled.
+#   - `timeout-minutes: 30` hard-caps wall-clock; `--max-turns 30` caps
+#     tool calls. Expected spend per run: $2-$8 at Opus pricing.
+#
+# Cost ceiling (max N runs per day):
+#   - 5 dispatches per UTC day across all PRs. The preflight counts completed
+#     runs of this workflow in the last 24h; if >= 5, logs a notice and exits
+#     0. Adjust `DAILY_RUN_CEILING` below if the cadence changes.
+#
+# Kill-switch:
+#   - Disable the workflow in the Actions tab: "Resolve PR merge conflicts"
+#     -> "..." -> "Disable workflow". Label events will queue no jobs.
+#   - Or push `.github/resolve-pr-conflicts.halt` to main; the preflight job
+#     short-circuits when that path exists.
+#   - Or rotate/clear `CLAUDE_CODE_OAUTH_TOKEN`; the preflight logs and skips.
+#
+# Required secrets (shared with SH-134 daily cycle):
+#   - `CLAUDE_CODE_OAUTH_TOKEN`
+#   - `GITHUB_TOKEN` is provided automatically by Actions.
+# ---------------------------------------------------------------------------
+
+on:
+  pull_request_target:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to attempt conflict resolution on
+        required: true
+        type: string
+
+concurrency:
+  group: resolve-pr-conflicts-${{ github.event.pull_request.number || github.event.inputs.pr }}
+  cancel-in-progress: true
+
+# Workflow-level default is least-privilege read. Only the job that actually
+# merges + pushes elevates to `contents: write` + `pull-requests: write`.
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    name: Eligibility + cost ceiling
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Skip as cheaply as possible when the label event is not one we care
+    # about. `contains` short-circuits the rest of the conditional tree.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request_target' &&
+       (github.event.label.name == 'has-conflicts' ||
+        github.event.label.name == 'action-required'))
+    outputs:
+      pr_number: ${{ steps.resolve.outputs.pr_number }}
+      head_ref: ${{ steps.resolve.outputs.head_ref }}
+      skipped: ${{ steps.resolve.outputs.skipped || steps.earlyskip.outputs.skipped || 'true' }}
+      skip_reason: ${{ steps.resolve.outputs.skip_reason || steps.earlyskip.outputs.skip_reason }}
+    steps:
+      - name: Check out repo (for kill-switch file only)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Kill-switch + secrets preflight
+        id: earlyskip
+        env:
+          HAS_CLAUDE: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
+        run: |
+          set -euo pipefail
+          if [ -f .github/resolve-pr-conflicts.halt ]; then
+            echo "::notice::Halt file present; exiting cleanly."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=halted" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$HAS_CLAUDE" != "true" ]; then
+            echo "::notice::CLAUDE_CODE_OAUTH_TOKEN secret is not configured; skipping run."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=missing-claude-token" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve PR + eligibility
+        id: resolve
+        if: steps.earlyskip.outputs.skipped == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_PR: ${{ github.event.inputs.pr }}
+          LABEL_PR: ${{ github.event.pull_request.number }}
+          # Max conflict-resolution dispatches in a rolling 24h window.
+          DAILY_RUN_CEILING: "5"
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            PR_NUMBER="$DISPATCH_PR"
+          else
+            PR_NUMBER="$LABEL_PR"
+          fi
+          echo "Checking eligibility for PR #${PR_NUMBER}"
+
+          PR_JSON=$(gh pr view "$PR_NUMBER" --repo "$GH_REPO" \
+            --json number,isDraft,state,headRefName,author,assignees,labels)
+          IS_DRAFT=$(echo "$PR_JSON" | jq -r '.isDraft')
+          STATE=$(echo "$PR_JSON" | jq -r '.state')
+          HEAD_REF=$(echo "$PR_JSON" | jq -r '.headRefName')
+          AUTHOR=$(echo "$PR_JSON" | jq -r '.author.login')
+          ASSIGNEES=$(echo "$PR_JSON" | jq -r '[.assignees[].login] | join(",")')
+          LABELS=$(echo "$PR_JSON" | jq -r '[.labels[].name] | join(",")')
+
+          if [ "$STATE" != "OPEN" ] || [ "$IS_DRAFT" = "true" ]; then
+            echo "::notice::PR #${PR_NUMBER} is not open+ready (state=$STATE draft=$IS_DRAFT); skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=pr-not-open" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # "Only runs on issues assigned to Josh" per AC. PRs assigned to
+          # Josh OR authored by him both count; everything else is skipped
+          # to keep the agent off contributor PRs until Josh opts in.
+          JOSH="J-Melon"
+          if [ "$AUTHOR" != "$JOSH" ] && ! echo ",$ASSIGNEES," | grep -q ",$JOSH,"; then
+            echo "::notice::PR #${PR_NUMBER} not authored by or assigned to $JOSH; skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=not-josh-owned" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if ! echo ",$LABELS," | grep -qE ',(has-conflicts|action-required),'; then
+            echo "::notice::PR #${PR_NUMBER} lacks has-conflicts / action-required; skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=no-conflict-label" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Rolling-24h cost ceiling. `gh run list` returns newest-first; we
+          # count completed runs of this workflow in the window.
+          SINCE=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          RECENT=$(gh run list \
+            --repo "$GH_REPO" \
+            --workflow "Resolve PR merge conflicts" \
+            --created ">=${SINCE}" \
+            --json databaseId --jq 'length' 2>/dev/null || echo 0)
+          echo "Runs of this workflow in last 24h: ${RECENT} (ceiling: ${DAILY_RUN_CEILING})"
+          if [ "$RECENT" -ge "$DAILY_RUN_CEILING" ]; then
+            echo "::notice::Daily ceiling reached (${RECENT}/${DAILY_RUN_CEILING}); skipping."
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=daily-ceiling" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "head_ref=$HEAD_REF" >> "$GITHUB_OUTPUT"
+          echo "skipped=false" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Conflict-resolution dispatch"
+            echo ""
+            echo "- PR: **#${PR_NUMBER}** (\`${HEAD_REF}\`)"
+            echo "- Labels: \`${LABELS}\`"
+            echo "- Runs in last 24h: ${RECENT} / ${DAILY_RUN_CEILING}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  resolve:
+    name: Headless Claude resolves conflicts
+    needs: preflight
+    if: needs.preflight.outputs.skipped == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ needs.preflight.outputs.head_ref }}
+          fetch-depth: 0
+          # Use GITHUB_TOKEN with contents: write so the push back to the PR
+          # branch is authenticated as the bot rather than via a PAT.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "resolve-pr-conflicts-bot"
+          git config user.email "resolve-pr-conflicts-bot@users.noreply.github.com"
+
+      - name: Run Claude Code headless
+        uses: anthropics/claude-code-action@5d5c10a4f389689f992ea10bb14dcb6fcc83146d # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            You are resolving merge conflicts on PR #${{ needs.preflight.outputs.pr_number }}
+            (branch `${{ needs.preflight.outputs.head_ref }}`). The branch is
+            already checked out.
+
+            Steps:
+            1. `git fetch origin main`.
+            2. `git merge origin/main` (merge, never rebase, per ai/PARALLEL.md).
+            3. If the only conflicts are additive collisions in
+               `ai/PARALLEL.md` (e.g. both sides added rows to the Active
+               table or lines to the Activity Log), resolve by keeping both
+               sides. Stage and commit with
+               `git commit -s -m "SH-141 chore: merge main into <branch>"`.
+            4. If conflicts touch anything else: abort the merge
+               (`git merge --abort`), post a PR comment explaining which
+               files conflicted and that a human needs to resolve, ensure the
+               `action-required` label is present, and exit 0 without pushing.
+            5. On a clean merge: `git push origin HEAD`. Do NOT `push --force`
+               or `--force-with-lease`. Do NOT amend. Do NOT drop commits.
+            6. If the push is rejected (remote moved), fetch + merge once
+               more; if that also conflicts, fall back to step 4.
+
+            Hard rules:
+            - Never force-push.
+            - Never rewrite history (no rebase, no amend, no reset --hard).
+            - Never resolve semantic conflicts (code, scenes, tests, configs)
+              automatically. PARALLEL.md additive collisions only.
+            - Stop after one merge attempt and one push attempt. If anything
+              is unclear, comment on the PR and exit.
+          claude_args: |
+            --max-turns 30
+            --allowedTools "Bash,Read,Write,Edit,Grep,Glob"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ needs.preflight.outputs.pr_number }}
+
+      - name: Session summary
+        if: always()
+        run: |
+          {
+            echo "## Conflict-resolution session complete"
+            echo ""
+            echo "PR: #${{ needs.preflight.outputs.pr_number }}"
+            echo "Branch: \`${{ needs.preflight.outputs.head_ref }}\`"
+            echo "Result: \`${{ job.status }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
