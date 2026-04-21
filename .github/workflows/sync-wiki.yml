@@ -14,16 +14,18 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  # contents: write is what lets the github-actions bot push to the
-  # associated .wiki.git repo. Third-party GitHub Apps cannot request a
-  # Wikis permission; only the first-party bot token can reach the wiki.
-  contents: write
+  contents: read
 
 jobs:
   sync:
     name: Mirror designs to wiki
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # contents: write is what lets the github-actions bot push to the
+    # associated .wiki.git repo. Third-party GitHub Apps cannot request a
+    # Wikis permission; only the first-party bot token can reach the wiki.
+    permissions:
+      contents: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

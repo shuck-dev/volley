@@ -110,6 +110,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Trillian | SH-120 / SH-123 | sh-120-sh-123-workflow-hardening | .github/workflows/*.yml | 2026-04-21 | paired dispatch: per-job permissions + verify SHA pins |
 
 ## Done (recent)
 
@@ -129,5 +130,6 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-120/SH-123] Trillian: claimed paired dispatch; per-job permissions landed, SHA pins verified across all workflows
 [init] scratchpad reset on cycle #3 open
 ```

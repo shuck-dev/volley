@@ -10,6 +10,9 @@ concurrency:
   group: release-${{ github.event.release.tag_name }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 env:
   GODOT_VERSION: "4.6.2"
   GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"

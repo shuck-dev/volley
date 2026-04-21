@@ -19,8 +19,7 @@ on:
   merge_group:
 
 permissions:
-  checks: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
@@ -31,6 +30,10 @@ jobs:
     name: Post approval checks
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     # Skip the job when a labeled/unlabeled event touches a category label
     # (feature, bug, autolabel additions) rather than an approval label.
     # Category labels carry no approval signal, so re-running the gate
