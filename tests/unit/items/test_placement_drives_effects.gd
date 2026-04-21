@@ -37,7 +37,7 @@ func _make_item(
 
 
 func _make_manager_with(items: Array) -> Node:
-	var manager := ItemFactory.create_manager(self)
+	var manager: Node = ItemFactory.create_manager(self)
 	var typed_items: Array[ItemDefinition] = []
 	for item in items:
 		typed_items.append(item)
@@ -47,7 +47,7 @@ func _make_manager_with(items: Array) -> Node:
 
 func test_equipment_on_player_registers_effects_at_level() -> void:
 	var item := _make_item("equip_a", &"equipment")
-	var manager := _make_manager_with([item])
+	var manager: Node = _make_manager_with([item])
 	manager._progression.item_levels[item.key] = 1
 	var base_speed: float = GameRules.base_stats[STAT_KEY]
 	manager.activate(item.key)
@@ -60,7 +60,7 @@ func test_equipment_on_player_registers_effects_at_level() -> void:
 
 func test_removing_equipment_from_player_unregisters_effects() -> void:
 	var item := _make_item("equip_b", &"equipment")
-	var manager := _make_manager_with([item])
+	var manager: Node = _make_manager_with([item])
 	manager._progression.item_levels[item.key] = 1
 	manager.activate(item.key)
 	var base_speed: float = GameRules.base_stats[STAT_KEY]
@@ -74,7 +74,7 @@ func test_removing_equipment_from_player_unregisters_effects() -> void:
 
 func test_ball_on_court_registers_effects_and_enters_play() -> void:
 	var item := _make_item("ball_a", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager := _make_manager_with([item])
+	var manager: Node = _make_manager_with([item])
 	manager._progression.item_levels[item.key] = 1
 	var base_value: float = GameRules.base_stats[BALL_STAT_KEY]
 	watch_signals(manager)
@@ -97,7 +97,7 @@ func test_ball_on_court_registers_effects_and_enters_play() -> void:
 
 func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void:
 	var item := _make_item("ball_b", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager := _make_manager_with([item])
+	var manager: Node = _make_manager_with([item])
 	manager._progression.item_levels[item.key] = 1
 	manager.activate(item.key)
 	var base_value: float = GameRules.base_stats[BALL_STAT_KEY]
@@ -122,7 +122,7 @@ func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void
 func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 	var equipment := _make_item("equip_rack", &"equipment")
 	var ball := _make_item("ball_rack", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager := _make_manager_with([equipment, ball])
+	var manager: Node = _make_manager_with([equipment, ball])
 	# Owned (i.e. sitting on the rack after purchase) but never activated.
 	manager._progression.item_levels[equipment.key] = 1
 	manager._progression.item_levels[ball.key] = 1
@@ -150,7 +150,7 @@ func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 
 func test_levelling_equipment_on_player_updates_running_effects() -> void:
 	var equipment := _make_item("equip_lvl", &"equipment")
-	var manager := _make_manager_with([equipment])
+	var manager: Node = _make_manager_with([equipment])
 	manager._progression.friendship_point_balance = 100000
 	manager.purchase(equipment.key)
 	manager.activate(equipment.key)
@@ -175,7 +175,7 @@ func test_levelling_equipment_on_player_updates_running_effects() -> void:
 
 func test_levelling_ball_on_court_updates_running_effects() -> void:
 	var ball := _make_item("ball_lvl", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager := _make_manager_with([ball])
+	var manager: Node = _make_manager_with([ball])
 	manager._progression.friendship_point_balance = 100000
 	manager.purchase(ball.key)
 	manager.activate(ball.key)
