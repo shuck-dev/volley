@@ -130,6 +130,15 @@ jobs:
               },
             ];
 
+            // listForRef still drives the three-state UX detection: on the
+            // same sha, a prior run signals the un-approve path rather than
+            // the fresh-PR path. But we always create a new check-run rather
+            // than updating the prior one. GitHub's merge queue evaluator
+            // does not consistently count `checks.update` results as
+            // satisfying required status checks on the current head sha;
+            // freshly created runs always do. The cost is a modestly
+            // longer check-runs list in the UI, which GitHub collapses to
+            // the latest per name when displaying status.
             for (const check of checks) {
               const existing = await github.rest.checks.listForRef({
                 owner: context.repo.owner,
@@ -142,44 +151,35 @@ jobs:
               let payload;
               if (check.pending && !hasExisting) {
                 // First post on this commit, condition not yet met → queued
-                // with custom text. Subsequent events on the same commit
-                // either resolve it (success / action_required) or stay in
-                // queued via update.
+                // with custom text. Any subsequent event on the same commit
+                // creates a new run that either resolves it (success /
+                // action_required) or posts queued again.
                 payload = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
                   status: 'queued',
                   output: { title: check.pendingTitle, summary: check.pendingSummary },
                 };
               } else if (check.pending && hasExisting) {
-                // Existing check + condition no longer met → un-approve
-                // path, surface as action_required with the un-approve copy.
+                // Prior run on this sha + condition no longer met → the
+                // un-approve path. Post as action_required with the
+                // un-approve copy.
                 payload = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
                   status: 'completed',
                   conclusion: check.conclusion,
                   output: { title: check.title, summary: check.summary },
                 };
               } else {
                 payload = {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
                   status: 'completed',
                   conclusion: check.conclusion,
                   output: { title: check.title, summary: check.summary },
                 };
               }
-              if (hasExisting) {
-                await github.rest.checks.update({
-                  ...payload,
-                  check_run_id: existing.data.check_runs[0].id,
-                });
-              } else {
-                await github.rest.checks.create({
-                  ...payload,
-                  name: check.name,
-                  head_sha: targetSha,
-                });
-              }
+
+              await github.rest.checks.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: check.name,
+                head_sha: targetSha,
+                ...payload,
+              });
             }
