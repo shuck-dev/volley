@@ -3,6 +3,9 @@ extends Resource
 
 @export var key: String
 @export var type: StringName = &""
+## Physical role of this item: determines its natural placement target.
+## &"equipment" (default) lives on the player; &"ball" lives on the court.
+@export var role: StringName = &"equipment"
 @export var display_name: String
 @export var art: PackedScene
 @export var descriptions: Array[String]

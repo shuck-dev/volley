@@ -265,6 +265,9 @@ class TestReloadFromProgression:
 		assert_eq(_manager.get_stat(&"paddle_speed"), base_speed, "no level, no effect")
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
 		_manager._progression.item_levels[TEST_KEY] = 1
+		_manager._progression.item_placements[TEST_KEY] = (
+			preload("res://scripts/items/placement.gd").EQUIPPED
+		)
 		_manager.reload_from_progression()
 		assert_eq(
 			_manager.get_stat(&"paddle_speed"),

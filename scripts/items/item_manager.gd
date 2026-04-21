@@ -1,7 +1,12 @@
+# gdlint:ignore = max-public-methods
 extends Node
 
 signal friendship_point_balance_changed(balance: int)
 signal item_level_changed(item_key: String)
+signal item_placement_changed(item_key: String, placement: int)
+signal court_changed(item_key: String, on_court: bool)
+
+const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
@@ -31,9 +36,8 @@ func _ready() -> void:
 
 func _register_existing_items() -> void:
 	for item in items:
-		var level: int = get_level(item.key)
-		if level > 0:
-			_effect_manager.register_source(item, level)
+		if _is_placed(item.key):
+			_effect_manager.register_source(item, get_level(item.key))
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -94,6 +98,41 @@ func get_level(item_key: String) -> int:
 	return _progression.item_levels.get(item_key, 0)
 
 
+## Returns the current placement of an item. Defaults to STORED (on the rack).
+func _get_placement(item_key: String) -> int:
+	return _progression.item_placements.get(item_key, PlacementScript.STORED)
+
+
+## True when an item is currently placed (on player or court), false on the rack.
+func is_on_court(item_key: String) -> bool:
+	return _get_placement(item_key) != PlacementScript.STORED
+
+
+## Returns the list of ball-role item keys currently on the court.
+func get_court_items() -> Array[String]:
+	var result: Array[String] = []
+	for item in items:
+		if item.role == &"ball" and _get_placement(item.key) == PlacementScript.ON_COURT:
+			result.append(item.key)
+	return result
+
+
+## Places an owned item on its natural target and registers effects at current level; false if unowned.
+func activate(item_key: String) -> bool:
+	if get_level(item_key) <= 0:
+		return false
+	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+	return true
+
+
+## Moves an owned item back to the rack and unregisters its effects; false if unowned.
+func deactivate(item_key: String) -> bool:
+	if get_level(item_key) <= 0:
+		return false
+	_set_item_placement(item_key, PlacementScript.STORED)
+	return true
+
+
 ## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
 	var item: ItemDefinition = _get_item(item_key)
@@ -121,8 +160,16 @@ func can_purchase(item_key: String) -> bool:
 func purchase(item_key: String) -> bool:
 	if not can_purchase(item_key):
 		return false
+	var was_unowned := get_level(item_key) == 0
 	subtract_friendship_points(calculate_cost(item_key))
-	_set_level(item_key, get_level(item_key) + 1)
+	var new_level := get_level(item_key) + 1
+	_progression.item_levels[item_key] = new_level
+	if was_unowned:
+		# First purchase lands the item on its natural target, skipping the rack.
+		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+	elif _is_placed(item_key):
+		_refresh_registration(item_key)
+	item_level_changed.emit(item_key)
 	SaveManager.save()
 	return true
 
@@ -157,6 +204,9 @@ func remove_level(item_key: String) -> void:
 		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
 		_refund_friendship_points(refund)
 		_set_level(item_key, current_level - 1)
+		if current_level - 1 == 0:
+			# Fully removed: treat the item as if it was never owned; clear placement.
+			_set_item_placement(item_key, PlacementScript.STORED)
 		SaveManager.save()
 
 
@@ -182,12 +232,45 @@ func _refund_friendship_points(points: int) -> void:
 
 
 func _set_level(item_key: String, level: int) -> void:
+	_progression.item_levels[item_key] = level
+	if _is_placed(item_key):
+		_refresh_registration(item_key)
+	item_level_changed.emit(item_key)
+
+
+func _set_item_placement(item_key: String, placement: int) -> void:
+	var previous := _get_placement(item_key)
+	if previous == placement:
+		return
+	var item := _get_item(item_key)
+	if placement == PlacementScript.STORED:
+		_progression.item_placements.erase(item_key)
+		_effect_manager.unregister_source(item)
+	else:
+		_progression.item_placements[item_key] = placement
+		_effect_manager.unregister_source(item)
+		_effect_manager.register_source(item, get_level(item_key))
+	item_placement_changed.emit(item_key, placement)
+	var was_on_court := previous == PlacementScript.ON_COURT
+	var now_on_court := placement == PlacementScript.ON_COURT
+	if was_on_court != now_on_court and item.role == &"ball":
+		court_changed.emit(item_key, now_on_court)
+
+
+func _refresh_registration(item_key: String) -> void:
 	var item := _get_item(item_key)
 	_effect_manager.unregister_source(item)
-	_progression.item_levels[item_key] = level
+	var level := get_level(item_key)
 	if level > 0:
 		_effect_manager.register_source(item, level)
-	item_level_changed.emit(item_key)
+
+
+func _is_placed(item_key: String) -> bool:
+	return _get_placement(item_key) != PlacementScript.STORED
+
+
+func _natural_target(item: ItemDefinition) -> int:
+	return PlacementScript.ON_COURT if item.role == &"ball" else PlacementScript.EQUIPPED
 
 
 func _get_item(item_key: String) -> ItemDefinition:
