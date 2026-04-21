@@ -27,6 +27,7 @@ max_active_level = null
 script = ExtResource("1_item")
 key = "training_ball"
 type = &"kit"
+role = &"ball"
 display_name = "Training Ball"
 art = ExtResource("1_5blea")
 descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Never cooled down"])

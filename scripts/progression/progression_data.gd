@@ -3,7 +3,9 @@ extends RefCounted
 
 var friendship_point_balance := 0
 var total_friendship_points_earned := 0
-var item_levels: Dictionary[String, int]
+var item_levels: Dictionary[String, int] = {}
+var item_placements: Dictionary[String, int] = {}
+var partner_placements: Dictionary[StringName, int] = {}
 var personal_volley_best := 0
 var shop_unlocked := false
 var recruit_offered_partners: Array[StringName] = []
@@ -19,6 +21,8 @@ func clear() -> void:
 	friendship_point_balance = 0
 	total_friendship_points_earned = 0
 	item_levels = {}
+	item_placements = {}
+	partner_placements = {}
 	personal_volley_best = 0
 	shop_unlocked = false
 	recruit_offered_partners = []
@@ -54,6 +58,8 @@ func _try_load_content(content: String) -> bool:
 	friendship_point_balance = loaded.friendship_point_balance
 	total_friendship_points_earned = loaded.total_friendship_points_earned
 	item_levels = loaded.item_levels
+	item_placements = loaded.item_placements
+	partner_placements = loaded.partner_placements
 	personal_volley_best = loaded.personal_volley_best
 	shop_unlocked = loaded.shop_unlocked
 	recruit_offered_partners = loaded.recruit_offered_partners
@@ -69,6 +75,8 @@ func to_dict() -> Dictionary:
 		"friendship_point_balance": friendship_point_balance,
 		"total_friendship_points_earned": total_friendship_points_earned,
 		"item_levels": item_levels,
+		"item_placements": item_placements,
+		"partner_placements": partner_placements,
 		"personal_volley_best": personal_volley_best,
 		"shop_unlocked": shop_unlocked,
 		"recruit_offered_partners": recruit_offered_partners,
@@ -84,6 +92,8 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.friendship_point_balance = data.get("friendship_point_balance", 0)
 	progression.total_friendship_points_earned = data.get("total_friendship_points_earned", 0)
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
+	progression.item_placements = _to_typed_dict(data.get("item_placements", {}))
+	progression.partner_placements = _to_typed_string_name_dict(data.get("partner_placements", {}))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
 	progression.shop_unlocked = data.get("shop_unlocked", false)
 	progression.recruit_offered_partners = _to_typed_string_name_array(
