@@ -110,6 +110,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Riebeck | SH-88 | sh-88-ball-speed-tiers-and-physics-ceiling | designs/01-prototype/20-ball-speed-tiers.md | 2026-04-21 | spike: tier system + 1800 px/s physics ceiling |
 
 ## Done (recent)
 
@@ -129,5 +130,6 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-88] Riebeck: claim; drafting ball speed tier design doc
 [init] scratchpad reset on cycle #3 open
 ```
