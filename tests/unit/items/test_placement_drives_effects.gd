@@ -1,7 +1,4 @@
-## Covers SH-96: placement drives effects. Effects run only while an item is on
-## the player (equipment) or on the court (balls). Rack placement is inert.
-## These tests assert behaviour against the public API described in
-## designs/01-prototype/08-item-manager.md. AC 7 (integration) lives elsewhere.
+## SH-96 placement rule: effects run only on player or court, never on rack.
 extends GutTest
 
 const STAT_KEY := &"paddle_speed"

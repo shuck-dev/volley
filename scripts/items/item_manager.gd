@@ -6,7 +6,7 @@ signal item_level_changed(item_key: String)
 signal item_placement_changed(item_key: String, placement: int)
 signal court_changed(item_key: String, on_court: bool)
 
-const PlacementScript := preload("res://scripts/items/placement.gd")
+const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
@@ -125,8 +125,7 @@ func activate(item_key: String) -> bool:
 	return true
 
 
-## Moves an owned item back to the rack and unregisters its effects.
-## Returns true on success, false if the item is not owned.
+## Moves an owned item back to the rack and unregisters its effects; false if unowned.
 func deactivate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
