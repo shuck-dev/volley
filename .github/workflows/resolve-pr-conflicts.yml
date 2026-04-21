@@ -209,6 +209,48 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # Defensive re-check before elevating to `contents: write`. The preflight
+      # already gates on Josh-ownership + conflict labels, but `pull_request_target`
+      # + write token is a high-blast-radius combo: if the eligibility ever
+      # regresses (assignee flipped mid-run, label added to a contributor PR),
+      # this step ensures we never check out untrusted PR code with a write
+      # token. Also rejects PRs whose diff touches workflow files, since those
+      # are off-limits for automated merging regardless of author.
+      - name: Re-verify eligibility before elevating
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ needs.preflight.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          PR_JSON=$(gh pr view "$PR_NUMBER" --repo "$GH_REPO" \
+            --json isDraft,state,author,assignees,labels,files)
+          STATE=$(echo "$PR_JSON" | jq -r '.state')
+          IS_DRAFT=$(echo "$PR_JSON" | jq -r '.isDraft')
+          AUTHOR=$(echo "$PR_JSON" | jq -r '.author.login')
+          ASSIGNEES=$(echo "$PR_JSON" | jq -r '[.assignees[].login] | join(",")')
+          LABELS=$(echo "$PR_JSON" | jq -r '[.labels[].name] | join(",")')
+          JOSH="J-Melon"
+          if [ "$STATE" != "OPEN" ] || [ "$IS_DRAFT" = "true" ]; then
+            echo "::error::PR no longer open+ready (state=$STATE draft=$IS_DRAFT)."
+            exit 1
+          fi
+          if [ "$AUTHOR" != "$JOSH" ] && ! echo ",$ASSIGNEES," | grep -q ",$JOSH,"; then
+            echo "::error::PR is not authored by or assigned to $JOSH."
+            exit 1
+          fi
+          if ! echo ",$LABELS," | grep -qE ',(has-conflicts|action-required),'; then
+            echo "::error::PR no longer carries has-conflicts / action-required."
+            exit 1
+          fi
+          # Refuse to run if the PR diff touches workflow files. `pull_request_target`
+          # + write token + untrusted workflow edits is the canonical supply-chain
+          # footgun; block it even for Josh-authored PRs.
+          if echo "$PR_JSON" | jq -e '[.files[].path] | any(startswith(".github/workflows/"))' >/dev/null; then
+            echo "::error::PR diff touches .github/workflows/; refusing to auto-resolve."
+            exit 1
+          fi
+
       - name: Check out PR branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -246,8 +288,9 @@ jobs:
                `action-required` label is present, and exit 0 without pushing.
             5. On a clean merge: `git push origin HEAD`. Do NOT `push --force`
                or `--force-with-lease`. Do NOT amend. Do NOT drop commits.
-            6. If the push is rejected (remote moved), fetch + merge once
-               more; if that also conflicts, fall back to step 4.
+               If the push is rejected (remote moved), do NOT retry: post a
+               PR comment noting the push was rejected, ensure the
+               `action-required` label is present, and exit 0.
 
             Hard rules:
             - Never force-push.
