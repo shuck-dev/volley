@@ -110,6 +110,8 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Trillian | SH-120 / SH-123 | sh-120-sh-123-workflow-hardening | .github/workflows/*.yml | 2026-04-21 | paired dispatch: per-job permissions + verify SHA pins |
+| Solanum | SH-83 | sh-83-ball-dynamics-design-spike | designs/01-prototype/21-ball-dynamics.md | 2026-04-21 | spike: ball physics model answers to seven questions |
 
 ## Done (recent)
 
@@ -129,5 +131,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-83] Solanum: claimed; spike doc drafted at designs/01-prototype/21-ball-dynamics.md (slot 20 taken by SH-88)
+[SH-120/SH-123] Trillian: claimed paired dispatch; all workflows already SHA-pinned, adding per-job permissions blocks
 [init] scratchpad reset on cycle #3 open
 ```
