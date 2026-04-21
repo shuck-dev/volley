@@ -1,10 +1,7 @@
 class_name Placement
 extends RefCounted
 
-## Where an item currently lives. Effects run only when the item is physically
-## on the player (EQUIPPED) or on the court (ON_COURT). STORED means the item
-## is owned but sitting on a rack, and is inert.
-
+## Where an item currently lives; STORED is inert, EQUIPPED and ON_COURT run effects.
 enum {
 	STORED = 0,
 	EQUIPPED = 1,

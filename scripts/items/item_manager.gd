@@ -103,8 +103,7 @@ func _get_placement(item_key: String) -> int:
 	return _progression.item_placements.get(item_key, PlacementScript.STORED)
 
 
-## Returns true when an item is currently placed (on player or court).
-## Rack-resident items return false.
+## True when an item is currently placed (on player or court), false on the rack.
 func is_on_court(item_key: String) -> bool:
 	return _get_placement(item_key) != PlacementScript.STORED
 
@@ -118,15 +117,11 @@ func get_court_items() -> Array[String]:
 	return result
 
 
-## Places an owned item on its natural target: player for equipment, court for
-## balls. Registers the item's effects at its current level. Returns true on
-## success, false if the item is not owned.
+## Places an owned item on its natural target and registers effects at current level; false if unowned.
 func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
-	var item := _get_item(item_key)
-	var target := PlacementScript.ON_COURT if item.role == &"ball" else PlacementScript.EQUIPPED
-	_set_item_placement(item_key, target)
+	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 	return true
 
 
@@ -171,11 +166,8 @@ func purchase(item_key: String) -> bool:
 	var new_level := get_level(item_key) + 1
 	_progression.item_levels[item_key] = new_level
 	if was_unowned:
-		# First purchase puts the item straight onto its natural target so the
-		# player doesn't have to drag a freshly bought item out of the shop.
-		var item := _get_item(item_key)
-		var target := PlacementScript.ON_COURT if item.role == &"ball" else PlacementScript.EQUIPPED
-		_set_item_placement(item_key, target)
+		# First purchase lands the item on its natural target, skipping the rack.
+		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
 	item_level_changed.emit(item_key)
@@ -276,6 +268,10 @@ func _refresh_registration(item_key: String) -> void:
 
 func _is_placed(item_key: String) -> bool:
 	return _get_placement(item_key) != PlacementScript.STORED
+
+
+func _natural_target(item: ItemDefinition) -> int:
+	return PlacementScript.ON_COURT if item.role == &"ball" else PlacementScript.EQUIPPED
 
 
 func _get_item(item_key: String) -> ItemDefinition:

@@ -35,8 +35,7 @@ func _make_item(
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = [effect]
-	# Use dynamic set so the tests parse before ItemDefinition gains `role`.
-	item.set(&"role", role)
+	item.role = role
 	return item
 
 
