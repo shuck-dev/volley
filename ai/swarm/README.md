@@ -34,6 +34,10 @@ Three new reviewers join the eight reactive ones that already ride PRs today.
 
 Existing reviewers, unchanged: `code-quality`, `gdscript-conventions`, `signals-lifecycle`, `test-coverage`, `godot-scene`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`.
 
+### Registry reload
+
+Claude Code caches the agent registry at session start. A new `.claude/agents/*.md` that lands mid-session does not route to its declared `subagent_type` until the session is reloaded; calls return "Agent type not found". The fallback that works without a reload is to dispatch as `general-purpose` with the role's codename at the front of the description and the full brief in the prompt; the agent runs the same work, just without the automatic routing hint. New roles should be added at the start of a session, or the fallback used deliberately until the next reload.
+
 ## Naming
 
 Roles are the slots. Codenames are the people filling them today.
@@ -120,6 +124,23 @@ Worked example, a mid-cycle health check: **Trillian**, **Eddie**, **Zephyr**, a
 Spikes use the support team, not the resolver team. `researcher` gathers material. `devils-advocate` stages the failure modes. `supply-chain-scout` scores options where third-party tools are on the table. The organiser compiles a briefing. Josh decides. Only after that does the organiser draft a design stub and follow-up tickets, and it confirms before filing any of them.
 
 Worked example, picking a GDScript linter: **Zephyr** pulls docs for the three candidates; **Bill** writes the adversarial read on each; **Abe** checks provenance and SHA pinning on all three. Josh picks one. **Mabel** drafts the rollout design and the tickets, and asks before submitting.
+
+### Paired dispatch
+
+Some specialists have to ship together because the repo forces their outputs into one commit. The failing-first tests and the implementation that makes them green are the standing example: the pre-commit hook runs GUT, so red tests cannot land as a standalone commit. When a repo policy couples two outputs, the swarm couples the specialists.
+
+Two shapes work:
+
+1. **Single dual-role agent.** One prompt carries both roles: "write the failing tests, then the implementation, commit once when green." Simplest; loses the parallelism between the two roles but wins on coordination cost. Use when the roles share almost all of their context.
+2. **Shared worktree handoff.** Dispatch two agents with a pair id; the first writes its half to the worktree and posts `status: ready_to_pair` to an inbox; the organiser reads the signal and dispatches the second agent into the same worktree. They commit as one unit at the end. Preserves role specialisation at the cost of an extra dispatch hop.
+
+Known pair triggers today:
+
+- **Failing tests and implementation** — GUT runs in lefthook pre-commit; red tests block commits. `test-author` pairs with an implementer.
+- Any future "docs with code" gate would pair `docs-tender` with the implementer.
+- Integration-scenario-author may pair with an implementer on the same worktree when the scenario is as load-bearing as the unit tests for the same commit.
+
+Research outputs are not paired. `researcher`, `design-doc-reader`, `refactor-planner`, and `devils-advocate` inform the implementer but do not ship alongside it; they stay independent fan-outs that write to the scratchpad.
 
 ### Merge conflict
 
