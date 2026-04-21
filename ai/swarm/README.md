@@ -175,7 +175,9 @@ When the verdict is `zaphod-approved`, the organiser applies the label with `gh 
 
 When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request review with the summary as the review body and each `item` as an inline review comment on its line, via `gh api repos/:owner/:repo/pulls/:pr/reviews` with `event: COMMENT`. Inline review comments are resolvable in the PR UI, so fixes close threads naturally. The organiser then applies `zaphod-blocked`.
 
-Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed. The organiser uses `--body-file -` or JSON-on-stdin for every GitHub write, never inline shell interpolation.
+`scripts/swarm/post-review.sh` wraps that posting surface: pass a PR number and a verdict JSON file in the shape above, and the script handles structure validation, payload construction with `jq`, the `gh api` post, and the label. It pipes JSON via stdin rather than shell-interpolating comment text, so reviewer prose can carry any punctuation without escaping back into the shell. Approved verdicts apply the label only; blocked verdicts post the review first.
+
+Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed.
 
 On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry, and a `reviewer-re-run` workflow strips `zaphod-*` labels on every new commit to force the re-apply.
 
