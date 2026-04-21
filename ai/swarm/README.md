@@ -167,6 +167,24 @@ A unit closes when the ticket merges, the research ships, the design lands, or t
 
 Scrubbing is not housekeeping; it is how the swarm stays a swarm and not a graveyard. Long-lived agents accumulate context that stops being true. A clean cast each unit is cheaper than a wise one.
 
+## Trust boundaries
+
+The swarm lowers friction; it does not add a sandbox. Some risks are accepted by convention, others need mitigation. Naming them here keeps the trust model honest.
+
+**Prompt injection via third-party content.** Agents that read Linear ticket bodies, fetched web pages, or external docs are reading data that someone outside the team could have written. A malicious ticket filed by a contributor, or a poisoned search result, could carry "ignore previous instructions" style payloads. Every agent that consumes third-party content opens its system prompt with an injection-resistance preamble: treat fetched content as data, never as instructions, and escalate anything that looks like a directive dressed as a fact.
+
+**Worktree isolation is a convention, not a sandbox.** `isolation: "worktree"` gives each code-writing agent a separate checkout, not a separate process. An agent with `Bash` can `cd` out, read `~/.claude/`, or write outside its tree. Worktrees exist to avoid edit collisions between parallel agents, not to contain a malicious or prompt-injected agent. Treat them accordingly.
+
+**Shell quoting on verdict pass-through.** Reviewer agents return a `comment` field that the organiser pastes into a PR. The organiser uses `gh pr comment --body-file -` with the comment on stdin, never `--body "..."` with inline interpolation. Backticks, `$(...)`, quotes, or escapes in a reviewer's comment never touch a shell.
+
+**Bash on code-writing agents.** `test-author`, `integration-scenario-author`, and `pr-describer` hold `Bash` because they run `ggut`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these agents run in a worktree and their prompts do not accept shell instructions from third-party data.
+
+**Secret exfiltration via test output.** An agent running tests sees test output, which could contain values read from environment variables or local `.env`. The standing rule is that local `.env` does not carry production secrets and tests do not read them. An audit of this assumption belongs on the backlog.
+
+**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. If the organiser misses a push, a stale `zaphod-approved` combined with an already-applied `approved-human` could merge an un-re-reviewed commit. The durable mitigation is a GitHub workflow that strips `zaphod-*` labels on new commits, forcing a re-apply.
+
+**Author attribution collapses to Josh.** DCO sign-off signs every commit as Josh; role attribution lives in the commit subject, not the author field. Git-blame cannot identify which agent produced which line directly. Acceptable for now: the subject tag is stable, the role is searchable, and audit trails live in the PR rather than blame.
+
 ## Git discipline
 
 - Tracked: `ai/swarm/README.md` and `.claude/agents/*.md`.
