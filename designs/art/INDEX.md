@@ -8,6 +8,7 @@ The living reference for Volley!'s visual direction. Concept studies and product
 | [Direction](direction.md) | The creative direction distilled into themes. The narrative layer that feeds the bible. |
 | [Inspirations](inspirations.md) | Works Volley! has looked at; factual attribution list. |
 | [Style Workshop](style-workshop.md) | Workshop notes that fed into the bible. |
+| [Tech Pipeline](tech-pipeline.md) | How the style is implemented in Godot: rendering, assets, register shifts. |
 
 ---
 

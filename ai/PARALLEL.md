@@ -110,6 +110,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Glottis | SH-80 | sh-80-tech-art-pipeline | designs/art/tech-pipeline.md, designs/art/INDEX.md | 2026-04-21 | Tech art pipeline spike |
 
 ## Done (recent)
 
@@ -129,5 +130,6 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [init] scratchpad reset on cycle #3 open
 ```
