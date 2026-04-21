@@ -183,6 +183,14 @@ On any follow-up push, the organiser re-dispatches the relevant reviewers and re
 
 The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
 
+### Reviewer dispatch discipline
+
+Reviewer agents must review the PR under review, not whatever the working tree happens to show. Three rules make that hold:
+
+- **Reviewers see the PR's diff, not the disk.** If a reviewer's toolset includes `Bash`, the organiser instructs it to read via `gh pr diff <N>` (or `gh api repos/:owner/:repo/pulls/:pr/files`). If the reviewer lacks `Bash` (the existing reactive pool is `Read, Grep, Glob` only), the organiser pre-fetches the diff and pastes it into the prompt. Reading the on-disk file is only safe when the working tree is guaranteed to match the PR branch, which is rarely true in parallel swarm work.
+- **Organiser holds the branch between dispatch and return.** Switching branches while a reviewer is in flight changes what the reviewer reads. The organiser either stays on the PR branch until every reviewer in the fan-out has reported, or dispatches reviewers with `isolation: "worktree"` so they read an isolated checkout of that branch.
+- **Reviewer verdicts are diff-scoped, not session-scoped.** A verdict applies to the commit it was taken against. The `reviewer-re-run.yml` workflow strips `zaphod-*` labels on every new commit so the next push invalidates the prior verdict automatically; reviewers re-run against the new tip.
+
 ## Fail early on ambiguity
 
 The organiser checks AC and scope against the entity, the design docs, and memory before dispatching. If any of that is unclear, it stops and asks Josh a single precise question. Guessing is not allowed at the entry gate; the cost of a five-minute wait is lower than the cost of five parallel agents building the wrong thing.
