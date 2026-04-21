@@ -179,6 +179,8 @@ When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request 
 
 Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed.
 
+Every review comment gets a threaded reply from whoever addresses it, naming the concrete edit and the commit SHA. That holds for Josh's comments and for reviewer-agent comments the organiser posted on their behalf. Silent fixes are not acceptable even when the diff would make the change obvious; the reply is what closes the loop inline for mobile readers and leaves a per-comment audit trail. Questions get answered, not resolved by code; preference-level nits that are kept as-is get a one-line reason, once, and the reviewer decides from there. Use `gh api repos/OWNER/REPO/pulls/{pr}/comments/{comment_id}/replies` to thread; never post a new top-level comment in place of a reply.
+
 On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry, and a `reviewer-re-run` workflow strips `zaphod-*` labels on every new commit to force the re-apply.
 
 The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
