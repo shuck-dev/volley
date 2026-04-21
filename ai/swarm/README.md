@@ -34,6 +34,10 @@ Three new reviewers join the eight reactive ones that already ride PRs today.
 
 Existing reviewers, unchanged: `code-quality`, `gdscript-conventions`, `signals-lifecycle`, `test-coverage`, `godot-scene`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`.
 
+### Registry reload
+
+Claude Code caches the agent registry at session start. A new `.claude/agents/*.md` that lands mid-session does not route to its declared `subagent_type` until the session is reloaded; calls return "Agent type not found". The fallback that works without a reload is to dispatch as `general-purpose` with the role's codename at the front of the description and the full brief in the prompt; the agent runs the same work, just without the automatic routing hint. New roles should be added at the start of a session, or the fallback used deliberately until the next reload.
+
 ## Naming
 
 Roles are the slots. Codenames are the people filling them today.
@@ -121,6 +125,23 @@ Spikes use the support team, not the resolver team. `researcher` gathers materia
 
 Worked example, picking a GDScript linter: **Zephyr** pulls docs for the three candidates; **Bill** writes the adversarial read on each; **Abe** checks provenance and SHA pinning on all three. Josh picks one. **Mabel** drafts the rollout design and the tickets, and asks before submitting.
 
+### Paired dispatch
+
+Some specialists have to ship together because the repo forces their outputs into one commit. The failing-first tests and the implementation that makes them green are the standing example: the pre-commit hook runs GUT, so red tests cannot land as a standalone commit. When a repo policy couples two outputs, the swarm couples the specialists.
+
+Two shapes work:
+
+1. **Single dual-role agent.** One prompt carries both roles: "write the failing tests, then the implementation, commit once when green." Simplest; loses the parallelism between the two roles but wins on coordination cost. Use when the roles share almost all of their context.
+2. **Shared worktree handoff.** Dispatch two agents with a pair id; the first writes its half to the worktree and posts `status: ready_to_pair` to an inbox; the organiser reads the signal and dispatches the second agent into the same worktree. They commit as one unit at the end. Preserves role specialisation at the cost of an extra dispatch hop.
+
+Known pair triggers today:
+
+- **Failing tests and implementation**: GUT runs in lefthook pre-commit; red tests block commits. `test-author` pairs with an implementer.
+- Any future "docs with code" gate would pair `docs-tender` with the implementer.
+- Integration-scenario-author may pair with an implementer on the same worktree when the scenario is as load-bearing as the unit tests for the same commit.
+
+Research outputs are not paired. `researcher`, `design-doc-reader`, `refactor-planner`, and `devils-advocate` inform the implementer but do not ship alongside it; they stay independent fan-outs that write to the scratchpad.
+
 ### Merge conflict
 
 Three kinds, three responses. **Kind A**, worktree against worktree before either PR opens: the organiser resolves mechanical conflicts and halts on semantic ones to ask Josh. **Kind B**, a PR goes stale against `main`: the GitHub merge queue handles it; the organiser does not. **Kind C**, two queued PRs conflict with each other: the organiser flags a design smell. PRs are meant to be independent; two that fight in the queue were split wrong.
@@ -154,11 +175,23 @@ When the verdict is `zaphod-approved`, the organiser applies the label with `gh 
 
 When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request review with the summary as the review body and each `item` as an inline review comment on its line, via `gh api repos/:owner/:repo/pulls/:pr/reviews` with `event: COMMENT`. Inline review comments are resolvable in the PR UI, so fixes close threads naturally. The organiser then applies `zaphod-blocked`.
 
-Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed. The organiser uses `--body-file -` or JSON-on-stdin for every GitHub write, never inline shell interpolation.
+`scripts/swarm/post-review.sh` wraps that posting surface: pass a PR number and a verdict JSON file in the shape above, and the script handles structure validation, payload construction with `jq`, the `gh api` post, and the label. It pipes JSON via stdin rather than shell-interpolating comment text, so reviewer prose can carry any punctuation without escaping back into the shell. Approved verdicts apply the label only; blocked verdicts post the review first.
+
+Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed.
+
+Every review comment gets a threaded reply from whoever addresses it, naming the concrete edit and the commit SHA. That holds for Josh's comments and for reviewer-agent comments the organiser posted on their behalf. Silent fixes are not acceptable even when the diff would make the change obvious; the reply is what closes the loop inline for mobile readers and leaves a per-comment audit trail. Questions get answered, not resolved by code; preference-level nits that are kept as-is get a one-line reason, once, and the reviewer decides from there. Use `gh api repos/OWNER/REPO/pulls/{pr}/comments/{comment_id}/replies` to thread; never post a new top-level comment in place of a reply.
 
 On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry, and a `reviewer-re-run` workflow strips `zaphod-*` labels on every new commit to force the re-apply.
 
 The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
+
+### Reviewer dispatch discipline
+
+Reviewer agents must review the PR under review, not whatever the working tree happens to show. Three rules make that hold:
+
+- **Reviewers see the PR's diff, not the disk.** If a reviewer's toolset includes `Bash`, the organiser instructs it to read via `gh pr diff <N>` (or `gh api repos/:owner/:repo/pulls/:pr/files`). If the reviewer lacks `Bash` (the existing reactive pool is `Read, Grep, Glob` only), the organiser pre-fetches the diff and pastes it into the prompt. Reading the on-disk file is only safe when the working tree is guaranteed to match the PR branch, which is rarely true in parallel swarm work.
+- **Organiser holds the branch between dispatch and return.** Switching branches while a reviewer is in flight changes what the reviewer reads. The organiser either stays on the PR branch until every reviewer in the fan-out has reported, or dispatches reviewers with `isolation: "worktree"` so they read an isolated checkout of that branch.
+- **Reviewer verdicts are diff-scoped, not session-scoped.** A verdict applies to the commit it was taken against. The `reviewer-re-run.yml` workflow strips `zaphod-*` labels on every new commit so the next push invalidates the prior verdict automatically; reviewers re-run against the new tip.
 
 ## Fail early on ambiguity
 
