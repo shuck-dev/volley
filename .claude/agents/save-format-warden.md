@@ -38,11 +38,12 @@ Memory: `feedback_no_save_compat.md`. Shim-style fallbacks for old field names o
 
 ## Output
 
-Return a verdict to the organiser, who posts the PR comment and applies the label on your behalf. Two fields:
+Return a structured verdict to the organiser. Three fields:
 
 - `verdict`: `zaphod-approved` when the diff either does not change the format or changes it with an explicit "wipes saves" call-out. `zaphod-blocked` when the format changes silently, when a compat shim appears, or when autoload order shifts without justification.
-- `comment`: the specific lines that trigger a format change, and whether the PR body calls out the wipe. Written to paste into `gh pr comment` as-is.
+- `summary`: one-sentence overall finding. For approved verdicts this is optional.
+- `items`: required when blocked, absent when approved. Each item is `{path, line, body}`. Anchor every finding to the specific line in the diff that triggers the concern: the `@export` that renames, the `if data.has("old_field")` branch, the autoload order edit. `body` explains the concern and the fix in one or two sentences.
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-Re-run on any follow-up push; the old verdict does not carry, and the organiser will re-apply whatever you return.
+The organiser posts your blocked verdicts as inline review comments on the flagged lines (resolvable in the PR UI) and applies the label. Approved verdicts apply the label with no comment. On follow-up pushes the organiser re-dispatches you and re-applies whatever you return.

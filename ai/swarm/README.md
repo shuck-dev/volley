@@ -144,9 +144,19 @@ Three labels live on PRs. Two are for agents; one is not.
 
 **Hard rule: agents never apply `approved-human`.** The label is the merge-queue permission slip, and only Josh grants it.
 
-Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a verdict to the organiser as two fields: `verdict` (one of `zaphod-approved` / `zaphod-blocked`) and `comment` (ready-to-paste PR comment text). The organiser posts the comment with `gh pr comment` and applies the label with `gh pr edit --add-label`. This keeps reviewer scope narrow, avoids label-clobber footguns from GitHub APIs that replace the full label set, and centralises the audit trail.
+Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a structured verdict to the organiser:
 
-On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry.
+- `verdict`: `zaphod-approved` or `zaphod-blocked`.
+- `summary`: one-sentence overall finding.
+- `items`: required when blocked, absent when approved. A list of `{path, line, body}` entries, each anchored to a specific line in the diff. Anything actionable must point at the line that carries the evidence.
+
+When the verdict is `zaphod-approved`, the organiser applies the label with `gh pr edit --add-label zaphod-approved`. No comment is posted; clean reviews do not clutter the PR.
+
+When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request review with the summary as the review body and each `item` as an inline review comment on its line, via `gh api repos/:owner/:repo/pulls/:pr/reviews` with `event: COMMENT`. Inline review comments are resolvable in the PR UI, so fixes close threads naturally. The organiser then applies `zaphod-blocked`.
+
+Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed. The organiser uses `--body-file -` or JSON-on-stdin for every GitHub write, never inline shell interpolation.
+
+On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry, and a `reviewer-re-run` workflow strips `zaphod-*` labels on every new commit to force the re-apply.
 
 The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
 
@@ -181,9 +191,9 @@ Linear's workflow already gives the swarm a natural trust boundary: the **Triage
 
 **Bash on code-writing agents.** `test-author`, `integration-scenario-author`, and `pr-describer` hold `Bash` because they run `ggut`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these agents run in a worktree and their prompts do not accept shell instructions from third-party data.
 
-**Secret exfiltration via test output.** An agent running tests sees test output, which could contain values read from environment variables or local `.env`. The standing rule is that local `.env` does not carry production secrets and tests do not read them. An audit of this assumption belongs on the backlog.
+**Secret exfiltration via test output.** An agent running tests sees test output, which could contain values read from environment variables or local `.env`. Audited 2026-04-21: no `.env*` files are present in the repo, and the only environment variable test code reads is `COVERAGE_FILE`, which is a path, not a secret. The standing rule remains that local `.env` does not carry production secrets and tests do not read them.
 
-**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. If the organiser misses a push, a stale `zaphod-approved` combined with an already-applied `approved-human` could merge an un-re-reviewed commit. The durable mitigation is a GitHub workflow that strips `zaphod-*` labels on new commits, forcing a re-apply.
+**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. The `reviewer-re-run.yml` workflow strips `zaphod-approved` and `zaphod-blocked` on every new commit to a PR, forcing the organiser to re-dispatch reviewers and re-apply the verdict before the PR can merge. `approved-human` is not touched by the workflow; that gate is Josh's alone.
 
 **Author attribution collapses to Josh.** DCO sign-off signs every commit as Josh; role attribution lives in the commit subject, not the author field. Git-blame cannot identify which agent produced which line directly. Acceptable for now: the subject tag is stable, the role is searchable, and audit trails live in the PR rather than blame.
 
