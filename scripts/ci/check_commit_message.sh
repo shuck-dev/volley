@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Validates commit messages match `[SH-<ticket> ]<type>: <subject>` where type is
-# one of feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert.
+# Validates commit messages match `[SH-<ticket> ]<type>[!]: <subject>` where
+# type is one of feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert
+# and the optional `!` marks a conventional-commit breaking change (matches
+# the release-drafter autolabeler in .github/release-drafter.yml).
 # Allows merge/squash commits and fixup/amend messages to pass untouched.
 
 set -eu
@@ -14,12 +16,13 @@ case "$FIRST_LINE" in
 		;;
 esac
 
-PATTERN='^(SH-[0-9]+ )?(feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert): .+'
+PATTERN='^(SH-[0-9]+ )?(feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert)!?: .+'
 if ! printf '%s' "$FIRST_LINE" | grep -qE "$PATTERN"; then
 	cat >&2 <<EOF
 Commit message does not match the required format.
-Expected: [SH-<ticket> ]<type>: <subject>
+Expected: [SH-<ticket> ]<type>[!]: <subject>
 Types:    feat, fix, chore, docs, refactor, test, style, perf, ci, build, revert
+          Append '!' after the type to mark a breaking change (feat!:, fix!:).
 Got:      $FIRST_LINE
 EOF
 	exit 1
