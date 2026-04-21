@@ -142,9 +142,13 @@ Three labels live on PRs. Two are for agents; one is not.
 - `zaphod-blocked`: the reviewer pool found something that needs a human look.
 - `approved-human`: Josh only.
 
-**Hard rule: agents never apply `approved-human`.** The label is the merge-queue permission slip, and only Josh grants it. Reviewer agents post their reasoning as a PR comment, then apply one of the two `zaphod-*` labels. If the PR takes another push, whether a conflict resolution or a follow-up commit, reviewers re-run and re-apply. The prior verdict does not carry.
+**Hard rule: agents never apply `approved-human`.** The label is the merge-queue permission slip, and only Josh grants it.
 
-Agents may queue auto-merge with `gh pr merge --auto --squash` once they have applied `zaphod-approved`. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge by agents is forbidden. No rebases, no amends, no force pushes, ever.
+Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a verdict to the organiser as two fields: `verdict` (one of `zaphod-approved` / `zaphod-blocked`) and `comment` (ready-to-paste PR comment text). The organiser posts the comment with `gh pr comment` and applies the label with `gh pr edit --add-label`. This keeps reviewer scope narrow, avoids label-clobber footguns from GitHub APIs that replace the full label set, and centralises the audit trail.
+
+On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry.
+
+The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
 
 ## Fail early on ambiguity
 
