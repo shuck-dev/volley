@@ -27,7 +27,9 @@ Same treatment for anything else in the home directory that holds plaintext cred
 
 ```sh
 chmod 600 ~/.netrc ~/.pypirc ~/.npmrc ~/.config/gh/hosts.yml 2>/dev/null
-find ~/.config -type f -name '*.json' -perm /044 -print  # audit world-readable configs
+# audit every world-readable file under ~/.config, including .yml, .toml, .env, and dotfiles
+find ~/.config -type f -perm /044 -print
+find ~ -maxdepth 2 -type f -name '.*' -perm /044 -print  # also sweep home-dir dotfiles
 ```
 
 If a file needs to stay world-readable (a checked-in sample config, a public key), it should not contain a secret in the first place. Move the secret out, then relax the mode.
