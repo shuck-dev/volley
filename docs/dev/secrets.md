@@ -72,13 +72,24 @@ Either way, the pattern is the same: the plaintext key never lands in a shell rc
 
 ## Wiring the manager into Claude Code
 
-Claude reads MCP env blocks from `~/.claude/settings.json`. Instead of pasting the key value there, keep the value in the manager and launch Claude from a shell that exports the env var first:
+Claude reads MCP env blocks from `~/.claude/settings.json`. Instead of pasting the key value there, keep the value in the manager and launch Claude from a shell that exports the env var first.
+
+The primary pattern is an on-demand `dev-env` script you `source` when you start a Volley work session. Keep it outside the repo and out of any shell rc file:
 
 ```sh
-# ~/.zshrc or a dedicated dev-env script, not checked in
+# ~/bin/dev-env (or anywhere on PATH), not checked in
 export ANTHROPIC_API_KEY="$(pass show volley/anthropic-api-key)"
 export LINEAR_API_KEY="$(pass show volley/linear-api-key)"
 ```
+
+Then:
+
+```sh
+source ~/bin/dev-env   # one GPG prompt, once, when you actually want the keys
+claude                 # or the MCP-aware tool of choice
+```
+
+Avoid putting these `pass show` lines directly in `~/.zshrc` or `~/.bashrc`: every new shell would fire a GPG unlock prompt, which pushes people toward caching tricks or back to plaintext. Source the script only in the shells that need the keys.
 
 Then the `settings.json` entry becomes a passthrough rather than a secret store:
 
