@@ -14,7 +14,10 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  # contents: write is what lets the github-actions bot push to the
+  # associated .wiki.git repo. Third-party GitHub Apps cannot request a
+  # Wikis permission; only the first-party bot token can reach the wiki.
+  contents: write
 
 jobs:
   sync:
@@ -25,19 +28,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Checkout wiki
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          repository: ${{ github.repository }}.wiki
-          path: wiki
-          token: ${{ secrets.WIKI_TOKEN }}
-
-      - name: Mirror designs/ into wiki
+      - name: Mirror designs/ into wiki/
         run: |
           set -euo pipefail
           shopt -s globstar nullglob
 
-          find wiki -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          mkdir -p wiki
 
           copy_with_rewrite() {
             local src="$1" dest="$2" dir="$3"
@@ -70,15 +66,12 @@ jobs:
             copy_with_rewrite designs/INDEX.md wiki/Home.md ""
           fi
 
-      - name: Commit and push
-        working-directory: wiki
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain)" ]; then
-            git add -A
-            git commit -m "Sync designs/ from ${{ github.sha }}"
-            git push
-          else
-            echo "No changes to sync."
-          fi
+      - name: Publish wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@64efa0a9436db17670a2259e0ac249d6f08bb352 # v5.0.4
+        with:
+          path: wiki
+          # Our bash already handled link rewriting and the INDEX.md rename,
+          # so we skip the action's built-in preprocess pass to avoid
+          # double-mangling the links we just produced.
+          preprocess: false
+          disable-empty-commits: true
