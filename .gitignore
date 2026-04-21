@@ -45,6 +45,13 @@ designs/private/
 # Final essays, persistent research notes, critical reviews, and meta planning docs stay tracked.
 designs/research/drafts/
 
+# Swarm scratchpad: ephemeral per work unit, scrubbed on completion.
+# The README and per-agent definitions stay tracked; working state does not.
+ai/swarm/agents/
+ai/swarm/tasks/
+ai/swarm/inbox/
+ai/swarm/_bootstrap.md
+
 # OS junk
 .DS_Store
 Thumbs.db
