@@ -44,7 +44,7 @@ Design properties:
 - The stat stays additive like every other `ItemManager` stat, so items can nudge it (e.g. a "Fine Tuning" passive lifts player return angle; a debuff trims it).
 - Hit offset is derived from the current paddle collision-shape height (`_collision_shape.size.y`), so `paddle_size` changes (shrink effects, levelling) automatically rescale the mapping.
 
-This subsumes the existing `_apply_return_angle_influence` implementation. The horizontal-bias version it replaced was never shipped as an item and was not observable in normal play, so removing it has no save-compat cost (per [no save backward-compat shims](../process/ticket-writing.md) rule; just delete the old branch).
+This subsumes the existing `_apply_return_angle_influence` implementation. The horizontal-bias version it replaced was never shipped as an item and was not observable in normal play, so removing it has no save-compat cost: just delete the old branch.
 
 **Acceptance hooks:** paddle position influences return angle; `return_angle_influence` drives it.
 
