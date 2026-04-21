@@ -31,6 +31,17 @@ jobs:
     name: Post approval checks
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    # Skip the job when a labeled/unlabeled event touches a category label
+    # (feature, bug, autolabel additions) rather than an approval label.
+    # Category labels carry no approval signal, so re-running the gate
+    # wastes a billed minute per event. Approval labels (approved-human,
+    # zaphod-approved, zaphod-blocked) must always run; synchronize,
+    # opened, reopened, merge_group, and workflow_dispatch always run.
+    if: >-
+      github.event_name != 'pull_request_target' ||
+      (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+      github.event.label.name == 'approved-human' ||
+      startsWith(github.event.label.name, 'zaphod-')
     steps:
       - name: Strip human-approved on new commits
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize'

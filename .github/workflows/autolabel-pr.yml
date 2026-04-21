@@ -2,7 +2,10 @@ name: Autolabel PR
 
 on:
   pull_request:
-    types: [opened, synchronize, edited]
+    # synchronize omitted: PR titles do not change between pushes, and
+    # edited already covers title edits. Dropping synchronize saves a
+    # billed minute per extra commit on a PR.
+    types: [opened, edited]
 
 concurrency:
   group: autolabel-pr-${{ github.event.pull_request.number }}
