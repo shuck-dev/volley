@@ -1,16 +1,20 @@
 # Ball Speed Tiers and Physics Ceiling
 
-Spike SH-88. Defines a world max ball speed the 2D physics can reliably handle, a tiered progression that turns "reach the ceiling" into a reward beat, and a rewrite of how ball-speed items interact with the tier stack instead of raising a single linear cap.
+Spike SH-88. Defines a world max ball speed the 2D physics can reliably handle, the tier math on top of it, and how ball-speed items interact with the tier stack instead of raising a single linear cap.
+
+Companion design doc: [20a Ball Speed Tier Progression](20a-ball-speed-tier-progression.md) covers the narrative framing and the reward ladder that sits on top of this ceiling.
 
 ## Goal
 
 Current speed model is linear: `ball_speed_min` base, `ball_speed_increment` per hit, clamped to `ball_speed_min + ball_speed_max_range`. Miss resets to min. Items like Court Lines raise `ball_speed_max_range` additively, Cadence raises it further on `on_max_speed_reached`, Wrist Brace raises `ball_speed_increment`. With enough stacking, long rallies push the ball arbitrarily fast and the ceiling becomes a soft curiosity rather than a goal.
 
-We want three things the linear model does not give us:
+What this spike owns:
 
 1. A hard speed the physics pipeline can promise to handle on a 60 Hz tick.
-2. A satisfying payoff when the player reaches the top of a speed band, so climbing feels like progress against a structured loop.
-3. Item effects that stack meaningfully without sliding the whole ceiling sideways.
+2. Tier math that fits inside that ceiling and gives items somewhere to stack without sliding it sideways.
+3. A rewrite of the speed-shaping items against the tier ladder.
+
+The companion doc (20a) owns the narrative framing of the tiers, what each peak rewards, and the felt experience of climbing.
 
 ## The physics ceiling
 
@@ -30,22 +34,30 @@ A conservative world ceiling that keeps all three safe, including a Wrist Brace-
 
 At 1800 px/s the ball travels 30 px per frame. Add the player paddle moving at `paddle_speed = 560` straight into the ball and closing per frame is about 39 px; with a 36 px paddle and 12 px ball radius that still leaves a 9 px overlap margin even at worst-case alignment. A shrunken 45 px paddle hit edge-on still has a 3-4 px margin at the corner, which is uncomfortable but survivable.
 
-Higher than that and edge catches on minified paddles become unreliable; runtime enabling of RigidBody2D `continuous_cd` would be the next step, and we do not want to pay for it yet.
+Higher than that and edge catches on minified paddles become unreliable at the default discrete step.
 
 **No stacked item, no effect outcome, no debug cheat may push `ball.speed` above `BALL_WORLD_MAX_SPEED`.** This is a physics guarantee, not a balance number.
 
-## Tier design
+### Continuous collision detection as a pressure valve
 
-Speed progression becomes a ladder of tiers. Each tier has its own floor, ceiling, and payoff. Reaching the top of a tier fires a tier event, snaps the ball back to the floor of a new tier, and gives the player something. Ceiling-chasing becomes the thing you do on purpose.
+Godot 4.6.2 ships two continuous collision detection modes on `RigidBody2D.continuous_cd`: `CCD_MODE_CAST_RAY` casts the body's motion as a ray (cheap, suits small fast bodies), and `CCD_MODE_CAST_SHAPE` casts the full collider shape along the motion vector (heavier, more accurate, per Godot 4 physics docs). Either mode solves tunnelling geometrically by resolving the first contact along the swept path rather than only sampling at the end of each physics tick, and either could in principle lift the hard speed ceiling.
+
+CCD is not free. Each enabled body adds a per-frame broadphase and narrowphase query against the swept volume, and the cost lands on the physics thread. In this project the web export runs on the main thread (single-threaded physics, no `physics/common/physics_jitter_fix` relief), so that cost reads directly in the frame budget on Volley!'s busiest target. It is a valve we open on purpose, not a default.
+
+Recommendation: keep `BALL_WORLD_MAX_SPEED = 1800` px/s as the uncontested ceiling while `continuous_cd = CCD_MODE_DISABLED`. Enable `CCD_MODE_CAST_RAY` on the ball at Tier 2 entry, promote to `CCD_MODE_CAST_SHAPE` at Tier 3 entry, and disable on tier reset. A later spike can evaluate raising `BALL_WORLD_MAX_SPEED` once we have a web-build frame budget to pay for CCD; until then the ceiling stands.
+
+## Tier math
+
+Speed progression becomes a ladder of tiers. Each tier has its own floor and ceiling; reaching a ceiling fires a tier event and drops the ball to the floor of the next tier. The reward that fires alongside the event is owned by the companion progression doc.
 
 ### Tier 0 to Tier 3
 
-| Tier | Floor (px/s) | Ceiling (px/s) | Band width | Hits to climb | Payoff on completion |
-|---|---|---|---|---|---|
-| 0 | 450 | 790 | 340 | ~20 | Enter Tier 1, speed drops to 790 |
-| 1 | 790 | 1100 | 310 | ~18 | Enter Tier 2, speed drops to 1100; small reward |
-| 2 | 1100 | 1450 | 350 | ~20 | Enter Tier 3, speed drops to 1450; medium reward |
-| 3 | 1450 | 1800 | 350 | ~20 | Peak reward, speed stays near ceiling and starts a Peak window |
+| Tier | Floor (px/s) | Ceiling (px/s) | Band width | Hits to climb |
+|---|---|---|---|---|
+| 0 | 450 | 790 | 340 | ~20 |
+| 1 | 790 | 1100 | 310 | ~18 |
+| 2 | 1100 | 1450 | 350 | ~20 |
+| 3 | 1450 | 1800 | 350 | ~20 |
 
 Tier 0 matches today's base numbers exactly: floor 450, width 340, increment 17. Players starting a run feel the same ramp they feel now.
 
@@ -53,17 +65,9 @@ Hits-to-climb uses the base `ball_speed_increment = 17`. With Wrist Brace at lev
 
 Tier ceilings compound deliberately: each band is a bit wider than the last, so the later tiers feel harder-earned without the absolute ceiling running away. The final band tops out at `BALL_WORLD_MAX_SPEED`. No tier, no item, no effect can promote the ball past Tier 3 ceiling.
 
-### Tier-completion payoff
+### Tier-completion event
 
-Reaching a tier ceiling fires `on_tier_completed(tier_index)` on the item effect bus, drops `ball.speed` back to the new tier's floor, and continues the rally. The event payload carries the completed tier index so effect outcomes can scale their payoff.
-
-Concrete payoffs (tunable, starting values for playtest):
-
-- **Tier 1**: small coin bonus (`+5`). Audio sting, colour shift on the speed bar. No gameplay modifier.
-- **Tier 2**: `+15` coins, a brief 1.5s "Charged" window during which the next paddle hit awards 2x friendship points.
-- **Tier 3** (**Peak**): `+40` coins, speed stays inside the top band for a 4s Peak window. During Peak every paddle hit re-emits a `peak_hit` event that items can latch onto. Leaving Peak (4s elapse, or a miss) drops back to Tier 0 floor.
-
-Peak is the satisfying payoff. Reaching it costs four tiers of disciplined rally and pays with a fixed window of intense play that has a clean end.
+Reaching a tier ceiling fires `on_tier_completed(tier_index)` on the item effect bus, drops `ball.speed` back to the new tier's floor, and continues the rally. The event payload carries the completed tier index so effect outcomes and reward handlers can scale their response. Tier 3 completion additionally opens a Peak window; see 20a for its framing and reward payload.
 
 ### Reset behaviour
 
@@ -123,14 +127,14 @@ New: unchanged. Wrist Brace compresses every tier's hits-to-climb and trades pad
 
 ## Open questions
 
-- Peak window length: 4s is a placeholder. Tune against playtest once the event bus wires up.
-- Tier 2 Charged window: does it also extend into Tier 3? Probably not, but the event bus makes it easy to try.
+- CCD per-body cost on the web export. Needs a frame-budget measurement at Tier 3 + CCD_MODE_CAST_SHAPE before the recommendation locks in.
 - Do Partners care about tier? Martha's current numbers do not touch speed, but a future Partner could want an `on_peak_hit` outcome. The event bus should accept it without special casing.
-- Should missing during Peak cost more than a normal miss? A "crash" penalty (halve coins earned this rally, say) would give Peak genuine risk. Leave off for first iteration; evaluate after playtest.
 
 ## Acceptance criteria mapping
 
 - Hard physics ceiling identified and documented. `BALL_WORLD_MAX_SPEED = 1800` px/s, justified against the 60 Hz tick, paddle collider width, and min paddle size.
-- Tier progression designed. Four tiers, ~18-20 hits per climb at base increment, payoffs scaling from coins to a Peak window.
+- CCD evaluated as a pressure valve. `CCD_MODE_CAST_RAY` at Tier 2, `CCD_MODE_CAST_SHAPE` at Tier 3, disabled on reset; web-thread cost called out as the gate on raising the ceiling.
+- Tier progression designed. Four tiers, ~18-20 hits per climb at base increment.
 - Reset behaviour defined. Miss to Tier 0 floor. Tier completion to next tier floor. Peak end without miss drops to Tier 0 floor without counting as a miss.
 - Existing-item interactions documented. Cadence, Court Lines, Training Ball, Wrist Brace all re-expressed against the tier stack.
+- Narrative framing and reward ladder live in [20a Ball Speed Tier Progression](20a-ball-speed-tier-progression.md).
