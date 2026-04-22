@@ -40,7 +40,7 @@ Higher than that and edge catches on minified paddles become unreliable at the d
 
 ### Continuous collision detection as a pressure valve
 
-Godot 4.6.2 ships two continuous collision detection modes on `RigidBody2D.continuous_cd`: `CCD_MODE_CAST_RAY` casts the body's motion as a ray (cheap, suits small fast bodies), and `CCD_MODE_CAST_SHAPE` casts the full collider shape along the motion vector (heavier, more accurate, per Godot 4 physics docs). Either mode solves tunnelling geometrically by resolving the first contact along the swept path rather than only sampling at the end of each physics tick, and either could in principle lift the hard speed ceiling.
+Godot 4.6.2 ships two continuous collision detection modes on `RigidBody2D.continuous_cd`: `CCD_MODE_CAST_RAY` casts the body's motion as a ray (cheap, suits small fast bodies), and `CCD_MODE_CAST_SHAPE` casts the full collider shape along the motion vector (heavier, more accurate, per [Godot's `RigidBody2D.continuous_cd` reference](https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html#class-rigidbody2d-property-continuous-cd)). Either mode solves tunnelling geometrically by resolving the first contact along the swept path rather than only sampling at the end of each physics tick, and either could in principle lift the hard speed ceiling.
 
 CCD is not free. Each enabled body adds a per-frame broadphase and narrowphase query against the swept volume, and the cost lands on the physics thread. In this project the web export runs on the main thread (single-threaded physics, no `physics/common/physics_jitter_fix` relief), so that cost reads directly in the frame budget on Volley!'s busiest target. It is a valve we open on purpose, not a default.
 
