@@ -12,7 +12,7 @@ The court is not a closed box. It sits inside the venue, bounded on three sides 
 |---|---|---|
 | Top | The screen edge | The camera never scrolls up; the top of the frame is a hard ceiling the ball bounces off. |
 | Bottom | The ground | Physical floor; ball bounces off (pong-style). Hitting the floor does not end the rally. |
-| Back | The main character's wall | The goal line. Ball crossing this is a miss. |
+| Back | Behind the main character's paddle lane | The miss line. Ball crossing past the paddle is a miss. |
 | Sides | Open | The ball can leave the court sideways; leaving this way is also a miss. |
 
 No side walls. The court visibly opens onto the rest of the venue.
@@ -22,23 +22,21 @@ No side walls. The court visibly opens onto the rest of the venue.
 Two bands along the court sides detect sideways exits. Both run the full height of the play area.
 
 ```
-  ┌──────────────── top (ceiling, bounce) ────────────────┐
-  │                                                       │
-  │  miss-out  ┆                                 miss-out │
-  │  ┌──┐      ┆                                    ┌──┐  │
-  │  │  │ MC   ┆                                    │  │  │
-  │  │  │ wall ┆           in-play court            │  │  │
-  │  │  │      ┆                                    │  │  │
-  │  │  │ goal ┆                                    │  │  │
-  │  │  │ line ┆                                    │  │  │
-  │  │  │      ┆                                    │  │  │
-  │  └──┘      ┆                                    └──┘  │
-  └──────────────── ground (bounce) ──────────────────────┘
-                  ↑ vertical goal-line trigger
+  ┌──────────────── top (ceiling, bounce) ────────────────────┐
+  │                                                           │
+  │                 ┆                                miss-out │
+  │         ┌──┐    ┆                                   ┌──┐  │
+  │ behind  │MC│    ┆                                   │  │  │
+  │ paddle  │  │    ┆        in-play court              │  │  │
+  │ space   │  │    ┆                                   │  │  │
+  │         │  │    ┆                                   │  │  │
+  │         └──┘    ┆                                   └──┘  │
+  └──────────────── ground (bounce) ──────────────────────────┘
+                    ↑ vertical miss-line trigger (in front of paddle)
 ```
 
-- **In-play region:** bounded by the top (ceiling), the ground (bounce floor), and the goal line at the back. A ball inside this region is live.
-- **Goal-line band:** a thin trigger just behind the main character. Crossing it fires a back-miss.
+- **In-play region:** bounded by the top (ceiling), the ground (bounce floor), and the miss line to the paddle's court-facing side. A ball inside this region is live.
+- **Miss-line band:** a thin vertical trigger just in front of the paddle's tracking lane. A ball crossing it heading behind the paddle fires a back-miss. The paddle itself sits behind the line; the space further behind the paddle is open venue, not a wall.
 - **Side miss bands:** one on each side, just outside the court's lateral extent. Crossing either fires a side-miss.
 
 Detection uses `Area2D` triggers rather than tight collider math: the ball's centre entering a band is the event. This keeps the signal independent of ball radius or rotation quirks.
@@ -49,7 +47,7 @@ Detection uses `Area2D` triggers rather than tight collider math: the ball's cen
 
 A miss ends the current rally. It fires when either:
 
-- The ball crosses the main character's goal line (back-miss, existing miss condition).
+- The ball crosses the main character's miss line (back-miss, existing miss condition).
 - The ball leaves the court sideways without first landing back in play (side-miss).
 
 On miss, the rally counter resets to zero (existing behaviour). The ball does not despawn; it keeps its velocity, rolls out of the court, loses energy on the venue floor, and comes to rest.
@@ -68,7 +66,7 @@ All three are audio + world-space only. No screen-space banners (per venue diege
 
 While the rally is alive, balls live in a physics volume that treats them as weightless. Their `gravity_scale` is `0` and linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling. The court's `Area2D` is what applies this treatment.
 
-A miss trigger (goal-line or side band) flips the ball out of this state. `gravity_scale` rises to `1`. Linear damping kicks in. The ball retains whatever velocity it had at the moment of the cross, so a fast ball sails further before it lands; a slow one drops almost immediately. From there it rolls across the venue floor, decelerates against friction, and comes to rest.
+A miss trigger (miss line or side band) flips the ball out of this state. `gravity_scale` rises to `1`. Linear damping kicks in. The ball retains whatever velocity it had at the moment of the cross, so a fast ball sails further before it lands; a slow one drops almost immediately. From there it rolls across the venue floor, decelerates against friction, and comes to rest.
 
 The transition is a single signal on `Area2D.body_exited`: clear the in-court flag, unlock gravity, engage damping. No interpolation, no blend window. The ball was in play and now it is not.
 
@@ -151,7 +149,7 @@ The helper reuses the bot's `court` role plumbing; it does not need a new role. 
 From the spike:
 
 1. **Ball-ground interaction.** Pong-style bounce. Hitting the floor does not end the rally.
-2. **Rally-ending condition.** Back-miss (goal line) or side-miss (lateral exit). Both reset the counter.
+2. **Rally-ending condition.** Back-miss (miss line) or side-miss (lateral exit). Both reset the counter.
 3. **Clutter.** Not a real problem at prototype scale. No cap or decay.
 4. **Where rested balls can sit.** Anywhere on the venue floor. No invisible barriers. Rack footprints snap-to-rack instead of resting.
 5. **Auto-serve with one ball resting.** Main character idles; player must re-rack. The helper fixes this later.
