@@ -77,6 +77,8 @@ The organiser merges worktrees back without squashing, preserving per-agent attr
 
 Review happens in the pull request, never on local files. "Ready for your review" means the branch is pushed and a PR is open with the reviewer fan-out running. Local file-review bypasses the `zaphod-approved` / `zaphod-blocked` surface and the existing reactive reviewers.
 
+PRs open as drafts so Linear transitions the ticket to In Progress without pulling reviewers onto a moving target. When the work is done, flip to ready via `gh pr ready <N>` and immediately confirm with `gh pr view <N> --json isDraft --jq '.isDraft'`; that must return `false`. The CLI has a documented silent-success failure mode where it reports the flip but the PR stays in draft, so verification is mandatory. If the flip did not take, retry through the raw GraphQL mutation: grab the PR node id via `gh pr view <N> --json id -q .id`, then `gh api graphql -f query='mutation($id:ID!){markPullRequestReadyForReview(input:{pullRequestId:$id}){pullRequest{isDraft}}}' -F id="$PR_ID"` and read the returned `isDraft` directly.
+
 ## Godot session tiers
 
 The swarm inherits the session-tier system from `ai/PARALLEL.md`. Every agent declares a tier ceiling in its `.claude/agents/*.md` body; the organiser respects it and never elevates silently.
