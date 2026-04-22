@@ -26,9 +26,12 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 
    ```
    gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
-     -f body="..." -f commit_id="<sha>" -f path="<file>" \
+     -f body=$'**<commenter>**\n\n<type>: <body>' \
+     -f commit_id="<sha>" -f path="<file>" \
      -F line=<line> -f side=RIGHT
    ```
+
+   ANSI-C quoting (`$'...'`) expands `\n\n` into real newlines, so the bold name sits on its own line above the Conventional Comment. `<commenter>` is a rotating codename for implementation agents (`trillian`, `abe`, `manny`), the role name for review specialists (`ci-and-workflows`, `docs-and-writing`, `code-quality`, etc.), or `josh` for Josh. Replies to existing comments use the same prefix so threaded context stays legible.
 6. **Hand off.** Re-sync against main, then report the PR to Josh. Don't flag comments in chat; the PR is the source of truth.
 7. **Block or spin.** Loop on the same issue twice → escalate (see below). Do not try a third variant silently.
 
@@ -110,6 +113,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
 
 ## Done (recent)
 
@@ -129,5 +133,6 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-169] Ford: claimed; name-prefix rule landed in PARALLEL.md §5, swarm README, post-review.sh
 [init] scratchpad reset on cycle #3 open
 ```
