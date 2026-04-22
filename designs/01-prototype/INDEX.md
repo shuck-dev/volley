@@ -35,4 +35,6 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 17 | [Partner AI](17-partner-ai.md) |
 | 18 | [Partner Upgrade Strategy](18-partner-upgrade-strategy.md) |
 | 19 | [Minified Paddle](19-minified-paddle.md) |
+| 20 | [Ball Speed Tiers and Physics Ceiling](20-ball-speed-tiers.md) |
+| 20a | [Ball Speed Tier Progression](20a-ball-speed-tier-progression.md) |
 | 21 | [Ball Dynamics](21-ball-dynamics.md) |
