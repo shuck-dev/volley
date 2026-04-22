@@ -81,6 +81,8 @@ jobs:
     name: Pick eligible ticket from active cycle
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     outputs:
       ticket_id: ${{ steps.pick.outputs.ticket_id }}
       ticket_number: ${{ steps.pick.outputs.ticket_number }}
@@ -318,6 +320,8 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      contents: read
     steps:
       - name: Post to ntfy (if configured)
         env:
@@ -376,7 +380,7 @@ jobs:
           git config user.email "daily-cycle-bot@users.noreply.github.com"
 
       - name: Run Claude Code headless
-        uses: anthropics/claude-code-action@5d5c10a4f389689f992ea10bb14dcb6fcc83146d # v1
+        uses: anthropics/claude-code-action@5d5c10a4f389689f992ea10bb14dcb6fcc83146d # v1 (Claude Code 2.1.116, Agent SDK 0.2.116)
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
