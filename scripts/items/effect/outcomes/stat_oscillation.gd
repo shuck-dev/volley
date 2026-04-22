@@ -14,16 +14,21 @@ var stat_key: StringName
 var amplitude: float
 var range_stat_key: StringName
 var _time := 0.0
+var _range_value := 1.0
 
 
 func advance(delta: float) -> void:
 	_time += delta
 
 
-func get_offset(effect_state: EffectState) -> float:
+func set_range_value(value: float) -> void:
+	_range_value = value
+
+
+func get_offset() -> float:
 	var wave: float = (
 		sin(_time * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
 		+ sin(_time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
 		+ sin(_time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
 	)
-	return wave * amplitude * effect_state.get_base_stat(range_stat_key)
+	return wave * amplitude * _range_value

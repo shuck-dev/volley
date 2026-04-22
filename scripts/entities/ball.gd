@@ -5,6 +5,8 @@ signal missed
 signal at_max_speed_changed(is_at_max: bool)
 signal speed_changed(speed: float, min_speed: float, max_speed: float)
 
+const SPEED_EMIT_THRESHOLD := 10.0
+
 var speed: float = 0.0
 var min_speed: float
 var max_speed: float
@@ -13,6 +15,9 @@ var effect_processor: BallEffectProcessor
 
 var _item_manager: Node
 var _was_at_max_speed := false
+var _last_emitted_speed: float = 0.0
+var _last_emitted_min: float = 0.0
+var _last_emitted_max: float = 0.0
 
 
 func _ready() -> void:
@@ -28,20 +33,28 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
-	var prev_speed: float = speed
-	var prev_min: float = min_speed
-	var prev_max: float = max_speed
 	effect_processor.process_frame(delta)
 	_emit_max_speed_if_changed()
-	var speed_unchanged: bool = (
-		is_equal_approx(speed, prev_speed)
-		and is_equal_approx(min_speed, prev_min)
-		and is_equal_approx(max_speed, prev_max)
-	)
-	if speed_unchanged:
-		return
-	speed_changed.emit(speed, min_speed, max_speed)
+	if _should_emit_speed_changed():
+		_emit_speed_changed()
 	linear_velocity = linear_velocity.normalized() * speed
+
+
+func _should_emit_speed_changed() -> bool:
+	if absf(speed - _last_emitted_speed) >= SPEED_EMIT_THRESHOLD:
+		return true
+	if not is_equal_approx(min_speed, _last_emitted_min):
+		return true
+	if not is_equal_approx(max_speed, _last_emitted_max):
+		return true
+	return false
+
+
+func _emit_speed_changed() -> void:
+	_last_emitted_speed = speed
+	_last_emitted_min = min_speed
+	_last_emitted_max = max_speed
+	speed_changed.emit(speed, min_speed, max_speed)
 
 
 func _on_body_entered(body: Node) -> void:
@@ -81,7 +94,7 @@ func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
 	linear_velocity = linear_velocity.normalized() * speed
 	_emit_max_speed_if_changed()
-	speed_changed.emit(speed, min_speed, max_speed)
+	_emit_speed_changed()
 
 
 func _emit_max_speed_if_changed() -> void:
