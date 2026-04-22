@@ -116,7 +116,7 @@ Applied by the orchestrator after `gh pr create` per the step 4 flow in `ai/PARA
 Two required status checks drive the merge gate:
 
 - **`Human Approved`**: succeeds only when the `approved-human` label is present.
-- **`AI Review Passed`**: succeeds only when the `zaphod-blocked` label is absent.
+- **`Zaphod Review Passed`**: succeeds only when the `zaphod-blocked` label is absent.
 
 Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
 
