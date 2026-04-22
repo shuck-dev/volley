@@ -46,13 +46,13 @@ jobs:
     # (feature, bug, autolabel additions) rather than an approval label.
     # Category labels carry no approval signal, so re-running the gate
     # wastes a billed minute per event. Approval labels (approved-human,
-    # changes-requested-human, zaphod-*) must always run; synchronize,
+    # action-required-human, zaphod-*) must always run; synchronize,
     # opened, reopened, merge_group, and workflow_dispatch always run.
     if: >-
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
       github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'changes-requested-human' ||
+      github.event.label.name == 'action-required-human' ||
       startsWith(github.event.label.name, 'zaphod-')
     steps:
       - name: Strip human verdict labels on new commits
@@ -62,11 +62,11 @@ jobs:
           script: |
             // Both human verdict labels are content-specific: a new push
             // invalidates them, so Josh must re-verdict after addressing
-            // feedback (changes-requested-human) or re-reviewing a tweak
+            // feedback (action-required-human) or re-reviewing a tweak
             // (approved-human). Matches the zaphod strip in reviewer-re-run.yml.
             const pr = context.payload.pull_request;
             const current = new Set(pr.labels.map(label => label.name));
-            for (const name of ['approved-human', 'changes-requested-human']) {
+            for (const name of ['approved-human', 'action-required-human']) {
               if (!current.has(name)) continue;
               try {
                 await github.rest.issues.removeLabel({
@@ -82,11 +82,11 @@ jobs:
             }
 
       - name: Enforce mutual exclusion between human verdict labels
-        if: github.event_name == 'pull_request_target' && github.event.action == 'labeled' && (github.event.label.name == 'approved-human' || github.event.label.name == 'changes-requested-human')
+        if: github.event_name == 'pull_request_target' && github.event.action == 'labeled' && (github.event.label.name == 'approved-human' || github.event.label.name == 'action-required-human')
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            // approved-human and changes-requested-human are a binary
+            // approved-human and action-required-human are a binary
             // verdict: Josh cannot simultaneously approve and request
             // changes. Whichever label was just applied wins; the other
             // strips. The human-approved-guard workflow still polices
@@ -94,7 +94,7 @@ jobs:
             // between the two verdict states.
             const applied = context.payload.label.name;
             const other = applied === 'approved-human'
-              ? 'changes-requested-human'
+              ? 'action-required-human'
               : 'approved-human';
             try {
               await github.rest.issues.removeLabel({
@@ -124,7 +124,7 @@ jobs:
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
       github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'changes-requested-human' ||
+      github.event.label.name == 'action-required-human' ||
       startsWith(github.event.label.name, 'zaphod-')
     steps:
       - name: Evaluate human verdict labels
@@ -163,12 +163,12 @@ jobs:
             });
             const labels = new Set(pr.labels.map(label => label.name));
 
-            // changes-requested-human wins over every other state: even if
+            // action-required-human wins over every other state: even if
             // approved-human somehow coexists (race between label events),
             // an explicit "wants changes" verdict must block the merge
             // queue. The gate job's mutual-exclusion step normally
             // prevents the coexistence, but this check is the safety net.
-            if (labels.has('changes-requested-human')) {
+            if (labels.has('action-required-human')) {
               core.setFailed(
                 'Changes requested: address Josh\'s comments and push a fix. ' +
                 'The label strips automatically on the next push.',
@@ -211,7 +211,7 @@ jobs:
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
       github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'changes-requested-human' ||
+      github.event.label.name == 'action-required-human' ||
       startsWith(github.event.label.name, 'zaphod-')
     steps:
       - name: Evaluate zaphod-blocked label

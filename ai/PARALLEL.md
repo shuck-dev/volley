@@ -37,7 +37,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 
 **Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
-**Human verdict labels.** Josh's review applies one of two mutually exclusive labels: `approved-human` (sign-off, required for merge) or `changes-requested-human` (address comments before merge). Both strip on every new commit, so pushing a fix naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with a "Changes requested" message whenever `changes-requested-human` is present and fails with a "Needs human review" message when neither label is set. Only Josh may apply either label; the approver-check workflow strips unauthorised applications.
+**Human verdict labels.** Josh's review applies one of two mutually exclusive labels: `approved-human` (sign-off, required for merge) or `action-required-human` (address comments before merge). Both strip on every new commit, so pushing a fix naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with a "Changes requested" message whenever `action-required-human` is present and fails with a "Needs human review" message when neither label is set. Only Josh may apply either label; the approver-check workflow strips unauthorised applications.
 
 ---
 

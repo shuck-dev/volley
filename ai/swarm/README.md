@@ -162,9 +162,9 @@ Four labels live on PRs. Two are for agents; two are not.
 - `zaphod-approved`: the reviewer pool read the diff and found it clean.
 - `zaphod-blocked`: the reviewer pool found something that needs a human look.
 - `approved-human`: Josh only. Sign-off; required for merge.
-- `changes-requested-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
+- `action-required-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
 
-**Hard rule: agents never apply `approved-human` or `changes-requested-human`.** Both labels are Josh-only and mutually exclusive; applying one strips the other. The `Human Approved` merge-queue check fails with a "Changes requested" message while `changes-requested-human` is present.
+**Hard rule: agents never apply `approved-human` or `action-required-human`.** Both labels are Josh-only and mutually exclusive; applying one strips the other. The `Human Approved` merge-queue check fails with a "Changes requested" message while `action-required-human` is present.
 
 Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a structured verdict to the organiser:
 
