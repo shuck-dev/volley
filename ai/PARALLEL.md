@@ -22,7 +22,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
    - **Mechanical fixes** (typos, dead code, obvious bugs, style): commit on the PR branch.
    - **Everything else**: short line-anchored review comments following [Conventional Comments](https://conventionalcomments.org/) (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:`, with decorators like `(non-blocking)`). **One idea per comment, two sentences max.** If it needs more context, open an issue and link from the comment.
 
-   After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. No `LGTM` or summary comments. Line-anchored comment template:
+   After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. `zaphod-blocked` supersedes `zaphod-approved`: if a later specialist finds blocking issues, add `zaphod-blocked` and the race-resolver workflow strips the earlier `zaphod-approved`. A later clean pass never downgrades a prior blocked verdict; the blocked stands until a new commit triggers a fresh review. No `LGTM` or summary comments. Line-anchored comment template:
 
    ```
    gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
@@ -37,6 +37,8 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 
 **Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
+**Human verdict labels.** Josh's review applies one of two mutually exclusive labels: `approved-human` (sign-off, required for merge) or `action-required-human` (address comments before merge). Both strip on every new commit, so pushing a fix naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with a "Changes requested" message whenever `action-required-human` is present and fails with a "Needs human review" message when neither label is set. Only Josh may apply either label; the approver-check workflow strips unauthorised applications.
+
 ---
 
 ## Ground rules
@@ -49,7 +51,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 - **`./scripts/ci/run_gut.sh` after every code change.** Iterate until green. Lefthook fires on `git commit`; don't invoke it manually.
 - **Merge queue serialises main.** Clicking "Merge when ready" pulls the PR into a `merge_group` ref, re-runs lint+test against `main + PR`, then fast-forwards main. The pre-PR `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
 - **Godot tool discipline.** Prefer GodotIQ MCP tools over raw file ops. Never delete-and-rebuild scenes; `node_ops` + `save_scene` for `.tscn`. Godot 4 quirks live in [`godot-quirks.md`](godot-quirks.md).
-- **Conventional Commits.** `[SH-<N> ]<type>: <subject>` enforced by the `commit-msg` hook. Types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`, `ci`, `build`, `revert`. Use `git commit -s` to sign off.
+- **Commit subjects.** `[SH-<N> ]<type>: <subject>` is the convention, not a gate. Common types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `style`, `perf`, `ci`, `build`, `revert`. The `prepare-commit-msg` hook auto-prepends the SH-XXX prefix from the branch; use `git commit -s` to sign off.
 - **Engineer PRs to merge in any order.** Each PR stands alone against current main. Combine related changes sharing a file rather than splitting them. Avoid "depends on #X".
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 
@@ -110,6 +112,8 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 ---
 
 ## Active (in flight)
+
+The Active table on `origin/main` is the source of truth. A fresh worktree reads whatever commit it branched from, so sibling agents' claim rows only appear after their pre-push sync merges their claim into `main` and you pull it in. If the table looks empty in your worktree, fetch `origin/main` before trusting it.
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|

@@ -109,7 +109,7 @@ jobs:
           relative_project_path: ./
           cache: true
           export_debug: true
-          presets_to_export: Web
+          presets_to_export: WebThreaded
 
       - name: Download Butler
         run: |
@@ -119,6 +119,6 @@ jobs:
           chmod +x butler
 
       - name: Push to Itch.io Preview
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/Web" ${{ env.ITCH_PROJECT }}:html5-preview
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebThreaded" ${{ env.ITCH_PROJECT }}:html5-preview
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

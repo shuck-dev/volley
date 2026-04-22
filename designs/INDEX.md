@@ -23,6 +23,7 @@ The design thinking behind Volley!, organised by subject. Each folder has its ow
 | Folder | Description |
 |---|---|
 | [art/](art/INDEX.md) | The art bible, direction, style workshop, and inspirations |
+| [platform/](platform/threaded-web-export.md) | Platform and distribution decisions (web export, hosting) |
 | [roadmaps/](roadmaps/INDEX.md) | Discipline-specific roadmap breakdowns |
 
 ## Process
@@ -31,6 +32,7 @@ The design thinking behind Volley!, organised by subject. Each folder has its ow
 |---|---|
 | [Ticket Writing](process/ticket-writing.md) | How we write Linear and GitHub issues |
 | [Labels](process/labels.md) | The label taxonomy and what each label means |
+| [Swarm Architecture](process/swarm-architecture.md) | How the parallel agent system is shaped and why |
 
 ## Research
 

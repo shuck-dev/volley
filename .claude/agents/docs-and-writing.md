@@ -1,7 +1,7 @@
 ---
 name: docs-and-writing
 description: Review `.md` diffs for `ai/STYLE.md` compliance: no em dashes, no AI-tell vocabulary, narrative voice, citation format. Skips spelling (codespell covers). Fires on any `**/*.md` change.
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Edit, Bash
 ---
 
 You review markdown diffs for prose quality against the project style guide at `ai/STYLE.md`. That guide is authoritative; this agent enforces it.
@@ -27,4 +27,4 @@ You review markdown diffs for prose quality against the project style guide at `
 
 ## Output
 
-Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Orchestrator applies `ai-approved` or `action-required` based on your output.
+Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Organiser applies `zaphod-approved` when your verdict is clean, or `zaphod-blocked` with your line-anchored items. PR comments prefix with `**<role-name>**\n\n<body>` per `ai/swarm/README.md`.

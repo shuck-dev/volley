@@ -71,11 +71,13 @@ The organiser owns every merge back. Agents do not merge each other's worktrees,
 
 ## Commit discipline
 
-Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a subject line that names its role: `test-author: pin coverage for shop-upgrade race`, `refactor-planner: extract paddle AI state machine`. The commit author is Josh (per DCO), so the role tag lives in the subject and body rather than the author field.
+Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a Conventional Commits subject the `commit-msg` hook accepts: `test: pin coverage for shop-upgrade race`, `refactor: extract paddle AI state machine`. The `commit-msg` regex has no scope group, so role tags never appear in the subject. The role name goes in the commit body on its own line (`test-author: ...` or `refactor-planner: ...`) alongside the DCO sign-off. The commit author is Josh (per DCO), so the role tag lives in the body rather than the author field.
 
 The organiser merges worktrees back without squashing, preserving per-agent attribution in the commit history. When the final PR opens, `pr-describer` writes the body; the reader can scan the commit list to see which agent produced which change.
 
 Review happens in the pull request, never on local files. "Ready for your review" means the branch is pushed and a PR is open with the reviewer fan-out running. Local file-review bypasses the `zaphod-approved` / `zaphod-blocked` surface and the existing reactive reviewers.
+
+PRs open as drafts so Linear transitions the ticket to In Progress without pulling reviewers onto a moving target. When the work is done, flip to ready via `gh pr ready <N>` and immediately confirm with `gh pr view <N> --json isDraft --jq '.isDraft'`; that must return `false`. The CLI has a documented silent-success failure mode where it reports the flip but the PR stays in draft, so verification is mandatory. If the flip did not take, retry through the raw GraphQL mutation: grab the PR node id via `gh pr view <N> --json id -q .id`, then `gh api graphql -f query='mutation($id:ID!){markPullRequestReadyForReview(input:{pullRequestId:$id}){pullRequest{isDraft}}}' -F id="$PR_ID"` and read the returned `isDraft` directly.
 
 ## Godot session tiers
 
@@ -96,6 +98,10 @@ The organiser is entity-driven. Point it at a thing and it does the right thing.
 - **A cycle** fans out research across four facets: point load, unassigned tickets, stale dates, orphan projects.
 
 Phrases do not trigger recipes. "Can you look at SH-42" does. The shape of the entity chooses the shape of the team.
+
+### Pre-dispatch ticket-state recheck
+
+Before spinning up a worktree the organiser re-reads each candidate ticket's Linear state and searches for a merged PR on its branch pattern (`feature/sh-N-*`, `sh-N-*`). If the ticket is Done, Canceled, or its branch pattern resolves to a merged PR, the organiser skips dispatch and flags the stale entity. One turn of `mcp__linear__get_issue` plus `gh pr list --search "sh-N" --state merged` is enough; the cost is negligible next to spinning up a worktree for work that has already shipped.
 
 ## Recipes
 
@@ -157,13 +163,14 @@ Everything between those two points is parallel. Agents do not wait for each oth
 
 ## PR verdicts and merge
 
-Three labels live on PRs. Two are for agents; one is not.
+Four labels live on PRs. Two are for agents; two are not.
 
 - `zaphod-approved`: the reviewer pool read the diff and found it clean.
 - `zaphod-blocked`: the reviewer pool found something that needs a human look.
-- `approved-human`: Josh only.
+- `approved-human`: Josh only. Sign-off; required for merge.
+- `action-required-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
 
-**Hard rule: agents never apply `approved-human`.** The label is the merge-queue permission slip, and only Josh grants it.
+**Hard rule: agents never apply `approved-human` or `action-required-human`.** Both labels are Josh-only and mutually exclusive; applying one strips the other. The `Human Approved` merge-queue check fails with a "Changes requested" message while `action-required-human` is present.
 
 Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a structured verdict to the organiser:
 
