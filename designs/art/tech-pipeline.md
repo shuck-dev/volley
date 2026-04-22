@@ -275,7 +275,7 @@ Frame indexing is two-digit zero-padded (`_01`, `_02`, …, `_99`). If an animat
 
 Indicative targets for a 1080p frame on the mobile renderer, idle-play load:
 
-- **Draw calls:** under 200 during gameplay. Parallax2D layers and per-character `AnimatedSprite2D` dominate; batching is mostly free. (The 200 figure is a working target pending a cited reference; see [Open questions](#open-questions).)
+- **Draw calls:** under 200 during gameplay. Parallax2D layers and per-character `AnimatedSprite2D` dominate; batching is mostly free. Arm's GPU Best Practices guide recommends staying under 500 per frame on OpenGL ES and under 1000 on Vulkan for mobile-class hardware; 200 keeps Volley! comfortably inside that envelope with headroom for the layer count a painted venue implies.
 - **Sprite memory:** under 256 MB at steady state. Characters and backgrounds together. Per-venue background set under 64 MB.
 - **Particles alive:** under 500 at peak. A hit spark plus ambient motes sits near 100.
 - **Animation updates:** `AnimatedSprite2D` runs at the animation's authored FPS, not the monitor refresh rate. A 4-FPS idle does not cost more because the monitor is 144 Hz.
@@ -305,4 +305,3 @@ The background layering approach described here is validated by `scenes/court.ts
 - Whether any in-world text (signage, the ball rack's label strip) needs a separate font treatment. Deferred until UI work begins.
 - Whether VFX lives in the mobile renderer's additive blend path as well as it does under Forward Plus. Validated when the renderer is switched.
 - How painted-light reconciliation extends to characters that traverse longer spatial ranges within a single animation state (a reaction that crosses the venue, a cutscene pan). Current answer is to paint the enter/exit states with resolving light; an animator-led pass can confirm whether that covers every practical case or if a small set of directional variants per character becomes necessary.
-- A citable reference for the draw-call budget (the 200 figure) on the mobile renderer with Volley!'s layer count; to be pinned during the first full venue integration with `perf_snapshot` data alongside published Godot 2D benchmarks.
