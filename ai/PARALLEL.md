@@ -6,7 +6,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 
 ## How to use this doc
 
-1. **Claim a ticket.** Every branch must carry its Linear ticket ID. Chore/infra with no SH-N: file first via `./scripts/dev/new-ticket.sh "<title>"` (Backlog, Feature, Josh-assigned, estimate 0, auto-slotted into the active cycle). Branch name: `sh-<N>-<slug>`. Add a row to the Active table, then commit the claim on the branch (not on main).
+1. **Claim a ticket.** Every branch must carry its Linear ticket ID. Chore/infra with no SH-N: file first via `./scripts/dev/new-ticket.sh "<title>"` (Backlog, Feature, Josh-assigned, estimate 0, auto-slotted into the active cycle). Branch name: `sh-<N>-<slug>`. Add a row to the Active table, then commit the claim on the branch (not on main). Spikes: fill the "Vocabulary claims" column with the symbol names, stat keys, and API surfaces the spike is fixing, so parallel spikes on adjacent surfaces can see what vocabulary is already spoken for.
 2. **Cycle placement.** If the claimed ticket has no cycle, move it into the current active cycle: `mcp__linear__list_cycles(teamId, type: "current")` → `mcp__linear__save_issue(id, cycleId)`. Skip if no active cycle.
 3. **Log progress.** One terse line per meaningful step to the Activity Log: `[SH-XX] <agent>: <what happened>`.
 4. **Sync before opening and before every later push.** `git fetch origin main && git merge origin/main`, resolve, re-run `./scripts/ci/run_gut.sh`, push. Repeat any time you resume work or before asking Josh to merge. `git rev-list --count HEAD..origin/main` = "behind by N".
@@ -111,14 +111,18 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 ## Active (in flight)
 
-| Agent | Ticket | Branch | Files touched | Started | Notes |
-|---|---|---|---|---|---|
-| Glottis | SH-80 | sh-80-tech-art-pipeline | designs/art/tech-pipeline.md, designs/art/INDEX.md | 2026-04-21 | Tech art pipeline spike |
-| Trillian | SH-120 / SH-123 | sh-120-sh-123-workflow-hardening | .github/workflows/*.yml | 2026-04-21 | paired dispatch: per-job permissions + verify SHA pins |
-| Riebeck | SH-88 | sh-88-ball-speed-tiers-and-physics-ceiling | designs/01-prototype/20-ball-speed-tiers.md | 2026-04-21 | spike: tier system + 1800 px/s physics ceiling |
-| Solanum | SH-83 | sh-83-ball-dynamics-design-spike | designs/01-prototype/21-ball-dynamics.md | 2026-04-21 | spike: ball physics model answers to seven questions |
-| Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
-| Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
+The Active table on `origin/main` is the source of truth. A fresh worktree reads whatever commit it branched from, so sibling agents' claim rows only appear after their pre-push sync merges their claim into `main` and you pull it in. If the table looks empty in your worktree, fetch `origin/main` before trusting it.
+
+Spike agents fill the "Vocabulary claims" column with the symbol names, stat keys, enum values, and API surfaces they are committing to in the spike: the names adjacent work has to agree with. An empty cell means no public vocabulary is being fixed; a row full of names warns the next spike off those surfaces.
+
+| Agent | Ticket | Branch | Files touched | Vocabulary claims | Started | Notes |
+|---|---|---|---|---|---|---|
+| Glottis | SH-80 | sh-80-tech-art-pipeline | designs/art/tech-pipeline.md, designs/art/INDEX.md | _(none)_ | 2026-04-21 | Tech art pipeline spike |
+| Trillian | SH-120 / SH-123 | sh-120-sh-123-workflow-hardening | .github/workflows/*.yml | _(none)_ | 2026-04-21 | paired dispatch: per-job permissions + verify SHA pins |
+| Riebeck | SH-88 | sh-88-ball-speed-tiers-and-physics-ceiling | designs/01-prototype/20-ball-speed-tiers.md | _(none)_ | 2026-04-21 | spike: tier system + 1800 px/s physics ceiling |
+| Solanum | SH-83 | sh-83-ball-dynamics-design-spike | designs/01-prototype/21-ball-dynamics.md | _(none)_ | 2026-04-21 | spike: ball physics model answers to seven questions |
+| Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | _(none)_ | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
+| Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | _(none)_ | 2026-04-21 | commenter-name prefix on PR comments |
 
 ## Done (recent)
 
