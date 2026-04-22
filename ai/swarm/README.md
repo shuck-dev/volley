@@ -175,7 +175,38 @@ When the verdict is `zaphod-approved`, the organiser applies the label with `gh 
 
 When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request review with the summary as the review body and each `item` as an inline review comment on its line, via `gh api repos/:owner/:repo/pulls/:pr/reviews` with `event: COMMENT`. Inline review comments are resolvable in the PR UI, so fixes close threads naturally. The organiser then applies `zaphod-blocked`.
 
-`scripts/swarm/post-review.sh` wraps that posting surface: pass a PR number and a verdict JSON file in the shape above, and the script handles structure validation, payload construction with `jq`, the `gh api` post, and the label. It pipes JSON via stdin rather than shell-interpolating comment text, so reviewer prose can carry any punctuation without escaping back into the shell. Approved verdicts apply the label only; blocked verdicts post the review first.
+`scripts/swarm/post-review.sh` wraps that posting surface: pass a PR number and a verdict JSON file in the shape above, and the script handles structure validation, payload construction with `jq`, the `gh api` post, and the label. It pipes JSON via stdin rather than shell-interpolating comment text, so reviewer prose can carry any punctuation without escaping back into the shell. Every `item` also carries a `commenter` field (the role name for reviewers, the rotating codename for implementers, `josh` for Josh); the script prepends `**<commenter>**\n\n` to each body automatically, so agents pass only their identity and the raw Conventional Comment. Approved verdicts apply the label only; blocked verdicts post the review first.
+
+Agents that post comments directly with `gh api` (one-off replies, manual comments outside the reviewer fan-out) follow the template from `ai/PARALLEL.md` §5 and prefix the body by hand. One example per commenter type:
+
+- **Implementation agent (rotating codename).** `trillian` leaves a `note:` on a workflow pin after auto-fixing it:
+
+  ```
+  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
+    -f body=$'**trillian**\n\nnote: pinned to the tagged SHA; dependabot will bump this alongside the tag.' \
+    -f commit_id="$SHA" -f path=".github/workflows/ci.yml" \
+    -F line=42 -f side=RIGHT
+  ```
+
+- **Review specialist (role name).** `ci-and-workflows` flags a missing permissions block:
+
+  ```
+  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
+    -f body=$'**ci-and-workflows**\n\nissue: job is missing an explicit `permissions:` block; default is read-all which is broader than needed.' \
+    -f commit_id="$SHA" -f path=".github/workflows/release.yml" \
+    -F line=17 -f side=RIGHT
+  ```
+
+- **Josh.** When Josh comments inline himself the same prefix applies so threaded replies stay consistent:
+
+  ```
+  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
+    -f body=$'**josh**\n\nquestion: why RIGHT side here rather than the base commit?' \
+    -f commit_id="$SHA" -f path="ai/PARALLEL.md" \
+    -F line=30 -f side=RIGHT
+  ```
+
+Replies to existing comments (`…/comments/{id}/replies`) use the same `**<commenter>**\n\n<type>: <body>` shape, so reply bodies read the same as top-level ones on mobile.
 
 Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed.
 
@@ -237,3 +268,9 @@ Linear's workflow already gives the swarm a natural trust boundary: the **Triage
 - Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; agents queue auto-merge behind `zaphod-approved` and wait for `approved-human`.
 
 The rest of the git rules live in [`ai/PARALLEL.md`](../PARALLEL.md). This file governs how the swarm is shaped; that one governs how a single stream behaves on the branch.
+
+## Required checks must be real jobs
+
+A required status check on the ruleset has to map to a workflow job whose `name:` matches it exactly. The merge queue's pre-enqueue evaluator inspects workflow YAML to decide whether a required check will appear on the integration commit; it does not execute script steps or follow `github.rest.checks.create()` calls. A check posted from inside a github-script step passes on the PR head and still blocks the queue with "N of M required status checks are expected" (see SH-159).
+
+If a gate needs a required check, write a job named exactly that check. The job reads whatever state it needs and exits 0 for pass, non-zero for fail; GitHub publishes the check-run from the job's conclusion. Preserve multi-state UX via `core.notice` and `core.warning` annotations on the job, not via manual check-run posting.

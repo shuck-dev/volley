@@ -8,8 +8,16 @@
 #   {
 #     "verdict": "zaphod-approved" | "zaphod-blocked",
 #     "summary": "one-sentence overall finding",
+#     "commenter": "<role-or-codename>",  # default commenter for items that
+#                                          # omit their own (reviewer role name,
+#                                          # implementer codename, or "josh")
 #     "items": [                           # required when blocked
-#       {"path": "<file>", "line": <N>, "body": "<concern and fix>"}
+#       {
+#         "path": "<file>",
+#         "line": <N>,
+#         "body": "<type>: <concern and fix>",
+#         "commenter": "<override>"        # optional, overrides top-level
+#       }
 #     ]
 #   }
 #
@@ -19,7 +27,9 @@
 # - zaphod-blocked: posts a GitHub pull-request review with event=COMMENT
 #   (GitHub rejects REQUEST_CHANGES on self-authored PRs), summary as the
 #   review body, and each item as a line-anchored review comment on its
-#   path and line. Then applies zaphod-blocked.
+#   path and line. Each item body is emitted as "**<commenter>**\n\n<body>"
+#   so the author is legible at a glance in the review thread. Then applies
+#   zaphod-blocked.
 #
 # The script always pipes JSON via stdin to `gh api`, never builds the
 # payload by interpolating strings into a shell command, so reviewer
@@ -63,15 +73,32 @@ if [[ "$verdict" == "zaphod-blocked" ]]; then
 	missing=$(jq -r '[(.items // [])[] | select((.path // "") == "" or (.line // null) == null)] | length' "$verdict_file")
 	[[ "$missing" == "0" ]] || die "every item must carry path and line (got $missing malformed)"
 
+	default_commenter=$(jq -r '.commenter // ""' "$verdict_file")
+	missing_commenter=$(
+		jq -r --arg default "$default_commenter" \
+			'[(.items // [])[] | select(((.commenter // $default) | length) == 0)] | length' \
+			"$verdict_file"
+	)
+	[[ "$missing_commenter" == "0" ]] \
+		|| die "every item needs a commenter (set top-level .commenter or .items[].commenter; got $missing_commenter missing)"
+
 	repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 	payload=$(
 		jq -n \
 			--arg summary "$summary" \
+			--arg default_commenter "$default_commenter" \
 			--slurpfile verdict "$verdict_file" \
 			'{
 				event: "COMMENT",
 				body: $summary,
-				comments: ($verdict[0].items | map({path, line, side: "RIGHT", body}))
+				comments: (
+					$verdict[0].items | map({
+						path,
+						line,
+						side: "RIGHT",
+						body: ("**" + (.commenter // $default_commenter) + "**\n\n" + .body)
+					})
+				)
 			}'
 	)
 
