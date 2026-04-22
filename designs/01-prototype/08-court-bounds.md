@@ -21,20 +21,6 @@ No side walls. The court visibly opens onto the rest of the venue.
 
 Two bands along the court sides detect sideways exits. Both run the full height of the play area.
 
-```
-  ┌──────────────── top (ceiling, bounce) ────────────────────┐
-  │                                                           │
-  │                 ┆                                miss-out │
-  │         ┌──┐    ┆                                   ┌──┐  │
-  │ behind  │MC│    ┆                                   │  │  │
-  │ paddle  │  │    ┆        in-play court              │  │  │
-  │ space   │  │    ┆                                   │  │  │
-  │         │  │    ┆                                   │  │  │
-  │         └──┘    ┆                                   └──┘  │
-  └──────────────── ground (bounce) ──────────────────────────┘
-                    ↑ vertical miss-line trigger (in front of paddle)
-```
-
 - **In-play region:** bounded by the top (ceiling), the ground (bounce floor), and the miss line to the paddle's court-facing side. A ball inside this region is live.
 - **Miss-line band:** a thin vertical trigger just in front of the paddle's tracking lane. A ball crossing it heading behind the paddle fires a back-miss. The paddle itself sits behind the line; the space further behind the paddle is open venue, not a wall.
 - **Side miss bands:** one on each side, just outside the court's lateral extent. Crossing either fires a side-miss.
@@ -134,13 +120,13 @@ The player will never own enough balls for visual clutter to become a problem at
 
 ## Helper upgrade (future, not in prototype scope)
 
-A `court` role item that automatically fetches rested balls and returns them to the rack. Authoring follows the existing court-item shape:
+A `court` role item: a dog that automatically fetches rested balls and returns them to the rack. Authoring follows the existing court-item shape:
 
 - `role = &"court"` so it snaps to a `Roles/Court` marker on drag-in.
-- Acts as a fixture (see `08-fixtures.md`) if its prop needs to sit in the venue; if a simple behavioural item is enough, it skips the fixture scene and just attaches a controller script.
-- Behaviour: scans for balls with the `resting` flag, walks or teleports a small animated helper to each, returns them to the rack one at a time on an authored cadence.
+- Acts as a fixture (see `08-fixtures.md`) if the dog's prop needs to sit in the venue; if a simple behavioural item is enough, it skips the fixture scene and just attaches a controller script.
+- Behaviour: scans for balls with the `resting` flag, the dog walks or bounds to each one, and carries them back to the rack one at a time on an authored cadence.
 
-The helper reuses the bot's `court` role plumbing; it does not need a new role. Whether it uses the bot's fixture shape or a lighter behavioural item is an implementation choice for its own ticket.
+The dog reuses the bot's `court` role plumbing; it does not need a new role. Whether it uses the bot's fixture shape or a lighter behavioural item is an implementation choice for its own ticket.
 
 ---
 
