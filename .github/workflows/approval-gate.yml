@@ -18,6 +18,9 @@ on:
   # appear on the integration commit and the merge queue stalls on them.
   merge_group:
 
+permissions:
+  contents: read
+
 # `Human Approved` and `Zaphod Review Passed` are real jobs rather than
 # check-runs posted from inside a script step. The merge queue's
 # enqueue-time pre-evaluator matches required checks against workflow
