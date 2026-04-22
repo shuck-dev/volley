@@ -18,7 +18,7 @@ on:
   # appear on the integration commit and the merge queue stalls on them.
   merge_group:
 
-# `Human Approved` and `AI Review Passed` are real jobs rather than
+# `Human Approved` and `Zaphod Review Passed` are real jobs rather than
 # check-runs posted from inside a script step. The merge queue's
 # enqueue-time pre-evaluator matches required checks against workflow
 # job names; it cannot see `github.rest.checks.create()` calls inside a
@@ -138,8 +138,8 @@ jobs:
             }
             core.setFailed('approved-human label not present on PR.');
 
-  ai-review-passed:
-    name: AI Review Passed
+  zaphod-review-passed:
+    name: Zaphod Review Passed
     runs-on: ubuntu-latest
     timeout-minutes: 2
     needs: gate
