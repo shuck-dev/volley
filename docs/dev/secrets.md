@@ -1,42 +1,44 @@
-# Developer secrets: keep them off disk, off world-read
+# Handling API keys while working on Volley!
 
-This is the short version of how personal API keys live on a Volley! developer machine. It covers the files that tend to accumulate credentials (`~/.claude/settings.json`, shell rc files, environment helpers) and the migration path to a password manager so those credentials stop sitting unencrypted in the home directory.
+If your setup for working on Volley! includes personal API keys on your dev machine, this doc collects some hygiene habits that keep them out of world-readable files and out of the repo. It is aimed at open-source contributors, so the advice is optional where it needs to be: a contributor touching only Godot scenes can skip most of it, and a contributor wiring up third-party tooling can cherry-pick the parts that match their setup.
 
-The rule in one line: secrets belong in a manager that prompts for unlock, not in a world-readable file.
+The rule in one line: a secret belongs in a manager that prompts for unlock, not in a file that any process running as your user can read.
 
-## What counts as a secret here
+## What a "secret" might look like
 
-- Linear API keys (`LINEAR_API_KEY`).
-- Anthropic API keys used by Claude Code (`ANTHROPIC_API_KEY`).
-- GodotIQ tokens and other MCP server credentials.
-- GitHub personal access tokens used outside of `gh auth`.
-- itch.io API keys used by butler.
+Concretely, the sort of credential that benefits from this treatment is any long-lived token that calls a third-party service on your behalf. Examples a contributor might have lying around (none of these are required to work on Volley!):
 
-Anything the project needs to call a third-party service on your behalf belongs on this list. Tokens that only exist inside `gh auth` or `op signin` are already managed; leave those alone.
+- API keys for any AI or LLM provider you use while coding.
+- API keys for project-management services (for example: Linear, Jira, GitHub tokens used outside `gh auth`).
+- Publishing or deployment tokens (for example: `butler` for itch.io, registry credentials).
+- MCP server credentials, if you run an editor or agent that speaks MCP.
 
-## Baseline: tighten file modes
+Tokens that already live inside a managed store, like `gh auth` or `op signin`, are already covered. This doc is about the ones that tend to drift into plaintext config files instead.
 
-The one concrete change every dev machine needs is a stricter mode on the Claude settings file, which ships as `644` by default and ends up holding MCP env blocks:
+## Baseline: tighten file modes on anything that holds a key
+
+The one habit worth picking up regardless of toolchain is making sure home-directory files that hold credentials are not world-readable. Many tools ship config files at mode `644` and then invite you to paste a key into them.
 
 ```sh
-chmod 600 ~/.claude/settings.json
-chmod 600 ~/.claude/settings.local.json  # if present
+# for any file in your home directory that holds a plaintext credential
+chmod 600 <path>
 ```
 
-Same treatment for anything else in the home directory that holds plaintext credentials:
+A sweep that surfaces candidates:
 
 ```sh
-chmod 600 ~/.netrc ~/.pypirc ~/.npmrc ~/.config/gh/hosts.yml 2>/dev/null
-# audit every world-readable file under ~/.config, including .yml, .toml, .env, and dotfiles
+# audit world-readable files under ~/.config and in the top of $HOME
 find ~/.config -type f -perm /044 -print
-find ~ -maxdepth 2 -type f -name '.*' -perm /044 -print  # also sweep home-dir dotfiles
+find ~ -maxdepth 2 -type f -name '.*' -perm /044 -print
 ```
+
+Common suspects: `~/.netrc`, `~/.pypirc`, `~/.npmrc`, `~/.config/gh/hosts.yml`, per-tool `*.yml`, `*.toml`, `*.env`, and any editor or agent settings that accept an `env` block.
 
 If a file needs to stay world-readable (a checked-in sample config, a public key), it should not contain a secret in the first place. Move the secret out, then relax the mode.
 
 ## Migration path: move secrets into a manager
 
-Pick one of these and stick with it. Both are fine; the choice is about workflow preference.
+Two general-purpose options. Either is fine; pick the one that fits your workflow.
 
 ### Option A: `pass` (gpg-backed, filesystem store)
 
@@ -49,10 +51,10 @@ gpg --full-generate-key                 # RSA 4096 or ed25519
 pass init <your-gpg-key-id>
 
 # store a secret
-pass insert volley/anthropic-api-key
+pass insert example/some-api-key
 
 # export for a single shell session
-export ANTHROPIC_API_KEY="$(pass show volley/anthropic-api-key)"
+export SOME_API_KEY="$(pass show example/some-api-key)"
 ```
 
 ### Option B: `1password-cli` (`op`)
@@ -65,59 +67,57 @@ sudo pacman -S 1password-cli            # or: brew install 1password-cli
 op signin
 
 # store: add the item via the 1Password app, then reference it by path
-export ANTHROPIC_API_KEY="$(op read op://Private/Anthropic/api-key)"
+export SOME_API_KEY="$(op read op://Private/Example/api-key)"
 ```
 
 Either way, the pattern is the same: the plaintext key never lands in a shell rc file or a config JSON. It lives in the manager, gets read into a variable per-session, and evaporates when the shell exits.
 
-## Wiring the manager into Claude Code
+## An on-demand shell session for dev work
 
-Claude reads MCP env blocks from `~/.claude/settings.json`. Instead of pasting the key value there, keep the value in the manager and launch Claude from a shell that exports the env var first.
-
-The primary pattern is an on-demand `dev-env` script you `source` when you start a Volley work session. Keep it outside the repo and out of any shell rc file:
+Rather than exporting every key in `~/.zshrc` or `~/.bashrc` (which fires an unlock prompt on every new shell), keep an opt-in script that you `source` when you start a session that actually needs the keys.
 
 ```sh
 # ~/bin/dev-env (or anywhere on PATH), not checked in
-export ANTHROPIC_API_KEY="$(pass show volley/anthropic-api-key)"
-export LINEAR_API_KEY="$(pass show volley/linear-api-key)"
+export SOME_API_KEY="$(pass show example/some-api-key)"
+export OTHER_API_KEY="$(pass show example/other-api-key)"
 ```
 
 Then:
 
 ```sh
 source ~/bin/dev-env   # one GPG prompt, once, when you actually want the keys
-claude                 # or the MCP-aware tool of choice
+# ...launch your editor or tool here
 ```
 
-Avoid putting these `pass show` lines directly in `~/.zshrc` or `~/.bashrc`: every new shell would fire a GPG unlock prompt, which pushes people toward caching tricks or back to plaintext. Source the script only in the shells that need the keys.
+One unlock per work session, zero keys in rc files.
 
-Then the `settings.json` entry becomes a passthrough rather than a secret store:
+## Repo and history hygiene
+
+- Do not commit keys to the repo. `gitleaks` runs in CI; local habits should match.
+- Do not paste secrets into shell history. Use the manager's read command, or a here-doc.
+- Do not share the home directory (`scp -r ~`, cloud sync of `$HOME`, terminal screenshots) without auditing which files hold secrets first.
+- If a key has ever sat in a world-readable file, treat it as compromised: revoke at the provider, issue a new one, store it in the manager, re-export in the shell, and restart any long-lived process that cached the old value.
+
+## Appendix: if you use Claude Code
+
+Skip this section if you do not use Claude Code; the rest of the doc stands on its own.
+
+Claude Code reads MCP environment variables from `~/.claude/settings.json`. That file ships at mode `644`, and MCP `env` blocks are a natural place for keys to accumulate, so it is worth both tightening the mode and keeping the key values out of the file.
+
+```sh
+chmod 600 ~/.claude/settings.json
+chmod 600 ~/.claude/settings.local.json  # if present
+```
+
+With the `dev-env` pattern above in place, the settings file becomes a passthrough rather than a secret store:
 
 ```json
 {
   "env": {
-    "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
-    "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+    "SOME_API_KEY": "${SOME_API_KEY}",
+    "OTHER_API_KEY": "${OTHER_API_KEY}"
   }
 }
 ```
 
-That file can still be `chmod 600` as defence in depth, but it no longer holds the secret.
-
-## What not to do
-
-- Do not commit any of these keys to the repo, ever. Repo hygiene is covered by `gitleaks` in CI; local discipline has to match.
-- Do not paste secrets into shell history. Use the manager's read command or a here-doc.
-- Do not share the home directory (`scp -r ~`, cloud sync of `$HOME`, screenshots of terminal) without auditing which files hold secrets first.
-- Do not leave a previously-leaked key rotating on a timer. Revoke at the provider, then reissue through the manager.
-
-## Rotation
-
-When a secret has been in a world-readable file at any point, treat it as compromised:
-
-1. Revoke at the provider (Linear, Anthropic, itch.io, GitHub).
-2. Issue a new key.
-3. Store the new key in `pass` or `op`.
-4. Re-export in the shell and restart Claude Code or any long-lived process that cached the old value.
-
-Rotation is cheap. Guessing whether a key leaked is not.
+Launch Claude from a shell that has `source`d `dev-env`, and the values resolve from the environment. The settings file can still be `chmod 600` as defence in depth, but it no longer holds the secret.
