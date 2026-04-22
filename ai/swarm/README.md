@@ -237,3 +237,9 @@ Linear's workflow already gives the swarm a natural trust boundary: the **Triage
 - Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; agents queue auto-merge behind `zaphod-approved` and wait for `approved-human`.
 
 The rest of the git rules live in [`ai/PARALLEL.md`](../PARALLEL.md). This file governs how the swarm is shaped; that one governs how a single stream behaves on the branch.
+
+## Required checks must be real jobs
+
+A required status check on the ruleset has to map to a workflow job whose `name:` matches it exactly. The merge queue's pre-enqueue evaluator inspects workflow YAML to decide whether a required check will appear on the integration commit; it does not execute script steps or follow `github.rest.checks.create()` calls. A check posted from inside a github-script step passes on the PR head and still blocks the queue with "N of M required status checks are expected" (see SH-159).
+
+If a gate needs a required check, write a job named exactly that check. The job reads whatever state it needs and exits 0 for pass, non-zero for fail; GitHub publishes the check-run from the job's conclusion. Preserve multi-state UX via `core.notice` and `core.warning` annotations on the job, not via manual check-run posting.

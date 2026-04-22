@@ -18,9 +18,13 @@ on:
   # appear on the integration commit and the merge queue stalls on them.
   merge_group:
 
-permissions:
-  checks: write
-  pull-requests: write
+# `Human Approved` and `AI Review Passed` are real jobs rather than
+# check-runs posted from inside a script step. The merge queue's
+# enqueue-time pre-evaluator matches required checks against workflow
+# job names; it cannot see `github.rest.checks.create()` calls inside a
+# github-script step, so script-posted checks pass on the PR head but
+# leave the queue stuck at "N of M required status checks are expected".
+# See SH-159.
 
 concurrency:
   group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
@@ -31,6 +35,9 @@ jobs:
     name: Post approval checks
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      contents: read
+      pull-requests: write
     # Skip the job when a labeled/unlabeled event touches a category label
     # (feature, bug, autolabel additions) rather than an approval label.
     # Category labels carry no approval signal, so re-running the gate
@@ -58,30 +65,47 @@ jobs:
               });
             }
 
-      - name: Evaluate labels and post check runs
+  human-approved:
+    name: Human Approved
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: gate
+    permissions:
+      contents: read
+      pull-requests: read
+    if: >-
+      github.event_name != 'pull_request_target' ||
+      (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+      github.event.label.name == 'approved-human' ||
+      startsWith(github.event.label.name, 'zaphod-')
+    steps:
+      - name: Evaluate approved-human label
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_MERGE_REF: ${{ github.event.merge_group.head_ref }}
+          GH_INPUT_PR: ${{ github.event.inputs.pr }}
         with:
           script: |
             // Derive the PR number from whichever event fired. merge_group
             // carries the PR number inside head_ref like
             // refs/heads/gh-readonly-queue/main/pr-123-<sha>.
             let number = null;
-            let sha = null;
             if (context.payload.pull_request) {
               number = context.payload.pull_request.number;
             } else if (context.payload.merge_group) {
-              const ref = context.payload.merge_group.head_ref || '';
+              const ref = process.env.GH_MERGE_REF || '';
               const match = ref.match(/pr-(\d+)-/);
               if (match) {
                 number = Number(match[1]);
               }
-              sha = context.payload.merge_group.head_sha;
-            } else if (context.payload.inputs && context.payload.inputs.pr) {
-              number = Number(context.payload.inputs.pr);
+            } else if (process.env.GH_INPUT_PR) {
+              number = Number(process.env.GH_INPUT_PR);
             }
 
             if (!number) {
-              core.info('No PR number in payload; nothing to gate.');
+              core.warning('No PR number in payload; cannot evaluate approval.');
+              core.setFailed('No PR number in payload.');
               return;
             }
 
@@ -91,106 +115,85 @@ jobs:
               pull_number: number,
             });
             const labels = new Set(pr.labels.map(label => label.name));
-            // On pull_request_target / workflow_dispatch: attach checks to
-            // the PR head sha. On merge_group: attach to the integration
-            // commit so the queue sees them.
-            const targetSha = sha || pr.head.sha;
 
-            const humanApproved = labels.has('approved-human');
-            const actionRequired = labels.has('zaphod-blocked');
-
-            // Three-state UX for Human Approved:
-            //
-            // 1. Label absent on a fresh PR → post status=queued with custom
-            //    text "Needs human review". Yellow pending dot in the UI,
-            //    blocks merge, and the message is ours rather than GitHub's
-            //    default GitHub waiting copy.
-            //    `queued` is more honest than `in_progress`: the gate is
-            //    scheduled but isn't actually running, it's idle waiting
-            //    for input.
-            // 2. Label applied → success (green ✓).
-            // 3. Label was applied and is now absent (e.g. the synchronize
-            //    handler stripped it on a new commit) → action_required.
-            //    Loud red/orange signal so a previously-approved PR doesn't
-            //    silently fall back to yellow without anyone noticing the
-            //    approval went away.
-            //
-            // AI Review Passed has a meaningful default on every PR (no
-            // action-required label = passing), so it always posts a
-            // completed check with a definitive conclusion.
-            const checks = [
-              {
-                name: 'Human Approved',
-                pending: !humanApproved,
-                pendingTitle: 'Needs human review',
-                pendingSummary: 'Apply the `approved-human` label once you have reviewed the PR.',
-                conclusion: humanApproved ? 'success' : 'action_required',
-                title: humanApproved ? 'Josh signed off' : 'Approval was withdrawn',
-                summary: humanApproved
-                  ? 'The `approved-human` label is present.'
-                  : 'The `approved-human` label was previously applied and has been removed (likely by a new commit). Re-apply it after re-reviewing.',
-              },
-              {
-                name: 'AI Review Passed',
-                pending: false,
-                conclusion: actionRequired ? 'failure' : 'success',
-                title: actionRequired ? 'AI reviewer left items to resolve' : 'AI review passed',
-                summary: actionRequired
-                  ? 'Resolve the `zaphod-blocked` items and remove the label before merging.'
-                  : 'No unresolved AI reviewer comments.',
-              },
-            ];
-
-            // listForRef still drives the three-state UX detection: on the
-            // same sha, a prior run signals the un-approve path rather than
-            // the fresh-PR path. But we always create a new check-run rather
-            // than updating the prior one. GitHub's merge queue evaluator
-            // does not consistently count `checks.update` results as
-            // satisfying required status checks on the current head sha;
-            // freshly created runs always do. The cost is a modestly
-            // longer check-runs list in the UI, which GitHub collapses to
-            // the latest per name when displaying status.
-            for (const check of checks) {
-              const existing = await github.rest.checks.listForRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: targetSha,
-                check_name: check.name,
-              });
-              const hasExisting = existing.data.check_runs.length > 0;
-
-              let payload;
-              if (check.pending && !hasExisting) {
-                // First post on this commit, condition not yet met → queued
-                // with custom text. Any subsequent event on the same commit
-                // creates a new run that either resolves it (success /
-                // action_required) or posts queued again.
-                payload = {
-                  status: 'queued',
-                  output: { title: check.pendingTitle, summary: check.pendingSummary },
-                };
-              } else if (check.pending && hasExisting) {
-                // Prior run on this sha + condition no longer met → the
-                // un-approve path. Post as action_required with the
-                // un-approve copy.
-                payload = {
-                  status: 'completed',
-                  conclusion: check.conclusion,
-                  output: { title: check.title, summary: check.summary },
-                };
-              } else {
-                payload = {
-                  status: 'completed',
-                  conclusion: check.conclusion,
-                  output: { title: check.title, summary: check.summary },
-                };
-              }
-
-              await github.rest.checks.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                name: check.name,
-                head_sha: targetSha,
-                ...payload,
-              });
+            if (labels.has('approved-human')) {
+              core.notice('Josh signed off: approved-human label present.');
+              return;
             }
+
+            // Three-state UX. The `gate` job above strips `approved-human`
+            // on synchronize, so a push after approval naturally lands here
+            // on the next run. We can't distinguish "never approved" from
+            // "approval withdrawn" purely from the current label set, but
+            // on synchronize we know we just stripped it if it was there.
+            if (context.payload.pull_request &&
+                context.payload.action === 'synchronize') {
+              core.warning(
+                'Approval withdrawn: approved-human was removed after a new commit. ' +
+                'Re-apply the label after re-reviewing.',
+              );
+            } else {
+              core.warning(
+                'Needs human review: apply the `approved-human` label once you have reviewed the PR.',
+              );
+            }
+            core.setFailed('approved-human label not present on PR.');
+
+  ai-review-passed:
+    name: AI Review Passed
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: gate
+    permissions:
+      contents: read
+      pull-requests: read
+    if: >-
+      github.event_name != 'pull_request_target' ||
+      (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
+      github.event.label.name == 'approved-human' ||
+      startsWith(github.event.label.name, 'zaphod-')
+    steps:
+      - name: Evaluate zaphod-blocked label
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          GH_EVENT_NAME: ${{ github.event_name }}
+          GH_MERGE_REF: ${{ github.event.merge_group.head_ref }}
+          GH_INPUT_PR: ${{ github.event.inputs.pr }}
+        with:
+          script: |
+            let number = null;
+            if (context.payload.pull_request) {
+              number = context.payload.pull_request.number;
+            } else if (context.payload.merge_group) {
+              const ref = process.env.GH_MERGE_REF || '';
+              const match = ref.match(/pr-(\d+)-/);
+              if (match) {
+                number = Number(match[1]);
+              }
+            } else if (process.env.GH_INPUT_PR) {
+              number = Number(process.env.GH_INPUT_PR);
+            }
+
+            if (!number) {
+              core.warning('No PR number in payload; cannot evaluate AI review.');
+              core.setFailed('No PR number in payload.');
+              return;
+            }
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: number,
+            });
+            const labels = new Set(pr.labels.map(label => label.name));
+
+            if (labels.has('zaphod-blocked')) {
+              core.warning(
+                'AI reviewer left items to resolve. ' +
+                'Address the `zaphod-blocked` findings and remove the label before merging.',
+              );
+              core.setFailed('zaphod-blocked label present on PR.');
+              return;
+            }
+
+            core.notice('AI review passed: no unresolved reviewer comments.');
