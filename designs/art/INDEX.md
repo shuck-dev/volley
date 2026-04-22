@@ -9,6 +9,7 @@ The living reference for Volley!'s visual direction. Concept studies and product
 | [Inspirations](inspirations.md) | Works Volley! has looked at; factual attribution list. |
 | [Style Workshop](style-workshop.md) | Workshop notes that fed into the bible. |
 | [Tech Pipeline](tech-pipeline.md) | How the style is implemented in Godot: rendering, assets, register shifts. |
+| [Character Lighting](character-lighting.md) | Post-prototype dynamic light-state pipeline for characters across venues. |
 
 ---
 
