@@ -3,11 +3,10 @@ name: Reviewer Re-run
 # Label lifecycle for the zaphod-* verdicts. Three related mechanics live here
 # because they all reconcile the same label pair:
 #
-#   - strip-zaphod-on-push (SH-175/original): new commit strips both labels;
-#     the AI verdict must be re-earned against the new HEAD.
-#   - re-review (SH-175): after a strip, dispatch a fresh headless Claude pass
-#     that re-applies zaphod-approved on a clean review or zaphod-blocked
-#     when it has line-anchored findings to post.
+#   - strip-zaphod-on-push: new commit strips both labels; the AI verdict
+#     must be re-earned against the new HEAD. Re-dispatch is manual, by
+#     the organiser (main Claude thread), never CI; PR-triggered workflows
+#     do not run Claude because outside PRs are a prompt-injection surface.
 #   - strip-zaphod-on-human-review (SH-187): Josh commenting on a PR is a
 #     human verdict landing; the prior AI verdict is stale and comes off.
 #   - blocked-supersedes-approved (SH-166): when two specialists race and
@@ -158,80 +157,3 @@ jobs:
                 throw error;
               }
             }
-
-  re-review:
-    # SH-175: after strip-zaphod runs on a new commit, dispatch a fresh
-    # headless Claude pass to re-earn the appropriate zaphod verdict against
-    # the new HEAD. Only runs on pull_request.synchronize; Josh's review
-    # events strip labels but do not trigger an auto re-review (he is the
-    # one reviewing).
-    name: Re-dispatch reviewers against new HEAD
-    needs: strip-zaphod
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 18
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - name: Preflight — Claude token present?
-        id: preflight
-        env:
-          HAS_CLAUDE: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN != '' }}
-        run: |
-          if [ "$HAS_CLAUDE" != "true" ]; then
-            echo "::notice::CLAUDE_CODE_OAUTH_TOKEN not configured; skipping re-review."
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Check out PR head
-        if: steps.preflight.outputs.ready == 'true'
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-
-      - name: Run headless Claude reviewer
-        if: steps.preflight.outputs.ready == 'true'
-        uses: anthropics/claude-code-action@5d5c10a4f389689f992ea10bb14dcb6fcc83146d # v1 (Claude Code 2.1.116, Agent SDK 0.2.116)
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          prompt: |
-            You are the auto re-review pass for PR #${{ github.event.pull_request.number }}
-            after a new commit landed. Follow ai/PARALLEL.md §5.
-
-            1. Inspect the PR diff (`gh pr diff ${{ github.event.pull_request.number }}`).
-            2. Identify which reviewer specialists in `.claude/agents/` match the
-               changed paths per PARALLEL.md §5 (gd → code-quality +
-               gdscript-conventions + test-coverage; tscn/tres → godot-scene;
-               signals → signals-lifecycle; .github → ci-and-workflows;
-               export_presets/project.godot/import → asset-pipeline; md →
-               docs-and-writing).
-            3. For each matched specialist, review the diff against its
-               conventions. Post line-anchored Conventional Comments via
-               `gh api` using the template in PARALLEL.md §5. One idea per
-               comment, two sentences max. No LGTM or summary comments.
-            4. After all specialists finish:
-               - If nothing to comment on, apply zaphod-approved:
-                 `gh pr edit ${{ github.event.pull_request.number }} --add-label zaphod-approved`
-               - If any comments posted, apply zaphod-blocked instead.
-            5. Never apply approved-human; that label is Josh-only.
-            6. Do not modify code, do not push commits. Review-only pass.
-          claude_args: |
-            --max-turns 14
-            --allowedTools "Bash,Read,Grep,Glob"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Re-review summary
-        if: always() && steps.preflight.outputs.ready == 'true'
-        run: |
-          {
-            echo "## Reviewer re-run complete"
-            echo ""
-            echo "PR: #${{ github.event.pull_request.number }}"
-            echo "Head: \`${{ github.event.pull_request.head.sha }}\`"
-            echo "Result: \`${{ job.status }}\`"
-          } >> "$GITHUB_STEP_SUMMARY"
