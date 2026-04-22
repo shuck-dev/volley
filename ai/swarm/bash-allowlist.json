@@ -9,7 +9,6 @@
       "Bash(gh pr edit:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr ready:*)",
-      "Bash(gh api:*)",
       "Bash(gh label:*)",
       "Bash(gh workflow:*)",
       "Bash(gh run:*)",
