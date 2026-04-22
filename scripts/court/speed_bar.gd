@@ -27,6 +27,12 @@ func _ready() -> void:
 
 
 func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float) -> void:
+	if (
+		is_equal_approx(new_speed, current_speed)
+		and is_equal_approx(min_speed, _min_speed)
+		and is_equal_approx(max_speed, _max_speed)
+	):
+		return
 	current_speed = new_speed
 	_min_speed = min_speed
 	_max_speed = max_speed
