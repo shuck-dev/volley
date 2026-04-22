@@ -113,6 +113,8 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
+| Glottis | SH-80 | sh-80-tech-art-pipeline | designs/art/tech-pipeline.md, designs/art/INDEX.md | 2026-04-21 | Tech art pipeline spike |
+| Trillian | SH-120 / SH-123 | sh-120-sh-123-workflow-hardening | .github/workflows/*.yml | 2026-04-21 | paired dispatch: per-job permissions + verify SHA pins |
 | Riebeck | SH-88 | sh-88-ball-speed-tiers-and-physics-ceiling | designs/01-prototype/20-ball-speed-tiers.md | 2026-04-21 | spike: tier system + 1800 px/s physics ceiling |
 | Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
 | Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
@@ -135,7 +137,9 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 Newest at top. One line per event.
 
 ```
+[SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc
+[SH-120/SH-123] Trillian: claimed paired dispatch; per-job permissions landed, SHA pins verified across all workflows
 [SH-107] feldspar: claimed spike; validating 08-court-bounds.md against ticket open questions
 [SH-169] Ford: claimed; name-prefix rule landed in PARALLEL.md §5, swarm README, post-review.sh
 [init] scratchpad reset on cycle #3 open
