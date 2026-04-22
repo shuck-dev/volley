@@ -173,7 +173,7 @@ jobs:
             }
 
             if (!number) {
-              core.warning('No PR number in payload; cannot evaluate AI review.');
+              core.warning('No PR number in payload; cannot evaluate Zaphod review.');
               core.setFailed('No PR number in payload.');
               return;
             }
@@ -187,11 +187,11 @@ jobs:
 
             if (labels.has('zaphod-blocked')) {
               core.warning(
-                'AI reviewer left items to resolve. ' +
+                'Zaphod reviewer left items to resolve. ' +
                 'Address the `zaphod-blocked` findings and remove the label before merging.',
               );
               core.setFailed('zaphod-blocked label present on PR.');
               return;
             }
 
-            core.notice('AI review passed: no unresolved reviewer comments.');
+            core.notice('Zaphod review passed: no unresolved reviewer comments.');
