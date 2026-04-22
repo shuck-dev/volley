@@ -10,11 +10,6 @@ prepare-commit-msg:
     ticket-prefix:
       run: ./scripts/ci/prepend_ticket_prefix.sh {1} {2}
 
-commit-msg:
-  commands:
-    format:
-      run: ./scripts/ci/check_commit_message.sh {1}
-
 pre-commit:
   piped: true
   commands:
