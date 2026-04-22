@@ -40,7 +40,6 @@ jobs:
     timeout-minutes: 2
     permissions:
       contents: read
-      checks: write
       pull-requests: write
     # Skip the job when a labeled/unlabeled event touches a category label
     # (feature, bug, autolabel additions) rather than an approval label.
