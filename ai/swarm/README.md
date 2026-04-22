@@ -97,6 +97,10 @@ The organiser is entity-driven. Point it at a thing and it does the right thing.
 
 Phrases do not trigger recipes. "Can you look at SH-42" does. The shape of the entity chooses the shape of the team.
 
+### Pre-dispatch ticket-state recheck
+
+Before spinning up a worktree the organiser re-reads each candidate ticket's Linear state and searches for a merged PR on its branch pattern (`feature/sh-N-*`, `sh-N-*`). If the ticket is Done, Canceled, or its branch pattern resolves to a merged PR, the organiser skips dispatch and flags the stale entity. One turn of `mcp__linear__get_issue` plus `gh pr list --search "sh-N" --state merged` is enough; the cost is negligible next to spinning up a worktree for work that has already shipped.
+
 ## Recipes
 
 Every recipe is a parallel fan-out. The organiser dispatches several sub-agents at once, lets them work independently, and reconvenes only at the sync points below.
