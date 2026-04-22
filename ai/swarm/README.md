@@ -71,7 +71,7 @@ The organiser owns every merge back. Agents do not merge each other's worktrees,
 
 ## Commit discipline
 
-Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a subject line that names its role: `test-author: pin coverage for shop-upgrade race`, `refactor-planner: extract paddle AI state machine`. The commit author is Josh (per DCO), so the role tag lives in the subject and body rather than the author field.
+Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a Conventional Commits subject the `commit-msg` hook accepts: `test: pin coverage for shop-upgrade race`, `refactor: extract paddle AI state machine`. The `commit-msg` regex has no scope group, so role tags never appear in the subject. The role name goes in the commit body on its own line (`test-author: ...` or `refactor-planner: ...`) alongside the DCO sign-off. The commit author is Josh (per DCO), so the role tag lives in the body rather than the author field.
 
 The organiser merges worktrees back without squashing, preserving per-agent attribution in the commit history. When the final PR opens, `pr-describer` writes the body; the reader can scan the commit list to see which agent produced which change.
 

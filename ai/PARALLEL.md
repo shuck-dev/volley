@@ -113,6 +113,8 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 
 ## Active (in flight)
 
+The Active table on `origin/main` is the source of truth. A fresh worktree reads whatever commit it branched from, so sibling agents' claim rows only appear after their pre-push sync merges their claim into `main` and you pull it in. If the table looks empty in your worktree, fetch `origin/main` before trusting it.
+
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
 | Glottis | SH-80 | sh-80-tech-art-pipeline | designs/art/tech-pipeline.md, designs/art/INDEX.md | 2026-04-21 | Tech art pipeline spike |
