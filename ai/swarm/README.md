@@ -150,20 +150,22 @@ Three kinds, three responses. **Kind A**, worktree against worktree before eithe
 
 Only two. The organiser does not call standups.
 
-1. **A diff exists.** The organiser dispatches `pr-describer` and the reviewer fan-out matching the changed paths.
+1. **A diff exists.** The organiser dispatches `pr-describer` and the reviewer fan-out matching the changed paths. Fork PRs (`head.repo.full_name != base.repo.full_name`) skip auto-dispatch until a maintainer applies `zaphod-requested`; `fork-review-gate.yml` strips the label on every new commit so each re-request is explicit.
 2. **A work unit closes.** The organiser scrubs the scratchpad and promotes keepers.
 
 Everything between those two points is parallel. Agents do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
 
 ## PR verdicts and merge
 
-Three labels live on PRs. Two are for agents; one is not.
+Five labels live on PRs. Three are for agents; two are not.
 
 - `zaphod-approved`: the reviewer pool read the diff and found it clean.
 - `zaphod-blocked`: the reviewer pool found something that needs a human look.
-- `approved-human`: Josh only.
+- `zaphod-requested`: a maintainer opted a fork PR into the reviewer fan-out. Internal PRs dispatch automatically and do not use this label.
+- `approved-human`: Josh only. Sign-off; required for merge.
+- `changes-requested-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
 
-**Hard rule: agents never apply `approved-human`.** The label is the merge-queue permission slip, and only Josh grants it.
+**Hard rule: agents never apply `approved-human` or `changes-requested-human`.** Both labels are Josh-only and mutually exclusive; applying one strips the other. The `Human Approved` merge-queue check fails with a "Changes requested" message while `changes-requested-human` is present.
 
 Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a structured verdict to the organiser:
 

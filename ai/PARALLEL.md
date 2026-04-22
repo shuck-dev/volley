@@ -22,6 +22,8 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
    - **Mechanical fixes** (typos, dead code, obvious bugs, style): commit on the PR branch.
    - **Everything else**: short line-anchored review comments following [Conventional Comments](https://conventionalcomments.org/) (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:`, with decorators like `(non-blocking)`). **One idea per comment, two sentences max.** If it needs more context, open an issue and link from the comment.
 
+   **Fork PRs.** If `head.repo.full_name != base.repo.full_name`, skip auto-dispatch. A maintainer applies `zaphod-requested` to opt the PR in; only then do reviewers fire. `zaphod-requested` strips on every new commit (`fork-review-gate.yml`), so each re-request is a deliberate maintainer action. Internal (same-repo) PRs keep their existing auto fan-out.
+
    After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. No `LGTM` or summary comments. Line-anchored comment template:
 
    ```
@@ -36,6 +38,8 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 7. **Block or spin.** Loop on the same issue twice → escalate (see below). Do not try a third variant silently.
 
 **Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
+
+**Human verdict labels.** Josh's review applies one of two mutually exclusive labels: `approved-human` (sign-off, required for merge) or `changes-requested-human` (address comments before merge). Both strip on every new commit, so pushing a fix naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with a "Changes requested" message whenever `changes-requested-human` is present and fails with a "Needs human review" message when neither label is set. Only Josh may apply either label; the approver-check workflow strips unauthorised applications.
 
 ---
 
