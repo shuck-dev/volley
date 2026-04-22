@@ -22,17 +22,19 @@ No side walls. The court visibly opens onto the rest of the venue.
 Two bands along the court sides detect sideways exits. Both run the full height of the play area.
 
 ```
-  ┌──────────── top (ceiling, bounce) ─────────────┐
-  │                                                │
-  │  miss-out                              miss-out │
-  │  ┌──┐                                    ┌──┐  │
-  │  │  │          in-play court             │  │  │
-  │  │  │                                    │  │  │
-  │  │  │ main character's goal line (back)  │  │  │
-  │  │  │ ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ │  │  │
-  │  │  │          ground (bounce)           │  │  │
-  │  └──┘                                    └──┘  │
-  └────────────── venue floor ─────────────────────┘
+  ┌──────────────── top (ceiling, bounce) ────────────────┐
+  │                                                       │
+  │  miss-out  ┆                                 miss-out │
+  │  ┌──┐      ┆                                    ┌──┐  │
+  │  │  │ MC   ┆                                    │  │  │
+  │  │  │ wall ┆           in-play court            │  │  │
+  │  │  │      ┆                                    │  │  │
+  │  │  │ goal ┆                                    │  │  │
+  │  │  │ line ┆                                    │  │  │
+  │  │  │      ┆                                    │  │  │
+  │  └──┘      ┆                                    └──┘  │
+  └──────────────── ground (bounce) ──────────────────────┘
+                  ↑ vertical goal-line trigger
 ```
 
 - **In-play region:** bounded by the top (ceiling), the ground (bounce floor), and the goal line at the back. A ball inside this region is live.
@@ -76,7 +78,7 @@ A rally is how the spirit of the volley shows up. It is not owned by the player 
 
 A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do. It falls, rolls, and waits to be summoned again.
 
-A player can call the spirit alone. Partners, when they arrive, do not create it; they amplify it and make it easier to sustain. High-count rallies visibly run hotter: the ball carries the spirit's charge in how it reads, as subtle light, a trail, a weight of sound. A miss drains it; the ball on the venue floor is just a ball.
+A player can call the spirit alone. Partners, when they arrive, do not create it; they amplify it and make it easier to sustain. High-count rallies visibly run hotter: the ball carries the spirit's charge in how it reads, with a subtle light on it and a weight to its sound. A miss drains it; the ball on the venue floor is just a ball.
 
 Later items that extend or revive rallies are gestures of devotion to the spirit. Some plead with it to stay longer. Some call it back after it leaves. Naming them that way gives the system a vocabulary the player can feel rather than read from a stat block.
 
@@ -167,16 +169,3 @@ Called out so they don't leak into implementation:
 - Miss-ending-the-rally vs miss-ending-this-ball distinction for multiball (handled in `08-balls.md`).
 - Visual polish on the rest-roll deceleration curve; tuned during implementation.
 
----
-
-## Implementation ticket outline
-
-Not filing yet. Rough split, each intended to land independently:
-
-1. **Court bounds geometry.** Top ceiling collider, ground collider, goal-line trigger, two side-miss triggers. Hook the side triggers to the existing miss path. Ceiling bounce + ground bounce behaviour verified.
-2. **Ball rest state.** `resting` flag, deceleration on the venue floor, persistence of rest position and flag across saves and scene reloads.
-3. **Drag rested ball to rack.** Reuse the existing drag-to-rack handler; accept `resting` balls as a valid source. Live rally handling unchanged.
-4. **Side-miss cue.** Audio variant + wall flash on the relevant side. Back-miss cue unchanged.
-5. **Auto-serve when rack is empty.** Idle the main character; no fetch in prototype. (Confirms the friction beat behaves as designed.)
-
-Helper upgrade is its own later ticket and is not part of this prototype slice.
