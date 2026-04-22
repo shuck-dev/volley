@@ -33,19 +33,19 @@ On itch.io this is the "SharedArrayBuffer support" toggle on the HTML5 upload, w
 
 ## Operational changes
 
-Two things have to move with this decision:
+One thing has to move with this decision:
 
-1. **Threaded export template in CI.** The Godot threaded template is a separate download from the stock template. The release workflow has to install it before running the web export, otherwise the build silently falls back to single-threaded. This is a follow-up, not part of this change, because verifying it needs a Tier 1 runtime check.
-2. **Itch upload toggle.** Each new HTML5 upload to itch needs "SharedArrayBuffer support" re-enabled; the toggle does not persist across uploads. Add this to the release checklist.
+1. **Itch upload toggle.** Each new HTML5 upload to itch needs "SharedArrayBuffer support" re-enabled; the toggle does not persist across uploads. Add this to the release checklist.
+
+CI template install is a non-issue: the threaded and non-threaded web templates ship together inside the standard `Godot_v${VERSION}-stable_export_templates.tpz` bundle, and both `release.yml` and `publish.yml` already download the full bundle. No separate install step is required.
 
 Save paths are unaffected: threaded builds use the same `user://` IDBFS store as the single-threaded build, so existing player saves carry forward.
 
 ## Fallback
 
-The export config keeps a second preset, `Web (no threads)`, as a fallback target for hosts that cannot serve the COOP/COEP pair. This is not shipped as the primary build; it exists so that if itch's SAB toggle regresses, or we stand up a mirror on a host without header control, we can produce a compatible bundle without reconfiguring the main preset.
+The export config keeps a second preset, `WebNoThreads`, as a fallback target for hosts that cannot serve the COOP/COEP pair. This is not shipped as the primary build; it exists so that if itch's SAB toggle regresses, or we stand up a mirror on a host without header control, we can produce a compatible bundle without reconfiguring the main preset.
 
 ## Follow-ups
 
-- Install the threaded web template in the release workflow (separate PR; needs a Tier 1 build verification).
 - Flip the "SharedArrayBuffer support" toggle on the next itch upload that uses this preset.
 - Playwright verification of the frame-time improvement lands under SH-189 once that ticket is scheduled.
