@@ -30,14 +30,18 @@ Switch via `project.godot` → `rendering/renderer/rendering_method` (and `rende
 
 Artists deliver **PNG, sRGB, 32-bit with alpha**. No interlacing, no colour profiles embedded (Godot strips them; exported profile mismatches cause subtle hue drift). SVG is acceptable for a handful of graphic props and UI marks that need to scale cleanly across resolutions (see the existing `assets/art/martha_bow.svg` and `assets/ui/friend_pick_note.svg`), but the default is PNG because the bible calls for line with life in it, and SVG renders the line mechanically.
 
-Deliverables arrive at **1x authoring resolution** for their intended on-screen size at 1080p. A paddle that reads as 40x200 logical pixels is delivered at 40x200. Characters are delivered at the size they appear in-game, not oversized for downscaling. This keeps the drawn line weight consistent across the frame rather than varying with each artist's canvas choice.
+Deliverables target their intended on-screen role, with headroom for upscaling. The base resolution is 1080p, but 4K and ultrawide are first-class display targets: assets authored at exactly 1x will soften when the viewport scales up. The working rule:
 
-Two authored scales ship alongside the base:
+- **Characters, props, UI marks**: author at **@2x the logical size** at 1080p. A paddle that reads as 40x200 logical pixels is delivered at 80x400. The runtime downscale is gentler than the 4K upscale, and the drawn line keeps its weight in both directions.
+- **Backgrounds and layered parallax**: author at **@2x the visible range** of each layer (see [Backgrounds](#backgrounds)). A layer the camera sees 2000px of at 1080p is delivered at 4000px.
+- **SVG marks** (graphic props, UI glyphs) stay vector where the bible's line allows.
 
-- **@2x** for sprites that may appear zoomed (cutscenes, The Break reveal, marketing crops).
-- **@0.5x** only where an asset is shown much smaller in UI than in the world (item thumbnails) and aliasing at runtime-downscale is visible.
+Two authored scales ship alongside the @2x base:
 
-Default to base only. Add scales as the need shows up in review, not preemptively.
+- **@4x** for sprites that may appear zoomed (cutscenes, The Break reveal, marketing crops) or that must stay crisp on 4K displays where even the @2x base reveals softening.
+- **@1x** only where an asset is shown much smaller in UI than in the world (item thumbnails) and aliasing at runtime-downscale is visible.
+
+Default to @2x only. Add scales as the need shows up in review, not preemptively. The consistent rule is that artists author above target pixel density so the downscale path carries the weight, not the upscale path.
 
 ### Import
 
@@ -45,28 +49,27 @@ Each PNG has a sibling `.import` file committed to the repo. Import settings per
 
 | Class | Filter | Mipmaps | Fix alpha border | Notes |
 |---|---|---|---|---|
-| Characters and props | Linear | Off | On | The line must stay crisp; nearest-neighbour reads pixel-art, linear with mipmaps off reads drawn. |
+| Characters | Linear | Off | On | The line must stay crisp; nearest-neighbour reads pixel-art, linear with mipmaps off reads drawn. |
+| Surfaces (props, items, UI marks, signage) | Linear | Off | On | Same hand across world and HUD; render at roughly native scale, so mipmaps waste memory. |
 | Backgrounds | Linear | On | On | Parallax2D layers may render at fractional scales; mipmaps prevent shimmer on slow drift. |
-| UI | Linear | Off | On | UI sits at native scale; mipmaps waste memory. |
-| Item thumbnails | Linear | Off | On | Icons render at fixed UI size. |
 
 Filter is **linear, never nearest**. Volley! is not pixel art, and nearest-neighbour hardens the drawn line into something mechanical the bible explicitly rejects.
 
 ### Folder structure
 
+The axis that matters is **how the asset behaves at runtime**, not who drew it or where it's shown. Props, items, and UI marks are drawn the same, animate the same, and reuse the same PNG across contexts; they are one folder. Backgrounds layer and parallax; they are their own folder. Characters have rigs and named animation states; they are their own folder. VFX are frame-burst effects; they are their own folder.
+
 ```
 assets/
   characters/<name>/          sprites, animations, expressions for one character
-  items/                      item sprites (shop and kit reuse the same PNG)
-  ui/                         hand-drawn UI elements
+  surfaces/                   props, items, UI marks, in-world signage (one PNG, reused across shop, kit, HUD, world)
   backgrounds/<venue>/        parallax layers, named layer_01_back to layer_NN_front
   vfx/                        hit sparks, miss reactions, streak glow
-  props/                      ball, paddle, rack, mat, compendium, other diegetic objects
 ```
 
-One asset, one canonical path. If the shop and the kit both show an item, they reference the same PNG. Duplicated sprites rot separately.
+One asset, one canonical path. If the shop and the kit both show the same item, they reference the same PNG in `surfaces/`. If the pinboard shows it in the world and a HUD slot shows it as an icon, same file. Duplicated sprites rot separately.
 
-File names are `lower_snake_case.png`. Animation frames suffix the state: `martha_idle_01.png`, `martha_idle_02.png`, `martha_hit.png`. Registers suffix the file: `kitchen_real.png` alongside `kitchen_constructed.png`. Prefer a single file with a runtime shift (see [Register shift](#register-shift)) over duplicated assets whenever the bible's "shifting" mark can be expressed through palette and edge treatment rather than repainting.
+File names are `lower_snake_case.png`. Animation frames suffix the state: `martha_idle_01.png`, `martha_idle_02.png`, `martha_hit.png`. Registers suffix the file: `kitchen_real.png` alongside `kitchen_constructed.png`. Each register ships its own painted asset (see [Register shift](#register-shift)).
 
 ---
 
@@ -93,18 +96,18 @@ Characters use **`AnimatedSprite2D` with a `SpriteFrames` resource per character
 
 ### Target frame counts
 
-Indicative budgets; the bible governs what earns more frames.
+Indicative budgets, framed in traditional animator terms. Target a base game tick of 24 drawings per second: "on ones" is every tick (24 dps), "on twos" is every other tick (12 dps), "on fours" every fourth (6 dps), "on sixes" every sixth (4 dps). Godot's `SpriteFrames` authors in FPS rather than step counts; the column below gives both so an animator and an integrator read the same row.
 
-| State | Frames | FPS | Notes |
-|---|---|---|---|
-| Idle / breathing | 2-4 | 4-6 | Loop; small weight shift, not animation wallpaper. |
-| Anticipation | 2-3 | 12 | Builds into contact. |
-| Contact | 1-2 | held 2-4 frames | Time stretches on impact; holds are the animation. |
-| Follow-through | 3-5 | 12 | Carries the energy out. |
-| React (celebrate, sigh, shrug) | 4-8 | 8-12 | Body language; character moment. |
-| Enter / exit | 3-6 | 12 | Scene transitions. |
+| State | Frames | Step | Equivalent FPS | Notes |
+|---|---|---|---|---|
+| Idle / breathing | 2-4 | on fours to sixes | 4-6 | Loop; small weight shift, not animation wallpaper. |
+| Anticipation | 2-3 | on twos | 12 | Builds into contact. |
+| Contact | 1-2 | held (step paused 2-4 ticks) | 24 while moving, held on impact | Time stretches on impact; holds are the animation. |
+| Follow-through | 3-5 | on twos | 12 | Carries the energy out. |
+| React (celebrate, sigh, shrug) | 4-8 | on twos to threes | 8-12 | Body language; character moment. |
+| Enter / exit | 3-6 | on twos | 12 | Scene transitions. |
 
-**Anticipation, contact, follow-through on every meaningful action.** The bible's rule; the numbers above are scaffolding for it.
+**Anticipation, contact, follow-through on every meaningful action.** The bible's rule; the numbers above are scaffolding for it. Steps may vary within a single state: an idle breathing on fours may drop to sixes at the end of the loop, a follow-through on twos may ease into fours as energy dissipates. Animators pick the step that reads; the table is the starting point, not the ceiling.
 
 ### Style-bend moments
 
@@ -116,17 +119,17 @@ The bible permits style to bend at emotional peaks. Those frames ship as their o
 
 ### Layering
 
-Venues use **Parallax2D** (Godot 4.3+), already in use in `scenes/court.tscn`. Each venue has three to five layers:
+Venues use **Parallax2D** (available since Godot 4.3; Volley! runs on 4.6.2, the version pinned in `project.godot`), already in use in `scenes/court.tscn`. Each venue has three to five layers, named by where they sit relative to the playing surface:
 
-1. **Back.** Sky, distant silhouette. Slowest scroll.
-2. **Mid-back.** Far walls, windows, distant props.
-3. **Mid.** Playing surface, primary architecture. Scroll scale matches the camera 1:1 for gameplay layers.
-4. **Mid-front.** Near props, foreground trim. Slightly faster than mid.
-5. **Front.** Occasional foreground pass (a beam, a curtain edge) that sells depth. Optional.
+1. **Deep background.** Sky, distant silhouette. Slowest scroll.
+2. **Background.** Far walls, windows, distant props.
+3. **Playing surface.** Primary architecture. Scroll scale matches the camera 1:1 for gameplay layers.
+4. **Near foreground.** Near props, foreground trim. Slightly faster than the playing surface.
+5. **Foreground.** Occasional foreground pass (a beam, a curtain edge) that sells depth. Optional.
 
 Scroll scales tune per venue. The court stays composed; The Break reveal uses a looser, slower parallax to mark the register shift.
 
-Layers are authored as **separate PNGs sized to the layer's visible range**, not full-resolution panoramas. A back layer that the camera only sees 2000px of is authored at 2000px, not 8000. Repeat, if needed, is handled by `Parallax2D.repeat_size`.
+Layers are authored as **separate PNGs sized to the layer's visible range** (at the @2x authoring density from [Sprites](#sprites)), not full-resolution panoramas. A background layer the camera only sees 2000 logical pixels of is authored at 4000px, not at 8000px or the full world width. Repeat, if needed, is handled by `Parallax2D.repeat_size`.
 
 ### Painting order
 
@@ -146,25 +149,29 @@ Volley!'s lighting is **painted first, runtime second.**
 
 Shadows, form lighting, and ambient occlusion are **painted into the sprites** by the artist. Oga's watercolour afternoons are not a shader; they are a painting. Runtime lighting cannot recover what the painting establishes, and fighting the painted light with runtime light produces the mechanical, over-rendered look the bible rejects.
 
+This is tractable because characters occupy a narrow spatial range per venue: paddle positions are constrained, the ball's path is readable, and the camera is near-static. The painted light in a venue is the light the characters see, and the characters are painted to match it. When a character's position varies meaningfully across the frame (a mid-flight reaction that crosses the venue, an enter/exit from the opposite side), the artist paints the enter and exit states with lighting that resolves the traversal rather than attempting to match a single fixed source. The bible's "silhouettes hold; only the light, colour, and line quality shift" rule covers the acceptable variation.
+
 ### Runtime
 
-Runtime lighting is reserved for three roles:
+Runtime lighting is reserved for two roles:
 
-1. **Register shift.** `CanvasModulate` applied per venue swaps the global tint between constructed (warm, saturated) and real (cooler, muted). One node, one property animation; the art underneath does not change.
-2. **Rhythm accents.** `Light2D` on specific emitters (the scoreboard on a milestone hit, the ball at peak streak) adds felt pulses without repainting frames. Short bursts, low energy, tuned to not overwhelm the painted light.
-3. **Post-Break / Peace shifts.** A second `CanvasModulate` palette for post-break venues and for Peace. Same mechanism, different target.
+1. **Rhythm accents.** `Light2D` on specific emitters (the scoreboard on a milestone hit, the ball at peak streak) adds felt pulses without repainting frames. Short bursts, low energy, tuned not to overwhelm the painted light.
+2. **Mood timing.** Subtle scripted palette beats (a window filling with sun during a long idle, the court dimming when the player misses three in a row) are delivered through art-direction-approved modulation curves on specific layers, not a single colour pushed over the whole frame. Global tint turns the picture garish; the direction calls for targeted palette moves that respect the painted light.
 
 `DirectionalLight2D` and `PointLight2D` with `shadow_enabled = true` are avoided; shadows come from painting. The ball's trail and hit spark FX are `GPUParticles2D` on an additive blend layer, not light.
 
 ### Register shift
 
-The constructed-to-real shift is not a repaint. It is:
+**The constructed-to-real shift is a repaint.** This is the only way it actually looks good. Shader tricks and global tint cannot recover the reweighted line, the cooler pigments, the loosened edges that make the real register feel like the same world seen honestly; attempting to fake it produces the "filter over the same image" look the bible explicitly rejects.
 
-- `CanvasModulate.color` from the constructed register palette to the real register palette.
-- Optional mild desaturation via a `CanvasItem` material shader (see [Shaders](#shaders)) on select layers.
-- Background layer opacity tweaks: the constructed register's most "arranged" props (curtains, bunting) fade slightly in the real register.
+Each venue ships two painted sets:
 
-Characters do not redraw across registers. Same sprite, different global tint. The bible's rule, "silhouettes hold across both registers; only the light, colour, and line quality shift", is the contract this runtime shift upholds.
+- **Constructed register.** Warm, saturated, arranged. The world as the player wants to see it.
+- **Real register.** Cooler, muted, looser. Same silhouettes, same staging, repainted.
+
+Characters follow the same rule: constructed and real sprite sets per character where the register shift is felt. The bible's "silhouettes hold across both registers; only the light, colour, and line quality shift" rule governs what stays and what moves.
+
+At runtime the shift is a crossfade between the two painted sets, timed to the narrative beat, delivered through a `RegisterManager` that swaps sprite textures on affected nodes and tweens opacity between them. Shaders and modulation are adjuncts used only where the repaint itself does not need help: a mild saturation ease on the frame during the crossfade, a brief dimming of over-arranged props as the real register settles in. The heavy lifting is paint.
 
 The Break itself is the exception: a scripted, one-time transition with authored keyframes in an `AnimationPlayer`, permitting stronger visual disruption than the routine register shift.
 
@@ -176,7 +183,7 @@ Kept minimal. Every shader is a named resource under `resources/shaders/` with a
 
 Shipping list (spike-time):
 
-- **`register_shift.gdshader`:** CanvasItem shader; global saturation and edge-softness offsets driven by one float. Bound to the register manager.
+- **`register_shift.gdshader`:** CanvasItem shader used only as an easing adjunct during a register crossfade (saturation and edge-softness offsets driven by one float). The shift itself is the repaint; this shader smooths the transition while the painted sets swap.
 - **`painted_outline.gdshader`:** CanvasItem shader that thickens and breaks the existing painted outline at a per-sprite modulation. Used sparingly on a handful of props whose silhouettes need to harden in the real register; disabled by default.
 - **`streak_glow.gdshader`:** additive CanvasItem shader on the ball when streak count crosses thresholds.
 
@@ -239,7 +246,7 @@ The workflow that takes a finished asset from an artist's machine to the game.
     - Wires the sprite into the relevant scene (`node_ops` + `save_scene`, never by hand-editing `.tscn`).
     - Adds an `AnimatedSprite2D` + `SpriteFrames` resource where animation is involved.
     - Verifies with `spatial_audit` and a smoke play.
-5. **Review.** `asset-pipeline` reviewer on the PR checks import settings, path, and `.import` sidecar; `godot-scene` reviewer checks scene wiring.
+5. **Review.** The PR carries the [`asset`](../process/labels.md#art) label (art, produce tier). Label-dispatched specialist reviewers pick it up from there; asset-pipeline checks import settings, path, and `.import` sidecar, and godot-scene checks scene wiring. Integration work that grows a new engine capability instead carries [`feature`](../process/labels.md#tech) (tech, produce); spikes like this document carry [`spike`](../process/labels.md#tech).
 
 The artist does not open PRs. The integration PR is the contract: everything needed to get the asset into the game lives there, reviewable in one place.
 
@@ -250,11 +257,13 @@ Artists deliver with the target path baked into the filename so the integrator c
 ```
 characters_martha_idle_01.png
 backgrounds_kitchen_layer_02_mid.png
-items_grip_tape.png
+surfaces_grip_tape.png
 vfx_hit_spark_frames.png
 ```
 
 Underscore-separated; the first segment matches the folder under `assets/`. The integrator strips the prefix when committing.
+
+Frame indexing is two-digit zero-padded (`_01`, `_02`, …, `_99`). If an animation runs past 99 frames, switch to letter indexing (`_a`, `_b`, …, `_z`, `_aa`, …) rather than widening to three digits; the letter sequence reads unambiguously and sorts correctly at any count, and 100+ frames on a single state is rare enough that the visual break from digits is a useful signal something has gone outside the frame budget.
 
 ### Source files
 
@@ -266,7 +275,7 @@ Underscore-separated; the first segment matches the folder under `assets/`. The 
 
 Indicative targets for a 1080p frame on the mobile renderer, idle-play load:
 
-- **Draw calls:** under 200 during gameplay. Parallax2D layers and per-character `AnimatedSprite2D` dominate; batching is mostly free.
+- **Draw calls:** under 200 during gameplay. Parallax2D layers and per-character `AnimatedSprite2D` dominate; batching is mostly free. (The 200 figure is a working target pending a cited reference; see [Open questions](#open-questions).)
 - **Sprite memory:** under 256 MB at steady state. Characters and backgrounds together. Per-venue background set under 64 MB.
 - **Particles alive:** under 500 at peak. A hit spark plus ambient motes sits near 100.
 - **Animation updates:** `AnimatedSprite2D` runs at the animation's authored FPS, not the monitor refresh rate. A 4-FPS idle does not cost more because the monitor is 144 Hz.
@@ -277,7 +286,7 @@ Budgets are re-verified with `perf_snapshot` once representative content ships. 
 
 ## Godot version and addons
 
-Volley! targets **Godot 4.6**. Parallax2D requires 4.3 or later; CanvasModulate, AnimatedSprite2D, and Light2D have been stable since 4.0.
+Volley! targets **Godot 4.6.2** (the version pinned in `project.godot`). Parallax2D requires 4.3 or later; CanvasModulate, AnimatedSprite2D, and Light2D have been stable since 4.0.
 
 Rendering-adjacent addons currently enabled: none. The pipeline above ships in core Godot. GodotIQ, GUT, config_hot_reload, gdfxr, and item_preview are authoring-side only and do not affect runtime rendering.
 
@@ -291,13 +300,9 @@ The background layering approach described here is validated by `scenes/court.ts
 
 ## Open questions
 
-- Exact `CanvasModulate` values per register. Blocks on the bible's palette section.
+- Per-register painted palette targets. Blocks on the bible's palette section.
 - Display and reading fonts for the UI theme. Blocks on typography.
 - Whether any in-world text (signage, the ball rack's label strip) needs a separate font treatment. Deferred until UI work begins.
 - Whether VFX lives in the mobile renderer's additive blend path as well as it does under Forward Plus. Validated when the renderer is switched.
-
----
-
-## Changelog
-
-- **2026-04-21:** first pass. Spike authored alongside the bible; fills the pipeline side of the bible/pipeline pair.
+- How painted-light reconciliation extends to characters that traverse longer spatial ranges within a single animation state (a reaction that crosses the venue, a cutscene pan). Current answer is to paint the enter/exit states with resolving light; an animator-led pass can confirm whether that covers every practical case or if a small set of directional variants per character becomes necessary.
+- A citable reference for the draw-call budget (the 200 figure) on the mobile renderer with Volley!'s layer count; to be pinned during the first full venue integration with `perf_snapshot` data alongside published Godot 2D benchmarks.
