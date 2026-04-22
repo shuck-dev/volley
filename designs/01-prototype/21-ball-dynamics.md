@@ -63,6 +63,8 @@ Rationale:
 
 If future playtesting shows the ceiling arrives too fast, the levers are: raise `ball_speed_max_range`, lower `ball_speed_increment`, or add a per-streak-bracket offset via an item. None require a code change to the ball.
 
+This recommendation dovetails with the tier model in [20-ball-speed-tiers.md](20-ball-speed-tiers.md): `ball_speed_max_range` stays the tuning surface, and SH-88's `SpeedTierTable` reads it per-tier as a `max_range` field rather than a single flat stat. Tier 0 carries the flat value this doc assumes (340 px/s), so the linear-curve tuning story here still holds; Tiers 1-3 each declare their own `max_range` alongside their floor and ceiling, widening the surface without breaking it.
+
 **Acceptance hooks:** speed curve reviewed, recommendation is keep linear and tune via base stats.
 
 ---
