@@ -12,6 +12,7 @@ jobs:
     name: Strip restricted label if applied by unauthorised actor
     if: >-
       github.event.label.name == 'approved-human' ||
+      github.event.label.name == 'action-required-human' ||
       github.event.label.name == 'zaphod-blocked' ||
       github.event.label.name == 'zaphod-approved'
     runs-on: ubuntu-latest
@@ -27,14 +28,17 @@ jobs:
           MAINTAINER: J-Melon
         with:
           script: |
-            // Each restricted label has its own allow-list. approved-human
-            // is Josh-only. The bot labels can be applied by Josh OR by
-            // github-actions workflow runs (sender.login is then
-            // 'github-actions[bot]').
+            // Each restricted label has its own allow-list.
+            //   approved-human / action-required-human: Josh-only (both
+            //     sides of the human verdict; SH-179).
+            //   zaphod-approved / zaphod-blocked: Josh OR workflow runs
+            //     (sender.login is 'github-actions[bot]' when a workflow
+            //     applies them); bots post verdicts, Josh overrides.
             const labelName = context.payload.label.name;
             const maintainer = process.env.MAINTAINER;
             const policy = {
               'approved-human': new Set([maintainer]),
+              'action-required-human': new Set([maintainer]),
               'zaphod-blocked': new Set([maintainer, 'github-actions[bot]']),
               'zaphod-approved': new Set([maintainer, 'github-actions[bot]']),
             };
