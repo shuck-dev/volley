@@ -99,12 +99,7 @@ When two spikes work adjacent territory they can silently disagree on naming. Th
 
 The plan: a reconciliation agent reads all live per-task files plus the relevant tickets and reasons about whether two claims describe the same concept under different names. It runs at claim time (preventive) and pre-push (detective), reports candidate collisions to the organiser, and the organiser escalates to Josh. Task files carry claims as plain prose, not schema.
 
-The ticket is not yet filed; this is the next architectural spike.
-
-## Open questions
-
-- Exact schema (or lack of schema) for per-task `ai/swarm/tasks/<id>.md` files. Reconciliation wants prose; handoffs want structure. The compromise shape is not settled.
-- Activity log archival. Truncation at cycle close is the working rule, but older entries may be worth archiving to `ai/swarm/tasks/archive/` rather than dropped outright. Open.
+Tracked as [SH-191](https://linear.app/shuck-games/issue/SH-191/spike-reconciliation-agent-for-naming-drift). Dependent spikes: [SH-192](https://linear.app/shuck-games/issue/SH-192/spike-per-task-file-schema) (per-task file schema, which the reconciler reads) and [SH-193](https://linear.app/shuck-games/issue/SH-193/spike-activity-log-archival-policy) (activity log archival).
 
 ## References
 
