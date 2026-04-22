@@ -14,8 +14,7 @@ jobs:
       github.event.label.name == 'approved-human' ||
       github.event.label.name == 'changes-requested-human' ||
       github.event.label.name == 'zaphod-blocked' ||
-      github.event.label.name == 'zaphod-approved' ||
-      github.event.label.name == 'zaphod-requested'
+      github.event.label.name == 'zaphod-approved'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions:
@@ -35,9 +34,6 @@ jobs:
             //   zaphod-approved / zaphod-blocked: Josh OR workflow runs
             //     (sender.login is 'github-actions[bot]' when a workflow
             //     applies them); bots post verdicts, Josh overrides.
-            //   zaphod-requested: Josh-only, fork-PR reviewer gate
-            //     (SH-178). External contributors must not be able to
-            //     self-apply to trigger review cycles.
             const labelName = context.payload.label.name;
             const maintainer = process.env.MAINTAINER;
             const policy = {
@@ -45,7 +41,6 @@ jobs:
               'changes-requested-human': new Set([maintainer]),
               'zaphod-blocked': new Set([maintainer, 'github-actions[bot]']),
               'zaphod-approved': new Set([maintainer, 'github-actions[bot]']),
-              'zaphod-requested': new Set([maintainer]),
             };
             const allowed = policy[labelName];
             if (!allowed) {

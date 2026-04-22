@@ -22,8 +22,6 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
    - **Mechanical fixes** (typos, dead code, obvious bugs, style): commit on the PR branch.
    - **Everything else**: short line-anchored review comments following [Conventional Comments](https://conventionalcomments.org/) (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:`, with decorators like `(non-blocking)`). **One idea per comment, two sentences max.** If it needs more context, open an issue and link from the comment.
 
-   **Fork PRs.** If `head.repo.full_name != base.repo.full_name`, skip auto-dispatch. A maintainer applies `zaphod-requested` to opt the PR in; only then do reviewers fire. `zaphod-requested` strips on every new commit (`fork-review-gate.yml`), so each re-request is a deliberate maintainer action. Internal (same-repo) PRs keep their existing auto fan-out.
-
    After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. No `LGTM` or summary comments. Line-anchored comment template:
 
    ```

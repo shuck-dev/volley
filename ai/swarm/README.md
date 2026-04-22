@@ -150,18 +150,17 @@ Three kinds, three responses. **Kind A**, worktree against worktree before eithe
 
 Only two. The organiser does not call standups.
 
-1. **A diff exists.** The organiser dispatches `pr-describer` and the reviewer fan-out matching the changed paths. Fork PRs (`head.repo.full_name != base.repo.full_name`) skip auto-dispatch until a maintainer applies `zaphod-requested`; `fork-review-gate.yml` strips the label on every new commit so each re-request is explicit.
+1. **A diff exists.** The organiser dispatches `pr-describer` and the reviewer fan-out matching the changed paths.
 2. **A work unit closes.** The organiser scrubs the scratchpad and promotes keepers.
 
 Everything between those two points is parallel. Agents do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
 
 ## PR verdicts and merge
 
-Five labels live on PRs. Three are for agents; two are not.
+Four labels live on PRs. Two are for agents; two are not.
 
 - `zaphod-approved`: the reviewer pool read the diff and found it clean.
 - `zaphod-blocked`: the reviewer pool found something that needs a human look.
-- `zaphod-requested`: a maintainer opted a fork PR into the reviewer fan-out. Internal PRs dispatch automatically and do not use this label.
 - `approved-human`: Josh only. Sign-off; required for merge.
 - `changes-requested-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
 
