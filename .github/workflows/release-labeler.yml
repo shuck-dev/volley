@@ -1,4 +1,4 @@
-name: Autolabel PR
+name: Release Labeler
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
     types: [opened, edited]
 
 concurrency:
-  group: autolabel-pr-${{ github.event.pull_request.number }}
+  group: release-labeler-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
   # Split out of the drafter workflow so skipped-on-PR / skipped-on-push
   # check noise is gone.
   autolabel:
-    name: Apply labels from PR title
+    name: Apply release category labels from PR title
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
