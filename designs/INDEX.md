@@ -31,6 +31,7 @@ The design thinking behind Volley!, organised by subject. Each folder has its ow
 |---|---|
 | [Ticket Writing](process/ticket-writing.md) | How we write Linear and GitHub issues |
 | [Labels](process/labels.md) | The label taxonomy and what each label means |
+| [Swarm Architecture](process/swarm-architecture.md) | How the parallel agent system is shaped and why |
 
 ## Research
 
