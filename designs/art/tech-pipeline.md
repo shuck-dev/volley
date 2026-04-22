@@ -96,7 +96,9 @@ Characters use **`AnimatedSprite2D` with a `SpriteFrames` resource per character
 
 ### Target frame counts
 
-Indicative budgets, framed in traditional animator terms. Target a base game tick of 24 drawings per second: "on ones" is every tick (24 dps), "on twos" is every other tick (12 dps), "on fours" every fourth (6 dps), "on sixes" every sixth (4 dps). Godot's `SpriteFrames` authors in FPS rather than step counts; the column below gives both so an animator and an integrator read the same row.
+Indicative budgets, framed in traditional animator terms. The base tick is **24 frames per second**, matching the century-old feature-animation standard: per traditional animation practice, fully animated films are drawn on twos (12 unique drawings per second) and step up to ones (24) for fast action, so 24 fps is the tick the drawings slot into rather than the drawing rate itself. Indie 2D game references sit on the same tick: per Cuphead's creators, StudioMDHR animate on ones at 24 fps while the game runs at 60; per Hollow Knight's art breakdowns and Rain World's rigging, hand-drawn states read at roughly 12 unique drawings per second even when the engine presents them at 60. Volley! picks 24 as the base tick and defaults to on-twos, stepping up or down per state.
+
+"On ones" is every tick (24 dps), "on twos" is every other tick (12 dps), "on fours" every fourth (6 dps), "on sixes" every sixth (4 dps). Godot's `SpriteFrames` authors in FPS rather than step counts; the column below gives both so an animator and an integrator read the same row.
 
 | State | Frames | Step | Equivalent FPS | Notes |
 |---|---|---|---|---|
@@ -149,7 +151,21 @@ Volley!'s lighting is **painted first, runtime second.**
 
 Shadows, form lighting, and ambient occlusion are **painted into the sprites** by the artist. Oga's watercolour afternoons are not a shader; they are a painting. Runtime lighting cannot recover what the painting establishes, and fighting the painted light with runtime light produces the mechanical, over-rendered look the bible rejects.
 
-This is tractable because characters occupy a narrow spatial range per venue: paddle positions are constrained, the ball's path is readable, and the camera is near-static. The painted light in a venue is the light the characters see, and the characters are painted to match it. When a character's position varies meaningfully across the frame (a mid-flight reaction that crosses the venue, an enter/exit from the opposite side), the artist paints the enter and exit states with lighting that resolves the traversal rather than attempting to match a single fixed source. The bible's "silhouettes hold; only the light, colour, and line quality shift" rule covers the acceptable variation.
+This is tractable because characters occupy a narrow spatial range per venue: paddle positions are constrained, the ball's path is readable, and the camera is near-static. The painted light in a venue is the light the characters see, and the characters are painted to match it.
+
+### Character light states
+
+Other painted-first 2D games resolve this tension by layering cheap real-time tricks over carefully authored base art, rather than by lighting the characters dynamically. Per Ori and the Blind Forest's GDC breakdowns, Moon Studios composite a 3D-rendered character onto painted backgrounds with an additive side-mask that fakes a directional source and flips with the sprite; per the gamedeveloper.com "Dynamic 2D Character Lighting" write-up, a screen-space light map blurred against a character alpha mask is the common runtime layer for otherwise hand-painted worlds; per Hyper Light Drifter's art-direction analyses, flat-colour pixel art takes a soft overlay gradient at low opacity to carry the venue's light without washing the sprite. Volley!'s painted-first brief precludes a 3D render, but the pattern holds: author the lighting into the sprite, lean on one or two runtime adjuncts to stitch the character into the painted venue.
+
+The concrete pipeline:
+
+1. **Authored light states per venue.** Each character ships **3 to 5 painted light states** per venue they appear in: a base state matched to the venue's locked painted light, plus one state per traversal pose the animator flags during layout (e.g. "entering from the lit side", "under the window", "exiting into shadow"). States are `.tres` `SpriteFrames` animations named `<state>_<light>` (`idle_base`, `idle_window`, `enter_left`) under `resources/animations/<character>.tres`. The base state is mandatory; additional states are added only when layout demands them, not speculatively.
+2. **Runtime selection.** A `CharacterLighting` node on each character scene reads a per-venue `LightingZone` hint (a small `Area2D` grid painted over the venue during integration, keyed to the relevant light state name) and switches the `AnimatedSprite2D` to the matching named animation when the character enters a zone. No zone overlap means fall through to the base state.
+3. **Runtime blend.** Transitions between light states tween `modulate` over 150-250 ms while the animation frame list swaps, so the visual change is a soft colour ease rather than a cut. This is the only runtime colour operation on characters; no `Light2D` with `shadow_enabled`, no per-pixel recolour.
+4. **Budget.** Per character per venue: base state, up to 4 additional light states, up to 5 total. A character appearing in 4 venues therefore ships up to 20 light-state sets across its lifetime. States are repaints of the base animation at the same frame count, so the marginal cost scales with animation length, not with venue count.
+5. **Fallback.** If no authored state matches the character's position (new traversal pattern, late-added venue cue), the base state plays with a `modulate` pulled from the venue's `LightingZone` tint. This is visibly less accurate than an authored state and exists only to unblock gameplay integration while the painted state is authored.
+
+`LightingZone` and `CharacterLighting` are specified here; implementation lands alongside the first venue that needs more than the base state. The bible's "silhouettes hold; only the light, colour, and line quality shift" rule covers the acceptable variation between states.
 
 ### Runtime
 
@@ -304,4 +320,3 @@ The background layering approach described here is validated by `scenes/court.ts
 - Display and reading fonts for the UI theme. Blocks on typography.
 - Whether any in-world text (signage, the ball rack's label strip) needs a separate font treatment. Deferred until UI work begins.
 - Whether VFX lives in the mobile renderer's additive blend path as well as it does under Forward Plus. Validated when the renderer is switched.
-- How painted-light reconciliation extends to characters that traverse longer spatial ranges within a single animation state (a reaction that crosses the venue, a cutscene pan). Current answer is to paint the enter/exit states with resolving light; an animator-led pass can confirm whether that covers every practical case or if a small set of directional variants per character becomes necessary.
