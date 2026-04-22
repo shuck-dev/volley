@@ -1,0 +1,33 @@
+{
+  "_comment": "Canonical Bash allowlist for the swarm. Copy the `permissions` block into your local .claude/settings.json to enforce deny-by-default on agent shell calls. Commands outside the allowlist prompt for confirmation rather than running silently. See ai/swarm/README.md for rationale.",
+  "permissions": {
+    "allow": [
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr comment:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr ready:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(git branch --show-current:*)",
+      "Bash(git branch -vv:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push origin:*)",
+      "Bash(git push -u origin:*)",
+      "Bash(git push --set-upstream origin:*)",
+      "Bash(git fetch origin:*)",
+      "Bash(git merge origin/main:*)",
+      "Bash(git checkout -b:*)",
+      "Bash(git worktree:*)",
+      "Bash(./scripts/ci/run_gut.sh:*)",
+      "Bash(./scripts/swarm/post-review.sh:*)"
+    ]
+  }
+}
