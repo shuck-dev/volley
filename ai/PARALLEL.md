@@ -114,6 +114,7 @@ See [`release-playbook.md`](release-playbook.md). Agents read it only when Josh 
 | Agent | Ticket | Branch | Files touched | Started | Notes |
 |---|---|---|---|---|---|
 | Marvin | SH-141 | sh-141-auto-dispatch-agent-to-resolve-pr-merge-conflicts | .github/workflows/resolve-pr-conflicts.yml | 2026-04-21 | headless conflict-resolver workflow |
+| Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
 | Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
 
 ## Done (recent)
@@ -135,6 +136,7 @@ Newest at top. One line per event.
 
 ```
 [SH-141] Marvin: claim; adding resolve-pr-conflicts workflow (complements SH-139 sweep)
+[SH-107] feldspar: claimed spike; validating 08-court-bounds.md against ticket open questions
 [SH-169] Ford: claimed; name-prefix rule landed in PARALLEL.md §5, swarm README, post-review.sh
 [init] scratchpad reset on cycle #3 open
 ```
