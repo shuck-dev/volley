@@ -62,6 +62,24 @@ Bounces and misses read distinctly:
 
 All three are audio + world-space only. No screen-space banners (per venue diegetic rule).
 
+### Physics at the court boundary
+
+While the rally is alive, balls live in a physics volume that treats them as weightless. Their `gravity_scale` is `0` and linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling. The court's `Area2D` is what applies this treatment.
+
+A miss trigger (goal-line or side band) flips the ball out of this state. `gravity_scale` rises to `1`. Linear damping kicks in. The ball retains whatever velocity it had at the moment of the cross, so a fast ball sails further before it lands; a slow one drops almost immediately. From there it rolls across the venue floor, decelerates against friction, and comes to rest.
+
+The transition is a single signal on `Area2D.body_exited`: clear the in-court flag, unlock gravity, engage damping. No interpolation, no blend window. The ball was in play and now it is not.
+
+### In-world framing: the spirit of the volley
+
+A rally is how the spirit of the volley shows up. It is not owned by the player and it does not live in the ball. It answers commitment to the exchange, and it holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points you have scored.
+
+A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do. It falls, rolls, and waits to be summoned again.
+
+A player can call the spirit alone. Partners, when they arrive, do not create it; they amplify it and make it easier to sustain. High-count rallies visibly run hotter: the ball carries the spirit's charge in how it reads, as subtle light, a trail, a weight of sound. A miss drains it; the ball on the venue floor is just a ball.
+
+Later items that extend or revive rallies are gestures of devotion to the spirit. Some plead with it to stay longer. Some call it back after it leaves. Naming them that way gives the system a vocabulary the player can feel rather than read from a stat block.
+
 ---
 
 ## Resting balls in the venue
