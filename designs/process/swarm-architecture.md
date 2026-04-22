@@ -20,9 +20,10 @@ Everything lives under `ai/swarm/`. Three kinds of file, one tracked surface, an
 
 - `agents/{name}.md`: per-agent working state, gitignored, private to the worktree that owns it. Appends only.
 - `tasks/{id}.md`: per-task work, one file per ticket, gitignored today. Carries claims, blocked-by, rich context for the agent working the ticket. Scrubs on ticket close.
-- `inbox/{name}.md`: per-agent mailbox, gitignored. Used for directed handoffs; currently quiet.
 - `README.md`: the tracked reference for how the swarm works. Stable; changes rarely.
 - `ai/PARALLEL.md`: the tracked live board. Cycle header, Active, Done recent, Blocked, Activity log. Volatile; rewritten constantly.
+
+Point-to-point agent messaging is not in the design. Handoffs go through the organiser, which acts as the switchboard. An earlier `inbox/{name}.md` mailbox surface was reserved for directed handoffs but stayed empty across several swarms, so it was dropped. If a concrete agent-to-agent use case shows up it can return cleanly; for now the organiser is sufficient.
 
 The split between tracked and gitignored matters. PARALLEL.md is the one surface where siblings can see each other's claims, which means every concurrent-claim write is a merge conflict in waiting. That pressure keeps the board small and pushes rich structured state into per-task files instead.
 
@@ -103,7 +104,6 @@ The ticket is not yet filed; this is the next architectural spike.
 ## Open questions
 
 - Exact schema (or lack of schema) for per-task `ai/swarm/tasks/<id>.md` files. Reconciliation wants prose; handoffs want structure. The compromise shape is not settled.
-- Inbox usage. The design reserves `inbox/{name}.md` for directed handoffs but nothing currently uses it. Either find the use case or drop the surface.
 - Activity log archival. Truncation at cycle close is the working rule, but older entries may be worth archiving to `ai/swarm/tasks/archive/` rather than dropped outright. Open.
 
 ## References
