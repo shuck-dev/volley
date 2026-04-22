@@ -1,58 +1,10 @@
 name: Resolve PR merge conflicts
 
-# ---------------------------------------------------------------------------
-# SH-141: auto-dispatch a headless Claude Code agent to resolve PR merge
-# conflicts when the auto-update sweep (SH-139) cannot fast-forward a branch.
-#
-# Complements `auto-update-prs.yml`: that workflow labels conflicting PRs with
-# `has-conflicts` / `action-required`; this one subscribes to that signal and
-# spins up a bounded Claude session whose brief is "resolve the merge from
-# main, commit, push; escalate anything ambiguous".
-#
-# Triggers:
-#   - `pull_request_target: labeled` when a PR gains `has-conflicts` or
-#     `action-required`. `pull_request_target` runs in the base repo context,
-#     so the `GITHUB_TOKEN` and secrets are available; the checked-out code is
-#     the PR branch, which the agent then merges main into.
-#   - `workflow_dispatch` with a PR number, for manual re-tries.
-#
-# Eligibility (all must hold, fail closed):
-#   - PR is open and not a draft.
-#   - PR author / assignee is Josh (`J-Melon`), matching the ticket's "only
-#     runs on issues assigned to Josh" guardrail.
-#   - PR carries `has-conflicts` or `action-required`.
-#   - Daily run count under the cost ceiling (see below).
-#   - Both `CLAUDE_CODE_OAUTH_TOKEN` and `GITHUB_TOKEN` are available.
-#
-# Safety rails:
-#   - Permissions: `contents: write`, `pull-requests: write`. No `actions:
-#     write`, no `id-token`, no packages. Cannot force-push to main (branch
-#     protection enforces that); the brief also forbids `push --force`.
-#   - Agent brief forbids dropping commits, rewriting history, or resolving
-#     anything beyond additive PARALLEL.md collisions and trivial textual
-#     overlaps. Everything else: agent posts a comment + keeps the
-#     `action-required` label on, and exits.
-#   - Concurrency: one conflict-resolution run per PR at a time; a second
-#     label event while one is active is cancelled.
-#   - `timeout-minutes: 30` hard-caps wall-clock; `--max-turns 30` caps
-#     tool calls. Expected spend per run: $2-$8 at Opus pricing.
-#
-# Cost ceiling (max N runs per day):
-#   - 5 dispatches per UTC day across all PRs. The preflight counts completed
-#     runs of this workflow in the last 24h; if >= 5, logs a notice and exits
-#     0. Adjust `DAILY_RUN_CEILING` below if the cadence changes.
-#
-# Kill-switch:
-#   - Disable the workflow in the Actions tab: "Resolve PR merge conflicts"
-#     -> "..." -> "Disable workflow". Label events will queue no jobs.
-#   - Or push `.github/resolve-pr-conflicts.halt` to main; the preflight job
-#     short-circuits when that path exists.
-#   - Or rotate/clear `CLAUDE_CODE_OAUTH_TOKEN`; the preflight logs and skips.
-#
-# Required secrets (shared with SH-134 daily cycle):
-#   - `CLAUDE_CODE_OAUTH_TOKEN`
-#   - `GITHUB_TOKEN` is provided automatically by Actions.
-# ---------------------------------------------------------------------------
+# SH-141: dispatch a headless Claude Code agent to merge main into a Josh-owned
+# PR when the auto-update sweep labels it `has-conflicts` / `action-required`.
+# Fires on `pull_request_target: labeled` (plus `workflow_dispatch` for manual
+# retries). Kill-switch: disable the workflow in the Actions tab, push
+# `.github/resolve-pr-conflicts.halt` to main, or clear `CLAUDE_CODE_OAUTH_TOKEN`.
 
 on:
   pull_request_target:
@@ -75,7 +27,7 @@ permissions:
 
 jobs:
   preflight:
-    name: Eligibility + cost ceiling
+    name: Eligibility
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Skip as cheaply as possible when the label event is not one we care
@@ -125,8 +77,6 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           DISPATCH_PR: ${{ github.event.inputs.pr }}
           LABEL_PR: ${{ github.event.pull_request.number }}
-          # Max conflict-resolution dispatches in a rolling 24h window.
-          DAILY_RUN_CEILING: "5"
         run: |
           set -euo pipefail
 
@@ -171,22 +121,6 @@ jobs:
             exit 0
           fi
 
-          # Rolling-24h cost ceiling. `gh run list` returns newest-first; we
-          # count completed runs of this workflow in the window.
-          SINCE=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
-          RECENT=$(gh run list \
-            --repo "$GH_REPO" \
-            --workflow "Resolve PR merge conflicts" \
-            --created ">=${SINCE}" \
-            --json databaseId --jq 'length' 2>/dev/null || echo 0)
-          echo "Runs of this workflow in last 24h: ${RECENT} (ceiling: ${DAILY_RUN_CEILING})"
-          if [ "$RECENT" -ge "$DAILY_RUN_CEILING" ]; then
-            echo "::notice::Daily ceiling reached (${RECENT}/${DAILY_RUN_CEILING}); skipping."
-            echo "skipped=true" >> "$GITHUB_OUTPUT"
-            echo "skip_reason=daily-ceiling" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
           echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           echo "head_ref=$HEAD_REF" >> "$GITHUB_OUTPUT"
           echo "skipped=false" >> "$GITHUB_OUTPUT"
@@ -196,7 +130,6 @@ jobs:
             echo ""
             echo "- PR: **#${PR_NUMBER}** (\`${HEAD_REF}\`)"
             echo "- Labels: \`${LABELS}\`"
-            echo "- Runs in last 24h: ${RECENT} / ${DAILY_RUN_CEILING}"
           } >> "$GITHUB_STEP_SUMMARY"
 
   resolve:
