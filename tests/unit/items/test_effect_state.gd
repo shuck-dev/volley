@@ -1,3 +1,4 @@
+# gdlint:ignore = max-public-methods
 extends GutTest
 
 var _state: EffectState
@@ -98,6 +99,52 @@ func test_remove_modifiers_by_source_removes_across_operations() -> void:
 	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
 	_state.remove_modifiers_by_source("item_a")
 	assert_eq(_state.get_stat(&"speed"), 100.0)
+
+
+# --- stat cache ---
+func test_get_stat_reflects_new_modifier_after_add() -> void:
+	assert_eq(_state.get_stat(&"speed"), 100.0)
+	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
+	assert_eq(_state.get_stat(&"speed"), 150.0)
+
+
+func test_get_stat_reflects_removal_after_remove_by_source() -> void:
+	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
+	assert_eq(_state.get_stat(&"speed"), 150.0)
+	_state.remove_modifiers_by_source("item_a")
+	assert_eq(_state.get_stat(&"speed"), 100.0)
+
+
+func test_get_stat_reflects_removal_after_clear_temporary() -> void:
+	var modifier := _make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0)
+	modifier.temporary = true
+	_state.add_modifier(modifier)
+	assert_eq(_state.get_stat(&"speed"), 150.0)
+	_state.clear_temporary_modifiers()
+	assert_eq(_state.get_stat(&"speed"), 100.0)
+
+
+func test_get_stat_reflects_new_base_after_register_base_values() -> void:
+	assert_eq(_state.get_stat(&"speed"), 100.0)
+	_state.register_base_values({&"speed": 200.0})
+	assert_eq(_state.get_stat(&"speed"), 200.0)
+
+
+func test_get_stat_stable_within_tick_then_advances_on_process_frame() -> void:
+	var oscillation := StatOscillation.new()
+	oscillation.stat_key = &"speed"
+	oscillation.source_key = "osc_a"
+	oscillation.amplitude = 0.1
+	oscillation.range_stat_key = &"size"
+	_state.add_oscillation(oscillation)
+	# Advance once so the oscillation has a non-zero offset.
+	_state.process_frame(0.25)
+	var first_read: float = _state.get_stat(&"speed")
+	# Second read within same tick must hit cache and match exactly.
+	assert_eq(_state.get_stat(&"speed"), first_read)
+	_state.process_frame(0.25)
+	# After process_frame, cache cleared so oscillation has advanced.
+	assert_ne(_state.get_stat(&"speed"), first_read)
 
 
 # --- states ---

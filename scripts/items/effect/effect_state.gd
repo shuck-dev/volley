@@ -8,16 +8,21 @@ var _multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
 var _oscillations: Array[StatOscillation] = []
 var _resolving_keys: Array[StringName] = []
+var _stat_cache: Dictionary[StringName, float] = {}
 
 
 func get_stat(key: StringName) -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
+
+	if _stat_cache.has(key):
+		return _stat_cache[key]
 
 	var result: float = _base_values[key]
 	result += _sum_oscillations(key)
 	result += _sum_modifiers(key, _add_modifiers, false)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false)
 	result *= _product_modifiers(key, _multiply_modifiers, false)
+	_stat_cache[key] = result
 	return result
 
 
@@ -44,6 +49,7 @@ func get_percentage_offset(key: StringName) -> float:
 
 func add_modifier(modifier: StatModifier) -> void:
 	_array_for_operation(modifier.operation).append(modifier)
+	_stat_cache.clear()
 
 
 func remove_modifiers_by_source(source_key: String) -> void:
@@ -53,6 +59,7 @@ func remove_modifiers_by_source(source_key: String) -> void:
 	_oscillations = _oscillations.filter(
 		func(oscillation: StatOscillation) -> bool: return oscillation.source_key != source_key
 	)
+	_stat_cache.clear()
 
 
 func get_temporary_total(stat_key: StringName, source_key: String) -> float:
@@ -72,20 +79,24 @@ func clear_temporary_modifiers() -> void:
 	_add_modifiers = _add_modifiers.filter(keep_permanent)
 	_percentage_modifiers = _percentage_modifiers.filter(keep_permanent)
 	_multiply_modifiers = _multiply_modifiers.filter(keep_permanent)
+	_stat_cache.clear()
 
 
 func register_base_values(values: Dictionary) -> void:
 	for key in values:
 		_base_values[key] = values[key]
+	_stat_cache.clear()
 
 
 func add_oscillation(oscillation: StatOscillation) -> void:
 	_oscillations.append(oscillation)
+	_stat_cache.clear()
 
 
 func process_frame(delta: float) -> void:
 	for oscillation in _oscillations:
 		oscillation.advance(delta)
+	_stat_cache.clear()
 
 
 func set_state(state: StringName, source_key: String) -> void:

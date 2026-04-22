@@ -33,8 +33,14 @@ func _physics_process(delta: float) -> void:
 	var prev_max: float = max_speed
 	effect_processor.process_frame(delta)
 	_emit_max_speed_if_changed()
-	if speed != prev_speed or min_speed != prev_min or max_speed != prev_max:
-		speed_changed.emit(speed, min_speed, max_speed)
+	var speed_unchanged: bool = (
+		is_equal_approx(speed, prev_speed)
+		and is_equal_approx(min_speed, prev_min)
+		and is_equal_approx(max_speed, prev_max)
+	)
+	if speed_unchanged:
+		return
+	speed_changed.emit(speed, min_speed, max_speed)
 	linear_velocity = linear_velocity.normalized() * speed
 
 
