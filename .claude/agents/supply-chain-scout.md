@@ -47,4 +47,4 @@ Return a structured verdict to the organiser. Three fields:
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-Use `WebFetch` freely for upstream repos and changelogs while investigating. The organiser posts blocked verdicts as inline review comments on the flagged lines (resolvable in the PR UI) and applies the label. Approved verdicts apply the label with no comment. PR comments prefix with `**supply-chain-scout**\n\n<body>` per `ai/swarm/README.md`.
+Use `WebFetch` freely for upstream repos and changelogs while investigating. The organiser posts blocked verdicts as inline review comments on the flagged lines (resolvable in the PR UI) and applies the label. Approved verdicts apply the label with no comment. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.

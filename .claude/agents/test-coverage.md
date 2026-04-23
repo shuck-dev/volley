@@ -44,4 +44,4 @@ Coverage numbers are a sanity check, not the verdict. A changed file at 80% cove
 
 ## Output
 
-Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Organiser applies `zaphod-approved` when your verdict is clean, or `zaphod-blocked` with your line-anchored items. PR comments prefix with `**<role-name>**\n\n<body>` per `ai/swarm/README.md`.
+Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.

@@ -23,4 +23,4 @@ You review signal-wiring and tree-lifecycle changes. These bugs are subtle and u
 
 ## Output
 
-Mechanical fixes (e.g. a clear `tree_exited` → `tree_exiting` typo) as commits. Everything else as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Organiser applies `zaphod-approved` when your verdict is clean, or `zaphod-blocked` with your line-anchored items. PR comments prefix with `**<role-name>**\n\n<body>` per `ai/swarm/README.md`.
+Mechanical fixes (e.g. a clear `tree_exited` → `tree_exiting` typo) as commits. Everything else as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
