@@ -6,11 +6,11 @@ We build in the open. The repository is public, the design documents are public,
 
 The wager behind the practice is simple. Work seen by strangers can be remembered, recommended, and returned to. Work kept hidden cannot. A community forms in the years before a launch, not in the weeks after. The makers who show their process find the people who care about that process, and those people carry the work further than any launch-day push would.
 
-Open development also widens who gets to shape the game. A player who has lived with a one-handed controller layout, or with dyslexia, or with a language the studio doesn't speak, holds information that no internal review surfaces on its own. Public work invites that information in. Credit follows the contribution, by name, every time.
+A wider room changes the game itself. A player who has lived with a one-handed controller layout, or with dyslexia, or with a language the studio doesn't speak, holds information no internal review surfaces on its own. Public work invites that information in. Credit follows the contribution, by name, every time.
 
-Volley! is under an MIT licence. Not because the code sells the game, but because the trust and the on-ramp the openness builds are worth more than the code. If you want to read, file an issue, send a patch, suggest a name, or watch quietly, all of that is welcome.
+Volley! is under an MIT licence. Not because the code sells the game, but because the trust and the on-ramp the practice builds are worth more than the code. Contribution here is whatever you bring: code and art, music and sound, writing and translation, accessibility notes and playtest reports, a suggested name, a bug you stumbled over, documentation and tutorials, community care, or quiet attention from the sidelines. All of it counts, and all of it is welcome.
 
-The long version of the argument, with the cases it rests on, sits here:
+The extended cut, with the cases it rests on, sits here:
 <https://github.com/shuck-dev/volley/blob/main/designs/research/the-case-for-open-development.md>
 
 Come in, have a look around.
