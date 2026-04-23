@@ -59,16 +59,17 @@ case "$tool_name" in
 esac
 
 # tool_response shapes differ. WebFetch returns a string or {content: ...};
-# WebSearch returns an array of results. Flatten everything to a single
-# string for pattern matching.
+# WebSearch returns an array of {title, url, snippet, ...} objects. Flatten
+# via a strings-walk joined with real newlines so anchored patterns like
+# `^#+\s*MCP\s+Instructions` can still fire on structured responses; a
+# naive `tostring` would JSON-escape newlines into literal `\n` and kill
+# every ^-anchored pattern on WebSearch arrays.
 content=$(
 	printf '%s' "$payload" \
 		| jq -r '
 			(.tool_response // "") as $r
 			| if ($r | type) == "string" then $r
-				elif ($r | type) == "object" then ($r | tostring)
-				elif ($r | type) == "array" then ($r | tostring)
-				else ""
+				else ($r | [.. | strings] | join("\n"))
 				end
 		' 2>/dev/null
 )
