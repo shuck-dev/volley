@@ -66,7 +66,7 @@ These are two separate outputs.
 - **PR comment** is for Josh. Short, attributed, per the caps above.
 - **Organiser report** (your return message to the dispatching thread) can be as long as it needs. Technical reasoning, references, side observations, confidence level.
 
-If your dispatch prompt says "report back with verdict, summary, and SHA" — that is the organiser report, not the PR comment. Post the tight version to the PR; give the full version back.
+If your dispatch prompt says "report back with verdict, summary, and SHA", that is the organiser report, not the PR comment. Post the tight version to the PR; give the full version back.
 
 ## Where findings live
 
