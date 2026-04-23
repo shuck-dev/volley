@@ -117,6 +117,20 @@ func get_court_items() -> Array[String]:
 	return result
 
 
+## Returns owned items of the given role whose placement is STORED (on the rack).
+func get_kit_items(role: StringName) -> Array[String]:
+	var result: Array[String] = []
+	for item in items:
+		if item.role != role:
+			continue
+		if get_level(item.key) <= 0:
+			continue
+		if _get_placement(item.key) != PlacementScript.STORED:
+			continue
+		result.append(item.key)
+	return result
+
+
 ## Places an owned item on its natural target and registers effects at current level; false if unowned.
 func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:

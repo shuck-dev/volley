@@ -1,31 +1,19 @@
 class_name RackDisplay
 extends Node2D
 
-## Reactive display for inactive items in a given role.
-## Renders one slot per owned-but-unplaced item, using `ItemDefinition.art`.
-## Declares a drop-target Area2D child for future drag-and-drop wiring (SH-97/SH-98).
-## No gameplay effect while items sit here: effects are driven by placement (SH-96).
-
-## Which role this rack displays. `&"ball"` or `&"equipment"`.
 @export var role: StringName = &"ball"
-
-## Parent node for item slots; rebuilt from scratch on every change.
 @export var slot_container: Node2D
-
-## Visible bounds the rack covers, used to size the drop-target Area2D.
 @export var bounds: Rect2 = Rect2(0, 0, 300, 200)
-
-## Per-slot spacing. Items flow left-to-right then wrap to the next row.
-@export var slot_size: Vector2 = Vector2(72, 72)
-@export var slot_padding: Vector2 = Vector2(16, 16)
 
 var _item_manager: Node
 var _slots: Array[Node2D] = []
+var _slot_markers: Array[Node2D] = []
 
 
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
+	_cache_slot_markers()
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_item_manager.item_placement_changed.connect(_on_item_placement_changed)
 	refresh()
@@ -36,22 +24,25 @@ func configure(item_manager: Node) -> void:
 	_item_manager = item_manager
 
 
-## Rebuilds the slot children from the current inactive set. Idempotent.
 func refresh() -> void:
 	_clear_slots()
-	var inactive_keys := _collect_inactive_keys()
-	for index in inactive_keys.size():
-		var item_key := inactive_keys[index]
+	if _slot_markers.is_empty():
+		_cache_slot_markers()
+	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
+	var marker_count := _slot_markers.size()
+	for index in kit_keys.size():
+		var item_key: String = kit_keys[index]
 		var definition := _get_item_definition(item_key)
 		if definition == null or definition.art == null:
 			continue
-		var slot := _build_slot(definition, index)
+		if marker_count == 0:
+			continue
+		var marker_index: int = min(index, marker_count - 1)
+		var slot := _build_slot(definition, _slot_markers[marker_index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
 
 
-## Returns the inactive, role-matching item keys currently rendered.
-## Exposed for tests and for future drop-target logic.
 func get_displayed_keys() -> Array[String]:
 	var keys: Array[String] = []
 	for slot in _slots:
@@ -63,37 +54,23 @@ func get_displayed_keys() -> Array[String]:
 	return keys
 
 
-func _collect_inactive_keys() -> Array[String]:
-	var keys: Array[String] = []
-	for item in _item_manager.items:
-		if item.role != role:
-			continue
-		if _item_manager.get_level(item.key) <= 0:
-			continue
-		# is_on_court returns true for any non-STORED placement (EQUIPPED or ON_COURT).
-		if _item_manager.is_on_court(item.key):
-			continue
-		keys.append(item.key)
-	return keys
+func _cache_slot_markers() -> void:
+	_slot_markers.clear()
+	if slot_container == null:
+		return
+	for child in slot_container.get_children():
+		if child is Node2D and String(child.name).begins_with("SlotMarker"):
+			_slot_markers.append(child)
 
 
-func _build_slot(definition: ItemDefinition, index: int) -> Node2D:
+func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	var slot := Node2D.new()
 	slot.name = "Slot_%s" % definition.key
-	slot.position = _slot_position(index)
+	slot.position = slot_position
 	slot.set_meta(&"item_key", definition.key)
 	var art_instance: Node = definition.art.instantiate()
 	slot.add_child(art_instance)
 	return slot
-
-
-func _slot_position(index: int) -> Vector2:
-	var stride := slot_size + slot_padding
-	var columns: int = max(1, int(floor((bounds.size.x - slot_padding.x) / stride.x)))
-	var column := index % columns
-	var row := index / columns
-	var origin := bounds.position + slot_padding + slot_size * 0.5
-	return origin + Vector2(column * stride.x, row * stride.y)
 
 
 func _clear_slots() -> void:

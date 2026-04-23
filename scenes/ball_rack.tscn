@@ -30,6 +30,30 @@ text = "BallRack"
 
 [node name="SlotContainer" type="Node2D" parent="." unique_id=1349315968]
 
+[node name="SlotMarker0" type="Node2D" parent="SlotContainer" unique_id=1349315980]
+position = Vector2(37.5, 50)
+
+[node name="SlotMarker1" type="Node2D" parent="SlotContainer" unique_id=1349315981]
+position = Vector2(112.5, 50)
+
+[node name="SlotMarker2" type="Node2D" parent="SlotContainer" unique_id=1349315982]
+position = Vector2(187.5, 50)
+
+[node name="SlotMarker3" type="Node2D" parent="SlotContainer" unique_id=1349315983]
+position = Vector2(262.5, 50)
+
+[node name="SlotMarker4" type="Node2D" parent="SlotContainer" unique_id=1349315984]
+position = Vector2(37.5, 150)
+
+[node name="SlotMarker5" type="Node2D" parent="SlotContainer" unique_id=1349315985]
+position = Vector2(112.5, 150)
+
+[node name="SlotMarker6" type="Node2D" parent="SlotContainer" unique_id=1349315986]
+position = Vector2(187.5, 150)
+
+[node name="SlotMarker7" type="Node2D" parent="SlotContainer" unique_id=1349315987]
+position = Vector2(262.5, 150)
+
 [node name="DropTarget" type="Area2D" parent="." unique_id=1349315969]
 monitoring = false
 monitorable = true

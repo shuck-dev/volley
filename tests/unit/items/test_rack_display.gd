@@ -33,6 +33,11 @@ func _make_rack(role: StringName, manager: Node) -> Node2D:
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)
+	for index in 8:
+		var marker := Node2D.new()
+		marker.name = "SlotMarker%d" % index
+		marker.position = Vector2(index * 32, 0)
+		slot_container.add_child(marker)
 	rack.slot_container = slot_container
 	rack.configure(manager)
 	add_child_autofree(rack)
