@@ -13,7 +13,4 @@ Volley! is under an MIT licence. Not because the code sells the game, but becaus
 The long version of the argument, with the cases it rests on, sits here:
 <https://github.com/shuck-dev/volley/blob/main/designs/research/the-case-for-open-development.md>
 
-The guide to how the day-to-day work happens, including how human contributors and AI agents share the repo, is here:
-<https://github.com/shuck-dev/volley/blob/main/ai/lair/guide.md>
-
 Come in, have a look around.
