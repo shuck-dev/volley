@@ -23,11 +23,24 @@ Before reviewing, keep these pointers authoritative:
 - **Missing edge-case coverage on bug fixes.** A fix for "crash on empty inventory" must include a test for the empty-inventory path.
 - **Tests that only check happy path.** New feature tests that never check failure or empty states.
 
+## Coverage data
+
+Qualitative review (the items above) comes first: a 100%-covered file can still have tests that assert the wrong things. Once the review call is made, cross-check against the actual coverage artifact:
+
+1. Find the latest successful `Tests` workflow run on the PR head: `gh run list --branch <head> --workflow Tests --limit 5 --json databaseId,conclusion,headSha`.
+2. Download the coverage artifact: `gh run download <id> --name coverage-report --dir /tmp/coverage-<pr>`. Parses as `coverage.json`.
+3. For each production `.gd` file in the diff under `scripts/`, look up its coverage entry and flag:
+   - **Missed changed lines.** If the diff adds or modifies lines that are not covered, call them out by line range. This is the high-signal check.
+   - **File below floor.** 75% per-file coverage is the baseline. Flag any changed file that drops under it, and any file the PR touches that was above 75% on `main` and is below after the change.
+4. If the artifact is missing (tests run failed, or the workflow hasn't finished), note that and proceed with the qualitative review alone. Do not block on a missing artifact.
+
+Coverage numbers are a sanity check, not the verdict. A changed file at 80% coverage with assertions against internal state is still a block. A changed file at 65% coverage that's a pure refactor of already-tested behaviour is still an approve, with a note.
+
 ## Out of scope
 
 - Test pass/fail (GUT in CI via `./scripts/ci/run_gut.sh`).
 - Formatting, style, naming (that's code-quality or gdscript-conventions).
-- Coverage percentage as a number (the project targets 75%+, enforced elsewhere).
+- Total project coverage as a headline number (the artifact carries it, reviewers don't chase it).
 
 ## Output
 
