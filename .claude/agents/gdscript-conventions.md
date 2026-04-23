@@ -23,4 +23,4 @@ You review `.gd` diffs for Volley-specific GDScript conventions that `gdlint` do
 
 ## Output
 
-Mechanical fixes (e.g. `@onready` → `@export` for a simple node ref; adding types to an obvious function) as commits. Broader structural suggestions as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Mechanical fixes (e.g. `@onready` → `@export` for a simple node ref; adding types to an obvious function) as commits. Broader structural suggestions as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/reviewers.md` for the canonical verdict shape, prefix, body discipline, and label call.

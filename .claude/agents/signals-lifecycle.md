@@ -23,4 +23,4 @@ You review signal-wiring and tree-lifecycle changes. These bugs are subtle and u
 
 ## Output
 
-Mechanical fixes (e.g. a clear `tree_exited` → `tree_exiting` typo) as commits. Everything else as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Mechanical fixes (e.g. a clear `tree_exited` → `tree_exiting` typo) as commits. Everything else as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/reviewers.md` for the canonical verdict shape, prefix, body discipline, and label call.

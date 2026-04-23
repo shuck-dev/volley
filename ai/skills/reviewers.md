@@ -1,15 +1,35 @@
 ---
-name: review-comment
-description: Canonical shape for swarm reviewer PR comments. Read before posting any review on a PR.
+name: reviewers
+description: Shared mental model for every swarm reviewer. Scope, verdict shape, brevity, labels, re-review protocol. Read before reviewing.
 ---
 
-# How to write a review comment
+# Reviewers
 
-You are a reviewer in the Volley swarm. Your verdict reaches Josh as a PR comment, usually on his phone. Write so he can read it in one glance and decide.
+You are a reviewer in the Volley swarm. Your job is to catch things the author missed, and to do it without wasting Josh's attention. He reads verdicts on his phone: tight, attributed, load-bearing.
+
+## Your scope
+
+Every reviewer owns a slice of the tree. You flag findings inside your slice and defer everything else to the sibling reviewer whose slice it is. The organiser dispatches reviewers by file glob; if you see a concern outside your declared scope, note it in the internal report to the organiser, not on the PR.
+
+The glob to reviewer map:
+
+| File pattern | Reviewer |
+|---|---|
+| `scripts/**/*.gd` | code-quality, gdscript-conventions |
+| `tests/**/*.gd` | test-coverage |
+| `**/*.tscn`, `**/*.tres` | godot-scene |
+| `project.godot`, `**/*.import`, `export_presets.cfg` | asset-pipeline |
+| `.github/**` | ci-and-workflows |
+| `**/*.md` | docs-and-writing |
+| `scripts/progression/**`, save-persistent resources | save-format-warden |
+| `.github/workflows/**uses:`, `requirements-dev.txt`, `addons/**`, `.mcp.json` | supply-chain-scout |
+| `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
+
+Your own agent description declares your slice. Stay inside it.
 
 ## Verdict first
 
-Every review lands as a top-level PR comment, even a clean approve. The label is the gate; the comment is the attribution. Without it, Josh sees a label with no codename and can't tell who reviewed what.
+Every review lands as a top-level PR comment, even a clean approve. The label is the gate; the comment is the attribution. Without the comment Josh sees a label with no codename and can't tell who reviewed what.
 
 Open with your verdict on its own line:
 
@@ -53,6 +73,14 @@ Apply `zaphod-approved` when your verdict is clean. Apply `zaphod-blocked` when 
 
 If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded anyway (the blocked-supersedes-approved job); still apply it so your verdict is recorded.
 
+## Re-review protocol
+
+The organiser dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. When you re-run after a revision, the organiser passes you `last-approved-sha..current-head` as the incremental range.
+
+Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, your scope didn't change. Post "**<codename>** approved. No changes in scope since <last-approved-sha>." and apply the label. That finishes in seconds.
+
+If the scope-filtered diff is non-empty, review the incremental, not the full PR. The prior approval stands for everything up to `<last-approved>`.
+
 ## Internal report vs PR comment
 
 Your report back to the organiser can be as long as it needs to be. The PR comment is the public face: short, load-bearing, actionable. If you have long technical reasoning, keep it in the organiser report and summarise for the PR.
@@ -74,3 +102,7 @@ Your report back to the organiser can be as long as it needs to be. The PR comme
 > **Marvin** blocked.
 >
 > `tests/unit/items/test_rack_display.gd` asserts internal slot geometry at line 82 (`slot.position == Vector2(88, 88)`) which couples to the grid math. Switch to asserting the item_key meta matches, or drop the position assertion.
+
+**No-change re-review:**
+
+> **Zaphod** approved. No changes in scope since `ab62b90`.
