@@ -57,11 +57,12 @@ Everything lives under `ai/swarm/`.
 - `README.md`: this file, the canonical design; tracked.
 - `agents/{name}.md`: per-agent working state; gitignored.
 - `tasks/{id}.md`: per-task work, one file per unit; gitignored.
-- `inbox/{name}.md`: per-agent mailbox; gitignored.
 
 Agent files carry YAML frontmatter (`name`, `topic`, `last_active`) and three append-only sections: `## What I know`, `## Open threads`, `## Sources`. Task files carry `status` (`pending`, `claimed`, `in_progress`, `blocked`, `done`), `owner`, `blocked_by`, `updated_at`.
 
-Write access is strict. The organiser owns the dispatch board and task frontmatter. Each agent writes only to its own `{name}.md` and `inbox/{name}.md`. Bodies append; they do not rewrite prior blocks. That rule makes the scratchpad safe to read concurrently and safe to scrub.
+Write access is strict. The organiser owns the dispatch board and task frontmatter. Each agent writes only to its own `{name}.md`. Bodies append; they do not rewrite prior blocks. That rule makes the scratchpad safe to read concurrently and safe to scrub.
+
+Point-to-point agent messaging is not in the design. An earlier `inbox/{name}.md` surface was reserved for directed handoffs but stayed empty across several swarms and was dropped. Handoffs go through the organiser, which acts as the switchboard.
 
 ## Worktree discipline
 
@@ -77,7 +78,7 @@ Agents commit like a proper team. Each code-writing agent stages and commits its
 
 The organiser merges worktrees back without squashing, preserving per-agent attribution in the commit history. When the final PR opens, `pr-describer` writes the body; the reader can scan the commit list to see which agent produced which change.
 
-Review happens in the pull request, never on local files. "Ready for your review" means the branch is pushed and a PR is open with the reviewer fan-out running. Local file-review bypasses the `zaphod-approved` / `zaphod-blocked` surface and the existing reactive reviewers.
+Review happens in the pull request, never on local files. "Ready for your review" means the branch is pushed, a PR is open, and the reviewer fan-out has posted at the current HEAD. Local file-review bypasses the `zaphod-approved` / `zaphod-blocked` surface and the reviewer pool entirely.
 
 ## Bash allowlist
 
@@ -91,7 +92,7 @@ PRs open as drafts so Linear transitions the ticket to In Progress without pulli
 
 The swarm inherits the session-tier system from `ai/PARALLEL.md`. Every agent declares a tier ceiling in its `.claude/agents/*.md` body; the organiser respects it and never elevates silently.
 
-- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most agents live here: `ticket-writer`, `pr-describer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer (`save-format-warden`, `supply-chain-scout`, `devils-advocate`, plus the eight existing reactive reviewers).
+- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most agents live here: `ticket-writer`, `pr-describer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer in the pool (`code-quality`, `gdscript-conventions`, `godot-scene`, `signals-lifecycle`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`, `test-coverage`, `save-format-warden`, `supply-chain-scout`, plus `devils-advocate`).
 - **Tier 1 (scene edits)** covers `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit`. Dispatch requires `isolation: "worktree"`; parallelism is across worktrees. Agents that may escalate here: `integration-scenario-author` when scenarios stage scenes, `test-author` when tests need scene fixtures.
 - **Tier 2 (runtime)** covers `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot`. By request only. The agent files a `RUNTIME REQUEST` per the format in `ai/PARALLEL.md` and waits for Josh's approval before `run(play)` fires. No swarm agent currently holds a Tier 2 ceiling; Josh does the play-testing.
 
@@ -166,10 +167,10 @@ Three kinds, three responses. **Kind A**, worktree against worktree before eithe
 
 Only two. The organiser does not call standups.
 
-1. **A diff exists.** The organiser dispatches `pr-describer` and the reviewer fan-out matching the changed paths.
+1. **A review moment.** The PR opens, or the author reports "ready for re-review" after a revision round. The organiser dispatches `pr-describer` (first open only) and the scope-filtered reviewer fan-out.
 2. **A work unit closes.** The organiser scrubs the scratchpad and promotes keepers.
 
-Everything between those two points is parallel. Agents do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
+Intermediate pushes strip `zaphod-*` labels but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Agents do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
 
 ## PR verdicts and merge
 
