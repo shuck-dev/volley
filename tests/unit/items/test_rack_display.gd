@@ -2,8 +2,12 @@
 extends GutTest
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
-const TRAINING_BALL_ART: PackedScene = preload("res://scenes/items/training_ball.tscn")
-const GRIP_TAPE_ART: PackedScene = preload("res://scenes/items/grip_tape.tscn")
+
+
+func _stub_art() -> PackedScene:
+	var scene := PackedScene.new()
+	scene.pack(Node2D.new())
+	return scene
 
 
 func _make_item(item_key: String, role: StringName) -> ItemDefinition:
@@ -14,7 +18,7 @@ func _make_item(item_key: String, role: StringName) -> ItemDefinition:
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = []
-	item.art = TRAINING_BALL_ART if role == &"ball" else GRIP_TAPE_ART
+	item.art = _stub_art()
 	return item
 
 
@@ -49,7 +53,9 @@ func test_adding_a_ball_item_shows_a_slot_on_the_ball_rack() -> void:
 	var manager: Node = _make_manager_with([ball])
 	manager._progression.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
+
 	manager.take(ball.key)
+
 	var displayed: Array[String] = rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "ball rack should render one slot for the new ball item")
 	assert_eq(displayed[0], ball.key, "ball rack slot should reference the ball item key")
@@ -60,7 +66,9 @@ func test_adding_an_equipment_item_shows_a_slot_on_the_gear_rack() -> void:
 	var manager: Node = _make_manager_with([gear])
 	manager._progression.friendship_point_balance = 1000
 	var rack := _make_rack(&"equipment", manager)
+
 	manager.take(gear.key)
+
 	var displayed: Array[String] = rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "gear rack should render one slot for the new equipment item")
 	assert_eq(displayed[0], gear.key, "gear rack slot should reference the equipment item key")
@@ -71,7 +79,9 @@ func test_ball_items_do_not_appear_on_the_gear_rack() -> void:
 	var manager: Node = _make_manager_with([ball])
 	manager._progression.friendship_point_balance = 1000
 	var rack := _make_rack(&"equipment", manager)
+
 	manager.take(ball.key)
+
 	assert_eq(
 		rack.get_displayed_keys().size(),
 		0,
@@ -84,7 +94,9 @@ func test_equipment_items_do_not_appear_on_the_ball_rack() -> void:
 	var manager: Node = _make_manager_with([gear])
 	manager._progression.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
+
 	manager.take(gear.key)
+
 	assert_eq(
 		rack.get_displayed_keys().size(),
 		0,
@@ -103,7 +115,9 @@ func test_activating_an_item_removes_its_slot() -> void:
 		1,
 		"precondition: taken ball should render on the rack",
 	)
+
 	manager.activate(ball.key)
+
 	assert_eq(
 		rack.get_displayed_keys().size(),
 		0,
@@ -123,7 +137,9 @@ func test_deactivating_an_item_restores_its_slot() -> void:
 		0,
 		"precondition: activated equipment should not be on the rack",
 	)
+
 	manager.deactivate(gear.key)
+
 	assert_eq(
 		rack.get_displayed_keys().size(),
 		1,
@@ -136,8 +152,10 @@ func test_court_role_items_never_appear_on_either_rack() -> void:
 	var court_item := _make_item("court_alpha", &"court")
 	var manager: Node = _make_manager_with([court_item])
 	manager._progression.item_levels[court_item.key] = 1
+
 	var ball_rack := _make_rack(&"ball", manager)
 	var gear_rack := _make_rack(&"equipment", manager)
+
 	assert_eq(
 		ball_rack.get_displayed_keys().size(),
 		0,
@@ -157,6 +175,7 @@ func test_rack_exposes_a_drop_target_child() -> void:
 	var gear_rack_instance: Node = gear_rack_scene.instantiate()
 	add_child_autofree(ball_rack_instance)
 	add_child_autofree(gear_rack_instance)
+
 	assert_not_null(
 		ball_rack_instance.get_node_or_null("DropTarget"),
 		"ball rack scene should expose a DropTarget child",
