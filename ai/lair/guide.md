@@ -2,7 +2,7 @@
 
 ## What the Lair is
 
-The Lair is Volley!'s operational base. It holds the repo docs, the agent infrastructure, and the scripts and workflows that let a week of work run without reinventing the wheel each time. If a rule is worth keeping, it lives in the Lair.
+The Lair is Volley!'s operational base. It holds the repo docs, the agent infrastructure, and the scripts and workflows that let two weeks of work run without reinventing the wheel each time. If a rule is worth keeping, it lives in the Lair.
 
 The Lair sits inside the Anti-Villain League, which is the broader circle around the project: Josh, the regular crew, and every contributor who turns up to help.
 
@@ -10,7 +10,7 @@ This page is the internal guide. It names the crew, walks through a cycle of wor
 
 ## What happens here
 
-A week of work at the Lair looks like this. Josh decides what matters next. A plan for the cycle gets assembled. The work is split across specialist AI helpers, one per trade, who are dispatched one task at a time and who we call minions. The main Claude thread coordinates them. When a batch of work is ready, it goes through review, then through playtest, then out to the public as a release.
+Two weeks of work at the Lair looks like this. Josh decides what matters next. A plan for the cycle gets assembled. The work is split across specialist AI helpers, one per trade, who are dispatched one task at a time and who we call minions. The main Claude thread coordinates them. When a batch of work is ready, it goes through review, then through playtest, then out to the public as a release.
 
 The names for each of those beats get introduced below in the order you meet them.
 
@@ -36,7 +36,7 @@ Two supporting layers keep Gru and the minions current.
 
 ## The cycle
 
-Each cycle is a week. The beats are the same every time.
+Each cycle is two weeks. The beats are the same every time.
 
 **Dossier.** Before the cycle opens, Josh and Gru assemble the Dossier: the issues ready for the upcoming cycle, estimated, labelled, linked to their designs. A Dossier is what turns Backlog into a plan.
 
@@ -119,7 +119,7 @@ Three layers do not change under any of this. The Lair sits on top of them; it d
 
 **GitHub.** Pull requests, reviews, merges, tags, releases, branches. When Gru says "PR" it means pull request; when Gru says "Dandori Challenge" it means the same pull request from the mission side.
 
-**Cycle names.** Every cycle spends its week at the Lair under its own name. Right now the names march alphabetically through famous puppets. Future cycles may pick a different theme; what matters is the habit of naming each cycle, not the theme it happens to wear.
+**Cycle names.** Every cycle spends its two weeks at the Lair under its own name. Right now the names march alphabetically through famous puppets. Future cycles may pick a different theme; what matters is the habit of naming each cycle, not the theme it happens to wear.
 
 **Agent codenames.** Every minion gets a codename per work unit, rotated from a fixed pool: *Gravity Falls*, *Hitchhiker's Guide to the Galaxy*, *Oddworld*, *Omori*, *Outer Wilds* (Hearthians and Nomai), Volley!'s own cast (Martha and friends), and *Minions* too where a Minion-flavoured name fits the case. Trillian reviewing a PR is still Trillian; the role underneath is `code-quality` or whichever slot fits.
 
