@@ -39,6 +39,8 @@ Do not file proactively. If you spot gaps while working other tasks, surface the
 
 Defaults for every new ticket: status Backlog (`d41fb73e-32af-40b2-a7e5-5052900ab0fc`), no cycle, unassigned. Feature label for stories, bug label for bug reports. Estimates: bugs 0, spikes 1, stories left unpointed for Josh. Never use Triage; that column is for external incoming tickets.
 
+A spike for a feature that does not yet exist in the game is filed as at least two tickets: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). Design and tech pull each other sideways when they share a ticket. Spikes against an existing system (a perf regression, a refactor question) do not need to split.
+
 Use Linear's native relations rather than a "References:" block in the description. Regressions `blocks` the feature that introduced them. Foundation tickets (style guides, pipelines, specs, spikes) block the production or integration work that depends on them. Cross-links to GitHub use absolute URLs.
 
 Keep acceptance criteria to a tight testable checklist. No computed values hardcoded; describe the behaviour, not the number. Bug reports always include steps to reproduce, expected vs actual, and environment (scene path, conditions).
