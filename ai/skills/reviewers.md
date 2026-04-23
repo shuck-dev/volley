@@ -20,11 +20,11 @@ The dispatch prompt may say "confirm X is clean." Read that as "try to break X a
 
 What this looks like concretely:
 
-- Shell reviewer: run the script against a mock payload shaped like an attack, or like the known failure class.
-- Code reviewer: run `ggut` against the change; if the tests cannot reach the new branch, that is the finding.
-- Test-coverage reviewer: confirm the test fails without the production change, not only that it passes with it.
-- Scene reviewer: load the `.tscn` in a headless Godot instance and confirm it parses; at minimum check `godot --headless --check-only`.
-- Docs reviewer: read the change against the doc it contradicts if any, not only `ai/STYLE.md`.
+- Shell-touching change (ci-and-workflows, asset-pipeline, supply-chain-scout): run the script against a mock payload shaped like an attack, or like the known failure class.
+- Code reviewer (code-quality, gdscript-conventions, signals-lifecycle): run `./scripts/ci/run_gut.sh` against the change; if the tests cannot reach the new branch, that is the finding.
+- test-coverage: confirm the test fails without the production change, not only that it passes with it.
+- godot-scene: load the `.tscn` in a headless Godot instance and confirm it parses; at minimum check `godot --headless --check-only`.
+- docs-and-writing: read the change against the doc it contradicts if any, not only `ai/STYLE.md`.
 
 If the role has no runtime step you can run, name the failure modes you checked by reading and say why none triggered. Pattern-matching alone is not sufficient.
 
@@ -46,7 +46,7 @@ The glob to reviewer map:
 | `.github/workflows/**uses:`, `requirements-dev.txt`, `addons/**`, `.mcp.json` | supply-chain-scout |
 | `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
 
-A **fresh-eyes reviewer** runs unscoped on every PR. Their job is to read the whole diff and catch the thing no specialist can see: a scope-filtered reviewer will not notice that a removed export is still referenced in a scene, that a new function contradicts the architecture doc, or that the change ships without a ticket link.
+The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers. Fresh-eyes reads the whole diff unscoped to catch the thing no specialist can see: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without a ticket link. Fresh-eyes is not a dedicated agent role today; the organiser fills it by dispatching an unscoped reviewer (general-purpose or devils-advocate) at its discretion. A standing `fresh-eyes` agent may come later if the pattern earns its keep.
 
 ## Findings are inline, verdicts are top-level
 
@@ -79,9 +79,13 @@ Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartib
 
 ## Body discipline
 
-The verdict comment has no body. Findings are inline, not in the top-level comment.
+Findings are inline. The top-level comment carries the verdict and, if anything needs pointing at, one short sentence routing the reader to the inline threads.
 
-If you are posting a top-level block or approved-with-notes, the body after the verdict line caps at **one sentence under 30 words**, pointing the reader at the inline findings: "See inline on `rack_display.gd:42` and `test_rack_display.gd:50`." That is the whole body.
+- **Approve**: verdict line only. No body. `**<codename>** approved.`
+- **Approve with notes**: verdict line followed by one sentence under 30 words pointing at the inline note. `**<codename>** approved with notes. See inline on rack_display.gd:42.`
+- **Blocked**: verdict line followed by one sentence under 30 words pointing at the inline findings. `**<codename>** blocked. See inline on test_rack_display.gd:82 and item_manager.gd:19.`
+
+The pointer sentence only exists when there is an inline finding to point at. If there is no inline finding, there is no sentence.
 
 No audit enumerations in the top-level comment. No restatement of the PR description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
 
