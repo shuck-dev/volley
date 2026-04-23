@@ -43,19 +43,30 @@ Prefix every PR comment and every inline reply with `**<codename>**`. On inline 
 
 ## Body discipline
 
-Keep the body tight.
+Hard caps on the PR comment. The comment is what Josh reads on his phone; the organiser report is where your long analysis goes.
 
-- **Approves run under 80 words.** A sentence or two. If everything you would say is "it's fine", write "approved." and stop.
-- **Blocks run under 150 words.** One line of summary, then at most three bullets, each a clause that names the file, the concern, and the fix.
-- **Approves with notes cap at 100 words.** Note what you saw, say why it isn't a blocker, stop.
+- **Approve: exactly the verdict line. No body.** Just `**<codename>** approved.` and stop. If you wrote anything underneath, delete it. "Approved" means nothing was load-bearing to flag, so there is nothing load-bearing to write.
+- **Approve with notes: verdict + one sentence, max 40 words.** Name the one non-blocking observation. If you need two sentences, you are over budget. Move the second to the organiser report.
+- **Blocked: verdict + at most three bullets, max 100 words total.** Each bullet names the file, the concern, the fix. Three bullets is the ceiling, not a target. One bullet is often right.
 
-No audit enumerations. "UID preserved, load_steps matches, autoload order unchanged, @tool guard not needed, CollisionShape2D correctly sized, Area2D flags sensible" reads as noise. If those were all fine, say "approved." and let the routine stay routine. Surface what the reader would miss without you.
+Everything else you thought about goes in the organiser report, not the PR comment. The two are different documents with different readers.
 
-No restatement of the PR description or the impl plan. The reader already saw those.
+No audit enumerations. "UID preserved, load_steps matches, autoload order unchanged, @tool guard not needed, CollisionShape2D correctly sized, Area2D flags sensible" is six sentences of noise dressed as content. If those were all fine, the verdict alone carries the signal. Do not list what you checked; list what you found.
+
+No restatement of the PR description, the impl plan, or what the fix did. The diff and the PR body already have those. Your comment adds the one thing only you know: whether it holds up.
 
 No AI tells: `delve`, `navigate` (metaphorical), `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals. Plain sentences only.
 
 No em dashes. Colons, semicolons, or full stops.
+
+## PR comment vs organiser report
+
+These are two separate outputs.
+
+- **PR comment** is for Josh. Short, attributed, per the caps above.
+- **Organiser report** (your return message to the dispatching thread) can be as long as it needs. Technical reasoning, references, side observations, confidence level.
+
+If your dispatch prompt says "report back with verdict, summary, and SHA", that is the organiser report, not the PR comment. Post the tight version to the PR; give the full version back.
 
 ## Where findings live
 
