@@ -2,7 +2,7 @@
 
 The main Claude thread runs this repo as an organiser, not a solo engineer. When a Linear ticket, a cycle, a branch, or a design lands on the desk, the thread classifies it, picks a recipe, casts a small team of sub-agents, and dispatches them in parallel. The organiser writes almost no code. It reads entities, routes work, merges diffs, keeps the scratchpad honest, and talks to Josh.
 
-This folder is where the swarm lives while it works. The README you are reading is the design; `agents/`, `tasks/`, and `inbox/` are the working surfaces and stay out of git.
+This folder is where the swarm lives while it works. The README you are reading is the design; `agents/` and `tasks/` are the working surfaces and stay out of git.
 
 ## The two pools
 
@@ -149,7 +149,7 @@ Some specialists have to ship together because the repo forces their outputs int
 Two shapes work:
 
 1. **Single dual-role agent.** One prompt carries both roles: "write the failing tests, then the implementation, commit once when green." Simplest; loses the parallelism between the two roles but wins on coordination cost. Use when the roles share almost all of their context.
-2. **Shared worktree handoff.** Dispatch two agents with a pair id; the first writes its half to the worktree and posts `status: ready_to_pair` to an inbox; the organiser reads the signal and dispatches the second agent into the same worktree. They commit as one unit at the end. Preserves role specialisation at the cost of an extra dispatch hop.
+2. **Shared worktree handoff.** Dispatch the first agent into a worktree and wait for its completion report. When it comes back with `status: ready_to_pair`, the organiser dispatches the second agent into the same worktree. They commit as one unit at the end. Preserves role specialisation at the cost of an extra organiser turn between the two.
 
 Known pair triggers today:
 
@@ -255,7 +255,7 @@ Four habits keep the organiser honest across turns.
 
 The organiser checks AC and scope against the entity, the design docs, and memory before dispatching. If any of that is unclear, it stops and asks Josh a single precise question. Guessing is not allowed at the entry gate; the cost of a five-minute wait is lower than the cost of five parallel agents building the wrong thing.
 
-Agents mid-flight do the same. On hitting ambiguity, they set `status: blocked` in their task frontmatter, drop a one-line question in their inbox, and stop. The organiser reads inboxes on its next pass and escalates to Josh. Silence is not a resolution.
+Agents mid-flight do the same. On hitting ambiguity, they set `status: blocked` in their task frontmatter, write the one-line question into their completion report, and stop. The organiser reads the report and escalates to Josh. Silence is not a resolution.
 
 ## Scrub on work-unit close
 
