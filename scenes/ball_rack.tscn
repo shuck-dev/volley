@@ -1,8 +1,16 @@
-[gd_scene format=3 uid="uid://bxyckxy4cf7r0"]
+[gd_scene load_steps=3 format=3 uid="uid://bxyckxy4cf7r0"]
 
-[node name="BallRack" type="Node2D" unique_id=949376876]
+[ext_resource type="Script" path="res://scripts/items/rack_display.gd" id="1_rack"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ball_rack_drop"]
+size = Vector2(300, 200)
+
+[node name="BallRack" type="Node2D" unique_id=949376876 node_paths=PackedStringArray("slot_container")]
 z_index = 100
 z_as_relative = false
+script = ExtResource("1_rack")
+role = &"ball"
+slot_container = NodePath("SlotContainer")
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1349315967]
@@ -18,3 +26,37 @@ offset_right = 10.0
 offset_bottom = 10.0
 theme_override_font_sizes/font_size = 36
 text = "BallRack"
+
+[node name="SlotContainer" type="Node2D" parent="." unique_id=1349315968]
+
+[node name="SlotMarker0" type="Node2D" parent="SlotContainer" unique_id=1349315980]
+position = Vector2(37.5, 50)
+
+[node name="SlotMarker1" type="Node2D" parent="SlotContainer" unique_id=1349315981]
+position = Vector2(112.5, 50)
+
+[node name="SlotMarker2" type="Node2D" parent="SlotContainer" unique_id=1349315982]
+position = Vector2(187.5, 50)
+
+[node name="SlotMarker3" type="Node2D" parent="SlotContainer" unique_id=1349315983]
+position = Vector2(262.5, 50)
+
+[node name="SlotMarker4" type="Node2D" parent="SlotContainer" unique_id=1349315984]
+position = Vector2(37.5, 150)
+
+[node name="SlotMarker5" type="Node2D" parent="SlotContainer" unique_id=1349315985]
+position = Vector2(112.5, 150)
+
+[node name="SlotMarker6" type="Node2D" parent="SlotContainer" unique_id=1349315986]
+position = Vector2(187.5, 150)
+
+[node name="SlotMarker7" type="Node2D" parent="SlotContainer" unique_id=1349315987]
+position = Vector2(262.5, 150)
+
+[node name="DropTarget" type="Area2D" parent="." unique_id=1349315969]
+monitoring = false
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1349315970]
+position = Vector2(150, 100)
+shape = SubResource("RectangleShape2D_ball_rack_drop")

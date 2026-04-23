@@ -288,3 +288,97 @@ class TestReloadFromProgression:
 			base_speed,
 			"reload should drop effects that no longer have a level"
 		)
+
+
+class TestKitItemsBall:
+	extends GutTest
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var ball_item := ItemDefinition.new()
+		ball_item.key = "kit_ball"
+		ball_item.role = &"ball"
+		ball_item.base_cost = 100
+		ball_item.cost_scaling = 2.0
+		ball_item.max_level = 3
+		ball_item.effects = []
+		_manager.items.assign([ball_item])
+		_manager._progression.friendship_point_balance = 10000
+
+	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
+		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+
+	func test_get_kit_items_returns_owned_stored_ball_items() -> void:
+		_manager.take("kit_ball")
+		var ball_kit: Array[String] = _manager.get_kit_items(&"ball")
+		assert_eq(ball_kit.size(), 1)
+		assert_eq(ball_kit[0], "kit_ball")
+
+	func test_get_kit_items_excludes_ball_when_queried_for_equipment_role() -> void:
+		_manager.take("kit_ball")
+		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
+
+	func test_get_kit_items_excludes_unowned_ball_items() -> void:
+		assert_eq(_manager.get_level("kit_ball"), 0)
+		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+
+	func test_get_kit_items_excludes_activated_ball_items() -> void:
+		_manager.take("kit_ball")
+		_manager.activate("kit_ball")
+		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+
+	func test_get_kit_items_includes_ball_items_after_deactivation() -> void:
+		_manager.take("kit_ball")
+		_manager.activate("kit_ball")
+		_manager.deactivate("kit_ball")
+		var kit: Array[String] = _manager.get_kit_items(&"ball")
+		assert_eq(kit.size(), 1)
+		assert_eq(kit[0], "kit_ball")
+
+
+class TestKitItemsEquipment:
+	extends GutTest
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var gear_item := ItemDefinition.new()
+		gear_item.key = "kit_gear"
+		gear_item.role = &"equipment"
+		gear_item.base_cost = 100
+		gear_item.cost_scaling = 2.0
+		gear_item.max_level = 3
+		gear_item.effects = []
+		_manager.items.assign([gear_item])
+		_manager._progression.friendship_point_balance = 10000
+
+	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
+		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
+
+	func test_get_kit_items_returns_owned_stored_equipment_items() -> void:
+		_manager.take("kit_gear")
+		var gear_kit: Array[String] = _manager.get_kit_items(&"equipment")
+		assert_eq(gear_kit.size(), 1)
+		assert_eq(gear_kit[0], "kit_gear")
+
+	func test_get_kit_items_excludes_equipment_when_queried_for_ball_role() -> void:
+		_manager.take("kit_gear")
+		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+
+	func test_get_kit_items_excludes_unowned_equipment_items() -> void:
+		assert_eq(_manager.get_level("kit_gear"), 0)
+		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
+
+	func test_get_kit_items_excludes_activated_equipment_items() -> void:
+		_manager.take("kit_gear")
+		_manager.activate("kit_gear")
+		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
+
+	func test_get_kit_items_includes_equipment_items_after_deactivation() -> void:
+		_manager.take("kit_gear")
+		_manager.activate("kit_gear")
+		_manager.deactivate("kit_gear")
+		var kit: Array[String] = _manager.get_kit_items(&"equipment")
+		assert_eq(kit.size(), 1)
+		assert_eq(kit[0], "kit_gear")
