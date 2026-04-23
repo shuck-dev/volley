@@ -87,7 +87,7 @@ Agent-Role: code-quality
 Signed-off-by: Josh Hartley <josh@hartley.best>
 ```
 
-One trailer, one role name from the stable pool (`code-quality`, `test-author`, `docs-tender`, and so on, matching the agents under `.claude/agents/`). No `Co-Authored-By:` — without a real GitHub account backing the email, it adds a line without adding an avatar. Codename stays in the subject tag; adding it as a trailer would duplicate what's already there.
+One trailer, one role name from the stable pool (`code-quality`, `test-author`, `docs-tender`, and so on, matching the agents under `.claude/agents/`). No `Co-Authored-By:`, because without a real GitHub account backing the email, that line adds no avatar value. Codename stays in the subject tag; adding it as a trailer would duplicate what's already there.
 
 Organiser-authored commits skip the trailer. The absence is itself the signal that no agent wore the keyboard; a commit with no `Agent-Role:` came from the main thread directly.
 
