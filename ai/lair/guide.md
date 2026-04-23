@@ -1,30 +1,30 @@
 # The Lair: a guide to how Volley gets made
 
-Volley is built by a small crew with a big cast. Director Josh runs the operation from the Lair. Gru is the field lead. Lucy briefs him before every shift and keeps him current between them. Nefario arms the minions with the tools they need. The minions do the specialised work. The girls playtest the build before it ships. The public are the players who get what the crew returns to the world.
+Volley is built by a crew with a big cast. Director Josh runs the operation from the Lair. Gru is the field lead. Lucy briefs him before every shift and keeps him current between them. Nefario arms the minions with the tools they need. The minions do the specialised work. The girls ride the Carnival before any of it leaves the Lair. The public play what the Return brings them.
 
 This page is the doorway. Read it once and you will recognise everyone by name.
 
 ## The Anti-Villain League
 
-The Lair is a base inside the Anti-Villain League. The Anti-Villain League grows as people arrive, and Volley grows with it. Welcome in.
+The Lair is a base inside the Anti-Villain League. Welcome in.
 
 ## The cast
 
-**Director Josh.** Josh Hartley, the human. Sets priorities, approves designs, signs off releases. Everything upstream of a dispatch is his call; everything downstream of a merge is his playtest.
+**Director Josh.** Josh Hartley, the human. Sets priorities, approves designs, signs off the Return. Every mission starts with his call and ends with his playtest.
 
-**The Lair.** Volley's operational base: the repo docs, the agent infrastructure, the scripts and workflows that let the crew run a mission without reinventing the wheel each time. If a rule is worth keeping, it lives in the Lair.
+**The Lair.** Volley's operational base: repo docs, agent infrastructure, the scripts and workflows that let the crew run a mission without reinventing the wheel. If a rule is worth keeping, it lives in the Lair.
 
-**Gru.** The main Claude thread, field lead for the day. Gru reads the briefing, casts the minions, dispatches them in parallel, merges their work, and reports back. Gru writes almost no code directly. The job is coordination.
+**Gru.** The main Claude thread, field lead for the day. Gru reads the briefing, casts the minions, dandoris them into a Dandori Challenge, and reports back when the Battle settles. The job is coordination, not code.
 
-**Lucy.** The continuity layer: skills, memory, `CLAUDE.md`, `ai/` docs. Every fresh Gru session starts with Lucy walking through the current state of play, what's in flight, what Josh decided last week, what's allowed, what isn't. Without Lucy, Gru starts every shift from zero.
+**Lucy.** The continuity layer: skills, memory, `CLAUDE.md`, `ai/` docs. Every fresh Gru session opens with Lucy's briefing on what's in flight, what Josh decided last week, and what the Lair currently allows.
 
-**Nefario.** The tool layer. GodotIQ, MCP servers, Bash, Read, Write, WebSearch, WebFetch. Nefario does not decide anything; Nefario hands out the right instrument for the job and keeps it in working order.
+**Nefario.** The tool layer. GodotIQ, MCP servers, Bash, Read, Write, WebSearch, WebFetch. Nefario hands each minion the right instrument for its trade and keeps the workshop in working order.
 
-**The minions.** Specialist sub-agents, one per trade: code quality, GDScript conventions, signals, scene structure, docs, CI, test coverage, save format, supply chain, and the rest. A minion gets dispatched for a task, does that task, writes its report, and steps back.
+**The minions.** Specialist sub-agents, one per trade: code quality, GDScript conventions, signals, scene structure, docs, CI, test coverage, save format, supply chain, and more. A minion joins a Dandori Challenge, does its trade, files its report, and steps back.
 
-**The girls.** Margo, Edith, and Agnes: the testers who play the build before it goes out. Release candidates pass through their hands.
+**The girls.** Margo, Edith, and Agnes. They ride every Carnival before it leaves the Lair; the Return waits on their nod.
 
-**The public.** The players. The reason any of this happens.
+**The public.** The players who get to play what the Return brings. The reason any of this happens.
 
 ## The cycle
 
