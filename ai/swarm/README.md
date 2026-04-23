@@ -74,7 +74,24 @@ The organiser owns every merge back. Agents do not merge each other's worktrees,
 
 ## Commit discipline
 
-Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a Conventional Commits subject the `commit-msg` hook accepts: `test: pin coverage for shop-upgrade race`, `refactor: extract paddle AI state machine`. The `commit-msg` regex has no scope group, so role tags never appear in the subject. The role name goes in the commit body on its own line (`test-author: ...` or `refactor-planner: ...`) alongside the DCO sign-off. The commit author is Josh (per DCO), so the role tag lives in the body rather than the author field.
+Agents commit like a proper team. Each code-writing agent stages and commits its own changes from its worktree, with a DCO sign-off and a Conventional Commits subject the `commit-msg` hook accepts: `test: pin coverage for shop-upgrade race`, `refactor: extract paddle AI state machine`. The codename goes in the subject as a trailing tag like `[slartibartfast]`, and the role lives in an `Agent-Role:` trailer in the commit body. The commit author is Josh (per DCO), so agent identity lives in the subject tag and the trailer, not the author field.
+
+Shape:
+
+```
+refactor(SH-99): explicit types in rack_display [slartibartfast]
+
+Body prose.
+
+Agent-Role: code-quality
+Signed-off-by: Josh Hartley <josh@hartley.best>
+```
+
+One trailer, one role name from the stable pool (`code-quality`, `test-author`, `docs-tender`, and so on, matching the agents under `.claude/agents/`). No `Co-Authored-By:`, because without a real GitHub account backing the email, that line adds no avatar value. Codename stays in the subject tag; adding it as a trailer would duplicate what's already there.
+
+Organiser-authored commits skip the trailer. The absence is itself the signal that no agent wore the keyboard; a commit with no `Agent-Role:` came from the main thread directly.
+
+Query across history: `git log --pretty='%(trailers:key=Agent-Role)' | sort | uniq -c`.
 
 The organiser merges worktrees back without squashing, preserving per-agent attribution in the commit history. When the final PR opens, `pr-describer` writes the body; the reader can scan the commit list to see which agent produced which change.
 
