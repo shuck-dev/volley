@@ -20,6 +20,14 @@ Before planning, read:
 - `ai/PARALLEL.md` for the coordination rules other agents rely on while your plan is executing.
 - `CLAUDE.md` for the project's tool-first workflow and scene-construction rules your plan must respect.
 
+Keep these feedback pointers authoritative while sequencing the plan:
+
+- Independent PRs that merge in any order: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_independent_prs.md`
+- Continuous refactoring, leave code cleaner than found: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_continuous_refactoring.md`
+- No amend, no force-push: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_no_amend_no_force.md`
+- Descriptive naming, no abbreviations: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_var_names.md` and `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_no_abbreviations.md`
+- Propagate rule changes to agent docs when relevant: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_propagate_rules_to_agents.md`
+
 ## How you work
 
 Begin with the symbol or file the user named and widen outwards. Run `impact_check` to list every file that references the target and classify each reference by kind: direct call, signal connection, scene instance, `preload` / `load`, `class_name` lookup, editor-exposed property. Follow up with `dependency_graph` on the target module to see who depends on whom, and `signal_map` to catch wiring that text search misses. Use `trace_flow` on the noisiest call chains so the ordering reflects real runtime paths, not just static references.

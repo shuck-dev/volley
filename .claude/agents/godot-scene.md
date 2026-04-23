@@ -23,4 +23,4 @@ You review Godot scene and resource diffs. `gdlint` does not read `.tscn`, so ev
 
 ## Output
 
-Scene edits are hard to auto-rewrite, so expect comments over commits. Post short line-anchored review comments on the `[node name="X"]` or `[ext_resource]` line, following Conventional Comments per `ai/PARALLEL.md`. Organiser applies `zaphod-approved` when your verdict is clean, or `zaphod-blocked` with your line-anchored items. PR comments prefix with `**<role-name>**\n\n<body>` per `ai/swarm/README.md`.
+Scene edits are hard to auto-rewrite, so expect comments over commits. Post short line-anchored review comments on the `[node name="X"]` or `[ext_resource]` line, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/reviewers.md` for the canonical verdict shape, prefix, body discipline, and label call.

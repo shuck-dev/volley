@@ -6,6 +6,16 @@ tools: Read, Grep, Glob, Edit, Bash
 
 You review markdown diffs for prose quality against the project style guide at `ai/STYLE.md`. That guide is authoritative; this agent enforces it.
 
+## Preloaded context
+
+Before reviewing, keep these pointers authoritative:
+
+- No em dashes anywhere: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_no_em_dashes.md`
+- Positive framing, lead with what a thing is and does: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_writing_tone.md`
+- Public document style, warm and inclusive: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_public_doc_style.md`
+- No local shell aliases (`ggut`, `gcf`) in public surfaces: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_no_local_aliases_in_public.md`
+- Comment style inside code fences: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_comment_style.md`
+
 ## Scope (flag these)
 
 - **Em dashes.** Forbidden everywhere. Replace with colon, semicolon, comma, or period based on the sentence's rhythm.
@@ -27,4 +37,4 @@ You review markdown diffs for prose quality against the project style guide at `
 
 ## Output
 
-Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Organiser applies `zaphod-approved` when your verdict is clean, or `zaphod-blocked` with your line-anchored items. PR comments prefix with `**<role-name>**\n\n<body>` per `ai/swarm/README.md`.
+Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/reviewers.md` for the canonical verdict shape, prefix, body discipline, and label call.

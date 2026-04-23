@@ -61,12 +61,16 @@ Everything between those two points is parallel. Agents do not wait for each oth
 
 Four labels live on PRs. Two are agent-applied, two are Josh-only.
 
-- `zaphod-approved`: reviewer pool read the diff and found it clean.
-- `zaphod-blocked`: reviewer pool found something that needs a human look.
+- `zaphod-approved`: a reviewer read the diff and found it clean. Each reviewer applies its own.
+- `zaphod-blocked`: a reviewer found something that needs a fix. Blocked supersedes approved.
 - `approved-human`: Josh's sign-off. Required for merge.
 - `action-required-human`: Josh's "I looked at this and want changes". Mutually exclusive with `approved-human`.
 
-Agents never apply either human label. Both strip on every new commit so a push re-earns Josh's verdict on the next pass. The `Human Approved` merge-queue check fails with an "Action required" message while `action-required-human` is present and fails with "Needs human review" when neither human label is set.
+Reviewers post their own comments and apply their own labels; the organiser does not aggregate or post on their behalf. Every comment opens with `**<codename>**` so the attribution lives in the text, not in the label alone. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/reviewers.md`](../../ai/skills/reviewers.md).
+
+Dispatch happens at declared review moments (PR first opens, author signals ready for re-review), not every push. The organiser partitions the `<last-approved>..<head>` diff by reviewer scope and only dispatches reviewers whose scope was touched. Scope-filter empty means immediate approve.
+
+Agents never apply either human label. The `zaphod-*` namespace strips on every new commit so a push re-earns the verdict. The `Human Approved` merge-queue check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set.
 
 ## Live state versus stable protocol
 
