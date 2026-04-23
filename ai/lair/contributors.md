@@ -14,4 +14,4 @@ Where to go next:
 - The [internal guide](https://github.com/shuck-dev/volley/blob/main/ai/lair/guide.md) at `ai/lair/guide.md` describes how the crew runs day-to-day, with all the vocabulary we use among ourselves. Read it if you are curious about how missions are planned and reviewed.
 - The [Shuck manifesto](https://github.com/shuck-dev/volley/blob/main/SHUCK.md) at `SHUCK.md` explains why we build the way we do.
 
-Welcome in. We are glad you are here.
+Come on through. We are glad you are here.

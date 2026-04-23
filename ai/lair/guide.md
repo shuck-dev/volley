@@ -127,4 +127,4 @@ Three layers do not change under any of this. The Lair sits on top of them; it d
 
 Don't worry about memorising the cast. The crew briefs you when you arrive: Lucy hands over the current state of play, Gru points you at the mission, and the minion whose slot matches your strength picks up its trade. Ask questions in the open. The Lair is built for it, and the Anti-Villain League is bigger every time someone new steps through.
 
-Welcome in.
+The door is open; come on through.
