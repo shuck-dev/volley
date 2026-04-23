@@ -65,9 +65,11 @@ Write access is strict. The organiser owns the dispatch board and task frontmatt
 
 ## Worktree discipline
 
-Code-writing agents dispatch with `isolation: "worktree"` on the Agent tool. Each gets a clean tree at `../volley-sh-N` (or equivalent) and cannot collide with siblings. Non-worktree agents stay on the main tree: `researcher`, `root-cause-analyst`, `design-doc-reader`, `devils-advocate`, `supply-chain-scout`, `save-format-warden`. The reviewers post PR comments and apply labels via `gh`, which counts as external writes but never touches the working tree.
+Code-writing agents dispatch with `isolation: "worktree"` on the Agent tool. Each gets a clean tree at `/home/josh/gamedev/volley-<short-slug>/` as a sibling of the main workspace, never under `/tmp/` and never buried in `.claude/worktrees/`. Non-worktree agents stay on the main tree: `researcher`, `root-cause-analyst`, `design-doc-reader`, `devils-advocate`, `supply-chain-scout`, `save-format-warden`. Reviewers read `gh pr diff` against origin; they never take a worktree.
 
-The organiser owns every merge back. Agents do not merge each other's worktrees, and they do not merge into `main`. When a unit closes the organiser removes the worktree and deletes the branch; drift between `git worktree list` and the Active table is cleaned up on the next sync.
+Worktrees come down at the end of each stage, not at PR merge. When an impl agent pushes, the organiser removes the worktree in the same turn. A revision cycle on the same branch creates a fresh `git worktree add` (seconds). The branch on origin carries every byte the worktree held; a worktree that lingers past its push is clutter and a drift risk. The one exception is the main workspace at `/home/josh/gamedev/volley/`, which stays.
+
+The organiser owns every merge back. Agents do not merge each other's worktrees, and they do not merge into `main`. Sweep merged local branches alongside worktree removals: `git branch --merged origin/main | grep -v main | xargs git branch -D`.
 
 ## Commit discipline
 
@@ -135,6 +137,8 @@ Worked example, a mid-cycle health check: **Trillian**, **Eddie**, **Zephyr**, a
 
 Spikes use the support team, not the resolver team. `researcher` gathers material. `devils-advocate` stages the failure modes. `supply-chain-scout` scores options where third-party tools are on the table. The organiser compiles a briefing. Josh decides. Only after that does the organiser draft a design stub and follow-up tickets, and it confirms before filing any of them.
 
+New-feature spikes split into at least two tickets before dispatch: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). The two pull in opposite directions and produce cleaner writeups apart than mashed together. Spikes on a single existing system (a perf regression, a refactor question) stay as one ticket.
+
 Worked example, picking a GDScript linter: **Zephyr** pulls docs for the three candidates; **Bill** writes the adversarial read on each; **Abe** checks provenance and SHA pinning on all three. Josh picks one. **Mabel** drafts the rollout design and the tickets, and asks before submitting.
 
 ### Paired dispatch
@@ -169,73 +173,82 @@ Everything between those two points is parallel. Agents do not wait for each oth
 
 ## PR verdicts and merge
 
-Four labels live on PRs. Two are for agents; two are not.
+The full reviewer contract (verdict shape, brevity caps, bold-name prefix, inline-comment posting, em-dash ban, no-audit-laundry rule, re-review protocol) lives in [`ai/skills/reviewers.md`](../skills/reviewers.md). Every reviewer agent reads that skill before posting. Don't duplicate its rules here.
 
-- `zaphod-approved`: the reviewer pool read the diff and found it clean.
-- `zaphod-blocked`: the reviewer pool found something that needs a human look.
+What the skill doesn't cover, and belongs in the swarm README:
+
+**Four labels on every PR.**
+
+- `zaphod-approved`: a reviewer read the diff and found it clean. Each reviewer applies their own.
+- `zaphod-blocked`: a reviewer found something that needs a fix. Blocked supersedes approved.
 - `approved-human`: Josh only. Sign-off; required for merge.
-- `action-required-human`: Josh only. First-class "I looked at this and want changes" signal, parallel to `zaphod-blocked`. Strips on the next push; the author re-earns Josh's verdict after pushing a fix.
+- `action-required-human`: Josh only. Parallel to `zaphod-blocked`. Mutually exclusive with `approved-human`; applying one strips the other.
 
-**Hard rule: agents never apply `approved-human` or `action-required-human`.** Both labels are Josh-only and mutually exclusive; applying one strips the other. The `Human Approved` merge-queue check fails with a "Changes requested" message while `action-required-human` is present.
+Agents never apply either human label. Any push strips the `zaphod-*` namespace; re-review re-earns them. The `Human Approved` merge-queue check fails "Changes requested" while `action-required-human` is present, and "Needs human review" while neither human label is set.
 
-Reviewer agents are sandboxed to `Read, Grep, Glob` (plus `WebFetch` where the role calls for it). They do not shell out to `gh` directly. Instead they return a structured verdict to the organiser:
+**Reviewers post directly.** Each reviewer applies its own label and posts its own PR comment with `**<codename>**` leading the body; the organiser does not aggregate or post on their behalf. Reviewers hold `gh` through the bash allowlist for exactly this. Clean approves still land as comments so Josh sees who reviewed.
 
-- `verdict`: `zaphod-approved` or `zaphod-blocked`.
-- `summary`: one-sentence overall finding.
-- `items`: required when blocked, absent when approved. A list of `{path, line, body}` entries, each anchored to a specific line in the diff. Anything actionable must point at the line that carries the evidence.
+**Auto-merge discipline.** The organiser may queue auto-merge with `gh pr merge --auto --squash` once a reviewer posts `zaphod-approved`. Auto-merge will not fire until `approved-human` lands; Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes.
 
-When the verdict is `zaphod-approved`, the organiser applies the label with `gh pr edit --add-label zaphod-approved`. No comment is posted; clean reviews do not clutter the PR.
+### Review lifecycle diagram
 
-When the verdict is `zaphod-blocked`, the organiser posts a GitHub pull request review with the summary as the review body and each `item` as an inline review comment on its line, via `gh api repos/:owner/:repo/pulls/:pr/reviews` with `event: COMMENT`. Inline review comments are resolvable in the PR UI, so fixes close threads naturally. The organiser then applies `zaphod-blocked`.
+```mermaid
+flowchart TD
+    Open[PR opened] --> Scope[Organiser scopes diff]
+    Scope --> Fanout[Dispatch touched reviewers in parallel]
+    Fanout --> Verdicts[Reviewers post comments with codename]
+    Verdicts --> Labels[Reviewers apply zaphod-approved or zaphod-blocked]
+    Labels --> Wait{Push?}
+    Wait -- yes --> Strip[reviewer-re-run strips zaphod-*]
+    Strip --> ReadyAgain[Author signals ready for re-review]
+    ReadyAgain --> Scope
+    Wait -- no --> Josh[Josh applies approved-human]
+    Josh --> AutoMerge[Auto-merge fires]
+```
 
-`scripts/swarm/post-review.sh` wraps that posting surface: pass a PR number and a verdict JSON file in the shape above, and the script handles structure validation, payload construction with `jq`, the `gh api` post, and the label. It pipes JSON via stdin rather than shell-interpolating comment text, so reviewer prose can carry any punctuation without escaping back into the shell. Every `item` also carries a `commenter` field (the role name for reviewers, the rotating codename for implementers, `josh` for Josh); the script prepends `**<commenter>**\n\n` to each body automatically, so agents pass only their identity and the raw Conventional Comment. Approved verdicts apply the label only; blocked verdicts post the review first.
+### Reviewer scope map
 
-Agents that post comments directly with `gh api` (one-off replies, manual comments outside the reviewer fan-out) follow the template from `ai/PARALLEL.md` §5 and prefix the body by hand. One example per commenter type:
-
-- **Implementation agent (rotating codename).** `trillian` leaves a `note:` on a workflow pin after auto-fixing it:
-
-  ```
-  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
-    -f body=$'**trillian**\n\nnote: pinned to the tagged SHA; dependabot will bump this alongside the tag.' \
-    -f commit_id="$SHA" -f path=".github/workflows/ci.yml" \
-    -F line=42 -f side=RIGHT
-  ```
-
-- **Review specialist (role name).** `ci-and-workflows` flags a missing permissions block:
-
-  ```
-  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
-    -f body=$'**ci-and-workflows**\n\nissue: job is missing an explicit `permissions:` block; default is read-all which is broader than needed.' \
-    -f commit_id="$SHA" -f path=".github/workflows/release.yml" \
-    -F line=17 -f side=RIGHT
-  ```
-
-- **Josh.** When Josh comments inline himself the same prefix applies so threaded replies stay consistent:
-
-  ```
-  gh api -X POST repos/shuck-dev/volley/pulls/291/comments \
-    -f body=$'**josh**\n\nquestion: why RIGHT side here rather than the base commit?' \
-    -f commit_id="$SHA" -f path="ai/PARALLEL.md" \
-    -F line=30 -f side=RIGHT
-  ```
-
-Replies to existing comments (`…/comments/{id}/replies`) use the same `**<commenter>**\n\n<type>: <body>` shape, so reply bodies read the same as top-level ones on mobile.
-
-Reviewers never post standalone issue comments on PRs; all actionable feedback lives as line-anchored review comments so Josh can resolve them as they are addressed.
-
-Every review comment gets a threaded reply from whoever addresses it, naming the concrete edit and the commit SHA. That holds for Josh's comments and for reviewer-agent comments the organiser posted on their behalf. Silent fixes are not acceptable even when the diff would make the change obvious; the reply is what closes the loop inline for mobile readers and leaves a per-comment audit trail. Questions get answered, not resolved by code; preference-level nits that are kept as-is get a one-line reason, once, and the reviewer decides from there. Use `gh api repos/OWNER/REPO/pulls/{pr}/comments/{comment_id}/replies` to thread; never post a new top-level comment in place of a reply.
-
-On any follow-up push, the organiser re-dispatches the relevant reviewers and re-applies whatever they return. The prior verdict does not carry, and a `reviewer-re-run` workflow strips `zaphod-*` labels on every new commit to force the re-apply.
-
-The organiser may queue auto-merge with `gh pr merge --auto --squash` once `zaphod-approved` is on the PR. Auto-merge will not fire until `approved-human` lands, so Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes, ever.
+```mermaid
+flowchart LR
+    GDProd["scripts/**/*.gd"] --> CodeQuality[code-quality]
+    GDProd --> Conventions[gdscript-conventions]
+    GDTest["tests/**/*.gd"] --> TestCoverage[test-coverage]
+    Scenes["**/*.tscn, **/*.tres"] --> GodotScene[godot-scene]
+    ProjectFiles["project.godot, *.import, export_presets.cfg"] --> AssetPipeline[asset-pipeline]
+    Workflows[".github/**"] --> CIWorkflows[ci-and-workflows]
+    Docs["**/*.md"] --> DocsWriting[docs-and-writing]
+    Save["scripts/progression/**"] --> SaveWarden[save-format-warden]
+    Deps["addons/**, requirements-dev.txt, workflow uses:"] --> Supply[supply-chain-scout]
+    Signals["connect(, emit(, tree_exit, autoloads"] --> SignalsLifecycle[signals-lifecycle]
+```
 
 ### Reviewer dispatch discipline
 
-Reviewer agents must review the PR under review, not whatever the working tree happens to show. Three rules make that hold:
+Review happens at declared review moments, not on every push. A review moment is the PR first opening, or the author (agent or Josh) reporting "ready for re-review" after a revision round. Mid-flight WIP pushes strip the `zaphod-*` labels; the organiser lets that happen and waits.
 
-- **Reviewers see the PR's diff, not the disk.** If a reviewer's toolset includes `Bash`, the organiser instructs it to read via `gh pr diff <N>` (or `gh api repos/:owner/:repo/pulls/:pr/files`). If the reviewer lacks `Bash` (the existing reactive pool is `Read, Grep, Glob` only), the organiser pre-fetches the diff and pastes it into the prompt. Reading the on-disk file is only safe when the working tree is guaranteed to match the PR branch, which is rarely true in parallel swarm work.
-- **Organiser holds the branch between dispatch and return.** Switching branches while a reviewer is in flight changes what the reviewer reads. The organiser either stays on the PR branch until every reviewer in the fan-out has reported, or dispatches reviewers with `isolation: "worktree"` so they read an isolated checkout of that branch.
-- **Reviewer verdicts are diff-scoped, not session-scoped.** A verdict applies to the commit it was taken against. The `reviewer-re-run.yml` workflow strips `zaphod-*` labels on every new commit so the next push invalidates the prior verdict automatically; reviewers re-run against the new tip.
+On a review moment, the organiser:
+
+1. Hydrates PR state with `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft`.
+2. Reads the last-approved SHA from prior reviewer comments or label events.
+3. Diffs `<last-approved>..<current-head>` and partitions the changed file set by reviewer scope (the table lives in [`ai/skills/reviewers.md`](../skills/reviewers.md)).
+4. Dispatches only the reviewers whose scope was touched. Each prompt includes the SHA range so the review is incremental.
+5. A reviewer whose scope-filtered diff is empty approves immediately with "no changes in scope since `<sha>`".
+
+Reviewers always read the PR's diff via `gh pr diff <N>`, not the working tree. The working tree in any worktree may be on a different branch. On the first open the range is the full PR; on re-review the range is `<last-approved>..<head>`.
+
+The `reviewer-re-run.yml` workflow strips `zaphod-*` on every push so a verdict never carries across commits.
+
+## Organiser rules
+
+Four habits keep the organiser honest across turns.
+
+**Hydrate PR state at turn-start.** When the turn touches PRs (dispatching reviewers, replying to comments, narrating status, deciding about merge conflicts), run `gh pr list --state open --json number,headRefOid,labels,state,mergeStateStatus,isDraft,updatedAt` first. Memory from earlier turns goes stale: SHAs move on push, `zaphod-*` labels strip on push, Josh applies labels between turns, merges happen quietly. For a single PR, `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft` is the tighter form.
+
+**Codename leads every Agent dispatch.** The `description` field on the Agent tool reads `<Codename> <short action>` (`Trillian reviews #321 code`, `Marvin revises #321 tests`). The codename is what Josh tracks on the CLI; the role is already in `subagent_type`.
+
+**Main worktree checks out the PR branch for Josh's playtest.** After reviewers post and before narrating "ready for your review", the organiser switches `/home/josh/gamedev/volley/` to the PR branch so Josh can launch Godot against the change. If the main worktree is dirty, stop and ask before stashing. Matters especially for visual PRs; pure backend/CI/docs PRs can skip the switch.
+
+**Stop at ready-for-review.** Waiting for Josh to merge is not a pending task. When a PR is ready, narrate the handoff and end the turn. "Dispatch Wave 2 on SH-X merge" in the task list implies the organiser is polling GitHub; it isn't. When Josh comes back with "merged" or "go", re-plan from current state.
 
 ## Fail early on ambiguity
 
