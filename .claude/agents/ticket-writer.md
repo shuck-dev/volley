@@ -28,6 +28,7 @@ Before drafting, preload these pointers and keep them authoritative:
 - Intake status (Backlog, not Triage): `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_triage_status.md`
 - Regression linking: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_bug_blocks_feature.md`
 - Native relations over prose links: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_use_linear_native_relations.md`
+- Spike split for new features: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_spike_split_design_tech.md`
 
 Read the ticket-writing guide every session before drafting; it is the source of truth and it changes.
 
