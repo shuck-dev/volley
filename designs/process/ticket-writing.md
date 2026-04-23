@@ -97,6 +97,8 @@ Labels: `spike`, `feature`, `bug`.
 
 **Spike** (explore). Question-led. Output is a written recommendation: option A vs B, with reasoning, risks, and a suggested path. Spikes answer "can we" or "how would we" before a feature is written against them. Keep them small; if a spike looks large, it probably contains a feature underneath.
 
+A spike for a feature that does not yet exist in the game is filed as at least two tickets: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). Design and tech questions drag each other sideways when they share a ticket; the split lets each run at its own pace and produces two clean writeups. The feature ticket is drafted against both spike outputs, after they resolve. Spikes that investigate a single existing system (a perf regression, a refactor question) do not need to split.
+
 **Feature** (produce). Most features at Shuck are System Stories because they describe internal capability. Player-facing interaction uses User Story form. Either way, AC describes observable system or player outcomes. Insomniac's engineering practice (Mike Acton, GDC 2014–2019) adds target platform and frame-time budget to tickets touching the runtime; adopt the same discipline when perf is load-bearing.
 
 **Bug** (restore). The Bug format in CLAUDE.md is the full template. Regressions block their originating feature.

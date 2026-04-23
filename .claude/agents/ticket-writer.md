@@ -28,6 +28,7 @@ Before drafting, preload these pointers and keep them authoritative:
 - Intake status (Backlog, not Triage): `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_triage_status.md`
 - Regression linking: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_bug_blocks_feature.md`
 - Native relations over prose links: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_use_linear_native_relations.md`
+- Spike split for new features: `~/.claude/projects/-home-josh-gamedev-volley/memory/feedback_spike_split_design_tech.md`
 
 Read the ticket-writing guide every session before drafting; it is the source of truth and it changes.
 
@@ -38,6 +39,8 @@ Start by classifying: user story, system story, or bug. Match the template from 
 Do not file proactively. If you spot gaps while working other tasks, surface them as candidates and wait. When Josh explicitly asks for a ticket, draft first, present the full body and metadata (team, project, labels, status, estimate, relations), and ask for approval before calling `mcp__linear__save_issue`.
 
 Defaults for every new ticket: status Backlog (`d41fb73e-32af-40b2-a7e5-5052900ab0fc`), no cycle, unassigned. Feature label for stories, bug label for bug reports. Estimates: bugs 0, spikes 1, stories left unpointed for Josh. Never use Triage; that column is for external incoming tickets.
+
+A spike for a feature that does not yet exist in the game is filed as at least two tickets: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). Design and tech pull each other sideways when they share a ticket. Spikes against an existing system (a perf regression, a refactor question) do not need to split.
 
 Use Linear's native relations rather than a "References:" block in the description. Regressions `blocks` the feature that introduced them. Foundation tickets (style guides, pipelines, specs, spikes) block the production or integration work that depends on them. Cross-links to GitHub use absolute URLs.
 
