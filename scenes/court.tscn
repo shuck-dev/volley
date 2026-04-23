@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
+[ext_resource type="Script" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
@@ -24,7 +25,7 @@ size = Vector2(36, 1472)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(36, 1172)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
 script = ExtResource("1_tbgi4")
 ball = NodePath("Ball")
 player_paddle_scene = ExtResource("9_0tnpc")
@@ -32,6 +33,7 @@ player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
 right_wall = NodePath("Bounds/Right Wall")
 partner_spawn = NodePath("PartnerSpawn")
+timeout_controller = NodePath("TimeoutController")
 
 [node name="CourtBackground" type="Parallax2D" parent="." unique_id=1053024008]
 scroll_scale = Vector2(0, 0)
@@ -114,6 +116,9 @@ position = Vector2(18, 586)
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
 config = ExtResource("8_85g3d")
+
+[node name="TimeoutController" type="Node" parent="." unique_id=1998734210]
+script = ExtResource("19_timeout")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
 position = Vector2(500, 0)
