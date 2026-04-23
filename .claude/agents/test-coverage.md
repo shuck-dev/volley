@@ -44,4 +44,4 @@ Coverage numbers are a sanity check, not the verdict. A changed file at 80% cove
 
 ## Output
 
-Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment.md` for the canonical verdict shape, prefix, body discipline, and label call.
