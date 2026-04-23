@@ -1,14 +1,11 @@
 name: Reviewer Re-run
 
-# Label lifecycle for the zaphod-* verdicts. Three related mechanics live here
-# because they all reconcile the same label pair:
+# Label lifecycle for the zaphod-* verdicts. Two reconcilers live here:
 #
 #   - strip-zaphod-on-push: new commit strips both labels; the AI verdict
 #     must be re-earned against the new HEAD. Re-dispatch is manual, by
 #     the organiser (main Claude thread), never CI; PR-triggered workflows
 #     do not run Claude because outside PRs are a prompt-injection surface.
-#   - strip-zaphod-on-human-review (SH-187): Josh commenting on a PR is a
-#     human verdict landing; the prior AI verdict is stale and comes off.
 #   - blocked-supersedes-approved (SH-166): when two specialists race and
 #     one lands blocked after the other landed approved, the blocker wins.
 #     approved is removed so the merged state reflects the combined verdict.
@@ -18,12 +15,6 @@ name: Reviewer Re-run
 on:
   pull_request:
     types: [synchronize]
-  pull_request_review:
-    types: [submitted]
-  pull_request_review_comment:
-    types: [created]
-  issue_comment:
-    types: [created]
   pull_request_target:
     types: [labeled]
 
@@ -31,9 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  # Group per PR across all trigger shapes so a burst of events (commit +
-  # review + comment) serialises rather than racing the label set.
-  group: reviewer-re-run-${{ github.event.pull_request.number || github.event.issue.number }}
+  group: reviewer-re-run-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -64,56 +53,6 @@ jobs:
               } catch (error) {
                 if (error.status === 404) {
                   core.info(`${name} not present; skipping`);
-                } else {
-                  throw error;
-                }
-              }
-            }
-
-  strip-zaphod-on-human-review:
-    # SH-187: Josh reviewing means the AI verdict is stale. Catches all three
-    # review shapes:
-    #   - pull_request_review: the review-summary form (Approve / Request
-    #     changes / Comment from the Files Changed tab).
-    #   - pull_request_review_comment: inline comments attached to a review.
-    #   - issue_comment: PR-level comments from the Conversation tab (GitHub
-    #     routes these through the issues API).
-    # Only strips when the actor is J-Melon; agents and bots are ignored.
-    name: Strip zaphod verdict labels when Josh reviews
-    if: >-
-      (github.event_name == 'pull_request_review' ||
-       github.event_name == 'pull_request_review_comment' ||
-       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null))
-      && github.event.sender.login == 'J-Melon'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-    steps:
-      - name: Remove zaphod-approved and zaphod-blocked
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            // issue_comment payloads expose the PR via .issue.number; the two
-            // review events expose it via .pull_request.number.
-            const prNumber = context.payload.pull_request
-              ? context.payload.pull_request.number
-              : context.payload.issue.number;
-            const labels = ['zaphod-approved', 'zaphod-blocked'];
-            for (const name of labels) {
-              try {
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: prNumber,
-                  name,
-                });
-                core.info(`Removed ${name} from PR #${prNumber}`);
-              } catch (error) {
-                if (error.status === 404) {
-                  core.info(`${name} not present on PR #${prNumber}; skipping`);
                 } else {
                   throw error;
                 }
