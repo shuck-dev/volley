@@ -21,6 +21,7 @@ logs/
 # Editor/tool config
 .claude/*
 !.claude/agents/
+!.claude/skills/
 .vscode/
 .mcp.json
 .cursorrules
