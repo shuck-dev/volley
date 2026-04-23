@@ -26,4 +26,4 @@ You review Godot project-config and import-pipeline diffs. `gdlint` does not tou
 
 ## Output
 
-Mechanical fixes (flipping `codesign=1` with empty identity to `0`, adding a missing comma in an exclude list) as commits. Everything else (preset parity questions, runtime-path excludes, platform-flag tradeoffs) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Mechanical fixes (flipping `codesign=1` with empty identity to `0`, adding a missing comma in an exclude list) as commits. Everything else (preset parity questions, runtime-path excludes, platform-flag tradeoffs) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.

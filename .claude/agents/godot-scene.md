@@ -23,4 +23,4 @@ You review Godot scene and resource diffs. `gdlint` does not read `.tscn`, so ev
 
 ## Output
 
-Scene edits are hard to auto-rewrite, so expect comments over commits. Post short line-anchored review comments on the `[node name="X"]` or `[ext_resource]` line, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Scene edits are hard to auto-rewrite, so expect comments over commits. Post short line-anchored review comments on the `[node name="X"]` or `[ext_resource]` line, following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.

@@ -46,4 +46,4 @@ Return a structured verdict to the organiser. Three fields:
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-The organiser posts your blocked verdicts as inline review comments on the flagged lines (resolvable in the PR UI) and applies the label. Approved verdicts apply the label with no comment. On follow-up pushes the organiser re-dispatches you and re-applies whatever you return. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+The organiser posts your blocked verdicts as inline review comments on the flagged lines (resolvable in the PR UI) and applies the label. Approved verdicts apply the label with no comment. On follow-up pushes the organiser re-dispatches you and re-applies whatever you return. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.

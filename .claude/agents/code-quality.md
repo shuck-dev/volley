@@ -28,6 +28,6 @@ Do not re-report any of the above.
 
 ## Output
 
-Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
 
 Never flag an item that is already covered by `ai/PARALLEL.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.

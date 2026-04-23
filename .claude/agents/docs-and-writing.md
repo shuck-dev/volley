@@ -37,4 +37,4 @@ Before reviewing, keep these pointers authoritative:
 
 ## Output
 
-Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `.claude/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
+Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Before posting any comment, read `ai/skills/review-comment/SKILL.md` for the canonical verdict shape, prefix, body discipline, and label call.
