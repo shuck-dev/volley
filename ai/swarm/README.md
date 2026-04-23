@@ -262,7 +262,7 @@ Agents mid-flight do the same. On hitting ambiguity, they set `status: blocked` 
 A unit closes when the ticket merges, the research ships, the design lands, or the briefing gets accepted. Then:
 
 1. Promote any keepers to `memory/` or repo docs.
-2. Delete the unit's `ai/swarm/agents/*.md`, `ai/swarm/tasks/*.md`, `ai/swarm/inbox/*.md`.
+2. Delete the unit's `ai/swarm/agents/*.md` and `ai/swarm/tasks/*.md`.
 3. Remove every worktree the unit spawned.
 4. Release the codenames back to the pool.
 
@@ -291,7 +291,7 @@ Linear's workflow already gives the swarm a natural trust boundary: the **Triage
 ## Git discipline
 
 - Tracked: `ai/swarm/README.md` and `.claude/agents/*.md`.
-- Ignored: `ai/swarm/agents/`, `ai/swarm/tasks/`, `ai/swarm/inbox/`.
+- Ignored: `ai/swarm/agents/` and `ai/swarm/tasks/`.
 - Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; agents queue auto-merge behind `zaphod-approved` and wait for `approved-human`.
 
 The rest of the git rules live in [`ai/PARALLEL.md`](../PARALLEL.md). This file governs how the swarm is shaped; that one governs how a single stream behaves on the branch.
