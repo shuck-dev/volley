@@ -9,7 +9,7 @@ size = Vector2(300, 200)
 z_index = 100
 z_as_relative = false
 script = ExtResource("1_rack")
-displayed_role = &"equipment"
+role = &"equipment"
 slot_container = NodePath("SlotContainer")
 metadata/_edit_group_ = true
 

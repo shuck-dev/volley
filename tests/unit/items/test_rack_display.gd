@@ -29,7 +29,7 @@ func _make_manager_with(items: Array) -> Node:
 
 func _make_rack(role: StringName, manager: Node) -> Node2D:
 	var rack: Node2D = RackDisplayScript.new()
-	rack.displayed_role = role
+	rack.role = role
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)
