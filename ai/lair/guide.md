@@ -38,7 +38,7 @@ Two supporting layers keep Gru and the minions current.
 
 Each cycle is two weeks. The beats are the same every time.
 
-**Dossier.** Before the cycle opens, Josh and Gru assemble the Dossier: the issues ready for the upcoming cycle, estimated, labelled, linked to their designs. A Dossier is what turns Backlog into a plan.
+**Dossier.** Before the cycle opens, Josh and Gru assemble the Dossier: the issues ready for the upcoming cycle, estimated, labelled, linked to their designs. A Dossier is what turns Icebox into a plan.
 
 **Mission briefing.** Before each mission inside the cycle, Gru writes a short briefing: which issues are in scope, which minions are cast, and the deadline. One paragraph is usually enough. The briefing is what the minions read first. A mission is a bundle of issues dispatched as one coordinated push.
 
@@ -115,7 +115,7 @@ Usage examples, so the words feel natural:
 
 Three layers do not change under any of this. The Lair sits on top of them; it does not replace them.
 
-**Linear.** Issues, cycles, states (Backlog, Icebox, Ready, In Progress, In Review, Done), projects, labels. The Linear vocabulary is what every dashboard and API call already speaks.
+**Linear.** Issues, cycles, states (Triage, Icebox, Ready, In Progress, In Review, Done), projects, labels. The Linear vocabulary is what every dashboard and API call already speaks.
 
 **GitHub.** Pull requests, reviews, merges, tags, releases, branches. When Gru says "PR" it means pull request; when Gru says "Dandori Challenge" it means the same pull request from the mission side.
 
