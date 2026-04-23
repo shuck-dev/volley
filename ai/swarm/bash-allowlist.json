@@ -1,5 +1,5 @@
 {
-  "_comment": "Canonical Bash allowlist for the swarm. Copy the `permissions` block into your local .claude/settings.json to enforce deny-by-default on agent shell calls. Commands outside the allowlist prompt for confirmation rather than running silently. See ai/swarm/README.md for rationale.",
+  "_comment": "Canonical Bash allowlist and hook config for the swarm. Copy the `permissions` and `hooks` blocks into your local .claude/settings.json to enforce deny-by-default on agent shell calls and to wire the WebSearch/WebFetch injection guard. Commands outside the allowlist prompt for confirmation rather than running silently. See ai/swarm/README.md for rationale.",
   "permissions": {
     "allow": [
       "Bash(gh pr view:*)",
@@ -28,6 +28,19 @@
       "Bash(git worktree:*)",
       "Bash(./scripts/ci/run_gut.sh:*)",
       "Bash(./scripts/swarm/post-review.sh:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "WebSearch|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/scripts/swarm/injection_guard.sh"
+          }
+        ]
+      }
     ]
   }
 }
