@@ -4,6 +4,10 @@ Volley is built by a small crew with a big cast. Director Josh runs the operatio
 
 This page is the doorway. Read it once and you will recognise everyone by name.
 
+## The Anti-Villain League
+
+The Lair is a base inside the Anti-Villain League. The Anti-Villain League grows as people arrive, and Volley grows with it. Welcome in.
+
 ## The cast
 
 **Director Josh.** Josh Hartley, the human. Sets priorities, approves designs, signs off releases. Everything upstream of a dispatch is his call; everything downstream of a merge is his playtest.
@@ -92,6 +96,6 @@ Three layers do not change under any of this. The Lair sits on top of them; it d
 
 ## If you are new
 
-Don't worry about memorising the cast. The crew briefs you when you arrive: Lucy hands over the current state of play, Gru points you at the mission, the minion whose slot matches your strength picks up its trade. Ask questions in the open. The Lair is built for it.
+Don't worry about memorising the cast. The crew briefs you when you arrive: Lucy hands over the current state of play, Gru points you at the mission, the minion whose slot matches your strength picks up its trade. Ask questions in the open. The Lair is built for it, and the Anti-Villain League is bigger every time someone new steps through.
 
 Welcome in.
