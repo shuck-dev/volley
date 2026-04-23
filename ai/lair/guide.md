@@ -115,7 +115,7 @@ Usage examples, so the words feel natural:
 
 Three layers do not change under any of this. The Lair sits on top of them; it does not replace them.
 
-**Linear.** Issues, cycles, states (Triage, Vault, Ready, Dispatched, Challenged, Completed), projects, labels. The Linear vocabulary is what every dashboard and API call already speaks.
+**Linear.** Issues, cycles, states (Triage, Vault, Ready, Dispatched, Challenged, Completed, Retired), projects, labels. The Linear vocabulary is what every dashboard and API call already speaks.
 
 **GitHub.** Pull requests, reviews, merges, tags, releases, branches. When Gru says "PR" it means pull request; when Gru says "Dandori Challenge" it means the same pull request from the mission side.
 
