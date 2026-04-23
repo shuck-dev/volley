@@ -122,9 +122,3 @@ Three layers do not change under any of this. The Lair sits on top of them; it d
 **Cycle names.** Every cycle spends its two weeks at the Lair under its own name. Right now the names march alphabetically through famous puppets. Future cycles may pick a different theme; what matters is the habit of naming each cycle, not the theme it happens to wear.
 
 **Agent codenames.** Every minion gets a codename per work unit, rotated from a fixed pool: *Gravity Falls*, *Hitchhiker's Guide to the Galaxy*, *Oddworld*, *Omori*, *Outer Wilds* (Hearthians and Nomai), Volley!'s own cast (Martha and friends), and *Minions* too where a Minion-flavoured name fits the case. Trillian reviewing a PR is still Trillian; the role underneath is `code-quality` or whichever slot fits.
-
-## If you are new
-
-Don't worry about memorising the cast. The crew briefs you when you arrive: Lucy hands over the current state of play, Gru points you at the mission, and the minion whose slot matches your strength picks up its trade. Ask questions in the open. The Lair is built for it, and the Anti-Villain League is bigger every time someone new steps through.
-
-The door is open; come on through.
