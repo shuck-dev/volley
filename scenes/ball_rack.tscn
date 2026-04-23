@@ -1,8 +1,17 @@
-[gd_scene format=3 uid="uid://bxyckxy4cf7r0"]
+[gd_scene load_steps=3 format=3 uid="uid://bxyckxy4cf7r0"]
 
-[node name="BallRack" type="Node2D" unique_id=949376876]
+[ext_resource type="Script" path="res://scripts/items/rack_display.gd" id="1_rack"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ball_rack_drop"]
+size = Vector2(300, 200)
+
+[node name="BallRack" type="Node2D" unique_id=949376876 node_paths=PackedStringArray("slot_container")]
 z_index = 100
 z_as_relative = false
+script = ExtResource("1_rack")
+role = &"ball"
+slot_container = NodePath("SlotContainer")
+bounds = Rect2(0, 0, 300, 200)
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1349315967]
@@ -18,3 +27,13 @@ offset_right = 10.0
 offset_bottom = 10.0
 theme_override_font_sizes/font_size = 36
 text = "BallRack"
+
+[node name="SlotContainer" type="Node2D" parent="." unique_id=1349315968]
+
+[node name="DropTarget" type="Area2D" parent="." unique_id=1349315969]
+monitoring = false
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1349315970]
+position = Vector2(150, 100)
+shape = SubResource("RectangleShape2D_ball_rack_drop")
