@@ -9,9 +9,8 @@ size = Vector2(300, 200)
 z_index = 100
 z_as_relative = false
 script = ExtResource("1_rack")
-role = &"equipment"
+displayed_role = &"equipment"
 slot_container = NodePath("SlotContainer")
-bounds = Rect2(0, 0, 300, 200)
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1470078387]
