@@ -2,6 +2,10 @@ class_name BallDragController
 extends Node2D
 
 ## Owns the held-token visual during a ball drag gesture.
+##
+## Press starts a hold (held token follows cursor); release decides the outcome.
+## Rack press: held token spawns, item stays inactive until release over court.
+## Live-ball press: live Ball is freed, held token takes over until release.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, over_court: bool)
@@ -18,6 +22,8 @@ var _item_manager: Node
 var _held_token: Node2D = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
+## Was the item on-court before the gesture? Rack pickups defer activation, so a click-without-movement is a no-op.
+var _held_was_on_court: bool = false
 var _cursor_samples: Array = []
 
 
@@ -39,6 +45,10 @@ func _ready() -> void:
 
 	if rack != null and not rack.slot_pressed.is_connected(_on_rack_slot_pressed):
 		rack.slot_pressed.connect(_on_rack_slot_pressed)
+
+	if reconciler != null:
+		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
+			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
 
 func _process(_delta: float) -> void:
@@ -77,7 +87,7 @@ func get_held_token() -> Node2D:
 	return _held_token
 
 
-## Test seam / production entry for rack-origin pickups.
+## Test seam / production entry for rack-origin pickups. Activation defers to release-over-court (SH-245).
 func grab_from_rack(item_key: String) -> bool:
 	if _held_token != null:
 		return false
@@ -87,7 +97,7 @@ func grab_from_rack(item_key: String) -> bool:
 		return false
 
 	_spawn_held_token(item_key, _cursor_position(), false)
-	_item_manager.activate(item_key)
+	_held_was_on_court = false
 	pickup_started.emit(item_key)
 	return true
 
@@ -110,6 +120,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		existing.call_deferred("queue_free")
 
 	_spawn_held_token(item_key, spawn_position, is_temporary)
+	_held_was_on_court = not is_temporary
 	pickup_started.emit(item_key)
 	return true
 
@@ -125,16 +136,21 @@ func attempt_release(release_position: Vector2) -> bool:
 	var item_key: String = _held_key
 	var token: Node2D = _held_token
 	var was_temporary: bool = _held_is_temporary
+	var was_on_court: bool = _held_was_on_court
 	var release_velocity: Vector2 = _compute_release_velocity()
 
 	_held_token = null
 	_held_key = ""
 	_held_is_temporary = false
+	_held_was_on_court = false
 	_cursor_samples.clear()
 	token.queue_free()
 
 	if over_rack:
-		if not was_temporary and _item_manager.is_on_court(item_key):
+		# Rack release returns the item to inactive storage; if it had been on court before
+		# the gesture, deactivate. Rack pickups that started inactive stay inactive (the
+		# click-without-movement no-op path).
+		if not was_temporary and was_on_court and _item_manager.is_on_court(item_key):
 			_item_manager.deactivate(item_key)
 	else:
 		_release_onto_court(
@@ -154,6 +170,8 @@ func _release_onto_court(
 	if is_temporary:
 		return
 
+	# Activation happens at release-over-court so a click without movement on the rack
+	# does not introduce the ball (SH-245).
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
 
@@ -272,3 +290,12 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 
 func _on_rack_slot_pressed(item_key: String) -> void:
 	grab_from_rack(item_key)
+
+
+func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
+	if not ball.pressed.is_connected(_on_live_ball_pressed):
+		ball.pressed.connect(_on_live_ball_pressed.bind(item_key))
+
+
+func _on_live_ball_pressed(_ball: Ball, item_key: String) -> void:
+	grab_live_ball(item_key, false)

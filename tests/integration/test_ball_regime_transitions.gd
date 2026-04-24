@@ -331,3 +331,92 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 		0.01,
 		"reloaded ball item must run the same effect as before the save",
 	)
+
+
+# --- Scenario 7 (SH-245): press-drag-release on rack drives full input pipeline -
+
+
+func test_real_press_drag_release_on_rack_spawns_live_ball_with_item_art() -> void:
+	# Drives the actual InputEventMouseButton path on the rack token: press,
+	# move, release. Asserts the released live ball lands at the release position
+	# AND wears the item's authored art (SH-244).
+	_manager.take("training_ball")
+	await get_tree().process_frame
+	var displayed: Array[String] = _rack.get_displayed_keys()
+	assert_eq(displayed, ["training_ball"], "precondition: rack shows the token")
+
+	# Resolve the slot's click area and feed it a mouse-down event.
+	var slot: Node2D = _find_slot_for_key("training_ball")
+	assert_not_null(slot, "rack slot exists for the owned key")
+	var click_area: Area2D = slot.get_node("ClickArea")
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	click_area.input_event.emit(get_viewport(), press, 0)
+
+	assert_true(_drag.is_dragging(), "press on the rack token starts the held-token gesture")
+	assert_false(
+		_manager.is_on_court("training_ball"),
+		"press alone must not introduce the ball (SH-245)",
+	)
+
+	# Simulate cursor motion across a window so release velocity is non-zero.
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
+	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(200, 0)})
+
+	# Release over the court. Drive the actual mouse-button-up path through _input.
+	for ball in _all_balls_under_host():
+		ball.queue_free()
+	await get_tree().process_frame
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	_drag._input(release)
+
+	assert_false(_drag.is_dragging(), "release ends the gesture")
+	assert_true(_manager.is_on_court("training_ball"), "release over court activates the item")
+	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(ball, "reconciler should own the live ball after release")
+	assert_true(ball.has_item_art(), "live ball must render the item's authored art (SH-244)")
+
+
+# --- Scenario 8 (SH-247): real press on a live Ball flips into mid-rally grab --
+
+
+func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates() -> void:
+	_manager.take("training_ball")
+	_manager.activate("training_ball")
+	var live: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(live, "precondition: live ball exists")
+	assert_true(live.input_pickable, "live ball must be input_pickable so a press routes through")
+
+	# Drive a real press through the Ball's input_event signal.
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	live.input_event.emit(get_viewport(), press, 0)
+
+	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode (SH-247)")
+	await get_tree().process_frame
+	assert_false(
+		is_instance_valid(live),
+		"the live ball is freed during the hold; held token takes over the cursor",
+	)
+
+	# Release over the court reinstates a live ball at the cursor.
+	var court_point := Vector2(50, -25)
+	var released: bool = _drag.attempt_release(court_point)
+	assert_true(released)
+
+	var reinstated: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(reinstated, "court release should reinstate a Ball via the reconciler")
+	assert_eq(reinstated.global_position, court_point)
+	assert_true(reinstated.has_item_art(), "reinstated ball preserves the item's art (SH-244)")
+
+
+func _find_slot_for_key(item_key: String) -> Node2D:
+	for child in _rack.slot_container.get_children():
+		if child is Node2D and child.get_meta(&"item_key", "") == item_key:
+			return child
+	return null

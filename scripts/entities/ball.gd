@@ -4,6 +4,8 @@ extends RigidBody2D
 signal missed
 signal at_max_speed_changed(is_at_max: bool)
 signal speed_changed(speed: float, min_speed: float, max_speed: float)
+## Mid-rally grab entry: emitted when the player presses the live ball.
+signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
@@ -14,6 +16,7 @@ var speed_increment: float
 var effect_processor: BallEffectProcessor
 var is_temporary: bool = false
 var _dragging: bool = false
+var _item_art: Node2D = null
 
 var _item_manager: Node
 var _was_at_max_speed := false
@@ -131,3 +134,39 @@ func _ball_setup() -> void:
 	max_contacts_reported = 1
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
+	input_pickable = true
+	if not input_event.is_connected(_on_input_event):
+		input_event.connect(_on_input_event)
+
+
+## Press on the live ball routes through here and surfaces as the `pressed` signal so the drag controller can flip into mid-rally grab mode.
+func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if _dragging:
+		return
+	if not (event is InputEventMouseButton):
+		return
+	var mouse_button: InputEventMouseButton = event
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if not mouse_button.pressed:
+		return
+	pressed.emit(self)
+
+
+## Replaces the default sprite with the item's authored art so the live ball reads as the same object the player grabbed.
+func apply_item_art(art_scene: PackedScene) -> void:
+	if art_scene == null:
+		return
+	if _item_art != null and is_instance_valid(_item_art):
+		_item_art.queue_free()
+	var instance: Node = art_scene.instantiate()
+	if instance is Node2D:
+		_item_art = instance
+	add_child(instance)
+	var default_sprite: Node = get_node_or_null("Sprite")
+	if default_sprite != null:
+		default_sprite.visible = false
+
+
+func has_item_art() -> bool:
+	return _item_art != null and is_instance_valid(_item_art)

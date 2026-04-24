@@ -52,8 +52,12 @@ func _shop_item(item_key: String) -> ShopItem:
 
 
 func _take_from_shop(shop_item: ShopItem) -> void:
-	# Emit the signal directly to avoid physics-frame timing in tests.
-	_shop.shop_area.body_exited.emit(shop_item)
+	# Drive the diegetic drag-as-purchase path: press, then release outside the
+	# shop bounds. attempt_release accepts a release position so we can hit-test
+	# against the shop area without depending on real cursor placement.
+	shop_item.start_drag()
+	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	shop_item.attempt_release(outside)
 
 
 # --- ball rack arrivals ----------------------------------------------------

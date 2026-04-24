@@ -75,7 +75,7 @@ func _permanent_balls() -> Array:
 	return result
 
 
-func test_grab_from_rack_spawns_held_token_and_activates_item() -> void:
+func test_grab_from_rack_spawns_held_token_without_activating_item() -> void:
 	_manager.take("ball_alpha")
 	assert_false(_manager.is_on_court("ball_alpha"), "precondition: item is on the rack")
 
@@ -83,10 +83,38 @@ func test_grab_from_rack_spawns_held_token_and_activates_item() -> void:
 	assert_true(ok)
 	assert_true(_drag.is_dragging(), "drag controller should be mid-gesture after rack pickup")
 	assert_eq(_drag.get_held_key(), "ball_alpha")
-	assert_true(
+	# SH-245: a press alone must not introduce the ball; activation is deferred to
+	# release-over-court so a click-without-movement leaves the rack untouched.
+	assert_false(
 		_manager.is_on_court("ball_alpha"),
-		"picking up a rack token should activate the item so the rack marks the slot spent",
+		"rack pickup is press-hold-release; activation only fires at release over court",
 	)
+
+
+func test_click_on_rack_without_movement_does_not_introduce_ball() -> void:
+	# SH-245 regression guard: press, then immediately release at the same rack position.
+	# The held token must clear and no ball should land on the court.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	# Release over the rack drop target with zero cursor movement.
+	var rack_position: Vector2 = _drop_target.global_position
+	var released: bool = _drag.attempt_release(rack_position)
+
+	assert_true(released)
+	assert_false(_drag.is_dragging(), "held token cleared on release")
+	assert_false(
+		_manager.is_on_court("ball_alpha"),
+		"no movement, no court release: the item must not be activated",
+	)
+	assert_null(
+		_reconciler.get_ball_for_key("ball_alpha"),
+		"a click-without-movement must not spawn a live ball",
+	)
+	assert_eq(_permanent_balls().size(), 0, "no permanent Ball instance should land on the court")
 
 
 func test_rack_pickup_fails_when_item_unowned() -> void:
@@ -160,9 +188,15 @@ func test_release_far_outside_court_clamps_to_bounds() -> void:
 	assert_eq(ball.global_position, Vector2(600, 400), "spawn clamps to court bounds")
 
 
-func test_release_over_rack_returns_owned_ball_to_rack_and_stops_effects() -> void:
+func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
+	# Grabbing a live ball that was already on court and releasing over the rack
+	# must deactivate the item so the rack regrows the token.
 	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
+	_manager.activate("ball_alpha")
+	assert_true(_manager.is_on_court("ball_alpha"), "precondition: item is on court")
+
+	_drag.grab_live_ball("ball_alpha", false)
+	await get_tree().process_frame
 	var over_rack := _drop_target.global_position
 
 	var released: bool = _drag.attempt_release(over_rack)
