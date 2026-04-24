@@ -15,6 +15,7 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var autoplay_controller: AutoplayController
 @export var right_wall: StaticBody2D
 @export var partner_spawn: Marker2D
+@export var timeout_controller: TimeoutController
 
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
@@ -48,6 +49,9 @@ func _ready() -> void:
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 	ball.effect_processor.paddles = [player_paddle]
 
+	if timeout_controller != null:
+		timeout_controller.configure(player_paddle)
+
 	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
 		ball.register_miss_zone(zone)
 
@@ -67,6 +71,11 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_autoplay"):
 		autoplay_controller.toggle()
+	if event.is_action_pressed("call_timeout") and timeout_controller != null:
+		if timeout_controller.can_call_timeout():
+			timeout_controller.call_timeout()
+		else:
+			timeout_controller.end_timeout()
 
 
 func _physics_process(delta: float) -> void:
