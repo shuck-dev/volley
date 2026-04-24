@@ -48,7 +48,7 @@ The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered re
 
 Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome.
 
-- **Approve**: apply `zaphod-approved` and stop. No PR comment, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve.
+- **Approve**: post a formal approval via `gh pr review <N> --approve --body ""` and apply the label via `gh pr edit <N> --add-label zaphod-approved`. The empty body keeps the conversation stream silent; the formal review populates the Reviews tab so GitHub mobile shows the PR was actually looked at. No issue comment, no review-body text beyond the empty string. If a note feels worth posting, the verdict was block, not approve.
 - **Block**: post a formal PR review with `gh pr review --request-changes --body "<verdict + up to three bullets, 100 words total>"`. Start the body with `**<codename>** blocked at <short-sha>.` Follow with up to three bullets naming file, concern, fix. Per-line findings attach as inline review comments on the same formal review. Apply `zaphod-blocked`. Do not post issue comments.
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
@@ -91,7 +91,7 @@ Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you bl
 
 The organiser dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. On re-run, the organiser passes you `last-approved-sha..current-head` as the incremental range.
 
-Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, apply `zaphod-approved` silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
+Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, post the empty-body formal approve and apply `zaphod-approved`, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
 
 ## Mechanical fixes as commits
 
@@ -101,14 +101,14 @@ If the finding has a one-line fix and you have Edit access, land the fix as a co
 
 These are two separate outputs and the distinction matters more now that approves are silent.
 
-- **PR surface**: on approve, just the label. On block, one formal review with the verdict body and inline findings attached. Short, attributed, per the rules above.
+- **PR surface**: on approve, a silent `gh pr review --approve` with empty body plus the label. On block, one formal review with the verdict body and inline findings attached. Short, attributed, per the rules above.
 - **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the PR surface did.
 
 If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The PR gets the label on approve, or the formal review on block; the organiser gets the full reasoning either way.
 
 ## Examples
 
-**Approved:** label only, no comment posted. Organiser gets the full reasoning.
+**Approved:** formal `gh pr review --approve --body ""` plus the label, no issue comment. Organiser gets the full reasoning.
 
 **Blocked:**
 
