@@ -18,7 +18,7 @@ The impl pool produces artefacts: tickets, code, tests, plans, research, analysi
 
 Everything lives under `ai/swarm/`. Three kinds of file, one tracked surface, and one tracked board.
 
-- `agents/{name}.md`: per-agent working state, gitignored, private to the worktree that owns it. Appends only.
+- `agents/{name}.md`: per-minion working state, gitignored, private to the worktree that owns it. Appends only.
 - `tasks/{id}.md`: per-task work, one file per ticket, gitignored today. Carries claims, blocked-by, rich context for the agent working the ticket. Scrubs on ticket close.
 - `README.md`: the tracked reference for how the swarm works. Stable; changes rarely.
 - `ai/PARALLEL.md`: the tracked live board. Cycle header, Active, Done recent, Blocked, Activity log. Volatile; rewritten constantly.
@@ -41,9 +41,9 @@ Review happens in the Dandori Challenge, never on local files. The `zaphod-appro
 
 The swarm inherits Godot's session-tier system. Every minion declares a tier ceiling in its definition and Gru respects it.
 
-- Tier 0 (static, headless) runs grep, read, validate, signal_map, impact_check, run_gut.sh, and `.gd` edits that do not touch scenes. Fully parallel. Most agents live here.
+- Tier 0 (static, headless) runs grep, read, validate, signal_map, impact_check, run_gut.sh, and `.gd` edits that do not touch scenes. Fully parallel. Most minions live here.
 - Tier 1 (scene edits) covers node_ops, build_scene, save_scene, placement, scene_map, spatial_audit. Requires a worktree; parallelism is across worktrees.
-- Tier 2 (runtime) covers run(play), state_inspect, verify_motion, screenshot, input, ui_map, perf_snapshot. Exclusive: one agent at a time, no parallel Tier 2 sessions. No Josh sign-off required; the constraint is the single running editor.
+- Tier 2 (runtime) covers run(play), state_inspect, verify_motion, screenshot, input, ui_map, perf_snapshot. Exclusive: one minion at a time, no parallel Tier 2 sessions. No Josh sign-off required; the constraint is the single running editor.
 
 Gru picks the dispatch tier from the task, not the minion's ceiling. A specialist invoked for a signal-chain test stays at Tier 0 even if its ceiling is Tier 1.
 
@@ -59,7 +59,7 @@ Everything between those two points is parallel. Minions do not wait for each ot
 
 ## PR verdict flow
 
-Four labels live on PRs. Two are agent-applied, two are Josh-only.
+Four labels live on PRs. Two are minion-applied, two are Josh-only.
 
 - `zaphod-approved`: a reviewer read the diff and found it clean. Each reviewer applies its own.
 - `zaphod-blocked`: a reviewer found something that needs a fix. Blocked supersedes approved.
@@ -76,7 +76,7 @@ Minions never apply either human label. The `zaphod-*` namespace strips on every
 
 The board bloats if protocol lives with state. `ai/PARALLEL.md` carries only live state: the cycle header, Active, Done recent, Blocked, Activity log. The stable how-to (roles, tiers, PR comment templates, commit discipline) lives in `ai/swarm/README.md`. The design rationale (this doc) lives under `designs/`.
 
-This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two agents claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
+This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two minions claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
 
 ## Freshness and cleanup
 
