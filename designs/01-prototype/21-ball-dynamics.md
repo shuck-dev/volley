@@ -249,9 +249,10 @@ Three owners, one per shape:
 
 Release rules:
 
-- Held over court: the drag controller destroys the held token and asks the court (via the reconciler for permanent balls, directly for a mid-rally reinstatement) for a `Ball` at the cursor with the release-gesture velocity.
-- Held over rack: the drag controller destroys the held token; the rack refresh handles the visual return.
-- Released outside a valid drop zone: release fires only when the cursor is over `BallRack.DropTarget` or the court surface. Lifting the mouse button anywhere else (under the ground, off-screen, over the HUD) is a no-op, and the hold continues with the token still following the cursor until the player releases over a real target.
+- Held-token follow clamps to venue bounds each frame, so the cursor can never take the token outside the venue. Release always fires from within the venue; the clamp does the work at the edges.
+- Released over `BallRack.DropTarget`: the held token is destroyed and the item deactivates; the rack refresh handles the visual return.
+- Released over the court (inside `court_bounds`): the drag controller destroys the held token and asks the court (via the reconciler for permanent balls, directly for a mid-rally reinstatement) for a `Ball` at the cursor with the release-gesture velocity.
+- Released inside the venue but outside both rack and court: the ball enters play at the position clamped to `court_bounds` (the nearest valid play point). Defensively, any release position is clamped to venue bounds before the zone check.
 
 Nothing crosses boundaries by mutating a shared body. Each owner only creates and frees its own shape.
 
@@ -268,6 +269,12 @@ Auto-serve and Tinkerer are out of scope for this spike. Auto-serve belongs near
 Persist what the world actually contains: rack placement counts, and each live `Ball`'s position and `linear_velocity`. The held state is ephemeral UI and is never persisted; a save taken mid-hold snaps back to "ball on rack" for a held-from-rack grab or "ball in play" for a held-from-rally grab.
 
 On load, the court resumes as though the rally had continued in the background during the save window: live balls are reconstructed at their persisted position and velocity, and normal physics advances them from there. If resuming from the exact persisted state turns out to be too expensive (pathological stacks, solver warm-up cost), the escape hatch is to snap live balls to a sensible serve-ready position rather than stall the load. Hack it if it comes to that.
+
+### Temporary ball scenario
+
+Temporary balls cover the `SpawnBallOutcome` pathway and any other one-shot ball that does not belong to permanent-item placement. A temporary ball is instantiated from `scenes/ball.tscn` directly, tagged `is_temporary = true`, and parented under the court host. It stays outside the reconciler's tracked set, never touches `on_court`, and does not register an item-level effect. Dragging a temporary ball still goes through the drag controller's held-token gesture so the release path clears cleanly, but the release never spawns a permanent ball through the reconciler and never flips placement state.
+
+Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd` under `test_temporary_ball_does_not_touch_placement_or_reconciler`.
 
 ### Watchouts for the implementation
 

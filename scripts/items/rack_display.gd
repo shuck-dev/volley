@@ -1,6 +1,10 @@
 class_name RackDisplay
 extends Node2D
 
+signal slot_pressed(item_key: String)
+
+const SLOT_HIT_SIZE: Vector2 = Vector2(60, 60)
+
 @export var role: StringName = &"ball"
 @export var slot_container: Node2D
 
@@ -69,7 +73,46 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	slot.set_meta(&"item_key", definition.key)
 	var art_instance: Node = definition.art.instantiate()
 	slot.add_child(art_instance)
+	_attach_slot_input(slot, definition.key)
 	return slot
+
+
+func _attach_slot_input(slot: Node2D, item_key: String) -> void:
+	var area: Area2D = _build_slot_click_area()
+	area.input_event.connect(_on_slot_input_event.bind(item_key))
+	slot.add_child(area)
+
+
+func _build_slot_click_area() -> Area2D:
+	var area: Area2D = Area2D.new()
+	area.name = "ClickArea"
+	area.input_pickable = true
+
+	var rectangle: RectangleShape2D = RectangleShape2D.new()
+	rectangle.size = SLOT_HIT_SIZE
+
+	var collision: CollisionShape2D = CollisionShape2D.new()
+	collision.shape = rectangle
+	area.add_child(collision)
+
+	return area
+
+
+func _on_slot_input_event(
+	_viewport: Node, event: InputEvent, _shape_idx: int, item_key: String
+) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mouse_button: InputEventMouseButton = event
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+		return
+	if not mouse_button.pressed:
+		return
+	slot_pressed.emit(item_key)
+
+
+func press_slot(item_key: String) -> void:
+	slot_pressed.emit(item_key)
 
 
 func _clear_slots() -> void:

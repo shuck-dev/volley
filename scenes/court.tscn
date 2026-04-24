@@ -19,6 +19,8 @@
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
 [ext_resource type="Resource" uid="uid://iq04trmvlswer" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
+[ext_resource type="Script" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
+[ext_resource type="Script" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(36, 1472)
@@ -204,3 +206,14 @@ offset_left = -900.0
 offset_top = -400.0
 offset_right = -900.0
 offset_bottom = -400.0
+
+[node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
+script = ExtResource("21_reconciler")
+
+[node name="BallDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "reconciler")]
+script = ExtResource("22_drag")
+rack = NodePath("../BallRack")
+rack_drop_target = NodePath("../BallRack/DropTarget")
+reconciler = NodePath("../BallReconciler")
+court_bounds = Rect2(-700, -600, 1400, 1200)
+venue_bounds = Rect2(-2000, -1200, 4000, 2400)
