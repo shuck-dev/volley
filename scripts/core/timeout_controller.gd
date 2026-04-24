@@ -46,10 +46,6 @@ func can_call_timeout() -> bool:
 	return _state == State.IDLE
 
 
-func get_state() -> int:
-	return _state
-
-
 ## Starts a timeout. The main character walks off the court toward the equip
 ## pose. No-op if a timeout is already in progress.
 func call_timeout() -> void:
@@ -100,6 +96,6 @@ func _on_reached_equip_pose() -> void:
 
 func _on_reached_lane() -> void:
 	_state = State.IDLE
-	if main_character != null:
+	if is_instance_valid(main_character):
 		main_character.set_physics_process(true)
 	timeout_ended.emit()

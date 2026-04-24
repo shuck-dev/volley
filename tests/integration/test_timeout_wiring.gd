@@ -47,5 +47,7 @@ func test_pressing_call_timeout_starts_a_timeout() -> void:
 
 func test_timeout_action_is_noop_without_controller() -> void:
 	_game.timeout_controller = null
-	_press(&"call_timeout")  # should not crash
-	assert_true(true)
+	watch_signals(_timeout)
+	_press(&"call_timeout")
+	assert_signal_not_emitted(_timeout, "timeout_started")
+	assert_false(_timeout.is_active())
