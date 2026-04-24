@@ -229,12 +229,8 @@ func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
 # --- Scenario 4: temporary balls live outside the reconciler's set ---------
 
 
-# A temporary ball (future SpawnBallOutcome) is instantiated directly, tagged
-# is_temporary, and parented under the host. It does not touch on_court,
-# does not show up to the reconciler, and can be dragged without affecting
-# the permanent-placement bookkeeping.
-# todo: SH-224 — once SpawnBallOutcome lands, drive the spawn through that
-# production path instead of instantiating Ball directly.
+# scenario covers the temporary-ball pathway; see designs/01-prototype/21-ball-dynamics.md#temporary-ball-scenario
+# todo: SH-224 drive the spawn through SpawnBallOutcome once it lands
 func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	# Baseline: no placement, no live ball, no effects.
 	assert_false(_manager.is_on_court("training_ball"))

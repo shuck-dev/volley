@@ -23,7 +23,9 @@ func _ready() -> void:
 		_item_manager = ItemManager
 	if _ball_host == null:
 		_ball_host = get_parent()
+
 	_item_manager.court_changed.connect(_on_court_changed)
+
 	if spawn_for_existing_on_load:
 		_reconcile_initial_state()
 
@@ -31,6 +33,7 @@ func _ready() -> void:
 func get_ball_for_key(item_key: String) -> Ball:
 	if not _balls_by_key.has(item_key):
 		return null
+
 	var raw: Variant = _balls_by_key[item_key]
 	if not is_instance_valid(raw):
 		_balls_by_key.erase(item_key)
@@ -47,6 +50,7 @@ func ensure_ball_for_key(
 		existing.global_position = spawn_position
 		existing.linear_velocity = initial_velocity
 		return existing
+
 	var ball: Ball = ball_scene.instantiate()
 	_ball_host.add_child(ball)
 	ball.global_position = spawn_position
@@ -59,6 +63,7 @@ func release_ball(item_key: String) -> Ball:
 	var ball: Ball = get_ball_for_key(item_key)
 	if ball == null:
 		return null
+
 	_balls_by_key.erase(item_key)
 	return ball
 
@@ -70,12 +75,14 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		ensure_ball_for_key(
 			item_key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
 		)
-	else:
-		var ball: Ball = get_ball_for_key(item_key)
-		if ball == null:
-			return
-		_balls_by_key.erase(item_key)
-		ball.call_deferred("queue_free")
+		return
+
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball == null:
+		return
+
+	_balls_by_key.erase(item_key)
+	ball.call_deferred("queue_free")
 
 
 func _reconcile_initial_state() -> void:

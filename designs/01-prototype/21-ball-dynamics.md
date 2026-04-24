@@ -270,6 +270,12 @@ Persist what the world actually contains: rack placement counts, and each live `
 
 On load, the court resumes as though the rally had continued in the background during the save window: live balls are reconstructed at their persisted position and velocity, and normal physics advances them from there. If resuming from the exact persisted state turns out to be too expensive (pathological stacks, solver warm-up cost), the escape hatch is to snap live balls to a sensible serve-ready position rather than stall the load. Hack it if it comes to that.
 
+### Temporary ball scenario
+
+Temporary balls cover the `SpawnBallOutcome` pathway and any other one-shot ball that does not belong to permanent-item placement. A temporary ball is instantiated from `scenes/ball.tscn` directly, tagged `is_temporary = true`, and parented under the court host. It stays outside the reconciler's tracked set, never touches `on_court`, and does not register an item-level effect. Dragging a temporary ball still goes through the drag controller's held-token gesture so the release path clears cleanly, but the release never spawns a permanent ball through the reconciler and never flips placement state.
+
+Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd` under `test_temporary_ball_does_not_touch_placement_or_reconciler`.
+
 ### Watchouts for the implementation
 
 - Add a `_dragging` guard on `Ball._on_body_entered` so a paddle contact at the edge of a grab does not register as a hit during the handoff.
