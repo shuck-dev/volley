@@ -80,6 +80,8 @@ Each inline comment follows Conventional Comments:
 
 Keep each inline under 60 words. One issue per comment, state the why, don't lecture.
 
+**Length tiers.** One line is ideal. Two lines is exceptional and fine; flag only as `nitpick` or `suggestion`, never as blocking. Three or more lines is a hard block: ask the author to split the concern or tighten the prose.
+
 ## Labels
 
 Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human`; that's Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the blocked-supersedes-approved job anyway; still apply it so your verdict is recorded.
