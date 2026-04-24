@@ -73,8 +73,10 @@ func test_independent_ball_items_each_get_their_own_live_instance() -> void:
 	assert_not_null(_reconciler.get_ball_for_key("ball_beta"))
 
 
-func test_spawn_for_key_places_ball_at_requested_position_and_velocity() -> void:
-	var ball: Ball = _reconciler.spawn_for_key("ball_alpha", Vector2(100, 50), Vector2(120, 0))
+func test_ensure_ball_for_key_places_ball_at_requested_position_and_velocity() -> void:
+	var ball: Ball = _reconciler.ensure_ball_for_key(
+		"ball_alpha", Vector2(100, 50), Vector2(120, 0)
+	)
 	assert_not_null(ball)
 	assert_eq(ball.global_position, Vector2(100, 50))
 	assert_eq(ball.linear_velocity, Vector2(120, 0))
@@ -119,14 +121,16 @@ func test_release_ball_returns_null_when_no_ball_tracked() -> void:
 
 
 func test_get_ball_for_key_erases_stale_instances() -> void:
-	var ball: Ball = _reconciler.spawn_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
+	var ball: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
 	ball.free()
 	assert_null(
 		_reconciler.get_ball_for_key("ball_alpha"),
 		"freed instances should be evicted from the lookup",
 	)
 	# A subsequent spawn must succeed cleanly, not collide with the stale slot.
-	var replacement: Ball = _reconciler.spawn_for_key("ball_alpha", Vector2(5, 5), Vector2.ZERO)
+	var replacement: Ball = _reconciler.ensure_ball_for_key(
+		"ball_alpha", Vector2(5, 5), Vector2.ZERO
+	)
 	assert_not_null(replacement)
 	assert_eq(replacement.global_position, Vector2(5, 5))
 
@@ -164,9 +168,9 @@ func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> voi
 	)
 
 
-func test_spawn_for_key_moves_existing_ball_without_duplicating() -> void:
-	var first: Ball = _reconciler.spawn_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
-	var second: Ball = _reconciler.spawn_for_key("ball_alpha", Vector2(42, -7), Vector2(3, 4))
+func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
+	var first: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
+	var second: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2(42, -7), Vector2(3, 4))
 	assert_eq(first, second, "second spawn with the same key reuses the existing ball")
 	assert_eq(second.global_position, Vector2(42, -7))
 	assert_eq(second.linear_velocity, Vector2(3, 4))

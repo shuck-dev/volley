@@ -38,7 +38,10 @@ func get_ball_for_key(item_key: String) -> Ball:
 	return raw
 
 
-func spawn_for_key(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+## Returns the tracked Ball for `item_key`, repositioning and relaunching it, or instantiates a new one if none is tracked.
+func ensure_ball_for_key(
+	item_key: String, spawn_position: Vector2, initial_velocity: Vector2
+) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
 		existing.global_position = spawn_position
@@ -64,7 +67,7 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if on_court:
 		if get_ball_for_key(item_key) != null:
 			return
-		spawn_for_key(
+		ensure_ball_for_key(
 			item_key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
 		)
 	else:
@@ -78,7 +81,7 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 func _reconcile_initial_state() -> void:
 	for key in _item_manager.get_court_items():
 		if get_ball_for_key(key) == null:
-			spawn_for_key(
+			ensure_ball_for_key(
 				key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
 			)
 

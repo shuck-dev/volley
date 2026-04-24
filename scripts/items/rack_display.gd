@@ -78,16 +78,24 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 
 
 func _attach_slot_input(slot: Node2D, item_key: String) -> void:
+	var area: Area2D = _build_slot_click_area()
+	area.input_event.connect(_on_slot_input_event.bind(item_key))
+	slot.add_child(area)
+
+
+func _build_slot_click_area() -> Area2D:
 	var area: Area2D = Area2D.new()
 	area.name = "ClickArea"
 	area.input_pickable = true
-	var collision: CollisionShape2D = CollisionShape2D.new()
+
 	var rectangle: RectangleShape2D = RectangleShape2D.new()
 	rectangle.size = SLOT_HIT_SIZE
+
+	var collision: CollisionShape2D = CollisionShape2D.new()
 	collision.shape = rectangle
 	area.add_child(collision)
-	area.input_event.connect(_on_slot_input_event.bind(item_key))
-	slot.add_child(area)
+
+	return area
 
 
 func _on_slot_input_event(

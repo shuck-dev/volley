@@ -67,6 +67,7 @@ func _on_body_entered(body: Node) -> void:
 		effect_processor.process_hit()
 
 
+## Suppresses hit processing while a drag gesture owns this ball; BallDragController toggles it on mid-rally grabs before the ball is freed.
 func set_dragging(value: bool) -> void:
 	_dragging = value
 

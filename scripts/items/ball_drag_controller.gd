@@ -6,7 +6,7 @@ extends Node2D
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, over_court: bool)
 
-const GESTURE_SAMPLE_WINDOW: float = 0.08
+const CURSOR_SAMPLE_WINDOW: float = 0.08
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -18,7 +18,7 @@ var _item_manager: Node
 var _held_token: Node2D = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
-var _gesture_samples: Array = []
+var _cursor_samples: Array = []
 
 
 func configure(
@@ -45,7 +45,7 @@ func _process(_delta: float) -> void:
 		return
 	var follow_position: Vector2 = _clamp_to_venue(_cursor_position())
 	_held_token.global_position = follow_position
-	_sample_gesture(follow_position)
+	_track_cursor_motion(follow_position)
 
 
 func _input(event: InputEvent) -> void:
@@ -115,18 +115,19 @@ func attempt_release(release_position: Vector2) -> bool:
 	var item_key: String = _held_key
 	var token: Node2D = _held_token
 	var was_temporary: bool = _held_is_temporary
-	var gesture_velocity: Vector2 = _compute_gesture_velocity()
+	var release_velocity: Vector2 = _compute_release_velocity()
 	_held_token = null
 	_held_key = ""
 	_held_is_temporary = false
-	_gesture_samples.clear()
+	_cursor_samples.clear()
 	token.queue_free()
+
 	if over_rack:
 		if not was_temporary and _item_manager.is_on_court(item_key):
 			_item_manager.deactivate(item_key)
 	else:
 		_release_onto_court(
-			item_key, _clamp_to_court(clamped_position), gesture_velocity, was_temporary
+			item_key, _clamp_to_court(clamped_position), release_velocity, was_temporary
 		)
 	drop_completed.emit(item_key, clamped_position, not over_rack)
 	return true
@@ -135,7 +136,7 @@ func attempt_release(release_position: Vector2) -> bool:
 func _release_onto_court(
 	item_key: String,
 	release_position: Vector2,
-	gesture_velocity: Vector2,
+	release_velocity: Vector2,
 	is_temporary: bool,
 ) -> void:
 	if is_temporary:
@@ -143,7 +144,7 @@ func _release_onto_court(
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
 	if reconciler != null:
-		reconciler.spawn_for_key(item_key, release_position, gesture_velocity)
+		reconciler.ensure_ball_for_key(item_key, release_position, release_velocity)
 
 
 func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: bool) -> void:
@@ -158,26 +159,27 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	_held_token = token
 	_held_key = item_key
 	_held_is_temporary = is_temporary
-	_gesture_samples.clear()
-	_sample_gesture(spawn_position)
+	_cursor_samples.clear()
+	_track_cursor_motion(spawn_position)
 
 
-func _sample_gesture(sample_position: Vector2) -> void:
+## Records cursor positions across a short rolling window so release velocity can be derived from recent motion.
+func _track_cursor_motion(sample_position: Vector2) -> void:
 	var now_ms: float = float(Time.get_ticks_msec()) / 1000.0
-	_gesture_samples.append({"time": now_ms, "position": sample_position})
-	while _gesture_samples.size() > 1:
-		var oldest: Dictionary = _gesture_samples[0]
-		if now_ms - float(oldest["time"]) > GESTURE_SAMPLE_WINDOW:
-			_gesture_samples.remove_at(0)
+	_cursor_samples.append({"time": now_ms, "position": sample_position})
+	while _cursor_samples.size() > 1:
+		var oldest: Dictionary = _cursor_samples[0]
+		if now_ms - float(oldest["time"]) > CURSOR_SAMPLE_WINDOW:
+			_cursor_samples.remove_at(0)
 		else:
 			break
 
 
-func _compute_gesture_velocity() -> Vector2:
-	if _gesture_samples.size() < 2:
+func _compute_release_velocity() -> Vector2:
+	if _cursor_samples.size() < 2:
 		return _item_manager.get_default_ball_launch_velocity()
-	var first: Dictionary = _gesture_samples[0]
-	var last: Dictionary = _gesture_samples[_gesture_samples.size() - 1]
+	var first: Dictionary = _cursor_samples[0]
+	var last: Dictionary = _cursor_samples[_cursor_samples.size() - 1]
 	var time_delta: float = float(last["time"]) - float(first["time"])
 	if time_delta <= 0.0:
 		return _item_manager.get_default_ball_launch_velocity()

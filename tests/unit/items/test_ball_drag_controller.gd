@@ -103,9 +103,9 @@ func test_release_over_court_instates_a_ball_at_cursor_with_gesture_velocity() -
 
 	# Feed a multi-sample gesture moving right across the 80 ms window.
 	var start_position := Vector2(0, 0)
-	_drag._gesture_samples.clear()
-	_drag._gesture_samples.append({"time": 0.0, "position": start_position})
-	_drag._gesture_samples.append({"time": 0.04, "position": Vector2(200, 0)})
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": start_position})
+	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(200, 0)})
 
 	var court_point := Vector2(100, 50)
 	var released: bool = _drag.attempt_release(court_point)
@@ -131,8 +131,8 @@ func test_release_without_gesture_uses_default_launch_velocity() -> void:
 	await get_tree().process_frame
 
 	# Single sample means no motion - gesture path falls back to the default.
-	_drag._gesture_samples.clear()
-	_drag._gesture_samples.append({"time": 0.0, "position": Vector2.ZERO})
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
 
 	var released: bool = _drag.attempt_release(Vector2(100, 50))
 	assert_true(released)
@@ -160,7 +160,7 @@ func test_release_far_outside_court_clamps_to_bounds() -> void:
 	assert_eq(ball.global_position, Vector2(600, 400), "spawn clamps to court bounds")
 
 
-func test_release_over_rack_destroys_held_token_and_deactivates_permanent() -> void:
+func test_release_over_rack_returns_owned_ball_to_rack_and_stops_effects() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	var over_rack := _drop_target.global_position
