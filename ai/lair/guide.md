@@ -46,7 +46,7 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Mission briefing.** Before each mission inside the cycle, Gru writes a short briefing: which issues are in scope, which minions are cast, and the deadline. One paragraph is usually enough. The briefing is what the minions read first. A mission is a bundle of issues dispatched as one coordinated push.
 
-**Mission codename.** Every mission carries a codename and a description. Codenames are CIA-style opaque, drawn from the *Despicable Me* and *Minions* lexicon: gadgets, heists, villain cast, Agnes-family motifs, minion bahasa. The codename winks softly at the mission shape without spelling it out; the description carries the real content. In formal contexts, prefix with "Operation". Example: "Operation Banana Stand", whose description reads *timeout flow plus shop arrivals*.
+**Mission codename.** Every mission carries a codename and a description. Codenames are opaque, drawn from the *Despicable Me* and *Minions* lexicon: gadgets, heists, villain cast, Agnes-family motifs, minion bahasa. The codename winks softly at the mission shape without spelling it out; the description carries the real content. In formal contexts, prefix with "Operation". Example: "Operation Banana Stand", whose description reads *timeout flow plus shop arrivals*.
 
 **Dandori.** A verb, borrowed from Shigeru Miyamoto, who uses it to mean good planning. To dandori is to plan the work so parallel hands can close it without tripping over each other. "Gru dandoris the review round" means Gru reads the diff, partitions it by reviewer scope, and dispatches the right minions at once.
 
