@@ -112,11 +112,11 @@ If your dispatch asks for "verdict, summary, and SHA", that's the organiser repo
 
 **Blocked:**
 
-> **Marvin** blocked at `ab62b90`.
+> **Zaphod** blocked at `ab62b90`.
 >
 > - `test_rack_display.gd:82`: assertion couples to grid math; assert `item_key` meta instead.
 > - `item_manager.gd:19`: new `@export` renames a persisted field silently; wipe saves or keep the name.
 
 Inline on `test_rack_display.gd:82`:
 
-> **Marvin** issue (blocking): assertion on `slot.position` couples to grid math. Switch to asserting `item_key` meta matches, or drop the position assertion.
+> **Zaphod** issue (blocking): assertion on `slot.position` couples to grid math. Switch to asserting `item_key` meta matches, or drop the position assertion.
