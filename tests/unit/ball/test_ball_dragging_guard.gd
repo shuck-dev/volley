@@ -1,5 +1,4 @@
-## SH-218 a ball marked as dragging ignores paddle body_entered so a grab-edge contact
-## does not register as a hit during the handoff.
+## SH-218 a ball marked as dragging ignores paddle body_entered during drag handoff.
 extends GutTest
 
 var _ball: Ball

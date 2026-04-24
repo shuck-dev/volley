@@ -1,17 +1,4 @@
-## SH-218 integration: end-to-end ball regime transitions across drag, reconciler, item manager, rack.
-##
-## Drives the full chain through public surfaces (grab_from_rack, grab_live_ball, attempt_release,
-## activate/deactivate, save round-trip). No mocks beyond SaveStorage for the progression disk layer.
-## Asserts on externally observable outcomes: Ball instances under the host, placement state on
-## ItemManager, rack-display occupancy, effect registration (via get_stat), and save-persisted state.
-##
-## Scope notes:
-## - Venue/court clamp math is covered by unit tests; this file asserts only end-to-end outcomes
-##   of the grab -> release chain, not the intermediate clamp steps.
-## - Scenarios that grab from the rack free any activation-spawn balls before asserting the
-##   drop path. grab_from_rack calls ItemManager.activate, which fires the reconciler via
-##   court_changed; draining isolates the release outcome from the activation-spawn outcome.
-##   If a future test seam lets us suppress activation-spawn cleanly, this free-loop can go.
+## SH-218 end-to-end ball regime transitions; see designs/01-prototype/21-ball-dynamics.md#regime-unification.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -115,9 +102,6 @@ func _all_balls_under_host() -> Array:
 # --- Scenario 1: rack -> court via drag spawns a Ball in play ---------------
 
 
-# The player owns a ball token on the rack. They grab it and release over the court.
-# The full chain fires: drag activates the item, ItemManager emits court_changed, the
-# reconciler spawns a real Ball, and the rack stops showing the token.
 func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 	_manager.take("training_ball")
 	assert_eq(
@@ -126,9 +110,7 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 	var base_min: float = _manager.get_stat(&"ball_speed_min")
 
 	_drag.grab_from_rack("training_ball")
-	# grab_from_rack already activates the item, which fires the reconciler on
-	# court_changed. Drain any spawned-on-activation balls before asserting the
-	# drop path: this scenario asserts the release outcome, not the activation-spawn.
+	# Drain activation-spawn balls to isolate the release outcome.
 	for ball in _all_balls_under_host():
 		ball.queue_free()
 	await get_tree().process_frame
@@ -158,9 +140,6 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 # --- Scenario 2: court -> rack via drag frees the Ball and regrows the token ---
 
 
-# Start with a placed permanent ball. The player grabs it mid-rally and drops it
-# over the rack DropTarget. The live Ball is freed, placement flips to stored,
-# the effect stops running, and the rack's refresh puts the token back.
 func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 	_manager.take("training_ball")
 	_manager.activate("training_ball")
@@ -197,9 +176,6 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 # --- Scenario 3: rack -> mid-venue release clamps to court edge ------------
 
 
-# Releasing inside venue_bounds but outside court_bounds should still spawn a
-# ball: the release rule clamps the spawn position to the nearest valid court
-# point rather than no-opping.
 func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
 	_manager.take("training_ball")
 	_drag.grab_from_rack("training_ball")
@@ -207,7 +183,7 @@ func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
 		ball.queue_free()
 	await get_tree().process_frame
 
-	# Inside VENUE_BOUNDS.x span (-2000..2000) but outside COURT_BOUNDS.x span (-600..600).
+	# Inside VENUE_BOUNDS.x (-2000..2000) but outside COURT_BOUNDS.x (-600..600).
 	var in_venue_outside_court := Vector2(1500, 50)
 	var released: bool = _drag.attempt_release(in_venue_outside_court)
 
@@ -229,10 +205,8 @@ func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
 # --- Scenario 4: temporary balls live outside the reconciler's set ---------
 
 
-# scenario covers the temporary-ball pathway; see designs/01-prototype/21-ball-dynamics.md#temporary-ball-scenario
 # todo: SH-224 drive the spawn through SpawnBallOutcome once it lands
 func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
-	# Baseline: no placement, no live ball, no effects.
 	assert_false(_manager.is_on_court("training_ball"))
 	var base_min: float = _manager.get_stat(&"ball_speed_min")
 
@@ -242,7 +216,6 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	temp.global_position = Vector2(100, 50)
 	await get_tree().process_frame
 
-	# Permanent-ball bookkeeping is untouched.
 	assert_eq(
 		_permanent_balls().size(),
 		0,
@@ -264,8 +237,6 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 		"temporary ball has no item-level placement, so no extra effect registers",
 	)
 
-	# The drag path for a temporary ball still releases cleanly and does not
-	# spawn a permanent ball through the reconciler.
 	_drag.grab_live_ball("training_ball", true)
 	assert_true(_drag.is_dragging(), "temporary drag starts the held-token gesture")
 
@@ -286,11 +257,6 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 # --- Scenario 5: release from outside venue still lands on the court -------
 
 
-# The player's cursor ranges arbitrarily far beyond the venue; the release rule
-# is "always fires, clamp for spawn". The observable end-to-end outcome is that
-# a ball spawns at the court corner. The venue-clamp step is internal detail
-# exercised by a unit test in tests/unit/; this scenario only asserts what the
-# player sees after the full grab->release chain.
 func test_release_from_far_outside_cursor_spawns_ball_at_court_corner() -> void:
 	_manager.take("training_ball")
 	_drag.grab_from_rack("training_ball")
@@ -319,16 +285,12 @@ func test_release_from_far_outside_cursor_spawns_ball_at_court_corner() -> void:
 # --- Scenario 6: save round-trip preserves live ball placement -------------
 
 
-# A placed permanent ball should survive a save/reload: after reloading
-# progression into a fresh ItemManager + reconciler, the ball reappears,
-# placement is preserved, and the reconciler is tracking it.
 func test_save_round_trip_preserves_live_ball_placement() -> void:
 	_manager.take("training_ball")
 	_manager.activate("training_ball")
 	var placed_min: float = _manager.get_stat(&"ball_speed_min")
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
-	# Round-trip through a stringified progression blob.
 	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
 
 	var reload_storage: SaveStorage = double(SaveStorage).new()
@@ -353,19 +315,16 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	add_child_autofree(reloaded_reconciler)
 	await get_tree().process_frame
 
-	# Placement survived the round-trip.
 	assert_true(
 		reloaded_manager.is_on_court("training_ball"),
 		"placement must survive the save/reload cycle",
 	)
-	# Reconciler reflects the live state: the tracked ball is in the host tree.
 	var reloaded_ball: Ball = reloaded_reconciler.get_ball_for_key("training_ball")
 	assert_not_null(reloaded_ball, "reconciler re-spawned the ball from progression on load")
 	assert_true(
 		reloaded_ball.get_parent() == reloaded_host,
 		"the live ball is parented under the reloaded host",
 	)
-	# Effects match: reloaded stats must reflect the placed ball.
 	assert_almost_eq(
 		reloaded_manager.get_stat(&"ball_speed_min"),
 		placed_min,

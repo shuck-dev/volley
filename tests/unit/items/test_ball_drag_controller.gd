@@ -271,9 +271,7 @@ func test_process_follow_clamps_held_token_to_venue_bounds() -> void:
 	var token: Node2D = _drag.get_held_token()
 	assert_not_null(token, "precondition: held token exists")
 
-	# _process uses the viewport mouse position we can't drive from a unit test,
-	# but _clamp_to_venue is the pure function behind the follow. Any point beyond
-	# venue bounds must be pulled back to the rect edge.
+	# _clamp_to_venue is the pure function behind _process follow; drive it directly.
 	var clamped: Vector2 = _drag._clamp_to_venue(Vector2(99999, -99999))
 	assert_eq(clamped, Vector2(2000, -1200), "clamp pulls to the venue rect corner")
 
