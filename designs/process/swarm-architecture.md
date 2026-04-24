@@ -4,7 +4,7 @@ How Volley's parallel agent system is shaped, why it is shaped that way, and whe
 
 ## The Gru model
 
-A single Claude thread runs as Gru. Gru reads tickets, picks Dandoris, dispatches minions in parallel, merges diffs, and talks to Josh. Minions do the specialised work: write code, write tests, review diffs, draft docs, plan refactors. Gru writes almost no code.
+A single Claude thread runs as Gru. Gru reads tickets, dandoris the fan-out, dispatches minions in parallel, merges diffs, and talks to Josh. Minions do the specialised work: write code, write tests, review diffs, draft docs, plan refactors. Gru writes almost no code.
 
 This shape is a deliberate bet against the blackboard pattern. Blackboard systems let every agent post to and read from one shared surface, which reports 13 to 57 percent gains over master-slave when agents have overlapping expertise and the controller cannot reliably pick who does what (see the 2025 blackboard-architecture papers). Volley's roles are specialised and legible: `test-author` writes tests, `docs-and-writing` reviews prose, `ci-and-workflows` knows GitHub Actions. Gru does know who fits each ticket, so a blackboard buys overhead without the routing win. The orchestrator model keeps the authority single and the state small.
 
@@ -19,7 +19,7 @@ The impl pool produces artefacts: tickets, code, tests, plans, research, analysi
 Everything lives under `ai/swarm/`. Three kinds of file, one tracked surface, and one tracked board.
 
 - `agents/{name}.md`: per-minion working state, gitignored, private to the worktree that owns it. Appends only.
-- `tasks/{id}.md`: per-task work, one file per ticket, gitignored today. Carries claims, blocked-by, rich context for the agent working the ticket. Scrubs on ticket close.
+- `tasks/{id}.md`: per-task work, one file per ticket, gitignored today. Carries claims, blocked-by, rich context for the minion working the ticket. Scrubs on ticket close.
 - `README.md`: the tracked reference for how the swarm works. Stable; changes rarely.
 - `ai/PARALLEL.md`: the tracked live board. Cycle header, Active, Done recent, Blocked, Activity log. Volatile; rewritten constantly.
 

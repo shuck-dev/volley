@@ -50,15 +50,6 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Dandori (verb).** Borrowed from Shigeru Miyamoto, who uses it to mean good planning. To dandori is to plan the work so parallel hands can close it without tripping over each other. "Gru dandoris the review round" means Gru reads the diff, partitions it by reviewer scope, and dispatches the right minions at once.
 
-**Dandori (noun).** A recipe for fanning out a single ticket across minions in parallel. Each Dandori picks the strands that fit the ticket shape and dispatches them at once; the minions work independently and converge on a diff. There are four ticket-type variants, each with its own strand set. The canonical strand lists live in the Dandoris section of `ai/swarm/README.md`.
-
-- **Story Dandori.** Four strands: `design-doc-reader` on the AC, `refactor-planner` on the blast radius when three or more files are touched, `test-author` on the unit cases, `integration-scenario-author` on the cross-system flow.
-- **Bug Dandori.** Four strands: `root-cause-analyst` on the symptom, `test-author` producing a failing repro, `researcher` checking upstream Godot and context7, `design-doc-reader` confirming the AC describes the broken behaviour.
-- **Spike Dandori.** Support team rather than resolver team: `researcher` gathers material, `devils-advocate` stages failure modes, `supply-chain-scout` scores third-party options. Gru compiles a briefing, Josh decides, and only then do follow-up tickets get drafted.
-- **Audit Dandori.** Read-only, no worktrees: `researcher` fans out across cycle facets (point load, owners, dates, linked designs), `design-doc-reader` opens each linked design, `devils-advocate` reviews the synthesis.
-
-A fifth shape, **paired dispatch**, couples two specialists whose outputs must land in a single commit (failing tests plus the implementation that turns them green). It is not a ticket-type Dandori; it is a dispatch pattern that any Dandori can reach for when a repo gate forces two outputs together.
-
 **Dandori Challenge.** A pull request. A Challenge is where minions close out a mission together. The Challenge opens when the PR opens; it ends when the PR merges.
 
 **Dandori Battle.** The adversarial review round inside the Challenge. Reviewer minions post their verdicts, blocks supersede approves, authors revise, and the Battle resolves when the diff is clean and Josh signs off.
@@ -132,7 +123,6 @@ The players who get to play what the Return brings them. The reason any of this 
 | Dossier | Pre-cycle ritual: the issues readied for the upcoming cycle. |
 | Mission briefing | Pre-mission ritual: scope, cast, deadline. |
 | Dandori (verb) | Plan the work so parallel hands can close it cleanly. |
-| Dandori (noun) | A fan-out recipe for a ticket: Story, Bug, Spike, or Audit. |
 | Dandori Challenge | A pull request, seen from the mission side. |
 | Dandori Battle | The adversarial review round inside a Dandori Challenge. |
 | The Ride | Single-feature smoke on the built game, after a Challenge merges. |

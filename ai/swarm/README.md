@@ -119,45 +119,27 @@ Gru picks the dispatch tier from the task, not from the minion's ceiling. An `in
 
 Gru is entity-driven. Point Gru at a thing and Gru does the right thing.
 
-- **A branch or issue** classifies off its label: bug, feature, spike, refactor. That picks a Dandori.
+- **A branch or issue** classifies off its label: bug, feature, spike, refactor. That shapes how Gru fans out.
 - **A project** fans out across linked designs and child issues, one minion per leaf where leaves are independent.
 - **A cycle** fans out research across four facets: point load, unassigned tickets, stale dates, orphan projects.
 
-Phrases do not trigger Dandoris. "Can you look at SH-42" does. The shape of the entity chooses the shape of the team.
+Phrases do not trigger a fan-out. "Can you look at SH-42" does. The shape of the entity chooses the shape of the team.
 
 ### Pre-dispatch ticket-state recheck
 
 Before spinning up a worktree Gru re-reads each candidate ticket's Linear state and searches for a merged PR on its branch pattern (`feature/sh-N-*`, `sh-N-*`). If the ticket is Done, Canceled, or its branch pattern resolves to a merged PR, Gru skips dispatch and flags the stale entity. One turn of `mcp__linear__get_issue` plus `gh pr list --search "sh-N" --state merged` is enough; the cost is negligible next to spinning up a worktree for work that has already shipped.
 
-## Dandoris
+## How Gru fans out
 
-Every Dandori is a parallel fan-out. Gru dispatches several minions at once, lets them work independently, and reconvenes only at the sync points below.
+Gru reads the ticket and casts fresh every time. The briefing comes first, then the minion choice. What follows is not a rulebook; it is illustrative reference, the shapes that tend to recur so a new reader has something concrete to picture. The strand lists are examples of what has worked, not templates Gru reaches for.
 
-### Bug Dandori
+A bug usually wants four hands in parallel: `root-cause-analyst` on the symptom, `test-author` producing a failing repro, `researcher` checking the Godot issue tracker and context7, `design-doc-reader` confirming the AC actually describes the broken behaviour. They converge on a diff. A save-integrity regression might look like **Marvin** digging into `trace_flow` output on the failing load path, **Basil** writing the GUT case that reproduces it, **Zephyr** scanning upstream Godot for related reports, and **Martha** confirming the design said what the test now asserts.
 
-Four strands in parallel: `root-cause-analyst` on the symptom, `test-author` producing a failing repro, `researcher` checking the Godot issue tracker and context7, `design-doc-reader` confirming the AC actually describes the broken behaviour. They converge on a diff.
+A story often wants a similar shape with the reader swapped out: `design-doc-reader` on the AC, `refactor-planner` on the blast radius if three or more files are touched, `test-author` on the unit cases, `integration-scenario-author` on the cross-system flow. A new scoring modifier might read as **Ford** listing the AC bullets that must pass, **Cassius** running `impact_check` on `ScoreTracker` and sequencing the edits, **Hector** writing the unit tests, and **Dipper** writing the integration scenario that proves the modifier survives a save round-trip.
 
-Worked example, a save-integrity regression: **Marvin** digs into `trace_flow` output on the failing load path; **Basil** writes the GUT case that reproduces it; **Zephyr** scans upstream Godot for related reports; **Martha** confirms the design said what the test now asserts.
+An audit is read-only, no worktrees. `researcher` fans out four times across different facets (point load, owners, dates, linked designs). `design-doc-reader` opens each linked design. `devils-advocate` reviews the synthesis and names what the plan is lying about. A mid-cycle health check might cast **Trillian**, **Eddie**, **Zephyr**, and **Aunt Beast** each on one facet; **Stanford** on the linked designs; **Bill** on the synthesis, flagging the project that has no acceptance criteria at all.
 
-### Story Dandori
-
-Four strands again: `design-doc-reader` on the AC, `refactor-planner` on the blast radius if three or more files are touched, `test-author` on the unit cases, `integration-scenario-author` on the cross-system flow.
-
-Worked example, a new scoring modifier story: **Ford** reads the design and lists the AC bullets that must pass; **Cassius** runs `impact_check` on `ScoreTracker` and sequences the edits; **Hector** writes the unit tests; **Dipper** writes the integration scenario that proves the modifier survives a save round-trip.
-
-### Audit Dandori
-
-Read-only, no worktrees. `researcher` fans out four times across different facets (point load, owners, dates, linked designs). `design-doc-reader` opens each linked design. `devils-advocate` reviews the synthesis and names what the plan is lying about.
-
-Worked example, a mid-cycle health check: **Trillian**, **Eddie**, **Zephyr**, and **Aunt Beast** each take one facet of the audit; **Stanford** reads the three linked designs; **Bill** plays devil's advocate on the synthesis and flags the project that has no acceptance criteria at all.
-
-### Spike Dandori
-
-Spikes use the support team, not the resolver team. `researcher` gathers material. `devils-advocate` stages the failure modes. `supply-chain-scout` scores options where third-party tools are on the table. Gru compiles a briefing. Josh decides. Only after that does Gru draft a design stub and follow-up tickets, confirming before filing any of them.
-
-New-feature spikes split into at least two tickets before dispatch: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). The two pull in opposite directions and produce cleaner writeups apart than mashed together. Spikes on a single existing system (a perf regression, a refactor question) stay as one ticket.
-
-Worked example, picking a GDScript linter: **Zephyr** pulls docs for the three candidates; **Bill** writes the adversarial read on each; **Abe** checks provenance and SHA pinning on all three. Josh picks one. **Mabel** drafts the rollout design and the tickets, and asks before submitting.
+A spike uses the support team rather than the resolver team. `researcher` gathers material, `devils-advocate` stages failure modes, `supply-chain-scout` scores options where third-party tools are on the table. Gru compiles a briefing, Josh decides, and only then does Gru draft a design stub and follow-up tickets, confirming before filing any of them. New-feature spikes split into at least two tickets before dispatch: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). The two pull in opposite directions and produce cleaner writeups apart than mashed together. Spikes on a single existing system (a perf regression, a refactor question) stay as one ticket. Picking a GDScript linter might look like **Zephyr** pulling docs for three candidates, **Bill** writing the adversarial read on each, **Abe** checking provenance and SHA pinning, Josh picking one, and **Mabel** drafting the rollout design and tickets and asking before submitting.
 
 ### Paired dispatch
 
