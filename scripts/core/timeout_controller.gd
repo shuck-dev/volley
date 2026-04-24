@@ -91,9 +91,10 @@ func _ground_then_walk_to(target_x: float, on_finished: Callable) -> void:
 	if _walk_tween != null and _walk_tween.is_valid():
 		_walk_tween.kill()
 	_walk_tween = create_tween()
-	if not is_equal_approx(main_character.position.y, _lane_y):
+	var floor_y: float = config.floor_y
+	if not is_equal_approx(main_character.position.y, floor_y):
 		_walk_tween.tween_property(
-			main_character, "position:y", _lane_y, config.walk_duration_seconds
+			main_character, "position:y", floor_y, config.walk_duration_seconds
 		)
 	_walk_tween.tween_property(main_character, "position:x", target_x, config.walk_duration_seconds)
 	_walk_tween.finished.connect(on_finished)
