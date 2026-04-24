@@ -214,7 +214,7 @@ All four items above can ship independently and against current main. Nothing ab
 
 ---
 
-## Regime unification (Shrink Ray)
+## Regime unification
 
 A ball shows up in three conceptual places: as a token on the rack between rounds, as something the player is dragging, and as the live rally body that everything else reacts to. The live body exists today in `scripts/entities/ball.gd`. Drag exists today only for shop items, in `scripts/shop/shop_item.gd`. Rack tokens, `SpawnBallOutcome`, `BallReconciler`, auto-serve, and Tinkerer are all design references without code behind them yet. `ItemManager` already emits `court_changed` (around line 255), and nothing listens.
 
@@ -222,33 +222,38 @@ The question this spike answers: do these three presentations need three separat
 
 ### Decision
 
-One body for drag and live rally. The rack token stays a plain `Node2D` with art, no physics cost, owned by `RackDisplay` and regrown on each refresh.
+Held is not physics; live rally is. The cursor roams the whole screen during a hold, unconstrained by where a ball could legally sit, and physics only re-enters the picture at the moment of release.
 
-`Ball` itself gains a drag mode built on the ShopItem precedent:
+Three shapes, each with a clear job:
 
-- `freeze_mode = FREEZE_MODE_KINEMATIC`, authored in the scene.
-- `freeze = true` on drag start, with cursor-follow in `_physics_process`.
-- `freeze = false` on release.
+- **Rack token.** `Node2D` plus art, owned by `RackDisplay`, regrown on refresh.
+- **Held token.** `Node2D` plus art, owned by the drag controller, parented to a screen-space layer so it follows the cursor with no collision and no solver cost.
+- **Live rally ball.** `Ball` (`RigidBody2D`), the behaviour already shipped.
 
-That keeps the single body across drag and rally, avoids a second scene for "ball being held," and keeps the physics material and collision shape in one place.
+Transitions swap shape rather than mutate a single body:
+
+- Rack click: the drag controller spawns a held token and the rack marks that slot spent.
+- Mid-rally grab: the live `Ball` is removed from play (suspended, hidden, or `queue_free`d depending on what reads cleanest) and a held token takes over cursor-follow in its place.
+- Release over court: a `Ball` instance is instantiated (or reinstated, for a mid-rally grab) at the cursor with an initial velocity derived from the release gesture.
+- Release over rack: the held token is destroyed and the rack refresh regrows the rack token in its slot.
+
+Keeping physics out of the held state means the cursor never has to respect a collision envelope and the held visual is cheap to move, fade, or restyle without touching solver code.
 
 ### Boundaries and ownership
 
-**Rack token.** Pure `Node2D` plus art. `RackDisplay` owns the token and `queue_free`s on refresh. No `Ball` instance exists while the ball is "in the rack"; rack state is a count, not a live body.
+Three owners, one per shape:
 
-**Dragged ball.** A `Ball` instance with `freeze = true`. Two entry paths:
+- **`RackDisplay`** owns rack tokens. Tokens are `Node2D` + art, regrown on each rack refresh.
+- **Drag controller** owns the held token. It spawns the token on grab, slides it under the cursor each frame, and destroys it on release.
+- **Reconciler / `Court`** owns live `Ball` instances. The reconciler hands out and tears down `Ball` nodes to match `on_court[&ball]`, and the court hosts them during rally.
 
-- Rack click: `RackDisplay` asks the ball factory for a new `Ball`, hands it to the drag controller, flips it to drag mode.
-- Mid-rally grab: the existing live `Ball` flips to drag mode in place.
+Release rules:
 
-Flipping `freeze` from inside a physics callback (`area_entered`, `body_entered`) is unreliable; Godot issue 85371 covers it. The transition uses `set_deferred("freeze", ...)` or a `call_deferred` hop so the write lands between ticks.
+- Held over court: the drag controller destroys the held token and asks the court (via the reconciler for permanent balls, directly for a mid-rally reinstatement) for a `Ball` at the cursor with the release-gesture velocity.
+- Held over rack: the drag controller destroys the held token; the rack refresh handles the visual return.
+- Released outside a valid drop zone: release fires only when the cursor is over `BallRack.DropTarget` or the court surface. Lifting the mouse button anywhere else (under the ground, off-screen, over the HUD) is a no-op, and the hold continues with the token still following the cursor until the player releases over a real target.
 
-**Live rally ball.** Fully dynamic `RigidBody2D`, the behaviour already shipped. Nothing about the current rally changes.
-
-**Release destinations.**
-
-- Drop over `BallRack.DropTarget`: the drag controller calls `deactivate(key)` on the rack, the rack rebuilds, and the token regrows in place. The `Ball` instance that was being dragged is freed.
-- Drop over court: the drag controller unfreezes the ball and hands it back to the rally, optionally with a throw impulse from the release gesture.
+Nothing crosses boundaries by mutating a shared body. Each owner only creates and frees its own shape.
 
 ### Transition seams
 
@@ -256,25 +261,16 @@ Flipping `freeze` from inside a physics callback (`area_entered`, `body_entered`
 
 `SpawnBallOutcome` instantiates `scenes/ball.tscn`, tags the instance as temporary, and `queue_free`s on the outcome's expiry trigger. Temporary balls live outside the reconciler's placement-driven set and do not touch `on_court`. No coupling across balls beyond the spawn itself.
 
-Auto-serve and Tinkerer are out of Shrink Ray's scope. Auto-serve belongs near Court's ball-spawn path; Tinkerer is a `BallEffectProcessor` extension rather than a regime question. Both get their own follow-up tickets.
+Auto-serve and Tinkerer are out of scope for this spike. Auto-serve belongs near Court's ball-spawn path; Tinkerer is a `BallEffectProcessor` extension rather than a regime question.
 
 ### Save-shape
 
-Persist the regime enum, position, `linear_velocity`, and owner path. Never serialise a ball mid-transition; snap to the nearest stable regime at save time. Reload reconstructs live balls through the reconciler, so the save format stays thin and the construction path stays single-sourced.
+Persist what the world actually contains: rack placement counts, and each live `Ball`'s position and `linear_velocity`. The held state is ephemeral UI and is never persisted; a save taken mid-hold snaps back to "ball on rack" for a held-from-rack grab or "ball in play" for a held-from-rally grab.
+
+On load, the court resumes as though the rally had continued in the background during the save window: live balls are reconstructed at their persisted position and velocity, and normal physics advances them from there. If resuming from the exact persisted state turns out to be too expensive (pathological stacks, solver warm-up cost), the escape hatch is to snap live balls to a sensible serve-ready position rather than stall the load. Hack it if it comes to that.
 
 ### Watchouts for the implementation
 
-- Add a `_dragging` guard on `Ball._on_body_entered` so a paddle contact during drag does not register as a hit.
-- Writes to `freeze` from a physics callback need `set_deferred("freeze", ...)`; see Godot issue 85371.
-- Reparenting a `CollisionObject2D` inside a physics callback errors out. Use `call_deferred("reparent", ...)` wherever a transition changes parents.
-- Kinematic-into-dynamic solver weirdness applies to paddles rather than balls directly, but it is worth remembering if paddles are ever re-tuned.
-
-### Follow-up tickets
-
-The Ride will file these once this spike lands:
-
-1. Wire `BallReconciler` against `court_changed`: hand out and tear down `Ball` instances to match placement state.
-2. Ball drag state on `Ball`: `input_pickable`, `input_event` wiring, freeze toggle, cursor-follow, release handlers for rack and court drop targets.
-3. Implement `SpawnBallOutcome` per [08-balls.md](08-balls.md): effect-pipeline spawn, tagged temporary, expiry despawn.
-4. Auto-serve trigger and scope (out of Shrink Ray).
-5. Tinkerer scope: `BallEffectProcessor` extension (out of Shrink Ray).
+- Add a `_dragging` guard on `Ball._on_body_entered` so a paddle contact at the edge of a grab does not register as a hit during the handoff.
+- Reparenting or freeing a `CollisionObject2D` inside a physics callback errors out. Any mid-rally grab that removes the live `Ball` from play uses `call_deferred` so the mutation lands between ticks.
+- Velocity on release comes from the gesture, not from whatever the old live ball was doing; a mid-rally grab intentionally resets motion.
