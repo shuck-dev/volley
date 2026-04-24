@@ -186,7 +186,7 @@ What the skill doesn't cover, and belongs in the swarm README:
 
 Minions never apply either human label. Any push strips the `zaphod-*` namespace; re-review re-earns them. The `Human Approved` merge-queue check fails "Changes requested" while `action-required-human` is present, and "Needs human review" while neither human label is set.
 
-**Reviewers post directly.** Each reviewer applies its own label and posts its own PR comment with `**<codename>**` leading the body; Gru does not aggregate or post on their behalf. Reviewers hold `gh` through the bash allowlist for exactly this. Clean approves still land as comments so Josh sees who reviewed.
+**Reviewers post directly.** Each reviewer applies its own label. On approve, the label is the full verdict; no comment is posted. On block, the reviewer submits a formal PR review with `gh pr review --request-changes` carrying `**<codename>** blocked at <short-sha>.` as the body, and attaches per-line findings as inline comments on that same review. Gru does not aggregate or post on their behalf. Reviewers hold `gh` through the bash allowlist for exactly this. Josh tracks who reviewed via the label list, not comment noise.
 
 **Auto-merge discipline.** Gru may queue auto-merge with `gh pr merge --auto --squash` once a reviewer posts `zaphod-approved`. Auto-merge will not fire until `approved-human` lands; Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes.
 
@@ -196,7 +196,7 @@ Minions never apply either human label. Any push strips the `zaphod-*` namespace
 flowchart TD
     Open[PR opened] --> Scope[Gru scopes diff]
     Scope --> Fanout[Dispatch touched reviewers in parallel]
-    Fanout --> Verdicts[Reviewers post comments with codename]
+    Fanout --> Verdicts[Approves silent; blocks post formal pr review]
     Verdicts --> Labels[Reviewers apply zaphod-approved or zaphod-blocked]
     Labels --> Wait{Push?}
     Wait -- yes --> Strip[reviewer-re-run strips zaphod-*]

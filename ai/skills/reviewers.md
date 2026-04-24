@@ -46,25 +46,26 @@ The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered re
 
 ## Verdict shape
 
-Findings land as **inline** review comments anchored to the specific line. The top-level PR comment carries the verdict line and, if any finding exists, one short sentence pointing at the inline threads.
+Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome.
 
-- **Approve**: verdict line only, no body. `**<codename>** approved.`
-- **Approve with notes**: verdict line + one sentence pointing at the inline note, max 40 words. `**<codename>** approved with notes. See inline on rack_display.gd:42.`
-- **Blocked**: verdict line + pointer sentence or up to three bullets, max 100 words total. Each bullet names the file, the concern, the fix. `**<codename>** blocked. See inline on test_rack_display.gd:82 and item_manager.gd:19.`
+- **Approve**: apply `zaphod-approved` and stop. No PR comment, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve.
+- **Block**: post a formal PR review with `gh pr review --request-changes --body "<verdict + up to three bullets, 100 words total>"`. Start the body with `**<codename>** blocked at <short-sha>.` Follow with up to three bullets naming file, concern, fix. Per-line findings attach as inline review comments on the same formal review. Apply `zaphod-blocked`. Do not post issue comments.
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
 
 No audit enumerations. No restatement of the PR description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
 
-Post inline via:
+Post inline findings as part of the block review. Each inline attaches to the formal review rather than floating as a detached comment:
 
 ```
-gh api repos/<owner>/<repo>/pulls/<n>/comments \
-  -f body="**<codename>** <label>: <finding>" \
+gh api repos/<owner>/<repo>/pulls/<n>/reviews \
+  -f event=REQUEST_CHANGES \
+  -f body="**<codename>** blocked at <short-sha>. <bullets>" \
   -f commit_id="<sha>" \
-  -f path="<file>" \
-  -F line=<line> \
-  -f side=RIGHT
+  -F "comments[][path]=<file>" \
+  -F "comments[][line]=<line>" \
+  -F "comments[][side]=RIGHT" \
+  -F "comments[][body]=**<codename>** <label>: <finding>"
 ```
 
 Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>/replies`.
@@ -90,43 +91,32 @@ Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you bl
 
 The organiser dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. On re-run, the organiser passes you `last-approved-sha..current-head` as the incremental range.
 
-Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, post `**<codename>** approved. No changes in scope since <last-approved-sha>.` and apply the label. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
+Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, apply `zaphod-approved` silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
 
 ## Mechanical fixes as commits
 
 If the finding has a one-line fix and you have Edit access, land the fix as a commit with a `[<codename>]` role tag in the subject. Reference the fix by commit SHA rather than typing the diff into the body.
 
-## Organiser report vs PR comment
+## Organiser report vs PR surface
 
-These are two separate outputs.
+These are two separate outputs and the distinction matters more now that approves are silent.
 
-- **PR comment**: verdict line + inline findings. Short, attributed, per the rules above.
-- **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent.
+- **PR surface**: on approve, just the label. On block, one formal review with the verdict body and inline findings attached. Short, attributed, per the rules above.
+- **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the PR surface did.
 
-If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. Post the tight version to the PR; give the full version back.
+If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The PR gets the label on approve, or the formal review on block; the organiser gets the full reasoning either way.
 
 ## Examples
 
-**Approved:**
-
-> **Trillian** approved.
-
-**Approved with notes:**
-
-> **Ford** approved with notes. See inline on `rack_display.gd:22`.
-
-Inline:
-
-> **Ford** nitpick: `_item_manager: Node` could tighten to `ItemManager`. Matches paddle.gd precedent, non-blocking.
+**Approved:** label only, no comment posted. Organiser gets the full reasoning.
 
 **Blocked:**
 
-> **Marvin** blocked. See inline on `test_rack_display.gd:82`.
+> **Marvin** blocked at `ab62b90`.
+>
+> - `test_rack_display.gd:82`: assertion couples to grid math; assert `item_key` meta instead.
+> - `item_manager.gd:19`: new `@export` renames a persisted field silently; wipe saves or keep the name.
 
-Inline:
+Inline on `test_rack_display.gd:82`:
 
-> **Marvin** issue (blocking): assertion on slot.position couples to grid math. Switch to asserting item_key meta matches, or drop the position assertion.
-
-**No-change re-review:**
-
-> **Zaphod** approved. No changes in scope since `ab62b90`.
+> **Marvin** issue (blocking): assertion on `slot.position` couples to grid math. Switch to asserting `item_key` meta matches, or drop the position assertion.
