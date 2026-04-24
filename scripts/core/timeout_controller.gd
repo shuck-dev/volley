@@ -2,18 +2,19 @@ class_name TimeoutController
 extends Node
 
 ## State machine for timeout-and-equip: walks the main character off court to an equip pose and back.
+##
+## Invariant: when `_state != IDLE`, `main_character` is non-null and valid; enforced at
+## `call_timeout`, trusted elsewhere.
 
 signal timeout_started
 signal main_character_reached_equip_pose
 signal timeout_ended
 
+## Phases of the main character's timeout; IDLE means no timeout is in flight.
 enum State { IDLE, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
 
-const WALK_DURATION_SECONDS: float = 0.6
-## Horizontal offset from lane x to equip pose, away from the court on the player's side.
-const EQUIP_POSE_OFFSET_X: float = -320.0
-
 @export var main_character: Paddle
+@export var config: TimeoutConfig
 
 var _state: State = State.IDLE
 var _lane_x: float = 0.0
@@ -22,12 +23,19 @@ var _walk_tween: Tween
 
 
 func _ready() -> void:
+	if config == null:
+		config = TimeoutConfig.new()
 	if main_character == null:
 		return
 	_cache_positions()
 
 
 func configure(paddle: Paddle) -> void:
+	assert(paddle != null, "TimeoutController.configure: paddle must not be null")
+	assert(
+		_state == State.IDLE,
+		"TimeoutController.configure: cannot reconfigure during active timeout",
+	)
 	main_character = paddle
 	_cache_positions()
 
@@ -63,8 +71,10 @@ func call_timeout() -> void:
 func end_timeout() -> void:
 	if _state != State.AT_EQUIP_POSE:
 		return
-	if main_character == null:
-		return
+	assert(
+		main_character != null,
+		"TimeoutController invariant: active state with null main_character",
+	)
 	_state = State.WALKING_ON
 	_walk_to(_lane_x, _on_reached_lane)
 
@@ -72,20 +82,23 @@ func end_timeout() -> void:
 func _cache_positions() -> void:
 	if main_character == null:
 		return
-	if _state == State.IDLE:
-		_lane_x = main_character.position.x
-		_equip_pose_x = _lane_x + EQUIP_POSE_OFFSET_X
+	if config == null:
+		config = TimeoutConfig.new()
+	_lane_x = main_character.position.x
+	_equip_pose_x = _lane_x + config.equip_pose_offset_x
 
 
 func _walk_to(target_x: float, on_finished: Callable) -> void:
 	if _walk_tween != null and _walk_tween.is_valid():
 		_walk_tween.kill()
 	_walk_tween = create_tween()
-	_walk_tween.tween_property(main_character, "position:x", target_x, WALK_DURATION_SECONDS)
+	_walk_tween.tween_property(main_character, "position:x", target_x, config.walk_duration_seconds)
 	_walk_tween.finished.connect(on_finished)
 
 
 func _on_reached_equip_pose() -> void:
+	if not is_instance_valid(main_character):
+		return
 	_state = State.AT_EQUIP_POSE
 	main_character_reached_equip_pose.emit()
 

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="TimeoutConfig" format=3 uid="uid://iq04trmvlswer"]
+
+[ext_resource type="Script" uid="uid://twzcw4zqandao" path="res://scripts/core/timeout_config.gd" id="1_tcfg0"]
+
+[resource]
+script = ExtResource("1_tcfg0")
+walk_duration_seconds = 0.6
+equip_pose_offset_x = -320.0

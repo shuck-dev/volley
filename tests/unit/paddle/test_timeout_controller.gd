@@ -5,9 +5,9 @@ extends GutTest
 ## Drives the walk-off/walk-on state machine by advancing tweens via
 ## SceneTree's process step so we do not inspect private state.
 
-const WALK_DURATION: float = TimeoutController.WALK_DURATION_SECONDS
 const LANE_X: float = -500.0
 
+var _walk_duration: float
 var _paddle: Paddle
 var _controller: TimeoutController
 
@@ -17,13 +17,17 @@ func before_each() -> void:
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
+
 	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
 	_paddle.tracker = tracker
 	_paddle.add_child(tracker)
 	_paddle.position = Vector2(LANE_X, 0.0)
 	add_child_autofree(_paddle)
 
+	var config: TimeoutConfig = load("res://resources/timeout_config.tres")
+	_walk_duration = config.walk_duration_seconds
 	_controller = load("res://scripts/core/timeout_controller.gd").new()
+	_controller.config = config
 	_controller.configure(_paddle)
 	add_child_autofree(_controller)
 
@@ -31,7 +35,7 @@ func before_each() -> void:
 func _advance_walk() -> void:
 	# Advance the tween past completion. One extra frame lets the finished
 	# callback settle.
-	await wait_seconds(WALK_DURATION + 0.05)
+	await wait_seconds(_walk_duration + 0.05)
 
 
 # --- initial state ---
