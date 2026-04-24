@@ -47,4 +47,4 @@ Return a structured verdict to the organiser. Three fields:
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-Use `WebFetch` freely for upstream repos and changelogs while investigating. Verdict surface per `ai/skills/reviewers.md`. Approves post a silent `gh pr review --approve` plus the label; blocks post a formal PR review with inline items attached.
+Use `WebFetch` freely for upstream repos and changelogs while investigating. Verdict surface per `ai/skills/reviewers.md`. Approves apply the label and stop; blocks post a formal PR review with inline items attached.
