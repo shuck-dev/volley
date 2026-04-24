@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/friendship_points.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
+[ext_resource type="Resource" uid="uid://iq04trmvlswer" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(36, 1472)
@@ -119,6 +120,7 @@ config = ExtResource("8_85g3d")
 
 [node name="TimeoutController" type="Node" parent="." unique_id=1998734210]
 script = ExtResource("19_timeout")
+config = ExtResource("20_timeout_cfg")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
 position = Vector2(500, 0)
