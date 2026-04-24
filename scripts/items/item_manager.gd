@@ -78,6 +78,12 @@ func get_stat(key: StringName) -> float:
 	return _effect_manager.get_stat(key)
 
 
+## Default launch velocity for a ball that lacks a player-supplied gesture.
+func get_default_ball_launch_velocity() -> Vector2:
+	var min_speed: float = get_stat(&"ball_speed_min")
+	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
+
+
 ## Returns the stat value excluding temporary (until-miss) modifiers
 func get_base_stat(key: StringName) -> float:
 	return _effect_manager.get_base_stat(key)

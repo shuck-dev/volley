@@ -2,8 +2,6 @@ class_name BallDragController
 extends Node2D
 
 ## Owns the held-token visual during a ball drag gesture.
-## Rack click or live-ball click spawns a held token; release over court instates a Ball,
-## release over rack destroys the token and the rack refresh regrows the rack token.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, over_court: bool)
@@ -13,13 +11,13 @@ const GESTURE_SAMPLE_WINDOW: float = 0.08
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
 @export var court_bounds: Rect2 = Rect2()
+@export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 
 var _item_manager: Node
 var _held_token: Node2D = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
-var _held_from_rack: bool = true
 var _gesture_samples: Array = []
 
 
@@ -45,8 +43,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _held_token == null:
 		return
-	_held_token.global_position = _cursor_position()
-	_sample_gesture(_held_token.global_position)
+	var follow_position: Vector2 = _clamp_to_venue(_cursor_position())
+	_held_token.global_position = follow_position
+	_sample_gesture(follow_position)
 
 
 func _input(event: InputEvent) -> void:
@@ -59,7 +58,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if mouse_button.pressed:
 		return
-	attempt_release(_cursor_position())
+	attempt_release(_clamp_to_venue(_cursor_position()))
 
 
 func is_dragging() -> bool:
@@ -83,7 +82,6 @@ func grab_from_rack(item_key: String) -> bool:
 	if _item_manager.is_on_court(item_key):
 		return false
 	_spawn_held_token(item_key, _cursor_position(), false)
-	_held_from_rack = true
 	_item_manager.activate(item_key)
 	pickup_started.emit(item_key)
 	return true
@@ -101,22 +99,19 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		spawn_position = existing.global_position
 		if reconciler != null:
 			reconciler.release_ball(item_key)
+		existing.set_dragging(true)
 		existing.call_deferred("queue_free")
 	_spawn_held_token(item_key, spawn_position, is_temporary)
-	_held_from_rack = false
 	pickup_started.emit(item_key)
 	return true
 
 
-## Release the held token at the given position. Fires only over rack or court;
-## outside either zone the hold continues.
+## Release the held token; held-token follow already clamps cursor to venue, so release always resolves.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
-	var over_rack: bool = _position_over_rack(release_position)
-	var over_court: bool = _position_over_court(release_position)
-	if not over_rack and not over_court:
-		return false
+	var clamped_position: Vector2 = _clamp_to_venue(release_position)
+	var over_rack: bool = _position_over_rack(clamped_position)
 	var item_key: String = _held_key
 	var token: Node2D = _held_token
 	var was_temporary: bool = _held_is_temporary
@@ -131,9 +126,9 @@ func attempt_release(release_position: Vector2) -> bool:
 			_item_manager.deactivate(item_key)
 	else:
 		_release_onto_court(
-			item_key, _clamp_to_court(release_position), gesture_velocity, was_temporary
+			item_key, _clamp_to_court(clamped_position), gesture_velocity, was_temporary
 		)
-	drop_completed.emit(item_key, release_position, over_court and not over_rack)
+	drop_completed.emit(item_key, clamped_position, not over_rack)
 	return true
 
 
@@ -180,22 +175,17 @@ func _sample_gesture(sample_position: Vector2) -> void:
 
 func _compute_gesture_velocity() -> Vector2:
 	if _gesture_samples.size() < 2:
-		return _default_release_velocity()
+		return _item_manager.get_default_ball_launch_velocity()
 	var first: Dictionary = _gesture_samples[0]
 	var last: Dictionary = _gesture_samples[_gesture_samples.size() - 1]
 	var time_delta: float = float(last["time"]) - float(first["time"])
 	if time_delta <= 0.0:
-		return _default_release_velocity()
+		return _item_manager.get_default_ball_launch_velocity()
 	var pos_delta: Vector2 = Vector2(last["position"]) - Vector2(first["position"])
 	var velocity: Vector2 = pos_delta / time_delta
 	if velocity.length() < 1.0:
-		return _default_release_velocity()
+		return _item_manager.get_default_ball_launch_velocity()
 	return velocity
-
-
-func _default_release_velocity() -> Vector2:
-	var min_speed: float = _item_manager.get_stat(&"ball_speed_min")
-	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
 func _cursor_position() -> Vector2:
@@ -215,20 +205,21 @@ func _position_over_rack(position: Vector2) -> bool:
 	return rect.has_point(position)
 
 
-func _position_over_court(position: Vector2) -> bool:
-	if court_bounds.size == Vector2.ZERO:
-		return not _position_over_rack(position)
-	return court_bounds.has_point(position)
-
-
 func _clamp_to_court(position: Vector2) -> Vector2:
-	if court_bounds.size == Vector2.ZERO:
+	return _clamp_to_rect(position, court_bounds)
+
+
+func _clamp_to_venue(position: Vector2) -> Vector2:
+	return _clamp_to_rect(position, venue_bounds)
+
+
+func _clamp_to_rect(position: Vector2, bounds: Rect2) -> Vector2:
+	if bounds.size == Vector2.ZERO:
 		return position
-	var clamped := Vector2(
-		clampf(position.x, court_bounds.position.x, court_bounds.position.x + court_bounds.size.x),
-		clampf(position.y, court_bounds.position.y, court_bounds.position.y + court_bounds.size.y),
+	return Vector2(
+		clampf(position.x, bounds.position.x, bounds.position.x + bounds.size.x),
+		clampf(position.y, bounds.position.y, bounds.position.y + bounds.size.y),
 	)
-	return clamped
 
 
 func _first_collision_shape(area: Area2D) -> CollisionShape2D:

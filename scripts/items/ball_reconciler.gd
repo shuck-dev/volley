@@ -2,7 +2,6 @@ class_name BallReconciler
 extends Node
 
 ## Owns live Ball instances for permanent on-court ball items.
-## Listens to ItemManager.court_changed and reconciles the live set to on_court[&ball].
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 
@@ -65,7 +64,9 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if on_court:
 		if get_ball_for_key(item_key) != null:
 			return
-		spawn_for_key(item_key, _default_spawn_position(), _default_velocity())
+		spawn_for_key(
+			item_key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
+		)
 	else:
 		var ball: Ball = get_ball_for_key(item_key)
 		if ball == null:
@@ -77,15 +78,12 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 func _reconcile_initial_state() -> void:
 	for key in _item_manager.get_court_items():
 		if get_ball_for_key(key) == null:
-			spawn_for_key(key, _default_spawn_position(), _default_velocity())
+			spawn_for_key(
+				key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
+			)
 
 
 func _default_spawn_position() -> Vector2:
 	if _ball_host is Node2D:
 		return (_ball_host as Node2D).global_position
 	return Vector2.ZERO
-
-
-func _default_velocity() -> Vector2:
-	var min_speed: float = _item_manager.get_stat(&"ball_speed_min")
-	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed

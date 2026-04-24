@@ -249,9 +249,10 @@ Three owners, one per shape:
 
 Release rules:
 
-- Held over court: the drag controller destroys the held token and asks the court (via the reconciler for permanent balls, directly for a mid-rally reinstatement) for a `Ball` at the cursor with the release-gesture velocity.
-- Held over rack: the drag controller destroys the held token; the rack refresh handles the visual return.
-- Released outside a valid drop zone: release fires only when the cursor is over `BallRack.DropTarget` or the court surface. Lifting the mouse button anywhere else (under the ground, off-screen, over the HUD) is a no-op, and the hold continues with the token still following the cursor until the player releases over a real target.
+- Held-token follow clamps to venue bounds each frame, so the cursor can never take the token outside the venue. Release always fires from within the venue; the clamp does the work at the edges.
+- Released over `BallRack.DropTarget`: the held token is destroyed and the item deactivates; the rack refresh handles the visual return.
+- Released over the court (inside `court_bounds`): the drag controller destroys the held token and asks the court (via the reconciler for permanent balls, directly for a mid-rally reinstatement) for a `Ball` at the cursor with the release-gesture velocity.
+- Released inside the venue but outside both rack and court: the ball enters play at the position clamped to `court_bounds` (the nearest valid play point). Defensively, any release position is clamped to venue bounds before the zone check.
 
 Nothing crosses boundaries by mutating a shared body. Each owner only creates and frees its own shape.
 

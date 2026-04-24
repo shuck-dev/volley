@@ -4,6 +4,7 @@ extends GutTest
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 var _manager: Node
 var _host: Node2D
@@ -11,24 +12,6 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
-
-
-func _stub_art() -> PackedScene:
-	var scene := PackedScene.new()
-	scene.pack(Node2D.new())
-	return scene
-
-
-func _make_ball_item(key: String) -> ItemDefinition:
-	var item := ItemDefinition.new()
-	item.key = key
-	item.role = &"ball"
-	item.base_cost = 10
-	item.cost_scaling = 2.0
-	item.max_level = 3
-	item.effects = []
-	item.art = _stub_art()
-	return item
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -62,7 +45,7 @@ func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
 
 func before_each() -> void:
 	_manager = ItemFactory.create_manager(self)
-	var ball_alpha := _make_ball_item("ball_alpha")
+	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
 	_manager._progression.friendship_point_balance = 10000
@@ -80,6 +63,7 @@ func before_each() -> void:
 	_drag = BallDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	add_child_autofree(_drag)
 
 
@@ -113,10 +97,15 @@ func test_rack_pickup_fails_when_item_unowned() -> void:
 func test_release_over_court_instates_a_ball_at_cursor_with_gesture_velocity() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	# Existing live ball from activation - remove it so we can assert the release-path spawn.
 	for ball in _permanent_balls():
 		ball.queue_free()
 	await get_tree().process_frame
+
+	# Feed a multi-sample gesture moving right across the 80 ms window.
+	var start_position := Vector2(0, 0)
+	_drag._gesture_samples.clear()
+	_drag._gesture_samples.append({"time": 0.0, "position": start_position})
+	_drag._gesture_samples.append({"time": 0.04, "position": Vector2(200, 0)})
 
 	var court_point := Vector2(100, 50)
 	var released: bool = _drag.attempt_release(court_point)
@@ -126,18 +115,49 @@ func test_release_over_court_instates_a_ball_at_cursor_with_gesture_velocity() -
 	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(ball, "reconciler should own the live ball after a court release")
 	assert_eq(ball.global_position, court_point)
+	assert_ne(
+		ball.linear_velocity, Vector2.ZERO, "gesture-derived velocity should drive the ball launch"
+	)
+	assert_gt(
+		ball.linear_velocity.x, 0.0, "rightward gesture should produce rightward launch velocity"
+	)
 
 
-func test_release_outside_valid_zones_is_a_no_op_and_hold_continues() -> void:
+func test_release_without_gesture_uses_default_launch_velocity() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	# Single sample means no motion - gesture path falls back to the default.
+	_drag._gesture_samples.clear()
+	_drag._gesture_samples.append({"time": 0.0, "position": Vector2.ZERO})
+
+	var released: bool = _drag.attempt_release(Vector2(100, 50))
+	assert_true(released)
+
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball)
+	var expected: Vector2 = _manager.get_default_ball_launch_velocity()
+	assert_eq(ball.linear_velocity, expected, "fallback path should match ItemManager default")
+
+
+func test_release_far_outside_court_clamps_to_bounds() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
 	var off_world := Vector2(99999, 99999)
 
 	var released: bool = _drag.attempt_release(off_world)
 
-	assert_false(released, "release outside valid zones should not resolve")
-	assert_true(_drag.is_dragging(), "hold continues when release lands in no-mans-land")
-	assert_eq(_drag.get_held_key(), "ball_alpha")
+	assert_true(released, "any release not over the rack resolves as a court release")
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball)
+	# Court bounds max corner is (600, 400); far-off position should clamp to it.
+	assert_eq(ball.global_position, Vector2(600, 400), "spawn clamps to court bounds")
 
 
 func test_release_over_rack_destroys_held_token_and_deactivates_permanent() -> void:
@@ -189,6 +209,8 @@ func test_mid_rally_grab_then_release_over_court_reinstates_a_ball() -> void:
 
 func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() -> void:
 	_drag.grab_live_ball("ball_alpha", true)
+	assert_true(_drag.is_dragging(), "precondition: held token exists for the temporary drag")
+	var token_before: Node2D = _drag.get_held_token()
 	var court_point := Vector2(0, 0)
 
 	var released: bool = _drag.attempt_release(court_point)
@@ -198,6 +220,69 @@ func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() 
 		_reconciler.get_ball_for_key("ball_alpha"),
 		"temporary balls are outside the reconciler's placement-driven set",
 	)
+	assert_false(_drag.is_dragging(), "temporary release clears the drag state")
+	await get_tree().process_frame
+	assert_false(is_instance_valid(token_before), "held token should be freed on release")
+	assert_eq(
+		_permanent_balls().size(), 0, "temporary release should not leave a permanent Ball behind"
+	)
+
+
+func test_release_inside_venue_outside_court_spawns_at_court_clamped_position() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	# Inside venue_bounds (-2000..2000) but outside court_bounds (-600..600 on x).
+	var in_venue_out_of_court := Vector2(1500, 50)
+	var released: bool = _drag.attempt_release(in_venue_out_of_court)
+	assert_true(released, "release inside venue always resolves, never a no-op")
+
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "release inside venue but outside court still spawns a ball")
+	assert_eq(ball.global_position.x, 600.0, "x clamps to the right edge of court_bounds")
+	assert_eq(ball.global_position.y, 50.0, "in-bounds axes pass through unchanged")
+
+
+func test_mouse_button_release_event_triggers_release() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = false
+	_drag._input(event)
+
+	assert_false(_drag.is_dragging(), "mouse-up should resolve the active drag")
+	assert_not_null(
+		_reconciler.get_ball_for_key("ball_alpha"),
+		"mouse-up over the default court region should spawn the ball",
+	)
+
+
+func test_process_follow_clamps_held_token_to_venue_bounds() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	var token: Node2D = _drag.get_held_token()
+	assert_not_null(token, "precondition: held token exists")
+
+	# _process uses the viewport mouse position we can't drive from a unit test,
+	# but _clamp_to_venue is the pure function behind the follow. Any point beyond
+	# venue bounds must be pulled back to the rect edge.
+	var clamped: Vector2 = _drag._clamp_to_venue(Vector2(99999, -99999))
+	assert_eq(clamped, Vector2(2000, -1200), "clamp pulls to the venue rect corner")
+
+
+func test_clamp_to_venue_is_identity_when_bounds_unset() -> void:
+	var unbounded: BallDragController = BallDragControllerScript.new()
+	add_child_autofree(unbounded)
+	var point := Vector2(12345, -67890)
+	assert_eq(unbounded._clamp_to_venue(point), point, "zero-size venue leaves positions untouched")
 
 
 func test_rack_slot_press_triggers_drag_pickup() -> void:
