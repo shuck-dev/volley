@@ -4,6 +4,14 @@
 ## activate/deactivate, save round-trip). No mocks beyond SaveStorage for the progression disk layer.
 ## Asserts on externally observable outcomes: Ball instances under the host, placement state on
 ## ItemManager, rack-display occupancy, effect registration (via get_stat), and save-persisted state.
+##
+## Scope notes:
+## - Venue/court clamp math is covered by unit tests; this file asserts only end-to-end outcomes
+##   of the grab -> release chain, not the intermediate clamp steps.
+## - Scenarios that grab from the rack free any activation-spawn balls before asserting the
+##   drop path. grab_from_rack calls ItemManager.activate, which fires the reconciler via
+##   court_changed; draining isolates the release outcome from the activation-spawn outcome.
+##   If a future test seam lets us suppress activation-spawn cleanly, this free-loop can go.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -225,6 +233,8 @@ func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
 # is_temporary, and parented under the host. It does not touch on_court,
 # does not show up to the reconciler, and can be dragged without affecting
 # the permanent-placement bookkeeping.
+# todo: SH-224 — once SpawnBallOutcome lands, drive the spawn through that
+# production path instead of instantiating Ball directly.
 func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	# Baseline: no placement, no live ball, no effects.
 	assert_false(_manager.is_on_court("training_ball"))
@@ -277,14 +287,15 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	)
 
 
-# --- Scenario 5: follow clamps to venue; release resolves to court clamp ---
+# --- Scenario 5: release from outside venue still lands on the court -------
 
 
-# The cursor can range arbitrarily far, but the held-token follow clamps to
-# venue bounds each frame. A release from a far-outside position therefore
-# fires from the clamped-to-venue point, which further clamps to court bounds
-# for the spawn.
-func test_release_from_outside_venue_clamps_to_venue_then_court() -> void:
+# The player's cursor ranges arbitrarily far beyond the venue; the release rule
+# is "always fires, clamp for spawn". The observable end-to-end outcome is that
+# a ball spawns at the court corner. The venue-clamp step is internal detail
+# exercised by a unit test in tests/unit/; this scenario only asserts what the
+# player sees after the full grab->release chain.
+func test_release_from_far_outside_cursor_spawns_ball_at_court_corner() -> void:
 	_manager.take("training_ball")
 	_drag.grab_from_rack("training_ball")
 	for ball in _all_balls_under_host():
@@ -292,22 +303,20 @@ func test_release_from_outside_venue_clamps_to_venue_then_court() -> void:
 	await get_tree().process_frame
 
 	var far_outside := Vector2(99999, 99999)
-	# Follow clamp: a position beyond venue bounds is pulled back to the rect corner.
-	var follow_clamp: Vector2 = _drag._clamp_to_venue(far_outside)
-	var venue_max: Vector2 = VENUE_BOUNDS.position + VENUE_BOUNDS.size
-	assert_eq(follow_clamp, venue_max, "held-token follow clamps to venue rect corner")
-
-	# Release always fires (per the unified always-fires rule) and lands on the
-	# court-clamped position; venue corner (2000, 1200) clamps to court corner (600, 400).
 	var released: bool = _drag.attempt_release(far_outside)
+
 	assert_true(released, "release always resolves, even from a far-outside cursor")
+	assert_true(
+		_manager.is_on_court("training_ball"),
+		"placement settles on court despite the out-of-bounds cursor",
+	)
 	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(ball, "release still spawns a live ball")
 	var court_max: Vector2 = COURT_BOUNDS.position + COURT_BOUNDS.size
 	assert_eq(
 		ball.global_position,
 		court_max,
-		"ball lands at the court-clamped corner after the follow->release chain",
+		"ball lands at the court corner after the out-of-bounds release",
 	)
 
 
