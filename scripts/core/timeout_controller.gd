@@ -16,6 +16,7 @@ enum State { IDLE, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
 
 var _state: State = State.IDLE
 var _lane_x: float = 0.0
+var _lane_y: float = 0.0
 var _equip_pose_x: float = 0.0
 var _walk_tween: Tween
 
@@ -57,12 +58,11 @@ func call_timeout() -> void:
 	if main_character == null:
 		push_warning("TimeoutController.call_timeout: main_character is null")
 		return
-	_cache_positions()
 	_state = State.WALKING_OFF
 	main_character.set_physics_process(false)
 	main_character.velocity = Vector2.ZERO
 	timeout_started.emit()
-	_walk_to(_equip_pose_x, _on_reached_equip_pose)
+	_ground_then_walk_to(_equip_pose_x, _on_reached_equip_pose)
 
 
 ## Ends a timeout and walks the main character back on court. No-op unless at the equip pose.
@@ -74,7 +74,7 @@ func end_timeout() -> void:
 		"TimeoutController invariant: active state with null main_character",
 	)
 	_state = State.WALKING_ON
-	_walk_to(_lane_x, _on_reached_lane)
+	_walk_to_position(Vector2(_lane_x, _lane_y), _on_reached_lane)
 
 
 func _cache_positions() -> void:
@@ -83,14 +83,27 @@ func _cache_positions() -> void:
 	if config == null:
 		config = TimeoutConfig.new()
 	_lane_x = main_character.position.x
+	_lane_y = main_character.position.y
 	_equip_pose_x = _lane_x + config.equip_pose_offset_x
 
 
-func _walk_to(target_x: float, on_finished: Callable) -> void:
+func _ground_then_walk_to(target_x: float, on_finished: Callable) -> void:
 	if _walk_tween != null and _walk_tween.is_valid():
 		_walk_tween.kill()
 	_walk_tween = create_tween()
+	if not is_equal_approx(main_character.position.y, _lane_y):
+		_walk_tween.tween_property(
+			main_character, "position:y", _lane_y, config.walk_duration_seconds
+		)
 	_walk_tween.tween_property(main_character, "position:x", target_x, config.walk_duration_seconds)
+	_walk_tween.finished.connect(on_finished)
+
+
+func _walk_to_position(target: Vector2, on_finished: Callable) -> void:
+	if _walk_tween != null and _walk_tween.is_valid():
+		_walk_tween.kill()
+	_walk_tween = create_tween()
+	_walk_tween.tween_property(main_character, "position", target, config.walk_duration_seconds)
 	_walk_tween.finished.connect(on_finished)
 
 
