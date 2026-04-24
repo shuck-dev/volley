@@ -48,7 +48,7 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Mission codename.** Every mission carries a codename and a description. Codenames are opaque, drawn from the *Despicable Me* and *Minions* lexicon: gadgets, heists, villain cast, Agnes-family motifs, minion bahasa. The codename winks softly at the mission shape without spelling it out; the description carries the real content. In formal contexts, prefix with "Operation". Example: "Operation Banana Stand", whose description reads *timeout flow plus shop arrivals*.
 
-**Dandori.** A verb, borrowed from Shigeru Miyamoto, who uses it to mean good planning. To dandori is to plan the work so parallel hands can close it without tripping over each other. "Gru dandoris the review round" means Gru reads the diff, partitions it by reviewer scope, and dispatches the right minions at once.
+**Dandori (verb).** Borrowed from Shigeru Miyamoto, who uses it to mean good planning. To dandori is to plan the work so parallel hands can close it without tripping over each other. "Gru dandoris the review round" means Gru reads the diff, partitions it by reviewer scope, and dispatches the right minions at once.
 
 **Dandori Challenge.** A pull request. A Challenge is where minions close out a mission together. The Challenge opens when the PR opens; it ends when the PR merges.
 
@@ -122,7 +122,7 @@ The players who get to play what the Return brings them. The reason any of this 
 | Mission codename | Opaque *Despicable Me* flavoured name, formally prefixed "Operation". |
 | Dossier | Pre-cycle ritual: the issues readied for the upcoming cycle. |
 | Mission briefing | Pre-mission ritual: scope, cast, deadline. |
-| Dandori | Verb. Plan the work so parallel hands can close it cleanly. |
+| Dandori (verb) | Plan the work so parallel hands can close it cleanly. |
 | Dandori Challenge | A pull request, seen from the mission side. |
 | Dandori Battle | The adversarial review round inside a Dandori Challenge. |
 | The Ride | Single-feature smoke on the built game, after a Challenge merges. |
