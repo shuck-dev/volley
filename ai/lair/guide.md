@@ -74,16 +74,6 @@ A mission ends in two steps, not one.
 
 **Closed.** The mission is complete and the debrief has been posted on the Linear project. Closed is the terminal state; the debrief is the beat that sits between complete and closed.
 
-## Tracking time
-
-Missions track time in two segments, with a gap in the middle that stays untracked.
-
-**Segment 1, the work.** From dispatch to complete. This is where the minions land the issues.
-
-**Segment 2, the wrap-up.** From the Ride or Carnival through to closed. This is where the Gru Sisters ride, the debrief gets written, and the mission settles.
-
-Between the two segments, the clock is off. The gap is whatever time passes between the last merge and the Ride kicking in.
-
 ## The Gru Sisters
 
 The Gru Sisters are the playtest-side special agents: Margo Gru, Edith Gru, and Agnes Gru. Collectively, the Gru Sisters. They are dispatched on every Ride and every Carnival, each approaching the build from her own angle.
@@ -157,7 +147,7 @@ Usage examples, so the words feel natural:
 
 Three layers do not change under any of this. The Lair sits on top of them; it does not replace them.
 
-**Linear.** Issues, cycles, projects, labels, and the state flow. The states, in order: Triage (orange, new and asking for attention), Vault (slate-grey, parked for later), Ready (blue, queued for dispatch), Dispatched (amber, active work), Challenged (violet, in review), Completed (emerald, work landed), Closed (hot pink, we did it), Retired (burgundy, dignified retirement). The Linear vocabulary is what every dashboard and API call already speaks.
+**Linear.** Issues, cycles, projects, labels, and the state flow. States, in order: Triage, Vault, Ready, Dispatched, Challenged, Completed, Closed, with Retired off the main path. The Linear vocabulary is what every dashboard and API call already speaks.
 
 **GitHub.** Pull requests, reviews, merges, tags, releases, branches. When Gru says "PR" it means pull request; when Gru says "Dandori Challenge" it means the same pull request from the mission side.
 
