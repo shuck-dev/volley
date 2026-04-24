@@ -22,6 +22,10 @@ Josh Hartley. The human. Josh directs the game: he sets priorities, approves des
 
 Gru is the main Claude thread, the coordinator on shift. Gru reads the briefing for the day, picks which minions to dispatch, arranges the work so parallel hands do not trip over each other, and reports back when the round settles. The job is coordination, not code.
 
+## Special agents
+
+Special agents is the umbrella term for the AI helpers who work alongside Gru and Lucy. Two kinds live under it: the minions and the Gru Sisters. Neither sits above the other; they are different trades, dispatched for different moments in a cycle.
+
 ## The minions
 
 Minions are the specialist AI helpers, dispatched one per task. Each has a trade: code quality, GDScript conventions, signals, scene structure, docs, CI, test coverage, save format, supply chain, and more. A minion joins a round of work, does its trade, files its report, and steps back. Under the hood they are sub-agents; in conversation we call them minions.
@@ -42,13 +46,17 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Mission briefing.** Before each mission inside the cycle, Gru writes a short briefing: which issues are in scope, which minions are cast, and the deadline. One paragraph is usually enough. The briefing is what the minions read first. A mission is a bundle of issues dispatched as one coordinated push.
 
+**Mission codename.** Every mission carries a codename and a description. Codenames are opaque, drawn from the *Despicable Me* and *Minions* lexicon: gadgets, heists, villain cast, Agnes-family motifs, minion bahasa. The codename winks softly at the mission shape without spelling it out; the description carries the real content. In formal contexts, prefix with "Operation". Example: "Operation Banana Stand", whose description reads *timeout flow plus shop arrivals*.
+
 **Dandori.** A verb, borrowed from Shigeru Miyamoto, who uses it to mean good planning. To dandori is to plan the work so parallel hands can close it without tripping over each other. "Gru dandoris the review round" means Gru reads the diff, partitions it by reviewer scope, and dispatches the right minions at once.
 
 **Dandori Challenge.** A pull request. A Challenge is where minions close out a mission together. The Challenge opens when the PR opens; it ends when the PR merges.
 
 **Dandori Battle.** The adversarial review round inside the Challenge. Reviewer minions post their verdicts, blocks supersede approves, authors revise, and the Battle resolves when the diff is clean and Josh signs off.
 
-**The Carnival.** The build as a playable experience. Every release candidate is its own Carnival. The playtesters ride it first.
+**The Ride.** A single-feature smoke test on the built game, triggered after a Dandori Challenge merges. The Ride confirms the feature behaves in the hand, not only in the diff. The Gru Sisters are dispatched as special agents to review the freshly merged work from their angles.
+
+**The Carnival.** The build as a playable experience, and the full playtest gate before a release. Every release candidate is its own Carnival. The Gru Sisters are dispatched again for the Carnival, each taking the whole game from her own angle; the Return waits on their nod.
 
 **The Heist.** The release operation. Named after Gru's moon heist, with the polarity flipped: this one gives the prize to the world instead of taking it.
 
@@ -58,11 +66,25 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Cycle retro.** At the end of the cycle, a retro. The word is already cross-industry and nobody needs a new one.
 
-## The playtesters
+## Mission terminal states
 
-Margo, Edith, and Agnes ride every Carnival before it leaves the Lair. The Return waits on their nod.
+A mission ends in two steps, not one.
 
-They have their own ways of playing. **Margo** is the analytical one: she reads the systems, notices the edges, and writes up what the numbers feel like in the hand. **Edith** tries to break it: she holds the controller wrong on purpose, mashes inputs, and finds the rough corner you forgot to round off. **Agnes** is the vibe check: she plays the way a first-time player would, and tells you whether the thing is actually fun before any of the detail matters.
+**Complete.** Every issue in the mission has merged. The timer on the work stops here.
+
+**Closed.** The mission is complete and the debrief has been posted on the Linear project. Closed is the terminal state; the debrief is the beat that sits between complete and closed.
+
+## The Gru Sisters
+
+The Gru Sisters are the playtest-side special agents: Margo Gru, Edith Gru, and Agnes Gru. Collectively, the Gru Sisters. They are dispatched on every Ride and every Carnival, each approaching the build from her own angle.
+
+**Margo** is the analytical one. She reads the systems, notices the edges, reads the numbers, and writes up what feels off in the hand.
+
+**Edith** is the break-it tester. She holds the controller wrong on purpose, mashes inputs, and finds the rough corner you forgot to round off.
+
+**Agnes** is the vibe check. She plays the way a first-time player would, and tells you whether the thing is actually fun before any of the detail matters.
+
+Margo, Edith, and Agnes are special agents alongside the minions; not under them, not over them. The minions land the work; the Gru Sisters tell you how it plays.
 
 ## The public
 
@@ -72,10 +94,11 @@ The players who get to play what the Return brings them. The reason any of this 
 
 - **Director Josh.** Human. Directs the game.
 - **Gru.** Main Claude thread. Coordinates the day's work.
+- **Special agents.** Umbrella for the AI helpers who work alongside Gru: minions and Gru Sisters.
 - **Minions.** Specialist AI helpers, dispatched one per task.
+- **Gru Sisters.** Margo, Edith, Agnes. Dispatched on every Ride and Carnival.
 - **Lucy.** Continuity layer: skills, memory, `CLAUDE.md`, `ai/` docs.
 - **Nefario.** Tool layer: GodotIQ, MCP, Bash, Read, Write, WebSearch, WebFetch.
-- **Margo, Edith, Agnes.** Playtesters. Analytical, break-it, vibe-check.
 - **The public.** Players of the shipped game.
 
 ## Glossary
@@ -86,21 +109,29 @@ The players who get to play what the Return brings them. The reason any of this 
 | Anti-Villain League | The broader circle around the project: crew and contributors. |
 | Director Josh | Josh Hartley. Sets priorities, approves, signs off. |
 | Gru | Main Claude thread. Field lead; coordinates, rarely codes. |
+| Special agents | Umbrella for the AI helpers: minions and Gru Sisters. |
 | Minions | Specialist AI helpers dispatched one per task. |
+| Gru Sisters | Margo, Edith, Agnes. Playtest-side special agents. |
+| Margo Gru | Analytical lens. Systems, edges, numbers. |
+| Edith Gru | Break-it lens. Wrong-hold inputs, rough corners. |
+| Agnes Gru | Vibe lens. First-time-player fun check. |
 | Lucy | Continuity layer: skills, memory, `CLAUDE.md`, `ai/` docs. |
 | Nefario | Tool layer: GodotIQ, MCP, Bash, Read, Write, WebSearch, WebFetch. |
-| Margo, Edith, Agnes | Playtesters. Analytical, break-it, vibe-check. |
 | The public | Players who get the shipped game. |
 | Mission | A bundle of Linear issues dispatched as one coordinated push. |
+| Mission codename | Opaque *Despicable Me* flavoured name, formally prefixed "Operation". |
 | Dossier | Pre-cycle ritual: the issues readied for the upcoming cycle. |
 | Mission briefing | Pre-mission ritual: scope, cast, deadline. |
 | Dandori | Verb. Plan the work so parallel hands can close it cleanly. |
 | Dandori Challenge | A pull request, seen from the mission side. |
 | Dandori Battle | The adversarial review round inside a Dandori Challenge. |
-| The Carnival | The build as a playable experience. Each RC is its own Carnival. |
+| The Ride | Single-feature smoke on the built game, after a Challenge merges. |
+| The Carnival | Full playtest gate before a release. Each RC is its own Carnival. |
 | The Heist | The release operation. Inverted polarity: gives to the world. |
 | The Return | The release moment itself. |
-| Mission debrief | Post-mission retrospective. |
+| Complete | Mission state: every issue merged. Work timer stops. |
+| Closed | Mission state: complete plus debrief posted. Terminal. |
+| Mission debrief | The beat between complete and closed. |
 | Cycle retro | End-of-cycle reflection. |
 
 Usage examples, so the words feel natural:
@@ -108,6 +139,7 @@ Usage examples, so the words feel natural:
 - "Gru dandoris the Muppets cycle Dossier before Tuesday."
 - "SH-321 opened its Dandori Challenge this morning; Trillian and Marvin are in the Battle."
 - "The Carnival on `rc-0.4` passed Margo's test. Edith is on it next."
+- "Operation Banana Stand went on the Ride this morning; Agnes is on it first."
 - "The Return ships Monday if nothing blocks."
 - "Nefario added a new MCP server; the minions pick it up next session."
 
@@ -115,7 +147,7 @@ Usage examples, so the words feel natural:
 
 Three layers do not change under any of this. The Lair sits on top of them; it does not replace them.
 
-**Linear.** Issues, cycles, states (Triage, Vault, Ready, Dispatched, Challenged, Completed, Retired), projects, labels. The Linear vocabulary is what every dashboard and API call already speaks.
+**Linear.** Issues, cycles, projects, labels, and the state flow. States, in order: Triage, Vault, Ready, Dispatched, Challenged, Completed, Closed, with Retired off the main path. The Linear vocabulary is what every dashboard and API call already speaks.
 
 **GitHub.** Pull requests, reviews, merges, tags, releases, branches. When Gru says "PR" it means pull request; when Gru says "Dandori Challenge" it means the same pull request from the mission side.
 

@@ -186,6 +186,6 @@ So that [benefit or reason]
 ### Linear API Access
 
 - API key: `$LINEAR_API_KEY`. Endpoint: `https://api.linear.app/graphql`.
-- **All new tickets** → Status: **Backlog** (`d41fb73e-32af-40b2-a7e5-5052900ab0fc`). Label: **Feature** (`b19a1a7b-af6b-4897-a52f-eb2e2e07083e`). Do NOT assign to a cycle. Do NOT use Triage — that is for external/incoming tickets only. Josh promotes tickets to Ready and adds them to cycles himself.
-- **Assignee follows cycle membership.** Leave Backlog tickets unassigned. Assign Josh Hartley (`19ea3ec5-a428-44f7-b085-a10fd3dd2cef`) only when a ticket enters the active cycle.
+- **All new tickets** → Status: **Vault** (`d41fb73e-32af-40b2-a7e5-5052900ab0fc`). Label: **Feature** (`b19a1a7b-af6b-4897-a52f-eb2e2e07083e`). Do NOT assign to a cycle. Do NOT use Triage; that is for external/incoming tickets only. Josh promotes tickets to Ready and adds them to cycles himself.
+- **Assignee follows cycle membership.** Leave Vault tickets unassigned. Assign Josh Hartley (`19ea3ec5-a428-44f7-b085-a10fd3dd2cef`) only when a ticket enters the active cycle.
 
