@@ -1,12 +1,7 @@
 class_name TimeoutController
 extends Node
 
-## Manages the timeout-and-equip state machine.
-##
-## On a timeout call the main character walks off the court to an equip pose
-## where equipment can be dragged on or off. While the timeout is active the
-## main character no longer defends, so the rally ends on the next miss.
-## Ending the timeout walks the main character back on so a new rally can begin.
+## State machine for timeout-and-equip: walks the main character off court to an equip pose and back.
 
 signal timeout_started
 signal main_character_reached_equip_pose
@@ -15,13 +10,12 @@ signal timeout_ended
 enum State { IDLE, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
 
 const WALK_DURATION_SECONDS: float = 0.6
-## Horizontal distance from the main character's lane x to the equip pose,
-## away from the court on the player's side.
+## Horizontal offset from lane x to equip pose, away from the court on the player's side.
 const EQUIP_POSE_OFFSET_X: float = -320.0
 
 @export var main_character: Paddle
 
-var _state: int = State.IDLE
+var _state: State = State.IDLE
 var _lane_x: float = 0.0
 var _equip_pose_x: float = 0.0
 var _walk_tween: Tween
@@ -46,8 +40,11 @@ func can_call_timeout() -> bool:
 	return _state == State.IDLE
 
 
-## Starts a timeout. The main character walks off the court toward the equip
-## pose. No-op if a timeout is already in progress.
+func get_state() -> State:
+	return _state
+
+
+## Starts a timeout, walking the main character off to the equip pose. No-op if already active.
 func call_timeout() -> void:
 	if not can_call_timeout():
 		return
@@ -62,8 +59,7 @@ func call_timeout() -> void:
 	_walk_to(_equip_pose_x, _on_reached_equip_pose)
 
 
-## Ends a timeout and walks the main character back on court. No-op unless the
-## main character has finished walking off to the equip pose.
+## Ends a timeout and walks the main character back on court. No-op unless at the equip pose.
 func end_timeout() -> void:
 	if _state != State.AT_EQUIP_POSE:
 		return
