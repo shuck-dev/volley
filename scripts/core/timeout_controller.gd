@@ -2,9 +2,7 @@ class_name TimeoutController
 extends Node
 
 ## State machine for timeout-and-equip: walks the main character off court to an equip pose and back.
-##
-## Invariant: when `_state != IDLE`, `main_character` is non-null and valid; enforced at
-## `call_timeout`, trusted elsewhere.
+## Invariant: when `_state != IDLE`, `main_character` is non-null; enforced at `call_timeout`, trusted elsewhere.
 
 signal timeout_started
 signal main_character_reached_equip_pose
