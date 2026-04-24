@@ -6,3 +6,4 @@
 script = ExtResource("1_tcfg0")
 walk_duration_seconds = 0.6
 equip_pose_offset_x = -320.0
+floor_y = 600.0
