@@ -12,6 +12,8 @@ var min_speed: float
 var max_speed: float
 var speed_increment: float
 var effect_processor: BallEffectProcessor
+var is_temporary: bool = false
+var _dragging: bool = false
 
 var _item_manager: Node
 var _was_at_max_speed := false
@@ -58,9 +60,15 @@ func _emit_speed_changed() -> void:
 
 
 func _on_body_entered(body: Node) -> void:
+	if _dragging:
+		return
 	if body.has_method("on_ball_hit"):
 		body.on_ball_hit()
 		effect_processor.process_hit()
+
+
+func set_dragging(value: bool) -> void:
+	_dragging = value
 
 
 func register_miss_zone(zone: MissZone) -> void:
