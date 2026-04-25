@@ -1,6 +1,6 @@
 # Construction
 
-The bright world. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `three-registers.md`.
+The bright world. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `00-three-registers.md`.
 
 ## What Construction is
 
@@ -8,7 +8,7 @@ The garden, the stall, the racquet, the rally. Saturated colour, generous light,
 
 Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). The bright world is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the warmth itself.
 
-The artist's hardest job lives here. Construction must be straight-up enjoyable as an idle pong game for the player who never thinks about the narrative. The cracks come later (`cracks-and-break.md`); if they arrive before the player has good reason to want the rally to keep going, they have nothing to crack.
+The artist's hardest job lives here. Construction must be straight-up enjoyable as an idle pong game for the player who never thinks about the narrative. The cracks come later (`02-cracks-and-break.md`); if they arrive before the player has good reason to want the rally to keep going, they have nothing to crack.
 
 ## The cast
 
@@ -17,13 +17,13 @@ The cast splits into two groups. The supporting cast are real people from the pr
 ### Supporting cast
 
 - **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
-- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`postgame.md`). (See "Why the shopkeeper is at the stall" below.)
+- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into the bright world as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
-- **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`reconstruction.md`).
+- **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`03-reconstruction.md`).
 
 ### Opposing cast
 
-- **The champ.** The dead friend. The championship final. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. No real-world counterpart in person; their reality is the cliff (`reconstruction.md`).
+- **The champ.** The dead friend. The championship final. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. No real-world counterpart in person; their reality is the cliff (`03-reconstruction.md`).
 
 ## Why the shopkeeper is at the stall
 
@@ -39,7 +39,7 @@ This is why the world record IS the shopkeeper's phone number. Every rally is th
 
 It is why the championship sits structurally as the final wall. Reaching the champ means reaching the dead friend, which means facing what happened, which means facing the shopkeeper, which means facing where the protagonist was instead.
 
-It is why the call is the ending (`postgame.md`). Once the protagonist has faced the cliff (the place they should have been) and reconciled the absence, there is nothing left between them and the shopkeeper. The shared knowledge has been waiting all along.
+It is why the call is the ending (`05-postgame.md`). Once the protagonist has faced the cliff (the place they should have been) and reconciled the absence, there is nothing left between them and the shopkeeper. The shared knowledge has been waiting all along.
 
 ## The tournament
 
@@ -65,11 +65,11 @@ Concrete shape of the mechanics is downstream design (one mechanic per coach, ea
 
 The champ is the final coach the protagonist had: the friend they used to play with, who was the best at the game and pushed the protagonist to be better. In the construction, the champ holds the championship spot, a person the protagonist looks up to, never a rival.
 
-In Construction, the protagonist climbs the rounds, learning each coach's mechanic, and eventually qualifies for the championship. The championship match is unwinnable. The wall is exactly there. The break (`cracks-and-break.md`) is what happens when the player has been at the championship long enough that the construction can no longer hold them against the impossibility.
+In Construction, the protagonist climbs the rounds, learning each coach's mechanic, and eventually qualifies for the championship. The championship match is unwinnable. The wall is exactly there. The break (`02-cracks-and-break.md`) is what happens when the player has been at the championship long enough that the construction can no longer hold them against the impossibility.
 
 Late in Reconstruction, after the cliff visit, the champ shifts. They become recruitable as a partner; the player can put them on the court like any other. The rallies are different with them; they were always the player they admired. The path to the call opens once the champ is a partner the player can rally with, not a championship match they cannot win.
 
-After the call, the champ is gone (`postgame.md`).
+After the call, the champ is gone (`05-postgame.md`).
 
 ## The rally and the count
 
@@ -77,7 +77,7 @@ The rally is the engine of Construction. Pong-shape court (described in the arti
 
 In Construction, the count is visible. The current round's qualifying count gates the next round; the championship's qualifying count is the world record. The champ holds the championship; the player can qualify for the championship match but cannot win it.
 
-In Reconstruction, the count is hidden in Construction. The number can still be checked, but only by visiting somewhere in Reality. See `reconstruction.md` for the mechanics.
+In Reconstruction, the count is hidden in Construction. The number can still be checked, but only by visiting somewhere in Reality. See `03-reconstruction.md` for the mechanics.
 
 ## Prototype scope
 
@@ -97,4 +97,4 @@ The prototype's job is to land the championship-shape: the protagonist meets a c
 - The cast doubles in scope. Protagonist + shopkeeper + tinkerer + 4-6 partners (each in two renders, plus their teaching mechanic), plus the champ (one render, plus their championship match). Worth bounding the partner count early.
 - Construction's content scales (procedural rally, item economy, partner system, tournament rounds). This is the part of Volley that has long-tail content runway.
 - Round matches reuse one battle court re-themed per venue; production-tight versus building unique battle venues.
-- The count's behaviour shifts between Construction and Reconstruction (visible vs hidden); this is one of Construction's load-bearing mechanics. The hidden-count move in Reconstruction is described in `reconstruction.md`.
+- The count's behaviour shifts between Construction and Reconstruction (visible vs hidden); this is one of Construction's load-bearing mechanics. The hidden-count move in Reconstruction is described in `03-reconstruction.md`.

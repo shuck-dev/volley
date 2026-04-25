@@ -1,6 +1,6 @@
 # The Call and Postgame
 
-The ending and what comes after. High-level architecture in `three-registers.md`.
+The ending and what comes after. High-level architecture in `00-three-registers.md`.
 
 ## The call
 
@@ -24,7 +24,7 @@ The call is the ending. The warmth in Construction is now available without the 
 
 Postgame is rallying with the shopkeeper. They take the right side of the court that used to be the championship spot, the same spot the champ once held. The construction is at last what the protagonist was always reaching for: themselves on the left, the shopkeeper on the right, the rally going.
 
-The champ exited earlier, late in Reconstruction (see `construction.md` and `reconstruction.md`). They had become a partner the player could rally with after the cliff; once the path to the call was opened, they left, with the seashell where they had been. Reaching the call clears the championship spot for the shopkeeper; the seashell stays.
+The champ exited earlier, late in Reconstruction (see `01-construction.md` and `03-reconstruction.md`). They had become a partner the player could rally with after the cliff; once the path to the call was opened, they left, with the seashell where they had been. Reaching the call clears the championship spot for the shopkeeper; the seashell stays.
 
 The seashell, carried by the protagonist from the call onward, opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Grief integrated as access, not as event. The cliff was chosen acceptance the first time it was visited; the seashell makes it a chosen visit.
 

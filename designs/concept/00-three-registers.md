@@ -7,10 +7,11 @@ This is a working set of docs. Refinement passes follow.
 ## Map
 
 - This doc: the game's overall shape and the synthesis index.
-- `construction.md`: the bright world, the cast, the shopkeeper psychology, the opposing cast, the rally and the count.
-- `cracks-and-break.md`: the wall thinning and the wall coming down.
-- `reconstruction.md`: the long arc after the break, the bidirectional carry, Reality the place, the sister and photo book, the cliff.
-- `postgame.md`: the call, the seashell, what the bright world becomes after.
+- `01-construction.md`: the bright world, the cast, the shopkeeper psychology, the tournament structure, the champ, the rally and the count.
+- `02-cracks-and-break.md`: the wall thinning and the wall coming down.
+- `03-reconstruction.md`: the long arc after the break, the bidirectional carry, the reconciliation mechanic.
+- `04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.
+- `05-postgame.md`: the call, the seashell, what the bright world becomes after.
 
 The earlier narrative pass at `designs/02-alpha/01-world-and-narrative.md` is raw material for these docs. Pieces that work are kept; pieces that do not are reframed or dropped. The picked-up section below names the deltas.
 
@@ -24,19 +25,19 @@ The bright world is a construction the protagonist is actively maintaining. It t
 
 ## The three registers
 
-**Construction.** The bright world. Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `construction.md`.
+**Construction.** The bright world. Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
 
-**Reality.** A complete second register. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `reconstruction.md` (where Reality first becomes voluntarily accessible).
+**Reality.** A complete second register. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `03-reconstruction.md` (where Reality first becomes voluntarily accessible).
 
-**Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual register; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `reconstruction.md`.
+**Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual register; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `03-reconstruction.md`.
 
 ## The five movements at a glance
 
-1. **Construction.** The pretense actively maintained. The rally climbs toward the record. The count is visible; the goal is named in dialogue. (Detail: `construction.md`.)
-2. **Cracks.** Reality leaks into the construction in small atmospheric ways. Each crack is dismissible; the cumulative pressure matters. (Detail: `cracks-and-break.md`.)
-3. **The break.** The wall comes down once. Cumulative cracks plus a singular rupture. The player is pulled into Reality involuntarily for the first time. (Detail: `cracks-and-break.md`.)
-4. **Reconstruction.** The long arc. Free travel between registers; bidirectional carry; reconciliation actions accumulate; the cliff visit closes the arc. (Detail: `reconstruction.md`.)
-5. **The call.** Reaching the world record means dialling the shopkeeper. Peace is the call made. (Detail: `postgame.md`.)
+1. **Construction.** The pretense actively maintained. The rally climbs toward the record. The count is visible; the goal is named in dialogue. (Detail: `01-construction.md`.)
+2. **Cracks.** Reality leaks into the construction in small atmospheric ways. Each crack is dismissible; the cumulative pressure matters. (Detail: `02-cracks-and-break.md`.)
+3. **The break.** The wall comes down once. Cumulative cracks plus a singular rupture. The player is pulled into Reality involuntarily for the first time. (Detail: `02-cracks-and-break.md`.)
+4. **Reconstruction.** The long arc. Free travel between registers; bidirectional carry; reconciliation actions accumulate; the cliff visit closes the arc. (Detail: `03-reconstruction.md`.)
+5. **The call.** Reaching the world record means dialling the shopkeeper. Peace is the call made. (Detail: `05-postgame.md`.)
 
 After the call: postgame, with the champ gone and a seashell in their place.
 
@@ -85,22 +86,22 @@ Reframings:
 
 The questions live in their respective per-arc docs; this is the index.
 
-From `construction.md`:
+From `01-construction.md`:
 - Gym-leader / encounter shape. The "leaders as metaphors" framing reads as too on-the-nose (close to Omori). Currently being reworked: a venue-tied encounter involving the partner, off the main flow, in a shared themed battle space.
 - Partner unlock cadence inside the gym-leader-vs-partner shape.
 
-From `cracks-and-break.md`:
+From `02-cracks-and-break.md`:
 - Crack pacing. Cracks tied to count milestones, playtime, story flags, or a combination?
 - Cracks as deniable in an idle context. Burst-player vs all-night-grinder pacing.
 
-From `reconstruction.md`:
+From `03-reconstruction.md`:
 - Reconciliation action count. 4–6 or 5–7?
 - Action shape. Memory faced, character encountered, small task, or varying?
 - Bridge unlock signal. UI affordance, character moment, music shift?
 - Cliff trigger. What unlocks the cliff dip late in Reconstruction?
 - Visual language of the carry.
 
-From `postgame.md`:
+From `05-postgame.md`:
 - Reality cycling post-call. After the call, does the game continue, close, or open into a Regret-style alt-perspective?
 
 ## What this unblocks
