@@ -77,6 +77,18 @@ The same rule applies to nouns that name a relationship, a feeling, or an inner 
 
 This rule is closest in spirit to the cadence rule: short sentences land because what set them up did the work. Modifiers that re-do the work the noun has already done, and nouns that announce a relationship the picture has not yet earned, are the prose equivalent of explaining a punchline.
 
+## Place the nouns
+
+Show-don't-tell asks the writer not to name what the picture should produce. Place-the-nouns asks the writer to make the picture buildable in the first place. Every new noun in a scene needs to sit somewhere relative to what came before. "A garden in the late afternoon. A small court fenced in by stone and vines." reads as two unrelated images: a garden has no court inside it until the prose puts one there. "A garden in the late afternoon. In one corner, a small court fenced in by stone and vines." builds the geometry as the picture goes.
+
+The connectors are short and ordinary. "In one corner." "Across the way." "Behind the counter." "Past the fence." "At the back of the garden." Each new noun arrives with a place. The reader assembles the scene as fast as the prose lays it down.
+
+When this fails, the prose stutters even though every individual noun is concrete. The reader has to stop and reconcile where the second noun sits relative to the first. By the third or fourth unconnected noun the picture has fallen apart and the reader is doing the writer's job.
+
+The opposite trap is over-naming the geometry: "The court, which sits in the south-eastern corner of the rectangular garden, oriented so that its long axis runs east to west." Volley's voice prefers the ordinary connector. Place the noun, then move on. Geography that needs a compass rose has been overspecified.
+
+The rule applies to consecutive sentences that introduce new world-elements. Once the scene is built, the prose can return to the elements without re-placing them; "the friend" and "the rack" and "the workshop" can appear by name once the geography has been laid down. The first time matters most.
+
 ## Paragraph closes
 
 The last sentence is the loaded one. Engineer it.
