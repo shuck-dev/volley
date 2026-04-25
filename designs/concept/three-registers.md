@@ -111,9 +111,11 @@ The call is the ending. The warmth in Construction is now available without the 
 
 The player can return after the call. When they do, the rival is gone. They were always grief-shaped; once the loss has been faced and the call has been made, there is nothing for them to be in the construction anymore. The right side of the court they used to take is empty.
 
-The rival has left an item behind. The item changes the game. The shape of that change is downstream design; what the structure asks for is one specific object the player picks up on first return that opens a postgame mode the bright world did not have. Possible reads (not commitments): a racquet handle the protagonist now plays with, that rallies the way the rival rallied; an unlock for a different perspective the player can run from; a memento that turns the world record from a number into a memory, with a new ladder underneath.
+The rival has left a seashell behind. A small thing from the cliff, picked up the day they died and somehow waiting in the empty partner spot now. When carried, the seashell opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Postgame is the protagonist having that access as a daily option.
 
-The narrative doc names "Regret" as a future-update perspective for someone who never made the call. The postgame item is the structural slot that perspective could live inside.
+The cliff was the chosen acceptance the first time it was visited; the seashell makes it a chosen visit. Grief integrated as access, not as event.
+
+The narrative doc names "Regret" as a future-update perspective for someone who never made the call. The postgame item could grow further down that road, but the seashell is the structural minimum: one object, one returned place, one small daily ritual the bright world did not have before.
 
 ## What this teaches each surface
 
