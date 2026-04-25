@@ -18,7 +18,7 @@ A note about the person on the left. They are androgynous, agender, mid-30s, a l
 
 ## How a session feels
 
-The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop in another corner of the garden, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
+The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. A rack at the side of the court holds items; behind a stall, the friend watches, attentive without intruding. The player picks up new items, drops things off at a workshop in another corner of the garden, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends it; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
 
 ---
 
@@ -55,7 +55,7 @@ Behind the counter of the stall, leaning on their elbows, watching the rally. Wi
 
 The friend is one of several people the protagonist holds close, and the centre of the venue. Whether they are the person the protagonist lost or someone else who matters is left ambiguous; the artist's read is welcome here, and the answer can stay open.
 
-What matters: the friend reads as one particular person the protagonist loves, not a generic shopkeeper. Warm, grounded, named rather than typed. Gender, age, and presentation are all open to the artist's read. The friend stays behind the stall most of the time, head tilted toward the play, attentive without intruding.
+What matters: the friend reads as one particular person the protagonist loves, not a generic shopkeeper. Warm, grounded, named rather than typed. Gender, age, and presentation are all open to the artist's read; what holds is the posture, behind the stall most of the time, head tilted toward the play, attentive without intruding.
 
 The friend, the stall, and the warmth travel with the game across every venue. When the bright world leaps to underwater or a meteor or a treetop canopy, the stall lashes to whatever holds it and the friend is still there. They are the constant.
 
@@ -91,7 +91,7 @@ The spirit is not only metaphor. It has a felt presence in the world, and it is 
 
 A workshop in another corner of the garden, and the tinkerer behind the bench. The player drops items off; she rests, procrastinates, and works at her own pace; finished items land on a done tray with a soft chime.
 
-The tinkerer is the friend's younger sister. Different rhythm, different relationship to the protagonist, same family warmth. She talks less than the friend. She hands things back when they are done. The rhythm of the workshop is part of her personality: she makes tea, stares out the window, reads, tidies the bench, settles into the work in her own time. She unlocks later than the friend.
+The tinkerer is the friend's younger sister. Different rhythm, different relationship to the protagonist, same family warmth. She talks less than the friend, handing things back when they are done. The rhythm of the workshop is part of her personality: she makes tea, stares out the window, reads, tidies the bench, settles into the work in her own time. She unlocks later than the friend.
 
 The tinkerer's age, presentation, and look are open. Her relationship to the friend is what anchors her: family, not a separate thread.
 
