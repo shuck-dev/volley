@@ -8,17 +8,17 @@ The bible describes the world: its tone, its visual texture, its emotional shape
 
 ## What the player meets first
 
-A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is already in the air, or about to be. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
+A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is in the air, mid-arc. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
 
-That is the picture the art carries. Everything else in this bible: the partners, the items, the venues that come later, exists to make that picture true.
+That is the picture the art carries. Everything else in this bible exists to make that picture true: the partners, the items, the venues that come later.
 
-A note about the person on the left. They are androgynous, agender, mid-30s, a little softer than they once were, gentle with themselves. The world is built around their quiet presence at its centre. They love this game. They love the friend at the stall. The art's first job is to make the player feel that, before a single line of dialogue.
+A note about the person on the left. They are androgynous, agender, mid-30s, a little softer than they once were, gentle with themselves. The world is built around their quiet presence at its centre. They love this game, and they love the friend at the stall. The art's first job is to make the player feel that, before a single line of dialogue.
 
 ---
 
 ## How a session feels
 
-The player opens Volley! and a rally is already happening, or about to. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
+The player opens Volley! and a ball is mid-rally, arcing back. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
 
 ---
 
@@ -79,7 +79,7 @@ A partner. She joins the right side of the court once the player has built up en
 
 ## The spirit of the volley
 
-A long rally has its own quiet life. Players know the feeling: the ball moving easily, the partner's timing settling in, the sense that the rally could keep going as long as both of you do. Volley has a name for what is happening there. The spirit of the volley. It is the protagonist's fighting spirit and the bond they share with each partner, the same warmth seen from two angles.
+A long rally has its own quiet life. The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of you do. Volley has a name for what is happening there. The spirit of the volley. It is the protagonist's fighting spirit and the bond they share with each partner, the same warmth seen from two angles.
 
 It deepens with shared rallies and small attentions. A long rally is the spirit at full breath. A miss is the spirit catching its breath again. The ball runs hotter when the spirit is up; the venue light leans warmer; the rally feels a little brighter than the count alone explains. None of this needs spelling out for the player. The art carries it.
 
