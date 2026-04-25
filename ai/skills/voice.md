@@ -73,7 +73,9 @@ The trap is the writer narrating their own picture. A racquet "ready" is fine; "
 
 When you find a modifier explaining what the noun does, cut the modifier. The reader's imagination is faster than your description.
 
-This rule is closest in spirit to the cadence rule: short sentences land because what set them up did the work. Modifiers that re-do the work the noun has already done are the prose equivalent of explaining a punchline.
+The same rule applies to nouns that name a relationship, a feeling, or an inner state before the picture has earned them. "A friend leans on the counter" tells the reader the relationship before the leaning, the head tilted toward the play, the warmth have done the friend-work. Use a neutral noun first ("someone leans on the counter, head tilted toward the play"); let the picture build the relationship; let the reader arrive at "friend" themselves. The same goes for "a memory", "a regret", "a longing", "a beloved object", "a lonely room". If the picture works, the reader names it. If the writer names it, the picture is doing less than it should.
+
+This rule is closest in spirit to the cadence rule: short sentences land because what set them up did the work. Modifiers that re-do the work the noun has already done, and nouns that announce a relationship the picture has not yet earned, are the prose equivalent of explaining a punchline.
 
 ## Paragraph closes
 
