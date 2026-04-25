@@ -10,7 +10,7 @@ The bible is dense on purpose. Pick the bits that resonate and let the rest be a
 
 Volley! is an idle pong game that lives in a small window on someone's desktop. A paddle on the left, a paddle on the right, a ball going back and forth, a counter ticking up. That is the surface.
 
-Most idle games default to pixel art. Volley's bet is hand-drawn illustration carrying the genre into a register the field hasn't claimed.
+Most Steam idles default to pixel art; the mobile cozy lineage (Cats and Soup, Tsuki, Neko Atsume) defaults to soft pastel illustration. Hand-drawn illustration as the visual centre of an idle game is unclaimed territory, and that is where Volley sits.
 
 Underneath: a story about a man in his mid-30s who lost his best friend and built a world to hide in. The constructed world is the game we play. The real world is a town the protagonist grew up in and where the loss happened. Both are visited. The constructed world holds the rally and the friend's voice: warm, curated, safe. The real world is sparser, quieter, where the true moments live: ordinary, familiar, difficult.
 
@@ -447,7 +447,7 @@ A note on calibration. Volley's public footprint today is small.
 - One named character is public: Martha.
 - The vocabulary public-facing right now: venue, court, shop, workshop, cast.
 - The roadmap's milestone definitions are the most distilled public-voice writing: "Prototype: done when someone who's never heard of the game plays for an afternoon and comes away wanting more." "v1: done when you'd put your name on it and tell people to play."
-- There are no public screenshots, no key art, no banner. **The public art bar is unset, and that's deliberate.** The art is the bet; the artist is the one defining what differentiates Volley from the pixel-art register that dominates the idle-game genre. There is no bar to match; there is a bar to set.
+- There are no public screenshots, no key art, no banner. **The public art bar is unset, and that's deliberate.** The art is the bet; the artist is the one defining what sets Volley apart from the pixel-art register that dominates Steam idles and the soft-pastel register the mobile cozy lineage owns. There is no bar to match; there is a bar to set.
 
 ---
 
