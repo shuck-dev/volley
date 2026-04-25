@@ -29,10 +29,22 @@ The artist's hardest job lives here. Construction must be straight-up enjoyable 
 Everyone in Construction is a real person rendered in the bright world's register. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The exception is the rival.
 
 - **The protagonist.** Young, full of motion, focused on the rally. The reality version comes later.
-- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue. In reality, this is someone the protagonist has pushed away. Same person, two renders.
+- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue. In reality, this is someone the protagonist has pushed away. Same person, two renders. (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into the bright world to fill the right side of the court. Each has a real-world counterpart the player can meet during Reconstruction.
 - **The tinkerer.** Real person, the shopkeeper's younger sister.
 - **The rival.** The exception. The dead friend. No real-world counterpart in person; their reality is the cliff (see Reconstruction).
+
+### Why the shopkeeper is at the stall
+
+The shopkeeper is the relationship the protagonist most needs but most cannot face. They were there when the friend died. They are the only other person who knows what happened. To talk to them in reality is to talk about the death; the protagonist pushes them away because facing them would mean facing what they have not been able to face.
+
+The protagonist's mind cannot let them go either. The shopkeeper is the only one who could understand. The construction's compromise is precise: keep the shopkeeper present, warm, available; have the relationship without the conversation. The friend at the stall, attentive without intruding, is the relationship the protagonist wants AND the relationship they cannot have in reality, rendered as the version they can hold.
+
+This is also why the world record IS the shopkeeper's phone number. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
+
+It is why the rival sits structurally as the obstacle: the dead friend stands between the protagonist and the shopkeeper, because facing the shopkeeper requires first facing the death. In the bright world the rival is the partner who pushes; in the underlying psychology the rival is the wall.
+
+It is why the call is the ending. Once the protagonist has faced the cliff and reconciled the death (rival becomes a partner), there is nothing left between them and the shopkeeper. The substitute becomes redundant when the real is reachable. Postgame the bright world dims because it does not need to hold what reality can now hold.
 
 ### The rival
 
