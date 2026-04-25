@@ -345,7 +345,8 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 ### Games
 
 - **Pong** (1972). The seed object. The whole rally lineage starts here.
-- **Oddworld: Abe's Oddysee / Exodus** (1997 / 1998). The Oddworld Signature: six artistic commandments that governed every screen. Structural inspiration for Volley's Six Marks.
+- **Oddworld: Abe's Oddysee / Exodus** (1997 / 1998). The Oddworld Signature: six artistic commandments that governed every screen. Structural inspiration for Volley's Six Marks. Also a painterly-atmosphere reference at sustainable scale: simpler character silhouettes against richly painted backgrounds, the same calibration register Machinarium reaches for.
+- **Machinarium** (2009, Amanita Design). Painterly atmosphere at sustainable scale. Simpler character silhouettes against textured backgrounds; the painterly feel without the per-character full-render cost of Cuphead.
 - **The Stanley Parable** (2013). A game that lets its own scaffolding show without breaking the player's trust.
 - **Neko Atsume** (2014). Mobile cosy lineage; Volley sits adjacent to this, not inside it.
 - **Enter the Gungeon** (2016). Readability at small scale. Silhouette-led sprites that work when scaled down. Maps onto Volley's desktop-window readability rule.
@@ -365,6 +366,10 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 - **Mario Galaxy**. Biome variety as cosmic-cosy. Each tiny world with its own character.
 - **Wii Sports Resort**. Sport-as-place. Each activity a distinct visual setting.
 - **Broken Age**. Hand-drawn painterly with dual settings shared by one story.
+
+### The calibration
+
+Volley aims for the painterly atmosphere of Broken Age, Poco, Machinarium, Oddworld, and Cast n Chill, at the labour scale of Ranking of Kings and Eizouken: simple character shapes that breathe through animation rather than rendering, painterly backgrounds carrying the world's weight, characters readable in silhouette before line. The painterly register is the feel; the simple-shape discipline is how we afford it.
 
 ### Named hands
 
