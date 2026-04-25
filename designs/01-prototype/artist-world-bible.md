@@ -8,7 +8,7 @@ The bible describes the world: its tone, its visual texture, its emotional shape
 
 ## What the player meets first
 
-A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is in the air, mid-arc. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
+A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is in the air. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
 
 That is the picture the art carries. Everything else in this bible exists to make that picture true: the partners, the items, the venues that come later.
 
@@ -18,7 +18,7 @@ A note about the person on the left. They are androgynous, agender, mid-30s, a l
 
 ## How a session feels
 
-The player opens Volley! and a ball is mid-rally, arcing back. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
+The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
 
 ---
 
