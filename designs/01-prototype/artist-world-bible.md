@@ -18,7 +18,7 @@ A note about the person on the left. They are androgynous, agender, mid-30s, a l
 
 ## How a session feels
 
-The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. A rack at the side of the rally holds items; behind a stall, the friend watches, attentive without intruding. The player picks up new items, drops things off at a workshop in another corner of the garden, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends it; the ball rolls out of play and waits to be picked up again. The game keeps going whether the player is watching or not.
+The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. A rack at the side of the play area holds items; behind a stall, the friend watches, attentive without intruding. The player picks up new items, drops things off at a workshop in another corner of the garden, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends it; the ball rolls out of play and waits to be picked up again. The game keeps going whether the player is watching or not.
 
 ---
 
@@ -115,7 +115,7 @@ A garden. The setting is a UK and Mediterranean blend, warm climate; the archite
 
 The friend's stall sits against one inside wall. A small wooden affair with a stripe of awning and one shelf of items. The stall is not part of the architecture; it is a thing the friend put there. It can fold up and travel.
 
-A ball feeder sits on one side of the rally, holding the balls that are not currently in play. A smaller rack opposite holds equipment items. Both have visible age and use.
+A ball feeder sits on one side of the play area, holding the balls that are not currently in play. A smaller rack opposite holds equipment items. Both have visible age and use.
 
 A locked gate sits at the back beside the tree. The player can see it but not reach it. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of palm fronds, a strip of sky that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger.
 
