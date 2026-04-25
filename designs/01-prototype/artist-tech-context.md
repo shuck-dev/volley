@@ -14,9 +14,11 @@ It works through layered painted backgrounds set at different distances from the
 
 Godot calls this a `Parallax2D` rig: a stack of painted layers, each scrolling at its own rate. The court already runs a single-layer version of this in `scenes/court.tscn`, which is the seed the rest grows from.
 
-What this means for the work: when you paint a background, you are not painting a frame, you are painting a slice of the world at a specific distance. A near layer needs the kind of detail the player's eye lands on when the rally pauses. A deep layer can carry atmosphere with almost nothing in it: a wall of warm afternoon, a wash of submerged green, the suggestion of a tree. The friend's stall sits forward; a row of distant rooftops sits back; the wonder past the locked gate sits further back still.
+What this means for the work: when you paint a background, you are not painting a frame; you are painting a slice of the world at a specific distance. A near layer needs the kind of detail the player's eye lands on when the rally pauses. A deep layer can carry atmosphere with almost nothing in it: a wall of warm afternoon, a wash of submerged green, the suggestion of a tree. The friend's stall sits forward; a row of distant rooftops sits back; the wonder past the locked gate sits further back still.
 
 You decide what lives at which depth. The depth read is one of the strongest tools the venue has for feeling like a place rather than a plane.
+
+The illusion holds on consistency. Light direction is locked per venue before any layer goes into production: a backlit afternoon in the garden, sunlight filtering through water in the underwater venue, nebula glow from above on the meteor. Every layer is painted to the same source, characters included. Painted shadow on the friend's awning matches painted shadow on the paddle matches painted shadow on the back wall. Nothing in this rig depends on shaders or runtime lighting; the painting carries it.
 
 ---
 
@@ -31,16 +33,6 @@ Three layers in the engine are worth knowing about by name, because they shape w
 **The screen-space dev overlay.** A separate layer, technically a `CanvasLayer`, that sits glued to the screen and ignores the camera. The only thing that lives here is a developer-only HUD: framerate, debug toggles, state inspection text. Player-facing game state never lives here. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship-point balance is a counter the friend keeps. The shipment landing is a thump and a small pulse on the mat. Banners, popups, and floating numbers across the player's field of view are not how Volley! talks to its player. The world tells the player what is happening, in objects the player can point at.
 
 The shorthand: *system chrome on the screen-space layer, fiction chrome inside the world.*
-
----
-
-## Faux 3D through painted depth
-
-The scene reads as three-dimensional without being three-dimensional. Everything is 2D sprites, but the layers are arranged so the player's eye assembles depth on its own.
-
-The trick is consistency. Light direction is locked per venue before any layer goes into production: a backlit afternoon in the garden, sunlight filtering through water in the underwater venue, nebula glow from above on the meteor. Every layer is painted to the same light source. A foreground prop catching light from one direction while a background catches it from another flattens the illusion immediately. Characters are painted into the same light. The painted shadow on the friend's awning matches the painted shadow on the paddle matches the painted shadow on the back wall of the venue.
-
-Depth comes from layering, parallax, and shared light. Nothing in this rig depends on shaders or runtime lighting tricks. The painting carries it.
 
 ---
 
@@ -85,7 +77,7 @@ The ball rack and the gear rack are the exception: a ball that rolls into a rack
 
 Volley! defaults to a small borderless desktop window. Web export is the primary distribution channel today. The work needs to read at sizes well below a feature-film frame.
 
-The bible's calibration paragraph is the answer in one line: characters as simple as Ranking of Kings, painterly atmosphere across the backgrounds, the painterly feel sustained through layered depth and shared light rather than per-character full-render. Per-character Cuphead-level rendering is out of reach at this scale; the rendering load goes into the venue, the simple-shape discipline holds the characters.
+The bible's calibration paragraph is the answer in one line: characters as simple as Ranking of Kings, painterly atmosphere across the backgrounds, the painterly feel sustained through layered depth and shared light rather than per-character full-render. Per-character Cuphead-level rendering is out of reach at this scale; the rendering load goes into the venue; the simple-shape discipline holds the characters.
 
 This shapes a few practical asks:
 
@@ -98,35 +90,22 @@ The format is the bet, not a constraint sitting outside the work. The painterly 
 
 ---
 
-## Art DOs
+## Engine-side DOs and DON'Ts
 
-A short list of the moves that make Volley! look like Volley!.
+The bible covers the visual register. These are the engine-layer asks the bible cannot speak to.
 
-- **Bold silhouettes** that read at any size.
-- **Painterly backgrounds** carrying depth, light, and atmosphere.
-- **Simple character shapes** in the Ranking of Kings register; body language doing the acting work.
-- **Diegetic state.** A magazine, a plaque, a stall, a chalk line, a coral-rimmed slate underwater. Never a screen-space banner for player-facing state.
-- **Hand-drawn line with life in it.** Cleaner in the constructed register, looser in the real register. Same hand.
-- **Three description states for items that earn it.** Default, power-revealed (after the player hits a power threshold), narrative-revealed (deeper into the story). Three painted faces for the same object where the design asks for it.
-- **Lived-in patina.** Paint chips, frayed velcro, worn elastic, faded awning stripes, rust on a screw. The world has been here a while.
-- **Anticipation, contact, follow-through** on every meaningful action. Movement carries personality before rendering does.
+**DO:**
 
----
+- **Paint to a single locked light direction per venue.** Foreground props, characters, and backgrounds share one source so the layered illusion holds.
+- **Keep the line heavy enough to survive downscale.** Web export and a small borderless window are the default sizes; per-character feathered detail and mechanical-precise vector lines both soften badly there.
+- **Put player-facing state in the world.** A plaque on the court, a sign on the wall, a counter at the friend's stall, a thump on the mat. The world layer carries fiction; the screen-space overlay is dev-only.
+- **Plan rendering load for the venue, not the character.** Painted backgrounds carry atmosphere and depth; characters stay in the simple-shape register so animation does the acting work.
 
-## Art DON'Ts
+**DON'T:**
 
-Things Volley! is consciously not, and shortcuts the engine cannot rescue.
-
-- **Pixel art.** The brief is explicit. Hand-drawn illustration, not pixel.
-- **Photoreal.** The world is hand-drawn warmth, not realism.
-- **Vector polish.** Mechanical precision drains the line of life.
-- **Painterly realism.** The hand-drawn mark stays visible; the per-character full-render register sits outside the calibration.
-- **Generic cosy.** Rounded shapes, smiling everything, undifferentiated soft palette. Volley!'s cosy is particular, not the genre default.
-- **Anime moe faces with big eyes.** The characters are people drawn warmly, not avatars.
-- **Period pastiche.** No fixed real-world era. The references are emotional, not periodic.
-- **Scary or distressing imagery.** The real register is quieter, not darker. Sadness sits with the player; the art does not chase it.
-- **Outline-and-flat-fill shortcuts.** Line and fill work together; shadows are painted, not rendered.
-- **Screen-space banners or HUDs** for player-facing state. The world holds the information.
+- **Mismatch light direction across layers.** A foreground catching sun from one side while a background catches it from another flattens the illusion immediately.
+- **Use screen-space banners, popups, or floating numbers** for anything the player needs to read about the rally, the economy, or progression. That layer is for framerate and debug toggles.
+- **Reach for shaders or runtime lighting tricks** to fake depth. The painting carries it; the rig is layers, parallax, and shared light.
 
 ---
 
@@ -134,14 +113,4 @@ Things Volley! is consciously not, and shortcuts the engine cannot rescue.
 
 The companion engineering-side doc is `designs/art/tech-pipeline.md`. It covers the asset-delivery side of the same conversation: file formats, import settings, folder structure, animation rigging, performance budgets, the integration-PR contract. If the present doc is *what the artist sees and how the engine paints it*, the pipeline doc is *how a finished asset travels from the artist's machine into the running game*.
 
-You do not need to read the pipeline doc on day one. The integrator handles the import side, and per-asset briefs link back to the relevant pipeline sections. If you are curious about the format and rigging side, it is there.
-
----
-
-## A short closing
-
-The technical context is not a wall the work has to climb over; it is the material the work is made of. Layered painted depth is the venue's atmosphere. Simple-shape discipline is what gives the characters room to breathe through animation. Diegetic everything is how the game and the world stay one thing. The format is small and the line has to survive downscale, so the painted register does the heavy carrying and the characters move with feeling rather than detail.
-
-The bible's calibration paragraph holds the same thread: the painterly feel is what we are reaching for, the simple-shape discipline is how we afford it, and the layered depth and shared light is how the engine keeps the illusion together. The two docs and the engine are one bet, made together.
-
-If something here pushes against your instincts on the work, push back. The bet is the bet; the route to it is the conversation.
+You do not need to read the pipeline doc on day one. The integrator handles the import side, and per-asset briefs link back to the relevant pipeline sections. The two docs and the engine are one bet, made together. If something here pushes against your instincts on the work, push back.
