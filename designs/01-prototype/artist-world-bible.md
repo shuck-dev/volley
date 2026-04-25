@@ -8,7 +8,7 @@ The bible describes the world: its tone, its visual texture, its emotional shape
 
 ## What the player meets first
 
-A garden in the late afternoon. In one corner, a small court fenced in by stone and vines. Someone stands on the left of the court with a racquet; across the way, someone leans on the counter of a small wooden stall, head tilted toward the play. Between them, a ball in the air. The counter on the wall reads zero. The light is warm.
+A garden in the late afternoon. In one corner, a stretch of grass walled in by stone and vines. Someone stands on the left of it with a racquet; across the way, someone leans on the counter of a small wooden stall, head tilted toward the play. Between them, a ball in the air. The counter on the wall reads zero. The light is warm.
 
 That is the picture the art carries. Everything else in this bible exists to make that picture true: the partners, the items, the venues that come later.
 
