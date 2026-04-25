@@ -83,6 +83,8 @@ One thread of warmth carries across every partner and every rally: the spirit of
 
 It deepens with shared rallies and small attentions. A long rally is the spirit at full breath. A miss is the spirit catching its breath again. The ball runs hotter when the spirit is up; the venue light leans warmer; the rally feels a little brighter than the count alone explains. None of this needs spelling out for the player. The art carries it.
 
+The spirit is not only metaphor. It has a felt presence in the world, and it is the in-fiction reason the world bends the way it does. It is what lifts the protagonist into the air and holds them there a beat longer than gravity would. It is what gives the ball its life, its arc, its little extra coast at the top of a hit. Anything that looks like it defies normal physics is the spirit acting on the world. The art does not need to draw the spirit; it needs to render a place where this kind of motion is the natural one.
+
 ---
 
 ## The tinkerer
