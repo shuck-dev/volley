@@ -89,6 +89,18 @@ The opposite trap is over-naming the geometry: "The court, which sits in the sou
 
 The rule applies to consecutive sentences that introduce new world-elements. Once the scene is built, the prose can return to the elements without re-placing them; "the friend" and "the rack" and "the workshop" can appear by name once the geography has been laid down. The first time matters most.
 
+## Integrate the sentences
+
+Place-the-nouns gives the picture geography. Integrate-the-sentences gives the paragraph thought. The trap here is the paragraph that reads as a list of facts, each sentence starting fresh with a new subject, no carryover from the one before. "The court is small. The court is fenced. The fence is stone. The stone is old." reads as four facts. "The court is small, fenced in stone that has been here longer than the fence." reads as a thought.
+
+The connective tissue is ordinary: pronouns picking up the previous subject ("they", "it", "the same"), dependent clauses continuing a thought ("which still holds", "where the rally lives"), semicolon-yokes that tighten relations between two complete thoughts, implicit logical connection ("the racquet is the constant; equipment hangs off it"). The reader follows because each sentence reaches back to what came before.
+
+The opposite trap is over-connecting. Every sentence chained with "and" or "but" or "because" lurches in the other direction; the prose loses its ability to land. The semicolon should not appear in every paragraph. The pronoun should not stand in for every noun. Variety is the rule.
+
+The list-of-three particulars stays a legitimate shape, but as a deliberate move, not a default. "A photograph. A figure across a kitchen table. A back walking down a street." earns its three short fragments because it is naming three concrete images for the reader to assemble. A paragraph that sounds like that all the way through has lost the difference between particulars-as-list and prose-as-list.
+
+The check: read the paragraph aloud and listen for whether each sentence reaches back. If every sentence has a fresh subject and no carryover, the paragraph is a list. Tighten by combining where two thoughts belong together; carry forward with a pronoun where the next sentence sits on the same subject; semicolon-yoke where the second thought lives in tight relation to the first.
+
 ## Paragraph closes
 
 The last sentence is the loaded one. Engineer it.
