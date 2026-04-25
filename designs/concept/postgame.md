@@ -4,7 +4,13 @@ The ending and what comes after. High-level architecture in `three-registers.md`
 
 ## The call
 
-Reaching the world record means winning the championship. Winning the championship means dialling the shopkeeper's phone number. The shopkeeper picks up. They are still there. The protagonist is reaching the person who was there when they were not; the shared knowledge has been waiting all along.
+Reaching the world record means winning the championship. Winning the championship means dialling the shopkeeper's phone number. The protagonist dials while standing at the shop door. The shopkeeper's phone rings inside; the protagonist hears it through the door of the shop they have been avoiding for years. The shopkeeper picks up. The first words happen on the phone with both of them in the same building, voice and body simultaneously. The call connects; the door is right there.
+
+The shopkeeper is still there. The protagonist is reaching the person who was there when they were not; the shared knowledge has been waiting all along.
+
+### Staging
+
+The call is one image, two presences. Composition splits the frame: protagonist on the outside, shopkeeper on the inside, the door (or window, or wall) dividing them. Both holding phones. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split IS the years of distance; the shared frame IS the resolution. The phone is the line that crosses the split. One moment, two people, finally in the same picture.
 
 The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they did and may still do, but it is no longer a wall.
 
