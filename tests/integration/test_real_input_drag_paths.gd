@@ -67,6 +67,14 @@ func _release_event() -> InputEventMouseButton:
 	return release
 
 
+## Mouse-up event with a deterministic viewport position so the controller's canvas-mapped
+## release point is reproducible under headless tests.
+func _release_event_at(position: Vector2) -> InputEventMouseButton:
+	var release := _release_event()
+	release.position = position
+	return release
+
+
 # --- ball drag fixtures ------------------------------------------------------------------
 
 
@@ -197,8 +205,7 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 
 	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
-	Input.warp_mouse(outside)
-	item._input(_release_event())
+	item._input(_release_event_at(outside))
 
 	assert_false(item.is_dragging(), "real mouse-up resolves the gesture")
 	assert_eq(
@@ -232,14 +239,12 @@ func test_real_press_release_on_rack_token_does_not_spawn_a_ball() -> void:
 			court_changed_signals.append([item_key, on_court])
 	)
 
-	# Press: simulate the rack slot click through the slot signal.
-	_rack.press_slot("training_ball")
+	# Press: simulate the rack slot click at the rack center (where the slot lives).
+	_rack.press_slot("training_ball", RACK_CENTER)
 	assert_true(_drag.is_dragging(), "rack press must spawn the held token")
 
-	# Release at the same position. Warp mouse to the rack center so the controller's
-	# cursor read lands inside the drop target rect.
-	Input.warp_mouse(RACK_CENTER)
-	_drag._input(_release_event())
+	# Release at the same position via a real mouse-up event with no cursor movement.
+	_drag._input(_release_event_at(RACK_CENTER))
 
 	assert_false(_drag.is_dragging(), "release must resolve the gesture")
 	assert_false(
@@ -279,9 +284,8 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	await get_tree().process_frame
 	assert_false(is_instance_valid(live), "live ball must be freed during the mid-rally grab")
 
-	# Release at the rack drop target: real cursor warp + real _input.
-	Input.warp_mouse(RACK_CENTER)
-	_drag._input(_release_event())
+	# Release at the rack drop target via a real mouse-up event with the rack as cursor.
+	_drag._input(_release_event_at(RACK_CENTER))
 
 	assert_false(_drag.is_dragging(), "release ends the rack-out gesture")
 	assert_false(

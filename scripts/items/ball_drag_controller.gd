@@ -11,6 +11,9 @@ signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, over_court: bool)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
+## Minimum cursor travel before a rack-origin gesture is treated as a real drag.
+## Below this, press-release at the same spot is a click-without-movement no-op (SH-252 a).
+const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -25,6 +28,11 @@ var _held_is_temporary: bool = false
 ## Was the item on-court before the gesture? Rack pickups defer activation, so a click-without-movement is a no-op.
 var _held_was_on_court: bool = false
 var _cursor_samples: Array = []
+## Cursor position when the held token spawned. Used to decide whether the gesture moved
+## far enough to count as a real drag (SH-252 a click-without-movement no-op).
+var _press_position: Vector2 = Vector2.ZERO
+## True until the cursor has travelled past COMMIT_MOVEMENT_THRESHOLD_PX from `_press_position`.
+var _gesture_below_threshold: bool = true
 
 
 func configure(
@@ -58,6 +66,9 @@ func _process(_delta: float) -> void:
 	var follow_position: Vector2 = _clamp_to_venue(_cursor_position())
 	_held_token.global_position = follow_position
 	_track_cursor_motion(follow_position)
+	if _gesture_below_threshold:
+		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
+			_gesture_below_threshold = false
 
 
 func _input(event: InputEvent) -> void:
@@ -72,7 +83,10 @@ func _input(event: InputEvent) -> void:
 	if mouse_button.pressed:
 		return
 
-	attempt_release(_clamp_to_venue(_cursor_position()))
+	# Use the event's own position (mapped through the canvas transform) so the release
+	# point is the player's actual cursor at mouse-up, not whatever the viewport's stale
+	# mouse state is. This is what makes a Camera2D in the venue not break rack hit-testing.
+	attempt_release(_clamp_to_venue(_event_world_position(mouse_button)))
 
 
 func is_dragging() -> bool:
@@ -88,7 +102,7 @@ func get_held_token() -> Node2D:
 
 
 ## Test seam / production entry for rack-origin pickups. Activation defers to release-over-court (SH-245).
-func grab_from_rack(item_key: String) -> bool:
+func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	if _held_token != null:
 		return false
 	if _item_manager.get_level(item_key) <= 0:
@@ -96,7 +110,10 @@ func grab_from_rack(item_key: String) -> bool:
 	if _item_manager.is_on_court(item_key):
 		return false
 
-	_spawn_held_token(item_key, _cursor_position(), false)
+	var spawn_position: Vector2 = (
+		press_position if press_position is Vector2 else _cursor_position()
+	)
+	_spawn_held_token(item_key, spawn_position, false)
 	_held_was_on_court = false
 	pickup_started.emit(item_key)
 	return true
@@ -132,6 +149,13 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var clamped_position: Vector2 = _clamp_to_venue(release_position)
 	var over_rack: bool = _position_over_rack(clamped_position)
+	# Cursor follow runs in _process; for direct callers (tests, deferred release), also
+	# check the release position against the press position so the no-op gate stays honest.
+	var below_threshold: bool = _gesture_below_threshold
+	if below_threshold:
+		below_threshold = (
+			clamped_position.distance_to(_press_position) < COMMIT_MOVEMENT_THRESHOLD_PX
+		)
 
 	var item_key: String = _held_key
 	var token: Node2D = _held_token
@@ -144,12 +168,21 @@ func attempt_release(release_position: Vector2) -> bool:
 	_held_is_temporary = false
 	_held_was_on_court = false
 	_cursor_samples.clear()
+	_press_position = Vector2.ZERO
+	_gesture_below_threshold = true
 	token.queue_free()
+
+	# SH-252 a: a press-release without real cursor movement on a rack-origin pickup is a
+	# click, not a drag. Held token lifts on press, but we cancel back to the rack rather
+	# than committing the ball to the court.
+	var click_without_movement: bool = below_threshold and not was_on_court and not was_temporary
+	if click_without_movement:
+		drop_completed.emit(item_key, clamped_position, false)
+		return true
 
 	if over_rack:
 		# Rack release returns the item to inactive storage; if it had been on court before
-		# the gesture, deactivate. Rack pickups that started inactive stay inactive (the
-		# click-without-movement no-op path).
+		# the gesture, deactivate. Rack pickups that started inactive stay inactive.
 		if not was_temporary and was_on_court and _item_manager.is_on_court(item_key):
 			_item_manager.deactivate(item_key)
 	else:
@@ -193,6 +226,8 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	_held_token = token
 	_held_key = item_key
 	_held_is_temporary = is_temporary
+	_press_position = spawn_position
+	_gesture_below_threshold = true
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
 
@@ -228,10 +263,20 @@ func _compute_release_velocity() -> Vector2:
 
 
 func _cursor_position() -> Vector2:
+	# Use the canvas-aware global mouse position so a Camera2D in the venue does not
+	# decouple the held token's follow position from the world rect tests for rack /
+	# court hit-testing (SH-252 b regression: viewport-local coords missed the rack).
 	var viewport: Viewport = get_viewport()
 	if viewport == null:
 		return global_position
-	return viewport.get_mouse_position()
+	return get_global_mouse_position()
+
+
+## Maps a mouse button event's viewport-local position into world coordinates so canvas
+## transforms (Camera2D) do not break rack/court hit-testing on release.
+func _event_world_position(event: InputEventMouseButton) -> Vector2:
+	var canvas_transform: Transform2D = get_canvas_transform()
+	return canvas_transform.affine_inverse() * event.position
 
 
 func _position_over_rack(position: Vector2) -> bool:
@@ -288,8 +333,8 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 	return null
 
 
-func _on_rack_slot_pressed(item_key: String) -> void:
-	grab_from_rack(item_key)
+func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
+	grab_from_rack(item_key, press_position)
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
