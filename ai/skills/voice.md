@@ -111,6 +111,18 @@ Transitions belong in the next paragraph's opening, never at this paragraph's cl
 
 When a paragraph wants to end on a contradiction, the contradiction goes in the last clause, not buried mid-paragraph: "The cases above are not a promise that visible work converts; they are an argument that the visible version is the one with a chance, and a record either way."
 
+## Literary devices, used sparingly
+
+Alliteration, metaphor, simile, assonance, anaphora: welcome, used sparingly. A literary device earns its place when it compresses emotion or amplifies a scene in a way the plain version could not. "Polish is cheap; credibility is not" lands harder than its plain version because of the parallel and the /k/ at the centre of both pivot words. The device does work the prose was already trying to do.
+
+The plain version comes first. Write it plain, then ask whether one place in the paragraph wants the lift. Add the device to that one place. Resist the urge to decorate elsewhere; the device lands because the prose around it is plain.
+
+The trap is stacking. A paragraph with three metaphors, two alliterations, and a simile reads as performance rather than thought. AI prose drifts here naturally because it has been trained on writing that performs. The fix is the cap: at most one device per paragraph, often none. The most charged paragraphs in the essay use no figurative language at all; the figurative paragraphs are the exceptions, and they land because of it.
+
+The check: remove the device. Does the paragraph still carry the meaning? If yes, the device was decoration; cut. If the paragraph now feels flatter than the moment deserved, the device was earning its place; keep.
+
+When the prose is doing emotional work, a device can be the lever that opens the moment. When the prose is doing argumentative work, the device can sharpen the point. Most prose is neither; most prose stays plain.
+
 ## What the voice is not
 
 - Not parallel for parallel's sake. Tricolons stack only when each member earns its weight; rhetorical triples on autopilot get cut to two or one.
