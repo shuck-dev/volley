@@ -6,6 +6,12 @@ extends Node
 signal ball_spawned(item_key: String, ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
+## Synthetic key prefix for Balls that ship pre-existing in the scene tree
+## (the bootstrap rally Ball in scenes/court.tscn) and so never came through
+## ensure_ball_for_key. Adopting them under a synthetic key wires the drag
+## controller's pressed handler so SH-262 mid-rally grabs work on the live
+## court ball, not just on player-placed balls.
+const ADOPTED_BALL_KEY_PREFIX: String = "__adopted_ball_"
 
 @export var ball_scene: PackedScene = BallScene
 @export var spawn_for_existing_on_load: bool = false
@@ -13,6 +19,7 @@ const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
+var _adopted_ball_counter: int = 0
 
 
 func configure(item_manager: Node, ball_host: Node) -> void:
@@ -30,6 +37,44 @@ func _ready() -> void:
 
 	if spawn_for_existing_on_load:
 		_reconcile_initial_state()
+
+	# Deferred so sibling listeners (BallDragController) finish their own _ready
+	# and connect to ball_spawned before we emit for adopted balls.
+	call_deferred(&"adopt_pre_existing_balls")
+
+
+## Scans `_ball_host` for Ball instances not yet tracked and registers each
+## under a synthetic key, emitting ball_spawned so listeners (drag controller)
+## wire their per-ball connections. Idempotent; safe to call repeatedly.
+func adopt_pre_existing_balls() -> void:
+	if _ball_host == null:
+		return
+	for child in _ball_host.get_children():
+		if not (child is Ball):
+			continue
+		var ball: Ball = child
+		if ball.is_temporary:
+			continue
+		if ball.is_queued_for_deletion():
+			continue
+		if _is_tracked(ball):
+			continue
+		# Defensive: if any listener has already wired Ball.pressed (the typical
+		# path is BallDragController during `ball_spawned`), the ball is already
+		# under canonical ownership and re-emitting would double-connect.
+		if ball.pressed.get_connections().size() > 0:
+			continue
+		var key: String = "%s%d" % [ADOPTED_BALL_KEY_PREFIX, _adopted_ball_counter]
+		_adopted_ball_counter += 1
+		_balls_by_key[key] = ball
+		ball_spawned.emit(key, ball)
+
+
+func _is_tracked(ball: Ball) -> bool:
+	for tracked in _balls_by_key.values():
+		if tracked == ball:
+			return true
+	return false
 
 
 func get_ball_for_key(item_key: String) -> Ball:
