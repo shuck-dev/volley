@@ -10,7 +10,7 @@ The bible is dense on purpose. Pick the bits that resonate and let the rest be a
 
 Volley! is an idle pong game that lives in a small window on someone's desktop. A paddle on the left, a paddle on the right, a ball going back and forth, a counter ticking up. That is the surface.
 
-Underneath: a story about a man in his mid-30s who lost his best friend and built a world to hide in. The constructed world is the game we play. The real world is a town the protagonist grew up in and where the loss happened. Both are visited. The constructed world holds the rally and the friend's voice. The real world is sparser, quieter, where the true moments live.
+Underneath: a story about a man in his mid-30s who lost his best friend and built a world to hide in. The constructed world is the game we play. The real world is a town the protagonist grew up in and where the loss happened. Both are visited. The constructed world holds the rally and the friend's voice: warm, curated, safe. The real world is sparser, quieter, where the true moments live: ordinary, familiar, difficult.
 
 The north star puts it directly: "It's a story about someone who built a world to hide from something real. The partners are memories of people who mattered. The record is a number that means something specific."
 
@@ -158,7 +158,7 @@ Real-world moments are short and named. A kitchen table at twilight. A walk down
 
 The artist's deliverable for the real world is a quiet moment between the protagonist and a partner in an ordinary place. The choice of moment shapes the cast that follows.
 
-How the two worlds relate visually is open. Same characters and visual DNA across both; saturation, edge quality, light, and arrangement shift between them.
+How the two worlds relate visually is open, but the principle holds: the shift between them is not a style change. It is a change in how much comfort the art offers. Same shapes, same proportions, same visual DNA. What moves is saturation, edge quality, lighting intention, and arrangement.
 
 ---
 
@@ -166,7 +166,7 @@ How the two worlds relate visually is open. Same characters and visual DNA acros
 
 Four phases. The visual register shifts across them. The prototype lives in phase one.
 
-1. **Pre-break.** Warm, cosy, constructed. The protagonist is in the world he built. Everything has light. The friend is at the shop, the partners arrive, the wonders escalate. The player is not asked to think too hard; the game is delightful. This is the prototype's whole register and the artist's first deliverable.
+1. **Pre-break.** Warm, cosy, constructed. The protagonist is in the world he built. Everything has light. The friend is at the shop, the partners arrive, the wonders escalate. The art should feel like someone needed things to be okay, and built a place where they could be. The player is not asked to think too hard; the game is delightful. This is the prototype's whole register and the artist's first deliverable.
 2. **The break.** A moment. Something cracks. The seam shows. The constructed world does not collapse yet, but the player notices. Visually a single tilted beat: light goes wrong, sound shifts, an object reads differently. Brief.
 3. **Post-break.** The same venues, but altered. Light is cooler. Saturation drops. Some things are missing or changed. The protagonist is still playing but the warmth has thinned. The friend is still there, quieter. Martha's lines acquire weight without changing register.
 4. **Peace.** Earned warmth returns. Not the same as pre-break: this warmth knows what it costs. The visual register is the warmth of pre-break with the texture of post-break. The protagonist has integrated the loss without losing the world.
@@ -314,7 +314,7 @@ The art bible's rulebook. Every piece of art carries all six. They are framed as
 2. **Specific.** Particulars over types. This fence, this stall, this Martha. Generic warmth fails.
 3. **Distinct.** The visual register is unmistakably Volley. Not rounded-cosy, not pixel, not painterly-realism.
 4. **Diegetic.** The world is something the player is inside, not looking at. UI sits inside the same hand and voice.
-5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked.
+5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked. A simple shape that moves with feeling carries more than a detailed shape that sits still.
 6. **Shifting.** The same world holds multiple registers (constructed / real, pre-break / post-break, biome to biome). Silhouettes hold; light, colour, line quality shift.
 
 ---
@@ -322,6 +322,8 @@ The art bible's rulebook. Every piece of art carries all six. They are framed as
 ## Reference register
 
 Every work below has been cited somewhere in the design corpus as a tonal or visual touchstone. Pick the two or three that resonate most with where you want to push the work; let the rest be ambient context.
+
+The mood board lives at `designs/art/mood-boards/`. Read the summary first; the full set is for deeper browsing.
 
 ### Animation and film
 
@@ -370,6 +372,8 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 ### The calibration
 
 Volley aims for the painterly atmosphere of Broken Age, Poco, Machinarium, Oddworld, and Cast n Chill, at the labour scale of Ranking of Kings and Eizouken: simple character shapes that breathe through animation rather than rendering, painterly backgrounds carrying the world's weight, characters readable in silhouette before line. The painterly register is the feel; the simple-shape discipline is how we afford it.
+
+Said as a single line: characters as simple as Ranking of Kings, coloured as confidently as Poco, lit as warmly as Porco Rosso, committed as completely as Cuphead, carrying across two worlds like Omori, with the restraint of Odd Taxi underneath.
 
 ### Named hands
 

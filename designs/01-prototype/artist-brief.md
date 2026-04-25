@@ -48,4 +48,6 @@ Both pieces should give a clear feel for line, shape, colour, and tone. They do 
 
 Include any supplementary info or design as you feel like.
 
+See also: `designs/01-prototype/artist-world-bible.md` for the wider world detail beyond this brief: characters, venues, references, tone, studio identity.
+
 If you are interested let me know!
