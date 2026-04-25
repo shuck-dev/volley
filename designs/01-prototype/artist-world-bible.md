@@ -8,7 +8,7 @@ The bible describes the world: its tone, its visual texture, its emotional shape
 
 ## What the player meets first
 
-A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is in the air. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
+A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet. The ball is in the air. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm.
 
 That is the picture the art carries. Everything else in this bible exists to make that picture true: the partners, the items, the venues that come later.
 
@@ -115,7 +115,7 @@ A garden. The setting is a UK and Mediterranean blend, warm climate; the archite
 
 The friend's stall sits against one inside wall. A small wooden affair with a stripe of awning and one shelf of items. The stall is not part of the architecture; it is a thing the friend put there. It can fold up and travel.
 
-A ball feeder sits on one side of the court, holding the balls that are not currently in play. A smaller rack opposite holds equipment items. Both have visible age and use; they have been here a while.
+A ball feeder sits on one side of the court, holding the balls that are not currently in play. A smaller rack opposite holds equipment items. Both have visible age and use.
 
 A locked gate sits at the back beside the tree. The player can see it but not reach it. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of palm fronds, a strip of sky that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger.
 
