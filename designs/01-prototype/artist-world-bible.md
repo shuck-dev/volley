@@ -12,7 +12,7 @@ A garden in the late afternoon. A small court fenced in by stone and vines. Some
 
 That is the picture the art carries. Everything else in this bible exists to make that picture true: the partners, the items, the venues that come later.
 
-A note about the person on the left. They are androgynous, agender, mid-30s, a little softer than they once were, gentle with themselves. The world is built around their quiet presence at its centre. They love this game, and they love the friend at the stall. The art's first job is to make the player feel that, before a single line of dialogue.
+A note about the person on the left. They are androgynous, agender, mid-30s, a little softer than they once were, gentle with themselves. The world is built around their quiet presence at its centre. The racquet is in their hand because they have been holding it for years; the head is turned toward the stall because that is where they want to look. The art's first job is to make the player feel that, before a single line of dialogue.
 
 ---
 
@@ -53,7 +53,7 @@ They lost someone close to them. Recently enough that it is not healed, long eno
 
 Behind the counter of the stall, leaning on their elbows, watching the rally. Without the friend the garden is a court with a fence around it; with them it is a place.
 
-The friend is one of several people the protagonist holds close, and the warm centre of the venue. Whether they are the lost one or someone else who matters is left ambiguous; the artist's read is welcome here, and the answer can stay open.
+The friend is one of several people the protagonist holds close, and the centre of the venue. Whether they are the person the protagonist lost or someone else who matters is left ambiguous; the artist's read is welcome here, and the answer can stay open.
 
 What matters: the friend reads as one particular person the protagonist loves, not a generic shopkeeper. Warm, grounded, named rather than typed. Gender, age, and presentation are all open to the artist's read. The friend stays behind the stall most of the time, head tilted toward the play, attentive without intruding.
 
@@ -79,7 +79,7 @@ A partner. She joins the right side of the court once the player has built up en
 
 ## The spirit of the volley
 
-A long rally has its own quiet life. The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of you do. Volley has a name for what is happening there. The spirit of the volley. It is the protagonist's fighting spirit and the bond they share with each partner, the same warmth seen from two angles.
+A long rally has its own quiet life. The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of you do. Volley has a name for what is happening there. The spirit of the volley. It is the protagonist's fighting spirit and the bond they share with each partner, the same thing seen from two angles.
 
 It deepens with shared rallies and small attentions. A long rally is the spirit at full breath. A miss is the spirit catching its breath again. The ball runs hotter when the spirit is up; the venue light leans warmer; the rally feels a little brighter than the count alone explains. None of this needs spelling out for the player. The art carries it.
 
@@ -103,7 +103,7 @@ Martha is the first. Three more arrive in the early game, and from then on each 
 
 The lineage rule names candidates: Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. The artist designing Martha sets the bar for the rest.
 
-Having a partner is a gift, and the art carries that. Their presence steadies the rally. Their misses sit at speeds the protagonist is also struggling with. The character truth underneath: partners are people the protagonist is glad to have around.
+Their presence steadies the rally. Their misses sit at speeds the protagonist is also struggling with. They turn up; the protagonist plays a longer rally when they do.
 
 The bright/constructed world is aged-down to a nostalgic 20s and 30s; that is part of how the protagonist's hiding place flatters memory. The quieter world reads at people's actual ages; nobody gets younger when the world goes honest.
 
