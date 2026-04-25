@@ -6,11 +6,7 @@ extends Node
 signal ball_spawned(item_key: String, ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
-## Synthetic key prefix for Balls that ship pre-existing in the scene tree
-## (the bootstrap rally Ball in scenes/court.tscn) and so never came through
-## ensure_ball_for_key. Adopting them under a synthetic key wires the drag
-## controller's pressed handler so SH-262 mid-rally grabs work on the live
-## court ball, not just on player-placed balls.
+## Synthetic key prefix for scene-authored Balls adopted post-load so drag wiring covers them too (SH-262).
 const ADOPTED_BALL_KEY_PREFIX: String = "__adopted_ball_"
 
 @export var ball_scene: PackedScene = BallScene
@@ -38,8 +34,7 @@ func _ready() -> void:
 	if spawn_for_existing_on_load:
 		_reconcile_initial_state()
 
-	# Deferred so sibling listeners (BallDragController) finish their own _ready
-	# and connect to ball_spawned before we emit for adopted balls.
+	# Deferred so sibling listeners connect to ball_spawned before we emit for adopted balls.
 	call_deferred(&"adopt_pre_existing_balls")
 
 
@@ -59,9 +54,7 @@ func adopt_pre_existing_balls() -> void:
 			continue
 		if _is_tracked(ball):
 			continue
-		# Defensive: if any listener has already wired Ball.pressed (the typical
-		# path is BallDragController during `ball_spawned`), the ball is already
-		# under canonical ownership and re-emitting would double-connect.
+		# Skip if a listener has already wired Ball.pressed; re-emitting would double-connect.
 		if ball.pressed.get_connections().size() > 0:
 			continue
 		var key: String = "%s%d" % [ADOPTED_BALL_KEY_PREFIX, _adopted_ball_counter]

@@ -71,9 +71,7 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	slot.name = "Slot_%s" % definition.key
 	slot.position = slot_position
 	slot.set_meta(&"item_key", definition.key)
-	# Canonical scale source lives on ItemDefinition (SH-261). Every container
-	# (shop, rack, held token, live ball) reads the same value so the three
-	# views read as the same object.
+	# Scale the art via a holder so it matches the canonical token size (SH-261).
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
 	art_holder.scale = definition.token_scale

@@ -153,8 +153,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	pressed.emit(self)
 
 
-## Replaces the default sprite with the item's authored art so the live ball reads as the same object the player grabbed.
-## The art is parented under a scaled holder so the live ball matches the canonical token size (SH-261).
+## Swaps the default sprite for the item's authored art at the canonical token scale (SH-261).
 func apply_item_art(art_scene: PackedScene, token_scale: Vector2 = Vector2.ONE) -> void:
 	if art_scene == null:
 		return
