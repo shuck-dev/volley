@@ -4,7 +4,7 @@ The ending and what comes after. High-level architecture in `three-registers.md`
 
 ## The call
 
-Reaching the world record means winning the championship. Winning the championship means dialling the shopkeeper's phone number. The shopkeeper picks up. They are still there.
+Reaching the world record means winning the championship. Winning the championship means dialling the shopkeeper's phone number. The shopkeeper picks up. They are still there. The protagonist is reaching the person who was there when they were not; the shared knowledge has been waiting all along.
 
 The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they did and may still do, but it is no longer a wall.
 

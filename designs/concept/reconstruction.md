@@ -43,15 +43,15 @@ Reality's puzzle shape is layered. The player walks into a scene with several th
 
 The tinkerer's real-world counterpart is the sister. She is the shopkeeper's younger sister and one of the first reachable people in Reality, less weighted by the death than the shopkeeper. She has the photo book.
 
-The photo book is the protagonist's history kept in someone's hands. Pictures of the protagonist and the dead friend rallying as kids; the shopkeeper at a younger age behind the counter; ordinary days. The book is not waiting in a drawer for the protagonist to find; the sister has been keeping it. Someone never left.
+The photo book is the protagonist's history kept in someone's hands. Pictures of the protagonist and the dead friend rallying as kids; the shopkeeper at a younger age behind the counter; ordinary days. The book is not waiting in a drawer for the protagonist to find; the sister has been keeping it. The shopkeeper kept the history because the protagonist could not. The sister holds it now because she is not entangled in the absence the way the shopkeeper is.
 
 Sitting with the sister and looking through the book is the reconciliation action that opens the protagonist's path toward the shopkeeper. The sister can hold the photos with the protagonist because she is not entangled the way the shopkeeper is; her warmth is the bridge. Looking together is what makes the protagonist ready to call.
 
 ## The cliff
 
-Late in Reconstruction, the protagonist visits the cliff where the friend died. The dip does not take them to the familiar hometown; it takes them somewhere they have been avoiding all along.
+Late in Reconstruction, the protagonist visits the cliff where the friend died. The dip does not take them to the familiar hometown; it takes them to the place they should have been and were not. The shopkeeper was here. The protagonist was not. The visit closes that absence by chosen presence.
 
-The cliff is the structural opposite of the break (`cracks-and-break.md`). The break is forced acceptance of Reality (the wall comes down on you). The cliff is chosen acceptance of the loss (you walk to it). The two are bookends.
+The cliff is the structural opposite of the break (`cracks-and-break.md`). The break is forced acceptance of Reality (the wall comes down on you). The cliff is chosen acceptance of the absence (you walk to where you should have been). The two are bookends.
 
 After the cliff visit, the champ's pushiness softens. They become a partner the player can rally with in the construction; the championship match is no longer impossible. The path to the call opens through the final reconciliation actions.
 

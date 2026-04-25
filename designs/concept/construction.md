@@ -27,15 +27,19 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 ## Why the shopkeeper is at the stall
 
-The shopkeeper is the relationship the protagonist most needs but most cannot face. They were there when the friend died. They are the only other person who knows what happened. To talk to them in reality is to talk about the death; the protagonist pushes them away because facing them would mean facing what they have not been able to face.
+The shopkeeper was there when the friend died. The protagonist was not.
 
-The protagonist's mind cannot let them go either. The shopkeeper is the only one who could understand. The construction's compromise is precise: keep the shopkeeper present, warm, available; have the relationship without the conversation. The friend at the stall, attentive without intruding, is the relationship the protagonist wants AND the relationship they cannot have in reality, rendered as the version they can hold.
+That asymmetry is the wedge. The friend did something reckless, alone except for the shopkeeper, who witnessed it and could not save them. The shopkeeper carries the memory; the protagonist carries the absence. Their grief is not shared in the same direction. Talking to the shopkeeper would mean hearing what happened, and naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment, the shopkeeper did not cause it; as mirror.
+
+The shopkeeper's tries to help after the death were partly their own grief reaching for connection. They got pushed away because the protagonist could not bear what their presence pointed at.
+
+The protagonist's mind cannot let them go either. The shopkeeper is the only one who knows; the only one who could understand. The construction's compromise is precise: keep the shopkeeper present, warm, available; have the relationship that does not require admitting where the protagonist was when the friend died. The friend at the stall, attentive without intruding, is the relationship the protagonist wants AND the relationship they cannot have in reality, rendered as the version they can hold.
 
 This is why the world record IS the shopkeeper's phone number. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
-It is why the championship sits structurally as the final wall. Reaching the champ means reaching the dead friend, which means facing the death, which means facing the shopkeeper.
+It is why the championship sits structurally as the final wall. Reaching the champ means reaching the dead friend, which means facing what happened, which means facing the shopkeeper, which means facing where the protagonist was instead.
 
-It is why the call is the ending (`postgame.md`). Once the protagonist has faced the cliff and reconciled the death, there is nothing left between them and the shopkeeper.
+It is why the call is the ending (`postgame.md`). Once the protagonist has faced the cliff (the place they should have been) and reconciled the absence, there is nothing left between them and the shopkeeper. The shared knowledge has been waiting all along.
 
 ## The tournament
 
