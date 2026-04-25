@@ -1,6 +1,6 @@
 # Game Structure References
 
-This is research reference for the Page One mission. Volley is a three-register game (Construction, Reality, Reconstruction) and the team needs lineage for what other games have done with comparable shapes. The doc collects case studies the design spike (SH-278) and the bible can lean on. The recommendations sit at the end and the cases earn them.
+Volley is a three-register game (Construction, Reality, Reconstruction) and the team needs lineage for what other games have done with comparable shapes. This doc collects case studies the design spike (SH-278) and the artist world bible can lean on. The recommendations sit at the end and the cases earn them.
 
 ## The two-world tradition
 
