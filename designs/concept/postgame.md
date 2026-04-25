@@ -12,15 +12,21 @@ The shopkeeper is still there. The protagonist is reaching the person who was th
 
 The call is one image, two presences. Composition splits the frame: protagonist on the outside, shopkeeper on the inside, the door (or window, or wall) dividing them. Both holding phones. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split IS the years of distance; the shared frame IS the resolution. The phone is the line that crosses the split. One moment, two people, finally in the same picture.
 
-The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they did and may still do, but it is no longer a wall.
+### Coming home
+
+The call lands. Both hang up; the door opens. The composition flows from the split frame into a single image of the court, with the shopkeeper crossing onto the right side, racquet in hand. The seashell is on the ground (the champ left it earlier, see below). The first ball is in the air.
+
+This is the postgame opening, and it is not a transition. The player never leaves the moment. The call IS the act of bringing the shopkeeper home; the home is the court; the rally that begins is postgame. The construction's warmth has returned, but as the actual relationship rather than the substitute. The right person is in the right spot.
+
+The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
 
 ## Postgame
 
-The player can return after the call. When they do, the champ is gone. They were always grief-shaped; once the loss has been faced and the call has been made, there is nothing for them to be in the construction anymore. The right side of the championship match they used to occupy is empty.
+Postgame is rallying with the shopkeeper. They take the right side of the court that used to be the championship spot, the same spot the champ once held. The construction is at last what the protagonist was always reaching for: themselves on the left, the shopkeeper on the right, the rally going.
 
-The champ has left a seashell behind. A small thing from the cliff, picked up the day they died and somehow waiting in the empty championship spot now. When carried, the seashell opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Postgame is the protagonist having that access as a daily option.
+The champ exited earlier, late in Reconstruction (see `construction.md` and `reconstruction.md`). They had become a partner the player could rally with after the cliff; once the path to the call was opened, they left, with the seashell where they had been. Reaching the call clears the championship spot for the shopkeeper; the seashell stays.
 
-The cliff was the chosen acceptance the first time it was visited; the seashell makes it a chosen visit. Grief integrated as access, not as event.
+The seashell, carried by the protagonist from the call onward, opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Grief integrated as access, not as event. The cliff was chosen acceptance the first time it was visited; the seashell makes it a chosen visit.
 
 ## What this opens
 

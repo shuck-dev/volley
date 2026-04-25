@@ -16,7 +16,7 @@ The break is the wall coming down. Spec Ops is the structural exemplar: cumulati
 
 The break's mechanical signature: the player is pulled into Reality involuntarily for the first time. The dip is forced. They walk through the protagonist's hometown. They see the people behind the partners. The shopkeeper is at their actual age. Martha is the cashier at the actual newsagent. The cliff is somewhere in this geography but not yet visited.
 
-The break ends and the player is back in Construction, but the wall does not go up again. Reconstruction begins (`reconstruction.md`).
+The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its warm centre: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`reconstruction.md`).
 
 ## The break and the championship
 

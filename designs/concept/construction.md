@@ -16,8 +16,8 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 ### Supporting cast
 
-- **The protagonist.** Young, full of motion, focused on the rally. The reality version comes later (in Reconstruction).
-- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue. In reality, this is someone the protagonist has pushed away. Same person, two renders. (See "Why the shopkeeper is at the stall" below.)
+- **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
+- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, pre-break. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`postgame.md`). (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into the bright world as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
 - **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`reconstruction.md`).
 
