@@ -26,13 +26,19 @@ The artist's hardest job lives here. Construction must be straight-up enjoyable 
 
 ### The cast in Construction
 
-Everyone in Construction is a real person rendered in the bright world's register. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The exception is the rival.
+The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in the bright world. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The opposing cast are gym leaders the player faces in encounter battles; only the champ is a real person, the dead friend. The other gym leaders are metaphor-figures (see "Gym leaders and the champ" below).
+
+Supporting cast:
 
 - **The protagonist.** Young, full of motion, focused on the rally. The reality version comes later.
 - **The shopkeeper / friend at the stall.** The warmth at the centre of the venue. In reality, this is someone the protagonist has pushed away. Same person, two renders. (See "Why the shopkeeper is at the stall" below.)
-- **Martha and the partners.** Real people the protagonist knew, summoned into the bright world to fill the right side of the court. Each has a real-world counterpart the player can meet during Reconstruction.
-- **The tinkerer.** Real person, the shopkeeper's younger sister.
-- **The rival.** The exception. The dead friend. No real-world counterpart in person; their reality is the cliff (see Reconstruction).
+- **Martha and the partners.** Real people the protagonist knew, summoned into the bright world to take the right side of the court as training support. Each has a real-world counterpart the player can meet during Reconstruction.
+- **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality.
+
+Opposing cast:
+
+- **Gym leaders.** One per venue. Construct-figures, not real people. Each is a metaphor for something the protagonist is processing about the event; the resonance is only obvious looking back. The player faces them in 1v1 encounter battles when the rally count reaches the venue's threshold.
+- **The champ.** The final gym leader. The dead friend. No real-world counterpart in person; their reality is the cliff (see Reconstruction).
 
 ### Why the shopkeeper is at the stall
 
@@ -42,21 +48,21 @@ The protagonist's mind cannot let them go either. The shopkeeper is the only one
 
 This is also why the world record IS the shopkeeper's phone number. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
-It is why the rival sits structurally as the obstacle: the dead friend stands between the protagonist and the shopkeeper, because facing the shopkeeper requires first facing the death. In the bright world the rival is the partner who pushes; in the underlying psychology the rival is the wall.
+It is why the champ sits structurally as the final obstacle: the dead friend stands between the protagonist and the shopkeeper, because facing the shopkeeper requires first facing the death. In the bright world the champ is the gym leader at the top of the ladder, someone the protagonist looks up to; in the underlying psychology the champ is the wall.
 
-It is why the call is the ending. Once the protagonist has faced the cliff and reconciled the death (rival becomes a partner), there is nothing left between them and the shopkeeper. The substitute becomes redundant when the real is reachable. Postgame the bright world dims because it does not need to hold what reality can now hold.
+It is why the call is the ending. Once the protagonist has faced the cliff and reconciled the death (champ becomes a partner), there is nothing left between them and the shopkeeper. The substitute becomes redundant when the real is reachable. Postgame the bright world dims because it does not need to hold what reality can now hold.
 
-### The rival
+### Gym leaders and the champ
 
-The rival is the dead friend rendered as a partner. The construction had to do something with someone it could not leave out and could not face on equal terms; what it did was put them in the partner slot with the wrong relationship. They are the only construct without a real-world embodiment, because the dead friend cannot appear in Reality except as place and absence (see the cliff).
+Gym leaders are the opposing cast. They are not partners and not real people. They are construct-figures the bright world has invented for the protagonist to face, one per venue, each a metaphor for something the protagonist is processing about the event. The first venue's gym leader, the underwater venue's gym leader, the meteor's, and so on; the resonance of each to the event is only obvious looking back. The artist needs to know each gym leader's emotional shape; the player will only feel it.
 
-The rival is a character, not a score. They take the right side of the court the way other partners do, but where Martha is uncomplicated warmth, the rival is the protagonist's memory of someone who pushed them. Their barks are sharper. Their returns are harder. The player rallies higher with the rival on the court than with anyone else, and the count climbs faster, but the texture is competitive rather than companionable. The narrative doc's read holds: the rival's aggression is not really aggression; it is the friend's old habit of not letting the protagonist coast.
+The play shape: the rally with partners is the training; the gym leader battle is the encounter. Battles are pong with items and effects, the rich version of the rally turned up for the encounter. The player faces the gym leader 1v1, no partner on the court. The training-with-partners is what gets the player to the encounter; the encounter is what they do alone.
 
-Pre-break, the rival is the partner who sets the record-1 ceiling. The protagonist plays best with them; the count peaks under their pressure; the wall is exactly there. The player feels the rival as the obstacle through the play itself, not through a leaderboard.
+The champ is the final gym leader. The dead friend. Someone the protagonist looks up to, not someone they push against; a champion to reach for, never a rival. In the construction's idiom, the champ sits at the top of the ladder where champions belong. The protagonist trains, climbs through gym leaders, eventually reaches the champ, and cannot pass. The wall is exactly there. The break is what happens when the player has been at the champ long enough that the construction can no longer hold them against the impossibility.
 
-Late in Reconstruction, after the cliff visit, the relationship shifts. The rival becomes a regular partner. The pushiness softens; the rallies still go high, but the protagonist is no longer being pushed; they are playing with someone they once played with. The path to the record opens.
+Late in Reconstruction, after the cliff visit, the champ shifts. They become recruitable as a partner; the player can put them on the court like any other. The rallies are different with them; they were always the player they admired. The path to the call opens once the champ is a partner, not a wall.
 
-After the call, the rival is gone (see Postgame).
+After the call, the champ is gone (see Postgame).
 
 ## Cracks
 
@@ -83,7 +89,7 @@ Reconstruction is not a third visual register. The two registers stay distinct: 
 Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the world record; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Two changes mark Reconstruction at the play level:
 
 - **The score is hidden in Construction.** Pre-break, the count climbs visibly; the player chases the number. Post-break, the number disappears from the rally. The player rallies without knowing how close they are to the call. The number can still be checked, but only by visiting somewhere in Reality (the sister's, the closed shop, the cliff). The score migrates from Construction to Reality. The player has to leave the rally to know how close they are; that is the exact register-shift Reconstruction wants to feel like.
-- **The rival's dialogue softens gradually.** Pre-break, the rival's lines are sharp, pushing, the friend's old habit of not letting the protagonist coast. Across Reconstruction the lines soften beat by beat, until late in the arc the rival sounds like a friend again. The shift is in what gets said and how, not in a stat. The player notices the change through the dialogue alone.
+- **The champ's dialogue softens gradually.** Pre-break, the champ's lines are sharp, pushing, the friend's old habit of not letting the protagonist coast. Across Reconstruction the lines soften beat by beat, until late in the arc the champ sounds like a friend again. The shift is in what gets said and how, not in a stat. The player notices the change through the dialogue alone.
 
 A third register-shift lives at the audio level: the construction's bright synthetic music thins and acoustic instruments arrive, with the balance moving toward fuller arrangement by late Reconstruction. The audio direction has its own doc (SH-281).
 
@@ -98,7 +104,7 @@ As the carry accumulates, the bright world ages with the player. Saturation drop
 
 ### Reconciliation
 
-Reconciliation is what the player DOES inside Reconstruction. The actions: dips into Reality, carries back, attentions paid, small reckonings worked through. Each reconciliation action compounds. The cumulative effect is the protagonist getting closer to the cliff, closer to the rival becoming a partner, closer to the call.
+Reconciliation is what the player DOES inside Reconstruction. The actions: dips into Reality, carries back, attentions paid, small reckonings worked through. Each reconciliation action compounds. The cumulative effect is the protagonist getting closer to the cliff, closer to the champ becoming a partner, closer to the call.
 
 By the end of Reconstruction, the protagonist has reconciled the event and reconstructed their view. The two land together.
 
@@ -126,7 +132,7 @@ Late in Reconstruction, the protagonist visits the cliff where the friend died. 
 
 The cliff is the structural opposite of the break. The break is forced acceptance of Reality (the wall comes down on you). The cliff is chosen acceptance of the loss (you walk to it). The two are bookends.
 
-After the cliff visit, the rival's pushiness softens. They become a partner in the ordinary sense; the rallies still go high but the protagonist is no longer being pushed. The gap to the record closes through reconciliation actions in the construction's final stretch. The path to the call opens.
+After the cliff visit, the champ's pushiness softens. They become a partner in the ordinary sense; the rallies still go high but the protagonist is no longer being pushed. The gap to the record closes through reconciliation actions in the construction's final stretch. The path to the call opens.
 
 ## The call
 
@@ -136,9 +142,9 @@ The call is the ending. The warmth in Construction is now available without the 
 
 ## Postgame
 
-The player can return after the call. When they do, the rival is gone. They were always grief-shaped; once the loss has been faced and the call has been made, there is nothing for them to be in the construction anymore. The right side of the court they used to take is empty.
+The player can return after the call. When they do, the champ is gone. They were always grief-shaped; once the loss has been faced and the call has been made, there is nothing for them to be in the construction anymore. The right side of the court they used to take is empty.
 
-The rival has left a seashell behind. A small thing from the cliff, picked up the day they died and somehow waiting in the empty partner spot now. When carried, the seashell opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Postgame is the protagonist having that access as a daily option.
+The champ has left a seashell behind. A small thing from the cliff, picked up the day they died and somehow waiting in the empty partner spot now. When carried, the seashell opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Postgame is the protagonist having that access as a daily option.
 
 The cliff was the chosen acceptance the first time it was visited; the seashell makes it a chosen visit. Grief integrated as access, not as event.
 
@@ -146,7 +152,7 @@ The narrative doc names "Regret" as a future-update perspective for someone who 
 
 ## What this teaches each surface
 
-- **Artist world bible**: the protagonist holds the racquet in Construction with bright-world weight, in Reality with real-world weight (older, plainer). Two asset sets per character that appears in both. The rival is the exception (Construction-only, with the cliff as their reality). Reconstruction's visual signal is the carry plus the gradual weathering, not a third render. Cracks are tonal and atmospheric; do not draw concrete reality-leaks.
+- **Artist world bible**: the protagonist holds the racquet in Construction with bright-world weight, in Reality with real-world weight (older, plainer). Two asset sets per character that appears in both. The champ is the exception (Construction-only, with the cliff as their reality). Reconstruction's visual signal is the carry plus the gradual weathering, not a third render. Cracks are tonal and atmospheric; do not draw concrete reality-leaks.
 - **MC profile**: the protagonist's reconciliation arc is the spine of their interior life. The call-of-the-void layer the profile already names becomes legible as the resistance to crossing into Reality. The cliff is where that resistance is met head-on.
 - **Tech-context**: the rally tooling holds Construction. Reality's tooling is its own thing: layered scene-state, contextual interactions, dialogue, descriptive prose, the present-and-attentive puzzle shape, the bidirectional carry. SH-279 is the right place to spike this.
 
@@ -164,7 +170,7 @@ Strong keeps from `designs/02-alpha/01-world-and-narrative.md`:
 - The world record is the shopkeeper's phone number. The hook resolves into the call.
 - Peace is the call made.
 - The shopkeeper is the friend who got pushed away. Same person as the friend at the stall. Two renders.
-- The rival is the dead friend. Construction only. Returns as final partner once the cliff is faced.
+- The champ is the dead friend. Construction only. Returns as final partner once the cliff is faced.
 - The hometown is the reality place. Coastal, British-seaside-meets-southern-Spain.
 
 Reframings:
