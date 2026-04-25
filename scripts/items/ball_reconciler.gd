@@ -3,6 +3,8 @@ extends Node
 
 ## Owns live Ball instances for permanent on-court ball items.
 
+signal ball_spawned(item_key: String, ball: Ball)
+
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 
 @export var ball_scene: PackedScene = BallScene
@@ -55,7 +57,9 @@ func ensure_ball_for_key(
 	_ball_host.add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
+	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
+	ball_spawned.emit(item_key, ball)
 	return ball
 
 
@@ -97,3 +101,17 @@ func _default_spawn_position() -> Vector2:
 	if _ball_host is Node2D:
 		return (_ball_host as Node2D).global_position
 	return Vector2.ZERO
+
+
+func _apply_item_art(ball: Ball, item_key: String) -> void:
+	var definition: ItemDefinition = _get_item_definition(item_key)
+	if definition == null or definition.art == null:
+		return
+	ball.apply_item_art(definition.art)
+
+
+func _get_item_definition(item_key: String) -> ItemDefinition:
+	for item: ItemDefinition in _item_manager.items:
+		if item.key == item_key:
+			return item
+	return null

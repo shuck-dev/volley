@@ -93,3 +93,47 @@ class TestShopItemArt:
 
 	func test_configure_stores_item_definition() -> void:
 		assert_eq(_item.item_definition, GripTape)
+
+
+class TestShopItemInputRelease:
+	extends GutTest
+
+	var _item: ShopItem
+	var _item_manager: Node
+
+	func before_each() -> void:
+		_item_manager = ItemFactory.create_manager(self)
+		_item_manager._progression.friendship_point_balance = 1000
+		var definition: ItemDefinition = _item_manager.items[0]
+		_item = ShopItemScene.instantiate()
+		_item._item_manager = _item_manager
+		add_child_autofree(_item)
+		_item.configure(_item_manager, definition)
+
+	func test_mouse_button_release_event_resolves_active_drag() -> void:
+		_item.start_drag()
+		assert_true(_item.is_dragging(), "precondition: drag is active")
+
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = false
+		_item._input(event)
+
+		assert_false(_item.is_dragging(), "mouse-up should resolve the active drag")
+
+	func test_mouse_button_release_event_ignored_when_not_dragging() -> void:
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_LEFT
+		event.pressed = false
+		_item._input(event)
+
+		assert_false(_item.is_dragging(), "no drag started by stray release event")
+
+	func test_non_left_button_release_does_not_end_drag() -> void:
+		_item.start_drag()
+		var event := InputEventMouseButton.new()
+		event.button_index = MOUSE_BUTTON_RIGHT
+		event.pressed = false
+		_item._input(event)
+
+		assert_true(_item.is_dragging(), "right-button release must not end the gesture")

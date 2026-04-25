@@ -112,7 +112,112 @@ func test_each_shop_item_responds_to_input_event_signal() -> void:
 		assert_ne(item.get_last_input_frame(), before, "input_event not wired for %s" % item.name)
 
 
+# --- diegetic drag-as-purchase ---
+func test_press_on_shop_item_starts_held_token_without_purchase() -> void:
+	var item: ShopItem = _shop_item("grip_tape")
+	var balance_before: int = _item_manager.get_friendship_point_balance()
+
+	item.start_drag()
+
+	assert_true(item.is_dragging(), "press on an affordable item starts the held-token gesture")
+	assert_not_null(item.get_held_token(), "held token spawned on press")
+	assert_eq(_item_manager.get_level("grip_tape"), 0, "purchase has not fired yet")
+	assert_eq(
+		_item_manager.get_friendship_point_balance(),
+		balance_before,
+		"FP balance unchanged until release outside the shop",
+	)
+
+
+func test_release_inside_shop_cancels_purchase() -> void:
+	var item: ShopItem = _shop_item("grip_tape")
+	item.start_drag()
+	var balance_before: int = _item_manager.get_friendship_point_balance()
+
+	item.attempt_release(_shop.shop_area.global_position)
+
+	assert_false(item.is_dragging(), "release ends the gesture")
+	assert_eq(_item_manager.get_level("grip_tape"), 0, "release inside shop must not purchase")
+	assert_eq(
+		_item_manager.get_friendship_point_balance(),
+		balance_before,
+		"release inside shop must not debit FP",
+	)
+
+
+func test_release_outside_shop_purchases_and_debits_balance() -> void:
+	var item: ShopItem = _shop_item("grip_tape")
+	var balance_before: int = _item_manager.get_friendship_point_balance()
+	var cost: int = GripTape.base_cost
+	item.start_drag()
+
+	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	item.attempt_release(outside)
+
+	assert_eq(
+		_item_manager.get_level("grip_tape"), 1, "release outside shop completes the purchase"
+	)
+	assert_eq(
+		_item_manager.get_friendship_point_balance(),
+		balance_before - cost,
+		"FP balance debits at release time",
+	)
+
+
+func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() -> void:
+	# Drives InputEventMouseButton through the shop item's input_event signal.
+	# Press starts the held token; release outside the shop bounds completes the
+	# purchase (SH-246) and lands the item inactive on the matching rack.
+	var item: ShopItem = _shop_item("grip_tape")
+	var balance_before: int = _item_manager.get_friendship_point_balance()
+	var cost: int = GripTape.base_cost
+	var viewport: Viewport = item.get_viewport()
+
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	item.input_event.emit(viewport, press, 0)
+
+	assert_true(item.is_dragging(), "press starts the held-token gesture")
+	assert_eq(_item_manager.get_level("grip_tape"), 0, "press alone must not purchase")
+
+	# Release outside shop bounds: drive attempt_release directly (the _input
+	# branch reads cursor position from the viewport, which is not deterministic
+	# under headless tests).
+	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	item.attempt_release(outside)
+
+	assert_false(item.is_dragging(), "release ends the gesture")
+	assert_eq(
+		_item_manager.get_level("grip_tape"),
+		1,
+		"release outside shop completes the purchase (one purchase event)",
+	)
+	assert_eq(
+		_item_manager.get_friendship_point_balance(),
+		balance_before - cost,
+		"FP balance debits exactly once at release time",
+	)
+	assert_false(
+		_item_manager.is_on_court("grip_tape"),
+		"purchased equipment lands inactive on the rack, not on the player",
+	)
+
+
+func test_unaffordable_item_cannot_start_drag() -> void:
+	_item_manager._progression.friendship_point_balance = 0
+	var item: ShopItem = _shop_item("grip_tape")
+
+	var ok: bool = item.start_drag()
+
+	assert_false(ok, "unaffordable items reject the drag-out gesture")
+	assert_false(item.is_dragging(), "no held token when unaffordable")
+
+
 # --- helpers ---
 func _drag_item_out_of_shop_area(item: ShopItem) -> void:
-	# Emit the signal directly to avoid physics-frame timing in tests.
-	_shop.shop_area.body_exited.emit(item)
+	# Drive the diegetic drag-as-purchase path: press, then release outside the
+	# shop bounds. The position is well outside the shop area's collision rect.
+	item.start_drag()
+	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	item.attempt_release(outside)
