@@ -14,7 +14,7 @@ The game has three registers: Construction, Reality, and Reconstruction.
 
 ## Construction
 
-The bright world. The garden, the stall, the racquet, the rally. Vibrant, full, Nintendo-saturated. Characters are young, helping, generous. The volley record is the goal; the count is the engine. Volleyball lives here and only here.
+The bright world. The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. The volley record is the goal; the count is the engine. Volleyball lives here and only here.
 
 Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). The bright world is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the warmth itself.
 
@@ -44,7 +44,7 @@ Reality during the reconciliation arc is finite hand-crafted content. It is not 
 
 Reality's tone in these dips: gold-hour, weighted, story-driven. Characters at their real ages, less vibrant, less full. Spiritfarer, Lake, Omori's Faraway Town are the tonal touchstones. Loss is acknowledged; the prose breathes; the rally is not the engine here. The pull of reality is its honesty; the player ends up wanting it.
 
-Reality's mechanic in these dips: TGYH-coded, where TGYH means **Thank Goodness You're Here**'s interaction model, not its tone. Layered situations, contextual interactions, presence-and-attention rather than inventory puzzles. The puzzles are about being in the room and doing the right small thing, not about pixel-hunting or item-recombining.
+Reality's mechanic in these dips: layered situations the player walks into, with several things going on at once and a handful of contextual interactions available. The puzzle is being present in the room and doing the right small thing. Not inventory recombination, not pixel-hunting; closer to navigating a busy scene where a small attentive act has the right effect.
 
 ## Reconstruction
 
@@ -65,7 +65,7 @@ The Nausicaä framing the bible has named applies here, gently: as the player ca
 
 - **Artist world bible**: the protagonist holds the racquet in Construction with bright-world weight, in Reality with real-world weight (older, plainer). Two asset sets per character that appears in both. Reconstruction's visual signal is the carry, not a third render. Cracks are tonal and atmospheric; do not draw concrete reality-leaks.
 - **MC profile**: the protagonist's reconciliation arc is the spine of their interior life. The call-of-the-void layer the profile already names becomes legible as the resistance to crossing into Reality.
-- **Tech-context**: the rally tooling holds Construction. Reality's tooling is its own thing: layered scene-state, contextual interactions, dialogue, descriptive prose, the TGYH-coded interaction shape. SH-279 is the right place to spike this.
+- **Tech-context**: the rally tooling holds Construction. Reality's tooling is its own thing: layered scene-state, contextual interactions, dialogue, descriptive prose, the present-and-attentive puzzle shape. SH-279 is the right place to spike this.
 
 ## What this teaches the production
 
@@ -90,5 +90,5 @@ The structure above is settled in conversation. The questions below are not, and
 ## What this unblocks
 
 - The artist world bible's content fills can proceed once dip count and crack pacing are answered. Without those, the bible can describe Construction and the cracks pattern, but not the rhythm of dips.
-- SH-279 (tech spike on reality gameplay) absorbs the TGYH-coded interaction model and the bidirectional carry. Most of its work follows from the open questions answered here.
+- SH-279 (tech spike on reality gameplay) absorbs the layered-scene interaction model and the bidirectional carry. Most of its work follows from the open questions answered here.
 - Future content tickets (specific dip scenes, specific cracks, specific puzzles) live downstream of this doc reaching consensus.
