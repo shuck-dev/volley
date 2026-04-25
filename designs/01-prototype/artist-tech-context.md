@@ -10,9 +10,9 @@ This doc is the practical context the brief leaves out: how the scene is layered
 
 A Volley! venue is built to read as somewhere a person could walk into, not as a backdrop with figures on top.
 
-Godot calls the rig `Parallax2D`: a stack of painted layers, each scrolling at its own rate as the camera moves. A deep background drifts almost imperceptibly. A near background sits behind the rally. The court itself, where the partners meet the ball, is a mid-ground plane. The foreground sits forward of the rally: a feeder leg, a corner of the friend's stall awning, a tabletop edge, a vine catching on the camera. The court already runs a single-layer version of this in `scenes/court.tscn`, which is the seed the rest grows from.
+Godot calls the rig `Parallax2D`: a stack of painted layers, each scrolling at its own rate as the camera moves. A deep background drifts. A near background sits behind the rally. The court itself, where the partners meet the ball, is a mid-ground plane. The foreground sits forward of the rally: a feeder leg, a corner of the friend's stall awning, a tabletop edge, a vine catching on the camera. The court already runs a single-layer version of this in `scenes/court.tscn`, which is the seed the rest grows from.
 
-When you paint a layer, you are painting a slice of the world at a specific distance. A near layer carries the kind of detail the player's eye lands on between rallies. A deep layer can carry atmosphere with almost nothing in it: a wall of warm afternoon, a wash of submerged green, the suggestion of a tree. The friend's stall sits forward; a row of distant rooftops sits back; the wonder past the locked gate sits further back still.
+When you paint a layer, you are painting a slice of the world at a specific distance. A near layer carries the kind of detail the player's eye lands on between rallies. A deep layer can carry atmosphere: a wall of warm afternoon, a wash of submerged green, the suggestion of a tree. The friend's stall sits forward; a row of distant rooftops sits back; the wonder past the locked gate sits further back still.
 
 The illusion holds on consistency. Light direction is locked per venue before any layer goes into production: a backlit afternoon in the garden, sunlight filtering through water in the underwater venue, nebula glow from above on the meteor. Every layer paints to the same source, characters included. Painted shadow on the friend's awning matches painted shadow on the racquet matches painted shadow on the back wall. Nothing in this rig depends on shaders or runtime lighting; the painting carries it.
 
@@ -26,7 +26,7 @@ Two engine layers are worth knowing about by name, because they shape what kind 
 
 **The world layer.** Almost everything sits here: the painted backgrounds, the court, the racquets, the ball, the friend's stall, the feeders, the workshop, characters. This is where the rally lives. When the camera moves or zooms, everything in the world layer moves with it. Anything diegetic, anything inside the fiction, lives here.
 
-**The screen-space dev overlay.** A separate layer (`CanvasLayer`) glued to the screen, ignoring the camera. Only a developer-only HUD lives here: framerate, debug toggles, state inspection text. Player-facing game state never lives here. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship-point balance is a counter the friend keeps. The shipment landing is a thump and a small pulse on the mat. The world tells the player what is happening, in objects the player can point at.
+**The screen-space dev overlay.** A separate layer (`CanvasLayer`) that ignores the camera. Only the developer HUD lives here: framerate, debug toggles, state inspection text. Player-facing game state never lives here. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship-point balance is a counter the friend keeps. The shipment landing is a thump and a small pulse on the mat. The world tells the player what is happening, in objects the player can point at.
 
 The shorthand: developer HUD on the screen-space layer, fiction in the world.
 
@@ -34,7 +34,7 @@ The shorthand: developer HUD on the screen-space layer, fiction in the world.
 
 ## Racquets, partners, anchor points
 
-Partners hold racquets. The protagonist holds one. Martha holds one. Each later partner will. Characters and racquets are separate things: the racquet is a tool the partner picks up, not a fixed extension of them.
+Partners hold racquets. The protagonist holds one. Martha holds one. Each later partner will. Characters and racquets are separate things: the racquet is a tool the partner picks up.
 
 Items attach to a racquet at named anchor points: a grip on the handle, a piece of equipment on the head, a tape across one side. The artist's racquet design carries through the venues; the partner holding it changes with the cast.
 
@@ -55,7 +55,7 @@ When the ball misses, it does not despawn. It keeps its velocity, rolls out of t
 
 ## The ball at rest, and why helpers exist
 
-Balls do not naturally roll into the feeder. A miss leaves the ball wherever the floor and gravity decide; a stray ball at rest is the default state, not a bug. The venue can hold a couple of resting balls scattered across the mid and foreground at any moment, alongside the rally on court, the friend at her stall, the tinkerer at the workshop, and the racks of inactive equipment.
+Balls do not naturally roll into the feeder. A miss leaves the ball wherever the floor and gravity decide; a stray ball at rest is the default state, not a bug. The venue can hold a couple of resting balls scattered across the mid and foreground, alongside the rally on court, the friend at her stall, the tinkerer at the workshop, and the racks of inactive equipment.
 
 Helpers exist diegetically for exactly this reason. A dog can fetch a stray ball back. The player can pick one up and drop it into the feeder. The feeder and the gear rack are drop targets: a ball that crosses a feeder slot snaps into it; equipment that lands on the gear rack settles into a slot. The artist's read on the venue needs to leave room for that loose population and the small acts that gather it.
 
@@ -89,7 +89,7 @@ The bible covers the visual register. These are the engine-layer asks the bible 
 
 **DON'T:**
 
-- **Mismatch light direction across layers.** A foreground catching sun from one side while a background catches it from another flattens the illusion immediately.
+- **Mismatch light direction across layers.** A foreground catching sun from one side while a background catches it from another flattens the illusion.
 - **Use screen-space banners, popups, or floating numbers** for anything the player needs to read about the rally, the economy, or progression. That layer is for framerate and debug toggles.
 - **Reach for shaders or runtime lighting tricks** to fake depth. The painting carries it; the rig is layers, parallax, and shared light.
 
