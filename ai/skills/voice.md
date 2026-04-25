@@ -65,6 +65,16 @@ Open with a particular: a person, a date, a number, a moment. "Somewhere tonight
 
 The thesis arrives, if at all, after the case is partly made. The reader is grounded in a concrete first; the structural point lands when there is enough evidence to hold it up.
 
+## Show, don't tell
+
+The picture does the work. Don't add the modifier that explains what the noun already implies. "The ball is in the air" needs no "mid-arc"; the air implies the arc. "A garden in the late afternoon" needs no "warm and golden"; afternoon implies the light.
+
+The trap is the writer narrating their own picture. A racquet "ready" is fine; "ready, poised to strike" is the writer adding camera direction. A counter "reads zero" is fine; "reads zero at the start of the rally" is the writer worrying the reader will not understand.
+
+When you find a modifier explaining what the noun does, cut the modifier. The reader's imagination is faster than your description.
+
+This rule is closest in spirit to the cadence rule: short sentences land because what set them up did the work. Modifiers that re-do the work the noun has already done are the prose equivalent of explaining a punchline.
+
 ## Paragraph closes
 
 The last sentence is the loaded one. Engineer it.
