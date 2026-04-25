@@ -10,6 +10,8 @@ The bible is dense on purpose. Pick the bits that resonate and let the rest be a
 
 Volley! is an idle pong game that lives in a small window on someone's desktop. A paddle on the left, a paddle on the right, a ball going back and forth, a counter ticking up. That is the surface.
 
+Most idle games default to pixel art. Volley's bet is hand-drawn illustration carrying the genre into a register the field hasn't claimed.
+
 Underneath: a story about a man in his mid-30s who lost his best friend and built a world to hide in. The constructed world is the game we play. The real world is a town the protagonist grew up in and where the loss happened. Both are visited. The constructed world holds the rally and the friend's voice: warm, curated, safe. The real world is sparser, quieter, where the true moments live: ordinary, familiar, difficult.
 
 The north star puts it directly: "It's a story about someone who built a world to hide from something real. The partners are memories of people who mattered. The record is a number that means something specific."
@@ -445,7 +447,7 @@ A note on calibration. Volley's public footprint today is small.
 - One named character is public: Martha.
 - The vocabulary public-facing right now: venue, court, shop, workshop, cast.
 - The roadmap's milestone definitions are the most distilled public-voice writing: "Prototype: done when someone who's never heard of the game plays for an afternoon and comes away wanting more." "v1: done when you'd put your name on it and tell people to play."
-- There are no public screenshots, no key art, no banner. **The public art bar is essentially unset; the bar is yours to set.**
+- There are no public screenshots, no key art, no banner. **The public art bar is unset, and that's deliberate.** The art is the bet; the artist is the one defining what differentiates Volley from the pixel-art register that dominates the idle-game genre. There is no bar to match; there is a bar to set.
 
 ---
 
@@ -492,7 +494,7 @@ Currently open:
 
 ## A short closing
 
-The bet of the project is that one combination (hand-drawn illustration, idle pong, cosy-with-weight, two registers shifting with the story) sits in a gap the 2025 / 2026 landscape has not yet built. Each individual move has a peer that shipped well in the last two years. The combination is the thing. Your work is what makes the combination feel intentional rather than accidental.
+The bet of the project is that one combination (hand-drawn illustration, idle pong, cosy-with-weight, two registers shifting with the story) sits in a gap the 2025 / 2026 landscape has not yet built. Each individual move has a peer that shipped well in the last two years. The combination is the thing. Your work is what the bet rests on; it is what makes the combination feel intentional rather than accidental.
 
 If something feels actively wrong or contradictory in the bible or the brief, push back. Both are the current state; both will move as you do.
 
