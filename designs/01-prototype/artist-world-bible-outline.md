@@ -76,15 +76,15 @@ The three registers as craft direction. The tournament structure overlaid. The c
 
 Two asset sets per cross-register character. The champ is the only Construction-only construct (their reality is the cliff). The MC is rendered like any other character; they do not transform.
 
-The sister's role is load-bearing post-break (the photo book, the bridge to the shopkeeper). The shopkeeper's role is bookended (warm centre pre-break; absent through Reconstruction; final partner at the call).
+The sister's role is load-bearing in Reconstruction (the photo book, the bridge to the shopkeeper). The shopkeeper's role is bookended (warm centre in Construction; absent through Reconstruction; final partner at the call).
 
 ### H. Constants across venues
 
-The racquet. The ball. The friend at the stall (pre-break only). The spirit of the volley (collapsed friendship + spirit; physically present in the bright world; gives the ball its arc, lifts the protagonist).
+The racquet. The ball. The friend at the stall (in Construction only). The spirit of the volley (collapsed friendship + spirit; physically present in the bright world; gives the ball its arc, lifts the protagonist).
 
 These travel with the game across every venue. They are construction-side constants. Reality has its own constants (the kitchen, the photograph, the back walking down a street, the hometown's ordinary surfaces) that do not need to mirror the construction's.
 
-The shopkeeper's stall is a constant pre-break and an absence post-break, until the call.
+The shopkeeper's stall is a constant in Construction and an absence in Reconstruction, until the call.
 
 ### I. The cast (everyone is real)
 
@@ -100,7 +100,7 @@ The shop as Argos catalogue. The workshop. The racks (ball feeder, equipment rac
 
 This section is craft-direction for diegetic UI. It applies primarily to construction (where most of the rendering happens); reality has its own diegetic surfaces (kitchen objects, photographs, paper, real shops).
 
-Note: the score migrates to Reality post-break. Reality acquires its own score-checking surfaces (the closed shop, the sister's, the cliff). The bible names these explicitly.
+Note: the score migrates to Reality in Reconstruction. Reality acquires its own score-checking surfaces (the closed shop, the sister's, the cliff). The bible names these explicitly.
 
 ### K. Venues
 
@@ -133,7 +133,7 @@ The structural spike now lives in `designs/concept/`; its open questions are the
 - **Encounter shape inside the tournament.** Coaches teach mechanics and take the other side in their round; specific match format, win condition, drop-out behaviour all open. (Spike `construction.md`.)
 - **Reconciliation action count and shape.** 4-6 vs 5-7 actions; memory-faced vs character-encountered vs small-task-in-Reality. Affects bible's content fills for the Reality scenes. (Spike `reconstruction.md`.)
 - **Crack pacing.** Count milestones vs playtime vs story flags vs combination. Affects bible's craft direction for the cracks. (Spike `cracks-and-break.md`.)
-- **Bridge unlock signal.** What does the player see/feel when Reconstruction begins. Affects bible's craft direction for the post-break beat. (Spike `reconstruction.md`.)
+- **Bridge unlock signal.** What does the player see/feel when Reconstruction begins. Affects bible's craft direction for the in Reconstruction beat. (Spike `reconstruction.md`.)
 - **Cliff trigger.** What unlocks the cliff dip late in Reconstruction. (Spike `reconstruction.md`.)
 
 The bible itself can proceed on the structure without these settled; content fills wait on them.

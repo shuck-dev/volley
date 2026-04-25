@@ -168,7 +168,7 @@ Four phases. The visual register shifts across them. The prototype lives in phas
 1. **Pre-break.** Warm, bright world. The protagonist is in the place they built. Everything has light. The friend is at the stall, the partners arrive, the wonders escalate. Underneath, small moments of oddness sit; the player is held, not lulled.
 2. **The break.** A monumental change. The bright world deconstructs. The seam does not just show; it opens. Light, sound, object readings all turn at once. The break is the hinge of the game.
 3. **Post-break.** Reconstruction and recontextualisation. Bright and quieter worlds both come back, both altered, both readable in a new light. The same venues hold different weight. Martha's lines acquire weight; the protagonist is still playing, but knowing more.
-4. **Peace.** Genuinely peaceful, and still fun and challenging. The warmth that returns knows what it costs. The visual register is the warmth of pre-break with the texture of post-break.
+4. **Peace.** Genuinely peaceful, and still fun and challenging. The warmth that returns knows what it costs. The visual register is the warmth of Construction with the texture of Reconstruction.
 
 The game is sad, but it earns the sadness and does not wallow. The reveal lands and the game moves forward.
 
@@ -245,7 +245,7 @@ The art bible's rulebook. Every piece of art carries all six. They are descripti
 3. **Distinct.** The visual register is unmistakably Volley. Not pixel, not painterly-realism, not vector polish.
 4. **Diegetic.** The world is something the player is inside, not looking at. UI sits inside the same hand and voice.
 5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked. A simple shape that moves with feeling carries more than a detailed shape that sits still.
-6. **Shifting.** The same world holds multiple registers (bright / quieter, pre-break / post-break, biome to biome). Silhouettes hold; light, colour, line quality shift.
+6. **Shifting.** The same world holds multiple registers (bright / quieter, Construction / Reconstruction, biome to biome). Silhouettes hold; light, colour, line quality shift.
 
 ---
 
