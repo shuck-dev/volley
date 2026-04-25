@@ -293,8 +293,8 @@ func _on_rack_slot_pressed(item_key: String) -> void:
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
-	if not ball.pressed.is_connected(_on_live_ball_pressed):
-		ball.pressed.connect(_on_live_ball_pressed.bind(item_key))
+	# Each Ball is a fresh instance from ensure_ball_for_key, no double-connect risk.
+	ball.pressed.connect(_on_live_ball_pressed.bind(item_key))
 
 
 func _on_live_ball_pressed(_ball: Ball, item_key: String) -> void:

@@ -4,7 +4,6 @@ extends Node
 ## Owns live Ball instances for permanent on-court ball items.
 
 signal ball_spawned(item_key: String, ball: Ball)
-signal ball_released(item_key: String, ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 
@@ -70,7 +69,6 @@ func release_ball(item_key: String) -> Ball:
 		return null
 
 	_balls_by_key.erase(item_key)
-	ball_released.emit(item_key, ball)
 	return ball
 
 
@@ -88,7 +86,6 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		return
 
 	_balls_by_key.erase(item_key)
-	ball_released.emit(item_key, ball)
 	ball.call_deferred("queue_free")
 
 
