@@ -24,7 +24,7 @@ World-space mid and foreground layers are interactive. Resting balls, items the 
 
 Two engine layers are worth knowing about by name, because they shape what kind of thing you are drawing.
 
-**The world layer.** Almost everything sits here: the painted backgrounds, the court, the racquets, the ball, the friend's stall, the feeders, the workshop, characters. This is where the rally lives. When the camera moves or zooms, everything in the world layer moves with it. Anything diegetic, anything inside the fiction, lives here.
+**The world layer.** Almost everything sits here: the painted backgrounds, the court, the racquets, the ball, the friend's stall, the feeders, the workshop, characters. This is where the rally lives, and when the camera moves or zooms it carries the whole layer with it. Anything diegetic, anything inside the fiction, belongs here.
 
 **The screen-space dev overlay.** A separate layer (`CanvasLayer`) that ignores the camera. Only the developer HUD lives here: framerate, debug toggles, state inspection text. Player-facing game state never lives here. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship-point balance is a counter the friend keeps. The shipment landing is a thump and a small pulse on the mat. The world tells the player what is happening, in objects the player can point at.
 
@@ -63,7 +63,7 @@ Helpers exist diegetically for exactly this reason. A dog can fetch a stray ball
 
 ## Format: where the work lives
 
-Volley! plays in a full window by default. A Desktop widget mode is an additional surface that pins a smaller view to the user's desktop; the rendering approach is the same in both. Web export is the primary distribution channel today.
+Volley! plays in a full window by default. A Desktop widget mode is an additional surface that pins a smaller view to the user's desktop; the rendering approach is the same in both, and web export is the primary distribution channel today.
 
 The work needs to read at sizes well below a feature-film frame. The bible's calibration paragraph is the answer in one line: characters as simple as Ranking of Kings, painterly atmosphere across the backgrounds, the painterly feel sustained through layered depth and shared light rather than per-character full-render. Per-character Cuphead-level rendering is out of reach at this scale; the rendering load goes into the venue; the simple-shape discipline holds the characters.
 
