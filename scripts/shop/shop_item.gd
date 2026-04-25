@@ -1,14 +1,18 @@
 class_name ShopItem
-extends RigidBody2D
+extends Node2D
 
 ## Diegetic shop item: pressing starts a held-token drag, releasing outside the
 ## shop bounds completes the purchase. The drag IS the buy gesture (SH-246).
+##
+## Shop items are non-physics tokens (SH-258). Only the live `Ball` carries a
+## RigidBody2D anywhere in the game; on the table the item is a `Node2D` plus
+## art, with an `Area2D` doing input picking.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
 @export var art_holder: Node2D
-@export var collision_shape: CollisionShape2D
+@export var pickup_area: Area2D
 @export var case_overlay: Node2D
 
 var item_definition: ItemDefinition
@@ -23,6 +27,7 @@ var _last_input_frame: int = -1
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
 	_item_manager = item_manager
 	item_definition = definition
+	_apply_token_scale()
 	_build_art()
 	_refresh_case_overlay()
 
@@ -62,11 +67,11 @@ func get_held_token() -> Node2D:
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	input_pickable = true
-	freeze_mode = FREEZE_MODE_KINEMATIC
-	input_event.connect(_on_input_event)
+	if pickup_area != null and not pickup_area.input_event.is_connected(_on_input_event):
+		pickup_area.input_event.connect(_on_input_event)
 	_item_manager.friendship_point_balance_changed.connect(_on_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_apply_token_scale()
 	_refresh_case_overlay()
 
 
@@ -76,7 +81,7 @@ func _process(_delta: float) -> void:
 	_held_token.global_position = _cursor_position()
 
 
-# Release handled here so a fast drag that outruns collision still ends the drag.
+# Release handled here so a fast drag that outruns the area still ends the drag.
 func _input(event: InputEvent) -> void:
 	if _held_token == null:
 		return
@@ -97,6 +102,12 @@ func _build_art() -> void:
 		_art_instance.queue_free()
 	_art_instance = item_definition.art.instantiate()
 	art_holder.add_child(_art_instance)
+
+
+func _apply_token_scale() -> void:
+	if art_holder == null or item_definition == null:
+		return
+	art_holder.scale = item_definition.token_scale
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -151,11 +162,13 @@ func attempt_release(release_position: Vector2) -> bool:
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % item_definition.key
+	if item_definition != null:
+		token.scale = item_definition.token_scale
 	if item_definition != null and item_definition.art != null:
 		var art_instance: Node = item_definition.art.instantiate()
 		token.add_child(art_instance)
 	# Parent at scene root so the held visual follows the cursor without being
-	# tied to the item's rigid body.
+	# tied to the shop item's transform.
 	var current_scene: Node = get_tree().current_scene
 	if current_scene != null:
 		current_scene.add_child(token)
@@ -215,14 +228,5 @@ func _refresh_case_overlay() -> void:
 		return
 	if is_owned():
 		case_overlay.visible = false
-		_refresh_freeze()
 		return
 	case_overlay.visible = not can_be_owned()
-	_refresh_freeze()
-
-
-# Cased items freeze kinematically; drag lifecycle controls freeze directly.
-func _refresh_freeze() -> void:
-	if _held_token != null:
-		return
-	set_deferred("freeze", not is_owned() and not can_be_owned())

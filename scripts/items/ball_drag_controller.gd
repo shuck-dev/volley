@@ -210,6 +210,8 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	token.global_position = spawn_position
 
 	var definition: ItemDefinition = _get_item_definition(item_key)
+	if definition != null:
+		token.scale = definition.token_scale
 	if definition != null and definition.art != null:
 		var art_instance: Node = definition.art.instantiate()
 		token.add_child(art_instance)

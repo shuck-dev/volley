@@ -145,7 +145,7 @@ func test_press_on_shop_item_hides_source_slot_during_drag() -> void:
 	var viewport: Viewport = item.get_viewport()
 
 	var press := _press_event()
-	item.input_event.emit(viewport, press, 0)
+	item.pickup_area.input_event.emit(viewport, press, 0)
 
 	assert_true(item.is_dragging(), "press must start the held-token gesture")
 	assert_false(
@@ -159,7 +159,7 @@ func test_release_inside_shop_restores_source_slot_visibility() -> void:
 	var item: ShopItem = _shop_item("grip_tape")
 	var viewport: Viewport = item.get_viewport()
 
-	item.input_event.emit(viewport, _press_event(), 0)
+	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
 	# Release inside the shop area cancels the purchase; the item must come back into view.
 	item.attempt_release(_shop.shop_area.global_position)
 
@@ -176,7 +176,7 @@ func test_release_outside_shop_keeps_source_slot_hidden_through_purchase() -> vo
 	var item: ShopItem = _shop_item("grip_tape")
 	var viewport: Viewport = item.get_viewport()
 
-	item.input_event.emit(viewport, _press_event(), 0)
+	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
 	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
 	item.attempt_release(outside)
 
@@ -201,7 +201,7 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 	var balance_before: int = _shop_manager.get_friendship_point_balance()
 	var cost: int = GripTape.base_cost
 
-	item.input_event.emit(viewport, _press_event(), 0)
+	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 
 	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
@@ -229,7 +229,7 @@ func test_real_press_release_inside_shop_restores_visibility_via_input_path() ->
 	var viewport: Viewport = item.get_viewport()
 	var balance_before: int = _shop_manager.get_friendship_point_balance()
 
-	item.input_event.emit(viewport, _press_event(), 0)
+	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 	assert_false(item.visible, "source slot is hidden during the drag")
 
@@ -327,4 +327,80 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	assert_null(
 		_reconciler.get_ball_for_key("training_ball"),
 		"no Ball should remain tracked after the rack-out release",
+	)
+
+
+# --- SH-258: shop item is a Node2D token, not a physics body --------------------------
+
+
+func test_shop_item_is_not_a_physics_body() -> void:
+	_setup_shop()
+	var item_node: Node = _shop.items_anchor.get_node("ShopItem_grip_tape")
+	assert_false(item_node is RigidBody2D, "shop items are non-physics tokens (SH-258)")
+	assert_false(item_node is PhysicsBody2D, "no body class on shop items at all")
+	var item: ShopItem = item_node
+	assert_not_null(item.pickup_area, "shop items pick input through an Area2D")
+
+
+# --- SH-261: one canonical scale source across shop, held, rack, live ball -----------
+
+
+func test_token_scale_matches_across_shop_held_and_rack() -> void:
+	# Same item rendered in every container reads as the same size: the art
+	# holder under each owner takes its scale from ItemDefinition.token_scale.
+	_setup_ball_drag()  # supplies a rack we can land an item onto
+	_shop = ShopScene.instantiate()
+	_shop._item_manager = _manager
+	add_child_autofree(_shop)
+
+	var shop_item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
+	assert_eq(
+		shop_item.art_holder.scale,
+		TrainingBall.token_scale,
+		"shop slot reads token_scale from the definition",
+	)
+
+	# Press to spawn the held token, then read its scale.
+	shop_item.pickup_area.input_event.emit(get_viewport(), _press_event(), 0)
+	var held_token: Node2D = shop_item.get_held_token()
+	assert_not_null(held_token, "held token spawns on press")
+	assert_eq(
+		held_token.scale,
+		TrainingBall.token_scale,
+		"held token reads token_scale from the definition",
+	)
+	# Cancel the drag so the test does not leak gesture state.
+	shop_item.attempt_release(_shop.shop_area.global_position)
+
+	# Land the item on the rack so the rack regrows a slot.
+	_manager.take("training_ball")
+	await get_tree().process_frame
+	var slot: Node2D = null
+	for child in _rack.slot_container.get_children():
+		if child is Node2D and String(child.name).begins_with("Slot_"):
+			slot = child
+			break
+	assert_not_null(slot, "rack regrew a slot for the owned item")
+	var rack_art_holder: Node2D = slot.get_node("ArtHolder")
+	assert_eq(
+		rack_art_holder.scale,
+		TrainingBall.token_scale,
+		"rack slot reads token_scale from the definition",
+	)
+
+
+func test_held_token_during_rack_drag_uses_definition_scale() -> void:
+	# The drag controller spawns its held token with the canonical scale, so a
+	# rack-origin drag matches the rack slot it came from.
+	_setup_ball_drag()
+	_manager.take("training_ball")
+	await get_tree().process_frame
+
+	_drag.grab_from_rack("training_ball")
+	var held_token: Node2D = _drag.get_held_token()
+	assert_not_null(held_token, "rack-origin drag spawns a held token")
+	assert_eq(
+		held_token.scale,
+		TrainingBall.token_scale,
+		"the drag controller's held token reads token_scale from the definition",
 	)

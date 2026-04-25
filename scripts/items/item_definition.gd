@@ -13,6 +13,11 @@ extends Resource
 @export var cost_scaling := 1.6
 @export var max_level := 3
 @export var effects: Array[Effect]
+## Canonical visual scale for this item across shop, rack, held, and live-ball
+## containers. Each owner reads this value and applies it to the spawned art so
+## the three views read as the same object (SH-261). Default matches the rack
+## baseline established before the canonical-scale unification.
+@export var token_scale: Vector2 = Vector2(2.5, 2.5)
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

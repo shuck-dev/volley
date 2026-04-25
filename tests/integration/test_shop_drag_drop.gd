@@ -94,10 +94,10 @@ func test_exiting_shop_area_when_already_owned_does_nothing() -> void:
 	assert_eq(_item_manager.get_friendship_point_balance(), balance_before)
 
 
-# --- physics input wiring ---
-# Regression guard: every ShopItem must have its input_event signal routed to
-# the drag handler. The shipping bug was that a scaled parent silently broke
-# physics picking, so a quiet test for "all items respond" is worth keeping.
+# --- input wiring ---
+# Regression guard: every ShopItem must route its Area2D input_event into the
+# drag handler. After SH-258 the shop item is a Node2D with a child PickupArea,
+# so the wiring lives on that area.
 func test_each_shop_item_responds_to_input_event_signal() -> void:
 	var viewport: Viewport = _shop.get_viewport()
 	for child in _shop.items_anchor.get_children():
@@ -108,7 +108,7 @@ func test_each_shop_item_responds_to_input_event_signal() -> void:
 		var press := InputEventMouseButton.new()
 		press.button_index = MOUSE_BUTTON_LEFT
 		press.pressed = true
-		item.input_event.emit(viewport, press, 0)
+		item.pickup_area.input_event.emit(viewport, press, 0)
 		assert_ne(item.get_last_input_frame(), before, "input_event not wired for %s" % item.name)
 
 
@@ -176,7 +176,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	item.input_event.emit(viewport, press, 0)
+	item.pickup_area.input_event.emit(viewport, press, 0)
 
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 	assert_eq(_item_manager.get_level("grip_tape"), 0, "press alone must not purchase")

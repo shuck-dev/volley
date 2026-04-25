@@ -154,15 +154,20 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 
 
 ## Replaces the default sprite with the item's authored art so the live ball reads as the same object the player grabbed.
-func apply_item_art(art_scene: PackedScene) -> void:
+## The art is parented under a scaled holder so the live ball matches the canonical token size (SH-261).
+func apply_item_art(art_scene: PackedScene, token_scale: Vector2 = Vector2.ONE) -> void:
 	if art_scene == null:
 		return
 	if _item_art != null and is_instance_valid(_item_art):
 		_item_art.queue_free()
+	var holder: Node2D = Node2D.new()
+	holder.name = "ItemArtHolder"
+	holder.scale = token_scale
 	var instance: Node = art_scene.instantiate()
+	holder.add_child(instance)
 	if instance is Node2D:
 		_item_art = instance
-	add_child(instance)
+	add_child(holder)
 	var default_sprite: Node = get_node_or_null("Sprite")
 	if default_sprite != null:
 		default_sprite.visible = false

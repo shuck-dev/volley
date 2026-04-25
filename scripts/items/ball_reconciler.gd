@@ -152,7 +152,7 @@ func _apply_item_art(ball: Ball, item_key: String) -> void:
 	var definition: ItemDefinition = _get_item_definition(item_key)
 	if definition == null or definition.art == null:
 		return
-	ball.apply_item_art(definition.art)
+	ball.apply_item_art(definition.art, definition.token_scale)
 
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
