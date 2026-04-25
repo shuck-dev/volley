@@ -84,8 +84,7 @@ func _input(event: InputEvent) -> void:
 		return
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
-		# Take the release position from the event itself so canvas transforms do not break
-		# the inside-shop hit-test, and so headless tests can drive the path deterministically.
+		# Use the event's own position so canvas transforms don't break the inside-shop hit-test.
 		var canvas_transform: Transform2D = get_canvas_transform()
 		var release_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
 		attempt_release(release_position)
@@ -164,8 +163,7 @@ func _start_drag() -> void:
 		add_child(token)
 	token.global_position = _cursor_position()
 	_held_token = token
-	# Hide the source slot's render for the duration of the drag (SH-251) so the
-	# player sees one item under their cursor, not the held token alongside the slot.
+	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
 	pickup_started.emit(item_definition.key)
 

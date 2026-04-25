@@ -220,6 +220,38 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 	)
 
 
+func test_real_press_release_inside_shop_restores_visibility_via_input_path() -> void:
+	# Drives the real cancel path through ShopItem._input(InputEventMouseButton): press starts
+	# the gesture, release inside the shop bounds cancels and the source slot must come back
+	# into view without changing item level.
+	_setup_shop()
+	var item: ShopItem = _shop_item("grip_tape")
+	var viewport: Viewport = item.get_viewport()
+	var balance_before: int = _shop_manager.get_friendship_point_balance()
+
+	item.input_event.emit(viewport, _press_event(), 0)
+	assert_true(item.is_dragging(), "press starts the held-token gesture")
+	assert_false(item.visible, "source slot is hidden during the drag")
+
+	item._input(_release_event_at(_shop.shop_area.global_position))
+
+	assert_false(item.is_dragging(), "real mouse-up resolves the gesture")
+	assert_true(
+		item.visible,
+		"SH-251: cancel via real _input must restore the source slot's render",
+	)
+	assert_eq(
+		_shop_manager.get_level("grip_tape"),
+		0,
+		"cancel inside shop must not change item level",
+	)
+	assert_eq(
+		_shop_manager.get_friendship_point_balance(),
+		balance_before,
+		"cancel inside shop must not debit FP",
+	)
+
+
 # --- SH-252 (a): click without movement on a rack token ---------------------------------
 
 

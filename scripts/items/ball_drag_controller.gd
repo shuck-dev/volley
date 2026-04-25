@@ -11,8 +11,7 @@ signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, over_court: bool)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
-## Minimum cursor travel before a rack-origin gesture is treated as a real drag.
-## Below this, press-release at the same spot is a click-without-movement no-op (SH-252 a).
+## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 
 @export var rack: RackDisplay
@@ -28,10 +27,8 @@ var _held_is_temporary: bool = false
 ## Was the item on-court before the gesture? Rack pickups defer activation, so a click-without-movement is a no-op.
 var _held_was_on_court: bool = false
 var _cursor_samples: Array = []
-## Cursor position when the held token spawned. Used to decide whether the gesture moved
-## far enough to count as a real drag (SH-252 a click-without-movement no-op).
+## Cursor position when the held token spawned; gates the SH-252 a click-without-movement no-op.
 var _press_position: Vector2 = Vector2.ZERO
-## True until the cursor has travelled past COMMIT_MOVEMENT_THRESHOLD_PX from `_press_position`.
 var _gesture_below_threshold: bool = true
 
 
@@ -83,9 +80,7 @@ func _input(event: InputEvent) -> void:
 	if mouse_button.pressed:
 		return
 
-	# Use the event's own position (mapped through the canvas transform) so the release
-	# point is the player's actual cursor at mouse-up, not whatever the viewport's stale
-	# mouse state is. This is what makes a Camera2D in the venue not break rack hit-testing.
+	# Use the event's own position so a Camera2D in the venue doesn't break rack hit-testing.
 	attempt_release(_clamp_to_venue(_event_world_position(mouse_button)))
 
 
@@ -149,8 +144,7 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var clamped_position: Vector2 = _clamp_to_venue(release_position)
 	var over_rack: bool = _position_over_rack(clamped_position)
-	# Cursor follow runs in _process; for direct callers (tests, deferred release), also
-	# check the release position against the press position so the no-op gate stays honest.
+	# Direct callers bypass _process, so re-check distance here to keep the no-op gate honest.
 	var below_threshold: bool = _gesture_below_threshold
 	if below_threshold:
 		below_threshold = (
@@ -172,9 +166,7 @@ func attempt_release(release_position: Vector2) -> bool:
 	_gesture_below_threshold = true
 	token.queue_free()
 
-	# SH-252 a: a press-release without real cursor movement on a rack-origin pickup is a
-	# click, not a drag. Held token lifts on press, but we cancel back to the rack rather
-	# than committing the ball to the court.
+	# SH-252 a: rack-origin click without movement cancels back to the rack instead of committing.
 	var click_without_movement: bool = below_threshold and not was_on_court and not was_temporary
 	if click_without_movement:
 		drop_completed.emit(item_key, clamped_position, false)
@@ -263,17 +255,14 @@ func _compute_release_velocity() -> Vector2:
 
 
 func _cursor_position() -> Vector2:
-	# Use the canvas-aware global mouse position so a Camera2D in the venue does not
-	# decouple the held token's follow position from the world rect tests for rack /
-	# court hit-testing (SH-252 b regression: viewport-local coords missed the rack).
+	# Canvas-aware global mouse so a Camera2D doesn't desync follow from rack/court hit-tests (SH-252 b).
 	var viewport: Viewport = get_viewport()
 	if viewport == null:
 		return global_position
 	return get_global_mouse_position()
 
 
-## Maps a mouse button event's viewport-local position into world coordinates so canvas
-## transforms (Camera2D) do not break rack/court hit-testing on release.
+## Maps a mouse event's viewport-local position into world coordinates through the canvas transform.
 func _event_world_position(event: InputEventMouseButton) -> Vector2:
 	var canvas_transform: Transform2D = get_canvas_transform()
 	return canvas_transform.affine_inverse() * event.position

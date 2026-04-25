@@ -287,7 +287,7 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 Every draggable lives in a container. Some containers hold their items as physics objects; others hold them as non-physics `Node2D` tokens. The held state during a drag is always a non-physics `Node2D` preview that follows the cursor. Release decides which container respawns the at-rest representation, and where.
 
 - **Venue (court).** Owns live rally balls in play as physics. Object: `Ball` (`RigidBody2D`).
-- **Shop.** Owns shop items at rest as physics. Object: `RigidBody2D` shop item, frozen or otherwise stationary while in the slot, so the player can feel the weight of an item before they buy it.
+- **Shop.** Non-physics. Owns shop items at rest as `Node2D` tokens, like racks. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
 - **Racks.** Own rack tokens as non-physics `Node2D` plus art, regrown on rack refresh. The rack is a slot grid; physics inside it would fight the layout for no gameplay benefit.
 - **Workshop (future).** Owns workshop tokens by the same non-physics pattern when it lands.
 
@@ -295,4 +295,4 @@ On grab, the owning container's at-rest representation is despawned (or hidden, 
 
 A consequence worth naming: a press without movement on any container's at-rest representation must NOT count as a commit. The held preview lifts on press, and the commit only fires when release lands over a valid destination after a real drag.
 
-**Forward look.** Venue, shop, racks, and workshop currently differ in whether they hold their items as physics or as `Node2D` tokens. They may converge over time toward a single token type with container-specific constraint behaviour, possibly procedurally generated. The split today is deliberate (one owner per container, physics only where the player feels it) but the unification path is open and should not be blocked by tight coupling.
+**Forward look.** Shop, racks, and workshop already converge on `Node2D` tokens; only the venue (live rally) holds physics. The remaining split is deliberate (physics only where the player feels rally motion) and the at-rest token type is consistent across containers, so the unification path is already most of the way there and should not be blocked by tight coupling.
