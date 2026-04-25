@@ -36,11 +36,15 @@ Everyone in Construction is a real person rendered in the bright world's registe
 
 ### The rival
 
-The rival is the dead friend rendered as obstacle. They are the only construct without a real-world embodiment, because the dead friend cannot appear in Reality except as place and absence. The rival is what the construction had to do with someone it could not leave out and could not face as a partner.
+The rival is the dead friend rendered as a partner. The construction had to do something with someone it could not leave out and could not face on equal terms; what it did was put them in the partner slot with the wrong relationship. They are the only construct without a real-world embodiment, because the dead friend cannot appear in Reality except as place and absence (see the cliff).
 
-Mechanically the rival is a score, not a paddle. An AI counter that climbs slightly ahead of the player's. Pre-break the rival's score sits at the world record minus one; the player chases but cannot catch. The Pong shape stays clean (protagonist plus partner); the rival lives in the count itself.
+The rival is a character, not a score. They take the right side of the court the way other partners do, but where Martha is uncomplicated warmth, the rival is the protagonist's memory of someone who pushed them. Their barks are sharper. Their returns are harder. The player rallies higher with the rival on the court than with anyone else, and the count climbs faster, but the texture is competitive rather than companionable. The narrative doc's read holds: the rival's aggression is not really aggression; it is the friend's old habit of not letting the protagonist coast.
 
-Late in Reconstruction, after the player has visited the cliff, the rival's number stops climbing. The gap closes. The dead friend can be played WITH instead of against. Reaching the record opens the call.
+Pre-break, the rival is the partner who sets the record-1 ceiling. The protagonist plays best with them; the count peaks under their pressure; the wall is exactly there. The player feels the rival as the obstacle through the play itself, not through a leaderboard.
+
+Late in Reconstruction, after the cliff visit, the relationship shifts. The rival becomes a regular partner. The pushiness softens; the rallies still go high, but the protagonist is no longer being pushed; they are playing with someone they once played with. The path to the record opens.
+
+After the call, the rival is gone (see Postgame).
 
 ## Cracks
 
@@ -95,13 +99,21 @@ Late in Reconstruction, the protagonist visits the cliff where the friend died. 
 
 The cliff is the structural opposite of the break. The break is forced acceptance of Reality (the wall comes down on you). The cliff is chosen acceptance of the loss (you walk to it). The two are bookends.
 
-After the cliff visit, the rival's number stops climbing. The gap closes through reconciliation actions in the construction's final stretch. The path to the record opens.
+After the cliff visit, the rival's pushiness softens. They become a partner in the ordinary sense; the rallies still go high but the protagonist is no longer being pushed. The gap to the record closes through reconciliation actions in the construction's final stretch. The path to the call opens.
 
 ## The call
 
 Reaching the world record means making the call. The shopkeeper picks up. They are still there.
 
 The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they did and may still do, but it is no longer a wall.
+
+## Postgame
+
+The player can return after the call. When they do, the rival is gone. They were always grief-shaped; once the loss has been faced and the call has been made, there is nothing for them to be in the construction anymore. The right side of the court they used to take is empty.
+
+The rival has left an item behind. The item changes the game. The shape of that change is downstream design; what the structure asks for is one specific object the player picks up on first return that opens a postgame mode the bright world did not have. Possible reads (not commitments): a racquet handle the protagonist now plays with, that rallies the way the rival rallied; an unlock for a different perspective the player can run from; a memento that turns the world record from a number into a memory, with a new ladder underneath.
+
+The narrative doc names "Regret" as a future-update perspective for someone who never made the call. The postgame item is the structural slot that perspective could live inside.
 
 ## What this teaches each surface
 
