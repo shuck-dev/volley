@@ -125,7 +125,7 @@ A locked gate sits at the back beside the tree. The player can see it but not re
 
 The first venue is small and contained. The game then leaps. Each leap is a wholly different place, and each leap is bigger than the last. Same partner. Same friend. Same warmth. A wildly different world around them.
 
-The first leap, in the prototype, is implied as a cliffhanger rather than visited. The player triggers it and the world fades on the brink of something else. The leading candidate for the second venue is **underwater**: sun above the surface, light filtered green and gold through deep water, the ball drifting through bubble streams, the friend now seen and heard through water. Cool, alien, dreamlike. Touchstones: Studio Ghibli's *Ponyo* and the sunken world in *Spirited Away*; Mario's underwater levels for the buoyant, slow-motion physics; Omori's underwater sequences for tone and saturation. Underwater is not formally locked.
+The first leap, in the prototype, is implied as a cliffhanger rather than visited. The player triggers it and the world fades on the brink of something else. The leading candidate for the second venue is **underwater**: sun above the surface, light filtered green and gold through deep water, the ball drifting through bubble streams, the friend now seen and heard through water. Cool, alien, dreamlike. Touchstones: Studio Ghibli's *[Ponyo](https://en.wikipedia.org/wiki/Ponyo)* and the sunken world in *[Spirited Away](https://en.wikipedia.org/wiki/Spirited_Away)*; [Mario's underwater levels](https://en.wikipedia.org/wiki/Super_Mario_Bros.) for the buoyant, slow-motion physics; [Omori](https://store.steampowered.com/app/1150690/OMORI/)'s underwater sequences for tone and saturation. Underwater is not formally locked.
 
 Beyond underwater, the leaps are sketches at this stage. A tropical island with palm shadows on white sand. A meteor in nebula light. A cathedral of trees high in a canopy, golden hour through leaves. A goo dimension where everything jiggles. A jungle full of dinosaurs. A massive stadium with a crowd. A city on clouds. An ice cave with breath visible in the air. A library so vast the shelves disappear into haze.
 
@@ -255,59 +255,59 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 
 ### Animation and film
 
-- **Porco Rosso** (1992, Studio Ghibli). North star for light and warmth. Late-afternoon watercolour register.
-- **Good Will Hunting** (1997). Quieter-world reference for finding beauty in honest, unglamorous places.
-- **La La Land** (2016). How saturation and lighting shift to change a scene's feeling without changing its style.
-- **Baby Driver** (2017). Rhythm as a visual principle.
-- **Ping Pong: The Animation** (2014, dir. Masaaki Yuasa). Sport as conversation. The style itself bends at peak emotion.
-- **Haikyuu!!** (2014-2020). The canonical text on volleyball as emotional language. Reaction shots that give a single point meaning.
-- **Keep Your Hands Off Eizouken!** (2020, dir. Masaaki Yuasa). Fewer frames, better chosen.
-- **Ranking of Kings** (2021). Storybook simplicity carrying enormous emotional range.
-- **Odd Taxi** (2021). Visual restraint as narrative strategy.
-- **Bo Burnham: Inside** (2021). One person, one room, obsessive light arrangement.
-- **Everything Everywhere All at Once** (2022). Wildly different visual modes held by a single emotional core.
-- **To Be Hero X** (2025). Multiple visual styles within one work, used as emotional punctuation.
-- **Detectorists**. British pastoral. Quiet warmth, gentle people, English summer afternoons. Tonal anchor for the quieter world.
-- **Coco**. Warm Mediterranean register, family memory.
-- **Wallace and Gromit / Beatrix Potter**. British illustration register. Warm, specific, lived-in.
-- **Adventure Time**. Visual variety held together by tonal warmth across wildly different settings.
+- **[Porco Rosso](https://en.wikipedia.org/wiki/Porco_Rosso)** (1992, Studio Ghibli). North star for light and warmth. Late-afternoon watercolour register.
+- **[Good Will Hunting](https://en.wikipedia.org/wiki/Good_Will_Hunting)** (1997). Quieter-world reference for finding beauty in honest, unglamorous places.
+- **[La La Land](https://en.wikipedia.org/wiki/La_La_Land)** (2016). How saturation and lighting shift to change a scene's feeling without changing its style.
+- **[Baby Driver](https://en.wikipedia.org/wiki/Baby_Driver)** (2017). Rhythm as a visual principle.
+- **[Ping Pong: The Animation](https://en.wikipedia.org/wiki/Ping_Pong_(manga)#Anime)** (2014, dir. Masaaki Yuasa). Sport as conversation. The style itself bends at peak emotion.
+- **[Haikyuu!!](https://en.wikipedia.org/wiki/Haikyu!!)** (2014-2020). The canonical text on volleyball as emotional language. Reaction shots that give a single point meaning.
+- **[Keep Your Hands Off Eizouken!](https://en.wikipedia.org/wiki/Keep_Your_Hands_Off_Eizouken!)** (2020, dir. Masaaki Yuasa). Fewer frames, better chosen.
+- **[Ranking of Kings](https://en.wikipedia.org/wiki/Ranking_of_Kings)** (2021). Storybook simplicity carrying enormous emotional range.
+- **[Odd Taxi](https://en.wikipedia.org/wiki/Odd_Taxi)** (2021). Visual restraint as narrative strategy.
+- **[Bo Burnham: Inside](https://en.wikipedia.org/wiki/Inside_(2021_film))** (2021). One person, one room, obsessive light arrangement.
+- **[Everything Everywhere All at Once](https://en.wikipedia.org/wiki/Everything_Everywhere_All_at_Once)** (2022). Wildly different visual modes held by a single emotional core.
+- **[To Be Hero X](https://en.wikipedia.org/wiki/To_Be_Hero_X)** (2025). Multiple visual styles within one work, used as emotional punctuation.
+- **[Detectorists](https://en.wikipedia.org/wiki/Detectorists)**. British pastoral. Quiet warmth, gentle people, English summer afternoons. Tonal anchor for the quieter world.
+- **[Coco](https://en.wikipedia.org/wiki/Coco_(2017_film))**. Warm Mediterranean register, family memory.
+- **[Wallace and Gromit](https://en.wikipedia.org/wiki/Wallace_%26_Gromit) / [Beatrix Potter](https://en.wikipedia.org/wiki/Beatrix_Potter)**. British illustration register. Warm, specific, lived-in.
+- **[Adventure Time](https://en.wikipedia.org/wiki/Adventure_Time)**. Visual variety held together by tonal warmth across wildly different settings.
 
 ### Games
 
-- **Pong** (1972). The seed object.
-- **Oddworld: Abe's Oddysee / Exodus** (1997 / 1998). The Oddworld Signature: six artistic commandments that governed every screen. Structural inspiration for Volley's Six Marks.
-- **Machinarium** (2009, Amanita Design). Painterly atmosphere at sustainable scale.
-- **The Stanley Parable** (2013). A game that lets its own scaffolding show without breaking the player's trust.
-- **Neko Atsume** (2014). Mobile lineage Volley sits adjacent to.
-- **Enter the Gungeon** (2016). Readability at small scale.
-- **Cuphead** (2017). Total commitment to one hand-drawn voice across every asset.
-- **Rain World** (2017). Environmental storytelling through care. Hand-placed ecosystems, painterly decay.
-- **Star Fetchers** (2020). Personality through motion rather than rendering.
-- **Omori** (2020). The closest existing structural parallel for Volley's two-world move. Headspace and Faraway Town: same cast, different weight.
-- **Slay the Princess** (2023). Pencil-on-paper line that shifts as the player's belief shifts.
-- **In Stars and Time** (2023). Hand-drawn storybook cast in a time-loop frame.
-- **Rusty's Retirement** (2024). Format peer for the desktop-companion mode.
-- **Cast n Chill** (2025). Backgrounds as environments rather than backdrops.
-- **Poco** (2025). Vibrant-but-controlled palette across cluttered hand-painted worlds.
-- **Wanderstop** (2025). Register peer. Mechanics that stay pleasant while carrying real weight.
-- **Despelote** (2025). Sport as a frame for emotional material.
-- **Black Hole Fishing** (2026). Diegetic UI at its most committed.
-- **Outer Wilds**. Tiny planets, music drifting across space.
-- **Mario Galaxy**. Biome variety as cosmic register.
-- **Wii Sports Resort**. Sport-as-place. Each activity a distinct visual setting.
-- **Broken Age**. Hand-drawn painterly with dual settings shared by one story.
+- **[Pong](https://en.wikipedia.org/wiki/Pong)** (1972). The seed object.
+- **[Oddworld: Abe's Oddysee](https://store.steampowered.com/app/15700/Oddworld_Abes_Oddysee/) / [Exodus](https://store.steampowered.com/app/15710/Oddworld_Abes_Exoddus/)** (1997 / 1998). The Oddworld Signature: six artistic commandments that governed every screen. Structural inspiration for Volley's Six Marks.
+- **[Machinarium](https://store.steampowered.com/app/40700/Machinarium/)** (2009, Amanita Design). Painterly atmosphere at sustainable scale.
+- **[The Stanley Parable](https://store.steampowered.com/app/1703340/The_Stanley_Parable_Ultra_Deluxe/)** (2013). A game that lets its own scaffolding show without breaking the player's trust.
+- **[Neko Atsume](https://en.wikipedia.org/wiki/Neko_Atsume)** (2014). Mobile lineage Volley sits adjacent to.
+- **[Enter the Gungeon](https://store.steampowered.com/app/311690/Enter_the_Gungeon/)** (2016). Readability at small scale.
+- **[Cuphead](https://store.steampowered.com/app/268910/Cuphead/)** (2017). Total commitment to one hand-drawn voice across every asset.
+- **[Rain World](https://store.steampowered.com/app/312520/Rain_World/)** (2017). Environmental storytelling through care. Hand-placed ecosystems, painterly decay.
+- **[Star Fetchers](https://store.steampowered.com/app/1178030/Star_Fetchers/)** (2020). Personality through motion rather than rendering.
+- **[Omori](https://store.steampowered.com/app/1150690/OMORI/)** (2020). The closest existing structural parallel for Volley's two-world move. Headspace and Faraway Town: same cast, different weight.
+- **[Slay the Princess](https://store.steampowered.com/app/1989270/Slay_the_Princess__The_Pristine_Cut/)** (2023). Pencil-on-paper line that shifts as the player's belief shifts.
+- **[In Stars and Time](https://store.steampowered.com/app/1677310/In_Stars_And_Time/)** (2023). Hand-drawn storybook cast in a time-loop frame.
+- **[Rusty's Retirement](https://store.steampowered.com/app/2666510/Rustys_Retirement/)** (2024). Format peer for the desktop-companion mode.
+- **[Cast n Chill](https://store.steampowered.com/app/3483740/Cast_n_Chill/)** (2025). Backgrounds as environments rather than backdrops.
+- **[Poco](https://store.steampowered.com/app/3454610/Poco/)** (2025). Vibrant-but-controlled palette across cluttered hand-painted worlds.
+- **[Wanderstop](https://store.steampowered.com/app/1299460/Wanderstop/)** (2025). Register peer. Mechanics that stay pleasant while carrying real weight.
+- **[Despelote](https://store.steampowered.com/app/2367820/despelote/)** (2025). Sport as a frame for emotional material.
+- **[Black Hole Fishing](https://store.steampowered.com/app/3667390/Black_Hole_Fishing/)** (2026). Diegetic UI at its most committed.
+- **[Outer Wilds](https://store.steampowered.com/app/753640/Outer_Wilds/)**. Tiny planets, music drifting across space.
+- **[Mario Galaxy](https://en.wikipedia.org/wiki/Super_Mario_Galaxy)**. Biome variety as cosmic register.
+- **[Wii Sports Resort](https://en.wikipedia.org/wiki/Wii_Sports_Resort)**. Sport-as-place. Each activity a distinct visual setting.
+- **[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)**. Hand-drawn painterly with dual settings shared by one story.
 
 ### Named hands
 
-- **Kazuo Oga** (*My Neighbor Totoro* art director). Watercolour quality of light.
-- **Atsuko Nozaki** (*Ranking of Kings* character designer). Storybook simplicity.
-- **Naoyuki Asano** (*Eizouken* character designer). Loose, sketchy, energetic.
-- **Baku Kinoshita** (*Odd Taxi* director). Visual restraint as deliberate strategy.
-- **Joar Jakobsson** (*Rain World*). Solo painterly worldbuilding.
-- **Chad and Jared Moldenhauer** (*Cuphead*). Production discipline.
-- **Joe Harty** (*Enter the Gungeon*). Readability through silhouette at small scale.
-- **Ashley Rose Smith** (*Cast n Chill* lead background artist). Layered painterly environments.
-- **Abby Howard** (*Slay the Princess*). Pencil-on-paper line that does narrative work.
+- **[Kazuo Oga](https://en.wikipedia.org/wiki/Kazuo_Oga)** (*My Neighbor Totoro* art director). Watercolour quality of light.
+- **Atsuko Nozaki** (*[Ranking of Kings](https://en.wikipedia.org/wiki/Ranking_of_Kings)* character designer). Storybook simplicity.
+- **Naoyuki Asano** (*[Eizouken](https://en.wikipedia.org/wiki/Keep_Your_Hands_Off_Eizouken!)* character designer). Loose, sketchy, energetic.
+- **Baku Kinoshita** (*[Odd Taxi](https://en.wikipedia.org/wiki/Odd_Taxi)* director). Visual restraint as deliberate strategy.
+- **Joar Jakobsson** (*[Rain World](https://en.wikipedia.org/wiki/Rain_World)*). Solo painterly worldbuilding.
+- **[Chad and Jared Moldenhauer](https://en.wikipedia.org/wiki/Chad_and_Jared_Moldenhauer)** (*Cuphead*). Production discipline.
+- **Joe Harty** (*[Enter the Gungeon](https://en.wikipedia.org/wiki/Enter_the_Gungeon)*). Readability through silhouette at small scale.
+- **Ashley Rose Smith** (*[Cast n Chill](https://store.steampowered.com/app/3483740/Cast_n_Chill/)* lead background artist). Layered painterly environments.
+- **[Abby Howard](https://en.wikipedia.org/wiki/Abby_Howard)** (*Slay the Princess*). Pencil-on-paper line that does narrative work.
 
 ### A note on character simplicity
 
