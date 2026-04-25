@@ -6,7 +6,7 @@ Volley has three registers: a bright Construction the protagonist actively maint
 
 ## Method note
 
-Primary sources first: GDC talks, post-mortems on Game Developer (formerly Gamasutra), interviews on Polygon, RPS, PC Gamer, Eurogamer, and the dev's own writing. Mark Brown's GMTK essay on Spec Ops is treated as design analysis, not reception, because Brown reasons from the dev quotes he cites. Wikipedia is used for hard facts (release date, studio, publisher) only when no primary source establishes them; never as the lead citation for a design claim. When a designer is reclusive (Toby Fox, Davey Wreden), this is named, and the analysis leans on close reading plus contemporary review.
+Primary sources first: GDC talks, post-mortems on Game Developer (formerly Gamasutra), interviews on Polygon, RPS, PC Gamer, Eurogamer, and the dev's own writing. Mark Brown's GMTK essay on Spec Ops is treated as design analysis, not reception, because Brown reasons from the dev quotes he cites. Wikipedia is used for hard facts (release date, studio, publisher) only when no primary source establishes them; never as the lead citation for a design claim. When a designer has given few interviews (Toby Fox, Davey Wreden), this is named, and the analysis leans on close reading plus contemporary review.
 
 ## Pattern 1: cracks earn dismissibility from prior generosity
 
@@ -20,8 +20,6 @@ The Beginner's Guide's "cleaning lady" level is the inverse worth naming. Davey 
 
 **What works.** The construction is delivered in good faith, on its own terms, for long enough that giving it up costs something. The first crack is small enough that the genre's defaults can absorb it. The cumulative cracks erode those defaults until the singular break is the only legible reading.
 
-**What Volley can lift.** Front-load the bright world. Hours of frictionless rally, of items that feel earned, of partners whose barks have personality, before the first crack lands. Walt Williams' principle applies: every crack must read as cause and effect of the construction, not as authorial intervention. A flicker in Martha's brightness, a line that does not quite fit the rally, a moment where the friend's tilt holds a beat too long. Each one dismissible. Each one cumulative. The first crack should not arrive before the player has good reason to want the rally to keep going.
-
 ## Pattern 2: the break is cumulative and singular
 
 The cracks pile up; one moment is the failure that makes the rest legible. Before that moment, the cracks are noise. After it, they are evidence. Spec Ops is the exemplar. Cory Davis, lead designer, on the cumulative goal: "by the time you get to the end we really wanted to express as strongly as possible what can happen to the psychological state of somebody who goes through these horrible events" (quoted in Mark Brown's GMTK Substack essay "Why Spec Ops: The Line Mattered"). The white phosphorus chapter eight sits where it does because the prior seven chapters have been doing the cumulative work: dialogue degradation, loading-screen taunts, the heat shimmer that turns Konrad into a hallucination. None of those alone is enough. Chapter eight is enough only because of all of them.
@@ -33,8 +31,6 @@ Silent Hill 2's reveal of Mary's letter is the cleanest singular moment in the g
 Disco Elysium's church scene works the same way. The cracks are the protagonist's interior chorus debating itself across hours of dialogue; the singular moment is when the church's acoustics let the player hear the cryptozoologist's pain register. Robert Kurvitz, on dialogue design at Rezzed 2018: dialogue was written "to be aggressive and personal", with critical information "repeated multiple times by the protagonist's various skills during key moments" (paraphrased in the GameAnalytics interview write-up). The repetition is the cumulative crack; the church is where the player can finally hear what they have been hearing.
 
 **What works.** The cumulative cracks teach the player a reading they do not yet know they have. The singular moment names the reading. The reading then re-runs through every prior crack, retroactively.
-
-**What Volley can lift.** Volley's break is described in the bible as both cumulative and singular. The structural risk is making the singular moment do the heavy lifting alone. Spec Ops's precedent says the singular moment is only as heavy as its cumulative debt. Build the debt deliberately: the cracks should not be uniform in flavour. Some should rhyme with the friend, some with the count, some with the racquet, so that the singular break can collapse a chord rather than a single note.
 
 ## Pattern 3: reconstruction carries knowledge, not assets
 
@@ -48,8 +44,6 @@ NieR: Automata's route C complicates this by adding new gameplay (A2 as a playab
 
 **What works.** The reconstruction does not need new assets to feel new. It needs the player's knowledge to have changed. Reusing the bright-world geometry while letting the player's understanding do the reframing is more economical than rebuilding and lands harder, because the recognition is the point.
 
-**What Volley can lift.** The bible names the reconstruction as "less Nintendo, more Nausicaä", a tonal maturation rather than a visual rebuild. Outer Wilds and Disco Elysium both validate this: the same garden, the same friend at the stall, the same racquet, but the player now knows what the structure was holding. The weight is in the rhyme between the two passes, not in the second pass's novelty.
-
 ## Pattern 4: reality is a different game, not the same game with the lights down
 
 Two-world games that work treat reality as a separate genre, not as a desaturated construction. Omori is the cleanest demonstration. Faraway Town is shaped like a slice-of-life walking-and-dialogue game; Headspace is a JRPG. Different stat names, different combat (or none), different pacing. Omocat, in interviews compiled at the Otaku Journalist profile and the OU Game Developer's Association write-up, has been clear that the dream world drew from "lucid dreaming" and personal dreams while Faraway Town drew from concrete domestic life. The two worlds are not made of the same material.
@@ -61,8 +55,6 @@ Persona 4 and 5 hold the dual-genre line for hundreds of hours. School day is da
 13 Sentinels is the structural analogue worth naming. George Kamitani told Frontline Gaming Japan he wrote the adventure parts as point-and-click visual novel "because test players found being forced into battles resulted in stress buildup", so the team "decided to separate the adventure and battle parts in the story". The two halves are different games, deliberately. Players choose when to be in which.
 
 **What works.** Reality is its own register, with its own rules, its own inputs, its own kind of attention. The contrast between registers is the work; matching them defeats the purpose.
-
-**What Volley can lift.** This is the most load-bearing precedent for Volley's reality being story-driven rather than rally-driven. The risk the bible names ("construction-with-volume-down") is the failure mode Omori, Catherine, and Persona avoid by treating their second world as a different genre. Volley's reality should be its own input vocabulary, its own pacing, its own attention. Volleyball as a flashback minigame is fine; volleyball as the ambient mode of reality flattens the contrast that makes the break legible.
 
 ## Pattern 5: the hook is named in dialogue, not HUD
 
@@ -76,8 +68,6 @@ Hades is the precedent for hook-as-character-line. Greg Kasavin, in the GDC Podc
 
 **What works.** The fiction carries the goal. The HUD shows the count and the resources; the dialogue shows the want. The player learns what to want by being told by someone they care about.
 
-**What Volley can lift.** The protagonist's stated goal is to beat the world volley record. The hook should be in the friend's mouth, not on a HUD. Stardew's letter is the closest precedent: a single piece of writing that names the want, the cost, and the welcome. The friend at the stall, leaning on their elbows in the first venue, can hold this. "You came back" or "you said you would" or the silence between two people who have done this many times.
-
 ## Pattern 6: construction-as-coping is a load-bearing genre
 
 The construction is itself a defence the protagonist mounts. The crack appears when the construction's energetic cost becomes legible. Disco Elysium is the genre's most precise instance: the protagonist's amnesia is the construction. Every skill check is the protagonist holding themselves together; every failure is a small admission that the holding has limits. Kurvitz, in the GameSpot Audio Logs interview, framed the writing as "aggressive and personal" because the skills are doing emotional work the protagonist cannot.
@@ -89,8 +79,6 @@ Spiritfarer is explicit. Nicolas Guérin, in the Game Developer interview: "Spir
 Lake holds the same shape at lower stakes: a postal route in 1986 Oregon as a refuge from the city career.
 
 **What works.** The construction is honest about being a defence. The mechanics that maintain it are the same mechanics that the crack will eventually expose. The player and the protagonist are doing the same work.
-
-**What Volley can lift.** The protagonist's profile names this directly: the bright world is "the thing they could assemble that held". Volley's strongest lineage is here. Spiritfarer's "playground and framework for you to deal with your own emotions" is exactly the register the north-star asks for ("make the player feel something real without making them feel bad"). The rally is the daily work of being well enough. The mechanics that maintain it (item pickup, partner recruitment, the count climbing) are the same mechanics that, slowed or stalled or made strange, will eventually crack. The friction between the two is the design's load-bearing tension, and Spiritfarer is the closest playable precedent for getting it right.
 
 ## Pattern 7: Animal Crossing as foil
 
@@ -104,33 +92,13 @@ Watch Dogs Legion and Hellblade name the failure modes worth flagging. Legion's 
 
 The Stanley Parable, by contrast, is a deliberate refusal of the build-then-break shape; it builds and breaks simultaneously, as comedy. It belongs to a different genre. Volley's lineage is not there.
 
-## What this means for Volley
-
-Eight specific design moves. Each carries the lineage it came from.
-
-1. **Front-load fifteen to twenty hours of frictionless construction before the first crack lands.** After Spec Ops's three-hour Walker setup before the white phosphorus, scaled to Volley's idle pacing. The bright world must be straight-up enjoyable as an idle pong game for the players the north-star names ("someone who never thinks about the narrative still enjoys it") before the first dismissible crack arrives. Walt Williams' principle: every crack reads as cause and effect.
-
-2. **Deliver the hook in the friend's voice, not on a HUD.** After Stardew's grandfather letter, Outer Wilds' launch-codes ritual, Hades's Zagreus-and-Hades dialogue. The friend at the stall, in the first venue, names the world record as the want. The HUD shows the count; the friend gives the count meaning.
-
-3. **Let the cracks rhyme on three frequencies, not one.** After Spec Ops's loading-screen taunts plus dialogue degradation plus heat-shimmer hallucinations, three different surfaces feeding the same cumulative debt. Volley's cracks should hit three surfaces: the friend's posture, the count's behaviour, and the venue's light. So that when the singular break collapses, it collapses a chord.
-
-4. **Make reality a different genre.** After Omori's Faraway Town, Catherine's day-life, Persona's school routine, 13 Sentinels' adventure parts. Reality's input vocabulary, pacing, and attention are not the rally's with the volume down. Volleyball as a flashback minigame is welcome; volleyball as the ambient mode of reality is the failure mode the bible flags.
-
-5. **Reuse the bright-world geometry for reconstruction.** After Outer Wilds' Eye sequence, Disco Elysium's epilogue, Undertale's pacifist return. The same garden, the same friend, the same racquet. What changes is what the player knows. The Nausicaä trajectory the bible names is a tonal weighting on familiar bones, not a visual rebuild.
-
-6. **Frame the construction as honest defence, not surface lie.** After Spiritfarer's "playground and framework for you to deal with your own emotions", Disco Elysium's amnesia-as-construction, Stardew's farm-as-recovery. The bright world is not pretending the protagonist is fine. It is the thing the protagonist built so that being not-fine could still be liveable. The north-star's "the warmth is real" is the same insight; Spiritfarer is the closest played precedent for executing it.
-
-7. **Let the singular break collapse a chord the player has been hearing.** After Silent Hill 2's letter retroactively unifying Mary's monsters, NieR's route C unifying A and B, Disco Elysium's church scene letting the chorus finally land. Volley's break is both cumulative and singular, per the bible. The singular moment must collapse all three crack frequencies (friend, count, venue) at once, so the cumulative work pays out structurally rather than as a list.
-
-8. **Hold Animal Crossing's permission while doing what Animal Crossing does not.** After Animal Crossing as the foil and the north-star's "idle loop was always worth playing". The bright world must remain a place the never-engaged player happily lives inside; the deeper layer must be earned by attention rather than enforced by structure. The north-star already names this. The lineage confirms it is achievable: Spec Ops, Spiritfarer, Outer Wilds all reward the surface read on its own terms.
-
 ## Open research questions
 
 Three claims could not be established to the standard the rest of the doc holds.
 
 The Stardew grandfather letter quote is reliably reproduced across summaries and wikis, but the original Eric Barone interview where the design intent is named in his own words is harder to surface than expected; the 425 Magazine anniversary piece and IGN's lengthy interview are the strongest available, and the softening-the-evaluation quotes there are what the analysis above relies on. The letter's wording itself is in-game canon, primary by definition.
 
-Toby Fox is reclusive; the Undertale pacifist-route design analysis above leans on the Mary Sue interview and the Escapist piece, which are the two clearest extant primary statements. Heavier claims about the route's intent would require quotes Fox has not given.
+Toby Fox has given few interviews; the Undertale pacifist-route design analysis above leans on the Mary Sue interview and the Escapist piece, which are the two clearest extant primary statements. Heavier claims about the route's intent would require quotes Fox has not given.
 
 Davey Wreden, similarly, has not extensively interviewed about The Beginner's Guide; the Designer Notes podcast with Soren Johnson (Idle Thumbs Network, October 2015) is the strongest single primary source, and is unavailable as a transcript without listening through. The cleaning-lady reading above is reception-grounded (Brendan Keogh's essay, Emily Short's blog post from the same week) rather than dev-confirmed. This is named in-text where it appears.
 
