@@ -6,13 +6,13 @@ The bible describes the world: its tone, its visual texture, its emotional shape
 
 ---
 
-## The shape of the game, in one breath
+## What the player meets first
 
-Volley! is an idle pong game played in a window on someone's screen. A partner on the left, a partner on the right, a ball in the air between them, a counter ticking up. That is the surface.
+A garden in the late afternoon. A small court fenced in by stone and vines. Someone stands on the left of the court with a racquet, ready. The ball is already in the air, or about to be. Across the way, a friend leans on the counter of a small wooden stall, head tilted toward the play. The counter on the wall reads zero. The light is warm and the rally is about to begin.
 
-Underneath sits a quieter story. The protagonist is androgynous, agender, mid-30s, less athletic than they used to be. They lost someone close, and built a place to keep playing while they figured out how to live with it. The bright world the player meets first is that place. There is also a quieter world underneath it: a small town the protagonist grew up in, where the loss happened. Both are visited. The bright world holds the rally and the friend's presence. The quieter world holds the ordinary, familiar, difficult moments the protagonist keeps coming back to.
+That is the picture the art carries. Everything else in this bible: the partners, the items, the venues that come later, exists to make that picture true.
 
-The throughline can be hinted visually before it ever speaks. A vision through a gate. A photo glimpsed across a table. A reflection that holds for a beat. The art's job is to let those moments land.
+A note about the person on the left. They are androgynous, agender, mid-30s, a little softer than they once were, gentle with themselves. The world is built around their quiet presence at its centre. They love this game. They love the friend at the stall. The art's first job is to make the player feel that, before a single line of dialogue.
 
 ---
 
@@ -51,9 +51,9 @@ They lost someone close to them. Recently enough that it is not healed, long eno
 
 ## The friend
 
-The most important supporting character in the bright world. The shopkeeper at the heart of the venue. Their stall sits against one wall of the garden, and their presence is what makes the venue feel like a place rather than a stage.
+Behind the counter of the stall, leaning on their elbows, watching the rally. Without the friend the garden is a court with a fence around it; with them it is a place.
 
-The friend is one of several people the protagonist holds close. They are the warm centre of the venue. Whether they are the lost one or someone else who matters is left ambiguous; the artist's read is welcome here, and the answer can stay open.
+The friend is one of several people the protagonist holds close, and the warm centre of the venue. Whether they are the lost one or someone else who matters is left ambiguous; the artist's read is welcome here, and the answer can stay open.
 
 What matters: the friend reads as one particular person the protagonist loves, not a generic shopkeeper. Warm, grounded, named rather than typed. Gender, age, and presentation are all open to the artist's read. The friend stays behind the stall most of the time, head tilted toward the play, attentive without intruding.
 
@@ -79,7 +79,7 @@ A partner. She joins the right side of the court once the player has built up en
 
 ## The spirit of the volley
 
-One thread of warmth carries across every partner and every rally: the spirit of the volley. It is the protagonist's fighting spirit and the bond they have with each partner, the same metaphor wearing two faces.
+A long rally has its own quiet life. Players know the feeling: the ball moving easily, the partner's timing settling in, the sense that the rally could keep going as long as both of you do. Volley has a name for what is happening there. The spirit of the volley. It is the protagonist's fighting spirit and the bond they share with each partner, the same warmth seen from two angles.
 
 It deepens with shared rallies and small attentions. A long rally is the spirit at full breath. A miss is the spirit catching its breath again. The ball runs hotter when the spirit is up; the venue light leans warmer; the rally feels a little brighter than the count alone explains. None of this needs spelling out for the player. The art carries it.
 
@@ -89,7 +89,7 @@ The spirit is not only metaphor. It has a felt presence in the world, and it is 
 
 ## The tinkerer
 
-The other named character in the venue. She runs the workshop. The player drops items off; she rests, procrastinates, and works at her own pace; finished items land on a done tray with a soft chime.
+A workshop in another corner of the garden, and the tinkerer behind the bench. The player drops items off; she rests, procrastinates, and works at her own pace; finished items land on a done tray with a soft chime.
 
 The tinkerer is the friend's younger sister. Different rhythm, different relationship to the protagonist, same family warmth. She talks less than the friend. She hands things back when they are done. The rhythm of the workshop is part of her personality: she makes tea, stares out the window, reads, tidies the bench, settles into the work in her own time. She unlocks later than the friend.
 
@@ -99,7 +99,7 @@ The tinkerer's age, presentation, and look are open. Her relationship to the fri
 
 ## The cast of partners
 
-Four partners join the protagonist from fairly early in the game. After that, each new venue brings one more. Each partner is a person the protagonist remembers. Each has a personality, a particular voice, a quieter-world counterpart. Beyond Martha, none are drafted yet.
+Martha is the first. Three more arrive in the early game, and from then on each new venue brings one. Every partner is someone the protagonist remembers from somewhere, with their own voice and their own pace. Beyond Martha, none are drafted yet.
 
 The lineage rule names candidates: Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. The artist designing Martha sets the bar for the rest.
 
@@ -192,7 +192,7 @@ A handful of hero illustrations is more useful than a full roster, because the r
 
 A corner of the venue, hidden until the friend unlocks. The shop reads as a small kiosk: a table with items resting on it, a thumbed-through catalogue the friend brings out across the table, a small counter where boxes briefly sit before they go on their way.
 
-The catalogue is the charming object at the centre of it. The reference is the **Argos catalogue**: flat product photography against plain backgrounds, square-cropped product cards, plain captions, prices, product codes. Domestic objects, presented with the unfussy honesty of a UK home-goods catalogue. Items reference places that do not exist in the prototype yet, but the page reads like any other page in the book: a kettle, a deck chair, a meteor shard, a starfish, all rendered with the same matter-of-fact catalogue voice.
+The catalogue is what the player will remember. The reference is the **Argos catalogue**: flat product photography against plain backgrounds, square-cropped product cards, plain captions, prices, product codes. Domestic objects, presented with the unfussy honesty of a UK home-goods catalogue. Items reference places that do not exist in the prototype yet, but the page reads like any other page in the book: a kettle, a deck chair, a meteor shard, a starfish, all rendered with the same matter-of-fact catalogue voice.
 
 The flatness is the load-bearing thing. A travel magazine would oversell the wider world; a catalogue undersells it, which makes the strangeness funnier and more grounded.
 
