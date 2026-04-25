@@ -18,7 +18,7 @@ A note about the person on the left. They are androgynous, agender, mid-30s, a l
 
 ## How a session feels
 
-The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
+The player opens Volley! and a ball is in the air. They serve, they hit, the counter climbs. Items sit on a rack at the side of the court. The friend is behind a stall, attentive without intruding. The player picks up new items, drops things off at a workshop in another corner of the garden, brings new partners into the rally, and chases a higher count. The rally has tiers it climbs through, each one slightly hotter than the last. A miss ends the rally; the ball rolls out of the court and waits to be picked up again. The game keeps going whether the player is watching or not.
 
 ---
 
