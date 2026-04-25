@@ -81,7 +81,7 @@ Sample lines from the bark drafts:
 
 The idle chatter is the centre of her voice. Small talk about nothing, the way she would have at the newsagent. Comfortable silences filled with the texture of an ordinary day.
 
-**Lineage.** Every partner in Volley is named for a character from a science fiction author's work, with a bias toward authors writing outside the dominant tradition (women, writers of colour, queer writers, writers from outside the Anglo-American centre). Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. The lineage informs how each partner carries themselves; it does not need to be visible on the surface of the game.
+**Lineage.** Every partner in Volley is named for a character from a science fiction author's work, with a bias toward authors writing outside the dominant tradition (women, writers of colour, queer writers, writers from outside the Anglo-American centre). Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. The lineage informs how each partner carries themselves; it does not need to be visible on the surface of the game.
 
 **The bark system itself is currently deferred** in the design (might be cancelled, might come back). Use the lines above as voice register, not as a promise of how Martha will speak in the shipped game.
 
@@ -379,10 +379,10 @@ Said as a single line: characters as simple as Ranking of Kings, coloured as con
 
 ### Named hands
 
-- **Kazuo Oga** (*My Neighbor Totoro* art director, also *Princess Mononoke* and *Spirited Away*). Watercolour quality of light.
+- **Kazuo Oga** (*My Neighbor Totoro* art director, also *Princess Mononoke* and *Kiki's Delivery Service*). Watercolour quality of light.
 - **Atsuko Nozaki** (*Ranking of Kings* character designer). Storybook simplicity.
 - **Naoyuki Asano** (*Eizouken* character designer). Loose, sketchy, energetic.
-- **Kazuya Konomoto** (*Odd Taxi* character designer). Visual restraint as deliberate strategy.
+- **Baku Kinoshita** (*Odd Taxi* director, originated the character designs handed to writer Kazuya Konomoto and designer Hiromi Nakayama). Visual restraint as deliberate strategy.
 - **Joar Jakobsson** (*Rain World*). Solo painterly worldbuilding.
 - **Chad and Jared Moldenhauer** (*Cuphead*). Production discipline.
 - **Joe Harty** (*Enter the Gungeon*). Readability through silhouette at small scale.
