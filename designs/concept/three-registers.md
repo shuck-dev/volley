@@ -80,6 +80,13 @@ The arc. The long phase between the break and the cliff. The wall stays down; th
 
 Reconstruction is not a third visual register. The two registers stay distinct: Construction is still vibrant, Reality is still gold-hour. Reconstruction is the meta-state in which the player has access to both and can carry across.
 
+Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the world record; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Two changes mark Reconstruction at the play level:
+
+- **The score is hidden in Construction.** Pre-break, the count climbs visibly; the player chases the number. Post-break, the number disappears from the rally. The player rallies without knowing how close they are to the call. The number can still be checked, but only by visiting somewhere in Reality (the sister's, the closed shop, the cliff). The score migrates from Construction to Reality. The player has to leave the rally to know how close they are; that is the exact register-shift Reconstruction wants to feel like.
+- **The rival's dialogue softens gradually.** Pre-break, the rival's lines are sharp, pushing, the friend's old habit of not letting the protagonist coast. Across Reconstruction the lines soften beat by beat, until late in the arc the rival sounds like a friend again. The shift is in what gets said and how, not in a stat. The player notices the change through the dialogue alone.
+
+A third register-shift lives at the audio level: the construction's bright synthetic music thins and acoustic instruments arrive, with the balance moving toward fuller arrangement by late Reconstruction. The audio direction has its own doc (SH-281).
+
 The carry is bidirectional and mechanical:
 
 - **Constructs into reality.** Any item, character, memory, or insight from Construction can be brought into Reality and used as a tool. The construction is what the protagonist built to keep going; in Reconstruction, the things they built turn out to be useful in the world they were avoiding.
