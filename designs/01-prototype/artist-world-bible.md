@@ -51,7 +51,7 @@ The most important supporting character in the constructed world. The shopkeeper
 
 In the real world, this is the friend the protagonist lost. In the constructed world, they are a heightened, kinder, slightly larger-than-life version of who they were. They run a small stall. Half kiosko, half village fair, with a stripe of awning and one shelf of items they have laid out. They bring back oddities from places that should not exist. They greet the protagonist with the kind of warmth that has been earned over decades.
 
-What matters: the friend reads as one specific person the protagonist loved, not a generic shopkeeper. Visual register: warm, specific, grounded. Man or woman, older or younger, all open to the artist's read. Voice is bark-sized: short lines that drop in over the course of play. Body sits behind the stall most of the time, head tilted toward the play, attentive without intruding.
+What matters: the friend reads as one particular person the protagonist loved, not a generic shopkeeper. Visual register: warm, grounded, named rather than typed. Man or woman, older or younger, all open to the artist's read. Voice is bark-sized: short lines that drop in over the course of play. Body sits behind the stall most of the time, head tilted toward the play, attentive without intruding.
 
 The friend, the stall, and the warmth travel with the game across every venue. When the constructed world leaps to underwater or a meteor or a treetop canopy, the stall lashes to whatever holds it and the friend is still there. They are the constant.
 
@@ -67,7 +67,7 @@ The first partner. She unlocks once the player crosses a friendship-point thresh
 
 **Why she's first.** She is the lowest-risk memory. No history to untangle, no falling out, no guilt. Just someone who was reliably kind to him. The protagonist brings her into the game first because reaching for her does not yet require facing anything painful. She is the baseline. The partners that come after will be more complicated.
 
-**Voice register.** Warm, slightly sharp, specific, British. The kind of person who would tell you the truth and then make you a cup of tea. She speaks rarely. Her silences are characterisation: she does not cheer on individual hits, she does not commentate. She is not a coach, she is a friend.
+**Voice register.** Warm, slightly sharp, particular, British. The kind of person who would tell you the truth and then make you a cup of tea. She speaks rarely. Her silences are characterisation: she does not cheer on individual hits, she does not commentate. She is not a coach, she is a friend.
 
 Sample lines from the bark drafts:
 
@@ -91,7 +91,7 @@ The other named character in the venue. They run the workshop. The player drops 
 
 In the real world, the tinkerer is a third significant person from the protagonist's life. The relationship is older or stranger than the friend's. Someone who taught the protagonist something, fixed something, gave them something they still keep.
 
-Voice register: rarer, more deliberate than the friend or Martha. They talk less. They hand things back when they are done. The state machine of the workshop (rest, procrastinate, work) is itself part of their personality: they make tea, stare out the window, read, tidy the bench, chat. Authored timing ranges in seconds: resting 20 to 60, procrastinating 60 to 300, working 180 to 900. So a tinkerer who putters for a long time, then settles in and works for as long as a quarter hour.
+Voice register: rarer, more deliberate than the friend or Martha. They talk less. They hand things back when they are done. The rhythm of the workshop is itself part of their personality: they make tea, stare out the window, read, tidy the bench, chat. A tinkerer who putters for a long time, then settles in for what feels like a quarter hour of real work.
 
 The tinkerer can be poked by the player: a sound effect, a small visual reaction, no gameplay effect. Worth knowing for character work.
 
@@ -115,7 +115,7 @@ A garden. Setting is a UK / Spain blend with a warm climate; the architecture is
 
 The friend's stall sits against one inside wall. A small wooden affair with a stripe of awning and one shelf of items. The stall is not part of the architecture; it is a thing the friend put there. It can fold up and travel.
 
-A ball rack sits on one side of the court. A simple wooden affair with several slots, where ball items sit when they are not being played with. A gear rack sits opposite, smaller, holding equipment items. Both racks have visible age and use; they have been here a while. (Both shipped with SH-99 recently; see implementation for established silhouette.)
+A ball rack sits on one side of the court. A simple wooden frame with several slots, where ball items sit when they are not being played with. A gear rack sits opposite, smaller, holding equipment items. Both racks have visible age and use; they have been here a while.
 
 A locked gate sits at the back beside the tree. The player can see it but not reach it. Past the gate, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of palm fronds, a strip of sky that does not belong here. The garden is closed but not sealed. The world has elsewheres.
 
@@ -127,9 +127,9 @@ The first venue is small and contained. The game then leaps. Each leap is a whol
 
 The first leap, in the prototype, is implied as a cliffhanger rather than visited. The player triggers it and the world fades on the brink of something else. The second venue, intended for after the prototype, is **underwater**. Sun above the surface, light filtered green and gold through deep water, the protagonist and the partner suspended, the ball drifting through bubble streams, the friend's voice now muffled and warm. Cool, alien, dreamlike. Studio Ghibli's *Ponyo* or the sunken world in *Spirited Away* as register references.
 
-After underwater, the leaps continue, never two in the same register. A tropical island with palm shadows on white sand. A meteor in nebula light. A cathedral of trees high in a canopy, golden hour through leaves. A goo dimension where everything jiggles and the ball wobbles. A jungle full of dinosaurs. A massive stadium with a crowd. A city on clouds. An ice cave with breath visible in the air. A library so vast the shelves disappear into haze.
+After underwater, the leaps continue, never two in the same register. A tropical island with palm shadows on white sand. A meteor in nebula light. A cathedral of trees high in a canopy, golden hour through leaves. Each is a wonder the protagonist imagined, and the leaps keep finding new shapes. A goo dimension where everything jiggles and the ball wobbles. A jungle full of dinosaurs. A massive stadium with a crowd. A city on clouds. An ice cave with breath visible in the air. A library so vast the shelves disappear into haze.
 
-Each is a wonder the protagonist imagined. The mechanic of biome leaps is the protagonist reaching further and further for a better hiding place. The bigger the wonder, the better the construction. The break, when it comes, exposes that all of it sits on top of something small and real.
+The mechanic of biome leaps is the protagonist reaching further and further for a better hiding place. The bigger the wonder, the better the construction. The break, when it comes, exposes that all of it sits on top of something small and real.
 
 ---
 
@@ -144,7 +144,7 @@ Things that never change across any constructed-world venue. The artist should t
 - **The friend's stall.** Different lashings per venue (against a fence, around a palm, lashed to a meteor edge), but always recognisable. A small awning, one shelf, the friend somewhere behind it.
 - **The friend's voice.** Audible across every venue. Muffled underwater, distant on the meteor, but always present.
 - **The volley counter.** Same number, dressed for each venue. A wooden plaque in the garden, a coral-rimmed slate underwater, a hovering glyph in space. Diegetic everywhere.
-- **The warm light register.** Colour temperature shifts (afternoon yellow, submerged green, nebula pink, canopy gold) but the warmth holds. Even in the ice cave there is warmth: a glow within the crystal.
+- **The warm light register.** Colour temperature shifts venue by venue (afternoon yellow, submerged green, nebula pink, canopy gold). See the Light register section below for how the constant-warmth principle reads.
 
 ---
 
@@ -154,7 +154,7 @@ What the player sees occasionally and what the protagonist is reaching for. Sett
 
 The visual register is quieter and more natural than the constructed world. Less saturation. More texture. Fewer edges. Memory rather than fantasy. The light is just light, not stylised; the air has weather. People walk by in coats; cars pass; a dog barks somewhere. The town has a pulse the constructed world does not.
 
-Real-world moments are short and specific. A kitchen table at twilight. A walk down a particular street. A bench by a pond. A photograph on a fridge door. They are felt rather than narrated. The protagonist is in them; the friend is there; sometimes Martha or the tinkerer or another partner. Each moment is the protagonist remembering something specific.
+Real-world moments are short and named. A kitchen table at twilight. A walk down a particular street. A bench by a pond. A photograph on a fridge door. They are felt rather than narrated. The protagonist is in them; the friend is there; sometimes Martha or the tinkerer or another partner. Each moment is the protagonist remembering one thing in particular.
 
 The artist's deliverable for the real world is a quiet moment between the protagonist and a partner in an ordinary place. The choice of moment shapes the cast that follows.
 
@@ -170,8 +170,6 @@ Four phases. The visual register shifts across them. The prototype lives in phas
 2. **The break.** A moment. Something cracks. The seam shows. The constructed world does not collapse yet, but the player notices. Visually a single tilted beat: light goes wrong, sound shifts, an object reads differently. Brief.
 3. **Post-break.** The same venues, but altered. Light is cooler. Saturation drops. Some things are missing or changed. The protagonist is still playing but the warmth has thinned. The friend is still there, quieter. Martha's lines acquire weight without changing register.
 4. **Peace.** Earned warmth returns. Not the same as pre-break: this warmth knows what it costs. The visual register is the warmth of pre-break with the texture of post-break. The protagonist has integrated the loss without losing the world.
-
-A constant-warmth principle holds across every phase: every venue, every register, has some warmth somewhere. The colour temperature changes, the intensity changes. The warmth holds. No phase is cold without some hold of warmth. No phase is purely warm without some texture or weight.
 
 From the north star non-goals: "Not devastating. The game is sad, but it earns the sadness and does not wallow in it. The reveal lands and the game moves forward."
 
@@ -206,22 +204,6 @@ The two systems sit alongside each other: the spirit-of-volley charge as continu
 
 ---
 
-## Item roles
-
-Every item declares one of three roles. The role decides where it lives, who hosts its prop, and what gesture moves it.
-
-| Role | Where it lives | Examples |
-|---|---|---|
-| `ball` | Ball rack at rest; on the court when active. | Training Ball, The Stray |
-| `court` | Always on the court once acquired. Snapped to a court marker. Removed only by the tinkerer. | Dead Weight, Spare, Court Lines, the Bot, the Jukebox, The Call |
-| `equipment` | Gear rack at rest; on the protagonist's paddle when active. | Grip Tape, Double Knot, Wrist Brace, Ankle Weights, Cadence, Seven Years |
-
-A stat-only item with no visible prop still picks a role; a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`. Court-role items with a physical prop carry a fixture resource that points at a `prop_scene`.
-
-Ball and equipment items can be **inactive** (sitting on the rack, generating passive friendship points) or **active** (in play). Court items are always active once acquired. Inactive items have flavour from the friend: "I saw you kept that. You don't have to use it."
-
----
-
 ## How items feel (form, not specifics)
 
 The roster will change before ship. The form will not. Three things hold across every item the artist will touch:
@@ -232,29 +214,31 @@ The roster will change before ship. The form will not. Three things hold across 
 
 **Items have three description states the art can support.** Default, power revealed (what changes when the player witnesses the effect for the first time), narrative revealed (what the item says when the protagonist's relationship to it deepens). For high-stakes items the visual itself can swap: a locker mirror with a whole / cracked / broken set, a whistle that visibly tarnishes. For most items, the same sprite carries all three readings and the description prose does the lift.
 
+Items occupy one of three spots in the world. Some sit on a rack until called for and then live on the protagonist's paddle. Some sit on a rack and travel out as the ball itself. Some take up a corner of the court as a piece of furniture, set down once and left there. The form an item carries gives the artist its home.
+
 The artist does not need to draw every item to a final spec. A handful of hero illustrations that exemplify the form is more useful than a full roster, because the roster is going to move.
 
 ---
 
 ## Court fixtures
 
-Items that come with a physical fixture: a piece of furniture for the venue. Activated, the fixture appears at its designated marker. The fixture is what we see thereafter.
+Items that come with a physical fixture: a piece of furniture for the venue. Once acquired, the fixture lives on the court.
 
-- **The Bot.** A paddle-driver that takes over when the player goes idle. Owns a `bot_dock.tscn` prop that snaps to a `BotDock` marker. Two paddles visible at the court at once: the protagonist's and the bot's, each in a resting pose when not active. On idle handover, the protagonist's paddle slides to a rest pose and the bot paddle rolls in (around 0.25s). Inverse on reclaim. Behaviour stats (`reach`, `response`, `anticipation`, `endurance`) hint at distinct silhouettes per level.
-- **The Jukebox.** A music cabinet at a wall fixture marker. Has on / off states. No deeper design yet. The artist will get a brief if one lands.
+- **The Bot.** A paddle-driver that lives at a small dock against the back wall. When the player goes idle, the bot takes over the paddle; when the player returns, the bot hands it back. Two paddles visible on the court at once: the protagonist's and the bot's, each in a resting pose when the other is playing. The bot's resting pose reads distinct from the player's: more upright, a little more patient.
+- **The Jukebox.** A music cabinet that sits against a wall. On and off states. No deeper design yet.
 - **The Training Wall.** Catalogue-shipped item; named in the shop doc. No detailed design yet.
 
-The jukebox and training wall are flagged: referenced casually, not yet specced.
+The jukebox and training wall are referenced casually, not yet specced.
 
 ---
 
 ## The shop as a travel magazine
 
-A corner of the venue, hidden until the friend unlocks. Three diegetic surfaces.
+A corner of the venue, hidden until the friend unlocks. Three diegetic surfaces sit in the stall.
 
-- **ShopTable.** Small items sit here as physics objects. The player buys by dragging or pushing the item out of the shop area. Once it crosses the boundary, it is owned. From there it lands wherever the player let it go: rack, floor, or rest position.
-- **ShopCatalog.** Bigger items (the bot, jukebox, training wall, paddle upgrades). Resolved as a pull-up menu styled as a physical catalog. From the doc: "purchased items get a 'sold' stamp or circle, the way you would mark off a Scholastic book order form." The catalogue paginates; sold-out items show the stamp.
-- **ShippingCounter.** Where sealed boxes sit briefly before they ship out. The friend walks the box from the catalogue confirmation to the counter; the box disappears as the wall-clock countdown begins.
+- **A table.** Small items rest here as physical objects. The player buys by dragging or pushing the item out of the shop area; once it crosses the boundary it is owned, and it lands wherever the player let it go.
+- **A magazine the friend keeps.** Bigger items (the bot, the jukebox, the training wall, paddle upgrades) live in a thumbed-through catalogue the friend pulls out across the table. Purchased items get a "sold" stamp or circle, the way you would mark off a Scholastic book order form. The catalogue paginates; sold-out items show the stamp.
+- **A counter.** Sealed boxes sit here briefly after the friend takes an order. The friend walks the box from the catalogue to the counter; the box disappears as the offshore countdown begins.
 
 The catalogue is a charming object in its own right. The artist's read on it sets the worldbuilding: 70s travel posters, *National Geographic* spreads, Studio Ghibli "found art", Outer Wilds field-guide pages. Even with placeholder photography, the aesthetic sells the wider world cheaply. Items reference places that do not exist in the prototype yet, which is one of the load-bearing implication cues.
 
@@ -262,22 +246,17 @@ The catalogue is a charming object in its own right. The artist's read on it set
 
 ## The tinkerer's workshop
 
-Hidden until the tinkerer unlocks. Four physical objects.
+Hidden until the tinkerer unlocks. Four physical surfaces share the space: the tinkerer themselves, a workbench where the current commission sits while being worked on, a done tray where finished commissions rest with a gentle pulse until the player picks them up, and a drop-off basket where the player leaves items.
 
-- **TinkererCharacter.** State machine (rest / procrastinate / work) drives idle behaviour.
-- **Workbench.** The current commission sits here while being worked on. Visible but not interactable.
-- **DoneTray.** Finished commissions sit here, gentle pulse while unclaimed. A soft chime fires from the workshop on completion.
-- **DropOffBasket.** Where the player leaves items for the tinkerer.
-
-The player drags an item onto the basket; the item enters the queue. The tinkerer rotates through their states, chips away at the head commission, and lands the finished item on the done tray. The player drags from the done tray back to wherever the item lives.
+The player drags an item onto the basket; the item enters the queue. The tinkerer chips away at the head commission and lands the finished item on the done tray, with a soft chime when it does. The player drags from the done tray back to wherever the item lives.
 
 ---
 
 ## Racks, shipments, and the rest
 
-The **ball rack** and **gear rack** sit at the protagonist's end of the court. Both host inactive items and act as drop targets: a ball that enters the rack's footprint snaps in. When no balls are in play, the protagonist walks to the ball rack, picks up the next available ball, and serves. Empty rack plus resting ball on the venue floor: the protagonist idles; the player must re-rack.
+The **ball rack** and **gear rack** sit at the protagonist's end of the court: a wooden rack with slots for balls on one side, a smaller rack for gear opposite. A ball that rolls near a rack snaps into a slot. When no balls are in play, the protagonist walks to the ball rack, picks up the next available ball, and serves. Empty rack plus a ball resting on the venue floor: the protagonist idles, and the player has to re-rack.
 
-The **shipment mat** sits in the court area. Catalogue orders arrive as shipments that land here; the friend "walks in from the shop, sets the box down, returns." Boxes sit visibly on the mat until the player drags from them. Shipments are framed as offshore deliveries: timers run while the game is open and while it is closed, just like reality. Default catalogue-to-court time is around thirty seconds; per-item overrides exist (the bot ships slower as a narrative beat).
+A **doormat** sits in the court area where shipments land. Catalogue orders arrive as boxes the friend walks in from the stall and sets down; they sit there until the player drags from them. Shipments are framed as offshore deliveries: timers run whether the game is open or closed, the way real shipments do. Most arrive within a beat; a few take longer on purpose.
 
 ---
 
@@ -309,8 +288,6 @@ Examples:
 - Ice cave: cold blue ground, but a single internal glow in the crystal walls or a lantern on the table.
 - Post-break garden: the same garden, but the afternoon yellow has thinned. Light is grey-warm rather than gold-warm.
 
-No phase is cold without some hold of warmth. No phase is purely warm without some texture or weight.
-
 ---
 
 ## Sound and atmosphere
@@ -334,7 +311,7 @@ Across all of them: the paddle hit. The volley counter ticking. The ball's quiet
 The art bible's rulebook. Every piece of art carries all six. They are framed as descriptions of what Volley looks like when the work is landing, not commandments.
 
 1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
-2. **Specific.** Particulars over types. A specific fence, a specific stall, a specific Martha. Generic warmth fails.
+2. **Specific.** Particulars over types. This fence, this stall, this Martha. Generic warmth fails.
 3. **Distinct.** The visual register is unmistakably Volley. Not rounded-cosy, not pixel, not painterly-realism.
 4. **Diegetic.** The world is something the player is inside, not looking at. UI sits inside the same hand and voice.
 5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked.
@@ -348,7 +325,7 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 
 ### Animation and film
 
-- **Porco Rosso** (1992, Studio Ghibli; art dir. Kazuo Oga). The constructed world's north star for light and warmth. Late-afternoon watercolour register. Warmth that is genuine and also a shield.
+- **Porco Rosso** (1992, Studio Ghibli). The constructed world's north star for light and warmth. Late-afternoon watercolour register. Warmth that is genuine and also a shield.
 - **Good Will Hunting** (1997). Real-world reference for finding beauty in honest, unglamorous places. Bare-bulb light, soft natural tones, a place that has been lived in.
 - **La La Land** (2016). How saturation and lighting shift to change a scene's feeling without changing its style. The fantasy sequences move on the same axis Volley moves between its two registers.
 - **Baby Driver** (2017). Rhythm as a visual principle. Cuts, movement, and colour serving a felt pulse. Volley has a pulse the art and sound both serve.
@@ -391,7 +368,7 @@ Every work below has been cited somewhere in the design corpus as a tonal or vis
 
 ### Named hands
 
-- **Kazuo Oga** (*Porco Rosso* art director). Watercolour quality of light.
+- **Kazuo Oga** (*My Neighbor Totoro* art director, also *Princess Mononoke* and *Spirited Away*). Watercolour quality of light.
 - **Atsuko Nozaki** (*Ranking of Kings* character designer). Storybook simplicity.
 - **Naoyuki Asano** (*Eizouken* character designer). Loose, sketchy, energetic.
 - **Kazuya Konomoto** (*Odd Taxi* character designer). Visual restraint as deliberate strategy.
@@ -411,9 +388,9 @@ What Volley is consciously not.
 - **Photoreal.** The world is hand-drawn warmth, not realism.
 - **Vector polish.** Lines have life in them. No mechanical precision.
 - **Painterly realism.** The hand-drawn mark stays visible.
-- **Generic cosy register.** Rounded shapes, smiling everything, undifferentiated soft palette. Volley's cosy is specific, not generic.
+- **Generic cosy register.** Rounded shapes, smiling everything, undifferentiated soft palette. Volley's cosy is particular, not generic.
 - **Anime-stylised faces with big eyes.** The characters are people drawn warmly, not avatars. The anime references in the list above contribute animation philosophy, body language, impact pacing; not the moe face vocabulary.
-- **Period pastiche.** No specific real-world era reference. The lesson Volley takes from *Cuphead*: the production discipline travels, the 1930s framing does not.
+- **Period pastiche.** No fixed real-world era reference. The lesson Volley takes from *Cuphead*: the production discipline travels, the 1930s framing does not.
 - **Scary or distressing imagery.** The real register is quieter, not darker. Sadness is a consequence the player can sit with, never a tone the art chases.
 - **Outline-and-flat-fill shortcuts.** Line and fill work together; shadows are painted, not rendered.
 
@@ -424,10 +401,10 @@ What Volley is consciously not.
 Three principles the game holds across every register.
 
 1. **The warmth is real.** The cosy surface is not a lie. The narrative reveal does not punish the player for enjoying the rally. Warmth is earned and stays.
-2. **Earnest, never ironic.** Cosy, never stressful. Personal, never melodramatic. Characters are warm and specific. Items have flavour. Nothing is a wink. Lean away from the generic cosy-game register; the cosy here is specific and lived-in.
+2. **Earnest, never ironic.** Cosy, never stressful. Personal, never melodramatic. Characters are warm and particular. Items have flavour. Nothing is a wink. Lean away from the generic cosy-game register; the cosy here is specific and lived-in.
 3. **Trust the player.** No exposition. No signposting. No fourth-wall breaks. Let the player notice, wonder, and eventually understand.
 
-The marketing positioning crystallises this: "A cosy idle game with more going on than it lets on." The art's job is to carry both halves of that line at once.
+The line that holds it: "A cosy idle game with more going on than it lets on." The art's job is to carry both halves of that line at once.
 
 ---
 
@@ -444,7 +421,7 @@ The studio Volley lives in. The artist is working with Shuck, not just on Volley
 - You are credited as a contributor, by name. Not contractor. Recognition compounds and you get yours.
 - Decisions are explained, not announced. Push back where something feels wrong; the docs move when better arguments arrive.
 - The studio is one full-timer (Josh Hartley) plus contributors. No bureaucracy. Conversations are direct. Small art questions answer fast; big ones may need a beat.
-- Licence: Volley source is MIT; art assets are CC BY-NC-SA 4.0. Copyright pre-incorporation is held by Josh Hartley.
+- Licence: Volley source is MIT and design docs are CC-BY 4.0, but art, music, sound, and narrative assets are All Rights Reserved. Contributing an asset grants Josh a perpetual, royalty-free licence to use it in the commercial release; the assets are not redistributable. Copyright pre-incorporation is held by Josh Hartley, and you keep your credit.
 
 **Future:** once Volley v1.0 ships, Shuck plans to host an annual public game jam (Shuck Month) in May. The studio organises and participates alongside everyone else, scoped to four or five small prototypes across the month. This is downstream of your first deliverables; worth knowing because it sets the studio's longer arc.
 
@@ -459,7 +436,7 @@ A note on calibration. Volley's public footprint today is small.
 - One named character is public: Martha.
 - The vocabulary public-facing right now: venue, court, shop, workshop, cast.
 - The roadmap's milestone definitions are the most distilled public-voice writing: "Prototype: done when someone who's never heard of the game plays for an afternoon and comes away wanting more." "v1: done when you'd put your name on it and tell people to play."
-- There are no public screenshots, no key art, no banner. **The public art bar is essentially unset; you are setting it.**
+- There are no public screenshots, no key art, no banner. **The public art bar is essentially unset; the bar is yours to set.**
 
 ---
 
@@ -486,7 +463,7 @@ Currently open:
 - The friend's gender, age, build. Deliberately open.
 - The tinkerer's gender, age, presentation. Deliberately open.
 - Martha's age. Best read from the design: late 30s through 60s, maternal-figure-adjacent without being maternal. 45 to 60 is the working range.
-- The protagonist's specific physicality. Mid-30s, less athletic than he was, gentle. The first real-world memory deliverable will set this.
+- The protagonist's physicality. Mid-30s, less athletic than he was, gentle. The first real-world memory deliverable will set this.
 - Exact colour palettes for both registers. Not yet locked; will lock as the first assets land.
 - Typography.
 - How partner introductions render (portraits, dialogue treatment).
@@ -506,7 +483,7 @@ Currently open:
 
 ## A short closing
 
-The bet of the project is that one specific combination (hand-drawn illustration, idle pong, cosy-with-weight, two registers shifting with the story) sits in a gap the 2025 / 2026 landscape has not yet built. Each individual move has a peer that shipped well in the last two years. The combination is the thing. Your work is what makes the combination feel intentional rather than accidental.
+The bet of the project is that one combination (hand-drawn illustration, idle pong, cosy-with-weight, two registers shifting with the story) sits in a gap the 2025 / 2026 landscape has not yet built. Each individual move has a peer that shipped well in the last two years. The combination is the thing. Your work is what makes the combination feel intentional rather than accidental.
 
 If something feels actively wrong or contradictory in the bible or the brief, push back. Both are the current state; both will move as you do.
 
