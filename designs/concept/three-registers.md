@@ -78,8 +78,8 @@ Strong keeps from `designs/02-alpha/01-world-and-narrative.md`:
 Reframings:
 
 - The shopkeeper's role in the death has shifted from "tried to help after" to "involved but not responsible." Something else caused it; the shopkeeper was present, entangled, a daily reminder of the failure. This sharpens why the protagonist blocks them out and why the call is hard.
-- The post-break mechanic in the prior doc was badge activation (slotting narrative items into milestone badges). The new architecture replaces this with the bidirectional carry. Badge activation may persist as one expression of the carry inside Construction, or be dropped entirely. SH-279 will decide.
-- The narrative doc framed post-break as a single arc through denial-to-acceptance. The new architecture splits it into Reconstruction (the arc) and Reconciliation (the actions inside it).
+- The in Reconstruction mechanic in the prior doc was badge activation (slotting narrative items into milestone badges). The new architecture replaces this with the bidirectional carry. Badge activation may persist as one expression of the carry inside Construction, or be dropped entirely. SH-279 will decide.
+- The narrative doc framed in Reconstruction as a single arc through denial-to-acceptance. The new architecture splits it into Reconstruction (the arc) and Reconciliation (the actions inside it).
 
 ## Open questions (synthesis index)
 
