@@ -173,7 +173,7 @@ The win lands wrong. Both pulls of becoming-champ are satisfied at the same beat
 
 The win IS the break. Construction can no longer hold itself together once its central goal has been reached and proved meaningless. Light, sound, the venue's surfaces, the friend's posture: all turn at once. A giving-way, not a glitch. The construction's maintenance has been the protagonist's choice every day until this one; on this one the goal hollows out and the choice fails.
 
-At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar (matching the unnamed number in their phone) but the recognition does not quite land yet. That match is the seed Reconstruction will grow.
+At the win the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
 
 After the rupture the player is pulled into Reality involuntarily for the first time and walks through the protagonist's hometown. The walk reveals the rupture's content: the shopkeeper is missing. The shop is empty, the lights off, a sign on the door, the family worried about where they have gone. The person the protagonist was reaching for without knowing has actually disappeared. **The cliff** sits beyond the town's edge but is not visited yet; the friend died there, and the shopkeeper has gone there, and it waits.
 
@@ -193,7 +193,7 @@ The mechanic at the centre of Reconstruction is **the photo book**. The shopkeep
 
 Volley itself becomes memory recall in Part 2. Each rally surfaces a memory; each memory becomes a photo or unlocks one; each photo points to a place in Reality the shopkeeper might be or where they left a trace. Coaches share their own memories of the shopkeeper as the player rallies with them. The rally and the photo work feed into each other.
 
-The unnamed number tightens across the arc. Fragments of the digits surface in Reality where they should not be: written on the back of a found photo, etched on the closed shop's sign, scrawled in the workshop, half-spoken by a coach mid-rally, mentioned by the sister as an area code. Each fragment moves the protagonist's recognition that the unnamed contact is the shopkeeper. The almost-dial recurs across the arc: hand-to-pocket after a coach's memory, the phone out after a heavy photo find, a draft message left open and never sent, a voicemail attempt that hangs up before saying anything. None connect. The reach without contact accumulates as the dread does.
+The unnamed number stays unnamed across the arc. No fragments surface. No partial recognition. The number sits in the phone throughout Reconstruction, dialable any time, ringing into nothing. The player can call after a heavy photo find, after a coach's memory, in the quiet between rallies. The line never picks up. The reach without contact accumulates as the dread does, and the connection between the digits and the shopkeeper is held until the cliff.
 
 Reconstruction asks for two surfaces. Construction weathers as the carry accumulates: saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. Reality acquires content: the sister's place gains the book and the table where the protagonist sits with it, scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
@@ -211,13 +211,15 @@ Across Reconstruction the protagonist has been carrying dread, afraid the shopke
 
 The cliff reads as a place people came to. A worn ledge, traces of small ceremony, the marks a group leaves on a spot they returned to until they stopped. A bench sits at the cliff edge, dedicated to the friend. The shopkeeper is on the bench, alive. The dread inverts to relief. The shopkeeper has been here, withdrawn, refusing every call.
 
-The protagonist takes out their phone and dials the unnamed number, the digits whole now from all the fragments that surfaced across Reality. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others, and they do not. They look up at the sound, see the protagonist, pick up.
+Recognition lands here for the first time. The protagonist sees the shopkeeper on the bench, and the connection forms in one beat: the unnamed number in their phone, the world record they reached, the digits the championship resolved on, the person sitting in front of them. One number, held unnamed the whole game, only now legible.
+
+The protagonist takes out their phone and dials, knowing whose number it is. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others, and they do not. They look up at the sound, see the protagonist, pick up.
 
 ### Staging
 
 One image, two presences. The composition splits the frame across the bench area: protagonist on the path, shopkeeper on the bench, the few steps between them. Both holding phones. After the touchstone of *[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)*'s key art, where two characters share one image divided by a structural element. The split is the years of distance; the shared frame is the resolution. The phone is the line that crosses the split. The cliff and the sea sit behind both of them; the bench is the dedication; the call is the answer. One moment, two people, finally in the same picture.
 
-The dial does two acts at once. Chosen presence, the choice to be reached and to reach across the few steps that took the whole game. And the moment the name finally attaches: the unnamed contact in the protagonist's phone is recognised as the shopkeeper, the contact and the person fused after a whole game of holding them apart.
+The dial is the choice to be reached and to reach across the few steps that took the whole game. The recognition has already landed on the bench; the dial is what the protagonist does with it. The contact and the person, held apart for the whole game, sit in one frame at last.
 
 The call ends. The protagonist crosses the small distance and sits beside the shopkeeper on the bench. Coming home is the call.
 
