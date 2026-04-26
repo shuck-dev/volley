@@ -53,7 +53,7 @@ The garden in Construction draws from this geography. Construction's other venue
 
 Construction and Reality are distinct worlds. Two styles, two visual treatments, two ways the player engages.
 
-**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Volleyball lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
+**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
 
 **Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in `designs/concept/04-reality.md`.
 
@@ -438,7 +438,7 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section 3 (overview), threaded through Parts 1 and 2.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
-- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones across the small distance between path and bench. Section 9.
+- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones, the call open between them. Section 9.
 - **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections 1 and 9.
 - **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section 8.
 - **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.

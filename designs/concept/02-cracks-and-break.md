@@ -6,7 +6,7 @@ The wall thinning across Part 1, the championship win that lands wrong, and the 
 
 Reality leaks into Construction in small atmospheric ways across Part 1. Each leak is dismissible on its own. The cumulative pressure is what matters.
 
-Cracks earn their dismissibility from prior generosity. Construction has to land as genuinely fun before a single crack works. Spec Ops's first heat shimmer arrives roughly three hours in, after the player has settled into a competent-soldier rhythm; Doki Doki's first poem night arrives after hours of dating-sim warmth; Inscryption's first scrybe-room break arrives once the player has earned the deck. Volley's idle pacing scales these numbers up; the principle holds.
+Cracks earn their dismissibility from prior generosity (see [Pattern 1](../research/game-structure-references.md#pattern-1-cracks-earn-dismissibility-from-prior-generosity)). Construction has to land as genuinely fun before a single crack works. [Spec Ops: The Line](https://en.wikipedia.org/wiki/Spec_Ops:_The_Line)'s first heat shimmer arrives roughly three hours in, after the player has settled into a competent-soldier rhythm; [Doki Doki Literature Club](https://en.wikipedia.org/wiki/Doki_Doki_Literature_Club!)'s first poem night arrives after hours of dating-sim warmth; [Inscryption](https://en.wikipedia.org/wiki/Inscryption)'s first scrybe-room break arrives once the player has earned the deck. Volley's idle pacing scales these numbers up; the principle holds.
 
 ### Two kinds of crack
 

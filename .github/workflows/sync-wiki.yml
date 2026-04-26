@@ -50,16 +50,42 @@ jobs:
                 my @dir = split m{/}, ($ENV{DIR} // "");
                 my @parts = split m{/}, $p;
                 while (@parts && $parts[0] eq "..") { shift @parts; pop @dir; }
-                my $joined = join("-", @dir, @parts);
-                "]($joined$a)"
+                my @combined = (@dir, @parts);
+                my $target;
+                if (@combined > 1 && $combined[-1] eq "INDEX") {
+                  # designs/<sub>/INDEX.md publishes as <Sub>.md (titlecased leaf).
+                  pop @combined;
+                  my $leaf = pop @combined;
+                  $leaf =~ s/^([a-z])/uc($1)/e;
+                  $leaf =~ s/(-)([a-z])/$1 . uc($2)/ge;
+                  $target = join("-", @combined, $leaf);
+                } elsif (@combined == 1 && $combined[0] eq "INDEX") {
+                  # designs/INDEX.md publishes as Home.
+                  $target = "Home";
+                } else {
+                  $target = join("-", @combined);
+                }
+                "]($target$a)"
               }ge' "$src" > "$dest"
+          }
+
+          # Titlecase a hyphen-separated dir name: 01-prototype -> 01-Prototype, art -> Art.
+          titlecase_dir() {
+            python3 -c 'import sys; print("-".join(p[:1].upper()+p[1:] if p and p[0].islower() else p for p in sys.argv[1].split("-")))' "$1"
           }
 
           for src in designs/**/*.md; do
             rel="${src#designs/}"
             [ "$rel" = "INDEX.md" ] && continue
-            flat="${rel//\//-}"
             dir="$(dirname "$rel")"
+            base="$(basename "$rel")"
+            if [ "$base" = "INDEX.md" ] && [ "$dir" != "." ]; then
+              # designs/<sub>/INDEX.md becomes wiki/<Sub>.md so the wiki page
+              # title is "Sub" instead of "sub-INDEX".
+              flat="$(titlecase_dir "${dir//\//-}").md"
+            else
+              flat="${rel//\//-}"
+            fi
             [ "$dir" = "." ] && dir=""
             copy_with_rewrite "$src" "wiki/$flat" "$dir"
           done
