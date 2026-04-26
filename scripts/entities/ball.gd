@@ -164,8 +164,7 @@ func apply_item_art(art_scene: PackedScene, token_scale: Vector2 = Vector2.ONE) 
 	holder.scale = token_scale
 	var instance: Node = art_scene.instantiate()
 	holder.add_child(instance)
-	if instance is Node2D:
-		_item_art = instance
+	_item_art = holder
 	add_child(holder)
 	var default_sprite: Node = get_node_or_null("Sprite")
 	if default_sprite != null:
