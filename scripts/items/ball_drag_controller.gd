@@ -13,6 +13,8 @@ signal drop_completed(item_key: String, position: Vector2, over_court: bool)
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
+## SH-287 patch: probe radius for the pre-spawn body projection; slightly larger than authored ball radius.
+const COURT_BLOCKED_PROBE_RADIUS_PX: float = 14.0
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -195,6 +197,12 @@ func _release_onto_court(
 	if is_temporary:
 		return
 
+	# SH-287 patch: refuse spawns that would intersect a wall, partner, or other body.
+	if not _release_position_clear(release_position):
+		if _item_manager.is_on_court(item_key):
+			_item_manager.deactivate(item_key)
+		return
+
 	# Activation happens at release-over-court so a click without movement on the rack
 	# does not introduce the ball (SH-245).
 	if not _item_manager.is_on_court(item_key):
@@ -202,6 +210,25 @@ func _release_onto_court(
 
 	if reconciler != null:
 		reconciler.ensure_ball_for_key(item_key, release_position, release_velocity)
+
+
+## SH-287 patch: pre-spawn body projection. Returns true if a ball-sized circle at the position would not overlap any physics body.
+func _release_position_clear(position: Vector2) -> bool:
+	var world: World2D = get_world_2d()
+	if world == null:
+		return true
+	var space: PhysicsDirectSpaceState2D = world.direct_space_state
+	if space == null:
+		return true
+	var shape: CircleShape2D = CircleShape2D.new()
+	shape.radius = COURT_BLOCKED_PROBE_RADIUS_PX
+	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	params.shape = shape
+	params.transform = Transform2D(0.0, position)
+	params.collide_with_bodies = true
+	params.collide_with_areas = false
+	var hits: Array = space.intersect_shape(params, 1)
+	return hits.is_empty()
 
 
 func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: bool) -> void:
