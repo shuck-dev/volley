@@ -9,7 +9,7 @@ extends Node2D
 ## target. The source rack is itself a target, giving the player a no-teleport escape valve.
 
 signal pickup_started(item_key: String)
-signal drop_completed(item_key: String, position: Vector2, over_court: bool)
+signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
@@ -231,7 +231,7 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 
 
 ## SH-287 patch: pre-spawn body projection. Returns true if a ball-sized circle at the position would not overlap any physics body.
-func _release_position_clear(position: Vector2) -> bool:
+func _release_position_clear(candidate_position: Vector2) -> bool:
 	var world: World2D = get_world_2d()
 	if world == null:
 		return true
@@ -242,7 +242,7 @@ func _release_position_clear(position: Vector2) -> bool:
 	shape.radius = COURT_BLOCKED_PROBE_RADIUS_PX
 	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	params.shape = shape
-	params.transform = Transform2D(0.0, position)
+	params.transform = Transform2D(0.0, candidate_position)
 	params.collide_with_bodies = true
 	params.collide_with_areas = false
 	var hits: Array = space.intersect_shape(params, 1)
@@ -314,38 +314,38 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 
 
 ## Returns true if the position is over a rack whose role accepts the held item's role.
-func _position_over_rack_for_role(position: Vector2, item_role: StringName) -> bool:
-	if item_role == &"ball" and _position_over_area(position, rack_drop_target):
+func _position_over_rack_for_role(world_position: Vector2, item_role: StringName) -> bool:
+	if item_role == &"ball" and _position_over_area(world_position, rack_drop_target):
 		return true
-	if item_role != &"ball" and _position_over_area(position, gear_rack_drop_target):
+	if item_role != &"ball" and _position_over_area(world_position, gear_rack_drop_target):
 		return true
 	return false
 
 
-func _position_over_area(position: Vector2, area: Area2D) -> bool:
+func _position_over_area(world_position: Vector2, area: Area2D) -> bool:
 	if area == null:
 		return false
 	var shape_owner: CollisionShape2D = _first_collision_shape(area)
 	if shape_owner == null:
 		return false
 	var rect: Rect2 = _world_rect_for_shape(area, shape_owner)
-	return rect.has_point(position)
+	return rect.has_point(world_position)
 
 
-func _clamp_to_court(position: Vector2) -> Vector2:
-	return _clamp_to_rect(position, court_bounds)
+func _clamp_to_court(world_position: Vector2) -> Vector2:
+	return _clamp_to_rect(world_position, court_bounds)
 
 
-func _clamp_to_venue(position: Vector2) -> Vector2:
-	return _clamp_to_rect(position, venue_bounds)
+func _clamp_to_venue(world_position: Vector2) -> Vector2:
+	return _clamp_to_rect(world_position, venue_bounds)
 
 
-func _clamp_to_rect(position: Vector2, bounds: Rect2) -> Vector2:
+func _clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
 	if bounds.size == Vector2.ZERO:
-		return position
+		return world_position
 	return Vector2(
-		clampf(position.x, bounds.position.x, bounds.position.x + bounds.size.x),
-		clampf(position.y, bounds.position.y, bounds.position.y + bounds.size.y),
+		clampf(world_position.x, bounds.position.x, bounds.position.x + bounds.size.x),
+		clampf(world_position.y, bounds.position.y, bounds.position.y + bounds.size.y),
 	)
 
 
