@@ -7,15 +7,15 @@ The design thinking behind Volley!, organised by subject. Each folder has its ow
 | Doc | Description |
 |---|---|
 | [North Star](north-star.md) | What the game is, who it's for, and why it matters |
-| [Roadmap](roadmap.md) | The main roadmap across all phases |
+| [Roadmap](roadmap.md) | The five phases at a glance |
 
 ## By phase
 
 | Phase | Folder | Description |
 |---|---|---|
 | Prototype | [01-prototype/](01-prototype/INDEX.md) | Public demo on itch.io |
-| Alpha | [02-alpha/](02-alpha/INDEX.md) | Pre-break content-complete |
-| Beta | [03-beta/](03-beta/INDEX.md) | Full game structure, all phases playable |
+| Alpha | [02-alpha/](02-alpha/INDEX.md) | Construction era content-complete, the break designed |
+| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction and both endings playable |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content |
 
 ## By discipline
@@ -24,7 +24,6 @@ The design thinking behind Volley!, organised by subject. Each folder has its ow
 |---|---|
 | [art/](art/INDEX.md) | The art bible, direction, style workshop, and inspirations |
 | [platform/](platform/threaded-web-export.md) | Platform and distribution decisions (web export, hosting) |
-| [roadmaps/](roadmaps/INDEX.md) | Discipline-specific roadmap breakdowns |
 
 ## Process
 

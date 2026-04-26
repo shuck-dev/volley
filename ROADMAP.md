@@ -2,8 +2,6 @@
 
 Volley! ships in six milestones. Each milestone is the state the game is in at the end of that phase, not a list of features.
 
-![Volley! roadmap](designs/roadmap.excalidraw.svg)
-
 ## Prototype
 
 Done when someone who's never heard of the game plays for an afternoon and comes away wanting more.

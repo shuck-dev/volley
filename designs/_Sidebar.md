@@ -20,6 +20,3 @@
 **Research**
 - [Early Clone Games](research-early-clone-games)
 - [Visual Positioning](research-visual-positioning)
-
-**Roadmaps**
-- [Roadmaps](roadmaps-INDEX)
