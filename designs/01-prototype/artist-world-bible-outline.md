@@ -4,11 +4,12 @@ Working doc for the bible's restructure. Captures the architecture Josh and Gru 
 
 The structural canon is held in `designs/concept/`:
 
-- `three-registers.md` — high-level architecture and synthesis index.
-- `construction.md` — the bright world, cast, shopkeeper psychology, tournament structure, coaches, the champ.
-- `cracks-and-break.md` — the wall thinning and the wall coming down.
-- `reconstruction.md` — the long arc after the break, bidirectional carry, Reality the place, sister and photo book, cliff.
-- `postgame.md` — the call (the ending) and what follows.
+- `00-three-registers.md`: high-level architecture and synthesis index.
+- `01-construction.md`: the bright world, cast, shopkeeper psychology, tournament structure, coaches, the champ.
+- `02-cracks-and-break.md`: the wall thinning and the wall coming down.
+- `03-reconstruction.md`: the long arc after the break, bidirectional carry, the reconciliation mechanic.
+- `04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.
+- `05-postgame.md`: the call (the ending) and what follows.
 
 The bible's job is to make this clear to the artist so every painting, every gesture, every venue choice fits the register it belongs to. The outline below maps how the bible expresses each piece of the spike's canon for the artist's purposes.
 
@@ -34,7 +35,7 @@ The bible keeps the player-facing hook visible (the championship to chase) and g
 
 The bright world. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. The volley record is the goal; the count is the engine. The structure is a tournament: the protagonist climbs through rounds, one per venue, with a coach-partner for each.
 
-What construction LOOKS like: described directly (see voice rules — no brand names). Saturation, youth, motion, generosity of light, fullness of detail, characters present and active.
+What construction LOOKS like: described directly (see voice rules : no brand names). Saturation, youth, motion, generosity of light, fullness of detail, characters present and active.
 
 What construction IS: the pretense the protagonist actively maintains. A coping shape. The warmth in it is real; the rendering is the defence.
 
@@ -50,7 +51,7 @@ The rupture. Both cumulative (cracks pile up) and singular (one moment is the fa
 
 At the break the shop closes; the shopkeeper exits the construction. The friend at the stall is gone. The warm centre is hollowed out. The bright world the player returns to after the break has lost its anchor; that absence is the felt difference of Reconstruction.
 
-The break is also the player's first walk through the protagonist's hometown — Reality, in passing. The cliff is somewhere in this geography but not yet visited.
+The break is also the player's first walk through the protagonist's hometown : Reality, in passing. The cliff is somewhere in this geography but not yet visited.
 
 ### E. Reality
 
@@ -120,7 +121,7 @@ This section stays largely as-is from the previous bible iteration; the architec
 
 The reference register: films and animation, games, named hands. Linked to canonical sources (Steam, Wikipedia, etc). Stays as-is in shape.
 
-Add: Broken Age as a new touchstone for the call's split-frame composition (`postgame.md`). The Game Structure references doc (`designs/research/game-structure-references.md`) holds research for the team's wider lineage; the bible's reference register is the artist-facing curation.
+Add: Broken Age as a new touchstone for the call's split-frame composition (`05-postgame.md`). The Game Structure references doc (`designs/research/game-structure-references.md`) holds research for the team's wider lineage; the bible's reference register is the artist-facing curation.
 
 ### N. Tone rules and what to avoid
 
@@ -130,11 +131,11 @@ The do-nots. The voice rules in summary form. Stays largely as-is.
 
 The structural spike now lives in `designs/concept/`; its open questions are the spike's, not the bible's. The bible's content fills wait on a few of those resolving:
 
-- **Encounter shape inside the tournament.** Coaches teach mechanics and take the other side in their round; specific match format, win condition, drop-out behaviour all open. (Spike `construction.md`.)
-- **Reconciliation action count and shape.** 4-6 vs 5-7 actions; memory-faced vs character-encountered vs small-task-in-Reality. Affects bible's content fills for the Reality scenes. (Spike `reconstruction.md`.)
-- **Crack pacing.** Count milestones vs playtime vs story flags vs combination. Affects bible's craft direction for the cracks. (Spike `cracks-and-break.md`.)
-- **Bridge unlock signal.** What does the player see/feel when Reconstruction begins. Affects bible's craft direction for the in Reconstruction beat. (Spike `reconstruction.md`.)
-- **Cliff trigger.** What unlocks the cliff dip late in Reconstruction. (Spike `reconstruction.md`.)
+- **Encounter shape inside the tournament.** Coaches teach mechanics and take the other side in their round; specific match format, win condition, drop-out behaviour all open. (Spike `01-construction.md`.)
+- **Reconciliation action count and shape.** 4-6 vs 5-7 actions; memory-faced vs character-encountered vs small-task-in-Reality. Affects bible's content fills for the Reality scenes. (Spike `03-reconstruction.md`.)
+- **Crack pacing.** Count milestones vs playtime vs story flags vs combination. Affects bible's craft direction for the cracks. (Spike `02-cracks-and-break.md`.)
+- **Bridge unlock signal.** What does the player see/feel when Reconstruction begins. Affects bible's craft direction for the moment the wall stays down. (Spike `03-reconstruction.md`.)
+- **Cliff trigger.** What unlocks the cliff dip late in Reconstruction. (Spike `03-reconstruction.md`.)
 
 The bible itself can proceed on the structure without these settled; content fills wait on them.
 

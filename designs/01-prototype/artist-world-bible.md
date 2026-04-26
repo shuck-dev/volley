@@ -165,9 +165,9 @@ How the two worlds relate visually is open. The principle holds: the shift betwe
 
 Four phases. The visual register shifts across them. The prototype lives in phase one.
 
-1. **Pre-break.** Warm, bright world. The protagonist is in the place they built. Everything has light. The friend is at the stall, the partners arrive, the wonders escalate. Underneath, small moments of oddness sit; the player is held, not lulled.
+1. **Construction.** Warm, bright world. The protagonist is in the place they built. Everything has light. The friend is at the stall, the partners arrive, the wonders escalate. Underneath, small moments of oddness sit; the player is held, not lulled.
 2. **The break.** A monumental change. The bright world deconstructs. The seam does not just show; it opens. Light, sound, object readings all turn at once. The break is the hinge of the game.
-3. **Post-break.** Reconstruction and recontextualisation. Bright and quieter worlds both come back, both altered, both readable in a new light. The same venues hold different weight. Martha's lines acquire weight; the protagonist is still playing, but knowing more.
+3. **Reconstruction.** Both worlds come back, both altered, both readable in a new light. The same venues hold different weight. Martha's lines acquire weight; the protagonist is still playing, but knowing more.
 4. **Peace.** Genuinely peaceful, and still fun and challenging. The warmth that returns knows what it costs. The visual register is the warmth of Construction with the texture of Reconstruction.
 
 The game is sad, but it earns the sadness and does not wallow. The reveal lands and the game moves forward.
@@ -215,12 +215,12 @@ The prototype lives in the first garden venue and ends on the cliffhanger leap. 
 
 Every venue, every phase, has some warmth somewhere. Colour temperature, intensity, and mood change; the warmth holds.
 
-- Pre-break garden: late-afternoon yellow, slant shadows, slight haze.
+- Construction garden: late-afternoon yellow, slant shadows, slight haze.
 - Underwater: sun above filtered green and gold, with motes of light cutting through.
 - Meteor or space: nebula pink, cold star points, the friend's stall has its own glow.
 - Treetops: golden hour through leaves; the canopy filtering everything to honey.
 - Ice cave: cold blue ground, but a single internal glow in the crystal walls or a lantern on the table.
-- Post-break garden: the same garden, but the afternoon yellow has thinned. Light is grey-warm rather than gold-warm.
+- Reconstruction garden: the same garden, but the afternoon yellow has thinned. Light is grey-warm rather than gold-warm.
 
 ---
 
