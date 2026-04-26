@@ -49,4 +49,4 @@ These are hard to ignore. The warm framing is straining.
 - Partner barks become more urgent and less characteristic. "Please" where they'd normally be breezy. "Not yet" on a milestone that should be celebrated.
 - The ball occasionally moves wrong in a way that can't be blamed on physics. Too slow, too deliberate. Like something is resisting.
 - Visual artifacts: a single frame where the art style is different. Not a bug. When the player looks again it's gone.
-- The world record gets very close and the game's tone doesn't match. The music is still warm, the UI still tended, but something underneath is pulling the other way.
+- The world record gets very close and the game's tone doesn't match. The music is still warm, the UI still inviting, but something underneath is pulling the other way.

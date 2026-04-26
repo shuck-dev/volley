@@ -50,7 +50,7 @@ The game should respect the player's time whether they engage with the narrative
 
 ## Tone
 
-Warm, never stressful. Earnest, never ironic. Personal, never melodramatic. Characters are specific. Competition is self-driven. Small wins are celebrated. The game takes itself slightly more seriously than a pong game should, and that's intentional.
+Warm, never stressful. Earnest, never ironic. Personal, never melodramatic. Characters are specific and warmly drawn. Competition is self-driven. Small wins are celebrated. The game takes itself slightly more seriously than a pong game should, and that's intentional.
 
 ## Non-goals
 
