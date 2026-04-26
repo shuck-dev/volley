@@ -42,7 +42,7 @@ The real world is revealed at **The Break**, when the player walks through the m
 
 Kind, never stressful. Earnest, never ironic. Personal, never melodramatic. The art takes itself slightly more seriously than a pong game should, and that is intentional.
 
-The bright surface is not a lie. Warmth is the main style. Under the warmth sits something honest. The art holds both at once without undercutting either.
+Warmth is the main style. Under it sits something honest. The art holds both at once without undercutting either.
 
 The game is sad, but it earns the sadness and never wallows. The art is **never scary or distressing**; the real style is quieter, not darker. Sadness is a consequence the player can sit with, not a tone the art chases.
 

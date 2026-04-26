@@ -44,7 +44,7 @@ These are noticeable on replay but easy to rationalise the first time. The rival
 
 ## Stage 3: The surface is cracking (approaching the record, final milestones)
 
-These are hard to ignore. The bright framing is straining.
+These are hard to ignore. The cheerfulness is starting to crack.
 
 - Partner barks become more urgent and less characteristic. "Please" where they'd normally be breezy. "Not yet" on a milestone that should be celebrated.
 - The ball occasionally moves wrong in a way that can't be blamed on physics. Too slow, too deliberate. Like something is resisting.

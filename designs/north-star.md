@@ -45,7 +45,7 @@ The game should respect the player's time whether they engage with the narrative
 - **Come back to good news.** The player returns to rewards, not a reset. Being away should feel like the game kept going without them.
 - **Don't make it a chore.** Active play is fun, not mandatory. Idle play earns less but still earns. The player chooses how much attention to give.
 - **Pinch points, not paywalls.** Progression slows naturally. Breakthrough moments feel earned. Nothing is gated behind anything except playing.
-- **The warmth is real.** The bright surface is not a lie. Learning the narrative should not make the player feel tricked for enjoying the game. The idle loop and the story both hold up on their own.
+- **Loving Construction is not the joke.** Learning the narrative does not punish the player for enjoying the game. The idle loop and the story both hold up on their own.
 - **Trust the player.** Don't explain. Don't signpost. Don't break the fourth wall. Let the player notice, wonder, and eventually understand. The game respects players who pay attention and doesn't punish players who don't.
 
 ## Tone
