@@ -84,9 +84,9 @@ A bench sits at the cliff edge, dedicated to the friend who died. The shopkeeper
 
 Recognition lands. The unnamed number in the phone, the world record they reached, the digits the championship match resolved on, the person on the bench: all the same number, held unnamed all along, only now legible. The connection forms in the seeing.
 
-The bench is a few steps away. The protagonist could close that distance silently. They do not. They take out their phone and dial the number, knowing now whose it is. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+The shopkeeper is right there. The protagonist could walk up silently. They do not. They take out their phone and dial the number, knowing now whose it is. The shopkeeper's phone rings on the bench beside them; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones, the call open between them.
 
-The dial bridges intention, not space. Chosen presence rather than a closing of distance. Two acts at once: choosing to reach, and finally attaching the name to the number that has sat unnamed in the protagonist's phone the whole game. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game.
+The dial bridges intention, not space. Chosen presence rather than a quiet approach. Two acts at once: choosing to reach, and finally attaching the name to the number that has sat unnamed in the protagonist's phone the whole game. The years between them were what was hard; the choice to be reached, and to reach, is the part that took the whole game.
 
 The call ends. The protagonist crosses, sits beside the shopkeeper on the bench. Credits roll over the rally that follows: the protagonist on the left, the shopkeeper on the right, the championship spot held by the actual person at last. The daily thing the protagonist did alone is finally done together.
 
