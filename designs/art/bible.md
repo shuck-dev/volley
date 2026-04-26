@@ -339,7 +339,7 @@ Five rules the art holds the work to.
 4. **Trust the player.** Let the player notice, wonder, and eventually understand.
 5. **Cracks stay tonal.** The leak renders as light, posture, sound, atmosphere. The cumulative shape relies on deniability.
 
-The art takes itself a touch more seriously than a pong game should, and that is intentional. The warmth holds, and something honest sits underneath it; both run at once without undercutting either. Sadness, when it comes, is a consequence the player can sit with. The art is never scary or distressing; Reality is quieter, not darker.
+The art takes itself a touch more seriously than a pong game should, and that is intentional. The presentation holds while harder material sits underneath; both run at once without undercutting either. Sadness, when it comes, is a consequence the player can sit with. The art is never scary or distressing; Reality is quieter, not darker.
 
 Audio direction lives in SH-281. A summary of the arc: Construction is synthetic, bright, energetic; cracks bring small dissonances and meta-glitches; the break is abstract synth, harsh, minimalist; Reality is acoustic, with bustle and wind instruments; Reconstruction holds synth and acoustic in conversation, weighted increasingly toward acoustic and toward fuller arrangement; the cliff and call run thin then full; the credits reach for both wonder and weight, full orchestra, the synthesis the game has been working toward.
 
@@ -349,11 +349,11 @@ Audio direction lives in SH-281. A summary of the arc: Construction is synthetic
 
 Hand-drawn illustration with the mark visible. Pencil and brushwork that breathe. Not pixel art. Not painterly realism. Not vector-clean.
 
-**Colour.** Bold shapes, limited and confident colour. Construction runs saturated and warm: warm golds, soft blues, deep warm shadows, colour as comfort. Reality runs the same family with the saturation dial turned down: muted warms, honest greys, natural greens. Light falls where it falls. Exact hex values lock as the first finished assets land.
+**Colour.** Bold shapes, limited and confident colour. Construction runs saturated and warm: honey golds, soft blues, deep amber shadows, colour as comfort. Reality runs the same family with the saturation dial turned down: muted warms, honest greys, natural greens. Light falls where it falls. Exact hex values lock as the first finished assets land.
 
 **Line.** Confident, slightly imperfect, visibly made by a person. No flat vector polish, no mechanical precision. Construction's line is cleaner; edges resolved. Reality's line is looser; the mark breathes more. Same hand, less composed. Stroke weight stays consistent within a scene. Silhouette reads first; line detail second.
 
-**Shape.** Soft and organic for warmth and characters; geometric and stable for props and architecture. The ball is round, the racquet is a slab with weight, the racks are specific objects. Characters stay simple; environments carry more depth. The two meet through shared light and palette, so characters belong to the space rather than floating on top of it.
+**Shape.** Soft and organic for characters; geometric and stable for props and architecture. The ball is round, the racquet is a slab with weight, the racks are specific objects. Characters stay simple; environments carry more depth. The two meet through shared light and palette, so characters belong to the space rather than floating on top of it.
 
 **Treatment.** Every element drawn by the same voice. No placeholder asset ships; if it is in the frame, it belongs. No outline-and-flat-fill shortcuts; line and fill work together. Shadows are painted, not rendered. Ambient occlusion is a choice, not a default. Cuphead-level commitment to the hand-drawn voice across every asset, including the interface.
 
@@ -387,7 +387,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 
 ### Animation and film
 
-- **[Porco Rosso](https://en.wikipedia.org/wiki/Porco_Rosso)** (1992, Studio Ghibli). North star for light and warmth. Late-afternoon watercolour style.
+- **[Porco Rosso](https://en.wikipedia.org/wiki/Porco_Rosso)** (1992, Studio Ghibli). North star for light and place. Late-afternoon watercolour style.
 - **[Good Will Hunting](https://en.wikipedia.org/wiki/Good_Will_Hunting)** (1997). Reality reference for finding beauty in honest, unglamorous places.
 - **[La La Land](https://en.wikipedia.org/wiki/La_La_Land)** (2016). How saturation and lighting shift to change a scene's feeling without changing its style.
 - **[Baby Driver](https://en.wikipedia.org/wiki/Baby_Driver)** (2017). Rhythm as a visual principle.
@@ -399,10 +399,10 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 - **[Bo Burnham: Inside](https://en.wikipedia.org/wiki/Inside_(2021_film))** (2021). One person, one room, obsessive light arrangement.
 - **[Everything Everywhere All at Once](https://en.wikipedia.org/wiki/Everything_Everywhere_All_at_Once)** (2022). Wildly different visual modes held by a single emotional core.
 - **[To Be Hero X](https://en.wikipedia.org/wiki/To_Be_Hero_X)** (2025). Multiple visual styles within one work, used as emotional punctuation.
-- **[Detectorists](https://en.wikipedia.org/wiki/Detectorists)**. British pastoral. Quiet warmth, gentle people, English summer afternoons. Tonal anchor for Reality.
-- **[Coco](https://en.wikipedia.org/wiki/Coco_(2017_film))**. Warm Mediterranean style, family memory.
-- **[Wallace and Gromit](https://en.wikipedia.org/wiki/Wallace_%26_Gromit) / [Beatrix Potter](https://en.wikipedia.org/wiki/Beatrix_Potter)**. British illustration. Warm, specific, lived-in.
-- **[Adventure Time](https://en.wikipedia.org/wiki/Adventure_Time)**. Visual variety held together by tonal warmth across wildly different settings.
+- **[Detectorists](https://en.wikipedia.org/wiki/Detectorists)**. British pastoral. Quiet kindness, gentle people, English summer afternoons. Tonal anchor for Reality.
+- **[Coco](https://en.wikipedia.org/wiki/Coco_(2017_film))**. Sun-saturated Mediterranean style, family memory.
+- **[Wallace and Gromit](https://en.wikipedia.org/wiki/Wallace_%26_Gromit) / [Beatrix Potter](https://en.wikipedia.org/wiki/Beatrix_Potter)**. British illustration. Specific, lived-in, particular.
+- **[Adventure Time](https://en.wikipedia.org/wiki/Adventure_Time)**. Visual variety held together by tonal continuity across wildly different settings.
 
 ### Games
 
