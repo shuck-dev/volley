@@ -6,24 +6,24 @@ The bible holds the world's tone, visual texture, emotional shape, and the canon
 
 ## Contents
 
-1. The world in one paragraph
-2. Setting and period
-3. Two styles
-4. The cast
-5. Part 1: Construction
-6. Cracks during Construction
-7. The break
-8. Part 2: Reconstruction
-9. The cliff and the call
-10. Credits and postgame
-11. The Six Marks
-12. Constants across venues
-13. Diegetic surfaces
-14. Venues
-15. Tone
-16. Touchstones
-17. Open questions
-18. Glossary
+1. [The world in one paragraph](#1-the-world-in-one-paragraph)
+2. [Setting and period](#2-setting-and-period)
+3. [Two styles](#3-two-styles)
+4. [The cast](#4-the-cast)
+5. [Part 1: Construction](#5-part-1-construction)
+6. [Cracks during Construction](#6-cracks-during-construction)
+7. [The break](#7-the-break)
+8. [Part 2: Reconstruction](#8-part-2-reconstruction)
+9. [The cliff and the call](#9-the-cliff-and-the-call)
+10. [Credits and postgame](#10-credits-and-postgame)
+11. [The Six Marks](#11-the-six-marks)
+12. [Constants across venues](#12-constants-across-venues)
+13. [Diegetic surfaces](#13-diegetic-surfaces)
+14. [Venues](#14-venues)
+15. [Tone](#15-tone)
+16. [Touchstones](#16-touchstones)
+17. [Open questions](#17-open-questions)
+18. [Glossary](#18-glossary)
 
 ---
 
