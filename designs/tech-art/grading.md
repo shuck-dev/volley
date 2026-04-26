@@ -6,7 +6,7 @@ This document fixes the grading contract: what the artist delivers, what the eng
 
 ## Why a grade lives in code
 
-Each Construction venue and Reality scene has its own colour register, locked per the canon in [the world bible](../01-prototype/artist-world-bible.md) Section 3 and Section 15. Construction holds saturated colour and generous warm light; Reality pulls cooler, plainer, more atmospheric. Reconstruction is the arc between the two, not a third style; a Reconstruction scene renders in whichever style it sits inside.
+Each Construction venue and Reality scene has its own colour register, locked per the canon in [the world bible](../art/bible.md) Section 3 and Section 15. Construction holds saturated colour and generous warm light; Reality pulls cooler, plainer, more atmospheric. Reconstruction is the arc between the two, not a third style; a Reconstruction scene renders in whichever style it sits inside.
 
 Authoring every sprite twice, once for each style, is the path the bible already takes for character renders and venue paintings where the style shift is felt. Repainting is right when the line-weight, edge treatment, and pigment selection have to change with the style. Grading is right when the same painted surface needs to read warmer here, cooler there, without the artist redoing the work. Most surfaces sit in the second category: a prop on the workshop bench, a stray ball at rest, a gear-rack item, the friend's stall. The grade carries those.
 
@@ -52,4 +52,4 @@ The constructed-to-real shift inside a venue, where the same place is rendered i
 
 ---
 
-For broader tech context the artist works against, see [the artist tech context](../01-prototype/artist-tech-context.md). For the asset delivery pipeline the LUT slots into, see [the tech pipeline](../art/tech-pipeline.md). For the per-style colour canon the grades implement, see [the world bible](../01-prototype/artist-world-bible.md) Section 3 and Section 15.
+For broader tech context the artist works against, see [the artist tech context](../01-prototype/artist-tech-context.md). For the asset delivery pipeline the LUT slots into, see [the tech pipeline](../art/tech-pipeline.md). For the per-style colour canon the grades implement, see [the world bible](../art/bible.md) Section 3 and Section 15.

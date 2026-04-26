@@ -2,7 +2,7 @@
 
 How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft register the writing aims for, line by line.
 
-The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../01-prototype/artist-world-bible.md`](../01-prototype/artist-world-bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
+The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../art/bible.md`](../art/bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
 
 ## Scene construction
 
