@@ -62,7 +62,7 @@ The album fills as the protagonist works. The shopkeeper's younger sister has he
 
 A layer underneath the structure. It sits next to the grief and the becoming-champ pull, not under them.
 
-The pull is the urge to do the destructive thing when nothing forces it. To jump from the bridge. To swerve into traffic. The cliff is the specific shape of this for them: the place the friend died, the place the protagonist did not go that day. The structure holds against the loss; it also holds against this. The two are related and distinct. Grief is what they are sheltering from. The void is what they are resisting.
+The pull is the urge to do the destructive thing when nothing forces it. To jump from the bridge. To swerve into traffic. The cliff is the specific shape of this for them: the place the friend died, the place the protagonist did not go that day. The structure holds them present in the loss; it also holds them present alongside this. Grief is what they are sheltering from. The void is what they live alongside, daily.
 
 It surfaces in places the artist and animator can feel for, not script:
 
