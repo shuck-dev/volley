@@ -1,10 +1,10 @@
 # Construction
 
-Part 1. The bright world the protagonist is actively maintaining, the tournament shape the climb takes, and the rally that drives it. High-level architecture lives in `00-three-styles.md`; the cracks and the win that breaks Construction live in `02-cracks-and-break.md`.
+Part 1. The vibrant world the protagonist is actively maintaining, the tournament shape the climb takes, and the rally that drives it. High-level architecture lives in `00-three-styles.md`; the cracks and the win that breaks Construction live in `02-cracks-and-break.md`.
 
 ## What Construction is
 
-The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present. Volleyball lives here and only here.
+The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present. Tennis lives here and only here.
 
 Construction is the structure the protagonist built to keep going. The warmth in it was always real; the rendering is the pretense. They did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held.
 
@@ -14,7 +14,7 @@ The artist's hardest job lives here. Construction must be straight-up enjoyable 
 
 The protagonist holds a racquet. The first session opens in the friend's voice at the stall: chase the world volley record. The count climbs. The friend gives the number meaning.
 
-What the player does not know yet: the world record is a phone number. The shopkeeper's. Every rally is the protagonist's unconscious reach. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
+What the player does not know yet: the world record is a phone number. The shopkeeper's. Every rally is the protagonist's unconscious reach. The vibrant world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
 ## The cast
 
@@ -48,7 +48,7 @@ This is why the world record IS the shopkeeper's phone number. Every rally is th
 
 ## The tournament
 
-The bright world is shaped as a volley tournament. The protagonist is climbing the ladder; the championship is the world record; the world record is the shopkeeper's phone number.
+The vibrant world is shaped as a volley tournament. The protagonist is climbing the ladder; the championship is the world record; the world record is the shopkeeper's phone number.
 
 Each main venue hosts one round. The player rallies in that venue with a coach until they qualify; then they enter the round, where the coach takes the other side and the player faces them in the round's match. Win the round, advance.
 

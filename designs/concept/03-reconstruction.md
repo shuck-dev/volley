@@ -16,7 +16,7 @@ This is the act-2 dread. It runs the length of Reconstruction. It inverts at the
 
 Part 2 lives in both styles. Reality carries the search. Construction holds the rally that surfaces what the search needs.
 
-Construction in Part 2 is missing its warm centre. The shopkeeper has left the stall; the shop is closed in Reality and unstaffed in Construction. The protagonist rallies on without them. The bright world has been hollowed out where it used to be warmest.
+Construction in Part 2 is missing its warm centre. The shopkeeper has left the stall; the shop is closed in Reality and unstaffed in Construction. The protagonist rallies on without them. The vibrant world has been hollowed out where it used to be warmest.
 
 Construction must also feel different to play, not only look hollowed. Three play-level changes mark Part 2:
 

@@ -18,11 +18,11 @@ The protagonist takes out their phone. They could walk up silently. They do not.
 
 The shopkeeper's phone rings on the bench beside them. They could ignore it like they have been ignoring all the others. They do not. They look up at the sound. See the protagonist. Pick up.
 
-The dial does two things at once. Chosen presence (the door staging adapts to the cliff: the dial bridges the small distance between them on the bench). And finally attaching the name to the number the protagonist has been carrying. The phone log entry is not just digits anymore. It is the person who jumped that day and came back; the one whose survival the protagonist could not look at, until now.
+The dial does two things at once. Chosen presence: the protagonist could close the silence by walking up, and chooses instead to call. The shopkeeper could ignore the ring like every other, and chooses instead to pick up. And finally attaching the name to the number the protagonist has been carrying. The phone log entry is not just digits anymore. It is the person who jumped that day and came back; the one whose survival the protagonist could not look at, until now.
 
 ### Staging
 
-Split frame at the path, the bench, the phones. The protagonist outside the bench area; the shopkeeper on the bench, holding their phone. The dial bridges intention, not space. They look at each other across the small distance, both holding their phones. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split is the years of distance; the shared frame is the resolution. Then the protagonist crosses, sits beside them. The call ends.
+Split frame at the path, the bench, the phones. The protagonist standing; the shopkeeper on the bench, holding their phone. The dial bridges intention, not space. They look at each other across the silence both have been holding, both with phones to their ears. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split is the years between them; the shared frame is the resolution. Then the protagonist crosses, sits beside them. The call ends.
 
 ## Credits
 
