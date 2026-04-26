@@ -1,4 +1,4 @@
-# Deferred item work
+# Deferred Item Work
 
 Tracking incomplete item features that depend on external systems not yet built (partners, kit UI, art direction). Features that only need new effect types belong in the item's ticket, not here.
 

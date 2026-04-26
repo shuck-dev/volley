@@ -1,4 +1,4 @@
-# Persuasion audit: *The Case for Open Development*
+# Persuasion Audit: *The Case for Open Development*
 
 A read of the essay against the canon of argumentation, rhetoric, and long-form essay craft. Line numbers refer to `designs/research/the-case-for-open-development.md` as it stands. Section names match the essay's running heads. Style guide constraints (`STYLE.md`) are treated as the boundary; nothing proposed here pushes against them. Where a fix would technically work but cuts against voice (manifesto sign-off, second-person command, signposting), it is not proposed.
 

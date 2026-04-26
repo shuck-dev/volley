@@ -1,4 +1,4 @@
-# Tech art
+# Tech Art
 
 The seam between art and engine. Pipelines that need both disciplines to land sit here: the painted sprite that the runtime tints, the authored animation that the rig drives, the LUT that the artist tunes and the shader that applies it.
 

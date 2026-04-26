@@ -8,7 +8,7 @@ This layer is narrative. The bible is the decision layer.
 
 ## Warmth that carries weight
 
-The bright surface is not a lie. Warmth is the main register: interior light, soft colour, hand-drawn confidence. Under the warmth sits something honest. The art has to hold both at once without undercutting either.
+The bright surface is not a lie. Warmth is the main style: interior light, soft colour, hand-drawn confidence. Under the warmth sits something honest. The art has to hold both at once without undercutting either.
 
 ## Simple shapes, full emotion
 
@@ -26,9 +26,9 @@ Personality lives in movement. How a character shifts weight, how they land, how
 
 Hits, misses, rallies, streaks, reactions, UI feedback all land on a felt rhythm. The game has a pulse the art and sound both serve.
 
-## Two registers, same world
+## Two styles, same world
 
-The game has phases and moods that shift without breaking the fiction. The same characters, the same court, the same rules, but the feeling can change. The art needs to hold both the bright surface and the heavier register without either feeling like a betrayal of the other.
+The game has phases and moods that shift without breaking the fiction. The same characters, the same court, the same rules, but the feeling can change. The art needs to hold both the bright surface and the heavier style without either feeling like a betrayal of the other.
 
 ## Diegetic, specific, lived-in
 
@@ -36,4 +36,4 @@ UI, props, and interfaces belong to the world. The ball rack, the gear rack, the
 
 ## Looked at, not copied
 
-Influences are honest. The game takes from a wide field: sports animation, cozy film, games with twin registers, painterly environments, rhythm-aware composition. None of it is transplanted; each is translated into Volley!'s own palette, line, and tempo.
+Influences are honest. The game takes from a wide field: sports animation, cozy film, games with twin styles, painterly environments, rhythm-aware composition. None of it is transplanted; each is translated into Volley!'s own palette, line, and tempo.

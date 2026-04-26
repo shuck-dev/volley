@@ -1,4 +1,4 @@
-# Style guide for the open-development essay
+# Style Guide for the Open-Development Essay
 
 This is the working style guide for every contributor (human or agent) editing the essay in `designs/research/drafts/`. Read it once before touching a section; follow it on every line.
 

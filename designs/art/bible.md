@@ -8,7 +8,7 @@ The bible is the decision layer. [Direction](direction.md) is the narrative; thi
 
 ## The Six Marks
 
-Every piece of art in Volley! carries all six. Not style rules, not commandments: Shuck is a sanctuary for craft, not a place that tells people what to make. The Six Marks describe what Volley! looks like when the work is landing, so an artist working on any asset, any screen, either register, has something to hold the work up against rather than a set of commands to obey.
+Every piece of art in Volley! carries all six. Not style rules, not commandments: Shuck is a sanctuary for craft, not a place that tells people what to make. The Six Marks describe what Volley! looks like when the work is landing, so an artist working on any asset, any screen, either style, has something to hold the work up against rather than a set of commands to obey.
 
 **Intentional.** Every mark, colour, and placement is a choice. Nothing is filler, nothing is accidental.
 
@@ -20,11 +20,11 @@ Every piece of art in Volley! carries all six. Not style rules, not commandments
 
 **Breathing.** Feels alive. Movement carries personality. Still frames feel about to move.
 
-**Shifting.** Designed for more than one state. The constructed register and the real register do not look the same, and both are Volley!.
+**Shifting.** Designed for more than one state. The constructed style and the real style do not look the same, and both are Volley!.
 
 ---
 
-## The two registers
+## The two styles
 
 Volley! has two visual worlds that share the same shapes, proportions, and line work. The difference is how much comfort the art offers. The constructed world is a simplification of the real one: the same place, rendered by someone who needed it to be okay.
 
@@ -42,9 +42,9 @@ The real world is revealed at **The Break**, when the player walks through the m
 
 Kind, never stressful. Earnest, never ironic. Personal, never melodramatic. The art takes itself slightly more seriously than a pong game should, and that is intentional.
 
-The bright surface is not a lie. Warmth is the main register. Under the warmth sits something honest. The art holds both at once without undercutting either.
+The bright surface is not a lie. Warmth is the main style. Under the warmth sits something honest. The art holds both at once without undercutting either.
 
-The game is sad, but it earns the sadness and never wallows. The art is **never scary or distressing**; the real register is quieter, not darker. Sadness is a consequence the player can sit with, not a tone the art chases.
+The game is sad, but it earns the sadness and never wallows. The art is **never scary or distressing**; the real style is quieter, not darker. Sadness is a consequence the player can sit with, not a tone the art chases.
 
 ---
 
@@ -52,9 +52,9 @@ The game is sad, but it earns the sadness and never wallows. The art is **never 
 
 Hand-drawn illustration with **bold shapes, limited but confident colour**. Not pixel art. Not painterly realism. Not vector-clean.
 
-**Constructed register.** Saturated, warm, deliberately arranged. Warm golds, soft blues, deep warm shadows. Colour as comfort.
+**Constructed style.** Saturated, warm, deliberately arranged. Warm golds, soft blues, deep warm shadows. Colour as comfort.
 
-**Real register.** Quieter. Muted warms, honest greys, natural greens. The saturation dial turned down; the palette is the same family, less pushed.
+**Real style.** Quieter. Muted warms, honest greys, natural greens. The saturation dial turned down; the palette is the same family, less pushed.
 
 *(Exact hex values to be locked as the first assets land.)*
 
@@ -64,9 +64,9 @@ Hand-drawn illustration with **bold shapes, limited but confident colour**. Not 
 
 The line has life in it. Confident, slightly imperfect, visibly made by someone. No flat vector polish; no mechanical precision.
 
-**Constructed register.** Cleaner line; edges resolved.
+**Constructed style.** Cleaner line; edges resolved.
 
-**Real register.** Looser line; the mark breathes more. Same hand, less composed.
+**Real style.** Looser line; the mark breathes more. Same hand, less composed.
 
 Stroke weight is consistent within a scene. Silhouette reads first; line detail second.
 
@@ -78,7 +78,7 @@ Characters and props read by silhouette at any size. If two things could be conf
 
 Simple shapes with enormous emotional range. A storybook shape that body-language-acts more than it model-sheet-acts. The gap between how simple a character looks and how deeply they make you feel is the territory.
 
-Silhouettes hold across both registers; only the light, colour, and line quality shift.
+Silhouettes hold across both styles; only the light, colour, and line quality shift.
 
 ---
 
@@ -116,7 +116,7 @@ No specific real-world era pastiche. The references are emotional, not period.
 
 ## Characters
 
-Characters share the same level of simplicity across both registers; the world around them shifts.
+Characters share the same level of simplicity across both styles; the world around them shifts.
 
 *(Per-character notes as they lock: main character, Martha, the tinkerer, the rival, the friend.)*
 
@@ -166,7 +166,7 @@ Every cut, movement, and colour choice can serve the rhythm. Visual rhythm is fe
 
 *(Direction questions that have not landed yet. Move them into the sections above as they resolve.)*
 
-- Exact colour palette for constructed and real registers.
+- Exact colour palette for constructed and real styles.
 - Typography: display and reading faces.
 - Per-character silhouette and palette notes.
 - How partner introductions (portraits, dialogue) render.
