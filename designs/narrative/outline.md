@@ -26,21 +26,25 @@ There is exactly one locked gate in the whole game. It sits in the garden. Walki
 
 ## The court has no top wall
 
-The top edge of the court is sky, not surface. The ball travels up to apex and returns under gravity and the friendship-bound: the bond between the protagonist and the friend at the stall is what the rally lives inside, and the bond's reach is what the ball cannot escape. Mechanically the ball changes direction at apex; diegetically nothing physical bounces it.
+The top edge of the court is sky, not surface. The ball travels up to apex and returns under gravity and the friendship-bound: whichever bond is in play in that venue is what the rally lives inside, and the bond's reach is what the ball cannot escape. Mechanically the ball changes direction at apex; diegetically nothing physical bounces it.
 
-The moment of return is a visible beat in Construction's register. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the friend at the stall: eyes up, racquet lift, a small gesture from the counter. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
+The moment of return is a visible beat in Construction's register. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the present friend: eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
 
-The garden carries the apex event through the friend's reaction, since it has no physical ceiling. Other Construction venues use physical referents that play the same role: the treetop canopy, the underwater surface, the meteor field. The bond is what the friendship actually is in every venue.
+The garden's version of the apex event runs through the shopkeeper's reaction at the stall, since the venue has no physical ceiling and the shopkeeper is the bond the garden holds. Other Construction venues run the same beat through the coach who teaches there: the partner's reaction at the treetop canopy, at the underwater surface, in the meteor field. The bond doing the work changes by venue. The pattern is the same.
 
-The Reconstruction implication is open. If the apex event is the friendship visualised, the bloom and chime should thin or fall silent in the garden once the friend is gone. The rally returns mechanically, and the celebratory beat does not. The hollow in Construction's warm centre lands in the rally's own texture. Whether this carries across all Construction venues or specifically the garden is still to decide.
+The Reconstruction implication follows from the same logic. The garden's bloom and chime thin or fall silent once the shopkeeper is gone, because the bond that carried them is broken. The rally returns mechanically, and the celebratory beat does not. The hollow in Construction's warm centre lands in the rally's own texture. The other Construction venues, with their coaches still present, keep their wind.
 
 The bottom edge of the court stays physical: the ground, the mat, the surface where the racquet meets the ball. Left and right remain open as miss zones.
 
-A friend reaction per rally point is animated state on the stall character. Even one looped frame plus a short return reaction is per-frame work the artist signs up for. Worth scoping with Aubrey before this lands as a hard requirement.
+A reaction per rally point is animated state on whichever character holds the bond in that venue: the shopkeeper at the stall in the garden, the coach in their own venue elsewhere. Even one looped frame plus a short return reaction is per-frame work the artist signs up for, multiplied across every venue. Worth scoping with Aubrey before this lands as a hard requirement.
 
 ## Friendship as wind
 
-The bond is treated, in the fiction and in the rally physics, as the medium the ball moves through. In the garden, the wind is the friendship; in the other Construction venues, the same bond expresses through whatever the venue offers. The friendship is not metaphorically present in the rally. It is the rally's invisible structure. When the bond thins, the rally still happens, and the air around it moves differently.
+Friendship, treated as a force, is the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. The treetop venue's wind is the bond with the coach who teaches there. The underwater venue's wind is the bond with the coach who teaches there. The protagonist's bonds, taken together, carry the rally across the whole game.
+
+The friendships are not metaphorically present in the rally. They are the rally's invisible structure. The shopkeeper bond is the load-bearing one for the story arc, the warm centre Construction is built around. The coach bonds are real in their own right, each one the wind in its own venue.
+
+When a bond thins, the rally still happens, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
 
 ## Cast
 
