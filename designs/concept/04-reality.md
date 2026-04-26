@@ -16,7 +16,7 @@ Characters are at their actual ages. Less vibrant, less full, deliberately uncon
 
 The pull of Reality is its honesty. The player ends up wanting it.
 
-Touchstones: Spiritfarer's quieter moments, Lake, Omori's Faraway Town. Loss is acknowledged; the prose breathes; the rally is not the engine here.
+Touchstones: [Spiritfarer](https://store.steampowered.com/app/972660/Spiritfarer_Farewell_Edition/)'s quieter moments, [Lake](https://store.steampowered.com/app/1812120/Lake/), [Omori](https://en.wikipedia.org/wiki/Omori_(video_game))'s Faraway Town. Loss is acknowledged; the prose breathes; the rally is not the engine here.
 
 ## Audio register
 
