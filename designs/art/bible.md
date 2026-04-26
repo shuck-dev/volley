@@ -127,7 +127,7 @@ Martha sets the bar for the rest.
 
 The dead friend. Construction-only; their Reality is the cliff.
 
-The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. Across Construction they are present-in-absence at the top of the ladder, the spot the protagonist is climbing toward; they appear as the partner only at the final venue, on the right side of the court for the championship match itself.
+The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. The player the protagonist always admired, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. Across Construction they are present-in-absence at the top of the ladder, the spot the protagonist is climbing toward; they appear as the partner only at the final venue, on the right side of the court for the championship match itself.
 
 The friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised thing in the friend group, the kind of thing they did on a hot afternoon and would do again next week, until the day it stopped being routine. The cliff in Reality is the actual cliff. The shopkeeper was there and the protagonist was not, and that arithmetic is the shape the rest of the game is bent around.
 
@@ -139,11 +139,11 @@ Render them as someone the protagonist loved. Sharp at the championship because 
 
 ## 5. Part 1: Construction
 
-Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present, bodies at ease in motion. The garden in late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
+Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present, bodies at ease in motion. The garden in late afternoon, the stall against the inside wall, the racquet moving on the left, the friend at the counter watching the rally, glad to be there. Everything has light; nothing is starved.
 
 The protagonist is actively maintaining Construction; tennis lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
 
-The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist assembled Construction because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. Construction needs to feel like somewhere the player wants to be, before the cracks ever come.
+The pretense is the rendering, not the protagonist's care. They assembled Construction because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. Construction needs to feel like somewhere the player wants to be, before the cracks ever come.
 
 Construction has to land as straight-up enjoyable. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
@@ -183,7 +183,7 @@ At the win the count completes. The digits land. The protagonist sees them, vagu
 
 After the rupture the player is pulled into Reality involuntarily for the first time and walks through the protagonist's hometown. The walk reveals the rupture's content: the shopkeeper is missing. The shop is empty, the lights off, a sign on the door, the family worried about where they have gone. The person the protagonist was reaching for without knowing has actually disappeared. **The cliff** sits beyond the town's edge but is not visited yet; the friend died there, and the shopkeeper has gone there, and it waits.
 
-The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The vibrant centre of Construction has been hollowed out; the rallies continue, and they feel the difference. The champ exits at the break and does not return. Reconstruction begins.
+The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre of Construction has been hollowed out; the rallies continue, and they feel the difference. The champ exits at the break and does not return. Reconstruction begins.
 
 ---
 
