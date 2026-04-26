@@ -51,6 +51,12 @@ func get_state() -> State:
 	return _state
 
 
+## Test seam: exposes the active walk tween so tests can step it deterministically
+## via Tween.custom_step instead of awaiting real-time durations.
+func get_walk_tween() -> Tween:
+	return _walk_tween
+
+
 ## Starts a timeout, walking the main character off to the equip pose. No-op if already active.
 func call_timeout() -> void:
 	if not can_call_timeout():

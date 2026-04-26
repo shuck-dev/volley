@@ -37,7 +37,7 @@ func test_save_writes_current_data_as_json() -> void:
 
 # --- autosave timer ---
 func test_autosave_timer_triggers_save() -> void:
-	await wait_seconds(0.2)
+	await wait_seconds(0.1)
 	assert_called(_mock_storage, "write")
 
 

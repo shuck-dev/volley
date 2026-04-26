@@ -40,9 +40,17 @@ func before_each() -> void:
 
 
 func _advance_walk() -> void:
-	# Advance the tween past completion. One extra frame lets the finished
-	# callback settle.
-	await wait_seconds(_walk_duration + 0.05)
+	# Step the active tween forward by exactly one walk-duration so a single
+	# _advance_walk crosses one phase deterministically. Pausing the tween
+	# disables auto-stepping so custom_step is the only driver, which keeps
+	# the suite fast while still exercising the engine's finished-callback
+	# path (the tween emits its callbacks under custom_step too).
+	var tween: Tween = _controller.get_walk_tween()
+	if tween != null and tween.is_valid():
+		tween.pause()
+		tween.custom_step(_walk_duration + 0.0001)
+	# One frame so any finished signal handlers settle before the next assert.
+	await get_tree().process_frame
 
 
 # --- initial state ---
