@@ -281,3 +281,38 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 - Add a `_dragging` guard on `Ball._on_body_entered` so a paddle contact at the edge of a grab does not register as a hit during the handoff.
 - Reparenting or freeing a `CollisionObject2D` inside a physics callback errors out. Any mid-rally grab that removes the live `Ball` from play uses `call_deferred` so the mutation lands between ticks.
 - Velocity on release comes from the gesture, not from whatever the old live ball was doing; a mid-rally grab intentionally resets motion.
+
+### Containers and the swap pattern
+
+Every draggable lives in a container. Some containers hold their items as physics objects; others hold them as non-physics `Node2D` tokens. The held state during a drag is always a non-physics `Node2D` preview that follows the cursor.
+
+- **Venue (court).** Owns live rally balls in play as physics. Object: `Ball` (`RigidBody2D`).
+- **Shop.** Non-physics. Owns shop items at rest as `Node2D` tokens. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
+- **Racks.** Own rack tokens as non-physics `Node2D` plus art, regrown on rack refresh. The rack is a slot grid; physics inside it would fight the layout for no gameplay benefit.
+- **Workshop (future).** Owns workshop tokens by the same non-physics pattern when it lands.
+
+On grab, the source container vacates its at-rest representation (despawn for the live ball, hide for the shop slot, leave-alone-and-track-emptied for the rack slot). The drag controller spawns a held `Node2D` preview on the cursor. The held preview reads `ItemDefinition.token_scale` so the same item renders at the same size at every container and in the held state.
+
+### Drop validation by body projection
+
+Release does not rely on rectangular hit-tests of the cursor position. The drag controller polls every registered drop target each physics frame on the held token's current position. The first target whose `can_accept(item, position)` returns true takes the drop and the gesture ends.
+
+For containers that respawn a non-physics token (shop, rack, workshop), `can_accept` is a bounds check plus per-target slot rules.
+
+For containers that respawn a physics body (the court), `can_accept` is a **body projection**: a `PhysicsDirectSpaceState2D.intersect_shape` query with the at-rest body's authored collision shape at the candidate position. If the query returns any overlap with walls, partners, other balls, or any future obstacle inside the court, the drop is rejected at that position. This is prevention, not depenetration; the body never spawns inside another body, so the solver never has to recover from one. Wall-edge release, ball-on-partner, ball-on-equipment-rack-edge, and stack-of-already-placed-balls all collapse into the same rule.
+
+`ItemDefinition.at_rest_shape` carries the projection shape per item. For balls this is the `CircleShape2D` at the ball's authored radius. Items whose at-rest representation is not a physics body declare `at_rest_shape = null` and the projection step is skipped (the bounds check alone decides).
+
+### No restore on invalid release
+
+The drag controller does not teleport the held token back to the source on an invalid release. Teleport-restore is non-diegetic; the held thing is a physical thing in the world.
+
+Instead, the gesture stays open until a valid target is reachable. After mouse-up, the held token continues to follow the cursor and the controller continues to poll `can_accept` every physics frame. The first frame any target accepts at the held position, the drop commits and the gesture ends. Mouse-button state is a hint after the initial press, not a gate.
+
+Hover feedback on the held token (slight lift, modulation, or scale bump) when `can_accept` returns true tells the player which positions will commit. Plain held state when no target accepts.
+
+The escape valve from this rule is that the source container is itself a target. Rack accepts a drop back into its slot (or any free slot). Shop accepts a drop back into its slot as cancel-no-purchase. The court accepts a drop back at the original spawn position when projecting from a live-ball grab. The player always has a way to put the thing back without the controller doing the move for them.
+
+### Press without movement does not commit
+
+A press on any container's at-rest representation lifts the held preview, but the commit gate stays closed until the gesture moves past `COMMIT_MOVEMENT_THRESHOLD_PX`. A press-and-immediate-release on a rack slot returns the item to the rack with no activation; on a shop slot it cancels back to the slot with no purchase; on a live ball it puts the ball back through the same target-accept loop without flipping placement state.
