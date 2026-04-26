@@ -14,7 +14,7 @@ Every piece of art in Volley! carries all six. Not style rules, not commandments
 
 **Specific.** This object, this space, this person. Never generic. Every element belongs to this world and no other.
 
-**Distinct.** Communicates through shape and colour. Unmistakable at any size. Readable when small.
+**Distinct.** Communicates through shape and colour.
 
 **Diegetic.** Part of the world, not on top of it. Every interaction and interface exists within the fiction.
 
