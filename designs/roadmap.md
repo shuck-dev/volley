@@ -8,11 +8,11 @@ A public itch.io demo with the core loop tight, first-pass art and sound through
 
 ## Alpha
 
-Construction (Act 1) playable end to end: real art landed, the cast and the tournament filled out, and the break-interlude designed.
+Construction playable end to end: real art landed, the cast and the tournament filled out, and the break designed.
 
 ## Beta
 
-The whole arc playable from start to finish: Construction, the break-interlude, Reconstruction (Act 2), the cliff-end, and the postgame, with every style holding up across the run.
+The whole arc playable from start to finish: Construction, the break, Reconstruction, the cliff and the call, and the postgame, with every style holding up across the run.
 
 ## v1
 
