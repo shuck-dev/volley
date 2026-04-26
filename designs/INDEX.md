@@ -54,14 +54,6 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [INDEX](tech-art/INDEX.md) | The discipline overview: pipeline, scope, current spikes. |
 | [Grading](tech-art/grading.md) | LUT pipeline for the two-style grade between Construction and Reality. |
 
-### AI
-
-| Doc | Purpose |
-|---|---|
-| [Swarm Architecture](ai/swarm-architecture.md) | The agent system that helps build the game: Gru-and-minions, two pools, session tiers, PR verdict flow. |
-
-The [open-development essay](research/the-case-for-open-development.md) sits in `research/` but speaks to the same surface: what stays human in the work as AI absorbs the boilerplate.
-
 ### Process
 
 | Doc | Purpose |
@@ -89,6 +81,14 @@ The [open-development essay](research/the-case-for-open-development.md) sits in 
 ### Concept
 
 The concept folder runs from [00-three-styles](concept/00-three-styles.md) through [05-postgame](concept/05-postgame.md). Earliest framing of the two-style world, the rally, the partners, the break, the reconstruction, and what the game looks like once the credits have rolled.
+
+### AI
+
+| Doc | Purpose |
+|---|---|
+| [Swarm Architecture](ai/swarm-architecture.md) | The agent system that helps build the game: Gru-and-minions, two pools, session tiers, PR verdict flow. |
+
+The [open-development essay](research/the-case-for-open-development.md) sits in `research/` but speaks to the same surface: what stays human in the work as AI absorbs the boilerplate.
 
 ## Phase
 

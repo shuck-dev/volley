@@ -20,9 +20,6 @@
 **Tech-art**
 - [Tech-art](tech-art)
 
-**AI**
-- [Swarm Architecture](ai-swarm-architecture)
-
 **Process**
 - [Ticket Writing](process-ticket-writing)
 - [Labels](process-labels)
@@ -32,3 +29,6 @@
 - [STYLE](research-STYLE)
 - [Visual Positioning](research-visual-positioning)
 - [Early Clone Games](research-early-clone-games)
+
+**AI**
+- [Swarm Architecture](ai-swarm-architecture)
