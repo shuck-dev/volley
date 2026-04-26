@@ -1,6 +1,6 @@
 # Reconstruction
 
-Part 2. The arc after the break: dread, the search, the photo album, the unnamed number that almost-dials, the key that opens the gate. High-level architecture in `00-three-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the call in `05-postgame.md`.
+Part 2. The arc after the break: dread, the search, the photo album, the unnamed number that never connects, the key that opens the gate. High-level architecture in `00-three-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the call in `05-postgame.md`.
 
 ## What Part 2 is
 
@@ -40,23 +40,17 @@ The photo album mechanic is the protagonist saying: someone has been keeping thi
 
 Less weighted by the death than the shopkeeper. The bridge. She holds the album and the protagonist's first reachable Reality character after the break.
 
-Sitting with her and turning the pages of what is there is the first reconciliation moment. After that, the protagonist goes to find the rest. She receives each found photo. She mentions things in passing as the album fills: an area code she half-remembers, the way her brother used to leave the shop door, what was on the radio that morning.
+Sitting with her and turning the pages of what is there is the first reconciliation moment. After that, the protagonist goes to find the rest. She receives each found photo. She mentions things in passing as the album fills: the way her brother used to leave the shop door, what was on the radio that morning, a song he played too loud.
 
 She is the most-visited Reality character. Her scene supports many returns.
 
-## The unnamed number deepens
+## The unnamed number, in Part 2
 
-Across Part 2 the recognition surfaces in Reality. The digits start showing up in places the protagonist visits. Written on the back of a found photo. Etched on the closed shop's sign. Scrawled on a workbench in the workshop. A coach absent-mindedly says a couple of digits while rallying. The sister mentions an area code.
+The number sits in the phone the same way it sat through Part 1. Unnamed. Dialable. Never picked up.
 
-By late Part 2, the protagonist knows the unnamed contact is the shopkeeper. The number is whole in their head from all the recovered fragments, even as it sits unlabelled in the phone.
+The player can dial it any time. The ring goes unanswered. The shopkeeper has withdrawn and is not picking the phone up for anyone. That no-answer is the player-facing weight of the protagonist's reach across the whole act.
 
-### Almost-dials
-
-The player can dial the unnamed number any time. It does not connect. The shopkeeper has withdrawn and is not picking up.
-
-The protagonist almost-dials in specific reconciliation beats: takes the phone out after a heavy photo find, hand-to-pocket after a coach's memory, a draft message left open and never sent, a voicemail attempt that hangs up before saying anything. Each almost-dial is the player-facing weight of the reach without contact.
-
-These almost-dial moments are authored beats threaded through the search, not a uniform mechanic. The phone control stays with the player throughout; the almost-dials are what the protagonist does on their own.
+The number stays unnamed all the way through Reconstruction. No fragments surface on found photos. No digits get half-spoken by a coach mid-rally. No area code from the sister. Recognition is held back for the cliff (`05-postgame.md`); Part 2's job is the search and the dread, not the dawning.
 
 ## The key, the gate
 
@@ -72,7 +66,6 @@ The cliff is on the other side. What happens there lives in `05-postgame.md`.
 
 - **Photo count.** How many photos across Part 2? Idle pacing argues four to six; narrative arc argues five to seven. Affects content scope and pacing.
 - **Per-photo scene shape.** Each found photo is a hand-crafted Reality scene. Variety: a place to visit, a person to ask, an item to find, a moment to witness. Mix and pacing are open.
-- **How recognition surfaces in Construction without breaking the no-concrete-leakage rule.** The number fragments belong in Reality; Construction holds the rally and the coaches' memories. The cracks-style discipline still applies in Part 2.
 - **Cliff-trigger gate.** The hidden compartment opens when the album fills enough. What counts as enough: photo count, specific photo, or a different gate?
 - **Bridge unlock signal.** What does the player see or feel that marks the bridge between Construction and Reality as available, after the break?
 

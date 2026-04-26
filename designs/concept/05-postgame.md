@@ -12,7 +12,9 @@ The act-2 dread inverts. Relief. The fear was wrong. The shopkeeper has been her
 
 ## The call
 
-The protagonist takes out their phone. They could walk up silently. They do not. They dial the unnamed number. The digits are whole in their head now from all the recovered fragments.
+Recognition lands at the cliff for the first time. The unnamed number in the phone, the world record the protagonist reached, the digits the championship match resolved on, the shopkeeper sitting in front of them on the bench: all of it the same number, held unnamed all along, only now legible.
+
+The protagonist takes out their phone. They could walk up silently. They do not. They dial the unnamed number, knowing now whose it is.
 
 The shopkeeper's phone rings on the bench beside them. They could ignore it like they have been ignoring all the others. They do not. They look up at the sound. See the protagonist. Pick up.
 

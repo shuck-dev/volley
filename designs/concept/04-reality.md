@@ -40,7 +40,7 @@ Reality holds the real-world version of every cross-style character. Each is at 
 
 **Martha and the partners.** The cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
 
-**The shopkeeper.** Present in Reality from the break onward. Not approachable directly until the cliff. The almost-dial mechanic with the unnamed number is the player-facing weight of their absence; detail in `03-reconstruction.md`. The cliff meeting and the call are in `05-postgame.md`.
+**The shopkeeper.** Present in Reality from the break onward. Not approachable directly until the cliff. The unnamed number that never connects is the player-facing weight of their absence; detail in `03-reconstruction.md`. The cliff meeting and the call are in `05-postgame.md`.
 
 **The protagonist.** Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
 

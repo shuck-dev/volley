@@ -14,7 +14,7 @@ The artist's hardest job lives here. Construction must be straight-up enjoyable 
 
 The protagonist holds a racquet. The first session opens in the friend's voice at the stall: chase the world volley record. The count climbs. The friend gives the number meaning.
 
-What the player does not know yet: the world record is a phone number. The shopkeeper's. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
+What the player does not know yet: the world record is a phone number. The shopkeeper's. Every rally is the protagonist's unconscious reach. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
 ## The cast
 

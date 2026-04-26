@@ -28,7 +28,7 @@ The win feels off. Like real-world achievement that turns out not to fix the thi
 
 The win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
 
-At the moment of the win, the count completes. The digits land. The protagonist sees them and they look weirdly familiar. They match the unnamed number in the phone. The recognition does not fully land yet.
+At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
 
 ## After the win: the walk through Reality
 

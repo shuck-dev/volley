@@ -85,7 +85,7 @@ From `01-construction.md`: the encounter shape per round. Partner unlock cadence
 
 From `02-cracks-and-break.md`: crack pacing across idle play. Tonal-vs-meta crack mix. How the cracks behave during the championship attempt itself.
 
-From `03-reconstruction.md`: photo count across Part 2. Per-photo scene shape. How the unnamed-number recognition surfaces in Construction without breaking the no-concrete-leakage rule. Cliff-trigger gate.
+From `03-reconstruction.md`: photo count across Part 2. Per-photo scene shape. Cliff-trigger gate. Bridge unlock signal after the break.
 
 From `04-reality.md`: per-scene state persistence. The interaction surface vocabulary. How dialogue layers across return visits.
 
