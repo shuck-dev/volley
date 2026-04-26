@@ -52,6 +52,20 @@ The doubled pull is what makes the championship win land the way it does. Both m
 
 ---
 
+## The unnamed number
+
+A third interior layer, sitting alongside the void and the becoming-champ pull.
+
+The protagonist's phone is a period device, late 90s or early 2000s, a flip or a candy-bar. The shopkeeper's number is sitting in the call log or the contacts list, unnamed. They either deleted the contact, never saved the name, or the device just holds digits without labels. They scroll past it sometimes. They know whose it is and they do not know whose it is, in the way a person can hold a thing in two halves at once.
+
+The player has the phone throughout the game. They can dial the unnamed number from Construction onward. It never connects; the shopkeeper has withdrawn and is not picking up. The unanswered ring is the player-facing manifestation of the protagonist's reach without contact.
+
+Across Reconstruction the digits surface in Reality where they should not be: written on the back of a found photo, etched on the closed shop's sign, scrawled in the workshop, half-spoken by a coach mid-rally. Each fragment tightens the recognition that the unnamed contact is the shopkeeper's number. By late Reconstruction the protagonist knows whose it is.
+
+The dial at the cliff is the moment the name finally attaches. Two acts at once: chosen presence, and the contact in their phone becoming a person they have called.
+
+---
+
 ## In Construction
 
 The court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and present, the way Construction renders the rest of its cast. The figure on the court is the player's anchor in Construction; the rendering choices that hold for the cast hold for the protagonist too.
@@ -74,11 +88,15 @@ The structure was built around what they love. The grief and the void are real; 
 
 ## The call
 
-At the cliff, with the key spent and the gate open behind them, the protagonist sees the shopkeeper on a bench dedicated to the friend. The bench is a few steps away. The protagonist could close that distance silently. They do not.
+The key arrives through the sister. Across Reconstruction she holds the half-filled photo album, with a hidden compartment that opens once the album fills enough. When the work is done, she takes the key out and hands it to the protagonist. They walk back to the garden, unlock the one locked gate at the back, and step through to the cliff in Reality.
 
-They take out their phone and dial. The number they finally have is the number they have been climbing toward the whole climb, surfacing across Reconstruction in places it should not be, becoming a phone number across the player's eyes. The shopkeeper's phone rings on the bench beside them; they turn at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+The whole of Reconstruction has been shadowed by dread. The shopkeeper has been missing since the break; calls to the unnamed number have not connected; the protagonist has been afraid the friend's path has been followed. Arriving at the cliff carries that fear: a bench dedicated to the friend, a place to find the worst.
 
-The dial bridges intention, not space. Chosen presence rather than a closing of distance. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game. After the call the protagonist crosses, sits beside the shopkeeper on the bench. The call ends there.
+The shopkeeper is on the bench, alive. The dread inverts. The fear was wrong; they are still here, withdrawn, refusing calls, but here.
+
+The bench is a few steps away. The protagonist could close that distance silently. They do not. They take out their phone and dial the unnamed number, the digits whole in their head now from all the surfaced fragments. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+
+The dial bridges intention, not space. Chosen presence rather than a closing of distance. Two acts at once: choosing to reach, and finally attaching the name to the number that has been sitting unnamed in the protagonist's phone the whole game. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game. After the call the protagonist crosses, sits beside the shopkeeper on the bench. The call ends there.
 
 ---
 
