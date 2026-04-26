@@ -1,6 +1,6 @@
 # Narrative discipline
 
-How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft register the writing aims for, line by line.
+How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft the writing aims for, line by line.
 
 The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../art/bible.md`](../art/bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
 
@@ -30,7 +30,7 @@ Canon lands as action. A piece of world that needs to reach the player reaches i
 
 Tone moves moment to moment. Construction's default is the coach's grin between rallies, the friend at the stall calling a name across the court, the lift in a line that did not need lift. A meta-crack lands, the player notices and reaches for a way to read it, the rally moves on. The slip is one beat the prose commits to and lets land; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
 
-The break runs cold and short. Sentences shrink. Adjectives drop. Light becomes light, sound becomes sound, the prose stops reaching for warmth because the construct has stopped supplying it. Then the walk through the hometown begins and the prose finds Reality's plainer register for the first time.
+The break runs cold and short. Sentences shrink. Adjectives drop. Light becomes light, sound becomes sound, the prose stops reaching for warmth because the construct has stopped supplying it. Then the walk through the hometown begins and the prose finds Reality's plainer voice for the first time.
 
 Part 2 defaults to dread. The temperature is low. Warm surfacings are rare and earned: a memory at a rally's apex, a small mercy from the sister, a cup of tea poured without comment. The contrast is the point. Warmth on a dread floor reads brighter than warmth on a warm floor.
 

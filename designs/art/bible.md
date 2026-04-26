@@ -151,7 +151,7 @@ Pacing across the climb, escalation rules, and the cumulative-shape principle li
 
 The wall comes down. Once. Light, sound, the venue's surfaces, the friend's posture: all turn at once. A giving-way, not a glitch.
 
-After the rupture the player walks through the protagonist's hometown for the first sustained Reality render: the people behind the partners at their actual ages, the closed shop with the lights off, a sign on the door. The walk's visual job is to introduce Reality's full register before the player carries it back to Construction.
+After the rupture the player walks through the protagonist's hometown for the first sustained Reality render: the people behind the partners at their actual ages, the closed shop with the lights off, a sign on the door. The walk's visual job is to introduce Reality's full style before the player carries it back to Construction.
 
 The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre is hollowed out; the rallies render that absence.
 
