@@ -1,113 +1,92 @@
 # The Three Styles
 
-The high-level structure of Volley as a game. This doc carries the architecture; per-arc docs in this folder carry the detail.
+The high-level architecture of Volley as a game. This doc carries the shape and how the three styles relate; per-arc docs in this folder carry the detail.
 
 This is a working set of docs. Refinement passes follow.
 
 ## Map
 
-- This doc: the game's overall shape and the synthesis index.
-- `01-construction.md`: the bright world, the cast, the shopkeeper psychology, the tournament structure, the champ, the rally and the count.
-- `02-cracks-and-break.md`: the wall thinning and the wall coming down.
-- `03-reconstruction.md`: the long arc after the break, the bidirectional carry, the reconciliation mechanic.
-- `04-reality.md`: the second style; the hometown, the cast in Reality, the photo book, the cliff.
-- `05-postgame.md`: the call, the seashell, what the bright world becomes after.
+- This doc: the game's overall shape and how the three styles fit together.
+- `01-construction.md`: Part 1. The vibrant world, the tournament, the cast, the rally, the count.
+- `02-cracks-and-break.md`: cracks across Part 1, the championship win that lands wrong, the involuntary walk through the hometown.
+- `03-reconstruction.md`: Part 2. Dread, the photo album, the sister, the unnamed number, the search.
+- `04-reality.md`: Reality as a style. Visual register, audio register, the structural shape of a Reality scene.
+- `05-postgame.md`: the cliff, the call, the credits, the postgame rally.
 
-The earlier narrative pass at `designs/02-alpha/01-world-and-narrative.md` is raw material for these docs. Pieces that work are kept; pieces that do not are reframed or dropped. The picked-up section below names the deltas.
+## Two worlds, one game
 
-## What the game is
+Volley holds two worlds. The player meets the first as the world. The second arrives later and is the one that was always there.
 
-The protagonist holds a racquet. Their stated goal is to beat the world volley record. Friends help them along the way. The count climbs, the rally tiers climb with it, the friends keep showing up. The hook arrives in the friend's voice in the first session, not on a HUD; the count gives a number, the friend gives the number meaning.
+**Construction** is the vibrant one. A garden in late afternoon, a stall against the inside wall, a racquet on the left, a friend's head turned toward the play. Saturated colour, generous light. Tennis lives here and only here. The protagonist built it and keeps it tending. The warmth in it is real; the rendering is the pretense.
 
-What the player does not know yet: the world record is a phone number. The shopkeeper's. Every volley counts toward dialling someone the protagonist could reach but won't. The construction is a coping shape; reaching the record means making the call.
+**Reality** is the protagonist's actual hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate: painted terraces in seaside colours, whitewashed walls, palm trees in places, Mediterranean light on a British coastline. The same people live here at their actual ages. One of them, the friend from the stall, has been pushed away. Reality is gold-hour, weighted, plainer.
 
-The bright world is a construction the protagonist is actively maintaining. It takes energy to keep. The warmth in it is real; the pretense is the rendering. The game is the arc of that pretense thinning, the wall coming down, and the protagonist learning to live without it.
+The player learns Construction is a construct only as the climb cracks open. The garden the player has been rallying in is the protagonist's memory of their actual garden in Reality, sprucing it up. Constructed garden and real garden remain separate places.
 
-## The three styles
+## The garden is the meeting point
 
-**Construction.** The bright world. Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
+The garden is the one venue where Construction and Reality overlap. Other Construction venues are purely fantastic, with no Reality counterpart. The garden's out-of-place-out-of-time feel comes from being the one venue grounded in the real hometown.
 
-**Reality.** A complete second style. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
+The title carries the weight. Literal place. Tended thing. Where things grow: rally, obsession, memory. Pre-Fall innocence preserved. Walled enclosure.
 
-**Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual style; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `03-reconstruction.md`.
+## One locked gate
 
-## The five movements at a glance
+There is one locked gate in the whole game. In the garden. Walking through it transitions to Reality. The cliff is on the other side. The gate opens once, late, when the sister hands over the key.
 
-1. **Construction.** The pretense actively maintained. The rally climbs toward the record. The count is visible; the goal is named in dialogue. (Detail: `01-construction.md`.)
-2. **Cracks.** Reality leaks into the construction in small atmospheric ways. Each crack is dismissible; the cumulative pressure matters. (Detail: `02-cracks-and-break.md`.)
-3. **The break.** The wall comes down once. Cumulative cracks plus a singular rupture. The player is pulled into Reality involuntarily for the first time. (Detail: `02-cracks-and-break.md`.)
-4. **Reconstruction.** The long arc. Free travel between styles; bidirectional carry; reconciliation actions accumulate; the cliff visit closes the arc. (Detail: `03-reconstruction.md`.)
-5. **The call.** Reaching the world record means dialling the shopkeeper. Peace is the call made. (Detail: `05-postgame.md`.)
+## The two-act spine
 
-After the call: postgame, with the champ gone and a seashell in their place.
+Volley is shaped in two acts.
+
+**Part 1 is Construction.** The protagonist climbs the volley world ladder. Each main venue hosts one round; coach-partners train them in mechanics that compose into the kit; the championship sits at the top. The stated goal is the world record. The cracks accumulate. The win arrives. The win lands wrong.
+
+**Part 2 is Reconstruction.** The construct cannot hold itself together once its central goal has been achieved and proved meaningless. The shopkeeper is missing. The protagonist searches Reality for traces of where they went, fearing the worst, while the player carries a phone with the unnamed number that never connects. The album fills, a key falls out, the gate opens, the cliff is on the other side.
+
+The two acts use the two styles in different proportion. Part 1 is mostly Construction, with Reality leaking in through cracks. Part 2 lives in both, with Reality carrying the search and Construction holding the rally that surfaces what the protagonist is searching for.
 
 ## Cross-style principles
 
-These principles bind the styles together; the per-arc docs should not contradict them.
+These bind the styles together. The per-arc docs do not contradict them.
 
-- **Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered young / vibrant / helping. The same people exist in Reality at their actual ages. Two asset sets per character that appears in both. Exception: the champ (Construction-only; their reality is the cliff).
-- **The hook is in dialogue, not HUD.** The world record is named by a character (probably the friend at the stall) in the first session. The number is on a HUD; the meaning is not.
-- **Cracks are tonal, not concrete.** A real-world object literally appearing in Construction reads as a flag the player can point at. A colour shift or a beat in a partner's posture is harder to name and easier to absorb. Concrete leakage breaks the deniability the cumulative shape needs.
-- **Reconstruction is not a third visual style.** The two styles stay distinct. Reconstruction's signal is the carry, plus a gradual weathering of Construction's saturation, plus play-level differentiators (score hidden in Construction, champ dialogue softens, audio shifts).
-- **Reality is finite hand-crafted content.** One place, built once, with iterative additions across Reconstruction. Reality cannot be procedural; the team builds each scene.
+**Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered young, vibrant, present. The same people exist in Reality at their actual ages. Two asset sets per cross-style character. The exception is the champ: Construction-only, the dead friend rendered as the championship final, no Reality counterpart.
+
+**The hook is in dialogue, not HUD.** The world record is named by a character in the first session. The number is on a HUD; the meaning is not.
+
+**Cracks are tonal and meta-contextual, never concrete.** A real-world object literally appearing inside Construction reads as a flag the player can point at. A flicker in the venue light, a music cue that skips, a UI element that blinks the wrong colour, a loading screen that says something it should not: these are easier to absorb and harder to name. Concrete leakage breaks the deniability the cumulative shape needs.
+
+**The unnamed number is load-bearing across both acts.** The shopkeeper's number sits in the protagonist's phone, unnamed. The player has full control of the phone throughout Construction, Reconstruction, and the cliff. Dialling never connects until the final beat. The unanswered ring is the player-facing weight of the protagonist's reach without contact.
+
+**Reality is finite hand-crafted content.** The hometown is built once with iterative additions across Part 2. Reality cannot be procedural; the team builds each scene.
+
+**The period is pre-smartphone.** Late 90s or early 2000s as a tonal range. Phones flip or candy-bar or land-line. Numbers held in heads or written on paper. The unnamed-number mechanic depends on the period.
 
 ## What this teaches each surface
 
-- **Artist world bible**: two asset sets per character that appears in both styles (champ is the exception). Reconstruction's visual signal is the carry plus weathering, not a third render. Cracks are tonal and atmospheric; do not draw concrete reality-leaks.
-- **MC profile**: the protagonist's reconciliation arc is the spine of their interior life. The call-of-the-void layer the profile already names becomes legible as the resistance to crossing into Reality. The cliff is where that resistance is met head-on.
-- **Tech-context**: the rally tooling holds Construction. Reality's tooling is its own thing: layered scene-state, contextual interactions, dialogue, descriptive prose, the present-and-attentive puzzle shape, the bidirectional carry. SH-279 is the right place to spike this.
-- **Audio (SH-281)**: a style per phase. Construction is synthetic / bright / energetic; Break is abstract synth, harsh, minimalist; Reality is acoustic with bustle and wind; Reconstruction is synth and acoustic in conversation, escalating to full orchestra by the end.
+The artist world bible holds the visual canon and the cast. The concept docs hold the structural spine. The character docs hold interior life. The audio direction (SH-281) holds the music arc. SH-279 holds the Reality gameplay tooling.
+
+Each cross-style character has two asset sets. The champ is the exception. Cracks are tonal and atmospheric; concrete reality-leaks are out. Reality is hand-crafted scene content, gated by photos. The photo album and the unnamed number are the load-bearing mechanics of Part 2.
 
 ## What this teaches the production
 
-- Construction's content scales (procedural rally, item economy, partner system).
-- Reality's content does not. The hometown is built once with iterative additions across Reconstruction. The cliff is a separate location built once. Finite hand-crafted content.
-- Reconstruction's length is a budget knob: more reconciliation actions means longer arc but more content to build.
-- Idle pacing means the cracks need to escalate slowly enough that month-long players see them as cumulative rather than clustered around early sessions.
-- The cast doubles in Reconstruction (each supporting-cast character with a Reality-side asset). Worth bounding the partner count early.
+Construction's content scales: procedural rally, item economy, partner system, tournament rounds. Reality's content does not: the hometown is built once with iterative additions; the cliff is a separate location built once.
 
-## What we are picking up from the prior narrative pass
+Idle pacing means the cracks need to escalate slowly enough that month-long players read them as cumulative rather than clustered around early sessions.
 
-Strong keeps from `designs/02-alpha/01-world-and-narrative.md`:
+The cast doubles in Part 2 (each cross-style character with a Reality-side asset). Worth bounding the partner count early.
 
-- The world record is the shopkeeper's phone number. The hook resolves into the call.
-- Peace is the call made.
-- The shopkeeper is the friend who got pushed away. Same person as the friend at the stall. Two renders.
-- The champ is the dead friend. Construction only. Returns as a partner once the cliff is faced.
-- The hometown is the reality place. Coastal, British-seaside-meets-southern-Spain.
+## Prototype scope
 
-Reframings:
-
-- The shopkeeper's role in the death has shifted from "tried to help after" to "involved but not responsible." Something else caused it; the shopkeeper was present, entangled, a daily reminder of the failure. This sharpens why the protagonist blocks them out and why the call is hard.
-- The post-break mechanic in the prior doc was badge activation (slotting narrative items into milestone badges). The new architecture replaces this with the bidirectional carry. Badge activation may persist as one expression of the carry inside Construction, or be dropped entirely. SH-279 will decide.
-- The narrative doc framed the post-break phase as a single arc through denial-to-acceptance. The new architecture splits it into Reconstruction (the arc) and Reconciliation (the actions inside it).
+Per SH-275, the prototype delivers Part 1's first venue: the garden. Martha as the coach, one mechanic she teaches, one round match. Part 2 and the cliff are post-prototype.
 
 ## Open questions (synthesis index)
 
-The questions live in their respective per-arc docs; this is the index.
+The questions live in the per-arc docs; this is the index.
 
-From `01-construction.md`:
-- Gym-leader / encounter shape. The "leaders as metaphors" framing reads as too on-the-nose (close to Omori). Currently being reworked: a venue-tied encounter involving the partner, off the main flow, in a shared themed battle space.
-- Partner unlock cadence inside the gym-leader-vs-partner shape.
+From `01-construction.md`: the encounter shape per round. Partner unlock cadence. Mechanic-per-coach specifics. Round-match win condition.
 
-From `02-cracks-and-break.md`:
-- Crack pacing. Cracks tied to count milestones, playtime, story flags, or a combination?
-- Cracks as deniable in an idle context. Burst-player vs all-night-grinder pacing.
+From `02-cracks-and-break.md`: crack pacing across idle play. Tonal-vs-meta crack mix. How the cracks behave during the championship attempt itself.
 
-From `03-reconstruction.md`:
-- Reconciliation action count. 4–6 or 5–7?
-- Action shape. Memory faced, character encountered, small task, or varying?
-- Bridge unlock signal. UI affordance, character moment, music shift?
-- Cliff trigger. What unlocks the cliff dip late in Reconstruction?
-- Visual language of the carry.
+From `03-reconstruction.md`: photo count across Part 2. Per-photo scene shape. Cliff-trigger gate. Bridge unlock signal after the break.
 
-From `05-postgame.md`:
-- Reality cycling post-call. After the call, does the game continue, close, or open into a Regret-style alt-perspective?
+From `04-reality.md`: per-scene state persistence. The interaction surface vocabulary. How dialogue layers across return visits.
 
-## What this unblocks
-
-- The artist world bible can name the three styles and the five movements, with content fills proceeding once the open questions on action count, crack pacing, and the encounter shape are answered.
-- SH-279 (tech spike on reality gameplay) absorbs the hometown structure, the layered-scene puzzle shape, and the bidirectional carry.
-- SH-281 (audio direction) drafts the music style per phase.
-- Future content tickets live downstream of these per-arc docs reaching consensus.
-- The MC profile can deepen with the call-of-the-void resistance mapped onto the cliff's chosen-acceptance shape.
+From `05-postgame.md`: what Construction looks like in postgame with the championship spot occupied by the shopkeeper. Whether the cliff becomes a returnable place after the call.

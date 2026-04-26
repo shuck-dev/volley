@@ -1,49 +1,49 @@
 # Cracks and the Break
 
-The wall thinning, then the wall coming down. This doc carries both phases together because they are one continuous beat. High-level architecture in `00-three-styles.md`; what follows here is the detail.
+The wall thinning across Part 1, the championship win that lands wrong, and the involuntary first walk through the hometown. These three beats are one continuous shape and live in one doc. High-level architecture in `00-three-styles.md`; Construction's detail in `01-construction.md`; Part 2 picks up in `03-reconstruction.md`.
 
 ## Cracks
 
-Reality leaks into the construction. Each leak is dismissible on its own. Their cumulative pressure is what matters.
+Reality leaks into Construction in small atmospheric ways across Part 1. Each leak is dismissible on its own. The cumulative pressure is what matters.
 
-Cracks earn dismissibility from prior generosity (Pattern 1 in `designs/research/game-structure-references.md`). The construction has to land as genuinely fun before a single crack works. Spec Ops's first heat shimmer arrives roughly three hours in, after the player has settled into a competent-soldier rhythm; Doki Doki's first poem night arrives after hours of dating-sim warmth; Inscryption's first scrybe-room break arrives once the player has earned the deck. Volley's idle pacing scales these numbers up, but the principle holds.
+Cracks earn their dismissibility from prior generosity. Construction has to land as genuinely fun before a single crack works. Spec Ops's first heat shimmer arrives roughly three hours in, after the player has settled into a competent-soldier rhythm; Doki Doki's first poem night arrives after hours of dating-sim warmth; Inscryption's first scrybe-room break arrives once the player has earned the deck. Volley's idle pacing scales these numbers up; the principle holds.
 
 ### Two kinds of crack
 
-Cracks come in two flavours. Both are intentional and authored; neither is bug-shaped. Both are dismissible.
+**Tonal cracks.** Inside Construction's fiction. A flicker in the venue light. A partner's tilt held a beat too long. A colour cooling at the edge of the frame. A moment of sound that does not match the venue. Atmospheric oddness; the player notices and lets it pass.
 
-**Tonal cracks.** Inside the construction's fiction. A flicker in the venue light, a partner's tilt held a beat too long, a colour cooling at the edge of the frame, a moment of sound that does not match the venue. These read as atmospheric oddness; the player notices and lets it pass.
+**Meta-contextual cracks.** Outside the fiction, in the surfaces around it. After Spec Ops's loading-screen taunts and dialogue-degradation, Doki Doki's interface glitches, Inscryption's desktop-frame breaks. Construction is itself a thing the player is interfacing with; that interface can crack. A music cue that skips. A UI element that blinks the wrong colour. A loading screen that says something it should not. A pause-menu wording that shifts.
 
-**Meta-contextual cracks.** Outside the construction's fiction, in the surfaces around it. After Spec Ops's loading-screen taunts and dialogue-degradation, Doki Doki's interface glitches, Inscryption's desktop-frame breaks. The construction is itself a thing the player is interfacing with; that interface can crack. A music cue that skips. A UI element that blinks the wrong colour. A loading screen that says something it should not. A pause menu where one option's wording shifts. The player half-notices, half-dismisses.
+Both kinds are authored. Both are deniable. The mix is what makes the cumulative weight feel woven rather than singular: tonal cracks live in the world; meta cracks live in the player's interaction with the game.
 
-Both kinds are authored, both are deniable. The mix is what makes the cumulative weight feel woven rather than singular: tonal cracks live in the world, meta cracks live in the player's interaction with the game. Together they signal that something larger is wrong, on multiple surfaces, none of which alone is enough to call.
+Concrete leakage stays out. A real-world object literally appearing on the rack reads as a flag the player can point at; the deniability the cumulative shape needs collapses.
 
-NEVER concrete leakage inside the construction's fiction (a real-world object literally appearing on the rack). That reads as a flag the player can point at; deniability collapses.
+## The championship win
 
-## The break
+The protagonist climbs every round. The obsession with becoming champ deepens. The word does double work: become the champion (win the title) and become the champ (the dead friend rendered as the final). Both pulls live in one motion; the protagonist does not separate them.
 
-The break is the wall coming down. Spec Ops is the structural exemplar: cumulative cracks across seven chapters, then chapter eight is the singular moment that makes the prior cracks legible as a chord rather than as noise. Volley's break is both. The cracks pile up, dismissible. Then one moment is the rupture, and from there reality is in the player's life whether they wanted it or not.
+The player wins the championship. They do beat the champ.
 
-The break's mechanical signature: the player is pulled into Reality involuntarily for the first time. The dip is forced. They walk through the protagonist's hometown. They see the people behind the partners. Martha is the cashier at the actual newsagent. The cliff is somewhere in this geography but not yet visited.
+The win feels off. Like real-world achievement that turns out not to fix the thing it was supposed to fix. Both pulls of becoming-champ are satisfied at the same beat and neither was the thing the protagonist actually needed.
 
-The shopkeeper is not there in the break walk. Some excuse: the shop has a sign on the door (closing hours, "back later", a notice about something), the lights are off, the door is locked. The shopkeeper's face-to-face is held back for the call (`05-postgame.md`). The break shows the player Reality but not the conversation that lives at its centre.
+The win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
 
-The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its warm centre: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`03-reconstruction.md`).
+At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
 
-## The break and the championship
+## After the win: the walk through Reality
 
-The break is what happens after the protagonist has attempted the championship and failed. The attempt is signalled to the player as one shot. The whole climb has been training; the championship is the test; the player thinks they have one chance and they take it.
+The player is pulled into Reality involuntarily for the first time. The protagonist walks through the hometown. Sees the people behind the partners. Martha at the actual newsagent. The others in their actual lives, plainer.
 
-The match is unwinnable. The champ holds the championship; the protagonist has done all the right work and still cannot pass. The break follows immediately. The construction can no longer hold the protagonist against this impossibility, and the wall comes down.
+They discover the shopkeeper is missing. The shop is empty. The door is locked, lights off, a notice on the door. Family worried. The person the protagonist was reaching for without admitting it has actually disappeared.
 
-This shape gives the championship attempt the structural weight that the break needs: the player feels the moment of trying and failing, not the slog of repeated attempts. One attempt, one failure, the wall down. The cumulative cracks have been preparing the player to read what just happened.
+The champ exits at this point. They do not appear in Part 2.
 
-The relationship to the cracks: the cracks have been thinning the wall throughout. The championship attempt is the singular moment that the cracks finally render as legible. Cumulative pressure plus singular rupture, in one beat.
+The break ends. The player is back in Construction, but Construction has lost its warm centre: the shop is closed; the friend at the stall is gone. End of Part 1. Part 2 begins (`03-reconstruction.md`).
 
 ## Open questions
 
-- **Crack pacing.** Cracks tied to count milestones, playtime, story flags, or a combination? Idle players play in spurts over months; cracks that gate on count alone reward grinders.
-- **Cracks as deniable in an idle context.** Idle games are played in short sessions over months. A cumulative crack pattern has to work for both the burst-player and the all-night-grinder. The pattern's pacing across real time vs in-game time is open.
-- **Cracks during a championship attempt.** Should cracks intensify or behave differently while the player is in the championship match itself? The match is where the construction's pressure is highest; that may be where the cracks land hardest.
-- **Tonal vs meta crack mix.** What proportion of each kind of crack across the arc? Meta-contextual cracks are higher-leverage but also higher-impact when they land; over-using them risks signalling too early.
-- **Replay attempts.** The match is signalled as one-shot, but if the player loses and can press play again on the championship, what happens? Possibilities: the championship is structurally one-shot (no replay button); the championship can be re-entered but always loses with diminishing diegetic effect; or the failed attempt is what triggers the break and the championship is not visitable again until reconstruction.
+- **Crack pacing.** Cracks tied to count milestones, playtime, story flags, or a combination? Idle players play in spurts over months; cracks gated on count alone reward grinders.
+- **Cracks as deniable in an idle context.** A cumulative crack pattern has to work for both the burst-player and the all-night-grinder. The pacing across real time vs in-game time is open.
+- **Cracks during the championship attempt.** Should cracks intensify or behave differently during the championship match itself? The match is where the construct's pressure is highest.
+- **Tonal vs meta crack mix.** What proportion across the arc? Meta-contextual cracks are higher-leverage and higher-impact when they land; over-using them risks signalling too early.
+- **The walk through the hometown as the player's first Reality.** How the style-switch is staged, how navigation works in this short forced beat, how it differs from the freer Reality movement of Part 2.
