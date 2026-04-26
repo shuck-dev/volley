@@ -27,9 +27,11 @@ The bible holds the world's tone, visual texture, emotional shape, and the canon
 
 ## The shape in one paragraph
 
-Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall on the far side of the play. The second is the protagonist's actual hometown, a coastal town in warm slant light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. Construction is structured as a tournament the protagonist climbs; somewhere at the top sits a friend who died, and the climb cannot pass them. When the climb fails, Construction's warm centre goes dark and the player begins moving freely between the two worlds, carrying things from one into the other, until the path opens to the door of the friend who was pushed away.
+Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall on the far side of the play. The player meets it as the world. The second is the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are distinct, and the player learns the bright one is a construct only as the climb cracks open.
 
-Everyone in the game is real. Each character who appears in both worlds has two renders: the Construction version, young, vibrant, helping, and the actual-life version. The hometown is **Reality**, and the long arc between the failed climb and the call to the door is **Reconstruction**. The Glossary at the end re-loads every named term in one place.
+Construction is structured as a tournament the protagonist climbs; at the top sits a friend who died, and beating them is the goal. When the player wins the championship, the win lands wrong, and the construction breaks open. The player then moves freely between the two worlds, carrying things from one into the other, until the path opens to a bench at the cliff and a phone call across a few steps.
+
+Everyone in the game is real. Each character who appears in both worlds has two renders: the Construction version, young, vibrant, helping, and the actual-life version. The hometown is **Reality**, and the long arc between the win-that-breaks-the-construct and the call at the bench is **Reconstruction**. The world's period is pre-smartphone, late 90s or early 2000s as a tonal range, with phones flip or candy-bar or land-line; one specific mechanic, the unnamed number, sits load-bearing inside that period. The Glossary at the end re-loads every named term in one place.
 
 ---
 
@@ -38,6 +40,8 @@ Everyone in the game is real. Each character who appears in both worlds has two 
 A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal. The friend gives the number meaning.
 
 Something the player does not learn until the end: the world record is a phone number, and the phone belongs to the friend at the stall. The bible names that friend **the shopkeeper**; section J holds the depth. Every rally is the protagonist almost-dialling. Every count climbing toward the cap is the protagonist reaching for someone they could call and won't. Construction is built around the rally that keeps that number rising; the rally is built around that call the protagonist cannot yet make.
+
+The number sits in the protagonist's phone the whole game, unnamed in the contacts list, period-correct for a flip or candy-bar device. The player can dial it any time. It does not connect until the cliff. The unanswered ring is the player-facing weight of the protagonist's reach without contact.
 
 Both layers hold at once. The hook the player meets, the canon underneath. The count is rendered as the championship to chase, and rendered knowing what the count is for.
 
@@ -64,7 +68,7 @@ This key is **Construction**. The protagonist is actively maintaining it; volley
 
 The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist assembled Construction because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. Construction needs to feel like somewhere the player wants to be, before the cracks ever come.
 
-Construction has to land as straight-up enjoyable. An idle pong game with warmth and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
+Construction has to land as straight-up enjoyable. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
 Full structural canon for Construction is in `designs/concept/01-construction.md`: the tournament, the coaches' teaching shape, the rally and the count, the championship. This bible holds the visual key and the people inside it.
 
@@ -90,15 +94,17 @@ Cracks escalate slowly across the climb, riding the pacing of an idle game playe
 
 The wall comes down. Once.
 
-The protagonist has climbed every round, learned every coach's mechanic, qualified for the championship at the top of the ladder. The championship match is signalled as one shot. They take it. The match is unwinnable. The champ is the dead friend, and the wall sits exactly there. The cracks have been thinning the wall throughout; the failed attempt makes them legible as a chord.
+The protagonist has climbed every round, learned every coach's mechanic, qualified for the championship at the top of the ladder. The championship match is signalled as one shot. They take it. They win. The champ is the dead friend, and the protagonist beats them.
 
-The moment Construction can no longer hold itself together. Light, sound, the venue's surfaces, the friend's posture: all turn at once. A giving-way, not a glitch. The construction's maintenance has been the protagonist's choice every day until this one. On this one the choice fails.
+The win lands wrong. Both pulls of becoming-champ are satisfied at the same beat (winning the title and reaching the friend the champ stood in for) and neither was the thing the protagonist actually needed. The construct's central goal has been reached and proved meaningless. Achievement-doesn't-equal-happiness is the felt shape; the trophy in hand and the floor giving way at the same time. The cracks have been thinning the wall throughout; the win is the moment they render legible as a chord.
 
-After the rupture the player is pulled into Reality involuntarily for the first time, and walks through the protagonist's hometown. The geography is the place described in section F. **The cliff** sits somewhere out beyond the town's edge but is not visited yet; it is the place where the friend died, and it waits.
+The moment Construction can no longer hold itself together. Light, sound, the venue's surfaces, the friend's posture: all turn at once. A giving-way, not a glitch. The construction's maintenance has been the protagonist's choice every day until this one; on this one the goal hollows out and the choice fails.
 
-The shopkeeper is not in this walk. The shop has a sign on the door. The lights are off. Some excuse: closing hours, a notice, the door is locked. The absence is rendered; the conversation waits for the call.
+At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar (matching the unnamed number in their phone) but the recognition does not quite land yet. That match is the seed Reconstruction will grow.
 
-The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre of Construction has been hollowed out; the rallies continue, and they feel the difference. Reconstruction begins.
+After the rupture the player is pulled into Reality involuntarily for the first time and walks through the protagonist's hometown. The geography is the place described in section F. The walk reveals the rupture's content: the shopkeeper is missing. The shop is empty, the lights off, a sign on the door, the family worried about where they have gone. The person the protagonist was reaching for without knowing has actually disappeared. **The cliff** sits beyond the town's edge but is not visited yet; the friend died there, and the shopkeeper has gone there, and it waits.
+
+The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The bright centre of Construction has been hollowed out; the rallies continue, and they feel the difference. Reconstruction begins.
 
 ---
 
@@ -108,7 +114,9 @@ A second key, completely. Visually distinct from Construction; mechanically a di
 
 A small coastal town, British seaside meets southern Spain. Terraced houses next to whitewashed walls; a high street that smells of both rain and citrus; light shifting between northern grey and Mediterranean glare. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in.
 
-Reality's tone is warm and weighted, story-driven. Less saturation than Construction, more texture. Light is just light; the air has weather. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. The pull of Reality is its honesty. The player ends up wanting it.
+Pre-smartphone era. Late 90s or early 2000s as a tonal range. Phones are flip, candy-bar, or land-line. Signage and clothes follow the period; numbers are held in heads or on paper. The exact year is open for the sketch to settle; what is fixed is the feel, and the absence of pocket databases that auto-attach a name to every digit.
+
+Reality's tone is weighted and story-driven. Less saturation than Construction, more texture. Light is just light; the air has weather. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. The pull of Reality is its honesty. The player ends up wanting it.
 
 The map is geographically static. The town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Reconstruction, things are added: people the player can meet, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
 
@@ -122,17 +130,23 @@ Full canon in `designs/concept/04-reality.md`.
 
 ## G. Reconstruction
 
-The arc between the break and **the call**, the moment late in the story when the protagonist finally dials the shopkeeper from the door of the closed shop. Reconstruction is not a third visual key; the two keys stay distinct. What Reconstruction adds is free travel between them, and the bridge that carries selected things across.
+The arc between the break and **the call** at the cliff. Part 2 of the game (Construction is Part 1). Reconstruction is not a third visual key; the two keys stay distinct. What Reconstruction adds is free travel between them, and the bridge that carries selected things across.
 
 The carry is bidirectional and curated. Specific things from Construction can be brought into Reality and used in specific scenes there; specific acknowledgements from Reality feed back into Construction, unlocking new venues, new lines from coaches, new affordances. Each carry is a narrative beat, not an open mechanic.
 
-The mechanic at the centre of Reconstruction is **the photo book**. The shopkeeper's younger sister has the book, but not all of the photos. Some are still inside; some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere, taped to the back of an old radio in the workshop. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned completes a part of the protagonist's history the shopkeeper kept and the protagonist could not. When the book fills, the path to the shopkeeper opens.
+Part 2 runs on dread. The break revealed the shopkeeper missing; the protagonist is afraid they have followed the friend's path. The driving force is the search for what happened, where they have gone, whether it is too late. The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
 
-Reconstruction asks for two surfaces. Construction weathers as the carry accumulates: saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. Reality acquires content: the sister's place gains the book and the table where the protagonist sits with it, scenes around the town gain the people and objects the photos send the protagonist to find, the cliff opens at the end.
+The mechanic at the centre of Reconstruction is **the photo book**. The shopkeeper's younger sister has the book, half-filled, with a hidden compartment in the binding that does not open until the album fills enough. Some photos are inside; some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere, taped to the back of an old radio in the workshop. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned completes a part of the protagonist's history the shopkeeper kept and the protagonist could not. When the album fills, the compartment opens. Inside is **the key**. The sister hands it to the protagonist; it opens the one locked gate at the back of the garden.
 
-Three play-level signals sit underneath. The score is hidden in Construction during Reconstruction; the player rallies without seeing the count, and walks into Reality to check it. The champ's dialogue softens beat by beat across the arc until they sound like a friend again. The audio shifts from synthetic toward acoustic. Each is a felt signal that something is changing. Full canon in `designs/concept/03-reconstruction.md`.
+Volley itself becomes memory recall in Part 2. Each rally surfaces a memory; each memory becomes a photo or unlocks one; each photo points to a place in Reality the shopkeeper might be or where they left a trace. Coaches share their own memories of the shopkeeper as the player rallies with them. The rally and the photo work feed into each other.
 
-After the cliff, the champ shifts from wall to partner. The path to the call opens.
+The unnamed number tightens across the arc. Fragments of the digits surface in Reality where they should not be: written on the back of a found photo, etched on the closed shop's sign, scrawled in the workshop, half-spoken by a coach mid-rally, mentioned by the sister as an area code. Each fragment moves the protagonist's recognition that the unnamed contact is the shopkeeper. The almost-dial recurs across the arc: hand-to-pocket after a coach's memory, the phone out after a heavy photo find, a draft message left open and never sent, a voicemail attempt that hangs up before saying anything. None connect. The reach without contact accumulates as the dread does.
+
+Reconstruction asks for two surfaces. Construction weathers as the carry accumulates: saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. Reality acquires content: the sister's place gains the book and the table where the protagonist sits with it, scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
+
+Three play-level signals sit underneath. The score is hidden in Construction during Reconstruction; the player rallies without seeing the count, and walks into Reality to check it. The champ's old dialogue softens in the protagonist's memory beat by beat across the arc, even though the champ themselves has gone (they exited at the break, beaten in the championship that turned out to be the rupture). The audio shifts from synthetic toward acoustic. Each is a felt signal that something is changing. Full canon in `designs/concept/03-reconstruction.md`.
+
+The album fills, the compartment opens, the sister hands over the key, and the path to the cliff opens.
 
 ---
 
@@ -186,9 +200,9 @@ In Reality this is the person the protagonist has pushed away. The shopkeeper wa
 
 This is why the world record is the shopkeeper's phone number. Every rally is the protagonist's almost-reach. Construction's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
-The shopkeeper has two renders. Construction: the friend at the stall, warm and grounded, present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past. They leave Construction at the break and return at the call as the final partner on the right side of the court.
+The shopkeeper has two renders. Construction: the friend at the stall, grounded and present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past, and on a bench at the cliff. They leave Construction at the break (the shop closes and the family worry about where they have gone); across Reconstruction they exist only in Reality, withdrawn to the cliff and refusing calls; they return to Construction at the call, on the right side of the court that used to be the championship spot, as the actual partner rather than the substitute.
 
-What holds is the warmth and the posture in Construction; the weight and the absence in Reality. Gender, age, presentation are open for the sketch to settle.
+What holds is the posture in Construction and the weight and absence in Reality. Gender, age, presentation are open for the sketch to settle.
 
 ### The sister (the tinkerer)
 
@@ -218,11 +232,11 @@ Martha sets the bar for the rest.
 
 The dead friend. Construction-only; their Reality is the cliff.
 
-The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. In Construction they sit as the final wall: warm in their pushiness, present in their absence from the lower rounds, the spot the protagonist is climbing toward.
+The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. Across Construction they are present-in-absence at the top of the ladder, the spot the protagonist is climbing toward; they appear as the partner only at the final venue, on the right side of the court for the championship match itself.
 
-The championship match is unwinnable on first attempt. The break follows. After the break, across Reconstruction, the champ's dialogue softens beat by beat. Late in the arc, after the cliff, they shift from wall to partner; the player can put them on the court like any other and rally with them. Then, once the path to the call opens, they leave, with a seashell where they had been.
+The championship match is winnable. The protagonist beats the champ. The win lands wrong, and the win IS the break. The champ exits at the break and does not return; the championship spot stands empty across Reconstruction, and is filled at the call by the shopkeeper.
 
-Render them as someone the protagonist loved. Sharp in Construction because the friend was sharp; soft by the end because the protagonist has finally let them be remembered as themselves rather than as the wall.
+Render them as someone the protagonist loved. Sharp at the championship because the friend was sharp; the doubled meaning of "becoming the champ" sits in their posture across the climb (the title to win, the friend to reach), the same word doing both jobs.
 
 ---
 
@@ -246,21 +260,23 @@ Surfaces carry information without HUD. UI sits inside the same hand and voice a
 
 ## L. Venues
 
-The first venue is the garden. From there Construction leaps, and each leap is bigger than the last. Same partner. Same friend at the stall. Same warmth. A wildly different world around them.
+The first venue is the garden. From there Construction leaps, and each leap is bigger than the last. Same partner. Same friend at the stall. Same light. A wildly different world around them.
 
 ### The garden
 
-A walled stretch of grass in one corner of a wider garden. Setting reads as a UK and Mediterranean blend, warm climate; architecture part European cottage, part Mediterranean patio, part a memory the protagonist is reaching for that does not exactly belong anywhere. Stone or terracotta tiles underfoot. A wall or wooden fence around the edge. A tree at the back, an olive or fig or apple, branches already old. Late afternoon light, warm and slant. The garden feels lived-in. Paint chips, vines on the wall, a watering can on its side near the tree.
+A walled stretch of grass in one corner of a wider garden. Setting reads as a UK and Mediterranean blend, warm climate; architecture part European cottage, part Mediterranean patio, part a memory the protagonist is reaching for that does not exactly belong anywhere. Stone or terracotta tiles underfoot. A wall or wooden fence around the edge. A tree at the back, an olive or fig or apple, branches already old. Late afternoon light, slant and golden. The garden feels lived-in. Paint chips, vines on the wall, a watering can on its side near the tree.
+
+The garden is the meeting point of the two worlds. It is the one Construction venue grounded in the protagonist's actual hometown geography in Reality: built from their memory of the real garden, sprucing it up. The constructed garden and the real garden remain separate places; this venue is the seam. Other Construction venues across the trajectory are purely fantastic, with no Reality counterparts. The garden's "out of place out of time" feel comes from being the venue grounded in a real place still standing.
 
 The friend's stall sits against one inside wall. A small wooden affair with a stripe of awning and one shelf of items. The stall is not part of the architecture; it is a thing the friend put there. It can fold up and travel.
 
 A ball feeder sits on one side of the play area, holding the balls not currently in play. A smaller rack opposite holds equipment items.
 
-A locked gate sits at the back beside the tree. The player can see it but not reach it. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of palm fronds, a strip of sky that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger.
+A locked gate sits at the back beside the tree. It is the one locked gate in the entire game. The player can see it but not reach it across most of the climb. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of cliff edge, a strip of sea that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger. Late in Reconstruction, after the album fills and the sister hands over the key, the protagonist returns to the garden, unlocks the gate, and walks through to the cliff in Reality.
 
 The garden is the prototype's only built venue. Per SH-275, it carries the championship-shape exemplar: one coach, Martha, one mechanic she teaches, one round. Everything else in the game is the same shape, scaled across the trajectory below.
 
-Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the warmth.
+Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the brightness.
 
 ### The trajectory
 
@@ -285,13 +301,21 @@ The court visibly opens onto the rest of the venue. A missed ball does not despa
 
 ### The call
 
-The call is the ending. The protagonist dials the world record from the door of the shop. The shopkeeper's phone rings inside; they pick up. The first words happen with both of them in the same building, voice and body simultaneously.
+The call is the ending, and it lands at the cliff, not at the shop.
 
-The staging is one image, two presences. The composition splits the frame: protagonist on the outside of the door, shopkeeper on the inside, the door dividing them. Both holding phones. The split is the years of distance; the shared frame is the resolution. The phone is the line that crosses the split. After the touchstone of *[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)*'s key art, where two characters share one image divided by a structural element. One moment, two people, finally in the same picture.
+Across Reconstruction the protagonist has been carrying dread, afraid the shopkeeper has followed the friend's path; the unanswered phone has been the player-facing weight of that fear. The album fills, the compartment opens, the sister hands over the key. The protagonist returns to the garden, unlocks the gate at the back, walks through to the cliff.
 
-Both hang up; the door opens. The composition flows from the split frame into a single image of the court, with the shopkeeper crossing onto the right side, racquet in hand. The seashell sits on the ground where the champ left it earlier, late in Reconstruction. The first ball is in the air. Construction's warmth has returned, this time as the actual relationship rather than the substitute. The right person is in the right spot.
+A bench sits at the cliff edge, dedicated to the friend. The shopkeeper is on the bench, alive. The dread inverts to relief. The shopkeeper has been here, withdrawn, refusing every call.
 
-Postgame is rallying with the shopkeeper there. The cliff is reachable any time, with no new gameplay; a place to sit, look at the sea, listen, with a seashell in the protagonist's hand.
+The protagonist takes out their phone and dials the unnamed number, the digits whole now from all the fragments that surfaced across Reality. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others, and they do not. They look up at the sound, see the protagonist, pick up.
+
+The staging is one image, two presences. The composition splits the frame across the bench area: protagonist on the path, shopkeeper on the bench, the few steps between them. Both holding phones. After the touchstone of *[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)*'s key art, where two characters share one image divided by a structural element. The split is the years of distance; the shared frame is the resolution. The phone is the line that crosses the split. The cliff and the sea sit behind both of them; the bench is the dedication; the call is the answer. One moment, two people, finally in the same picture.
+
+The dial does two acts at once. Chosen presence, the choice to be reached and to reach across the few steps that took the whole game. And the moment the name finally attaches: the unnamed contact in the protagonist's phone is recognised as the shopkeeper, the contact and the person fused after a whole game of holding them apart.
+
+The call ends. The protagonist crosses the small distance and sits beside the shopkeeper on the bench. Coming home is the call.
+
+Postgame is rallying with the shopkeeper, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
 Full canon for the call and postgame in `designs/concept/05-postgame.md`.
 
@@ -410,10 +434,13 @@ Where the bible or the brief feels actively wrong or contradictory, the canon mo
 The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
 
 - **Construction.** The bright key. Saturated, warm, helping. Where volleyball lives. Section C.
-- **Reality.** The second key. The protagonist's hometown, warm and weighted. Section F.
+- **Reality.** The second key. The protagonist's hometown, weighted and lived-in. Section F.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two keys; bidirectional carry. Not a third visual key. Section G.
-- **The break.** The single rupture at the failed championship match. The wall comes down once. Section E.
-- **The call.** The ending. The protagonist dials the world record from the door of the shop. Section L.
+- **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section E.
+- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones across the small distance between path and bench. Section L.
+- **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections A and L.
+- **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section G.
+- **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections G and L.
 - **The cliff.** The place outside the town where the friend died. Visited late in Reconstruction. Sections E and F.
 - **The champ.** The dead friend. Construction-only. Holds the championship spot. Section J.
 - **The round.** The encounter at the end of each tournament step where the coach takes the other side of the court. Section J.
