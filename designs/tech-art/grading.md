@@ -1,4 +1,4 @@
-# Colour grade pipeline
+# Colour Grade Pipeline
 
 The garden in late afternoon is warm, saturated, gleaming. The same garden in Reality is cooler, looser, weather in the air. Same silhouettes, same staging, different register. Volley! ships both, and the seam where the artist's neutral PNG becomes a registered surface is a runtime colour grade.
 

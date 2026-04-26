@@ -1,4 +1,4 @@
-# Swarm architecture
+# Swarm Architecture
 
 How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the live coordination board lives in [`ai/PARALLEL.md`](../../ai/PARALLEL.md). This doc is the design layer above both.
 

@@ -1,4 +1,4 @@
-# Item UI — Diegetic Drag and Drop
+# Item UI: Diegetic Drag and Drop
 
 Design notes for how items are presented and manipulated in the UI.
 
