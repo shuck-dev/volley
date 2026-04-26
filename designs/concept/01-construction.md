@@ -28,7 +28,7 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 **Martha and the partners.** Real people the protagonist knew, summoned into Construction as coach-partners. Each has a Reality-render at their actual age in their actual life. Lineage rule: each partner is named for a character from a science-fiction author's work.
 
-**The tinkerer.** The sister's Construction render. Workshop in another corner of the garden. The sister herself lives in Reality (`04-reality.md` for the register, `03-reconstruction.md` for her role with the photo album).
+**The tinkerer.** The sister's Construction render. Workshop in another corner of the garden. The sister herself lives in Reality (`04-reality.md` for Reality's style, `03-reconstruction.md` for her role with the photo album).
 
 ### Opposing cast
 

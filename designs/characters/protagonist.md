@@ -1,6 +1,6 @@
 # The protagonist
 
-The artist world bible at `designs/01-prototype/artist-world-bible.md` holds the world and the role. The structural arc lives across `designs/concept/`, beginning at `00-three-styles.md`. This document holds the person at the centre of both: who they are, what they carry, how they move through Part 1 and Part 2, and the interior weight underneath.
+The artist world bible at `designs/art/bible.md` holds the world and the role. The structural arc lives across `designs/concept/`, beginning at `00-three-styles.md`. This document holds the person at the centre of both: who they are, what they carry, how they move through Part 1 and Part 2, and the interior weight underneath.
 
 When this document and the bible disagree, the bible is canon for the world and this document is canon for them.
 
@@ -20,7 +20,7 @@ Not a tragic figure, not melodramatic, not a person in collapse. Someone who bui
 
 They lost a friend years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group, dangerous and routine for them, until it wasn't. The shopkeeper was there that day, jumping with the friend. The protagonist was not. Whether they ever went jumping with the group, or always declined, is a question the profile does not answer. The asymmetry of that day has sat between them ever since: one survivor on the cliff, one survivor who was elsewhere. Recently enough that it is not healed, long enough that they have built a structure around it.
 
-Construction is that structure. The garden, the stall, the rally, the friend at the counter with their head tilted toward the play. They did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
+Construction is that structure. The garden, the stall, the rally, the friend at the counter watching the rally, glad to be there. They did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
 
 The structure was built around what they love. The love is real; so is the grief. The protagonist is not surviving in the garden. They are living there. Quietly, partially, on the days they can; that is still living.
 

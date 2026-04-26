@@ -2,7 +2,7 @@
 
 How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft register the writing aims for, line by line.
 
-The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../01-prototype/artist-world-bible.md`](../01-prototype/artist-world-bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
+The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../art/bible.md`](../art/bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
 
 ## Scene construction
 
@@ -16,7 +16,7 @@ The geography is built before the people are. Place the nouns: the table is by t
 
 ## Dialogue
 
-Construction speaks warmer and lighter. Coaches perform a little; the friend at the stall keeps things easy; lines have lift. The register is the register of a place that wants to be enjoyable. It is not arch and it is not knowing, but it carries more colour than Reality does.
+Construction speaks warmer and lighter. Coaches perform a little; the friend at the stall keeps things easy; lines have lift. The voice is the voice of a place that wants to be enjoyable. It is not arch and it is not knowing, but it carries more colour than Reality does.
 
 Reality speaks plainer. Half-finished sentences. The thing said while looking at something else. Long pauses where the prose holds its breath instead of filling. The sister mentions the weather and means the weather; the cashier asks after the protagonist and means it; nothing performs.
 
@@ -38,7 +38,7 @@ The cliff and the call run thin, then full. The walk to the bench is plain prose
 
 ## Memory surfacings
 
-In Reconstruction rallies, memory shows up as a half-second image. The friend at the counter, an elbow, a tilt of the head, a sentence half-heard. Present tense. The surfacing puts the image in the room: "an elbow on the counter, the head tilted toward the play". Past-tense framings ("they used to") slide into exposition; the present tense keeps the memory alive in the rally.
+In Reconstruction rallies, memory shows up as a half-second image. The friend at the counter, an elbow, a tilt of the head, a sentence half-heard. Present tense. The surfacing puts the image in the room: "an elbow on the counter, eyes on the rally". Past-tense framings ("they used to") slide into exposition; the present tense keeps the memory alive in the rally.
 
 The surfacing is brief. One sentence, sometimes a fragment. The image lands and the rally takes it back; the player carries the meaning forward without a beat of explanation. The image fades. The next hit lands.
 
