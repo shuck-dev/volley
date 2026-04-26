@@ -1,6 +1,6 @@
 ---
 name: large-doc-dandori
-description: Workflow for any large doc effort — new bible, rewrite of an existing big doc, or restructure across files. Plan structure first, dispatch multi-minion work against the plan, multi-lens review on the result.
+description: Workflow for any large doc effort: new bible, rewrite of an existing big doc, or restructure across files. Plan structure first, dispatch multi-minion work against the plan, multi-lens review on the result.
 ---
 
 # Large-doc dandori
