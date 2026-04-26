@@ -276,7 +276,7 @@ Surfaces carry information without HUD. UI sits inside the same hand and voice a
 
 **The shop as catalogue.** A corner of the venue, hidden until the friend unlocks. The shop reads as a small kiosk: a table with items resting on it, a thumbed-through catalogue the friend brings out across the table, a small counter where boxes briefly sit before they go on their way. The catalogue is what the player will remember. Touchstones for the page treatment are the Argos catalogue, the school-photo-pack order form, the back-of-magazine mail-order spread: flat product photography against plain backgrounds, square-cropped cards, plain captions, prices, product codes. Domestic objects, presented with unfussy honesty. Items reference places the prototype does not visit yet, but the page reads like any other page in the book: a kettle, a deck chair, a meteor shard, a starfish, the same matter-of-fact voice across all of them. Flatness is the load-bearing thing. A travel magazine would oversell the wider world; the catalogue family undersells it, which makes the strangeness funnier and more grounded.
 
-**The workshop bench.** The tinkerer's place. A done tray for finished items. Tools in known places. The rhythm of the room is part of her personality; it makes tea, stares out the window, reads, tidies, settles into the work in its own time.
+**The workshop bench.** The tinkerer's place. A done tray for finished items. Tools in known places. The rhythm of the room is part of her personality. She makes tea, stares out the window, reads, tidies, settles into the work in her own time.
 
 **The racks.** A ball feeder on one side of the play area, holding the balls not currently in play. A smaller equipment rack opposite, holding items the player can attach to the racquet. Both with visible age and use. Their presence in every venue is a constant; their forms are venue-dressed.
 
@@ -304,7 +304,7 @@ A locked gate sits at the back beside the tree. It is the one locked gate in the
 
 The garden is the prototype's only built venue. Per SH-275, it carries the championship-shape exemplar: one coach, Martha, one mechanic she teaches, one round. Everything else in the game is the same shape, scaled across the trajectory below.
 
-Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the vibrance.
+Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight underneath.
 
 ### The trajectory
 
