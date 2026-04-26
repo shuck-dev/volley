@@ -58,7 +58,7 @@ The same person at their actual age. A small moment with a partner in an ordinar
 
 They love the game. They love the friend at the stall. They reach for the partners they reach for: Martha first, because she was reliably kind and asks nothing of them yet; others, harder, later.
 
-Warmth is the thing the structure was built around. The grief and the void are real, and the warmth is real too, and the warmth is the reason the structure stands. The protagonist is not surviving in the garden. They are living there. Quietly, partially, on the days they can; that is still living.
+The structure was built around what they love. The grief and the void are real; so is the love, and it is the reason the structure stands. The protagonist is not surviving in the garden. They are living there. Quietly, partially, on the days they can; that is still living.
 
 ---
 
