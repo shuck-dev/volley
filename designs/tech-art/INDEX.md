@@ -12,4 +12,4 @@ The bible says what the work feels like. The art-side pipeline says how a sprite
 
 - [Art tech pipeline](../art/tech-pipeline.md): asset delivery, import settings, folder structure, performance budgets.
 - [Artist tech context](../01-prototype/artist-tech-context.md): the engine the world is painted into.
-- [World bible](../01-prototype/artist-world-bible.md): the canon the rendering serves.
+- [World bible](../art/bible.md): the canon the rendering serves.

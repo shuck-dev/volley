@@ -178,4 +178,4 @@ Rallying with the shopkeeper as the championship-spot partner. The cliff stays r
 
 ## Cross-references
 
-The art bible at `../01-prototype/artist-world-bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`. The discipline doc at `discipline.md` is the parallel branch on player practice and ritual.
+The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`. The discipline doc at `discipline.md` is the parallel branch on player practice and ritual.
