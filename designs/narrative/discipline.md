@@ -2,7 +2,7 @@
 
 How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft register the writing aims for, line by line.
 
-The voice rules sit one level up in [`../../ai/skills/voice.md`](../../ai/skills/voice.md). The world canon sits in [`../01-prototype/artist-world-bible.md`](../01-prototype/artist-world-bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
+The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world canon sits in [`../01-prototype/artist-world-bible.md`](../01-prototype/artist-world-bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
 
 ## Scene construction
 
@@ -22,9 +22,9 @@ Reality speaks plainer. Half-finished sentences. The thing said while looking at
 
 The protagonist talks less than they are talked to. Their lines are short. They answer when asked, and the answer is usually one beat shorter than expected. The interior is in the protagonist profile; on the page it shows up as economy, not as introspection.
 
-When characters share memories of the shopkeeper, the memory arrives sideways. A coach mid-rally says something the shopkeeper used to say; the sister, turning a page, mentions the time her brother burnt the toast. The memory is the mention, not a story told to camera. No character explains the shopkeeper to the player. Each one knew them differently, and the prose lets that asymmetry sit.
+When characters share memories of the shopkeeper, the memory arrives sideways. A coach mid-rally says something the shopkeeper used to say; the sister, turning a page, mentions the time her brother burnt the toast. The memory is the mention. Each character knew the shopkeeper differently, and the prose lets that asymmetry sit; the player assembles the shopkeeper from the asymmetry, the way grief assembles a person from the people who loved them.
 
-No exposition dumps. If a piece of canon needs to land, it lands as something a character does in front of the protagonist, or as something the world shows. The locked gate is shown, not narrated. The number sits in the phone; nobody tells the player what it is.
+Canon lands as action. A piece of world that needs to reach the player reaches it as something a character does in front of the protagonist, or as something the world shows. The locked gate is shown. The number sits in the phone, ready when the player finds it.
 
 ## Tone modulation
 
@@ -38,11 +38,11 @@ The cliff and the call run thin, then full. The walk to the bench is plain prose
 
 ## Memory surfacings
 
-In Reconstruction rallies, memory shows up as a half-second image. The friend at the counter, an elbow, a tilt of the head, a sentence half-heard. Present tense. Never past-tense framed: "they used to" is exposition; "an elbow on the counter, the head tilted toward the play" is a surfacing.
+In Reconstruction rallies, memory shows up as a half-second image. The friend at the counter, an elbow, a tilt of the head, a sentence half-heard. Present tense. The surfacing puts the image in the room: "an elbow on the counter, the head tilted toward the play". Past-tense framings ("they used to") slide into exposition; the present tense keeps the memory alive in the rally.
 
-The surfacing is brief. One sentence, sometimes a fragment. Never explained, never followed by a beat that tells the player what the memory means. The rally continues. The image fades. The next hit lands.
+The surfacing is brief. One sentence, sometimes a fragment. The image lands and the rally takes it back; the player carries the meaning forward without a beat of explanation. The image fades. The next hit lands.
 
-Surfacings come from a specific moment with the friend at the counter, never from an abstract well of memory. The reader builds the friend out of the particulars across many surfacings: a sleeve, a laugh, the way they handed back a racquet. Generalities ("the friend's warmth", "the old days") are the failure mode.
+Surfacings come from a specific moment with the friend at the counter. The reader builds the friend out of the particulars across many surfacings: a sleeve, a laugh, the way they handed back a racquet. Specificity is the engine; generalities like "the friend's warmth" or "the old days" reach for the meaning before the picture has earned it.
 
 ## Cracks at the line level
 
@@ -54,7 +54,7 @@ A tonal crack in description is a flicker named with weight, not buried. A wrong
 
 The cumulative pattern is the load. One crack is a flourish; a dozen across an act is the world failing to reconcile. The protagonist's construct is failing to reconcile for them in the same shape and at the same pace. Player and protagonist drift out of alignment with Construction together. By the time the break arrives, the player has been collecting evidence the protagonist has been collecting too, and the recognition is shared rather than delivered.
 
-Write the crack, then read it back and ask two questions. Does the player notice? If no, the crack is too soft; sharpen until the beat lands. Does the player have somewhere to put it that is not "the game is telling me the world is fake"? If no, the crack has tipped into signpost; pull back until the in-fiction reach is available again. The target is a beat the player sees clearly and explains away, not a beat the player misses.
+Write the crack, then read it back and ask two questions. Does the player notice? Sharpen until the beat lands. Does the player have somewhere in-fiction to put it, somewhere short of "the game is telling me the world is fake"? Pull back until the in-fiction reach is available again. The target is a beat the player sees clearly and explains away.
 
 ## Pacing rhythms
 
@@ -66,12 +66,12 @@ Settle when the moment settles. A scene with the sister at the table runs in lon
 
 The Construction warmth at credits runs longer paragraphs again, the prose unhurried, light returning. Pacing is not a global setting; it is a per-beat decision, and the beat decides.
 
-## What the writing does not do
+## What the writing reaches for
 
-No closing morals. A scene that ends on what the scene meant has explained itself. End on the loaded particular: the cup, the gate, the hand on the racquet. The reader carries the meaning out.
+Endings land on a particular. The cup, the gate, the hand on the racquet. A scene that closes on the loaded image lets the reader carry the meaning out the door with them; the scene trusts the reader to do that work, and the reader does.
 
-No "this is a story about" framings, in prose or in dialogue. Volley is not about grief and is not about presence; Volley is the rally, the friend at the stall, the cliff and the call. The themes live in what happens, never in what is said about what happens.
+The themes live in what happens. Volley is the rally, the friend at the stall, the cliff and the call. Whatever the story is about arrives through those particulars, and the prose lets it arrive without naming it. Characters and narration alike stay inside the world rather than describing it.
 
-No flashbacks as exposition. Memory surfaces present-tense, brief, in the rally or in the room. A scene that cuts away to "years ago, the protagonist and the friend were…" has stopped trusting the surfacing to do its work.
+Memories arrive as present-tense surfacings. An elbow on the counter, a sleeve, a sentence half-heard, the rally still going on around it. The image does the work a flashback would do, faster, and leaves the rally intact.
 
-No on-the-nose dialogue about themes. Characters talk about the weather, the toast, the score, the bus that did not come. They do not talk about loss, or presence, or the construct. The themes arrive through what the characters do not say, and through what the prose places in the room around them.
+Dialogue plays oblique to the theme it carries. Characters talk about the weather, the toast, the score, the bus that arrived late. The themes ride underneath those conversations, surfacing through what is left in the room rather than through what is said. The reader hears both registers at once and feels the second one most because the first one carried it.
