@@ -1,24 +1,24 @@
 # Construction
 
-The bright world. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `00-three-registers.md`.
+Construction. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `00-three-registers.md`.
 
 ## What Construction is
 
 The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. Volleyball lives here and only here. The structure is a tournament: the protagonist is climbing the volley world ladder toward the championship.
 
-Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). The bright world is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the warmth itself.
+Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). Construction is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the warmth itself.
 
 The artist's hardest job lives here. Construction must be straight-up enjoyable as an idle pong game for the player who never thinks about the narrative. The cracks come later (`02-cracks-and-break.md`); if they arrive before the player has good reason to want the rally to keep going, they have nothing to crack.
 
 ## The cast
 
-The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in the bright world. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The opposing cast is just one person: the champ, the dead friend, who sits at the top of the tournament ladder.
+The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in Construction. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The opposing cast is just one person: the champ, the dead friend, who sits at the top of the tournament ladder.
 
 ### Supporting cast
 
-- **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
+- **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout Construction; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
 - **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
-- **Martha and the partners.** Real people the protagonist knew, summoned into the bright world as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
+- **Martha and the partners.** Real people the protagonist knew, summoned into Construction as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
 - **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`04-reality.md`).
 
 ### Opposing cast
@@ -35,7 +35,7 @@ The shopkeeper's tries to help after the death were partly their own grief reach
 
 The protagonist's mind cannot let them go either. The shopkeeper is the only one who knows; the only one who could understand. The construction's compromise is precise: keep the shopkeeper present, warm, available; have the relationship that does not require admitting where the protagonist was when the friend died. The friend at the stall, attentive without intruding, is the relationship the protagonist wants AND the relationship they cannot have in reality, rendered as the version they can hold.
 
-This is why the world record IS the shopkeeper's phone number. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
+This is why the world record IS the shopkeeper's phone number. Every rally is the protagonist's unconscious reach. The count climbing is the protagonist almost-dialling without admitting they want to. Construction's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
 It is why the championship sits structurally as the final wall. Reaching the champ means reaching the dead friend, which means facing what happened, which means facing the shopkeeper, which means facing where the protagonist was instead.
 
@@ -43,7 +43,7 @@ It is why the call is the ending (`05-postgame.md`). Once the protagonist has fa
 
 ## The tournament
 
-The bright world is shaped as a volley tournament. The protagonist is climbing the ladder; the championship is the world record; the world record is the shopkeeper's phone number. Reaching it means making the call.
+Construction is shaped as a volley tournament. The protagonist is climbing the ladder; the championship is the world record; the world record is the shopkeeper's phone number. Reaching it means making the call.
 
 The structure: each main venue hosts one round of the tournament. The player rallies in that venue with their coach (a partner) until they qualify; then they enter the round, where the coach takes the other side and the player faces them in the round's match. Win the round, advance.
 

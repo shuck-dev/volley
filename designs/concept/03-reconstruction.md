@@ -4,9 +4,9 @@ The arc. The long phase between the break and the cliff. The wall stays down; th
 
 ## What Reconstruction is
 
-Reconstruction is not a third visual register. The two registers stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) is still gold-hour. Reconstruction is the meta-state in which the player has access to both and can carry across.
+Reconstruction is not a third visual register. The two registers stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) keeps its weight. Reconstruction is the meta-state in which the player has access to both and can carry across.
 
-Reconstruction's Construction is missing its warm centre. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. The bright world has been hollowed out where it used to be warmest. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
+Reconstruction's Construction is missing its warm centre. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. Construction has been hollowed out where it used to be warmest. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
 
 Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the championship; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Three changes mark Reconstruction at the play level:
 
@@ -19,11 +19,11 @@ Reconstruction must also FEEL different to play, not only look different in the 
 The carry is what Reconstruction enables. Bidirectional and selective. Not anything-and-everything: that would open infinite interactions and demand combinatorial content. Each carry is hand-curated for its narrative function.
 
 - **Constructs into Reality.** Specific Construction items, characters, or memories can be brought into Reality and used in specific reconciliation scenes. The construction is what the protagonist built to keep going; in Reconstruction, the things they built turn out to be useful in the world they were avoiding. Which constructs are carry-able and which are not is a narrative decision per content beat, not an open mechanic.
-- **Reality into Construction.** Specific real-world acknowledgements feed back into the rally. New venues unlock; coaches gain new lines; the bright world acknowledges what it had been hiding from. Hints for Reality's next reconciliation surface in Construction. Same gate: which acknowledgements bridge back is a curated narrative call.
+- **Reality into Construction.** Specific real-world acknowledgements feed back into the rally. New venues unlock; coaches gain new lines; Construction acknowledges what it had been hiding from. Hints for Reality's next reconciliation surface in Construction. Same gate: which acknowledgements bridge back is a curated narrative call.
 
 The visual signal of Reconstruction is the act of crossing, plus the persistent presence of one register's elements when the player is in the other. The bridge itself is the new affordance.
 
-As the carry accumulates, the bright world ages with the player. Saturation drops a notch; line weight thickens; compositions hold longer pauses. The construction does not visually rebuild; it weathers.
+As the carry accumulates, Construction ages with the player. Saturation drops a notch; line weight thickens; compositions hold longer pauses. The construction does not visually rebuild; it weathers.
 
 ## Reconciliation
 
@@ -33,7 +33,7 @@ The mechanic is the photo book. The sister has the book, but not all of the phot
 
 The full mechanic and the photo arc live in Reality (`04-reality.md`). Reconstruction is the arc-shape; the photo book is the verb.
 
-Each found photo compounds: the wall thins; the champ's dialogue softens; new venues unlock; the bright world ages. The cumulative effect is the protagonist getting closer to the cliff (where the last photo lives), closer to the champ becoming a partner, closer to the call.
+Each found photo compounds: the wall thins; the champ's dialogue softens; new venues unlock; Construction ages. The cumulative effect is the protagonist getting closer to the cliff (where the last photo lives), closer to the champ becoming a partner, closer to the call.
 
 By the end of Reconstruction, the protagonist has reconciled the event and reconstructed their view. The two land together.
 

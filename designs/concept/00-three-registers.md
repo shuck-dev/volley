@@ -7,11 +7,11 @@ This is a working set of docs. Refinement passes follow.
 ## Map
 
 - This doc: the game's overall shape and the synthesis index.
-- `01-construction.md`: the bright world, the cast, the shopkeeper psychology, the tournament structure, the champ, the rally and the count.
+- `01-construction.md`: Construction, the cast, the shopkeeper psychology, the tournament structure, the champ, the rally and the count.
 - `02-cracks-and-break.md`: the wall thinning and the wall coming down.
 - `03-reconstruction.md`: the long arc after the break, the bidirectional carry, the reconciliation mechanic.
 - `04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.
-- `05-postgame.md`: the call, the seashell, what the bright world becomes after.
+- `05-postgame.md`: the call, the seashell, what Construction becomes after.
 
 The earlier narrative pass at `designs/02-alpha/01-world-and-narrative.md` is raw material for these docs. Pieces that work are kept; pieces that do not are reframed or dropped. The picked-up section below names the deltas.
 
@@ -21,13 +21,13 @@ The protagonist holds a racquet. Their stated goal is to beat the world volley r
 
 What the player does not know yet: the world record is a phone number. The shopkeeper's. Every volley counts toward dialling someone the protagonist could reach but won't. The construction is a coping shape; reaching the record means making the call.
 
-The bright world is a construction the protagonist is actively maintaining. It takes energy to keep. The warmth in it is real; the pretense is the rendering. The game is the arc of that pretense thinning, the wall coming down, and the protagonist learning to live without it.
+Construction is what the protagonist actively maintains. It takes energy to keep. The warmth in it is real; the pretense is the rendering. The game is the arc of that pretense thinning, the wall coming down, and the protagonist learning to live without it.
 
 ## The three registers
 
-**Construction.** The bright world. Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
+**Construction.** Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
 
-**Reality.** A complete second register. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
+**Reality.** A complete second register. Visually distinct from Construction: warm and weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
 
 **Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual register; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `03-reconstruction.md`.
 
