@@ -6,7 +6,7 @@ The playable sequence between pre-break and post-break. The player leaves the po
 
 ## Trigger
 
-As the volley count approaches the record, something resists. Not a game mechanic, something external to the game's logic. The ball slows. Not gradually, not like a physics change. Deliberately. Like something is pushing back against the number being reached. The cozy music continues. The UI is still warm. But the ball moves like it's moving through something.
+As the volley count approaches the record, something resists. Not a game mechanic, something external to the game's logic. The ball slows. Not gradually, not like a physics change. Deliberately. Like something is pushing back against the number being reached. The same music continues. The UI is still warm. But the ball moves like it's moving through something.
 
 This is not explained. There is no visual effect, no partner comment, no UI acknowledgement. The resistance is just there.
 

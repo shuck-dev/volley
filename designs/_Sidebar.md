@@ -13,10 +13,22 @@
 **Art**
 - [Art](Art)
 
+**Narrative**
+- [Outline](narrative-outline)
+- [Discipline](narrative-discipline)
+
+**Tech-art**
+- [Tech-art](tech-art)
+
 **Process**
 - [Ticket Writing](process-ticket-writing)
 - [Labels](process-labels)
 
 **Research**
-- [Early Clone Games](research-early-clone-games)
+- [The Case for Open Development](research-the-case-for-open-development)
+- [STYLE](research-STYLE)
 - [Visual Positioning](research-visual-positioning)
+- [Early Clone Games](research-early-clone-games)
+
+**AI**
+- [Swarm Architecture](ai-swarm-architecture)
