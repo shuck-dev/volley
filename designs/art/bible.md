@@ -89,51 +89,37 @@ The depth sits in [`../characters/protagonist.md`](../characters/protagonist.md)
 
 ### The shopkeeper
 
-The friend at the stall. The centre Construction's garden is built around. Behind the counter of a small wooden stall, leaning on their elbows, watching the rally, glad to be there. With them the garden is a place; without them it is a fenced patch of grass with a ball in the air.
+The friend at the stall. Behind the counter of a small wooden stall, leaning on their elbows, watching the rally, glad to be there. The centre Construction's garden is built around.
 
-In Reality this is the person the protagonist has pushed away. The shopkeeper was cliff-jumping with the friend the day the friend died; the protagonist was not there. Two survivors of the same routine, one of them at the edge when it stopped being routine. That asymmetry is the wedge. The shopkeeper carries the memory; the protagonist carries the absence. Talking would mean naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment; as mirror.
-
-This is why the world record is the shopkeeper's phone number. Every rally is the protagonist's almost-reach. Construction's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
-
-The shopkeeper has two renders. Construction: the friend at the stall, grounded and present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past, and on a bench at the cliff. They leave Construction at the break (the shop closes and the family worry about where they have gone); across Reconstruction they exist only in Reality, withdrawn to the cliff and refusing calls; they return at the call, on the right side of the court that used to be the championship spot, as the actual partner rather than the substitute.
+Two renders. Construction: the friend at the stall, grounded and present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past, and on a bench at the cliff.
 
 What holds is the posture in Construction and the weight and absence in Reality. Gender, age, presentation are open for the sketch to settle.
 
+The relationship and the arc sit in [`../characters/shopkeeper.md`](../characters/shopkeeper.md).
+
 ### The sister (the tinkerer)
 
-The shopkeeper's younger sister. In Construction she is the tinkerer behind the workshop bench in the garden: rests, procrastinates, works at her own pace, finished items land on a done tray with a soft chime. Different rhythm from the shopkeeper, different relationship to the protagonist, same family ease. She talks less than the shopkeeper, hands things back when they are done.
-
-In Reality she holds the photo book. She is one of the first reachable people across Reconstruction; sitting with her and the book is the first reconciliation action. She is less weighted by the death than the shopkeeper. The protagonist can sit with her; she is willing to do the work the shopkeeper cannot yet do alongside them. She is the bridge.
+The shopkeeper's younger sister. In Construction she is the tinkerer behind the workshop bench in the garden: rests, procrastinates, works at her own pace, finished items land on a done tray with a soft chime. Different rhythm from the shopkeeper, same family ease.
 
 Two renders, like the shopkeeper. Age, presentation, look stay open; the family resemblance to the shopkeeper is the anchor.
 
+The relationship and the arc sit in [`../characters/sister.md`](../characters/sister.md).
+
 ### Martha and the partners
 
-Each partner is a coach. They train the protagonist in one specific mechanic via the rally; once the protagonist qualifies, the partner takes the other side of the court, and **the round** is the test of what they taught. Master-and-pupil shape. By the championship the protagonist has a stack of techniques, each tied to a person who taught them.
+Each partner is a coach. The visual job is two renders: the coach beside the protagonist on the court (Construction), and the actual person at their actual age, in their actual life (Reality). Martha is the cashier at the newsagent; the Construction version is a more vibrant rendering of someone the protagonist remembers very specifically.
 
-**Martha** is the first partner. A Black woman who was the cashier at the local newsagent in the protagonist's hometown: a small shop on the high street, the kind of shop a person pops into most days. A smile waiting. Chats about nothing: the weather, something in the paper, a thing she saw on telly. A fixture, not a friend exactly, but someone who made the day land a little softer.
+Martha sets the visual bar for the rest. Three more partners arrive in the early game; from then on each new venue brings one.
 
-She comes early because she is one of the lowest-risk memories. No history to untangle, no falling out, no guilt. Reaching for her does not require facing anything heavier yet. The partners later carry more.
-
-Her voice: kind, slightly sharp, particular, British. The kind of person who would tell the truth and then make a cup of tea. She speaks rarely. Her silences are characterisation; not a coach in the speech-making sense, a friend who happens to be on the right side of the court. Working age range 45 to 60.
-
-Three more partners arrive in the early game; from then on each new venue brings one. Beyond Martha, none are drafted yet. The lineage rule names candidates: every partner shares a name with a character from a science-fiction author's work, with a bias toward authors writing outside the dominant tradition. Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. Lineage shapes how each partner carries themselves; it does not need to surface in the game.
-
-Each partner has two renders. Construction: the coach, present, beside the protagonist on the court. Reality: the actual person at their actual age. Martha is the cashier at the newsagent. The Construction version is a more vibrant rendering of someone the protagonist remembers very specifically.
-
-Martha sets the bar for the rest.
+The relationship work, Martha's profile, and the lineage rule sit in [`../characters/partners.md`](../characters/partners.md).
 
 ### The champ
 
-The dead friend. Construction-only; their Reality is the cliff.
-
-The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. The player the protagonist always admired, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. Across Construction they are present-in-absence at the top of the ladder, the spot the protagonist is climbing toward; they appear as the partner only at the final venue, on the right side of the court for the championship match itself.
-
-The friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised thing in the friend group, the kind of thing they did on a hot afternoon and would do again next week, until the day it stopped being routine. The cliff in Reality is the actual cliff. The shopkeeper was there and the protagonist was not, and that arithmetic is the shape the rest of the game is bent around.
-
-The championship match is winnable. The protagonist beats the champ. The win lands wrong, and the win IS the break. The champ exits at the break and does not return; the championship spot stands empty across Reconstruction, and is filled at the call by the shopkeeper.
+The dead friend. Construction-only; their Reality is the cliff. Holds the championship spot at the top of the tournament ladder.
 
 Render them as someone the protagonist loved. Sharp at the championship because the friend was sharp; the doubled meaning of "becoming the champ" sits in their posture across the climb (the title to win, the friend to reach), the same word doing both jobs.
+
+The relationship and the arc sit in [`../characters/champ.md`](../characters/champ.md).
 
 ---
 

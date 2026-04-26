@@ -77,6 +77,10 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | Doc | Purpose |
 |---|---|
 | [Protagonist](characters/protagonist.md) | Who the player is playing as, and what the partners are to them. |
+| [Shopkeeper](characters/shopkeeper.md) | The friend at the stall in Construction; the person the protagonist pushed away in Reality. |
+| [Sister (the tinkerer)](characters/sister.md) | The shopkeeper's younger sister. The bridge across Reconstruction. |
+| [Martha and the partners](characters/partners.md) | Coaches in Construction; people the protagonist knew in Reality. |
+| [Champ](characters/champ.md) | The dead friend, rendered into Construction as the championship final. |
 
 ### Concept
 
