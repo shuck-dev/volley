@@ -1,8 +1,8 @@
 # Volley!
 
-Volley! is a desktop idle game shaped like a tennis rally. The ball goes back and forth between the protagonist and a coach who arrives one round at a time. A counter on the wall climbs. A friend leans on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. Underneath the loop sits a story. The protagonist built **Construction** to keep playing after a friend died cliff-jumping; **Reality** is the hometown they came back to, where the people behind the partners live at their actual ages and one of them, the friend at the stall, has withdrawn. The two worlds stay visually and mechanically distinct. The player learns the bright one is a construct only as the climb cracks open.
+Volley! is a desktop idle game shaped like a tennis rally. The ball goes back and forth between the protagonist and a coach who arrives one round at a time. A counter on the wall climbs. A friend leans on the counter of a small wooden stall on the far side of the play; in another corner of the garden, a tinkerer keeps a workshop. The cast has a history with the protagonist that the rally pulls forward.
 
-The game has to land for both readers. A player who never engages with the narrative should still want the rally running while they work. A player who notices the names, the digits in the count, the weight a pong-shaped game has not earned, gets the second layer. Neither layer punishes the other.
+Underneath the loop sits a story the player meets gradually. Cracks accumulate, a second layer earns its weight by the time the player is ready to read it, and what the rally already gave stays earned. The game has to land for both readers: someone who only ever wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for. Neither reading punishes the other.
 
 This folder is the design thinking behind the game, organised by the people who do the work.
 
