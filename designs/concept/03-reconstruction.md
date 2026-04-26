@@ -1,56 +1,83 @@
 # Reconstruction
 
-The arc. The long phase between the break and the cliff. The wall stays down; the player can travel between Construction and Reality at will. The protagonist is reconstructing their view of the world. High-level architecture in `00-three-styles.md`.
+Part 2. The arc after the break: dread, the search, the photo album, the unnamed number that almost-dials, the key that opens the gate. High-level architecture in `00-three-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the call in `05-postgame.md`.
 
-## What Reconstruction is
+## What Part 2 is
 
-Reconstruction is not a third visual style. The two styles stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) is still gold-hour. Reconstruction is the meta-state in which the player has access to both and can carry across.
+The shopkeeper is missing. The shop is closed. The friend the protagonist was reaching for without admitting it has actually disappeared.
 
-Reconstruction's Construction is missing its warm centre. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. The bright world has been hollowed out where it used to be warmest. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
+The protagonist's belief, and the player's: the shopkeeper followed the friend's path. Did something reckless. Is gone. The unnamed number does not connect, and that no-answer is the player-facing weight of the protagonist's ineffectual reach.
 
-Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the championship; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Three changes mark Reconstruction at the play level:
+The driving force is the search. Not "find the shopkeeper" generically: find out what they did, where they went, whether it is too late. The whole arc is the search-for-confirmation, shadowed by the fear that the confirmation will be terrible.
 
-- **The score is hidden in Construction.** In Construction, the count climbs visibly; the player chases the number. In Reconstruction, the number disappears from the rally. The player rallies without knowing how close they are to the call. The number can still be checked, but only by visiting somewhere in Reality (the sister's, the closed shop, the cliff). The score migrates from Construction to Reality. The player has to leave the rally to know how close they are; that is the exact style-shift Reconstruction wants to feel like.
-- **The champ's dialogue softens gradually.** In Construction, the champ's lines are sharp, pushing, the friend's old habit of not letting the protagonist coast. Across Reconstruction the lines soften beat by beat, until late in the arc the champ sounds like a friend again. The shift is in what gets said and how, not in a stat. The player notices the change through the dialogue alone.
-- **Audio shifts.** The construction's bright synthetic music thins and acoustic instruments arrive, with the balance moving toward fuller arrangement by late Reconstruction. Full direction in SH-281.
+This is the act-2 dread. It runs the length of Reconstruction. It inverts at the cliff (`05-postgame.md`).
 
-## The bidirectional carry
+## Where the work happens
 
-The carry is what Reconstruction enables. Bidirectional and selective. Not anything-and-everything: that would open infinite interactions and demand combinatorial content. Each carry is hand-curated for its narrative function.
+Part 2 lives in both styles. Reality carries the search. Construction holds the rally that surfaces what the search needs.
 
-- **Constructs into Reality.** Specific Construction items, characters, or memories can be brought into Reality and used in specific reconciliation scenes. The construction is what the protagonist built to keep going; in Reconstruction, the things they built turn out to be useful in the world they were avoiding. Which constructs are carry-able and which are not is a narrative decision per content beat, not an open mechanic.
-- **Reality into Construction.** Specific real-world acknowledgements feed back into the rally. New venues unlock; coaches gain new lines; the bright world acknowledges what it had been hiding from. Hints for Reality's next reconciliation surface in Construction. Same gate: which acknowledgements bridge back is a curated narrative call.
+Construction in Part 2 is missing its warm centre. The shopkeeper has left the stall; the shop is closed in Reality and unstaffed in Construction. The protagonist rallies on without them. The bright world has been hollowed out where it used to be warmest.
 
-The visual signal of Reconstruction is the act of crossing, plus the persistent presence of one style's elements when the player is in the other. The bridge itself is the new affordance.
+Construction must also feel different to play, not only look hollowed. Three play-level changes mark Part 2:
 
-As the carry accumulates, the bright world ages with the player. Saturation drops a notch; line weight thickens; compositions hold longer pauses. The construction does not visually rebuild; it weathers.
+- **The score is hidden in Construction.** The count climbed visibly through Part 1; in Part 2 the number disappears from the rally HUD. The player rallies without seeing how the digits are filling. The number can be checked, but only in Reality (the sister's, the closed shop, the cliff once unlocked). The score migrates from Construction to Reality. Leaving the rally to know how close they are is the exact style-shift Part 2 wants to feel like.
+- **Coaches' lines reach back.** Each coach who keeps showing up in Construction carries memories of the shopkeeper into the rally between points. Their lines soften, lengthen, surface what they remember. The shift is in dialogue, not in stat.
+- **Audio shifts.** Construction's bright synthetic music thins; acoustic instruments arrive; the balance moves toward fuller arrangement by late Part 2. Full direction in SH-281.
 
-## Reconciliation
+## The photo album
 
-Reconciliation is what the player DOES inside Reconstruction. It is the mechanic that takes the player from the break to the call.
+The album is the spine of Part 2.
 
-The mechanic is the photo book. The sister has the book, but not all of the photos. Some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo found is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned to the book completes a part of the protagonist's history that the shopkeeper kept and the protagonist could not.
+The sister has the album. It is half-filled. There is a hidden compartment at the back that does not open until enough pages are filled.
 
-The full mechanic and the photo arc live in Reality (`04-reality.md`). Reconstruction is the arc-shape; the photo book is the verb.
+Each rally in Construction surfaces a memory. Each memory becomes a photo, or unlocks one already in the album. Each photo points to a place in Reality the shopkeeper might be, or left a trace of. Coaches share their own memories of the shopkeeper as the protagonist rallies with them. The volley is the search done sideways.
 
-Each found photo compounds: the wall thins; the champ's dialogue softens; new venues unlock; the bright world ages. The cumulative effect is the protagonist getting closer to the cliff (where the last photo lives), closer to the champ becoming a partner, closer to the call.
+The found photos compound. Pages fill. The hidden compartment gets closer to opening. The search closes in.
 
-By the end of Reconstruction, the protagonist has reconciled the event and reconstructed their view. The two land together.
+The photo album mechanic is the protagonist saying: someone has been keeping this. The shopkeeper kept the history because the protagonist could not. The sister holds the album because she is not entangled in the absence the way the shopkeeper is.
 
-## The cliff
+## The sister
 
-Late in Reconstruction, the protagonist visits the cliff where the friend died. The cliff is a Reality place; full description in `04-reality.md`. Structurally: it is the chosen-acceptance bookend to the break (forced acceptance) and the location of the last scattered photo. After the visit, the champ shifts from wall to partner; the path to the call opens.
+Less weighted by the death than the shopkeeper. The bridge. She holds the album and the protagonist's first reachable Reality character after the break.
+
+Sitting with her and turning the pages of what is there is the first reconciliation moment. After that, the protagonist goes to find the rest. She receives each found photo. She mentions things in passing as the album fills: an area code she half-remembers, the way her brother used to leave the shop door, what was on the radio that morning.
+
+She is the most-visited Reality character. Her scene supports many returns.
+
+## The unnamed number deepens
+
+Across Part 2 the recognition surfaces in Reality. The digits start showing up in places the protagonist visits. Written on the back of a found photo. Etched on the closed shop's sign. Scrawled on a workbench in the workshop. A coach absent-mindedly says a couple of digits while rallying. The sister mentions an area code.
+
+By late Part 2, the protagonist knows the unnamed contact is the shopkeeper. The number is whole in their head from all the recovered fragments, even as it sits unlabelled in the phone.
+
+### Almost-dials
+
+The player can dial the unnamed number any time. It does not connect. The shopkeeper has withdrawn and is not picking up.
+
+The protagonist almost-dials in specific reconciliation beats: takes the phone out after a heavy photo find, hand-to-pocket after a coach's memory, a draft message left open and never sent, a voicemail attempt that hangs up before saying anything. Each almost-dial is the player-facing weight of the reach without contact.
+
+These almost-dial moments are authored beats threaded through the search, not a uniform mechanic. The phone control stays with the player throughout; the almost-dials are what the protagonist does on their own.
+
+## The key, the gate
+
+The album fills. The hidden compartment opens. The key is inside.
+
+The sister hands it over.
+
+The protagonist returns to the first venue, the garden, with the key in hand. The locked gate at the back of the garden is the one locked gate in the whole game. They walk to it. They unlock it. They walk through to Reality.
+
+The cliff is on the other side. What happens there lives in `05-postgame.md`.
 
 ## Open questions
 
-- **Photo count.** How many scattered photos across Reconstruction? Idle pacing argues 4–6; narrative arc argues 5–7. The answer affects content scope and pacing.
-- **Per-photo scene shape.** Each found photo is a hand-crafted scene. Variety across them: a place to visit, a person to ask, an item to find, a moment to witness. Mix and pacing are open.
-- **Bridge unlock signal.** Reconstruction begins immediately after the break. What does the player see/feel that marks the bridge as available? A UI affordance? A character moment? A shift in the music?
-- **Cliff trigger.** The cliff carries the last photo. Does the cliff unlock when N other photos are found, when a specific photo is found, or via a different gate?
-- **Visual language of the carry.** When the player carries a construct into Reality, what does that look like on screen? An item icon that persists? A character who walks alongside? A note that surfaces in dialogue? Affects the tech-context and the artist's job.
+- **Photo count.** How many photos across Part 2? Idle pacing argues four to six; narrative arc argues five to seven. Affects content scope and pacing.
+- **Per-photo scene shape.** Each found photo is a hand-crafted Reality scene. Variety: a place to visit, a person to ask, an item to find, a moment to witness. Mix and pacing are open.
+- **How recognition surfaces in Construction without breaking the no-concrete-leakage rule.** The number fragments belong in Reality; Construction holds the rally and the coaches' memories. The cracks-style discipline still applies in Part 2.
+- **Cliff-trigger gate.** The hidden compartment opens when the album fills enough. What counts as enough: photo count, specific photo, or a different gate?
+- **Bridge unlock signal.** What does the player see or feel that marks the bridge between Construction and Reality as available, after the break?
 
 ## Production notes
 
-- The photo book and the scattered-photo mechanic are the spine of Reconstruction. SH-279 (tech spike on reality gameplay) absorbs the tooling.
-- Each reconciliation action is a hand-crafted Reality scene. Photo count = scene count. Bound the scope at SH-275 venue scope and Reconstruction length together.
-- The carry's selectivity is a production discipline, not just a narrative one: each carry-able is one entry in a curated list, not an open category.
+- The photo album and the scattered-photos mechanic are the spine of Part 2. SH-279 (tech spike on Reality gameplay) absorbs the tooling.
+- Each found photo is a hand-crafted Reality scene. Photo count equals scene count. Bound the scope at SH-275 venue scope and Part 2 length together.
+- The cast doubles in Part 2 (each cross-style character with a Reality-side asset). Worth bounding the partner count early.

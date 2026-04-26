@@ -1,64 +1,58 @@
 # Reality
 
-The second style. Visually distinct from Construction, mechanically a different game, story-driven. The protagonist's hometown, geographically static, with content added across Reconstruction. Reachable only voluntarily once Reconstruction begins (`03-reconstruction.md`).
+The second style. Reality as a register: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-three-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
 
 ## The place
 
-Reality is one place: the protagonist's hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours, the palette of Tenby and Aberaeron: pinks, yellows, sea-greens, sky-blues. Whitewashed walls. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Faded grandeur with sun on it. Ordinary, lived-in.
+Reality is one place: the protagonist's hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours, the palette of Tenby and Aberaeron: pinks, yellows, sea-greens, sky-blues. Whitewashed walls. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Faded grandeur with sun on it. Ordinary, lived-in. Pulls from real reference points; sits on no map.
 
-The place is geographically static. The map does not grow; the town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Reconstruction, things are added: people the player can meet, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
+The map is geographically static. The hometown does not grow; the town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Part 2, things are added: people who become reachable, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
 
-## Tone and texture
+## Visual register
 
-Reality's tone is gold-hour, weighted, story-driven. Characters at their real ages. Less vibrant, less full, deliberately unconstructed. Spiritfarer, Lake, Omori's Faraway Town are the tonal touchstones. Loss is acknowledged; the prose breathes; the rally is not the engine here. The pull of Reality is its honesty; the player ends up wanting it.
+Gold-hour. Weighted. Plainer than Construction. The light is slant afternoon rather than full midday; the shadows lengthen; the air carries dust. Saturation drops a notch from Construction; line weight thickens; compositions hold longer pauses.
 
-## The puzzle shape
+Characters are at their actual ages. Less vibrant, less full, deliberately unconstructed. The Six Marks still apply (per the artist world bible's section B); their expression here is plainer warmth, specific detail without gleam, breathing posture without performance.
 
-Reality is interaction-driven, not rally-driven. The player walks into a scene, does small attentive things, leaves. Specific puzzle mechanics (interaction surfaces, scene state, dialogue layering) are downstream game-design work and live in SH-279. The structure-level commit here is: it is not pong; it is not inventory recombination; it is being present in a room and finding what wants to happen.
+The pull of Reality is its honesty. The player ends up wanting it.
+
+Touchstones: Spiritfarer's quieter moments, Lake, Omori's Faraway Town. Loss is acknowledged; the prose breathes; the rally is not the engine here.
+
+## Audio register
+
+Reality is acoustic. Bustle, wind instruments, rooms with people in them. Where Construction is bright synthetic music with a melodic chip-tone heritage, Reality is the air outside that synth.
+
+Across Part 2, the two styles converse in the soundtrack: synth and acoustic in tension, the weight moving toward fuller arrangement by late Part 2. At the cliff, the music thins. At the credits, full orchestra reaches for both wonder and weight. Synthesis. Full direction in SH-281.
+
+## The shape of a scene
+
+Reality is interaction-driven, not rally-driven. The player walks into a scene, does small attentive things, leaves. Each scene is hand-crafted: layered state, contextual interactions, dialogue, descriptive prose, the present-and-attentive puzzle shape.
+
+The structure-level commit: not pong; not inventory recombination; being present in a room and finding what wants to happen. Specific puzzle mechanics (interaction surfaces, scene state, dialogue layering) are downstream game-design work and live in SH-279.
+
+Scenes are gated by photos. Each found photo opens a Reality scene; finding the photo and the corresponding scene compounds the trail. The mechanic itself is in `03-reconstruction.md`; what matters here is the register: scenes are hand-built, return-supporting, layered with state across visits.
 
 ## The cast in Reality
 
-Reality holds the real-world version of every cross-style character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Reconstruction.
+Reality holds the real-world version of every cross-style character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Part 2.
 
-- **The sister**: the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo book (see below). One of the first reachable people in Reality.
-- **Martha and the partners (in Reality)**: the cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
-- **The shopkeeper**: present in Reality from the break onward. Not approachable directly until late in Reconstruction; reachable through the sister and the photo-book arc, then through the call (`05-postgame.md`).
-- **The protagonist**: Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
+**The sister.** The tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo album. The bridge. One of the first reachable people in Reality. Detail in `03-reconstruction.md`.
 
-## The photo book and the scattered photos
+**Martha and the partners.** The cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
 
-The sister has the photo book, but not all of the photos. Some are still inside; some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere, taped to the back of an old radio in the workshop. The book is incomplete by design.
+**The shopkeeper.** Present in Reality from the break onward. Not approachable directly until the cliff. The almost-dial mechanic with the unnamed number is the player-facing weight of their absence; detail in `03-reconstruction.md`. The cliff meeting and the call are in `05-postgame.md`.
 
-The photo book IS the reconciliation mechanic. Sitting with the sister and turning the pages of what she has is the first reconciliation moment. After that, the protagonist goes to find the rest. Each scattered photo is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned to the book completes a part of the protagonist's history that the shopkeeper kept and the protagonist could not.
+**The protagonist.** Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
 
-Once the book fills, the path to the shopkeeper opens. The book is the spine of Reconstruction; the photos are the beats. The sister is where the work begins; the cliff is where the last photo lives.
+The champ is Construction-only. No Reality counterpart. Their reality is the cliff (`05-postgame.md`).
 
-The shopkeeper kept the history because the protagonist could not. The sister holds the book because she is not entangled in the absence the way the shopkeeper is. Each found photo is the protagonist saying: someone has been keeping this. I am here for it now.
+## Period
 
-## The cliff
-
-A separate place from the hometown. The cliff where the friend died.
-
-The cliff is the structural opposite of the break (`02-cracks-and-break.md`). The break is forced acceptance of Reality (the wall comes down on you). The cliff is chosen acceptance of the absence (you walk to where you should have been). The two are bookends.
-
-The shopkeeper was at the cliff when it happened. The protagonist was not. The visit closes that absence by chosen presence. The last scattered photo is here.
-
-After the cliff visit, the champ's pushiness softens. They become a partner the player can rally with in the construction. The path to the call opens through the final reconciliation actions.
-
-## Score-checking surfaces
-
-Per `03-reconstruction.md`, the score is hidden in Construction during Reconstruction. The number can be checked, but only in Reality, at specific surfaces:
-
-- The sister's place: she may glance at her phone, mention what she remembers of the day's number, or have a small note pinned somewhere.
-- The closed shop: the door has the closing-time hours written on it; somewhere the number lives in plain sight if you know to look.
-- The cliff: once unlocked, the cliff carries the count too, though the form is downstream design.
-
-The specific surfaces are open; what matters here is the structural commitment that the score lives in Reality, not on the rally HUD.
+Late 90s or early 2000s as a tonal range. Pre-smartphone. Phones flip or candy-bar or land-line. Numbers held in heads or written on paper, not auto-named in pocket databases. Period-appropriate clothes, signage, phone hardware, photo prints. The unnamed-number mechanic depends on the period.
 
 ## Production notes
 
-- Reality is finite hand-crafted content. The hometown is built once with iterative additions across Reconstruction.
-- The sister is the most-visited Reality character (she holds the photo book). Her scene supports many returns.
-- The scattered-photos mechanic gates the protagonist's progress. Each photo is a hand-crafted reconciliation scene.
-- The cliff is a separate location built once. Used at the chosen-acceptance moment and reused as the seashell's destination in postgame.
+- Reality is finite hand-crafted content. The hometown is built once with iterative additions across Part 2.
+- The sister is the most-visited Reality character (she holds the photo album). Her scene supports many returns.
+- The cliff is a separate location built once. Used at the chosen-acceptance moment and re-enterable through the unlocked gate after the call (`05-postgame.md`).
 - Specific Reality tooling (interaction surfaces, scene state, dialogue, navigation) belongs to SH-279.
