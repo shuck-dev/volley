@@ -1,7 +1,5 @@
 # The protagonist
 
-The person whose game this is. Mid-30s, androgynous, agender, a little softer than they once were. They picked up a racquet a long time ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
-
 This document is the starting point of the main-character profile. It carries what is canon now and the interior layer artists, animators, and writers need to hold them without flattening them. It will grow.
 
 ---
