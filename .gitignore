@@ -52,8 +52,9 @@ ai/swarm/tasks/
 ai/swarm/inbox/
 ai/swarm/_bootstrap.md
 
-# Injection-guard hook log: ephemeral local record of WebSearch/WebFetch matches.
-ai/scratchpads/injection-guard.log
+# Scratchpads: ephemeral working state; per-session notes, research dumps,
+# the injection-guard hook log. Not committed.
+ai/scratchpads/
 
 # OS junk
 .DS_Store
