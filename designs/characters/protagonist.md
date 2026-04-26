@@ -8,7 +8,7 @@ This document is the starting point of the main-character profile. It carries wh
 
 ## The basic
 
-Androgynous, agender, mid-30s. Less athletic than they used to be. The body has settled into a shape that still knows the game but no longer chases it: a slight rounding at the shoulders, a slight ease in the hips, weight a touch lower than the racquet's old line wanted it. Gentle with themselves; gentle in posture. They stand the way someone stands who has nothing to prove to the room.
+Androgynous, agender, mid-30s. Less athletic than they used to be. The body has settled into a shape that still knows the game but no longer chases it. They stand the way someone stands who has nothing to prove to the room.
 
 The racquet has been in their hand for years. It is the constant that equipment hangs off; it is also the constant they hang off. The grip is worn where their grip is. They hold it without thinking about holding it.
 
