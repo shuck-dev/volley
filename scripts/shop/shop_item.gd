@@ -22,6 +22,8 @@ var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
 var _last_input_frame: int = -1
+## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
+var _mouse_button_down: bool = false
 
 
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
@@ -79,20 +81,25 @@ func _process(_delta: float) -> void:
 	if _held_token == null:
 		return
 	_held_token.global_position = _cursor_position()
+	# SH-287: when mouse is up, poll for a valid commit position so the gesture ends the moment one is reachable.
+	if not _mouse_button_down:
+		attempt_release(_cursor_position())
 
 
 # Release handled here so a fast drag that outruns the area still ends the drag.
 func _input(event: InputEvent) -> void:
-	if _held_token == null:
-		return
 	if not (event is InputEventMouseButton):
 		return
 	var mouse_button: InputEventMouseButton = event
-	if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
-		# Use the event's own position so canvas transforms don't break the inside-shop hit-test.
-		var canvas_transform: Transform2D = get_canvas_transform()
-		var release_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
-		attempt_release(release_position)
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+		return
+	_mouse_button_down = mouse_button.pressed
+	if mouse_button.pressed or _held_token == null:
+		return
+	# Use the event's own position so canvas transforms don't break the inside-shop hit-test.
+	var canvas_transform: Transform2D = get_canvas_transform()
+	var release_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
+	attempt_release(release_position)
 
 
 func _build_art() -> void:
@@ -135,28 +142,40 @@ func start_drag() -> bool:
 	return true
 
 
-## Test seam / production entry. Outside shop bounds purchases; inside cancels.
+## Test seam / production entry. Returns true on commit (held token freed, gesture ends);
+## false on no valid target (held token stays following the cursor, gesture continues).
+## Inside-shop bounds is itself a valid target: cancels back to the slot. Outside-shop only
+## commits when the purchase succeeds; insufficient FP keeps the gesture open.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
-	var token: Node2D = _held_token
-	_held_token = null
-	token.queue_free()
-
-	var purchased: bool = false
 	var inside_shop: bool = _is_position_inside_shop(release_position)
-	if not inside_shop:
-		purchased = _complete_purchase()
+	if inside_shop:
+		# Cancel: held token freed, slot visible again, no purchase.
+		_finalise_gesture(release_position, false)
+		visible = true
+		return true
 
-	visible = inside_shop or is_owned() == false
-	# Items that purchase successfully leave the shop pool; the shop will despawn them
-	# on the next refresh. Until then, hide them so they don't sit visible on the table.
-	if purchased:
-		visible = false
+	# Outside shop: only commit if the purchase succeeds.
+	var purchased: bool = _complete_purchase()
+	if not purchased:
+		# Insufficient FP (or otherwise un-takeable). No snap-back; gesture stays open.
+		# Held token continues to follow the cursor; the player can drag back into the shop
+		# bounds to cancel, or get more FP and try again.
+		return false
 
-	drop_completed.emit(item_definition.key, release_position, purchased)
+	# Purchased: held token freed, slot stays hidden until the next shop refresh sweeps it.
+	_finalise_gesture(release_position, true)
+	visible = false
 	return true
+
+
+func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
+	if _held_token != null:
+		_held_token.queue_free()
+	_held_token = null
+	drop_completed.emit(item_definition.key, release_position, purchased)
 
 
 func _start_drag() -> void:
@@ -178,6 +197,7 @@ func _start_drag() -> void:
 	_held_token = token
 	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
+	_mouse_button_down = true
 	pickup_started.emit(item_definition.key)
 
 
