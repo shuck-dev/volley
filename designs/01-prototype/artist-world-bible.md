@@ -79,7 +79,7 @@ Mid-30s, androgynous, agender, less athletic than they used to be. They picked u
 
 Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
-The depth sits in `designs/characters/protagonist.md`: the interior layer, what they carry and what they resist. The bible names the body and the role; the profile holds the person.
+The depth sits in `designs/characters/protagonist.md`: the interior layer, the weight they carry and the pull they live alongside. The bible names the body and the role; the profile holds the person.
 
 ### The shopkeeper
 
