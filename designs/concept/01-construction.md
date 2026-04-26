@@ -1,6 +1,6 @@
 # Construction
 
-Part 1. The vibrant world the protagonist is actively maintaining, the tournament shape the climb takes, and the rally that drives it. High-level architecture lives in `00-three-styles.md`; the cracks and the win that breaks Construction live in `02-cracks-and-break.md`.
+Part 1. The vibrant world the protagonist is actively maintaining, the tournament shape the climb takes, and the rally that drives it. High-level architecture lives in `00-two-styles.md`; the cracks and the win that breaks Construction live in `02-cracks-and-break.md`.
 
 ## What Construction is
 

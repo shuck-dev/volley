@@ -80,7 +80,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 ### Concept
 
-The concept folder runs from [00-three-styles](concept/00-three-styles.md) through [05-postgame](concept/05-postgame.md). Earliest framing of the two-style world, the rally, the partners, the break, the reconstruction, and what the game looks like once the credits have rolled.
+The concept folder runs from [00-two-styles](concept/00-two-styles.md) through [05-postgame](concept/05-postgame.md). Earliest framing of the two-style world, the rally, the partners, the break, the reconstruction, and what the game looks like once the credits have rolled.
 
 ### AI
 

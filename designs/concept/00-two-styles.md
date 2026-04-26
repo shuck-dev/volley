@@ -1,12 +1,12 @@
-# The Three Styles
+# The Two Styles
 
-The high-level architecture of Volley as a game. This doc carries the shape and how the three styles relate; per-arc docs in this folder carry the detail.
+The high-level architecture of Volley as a game. This doc carries the shape and how the two styles relate; per-arc docs in this folder carry the detail.
 
 This is a working set of docs. Refinement passes follow.
 
 ## Map
 
-- This doc: the game's overall shape and how the three styles fit together.
+- This doc: the game's overall shape and how the two styles fit together.
 - `01-construction.md`: Part 1. The vibrant world, the tournament, the cast, the rally, the count.
 - `02-cracks-and-break.md`: cracks across Part 1, the championship win that lands wrong, the involuntary walk through the hometown.
 - `03-reconstruction.md`: Part 2. Dread, the photo album, the sister, the unnamed number, the search.

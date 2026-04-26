@@ -1,6 +1,6 @@
 # Reality
 
-The second style. Reality as a register: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-three-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
+The second style. Reality as a register: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-two-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
 
 ## The place
 
