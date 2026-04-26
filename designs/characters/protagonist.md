@@ -8,7 +8,7 @@ When this document and the bible disagree, the bible is canon for the world and 
 
 ## Who they are
 
-Androgynous, agender, mid-30s. Less athletic than they used to be. The body has settled into a shape that still knows the game but no longer chases it. They stand the way someone stands who has nothing to prove to the room.
+Androgynous, agender, mid-30s. Their body still knows the game; the chasing is over. Stands the way someone stands who has nothing to prove to the room.
 
 The racquet has been in their hand for years. It is the constant that equipment hangs off; it is also the constant they hang off. The grip is worn where their grip is. They hold it without thinking about holding it.
 
