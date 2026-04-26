@@ -53,9 +53,9 @@ The garden in Construction draws from this geography. Construction's other venue
 
 Construction and Reality are distinct worlds. Two styles, two visual treatments, two ways the player engages.
 
-**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present and helping, bodies at ease in motion. Volleyball lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
+**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Volleyball lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
 
-**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; the air has weather. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in `designs/concept/04-reality.md`.
+**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in `designs/concept/04-reality.md`.
 
 The garden is the meeting point. It is the one Construction venue grounded in the protagonist's actual hometown geography, built from their memory of the real garden. The constructed garden and the real garden remain separate places; the venue is the seam. Other Construction venues are purely fantastic. The garden's "out of place out of time" feel comes from being the venue grounded in a real place still standing.
 
@@ -67,11 +67,11 @@ There is one locked gate in the entire game. It sits at the back of the garden i
 
 ## 4. The cast
 
-Everyone in this game is real. The Construction cast is the real-world cast rendered young, vibrant, helping. The supporting cast are people from the protagonist's life. The exception is the champ.
+Everyone in this game is real. The Construction cast is the real-world cast rendered young, vibrant, present. The supporting cast are people from the protagonist's life. The exception is the champ.
 
-Anyone who appears in both worlds has two renders: a Construction-render, young, vibrant, helping, and a Reality-render at their actual age, in their actual life, plainer. Same character, different style.
+Anyone who appears in both worlds has two renders: a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life, plainer. Same character, different style.
 
-Each round of the tournament happens in a shared themed space, with the coach now on the opposite side of the court. Partner renders need to land in both positions: the coach beside the protagonist, helping, and the same person across the court, the same warmth, in **the round**. One person, one role with two faces.
+Each round of the tournament happens in a shared themed space, with the coach now on the opposite side of the court. Partner renders need to land in both positions: the coach beside the protagonist, partnered, and the same person across the court, the same warmth, in **the round**. One person, one role with two faces.
 
 ### The protagonist
 
@@ -113,7 +113,7 @@ Her voice: warm, slightly sharp, particular, British. The kind of person who wou
 
 Three more partners arrive in the early game; from then on each new venue brings one. Beyond Martha, none are drafted yet. The lineage rule names candidates: every partner shares a name with a character from a science-fiction author's work, with a bias toward authors writing outside the dominant tradition. Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. Lineage shapes how each partner carries themselves; it does not need to surface in the game.
 
-Each partner has two renders. Construction: the coach, present, helping, beside the protagonist on the court. Reality: the actual person at their actual age. Martha is the cashier at the newsagent. The Construction version is a brighter rendering of someone the protagonist remembers very specifically.
+Each partner has two renders. Construction: the coach, present, beside the protagonist on the court. Reality: the actual person at their actual age. Martha is the cashier at the newsagent. The Construction version is a brighter rendering of someone the protagonist remembers very specifically.
 
 Martha sets the bar for the rest.
 
@@ -133,7 +133,7 @@ Render them as someone the protagonist loved. Sharp at the championship because 
 
 ## 5. Part 1: Construction
 
-Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present and helping, bodies at ease in motion. The garden in late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
+Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present, bodies at ease in motion. The garden in late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
 
 The protagonist is actively maintaining Construction; volleyball lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
 
@@ -434,7 +434,7 @@ Where the bible or the brief feels actively wrong or contradictory, the canon mo
 
 The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
 
-- **Construction.** The bright style. Saturated, warm, helping. Where volleyball lives. Section 5.
+- **Construction.** The bright style. Saturated, warm, generous. Where volleyball lives. Section 5.
 - **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section 3 (overview), threaded through Parts 1 and 2.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
@@ -454,4 +454,4 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section 8.
 - **The spirit of the volley.** The protagonist's fighting spirit and their bond with each partner. Anything in the rally that bends physics is the spirit acting on the world. Section 12.
 - **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section 11.
-- **Two renders.** Each cross-style character has a Construction-render, young, vibrant, helping, and a Reality-render at their actual age, in their actual life. Section 4.
+- **Two renders.** Each cross-style character has a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life. Section 4.
