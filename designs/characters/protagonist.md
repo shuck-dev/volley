@@ -42,7 +42,7 @@ Hold this as quiet weight in how they treat the climb: not triumph, not desperat
 
 The doubled pull is what makes the championship win land the way it does. Both meanings are satisfied at the same beat and neither was the thing the protagonist actually needed. The win is the break. The construct cannot hold itself together once its central goal has been reached and proved meaningless.
 
-At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar. The number has been sitting in their phone the whole game. The recognition does not quite land yet.
+At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar. The number has been sitting in their phone the whole game. The connection does not form. The digits stay digits.
 
 ---
 
@@ -50,11 +50,9 @@ At the win the count completes; the digits land; the protagonist sees them, and 
 
 Reconstruction runs on dread. The shopkeeper went missing at the break and the protagonist has been afraid the friend's path has been followed. The driving force is the search for what happened, where they have gone, whether it is too late. The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
 
-The phone is theirs to hold the whole game. The shopkeeper's number sits in the call log or the contacts list, unnamed: deleted, never saved, or held by the device as digits without labels. They scroll past it sometimes. They know whose it is and they do not know whose it is, in the way a person can hold a thing in two halves at once.
+The phone is theirs to hold the whole game. A number sits in the call log or the contacts list, unnamed: deleted, never saved, or held by the device as digits without labels. They scroll past it sometimes. They carry it without naming it.
 
-The player has the phone throughout. They can dial the unnamed number from Construction onward. It never connects. The shopkeeper has withdrawn and is not picking up. The unanswered ring is the player-facing weight of the protagonist's reach without contact.
-
-Across Reconstruction the digits surface in Reality where they should not be: written on the back of a found photo, etched on the closed shop's sign, scrawled in the workshop, half-spoken by a coach mid-rally, mentioned by the sister as an area code. Each fragment tightens the recognition. By late Reconstruction the protagonist knows whose it is. The almost-dial recurs across the arc: hand-to-pocket after a coach's memory, the phone out after a heavy photo find, a draft message left open and never sent, a voicemail attempt that hangs up before saying anything. None connect.
+The player has the phone throughout. They can dial the unnamed number from Construction onward. It never connects. The unanswered ring is the player-facing weight of the protagonist's reach without contact. The protagonist does not know whose number it is. The number stays unnamed across Reconstruction, dialable, never picked up. The reveal is held until the cliff.
 
 The album fills as the protagonist works. The shopkeeper's younger sister has held the half-filled book the whole time; finding the scattered photos is the protagonist's work. When it fills enough the hidden compartment opens. The key is inside. The sister hands it to them.
 
@@ -84,9 +82,11 @@ The protagonist returns to the garden with the key from the album. They walk to 
 
 A bench sits at the cliff edge, dedicated to the friend who died. The shopkeeper is on the bench, alive. The dread inverts to relief. The fear was wrong; they are still here, withdrawn, refusing calls, but here.
 
-The bench is a few steps away. The protagonist could close that distance silently. They do not. They take out their phone and dial the unnamed number, the digits whole in their head now from all the surfaced fragments. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+Recognition lands. The unnamed number in the phone, the world record they reached, the digits the championship match resolved on, the person on the bench: all the same number, held unnamed all along, only now legible. The connection forms in the seeing.
 
-The dial bridges intention, not space. Chosen presence rather than a closing of distance. Two acts at once: choosing to reach, and finally attaching the name to the number that has been sitting unnamed in the protagonist's phone the whole game. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game.
+The bench is a few steps away. The protagonist could close that distance silently. They do not. They take out their phone and dial the number, knowing now whose it is. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+
+The dial bridges intention, not space. Chosen presence rather than a closing of distance. Two acts at once: choosing to reach, and finally attaching the name to the number that has sat unnamed in the protagonist's phone the whole game. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game.
 
 The call ends. The protagonist crosses, sits beside the shopkeeper on the bench. Credits roll over the rally that follows: the protagonist on the left, the shopkeeper on the right, the championship spot held by the actual person at last. The daily thing the protagonist did alone is finally done together.
 
