@@ -27,7 +27,7 @@ The bright world is a construction the protagonist is actively maintaining. It t
 
 **Construction.** The bright world. Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
 
-**Reality.** A complete second register. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `03-reconstruction.md` (where Reality first becomes voluntarily accessible).
+**Reality.** A complete second register. Visually distinct from Construction: gold-hour, weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
 
 **Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual register; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `03-reconstruction.md`.
 
@@ -79,8 +79,8 @@ Strong keeps from `designs/02-alpha/01-world-and-narrative.md`:
 Reframings:
 
 - The shopkeeper's role in the death has shifted from "tried to help after" to "involved but not responsible." Something else caused it; the shopkeeper was present, entangled, a daily reminder of the failure. This sharpens why the protagonist blocks them out and why the call is hard.
-- The in Reconstruction mechanic in the prior doc was badge activation (slotting narrative items into milestone badges). The new architecture replaces this with the bidirectional carry. Badge activation may persist as one expression of the carry inside Construction, or be dropped entirely. SH-279 will decide.
-- The narrative doc framed in Reconstruction as a single arc through denial-to-acceptance. The new architecture splits it into Reconstruction (the arc) and Reconciliation (the actions inside it).
+- The post-break mechanic in the prior doc was badge activation (slotting narrative items into milestone badges). The new architecture replaces this with the bidirectional carry. Badge activation may persist as one expression of the carry inside Construction, or be dropped entirely. SH-279 will decide.
+- The narrative doc framed the post-break phase as a single arc through denial-to-acceptance. The new architecture splits it into Reconstruction (the arc) and Reconciliation (the actions inside it).
 
 ## Open questions (synthesis index)
 

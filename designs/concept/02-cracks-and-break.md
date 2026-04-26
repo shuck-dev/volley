@@ -26,7 +26,7 @@ The break is the wall coming down. Spec Ops is the structural exemplar: cumulati
 
 The break's mechanical signature: the player is pulled into Reality involuntarily for the first time. The dip is forced. They walk through the protagonist's hometown. They see the people behind the partners. Martha is the cashier at the actual newsagent. The cliff is somewhere in this geography but not yet visited.
 
-The shopkeeper is not there in the break walk. Some excuse — the shop has a sign on the door (closing hours, "back later", a notice about something), the lights are off, the door is locked. The shopkeeper's face-to-face is held back for the call (`05-postgame.md`). The break shows the player Reality but not the conversation that lives at its centre.
+The shopkeeper is not there in the break walk. Some excuse: the shop has a sign on the door (closing hours, "back later", a notice about something), the lights are off, the door is locked. The shopkeeper's face-to-face is held back for the call (`05-postgame.md`). The break shows the player Reality but not the conversation that lives at its centre.
 
 The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its warm centre: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`03-reconstruction.md`).
 

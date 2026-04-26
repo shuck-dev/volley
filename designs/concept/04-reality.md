@@ -20,10 +20,10 @@ Reality is interaction-driven, not rally-driven. The player walks into a scene, 
 
 Reality holds the real-world version of every cross-register character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Reconstruction.
 
-- **The sister** — the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo book (see below). One of the first reachable people in Reality.
-- **Martha and the partners (in Reality)** — the cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
-- **The shopkeeper** — present in Reality from the break onward. Not approachable directly until late in Reconstruction; reachable through the sister and the photo-book arc, then through the call (`05-postgame.md`).
-- **The protagonist** — Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
+- **The sister**: the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo book (see below). One of the first reachable people in Reality.
+- **Martha and the partners (in Reality)**: the cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
+- **The shopkeeper**: present in Reality from the break onward. Not approachable directly until late in Reconstruction; reachable through the sister and the photo-book arc, then through the call (`05-postgame.md`).
+- **The protagonist**: Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
 
 ## The photo book and the scattered photos
 
@@ -49,9 +49,9 @@ After the cliff visit, the champ's pushiness softens. They become a partner the 
 
 Per `03-reconstruction.md`, the score is hidden in Construction during Reconstruction. The number can be checked, but only in Reality, at specific surfaces:
 
-- The sister's place — she may glance at her phone, mention what she remembers of the day's number, or have a small note pinned somewhere.
-- The closed shop — the door has the closing-time hours written on it; somewhere the number lives in plain sight if you know to look.
-- The cliff — once unlocked, the cliff carries the count too, though the form is downstream design.
+- The sister's place: she may glance at her phone, mention what she remembers of the day's number, or have a small note pinned somewhere.
+- The closed shop: the door has the closing-time hours written on it; somewhere the number lives in plain sight if you know to look.
+- The cliff: once unlocked, the cliff carries the count too, though the form is downstream design.
 
 The specific surfaces are open; what matters here is the structural commitment that the score lives in Reality, not on the rally HUD.
 

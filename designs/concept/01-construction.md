@@ -19,11 +19,11 @@ The cast splits into two groups. The supporting cast are real people from the pr
 - **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
 - **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into the bright world as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
-- **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`03-reconstruction.md`).
+- **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`04-reality.md`).
 
 ### Opposing cast
 
-- **The champ.** The dead friend. The championship final. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. No real-world counterpart in person; their reality is the cliff (`03-reconstruction.md`).
+- **The champ.** The dead friend. The championship final. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. No real-world counterpart in person; their reality is the cliff (`04-reality.md`).
 
 ## Why the shopkeeper is at the stall
 
@@ -87,7 +87,7 @@ The prototype's job is to land the championship-shape: the protagonist meets a c
 
 ## Open questions
 
-- **Mechanic shape.** What specifically does each coach teach? Concrete pong mechanics like top-spin, lob, smash, drop-shot, defensive dig — or something different? The space is open; what matters is each is interesting, different, and composable.
+- **Mechanic shape.** What specifically does each coach teach? Concrete pong mechanics like top-spin, lob, smash, drop-shot, defensive dig: or something different? The space is open; what matters is each is interesting, different, and composable.
 - **Round match format.** Pong with items and effects active, 1v1, no partner on court. What's the win condition? First-to-N points? Reach a count threshold against the coach's pressure? Survive a number of returns? Affects the felt difference between rally-mode and match-mode.
 - **Tournament round count for the full game.** SH-275 will name venues. One round per venue means tournament length tracks venue count.
 - **Drop-out behaviour.** If the player loses a round, what happens? Re-attempt? Train more? Affects pacing.

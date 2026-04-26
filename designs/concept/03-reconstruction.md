@@ -16,7 +16,7 @@ Reconstruction must also FEEL different to play, not only look different in the 
 
 ## The bidirectional carry
 
-The carry is what Reconstruction enables. Bidirectional and selective. Not anything-and-everything — that would open infinite interactions and demand combinatorial content. Each carry is hand-curated for its narrative function.
+The carry is what Reconstruction enables. Bidirectional and selective. Not anything-and-everything: that would open infinite interactions and demand combinatorial content. Each carry is hand-curated for its narrative function.
 
 - **Constructs into Reality.** Specific Construction items, characters, or memories can be brought into Reality and used in specific reconciliation scenes. The construction is what the protagonist built to keep going; in Reconstruction, the things they built turn out to be useful in the world they were avoiding. Which constructs are carry-able and which are not is a narrative decision per content beat, not an open mechanic.
 - **Reality into Construction.** Specific real-world acknowledgements feed back into the rally. New venues unlock; coaches gain new lines; the bright world acknowledges what it had been hiding from. Hints for Reality's next reconciliation surface in Construction. Same gate: which acknowledgements bridge back is a curated narrative call.
@@ -29,7 +29,7 @@ As the carry accumulates, the bright world ages with the player. Saturation drop
 
 Reconciliation is what the player DOES inside Reconstruction. It is the mechanic that takes the player from the break to the call.
 
-The mechanic is the photo book. The sister has the book, but not all of the photos. Some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo found is a reconciliation action — a place to visit, a person to ask, a small attentive thing to do. Each one returned to the book completes a part of the protagonist's history that the shopkeeper kept and the protagonist could not.
+The mechanic is the photo book. The sister has the book, but not all of the photos. Some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo found is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned to the book completes a part of the protagonist's history that the shopkeeper kept and the protagonist could not.
 
 The full mechanic and the photo arc live in Reality (`04-reality.md`). Reconstruction is the arc-shape; the photo book is the verb.
 
