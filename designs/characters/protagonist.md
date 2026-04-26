@@ -18,7 +18,7 @@ Not a tragic figure, not melodramatic, not a person in collapse. Someone who bui
 
 ## What they lost, what they built
 
-They lost a friend years ago in something reckless at the cliff. The shopkeeper was there. The protagonist was not. That asymmetry has sat between them ever since. Recently enough that it is not healed, long enough that they have built a structure around it.
+They lost a friend years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group, dangerous and routine for them, until it wasn't. The shopkeeper was there that day, jumping with the friend. The protagonist was not. Whether they ever went jumping with the group, or always declined, is a question the profile does not answer. The asymmetry of that day has sat between them ever since: one survivor on the cliff, one survivor who was elsewhere. Recently enough that it is not healed, long enough that they have built a structure around it.
 
 Construction is that structure. The garden, the stall, the rally, the friend at the counter with their head tilted toward the play. They did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
 
@@ -64,7 +64,7 @@ The album fills as the protagonist works. The shopkeeper's younger sister has he
 
 A layer underneath the structure. It sits next to the grief and the becoming-champ pull, not under them.
 
-The pull is the urge to do the destructive thing when nothing forces it. To jump from the bridge. To swerve into traffic. The structure holds against the loss; it also holds against this. The two are related and distinct. Grief is what they are sheltering from. The void is what they are resisting.
+The pull is the urge to do the destructive thing when nothing forces it. To jump from the bridge. To swerve into traffic. The cliff is the specific shape of this for them: the place the friend died, the place the protagonist did not go that day. The structure holds against the loss; it also holds against this. The two are related and distinct. Grief is what they are sheltering from. The void is what they are resisting.
 
 It surfaces in places the artist and animator can feel for, not script:
 
