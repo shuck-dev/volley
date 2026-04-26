@@ -4,7 +4,7 @@ The second register. Visually distinct from Construction, mechanically a differe
 
 ## The place
 
-Reality is one place: the protagonist's hometown. A small coastal town, British-seaside-meets-southern-Spain. Terraced houses next to whitewashed walls; a high street that smells of both rain and citrus; light shifting between northern grey and Mediterranean glare. Ordinary, lived-in.
+Reality is one place: the protagonist's hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours, the palette of Tenby and Aberaeron: pinks, yellows, sea-greens, sky-blues. Whitewashed walls. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Faded grandeur with sun on it. Ordinary, lived-in.
 
 The place is geographically static. The map does not grow; the town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Reconstruction, things are added: people the player can meet, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
 

@@ -20,6 +20,12 @@ This is the postgame opening, and it is not a transition. The player never leave
 
 The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
 
+## Credits
+
+Credits roll over the rally. The first one between the MC and the shopkeeper, the championship spot occupied by the actual person, racquet in their hand, the ball going back and forth. The substitute is gone; the right side of the court holds the friend the protagonist had been reaching for the whole time. The names scroll over the play. The rally keeps going.
+
+The image is the proof: the daily thing the protagonist did alone is finally done together.
+
 ## Postgame
 
 Postgame is rallying with the shopkeeper. They take the right side of the court that used to be the championship spot, the same spot the champ once held. The construction is at last what the protagonist was always reaching for: themselves on the left, the shopkeeper on the right, the rally going.
