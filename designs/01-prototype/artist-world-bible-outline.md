@@ -12,7 +12,11 @@ The MC is drawn like any other character. Construction-render and Reality-render
 
 ## Section list
 
-Fourteen sections. One outline minion per section in the next dispatch wave. After outlines are reviewed and revised, content fills in a second wave.
+Fourteen sections, plus an opening orientation paragraph, a glossary, and a revision log. The Six Marks sit early so the rest of the bible reads in their light; published art bibles consistently open with style pillars before world detail.
+
+### Orientation paragraph (new)
+
+A one-paragraph reload of the architecture, sitting between the framing and section A. Not a thesis; an anchor a returning artist can re-read in thirty seconds without revisiting all fourteen sections.
 
 ### A. What the game is
 
@@ -20,7 +24,11 @@ The hook in the friend's voice in the first session: chase the world volley reco
 
 The bible keeps the player-facing hook visible (the championship to chase) and gives the artist the underlying canon (the number is a phone number) so every render of the count carries the right weight.
 
-### B. Construction
+### B. The Six Marks
+
+The rendering rulebook, moved up from its previous trailing position. Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Each applies across all three registers; their expression varies by register. The bible's pillars sit near the front so every section that follows reads against them.
+
+### C. Construction
 
 The bright world. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. The volley record is the goal; the count is the engine. The structure is a tournament: the protagonist climbs through rounds, one per venue, with a coach-partner for each.
 
@@ -28,13 +36,13 @@ What construction LOOKS like: described directly (see voice rules : no brand nam
 
 What construction IS: the pretense the protagonist actively maintains. A coping shape. The warmth in it is real; the rendering is the defence.
 
-### C. Cracks during construction
+### D. Cracks during Construction
 
 Cracks form as the maintenance strains. They are visible but easy to dismiss; the player can keep playing and not notice. They get more obvious as the game continues.
 
 Cracks must be tonal, not concrete. The artist's hardest job in the bible: paint a colour shift, a flicker in the venue light, a partner's tilt held a beat too long. NEVER a real-world object literally appearing on the rack. Concrete leakage breaks the deniability the cumulative shape needs.
 
-### D. The break
+### E. The break
 
 The rupture. Both cumulative (cracks pile up) and singular (one moment is the failure that makes the rest legible). The artist's job is to render the moment when the construction's maintenance can no longer be sustained.
 
@@ -42,7 +50,7 @@ At the break the shop closes; the shopkeeper exits the construction. The friend 
 
 The break is also the player's first walk through the protagonist's hometown : Reality, in passing. The cliff is somewhere in this geography but not yet visited.
 
-### E. Reality
+### F. Reality
 
 The completely different register. One place: the protagonist's hometown. Coastal, British seaside meets southern Spain. Geographically static; the map does not grow. What changes is what is in it; across Reconstruction, things are added, people surface, conversations open as the protagonist is ready for them.
 
@@ -52,7 +60,7 @@ Reality's puzzle shape is layered: the player walks into a scene with several th
 
 The sister (the tinkerer's real-world counterpart) holds the photo book; sitting with her is the reconciliation action that opens the path to the shopkeeper. The cliff is its own place, visited late.
 
-### F. Reconstruction
+### G. Reconstruction
 
 The arc. Not a third visual register. The two registers stay distinct. Reconstruction is the meta-state in which the player has free travel between Construction and Reality and can carry across.
 
@@ -60,7 +68,7 @@ The carry is bidirectional: constructs into Reality (items, characters, memories
 
 Reconstruction must also FEEL different to play. Three play-level differentiators: the score is hidden in Construction (visible only by visiting somewhere in Reality); the champ's dialogue softens gradually beat by beat; audio shifts from synthetic toward acoustic (SH-281).
 
-### G. What the artist holds
+### H. What each register asks for
 
 The three registers as craft direction. The tournament structure overlaid. The cast of real people in two renders.
 
@@ -68,7 +76,7 @@ Two asset sets per cross-register character. The champ is the only Construction-
 
 The sister's role is load-bearing in Reconstruction (the photo book, the bridge to the shopkeeper). The shopkeeper's role is bookended (warm centre in Construction; absent through Reconstruction; final partner at the call).
 
-### H. Constants across venues
+### I. Constants across venues
 
 The racquet. The ball. The friend at the stall (in Construction only). The spirit of the volley (collapsed friendship + spirit; physically present in the bright world; gives the ball its arc, lifts the protagonist).
 
@@ -76,7 +84,7 @@ These travel with the game across every venue. They are construction-side consta
 
 The shopkeeper's stall is a constant in Construction and an absence in Reconstruction, until the call.
 
-### I. The cast (everyone is real)
+### J. The cast (everyone is real)
 
 The protagonist (drawn like any other character; visible throughout). The shopkeeper / friend at the stall. The tinkerer / sister. Martha and the partners (each a coach who teaches one mechanic via the rally). The champ (Construction-only; the dead friend; someone the protagonist looks up to, never a rival).
 
@@ -84,7 +92,7 @@ Brief sketches of each. Pointer to the MC profile (PR #427) for the protagonist'
 
 The lineage rule (every coach-partner named for a character from a science-fiction author's work) stays.
 
-### J. Diegetic surfaces
+### K. Diegetic surfaces
 
 The shop as Argos catalogue. The workshop. The racks (ball feeder, equipment rack). The plaque, the sign, the counter that reads zero. The world's surfaces that carry information without HUD.
 
@@ -92,19 +100,13 @@ This section is craft-direction for diegetic UI. It applies primarily to constru
 
 Note: the score migrates to Reality in Reconstruction. Reality acquires its own score-checking surfaces (the closed shop, the sister's, the cliff). The bible names these explicitly.
 
-### K. Venues
+### L. Venues
 
 First venue: the improvised garden. No built court; a stretch of grass walled in by stone and vines. Per SH-275, the prototype delivers this venue as the championship-shape exemplar: one coach (Martha), one mechanic she teaches, one round match.
 
 Each main venue hosts one tournament round and one encounter (round match) in a shared themed battle space. Round matches are pong with items and effects, 1v1, no partner on court. Each venue is also a sticking point for the protagonist related to the event (the resonance only obvious looking back).
 
 The leap to the second venue (likely underwater, V2 tentative). The trajectory from there: meteor in nebula light, tropical island, jungle, library, ice cave, all sketches.
-
-### L. The Six Marks
-
-The rendering rules: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Each applies across all three registers, but their expression varies by register.
-
-This section stays largely as-is from the previous bible iteration; the architecture above is what it serves.
 
 ### M. References and named hands
 
@@ -115,6 +117,14 @@ Add: Broken Age as a new touchstone for the call's split-frame composition (`05-
 ### N. Tone rules and what to avoid
 
 The do-nots. The voice rules in summary form. Stays largely as-is.
+
+### Glossary (new)
+
+The named terms the bible uses, in one place. Each term defined in one line, with a pointer back to its full section. Lets a returning artist reload the vocabulary fast: Construction, Reality, Reconstruction, the break, the call, the cliff, the champ, the shopkeeper, the sister, the partners, tonal cracks, meta-contextual cracks, the carry, the photo book, the spirit of the volley, the Six Marks, two renders.
+
+### Revision log (new)
+
+The bible is a living document. Each significant pass leaves a one-line entry. Lets the team see how the canon arrived at its current shape without git archaeology.
 
 ## Open canon questions, captured
 

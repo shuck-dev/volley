@@ -8,6 +8,14 @@ Pick the bits that resonate; let the rest be ambient context.
 
 ---
 
+## The shape in one paragraph
+
+Volley is a game with three registers and an arc shaped like a tournament. Construction is the bright world: saturated, full, helping. The protagonist climbs the volley world ladder toward a championship. The world record they are chasing is the shopkeeper's phone number. Cracks form atmospherically across the climb; the break is the wall coming down once, when the championship match against the champ (the dead friend) cannot be passed. At the break the shopkeeper leaves Construction; the shop is closed; the warm centre is gone. Reconstruction is the long arc that follows: free travel between Construction and Reality (the protagonist's hometown), bidirectional carry, reconciliation actions accumulating. Late in Reconstruction the protagonist visits the cliff where the friend died; the champ shifts from wall to partner. The path opens to the call: dialling the shopkeeper at their door, voice and body simultaneously. The shopkeeper joins the court as the final partner; the protagonist comes home.
+
+Everyone in the game is real. Two renders per character that crosses both registers. The exception is the champ, who is Construction-only; their Reality is the cliff.
+
+---
+
 ## A. What the game is
 
 A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal. The friend gives the number meaning.
@@ -18,7 +26,20 @@ You hold both. The hook the player meets, the canon underneath. Render the count
 
 ---
 
-## B. Construction
+## B. The Six Marks
+
+The art bible's rulebook. Every piece of art carries all six. They are descriptions of what Volley looks like when the work is landing, not commandments. They apply across every register; their expression varies by register. The rest of the bible reads in their light.
+
+1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
+2. **Specific.** Particulars over types. This fence, this stall, this tree. Generic warmth fails.
+3. **Distinct.** The visual register is unmistakably Volley. Not pixel, not painterly-realism, not vector polish.
+4. **Diegetic.** The world is something the player is inside, not looking at. UI sits inside the same hand and voice.
+5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked. A simple shape that moves with feeling carries more than a detailed shape that sits still.
+6. **Shifting.** The same world holds multiple registers (Construction / Reality, before-the-break / after-the-break, biome to biome). Silhouettes hold; light, colour, line quality shift.
+
+---
+
+## C. Construction
 
 Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present and helping, bodies at ease in motion. The garden in the late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
 
@@ -32,7 +53,7 @@ The full structural canon for Construction is in `designs/concept/01-constructio
 
 ---
 
-## C. Cracks during Construction
+## D. Cracks during Construction
 
 Reality leaks into the bright world. Each leak is small and dismissible; the cumulative pressure is what matters. The cracks come in two flavours, both authored, both deniable.
 
@@ -48,7 +69,7 @@ Cracks escalate slowly across the climb, riding the pacing of an idle game playe
 
 ---
 
-## D. The break
+## E. The break
 
 The wall comes down. Once.
 
@@ -56,7 +77,7 @@ The protagonist has climbed every round, learned every coach's mechanic, qualifi
 
 The rendering: the moment Construction can no longer hold itself together. Light, sound, the venue's surfaces, the friend's posture: all turn at once. Not a glitch; a giving-way. The construction's maintenance has been the protagonist's choice every day until this one, and on this one the choice fails.
 
-After the rupture the player is pulled into Reality involuntarily for the first time. They walk through the protagonist's hometown. The geography is the place described in section E; the walk is the player's first sight of it. The cliff is somewhere in this geography but is not visited yet.
+After the rupture the player is pulled into Reality involuntarily for the first time. They walk through the protagonist's hometown. The geography is the place described in section F; the walk is the player's first sight of it. The cliff is somewhere in this geography but is not visited yet.
 
 The shopkeeper is not in this walk. The shop has a sign on the door. The lights are off. Some excuse: closing hours, a notice, the door is locked. Render the absence; do not render the conversation. The conversation lives at the call.
 
@@ -64,7 +85,7 @@ The break ends and the player is back in Construction, but the wall does not go 
 
 ---
 
-## E. Reality
+## F. Reality
 
 A second register, completely. Visually distinct from Construction; mechanically a different game. One place: the protagonist's hometown.
 
@@ -76,13 +97,13 @@ The map is geographically static. The town stays the size it was when the player
 
 Reality is interaction-driven, not rally-driven. The player walks into a scene with several things going on at once and a handful of contextual interactions. The puzzle is being present in a room and finding what wants to happen. Not pong; not inventory recombination; not pixel-hunting. Quiet attention.
 
-The cliff is its own place outside the town's geography. The cliff where the friend died. Visited late in Reconstruction; the location of the last scattered photo (see section F).
+The cliff is its own place outside the town's geography. The cliff where the friend died. Visited late in Reconstruction; the location of the last scattered photo (see section G).
 
 Full canon in `designs/concept/04-reality.md`.
 
 ---
 
-## F. Reconstruction
+## G. Reconstruction
 
 The arc between the break and the call. Reconstruction is not a third visual register. The two registers stay distinct. What Reconstruction adds is the meta-state in which the player has free travel between them and can carry across.
 
@@ -98,7 +119,7 @@ After the cliff, the champ shifts from wall to partner. The path to the call ope
 
 ---
 
-## G. What each register asks for
+## H. What each register asks for
 
 Three things, in this order.
 
@@ -112,7 +133,7 @@ The depth of the protagonist sits in `designs/characters/protagonist.md`. Read i
 
 ---
 
-## H. Constants across venues
+## I. Constants across venues
 
 Things that travel with the camera through every Construction venue. They are the bright world's spine; they show up wherever the rally goes.
 
@@ -128,7 +149,7 @@ Reality's constants are its own. The kitchen, the photograph, the back walking d
 
 ---
 
-## I. The cast
+## J. The cast
 
 Everyone in this game is real. The bright-world cast is the real-world cast rendered young, vibrant, helping. The supporting cast are people from the protagonist's life. The exception is the champ.
 
@@ -188,7 +209,7 @@ Render them as someone the protagonist loved. Sharp in Construction because the 
 
 ---
 
-## J. Diegetic surfaces
+## K. Diegetic surfaces
 
 The world's surfaces carry information without HUD. UI sits inside the same hand and voice as the rest of the bible. The player is inside the world, not looking at it.
 
@@ -206,7 +227,7 @@ The world's surfaces carry information without HUD. UI sits inside the same hand
 
 ---
 
-## K. Venues
+## L. Venues
 
 The first venue is the garden. From there the bright world leaps, and each leap is bigger than the last. Same partner. Same friend at the stall. Same warmth. A wildly different world around them.
 
@@ -256,19 +277,6 @@ Both hang up; the door opens. The composition flows from the split frame into a 
 Postgame is rallying with the shopkeeper there. The cliff is reachable any time, with no new gameplay; a place to sit, look at the sea, listen, with a seashell in the protagonist's hand.
 
 Full canon for the call and postgame in `designs/concept/05-postgame.md`.
-
----
-
-## L. The Six Marks
-
-The art bible's rulebook. Every piece of art carries all six. They are descriptions of what Volley looks like when the work is landing, not commandments. They apply across every register; their expression varies by register.
-
-1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
-2. **Specific.** Particulars over types. This fence, this stall, this tree. Generic warmth fails.
-3. **Distinct.** The visual register is unmistakably Volley. Not pixel, not painterly-realism, not vector polish.
-4. **Diegetic.** The world is something the player is inside, not looking at. UI sits inside the same hand and voice.
-5. **Breathing.** Movement, posture, body language carry the personality. Animation breathes; nothing is locked. A simple shape that moves with feeling carries more than a detailed shape that sits still.
-6. **Shifting.** The same world holds multiple registers (Construction / Reality, before-the-break / after-the-break, biome to biome). Silhouettes hold; light, colour, line quality shift.
 
 ---
 
@@ -381,3 +389,37 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The first leap biome (underwater is the leading candidate; not formally locked).
 
 Where the bible or the brief feels actively wrong or contradictory, the canon moves to fit. Both are the current state.
+
+---
+
+## Glossary
+
+The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
+
+- **Construction.** The bright register. Saturated, warm, helping. Where volleyball lives. Section C.
+- **Reality.** The second register. The protagonist's hometown, gold-hour and weighted. Section F.
+- **Reconstruction.** The arc between the break and the call. Free travel between the two registers; bidirectional carry. Not a third visual register. Section G.
+- **The break.** The single rupture at the failed championship match. The wall comes down once. Section E.
+- **The call.** The ending. The protagonist dials the world record from the door of the shop. Section L (under Venues / The call).
+- **The cliff.** The place outside the town where the friend died. Visited late in Reconstruction. Section F.
+- **The champ.** The dead friend. Construction-only. Holds the championship spot. Section J.
+- **The shopkeeper.** The friend at the stall in Construction; the absence the protagonist walks past in Reality. The world record is their phone number. Section J.
+- **The sister (the tinkerer).** The shopkeeper's younger sister. Holds the photo book in Reality; works the bench in Construction. Section J.
+- **The partners (Martha and the rest).** Coaches in Construction; people from the protagonist's life in Reality. Each teaches one mechanic via the rally. Section J.
+- **Tonal cracks.** Cracks inside Construction's fiction (light, posture, sound, atmosphere). Section D.
+- **Meta-contextual cracks.** Cracks outside the fiction (UI, music, loading screens, menu wording). Section D.
+- **The carry.** The bidirectional bridge between Construction and Reality during Reconstruction. Curated, not open. Section G.
+- **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section G.
+- **The spirit of the volley.** The protagonist's fighting spirit and their bond with each partner, the same thing seen from two angles. Anything in the rally that bends physics is the spirit acting on the world. Section I.
+- **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section B.
+- **Two renders.** Each cross-register character has a Construction-render (young, vibrant, helping) and a Reality-render (their actual age, in their actual life). Section H.
+
+---
+
+## Revision log
+
+The bible is a living document. Each significant pass leaves a line.
+
+- 2026-04-25. Solusta. Reshape against published art-bible craft. Added the shape-in-one-paragraph orientation; moved the Six Marks to position B so the rest of the bible reads in their light; added Glossary and Revision log. No canon changes.
+- 2026-04. Hornfels. v2 of the artist-deliverable bible: full rewrite against the settled spike canon. Construction / Reality / Reconstruction terminology; cast section in current shape; Six Marks codified.
+- Earlier. Various iterations under the pre-break / post-break terminology, folded into the current shape.
