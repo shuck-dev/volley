@@ -2,7 +2,7 @@
 
 A companion to `artist-brief.md`. The brief is the deal. This is the world. Read the brief first; come back here for the texture.
 
-The bible holds the world's tone, visual texture, emotional shape, and the canon you need to render any moment in it with the right weight. Where it points elsewhere, the link is the source of truth: the protagonist's interior life lives in `designs/characters/protagonist.md`; the structural spine lives across `designs/concept/`; the audio direction will land in SH-281. The bible is for the hand that will draw the world.
+The bible holds the world's tone, visual texture, emotional shape, and the canon needed to render any moment in it with the right weight. Where it points elsewhere, the link is the source of truth: the protagonist's interior life lives in `designs/characters/protagonist.md`; the structural spine lives across `designs/concept/`; the audio direction will land in SH-281.
 
 Pick the bits that resonate; let the rest be ambient context.
 
@@ -40,7 +40,7 @@ Reality leaks into the bright world. Each leak is small and dismissible; the cum
 
 **Meta-contextual cracks** sit outside the fiction, in the surfaces around it. A music cue that skips. A UI element that blinks the wrong colour. A loading screen that says something it should not. A pause-menu option whose wording shifts between visits. The player half-notices, half-dismisses.
 
-This is the artist's hardest job in the bible. Tonal cracks need rendering that reads as oddness without ever reading as a mistake. The deniability is what does the work. A crack the player can name aloud as "the game is showing me X" has tipped over into signpost; a crack the player half-felt and shrugged off has done its job.
+This is the bible's hardest discipline. Tonal cracks need rendering that reads as oddness without ever reading as a mistake. The deniability is what does the work. A crack the player can name aloud as "the game is showing me X" has tipped over into signpost; a crack the player half-felt and shrugged off has done its job.
 
 Never a real-world object literally appearing inside Construction. A coffee mug from the protagonist's actual kitchen on the equipment rack reads as a flag the player can point at. The deniability collapses; the cumulative shape stops being cumulative. Concrete leakage is a different game.
 
@@ -54,7 +54,7 @@ The wall comes down. Once.
 
 The protagonist has climbed every round, learned every coach's mechanic, qualified for the championship at the top of the ladder. The championship match is signalled to the player as one shot. They take it. The match is unwinnable; the champ is the dead friend, and the wall sits exactly there. The cracks have been thinning the wall throughout. The failed attempt is the singular rupture that makes them legible as a chord.
 
-What the artist needs to render: the moment Construction can no longer hold itself together. Light, sound, the venue's surfaces, the friend's posture: all turn at once. Not a glitch; a giving-way. The construction's maintenance has been the protagonist's choice every day until this one, and on this one the choice fails.
+The rendering: the moment Construction can no longer hold itself together. Light, sound, the venue's surfaces, the friend's posture: all turn at once. Not a glitch; a giving-way. The construction's maintenance has been the protagonist's choice every day until this one, and on this one the choice fails.
 
 After the rupture the player is pulled into Reality involuntarily for the first time. They walk through the protagonist's hometown. The geography is the place described in section E; the walk is the player's first sight of it. The cliff is somewhere in this geography but is not visited yet.
 
@@ -90,7 +90,7 @@ The carry is bidirectional and selective. Specific things from Construction can 
 
 The mechanic at the centre of Reconstruction is **the photo book**. The shopkeeper's younger sister has the book, but not all of the photos. Some are still inside; some are scattered: lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere, taped to the back of an old radio in the workshop. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned to the book completes a part of the protagonist's history that the shopkeeper kept and the protagonist could not. When the book fills, the path to the shopkeeper opens.
 
-What the artist holds for Reconstruction is two surfaces. Construction weathers as the carry accumulates: saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. Reality acquires content: the sister's place gains the book and the table where the protagonist sits with it, scenes around the town gain the people and objects the photos send the protagonist to find, the cliff opens at the end.
+Reconstruction asks for two surfaces. Construction weathers as the carry accumulates: saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. Reality acquires content: the sister's place gains the book and the table where the protagonist sits with it, scenes around the town gain the people and objects the photos send the protagonist to find, the cliff opens at the end.
 
 Three play-level differentiators sit underneath. The score is hidden in Construction during Reconstruction; the player rallies without seeing the count, and has to walk into Reality to check it. The champ's dialogue softens beat by beat across the arc, until they sound like a friend again. The audio shifts from synthetic toward acoustic. Each is a felt signal that something is changing without saying so. Full canon in `designs/concept/03-reconstruction.md`.
 
@@ -98,7 +98,7 @@ After the cliff, the champ shifts from wall to partner. The path to the call ope
 
 ---
 
-## G. What the artist holds
+## G. What each register asks for
 
 Three things, in this order.
 
@@ -150,7 +150,7 @@ This is why the world record is the shopkeeper's phone number. Every rally is th
 
 The shopkeeper has two renders. Construction: the friend at the stall, warm and grounded, present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past. They leave Construction at the break and return at the call as the final partner on the right side of the court.
 
-Gender, age, presentation are open to the artist's read. What holds is the warmth and the posture in Construction; the weight and the absence in Reality.
+Gender, age, presentation stay open. What holds is the warmth and the posture in Construction; the weight and the absence in Reality.
 
 ### The sister (the tinkerer)
 
@@ -158,7 +158,7 @@ The shopkeeper's younger sister. In Construction she is the tinkerer behind the 
 
 In Reality she holds the photo book. She is one of the first reachable people across Reconstruction; sitting with her and the book is the first reconciliation action. She is less weighted by the death than the shopkeeper. The protagonist can sit with her; she is willing to do the work the shopkeeper cannot yet do alongside them.
 
-Two renders, like the shopkeeper. Age, presentation, look open to the artist; the family resemblance to the shopkeeper is the anchor.
+Two renders, like the shopkeeper. Age, presentation, look stay open; the family resemblance to the shopkeeper is the anchor.
 
 ### Martha and the partners
 
@@ -174,7 +174,7 @@ Three more partners arrive in the early game, and from then on each new venue br
 
 Each partner has two renders. The Construction-render is the coach: present, helping, beside the protagonist on the court. The Reality-render is the actual person at their actual age. Martha is the cashier at the newsagent; the others as they actually are. The bright-world version is a bigger, brighter rendering of someone the protagonist remembers very specifically.
 
-The artist designing Martha sets the bar for the rest.
+Martha sets the bar for the rest.
 
 ### The champ
 
@@ -261,7 +261,7 @@ Full canon for the call and postgame in `designs/concept/05-postgame.md`.
 
 ## L. The Six Marks
 
-The art bible's rulebook. Every piece of art carries all six. They are descriptions of what Volley looks like when the work is landing, not commandments. They apply across every register; their expression varies by where in the game you are.
+The art bible's rulebook. Every piece of art carries all six. They are descriptions of what Volley looks like when the work is landing, not commandments. They apply across every register; their expression varies by register.
 
 1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
 2. **Specific.** Particulars over types. This fence, this stall, this tree. Generic warmth fails.
@@ -274,9 +274,9 @@ The art bible's rulebook. Every piece of art carries all six. They are descripti
 
 ## M. Reference register
 
-Every work below has been cited somewhere in the design corpus as a tonal or visual touchstone. Pick the two or three that resonate most with where you want to push the work; let the rest be ambient context.
+Every work below has been cited somewhere in the design corpus as a tonal or visual touchstone. Two or three resonate most with any given push of the work; the rest sit as ambient context.
 
-For wider lineage on the game's structural choices: `designs/research/game-structure-references.md`. The bible's reference register is the artist-facing curation; the research doc holds the team's working notes on game shape.
+For wider lineage on the game's structural choices: `designs/research/game-structure-references.md`. The bible's reference register is the curated set; the research doc holds the team's working notes on game shape.
 
 ### Animation and film
 
@@ -367,9 +367,9 @@ What Volley is consciously not:
 
 ---
 
-## Open questions where your sketch may pin
+## Open questions for sketch to settle
 
-If a character or an object is not pinned down, the artist's sketch might be what pins it. Do not wait; draw what feels right.
+Where a character or an object is not pinned down, the sketch settles it. The bible follows what the sketch lands.
 
 - The shopkeeper's gender, age, build. Deliberately open.
 - The sister's gender, age, presentation. Deliberately open (with one anchor: she is the shopkeeper's younger sister).
@@ -380,4 +380,4 @@ If a character or an object is not pinned down, the artist's sketch might be wha
 - How partner introductions render.
 - The first leap biome (underwater is the leading candidate; not formally locked).
 
-If something feels actively wrong or contradictory in the bible or the brief, push back. Both are the current state; both will move as you do.
+Where the bible or the brief feels actively wrong or contradictory, the canon moves to fit. Both are the current state.

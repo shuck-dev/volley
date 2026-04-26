@@ -1,17 +1,6 @@
-# Artist World Bible: Re-architecture Outline
+# Artist World Bible: Outline
 
-Working doc for the bible's restructure. Captures the architecture Josh and Gru worked out across 2026-04-25 and 2026-04-26 after the diagnosis that the bible was texture without thesis and conflated two distinct protagonists.
-
-The structural canon is held in `designs/concept/`:
-
-- `00-three-registers.md`: high-level architecture and synthesis index.
-- `01-construction.md`: the bright world, cast, shopkeeper psychology, tournament structure, coaches, the champ.
-- `02-cracks-and-break.md`: the wall thinning and the wall coming down.
-- `03-reconstruction.md`: the long arc after the break, bidirectional carry, the reconciliation mechanic.
-- `04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.
-- `05-postgame.md`: the call (the ending) and what follows.
-
-The bible's job is to make this clear to the artist so every painting, every gesture, every venue choice fits the register it belongs to. The outline below maps how the bible expresses each piece of the spike's canon for the artist's purposes.
+The bible's section list and the canon each section serves. A reference for what the bible holds and where it points for depth.
 
 ## The architecture in one paragraph
 
@@ -139,27 +128,17 @@ The structural spike now lives in `designs/concept/`; its open questions are the
 
 The bible itself can proceed on the structure without these settled; content fills wait on them.
 
-## Process
+## Where the canon lives
 
-The essay-style swarm-write workflow:
-
-1. (You are here.) Outline the architecture as a section list with one-paragraph notes per section. This doc.
-2. Dispatch one minion per section to OUTLINE that section in more depth (what beats, what canon, what the artist needs).
-3. Outlines come back to scratchpads under `ai/scratchpads/bible-section-N-outline.md`.
-4. Josh reviews the outlines.
-5. Dispatch a fresh minion per section to FILL the content based on the approved outline.
-6. Section content lands in the bible in coherent waves.
-
-Each minion preloads `ai/skills/voice.md` (six rules: cadence, sentence shapes, show-don't-tell, place-the-nouns, integrate-the-sentences, literary-devices-sparingly) and reads the surrounding bible context. Cross-register canon (the three registers, the hook, everyone is real, the tournament structure, the call and the coming-home) lives in `designs/concept/` and is the source of truth.
-
-## Tickets that surfaced from this work
-
-- SH-275: define prototype venue scope.
-- SH-276: studio identity doc home.
-- SH-277: MC profile (in flight as PR #427).
-- SH-278: design spike on three-register structure (in flight as PR #433).
-- SH-279: tech spike on reality gameplay. Needs enrichment with the bidirectional carry, tournament round-match format, photo-book scene, cliff visit, score-migration mechanic.
-- SH-280: research game structures (in flight as PR #432).
-- SH-281: audio direction across the registers.
+- `designs/01-prototype/artist-world-bible.md`: the bible itself. World tone, visual texture, emotional shape, cast, references, tone rules.
+- `designs/concept/00-three-registers.md`: high-level architecture and synthesis index.
+- `designs/concept/01-construction.md`: the bright world, cast, shopkeeper psychology, tournament structure, coaches, the champ.
+- `designs/concept/02-cracks-and-break.md`: the wall thinning and the wall coming down.
+- `designs/concept/03-reconstruction.md`: the long arc after the break, bidirectional carry, the reconciliation mechanic.
+- `designs/concept/04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.
+- `designs/concept/05-postgame.md`: the call and what follows.
+- `designs/characters/protagonist.md`: the protagonist's interior life.
+- `designs/research/game-structure-references.md`: lineage research for structural choices.
+- SH-281 (forthcoming): audio direction across the registers.
 
 The bible's content fills are downstream of these settling.
