@@ -5,13 +5,13 @@
 - [North Star](north-star)
 
 **By phase**
-- [Prototype](01-prototype-INDEX)
-- [Alpha](02-alpha-INDEX)
-- [Beta](03-beta-INDEX)
-- [Content Updates](04-content-INDEX)
+- [Prototype](01-Prototype)
+- [Alpha](02-Alpha)
+- [Beta](03-Beta)
+- [Content Updates](04-Content)
 
 **Art**
-- [Art](art-INDEX)
+- [Art](Art)
 
 **Process**
 - [Ticket Writing](process-ticket-writing)

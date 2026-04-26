@@ -98,7 +98,7 @@ The prototype's job is to land the championship-shape: meet a coach, learn from 
 - **Round match format.** Pong with items and effects active, 1v1, no partner on court. What is the win condition? First-to-N points? Reach a count threshold against the coach's pressure? Survive a number of returns?
 - **Tournament round count for the full game.** SH-275 will name venues. One round per venue means tournament length tracks venue count.
 - **Drop-out behaviour.** If the player loses a round, what happens? Re-attempt? Train more?
-- **Encounter shape per round.** The round-match staging needs sharpening; the gym-leader framing reads close to Omori and is being reworked toward something venue-specific.
+- **Encounter shape per round.** The round-match staging needs sharpening; the gym-leader framing reads close to [Omori](https://en.wikipedia.org/wiki/Omori_(video_game)) and is being reworked toward something venue-specific.
 
 ## Production notes
 
