@@ -1,6 +1,6 @@
 # Volley! Artist Brief
 
-*See also: `artist-world-bible.md` for the world's texture and `artist-tech-context.md` for how the engine paints what you draw.*
+*See also: `../art/bible.md` for the world's texture and `artist-tech-context.md` for how the engine paints what you draw.*
 
 ---
 

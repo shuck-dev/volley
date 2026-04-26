@@ -1,6 +1,6 @@
 # Volley! narrative outline
 
-The canonical outline of the story Volley! tells. The art bible (`../01-prototype/artist-world-bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
+The canonical outline of the story Volley! tells. The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
 
 ## Setting
 

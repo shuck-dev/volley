@@ -1,6 +1,6 @@
 # The protagonist
 
-The artist world bible at `designs/01-prototype/artist-world-bible.md` holds the world and the role. The structural arc lives across `designs/concept/`, beginning at `00-three-styles.md`. This document holds the person at the centre of both: who they are, what they carry, how they move through Part 1 and Part 2, and the interior weight underneath.
+The art bible at `designs/art/bible.md` holds the world and the role. The structural arc lives across `designs/concept/`, beginning at `00-three-styles.md`. This document holds the person at the centre of both: who they are, what they carry, how they move through Part 1 and Part 2, and the interior weight underneath.
 
 When this document and the bible disagree, the bible is canon for the world and this document is canon for them.
 
