@@ -1,6 +1,6 @@
 # Volley! narrative outline
 
-The canonical outline of the story Volley! tells. The art bible (`../01-prototype/artist-world-bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
+The canonical outline of the story Volley! tells. The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
 
 ## Setting
 
@@ -80,7 +80,7 @@ What the player does not know yet: the world record is the shopkeeper's phone nu
 
 ### Cracks
 
-Reality leaks into Construction in small atmospheric ways. Two flavours.
+Reality leaks into Construction in two flavours.
 
 Tonal cracks live inside Construction's fiction. A flicker in the venue light. A partner's tilt held a beat too long. A colour cooling at the edge of the frame. Atmospheric oddness.
 
@@ -94,7 +94,7 @@ The protagonist climbs every round. The obsession with becoming champ deepens. T
 
 The player wins the championship. They beat the champ.
 
-The win feels off, in the way real-world achievement does not equal happiness. The win was supposed to fix the protagonist; it didn't. Both pulls of "becoming champ" satisfy, and neither was the thing.
+The win feels off. It was supposed to fix the protagonist; it didn't. Both pulls of "becoming champ" satisfy, and neither was the thing.
 
 The win is the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless.
 
@@ -178,4 +178,4 @@ Rallying with the shopkeeper as the championship-spot partner. The cliff stays r
 
 ## Cross-references
 
-The art bible at `../01-prototype/artist-world-bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`. The discipline doc at `discipline.md` is the parallel branch on player practice and ritual.
+The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`. The discipline doc at `discipline.md` is the parallel branch on player practice and ritual.
