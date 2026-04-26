@@ -100,4 +100,10 @@ The dial bridges intention, not space. Chosen presence rather than a closing of 
 
 ---
 
+## Credits over the rally
+
+Credits roll over a rally. The protagonist on the left of the court, the shopkeeper on the right, the ball moving between them. The first rally the two of them have ever played. The championship spot at the top of Construction held a substitute for the whole game; the actual person stands in it now, and the daily thing the protagonist did alone is finally done together. The rally is the proof. Hold the figures the way the rest of Construction holds them: full, present, drawn with the same care given to every coach-partner across the climb. Let the volley carry its own tempo; the credits sit on top of it without interrupting.
+
+---
+
 The artist world bible holds the world. This document holds the person at its centre. When the two disagree, the bible is canon for the world and this document is canon for them.
