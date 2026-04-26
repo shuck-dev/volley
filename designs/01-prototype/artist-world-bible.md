@@ -85,7 +85,7 @@ The depth sits in `designs/characters/protagonist.md`: the interior layer, what 
 
 The friend at the stall. The warmth at the centre of Construction's venue. Behind the counter of a small wooden stall, leaning on their elbows, head tilted toward the play, attentive without intruding. With them the garden is a place; without them it is a fenced patch of grass with a ball in the air.
 
-In Reality this is the person the protagonist has pushed away. The shopkeeper was at the cliff when the friend died; the protagonist was not. That asymmetry is the wedge. The shopkeeper carries the memory; the protagonist carries the absence. Talking would mean naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment; as mirror.
+In Reality this is the person the protagonist has pushed away. The shopkeeper was cliff-jumping with the friend the day the friend died; the protagonist was not there. Two survivors of the same routine, one of them at the edge when it stopped being routine. That asymmetry is the wedge. The shopkeeper carries the memory; the protagonist carries the absence. Talking would mean naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment; as mirror.
 
 This is why the world record is the shopkeeper's phone number. Every rally is the protagonist's almost-reach. Construction's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
@@ -122,6 +122,8 @@ Martha sets the bar for the rest.
 The dead friend. Construction-only; their Reality is the cliff.
 
 The champ holds the championship spot at the top of the tournament ladder. They are the friend the protagonist used to play with, the one who was the best at the game and pushed the protagonist to be better. Someone the protagonist looks up to, never a rival; the player the protagonist always admired. Across Construction they are present-in-absence at the top of the ladder, the spot the protagonist is climbing toward; they appear as the partner only at the final venue, on the right side of the court for the championship match itself.
+
+The friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised thing in the friend group, the kind of thing they did on a hot afternoon and would do again next week, until the day it stopped being routine. The cliff in Reality is the actual cliff. The shopkeeper was there and the protagonist was not, and that arithmetic is the shape the rest of the game is bent around.
 
 The championship match is winnable. The protagonist beats the champ. The win lands wrong, and the win IS the break. The champ exits at the break and does not return; the championship spot stands empty across Reconstruction, and is filled at the call by the shopkeeper.
 
@@ -207,7 +209,7 @@ The ending lands at the cliff, not at the shop.
 
 Across Reconstruction the protagonist has been carrying dread, afraid the shopkeeper has followed the friend's path; the unanswered phone has been the player-facing weight of that fear. The album fills, the compartment opens, the sister hands over the key. The protagonist returns to the garden, unlocks the gate at the back, walks through to the cliff in Reality.
 
-A bench sits at the cliff edge, dedicated to the friend. The shopkeeper is on the bench, alive. The dread inverts to relief. The shopkeeper has been here, withdrawn, refusing every call.
+The cliff reads as a place people came to. A worn ledge, traces of small ceremony, the marks a group leaves on a spot they returned to until they stopped. A bench sits at the cliff edge, dedicated to the friend. The shopkeeper is on the bench, alive. The dread inverts to relief. The shopkeeper has been here, withdrawn, refusing every call.
 
 The protagonist takes out their phone and dials the unnamed number, the digits whole now from all the fragments that surfaced across Reality. The shopkeeper's phone rings beside them on the bench; they could ignore it the way they have been ignoring all the others, and they do not. They look up at the sound, see the protagonist, pick up.
 
@@ -420,6 +422,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - Typography.
 - How partner introductions render.
 - The first leap biome. Underwater leads, not formally locked.
+- Why the protagonist was not at the cliff the day the friend died. Declined the trip, was not invited, had drifted from the group by then. The asymmetry between protagonist and shopkeeper holds either way; the specific cause is open.
 
 Where the bible or the brief feels actively wrong or contradictory, the canon moves to fit. Both are the current state.
 
@@ -437,7 +440,7 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections 1 and 9.
 - **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section 8.
 - **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
-- **The cliff.** The place outside the town where the friend died. Visited late in Reconstruction. Sections 7 and 9.
+- **The cliff.** The place outside the town where the friend died, a spot the friend group used to jump from. Visited late in Reconstruction. Sections 7 and 9.
 - **The champ.** The dead friend. Construction-only. Holds the championship spot. Section 4.
 - **The round.** The encounter at the end of each tournament step where the coach takes the other side of the court. Section 4.
 - **The shopkeeper.** The friend at the stall in Construction; the absence the protagonist walks past in Reality. The world record is their phone number. Section 4.
