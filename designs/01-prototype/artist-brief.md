@@ -1,5 +1,7 @@
 # Volley! Artist Brief
 
+*See also: `../art/bible.md` for the world's texture and `artist-tech-context.md` for how the engine paints what you draw.*
+
 ---
 
 Hi! I'm working on an initial prototype for an idle game and am looking for some initial concepts.
@@ -47,5 +49,7 @@ Two concept pieces showing both worlds:
 Both pieces should give a clear feel for line, shape, colour, and tone. They do not need to be final or polished; they should show a direction and the shift between the two worlds.
 
 Include any supplementary info or design as you feel like.
+
+See also: `designs/art/bible.md` for the wider world detail beyond this brief: characters, venues, references, tone, studio identity.
 
 If you are interested let me know!

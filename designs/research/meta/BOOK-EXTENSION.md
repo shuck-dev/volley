@@ -1,4 +1,4 @@
-# Notes for a book-length extension
+# Notes for a Book-Length Extension
 
 The essay makes the case for open development as one practice. A book would break the practice into its constituent disciplines and argue each independently. Each discipline is a distinct production decision a studio makes, with its own evidence base, its own counter-arguments, and its own people. The essay treats them as one bundled case because that is what an essay can do. A book has the room to give each discipline its own chapter (or short part) and prove it on its own merits, so a reader convinced of one but not another still has somewhere to land.
 

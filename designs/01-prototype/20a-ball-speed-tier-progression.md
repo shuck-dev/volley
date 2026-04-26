@@ -27,7 +27,7 @@ Rewards are what fires on `on_tier_completed`. They are tuned for first playtest
 
 All four rewards are opt-in for items; an item effect bound to `on_tier_completed` with a tier filter can add to these without replacing them. Partners can hook `on_peak_hit` (emitted per paddle hit while Peak is open) to add their own beats without any special casing.
 
-Tone constraints: no banners, no floating text, no venue-rule violations. Rewards are a sound, a light, a trail, a coin, or an unlock signal the player will see next time they visit the shop. Cozy and diegetic.
+Tone constraints: no banners, no floating text, no venue-rule violations. Rewards are a sound, a light, a trail, a coin, or an unlock signal the player will see next time they visit the shop. Quiet and diegetic.
 
 ## What a tier climb feels like
 

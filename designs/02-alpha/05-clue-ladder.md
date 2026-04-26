@@ -34,19 +34,19 @@ The earnestness is the first clue. Not in a winking, self-aware way. The game ge
 
 ## Stage 2: Something is definitely wrong (rival appears, more partners unlocked)
 
-These are noticeable on replay but easy to rationalise the first time. The rival's arrival is itself a stage 2 moment: someone shows up who doesn't play nice, and their aggression doesn't quite make sense for a cozy pong game.
+These are noticeable on replay but easy to rationalise the first time. The rival's arrival is itself a stage 2 moment: someone shows up who doesn't play nice, and their aggression doesn't quite make sense for a wholesome pong game.
 
 - A partner says something that couldn't be in-game knowledge. A reference to time passing in their world, a name that isn't their own, a memory that predates the game.
-- One partner's barks occasionally shift register. More direct, less warm. The real person bleeding through, not the version the main character constructed.
+- One partner's barks occasionally shift tone. More direct, less warm. The real person bleeding through, not the version the main character constructed.
 - An item description uses language that doesn't fit its mechanical effect.
 - A milestone congratulates on a number that is suspiciously specific.
 - The rival treats the game like it matters in a way that goes beyond competition.
 
 ## Stage 3: The surface is cracking (approaching the record, final milestones)
 
-These are hard to ignore. The cozy framing is straining.
+These are hard to ignore. The bright framing is straining.
 
 - Partner barks become more urgent and less characteristic. "Please" where they'd normally be breezy. "Not yet" on a milestone that should be celebrated.
 - The ball occasionally moves wrong in a way that can't be blamed on physics. Too slow, too deliberate. Like something is resisting.
 - Visual artifacts: a single frame where the art style is different. Not a bug. When the player looks again it's gone.
-- The world record gets very close and the game's tone doesn't match. The music is still cozy, the UI is still warm, but something underneath is pulling the other way.
+- The world record gets very close and the game's tone doesn't match. The music is unchanged, the UI is still warm, but something underneath is pulling the other way.

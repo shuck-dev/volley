@@ -5,21 +5,30 @@
 - [North Star](north-star)
 
 **By phase**
-- [Prototype](01-prototype-INDEX)
-- [Alpha](02-alpha-INDEX)
-- [Beta](03-beta-INDEX)
-- [Content Updates](04-content-INDEX)
+- [Prototype](01-Prototype)
+- [Alpha](02-Alpha)
+- [Beta](03-Beta)
+- [Content Updates](04-Content)
 
 **Art**
-- [Art](art-INDEX)
+- [Art](Art)
+
+**Narrative**
+- [Outline](narrative-outline)
+- [Discipline](narrative-discipline)
+
+**Tech-art**
+- [Tech-art](tech-art)
 
 **Process**
 - [Ticket Writing](process-ticket-writing)
 - [Labels](process-labels)
 
 **Research**
-- [Early Clone Games](research-early-clone-games)
+- [The Case for Open Development](research-the-case-for-open-development)
+- [STYLE](research-STYLE)
 - [Visual Positioning](research-visual-positioning)
+- [Early Clone Games](research-early-clone-games)
 
-**Roadmaps**
-- [Roadmaps](roadmaps-INDEX)
+**AI**
+- [Swarm Architecture](ai-swarm-architecture)

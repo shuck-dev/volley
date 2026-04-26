@@ -73,7 +73,7 @@ The shopkeeper is back. What form this takes in the pong world is an open questi
 
 Relationship level increases through visits: levelling, destruction, synergy attempts, story beats. It does not decrease.
 
-Three tiers. Each tier unlocks a deeper register of entry dialogue. This is the only thing relationship gates. The Tinkerer does not become more helpful mechanically; they become more present.
+Three tiers. Each tier unlocks a more candid layer of entry dialogue. This is the only thing relationship gates. The Tinkerer does not become more helpful mechanically; they become more present.
 
 ---
 

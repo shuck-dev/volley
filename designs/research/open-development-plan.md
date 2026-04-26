@@ -1,4 +1,4 @@
-# Open Development as the Path for New Indies — Essay Plan
+# Open Development as the Path for New Indies: Essay Plan
 
 A scaffolding document. The essay earns its argument through peer evidence before it ever names itself.
 
