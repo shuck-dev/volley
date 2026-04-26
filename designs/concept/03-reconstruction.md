@@ -1,6 +1,6 @@
 # Reconstruction
 
-Part 2. The arc after the break: dread, the search, the photo album, the unnamed number that never connects, the key that opens the gate. High-level architecture in `00-three-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the call in `05-postgame.md`.
+Part 2. The arc after the break: dread, the search, the photo album, the unnamed number that never connects, the key that opens the gate. High-level architecture in `00-two-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the call in `05-postgame.md`.
 
 ## What Part 2 is
 

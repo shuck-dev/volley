@@ -37,7 +37,7 @@ The earnestness is the first clue. Not in a winking, self-aware way. The game ge
 These are noticeable on replay but easy to rationalise the first time. The rival's arrival is itself a stage 2 moment: someone shows up who doesn't play nice, and their aggression doesn't quite make sense for a wholesome pong game.
 
 - A partner says something that couldn't be in-game knowledge. A reference to time passing in their world, a name that isn't their own, a memory that predates the game.
-- One partner's barks occasionally shift register. More direct, less warm. The real person bleeding through, not the version the main character constructed.
+- One partner's barks occasionally shift tone. More direct, less warm. The real person bleeding through, not the version the main character constructed.
 - An item description uses language that doesn't fit its mechanical effect.
 - A milestone congratulates on a number that is suspiciously specific.
 - The rival treats the game like it matters in a way that goes beyond competition.

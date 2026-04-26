@@ -1,6 +1,6 @@
 # The Cliff, the Call, the Postgame
 
-The ending and what comes after. The cliff is the chosen-acceptance bookend to the break; the call is the one beat the whole game has been reaching for; the credits play over the rally that proves it; postgame keeps the rally going. High-level architecture in `00-three-styles.md`. Part 2's arc into the gate is in `03-reconstruction.md`.
+The ending and what comes after. The cliff is the chosen-acceptance bookend to the break; the call is the one beat the whole game has been reaching for; the credits play over the rally that proves it; postgame keeps the rally going. High-level architecture in `00-two-styles.md`. Part 2's arc into the gate is in `03-reconstruction.md`.
 
 ## The cliff and the call
 

@@ -1,6 +1,6 @@
 # Cracks and the Break
 
-The wall thinning across Part 1, the championship win that lands wrong, and the involuntary first walk through the hometown. These three beats are one continuous shape and live in one doc. High-level architecture in `00-three-styles.md`; Construction's detail in `01-construction.md`; Part 2 picks up in `03-reconstruction.md`.
+The wall thinning across Part 1, the championship win that lands wrong, and the involuntary first walk through the hometown. These three beats are one continuous shape and live in one doc. High-level architecture in `00-two-styles.md`; Construction's detail in `01-construction.md`; Part 2 picks up in `03-reconstruction.md`.
 
 ## Cracks
 
