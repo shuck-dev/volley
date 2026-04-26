@@ -1,4 +1,4 @@
-# Character lighting pipeline
+# Character Lighting Pipeline
 
 Post-prototype scope. Volley!'s prototype authors character lighting into the sprite per venue: the painted light is the light the characters see, and the characters are painted to match it. This doc captures the dynamic light-state pipeline planned for the full-pass art phase, so the direction is recorded without committing prototype time to implementation.
 

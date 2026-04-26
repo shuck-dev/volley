@@ -8,7 +8,7 @@ This is a living spike. Colours, typography, and per-character notes still route
 
 ## Game shape
 
-Volley! is 2D throughout. Hand-drawn sprites, Control-node UI, Parallax2D backgrounds. Characters are simple and expressive; environments carry depth through layered, painted backgrounds. Two registers share the same assets where possible and diverge through palette, light, and edge treatment.
+Volley! is 2D throughout. Hand-drawn sprites, Control-node UI, Parallax2D backgrounds. Characters are simple and expressive; environments carry depth through layered, painted backgrounds. Two styles share the same assets where possible and diverge through palette, light, and edge treatment.
 
 The target resolution is **1920x1080**, set in `project.godot` under `window/size`. Stretch mode is `canvas_items`: the viewport scales to the window while Control and CanvasItem nodes keep crisp edges. All sprite and layout budgets in this doc assume that base.
 
@@ -69,7 +69,7 @@ assets/
 
 One asset, one canonical path. If the shop and the kit both show the same item, they reference the same PNG in `surfaces/`. If the pinboard shows it in the world and a HUD slot shows it as an icon, same file. Duplicated sprites rot separately.
 
-File names are `lower_snake_case.png`. Animation frames suffix the state: `martha_idle_01.png`, `martha_idle_02.png`, `martha_hit.png`. Registers suffix the file: `kitchen_real.png` alongside `kitchen_constructed.png`. Each register ships its own painted asset (see [Register shift](#register-shift)).
+File names are `lower_snake_case.png`. Animation frames suffix the state: `martha_idle_01.png`, `martha_idle_02.png`, `martha_hit.png`. Styles suffix the file: `kitchen_real.png` alongside `kitchen_constructed.png`. Each style ships its own painted asset (see [Style shift](#style-shift)).
 
 ---
 
@@ -129,7 +129,7 @@ Venues use **Parallax2D** (available since Godot 4.3; Volley! runs on 4.6.2, the
 4. **Near foreground.** Near props, foreground trim. Slightly faster than the playing surface.
 5. **Foreground.** Occasional foreground pass (a beam, a curtain edge) that sells depth. Optional.
 
-Scroll scales tune per venue. The court stays composed; The Break reveal uses a looser, slower parallax to mark the register shift.
+Scroll scales tune per venue. The court stays composed; The Break reveal uses a looser, slower parallax to mark the style shift.
 
 Layers are authored as **separate PNGs sized to the layer's visible range** (at the @2x authoring density from [Sprites](#sprites)), not full-resolution panoramas. A background layer the camera only sees 2000 logical pixels of is authored at 4000px, not at 8000px or the full world width. Repeat, if needed, is handled by `Parallax2D.repeat_size`.
 
@@ -168,20 +168,20 @@ Runtime lighting is reserved for two roles:
 
 `DirectionalLight2D` and `PointLight2D` with `shadow_enabled = true` are avoided; shadows come from painting. The ball's trail and hit spark FX are `GPUParticles2D` on an additive blend layer, not light.
 
-### Register shift
+### Style shift
 
-**The constructed-to-real shift is a repaint.** This is the only way it actually looks good. Shader tricks and global tint cannot recover the reweighted line, the cooler pigments, the loosened edges that make the real register feel like the same world seen honestly; attempting to fake it produces the "filter over the same image" look the bible explicitly rejects.
+**The constructed-to-real shift is a repaint.** This is the only way it actually looks good. Shader tricks and global tint cannot recover the reweighted line, the cooler pigments, the loosened edges that make the real style feel like the same world seen honestly; attempting to fake it produces the "filter over the same image" look the bible explicitly rejects.
 
 Each venue ships two painted sets:
 
-- **Constructed register.** Warm, saturated, arranged. The world as the player wants to see it.
-- **Real register.** Cooler, muted, looser. Same silhouettes, same staging, repainted.
+- **Constructed style.** Warm, saturated, arranged. The world as the player wants to see it.
+- **Real style.** Cooler, muted, looser. Same silhouettes, same staging, repainted.
 
-Characters follow the same rule: constructed and real sprite sets per character where the register shift is felt. The bible's "silhouettes hold across both registers; only the light, colour, and line quality shift" rule governs what stays and what moves.
+Characters follow the same rule: constructed and real sprite sets per character where the style shift is felt. The bible's "silhouettes hold across both styles; only the light, colour, and line quality shift" rule governs what stays and what moves.
 
-At runtime the shift is a crossfade between the two painted sets, timed to the narrative beat, delivered through a `RegisterManager` that swaps sprite textures on affected nodes and tweens opacity between them. Shaders and modulation are adjuncts used only where the repaint itself does not need help: a mild saturation ease on the frame during the crossfade, a brief dimming of over-arranged props as the real register settles in. The heavy lifting is paint.
+At runtime the shift is a crossfade between the two painted sets, timed to the narrative beat, delivered through a `StyleManager` that swaps sprite textures on affected nodes and tweens opacity between them. Shaders and modulation are adjuncts used only where the repaint itself does not need help: a mild saturation ease on the frame during the crossfade, a brief dimming of over-arranged props as the real style settles in. The heavy lifting is paint.
 
-The Break itself is the exception: a scripted, one-time transition with authored keyframes in an `AnimationPlayer`, permitting stronger visual disruption than the routine register shift.
+The Break itself is the exception: a scripted, one-time transition with authored keyframes in an `AnimationPlayer`, permitting stronger visual disruption than the routine style shift.
 
 ---
 
@@ -191,8 +191,8 @@ Kept minimal. Every shader is a named resource under `resources/shaders/` with a
 
 Shipping list (spike-time):
 
-- **`register_shift.gdshader`:** CanvasItem shader used only as an easing adjunct during a register crossfade (saturation and edge-softness offsets driven by one float). The shift itself is the repaint; this shader smooths the transition while the painted sets swap.
-- **`painted_outline.gdshader`:** CanvasItem shader that thickens and breaks the existing painted outline at a per-sprite modulation. Used sparingly on a handful of props whose silhouettes need to harden in the real register; disabled by default.
+- **`style_shift.gdshader`:** CanvasItem shader used only as an easing adjunct during a style crossfade (saturation and edge-softness offsets driven by one float). The shift itself is the repaint; this shader smooths the transition while the painted sets swap.
+- **`painted_outline.gdshader`:** CanvasItem shader that thickens and breaks the existing painted outline at a per-sprite modulation. Used sparingly on a handful of props whose silhouettes need to harden in the real style; disabled by default.
 - **`streak_glow.gdshader`:** additive CanvasItem shader on the ball when streak count crosses thresholds.
 
 No screen-space post-process stack. If an effect is universal enough to sit at the Viewport level, it is painted into the backgrounds instead.
