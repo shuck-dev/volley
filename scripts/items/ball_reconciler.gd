@@ -39,8 +39,9 @@ func _ready() -> void:
 
 
 ## Scans `_ball_host` for Ball instances not yet tracked and registers each
-## under a synthetic key, emitting ball_spawned so listeners (drag controller)
-## wire their per-ball connections. Idempotent; safe to call repeatedly.
+## under its authored item_key (or a synthetic key as a fallback), emitting
+## ball_spawned so listeners (drag controller) wire their per-ball connections.
+## Idempotent; safe to call repeatedly.
 func adopt_pre_existing_balls() -> void:
 	if _ball_host == null:
 		return
@@ -57,9 +58,15 @@ func adopt_pre_existing_balls() -> void:
 		# Skip if a listener has already wired Ball.pressed; re-emitting would double-connect.
 		if ball.pressed.get_connections().size() > 0:
 			continue
-		var key: String = "%s%d" % [ADOPTED_BALL_KEY_PREFIX, _adopted_ball_counter]
-		_adopted_ball_counter += 1
+		var key: String
+		if ball.item_key != "":
+			key = ball.item_key
+		else:
+			key = "%s%d" % [ADOPTED_BALL_KEY_PREFIX, _adopted_ball_counter]
+			_adopted_ball_counter += 1
 		_balls_by_key[key] = ball
+		# Apply the item's authored art so the held token (and the live ball) render with the canonical visual.
+		_apply_item_art(ball, key)
 		ball_spawned.emit(key, ball)
 
 

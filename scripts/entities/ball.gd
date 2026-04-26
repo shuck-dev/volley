@@ -9,6 +9,9 @@ signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
+## Item key this ball represents; the reconciler reads this on adoption so the held token finds the matching ItemDefinition.
+@export var item_key: String = ""
+
 var speed: float = 0.0
 var min_speed: float
 var max_speed: float

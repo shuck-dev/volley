@@ -217,7 +217,7 @@ func _release_onto_court(
 
 
 ## Clear held-token state after a successful commit (rack accept or court spawn).
-func _finalise_gesture(item_key: String, position: Vector2, over_court: bool) -> void:
+func _finalise_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
 	if _held_token != null:
 		_held_token.queue_free()
 	_held_token = null
@@ -227,7 +227,7 @@ func _finalise_gesture(item_key: String, position: Vector2, over_court: bool) ->
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
-	drop_completed.emit(item_key, position, over_court)
+	drop_completed.emit(item_key, release_position, over_court)
 
 
 ## SH-287 patch: pre-spawn body projection. Returns true if a ball-sized circle at the position would not overlap any physics body.
