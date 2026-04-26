@@ -189,7 +189,7 @@ func _complete_purchase() -> bool:
 	return _item_manager.take(item_definition.key)
 
 
-func _is_position_inside_shop(position: Vector2) -> bool:
+func _is_position_inside_shop(world_position: Vector2) -> bool:
 	if _shop_area == null:
 		return false
 	var shape_node: CollisionShape2D = null
@@ -204,7 +204,7 @@ func _is_position_inside_shop(position: Vector2) -> bool:
 		return false
 	var half: Vector2 = rectangle.size * 0.5
 	var center: Vector2 = _shop_area.global_position + shape_node.position
-	return Rect2(center - half, rectangle.size).has_point(position)
+	return Rect2(center - half, rectangle.size).has_point(world_position)
 
 
 func _cursor_position() -> Vector2:
