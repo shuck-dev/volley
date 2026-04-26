@@ -28,11 +28,11 @@ Every piece of art in Volley! carries all six. Not style rules, not commandments
 
 Volley! has two visual worlds that share the same shapes, proportions, and line work. The difference is how much comfort the art offers. The constructed world is a simplification of the real one: the same place, rendered by someone who needed it to be okay.
 
-**Constructed.** The pong arena the main character built. Saturated colour, clean edges, soft arranged light, composed frames. Every element placed with care. The warmth is genuine and also a shield.
+**Constructed.** A tennis tournament the main character built across impossible venues: a treetop canopy, an underwater court, a meteor field, and at the warm centre a garden that meets Reality at its edge. Vibrant colour, clean edges, arranged light, every frame composed. The warmth is genuine and a shield.
 
-**Real.** The world underneath. Same shapes, same characters. Quieter palette, looser edges, light falling where it falls, things where they actually are. More detail and depth than the constructed world; it has been lived in, not arranged. Not ugly or hostile, just ordinary, familiar, and carrying things the constructed world was built to cover.
+**Real.** The hometown the main character left. A two-storey house with a worn back fence, a kitchen with the kettle still warm, the same garden the tournament holds at its centre, only smaller and with weeds. Muted palette, looser line, the light wherever the time of day puts it.
 
-The shift between them is not a style change. Saturation, edge quality, lighting intention, level of detail, and arrangement move; the visual DNA holds.
+The shift between them IS a style change. Saturation, edge quality, lighting intention, level of detail, and arrangement all move. The visual DNA holds: the same shapes, proportions, and line work carry across.
 
 The real world is revealed at **The Break**, when the player walks through the main character's hometown. Everyone the player has been playing with appears as the people they are drawn from.
 
