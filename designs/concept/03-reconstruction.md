@@ -1,16 +1,16 @@
 # Reconstruction
 
-The arc. The long phase between the break and the cliff. The wall stays down; the player can travel between Construction and Reality at will. The protagonist is reconstructing their view of the world. High-level architecture in `00-three-registers.md`.
+The arc. The long phase between the break and the cliff. The wall stays down; the player can travel between Construction and Reality at will. The protagonist is reconstructing their view of the world. High-level architecture in `00-three-styles.md`.
 
 ## What Reconstruction is
 
-Reconstruction is not a third visual register. The two registers stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) is still gold-hour. Reconstruction is the meta-state in which the player has access to both and can carry across.
+Reconstruction is not a third visual style. The two styles stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) is still gold-hour. Reconstruction is the meta-state in which the player has access to both and can carry across.
 
 Reconstruction's Construction is missing its warm centre. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. The bright world has been hollowed out where it used to be warmest. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
 
 Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the championship; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Three changes mark Reconstruction at the play level:
 
-- **The score is hidden in Construction.** In Construction, the count climbs visibly; the player chases the number. In Reconstruction, the number disappears from the rally. The player rallies without knowing how close they are to the call. The number can still be checked, but only by visiting somewhere in Reality (the sister's, the closed shop, the cliff). The score migrates from Construction to Reality. The player has to leave the rally to know how close they are; that is the exact register-shift Reconstruction wants to feel like.
+- **The score is hidden in Construction.** In Construction, the count climbs visibly; the player chases the number. In Reconstruction, the number disappears from the rally. The player rallies without knowing how close they are to the call. The number can still be checked, but only by visiting somewhere in Reality (the sister's, the closed shop, the cliff). The score migrates from Construction to Reality. The player has to leave the rally to know how close they are; that is the exact style-shift Reconstruction wants to feel like.
 - **The champ's dialogue softens gradually.** In Construction, the champ's lines are sharp, pushing, the friend's old habit of not letting the protagonist coast. Across Reconstruction the lines soften beat by beat, until late in the arc the champ sounds like a friend again. The shift is in what gets said and how, not in a stat. The player notices the change through the dialogue alone.
 - **Audio shifts.** The construction's bright synthetic music thins and acoustic instruments arrive, with the balance moving toward fuller arrangement by late Reconstruction. Full direction in SH-281.
 
@@ -21,7 +21,7 @@ The carry is what Reconstruction enables. Bidirectional and selective. Not anyth
 - **Constructs into Reality.** Specific Construction items, characters, or memories can be brought into Reality and used in specific reconciliation scenes. The construction is what the protagonist built to keep going; in Reconstruction, the things they built turn out to be useful in the world they were avoiding. Which constructs are carry-able and which are not is a narrative decision per content beat, not an open mechanic.
 - **Reality into Construction.** Specific real-world acknowledgements feed back into the rally. New venues unlock; coaches gain new lines; the bright world acknowledges what it had been hiding from. Hints for Reality's next reconciliation surface in Construction. Same gate: which acknowledgements bridge back is a curated narrative call.
 
-The visual signal of Reconstruction is the act of crossing, plus the persistent presence of one register's elements when the player is in the other. The bridge itself is the new affordance.
+The visual signal of Reconstruction is the act of crossing, plus the persistent presence of one style's elements when the player is in the other. The bridge itself is the new affordance.
 
 As the carry accumulates, the bright world ages with the player. Saturation drops a notch; line weight thickens; compositions hold longer pauses. The construction does not visually rebuild; it weathers.
 

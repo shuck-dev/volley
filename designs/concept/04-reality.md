@@ -1,10 +1,10 @@
 # Reality
 
-The second register. Visually distinct from Construction, mechanically a different game, story-driven. The protagonist's hometown, geographically static, with content added across Reconstruction. Reachable only voluntarily once Reconstruction begins (`03-reconstruction.md`).
+The second style. Visually distinct from Construction, mechanically a different game, story-driven. The protagonist's hometown, geographically static, with content added across Reconstruction. Reachable only voluntarily once Reconstruction begins (`03-reconstruction.md`).
 
 ## The place
 
-Reality is one place: the protagonist's hometown. A small coastal town, British-seaside-meets-southern-Spain. Terraced houses next to whitewashed walls; a high street that smells of both rain and citrus; light shifting between northern grey and Mediterranean glare. Ordinary, lived-in.
+Reality is one place: the protagonist's hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours, the palette of Tenby and Aberaeron: pinks, yellows, sea-greens, sky-blues. Whitewashed walls. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Faded grandeur with sun on it. Ordinary, lived-in.
 
 The place is geographically static. The map does not grow; the town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Reconstruction, things are added: people the player can meet, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
 
@@ -18,7 +18,7 @@ Reality is interaction-driven, not rally-driven. The player walks into a scene, 
 
 ## The cast in Reality
 
-Reality holds the real-world version of every cross-register character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Reconstruction.
+Reality holds the real-world version of every cross-style character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Reconstruction.
 
 - **The sister**: the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo book (see below). One of the first reachable people in Reality.
 - **Martha and the partners (in Reality)**: the cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.

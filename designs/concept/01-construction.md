@@ -1,6 +1,6 @@
 # Construction
 
-The bright world. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `00-three-registers.md`.
+The bright world. The pretense the protagonist is actively maintaining. This doc carries Construction's detail; high-level architecture lives in `00-three-styles.md`.
 
 ## What Construction is
 
@@ -16,7 +16,7 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 ### Supporting cast
 
-- **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
+- **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout the bright world; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching styles.
 - **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into the bright world as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
 - **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`04-reality.md`).

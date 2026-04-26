@@ -1,6 +1,6 @@
 # The Call and Postgame
 
-The ending and what comes after. High-level architecture in `00-three-registers.md`.
+The ending and what comes after. High-level architecture in `00-three-styles.md`.
 
 ## The call
 
@@ -19,6 +19,12 @@ The call lands. Both hang up; the door opens. The composition flows from the spl
 This is the postgame opening, and it is not a transition. The player never leaves the moment. The call IS the act of bringing the shopkeeper home; the home is the court; the rally that begins is postgame. The construction's warmth has returned, but as the actual relationship rather than the substitute. The right person is in the right spot.
 
 The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
+
+## Credits
+
+Credits roll over the rally. The first one between the MC and the shopkeeper, the championship spot occupied by the actual person, racquet in their hand, the ball going back and forth. The substitute is gone; the right side of the court holds the friend the protagonist had been reaching for the whole time. The names scroll over the play. The rally keeps going.
+
+The image is the proof: the daily thing the protagonist did alone is finally done together.
 
 ## Postgame
 
