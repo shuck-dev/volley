@@ -17,7 +17,7 @@ This is a working set of docs. Refinement passes follow.
 
 Volley holds two worlds. The player meets the first as the world. The second arrives later and is the one that was always there.
 
-**Construction** is the vibrant one. A garden in late afternoon, a stall against the inside wall, a racquet on the left, a friend's head turned toward the play. Saturated colour, generous light. Tennis lives here and only here. The protagonist built it and keeps it tending. The warmth in it is real; the rendering is the pretense.
+**Construction** is the vibrant one. A garden in late afternoon, a stall against the inside wall, a racquet on the left, a friend at the counter watching the rally, glad to be there. Saturated colour, generous light. Tennis lives here and only here. The protagonist built it and keeps it tending. The pretense is the rendering, not the protagonist's care.
 
 **Reality** is the protagonist's actual hometown. A small coastal town on the Welsh and Cornish coast in an imagined warmer climate: painted terraces in seaside colours, whitewashed walls, palm trees in places, Mediterranean light on a British coastline. The same people live here at their actual ages. One of them, the friend from the stall, has been pushed away. Reality is gold-hour, weighted, plainer.
 
