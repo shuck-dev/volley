@@ -8,7 +8,7 @@ This layer is narrative. The bible is the decision layer.
 
 ## Warmth that carries weight
 
-The cozy surface is not a lie. Warmth is the main register: interior light, soft colour, hand-drawn confidence. Under the warmth sits something honest. The art has to hold both at once without undercutting either.
+The bright surface is not a lie. Warmth is the main register: interior light, vibrant colour, hand-drawn confidence. Under the warmth sits something honest. The art has to hold both at once without undercutting either.
 
 ## Simple shapes, full emotion
 

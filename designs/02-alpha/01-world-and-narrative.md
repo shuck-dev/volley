@@ -6,7 +6,7 @@ The world building and emotional core of Volley!. Who these people are, what hap
 
 ## The premise (what the player thinks)
 
-A plucky little paddle has a dream: beat the world volley record. It trains, recruits friends, gets better. Cozy, wholesome, idle. Nothing is wrong.
+A plucky little paddle has a dream: beat the world volley record. It trains, recruits friends, gets better. Warm, wholesome, idle. Nothing is wrong.
 
 ---
 
@@ -76,7 +76,7 @@ The first partner. The cashier at the local newsagent. See `01-prototype/11-firs
 
 ### Pre-break
 
-The cozy idle game. The surface holds. Clues build through partner barks, item descriptions, and the rival's presence, but the game feels warm and safe. The main character is hiding and it's working.
+The idle game at its warmest. The surface holds. Clues build through partner barks, item descriptions, and the rival's presence, but the game feels warm and safe. The main character is hiding and it's working.
 
 ### The break
 
@@ -120,5 +120,5 @@ The game is personal, emotional, and sad. It earns that sadness and doesn't wall
 **The narrative should always:**
 - Respect players who don't engage with it. The game works without the story.
 - Reward players who do. Attention should feel valued, not required.
-- Let the warmth be real. The cozy surface is not a trick. Learning the truth doesn't retroactively ruin the fun.
+- Let the warmth be real. The bright surface is not a trick. Learning the truth doesn't retroactively ruin the fun.
 - Move forward. The break happens, the game continues, the player and the paddle both keep going.

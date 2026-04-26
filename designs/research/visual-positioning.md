@@ -10,7 +10,7 @@ Jordan Morris released *Rusty's Retirement* in April 2024: a pixel farming sim t
 
 This is an unusual kind of hit. Its technical footprint is modest. Its art style is the retro-pixel register almost every Steam idle defaults to. It is not visually ambitious, and it does not try to be. What made it land was the fit: the game takes the shape of the time the player has to give it. Against the dashboard maximalism that has defined the idle genre since *Cookie Clicker*, and against the mobile cozy lineage that has grown for a decade, *Rusty's* names something quieter. A game you work beside, not over.
 
-Volley! is neither *Rusty's Retirement* nor a *Cookie Clicker* descendant. It shares *Rusty's* attitude (a game that sits with the player through a long day) but builds a different object: a hand-drawn pong rally as the idle loop, a cozy surface that opens into harder material as the story goes, and a secondary desktop-companion mode that enters the ambient category only after the primary work is done. The question is whether the combination has a place in the current indie landscape, and what the game has to be to earn it.
+Volley! is neither *Rusty's Retirement* nor a *Cookie Clicker* descendant. It shares *Rusty's* attitude (a game that sits with the player through a long day) but builds a different object: a hand-drawn pong rally as the idle loop, a warm surface that opens into harder material as the story goes, and a secondary desktop-companion mode that enters the ambient category only after the primary work is done. The question is whether the combination has a place in the current indie landscape, and what the game has to be to earn it.
 
 ---
 
@@ -84,7 +84,7 @@ The criticism of *Omori* worth registering is about pacing. Some reviewers found
 
 Two more recent releases fill out this lineage. *In Stars and Time* (insertdisc5, November 2023, ongoing accolades into 2025) runs a hand-drawn storybook cast through a time-loop. The game opens charming and settles into a meditation on repetition and friendship. *The Berlin Apartment* (Inkas Games, November 2025) uses a renovation-and-relics framing to shift between a present-day apartment and historical vignettes across decades of Berlin life, delivering dual-timeline warmth through ordinary domestic tasks. *Herdling* (Okomotive, August 2025), from the studio behind *FAR: Lone Sails*, runs a pastoral journey guiding creatures up a mountain, with small narrative beats revealing heavier themes through environmental storytelling.
 
-What these games share is a refusal to treat the cozy surface as a lie to be dismantled. Learning the truth in *Omori* does not punish the player for enjoying Headspace. The grief in *Wanderstop* does not undercut the satisfaction of brewing tea. Volley! takes the same approach. The cozy idle works without the narrative layer, and the narrative layer does not retract the warmth.
+What these games share is a refusal to treat the warm surface as a lie to be dismantled. Learning the truth in *Omori* does not punish the player for enjoying Headspace. The grief in *Wanderstop* does not undercut the satisfaction of brewing tea. Volley! takes the same approach. The idle loop works without the narrative layer, and the narrative layer does not retract the warmth.
 
 ---
 
@@ -96,7 +96,7 @@ What makes it relevant here is how the art behaves under narrative pressure. The
 
 *Slay the Princess* shares *The Stanley Parable*'s unreliable-narrator structure, but delivers it through art rather than script. The combination of drawn-by-hand specificity, shifting forms, and register responsive to player interpretation is a direct influence on how Volley! thinks about its own visual storytelling. The two registers Volley! works in (constructed and real) are a milder version of the same move: the art changes because the story has changed, and the change is the point.
 
-Hand-made quality reads as honest in a way polished rendering does not, which matters for a game with a cozy surface that needs to be trusted. Art that shifts with narrative is a structural device, not decoration. Visual ambition at indie scale comes down to matching technique to scope early: pencil and paper for *Slay the Princess*; simple shapes that carry expression through motion for Volley!.
+Hand-made quality reads as honest in a way polished rendering does not, which matters for a game with a warm surface that needs to be trusted. Art that shifts with narrative is a structural device, not decoration. Visual ambition at indie scale comes down to matching technique to scope early: pencil and paper for *Slay the Princess*; simple shapes that carry expression through motion for Volley!.
 
 ---
 
@@ -114,7 +114,7 @@ Volley!'s secondary mode sits in this category with a specific constraint. Most 
 
 Each current Volley! combines has a recent exemplar. *Despelote* for sport as an emotional frame [5][7]. *Wanderstop* for the cozy-to-honest register shift [9][10][11]. *Slay the Princess* for hand-drawn art that responds to narrative [29][30]. *Rusty's Retirement* for desktop-resident idle as a commercial format [1][2][3]. The exemplars exist. The scarcity is in combining them.
 
-That scarcity is structural. Each thread carries its own production discipline, its own design conviction, and its own demand on player trust. Holding four disciplines in one release is harder than delivering any one of them, and the difficulty is what keeps the intersection open. A hand-drawn idle with sport at its centre, cozy-to-honest weight underneath, and art that shifts with the narrative is the specific thing the 2025 landscape has not built.
+That scarcity is structural. Each thread carries its own production discipline, its own design conviction, and its own demand on player trust. Holding four disciplines in one release is harder than delivering any one of them, and the difficulty is what keeps the intersection open. A hand-drawn idle with sport at its centre, warmth-to-honest weight underneath, and art that shifts with the narrative is the specific thing the 2025 landscape has not built.
 
 For the secondary desktop-companion mode, *Rusty's Retirement* is the format peer and *Desktop Meadow* the spirit peer. The primary experience is where the position's weight sits.
 
