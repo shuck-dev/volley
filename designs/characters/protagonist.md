@@ -33,12 +33,22 @@ The pull is the urge to do the destructive thing when nothing forces it. To jump
 It surfaces in places the artist and animator can feel for, not script:
 
 - The cliffhanger leap to the next venue. The player triggers it; the world thins on the brink of something else; the choice to fall is theirs.
-- The locked gate at the back of the garden. The protagonist tries it. It does not open. They turn back. (The gate opens at the call; the cliff is on the other side. The champ leaves the key.)
+- The locked gate at the back of the garden. The protagonist tries it. It does not open. They turn back. (The gate opens later, after Reconstruction: the sister hands them the key from the photo album's hidden compartment once it has filled enough; they unlock the gate; they walk to the cliff on the other side.)
 - The ball about to roll out of the play area. The moment the protagonist could let it go.
 - The pause before serving in a long rally. The awareness, held inside the breath, that they could stop.
 - The edges of the play area where their gaze drifts past it.
 
 The structure holds because they choose it, again and again, not because anything forces it on them. That is the load-bearing piece. Hold it as a quiet undercurrent in posture and timing; let the choice be the visible thing.
+
+---
+
+## Becoming the champ
+
+A second layer underneath the structure. It sits next to the void, not under it.
+
+Across Construction the protagonist is climbing toward the championship, and the obsession pulls in two directions at once. They want to become the champion of the world they built: the title, the record, the spot at the top of the climb. They also want to become the champ inside that world, a friend now drawn as the partner at the final venue. The same word does both jobs and the protagonist does not separate them. Winning the title and reaching the friend are one motion to them, even though the world cannot grant the second.
+
+The doubled pull is what makes the championship win land the way it does. Both meanings are satisfied at the same beat and neither was the thing the protagonist actually needed. Hold this as quiet weight in how they treat the climb: not triumph, not desperation, a steadiness that knows what it is reaching for and does not yet know it is reaching past it.
 
 ---
 
@@ -59,6 +69,16 @@ The same person at their actual age. A small moment with a partner in an ordinar
 They love the game. They love the friend at the stall. They reach for the partners they reach for: Martha first, because she was reliably kind and asks nothing of them yet; others, harder, later.
 
 The structure was built around what they love. The grief and the void are real; so is the love, and it is the reason the structure stands. The protagonist is not surviving in the garden. They are living there. Quietly, partially, on the days they can; that is still living.
+
+---
+
+## The call
+
+At the cliff, with the key spent and the gate open behind them, the protagonist sees the shopkeeper on a bench dedicated to the friend. The bench is a few steps away. The protagonist could close that distance silently. They do not.
+
+They take out their phone and dial. The number they finally have is the number they have been climbing toward the whole climb, surfacing across Reconstruction in places it should not be, becoming a phone number across the player's eyes. The shopkeeper's phone rings on the bench beside them; they turn at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+
+The dial bridges intention, not space. Chosen presence rather than a closing of distance. The few steps between path and bench are easy; the choice to be reached, and to reach, is the part that took the whole game. After the call the protagonist crosses, sits beside the shopkeeper on the bench. The call ends there.
 
 ---
 
