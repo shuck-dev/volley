@@ -53,7 +53,7 @@ The garden in Construction draws from this geography. Construction's other venue
 
 Construction and Reality are distinct worlds. Two styles, two visual treatments, two ways the player engages.
 
-**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Volleyball lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
+**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in `designs/concept/01-construction.md`.
 
 **Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in `designs/concept/04-reality.md`.
 
