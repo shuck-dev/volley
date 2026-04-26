@@ -120,5 +120,5 @@ The game is personal, emotional, and sad. It earns that sadness and doesn't wall
 **The narrative should always:**
 - Respect players who don't engage with it. The game works without the story.
 - Reward players who do. Attention should feel valued, not required.
-- Not punish the player for loving Construction. Learning the truth does not retroactively ruin the fun.
+- Not punish the player for enjoying Construction. Learning the truth does not retroactively ruin the fun.
 - Move forward. The break happens, the game continues, the player and the paddle both keep going.
