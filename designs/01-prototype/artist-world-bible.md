@@ -438,7 +438,7 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section 3 (overview), threaded through Parts 1 and 2.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
-- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones across the small distance between path and bench. Section 9.
+- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones, the call open between them. Section 9.
 - **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections 1 and 9.
 - **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section 8.
 - **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
