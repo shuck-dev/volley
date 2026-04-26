@@ -4,11 +4,11 @@ The bible's section list and the canon each section serves. A reference for what
 
 ## The architecture in one paragraph
 
-Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall. The second is the protagonist's actual hometown, a coastal town in gold-hour light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The bright world is structured as a tournament the protagonist climbs; somewhere at the top sits a friend who died, and the climb cannot pass them. When the climb fails, the bright world's warm centre goes dark and the player begins moving freely between the two worlds, carrying things from one into the other, until the path opens to the door of the friend who was pushed away. The bible names the bright world **Construction**, the hometown **Reality**, the long arc between the failed climb and the call **Reconstruction**, the rupture itself **the break**, the door scene **the call**, the place where the friend died **the cliff**, the friend at the top of the ladder **the champ**, and the friend at the stall **the shopkeeper**. The Glossary at the end of the bible re-loads each term in one place.
+Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall. The second is the protagonist's actual hometown, a coastal town in warm slant light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. Construction is structured as a tournament the protagonist climbs; somewhere at the top sits a friend who died, and the climb cannot pass them. When the climb fails, Construction's warm centre goes dark and the player begins moving freely between the two worlds, carrying things from one into the other, until the path opens to the door of the friend who was pushed away. The bible's terms: the constructed world is **Construction**, the hometown is **Reality**, the long arc between the failed climb and the call is **Reconstruction**, the rupture is **the break**, the door scene is **the call**, the place where the friend died is **the cliff**, the friend at the top of the ladder is **the champ**, and the friend at the stall is **the shopkeeper**. The Glossary at the end of the bible re-loads each term in one place.
 
-Everyone in the game is real. The bright-world cast is the real-world cast rendered young, vibrant, helping. Two different asset sets for each character that appears in both registers. The exception is the champ (Construction-only; their reality is the cliff).
+Everyone in the game is real. The Construction cast is the real-world cast rendered young, vibrant, helping. Two different asset sets for each character that appears in both registers. The exception is the champ (Construction-only; their reality is the cliff).
 
-The MC is drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. Visible throughout in both registers. The image stays consistent through the bright world; the contrast comes from register-switching, not metamorphosis.
+The MC is drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. Visible throughout in both registers. The image stays consistent through Construction; the contrast comes from register-switching, not metamorphosis.
 
 ## Section list
 
@@ -20,7 +20,7 @@ A one-paragraph reload of the architecture, sitting between the framing and sect
 
 ### A. What the game is
 
-The hook in the friend's voice in the first session: chase the world volley record. The protagonist's stated goal in the bright world. What the player does not know yet: the world record is the shopkeeper's phone number; every volley counts toward dialling someone the protagonist could reach but won't.
+The hook in the friend's voice in the first session: chase the world volley record. The protagonist's stated goal in Construction. What the player does not know yet: the world record is the shopkeeper's phone number; every volley counts toward dialling someone the protagonist could reach but won't.
 
 The bible keeps the player-facing hook visible (the championship to chase) and gives the artist the underlying canon (the number is a phone number) so every render of the count carries the right weight.
 
@@ -30,7 +30,7 @@ The rendering rulebook, moved up from its previous trailing position. Intentiona
 
 ### C. Construction
 
-The bright world. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. The volley record is the goal; the count is the engine. The structure is a tournament: the protagonist climbs through rounds, one per venue, with a coach-partner for each.
+Construction. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. The volley record is the goal; the count is the engine. The structure is a tournament: the protagonist climbs through rounds, one per venue, with a coach-partner for each.
 
 What construction LOOKS like: described directly (see voice rules : no brand names). Saturation, youth, motion, generosity of light, fullness of detail, characters present and active.
 
@@ -46,7 +46,7 @@ Cracks must be tonal, not concrete. The artist's hardest job in the bible: paint
 
 The rupture. Both cumulative (cracks pile up) and singular (one moment is the failure that makes the rest legible). The artist's job is to render the moment when the construction's maintenance can no longer be sustained.
 
-At the break the shop closes; the shopkeeper exits the construction. The friend at the stall is gone. The warm centre is hollowed out. The bright world the player returns to after the break has lost its anchor; that absence is the felt difference of Reconstruction.
+At the break the shop closes; the shopkeeper exits the construction. The friend at the stall is gone. The warm centre is hollowed out. Construction the player returns to after the break has lost its anchor; that absence is the felt difference of Reconstruction.
 
 The break is also the player's first walk through the protagonist's hometown : Reality, in passing. The cliff is somewhere in this geography but not yet visited.
 
@@ -54,7 +54,7 @@ The break is also the player's first walk through the protagonist's hometown : R
 
 The completely different register. One place: the protagonist's hometown. Coastal, British seaside meets southern Spain. Geographically static; the map does not grow. What changes is what is in it; across Reconstruction, things are added, people surface, conversations open as the protagonist is ready for them.
 
-Reality's tone is gold-hour, weighted, story-driven. Characters at their real ages. Less vibrant, less full, deliberately unconstructed. The pull of Reality is its honesty.
+Reality's tone is warm and weighted, story-driven. Characters at their real ages. Less vibrant, less full, deliberately unconstructed. The pull of Reality is its honesty.
 
 Reality's puzzle shape is layered: the player walks into a scene with several things going on at once and a handful of contextual interactions. The puzzle is being present and doing the right small thing. Not inventory recombination; not pixel-hunting.
 
@@ -78,7 +78,7 @@ The sister's role is load-bearing in Reconstruction (the photo book, the bridge 
 
 ### I. Constants across venues
 
-The racquet. The ball. The friend at the stall (in Construction only). The spirit of the volley (collapsed friendship + spirit; physically present in the bright world; gives the ball its arc, lifts the protagonist).
+The racquet. The ball. The friend at the stall (in Construction only). The spirit of the volley (collapsed friendship + spirit; physically present in Construction; gives the ball its arc, lifts the protagonist).
 
 These travel with the game across every venue. They are construction-side constants. Reality has its own constants (the kitchen, the photograph, the back walking down a street, the hometown's ordinary surfaces) that do not need to mirror the construction's.
 
@@ -88,7 +88,7 @@ The shopkeeper's stall is a constant in Construction and an absence in Reconstru
 
 The protagonist (drawn like any other character; visible throughout). The shopkeeper / friend at the stall. The tinkerer / sister. Martha and the partners (each a coach who teaches one mechanic via the rally). The champ (Construction-only; the dead friend; someone the protagonist looks up to, never a rival).
 
-Brief sketches of each. Pointer to the MC profile (PR #427) for the protagonist's depth. The shopkeeper, sister, and tinkerer want their own profiles eventually; the bible names them as real-anchored and gives the artist the bright-world version.
+Brief sketches of each. Pointer to the MC profile (PR #427) for the protagonist's depth. The shopkeeper, sister, and tinkerer want their own profiles eventually; the bible names them as real-anchored and gives the artist the Construction version.
 
 The lineage rule (every coach-partner named for a character from a science-fiction author's work) stays.
 
@@ -142,7 +142,7 @@ The bible itself can proceed on the structure without these settled; content fil
 
 - `designs/01-prototype/artist-world-bible.md`: the bible itself. World tone, visual texture, emotional shape, cast, references, tone rules.
 - `designs/concept/00-three-registers.md`: high-level architecture and synthesis index.
-- `designs/concept/01-construction.md`: the bright world, cast, shopkeeper psychology, tournament structure, coaches, the champ.
+- `designs/concept/01-construction.md`: Construction, cast, shopkeeper psychology, tournament structure, coaches, the champ.
 - `designs/concept/02-cracks-and-break.md`: the wall thinning and the wall coming down.
 - `designs/concept/03-reconstruction.md`: the long arc after the break, bidirectional carry, the reconciliation mechanic.
 - `designs/concept/04-reality.md`: the second register; the hometown, the cast in Reality, the photo book, the cliff.

@@ -10,9 +10,9 @@ Pick the bits that resonate; let the rest be ambient context.
 
 ## The shape in one paragraph
 
-Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall on the far side of the play. The second is the protagonist's actual hometown, a coastal town in gold-hour light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The bright world is structured as a tournament the protagonist climbs; somewhere at the top sits a friend who died, and the climb cannot pass them. When the climb fails, the bright world's warm centre goes dark and the player begins moving freely between the two worlds, carrying things from one into the other, until the path opens to the door of the friend who was pushed away.
+Volley holds two worlds and the bridge between them. The first is a bright one the protagonist has built and keeps tending: a garden in late afternoon, a racquet, a long rally with a friend at a small wooden stall on the far side of the play. The second is the protagonist's actual hometown, a coastal town in warm slant light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. Construction is structured as a tournament the protagonist climbs; somewhere at the top sits a friend who died, and the climb cannot pass them. When the climb fails, Construction's warm centre goes dark and the player begins moving freely between the two worlds, carrying things from one into the other, until the path opens to the door of the friend who was pushed away.
 
-Everyone in the game is real. Each character who appears in both worlds has two renders: the bright-world version (young, vibrant, helping) and the actual-life version. The bible names the bright world **Construction**, the hometown **Reality**, and the long arc between the failed climb and the call to the door **Reconstruction**. The Glossary at the end re-loads every named term in one place.
+Everyone in the game is real. Each character who appears in both worlds has two renders: the Construction version (young, vibrant, helping) and the actual-life version. The bible names Construction **Construction**, the hometown **Reality**, and the long arc between the failed climb and the call to the door **Reconstruction**. The Glossary at the end re-loads every named term in one place.
 
 ---
 
@@ -20,7 +20,7 @@ Everyone in the game is real. Each character who appears in both worlds has two 
 
 A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal. The friend gives the number meaning.
 
-Something the player does not learn until the end: the world record is a phone number, and the phone belongs to the friend at the stall. The bible names that friend **the shopkeeper**; section J holds the depth. Every rally is the protagonist almost-dialling. Every count climbing toward the cap is the protagonist reaching for someone they could call and won't. The bright world is built around the rally that keeps that number rising; the rally is built around that call the protagonist cannot yet make.
+Something the player does not learn until the end: the world record is a phone number, and the phone belongs to the friend at the stall. The bible names that friend **the shopkeeper**; section J holds the depth. Every rally is the protagonist almost-dialling. Every count climbing toward the cap is the protagonist reaching for someone they could call and won't. Construction is built around the rally that keeps that number rising; the rally is built around that call the protagonist cannot yet make.
 
 You hold both. The hook the player meets, the canon underneath. Render the count as the championship to chase. Render it knowing what the count is for.
 
@@ -43,11 +43,11 @@ The art bible's rulebook. Every piece of art carries all six. They are descripti
 
 Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present and helping, bodies at ease in motion. The garden in the late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
 
-This register is called **Construction**. It is the bright world the protagonist is actively maintaining; volleyball lives here and only here. The structure across Construction is a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner for each, working toward the championship at the top of the ladder.
+This register is called **Construction**. The protagonist is actively maintaining it; volleyball lives here and only here. The structure across Construction is a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner for each, working toward the championship at the top of the ladder.
 
-The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist did not assemble Construction as a hiding place; they assembled it because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. The art's job is to make the bright world feel like somewhere the player wants to be, before the cracks come and ask them to look harder.
+The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist did not assemble Construction as a hiding place; they assembled it because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. The art's job is to make Construction feel like somewhere the player wants to be, before the cracks come and ask them to look harder.
 
-Construction has to land as straight-up enjoyable. An idle pong game with warmth and texture, full stop. If the bright world does not earn the player's investment first, the cracks have nothing to crack.
+Construction has to land as straight-up enjoyable. An idle pong game with warmth and texture, full stop. If Construction does not earn the player's investment first, the cracks have nothing to crack.
 
 The full structural canon for Construction is in `designs/concept/01-construction.md`: the tournament, the coaches' teaching shape, the rally and the count, the championship. The bible's job is the visual register and the people inside it.
 
@@ -55,7 +55,7 @@ The full structural canon for Construction is in `designs/concept/01-constructio
 
 ## D. Cracks during Construction
 
-Reality leaks into the bright world. Each leak is small and dismissible; the cumulative pressure is what matters. The cracks come in two flavours, both authored, both deniable.
+Reality leaks into Construction. Each leak is small and dismissible; the cumulative pressure is what matters. The cracks come in two flavours, both authored, both deniable.
 
 **Tonal cracks** sit inside Construction's fiction. A flicker in the venue light. A partner's tilt held a beat too long. A colour cooling at the edge of the frame. A moment of sound that does not match the venue. The player notices and lets it pass.
 
@@ -81,7 +81,7 @@ After the rupture the player is pulled into Reality involuntarily for the first 
 
 The shopkeeper is not in this walk. The shop has a sign on the door. The lights are off. Some excuse: closing hours, a notice, the door is locked. Render the absence; do not render the conversation. The conversation lives at the call.
 
-The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre of the bright world has been hollowed out; the rallies continue, and they feel the difference. Reconstruction begins.
+The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre of Construction has been hollowed out; the rallies continue, and they feel the difference. Reconstruction begins.
 
 ---
 
@@ -91,7 +91,7 @@ A second register, completely. Visually distinct from Construction; mechanically
 
 A small coastal town, British seaside meets southern Spain. Terraced houses next to whitewashed walls; a high street that smells of both rain and citrus; light shifting between northern grey and Mediterranean glare. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in.
 
-Reality's tone is gold-hour, weighted, story-driven. Less saturation than Construction; more texture. Light is just light; the air has weather. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. The pull of Reality is its honesty. The player ends up wanting it.
+Reality's tone is warm and weighted, story-driven. Less saturation than Construction; more texture. Light is just light; the air has weather. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. The pull of Reality is its honesty. The player ends up wanting it.
 
 The map is geographically static. The town stays the size it was when the player first walked through it at the break. What changes is what is in it. Across Reconstruction, things are added: people the player can meet, objects that were not there before, conversations that open as the protagonist is ready for them. The same hometown, revealed in passes.
 
@@ -123,9 +123,9 @@ After the cliff, the champ shifts from wall to partner. The path to the call ope
 
 Three things, in this order.
 
-**The three registers.** Construction, Reality, and the carry that lives between them in Reconstruction. Each is a different rendering job. Construction is the bright pretense, generous and warm. Reality is gold-hour honesty. Reconstruction is the same Construction weathering and the same Reality filling in. The player's emotional shift across the game is the shift between these registers, lived; the art is the surface that delivers that shift.
+**The three registers.** Construction, Reality, and the carry that lives between them in Reconstruction. Each is a different rendering job. Construction is the bright pretense, generous and warm. Reality is everyday honesty. Reconstruction is the same Construction weathering and the same Reality filling in. The player's emotional shift across the game is the shift between these registers, lived; the art is the surface that delivers that shift.
 
-**The tournament structure under Construction.** Every venue is one round of the world volley tournament. Every coach is a person from the protagonist's life summoned into the bright world to teach one mechanic via the rally. Every round match happens in a shared themed battle space, with the coach now on the other side. Renders of partners need to land both as warm Construction-side presences (the coach beside you, helping) and as figures the player can rally against in the round (the same person, the same warmth, now opposite). One person, one role with two faces.
+**The tournament structure under Construction.** Every venue is one round of the world volley tournament. Every coach is a person from the protagonist's life summoned into Construction to teach one mechanic via the rally. Every round match happens in a shared themed battle space, with the coach now on the other side. Renders of partners need to land both as warm Construction-side presences (the coach beside you, helping) and as figures the player can rally against in the round (the same person, the same warmth, now opposite). One person, one role with two faces.
 
 **Two asset sets per cross-register character.** Anyone who appears in both Construction and Reality has two renderings. The Construction-render is young, vibrant, helping, present. The Reality-render is the same person at their actual age, in their actual life, plainer. Same character; different register. The exception is the champ, who is Construction-only; their Reality is the cliff. The protagonist also has both renders, drawn like any other character; their image stays consistent through Construction and the contrast comes from the register-switch, not from a transformation in their figure.
 
@@ -135,7 +135,7 @@ The depth of the protagonist sits in `designs/characters/protagonist.md`. Read i
 
 ## I. Constants across venues
 
-Things that travel with the camera through every Construction venue. They are the bright world's spine; they show up wherever the rally goes.
+Things that travel with the camera through every Construction venue. They are Construction's spine; they show up wherever the rally goes.
 
 - **The protagonist's racquet.** Same shape, same colour, same handle, wherever the rally is. Equipment hangs off it; the racquet is the constant the player carries.
 - **The ball.** The same ball at the centre of every rally. Item skins change its art; the size and presence are the same.
@@ -151,13 +151,13 @@ Reality's constants are its own. The kitchen, the photograph, the back walking d
 
 ## J. The cast
 
-Everyone in this game is real. The bright-world cast is the real-world cast rendered young, vibrant, helping. The supporting cast are people from the protagonist's life. The exception is the champ.
+Everyone in this game is real. The Construction cast is the real-world cast rendered young, vibrant, helping. The supporting cast are people from the protagonist's life. The exception is the champ.
 
 ### The protagonist
 
 The person whose game this is. Mid-30s, androgynous, agender, less athletic than they used to be. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
 
-Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the register, not from a transformation in their figure. In Construction they are present at the centre of the bright world; in Reality they walk through their hometown at their own pace.
+Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the register, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
 For the depth, the interior layer, what they carry and what they resist: `designs/characters/protagonist.md`. Read it. The bible names the body and the role; the profile holds the person.
 
@@ -167,7 +167,7 @@ The friend at the stall. The warmth at the centre of Construction's venue. Behin
 
 In Reality this is the person the protagonist has pushed away. The shopkeeper was at the cliff when the friend died; the protagonist was not. That asymmetry is the wedge. The shopkeeper carries the memory; the protagonist carries the absence. Talking would mean naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment; as mirror.
 
-This is why the world record is the shopkeeper's phone number. Every rally is the protagonist's almost-reach. The bright world's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
+This is why the world record is the shopkeeper's phone number. Every rally is the protagonist's almost-reach. Construction's whole engine is the substitute relationship being maintained against the day the real one becomes possible.
 
 The shopkeeper has two renders. Construction: the friend at the stall, warm and grounded, present in every venue up to the break. Reality: someone at their actual age, weighted, in the closed shop the protagonist walks past. They leave Construction at the break and return at the call as the final partner on the right side of the court.
 
@@ -193,7 +193,7 @@ Her voice register: warm, slightly sharp, particular, British. The kind of perso
 
 Three more partners arrive in the early game, and from then on each new venue brings one. Beyond Martha, none are drafted yet. The lineage rule names candidates: every partner shares a name with a character from a science-fiction author's work, with a bias toward authors writing outside the dominant tradition. Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. The lineage informs how each partner carries themselves; it does not need to be visible on the surface of the game.
 
-Each partner has two renders. The Construction-render is the coach: present, helping, beside the protagonist on the court. The Reality-render is the actual person at their actual age. Martha is the cashier at the newsagent; the others as they actually are. The bright-world version is a bigger, brighter rendering of someone the protagonist remembers very specifically.
+Each partner has two renders. The Construction-render is the coach: present, helping, beside the protagonist on the court. The Reality-render is the actual person at their actual age. Martha is the cashier at the newsagent; the others as they actually are. The Construction version is a bigger, brighter rendering of someone the protagonist remembers very specifically.
 
 Martha sets the bar for the rest.
 
@@ -229,7 +229,7 @@ The world's surfaces carry information without HUD. UI sits inside the same hand
 
 ## L. Venues
 
-The first venue is the garden. From there the bright world leaps, and each leap is bigger than the last. Same partner. Same friend at the stall. Same warmth. A wildly different world around them.
+The first venue is the garden. From there Construction leaps, and each leap is bigger than the last. Same partner. Same friend at the stall. Same warmth. A wildly different world around them.
 
 ### The garden
 
@@ -243,7 +243,7 @@ A locked gate sits at the back beside the tree. The player can see it but not re
 
 The garden is the prototype's only built venue. Per SH-275, it carries the championship-shape exemplar: one coach (Martha), one mechanic she teaches, one round match. Everything else in the game is the same shape, scaled across the trajectory below.
 
-Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the bright-world rendering does not need to point at it. Every venue carries one quiet weight under the warmth.
+Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the warmth.
 
 ### The trajectory
 
@@ -251,7 +251,7 @@ The first leap, in the prototype, is implied as a cliffhanger rather than visite
 
 The leading candidate for the second venue is **underwater**: sun above the surface, light filtered green and gold through deep water, the ball drifting through bubble streams, the friend now seen and heard through water. Cool, alien, dreamlike. Touchstones: Studio Ghibli's *[Ponyo](https://en.wikipedia.org/wiki/Ponyo)* and the sunken world in *[Spirited Away](https://en.wikipedia.org/wiki/Spirited_Away)*; [Mario's underwater levels](https://en.wikipedia.org/wiki/Super_Mario_Bros.) for the buoyant, slow-motion physics; [Omori](https://store.steampowered.com/app/1150690/OMORI/)'s underwater sequences for tone and saturation. Underwater is not formally locked.
 
-Beyond underwater, the leaps are sketches. A tropical island with palm shadows on white sand. A meteor in nebula light. A cathedral of trees high in a canopy, golden hour through leaves. A goo dimension where everything jiggles. A jungle full of dinosaurs. A massive stadium with a crowd. A city on clouds. An ice cave with breath visible in the air. A library so vast the shelves disappear into haze.
+Beyond underwater, the leaps are sketches. A tropical island with palm shadows on white sand. A meteor in nebula light. A cathedral of trees high in a canopy, honey light through leaves. A goo dimension where everything jiggles. A jungle full of dinosaurs. A massive stadium with a crowd. A city on clouds. An ice cave with breath visible in the air. A library so vast the shelves disappear into haze.
 
 The mechanic underneath the leaps is the protagonist reaching further and further for a better hiding place. The bigger the wonder, the more elaborate the construction. The break, when it comes, lands on top of all of it.
 
@@ -397,7 +397,7 @@ Where the bible or the brief feels actively wrong or contradictory, the canon mo
 The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
 
 - **Construction.** The bright register. Saturated, warm, helping. Where volleyball lives. Section C.
-- **Reality.** The second register. The protagonist's hometown, gold-hour and weighted. Section F.
+- **Reality.** The second register. The protagonist's hometown, warm and weighted. Section F.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two registers; bidirectional carry. Not a third visual register. Section G.
 - **The break.** The single rupture at the failed championship match. The wall comes down once. Section E.
 - **The call.** The ending. The protagonist dials the world record from the door of the shop. Section L (under Venues / The call).
