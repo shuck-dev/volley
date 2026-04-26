@@ -1,6 +1,6 @@
 # Reality
 
-The second style. Reality as a register: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-three-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
+The second style. Reality on its own terms: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-three-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
 
 ## The place
 
@@ -30,7 +30,7 @@ Reality is interaction-driven, not rally-driven. The player walks into a scene, 
 
 The structure-level commit: not pong; not inventory recombination; being present in a room and finding what wants to happen. Specific puzzle mechanics (interaction surfaces, scene state, dialogue layering) are downstream game-design work and live in SH-279.
 
-Scenes are gated by photos. Each found photo opens a Reality scene; finding the photo and the corresponding scene compounds the trail. The mechanic itself is in `03-reconstruction.md`; what matters here is the register: scenes are hand-built, return-supporting, layered with state across visits.
+Scenes are gated by photos. Each found photo opens a Reality scene; finding the photo and the corresponding scene compounds the trail. The mechanic itself is in `03-reconstruction.md`; what matters here is the shape: scenes are hand-built, return-supporting, layered with state across visits.
 
 ## The cast in Reality
 
