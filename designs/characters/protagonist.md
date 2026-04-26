@@ -20,7 +20,7 @@ They lost someone close to them. Recently enough that it is not healed, long eno
 
 Construction is that structure. The garden, the stall, the rally, the friend at the counter with their head tilted toward the play. The protagonist did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
 
-They are visible throughout. Drawn like any other character, on the left of the court with a racquet, holding the gravity of the world they built. Their Construction-render is who the player connects to across Construction. Their Reality-render is the same person in their actual life, plainer, observed fly-on-the-wall in a small ordinary moment with a partner. The contrast lives in the register-switch, not in their presence on the page.
+They are visible throughout. Drawn like any other character, on the left of the court with a racquet, holding the gravity of the world they built. Their Construction-render is who the player connects to across Construction. Their Reality-render is the same person in their actual life, plainer, observed fly-on-the-wall in a small ordinary moment with a partner. The contrast lives in the style-switch, not in their presence on the page.
 
 ---
 
