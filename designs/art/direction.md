@@ -6,9 +6,9 @@ This layer is narrative. The bible is the decision layer.
 
 ---
 
-## Warmth that carries weight
+## Generous presentation, honest underneath
 
-The bright surface is not a lie. Warmth is the main style: interior light, soft colour, hand-drawn confidence. Under the warmth sits something honest. The art has to hold both at once without undercutting either.
+The presentation is generous: saturated colour, interior light, hand-drawn confidence. Underneath, harder material runs honest. The art holds both at once; neither is the joke.
 
 ## Simple shapes, full emotion
 
@@ -28,7 +28,7 @@ Hits, misses, rallies, streaks, reactions, UI feedback all land on a felt rhythm
 
 ## Two styles, same world
 
-The game has phases and moods that shift without breaking the fiction. The same characters, the same court, the same rules, but the feeling can change. The art needs to hold both the bright surface and the heavier style without either feeling like a betrayal of the other.
+The same characters, the same court, the same rules, rendered two ways. The art needs to hold Construction's generous presentation and Reality's quieter weight without either reading as a betrayal of the other.
 
 ## Diegetic, specific, lived-in
 
