@@ -31,7 +31,7 @@ The bible holds the world's tone, visual texture, emotional shape, and the canon
 
 A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal. The friend gives the number meaning.
 
-Volley holds two worlds. The first is **Construction**: a bright one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the bright one is a construct only as the climb cracks open.
+Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
 Construction is structured as a tournament the protagonist climbs; at the top sits a friend who died, and beating them is the goal. When the player wins the championship, the win lands wrong, and the construct breaks open. The player then moves between the two worlds, carrying things from one into the other, until the path opens to a bench at the cliff and a phone call across a few steps.
 
@@ -113,7 +113,7 @@ Her voice: warm, slightly sharp, particular, British. The kind of person who wou
 
 Three more partners arrive in the early game; from then on each new venue brings one. Beyond Martha, none are drafted yet. The lineage rule names candidates: every partner shares a name with a character from a science-fiction author's work, with a bias toward authors writing outside the dominant tradition. Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. Lineage shapes how each partner carries themselves; it does not need to surface in the game.
 
-Each partner has two renders. Construction: the coach, present, beside the protagonist on the court. Reality: the actual person at their actual age. Martha is the cashier at the newsagent. The Construction version is a brighter rendering of someone the protagonist remembers very specifically.
+Each partner has two renders. Construction: the coach, present, beside the protagonist on the court. Reality: the actual person at their actual age. Martha is the cashier at the newsagent. The Construction version is a more vibrant rendering of someone the protagonist remembers very specifically.
 
 Martha sets the bar for the rest.
 
@@ -135,7 +135,7 @@ Render them as someone the protagonist loved. Sharp at the championship because 
 
 Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present, bodies at ease in motion. The garden in late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
 
-The protagonist is actively maintaining Construction; volleyball lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
+The protagonist is actively maintaining Construction; tennis lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
 
 The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist assembled Construction because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. Construction needs to feel like somewhere the player wants to be, before the cracks ever come.
 
@@ -177,7 +177,7 @@ At the win the count completes. The digits land. The protagonist sees them, vagu
 
 After the rupture the player is pulled into Reality involuntarily for the first time and walks through the protagonist's hometown. The walk reveals the rupture's content: the shopkeeper is missing. The shop is empty, the lights off, a sign on the door, the family worried about where they have gone. The person the protagonist was reaching for without knowing has actually disappeared. **The cliff** sits beyond the town's edge but is not visited yet; the friend died there, and the shopkeeper has gone there, and it waits.
 
-The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The bright centre of Construction has been hollowed out; the rallies continue, and they feel the difference. The champ exits at the break and does not return. Reconstruction begins.
+The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The vibrant centre of Construction has been hollowed out; the rallies continue, and they feel the difference. The champ exits at the break and does not return. Reconstruction begins.
 
 ---
 
@@ -298,7 +298,7 @@ A locked gate sits at the back beside the tree. It is the one locked gate in the
 
 The garden is the prototype's only built venue. Per SH-275, it carries the championship-shape exemplar: one coach, Martha, one mechanic she teaches, one round. Everything else in the game is the same shape, scaled across the trajectory below.
 
-Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the brightness.
+Each venue is also a sticking point for the protagonist, related to the event at the cliff. The resonance is only obvious looking back; the Construction rendering does not need to point at it. Every venue carries one quiet weight under the vibrance.
 
 ### The trajectory
 
@@ -327,7 +327,7 @@ The court visibly opens onto the rest of the venue. A missed ball does not despa
 
 Five rules, then the surface Volley reaches for.
 
-1. **The warmth is real.** The bright surface is not a lie. The narrative reveal does not punish the player for enjoying the rally. Warmth is earned and stays.
+1. **The warmth is real.** The vibrant surface is not a lie. The narrative reveal does not punish the player for enjoying the rally. Warmth is earned and stays.
 2. **Earnest.** Personal and warm. Characters are particular. Items have flavour. The voice means what it says.
 3. **Stress is natural friction.** Tension has ebb and flow, the way a long rally does. The friction makes a moment feel alive.
 4. **Trust the player.** Let the player notice, wonder, and eventually understand.
@@ -434,7 +434,7 @@ Where the bible or the brief feels actively wrong or contradictory, the canon mo
 
 The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
 
-- **Construction.** The bright style. Saturated, warm, generous. Where volleyball lives. Section 5.
+- **Construction.** The vibrant style. Saturated, warm, generous. Where tennis lives. Section 5.
 - **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section 3 (overview), threaded through Parts 1 and 2.
 - **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
