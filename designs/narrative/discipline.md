@@ -28,7 +28,7 @@ No exposition dumps. If a piece of canon needs to land, it lands as something a 
 
 ## Tone modulation
 
-Tone moves moment to moment. Construction's default is the coach's grin between rallies, the friend at the stall calling a name across the court, the lift in a line that did not need lift. It slips for a beat into a meta-crack, and resettles. The slip is a half-second; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
+Tone moves moment to moment. Construction's default is the coach's grin between rallies, the friend at the stall calling a name across the court, the lift in a line that did not need lift. A meta-crack lands, the player notices and reaches for a way to read it, the rally moves on. The slip is one beat the prose commits to and lets land; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
 
 The break runs cold and short. Sentences shrink. Adjectives drop. Light becomes light, sound becomes sound, the prose stops reaching for warmth because the construct has stopped supplying it. Then the walk through the hometown begins and the prose finds Reality's plainer register for the first time.
 
