@@ -58,7 +58,7 @@ Martha and the partners are real people from the protagonist's life, summoned in
 
 The dead friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group: dangerous, but routine, until it wasn't. The reason the protagonist built Construction.
 
-The champ is the dead friend rendered into Construction as the championship final. A Construction-only construct, no Reality counterpart. Someone the protagonist looks up to, never a rival. The player wins the championship by beating them; the champ exits at the end of Part 1.
+The champ is the dead friend rendered into Construction as the championship final. A Construction-only construct, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player wins the championship by beating them; the champ exits at the end of Part 1.
 
 The tinkerer is the sister's Construction render. Workshop in another corner of the garden.
 
