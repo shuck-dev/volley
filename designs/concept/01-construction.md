@@ -4,7 +4,7 @@ Part 1. The bright world the protagonist is actively maintaining, the tournament
 
 ## What Construction is
 
-The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. Volleyball lives here and only here.
+The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present. Volleyball lives here and only here.
 
 Construction is the structure the protagonist built to keep going. The warmth in it was always real; the rendering is the pretense. They did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held.
 
@@ -18,7 +18,7 @@ What the player does not know yet: the world record is a phone number. The shopk
 
 ## The cast
 
-The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in Construction. The player will see two asset sets for each: a Construction-render (young, vibrant, helping) and a Reality-render (their actual age, plainer, in their actual life). The opposing cast is one person: the champ, who sits at the top of the tournament ladder.
+The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in Construction. The player will see two asset sets for each: a Construction-render (young, vibrant, present) and a Reality-render (their actual age, plainer, in their actual life). The opposing cast is one person: the champ, who sits at the top of the tournament ladder.
 
 ### Supporting cast
 

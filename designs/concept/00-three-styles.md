@@ -47,7 +47,7 @@ The two acts use the two styles in different proportion. Part 1 is mostly Constr
 
 These bind the styles together. The per-arc docs do not contradict them.
 
-**Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered young, vibrant, helping. The same people exist in Reality at their actual ages. Two asset sets per cross-style character. The exception is the champ: Construction-only, the dead friend rendered as the championship final, no Reality counterpart.
+**Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered young, vibrant, present. The same people exist in Reality at their actual ages. Two asset sets per cross-style character. The exception is the champ: Construction-only, the dead friend rendered as the championship final, no Reality counterpart.
 
 **The hook is in dialogue, not HUD.** The world record is named by a character in the first session. The number is on a HUD; the meaning is not.
 
