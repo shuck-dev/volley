@@ -52,7 +52,7 @@ The game is sad, but it earns the sadness and never wallows. The art is **never 
 
 Hand-drawn illustration with **bold shapes, limited but confident colour**. Not pixel art. Not painterly realism. Not vector-clean.
 
-**Constructed style.** Saturated, warm, deliberately arranged. Warm golds, soft blues, deep warm shadows. Colour as comfort.
+**Constructed style.** Saturated, glowing, deliberately arranged. Honey golds, soft blues, deep amber shadows. Colour as comfort.
 
 **Real style.** Quieter. Muted warms, honest greys, natural greens. The saturation dial turned down; the palette is the same family, less pushed.
 
@@ -84,7 +84,7 @@ Silhouettes hold across both styles; only the light, colour, and line quality sh
 
 ## Shape
 
-Bold, readable shape vocabulary. Soft and organic for warmth and character; geometric and stable for props and architecture. The ball is round, the paddle is a slab, the racks are specific objects with weight.
+Bold, readable shape vocabulary. Soft and organic for personality; geometric and stable for props and architecture. The ball is round, the paddle is a slab, the racks are specific objects with weight.
 
 Characters stay simple; environments carry more depth. The two meet through shared light and palette, so characters belong to the space rather than floating on top of it.
 
@@ -126,7 +126,7 @@ Characters share the same level of simplicity across both styles; the world arou
 
 Every prop is a specific object, not a symbol. Ball rack, gear rack, shipment mat, the ball itself, the paddle, the walls and ceiling.
 
-The court is the constant. It is warm, specific, and small. The rest of the venue composes around it.
+The court is the constant. It is intimate, specific, and small. The rest of the venue composes around it.
 
 Environments have depth: foreground, middle, back. Layers can move independently. Depth rewards sustained attention.
 

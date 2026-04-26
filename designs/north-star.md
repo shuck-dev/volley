@@ -2,7 +2,7 @@
 
 ## What is this game?
 
-An idle pong game that lives on your desktop. A small window, always there, gently bouncing away while you work. Your paddle has a dream: beat the world volley record. You train, buy items, recruit partners, and inch toward that number one bounce at a time.
+An idle pong game that lives on your desktop, always there, gently bouncing away while you work. Your paddle has a dream: beat the world volley record. You train, buy items, recruit partners, and inch toward that number one bounce at a time.
 
 Underneath: the game is personal. It's a story about someone who built a world to hide from something real. The partners are memories of people who mattered. The record is a number that means something specific. At some point, the game reveals the truth. The player keeps playing after that, but the game feels different because they know.
 
@@ -50,7 +50,7 @@ The game should respect the player's time whether they engage with the narrative
 
 ## Tone
 
-Kind, never stressful. Earnest, never ironic. Personal, never melodramatic. Characters are warm and specific. Competition is self-driven. Small wins are celebrated. The game takes itself slightly more seriously than a pong game should, and that's intentional.
+Kind, never stressful. Earnest, never ironic. Personal, never melodramatic. Characters are particular, and drawn with care. Competition is self-driven. Small wins are celebrated. The game takes itself slightly more seriously than a pong game should, and that's intentional.
 
 ## Non-goals
 

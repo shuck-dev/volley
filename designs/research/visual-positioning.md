@@ -102,7 +102,7 @@ Hand-made quality reads as honest in a way polished rendering does not, which ma
 
 ## Desktop companion games
 
-Volley!'s primary experience is fullscreen. Its secondary desktop-companion mode sits in a small window alongside the player's work, with its own conventions.
+Volley!'s primary experience is fullscreen. Its secondary desktop-companion mode runs alongside the player's work, with its own conventions.
 
 *Rusty's Retirement* is the category's defining release [1][2][3]. Its success validated the desktop-resident idle as a commercial proposition; the 550,000-copy figure is the load-bearing number. *Desktopia* places tiny low-poly villagers directly on the desktop. *Desktop Meadow* uses pixel art with a watercolour-evocative palette for birds and butterflies, closer in register to Volley!'s secondary mode than the louder companion apps. *Desktop Mate* (infiniteloop, 2024–25) lets licensed anime characters roam across the user's screen and has become the highest-visibility companion release since *Rusty's* [24]. *Tiny Pasture* (2024), *Desktop Friend* (2025), and frameworks like *Pal Engine* and *Desktop Companion* (2025) offer Steam Workshop-powered platforms for user-authored desktop pets [25]. The classic lineage (*Desktop Goose*, *Shimeji*, *Tabagotchi*) established two principles: personality in a desktop game comes through animation behaviour rather than art fidelity, and a small visual footprint is a virtue.
 
