@@ -13,7 +13,7 @@ The bible holds the world's tone, visual texture, emotional shape, and the canon
 - E. The break
 - F. Reality
 - G. Reconstruction
-- H. Two renders per cross-key character
+- H. Two renders per cross-style character
 - I. Constants across venues
 - J. The cast
 - K. Diegetic surfaces
@@ -53,10 +53,10 @@ Every piece of art carries all six. They describe what Volley looks like when th
 
 1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
 2. **Specific.** Particulars over types. This fence, this stall, this tree. Generic warmth fails.
-3. **Distinct.** The visual key is unmistakably Volley: hand-drawn warmth with a visible mark, painted shadows, lines that breathe.
+3. **Distinct.** The visual style is unmistakably Volley: hand-drawn warmth with a visible mark, painted shadows, lines that breathe.
 4. **Diegetic.** The world is something the player is inside. UI sits inside the same hand and voice.
 5. **Breathing.** Movement, posture, body language carry the personality. A simple shape that moves with feeling carries more than a detailed shape that sits still.
-6. **Shifting.** The same world holds multiple keys: Construction and Reality, before-the-break and after, biome to biome. Silhouettes hold; light, colour, line quality shift.
+6. **Shifting.** The same world holds multiple styles: Construction and Reality, before-the-break and after, biome to biome. Silhouettes hold; light, colour, line quality shift.
 
 ---
 
@@ -64,13 +64,13 @@ Every piece of art carries all six. They describe what Volley looks like when th
 
 Saturated colour, generous light, surfaces that gleam. Shadows held warm. Characters drawn young and full, present and helping, bodies at ease in motion. The garden in the late afternoon, the stall against the inside wall, the racquet moving on the left, the friend's head turned toward the play. Everything has light; nothing is starved.
 
-This key is **Construction**. The protagonist is actively maintaining it; volleyball lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
+This style is **Construction**. The protagonist is actively maintaining it; volleyball lives here and only here. Construction is structured as a tournament. The protagonist climbs from venue to venue, one round per venue, with a coach-partner at each, working toward the championship at the top of the ladder.
 
 The warmth is real. The pretense is the rendering, not the warmth itself. The protagonist assembled Construction because it was the thing they could assemble that held. The hiding is a by-product. The holding is the point. Construction needs to feel like somewhere the player wants to be, before the cracks ever come.
 
 Construction has to land as straight-up enjoyable. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
-Full structural canon for Construction is in `designs/concept/01-construction.md`: the tournament, the coaches' teaching shape, the rally and the count, the championship. This bible holds the visual key and the people inside it.
+Full structural canon for Construction is in `designs/concept/01-construction.md`: the tournament, the coaches' teaching shape, the rally and the count, the championship. This bible holds the visual style and the people inside it.
 
 ---
 
@@ -110,7 +110,7 @@ The break ends and the player is back in Construction, but the wall does not go 
 
 ## F. Reality
 
-A second key, completely. Visually distinct from Construction; mechanically a different game. One place: the protagonist's hometown.
+A second style, completely. Visually distinct from Construction; mechanically a different game. One place: the protagonist's hometown.
 
 A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls between them. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. Faded grandeur with sun on it. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in.
 
@@ -130,7 +130,7 @@ Full canon in `designs/concept/04-reality.md`.
 
 ## G. Reconstruction
 
-The arc between the break and **the call** at the cliff. Part 2 of the game (Construction is Part 1). Reconstruction is not a third visual key; the two keys stay distinct. What Reconstruction adds is free travel between them, and the bridge that carries selected things across.
+The arc between the break and **the call** at the cliff. Part 2 of the game (Construction is Part 1). Reconstruction is not a third visual style; the two styles stay distinct. What Reconstruction adds is free travel between them, and the bridge that carries selected things across.
 
 The carry is bidirectional and curated. Specific things from Construction can be brought into Reality and used in specific scenes there; specific acknowledgements from Reality feed back into Construction, unlocking new venues, new lines from coaches, new affordances. Each carry is a narrative beat, not an open mechanic.
 
@@ -150,13 +150,13 @@ The album fills, the compartment opens, the sister hands over the key, and the p
 
 ---
 
-## H. Two renders per cross-key character
+## H. Two renders per cross-style character
 
-Anyone who appears in both Construction and Reality has two renderings. The Construction-render is young, vibrant, helping, present. The Reality-render is the same person at their actual age, in their actual life, plainer. Same character, different key.
+Anyone who appears in both Construction and Reality has two renderings. The Construction-render is young, vibrant, helping, present. The Reality-render is the same person at their actual age, in their actual life, plainer. Same character, different style.
 
 The exception is the champ: Construction-only, with the cliff for their Reality.
 
-The protagonist has both renders too, drawn like any other character. The image stays consistent across both; the contrast comes from the key-switch, not from a transformation in their figure.
+The protagonist has both renders too, drawn like any other character. The image stays consistent across both; the contrast comes from the style-switch, not from a transformation in their figure.
 
 The protagonist's depth sits in `designs/characters/protagonist.md`. The bible holds the world; the profile holds the person at its centre.
 
@@ -173,10 +173,10 @@ Things that travel with the camera through every Construction venue. They are Co
 - **The opposing returner.** A wall in the very first venue, a partner from the moment the first partner arrives. One returner across the rally, always.
 - **The friend at the stall.** The shopkeeper, in their Construction-render. Behind the counter of a small wooden stall, leaning on their elbows, head tilted toward the play. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. The friend is recognisable wherever they sit. Present in Construction up to the break, absent across Reconstruction, back at the call.
 - **The volley counter.** A wooden plaque in the garden, a coral-rimmed slate underwater, a hovering glyph in space. Same number, dressed for each venue. Diegetic everywhere.
-- **The warm light key.** Colour temperature shifts venue by venue: afternoon yellow, submerged green, nebula pink, canopy gold. The warmth holds even when the colour does not.
+- **The warm light style.** Colour temperature shifts venue by venue: afternoon yellow, submerged green, nebula pink, canopy gold. The warmth holds even when the colour does not.
 - **The spirit of the volley.** The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of them do. Volley names that the spirit of the volley: the protagonist's fighting spirit and their bond with each partner, the same thing seen from two angles. It deepens with shared rallies and small attentions. A long rally is the spirit at full breath; a miss is the spirit catching its breath again. Anything in the rally that bends physics is the spirit acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally.
 
-Reality's constants are its own. The kitchen, the photograph, the back walking down a street, the ordinary surfaces of an ordinary town. They do not mirror Construction's; that is the point. Each key has its own spine, and the player learns both.
+Reality's constants are its own. The kitchen, the photograph, the back walking down a street, the ordinary surfaces of an ordinary town. They do not mirror Construction's; that is the point. Each style has its own spine, and the player learns both.
 
 ---
 
@@ -188,7 +188,7 @@ Everyone in this game is real. The Construction cast is the real-world cast rend
 
 The person whose game this is. Mid-30s, androgynous, agender, less athletic than they used to be. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
 
-Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the key, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
+Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
 The depth sits in `designs/characters/protagonist.md`: the interior layer, what they carry and what they resist. The bible names the body and the role; the profile holds the person.
 
@@ -329,7 +329,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 
 ### Animation and film
 
-- **[Porco Rosso](https://en.wikipedia.org/wiki/Porco_Rosso)** (1992, Studio Ghibli). North star for light and warmth. Late-afternoon watercolour key.
+- **[Porco Rosso](https://en.wikipedia.org/wiki/Porco_Rosso)** (1992, Studio Ghibli). North star for light and warmth. Late-afternoon watercolour style.
 - **[Good Will Hunting](https://en.wikipedia.org/wiki/Good_Will_Hunting)** (1997). Reality reference for finding beauty in honest, unglamorous places.
 - **[La La Land](https://en.wikipedia.org/wiki/La_La_Land)** (2016). How saturation and lighting shift to change a scene's feeling without changing its style.
 - **[Baby Driver](https://en.wikipedia.org/wiki/Baby_Driver)** (2017). Rhythm as a visual principle.
@@ -342,7 +342,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 - **[Everything Everywhere All at Once](https://en.wikipedia.org/wiki/Everything_Everywhere_All_at_Once)** (2022). Wildly different visual modes held by a single emotional core.
 - **[To Be Hero X](https://en.wikipedia.org/wiki/To_Be_Hero_X)** (2025). Multiple visual styles within one work, used as emotional punctuation.
 - **[Detectorists](https://en.wikipedia.org/wiki/Detectorists)**. British pastoral. Quiet warmth, gentle people, English summer afternoons. Tonal anchor for Reality.
-- **[Coco](https://en.wikipedia.org/wiki/Coco_(2017_film))**. Warm Mediterranean key, family memory.
+- **[Coco](https://en.wikipedia.org/wiki/Coco_(2017_film))**. Warm Mediterranean style, family memory.
 - **[Wallace and Gromit](https://en.wikipedia.org/wiki/Wallace_%26_Gromit) / [Beatrix Potter](https://en.wikipedia.org/wiki/Beatrix_Potter)**. British illustration. Warm, specific, lived-in.
 - **[Adventure Time](https://en.wikipedia.org/wiki/Adventure_Time)**. Visual variety held together by tonal warmth across wildly different settings.
 
@@ -358,7 +358,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 - **[Cuphead](https://store.steampowered.com/app/268910/Cuphead/)** (2017). Total commitment to one hand-drawn voice across every asset.
 - **[Rain World](https://store.steampowered.com/app/312520/Rain_World/)** (2017). Environmental storytelling through care. Hand-placed ecosystems, painterly decay.
 - **[Star Fetchers](https://store.steampowered.com/app/1178030/Star_Fetchers/)** (2020). Personality through motion rather than rendering.
-- **[Omori](https://store.steampowered.com/app/1150690/OMORI/)** (2020). The closest existing structural parallel for Volley's two-key move. Headspace and Faraway Town: same cast, different weight.
+- **[Omori](https://store.steampowered.com/app/1150690/OMORI/)** (2020). The closest existing structural parallel for Volley's two-style move. Headspace and Faraway Town: same cast, different weight.
 - **[Slay the Princess](https://store.steampowered.com/app/1989270/Slay_the_Princess__The_Pristine_Cut/)** (2023). Pencil-on-paper line that shifts as the player's belief shifts.
 - **[In Stars and Time](https://store.steampowered.com/app/1677310/In_Stars_And_Time/)** (2023). Hand-drawn storybook cast in a time-loop frame.
 - **[Rusty's Retirement](https://store.steampowered.com/app/2666510/Rustys_Retirement/)** (2024). Format peer for the desktop-companion mode.
@@ -368,7 +368,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 - **[Despelote](https://store.steampowered.com/app/2367820/despelote/)** (2025). Sport as a frame for emotional material.
 - **[Black Hole Fishing](https://store.steampowered.com/app/3667390/Black_Hole_Fishing/)** (2026). Diegetic UI at its most committed.
 - **[Outer Wilds](https://store.steampowered.com/app/753640/Outer_Wilds/)**. Tiny planets, music drifting across space.
-- **[Mario Galaxy](https://en.wikipedia.org/wiki/Super_Mario_Galaxy)**. Biome variety as cosmic key.
+- **[Mario Galaxy](https://en.wikipedia.org/wiki/Super_Mario_Galaxy)**. Biome variety as cosmic style.
 - **[Wii Sports Resort](https://en.wikipedia.org/wiki/Wii_Sports_Resort)**. Sport-as-place. Each activity a distinct visual setting.
 
 ### Named hands
@@ -422,7 +422,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The sister's gender, age, presentation. Deliberately open. The anchor is the family resemblance to the shopkeeper.
 - Martha's age. Working range 45 to 60.
 - The protagonist's physicality. Mid-30s, less athletic than they were, gentle, androgynous, agender. The MC profile holds the rest.
-- Exact colour palettes for each key.
+- Exact colour palettes for each style.
 - Typography.
 - How partner introductions render.
 - The first leap biome. Underwater leads, not formally locked.
@@ -435,9 +435,9 @@ Where the bible or the brief feels actively wrong or contradictory, the canon mo
 
 The named terms the bible uses, in one place. Each is defined fully in its own section; this is the quick re-loader.
 
-- **Construction.** The bright key. Saturated, warm, helping. Where volleyball lives. Section C.
-- **Reality.** The second key. The protagonist's hometown, weighted and lived-in. Section F.
-- **Reconstruction.** The arc between the break and the call. Free travel between the two keys; bidirectional carry. Not a third visual key. Section G.
+- **Construction.** The bright style. Saturated, warm, helping. Where volleyball lives. Section C.
+- **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section F.
+- **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section G.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section E.
 - **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones across the small distance between path and bench. Section L.
 - **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections A and L.
@@ -455,4 +455,4 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section G.
 - **The spirit of the volley.** The protagonist's fighting spirit and their bond with each partner. Anything in the rally that bends physics is the spirit acting on the world. Section I.
 - **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section B.
-- **Two renders.** Each cross-key character has a Construction-render, young, vibrant, helping, and a Reality-render at their actual age, in their actual life. Section H.
+- **Two renders.** Each cross-style character has a Construction-render, young, vibrant, helping, and a Reality-render at their actual age, in their actual life. Section H.
