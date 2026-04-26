@@ -112,7 +112,7 @@ The break ends and the player is back in Construction, but the wall does not go 
 
 A second key, completely. Visually distinct from Construction; mechanically a different game. One place: the protagonist's hometown.
 
-A small coastal town, British seaside meets southern Spain. Terraced houses next to whitewashed walls; a high street that smells of both rain and citrus; light shifting between northern grey and Mediterranean glare. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in.
+A small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls between them. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. Faded grandeur with sun on it. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in.
 
 Pre-smartphone era. Late 90s or early 2000s as a tonal range. Phones are flip, candy-bar, or land-line. Signage and clothes follow the period; numbers are held in heads or on paper. The exact year is open for the sketch to settle; what is fixed is the feel, and the absence of pocket databases that auto-attach a name to every digit.
 
@@ -314,6 +314,8 @@ The staging is one image, two presences. The composition splits the frame across
 The dial does two acts at once. Chosen presence, the choice to be reached and to reach across the few steps that took the whole game. And the moment the name finally attaches: the unnamed contact in the protagonist's phone is recognised as the shopkeeper, the contact and the person fused after a whole game of holding them apart.
 
 The call ends. The protagonist crosses the small distance and sits beside the shopkeeper on the bench. Coming home is the call.
+
+Credits play over a rally. The protagonist on the left, the shopkeeper on the right, the first volley between them. The championship spot is the actual person now, the substitute gone. The daily thing the protagonist did alone is finally done together; the rally is the proof. Construction's saturated light returns, with the texture Reality has worn into it across Reconstruction. The bench from the cliff sits somewhere in frame, glimpsed past a gate that stays open.
 
 Postgame is rallying with the shopkeeper, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
