@@ -227,7 +227,7 @@ One image, two presences. The composition splits the frame across the bench area
 
 The dial is the choice to be reached and to reach across the few steps that took the whole game. The recognition has already landed on the bench; the dial is what the protagonist does with it. The contact and the person, held apart for the whole game, sit in one frame at last.
 
-The call ends. The protagonist crosses the small distance and sits beside the shopkeeper on the bench. Coming home is the call.
+The call ends. The protagonist walks the few steps to the bench and sits beside the shopkeeper. Coming home is the call.
 
 ---
 
@@ -247,7 +247,7 @@ Six descriptions of what Volley looks like when the work is landing. They are no
 
 1. **Intentional.** Every choice carries a reason. Nothing arbitrary, nothing default.
 2. **Specific.** Particulars over types. This fence, this stall, this tree. Generic warmth fails.
-3. **Distinct.** The visual style is unmistakably Volley: hand-drawn warmth with a visible mark, painted shadows, lines that breathe. If two things could be confused at a glance, one of them changes. Readable when small.
+3. **Distinct.** The visual style is unmistakably Volley: hand-drawn line with a visible mark, painted shadows, surfaces that breathe. If two things could be confused at a glance, one of them changes. Readable when small.
 4. **Diegetic.** The world is something the player is inside. UI sits inside the same hand and voice.
 5. **Breathing.** Movement, posture, body language carry the personality. A simple shape that moves with feeling carries more than a detailed shape that sits still. Still frames feel about to move.
 6. **Shifting.** The same world holds multiple styles: Construction and Reality, before-the-break and after, biome to biome. Silhouettes hold; light, colour, line quality shift.
@@ -261,7 +261,7 @@ Things that travel with the camera through every Construction venue. They are Co
 - **The protagonist's racquet.** Same shape, same colour, same handle, wherever the rally is. Equipment hangs off it; the racquet is the constant the player carries.
 - **The ball.** The same ball at the centre of every rally. Item skins change its art; the size and presence are the same.
 - **The opposing returner.** A wall in the very first venue, a partner from the moment the first partner arrives. One returner across the rally, always.
-- **The friend at the stall.** The shopkeeper, in their Construction-render. Behind the counter of a small wooden stall, leaning on their elbows, head tilted toward the play. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. The friend is recognisable wherever they sit. Present in Construction up to the break, absent across Reconstruction, back at the call.
+- **The friend at the stall.** The shopkeeper, in their Construction-render. Behind the counter of a small wooden stall, leaning on their elbows, watching the rally. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. The friend is recognisable wherever they sit. Present in Construction up to the break, absent across Reconstruction, back at the call.
 - **The volley counter.** A wooden plaque in the garden, a coral-rimmed slate underwater, a hovering glyph in space. Same number, dressed for each venue. Diegetic everywhere.
 - **The warm light style.** Colour temperature shifts venue by venue: afternoon yellow, submerged green, nebula pink, canopy gold. The warmth holds even when the colour does not.
 - **The spirit of the volley.** The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of them do. Volley names that the spirit of the volley: the protagonist's fighting spirit and their bond with each partner, the same thing seen from two angles. It deepens with shared rallies and small attentions. A long rally is the spirit at full breath; a miss is the spirit catching its breath again. Anything in the rally that bends physics is the spirit acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally.
@@ -333,8 +333,8 @@ The court visibly opens onto the rest of the venue. A missed ball does not despa
 
 Five rules the art holds the work to.
 
-1. **The warmth is real.** The vibrant surface is not a lie. The narrative reveal does not punish the player for enjoying the rally. Warmth is earned and stays.
-2. **Earnest.** Personal and warm. Characters are particular. Items have flavour. The voice means what it says.
+1. **Enjoying Construction is not the joke.** The narrative reveal does not punish the player for the time they spent in the rally. The rally and the story both hold up on their own.
+2. **Earnest.** Personal and particular. Characters are specific. Items have flavour. The voice means what it says.
 3. **Stress is natural friction.** Tension has ebb and flow, the way a long rally does. The friction makes a moment feel alive.
 4. **Trust the player.** Let the player notice, wonder, and eventually understand.
 5. **Cracks stay tonal.** The leak renders as light, posture, sound, atmosphere. The cumulative shape relies on deniability.
