@@ -20,7 +20,7 @@ They lost someone close to them. Recently enough that it is not healed, long eno
 
 The bright world is that structure. The garden, the stall, the rally that climbs through its tiers, the friend at the counter with their head tilted toward the play. The protagonist did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
 
-They are rarely embodied in the bright world. The world is built around their quiet presence at its centre rather than their figure; the racquet moves, the counter climbs, the friend watches, and the protagonist is the gravity the rest of it orbits. In the quieter world they are on screen, observed fly-on-the-wall in a small ordinary moment with a partner. That is where the body lives.
+They are visible throughout. Drawn like any other character, on the left of the court with a racquet, holding the gravity of the world they built. Their Construction-render is who the player connects to across the bright world. Their Reality-render is the same person in their actual life, plainer, observed fly-on-the-wall in a small ordinary moment with a partner. The contrast lives in the register-switch, not in their presence on the page.
 
 ---
 
@@ -42,15 +42,15 @@ The structure holds because they choose it, again and again, not because anythin
 
 ---
 
-## In the bright world
+## In Construction
 
-The protagonist is a presence more than a figure. The court frames them on the left; the racquet moves; the head turns toward the stall when the rally allows it. The art's first job is to make the player feel the centre of the world is them, before a single line of dialogue.
+The court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and helping, the way the bright world renders the rest of its cast. The figure on the court is the player's anchor in the bright world; the rendering choices that hold for the cast hold for the protagonist too.
 
-When something is harder to look at, the camera does not look at them. The world holds the feeling instead: the light in the garden, the friend's posture, the ball in the air.
+When the moment is harder to look at, the camera can hold elsewhere: the light in the garden, the friend's posture, the ball in the air. The protagonist stays in the frame; the attention of the frame moves around them.
 
-## In the quieter world
+## In Reality
 
-The protagonist is on screen. A small moment with a partner in an ordinary place: a kitchen, a bus stop, the corner of a shop. Observed fly-on-the-wall, neither dramatised nor explained. Mid-30s, a little softer than they once were, gentle in posture. The artist's first quieter-world deliverable will set the rest of their physical specifics; everything else here defers to that read.
+The same person at their actual age. A small moment with a partner in an ordinary place: a kitchen, a bus stop, the corner of a shop. Observed fly-on-the-wall, neither dramatised nor explained. Mid-30s, a little softer than they once were, gentle in posture. The first Reality deliverable will set the rest of their physical specifics; everything else here defers to that read.
 
 ---
 
