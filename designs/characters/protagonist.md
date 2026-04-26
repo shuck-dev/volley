@@ -18,9 +18,9 @@ Not a tragic figure, not melodramatic, not a person in collapse. Someone who bui
 
 They lost someone close to them. Recently enough that it is not healed, long enough that they have built a structure around it.
 
-The bright world is that structure. The garden, the stall, the rally that climbs through its tiers, the friend at the counter with their head tilted toward the play. The protagonist did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
+Construction is that structure. The garden, the stall, the rally that climbs through its tiers, the friend at the counter with their head tilted toward the play. The protagonist did not assemble it as a hiding place. They assembled it because it was the thing they could assemble that held. The hiding is the by-product. The holding is the point.
 
-They are visible throughout. Drawn like any other character, on the left of the court with a racquet, holding the gravity of the world they built. Their Construction-render is who the player connects to across the bright world. Their Reality-render is the same person in their actual life, plainer, observed fly-on-the-wall in a small ordinary moment with a partner. The contrast lives in the register-switch, not in their presence on the page.
+They are visible throughout. Drawn like any other character, on the left of the court with a racquet, holding the gravity of the world they built. Their Construction-render is who the player connects to across Construction. Their Reality-render is the same person in their actual life, plainer, observed fly-on-the-wall in a small ordinary moment with a partner. The contrast lives in the register-switch, not in their presence on the page.
 
 ---
 
@@ -44,7 +44,7 @@ The structure holds because they choose it, again and again, not because anythin
 
 ## In Construction
 
-The court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and helping, the way the bright world renders the rest of its cast. The figure on the court is the player's anchor in the bright world; the rendering choices that hold for the cast hold for the protagonist too.
+The court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and helping, the way Construction renders the rest of its cast. The figure on the court is the player's anchor in Construction; the rendering choices that hold for the cast hold for the protagonist too.
 
 When the moment is harder to look at, the camera can hold elsewhere: the light in the garden, the friend's posture, the ball in the air. The protagonist stays in the frame; the attention of the frame moves around them.
 
