@@ -10,7 +10,7 @@ The place is geographically static. The map does not grow; the town stays the si
 
 ## Tone and texture
 
-Reality's tone is warm and weighted, story-driven. Characters at their real ages. Less vibrant, less full, deliberately unconstructed. Spiritfarer, Lake, Omori's Faraway Town are the tonal touchstones. Loss is acknowledged; the prose breathes; the rally is not the engine here. The pull of Reality is its honesty; the player ends up wanting it.
+Reality's tone is weighted, naturalistic, story-driven. Characters at their real ages. Less vibrant, less full, deliberately unconstructed. Spiritfarer, Lake, Omori's Faraway Town are the tonal touchstones. Loss is acknowledged; the prose breathes; the rally is not the engine here. The pull of Reality is its honesty; the player ends up wanting it.
 
 ## The puzzle shape
 

@@ -4,9 +4,9 @@ Construction. The pretense the protagonist is actively maintaining. This doc car
 
 ## What Construction is
 
-The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full and helping. Volleyball lives here and only here. The structure is a tournament: the protagonist is climbing the volley world ladder toward the championship.
+The garden, the stall, the racquet, the rally. Saturated colour, generous light, surfaces that gleam, shadows held soft. Characters drawn young and full and helping. Volleyball lives here and only here. The structure is a tournament: the protagonist is climbing the volley world ladder toward the championship.
 
-Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). Construction is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the warmth itself.
+Construction is a coping shape. Spiritfarer is the closest playable precedent: "We've only created a playground and framework for you to deal with your own emotions" (Nicolas Guérin, Thunder Lotus). Construction is honest about being a defence. The warmth in it was always real; the pretense is the rendering, not the feeling.
 
 The artist's hardest job lives here. Construction must be straight-up enjoyable as an idle pong game for the player who never thinks about the narrative. The cracks come later (`02-cracks-and-break.md`); if they arrive before the player has good reason to want the rally to keep going, they have nothing to crack.
 
@@ -17,7 +17,7 @@ The cast splits into two groups. The supporting cast are real people from the pr
 ### Supporting cast
 
 - **The protagonist.** Drawn like any other character; the player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is what the player connects to throughout Construction; the Reality-render is the protagonist as they actually are. The two stay distinct; the protagonist's image does not transform across the arc. The player gets the contrast by switching registers.
-- **The shopkeeper / friend at the stall.** The warmth at the centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
+- **The shopkeeper / friend at the stall.** The centre of the venue, in Construction. In reality, this is someone the protagonist has pushed away. Same person, two renders. The shopkeeper leaves the construction at the break (`02-cracks-and-break.md`) and returns at the call as the final partner on the right side of the court (`05-postgame.md`). (See "Why the shopkeeper is at the stall" below.)
 - **Martha and the partners.** Real people the protagonist knew, summoned into Construction as the protagonist's coaches and training partners. Each has a real-world counterpart the player can meet during Reconstruction. (See "The coaches" below.)
 - **The tinkerer.** Real person, the shopkeeper's younger sister. Holds the photo book in Reality (`04-reality.md`).
 

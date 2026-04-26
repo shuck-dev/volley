@@ -28,7 +28,7 @@ The break's mechanical signature: the player is pulled into Reality involuntaril
 
 The shopkeeper is not there in the break walk. Some excuse: the shop has a sign on the door (closing hours, "back later", a notice about something), the lights are off, the door is locked. The shopkeeper's face-to-face is held back for the call (`05-postgame.md`). The break shows the player Reality but not the conversation that lives at its centre.
 
-The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its warm centre: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`03-reconstruction.md`).
+The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its heart: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`03-reconstruction.md`).
 
 ## The break and the championship
 

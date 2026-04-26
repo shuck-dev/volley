@@ -27,7 +27,7 @@ Construction is what the protagonist actively maintains. It takes energy to keep
 
 **Construction.** Saturated, full, helping. Volleyball lives here; the count is the engine; the world record is the goal. The protagonist's pretense actively maintained against a loss they have not yet been able to face. Detail in `01-construction.md`.
 
-**Reality.** A complete second register. Visually distinct from Construction: warm and weighted, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
+**Reality.** A complete second register. Visually distinct from Construction: weighted, naturalistic, plainer, characters at their actual ages. Story-driven; layered scenes the player walks into. One place, the protagonist's hometown, geographically static with content added across the arc. Detail in `04-reality.md`.
 
 **Reconstruction.** The arc. The long phase after the break in which the wall stays down and the player can travel between Construction and Reality at will. Not a third visual register; a meta-state of free travel and bidirectional carry. Reconciliation lives inside Reconstruction as the actions the player takes. Detail in `03-reconstruction.md`.
 

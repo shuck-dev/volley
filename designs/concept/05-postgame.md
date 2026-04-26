@@ -16,9 +16,9 @@ The call is one image, two presences. Composition splits the frame: protagonist 
 
 The call lands. Both hang up; the door opens. The composition flows from the split frame into a single image of the court, with the shopkeeper crossing onto the right side, racquet in hand. The seashell is on the ground (the champ left it earlier, see below). The first ball is in the air.
 
-This is the postgame opening, and it is not a transition. The player never leaves the moment. The call IS the act of bringing the shopkeeper home; the home is the court; the rally that begins is postgame. The construction's warmth has returned, but as the actual relationship rather than the substitute. The right person is in the right spot.
+This is the postgame opening, and it is not a transition. The player never leaves the moment. The call IS the act of bringing the shopkeeper home; the home is the court; the rally that begins is postgame. Construction has its centre back, but as the actual relationship rather than the substitute. The right person is in the right spot.
 
-The call is the ending. The warmth in Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
+The call is the ending. Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
 
 ## Postgame
 

@@ -6,7 +6,7 @@ The arc. The long phase between the break and the cliff. The wall stays down; th
 
 Reconstruction is not a third visual register. The two registers stay distinct: Construction (`01-construction.md`) is still vibrant; Reality (`04-reality.md`) keeps its weight. Reconstruction is the meta-state in which the player has access to both and can carry across.
 
-Reconstruction's Construction is missing its warm centre. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. Construction has been hollowed out where it used to be warmest. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
+Reconstruction's Construction is missing its heart. The shopkeeper left at the break (`02-cracks-and-break.md`); the shop is closed; the stall is empty. Construction has been hollowed out where it used to live. The protagonist rallies on without them. The shopkeeper exists only in Reality during this arc, reachable through the reconciliation mechanic, until the call returns them to the construction (`05-postgame.md`).
 
 Reconstruction must also FEEL different to play, not only look different in the carry. Construction was driven by a visible count climbing toward the championship; if Reconstruction is just more of the same with the cap raised in stages, it will feel like Construction with extra steps. Three changes mark Reconstruction at the play level:
 
