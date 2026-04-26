@@ -6,7 +6,7 @@ Part 2. The arc after the break: dread, the search, the photo album, the unnamed
 
 The shopkeeper is missing. The shop is closed. The friend the protagonist was reaching for without admitting it has actually disappeared.
 
-The protagonist's belief, and the player's: the shopkeeper followed the friend's path. Did something reckless. Is gone. The unnamed number does not connect, and that no-answer is the player-facing weight of the protagonist's ineffectual reach.
+The protagonist's belief, and the player's: the shopkeeper followed the friend's path. Went back to the cliff. Is gone. Cliff jumping was the friend group's normal until the day it wasn't, and the shopkeeper survived once already; the fear is that surviving once was the limit. The unnamed number does not connect, and that no-answer is the player-facing weight of the protagonist's ineffectual reach.
 
 The driving force is the search. Not "find the shopkeeper" generically: find out what they did, where they went, whether it is too late. The whole arc is the search-for-confirmation, shadowed by the fear that the confirmation will be terrible.
 

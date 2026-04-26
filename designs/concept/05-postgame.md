@@ -6,9 +6,9 @@ The ending and what comes after. The cliff is the chosen-acceptance bookend to t
 
 The album fills. The hidden compartment opens. The sister hands over the key. The protagonist returns to the garden, walks to the locked gate, unlocks it, walks through.
 
-The cliff is on the other side. The bench is there, dedicated to the friend who died. The shopkeeper is on the bench. Alive.
+The cliff is on the other side. The same edge the friend group used to jump from. The bench is there, dedicated to the friend who died. The shopkeeper is on the bench. Alive.
 
-The act-2 dread inverts. Relief. The fear was wrong. The shopkeeper has been here, withdrawn, refusing calls. The shopkeeper was at the cliff when it happened; the protagonist was not. The visit closes that absence by chosen presence.
+The act-2 dread inverts. Relief. The fear was wrong. The shopkeeper has been here, withdrawn, refusing calls, sitting at the place they jumped from together and walked away from alone. The visit closes that absence by chosen presence: the protagonist arriving at the spot they were not at the day it happened, beside the one who was.
 
 ## The call
 
@@ -16,7 +16,7 @@ The protagonist takes out their phone. They could walk up silently. They do not.
 
 The shopkeeper's phone rings on the bench beside them. They could ignore it like they have been ignoring all the others. They do not. They look up at the sound. See the protagonist. Pick up.
 
-The dial does two things at once. Chosen presence (the door staging adapts to the cliff: the dial bridges the small distance between them on the bench). And finally attaching the name to the number the protagonist has been carrying. The phone log entry is not just digits anymore.
+The dial does two things at once. Chosen presence (the door staging adapts to the cliff: the dial bridges the small distance between them on the bench). And finally attaching the name to the number the protagonist has been carrying. The phone log entry is not just digits anymore. It is the person who jumped that day and came back; the one whose survival the protagonist could not look at, until now.
 
 ### Staging
 

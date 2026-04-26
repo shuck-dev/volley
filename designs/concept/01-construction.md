@@ -24,7 +24,7 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 **The protagonist.** Drawn like any other character. The player needs to see them to connect to them. Construction-render and Reality-render, same shape as everyone else. The Construction-render is who the player connects to throughout Part 1. The two stay distinct; the protagonist's image does not transform across the arc. The contrast lives in the style-switch.
 
-**The shopkeeper / friend at the stall.** Behind the counter of the small wooden stall in the garden. The warm centre of the venue. In Reality, the same person is alive in the hometown, withdrawn, the one the protagonist pushed away. The shopkeeper was at the cliff when the friend died; the protagonist was not. Their relationship is the load-bearing emotional shape of the game.
+**The shopkeeper / friend at the stall.** Behind the counter of the small wooden stall in the garden. The warm centre of the venue. In Reality, the same person is alive in the hometown, withdrawn, the one the protagonist pushed away. The shopkeeper was cliff-jumping with the friend the day they died; the protagonist was not there. Their relationship is the load-bearing emotional shape of the game.
 
 **Martha and the partners.** Real people the protagonist knew, summoned into Construction as coach-partners. Each has a Reality-render at their actual age in their actual life. Lineage rule: each partner is named for a character from a science-fiction author's work.
 
@@ -36,11 +36,11 @@ The cast splits into two groups. The supporting cast are real people from the pr
 
 ## Why the shopkeeper is at the stall
 
-The shopkeeper was there when the friend died. The protagonist was not.
+The shopkeeper was on the cliff with the friend the day they jumped. The protagonist was not.
 
-That asymmetry is the wedge. The friend did something reckless, alone except for the shopkeeper, who witnessed it and could not save them. The shopkeeper carries the memory; the protagonist carries the absence. Talking to the shopkeeper would mean hearing what happened, and naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment, the shopkeeper did not cause it; as mirror.
+That asymmetry is the wedge. Cliff jumping was a normalised activity in the friend group: dangerous, but routine for them, until it wasn't. The shopkeeper was up there too, doing the same thing, and walked away. The friend did not. The shopkeeper carries the memory and the survival; the protagonist carries the absence and the not-being-there. Talking to the shopkeeper would mean hearing what happened, and naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment, the shopkeeper did not cause it; as mirror, and as the survivor whose survival the protagonist cannot quite hold beside the friend's death.
 
-The shopkeeper's tries to help after the death were partly their own grief reaching for connection. They got pushed away because the protagonist could not bear what their presence pointed at.
+The shopkeeper's tries to help after the death were partly their own grief reaching for connection, the survivor's reach. They got pushed away because the protagonist could not bear what their presence pointed at.
 
 The protagonist's mind cannot let them go either. The shopkeeper is the only one who knows; the only one who could understand. Construction's compromise is precise: keep the shopkeeper present, warm, available; have the relationship that does not require admitting where the protagonist was when the friend died. The friend at the stall, attentive without intruding, is the relationship the protagonist wants AND the relationship they cannot have in Reality, rendered as the version they can hold.
 

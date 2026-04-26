@@ -44,7 +44,7 @@ Reality holds the real-world version of every cross-style character. Each is at 
 
 **The protagonist.** Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
 
-The champ is Construction-only. No Reality counterpart. Their reality is the cliff (`05-postgame.md`).
+The champ is Construction-only. No Reality counterpart. Their reality is the cliff (`05-postgame.md`): the place the friend group used to jump from, the place the friend died, the place the shopkeeper went back to.
 
 ## Period
 
@@ -54,5 +54,5 @@ Late 90s or early 2000s as a tonal range. Pre-smartphone. Phones flip or candy-b
 
 - Reality is finite hand-crafted content. The hometown is built once with iterative additions across Part 2.
 - The sister is the most-visited Reality character (she holds the photo album). Her scene supports many returns.
-- The cliff is a separate location built once. Used at the chosen-acceptance moment and re-enterable through the unlocked gate after the call (`05-postgame.md`).
+- The cliff is a separate location built once. The same cliff the friend group used as a jumping spot, the same edge the friend went off, the bench at the top dedicated to them. Used at the chosen-acceptance moment and re-enterable through the unlocked gate after the call (`05-postgame.md`).
 - Specific Reality tooling (interaction surfaces, scene state, dialogue, navigation) belongs to SH-279.
