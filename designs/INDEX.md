@@ -95,8 +95,8 @@ The [open-development essay](research/the-case-for-open-development.md) sits in 
 | Phase | Folder | What lives here now |
 |---|---|---|
 | Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline canon. |
-| Alpha | [02-alpha/](02-alpha/INDEX.md) | Construction era content-complete; the break designed. |
-| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction and the cliff playable end-to-end. |
+| Alpha | [02-alpha/](02-alpha/INDEX.md) | Construction content-complete; the break designed. |
+| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction, the cliff and the call, and the postgame playable end-to-end. |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content past the main arc. |
 
 Drafts start in the active phase folder, settle into the discipline folder when they earn canon, and the phase folder keeps the working history.
