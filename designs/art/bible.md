@@ -33,7 +33,7 @@ The protagonist's interior sits in [`../characters/protagonist.md`](../character
 
 ## 1. The world in one paragraph
 
-A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, head tilted toward the rally. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal. The friend gives the number meaning.
+A racquet. A ball. A counter on the wall that climbs. A friend leaning on the counter of a small wooden stall on the far side of the play, watching the protagonist play, glad to be there. The first session opens with a sentence in the friend's voice: chase the world volley record. The number is the goal.
 
 Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
@@ -77,7 +77,7 @@ Everyone in this game is real. The Construction cast is the real-world cast rend
 
 Anyone who appears in both worlds has two renders: a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life, plainer. Same character, different style.
 
-Each round of the tournament happens in a shared themed space, with the coach now on the opposite side of the court. Partner renders need to land in both positions: the coach beside the protagonist, partnered, and the same person across the court, the same warmth, in **the round**. One person, one role with two faces.
+Each round of the tournament happens in a shared themed space, with the coach now on the opposite side of the court. Partner renders need to land in both positions: the coach beside the protagonist, partnered, and the same person across the court, in **the round**. One person, one role with two faces.
 
 ### The protagonist
 
@@ -89,7 +89,7 @@ The depth sits in [`../characters/protagonist.md`](../characters/protagonist.md)
 
 ### The shopkeeper
 
-The friend at the stall. The warmth at the centre of Construction's venue. Behind the counter of a small wooden stall, leaning on their elbows, head tilted toward the play, attentive without intruding. With them the garden is a place; without them it is a fenced patch of grass with a ball in the air.
+The friend at the stall. The centre Construction's garden is built around. Behind the counter of a small wooden stall, leaning on their elbows, watching the rally, glad to be there. With them the garden is a place; without them it is a fenced patch of grass with a ball in the air.
 
 In Reality this is the person the protagonist has pushed away. The shopkeeper was cliff-jumping with the friend the day the friend died; the protagonist was not there. Two survivors of the same routine, one of them at the edge when it stopped being routine. That asymmetry is the wedge. The shopkeeper carries the memory; the protagonist carries the absence. Talking would mean naming where the protagonist was instead. The protagonist pushes them away because the shopkeeper IS the failure of presence, made daily and visible. Not as judgment; as mirror.
 
@@ -101,7 +101,7 @@ What holds is the posture in Construction and the weight and absence in Reality.
 
 ### The sister (the tinkerer)
 
-The shopkeeper's younger sister. In Construction she is the tinkerer behind the workshop bench in the garden: rests, procrastinates, works at her own pace, finished items land on a done tray with a soft chime. Different rhythm from the shopkeeper, different relationship to the protagonist, same family warmth. She talks less than the shopkeeper, hands things back when they are done.
+The shopkeeper's younger sister. In Construction she is the tinkerer behind the workshop bench in the garden: rests, procrastinates, works at her own pace, finished items land on a done tray with a soft chime. Different rhythm from the shopkeeper, different relationship to the protagonist, same family ease. She talks less than the shopkeeper, hands things back when they are done.
 
 In Reality she holds the photo book. She is one of the first reachable people across Reconstruction; sitting with her and the book is the first reconciliation action. She is less weighted by the death than the shopkeeper. The protagonist can sit with her; she is willing to do the work the shopkeeper cannot yet do alongside them. She is the bridge.
 
@@ -111,11 +111,11 @@ Two renders, like the shopkeeper. Age, presentation, look stay open; the family 
 
 Each partner is a coach. They train the protagonist in one specific mechanic via the rally; once the protagonist qualifies, the partner takes the other side of the court, and **the round** is the test of what they taught. Master-and-pupil shape. By the championship the protagonist has a stack of techniques, each tied to a person who taught them.
 
-**Martha** is the first partner. A Black woman who was the cashier at the local newsagent in the protagonist's hometown: a small shop on the high street, the kind of shop a person pops into most days. A smile waiting. Chats about nothing: the weather, something in the paper, a thing she saw on telly. A fixture, not a friend exactly, but someone who made the day a little warmer.
+**Martha** is the first partner. A Black woman who was the cashier at the local newsagent in the protagonist's hometown: a small shop on the high street, the kind of shop a person pops into most days. A smile waiting. Chats about nothing: the weather, something in the paper, a thing she saw on telly. A fixture, not a friend exactly, but someone who made the day land a little softer.
 
 She comes early because she is one of the lowest-risk memories. No history to untangle, no falling out, no guilt. Reaching for her does not require facing anything heavier yet. The partners later carry more.
 
-Her voice: warm, slightly sharp, particular, British. The kind of person who would tell the truth and then make a cup of tea. She speaks rarely. Her silences are characterisation; not a coach in the speech-making sense, a friend who happens to be on the right side of the court. Working age range 45 to 60.
+Her voice: kind, slightly sharp, particular, British. The kind of person who would tell the truth and then make a cup of tea. She speaks rarely. Her silences are characterisation; not a coach in the speech-making sense, a friend who happens to be on the right side of the court. Working age range 45 to 60.
 
 Three more partners arrive in the early game; from then on each new venue brings one. Beyond Martha, none are drafted yet. The lineage rule names candidates: every partner shares a name with a character from a science-fiction author's work, with a bias toward authors writing outside the dominant tradition. Le Guin, Jemisin, Tiptree / Sheldon, Becky Chambers, Margaret Atwood, Naomi Mitchison, Joanna Russ, Liu Cixin, Nnedi Okorafor. Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character. Lineage shapes how each partner carries themselves; it does not need to surface in the game.
 
