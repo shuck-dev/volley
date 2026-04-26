@@ -4,7 +4,7 @@ The wall thinning across Part 1, the championship win that lands wrong, and the 
 
 ## Cracks
 
-Reality leaks into Construction in small atmospheric ways across Part 1. Each leak is dismissible on its own. The cumulative pressure is what matters.
+Reality leaks into Construction across Part 1. Each leak is dismissible on its own. The cumulative pressure is what matters.
 
 Cracks earn their dismissibility from prior generosity (see [Pattern 1](../research/game-structure-references.md#pattern-1-cracks-earn-dismissibility-from-prior-generosity)). Construction has to land as genuinely fun before a single crack works. [Spec Ops: The Line](https://en.wikipedia.org/wiki/Spec_Ops:_The_Line)'s first heat shimmer arrives roughly three hours in, after the player has settled into a competent-soldier rhythm; [Doki Doki Literature Club](https://en.wikipedia.org/wiki/Doki_Doki_Literature_Club!)'s first poem night arrives after hours of dating-sim warmth; [Inscryption](https://en.wikipedia.org/wiki/Inscryption)'s first scrybe-room break arrives once the player has earned the deck. Volley's idle pacing scales these numbers up; the principle holds.
 
@@ -24,7 +24,7 @@ The protagonist climbs every round. The obsession with becoming champ deepens. T
 
 The player wins the championship. They do beat the champ.
 
-The win feels off. Like real-world achievement that turns out not to fix the thing it was supposed to fix. Both pulls of becoming-champ are satisfied at the same beat and neither was the thing the protagonist actually needed.
+The win feels off. Both pulls of becoming-champ are satisfied at the same beat and neither was the thing the protagonist actually needed.
 
 The win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
 
