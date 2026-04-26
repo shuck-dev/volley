@@ -28,7 +28,7 @@ There is exactly one locked gate in the whole game. It sits in the garden. Walki
 
 The top edge of the court is sky, not surface. The ball travels up to apex and returns under gravity and the friendship-bound: whichever bond is in play in that venue is what the rally lives inside, and the bond's reach is what the ball cannot escape. Mechanically the ball changes direction at apex; diegetically nothing physical bounces it.
 
-The moment of return is a visible beat in Construction's register. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the present friend: eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
+The moment of return is a visible beat in Construction's style. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the present friend: eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
 
 The garden's version of the apex event runs through the shopkeeper's reaction at the stall, since the venue has no physical ceiling and the shopkeeper is the bond the garden holds. Other Construction venues run the same beat through the coach who teaches there: the partner's reaction at the treetop canopy, at the underwater surface, in the meteor field. The bond doing the work changes by venue. The pattern is the same.
 
