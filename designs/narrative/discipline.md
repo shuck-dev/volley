@@ -46,11 +46,15 @@ Surfacings come from a specific moment with the friend at the counter, never fro
 
 ## Cracks at the line level
 
-A meta-crack in dialogue is a line that almost-acknowledges the construct and then moves on. A coach saying "we'll do this again next week, won't we" with a beat of weight on "won't we" that the player half-feels. The line is in-fiction; the weight is the crack. A version of the line that names the construct out loud has tipped into signpost.
+A crack is a visible, authored beat. The player notices. The discipline is not in hiding the crack; the discipline is in the crack earning its place and giving the player something to reach for when they try to explain it.
 
-A tonal crack in description is a flicker, a wrong colour, a sound out of place, named in plain prose and then dropped. "The light cools at the edge of the frame for a beat. It warms again." Two short sentences, no commentary, no character noticing. The reader feels the temperature drop; the text moves on.
+A meta-crack in dialogue is a line that almost-acknowledges the construct. A coach saying "we'll do this again next week, won't we" with weight on "won't we" the player hears. A friend at the stall ending a goodbye with "see you tomorrow, same as always". The line stays in-fiction; the construct stays unnamed; the weight is on the page. The player notices and reaches for an answer: the coach is being warm, the friend is being a friend, the line was meant kindly. The reach is the deniability. Each meta-crack does specific work: it widens the gap between what Construction says about itself and what the player is starting to suspect.
 
-Deniability is the discipline. A crack the player could name aloud as "the game is showing me something" has failed. A crack the player half-felt and shrugged off has worked. Write the crack, then read it back and ask whether a friend reading the page would point at it. If yes, soften.
+A tonal crack in description is a flicker named with weight, not buried. A wrong colour at the edge of a frame. A sound that does not belong to the place it lands in. "The light at the corner of the court goes blue for a beat, then back." "Somewhere behind the stall, a kettle clicks off in a kitchen that is not there." Two sentences, plain prose, no character noticing. The player notices. The player reaches: a lighting cue, a sound bug, an atmospheric flourish. The reach is the deniability. The crack has done its work: it has put a piece of the world out of true and let the player carry it.
+
+The cumulative pattern is the load. One crack is a flourish; a dozen across an act is the world failing to reconcile. The protagonist's construct is failing to reconcile for them in the same shape and at the same pace. Player and protagonist drift out of alignment with Construction together. By the time the break arrives, the player has been collecting evidence the protagonist has been collecting too, and the recognition is shared rather than delivered.
+
+Write the crack, then read it back and ask two questions. Does the player notice? If no, the crack is too soft; sharpen until the beat lands. Does the player have somewhere to put it that is not "the game is telling me the world is fake"? If no, the crack has tipped into signpost; pull back until the in-fiction reach is available again. The target is a beat the player sees clearly and explains away, not a beat the player misses.
 
 ## Pacing rhythms
 
