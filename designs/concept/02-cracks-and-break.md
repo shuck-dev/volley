@@ -1,6 +1,6 @@
 # Cracks and the Break
 
-The wall thinning, then the wall coming down. This doc carries both phases together because they are one continuous beat. High-level architecture in `00-three-registers.md`; what follows here is the detail.
+The wall thinning, then the wall coming down. This doc carries both phases together because they are one continuous beat. High-level architecture in `00-three-styles.md`; what follows here is the detail.
 
 ## Cracks
 

@@ -1,6 +1,6 @@
 # The Call and Postgame
 
-The ending and what comes after. High-level architecture in `00-three-registers.md`.
+The ending and what comes after. High-level architecture in `00-three-styles.md`.
 
 ## The call
 
