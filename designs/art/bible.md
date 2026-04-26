@@ -2,7 +2,7 @@
 
 The canonical rules for Volley!'s visual direction. Every concept study and production asset briefs against this doc.
 
-The bible is the decision layer. The [Style Workshop](style-workshop.md) is the analysis; [Direction](direction.md) is the narrative; this is the rulebook.
+The bible is the decision layer. [Direction](direction.md) is the narrative; this is the rulebook.
 
 ---
 
@@ -175,4 +175,4 @@ Every cut, movement, and colour choice can serve the rhythm. Visual rhythm is fe
 
 ## Changelog
 
-- **2026-04-18:** first pass, populated from the Style Workshop, Direction, and North-Star.
+- **2026-04-18:** first pass, populated from Direction and North-Star.
