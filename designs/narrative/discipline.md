@@ -28,7 +28,7 @@ No exposition dumps. If a piece of canon needs to land, it lands as something a 
 
 ## Tone modulation
 
-Tone moves moment to moment. Construction holds vibrant warmth as the default, slips for a beat into a meta-crack, and resettles. The slip is a half-second; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
+Tone moves moment to moment. Construction's default is the coach's grin between rallies, the friend at the stall calling a name across the court, the lift in a line that did not need lift. It slips for a beat into a meta-crack, and resettles. The slip is a half-second; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
 
 The break runs cold and short. Sentences shrink. Adjectives drop. Light becomes light, sound becomes sound, the prose stops reaching for warmth because the construct has stopped supplying it. Then the walk through the hometown begins and the prose finds Reality's plainer register for the first time.
 
@@ -54,7 +54,7 @@ Deniability is the discipline. A crack the player could name aloud as "the game 
 
 ## Pacing rhythms
 
-Volley's structure inherits its rhythm from the rally. Short sentences land like hits; longer sentences carry the rally between them. Voice's long-long-short pattern is the prose-level version of the same shape.
+A hit lands. The ball arcs back, slower, carrying the rally across the net before the next hit lands. Short sentences hit; longer sentences carry the rally between them. Voice's long-long-short pattern is the prose-level version of the same shape.
 
 Push when the moment pushes. The break wants short sentences in a stack. The cliff walk wants one breath, then the next. The recognition is a single sentence with no qualifier.
 
