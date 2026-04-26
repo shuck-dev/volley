@@ -1,8 +1,8 @@
 # Volley!
 
-Volley! is a desktop idle game shaped like a tennis rally. A small window sits on the player's desktop, the ball goes back and forth, and the player builds a paddle worth keeping. Underneath the loop is a story: a protagonist who built a vibrant world to keep playing while a bigger thing waits at the cliff. The Construction surface is warm and hand-drawn; Reality runs underneath it and presses through when the rally pauses long enough to listen.
+Volley! is a desktop idle game shaped like a tennis rally. The ball travels back and forth, the player builds a racquet worth keeping, and a friend leans on the counter of a small wooden stall on the far side of the play. Underneath the loop sits a story. The protagonist built **Construction** to keep playing after a friend died cliff-jumping; **Reality** is the hometown they came back to, where the people behind the partners live at their actual ages and one of them, the friend at the stall, has withdrawn. The two worlds stay visually and mechanically distinct. The player learns the bright one is a construct only as the climb cracks open.
 
-The game has to land for both readers. A player who never thinks about the narrative should still want the window on their desktop. A player who notices the names, the descriptions, the weight that a pong game has not earned, gets the second layer. Neither layer punishes the other.
+The game has to land for both readers. A player who never engages with the narrative should still want the rally running while they work. A player who notices the names, the digits in the count, the weight a pong-shaped game has not earned, gets the second layer. Neither layer punishes the other.
 
 This folder is the design thinking behind the game, organised by the people who do the work.
 
@@ -34,7 +34,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Bible](art/bible.md) | Canonical rules: palette, silhouette, line, mood, era, treatment. Source of truth for visual direction. |
+| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and call, then craft sections (palette, line, treatment, touchstones). Source of truth for the artist. |
 | [Direction](art/direction.md) | The themes the bible distils. The narrative layer behind the rules. |
 | [Inspirations](art/inspirations.md) | Works Volley! has looked at, with attribution. |
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: rendering, assets, register shifts. |
@@ -44,8 +44,8 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Outline](narrative/outline.md) | The story beats, in order. Construction, the break, Reconstruction, the choice at the cliff. |
-| [Discipline](narrative/discipline.md) | Writing craft notes for the project: voice, beats, register shifts. |
+| [Outline](narrative/outline.md) | The story beats, in order. Construction's climb, the break at the championship, Reconstruction's search, and the call at the cliff bench. |
+| [Discipline](narrative/discipline.md) | Writing craft notes for the project: scene construction, dialogue, tone modulation, memory surfacings, line-level cracks, pacing. |
 
 ### Tech-art
 
@@ -96,7 +96,7 @@ The [open-development essay](research/the-case-for-open-development.md) sits in 
 |---|---|---|
 | Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline canon. |
 | Alpha | [02-alpha/](02-alpha/INDEX.md) | Construction era content-complete; the break designed. |
-| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction and both endings playable. |
+| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction and the cliff playable end-to-end. |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content past the main arc. |
 
 Drafts start in the active phase folder, settle into the discipline folder when they earn canon, and the phase folder keeps the working history.
