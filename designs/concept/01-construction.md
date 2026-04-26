@@ -10,6 +10,12 @@ Construction is a coping shape. Spiritfarer is the closest playable precedent: "
 
 The artist's hardest job lives here. Construction must be straight-up enjoyable as an idle pong game for the player who never thinks about the narrative. The cracks come later (`02-cracks-and-break.md`); if they arrive before the player has good reason to want the rally to keep going, they have nothing to crack.
 
+### The garden as the meeting point
+
+The garden is the one Construction venue grounded in the protagonist's actual hometown geography. It is built from their memory of the real garden in Reality, sprucing it up. The constructed garden and the real garden remain distinct places, but the garden is the venue where construct and real overlap. Other Construction venues (underwater, meteor, treetop canopy, and so on across the trajectory) are purely fantastic, with no Reality counterparts. The garden's "out of place out of time" feel comes from being the venue grounded in the real hometown still standing.
+
+This is also why the one locked gate in the entire game lives at the back of the garden: the gate is the seam between the constructed garden and the cliff in Reality on the other side. Full canon in `00-three-registers.md` and `04-reality.md`.
+
 ## The cast
 
 The cast splits into two groups. The supporting cast are real people from the protagonist's life, rendered in Construction. The player will see two asset sets for each: a Construction-side rendering (young, vibrant, helping) and a Reality-side rendering (their actual age, plainer, in their actual life). The opposing cast is just one person: the champ, the dead friend, who sits at the top of the tournament ladder.
@@ -65,11 +71,11 @@ Concrete shape of the mechanics is downstream design (one mechanic per coach, ea
 
 The champ is the final coach the protagonist had: the friend they used to play with, who was the best at the game and pushed the protagonist to be better. In the construction, the champ holds the championship spot, a person the protagonist looks up to, never a rival.
 
-In Construction, the protagonist climbs the rounds, learning each coach's mechanic, and eventually qualifies for the championship. The championship match is unwinnable. The wall is exactly there. The break (`02-cracks-and-break.md`) is what happens when the player has been at the championship long enough that the construction can no longer hold them against the impossibility.
+In Construction, the protagonist climbs the rounds, learning each coach's mechanic, and eventually qualifies for the championship. The championship match is winnable. The player wins it. They beat the champ. The break (`02-cracks-and-break.md`) is the win itself: it lands wrong, the construct's central goal proved meaningless once reached, both pulls of becoming-champ satisfied and neither was the thing. The win IS the rupture; the construction cannot hold itself together once its central goal has been hollowed out.
 
-Late in Reconstruction, after the cliff visit, the champ shifts. They become recruitable as a partner; the player can put them on the court like any other. The rallies are different with them; they were always the player they admired. The path to the call opens once the champ is a partner the player can rally with, not a championship match they cannot win.
+The champ exits at this point. They are present across Construction as the wall at the top of the ladder; they appear as the partner only at the final venue, on the right side of the court for the championship match itself; they are not in Reconstruction. The champ does not return as a recruitable partner; the cliff visit and the call are not about reaching them but about reaching the shopkeeper, who is alive.
 
-After the call, the champ is gone (`05-postgame.md`).
+(See `02-cracks-and-break.md` for the win-as-break beat and `05-postgame.md` for what the championship spot becomes after the call.)
 
 ## The rally and the count
 

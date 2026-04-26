@@ -4,39 +4,39 @@ The ending and what comes after. High-level architecture in `00-three-registers.
 
 ## The call
 
-Reaching the world record means winning the championship. Winning the championship means dialling the shopkeeper's phone number. The protagonist dials while standing at the shop door. The shopkeeper's phone rings inside; the protagonist hears it through the door of the shop they have been avoiding for years. The shopkeeper picks up. The first words happen on the phone with both of them in the same building, voice and body simultaneously. The call connects; the door is right there.
+The album fills, the hidden compartment opens, the sister hands the protagonist the key. The protagonist returns to the garden, walks to the back, and unlocks the one locked gate. Through it is the cliff in Reality.
 
-The shopkeeper is still there. The protagonist is reaching the person who was there when they were not; the shared knowledge has been waiting all along.
+The whole of Reconstruction has been shadowed by dread (`03-reconstruction.md`): the shopkeeper missing since the break, calls to the unnamed number unanswered, the fear they have followed the friend's path. The cliff is set up to deliver the worst, with a bench dedicated to the friend.
+
+The shopkeeper is on the bench, alive. The dread inverts to relief. The fear was wrong; they have been here, withdrawn, refusing calls.
+
+The bench is a few steps away. The protagonist could close that distance silently. They do not. They take out their phone and dial the unnamed number, the digits whole now from all the surfaced fragments across Part 2. The shopkeeper's phone rings beside them; they could ignore it the way they have been ignoring all the others, and they do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones across the small distance between path and bench.
+
+The dial does two acts at once. Chosen presence, the choice to be reached and to reach across the few steps that took the whole game. And the moment the name finally attaches: the unnamed contact in the protagonist's phone is recognised as the shopkeeper, the contact and the person fused after a whole game of holding them apart.
+
+The call ends. The protagonist crosses the small distance and sits beside the shopkeeper on the bench. Coming home is the call.
 
 ### Staging
 
-The call is one image, two presences. Composition splits the frame: protagonist on the outside, shopkeeper on the inside, the door (or window, or wall) dividing them. Both holding phones. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split IS the years of distance; the shared frame IS the resolution. The phone is the line that crosses the split. One moment, two people, finally in the same picture.
+The call is one image, two presences. Composition splits the frame across the bench area: protagonist on the path, shopkeeper on the bench, the few steps between them. Both holding phones. After the touchstone of *Broken Age*'s key art, where two characters share one image divided by a structural element. The split IS the years of distance; the shared frame IS the resolution. The phone is the line that crosses the split. One moment, two people, finally in the same picture.
 
-### Coming home
-
-The call lands. Both hang up; the door opens. The composition flows from the split frame into a single image of the court, with the shopkeeper crossing onto the right side, racquet in hand. The seashell is on the ground (the champ left it earlier, see below). The first ball is in the air.
-
-This is the postgame opening, and it is not a transition. The player never leaves the moment. The call IS the act of bringing the shopkeeper home; the home is the court; the rally that begins is postgame. Construction has its centre back, but as the actual relationship rather than the substitute. The right person is in the right spot.
-
-The call is the ending. Construction is now available without the pretense; the protagonist can be in their hometown, with the people who are actually there, and the rally is something they do, with the right person, in a world that no longer has to be a wall.
+The cliff and the sea sit behind both of them. The bench is the dedication; the call is the answer.
 
 ## Postgame
 
 Postgame is rallying with the shopkeeper. They take the right side of the court that used to be the championship spot, the same spot the champ once held. The construction is at last what the protagonist was always reaching for: themselves on the left, the shopkeeper on the right, the rally going.
 
-The champ exited earlier, late in Reconstruction (see `01-construction.md` and `03-reconstruction.md`). They had become a partner the player could rally with after the cliff; once the path to the call was opened, they left, with the seashell where they had been. Reaching the call clears the championship spot for the shopkeeper; the seashell stays.
+The champ exited at the break (`01-construction.md`, `02-cracks-and-break.md`). The championship win was the rupture; the champ does not return. Reaching the call places the shopkeeper in the spot the champ once held, as the actual partner rather than the substitute.
 
-The seashell, carried by the protagonist from the call onward, opens the cliff as a place the protagonist can return to anytime. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Grief integrated as access, not as event. The cliff was chosen acceptance the first time it was visited; the seashell makes it a chosen visit.
+The cliff stays returnable through the now-unlocked gate. There is no new gameplay there: the cliff is a place to sit, look at the sea, listen. Grief integrated as access, not as event. Chosen acceptance the first time; chosen visit thereafter.
 
 ## What this opens
 
-The narrative doc names "Regret" as a future-update perspective for someone who never made the call. The postgame item could grow further down that road, but the seashell is the structural minimum: one object, one returned place, one small daily ritual Construction did not have before.
-
-Postgame is the slot where additional perspectives, alternate runs, or extended mechanics could live. The seashell is the load-bearing piece that closes the prototype-to-alpha arc; further postgame content is downstream.
+The narrative doc names "Regret" as a future-update perspective for someone who never made the call. Postgame is the slot where additional perspectives, alternate runs, or extended mechanics could live. The shopkeeper-as-partner and the returnable cliff are the structural minimum that closes the prototype-to-alpha arc; further postgame content is downstream.
 
 ## Open questions
 
-- **Reality cycling post-call.** After the call, does the game continue, close, or open into a Regret-style alt-perspective? Default: stays open with the seashell as the persistent affordance, no new gameplay loops. Confirm.
-- **What Construction looks like in postgame.** With the champ gone, the right side of the championship match is empty. Does the player still rally in Construction at all? With which partners? Or is Construction effectively closed once the call has landed?
-- **The shopkeeper after the call.** They picked up. What does the relationship look like after that? Reachable in Reality continuously? A character the player can visit? Or held off-screen as a closed beat?
+- **Reality cycling post-call.** After the call, does the game continue, close, or open into a Regret-style alt-perspective? Default: stays open with the cliff returnable as the persistent affordance, no new gameplay loops. Confirm.
+- **What Construction looks like in postgame.** With the champ gone since the break, and the shopkeeper now on the championship spot, what does the rest of Construction look like? Are earlier rounds re-rallyable? With which partners? Or is Construction effectively distilled down to the one shopkeeper rally?
+- **The shopkeeper after the call.** They picked up. What does the relationship look like after that? Reachable in Reality continuously? A character the player can visit at the shop, now reopened? Or held off-screen as a closed beat?
 - **Save state and the call.** Does reaching the call create a save-flag the player crosses once, or is the call something the player can replay? The call as a one-time moment is the cleaner narrative shape; replay is the structurally simpler implementation.

@@ -26,24 +26,28 @@ The break is the wall coming down. Spec Ops is the structural exemplar: cumulati
 
 The break's mechanical signature: the player is pulled into Reality involuntarily for the first time. The dip is forced. They walk through the protagonist's hometown. They see the people behind the partners. Martha is the cashier at the actual newsagent. The cliff is somewhere in this geography but not yet visited.
 
-The shopkeeper is not there in the break walk. Some excuse: the shop has a sign on the door (closing hours, "back later", a notice about something), the lights are off, the door is locked. The shopkeeper's face-to-face is held back for the call (`05-postgame.md`). The break shows the player Reality but not the conversation that lives at its centre.
+The walk reveals what the rupture is for: the shopkeeper is missing. The shop is empty, the lights off, a sign on the door, the family worried about where they have gone. The person the protagonist was reaching for without knowing has actually disappeared. The break shows the player Reality and the absence at its centre, in one walk.
 
-The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its heart: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here. Reconstruction begins (`03-reconstruction.md`).
+The break ends and the player is back in Construction, but the wall does not go up again. The construction has lost its heart: the shop is closed; the friend at the stall is gone. The shopkeeper exists only in Reality from here, missing, with the search for what happened ahead. Reconstruction begins (`03-reconstruction.md`).
 
-## The break and the championship
+## The win is the break
 
-The break is what happens after the protagonist has attempted the championship and failed. The attempt is signalled to the player as one shot. The whole climb has been training; the championship is the test; the player thinks they have one chance and they take it.
+The break is the championship win itself. The whole climb has been training; the championship is the test; the player wins. They beat the champ. The match is winnable; they pass it.
 
-The match is unwinnable. The champ holds the championship; the protagonist has done all the right work and still cannot pass. The break follows immediately. The construction can no longer hold the protagonist against this impossibility, and the wall comes down.
+The win lands wrong. Both pulls of becoming-champ are satisfied at the same beat (winning the title and reaching the friend the champ stood in for) and neither was the thing the protagonist actually needed. The construct's central goal has been reached and proved meaningless. There is no more wall to climb because the wall just fell over.
 
-This shape gives the championship attempt the structural weight that the break needs: the player feels the moment of trying and failing, not the slog of repeated attempts. One attempt, one failure, the wall down. The cumulative cracks have been preparing the player to read what just happened.
+The break follows immediately. The construction cannot hold itself together once its goal has been hollowed out, and the player is pulled into Reality involuntarily.
 
-The relationship to the cracks: the cracks have been thinning the wall throughout. The championship attempt is the singular moment that the cracks finally render as legible. Cumulative pressure plus singular rupture, in one beat.
+At the win moment the count completes; the digits land; the protagonist sees them. They look weirdly familiar (the unnamed number sitting in their phone the whole game) but the recognition does not quite land yet. That recognition is the shape Reconstruction will tighten across the rest of Part 2. Full canon for the unnamed number in `00-three-registers.md`.
+
+This shape gives the championship the structural weight the break needs without asking the player to lose. The relationship to the cracks: the cracks have been thinning the construct throughout; the win is the singular moment that the cracks render legible. Cumulative pressure plus singular rupture, in one beat. Achievement-doesn't-equal-happiness as the felt shape; the trophy in hand and the floor giving way at the same time.
+
+(The pre-smartphone era is the period the count and the unnamed number both sit inside; the period note lives in `00-three-registers.md`.)
 
 ## Open questions
 
 - **Crack pacing.** Cracks tied to count milestones, playtime, story flags, or a combination? Idle players play in spurts over months; cracks that gate on count alone reward grinders.
 - **Cracks as deniable in an idle context.** Idle games are played in short sessions over months. A cumulative crack pattern has to work for both the burst-player and the all-night-grinder. The pattern's pacing across real time vs in-game time is open.
-- **Cracks during a championship attempt.** Should cracks intensify or behave differently while the player is in the championship match itself? The match is where the construction's pressure is highest; that may be where the cracks land hardest.
+- **Cracks during the championship match.** Should cracks intensify or behave differently while the player is in the championship match itself? The match is where the construction's pressure is highest; that may be where the cracks land hardest, with the rupture arriving on the winning point.
 - **Tonal vs meta crack mix.** What proportion of each kind of crack across the arc? Meta-contextual cracks are higher-leverage but also higher-impact when they land; over-using them risks signalling too early.
-- **Replay attempts.** The match is signalled as one-shot, but if the player loses and can press play again on the championship, what happens? Possibilities: the championship is structurally one-shot (no replay button); the championship can be re-entered but always loses with diminishing diegetic effect; or the failed attempt is what triggers the break and the championship is not visitable again until reconstruction.
+- **The win moment's staging.** The win is the rupture: how is the won point rendered so that the off-feel lands? Sound dropping out, the venue stilling, the count digits surfacing alone on screen, the champ's posture, the protagonist's reaction. This is the singular image the cracks have been preparing the player to read.
