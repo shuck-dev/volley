@@ -1,20 +1,20 @@
 # Volley!
 
-Volley! is a desktop idle game shaped like a tennis rally. The ball goes back and forth between the protagonist and a coach who arrives one round at a time. A counter on the wall climbs. A friend leans on the counter of a small wooden stall on the far side of the play; in another corner of the garden, a tinkerer keeps a workshop. The cast has a history with the protagonist that the rally pulls forward.
+Volley! is a desktop idle game shaped like a tennis rally. The ball goes back and forth between the protagonist and a coach who arrives one round at a time. A counter on the wall climbs. A friend leans on the counter of a small wooden stall on the far side of the play, watching the protagonist play, glad to be there; in another corner of the garden, a tinkerer keeps a workshop.
 
-Underneath the loop sits a story the player meets gradually. Cracks accumulate, a second layer earns its weight by the time the player is ready to read it, and what the rally already gave stays earned. The game has to land for both readers: someone who only ever wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for. Neither reading punishes the other.
+Underneath the loop sits a story the player meets gradually. Cracks accumulate. The second layer earns its weight by the time the player can read it. What the rally already gave stays earned. The game holds for both readers: someone who only wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for.
 
-This folder is the design thinking behind the game, organised by the people who do the work.
+These folders hold the project's design canon, organised by discipline.
 
 ## Where to start
 
-If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first, then [Direction](art/direction.md) and [Inspirations](art/inspirations.md). The bible is the source of truth; everything else explains why it says what it says.
+If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first. Then [Direction](art/direction.md) for the themes the bible distils into rules, and [Inspirations](art/inspirations.md) for the works the project has looked at.
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) for the shape of the game, [Tech-art / INDEX](tech-art/INDEX.md) for the rendering side, and the active phase folder ([01-prototype/](01-prototype/INDEX.md) at the moment) for what the team is building this cycle.
 
 If you are a **writer** working on copy, beats, or character voice, read [Narrative / Outline](narrative/outline.md) for the story, [Narrative / Discipline](narrative/discipline.md) for craft notes, and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
 
-If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `narrative/`, pipeline questions in `tech-art/`. The phase folders are working drafts; the discipline folders are what those drafts mature into.
+If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `narrative/`, pipeline questions in `tech-art/`.
 
 If you are an **open-source visitor**, [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
 
@@ -35,9 +35,9 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | Doc | Purpose |
 |---|---|
 | [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and call, then craft sections (palette, line, treatment, touchstones). Source of truth for the artist. |
-| [Direction](art/direction.md) | The themes the bible distils. The narrative layer behind the rules. |
+| [Direction](art/direction.md) | The themes that fed into the bible. |
 | [Inspirations](art/inspirations.md) | Works Volley! has looked at, with attribution. |
-| [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: rendering, assets, register shifts. |
+| [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
 ### Narrative
@@ -51,21 +51,21 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [INDEX](tech-art/INDEX.md) | The discipline overview: pipeline, scope, current spikes. |
-| [Grading](tech-art/grading.md) | LUT pipeline for the two-style grade between Construction and Reality. |
+| [INDEX](tech-art/INDEX.md) | What tech-art owns: the seam between art and engine. |
+| [Grading](tech-art/grading.md) | LUT pipeline for the per-style grade between Construction and Reality. |
 
 ### Process
 
 | Doc | Purpose |
 |---|---|
 | [Ticket Writing](process/ticket-writing.md) | How issues get written so a stranger can pick them up cold. |
-| [Labels](process/labels.md) | The label taxonomy and what each label changes about a ticket's shape. |
+| [Labels](process/labels.md) | The label taxonomy: what each label means and when it applies. |
 
 ### Research
 
 | Doc | Purpose |
 |---|---|
-| [STYLE](research/STYLE.md) | The prose voice this project holds itself to. Read once before writing long-form. |
+| [STYLE](research/STYLE.md) | The prose voice for long-form writing. Read first. |
 | [The Case for Open Development](research/the-case-for-open-development.md) | The published essay: why open development is the most reliable practice for a new indie to be seen. |
 | [Open Development Plan](research/open-development-plan.md) | The internal plan that seeded the essay. |
 | [Visual Positioning](research/visual-positioning.md) | Where Volley! sits visually among idle, desktop, and sport games. |
