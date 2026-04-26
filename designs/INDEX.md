@@ -8,7 +8,7 @@ These folders hold the project's design canon, organised by discipline.
 
 ## Where to start
 
-If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first. Then [Direction](art/direction.md) for the themes the bible distils into rules, and [Inspirations](art/inspirations.md) for the works the project has looked at.
+If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first. The bible carries setting, cast, the arc, and the craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones) in one place.
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) for the shape of the game, [Tech-art / INDEX](tech-art/INDEX.md) for the rendering side, and the active phase folder ([01-prototype/](01-prototype/INDEX.md) at the moment) for what the team is building this cycle.
 
@@ -26,6 +26,8 @@ Two kinds of folder.
 
 **Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `02-alpha/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
 
+**Phase folders are not canon.** Anything in `01-prototype/`, `02-alpha/`, `03-beta/`, or `04-content/` is working draft. If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder, not to cite it as authoritative. The discipline folders are what the next brief and the next ticket pick up.
+
 The two-folder layout is the navigation: discipline tells you *what kind of doc*, phase tells you *what era it speaks to*.
 
 ## Discipline
@@ -34,9 +36,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and call, then craft sections (palette, line, treatment, touchstones). Source of truth for the artist. |
-| [Direction](art/direction.md) | The themes that fed into the bible. |
-| [Inspirations](art/inspirations.md) | Works Volley! has looked at, with attribution. |
+| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and call, then craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones). Source of truth for the artist. |
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
@@ -77,6 +77,10 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | Doc | Purpose |
 |---|---|
 | [Protagonist](characters/protagonist.md) | Who the player is playing as, and what the partners are to them. |
+| [Shopkeeper](characters/shopkeeper.md) | The friend at the stall in Construction; the person the protagonist pushed away in Reality. |
+| [Sister (the tinkerer)](characters/sister.md) | The shopkeeper's younger sister. The bridge across Reconstruction. |
+| [Martha and the partners](characters/partners.md) | Coaches in Construction; people the protagonist knew in Reality. |
+| [Champ](characters/champ.md) | The dead friend, rendered into Construction as the championship final. |
 
 ### Concept
 

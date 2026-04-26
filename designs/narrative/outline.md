@@ -104,6 +104,8 @@ At the win moment, the count completes. The digits land. The protagonist sees th
 
 The player is pulled into Reality involuntarily for the first time. Walks through the protagonist's hometown. Sees the people behind the partners. Discovers that the shopkeeper is missing. The shop is empty. The family is worried. The person the protagonist was reaching for without admitting it has actually disappeared.
 
+The cliff sits beyond the town's edge but is not visited yet. The friend died there, and the shopkeeper has gone there, and it waits.
+
 The champ exits at this point. Not in Part 2.
 
 End of Part 1.
@@ -115,6 +117,10 @@ End of Part 1.
 The driving feeling is dread. The player believes the shopkeeper is gone, has followed the dead friend's path, is lost. The unnamed number doesn't connect; the no-answer state is the player-facing weight of the protagonist's ineffectual reaching.
 
 The driving force is the search for what happened. Not "find the shopkeeper" generically, but "find out what they did, where they went, whether it's too late." The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
+
+### The carry
+
+Reconstruction adds free travel between Construction and Reality, and a bidirectional curated bridge between them. Specific things from Construction can be brought into Reality and used in specific scenes there; specific acknowledgements from Reality feed back into Construction, unlocking new venues, new lines from coaches, new affordances. Each carry is a narrative beat, not an open mechanic.
 
 ### Mechanics
 

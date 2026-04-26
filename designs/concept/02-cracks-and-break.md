@@ -18,27 +18,15 @@ Both kinds are authored. Both are deniable. The mix is what makes the cumulative
 
 Concrete leakage stays out. A real-world object literally appearing on the rack reads as a flag the player can point at; the deniability the cumulative shape needs collapses.
 
-## The championship win
+## The championship win as the break
 
-The protagonist climbs every round. The obsession with becoming champ deepens. The word does double work: become the champion (win the title) and become the champ (the dead friend rendered as the final). Both pulls live in one motion; the protagonist does not separate them.
+The structural shape: the win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
 
-The player wins the championship. They do beat the champ.
+At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. Recognition is held until the cliff.
 
-The win feels off. Both pulls of becoming-champ are satisfied at the same beat and neither was the thing the protagonist actually needed.
+The full beat (climbing every round, the doubled meaning of "becoming champ", the win landing wrong, the walk through the hometown, the shopkeeper missing, the champ exiting) sits in [`../narrative/outline.md`](../narrative/outline.md). The visual moment of the break is in [`../art/bible.md`](../art/bible.md) § 7.
 
-The win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
-
-At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
-
-## After the win: the walk through Reality
-
-The player is pulled into Reality involuntarily for the first time. The protagonist walks through the hometown. Sees the people behind the partners. Martha at the actual newsagent. The others in their actual lives, plainer.
-
-They discover the shopkeeper is missing. The shop is empty. The door is locked, lights off, a notice on the door. Family worried. The person the protagonist was reaching for without admitting it has actually disappeared.
-
-The champ exits at this point. They do not appear in Part 2.
-
-The break ends. The player is back in Construction, but Construction has lost its warm centre: the shop is closed; the friend at the stall is gone. End of Part 1. Part 2 begins (`03-reconstruction.md`).
+The break ends with the player back in Construction, the shop closed, the friend at the stall gone. End of Part 1. Part 2 begins (`03-reconstruction.md`).
 
 ## Open questions
 
