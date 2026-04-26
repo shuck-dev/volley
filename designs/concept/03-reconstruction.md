@@ -30,6 +30,8 @@ The album is the spine of Part 2.
 
 The sister has the album. It is half-filled. There is a hidden compartment at the back that does not open until enough pages are filled.
 
+Some photos sit inside the album already; others are scattered. Lost in the wind off the sea years ago, tucked into other people's drawers, pinned to a noticeboard somewhere, taped to the back of an old radio in the workshop. The protagonist begins by sitting with the sister and the book, then goes to find the rest. Each scattered photo is a reconciliation action: a place to visit, a person to ask, a small attentive thing to do. Each one returned completes a part of the protagonist's history the shopkeeper kept and the protagonist could not.
+
 Each rally in Construction surfaces a memory. Each memory becomes a photo, or unlocks one already in the album. Each photo points to a place in Reality the shopkeeper might be, or left a trace of. Coaches share their own memories of the shopkeeper as the protagonist rallies with them. The volley is the search done sideways.
 
 The found photos compound. Pages fill. The hidden compartment gets closer to opening. The search closes in.
