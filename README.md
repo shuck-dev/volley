@@ -10,7 +10,7 @@ Built in [Godot](https://godotengine.org) and developed in the open.
 
 ## Roadmap
 
-Volley! ships in six milestones, from Prototype through Future Updates. See [ROADMAP.md](ROADMAP.md) for the full arc and current focus.
+Volley! ships in five phases, from Prototype through Post-release. See [`designs/roadmap.md`](designs/roadmap.md) for the long view.
 
 ## Design
 

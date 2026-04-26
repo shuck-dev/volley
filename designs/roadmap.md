@@ -12,12 +12,12 @@ The Construction era playable end to end: real art landed, the cast and the tour
 
 ## Beta
 
-The break, the Reconstruction era, and both endings, the cliff and the call, playable from start to finish; every play style holds up across the arc.
+The whole arc playable from start to finish: the break, the Reconstruction era, and both endings the cliff and the call, with every play style holding up across the run.
 
 ## v1
 
-Platform polish, the Steam release, the ship.
+The Steam release, polished to the platform's bar and ready to ship.
 
 ## Post-release
 
-More cast and content, the Regret postgame, Mac, multiplayer.
+The long tail: more cast and content, the Regret postgame, Mac, multiplayer.
