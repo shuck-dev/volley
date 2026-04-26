@@ -67,6 +67,11 @@ func adopt_pre_existing_balls() -> void:
 		_balls_by_key[key] = ball
 		# Apply the item's authored art so the held token (and the live ball) render with the canonical visual.
 		_apply_item_art(ball, key)
+		# Mark a known-item adopted ball as on-court so the rack hides the item the player already sees in play.
+		# Without this the rack offers the same key, and a rack-to-court drag would teleport the existing ball instead of spawning a new one.
+		if ball.item_key != "" and _item_manager.has_method("activate"):
+			if _item_manager.get_level(key) > 0 and not _item_manager.is_on_court(key):
+				_item_manager.activate(key)
 		ball_spawned.emit(key, ball)
 
 
