@@ -4,21 +4,13 @@ Part 2. The arc after the break: dread, the search, the photo album, the unnamed
 
 ## What Part 2 is
 
-The shopkeeper is missing. The shop is closed. The friend the protagonist was reaching for without admitting it has actually disappeared.
+The arc after the break: the shopkeeper missing, dread, the search across Reality, the photo album, the unnamed number ringing into nothing, the key that opens the cliff. The full story sits in [`../narrative/outline.md`](../narrative/outline.md); the shopkeeper's withdrawal in [`../characters/shopkeeper.md`](../characters/shopkeeper.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
 
-The protagonist's belief, and the player's: the shopkeeper followed the friend's path. Went back to the cliff. Is gone. Cliff jumping was the friend group's normal until the day it wasn't, and the shopkeeper survived once already; the fear is that surviving once was the limit. The unnamed number does not connect, and that no-answer is the player-facing weight of the protagonist's ineffectual reach.
+This doc holds the structural detail: how Part 2 plays, the photo album mechanic, the unnamed number's behaviour, the key.
 
-The driving force is the search. Not "find the shopkeeper" generically: find out what they did, where they went, whether it is too late. The whole arc is the search-for-confirmation, shadowed by the fear that the confirmation will be terrible.
+## Three play-level changes
 
-This is the act-2 dread. It runs the length of Reconstruction. It inverts at the cliff (`05-postgame.md`).
-
-## Where the work happens
-
-Part 2 lives in both styles. Reality carries the search. Construction holds the rally that surfaces what the search needs.
-
-Construction in Part 2 is missing its warm centre. The shopkeeper has left the stall; the shop is closed in Reality and unstaffed in Construction. The protagonist rallies on without them. The vibrant world has been hollowed out where it used to be warmest.
-
-Construction must also feel different to play, not only look hollowed. Three play-level changes mark Part 2:
+Part 2 lives in both styles. Reality carries the search. Construction holds the rally that surfaces what the search needs. Construction must feel different to play, not only look hollowed:
 
 - **The score is hidden in Construction.** The count climbed visibly through Part 1; in Part 2 the number disappears from the rally HUD. The player rallies without seeing how the digits are filling. The number can be checked, but only in Reality (the sister's, the closed shop, the cliff once unlocked). The score migrates from Construction to Reality. Leaving the rally to know how close they are is the exact style-shift Part 2 wants to feel like.
 - **Coaches' lines reach back.** Each coach who keeps showing up in Construction carries memories of the shopkeeper into the rally between points. Their lines soften, lengthen, surface what they remember. The shift is in dialogue, not in stat.
@@ -35,14 +27,6 @@ Each rally in Construction surfaces a memory. Each memory becomes a photo, or un
 The found photos compound. Pages fill. The hidden compartment gets closer to opening. The search closes in.
 
 The photo album mechanic is the protagonist saying: someone has been keeping this. The shopkeeper kept the history because the protagonist could not. The sister holds the album because she is not entangled in the absence the way the shopkeeper is.
-
-## The sister
-
-Less weighted by the death than the shopkeeper. The bridge. She holds the album and the protagonist's first reachable Reality character after the break.
-
-Sitting with her and turning the pages of what is there is the first reconciliation moment. After that, the protagonist goes to find the rest. She receives each found photo. She mentions things in passing as the album fills: the way her brother used to leave the shop door, what was on the radio that morning, a song he played too loud.
-
-She is the most-visited Reality character. Her scene supports many returns.
 
 ## The unnamed number, in Part 2
 
