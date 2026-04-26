@@ -10,7 +10,7 @@ This is a working set of docs. Refinement passes follow.
 - `01-construction.md`: Part 1. The vibrant world, the tournament, the cast, the rally, the count.
 - `02-cracks-and-break.md`: cracks across Part 1, the championship win that lands wrong, the involuntary walk through the hometown.
 - `03-reconstruction.md`: Part 2. Dread, the photo album, the sister, the unnamed number, the search.
-- `04-reality.md`: Reality as a style. Visual register, audio register, the structural shape of a Reality scene.
+- `04-reality.md`: Reality as a style. Visuals, audio, the structural shape of a Reality scene.
 - `05-postgame.md`: the cliff, the call, the credits, the postgame rally.
 
 ## Two worlds, one game
