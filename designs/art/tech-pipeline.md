@@ -1,6 +1,6 @@
 # Tech Art Pipeline
 
-How Volley!'s visual direction becomes Godot. Partner document to the [Art Bible](bible.md) and [Style Workshop](style-workshop.md): the bible says what the work feels like, this doc says how it gets built.
+How Volley!'s visual direction becomes Godot. Partner document to the [Art Bible](bible.md): the bible says what the work feels like, this doc says how it gets built.
 
 This is a living spike. Colours, typography, and per-character notes still route through the bible. Pipeline structure is locked here so contributors can deliver art against it before the final style guide lands.
 

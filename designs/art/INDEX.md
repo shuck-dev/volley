@@ -7,7 +7,6 @@ The living reference for Volley!'s visual direction. Concept studies and product
 | [Art Bible](bible.md) | Canonical rules: palette, silhouette, line, mood, era, treatment. The source of truth for visual direction. |
 | [Direction](direction.md) | The creative direction distilled into themes. The narrative layer that feeds the bible. |
 | [Inspirations](inspirations.md) | Works Volley! has looked at; factual attribution list. |
-| [Style Workshop](style-workshop.md) | Workshop notes that fed into the bible. |
 | [Tech Pipeline](tech-pipeline.md) | How the style is implemented in Godot: rendering, assets, register shifts. |
 | [Character Lighting](character-lighting.md) | Post-prototype dynamic light-state pipeline for characters across venues. |
 
