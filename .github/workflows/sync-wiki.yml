@@ -44,7 +44,10 @@ jobs:
             #   - flatten internal slashes to dashes
             #   - prefix bare relative links with the source file's folder
             # [^):] in the character class excludes "://" so http URLs are untouched.
-            DIR="$dir" perl -pe '
+            # Slurp mode (-0777) lets us also strip the file's leading H1 in one pass:
+            # the wiki publisher injects the page title from the filename, so leaving
+            # the source's first `# Heading` produces a duplicate title row.
+            DIR="$dir" perl -0777 -pe '
               s{\]\(([^):\s]+)\.md(\#[^)]*)?\)}{
                 my ($p, $a) = ($1, $2 // "");
                 my @dir = split m{/}, ($ENV{DIR} // "");
@@ -66,7 +69,13 @@ jobs:
                   $target = join("-", @combined);
                 }
                 "]($target$a)"
-              }ge' "$src" > "$dest"
+              }ge;
+              # Strip the very first leading H1 (and the blank line after it, if any).
+              # Anchored at start-of-file so navigation files like _Sidebar.md, whose
+              # first line is bold-link text rather than `# `, are untouched, and so
+              # subsequent `# Headings` deeper in the document survive.
+              s{\A\# [^\n]*\n\n?}{};
+            ' "$src" > "$dest"
           }
 
           # Titlecase a hyphen-separated dir name: 01-prototype -> 01-Prototype, art -> Art.
