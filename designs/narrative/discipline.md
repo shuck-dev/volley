@@ -1,0 +1,73 @@
+# Narrative discipline
+
+How the prose, scenes, and dialogue of Volley get made. Not what the story is: that lives in [`outline.md`](outline.md) (sibling, in flight). This is the craft register the writing aims for, line by line.
+
+The voice rules sit one level up in [`../../ai/skills/voice.md`](../../ai/skills/voice.md). The world canon sits in [`../01-prototype/artist-world-bible.md`](../01-prototype/artist-world-bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this doc tells you how to write inside them.
+
+## Scene construction
+
+A Reality scene is a room with several things going on at once. A kettle that has just clicked off. A photo on a side table, half tucked under a magazine. A back at the window, watching the street. The protagonist walks in and the scene does not stop for them; the scene was already running.
+
+The puzzle the player is solving is presence. Not which dialogue option, not which item to pick up. Being in the room long enough to notice what wants to happen. The sister is turning a page; the protagonist can sit, or not. The kettle is cooling; the protagonist can pour, or not. Each interaction is small and contextual and reads as something a person would do without being prompted.
+
+A scene that works has more going on than the player will touch in one visit. A scene that feels flat has been written as a list of interactions: tap A, tap B, leave. Layer first, prune second. If three things are happening and the player engages with one, the other two were not wasted; they were the room.
+
+The geography is built before the people are. Place the nouns: the table is by the window, the book is on the table, the sister is across the table from where the protagonist will sit. The reader walks in behind the protagonist and finds the room already standing. Voice's place-the-nouns rule applies to scene prose word for word.
+
+## Dialogue
+
+Construction speaks warmer and lighter. Coaches perform a little; the friend at the stall keeps things easy; lines have lift. The register is the register of a place that wants to be enjoyable. It is not arch and it is not knowing, but it carries more colour than Reality does.
+
+Reality speaks plainer. Half-finished sentences. The thing said while looking at something else. Long pauses where the prose holds its breath instead of filling. The sister mentions the weather and means the weather; the cashier asks after the protagonist and means it; nothing performs.
+
+The protagonist talks less than they are talked to. Their lines are short. They answer when asked, and the answer is usually one beat shorter than expected. The interior is in the protagonist profile; on the page it shows up as economy, not as introspection.
+
+When characters share memories of the shopkeeper, the memory arrives sideways. A coach mid-rally says something the shopkeeper used to say; the sister, turning a page, mentions the time her brother burnt the toast. The memory is the mention, not a story told to camera. No character explains the shopkeeper to the player. Each one knew them differently, and the prose lets that asymmetry sit.
+
+No exposition dumps. If a piece of canon needs to land, it lands as something a character does in front of the protagonist, or as something the world shows. The locked gate is shown, not narrated. The number sits in the phone; nobody tells the player what it is.
+
+## Tone modulation
+
+Tone moves moment to moment. Construction holds vibrant warmth as the default, slips for a beat into a meta-crack, and resettles. The slip is a half-second; the resettle is the rest of the rally. A scene that crackles for two paragraphs has overcommitted.
+
+The break runs cold and short. Sentences shrink. Adjectives drop. Light becomes light, sound becomes sound, the prose stops reaching for warmth because the construct has stopped supplying it. Then the walk through the hometown begins and the prose finds Reality's plainer register for the first time.
+
+Part 2 defaults to dread. The temperature is low. Warm surfacings are rare and earned: a memory at a rally's apex, a small mercy from the sister, a cup of tea poured without comment. The contrast is the point. Warmth on a dread floor reads brighter than warmth on a warm floor.
+
+The cliff and the call run thin, then full. The walk to the bench is plain prose at minimum volume; the recognition lands in one sentence; the call opens the prose back up, a notch, no more. Credits return Construction's saturated light with Reality's texture worn into it. Each beat has a different temperature; none of them is loud.
+
+## Memory surfacings
+
+In Reconstruction rallies, memory shows up as a half-second image. The friend at the counter, an elbow, a tilt of the head, a sentence half-heard. Present tense. Never past-tense framed: "they used to" is exposition; "an elbow on the counter, the head tilted toward the play" is a surfacing.
+
+The surfacing is brief. One sentence, sometimes a fragment. Never explained, never followed by a beat that tells the player what the memory means. The rally continues. The image fades. The next hit lands.
+
+Surfacings come from a specific moment with the friend at the counter, never from an abstract well of memory. The reader builds the friend out of the particulars across many surfacings: a sleeve, a laugh, the way they handed back a racquet. Generalities ("the friend's warmth", "the old days") are the failure mode.
+
+## Cracks at the line level
+
+A meta-crack in dialogue is a line that almost-acknowledges the construct and then moves on. A coach saying "we'll do this again next week, won't we" with a beat of weight on "won't we" that the player half-feels. The line is in-fiction; the weight is the crack. A version of the line that names the construct out loud has tipped into signpost.
+
+A tonal crack in description is a flicker, a wrong colour, a sound out of place, named in plain prose and then dropped. "The light cools at the edge of the frame for a beat. It warms again." Two short sentences, no commentary, no character noticing. The reader feels the temperature drop; the text moves on.
+
+Deniability is the discipline. A crack the player could name aloud as "the game is showing me something" has failed. A crack the player half-felt and shrugged off has worked. Write the crack, then read it back and ask whether a friend reading the page would point at it. If yes, soften.
+
+## Pacing rhythms
+
+Volley's structure inherits its rhythm from the rally. Short sentences land like hits; longer sentences carry the rally between them. Voice's long-long-short pattern is the prose-level version of the same shape.
+
+Push when the moment pushes. The break wants short sentences in a stack. The cliff walk wants one breath, then the next. The recognition is a single sentence with no qualifier.
+
+Settle when the moment settles. A scene with the sister at the table runs in longer paragraphs that breathe. A coach's quiet line gets a paragraph break before and after. The reader's breath is part of the pacing budget.
+
+The Construction warmth at credits runs longer paragraphs again, the prose unhurried, light returning. Pacing is not a global setting; it is a per-beat decision, and the beat decides.
+
+## What the writing does not do
+
+No closing morals. A scene that ends on what the scene meant has explained itself. End on the loaded particular: the cup, the gate, the hand on the racquet. The reader carries the meaning out.
+
+No "this is a story about" framings, in prose or in dialogue. Volley is not about grief and is not about presence; Volley is the rally, the friend at the stall, the cliff and the call. The themes live in what happens, never in what is said about what happens.
+
+No flashbacks as exposition. Memory surfaces present-tense, brief, in the rally or in the room. A scene that cuts away to "years ago, the protagonist and the friend were…" has stopped trusting the surfacing to do its work.
+
+No on-the-nose dialogue about themes. Characters talk about the weather, the toast, the score, the bus that did not come. They do not talk about loss, or presence, or the construct. The themes arrive through what the characters do not say, and through what the prose places in the room around them.
