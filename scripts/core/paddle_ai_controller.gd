@@ -52,10 +52,10 @@ func bind_tracker(tracker: BallTracker) -> void:
 		return
 	_tracker.ball_added.connect(_on_tracker_ball_added)
 	_tracker.ball_removed.connect(_on_tracker_ball_removed)
-	# Pick up an already-tracked ball if the tracker had one before binding.
+	# Route already-tracked balls through the same handler so subclass overrides fire.
 	var existing: Ball = _tracker.get_current_ball()
 	if existing != null:
-		ball = existing
+		_on_tracker_ball_added(existing)
 
 
 func _on_tracker_ball_added(new_ball: Ball) -> void:

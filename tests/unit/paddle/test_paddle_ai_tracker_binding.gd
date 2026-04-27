@@ -86,6 +86,24 @@ func test_bind_tracker_inherits_already_attached_ball() -> void:
 	assert_eq(_controller.ball, ball, "binding inherits the tracker's current ball")
 
 
+func test_partner_bind_to_already_attached_ball_auto_enables() -> void:
+	# Mid-rally partner recruitment: Court attaches the ball, then spawns the
+	# partner and binds. The partner subclass must auto-enable.
+	var ball: Ball = _spawn_ball()
+	_tracker.attach(ball)
+
+	var partner: PartnerAIController = load("res://scripts/core/partner_ai_controller.gd").new()
+	partner.paddle = _paddle
+	partner.config = _config
+	add_child_autofree(partner)
+
+	partner.bind_tracker(_tracker)
+
+	assert_true(
+		partner.is_enabled(), "partner auto-enables when bound to a tracker that already has a ball"
+	)
+
+
 func test_rebind_to_null_disconnects_prior_signals() -> void:
 	_controller.bind_tracker(_tracker)
 	_controller.bind_tracker(null)
