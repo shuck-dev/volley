@@ -38,7 +38,8 @@ func before_each() -> void:
 	_controller.paddle = _paddle
 	_controller.config = _config
 	add_child_autofree(_controller)
-	_controller.enable_with_ball(_ball)
+	_controller.ball = _ball
+	_controller.set_enabled(true)
 
 
 func _run_frames(count: int) -> void:

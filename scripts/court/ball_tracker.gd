@@ -6,6 +6,10 @@ extends Node
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
 signal current_ball_changed(ball: Ball)
+## Re-emitted from the underlying ball_system so subscribers (AI controllers,
+## UI elements) bind to the tracker rather than reaching past it.
+signal ball_added(ball: Ball)
+signal ball_removed(ball: Ball)
 
 @export var ball_system: BallReconciler
 
@@ -56,11 +60,13 @@ func attach(new_ball: Ball) -> void:
 			new_ball.register_miss_zone(zone)
 	if _partner_paddle != null and _partner_paddle.has_method("set_ball"):
 		_partner_paddle.set_ball(new_ball)
+	ball_added.emit(new_ball)
 
 
 func detach(old_ball: Ball) -> void:
 	if old_ball == null:
 		return
+	var was_tracked: bool = _balls.has(old_ball)
 	_balls.erase(old_ball)
 	if is_instance_valid(old_ball):
 		if old_ball.missed.is_connected(_on_ball_missed):
@@ -73,6 +79,8 @@ func detach(old_ball: Ball) -> void:
 		_set_current(fallback)
 		if _partner_paddle != null and fallback != null and _partner_paddle.has_method("set_ball"):
 			_partner_paddle.set_ball(fallback)
+	if was_tracked:
+		ball_removed.emit(old_ball)
 
 
 func register_miss_zone_globally() -> void:
@@ -116,24 +124,6 @@ func clear_partner_paddle(paddle: Node2D) -> void:
 			tracked.effect_processor.paddles.erase(paddle)
 	if _partner_paddle == paddle:
 		_partner_paddle = null
-
-
-func advance_all_speed() -> void:
-	for tracked in _balls:
-		if is_instance_valid(tracked):
-			tracked.increase_speed()
-
-
-func reset_all_speed() -> void:
-	for tracked in _balls:
-		if is_instance_valid(tracked):
-			tracked.reset_speed()
-
-
-func set_speed_for_streak_all(streak: int) -> void:
-	for tracked in _balls:
-		if is_instance_valid(tracked):
-			tracked.set_speed_for_streak(streak)
 
 
 func _set_current(new_current: Ball) -> void:

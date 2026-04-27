@@ -58,11 +58,12 @@ func before_each() -> void:
 
 
 func test_ball_speed_increases_across_three_hits() -> void:
-	_paddle.on_ball_hit()
+	# Per-ball ownership: paddle collisions drive the ball's own speed via _on_body_entered.
+	_ball._on_body_entered(_paddle)
 	_paddle.tracker._process(HitTracker.COOLDOWN)
-	_paddle.on_ball_hit()
+	_ball._on_body_entered(_paddle)
 	_paddle.tracker._process(HitTracker.COOLDOWN)
-	_paddle.on_ball_hit()
+	_ball._on_body_entered(_paddle)
 	var effective_max: float = (
 		_manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_max_range")
 	)

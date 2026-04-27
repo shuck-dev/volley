@@ -67,7 +67,9 @@ func _on_body_entered(body: Node) -> void:
 	if freeze:
 		return
 	if body.has_method("on_ball_hit"):
-		body.on_ball_hit()
+		var hit_registered: bool = body.on_ball_hit()
+		if hit_registered:
+			increase_speed()
 		effect_processor.process_hit()
 
 
@@ -130,6 +132,8 @@ func _ball_setup() -> void:
 	max_contacts_reported = 1
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
+	if not missed.is_connected(reset_speed):
+		missed.connect(reset_speed)
 	input_pickable = true
 	if not input_event.is_connected(_on_input_event):
 		input_event.connect(_on_input_event)

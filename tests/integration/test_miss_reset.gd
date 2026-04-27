@@ -60,8 +60,9 @@ func before_each() -> void:
 
 
 func _build_streak(hits: int) -> void:
+	# Per-ball ownership: drive collisions through the ball so it advances its own speed.
 	for i in hits:
-		_paddle.on_ball_hit()
+		_ball._on_body_entered(_paddle)
 		_paddle.tracker._process(HitTracker.COOLDOWN)
 
 

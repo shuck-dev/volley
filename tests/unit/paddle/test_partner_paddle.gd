@@ -36,6 +36,9 @@ func _create_partner_paddle() -> PartnerPaddle:
 	var sound := AudioStreamPlayer.new()
 	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
 	var controller: PartnerAIController = load("res://scripts/core/partner_ai_controller.gd").new()
+	var config := PaddleAIConfig.new()
+	config.reaction_delay_frames = 1
+	controller.config = config
 	paddle.add_child(sound)
 	paddle.add_child(collision)
 	paddle.add_child(tracker)

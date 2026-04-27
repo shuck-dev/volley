@@ -51,6 +51,10 @@ func _ready() -> void:
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 
+	# Each AI controller owns its own ball ref and enable/disable state via
+	# the tracker; Court no longer mediates `controller.ball = ...` per the
+	# per-ball-ownership rule. See designs/01-prototype/21-ball-dynamics.md.
+
 	if timeout_controller != null:
 		timeout_controller.configure(player_paddle)
 
@@ -61,6 +65,7 @@ func _ready() -> void:
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
+	autoplay_controller.bind_tracker(ball_tracker)
 	ball_tracker.ball_at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
 	ball_tracker.register_miss_zone_globally()
 	if ball != null:
@@ -80,7 +85,6 @@ func _ready() -> void:
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
 	ball = new_ball
-	autoplay_controller.ball = new_ball
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -106,7 +110,6 @@ func _on_paddle_hit() -> void:
 		personal_volley_best_changed.emit(_progression.personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
-	ball_tracker.advance_all_speed()
 
 
 func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
@@ -116,7 +119,8 @@ func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
 
 
 func _on_ball_missed() -> void:
-	# process_event before reset_speed: temp modifiers clear first, then reset uses post-clear min.
+	# Each ball owns its speed: it resets itself off its own `missed` signal.
+	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
 	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
 	var should_halve: bool = actions.has(&"halve_streak")
 
@@ -127,11 +131,6 @@ func _on_ball_missed() -> void:
 
 	_friendship_point_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
-
-	if should_halve and _volley_count > 0:
-		ball_tracker.set_speed_for_streak_all(_volley_count)
-	else:
-		ball_tracker.reset_all_speed()
 
 	player_paddle.reset_streak()
 	if partner_paddle != null:
@@ -164,6 +163,8 @@ func _activate_partner() -> void:
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
 	ball_tracker.set_partner_paddle(partner_paddle)
+	if partner_paddle.controller != null:
+		partner_paddle.controller.bind_tracker(ball_tracker)
 
 	_item_manager.register_partner(partner_definition)
 
@@ -182,6 +183,8 @@ func _deactivate_partner() -> void:
 		_item_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
+	if partner_paddle.controller != null:
+		partner_paddle.controller.bind_tracker(null)
 	ball_tracker.clear_partner_paddle(partner_paddle)
 	partner_paddle.queue_free()
 	partner_paddle = null

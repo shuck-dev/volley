@@ -62,7 +62,8 @@ func before_each() -> void:
 
 
 func _hit_once() -> void:
-	_paddle.paddle_hit.emit()
+	# Per-ball ownership: drive a real paddle collision so the ball advances its own speed.
+	_ball._on_body_entered(_paddle)
 	_paddle.tracker._process(HitTracker.COOLDOWN)
 
 

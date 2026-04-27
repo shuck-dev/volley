@@ -9,8 +9,9 @@ class StubPaddle:
 	extends Node2D
 	var hit_count: int = 0
 
-	func on_ball_hit() -> void:
+	func on_ball_hit() -> bool:
 		hit_count += 1
+		return true
 
 
 func before_each() -> void:

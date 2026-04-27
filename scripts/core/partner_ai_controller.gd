@@ -2,17 +2,13 @@ class_name PartnerAIController
 extends PaddleAIController
 
 
-## Skips base _ready(): buffer init deferred until ball is injected via enable_with_ball().
-func _ready() -> void:
-	pass
-
-
-func enable_with_ball(target_ball: RigidBody2D) -> void:
-	assert(not _enabled, "enable_with_ball called on already-enabled controller")
-	ball = target_ball
-	_position_buffer.resize(config.reaction_delay_frames)
-	_position_buffer.fill(0.0)
-	set_enabled(true)
+## Auto-enables on the first ball it sees from the bound tracker; auto-disables
+## when the tracker empties (handled by the base class). Court calls
+## `bind_tracker()` after activating the partner.
+func _on_tracker_ball_added(new_ball: Ball) -> void:
+	super(new_ball)
+	if not _enabled:
+		set_enabled(true)
 
 
 func _ball_approaching() -> bool:

@@ -4,6 +4,11 @@ extends Node
 ## Abstract base for paddle AI controllers. Owns the shared tracking,
 ## reaction delay, and drift algorithm. Subclasses override
 ## _ball_approaching(), _get_paddle_speed(), and _is_ball_behind().
+##
+## Each controller manages its own state per the per-ball-ownership rule:
+## subscribe to a BallTracker via `bind_tracker()` and the controller will
+## attach to the freshest ball, disable itself when no balls exist, and
+## refuse to enable while no ball is held.
 
 @export var paddle: CharacterBody2D
 @export var config: PaddleAIConfig
@@ -11,6 +16,7 @@ extends Node
 var ball: RigidBody2D
 
 var _enabled := false
+var _tracker: BallTracker
 
 # --- reaction delay ---
 var _position_buffer: Array[float]
@@ -22,14 +28,52 @@ var _last_ball_direction_x := 0.0
 
 
 func _ready() -> void:
+	_init_position_buffer()
+
+
+func _init_position_buffer() -> void:
 	_position_buffer.resize(config.reaction_delay_frames)
 	_position_buffer.fill(0.0)
 
 
-## ball must be set before enabling. Game.gd injects it during _ready().
+## Wire the controller to a BallTracker. The controller picks up new balls
+## from `ball_added` and disables itself when the tracker empties via
+## `ball_removed`. Replaces Court-mediated `controller.ball = ...` injection.
+func bind_tracker(tracker: BallTracker) -> void:
+	if _tracker == tracker:
+		return
+	if _tracker != null:
+		if _tracker.ball_added.is_connected(_on_tracker_ball_added):
+			_tracker.ball_added.disconnect(_on_tracker_ball_added)
+		if _tracker.ball_removed.is_connected(_on_tracker_ball_removed):
+			_tracker.ball_removed.disconnect(_on_tracker_ball_removed)
+	_tracker = tracker
+	if _tracker == null:
+		return
+	_tracker.ball_added.connect(_on_tracker_ball_added)
+	_tracker.ball_removed.connect(_on_tracker_ball_removed)
+	# Pick up an already-tracked ball if the tracker had one before binding.
+	var existing: Ball = _tracker.get_current_ball()
+	if existing != null:
+		ball = existing
+
+
+func _on_tracker_ball_added(new_ball: Ball) -> void:
+	ball = new_ball
+
+
+func _on_tracker_ball_removed(_old_ball: Ball) -> void:
+	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
+	ball = fallback
+	if ball == null and _enabled:
+		set_enabled(false)
+
+
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
+	# Belt-and-braces: set_enabled refuses null-ball enable, so this is defence
+	# in depth against direct `_enabled = true` writes.
 	assert(ball != null, "PaddleAIController: ball must be set before enabling")
 	_maybe_resample_noise()
 	if _is_ball_behind():
@@ -40,8 +84,18 @@ func _physics_process(_delta: float) -> void:
 		_drift_to_center()
 
 
+## Refuses to enable when no ball is held; disabling is always allowed.
+## Logs a warning instead of asserting so toggle key presses with no live
+## ball are silent no-ops rather than crashes.
 func set_enabled(value: bool) -> void:
+	if value and ball == null:
+		push_warning("PaddleAIController.set_enabled(true) ignored: no ball bound")
+		return
 	_enabled = value
+
+
+func is_enabled() -> bool:
+	return _enabled
 
 
 ## Override: which ball x-direction counts as "coming toward me."

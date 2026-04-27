@@ -78,6 +78,21 @@ func test_each_ball_owns_its_own_speed_state() -> void:
 	assert_eq(second.speed, second_before, "second ball's speed is independent of the first")
 
 
+func test_paddle_collision_advances_only_the_hit_ball_speed() -> void:
+	# Drive a real paddle collision against one ball; only that ball's speed should advance.
+	# Verifies per-ball wiring end-to-end: the ball's own _on_body_entered drives its own
+	# increase_speed, with no batch fan-out across other tracked balls.
+	var first: Ball = _spawn_ball("ball_alpha")
+	var second: Ball = _spawn_ball("ball_beta")
+	var first_before: float = first.speed
+	var second_before: float = second.speed
+
+	first._on_body_entered(_paddle)
+
+	assert_gt(first.speed, first_before, "hit ball advances its own speed via the collision")
+	assert_eq(second.speed, second_before, "other tracked balls are unaffected by the hit")
+
+
 func test_ball_added_emissions_attach_balls_to_court() -> void:
 	# Two `ball_added` emissions through the reconciler should leave Court tracking both.
 	var first: Ball = _spawn_ball("ball_alpha")
