@@ -1,6 +1,6 @@
 ---
 name: dispatch
-description: Organiser-side rules for dispatching minions, rotating codenames, flipping Linear status, and queueing reviewers. Read on every dispatch.
+description: Organiser-side rules for dispatching minions, rotating codenames, flipping Linear status, and dispatching reviewers. Read on every dispatch.
 ---
 
 # Minion dispatch
@@ -37,7 +37,7 @@ Every Agent call uses `run_in_background: true`. Coordinate multiple background 
 
 Pair specialists when a hook or gate forces their outputs into one commit (failing tests + impl, scene + script). Otherwise dispatch independent. Paired dispatch costs parallelism on that pair; default to independent.
 
-## Reviewer queue
+## Reviewer dispatch
 
 Reviewers fire after the impl PR opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The map lives in `ai/skills/minions/reviewers.md`.
 
