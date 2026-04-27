@@ -45,6 +45,12 @@ Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers
 
 Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
 
+## Consensus on disagreement
+
+When two minions reach opposite conclusions on the same evidence (reviewer approves while battler blocks, two reviewers split, etc.), don't pick a side. Dispatch two more independent agents on the same question, briefed not to read each other's reports. Whichever side reaches three votes wins. Surface the consensus to Josh with the evidence each agent cited.
+
+If consensus is still split 2-2, that's a sign the question itself isn't decidable from the evidence at hand; flag for Josh and don't merge.
+
 ## Spike rule
 
 At most one `spike` issue per swarm dispatch. Run additional spikes sequentially.
