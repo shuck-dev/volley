@@ -11,6 +11,7 @@ const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
 	preload("res://resources/items/grip_tape.tres"),
+	preload("res://resources/items/base_ball.tres"),
 	preload("res://resources/items/training_ball.tres"),
 	preload("res://resources/items/court_lines.tres"),
 	preload("res://resources/items/double_knot.tres"),
@@ -228,6 +229,17 @@ func remove_level(item_key: String) -> void:
 			# Fully removed: treat the item as if it was never owned; clear placement.
 			_set_item_placement(item_key, PlacementScript.STORED)
 		SaveManager.save()
+
+
+## Adopts an authored on-court item: ensures level >= 1 and on-court placement.
+## Idempotent. Used by BallReconciler for balls that exist in the scene before
+## any purchase, so racks and progression have a real placement to register.
+func adopt_authored(item_key: String) -> void:
+	if get_level(item_key) <= 0:
+		_progression.item_levels[item_key] = 1
+		item_level_changed.emit(item_key)
+	if not is_on_court(item_key):
+		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
 
 ## Acquires an item without registering its effects. The item is owned but

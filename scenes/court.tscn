@@ -53,7 +53,7 @@ mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
-item_key = "training_ball"
+item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 

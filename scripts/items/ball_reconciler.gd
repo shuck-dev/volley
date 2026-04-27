@@ -16,6 +16,7 @@ const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
+var _initial_reconcile_pending: bool = true
 
 
 func configure(item_manager: Node, ball_host: Node) -> void:
@@ -31,9 +32,7 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
-	# Deferred so sibling listeners connect to ball_spawned before we emit for adopted balls.
-	# _reconcile_initial_state runs after adoption so any save-state on-court items without an
-	# authored Ball child (e.g. training_ball after a reload) get a physical node.
+	# Deferred so sibling listeners connect to ball_spawned before we emit.
 	call_deferred(&"adopt_pre_existing_balls")
 	call_deferred(&"_reconcile_initial_state")
 
@@ -60,9 +59,10 @@ func adopt_pre_existing_balls() -> void:
 		var key: String = ball.item_key
 		_balls_by_key[key] = ball
 		_apply_item_art(ball, key)
-		# Activating fires court_changed, which sees the ball already tracked and is a no-op for spawning.
-		# The placement flip is what lets the rack hide the token the player already sees in play.
-		if (
+		# Authored ball needs level >= 1 and ON_COURT so the rack hides its token.
+		if _item_manager.has_method("adopt_authored"):
+			_item_manager.adopt_authored(key)
+		elif (
 			_item_manager.has_method("activate")
 			and _item_manager.get_level(key) > 0
 			and not _item_manager.is_on_court(key)
@@ -143,12 +143,14 @@ func release_ball(item_key: String) -> Ball:
 	if ball == null:
 		return null
 
+	_initial_reconcile_pending = false
 	_balls_by_key.erase(item_key)
 	ball_removed.emit(ball)
 	return ball
 
 
 func _on_court_changed(item_key: String, on_court: bool) -> void:
+	_initial_reconcile_pending = false
 	if on_court:
 		if get_ball_for_key(item_key) != null:
 			return
@@ -166,7 +168,12 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	ball.call_deferred("queue_free")
 
 
+## One-shot recovery for saved-on-court keys without an authored Ball child.
+## Skipped once any signal-driven activity has begun.
 func _reconcile_initial_state() -> void:
+	if not _initial_reconcile_pending:
+		return
+	_initial_reconcile_pending = false
 	for key in _item_manager.get_court_items():
 		if get_ball_for_key(key) == null:
 			ensure_ball_for_key(
