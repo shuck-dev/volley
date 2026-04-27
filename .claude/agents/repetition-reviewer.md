@@ -51,7 +51,7 @@ Voice quality (docs-and-writing). Em dashes (docs-and-writing). Spelling (codesp
 
 ## Output
 
-Per `ai/skills/minions/reviewers.md`. Approve is silent (label only). Block is a formal review with inline findings. Each finding names the duplicate location or the missing destination so the author can fix it without searching.
+Per `ai/skills/minions/reviewers.md`. Approve is silent (label only). Block posts inline review comments anchored to `path:line`, never on the main PR thread. Each finding names the duplicate location or the missing destination so the author can fix it without searching.
 
 ## Examples
 
