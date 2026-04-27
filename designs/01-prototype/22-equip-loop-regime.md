@@ -39,9 +39,9 @@ This position is not weak. It is what most games do, and the reason is that most
 
 ### 1. Does loose-in-venue make the game better, or just add clutter?
 
-It makes the game better only if the venue is somewhere the player wants to spend time. Volley's venues are the rally surface plus a small amount of surrounding space. A ball that has rolled off the court onto the venue floor reads as "stray", and stray reads as the kind of cosy texture the game wants. An equipment item lying on the floor reads differently: it reads as something the player forgot to put away. The model wins when the loose object is a ball; it loses when the loose object is anything else.
+Clutter **is** the point. A ball lying on the venue floor reads as "the player left it there", and that is the diegetic argument for the model: the world keeps what the player puts down, and tidying is the player's job. Volley's venues are the rally surface plus a small amount of surrounding space, and a venue that quietly accumulates the player's toys is the cosy register the game wants. The chore of putting your toys away is a feature, not a failure mode; the despawn rule (Q4) exists for the player who never tidies, not as an apology for the rule.
 
-The fix is to scope loose to ball-role items only. Equipment, fixtures, and effects do not get a loose state. An invalid release for those classes returns to the rest home directly, with the same eased tween the model already specifies.
+Equipment, fixtures, and effects are scoped out of loose for a different reason: they have stronger rest homes by design (the paddle, the fixture marker, the rack slot is the only sensible place an effect can live), and a loose state for them would be a category error rather than an additional toy. The fix is to scope loose to ball-role items only. Equipment, fixtures, and effects return to their rest home directly on invalid release, with the same eased tween the model already specifies.
 
 ### 2. What happens at save / load? Does state grow unbounded?
 
@@ -57,9 +57,9 @@ The hard cap from the engine's side is not the relevant cap. The relevant cap is
 
 ### 4. Tidy-up affordance, or drift?
 
-A dedicated tidy button is bad: it is a chore the player has to remember, and the game has no other chores. Drift is good: balls disappear gradually as the threshold despawn fires between sessions, the player notices the floor stays roughly clear, and no UI was added.
+The tidy affordance is the existing drag. A loose ball is grabbed and dropped on the rack the same way any ball is, so "putting your toys away" is the same gesture the player already uses for every other interaction. The game does not need a dedicated tidy button, because tidy is not a separate verb; it is the gesture the player already knows, applied to a thing on the floor. This is the diegetic argument: the player has to put their toys away, and the world gives them exactly the tools to do it.
 
-The diegetic excuse is the lever. Different venues retire loose balls differently. A pet brings them back to the rack in V1, the tide claims them in V2, and so on. The retirement is part of the venue's character, not a system the player operates.
+Drift is the safety net, not the primary tidy. If the player never tidies and the loose count crosses the threshold, the oldest loose ball retires the next time the player leaves the venue. The diegetic excuse is the lever. Different venues retire loose balls differently. A pet brings them back to the rack in V1, the tide claims them in V2, and so on. The retirement is part of the venue's character, the floor is kept readable when the player chooses not to tidy, and no UI was added.
 
 ### 5. Effect items: what does loose mean?
 
@@ -99,9 +99,9 @@ The honest answer is that the court is not radically symmetric with the rack; th
 
 ## Failure modes
 
-### Cluttered floor as a mood
+### Floor that reads as broken instead of lived-in
 
-The model assumes loose balls read as cosy texture. They might not. A venue floor with eight balls scattered across it is the sort of background detail that one player reads as "lived-in" and another reads as "I should clean this". The model has no answer for the second player except the despawn rule (Q4), which is slow. If playtest shows the cosy read fails, the fallback is to scope loose even further: only the most recent loose ball persists, older ones retire on the next round boundary. This trades the model's "world keeps what you left" promise for visual cleanliness; the trade is acceptable if the cosy read fails, and the lever is one threshold value.
+The model wants the floor to read as "lived-in", a venue that keeps the player's toys until the player tidies. The failure mode is not clutter (clutter is the design feature; "I should clean this" is the intended read), it is **too much** clutter: a floor with sixty balls on it stops reading as lived-in and starts reading as broken. The despawn rule (Q4) holds the visual cap by retiring the oldest loose ball when the player leaves the venue, with a per-venue diegetic excuse. If playtest shows the lived-in read fails even at low counts, the lever is the threshold: tighten it until the floor reads right. The model's "world keeps what you left" promise survives the tightening; only the half-life of "left" shortens.
 
 ### Body projection holes for moving obstacles
 
@@ -137,7 +137,7 @@ Ship the model as proposed in [21-ball-dynamics.md](21-ball-dynamics.md), with t
 2. Loose balls retire diegetically per venue, with a soft cap around 8 to 12 visible. The cap is a tuning surface.
 3. Body projection on release uses an expansion-ring fallback after a short hold, then cancels to source if even the expanded shape fails.
 
-The model is the right shape because the venue is part of the game's character, not just a backdrop. Volley's cosy register earns the loose-in-venue rule; a less ambient game would not. The amendments narrow the model to where it pays back and away from where it costs floor clutter, save shape, or solver work for no benefit.
+The model is the right shape because the venue is part of the game's character, not just a backdrop. Volley's cosy register earns the loose-in-venue rule; the floor that quietly fills with the player's toys is the diegetic argument, and tidying is the player's job. A less ambient game would not earn this. The amendments narrow the model to where it pays back (ball-role items, where loose is a meaningful state) and away from where loose would be a category error (equipment, fixtures, effects) or where the floor would stop reading as lived-in (the visual cap).
 
 ## Follow-ups
 
