@@ -262,6 +262,21 @@ func test_repeated_call_timeout_while_airborne_stays_single_run() -> void:
 	assert_signal_emit_count(_controller, "main_character_reached_equip_pose", 1)
 
 
+# SH-233: a freed main character mid-walk must not deadlock the controller.
+func test_main_character_freed_mid_walk_recovers_to_idle() -> void:
+	watch_signals(_controller)
+	_controller.call_timeout()
+	_paddle.queue_free()
+	await get_tree().process_frame
+	# Walk tween auto-kills when its target frees; trigger the equip-pose callback directly.
+	_controller._on_reached_equip_pose()
+	assert_false(
+		_controller.is_active(), "controller must drop back to idle when main character vanishes"
+	)
+	assert_true(_controller.can_call_timeout(), "another timeout should be callable after recovery")
+	assert_signal_emitted(_controller, "timeout_ended")
+
+
 func test_end_timeout_returns_to_lane_position() -> void:
 	_controller.call_timeout()
 	await _advance_walk()

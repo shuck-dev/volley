@@ -110,6 +110,7 @@ func _walk_to_position(target: Vector2, on_finished: Callable) -> void:
 
 func _on_reached_equip_pose() -> void:
 	if not is_instance_valid(main_character):
+		_recover_to_idle()
 		return
 	_state = State.AT_EQUIP_POSE
 	main_character_reached_equip_pose.emit()
@@ -119,4 +120,12 @@ func _on_reached_lane() -> void:
 	_state = State.IDLE
 	if is_instance_valid(main_character):
 		main_character.set_physics_process(true)
+	timeout_ended.emit()
+
+
+# Drops a stuck timeout when the main character vanishes mid-walk so callers can start a new one.
+func _recover_to_idle() -> void:
+	if _walk_tween != null and _walk_tween.is_valid():
+		_walk_tween.kill()
+	_state = State.IDLE
 	timeout_ended.emit()
