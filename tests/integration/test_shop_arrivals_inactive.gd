@@ -52,12 +52,20 @@ func _shop_item(item_key: String) -> ShopItem:
 
 
 func _take_from_shop(shop_item: ShopItem) -> void:
-	# Drive the diegetic drag-as-purchase path: press, then release outside the
-	# shop bounds. attempt_release accepts a release position so we can hit-test
-	# against the shop area without depending on real cursor placement.
-	shop_item.start_drag()
-	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
-	shop_item.attempt_release(outside)
+	# SH-253: drive press + release through the real input handlers end-to-end.
+	var viewport: Viewport = shop_item.get_viewport()
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	shop_item.pickup_area.input_event.emit(viewport, press, 0)
+
+	var canvas_transform: Transform2D = shop_item.get_canvas_transform()
+	var outside_world: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = canvas_transform * outside_world
+	shop_item._input(release)
 
 
 # --- ball rack arrivals ----------------------------------------------------

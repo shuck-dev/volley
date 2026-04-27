@@ -1,10 +1,7 @@
 # gdlint:ignore = max-public-methods
 extends GutTest
 
-## Behavioural tests for TimeoutController.
-##
-## Drives the walk-off/walk-on state machine by advancing tweens via
-## SceneTree's process step so we do not inspect private state.
+## Drives the walk tween manually so phase boundaries land deterministically without real-time awaits.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0
@@ -31,6 +28,8 @@ func before_each() -> void:
 
 	var config: TimeoutConfig = load("res://resources/timeout_config.tres").duplicate()
 	config.floor_y = FLOOR_Y
+	# Round value keeps custom_step deltas readable; not awaited in real time.
+	config.walk_duration_seconds = 1.0
 	_walk_duration = config.walk_duration_seconds
 	_floor_y = config.floor_y
 	_controller = load("res://scripts/core/timeout_controller.gd").new()
@@ -40,9 +39,12 @@ func before_each() -> void:
 
 
 func _advance_walk() -> void:
-	# Advance the tween past completion. One extra frame lets the finished
-	# callback settle.
-	await wait_seconds(_walk_duration + 0.05)
+	# Pause first so engine idle doesn't double-advance the step.
+	var tween: Tween = _controller._walk_tween
+	if tween != null and tween.is_valid():
+		tween.pause()
+		tween.custom_step(_walk_duration + 0.001)
+	await get_tree().process_frame
 
 
 # --- initial state ---
@@ -81,9 +83,7 @@ func test_cannot_call_timeout_while_walking_off() -> void:
 	)
 
 
-# --- walk to equip pose ---
-# Paddle resting position is mid-court (LANE_Y). The timeout always descends
-# to the floor first, so the equip pose signal arrives after two walk phases.
+# Equip pose arrives after two phases: descent to floor, then walk-off.
 func test_main_character_reaches_equip_pose_after_walk() -> void:
 	watch_signals(_controller)
 	_controller.call_timeout()
@@ -152,9 +152,7 @@ func test_controller_returns_to_idle_after_full_cycle() -> void:
 	assert_true(_controller.can_call_timeout())
 
 
-# --- grounding before walk-off (SH-217 + SH-243) ---
-# A paddle starting mid-court takes one descent phase to reach the floor,
-# then one walk phase to reach the equip pose.
+# SH-217 + SH-243: mid-court paddles descend before walking off.
 func test_lane_call_timeout_descends_before_walking_off() -> void:
 	_controller.call_timeout()
 	await _advance_walk()
