@@ -45,6 +45,20 @@ Don't call `_physics_process()` directly to advance time. Use `await get_tree().
 
 Don't call `_on_paddle_hit()` for routing checks; emit the signal instead: `_paddle.paddle_hit.emit()`.
 
+### Step tweens deterministically instead of awaiting real time
+
+When a system under test runs a `Tween` to drive state, awaiting the tween's real-time duration multiplies wall-clock cost across every test that touches it. Pause the tween and advance it manually with `custom_step`, then yield one frame so chained `finished` callbacks settle before assertions. The production code is unchanged; tests still verify final position, signal emission, and signal counts.
+
+```gdscript
+var tween: Tween = _controller._walk_tween
+if tween != null and tween.is_valid():
+    tween.pause()
+    tween.custom_step(_walk_duration + 0.001)
+await get_tree().process_frame
+```
+
+This pattern lives in `tests/unit/paddle/test_timeout_controller.gd`.
+
 ### Physics nodes need the scene tree
 
 `RigidBody2D.linear_velocity` doesn't work until the node is in the tree. Always `add_child_autofree()` before setting velocity. Set `gravity_scale = 0.0` to prevent drift during `await` pauses.
