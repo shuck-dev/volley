@@ -12,7 +12,6 @@ signal ball_removed(ball: Ball)
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 
 @export var ball_scene: PackedScene = BallScene
-@export var spawn_for_existing_on_load: bool = false
 
 var _item_manager: Node
 var _ball_host: Node
@@ -32,11 +31,11 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
-	if spawn_for_existing_on_load:
-		_reconcile_initial_state()
-
 	# Deferred so sibling listeners connect to ball_spawned before we emit for adopted balls.
+	# _reconcile_initial_state runs after adoption so any save-state on-court items without an
+	# authored Ball child (e.g. training_ball after a reload) get a physical node.
 	call_deferred(&"adopt_pre_existing_balls")
+	call_deferred(&"_reconcile_initial_state")
 
 
 ## Registers each authored Ball under its `item_key`, applies item art, and ensures

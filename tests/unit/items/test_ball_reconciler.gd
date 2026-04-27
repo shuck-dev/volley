@@ -141,18 +141,23 @@ func test_off_event_without_tracked_ball_is_noop() -> void:
 	assert_eq(_permanent_ball_count(), 0, "off events for untracked keys should not spawn anything")
 
 
-func test_spawn_for_existing_on_load_reconciles_from_progression() -> void:
+func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
+	# Simulates a session reload where training_ball is ON_COURT in the save but
+	# has no authored Ball child in the scene (SH-289 GONE-on-buy regression).
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var preloaded_host := Node2D.new()
 	add_child_autofree(preloaded_host)
 	var fresh: BallReconciler = BallReconcilerScript.new()
 	fresh.configure(_manager, preloaded_host)
-	fresh.spawn_for_existing_on_load = true
 	add_child_autofree(fresh)
+	# Flush deferred calls (adopt_pre_existing_balls + _reconcile_initial_state).
+	await get_tree().process_frame
 
 	var found: Ball = fresh.get_ball_for_key("ball_alpha")
-	assert_not_null(found, "on-load reconcile should spawn balls for already-on-court items")
+	assert_not_null(
+		found, "reload reconcile should spawn balls for on-court items with no authored node"
+	)
 
 
 func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> void:
