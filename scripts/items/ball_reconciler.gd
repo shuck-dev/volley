@@ -2,17 +2,20 @@ class_name BallReconciler
 extends Node
 
 ## Single ownership point for live Ball instances. Drives lifecycle (spawn, art, freeing)
-## from `on_court[&ball]` and exposes `current_ball` so callers don't reach into the scene.
+## from `on_court[&ball]` and emits per-ball lifecycle signals so consumers wire to every
+## tracked ball, not a single "current" one. Multi-ball is design intent: see
+## `designs/01-prototype/21-ball-dynamics.md` (Regime unification, multi-ball wiring).
 
 signal ball_spawned(item_key: String, ball: Ball)
-signal current_ball_changed(ball: Ball)
+## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
+signal ball_added(ball: Ball)
+## Emitted whenever a ball leaves the tracked set (release, deactivate).
+signal ball_removed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 
 @export var ball_scene: PackedScene = BallScene
 @export var spawn_for_existing_on_load: bool = false
-
-var current_ball: Ball = null
 
 var _item_manager: Node
 var _ball_host: Node
@@ -70,7 +73,7 @@ func adopt_pre_existing_balls() -> void:
 		):
 			_item_manager.activate(key)
 		ball_spawned.emit(key, ball)
-		_set_current_ball(ball)
+		ball_added.emit(ball)
 
 
 func _is_tracked(ball: Ball) -> bool:
@@ -114,7 +117,7 @@ func ensure_ball_for_key(
 	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
-	_set_current_ball(ball)
+	ball_added.emit(ball)
 	_apply_preserved_speed(ball, preserved_speed)
 	return ball
 
@@ -150,8 +153,7 @@ func release_ball(item_key: String) -> Ball:
 		return null
 
 	_balls_by_key.erase(item_key)
-	if current_ball == ball:
-		_set_current_ball(_pick_current_candidate())
+	ball_removed.emit(ball)
 	return ball
 
 
@@ -169,23 +171,8 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		return
 
 	_balls_by_key.erase(item_key)
-	if current_ball == ball:
-		_set_current_ball(_pick_current_candidate())
+	ball_removed.emit(ball)
 	ball.call_deferred("queue_free")
-
-
-func _set_current_ball(ball: Ball) -> void:
-	if current_ball == ball:
-		return
-	current_ball = ball
-	current_ball_changed.emit(ball)
-
-
-func _pick_current_candidate() -> Ball:
-	for value in _balls_by_key.values():
-		if is_instance_valid(value):
-			return value
-	return null
 
 
 func _reconcile_initial_state() -> void:

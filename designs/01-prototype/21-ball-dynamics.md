@@ -256,6 +256,16 @@ Release rules:
 
 Nothing crosses boundaries by mutating a shared body. Each owner only creates and frees its own shape.
 
+### Multi-ball wiring
+
+The reconciler tracks N concurrent balls; consumers subscribe per-ball, not to a single "current ball." `BallReconciler` emits `ball_added(ball)` and `ball_removed(ball)` whenever the tracked set changes (spawn, ensure, adoption, release, deactivate). The previous `current_ball` / `current_ball_changed` single-var concept is removed; the reconciler keeps no opinion about which ball is "the" one.
+
+- **Court** subscribes to every tracked ball's `missed` and `at_max_speed_changed`. A miss on any ball halves or zeroes the shared streak and resets every tracked ball's speed; a paddle hit advances every tracked ball's speed. Streak is one rally state, shared across balls.
+- **SpeedBar** subscribes to every tracked ball's `speed_changed` and renders the **highest** current speed across the set. The bar reads as rally pressure: the most energetic ball drives the visual, the calmer ones live underneath it.
+- **Partner targeting** still picks one ball at a time today (back-compat handle on Court). The smarter "nearest projected intercept" selection is a separate ticket; see Q6.
+
+This is design intent, not a bug to prevent: the prototype has always wanted The Stray (SH-54) and similar multi-ball items to layer cleanly on top of the rally. Single-ball-on-court was an accidental constraint that fell out of consumer wiring, not a rule the system was trying to keep.
+
 ### Transition seams
 
 `court_changed` is the join point. A new `BallReconciler` listens to it and reconciles the live ball set to match `on_court[&ball]`. When a permanent ball becomes on-court, the reconciler hands out a `Ball` instance. When one leaves, the reconciler `queue_free`s the excess. Everything else about ball lifetime flows through this node, so nothing outside it needs to know about counts.

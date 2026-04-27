@@ -17,9 +17,15 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 
+## "Most recent" live ball; kept as a back-compat handle for tests and partner targeting.
+## Multi-ball is design intent: every tracked ball is wired in `_balls`, not just this one.
 var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
+
+## Every live ball Court is wired to. Court reacts to `missed`/`at_max_speed_changed` on
+## each entry; paddle hits accelerate every tracked ball; misses reset every tracked ball.
+var _balls: Array[Ball] = []
 
 var _volley_count := 0
 var _active_partner_definition: Resource
@@ -52,15 +58,13 @@ func _ready() -> void:
 		timeout_controller.configure(player_paddle)
 
 	if ball_system != null:
-		ball_system.current_ball_changed.connect(set_current_ball)
-		if ball_system.current_ball != null:
-			var initial: Ball = ball_system.current_ball
-			ball = null
-			set_current_ball(initial)
-	elif ball != null:
+		ball_system.ball_added.connect(_attach_ball)
+		ball_system.ball_removed.connect(_detach_ball)
+	if ball != null and not _balls.has(ball):
+		# Test seam / direct pre-set: route the pre-set ball through the same attach path.
 		var pre_set: Ball = ball
 		ball = null
-		set_current_ball(pre_set)
+		_attach_ball(pre_set)
 
 	if ProgressionManager.is_partner_unlocked(_progression.active_partner):
 		_activate_partner()
@@ -72,33 +76,50 @@ func _ready() -> void:
 	personal_volley_best_changed.emit(_progression.personal_volley_best)
 
 
-## Wires/unwires the per-ball signals when the ball-system swaps the live ball, and is the
-## test seam for harnesses that supply a stub ball directly.
-func set_current_ball(new_ball: Ball) -> void:
-	if ball == new_ball:
+## Wires Court to a live ball. Called per ball as the reconciler emits `ball_added`, so
+## every concurrent ball gets miss/max-speed listeners. The newest ball becomes the
+## back-compat `ball` handle and the partner's current target; partner multi-ball
+## targeting (nearest projected intercept) is the next layer up; see
+## `designs/01-prototype/21-ball-dynamics.md` Q6.
+func _attach_ball(new_ball: Ball) -> void:
+	if new_ball == null:
 		return
-	if ball != null and is_instance_valid(ball):
-		if ball.missed.is_connected(_on_ball_missed):
-			ball.missed.disconnect(_on_ball_missed)
-		if ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
-			ball.at_max_speed_changed.disconnect(_on_ball_at_max_speed_changed)
+	if _balls.has(new_ball):
+		return
+	_balls.append(new_ball)
 	ball = new_ball
 	autoplay_controller.ball = ball
-	if ball == null:
-		return
-	if not ball.missed.is_connected(_on_ball_missed):
-		ball.missed.connect(_on_ball_missed)
-	if not ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
-		ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
-	if ball.effect_processor != null:
+	if not new_ball.missed.is_connected(_on_ball_missed):
+		new_ball.missed.connect(_on_ball_missed)
+	if not new_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
+		new_ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
+	if new_ball.effect_processor != null:
 		var paddles: Array[Node2D] = [player_paddle]
 		if partner_paddle != null:
 			paddles.append(partner_paddle)
-		ball.effect_processor.paddles = paddles
+		new_ball.effect_processor.paddles = paddles
 	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
-		ball.register_miss_zone(zone)
+		new_ball.register_miss_zone(zone)
 	if partner_paddle != null:
-		partner_paddle.set_ball(ball)
+		partner_paddle.set_ball(new_ball)
+
+
+## Detaches Court from a ball that has left the tracked set. Drops the back-compat
+## `ball` handle to whichever ball remains, or null if none.
+func _detach_ball(old_ball: Ball) -> void:
+	if old_ball == null:
+		return
+	_balls.erase(old_ball)
+	if is_instance_valid(old_ball):
+		if old_ball.missed.is_connected(_on_ball_missed):
+			old_ball.missed.disconnect(_on_ball_missed)
+		if old_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
+			old_ball.at_max_speed_changed.disconnect(_on_ball_at_max_speed_changed)
+	if ball == old_ball:
+		ball = _balls.back() if not _balls.is_empty() else null
+		autoplay_controller.ball = ball
+		if partner_paddle != null and ball != null:
+			partner_paddle.set_ball(ball)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -124,9 +145,11 @@ func _on_paddle_hit() -> void:
 		personal_volley_best_changed.emit(_progression.personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
-	if ball == null:
-		return
-	ball.increase_speed()
+	# Multi-ball: every live ball shares the rally's friendship energy.
+	# Streak is shared, so each tracked ball advances on a paddle hit.
+	for tracked in _balls:
+		if is_instance_valid(tracked):
+			tracked.increase_speed()
 
 
 func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
@@ -150,11 +173,14 @@ func _on_ball_missed() -> void:
 	_friendship_point_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
 
-	if ball != null:
+	# Multi-ball: a miss on any ball resets the shared streak's energy across every ball.
+	for tracked in _balls:
+		if not is_instance_valid(tracked):
+			continue
 		if should_halve and _volley_count > 0:
-			ball.set_speed_for_streak(_volley_count)
+			tracked.set_speed_for_streak(_volley_count)
 		else:
-			ball.reset_speed()
+			tracked.reset_speed()
 
 	player_paddle.reset_streak()
 	if partner_paddle != null:
@@ -186,9 +212,12 @@ func _activate_partner() -> void:
 	add_child(partner_paddle)
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
+	for tracked in _balls:
+		if not is_instance_valid(tracked):
+			continue
+		if tracked.effect_processor != null:
+			tracked.effect_processor.paddles.append(partner_paddle)
 	if ball != null:
-		if ball.effect_processor != null:
-			ball.effect_processor.paddles.append(partner_paddle)
 		partner_paddle.set_ball(ball)
 
 	_item_manager.register_partner(partner_definition)
@@ -196,8 +225,9 @@ func _activate_partner() -> void:
 	if right_wall != null:
 		_partner_miss_zone = MissZoneScene.instantiate()
 		right_wall.add_child(_partner_miss_zone)
-		if ball != null:
-			ball.register_miss_zone(_partner_miss_zone)
+		for tracked in _balls:
+			if is_instance_valid(tracked):
+				tracked.register_miss_zone(_partner_miss_zone)
 
 	partner_changed.emit()
 
@@ -209,8 +239,9 @@ func _deactivate_partner() -> void:
 		_item_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
-	if ball != null and ball.effect_processor != null:
-		ball.effect_processor.paddles.erase(partner_paddle)
+	for tracked in _balls:
+		if is_instance_valid(tracked) and tracked.effect_processor != null:
+			tracked.effect_processor.paddles.erase(partner_paddle)
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null

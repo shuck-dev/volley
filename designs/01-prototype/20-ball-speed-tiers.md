@@ -30,6 +30,8 @@ If the speed ceiling turns out too tight under real play, Godot's [`RigidBody2D.
 
 ## Tier math
 
+Ball speed is friendship energy. The rally's accumulated speed is the player's relationship with the ball, and the tier ladder is the shape of that energy as it climbs. Speed resets only on miss; mid-rally grab-and-release carries energy through the held-token detour (see `21-ball-dynamics.md` for the regime model). Tiers compose with that semantics: a grab-and-release at Tier 2 lands at Tier 2, and misses are the only thing that takes the rally back to Tier 0.
+
 Speed progression becomes a ladder of tiers. Each tier has its own floor and ceiling; reaching a ceiling fires a tier event and drops the ball to the floor of the next tier. The reward that fires alongside the event is owned by the companion progression doc.
 
 ### Tier structure
