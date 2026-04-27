@@ -284,14 +284,16 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 
 ### Containers and the swap pattern
 
-Every draggable lives in a container. Some containers hold their items as physics objects; others hold them as non-physics `Node2D` tokens. The held state during a drag is always a non-physics `Node2D` preview that follows the cursor.
+Every item lives in a container. Every container owns its items the same way: one body per item, parented under the container, sized by `ItemDefinition.token_scale`. Containers differ in what kind of activity they host.
 
-- **Venue (court).** Owns live rally balls in play as physics. Object: `Ball` (`RigidBody2D`).
-- **Shop.** Non-physics. Owns shop items at rest as `Node2D` tokens. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
-- **Racks.** Own rack tokens as non-physics `Node2D` plus art, regrown on rack refresh. The rack is a slot grid; physics inside it would fight the layout for no gameplay benefit.
-- **Workshop (future).** Owns workshop tokens by the same non-physics pattern when it lands.
+- **Court.** The only container that activates movement physics. When the court accepts an item, that item's body becomes a live `RigidBody2D` participating in the rally. For ball-role items the body is a `Ball`; the same rule holds for any future court-eligible item. Movement physics belongs to the court because the court is the place the rally happens.
+- **Shop.** Owns items at rest. The body is parented under the shop's slot, no movement physics. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
+- **Racks.** Own items at rest in a slot grid. The body is parented under the rack, no movement physics. Slots are layout, not collision.
+- **Workshop (future).** Same as racks: items at rest, no movement physics, until the workshop's own activity (synthesis, levelling) animates them.
 
-On grab, the source container vacates its at-rest representation (despawn for the live ball, hide for the shop slot, leave-alone-and-track-emptied for the rack slot). The drag controller spawns a held `Node2D` preview on the cursor. The held preview reads `ItemDefinition.token_scale` so the same item renders at the same size at every container and in the held state.
+The shape is symmetric across items. Equipment items behave the same as ball items: same drag, same release, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and whether that container activates movement physics. Equipment never lands on the court because the court only owns ball-role items, but if a future court-eligible item type is introduced the same container-owns-and-activates rule applies.
+
+The held state during a drag is the one moment an item is between containers. The drag controller spawns a non-physics `Node2D` preview on the cursor; the source container vacates its body (despawn for a live court ball, hide for the shop slot, leave the slot empty for the rack slot). On commit, the destination container takes ownership: re-parents (or re-spawns) the body, applies its scale, and activates movement physics if the destination is the court.
 
 ### Drop validation by body projection
 
