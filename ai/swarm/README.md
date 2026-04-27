@@ -173,7 +173,7 @@ Intermediate pushes strip `zaphod-*` labels but do not trigger re-dispatch; the 
 
 ## PR verdicts and merge
 
-The full reviewer contract (verdict shape, brevity caps, bold-name prefix, inline-comment posting, em-dash ban, no-audit-laundry rule, re-review protocol) lives in [`ai/skills/reviewers.md`](../skills/reviewers.md). Every reviewer minion reads that skill before posting. Don't duplicate its rules here.
+The full reviewer contract (verdict shape, brevity caps, bold-name prefix, inline-comment posting, em-dash ban, no-audit-laundry rule, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../skills/minions/reviewers.md). Every reviewer minion reads that skill before posting. Don't duplicate its rules here.
 
 What the skill doesn't cover, and belongs in the swarm README:
 
@@ -230,7 +230,7 @@ On a review moment, Gru:
 
 1. Hydrates PR state with `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft`.
 2. Reads the last-approved SHA from prior reviewer comments or label events.
-3. Diffs `<last-approved>..<current-head>` and partitions the changed file set by reviewer scope (the table lives in [`ai/skills/reviewers.md`](../skills/reviewers.md)).
+3. Diffs `<last-approved>..<current-head>` and partitions the changed file set by reviewer scope (the table lives in [`ai/skills/minions/reviewers.md`](../skills/minions/reviewers.md)).
 4. Dispatches only the reviewers whose scope was touched. Each prompt includes the SHA range so the review is incremental.
 5. A reviewer whose scope-filtered diff is empty approves immediately with "no changes in scope since `<sha>`".
 

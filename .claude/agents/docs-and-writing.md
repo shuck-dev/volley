@@ -42,4 +42,4 @@ Before reviewing, keep these pointers authoritative:
 
 ## Output
 
-Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Verdict surface per `ai/skills/reviewers.md`.
+Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), following Conventional Comments per `ai/PARALLEL.md`. Verdict surface per `ai/skills/minions/reviewers.md`.

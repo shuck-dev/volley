@@ -66,7 +66,7 @@ Four labels live on PRs. Two are minion-applied, two are Josh-only.
 - `approved-human`: Josh's sign-off. Required for merge.
 - `action-required-human`: Josh's "I looked at this and want changes". Mutually exclusive with `approved-human`.
 
-Reviewers post their own comments and apply their own labels; Gru does not aggregate or post on their behalf. Every comment opens with `**<codename>**` so the attribution lives in the text, not in the label alone. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/reviewers.md`](../../ai/skills/reviewers.md).
+Reviewers post their own comments and apply their own labels; Gru does not aggregate or post on their behalf. Every comment opens with `**<codename>**` so the attribution lives in the text, not in the label alone. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
 
 Dispatch happens at declared review moments (Dandori Challenge first opens, author signals ready for re-review), not every push. Gru partitions the `<last-approved>..<head>` diff by reviewer scope and only dispatches reviewers whose scope was touched. Scope-filter empty means immediate approve.
 
