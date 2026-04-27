@@ -85,6 +85,8 @@ The organiser dispatches reviewers at explicit review moments (first open, autho
 
 Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, apply `zaphod-approved` silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
 
+If you previously blocked and the new diff resolves your block: reply inline to each of your prior block findings, naming the fix SHA in 15 words or less. Then apply `zaphod-approved`. Don't leave block threads hanging open when the underlying issue is fixed.
+
 ## Mechanical fixes as commits
 
 If the finding has a one-line fix and you have Edit access, land the fix as a commit with a `[<codename>]` role tag in the subject. Reference the fix by commit SHA rather than typing the diff into the body.
