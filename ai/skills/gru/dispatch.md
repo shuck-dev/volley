@@ -35,7 +35,11 @@ Every Agent call uses `run_in_background: true`. Coordinate multiple background 
 
 ## Paired dispatch
 
-Pair specialists when a hook or gate forces their outputs into one commit (failing tests + impl, scene + script). Otherwise dispatch independent. Paired dispatch costs parallelism on that pair; default to independent.
+Pair every code dispatch by default. Lefthook runs `ggut` on commit; failing tests block the commit. That gate forces failing tests + impl into the same commit on every code change, not edge cases. So the pair is the default shape: test-author writes failing tests first; impl makes them pass; one commit, ggut green by construction.
+
+Solo only when explicitly justified: doc-only fix, test-only refactor, scene-only restructure with no script edits. Flag the deviation when going solo.
+
+The cost is parallelism between the pair. The benefit is fewer re-review rounds: PR #506 / SH-288 dispatched solo three times in a row and Maggie blocked on coverage gaps each time. Net rounds went up.
 
 ## Reviewer dispatch
 
