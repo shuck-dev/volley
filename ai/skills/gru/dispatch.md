@@ -29,6 +29,8 @@ Every code-writing minion gets `isolation: "worktree"`. Reviewers and battlers w
 
 Tier 2 work (runtime / `run(play)`) is exclusive: only one minion at a time runs at Tier 2. Constraint is one-at-a-time, not Josh sign-off.
 
+When dispatching a minion onto a Linear issue, brief the agent to create the worktree on a properly named feature branch: `feature/sh-XXX-short-description`. The Agent tool's `isolation: "worktree"` defaults the branch name to the worktree slug (`worktree-agent-aXXXXXX`); that's an internal name, not a feature branch. SH-288 / PR #506 shipped on the slug name because the dispatch brief never named the branch. Future dispatches: include the branch name in the brief.
+
 ## Background by default
 
 Every Agent call uses `run_in_background: true`. Coordinate multiple background minions via a shared scratchpad if their work touches.
