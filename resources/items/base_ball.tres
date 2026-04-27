@@ -34,3 +34,4 @@ descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Neve
 base_cost = 40
 max_level = 10
 effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])
+purchasable = false
