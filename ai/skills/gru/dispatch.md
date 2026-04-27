@@ -37,7 +37,7 @@ Every Agent call uses `run_in_background: true`. Coordinate multiple background 
 
 Three dispatch shapes for code work, picked by issue type. The cognitive separation between test and impl is the point; pick the shape that achieves it for the kind of issue at hand.
 
-### User stories — blind test-author handoff
+### User stories: blind test-author handoff
 
 For tickets with player-observable ACs ("ball appears on rack after buy," "drag from court back to rack works mid-rally"):
 
@@ -45,7 +45,7 @@ For tickets with player-observable ACs ("ball appears on rack after buy," "drag 
 2. **Impl dispatched second** into the same worktree, briefed on the design and shown the failing tests. Makes them pass without weakening them. Commits both halves, pushes.
 3. **Reviewer (test-coverage)** verifies the tests aren't tautological: does the test fail if production is replaced with a stub returning the expected value verbatim? If yes, the tests were fudged.
 
-### System stories — solo impl plus adversarial test-coverage
+### System stories: solo impl plus adversarial test-coverage
 
 For refactor / infrastructure tickets whose ACs reference impl shape directly ("no synthetic-key path in `BallReconciler`," "`current_ball_changed` keeps Court's ref fresh"):
 
@@ -53,7 +53,7 @@ For refactor / infrastructure tickets whose ACs reference impl shape directly ("
 2. **Reviewer (test-coverage)** runs the tautology check post-PR: stub the production code to return the test's expected value and confirm the test fails. If it doesn't, block.
 3. The reviewer's adversarial check replaces the cognitive separation a blind test-author would have provided.
 
-### Bugs — test-from-repro plus impl
+### Bugs: test-from-repro plus impl
 
 For bug reports where the steps-to-reproduce already define the failing case:
 
