@@ -132,13 +132,13 @@ position = Vector2(500, 0)
 position = Vector2(-500, 0)
 
 [node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
-position = Vector2(-1065, 0)
+position = Vector2(-1000, 583)
 
 [node name="GearRack" parent="." unique_id=445509089 instance=ExtResource("9_c7axm")]
-position = Vector2(760, 0)
+position = Vector2(1000, 583)
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
-position = Vector2(760, 438)
+position = Vector2(1450, 583)
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=1644947756 node_paths=PackedStringArray("court")]
 offset_left = -150.0
