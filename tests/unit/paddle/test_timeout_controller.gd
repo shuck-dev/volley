@@ -34,9 +34,7 @@ func before_each() -> void:
 
 	var config: TimeoutConfig = load("res://resources/timeout_config.tres").duplicate()
 	config.floor_y = FLOOR_Y
-	# walk_duration is no longer awaited in real time; tests advance the
-	# tween manually via custom_step so wall-clock cost is independent of it.
-	# Pick a round value so step deltas stay readable.
+	# Round value keeps custom_step deltas readable; not awaited in real time.
 	config.walk_duration_seconds = 1.0
 	_walk_duration = config.walk_duration_seconds
 	_floor_y = config.floor_y
@@ -47,17 +45,9 @@ func before_each() -> void:
 
 
 func _advance_walk() -> void:
-	# Advance the controller's tween by one walk phase deterministically via
-	# custom_step. Pausing first prevents the engine's idle process from
-	# double-advancing the tween between the test's frames. After stepping,
-	# yield one process frame so any chained finished callback updates state
-	# before the test asserts.
+	# Pause first so engine idle doesn't double-advance the step.
 	var tween: Tween = _controller._walk_tween
 	if tween != null and tween.is_valid():
-		# Pause and step the tween manually so wall-clock cost stays
-		# constant. Subsequent _advance_walk calls keep stepping the same
-		# paused tween until it finishes (and the controller starts a new
-		# one for the walk-on phase).
 		tween.pause()
 		tween.custom_step(_walk_duration + 0.001)
 	await get_tree().process_frame
