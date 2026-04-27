@@ -3,8 +3,11 @@ extends GutTest
 
 ## Behavioural tests for TimeoutController.
 ##
-## Drives the walk-off/walk-on state machine by advancing tweens via
-## SceneTree's process step so we do not inspect private state.
+## Drives the walk-off/walk-on state machine by stepping the controller's
+## tween manually (Tween.custom_step), so phase boundaries land
+## deterministically without awaiting real-time durations. Assertions still
+## target player-observable outcomes: paddle position, signal emissions,
+## and signal counts.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0
@@ -31,6 +34,10 @@ func before_each() -> void:
 
 	var config: TimeoutConfig = load("res://resources/timeout_config.tres").duplicate()
 	config.floor_y = FLOOR_Y
+	# walk_duration is no longer awaited in real time; tests advance the
+	# tween manually via custom_step so wall-clock cost is independent of it.
+	# Pick a round value so step deltas stay readable.
+	config.walk_duration_seconds = 1.0
 	_walk_duration = config.walk_duration_seconds
 	_floor_y = config.floor_y
 	_controller = load("res://scripts/core/timeout_controller.gd").new()
@@ -40,9 +47,20 @@ func before_each() -> void:
 
 
 func _advance_walk() -> void:
-	# Advance the tween past completion. One extra frame lets the finished
-	# callback settle.
-	await wait_seconds(_walk_duration + 0.05)
+	# Advance the controller's tween by one walk phase deterministically via
+	# custom_step. Pausing first prevents the engine's idle process from
+	# double-advancing the tween between the test's frames. After stepping,
+	# yield one process frame so any chained finished callback updates state
+	# before the test asserts.
+	var tween: Tween = _controller._walk_tween
+	if tween != null and tween.is_valid():
+		# Pause and step the tween manually so wall-clock cost stays
+		# constant. Subsequent _advance_walk calls keep stepping the same
+		# paused tween until it finishes (and the controller starts a new
+		# one for the walk-on phase).
+		tween.pause()
+		tween.custom_step(_walk_duration + 0.001)
+	await get_tree().process_frame
 
 
 # --- initial state ---
