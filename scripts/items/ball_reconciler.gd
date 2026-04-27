@@ -17,6 +17,9 @@ var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
+## True while adopt_pre_existing_balls is running; prevents court_changed from
+## clearing _initial_reconcile_pending before _reconcile_initial_state runs.
+var _adopting_pre_existing: bool = false
 
 
 func configure(item_manager: Node, ball_host: Node) -> void:
@@ -43,6 +46,7 @@ func _ready() -> void:
 func adopt_pre_existing_balls() -> void:
 	if _ball_host == null:
 		return
+	_adopting_pre_existing = true
 	for child in _ball_host.get_children():
 		if not (child is Ball):
 			continue
@@ -70,6 +74,7 @@ func adopt_pre_existing_balls() -> void:
 			_item_manager.activate(key)
 		ball_spawned.emit(key, ball)
 		ball_added.emit(ball)
+	_adopting_pre_existing = false
 
 
 func _is_tracked(ball: Ball) -> bool:
@@ -150,7 +155,8 @@ func release_ball(item_key: String) -> Ball:
 
 
 func _on_court_changed(item_key: String, on_court: bool) -> void:
-	_initial_reconcile_pending = false
+	if not _adopting_pre_existing:
+		_initial_reconcile_pending = false
 	if on_court:
 		if get_ball_for_key(item_key) != null:
 			return

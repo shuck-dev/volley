@@ -2,6 +2,7 @@
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 var _manager: Node
@@ -233,6 +234,49 @@ func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
 	)
 	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [beta_live])
 	await get_tree().process_frame
+
+
+## SH-289: when base_ball is authored and training_ball is ON_COURT in the save,
+## the initial reconcile must spawn training_ball even though adopt_pre_existing_balls
+## fires court_changed for base_ball first.
+func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_court_changed(
+) -> void:
+	# Fresh manager with both ball items; no friendship points needed — we set placements directly.
+	var saved_manager: Node = ItemManagerScript.new()
+	var mock_storage: SaveStorage = double(SaveStorage).new()
+	stub(mock_storage.write).to_return(true)
+	stub(mock_storage.read).to_return("")
+	saved_manager._progression = ProgressionData.new(mock_storage)
+	saved_manager._effect_manager = EffectManager.new()
+	var base_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
+	var training_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("training_ball")
+	var typed_items: Array[ItemDefinition] = [base_ball_item, training_ball_item]
+	saved_manager.items.assign(typed_items)
+	add_child_autofree(saved_manager)
+
+	# Simulate saved state: training_ball ON_COURT, base_ball level set so adopt_authored works.
+	saved_manager._progression.item_levels["base_ball"] = 1
+	saved_manager._progression.item_levels["training_ball"] = 1
+	saved_manager._progression.item_placements["training_ball"] = Placement.ON_COURT
+
+	# Host has one authored Ball child for base_ball (the always-present authored scene child).
+	var fresh_host := Node2D.new()
+	add_child_autofree(fresh_host)
+	var authored_ball: Ball = preload("res://scenes/ball.tscn").instantiate()
+	authored_ball.item_key = "base_ball"
+	fresh_host.add_child(authored_ball)
+
+	var fresh_reconciler: BallReconciler = BallReconcilerScript.new()
+	fresh_reconciler.configure(saved_manager, fresh_host)
+	add_child_autofree(fresh_reconciler)
+
+	# Flush both deferred calls: adopt_pre_existing_balls then _reconcile_initial_state.
+	await get_tree().process_frame
+
+	assert_not_null(
+		fresh_reconciler.get_ball_for_key("training_ball"),
+		"reconcile must spawn training_ball even when base_ball adopt triggers court_changed first",
+	)
 
 
 func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
