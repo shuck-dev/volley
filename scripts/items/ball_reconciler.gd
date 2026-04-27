@@ -92,13 +92,19 @@ func get_ball_for_key(item_key: String) -> Ball:
 
 
 ## Returns the tracked Ball for `item_key`, repositioning and relaunching it, or instantiates a new one if none is tracked.
+## `preserved_speed` >= 0 carries friendship energy through grab-and-release (SH-288): the spawned
+## ball's `speed` is set to that magnitude and `linear_velocity` is re-magnituded along its direction.
 func ensure_ball_for_key(
-	item_key: String, spawn_position: Vector2, initial_velocity: Vector2
+	item_key: String,
+	spawn_position: Vector2,
+	initial_velocity: Vector2,
+	preserved_speed: float = -1.0,
 ) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
 		existing.global_position = spawn_position
 		existing.linear_velocity = initial_velocity
+		_apply_preserved_speed(existing, preserved_speed)
 		return existing
 
 	var ball: Ball = ball_scene.instantiate()
@@ -109,16 +115,33 @@ func ensure_ball_for_key(
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
 	_set_current_ball(ball)
+	_apply_preserved_speed(ball, preserved_speed)
 	return ball
 
 
 ## Single entry point for placing a permanent ball on the court: activates the item if needed,
 ## ensures one Ball at the position with the velocity, applies art. Replaces a stack of
 ## activate-then-spawn sequences elsewhere.
-func bring_into_play(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+## `preserved_speed` carries friendship energy through grab-and-release (SH-288).
+func bring_into_play(
+	item_key: String,
+	spawn_position: Vector2,
+	initial_velocity: Vector2,
+	preserved_speed: float = -1.0,
+) -> Ball:
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
-	return ensure_ball_for_key(item_key, spawn_position, initial_velocity)
+	return ensure_ball_for_key(item_key, spawn_position, initial_velocity, preserved_speed)
+
+
+## SH-288: friendship energy persists across grab-and-release. When `preserved_speed` is non-negative,
+## the ball adopts that speed and re-magnitudes its velocity along the requested direction.
+func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
+	if preserved_speed < 0.0:
+		return
+	ball.speed = preserved_speed
+	if ball.linear_velocity.length() > 0.0:
+		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 
 
 func release_ball(item_key: String) -> Ball:

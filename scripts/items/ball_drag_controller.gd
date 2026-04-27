@@ -37,6 +37,9 @@ var _press_position: Vector2 = Vector2.ZERO
 var _gesture_below_threshold: bool = true
 ## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
+## SH-288: friendship energy captured at mid-rally grab; forwarded to bring_into_play so the
+## released ball inherits the rally speed. Negative means no preserved energy (rack-origin gesture).
+var _held_preserved_speed: float = -1.0
 
 
 func configure(
@@ -142,6 +145,9 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	var spawn_position: Vector2 = _cursor_position()
 	if existing != null:
 		spawn_position = existing.global_position
+		# SH-288: capture the rally's friendship energy before freeing the live ball so the
+		# released ball inherits it. Reset only on miss, never on grab-and-release.
+		_held_preserved_speed = existing.speed
 		if reconciler != null:
 			reconciler.release_ball(item_key)
 		existing.freeze = true
@@ -208,7 +214,7 @@ func _release_onto_court(
 		return
 	if reconciler == null:
 		return
-	reconciler.bring_into_play(item_key, release_position, release_velocity)
+	reconciler.bring_into_play(item_key, release_position, release_velocity, _held_preserved_speed)
 
 
 ## Clear held-token state after a successful commit (rack accept or court spawn).
@@ -219,6 +225,7 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_held_key = ""
 	_held_is_temporary = false
 	_held_was_on_court = false
+	_held_preserved_speed = -1.0
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
