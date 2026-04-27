@@ -284,15 +284,52 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 
 ### Containers and the swap pattern
 
-Every draggable lives in a container. Some containers hold their items as physics objects; others hold them as non-physics `Node2D` tokens. The held state during a drag is always a non-physics `Node2D` preview that follows the cursor. Release decides which container respawns the at-rest representation, and where.
+Every item lives in a container. Every container owns its items the same way: one body per item, parented under the container, sized by `ItemDefinition.token_scale`. The body is the same body across containers; what changes per container is which physics state the body is in.
 
-- **Venue (court).** Owns live rally balls in play as physics. Object: `Ball` (`RigidBody2D`).
-- **Shop.** Non-physics. Owns shop items at rest as `Node2D` tokens, like racks. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
-- **Racks.** Own rack tokens as non-physics `Node2D` plus art, regrown on rack refresh. The rack is a slot grid; physics inside it would fight the layout for no gameplay benefit.
-- **Workshop (future).** Owns workshop tokens by the same non-physics pattern when it lands.
+Three states:
 
-On grab, the owning container's at-rest representation is despawned (or hidden, for the shop slot) and the drag controller spawns a held `Node2D` preview on the cursor. On release, the held preview despawns and one of the containers reinstates its at-rest representation: the source on cancel, the destination on commit.
+- **Token.** No physics body. A `Node2D` parented under its container's slot, sized by `ItemDefinition.token_scale`. This is the at-rest form items take inside the shop, the racks, and the workshop. Tokens don't fall, don't collide, don't have weight; they sit where the container puts them. The slot is layout.
+- **Dragged-gravity.** A `RigidBody2D` with gravity on. The body has weight; the player feels they are holding it up. Used during the drag gesture (the held body follows the cursor, fighting gravity) and for stray balls that have rolled off the court. Released without support (the cursor leaves the venue, no container accepts), the body falls under gravity.
+- **Active-movement.** A `RigidBody2D` with gravity off, frictionless momentum. The body keeps the velocity it was given until a paddle, wall, or item effect changes it. This is the rally physics: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return. **Only ball-role items ever enter this state, and only when the court owns them.**
 
-A consequence worth naming: a press without movement on any container's at-rest representation must NOT count as a commit. The held preview lifts on press, and the commit only fires when release lands over a valid destination after a real drag.
+Transitions between states happen at container boundaries. Every transition is eased, never a snap, so the body's position, scale, and modulation read as continuous through the state change.
 
-**Forward look.** Shop, racks, and workshop already converge on `Node2D` tokens; only the venue (live rally) holds physics. The remaining split is deliberate (physics only where the player feels rally motion) and the at-rest token type is consistent across containers, so the unification path is already most of the way there and should not be blocked by tight coupling.
+- **Token → Dragged-gravity.** On grab, the source container's token is vacated and a `RigidBody2D` body spawns at the token's last world position. The body eases onto the cursor over a short tween (~80 ms) rather than teleporting; the player sees the body "lift" off the slot. Gravity engages once the tween settles. Because the body eases to the cursor rather than snapping under it, the press hit box can be generous (wider than the visible body) and the body still arrives at the cursor cleanly. This matters most for balls in flight: the player presses near a moving ball and the body eases over to the pointer rather than the press requiring a pixel-precise hit on a body the rally is already moving.
+- **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the held body eases into the destination's slot position over a short tween, scale matching `token_scale` at landing. The `RigidBody2D` is replaced by the slot token only after the tween settles, so the visual is one continuous motion.
+- **Dragged-gravity → Active-movement.** On release of a ball onto the court, gravity flips off and the rally takes the body's release-gesture velocity as its starting motion. No tween needed; the velocity itself is the continuity.
+- **Active-movement → Dragged-gravity.** When a ball rolls off the court (stray), gravity flips back on as the body crosses the court boundary; the velocity at the boundary carries through, the deceleration on the venue floor is the continuity. The same transition fires when the player grabs a live ball mid-rally; the body's current world position is the gesture's start position, and the held tween eases the body onto the cursor as in the token-grab case.
+
+Easing keeps the diegetic feel: the body is one physical thing moving through the world. A snap (instant teleport from slot to cursor, or slot to court) breaks that read; the player sees a discrete event rather than a continuous motion.
+
+Container summary:
+
+- **Court.** Owns ball-role items in active-movement. The body is a `Ball` (`RigidBody2D` with the rally configured on it). Does not accept non-ball items.
+- **Shop.** Owns items as tokens under the shop's slot. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work.
+- **Racks.** Own items as tokens in a slot grid. Slot grid is layout.
+- **Workshop (future).** Same as racks: tokens at rest, until the workshop's own activity (synthesis, levelling) animates them.
+
+The drag flow is symmetric across items. Equipment items behave the same as ball items in the gesture: same press lifts a held body in dragged-gravity, same `at_rest_shape` projection on the candidate position before the drop, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and what state that container holds it in. Balls are the only items that ever enter active-movement; everything else cycles between token (at rest in a container) and dragged-gravity (during the gesture).
+
+### Drop validation by body projection
+
+Release does not rely on rectangular hit-tests of the cursor position. The drag controller polls every registered drop target each physics frame on the held token's current position. The first target whose `can_accept(item, position)` returns true takes the drop and the gesture ends.
+
+For containers that respawn a non-physics token (shop, rack, workshop), `can_accept` is a bounds check plus per-target slot rules.
+
+For containers that respawn a physics body (the court), `can_accept` is a **body projection**: a `PhysicsDirectSpaceState2D.intersect_shape` query with the at-rest body's authored collision shape at the candidate position. If the query returns any overlap with walls, partners, other balls, or any future obstacle inside the court, the drop is rejected at that position. This is prevention, not depenetration; the body never spawns inside another body, so the solver never has to recover from one. Wall-edge release, ball-on-partner, ball-on-equipment-rack-edge, and stack-of-already-placed-balls all collapse into the same rule.
+
+`ItemDefinition.at_rest_shape` carries the projection shape per item. For balls this is the `CircleShape2D` at the ball's authored radius. Items whose at-rest representation is not a physics body declare `at_rest_shape = null` and the projection step is skipped (the bounds check alone decides).
+
+### No restore on invalid release
+
+The drag controller does not teleport the held token back to the source on an invalid release. Teleport-restore is non-diegetic; the held thing is a physical thing in the world.
+
+Instead, the gesture stays open until a valid target is reachable. After mouse-up, the held token continues to follow the cursor and the controller continues to poll `can_accept` every physics frame. The first frame any target accepts at the held position, the drop fires and the gesture ends. Mouse-button state is a hint after the initial press, not a gate.
+
+Hover feedback on the held token (slight lift, modulation, or scale bump) when `can_accept` returns true tells the player which positions will drop. Plain held state when no target accepts.
+
+The escape valve from this rule is that the source container is itself a target. Rack accepts a drop back into its slot (or any free slot). Shop accepts a drop back into its slot as cancel-no-purchase. The court accepts a drop back at the original spawn position when projecting from a live-ball grab. The player always has a way to put the thing back without the controller doing the move for them.
+
+### Press without movement does not drop
+
+A press on any container's at-rest representation lifts the held preview, but the drop gate stays closed until the gesture moves past the drag movement threshold. A press-and-immediate-release on a rack slot returns the item to the rack with no activation; on a shop slot it cancels back to the slot with no purchase; on a live ball it puts the ball back through the same target-accept loop without flipping placement state.
