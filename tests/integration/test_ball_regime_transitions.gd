@@ -415,6 +415,47 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	assert_true(reinstated.has_item_art(), "reinstated ball preserves the item's art (SH-244)")
 
 
+# --- Scenario 9 (SH-262): pre-existing scene Ball is grabbable mid-rally ----
+
+
+# The live court scene ships with a Ball node already in the tree (see scenes/court.tscn).
+# That ball never went through ensure_ball_for_key, so the reconciler never emitted
+# ball_spawned for it, so the drag controller never wired its `pressed` signal. Players
+# pressed mid-rally and nothing happened. Reproduce by parenting a fresh Ball under the
+# host BEFORE the reconciler ever spawns one, then drive a real press through it.
+func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
+	# Mirror the scene-load shape: Ball is already a child of the host, no item activated,
+	# reconciler never invoked ensure_ball_for_key for this instance.
+	var pre_existing: Ball = BallScene.instantiate()
+	_host.add_child(pre_existing)
+	pre_existing.global_position = Vector2(0, 0)
+	await get_tree().process_frame
+	# Allow any deferred adoption pass to run before we drive input.
+	await get_tree().process_frame
+
+	assert_eq(_permanent_balls().size(), 1, "precondition: pre-existing Ball lives under host")
+	assert_true(
+		pre_existing.input_pickable, "Ball must be input_pickable for press to route through"
+	)
+	assert_false(_drag.is_dragging(), "precondition: no drag in progress before the press")
+
+	# Drive a real press on the pre-existing Ball.
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	pre_existing.input_event.emit(get_viewport(), press, 0)
+
+	assert_true(
+		_drag.is_dragging(),
+		"pressing a pre-existing scene Ball must flip the drag controller into mid-rally grab (SH-262)",
+	)
+	await get_tree().process_frame
+	assert_false(
+		is_instance_valid(pre_existing),
+		"the pre-existing ball is freed during the hold; held token takes over the cursor",
+	)
+
+
 func _find_slot_for_key(item_key: String) -> Node2D:
 	for child in _rack.slot_container.get_children():
 		if child is Node2D and child.get_meta(&"item_key", "") == item_key:

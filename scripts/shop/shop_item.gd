@@ -1,14 +1,18 @@
 class_name ShopItem
-extends RigidBody2D
+extends Node2D
 
 ## Diegetic shop item: pressing starts a held-token drag, releasing outside the
 ## shop bounds completes the purchase. The drag IS the buy gesture (SH-246).
+##
+## Shop items are non-physics tokens (SH-258). Only the live `Ball` carries a
+## RigidBody2D anywhere in the game; on the table the item is a `Node2D` plus
+## art, with an `Area2D` doing input picking.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
 @export var art_holder: Node2D
-@export var collision_shape: CollisionShape2D
+@export var pickup_area: Area2D
 @export var case_overlay: Node2D
 
 var item_definition: ItemDefinition
@@ -18,11 +22,14 @@ var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
 var _last_input_frame: int = -1
+## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
+var _mouse_button_down: bool = false
 
 
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
 	_item_manager = item_manager
 	item_definition = definition
+	_apply_token_scale()
 	_build_art()
 	_refresh_case_overlay()
 
@@ -62,11 +69,11 @@ func get_held_token() -> Node2D:
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	input_pickable = true
-	freeze_mode = FREEZE_MODE_KINEMATIC
-	input_event.connect(_on_input_event)
+	if pickup_area != null and not pickup_area.input_event.is_connected(_on_input_event):
+		pickup_area.input_event.connect(_on_input_event)
 	_item_manager.friendship_point_balance_changed.connect(_on_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_apply_token_scale()
 	_refresh_case_overlay()
 
 
@@ -74,17 +81,25 @@ func _process(_delta: float) -> void:
 	if _held_token == null:
 		return
 	_held_token.global_position = _cursor_position()
+	# SH-287: when mouse is up, poll for a valid commit position so the gesture ends the moment one is reachable.
+	if not _mouse_button_down:
+		attempt_release(_cursor_position())
 
 
-# Release handled here so a fast drag that outruns collision still ends the drag.
+# Release handled here so a fast drag that outruns the area still ends the drag.
 func _input(event: InputEvent) -> void:
-	if _held_token == null:
-		return
 	if not (event is InputEventMouseButton):
 		return
 	var mouse_button: InputEventMouseButton = event
-	if mouse_button.button_index == MOUSE_BUTTON_LEFT and not mouse_button.pressed:
-		attempt_release(_cursor_position())
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+		return
+	_mouse_button_down = mouse_button.pressed
+	if mouse_button.pressed or _held_token == null:
+		return
+	# Use the event's own position so canvas transforms don't break the inside-shop hit-test.
+	var canvas_transform: Transform2D = get_canvas_transform()
+	var release_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
+	attempt_release(release_position)
 
 
 func _build_art() -> void:
@@ -94,6 +109,12 @@ func _build_art() -> void:
 		_art_instance.queue_free()
 	_art_instance = item_definition.art.instantiate()
 	art_holder.add_child(_art_instance)
+
+
+func _apply_token_scale() -> void:
+	if art_holder == null or item_definition == null:
+		return
+	art_holder.scale = item_definition.token_scale
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -121,38 +142,52 @@ func start_drag() -> bool:
 	return true
 
 
-## Test seam / production entry. Outside shop bounds purchases; inside cancels.
+## Test seam / production entry. Returns true on commit (held token freed, gesture ends);
+## false on no valid target (held token stays following the cursor, gesture continues).
+## Inside-shop bounds is itself a valid target: cancels back to the slot. Outside-shop only
+## commits when the purchase succeeds; insufficient FP keeps the gesture open.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
-	var token: Node2D = _held_token
-	_held_token = null
-	token.queue_free()
-
-	var purchased: bool = false
 	var inside_shop: bool = _is_position_inside_shop(release_position)
-	if not inside_shop:
-		purchased = _complete_purchase()
+	if inside_shop:
+		# Cancel: held token freed, slot visible again, no purchase.
+		_finalise_gesture(release_position, false)
+		visible = true
+		return true
 
-	visible = inside_shop or is_owned() == false
-	# Items that purchase successfully leave the shop pool; the shop will despawn them
-	# on the next refresh. Until then, hide them so they don't sit visible on the table.
-	if purchased:
-		visible = false
+	# Outside shop: only commit if the purchase succeeds.
+	var purchased: bool = _complete_purchase()
+	if not purchased:
+		# Insufficient FP (or otherwise un-takeable). No snap-back; gesture stays open.
+		# Held token continues to follow the cursor; the player can drag back into the shop
+		# bounds to cancel, or get more FP and try again.
+		return false
 
-	drop_completed.emit(item_definition.key, release_position, purchased)
+	# Purchased: held token freed, slot stays hidden until the next shop refresh sweeps it.
+	_finalise_gesture(release_position, true)
+	visible = false
 	return true
+
+
+func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
+	if _held_token != null:
+		_held_token.queue_free()
+	_held_token = null
+	drop_completed.emit(item_definition.key, release_position, purchased)
 
 
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % item_definition.key
+	if item_definition != null:
+		token.scale = item_definition.token_scale
 	if item_definition != null and item_definition.art != null:
 		var art_instance: Node = item_definition.art.instantiate()
 		token.add_child(art_instance)
 	# Parent at scene root so the held visual follows the cursor without being
-	# tied to the item's rigid body.
+	# tied to the shop item's transform.
 	var current_scene: Node = get_tree().current_scene
 	if current_scene != null:
 		current_scene.add_child(token)
@@ -160,6 +195,9 @@ func _start_drag() -> void:
 		add_child(token)
 	token.global_position = _cursor_position()
 	_held_token = token
+	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
+	visible = false
+	_mouse_button_down = true
 	pickup_started.emit(item_definition.key)
 
 
@@ -171,7 +209,7 @@ func _complete_purchase() -> bool:
 	return _item_manager.take(item_definition.key)
 
 
-func _is_position_inside_shop(position: Vector2) -> bool:
+func _is_position_inside_shop(world_position: Vector2) -> bool:
 	if _shop_area == null:
 		return false
 	var shape_node: CollisionShape2D = null
@@ -186,7 +224,7 @@ func _is_position_inside_shop(position: Vector2) -> bool:
 		return false
 	var half: Vector2 = rectangle.size * 0.5
 	var center: Vector2 = _shop_area.global_position + shape_node.position
-	return Rect2(center - half, rectangle.size).has_point(position)
+	return Rect2(center - half, rectangle.size).has_point(world_position)
 
 
 func _cursor_position() -> Vector2:
@@ -210,14 +248,5 @@ func _refresh_case_overlay() -> void:
 		return
 	if is_owned():
 		case_overlay.visible = false
-		_refresh_freeze()
 		return
 	case_overlay.visible = not can_be_owned()
-	_refresh_freeze()
-
-
-# Cased items freeze kinematically; drag lifecycle controls freeze directly.
-func _refresh_freeze() -> void:
-	if _held_token != null:
-		return
-	set_deferred("freeze", not is_owned() and not can_be_owned())

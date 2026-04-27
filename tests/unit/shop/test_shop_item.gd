@@ -64,11 +64,13 @@ class TestShopItemContract:
 		_item_manager._progression.friendship_point_balance = 0
 		assert_true(_item.can_be_dragged())
 
-	func test_purchase_hides_case_overlay_and_unfreezes_body() -> void:
+	func test_purchase_hides_case_overlay() -> void:
+		# After SH-258 the shop item is a plain Node2D, so the freeze state on a
+		# RigidBody2D no longer applies. The case overlay still flips off when
+		# the player owns the item.
 		_item_manager._progression.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_false(_item.case_overlay.visible)
-		assert_false(_item.freeze)
 
 
 class TestShopItemArt:

@@ -9,6 +9,9 @@ signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
+## Item key this ball represents; the reconciler reads this on adoption so the held token finds the matching ItemDefinition.
+@export var item_key: String = ""
+
 var speed: float = 0.0
 var min_speed: float
 var max_speed: float
@@ -153,16 +156,19 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	pressed.emit(self)
 
 
-## Replaces the default sprite with the item's authored art so the live ball reads as the same object the player grabbed.
-func apply_item_art(art_scene: PackedScene) -> void:
+## Swaps the default sprite for the item's authored art at the canonical token scale (SH-261).
+func apply_item_art(art_scene: PackedScene, token_scale: Vector2 = Vector2.ONE) -> void:
 	if art_scene == null:
 		return
 	if _item_art != null and is_instance_valid(_item_art):
 		_item_art.queue_free()
+	var holder: Node2D = Node2D.new()
+	holder.name = "ItemArtHolder"
+	holder.scale = token_scale
 	var instance: Node = art_scene.instantiate()
-	if instance is Node2D:
-		_item_art = instance
-	add_child(instance)
+	holder.add_child(instance)
+	_item_art = holder
+	add_child(holder)
 	var default_sprite: Node = get_node_or_null("Sprite")
 	if default_sprite != null:
 		default_sprite.visible = false

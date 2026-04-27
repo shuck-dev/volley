@@ -3,19 +3,20 @@
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
 [ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_case"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_item"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pickup"]
 size = Vector2(40, 40)
 
-[node name="ShopItem" type="RigidBody2D" node_paths=PackedStringArray("art_holder", "collision_shape", "case_overlay")]
-input_pickable = true
-freeze_mode = 1
+[node name="ShopItem" type="Node2D" node_paths=PackedStringArray("art_holder", "pickup_area", "case_overlay")]
 script = ExtResource("1_lrx6i")
 art_holder = NodePath("ArtHolder")
-collision_shape = NodePath("CollisionShape2D")
+pickup_area = NodePath("PickupArea")
 case_overlay = NodePath("CaseOverlay")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_item")
+[node name="PickupArea" type="Area2D" parent="."]
+input_pickable = true
+
+[node name="PickupShape" type="CollisionShape2D" parent="PickupArea"]
+shape = SubResource("RectangleShape2D_pickup")
 
 [node name="ArtHolder" type="Node2D" parent="."]
 
