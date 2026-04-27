@@ -49,13 +49,16 @@ Review re-dispatch happens at "ready for re-review" signals from the impl, not o
 
 At most one `spike` issue per swarm dispatch. Run additional spikes sequentially.
 
-## Mergeable sweep
+## Challenge sweep
 
-On every challenge sweep, check `gh pr view <n> --json mergeable,mergeStateStatus` for each open challenge. There is no bot applying `zaphod-conflicts`; Gru owns it.
+On every challenge sweep, check `gh pr view <n> --json state,mergedAt,mergeable,labels` for each challenge in scope. Read `state` first; `mergeable` is unreliable on merged challenges and reads `UNKNOWN` post-merge.
 
-- `mergeable: CONFLICTING` → apply `zaphod-conflicts` if not present, merge `origin/main` into the worktree branch (never rebase, per `feedback_never_rebase.md`), push, then remove `zaphod-conflicts`.
-- `mergeable: MERGEABLE` with `zaphod-conflicts` still on → remove the stale label.
-- `mergeable: UNKNOWN` → GitHub is still computing; revisit in the same sweep loop, don't act yet.
+- `state: MERGED` → challenge is done. Clean up its worktree, advance the mission, do not act on `mergeable`.
+- `state: OPEN` and `mergeable: CONFLICTING` → apply `zaphod-conflicts` if missing, merge `origin/main` into the worktree branch (never rebase, per `feedback_never_rebase.md`), push, then remove `zaphod-conflicts`.
+- `state: OPEN` and `mergeable: MERGEABLE` with `zaphod-conflicts` still on → remove the stale label.
+- `state: OPEN` and `mergeable: UNKNOWN` → GitHub is still computing; revisit later, don't act yet.
+
+There is no bot applying `zaphod-conflicts`; Gru owns it.
 
 ## Cleanup
 
