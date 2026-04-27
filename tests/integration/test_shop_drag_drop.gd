@@ -165,9 +165,11 @@ func test_release_outside_shop_purchases_and_debits_balance() -> void:
 
 
 func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() -> void:
-	# Drives InputEventMouseButton through the shop item's input_event signal.
-	# Press starts the held token; release outside the shop bounds completes the
-	# purchase (SH-246) and lands the item inactive on the matching rack.
+	# Drives InputEventMouseButton through the shop item's input_event signal for
+	# the press, then through ShopItem._input for the release. Press starts the
+	# held token; release outside the shop bounds completes the purchase (SH-246)
+	# and lands the item inactive on the matching rack. SH-253 keeps the whole
+	# press-drag-release on the real input handler.
 	var item: ShopItem = _shop_item("grip_tape")
 	var balance_before: int = _item_manager.get_friendship_point_balance()
 	var cost: int = GripTape.base_cost
@@ -181,11 +183,16 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 	assert_eq(_item_manager.get_level("grip_tape"), 0, "press alone must not purchase")
 
-	# Release outside shop bounds: drive attempt_release directly (the _input
-	# branch reads cursor position from the viewport, which is not deterministic
-	# under headless tests).
-	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
-	item.attempt_release(outside)
+	# Release outside shop bounds via the real _input path. ShopItem._input reads
+	# the release point from the event's own position via the canvas transform,
+	# so a positioned mouse-up event is deterministic under headless tests.
+	var canvas_transform: Transform2D = item.get_canvas_transform()
+	var outside_world: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = canvas_transform * outside_world
+	item._input(release)
 
 	assert_false(item.is_dragging(), "release ends the gesture")
 	assert_eq(
