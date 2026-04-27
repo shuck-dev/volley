@@ -1,10 +1,7 @@
 class_name BallReconciler
 extends Node
 
-## Single ownership point for live Ball instances. Drives lifecycle (spawn, art, freeing)
-## from `on_court[&ball]` and emits per-ball lifecycle signals so consumers wire to every
-## tracked ball, not a single "current" one. Multi-ball is design intent: see
-## `designs/01-prototype/21-ball-dynamics.md` (Regime unification, multi-ball wiring).
+## Live-ball lifecycle owner; spec lives in designs/01-prototype/21-ball-dynamics.md.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).

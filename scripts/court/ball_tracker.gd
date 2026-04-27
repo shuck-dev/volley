@@ -1,13 +1,7 @@
 class_name BallTracker
 extends Node
 
-## Owns Court's view of the live-ball set. Subscribes to BallReconciler lifecycle signals,
-## maintains the per-ball Court connections (miss, max-speed), exposes batch operations
-## (advance speed, reset, set-for-streak, register miss zones) and partner-paddle re-targeting.
-## Court delegates here instead of carrying its own `_balls` array.
-## Boundary: this node owns "what balls are live and how Court reaches them"; Court owns
-## scoring, friendship points, item events, and partner lifecycle. See
-## `designs/01-prototype/21-ball-dynamics.md` (multi-ball wiring).
+## Multi-ball ownership; spec lives in designs/01-prototype/21-ball-dynamics.md.
 
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
@@ -47,6 +41,7 @@ func attach(new_ball: Ball) -> void:
 	_set_current(new_ball)
 	if not new_ball.missed.is_connected(_on_ball_missed):
 		new_ball.missed.connect(_on_ball_missed)
+
 	if not new_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
 		new_ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
 	if new_ball.effect_processor != null:
@@ -70,6 +65,7 @@ func detach(old_ball: Ball) -> void:
 	if is_instance_valid(old_ball):
 		if old_ball.missed.is_connected(_on_ball_missed):
 			old_ball.missed.disconnect(_on_ball_missed)
+
 		if old_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
 			old_ball.at_max_speed_changed.disconnect(_on_ball_at_max_speed_changed)
 	if _current_ball == old_ball:

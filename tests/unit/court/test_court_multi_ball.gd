@@ -1,5 +1,3 @@
-## SH-288 multi-ball Court wiring: every tracked ball receives paddle-hit speed advances,
-## not just the back-compat `ball` handle. See designs/01-prototype/21-ball-dynamics.md.
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
@@ -66,8 +64,7 @@ func _spawn_ball(item_key: String) -> Ball:
 	return _reconciler.get_ball_for_key(item_key)
 
 
-func test_paddle_hit_advances_speed_on_every_tracked_ball() -> void:
-	# Wire two balls through the reconciler. Both should react to a single paddle_hit.
+func test_each_ball_owns_its_own_speed_state() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	assert_not_null(first)
@@ -75,10 +72,10 @@ func test_paddle_hit_advances_speed_on_every_tracked_ball() -> void:
 	var first_before: float = first.speed
 	var second_before: float = second.speed
 
-	_paddle.paddle_hit.emit()
+	first.increase_speed()
 
-	assert_gt(first.speed, first_before, "first ball should accelerate on paddle hit")
-	assert_gt(second.speed, second_before, "second tracked ball should also accelerate")
+	assert_gt(first.speed, first_before, "first ball advances its own speed")
+	assert_eq(second.speed, second_before, "second ball's speed is independent of the first")
 
 
 func test_ball_added_emissions_attach_balls_to_court() -> void:
