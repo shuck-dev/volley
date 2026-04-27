@@ -49,39 +49,31 @@ The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered re
 Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome.
 
 - **Approve**: apply `zaphod-approved` via `gh pr edit <N> --add-label zaphod-approved` and stop. No PR comment, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve. <!-- todo: once a service account exists, approves also post `gh pr review --approve --body ""` so the Reviews tab shows attribution on mobile. -->
-- **Block**: post a formal PR review with `gh pr review --request-changes --body "<verdict + up to three bullets, 100 words total>"`. Start the body with `**<codename>** blocked at <short-sha>.` Follow with up to three bullets naming file, concern, fix. Per-line findings attach as inline review comments on the same formal review. Apply `zaphod-blocked`. Do not post issue comments.
+- **Block**: post each finding as an inline review comment anchored to the diff line. No verdict body in the main PR conversation. Apply `zaphod-blocked`. Never post issue comments in the main PR thread.
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
 
 No audit enumerations. No restatement of the PR description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
 
-Post inline findings as part of the block review. Each inline attaches to the formal review rather than floating as a detached comment:
+All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main PR thread.
 
 ```
-gh api repos/<owner>/<repo>/pulls/<n>/reviews \
-  -f event=REQUEST_CHANGES \
-  -f body="**<codename>** blocked at <short-sha>. <bullets>" \
+gh api repos/<owner>/<repo>/pulls/<n>/comments \
   -f commit_id="<sha>" \
-  -F "comments[][path]=<file>" \
-  -F "comments[][line]=<line>" \
-  -F "comments[][side]=RIGHT" \
-  -F "comments[][body]=**<codename>** <label>: <finding>"
+  -f path="<file>" \
+  -F line=<line> \
+  -f side=RIGHT \
+  -f body="**<codename>** <label>: <one-sentence concern; fix in 15 words>."
 ```
 
-Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>/replies`.
+Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>/replies`. All replies stay inline.
 
 ## Inline finding shape
 
-Each inline comment follows Conventional Comments:
-
-- **Label**: `issue`, `suggestion`, `nitpick`, `question`, `thought`, `praise`, `chore`, `todo`
-- **Decoration**: `(blocking)`, `(non-blocking)`, `(if-minor)` where relevant
-- **Subject**: one sentence naming the concern
-- **Discussion**: one or two sentences naming the fix
-
-Keep each inline under 60 words. One issue per comment, state the why, don't lecture.
-
-**Length tiers.** One line is ideal. Two lines is exceptional and fine; flag only as `nitpick` or `suggestion`, never as blocking. Three or more lines is a hard block: ask the author to split the concern or tighten the prose.
+- **Label**: `issue`, `suggestion`, `nitpick`, `question`.
+- One sentence naming the concern; one short clause naming the fix.
+- Hard cap: 30 words per inline. Two lines max. Three lines is a hard block on yourself; tighten.
+- One issue per inline. If you have two findings on different lines, post two inlines.
 
 ## Labels
 
@@ -101,7 +93,7 @@ If the finding has a one-line fix and you have Edit access, land the fix as a co
 
 These are two separate outputs and the distinction matters more now that approves are silent.
 
-- **PR surface**: on approve, just the label. On block, one formal review with the verdict body and inline findings attached. Short, attributed, per the rules above.
+- **PR surface**: on approve, just the label. On block, inline review comments anchored to `path:line`. Never main-thread issue comments. Short, attributed, per the rules above.
 - **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the PR surface did.
 
 If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The PR gets the label on approve, or the formal review on block; the organiser gets the full reasoning either way.
@@ -110,13 +102,12 @@ If your dispatch asks for "verdict, summary, and SHA", that's the organiser repo
 
 **Approved:** label only, no comment posted. Organiser gets the full reasoning.
 
-**Blocked:**
-
-> **Zaphod** blocked at `ab62b90`.
->
-> - `test_rack_display.gd:82`: assertion couples to grid math; assert `item_key` meta instead.
-> - `item_manager.gd:19`: new `@export` renames a persisted field silently; wipe saves or keep the name.
+**Blocked:** two inlines, no main-thread comment.
 
 Inline on `test_rack_display.gd:82`:
 
-> **Zaphod** issue (blocking): assertion on `slot.position` couples to grid math. Switch to asserting `item_key` meta matches, or drop the position assertion.
+> **Zaphod** issue: assertion couples to grid math; assert `item_key` meta instead.
+
+Inline on `item_manager.gd:19`:
+
+> **Zaphod** issue: new `@export` renames a persisted field silently; wipe saves or keep the name.

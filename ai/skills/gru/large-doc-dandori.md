@@ -53,7 +53,7 @@ Five lenses run on the result. Each lens is a separate dispatch; lenses run in p
 | Trim-verify | repetition-reviewer (sister lens) | If content was removed from a doc, did it land in the destination doc? Or was it lost? |
 | Cross-ref hygiene | docs-and-writing | Links resolve. Each link points at the canonical home for what it's referencing. No dead refs to renamed or deleted files. |
 
-Each reviewer follows `ai/skills/reviewers.md` for verdict shape. Approves are silent; blocks land as formal reviews with inline findings.
+Each reviewer follows `ai/skills/minions/reviewers.md` for verdict shape. Approves are silent; blocks land as formal reviews with inline findings.
 
 ### 4. Synthesis (organiser)
 
