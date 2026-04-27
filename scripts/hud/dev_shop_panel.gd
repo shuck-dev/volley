@@ -143,15 +143,22 @@ func _rebuild_rows() -> void:
 
 
 func _refresh() -> void:
-	if _cells.is_empty():
-		_rebuild_rows()
+	# Rebuild rows from live ShopItem children so freed nodes don't leave stale
+	# "GONE" rows (Shop frees a ShopItem node on purchase, which is correct).
+	var stale_keys: Array[StringName] = []
+	for key: StringName in _cells:
+		if _items_anchor.get_node_or_null(String(key)) == null:
+			stale_keys.append(key)
+	for key in stale_keys:
+		for cell: Label in _cells[key]:
+			cell.queue_free()
+		_cells.erase(key)
+	_rebuild_rows()
 	for key in _cells:
 		var shop_item: ShopItem = _items_anchor.get_node_or_null(String(key))
-		var row_cells: Array = _cells[key]
 		if shop_item == null:
-			_set_row(row_cells, [str(key), "-", "-", "-", "GONE"])
 			continue
-		_set_row(row_cells, _row_values(shop_item))
+		_set_row(_cells[key], _row_values(shop_item))
 
 
 func _row_values(shop_item: ShopItem) -> PackedStringArray:
