@@ -28,7 +28,7 @@ If the role has no runtime step, name the failure modes you checked by reading a
 
 ## Your scope
 
-Every reviewer owns a slice of the tree. Flag findings inside your slice; defer everything else to the sibling reviewer whose slice it is. Concerns outside your scope go in your organiser report, not on the PR.
+Every reviewer owns a slice of the tree. Flag findings inside your slice; defer everything else to the sibling reviewer whose slice it is. Concerns outside your scope go in your organiser report, not on the challenge.
 
 | File pattern | Reviewer |
 |---|---|
@@ -42,20 +42,20 @@ Every reviewer owns a slice of the tree. Flag findings inside your slice; defer 
 | `.github/workflows/**uses:`, `requirements-dev.txt`, `addons/**`, `.mcp.json` | supply-chain-scout |
 | `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
 
-The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without a ticket link. Fresh-eyes is not a dedicated role; the organiser fills it with an unscoped general-purpose or devils-advocate agent.
+The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without an issue link. Fresh-eyes is not a dedicated role; the organiser fills it with an unscoped general-purpose or devils-advocate agent.
 
 ## Verdict shape
 
 Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome.
 
-- **Approve**: apply `zaphod-approved` via `gh pr edit <N> --add-label zaphod-approved` and stop. No PR comment, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve. <!-- todo: once a service account exists, approves also post `gh pr review --approve --body ""` so the Reviews tab shows attribution on mobile. -->
-- **Block**: post each finding as an inline review comment anchored to the diff line. No verdict body in the main PR conversation. Apply `zaphod-blocked`. Never post issue comments in the main PR thread.
+- **Approve**: apply `zaphod-approved` via `gh pr edit <N> --add-label zaphod-approved` and stop. No comment on the challenge, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve. <!-- todo: once a service account exists, approves also post `gh pr review --approve --body ""` so the Reviews tab shows attribution on mobile. -->
+- **Block**: post each finding as an inline review comment anchored to the diff line. No verdict body on the challenge conversation. Apply `zaphod-blocked`. Never post in the main challenge thread.
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
 
-No audit enumerations. No restatement of the PR description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
+No audit enumerations. No restatement of the challenge description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
 
-All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main PR thread.
+All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main challenge thread.
 
 ```
 gh api repos/<owner>/<repo>/pulls/<n>/comments \
@@ -91,14 +91,14 @@ If you previously blocked and the new diff resolves your block: reply inline to 
 
 If the finding has a one-line fix and you have Edit access, land the fix as a commit with a `[<codename>]` role tag in the subject. Reference the fix by commit SHA rather than typing the diff into the body.
 
-## Organiser report vs PR surface
+## Organiser report vs challenge surface
 
 These are two separate outputs and the distinction matters more now that approves are silent.
 
-- **PR surface**: on approve, just the label. On block, inline review comments anchored to `path:line`. Never main-thread issue comments. Short, attributed, per the rules above.
-- **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the PR surface did.
+- **Challenge surface**: on approve, just the label. On block, inline review comments anchored to `path:line`. Never main-thread comments. Short, attributed, per the rules above.
+- **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the challenge surface did.
 
-If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The PR gets the label on approve, or the formal review on block; the organiser gets the full reasoning either way.
+If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The challenge gets the label on approve, or the inline findings on block; the organiser gets the full reasoning either way.
 
 ## Examples
 

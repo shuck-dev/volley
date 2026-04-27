@@ -20,20 +20,20 @@ If removing the comment wouldn't confuse a future reader, don't write it.
 ## What not to comment
 
 - **What the code does.** Well-named identifiers already do that. `// loops over enemies and applies damage` next to a `for enemy in enemies: enemy.take_damage(d)` loop is noise.
-- **Current task / fix / callers.** No `// added for SH-247`, no `// used by the rack reconciler`, no `// handles the case from #321`. Those belong in the PR description and rot the moment a caller changes.
+- **Current task / fix / callers.** No `// added for SH-247`, no `// used by the rack reconciler`, no `// handles the case from #321`. Those belong in the challenge description and rot the moment a caller changes.
 - **Section headers in code.** `// === Public API ===` divides a file that should be split if it's that big.
 
 ## Length
 
-One line max. If the WHY needs a paragraph, write a doc and link from the PR description, not from the code.
+One line max. If the WHY needs a paragraph, write a doc and link from the challenge description, not from the code.
 
 ## TODOs
 
-`todo: SH-XX` lowercase with the ticket id. No `TODO: ` shouty form. No bare TODOs without a ticket.
+`todo: SH-XX` lowercase with the issue id. No `TODO: ` shouty form. No bare TODOs without an issue.
 
 ## Why this rule keeps slipping
 
-Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the violation still appears in fresh PRs. The cause is "I'll explain my approach" instinct overriding the policy. Treat any urge to write more than one line of comment as a signal to either rename the identifier, extract a helper, or move the explanation to the PR description.
+Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the violation still appears in fresh challenges. The cause is "I'll explain my approach" instinct overriding the policy. Treat any urge to write more than one line of comment as a signal to either rename the identifier, extract a helper, or move the explanation to the challenge description.
 
 ## What this skill replaces
 

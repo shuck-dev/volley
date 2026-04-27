@@ -20,7 +20,7 @@ EOF
 )"
 ```
 
-- `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks PRs without it.
+- `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks challenges without it.
 - Subject prefix `[<Codename>/<role>]` for minions: codename (Feldspar, Hornfels, Trillian, etc.) plus role (general-purpose, code-quality, etc.). Codename rotates per work unit; role is stable to the agent type.
 - Subject prefix for Gru: `[Gru]` only. Gru is the singleton organiser; codename and role are the same and the slash is redundant.
 - `Agent-Role: <role>` trailer, exactly once. For Gru: `Agent-Role: organiser`.
@@ -28,7 +28,7 @@ EOF
 
 ## What goes in the subject
 
-Imperative mood, present tense. No file paths, no symptom descriptions, no ticket numbers (Linear autolinks the branch name). Conventional-commit prefixes are fine but not required: `[Feldspar/general-purpose] feat: fast timeout tests via custom_step`.
+Imperative mood, present tense. No file paths, no symptom descriptions, no issue numbers (Linear autolinks the branch name). Conventional-commit prefixes are fine but not required: `[Feldspar/general-purpose] feat: fast timeout tests via custom_step`.
 
 For breaking changes (save wipes, API renames, workflow-input shifts), use `feat!:` or `fix!:` on the subject. Autolabel aliases the bang.
 
@@ -38,7 +38,7 @@ Let lefthook fire on commit. Do not run `lefthook run pre-commit` by hand. If a 
 
 ## Push and merge
 
-Push the branch with `-u` on first push. Open the PR ready-for-review (not draft) unless more commits are coming. After `gh pr create`, queue auto-merge with `gh pr merge <n> --auto`.
+Push the branch with `-u` on first push. Open the challenge ready-for-review (not draft) unless more commits are coming. After `gh pr create`, queue auto-merge with `gh pr merge <n> --auto`. The `gh` command names stay literal; the noun for the work in flight is "challenge."
 
 Do not merge yourself. Only Josh applies `approved-human` to release auto-merge.
 
