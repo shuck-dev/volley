@@ -3,7 +3,7 @@ extends Resource
 
 @export var paddle_speed := 560.0
 @export var paddle_size := 54.0
-@export var paddle_size_min := 45.0
+@export var paddle_size_min := 27.0
 @export var ball_speed_min := 450.0
 @export var ball_speed_max_range := 340.0
 @export var ball_speed_increment := 17.0
