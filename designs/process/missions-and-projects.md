@@ -4,13 +4,17 @@ The four nouns that organise work in Volley, and how they relate.
 
 ## Mission
 
-A scoped goal with a codename. Lives in conversation, in memory, and in the body of its Ride ticket. Has no Linear ticket of its own.
+A scoped goal with a codename, surfaced as a **Linear milestone** in its owning project. The milestone name is the mission codename.
 
-The codename is opaque (e.g. **Kyle Patrol**, **Page One**) per the Gru-canon convention: CIA-style two-word handles from the DM/Minions lexicon, the codename doesn't leak the mission's content. The description does.
+The codename is opaque (e.g. **Kyle Patrol**, **Page One**) per the Gru-canon convention: CIA-style two-word handles from the DM/Minions lexicon, the codename doesn't leak the mission's content. The milestone description does.
 
-A project owns at most one active mission at a time. When the mission completes, the project picks up the next one.
+A project owns at most one active mission at a time, which means at most one active milestone per project. When the mission completes, the milestone closes and the project picks up the next one.
 
-A mission can have multiple rides if the first attempt is retired. The mission's name persists across rides; ride names rotate.
+A mission can have multiple rides if the first attempt is retired. The milestone persists across rides; ride codenames rotate.
+
+**To find the current mission**, read the project's active milestone. **To find what's in flight across the team**, read active milestones across the active projects.
+
+The Ride ticket and the work tickets that unblock the Ride all set their `milestone` field to the mission milestone, so the milestone's progress reflects what's left to land.
 
 ## Ride
 
@@ -52,10 +56,11 @@ A cycle is goal-oriented: its description names what the cycle wants to complete
 ## How they relate
 
 - A **cycle** holds tickets from multiple projects.
-- Each **project** has at most one active **mission** at a time.
-- The mission's verifiable target is its **ride**, a ticket in the project.
+- Each **project** has at most one active **mission**, surfaced as the project's active **milestone**.
+- The mission's verifiable target is its **ride**, a ticket in the project with the `milestone` field set to the mission milestone.
+- Other tickets unblocking the ride also point at the same milestone; the milestone's progress reflects what's left.
 - Findings from the ride file as tickets in the same project (or escalate to a different project's scope, which signals a missed boundary).
-- The cycle completes the mission when the ride passes.
+- The cycle completes the mission when the ride passes; the milestone closes; the project picks up the next mission.
 
 ## Worked example
 
