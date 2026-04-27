@@ -308,7 +308,7 @@ Container summary:
 - **Racks.** Own items as tokens in a slot grid. Slot grid is layout.
 - **Workshop (future).** Same as racks: tokens at rest, until the workshop's own activity (synthesis, levelling) animates them.
 
-The drag flow is symmetric across items. Equipment items behave the same as ball items in the gesture: same press lifts a held body in dragged-gravity, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and what state that container holds it in. Balls are the only items that ever enter active-movement; everything else cycles between token (at rest in a container) and dragged-gravity (during the gesture).
+The drag flow is symmetric across items. Equipment items behave the same as ball items in the gesture: same press lifts a held body in dragged-gravity, same `at_rest_shape` projection on the candidate position before the drop, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and what state that container holds it in. Balls are the only items that ever enter active-movement; everything else cycles between token (at rest in a container) and dragged-gravity (during the gesture).
 
 ### Drop validation by body projection
 
@@ -324,12 +324,12 @@ For containers that respawn a physics body (the court), `can_accept` is a **body
 
 The drag controller does not teleport the held token back to the source on an invalid release. Teleport-restore is non-diegetic; the held thing is a physical thing in the world.
 
-Instead, the gesture stays open until a valid target is reachable. After mouse-up, the held token continues to follow the cursor and the controller continues to poll `can_accept` every physics frame. The first frame any target accepts at the held position, the drop commits and the gesture ends. Mouse-button state is a hint after the initial press, not a gate.
+Instead, the gesture stays open until a valid target is reachable. After mouse-up, the held token continues to follow the cursor and the controller continues to poll `can_accept` every physics frame. The first frame any target accepts at the held position, the drop fires and the gesture ends. Mouse-button state is a hint after the initial press, not a gate.
 
-Hover feedback on the held token (slight lift, modulation, or scale bump) when `can_accept` returns true tells the player which positions will commit. Plain held state when no target accepts.
+Hover feedback on the held token (slight lift, modulation, or scale bump) when `can_accept` returns true tells the player which positions will drop. Plain held state when no target accepts.
 
 The escape valve from this rule is that the source container is itself a target. Rack accepts a drop back into its slot (or any free slot). Shop accepts a drop back into its slot as cancel-no-purchase. The court accepts a drop back at the original spawn position when projecting from a live-ball grab. The player always has a way to put the thing back without the controller doing the move for them.
 
-### Press without movement does not commit
+### Press without movement does not drop
 
-A press on any container's at-rest representation lifts the held preview, but the commit gate stays closed until the gesture moves past `COMMIT_MOVEMENT_THRESHOLD_PX`. A press-and-immediate-release on a rack slot returns the item to the rack with no activation; on a shop slot it cancels back to the slot with no purchase; on a live ball it puts the ball back through the same target-accept loop without flipping placement state.
+A press on any container's at-rest representation lifts the held preview, but the drop gate stays closed until the gesture moves past the drag movement threshold. A press-and-immediate-release on a rack slot returns the item to the rack with no activation; on a shop slot it cancels back to the slot with no purchase; on a live ball it puts the ball back through the same target-accept loop without flipping placement state.
