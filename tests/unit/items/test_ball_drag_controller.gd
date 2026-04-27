@@ -320,6 +320,41 @@ func test_clamp_to_venue_is_identity_when_bounds_unset() -> void:
 	assert_eq(unbounded._clamp_to_venue(point), point, "zero-size venue leaves positions untouched")
 
 
+func test_grab_and_release_preserves_live_ball_speed_through_to_reinstated_ball() -> void:
+	# SH-288: friendship energy persists across mid-rally grab + release-over-court.
+	# Capture a non-default rally speed, drive grab + release through _input, and assert the
+	# reinstated ball inherits that speed on both `speed` and `linear_velocity` magnitude.
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(live, "precondition: live ball exists")
+	live.speed = 600.0
+
+	var grabbed: bool = _drag.grab_live_ball("ball_alpha", false)
+	assert_true(grabbed)
+	await get_tree().process_frame
+	# Feed a small gesture so the release gets a non-zero launch direction.
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": Vector2(0, 0)})
+	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(40, 0)})
+
+	var release_event := InputEventMouseButton.new()
+	release_event.button_index = MOUSE_BUTTON_LEFT
+	release_event.pressed = false
+	release_event.position = Vector2(120, 30)
+	_drag._input(release_event)
+
+	var reinstated: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(reinstated, "release over court should reinstate a ball")
+	assert_eq(reinstated.speed, 600.0, "preserved_speed should propagate to the reinstated ball")
+	assert_almost_eq(
+		reinstated.linear_velocity.length(),
+		600.0,
+		0.001,
+		"reinstated ball's velocity magnitude should match the preserved speed",
+	)
+
+
 func test_rack_slot_press_triggers_drag_pickup() -> void:
 	_manager.take("ball_alpha")
 

@@ -168,6 +168,68 @@ func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> voi
 	)
 
 
+func test_bring_into_play_propagates_preserved_speed_for_spawn_and_existing_ball() -> void:
+	# SH-288: friendship energy carries through bring_into_play onto both newly spawned and
+	# already-tracked balls; both branches must re-magnitude linear_velocity along its direction.
+	_manager.take("ball_alpha")
+	var spawned: Ball = _reconciler.bring_into_play(
+		"ball_alpha", Vector2(10, 20), Vector2(120, 0), 600.0
+	)
+	assert_not_null(spawned)
+	assert_eq(spawned.speed, 600.0, "preserved_speed should set the spawned ball's speed")
+	assert_almost_eq(
+		spawned.linear_velocity.length(),
+		600.0,
+		0.001,
+		"spawned ball's velocity is re-magnituded to the preserved speed",
+	)
+
+	# Existing-ball branch: ensure_ball_for_key reuses the tracked ball and still re-magnitudes.
+	var existing: Ball = _reconciler.bring_into_play(
+		"ball_alpha", Vector2(0, 0), Vector2(100, 0), 450.0
+	)
+	assert_eq(existing, spawned, "existing tracked ball is reused, not duplicated")
+	assert_eq(existing.speed, 450.0)
+	assert_almost_eq(existing.linear_velocity.length(), 450.0, 0.001)
+
+
+func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
+	# SH-288: spawn, release, and deactivate each emit the matching lifecycle signal exactly once
+	# with the matching Ball argument; downstream wiring relies on per-event single emissions.
+	watch_signals(_reconciler)
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_added"),
+		1,
+		"spawn emits ball_added once",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_added", [live])
+
+	var released: Ball = _reconciler.release_ball("ball_alpha")
+	assert_eq(released, live)
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_removed"),
+		1,
+		"release emits ball_removed once",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [live])
+
+	# Spawn a second ball under a different key and drive the deactivate removal path.
+	_manager.take("ball_beta")
+	_manager.activate("ball_beta")
+	var beta_live: Ball = _reconciler.get_ball_for_key("ball_beta")
+	_manager.deactivate("ball_beta")
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_removed"),
+		2,
+		"deactivate emits a second ball_removed",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [beta_live])
+	await get_tree().process_frame
+
+
 func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
 	var first: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
 	var second: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2(42, -7), Vector2(3, 4))
