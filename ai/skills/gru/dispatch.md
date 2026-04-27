@@ -55,6 +55,12 @@ If consensus is still split 2-2, that's a sign the question itself isn't decidab
 
 At most one `spike` issue per swarm dispatch. Run additional spikes sequentially.
 
+## Hydrate before recap
+
+Before any recap, status report, or claim about challenge state, run `gh pr list --state open --json number,state,mergeable,labels,headRefOid` (or `gh pr view <n> --json ...` for a specific challenge). Don't recap from in-context memory of the last dispatch; dispatches and merges can happen between turns. The first action of any state-summary turn is the hydrate command, not text.
+
+Same rule for inline-comment threads: before claiming a thread is replied or unaddressed, run `gh api repos/.../pulls/<n>/comments` and read.
+
 ## Challenge sweep
 
 On every challenge sweep, check `gh pr view <n> --json state,mergedAt,mergeable,labels` for each challenge in scope. Read `state` first; `mergeable` is unreliable on merged challenges and reads `UNKNOWN` post-merge.
