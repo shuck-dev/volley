@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/items/rack_display.gd" id="1_rack"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gear_rack_drop"]
-size = Vector2(300, 200)
+size = Vector2(180, 120)
 
 [node name="GearRack" type="Node2D" unique_id=445509089 node_paths=PackedStringArray("slot_container")]
 z_index = 100
@@ -14,46 +14,46 @@ slot_container = NodePath("SlotContainer")
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1470078387]
-offset_left = -150.0
-offset_top = -100.0
-offset_right = 150.0
-offset_bottom = 100.0
+offset_left = -90.0
+offset_top = -60.0
+offset_right = 90.0
+offset_bottom = 60.0
 mouse_filter = 2
 color = Color(0.3, 0.5, 0.9, 0.6)
 
 [node name="Name" type="Label" parent="." unique_id=1742093710]
-offset_left = -140.0
-offset_top = -90.0
-offset_right = -140.0
-offset_bottom = -90.0
-theme_override_font_sizes/font_size = 36
+offset_left = -84.0
+offset_top = -54.0
+offset_right = -84.0
+offset_bottom = -54.0
+theme_override_font_sizes/font_size = 22
 text = "GearRack"
 
 [node name="SlotContainer" type="Node2D" parent="." unique_id=1742093711]
 
 [node name="SlotMarker0" type="Node2D" parent="SlotContainer" unique_id=1742093720]
-position = Vector2(-112.5, -50)
+position = Vector2(-67.5, -30)
 
 [node name="SlotMarker1" type="Node2D" parent="SlotContainer" unique_id=1742093721]
-position = Vector2(-37.5, -50)
+position = Vector2(-22.5, -30)
 
 [node name="SlotMarker2" type="Node2D" parent="SlotContainer" unique_id=1742093722]
-position = Vector2(37.5, -50)
+position = Vector2(22.5, -30)
 
 [node name="SlotMarker3" type="Node2D" parent="SlotContainer" unique_id=1742093723]
-position = Vector2(112.5, -50)
+position = Vector2(67.5, -30)
 
 [node name="SlotMarker4" type="Node2D" parent="SlotContainer" unique_id=1742093724]
-position = Vector2(-112.5, 50)
+position = Vector2(-67.5, 30)
 
 [node name="SlotMarker5" type="Node2D" parent="SlotContainer" unique_id=1742093725]
-position = Vector2(-37.5, 50)
+position = Vector2(-22.5, 30)
 
 [node name="SlotMarker6" type="Node2D" parent="SlotContainer" unique_id=1742093726]
-position = Vector2(37.5, 50)
+position = Vector2(22.5, 30)
 
 [node name="SlotMarker7" type="Node2D" parent="SlotContainer" unique_id=1742093727]
-position = Vector2(112.5, 50)
+position = Vector2(67.5, 30)
 
 [node name="DropTarget" type="Area2D" parent="." unique_id=1742093712]
 monitoring = false
