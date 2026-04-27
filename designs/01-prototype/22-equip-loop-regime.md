@@ -166,16 +166,6 @@ Ship the model as proposed in [21-ball-dynamics.md](21-ball-dynamics.md), with t
 1. Loose state applies to every diegetic item in the regime: balls, equipment, fixtures. Effects are out of scope, owned by the effect manager.
 2. Body projection on release uses an expansion-ring fallback after a short hold, then cancels to source if even the expanded shape fails.
 
-The hopper is the canonical serve. Player throws are honest physics: the throw vector is the ball's launch vector, and an over-throw smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
+The hopper is the canonical serve. Player throws are honest physics, with two cases. A throw of a ball at rest takes its launch velocity from the player's release gesture, capped at a max speed so the player cannot game friendship by chaining hard throws on rest balls. A throw of a ball that is already live (mid-rally grab) preserves the friendship and speed the rally has built; the gesture chooses direction only, magnitude stays from the rally. Same rule as the existing grab-and-release. An over-throw on a rest ball smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
 
 The model is the right shape because the venue is part of the game's character, not just a backdrop. Volley's cosy register earns the loose-in-venue rule; the floor that quietly holds the player's toys is the diegetic argument, and tidying is the player's job. A less ambient game would not earn this. The amendments narrow the model only at the seam where another subsystem (the effect manager) already owns the work.
-
-## Follow-ups
-
-If the recommendation lands, file:
-
-- **Impl ticket.** Wire the regime into the drag controller, the rack, the shop, the court, and the held-token visual. Body projection with the expansion-ring fallback. Loose state for every diegetic item.
-- **Save shape ticket.** Persist loose items per-venue with position and `linear_velocity`. Restore on load.
-- **Hopper-and-throw ticket.** Hopper-as-canonical-serve with controlled launch velocity. Player throws use raw release velocity. Over-throw rebound knocks the character over with a comedic fall animation and fast recovery.
-- **Narrative-leap handling ticket.** Per-venue serialisation of loose items.
-- **Starter ball ticket.** Convert the scene-authored Ball (the one SH-262 adopted) into an owned starter item with a rack rest home.
