@@ -1,13 +1,7 @@
 # gdlint:ignore = max-public-methods
 extends GutTest
 
-## Behavioural tests for TimeoutController.
-##
-## Drives the walk-off/walk-on state machine by stepping the controller's
-## tween manually (Tween.custom_step), so phase boundaries land
-## deterministically without awaiting real-time durations. Assertions still
-## target player-observable outcomes: paddle position, signal emissions,
-## and signal counts.
+## Drives the walk tween manually so phase boundaries land deterministically without real-time awaits.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0
@@ -89,9 +83,7 @@ func test_cannot_call_timeout_while_walking_off() -> void:
 	)
 
 
-# --- walk to equip pose ---
-# Paddle resting position is mid-court (LANE_Y). The timeout always descends
-# to the floor first, so the equip pose signal arrives after two walk phases.
+# Equip pose arrives after two phases: descent to floor, then walk-off.
 func test_main_character_reaches_equip_pose_after_walk() -> void:
 	watch_signals(_controller)
 	_controller.call_timeout()
@@ -160,9 +152,7 @@ func test_controller_returns_to_idle_after_full_cycle() -> void:
 	assert_true(_controller.can_call_timeout())
 
 
-# --- grounding before walk-off (SH-217 + SH-243) ---
-# A paddle starting mid-court takes one descent phase to reach the floor,
-# then one walk phase to reach the equip pose.
+# SH-217 + SH-243: mid-court paddles descend before walking off.
 func test_lane_call_timeout_descends_before_walking_off() -> void:
 	_controller.call_timeout()
 	await _advance_walk()
