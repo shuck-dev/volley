@@ -40,15 +40,15 @@ right_wall = NodePath("Bounds/Right Wall")
 partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 
-[node name="CourtBackground" type="Parallax2D" parent="." unique_id=1053024008]
-scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(0, 0)
+[node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
+layer = -100
 
 [node name="BackgroundColor" type="ColorRect" parent="CourtBackground" unique_id=2003900130]
-offset_left = -720.0
-offset_top = -720.0
-offset_right = 720.0
-offset_bottom = 720.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
 
