@@ -42,6 +42,10 @@ Push the branch with `-u` on first push. Open the challenge ready-for-review (no
 
 Do not merge yourself. Only Josh applies `approved-human` to release auto-merge.
 
+## Replying to Josh's review comments
+
+When a fix lands that resolves an inline review comment from Josh, reply to that comment via `gh api repos/.../pulls/<n>/comments/<id>/replies`. Lead with your codename in bold (`**Feldspar**`, `**Hornfels**`, `**Gru**`); name the fix SHA in short form (7 chars); under 30 words. Don't silently push and let the thread hang open.
+
 ## What this skill replaces
 
 Consolidates:
