@@ -2,7 +2,7 @@ class_name BaseStatsConfig
 extends Resource
 
 @export var paddle_speed := 560.0
-@export var paddle_size := 90.0
+@export var paddle_size := 54.0
 @export var paddle_size_min := 45.0
 @export var ball_speed_min := 450.0
 @export var ball_speed_max_range := 340.0
@@ -12,7 +12,7 @@ extends Resource
 @export var return_angle_influence := 0.0
 @export var kit_slots := 3.0
 @export var ball_speed_offset := 0.0
-@export var arena_height := 1100.0
+@export var arena_height := 660.0
 
 
 func to_dict() -> Dictionary:

@@ -14,7 +14,7 @@ extends Resource
 @export var max_level := 3
 @export var effects: Array[Effect]
 ## Canonical visual scale shared by shop, rack, held token, and live ball so the views read as one object (SH-261).
-@export var token_scale: Vector2 = Vector2(2.5, 2.5)
+@export var token_scale: Vector2 = Vector2(1.5, 1.5)
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

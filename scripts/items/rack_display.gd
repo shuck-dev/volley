@@ -3,7 +3,7 @@ extends Node2D
 
 signal slot_pressed(item_key: String, press_position: Vector2)
 
-const SLOT_HIT_SIZE: Vector2 = Vector2(60, 60)
+const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
 @export var role: StringName = &"ball"
 @export var slot_container: Node2D
