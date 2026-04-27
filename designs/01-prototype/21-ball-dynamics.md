@@ -288,19 +288,19 @@ Every item lives in a container. Every container owns its items the same way: on
 
 Two physics states:
 
-- **Dragged-gravity.** The body follows the cursor (or sits at rest under its container) under simple positional control. No rally interactions, no paddle collisions, no speed curve. This is the state the body is in inside the shop, the rack, the workshop, and during the held-token gesture between containers.
-- **Active-movement.** The body participates in the rally: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return, every effect the rally exposes. This state is reserved for items the court owns.
+- **Off-court.** Gravity applies. The body has weight; if it is not held or supported by its container's slot, it falls. This is the state the body is in inside the shop, the rack, the workshop, and during the held-token gesture between containers. The held gesture is "the player is supporting the body against gravity"; release without support drops it the way a real object would.
+- **On-court.** Gravity off, frictionless momentum. The body keeps the velocity it was given by the gesture (or the rally) until a paddle, wall, or item effect changes it. This is the rally physics.
 
-The court is the only container that activates the active-movement state. Every other container holds the body in dragged-gravity. When the court accepts an item, the body's physics flips from dragged-gravity to active-movement and the rally starts using it. When the player grabs the body off the court, it flips back to dragged-gravity for the duration of the held gesture, until another container accepts it.
+The court is the only container that flips items into the on-court state. When the court accepts an item, gravity is disabled on the body and its velocity from the release gesture takes over; the rally starts using it. When the player grabs the body off the court, gravity comes back on for the held gesture and the rest of the time the body sits in another container.
 
-- **Court.** Owns items in active-movement. For ball-role items the body is a `Ball` (`RigidBody2D` with the rally configured on it). The court is the place the rally happens; that is what active-movement renders.
-- **Shop.** Owns items at rest under the shop's slot in dragged-gravity. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
-- **Racks.** Own items at rest under the rack in dragged-gravity. Slot grid is layout, not collision.
-- **Workshop (future).** Same as racks: items at rest in dragged-gravity, until the workshop's own activity (synthesis, levelling) animates them.
+- **Court.** Owns items in the on-court state. Gravity off, frictionless momentum. For ball-role items the body is a `Ball` (`RigidBody2D` with the rally configured on it).
+- **Shop.** Owns items at rest under the shop's slot, off-court state. The slot supports the body against gravity. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work.
+- **Racks.** Own items at rest in a slot grid, off-court state. The rack supports the body against gravity. Slot grid is layout, not collision.
+- **Workshop (future).** Same as racks: items at rest, off-court, until the workshop's own activity (synthesis, levelling) animates them.
 
-The shape is symmetric across items. Equipment items behave the same as ball items: same drag, same release, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and whether that container flips it into active-movement. Equipment never lands on the court because the court only owns ball-role items, but if a future court-eligible item type is introduced the same container-owns-and-activates rule applies.
+The shape is symmetric across items. Equipment items behave the same as ball items: same drag, same release, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item, and whether that container flips it on-court. Equipment never lands on the court because the court only owns ball-role items, but if a future court-eligible item type is introduced the same container-owns-and-activates rule applies.
 
-The held state during a drag is the dragged-gravity body following the cursor. The source container vacates its slot (the body lifts onto the cursor); on commit, the destination container takes ownership and either keeps the body in dragged-gravity (shop, rack, workshop) or flips it into active-movement (court).
+The held state during a drag is the body following the cursor under gravity. The source container vacates its slot (the body lifts onto the cursor); on commit, the destination container takes ownership and either keeps the body off-court (shop, rack, workshop) or flips it on-court (court).
 
 ### Drop validation by body projection
 
