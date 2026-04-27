@@ -205,10 +205,10 @@ script = ExtResource("11_2768l")
 ball_system = NodePath("../BallReconciler")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
-offset_left = -540.0
+offset_left = -599.0
 offset_top = -240.0
-offset_right = -540.0
-offset_bottom = -240.0
+offset_right = -529.0
+offset_bottom = -172.0
 
 [node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
 script = ExtResource("21_reconciler")
