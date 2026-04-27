@@ -28,7 +28,7 @@ If the role has no runtime step, name the failure modes you checked by reading a
 
 ## Your scope
 
-Every reviewer owns a slice of the tree. Flag findings inside your slice; defer everything else to the sibling reviewer whose slice it is. Concerns outside your scope go in your organiser report, not on the challenge.
+Every reviewer owns a slice of the tree. Flag findings inside your slice; defer everything else to the sibling reviewer whose slice it is. Concerns outside your scope go in your dispatcher report, not on the challenge.
 
 | File pattern | Reviewer |
 |---|---|
@@ -42,7 +42,7 @@ Every reviewer owns a slice of the tree. Flag findings inside your slice; defer 
 | `.github/workflows/**uses:`, `requirements-dev.txt`, `addons/**`, `.mcp.json` | supply-chain-scout |
 | `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
 
-The organiser may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without an issue link. Fresh-eyes is not a dedicated role; the organiser fills it with an unscoped general-purpose or devils-advocate agent.
+The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without an issue link. Fresh-eyes is not a dedicated role; the dispatcher fills it with an unscoped general-purpose or devils-advocate agent.
 
 ## Verdict shape
 
@@ -81,7 +81,7 @@ Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you bl
 
 ## Re-review protocol
 
-The organiser dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. On re-run, the organiser passes you `last-approved-sha..current-head` as the incremental range.
+The dispatcher dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. On re-run, the dispatcher passes you `last-approved-sha..current-head` as the incremental range.
 
 Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, apply `zaphod-approved` silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
 
@@ -91,18 +91,18 @@ If you previously blocked and the new diff resolves your block: reply inline to 
 
 If the finding has a one-line fix and you have Edit access, land the fix as a commit with a `[<codename>]` role tag in the subject. Reference the fix by commit SHA rather than typing the diff into the body.
 
-## Organiser report vs challenge surface
+## Dispatcher report vs challenge surface
 
 These are two separate outputs and the distinction matters more now that approves are silent.
 
 - **Challenge surface**: on approve, just the label. On block, inline review comments anchored to `path:line`. Never main-thread comments. Short, attributed, per the rules above.
-- **Organiser report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the challenge surface did.
+- **Dispatcher report**: your return message to the dispatching thread. As long as you need, covering technical reasoning, runtime-check output, confidence level, and the failure modes you looked for and found absent. The report never shrinks just because the challenge surface did.
 
-If your dispatch asks for "verdict, summary, and SHA", that's the organiser report. The challenge gets the label on approve, or the inline findings on block; the organiser gets the full reasoning either way.
+If your dispatch asks for "verdict, summary, and SHA", that's the dispatcher report. The challenge gets the label on approve, or the inline findings on block; the dispatcher gets the full reasoning either way.
 
 ## Examples
 
-**Approved:** label only, no comment posted. Organiser gets the full reasoning.
+**Approved:** label only, no comment posted. Dispatcher gets the full reasoning.
 
 **Blocked:** two inlines, no main-thread comment.
 

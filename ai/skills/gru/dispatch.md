@@ -1,6 +1,6 @@
 ---
 name: dispatch
-description: Organiser-side rules for dispatching minions, rotating codenames, flipping Linear status, and dispatching reviewers. Read on every dispatch.
+description: Dispatcher-side rules for dispatching minions, rotating codenames, flipping Linear status, and dispatching reviewers. Read on every dispatch.
 ---
 
 # Minion dispatch
