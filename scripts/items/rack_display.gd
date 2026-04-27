@@ -1,7 +1,7 @@
 class_name RackDisplay
 extends Node2D
 
-signal slot_pressed(item_key: String)
+signal slot_pressed(item_key: String, press_position: Vector2)
 
 const SLOT_HIT_SIZE: Vector2 = Vector2(60, 60)
 
@@ -71,8 +71,13 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	slot.name = "Slot_%s" % definition.key
 	slot.position = slot_position
 	slot.set_meta(&"item_key", definition.key)
+	# Scale the art via a holder so it matches the canonical token size (SH-261).
+	var art_holder: Node2D = Node2D.new()
+	art_holder.name = "ArtHolder"
+	art_holder.scale = definition.token_scale
 	var art_instance: Node = definition.art.instantiate()
-	slot.add_child(art_instance)
+	art_holder.add_child(art_instance)
+	slot.add_child(art_holder)
 	_attach_slot_input(slot, definition.key)
 	return slot
 
@@ -108,11 +113,15 @@ func _on_slot_input_event(
 		return
 	if not mouse_button.pressed:
 		return
-	slot_pressed.emit(item_key)
+	# The Area2D input_event reports the press position in world coordinates already.
+	var canvas_transform: Transform2D = get_canvas_transform()
+	var press_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
+	slot_pressed.emit(item_key, press_position)
 
 
-func press_slot(item_key: String) -> void:
-	slot_pressed.emit(item_key)
+## Test seam / production fallback: emits the slot_pressed signal at the supplied position.
+func press_slot(item_key: String, press_position: Vector2 = Vector2.ZERO) -> void:
+	slot_pressed.emit(item_key, press_position)
 
 
 func _clear_slots() -> void:

@@ -64,7 +64,14 @@ func _find_item_under(world: Vector2) -> ShopItem:
 		if not child is ShopItem:
 			continue
 		var shop_item: ShopItem = child
-		var collision_shape: CollisionShape2D = shop_item.collision_shape
+		var pickup_area: Area2D = shop_item.pickup_area
+		if pickup_area == null:
+			continue
+		var collision_shape: CollisionShape2D = null
+		for area_child in pickup_area.get_children():
+			if area_child is CollisionShape2D:
+				collision_shape = area_child
+				break
 		if collision_shape == null or collision_shape.shape == null:
 			continue
 		var rectangle := collision_shape.shape as RectangleShape2D

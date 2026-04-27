@@ -287,9 +287,12 @@ func test_mouse_button_release_event_triggers_release() -> void:
 		ball.queue_free()
 	await get_tree().process_frame
 
+	# Release event must carry a position past the movement threshold so the controller
+	# treats it as a real drag rather than a click-without-movement no-op (SH-252 a).
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = false
+	event.position = Vector2(100, 50)
 	_drag._input(event)
 
 	assert_false(_drag.is_dragging(), "mouse-up should resolve the active drag")

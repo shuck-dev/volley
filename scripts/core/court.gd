@@ -91,6 +91,10 @@ func _on_paddle_hit() -> void:
 		personal_volley_best_changed.emit(_progression.personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
+	# Court.ball can be freed mid-rally by a live-ball grab; the @export reference
+	# does not auto-update when the reconciler swaps the live ball.
+	if ball == null or not is_instance_valid(ball):
+		return
 	ball.increase_speed()
 
 

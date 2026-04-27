@@ -281,3 +281,18 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 - Add a `_dragging` guard on `Ball._on_body_entered` so a paddle contact at the edge of a grab does not register as a hit during the handoff.
 - Reparenting or freeing a `CollisionObject2D` inside a physics callback errors out. Any mid-rally grab that removes the live `Ball` from play uses `call_deferred` so the mutation lands between ticks.
 - Velocity on release comes from the gesture, not from whatever the old live ball was doing; a mid-rally grab intentionally resets motion.
+
+### Containers and the swap pattern
+
+Every draggable lives in a container. Some containers hold their items as physics objects; others hold them as non-physics `Node2D` tokens. The held state during a drag is always a non-physics `Node2D` preview that follows the cursor. Release decides which container respawns the at-rest representation, and where.
+
+- **Venue (court).** Owns live rally balls in play as physics. Object: `Ball` (`RigidBody2D`).
+- **Shop.** Non-physics. Owns shop items at rest as `Node2D` tokens, like racks. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work in the slot.
+- **Racks.** Own rack tokens as non-physics `Node2D` plus art, regrown on rack refresh. The rack is a slot grid; physics inside it would fight the layout for no gameplay benefit.
+- **Workshop (future).** Owns workshop tokens by the same non-physics pattern when it lands.
+
+On grab, the owning container's at-rest representation is despawned (or hidden, for the shop slot) and the drag controller spawns a held `Node2D` preview on the cursor. On release, the held preview despawns and one of the containers reinstates its at-rest representation: the source on cancel, the destination on commit.
+
+A consequence worth naming: a press without movement on any container's at-rest representation must NOT count as a commit. The held preview lifts on press, and the commit only fires when release lands over a valid destination after a real drag.
+
+**Forward look.** Shop, racks, and workshop already converge on `Node2D` tokens; only the venue (live rally) holds physics. The remaining split is deliberate (physics only where the player feels rally motion) and the at-rest token type is consistent across containers, so the unification path is already most of the way there and should not be blocked by tight coupling.
