@@ -288,11 +288,11 @@ Every item lives in a container. Every container owns its items the same way: on
 
 Three states:
 
-- **Token.** No physics body. A `Node2D` parented under its container's slot, sized by `ItemDefinition.token_scale`. This is the at-rest form items take inside the shop, the racks, and the workshop. Tokens don't fall, don't collide, don't have weight — they sit where the container puts them. The slot is layout.
+- **Token.** No physics body. A `Node2D` parented under its container's slot, sized by `ItemDefinition.token_scale`. This is the at-rest form items take inside the shop, the racks, and the workshop. Tokens don't fall, don't collide, don't have weight; they sit where the container puts them. The slot is layout.
 - **Dragged-gravity.** A `RigidBody2D` with gravity on. The body has weight; the player feels they are holding it up. Used during the drag gesture (the held body follows the cursor, fighting gravity) and for stray balls that have rolled off the court. Released without support (the cursor leaves the venue, no container accepts), the body falls under gravity.
 - **Active-movement.** A `RigidBody2D` with gravity off, frictionless momentum. The body keeps the velocity it was given until a paddle, wall, or item effect changes it. This is the rally physics: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return. **Only ball-role items ever enter this state, and only when the court owns them.**
 
-Transitions between states happen at container boundaries. Every transition is eased — never a snap — so the body's position, scale, and modulation read as continuous through the state change.
+Transitions between states happen at container boundaries. Every transition is eased, never a snap, so the body's position, scale, and modulation read as continuous through the state change.
 
 - **Token → Dragged-gravity.** On grab, the source container's token is vacated and a `RigidBody2D` body spawns at the token's last world position. The body eases onto the cursor over a short tween (~80 ms) rather than teleporting; the player sees the body "lift" off the slot. Gravity engages once the tween settles.
 - **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the held body eases into the destination's slot position over a short tween, scale matching `token_scale` at landing. The `RigidBody2D` is replaced by the slot token only after the tween settles, so the visual is one continuous motion.
