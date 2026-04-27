@@ -35,11 +35,17 @@ Every Agent call uses `run_in_background: true`. Coordinate multiple background 
 
 ## Paired dispatch
 
-Pair every code dispatch by default. Lefthook runs `ggut` on commit; failing tests block the commit. That gate forces failing tests + impl into the same commit on every code change, not edge cases. So the pair is the default shape: test-author writes failing tests first; impl makes them pass; one commit, ggut green by construction.
+Pair every code dispatch by default with a **blind test-author handoff**. The default shape:
 
-Solo only when explicitly justified: doc-only fix, test-only refactor, scene-only restructure with no script edits. Flag the deviation when going solo.
+1. **Test-author dispatched first** to a fresh worktree. Briefed only on the issue's ACs and the player-observable behaviour. Not on the impl plan, not on how the code will look. Black-box write: given the AC, what tests prove the behaviour holds. Runs ggut to confirm tests fail. Posts `status: ready_to_pair` to the worktree's inbox file. Exits without committing.
+2. **Impl dispatched second** into the same worktree, briefed on the design and shown the failing tests. Makes them pass without weakening them. Commits both halves, pushes.
+3. **Reviewer (test-coverage)** verifies the tests aren't tautological: does the test fail if the production formula is replaced by a stub returning the test's expected value verbatim? If yes, the test is fudging.
 
-The cost is parallelism between the pair. The benefit is fewer re-review rounds: PR #506 / SH-288 dispatched solo three times in a row and Maggie blocked on coverage gaps each time. Net rounds went up.
+Why blind test-author: the cognitive separation is the point. A single dual-role agent writes tests against the impl it's about to write, so the tests assert what the impl produces (tautology) rather than what the AC requires. PR #506 / SH-288 hit this on round 5 — a test was reshaped to assert per-ball state independence (true) but didn't catch the underlying design issue Josh later named.
+
+Single dual-role is the exception: small fixes where the AC is one line and the impl is two. Anything bigger pairs.
+
+Solo (no test author at all) only when explicitly justified: doc-only fix, test-only refactor, scene-only restructure. Flag the deviation.
 
 ## Reviewer dispatch
 
