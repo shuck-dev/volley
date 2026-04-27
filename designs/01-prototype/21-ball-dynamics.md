@@ -292,12 +292,14 @@ Three states:
 - **Dragged-gravity.** A `RigidBody2D` with gravity on. The body has weight; the player feels they are holding it up. Used during the drag gesture (the held body follows the cursor, fighting gravity) and for stray balls that have rolled off the court. Released without support (the cursor leaves the venue, no container accepts), the body falls under gravity.
 - **Active-movement.** A `RigidBody2D` with gravity off, frictionless momentum. The body keeps the velocity it was given until a paddle, wall, or item effect changes it. This is the rally physics: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return. **Only ball-role items ever enter this state, and only when the court owns them.**
 
-Transitions between states happen at container boundaries:
+Transitions between states happen at container boundaries. Every transition is eased — never a snap — so the body's position, scale, and modulation read as continuous through the state change.
 
-- **Token → Dragged-gravity.** On grab, the source container's token is vacated (despawn or hide) and a `RigidBody2D` body spawns on the cursor with the item's `at_rest_shape` and `token_scale`. The body follows the cursor under gravity for the duration of the gesture.
-- **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the body is replaced by the destination's token in its slot.
-- **Dragged-gravity → Active-movement.** On release of a ball onto the court, gravity flips off and the rally takes the body's release-gesture velocity as its starting motion.
-- **Active-movement → Dragged-gravity.** When a ball rolls off the court (stray), gravity flips back on and the body decelerates against the venue floor until it rests. The same transition fires when the player grabs a live ball mid-rally; the body becomes the held gesture.
+- **Token → Dragged-gravity.** On grab, the source container's token is vacated and a `RigidBody2D` body spawns at the token's last world position. The body eases onto the cursor over a short tween (~80 ms) rather than teleporting; the player sees the body "lift" off the slot. Gravity engages once the tween settles.
+- **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the held body eases into the destination's slot position over a short tween, scale matching `token_scale` at landing. The `RigidBody2D` is replaced by the slot token only after the tween settles, so the visual is one continuous motion.
+- **Dragged-gravity → Active-movement.** On release of a ball onto the court, gravity flips off and the rally takes the body's release-gesture velocity as its starting motion. No tween needed; the velocity itself is the continuity.
+- **Active-movement → Dragged-gravity.** When a ball rolls off the court (stray), gravity flips back on as the body crosses the court boundary; the velocity at the boundary carries through, the deceleration on the venue floor is the continuity. The same transition fires when the player grabs a live ball mid-rally; the body's current world position is the gesture's start position, and the held tween eases the body onto the cursor as in the token-grab case.
+
+Easing keeps the diegetic feel: the body is one physical thing moving through the world. A snap (instant teleport from slot to cursor, or slot to court) breaks that read; the player sees a discrete event rather than a continuous motion.
 
 Container summary:
 
