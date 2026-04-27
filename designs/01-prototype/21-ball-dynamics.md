@@ -286,21 +286,27 @@ Integration coverage lives in `tests/integration/test_ball_regime_transitions.gd
 
 Every item lives in a container. Every container owns its items the same way: one body per item, parented under the container, sized by `ItemDefinition.token_scale`. The body is the same body across containers; what changes per container is which physics state the body is in.
 
-Two physics states:
+Three states:
 
-- **Dragged-gravity.** Gravity applies. The body has weight; if it is not held or supported by its container's slot, it falls. Every non-ball item lives in this state always. Balls live in this state any time they are not on the court (shop, rack, workshop, held during a drag, rolling out of court as a stray).
-- **Active-movement.** Gravity off, frictionless momentum. The body keeps the velocity it was given by the gesture (or the rally) until a paddle, wall, or item effect changes it. This is the rally physics: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return, every effect the rally exposes. **Only ball-role items ever enter this state, and only when the court owns them.** Equipment items never enter active-movement; they follow the gravity model wherever they go.
+- **Token.** No physics body. A `Node2D` parented under its container's slot, sized by `ItemDefinition.token_scale`. This is the at-rest form items take inside the shop, the racks, and the workshop. Tokens don't fall, don't collide, don't have weight — they sit where the container puts them. The slot is layout.
+- **Dragged-gravity.** A `RigidBody2D` with gravity on. The body has weight; the player feels they are holding it up. Used during the drag gesture (the held body follows the cursor, fighting gravity) and for stray balls that have rolled off the court. Released without support (the cursor leaves the venue, no container accepts), the body falls under gravity.
+- **Active-movement.** A `RigidBody2D` with gravity off, frictionless momentum. The body keeps the velocity it was given until a paddle, wall, or item effect changes it. This is the rally physics: paddle collisions, wall bounces, the speed curve, magnetism, the friendship-bound apex return. **Only ball-role items ever enter this state, and only when the court owns them.**
 
-The court is the only container that flips a body into active-movement, and only for ball-role items. Every other container — and every other item type — holds the body in dragged-gravity. When the court accepts a ball, the body's physics flips from dragged-gravity to active-movement and the rally starts using it. When the player grabs a ball off the court, it flips back to dragged-gravity for the held gesture and any subsequent container.
+Transitions between states happen at container boundaries:
 
-- **Court.** Owns ball-role items in active-movement. The body is a `Ball` (`RigidBody2D` with the rally configured on it). The court does not accept non-ball items.
-- **Shop.** Owns items at rest under the shop's slot in dragged-gravity. The slot supports the body against gravity. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work.
-- **Racks.** Own items at rest in a slot grid in dragged-gravity. The rack supports the body against gravity. Slot grid is layout, not collision.
-- **Workshop (future).** Same as racks: items at rest in dragged-gravity, until the workshop's own activity (synthesis, levelling) animates them.
+- **Token → Dragged-gravity.** On grab, the source container's token is vacated (despawn or hide) and a `RigidBody2D` body spawns on the cursor with the item's `at_rest_shape` and `token_scale`. The body follows the cursor under gravity for the duration of the gesture.
+- **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the body is replaced by the destination's token in its slot.
+- **Dragged-gravity → Active-movement.** On release of a ball onto the court, gravity flips off and the rally takes the body's release-gesture velocity as its starting motion.
+- **Active-movement → Dragged-gravity.** When a ball rolls off the court (stray), gravity flips back on and the body decelerates against the venue floor until it rests. The same transition fires when the player grabs a live ball mid-rally; the body becomes the held gesture.
 
-The drag flow is symmetric across items. Equipment items behave the same as ball items in the gesture: same press lifts a held body, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and which physics state that container holds. Balls are the only items that ever leave the gravity model.
+Container summary:
 
-The held state during a drag is the body following the cursor in dragged-gravity. The source container vacates its slot (the body lifts onto the cursor); on commit, the destination container takes ownership. For balls released onto the court the body flips into active-movement; for everything else (balls released into a rack, equipment released anywhere) the body stays in dragged-gravity.
+- **Court.** Owns ball-role items in active-movement. The body is a `Ball` (`RigidBody2D` with the rally configured on it). Does not accept non-ball items.
+- **Shop.** Owns items as tokens under the shop's slot. Diegetic feel for shop pickup comes through visual, audio, and haptic response on grab rather than solver work.
+- **Racks.** Own items as tokens in a slot grid. Slot grid is layout.
+- **Workshop (future).** Same as racks: tokens at rest, until the workshop's own activity (synthesis, levelling) animates them.
+
+The drag flow is symmetric across items. Equipment items behave the same as ball items in the gesture: same press lifts a held body in dragged-gravity, same `at_rest_shape` projection on the candidate position before commit, same canonical `token_scale` from the definition. What differs is which container ends up owning the item and what state that container holds it in. Balls are the only items that ever enter active-movement; everything else cycles between token (at rest in a container) and dragged-gravity (during the gesture).
 
 ### Drop validation by body projection
 
