@@ -165,11 +165,7 @@ func test_release_outside_shop_purchases_and_debits_balance() -> void:
 
 
 func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() -> void:
-	# Drives InputEventMouseButton through the shop item's input_event signal for
-	# the press, then through ShopItem._input for the release. Press starts the
-	# held token; release outside the shop bounds completes the purchase (SH-246)
-	# and lands the item inactive on the matching rack. SH-253 keeps the whole
-	# press-drag-release on the real input handler.
+	# SH-253: full press-drag-release through the real input handlers (SH-246 purchase path).
 	var item: ShopItem = _shop_item("grip_tape")
 	var balance_before: int = _item_manager.get_friendship_point_balance()
 	var cost: int = GripTape.base_cost
@@ -183,9 +179,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 	assert_eq(_item_manager.get_level("grip_tape"), 0, "press alone must not purchase")
 
-	# Release outside shop bounds via the real _input path. ShopItem._input reads
-	# the release point from the event's own position via the canvas transform,
-	# so a positioned mouse-up event is deterministic under headless tests.
+	# Release outside shop bounds via _input; event.position is deterministic under headless.
 	var canvas_transform: Transform2D = item.get_canvas_transform()
 	var outside_world: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
 	var release := InputEventMouseButton.new()

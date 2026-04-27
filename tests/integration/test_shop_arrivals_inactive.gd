@@ -52,11 +52,7 @@ func _shop_item(item_key: String) -> ShopItem:
 
 
 func _take_from_shop(shop_item: ShopItem) -> void:
-	# Drive the diegetic drag-as-purchase path through the real input handlers.
-	# Press routes through pickup_area.input_event (the player's pointer landing
-	# on the shop slot); release routes through ShopItem._input with the cursor
-	# parked outside the shop area so the gesture resolves as a purchase.
-	# SH-253: every player-AC test drives the real input pipeline end-to-end.
+	# SH-253: drive press + release through the real input handlers end-to-end.
 	var viewport: Viewport = shop_item.get_viewport()
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
