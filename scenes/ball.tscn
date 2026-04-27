@@ -18,3 +18,5 @@ shape = SubResource("CircleShape2D_n1dj2")
 [node name="Sprite" type="Sprite2D" parent="." unique_id=429755372]
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_f7cbr")
+
+[node name="ItemArtHolder" type="Node2D" parent="." unique_id=429755373]

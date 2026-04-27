@@ -94,9 +94,7 @@ func get_ball_for_key(item_key: String) -> Ball:
 	return raw
 
 
-## Returns the tracked Ball for `item_key`, repositioning and relaunching it, or instantiates a new one if none is tracked.
-## `preserved_speed` >= 0 carries friendship energy through grab-and-release (SH-288): the spawned
-## ball's `speed` is set to that magnitude and `linear_velocity` is re-magnituded along its direction.
+## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries friendship energy through grab-and-release.
 func ensure_ball_for_key(
 	item_key: String,
 	spawn_position: Vector2,
@@ -122,10 +120,7 @@ func ensure_ball_for_key(
 	return ball
 
 
-## Single entry point for placing a permanent ball on the court: activates the item if needed,
-## ensures one Ball at the position with the velocity, applies art. Replaces a stack of
-## activate-then-spawn sequences elsewhere.
-## `preserved_speed` carries friendship energy through grab-and-release (SH-288).
+## Activates the item if needed, then ensures a single Ball at `spawn_position` with `initial_velocity`.
 func bring_into_play(
 	item_key: String,
 	spawn_position: Vector2,
@@ -189,20 +184,20 @@ func _default_spawn_position() -> Vector2:
 	return Vector2.ZERO
 
 
-## Owns the art holder lifecycle on a Ball: frees any previous holder, instantiates the
-## item's authored art, hides the default sprite. Idempotent across re-applications.
+## Swaps the art into the authored ItemArtHolder slot on Ball; idempotent across re-applications.
 func _apply_item_art(ball: Ball, item_key: String) -> void:
 	var definition: ItemDefinition = _get_item_definition(item_key)
 	if definition == null or definition.art == null:
 		return
-	var existing: Node = ball.get_node_or_null("ItemArtHolder")
-	if existing != null:
-		existing.queue_free()
-	var holder: Node2D = Node2D.new()
-	holder.name = "ItemArtHolder"
+	var holder: Node2D = ball.get_node_or_null("ItemArtHolder") as Node2D
+	if holder == null:
+		push_warning("BallReconciler: ball.tscn missing ItemArtHolder slot; skipping art swap")
+		return
+	for child in holder.get_children():
+		holder.remove_child(child)
+		child.queue_free()
 	holder.scale = definition.token_scale
 	holder.add_child(definition.art.instantiate())
-	ball.add_child(holder)
 	var default_sprite: Node = ball.get_node_or_null("Sprite")
 	if default_sprite != null:
 		default_sprite.visible = false

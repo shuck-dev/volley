@@ -21,6 +21,7 @@
 [ext_resource type="Resource" uid="uid://iq04trmvlswer" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
 [ext_resource type="Script" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
+[ext_resource type="Script" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(36, 1472)
@@ -28,9 +29,10 @@ size = Vector2(36, 1472)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(36, 1172)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
 script = ExtResource("1_tbgi4")
 ball_system = NodePath("BallReconciler")
+ball_tracker = NodePath("BallTracker")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
@@ -210,6 +212,10 @@ offset_bottom = -400.0
 
 [node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
 script = ExtResource("21_reconciler")
+
+[node name="BallTracker" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("ball_system")]
+script = ExtResource("23_tracker")
+ball_system = NodePath("../BallReconciler")
 
 [node name="BallDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "gear_rack", "gear_rack_drop_target", "reconciler")]
 script = ExtResource("22_drag")

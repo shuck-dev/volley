@@ -84,17 +84,19 @@ func test_ball_added_emissions_attach_balls_to_court() -> void:
 	# Two `ball_added` emissions through the reconciler should leave Court tracking both.
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
-	assert_eq(_court._balls.size(), 2, "Court should track both balls after two ball_added emits")
-	assert_true(_court._balls.has(first))
-	assert_true(_court._balls.has(second))
+	var balls: Array[Ball] = _court.ball_tracker.get_balls()
+	assert_eq(balls.size(), 2, "Court should track both balls after two ball_added emits")
+	assert_true(balls.has(first))
+	assert_true(balls.has(second))
 
 
 func test_ball_removed_drops_court_tracking() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
-	assert_eq(_court._balls.size(), 2)
-	assert_true(_court._balls.has(second), "precondition: both balls tracked")
+	assert_eq(_court.ball_tracker.get_balls().size(), 2)
+	assert_true(_court.ball_tracker.get_balls().has(second), "precondition: both balls tracked")
 
 	_reconciler.release_ball("ball_alpha")
-	assert_false(_court._balls.has(first), "released ball should be detached from Court")
-	assert_eq(_court._balls.size(), 1)
+	var remaining: Array[Ball] = _court.ball_tracker.get_balls()
+	assert_false(remaining.has(first), "released ball should be detached from Court")
+	assert_eq(remaining.size(), 1)
