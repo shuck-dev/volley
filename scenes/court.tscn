@@ -28,9 +28,9 @@ size = Vector2(36, 1472)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(36, 1172)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
 script = ExtResource("1_tbgi4")
-ball = NodePath("Ball")
+ball_system = NodePath("BallReconciler")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
@@ -192,7 +192,7 @@ text = "+0% FP"
 script = ExtResource("18_fpb")
 court = NodePath("..")
 
-[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball")]
+[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball_system")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -150.0
@@ -200,7 +200,7 @@ offset_top = -634.0
 offset_right = 150.0
 offset_bottom = -624.0
 script = ExtResource("11_2768l")
-ball = NodePath("../Ball")
+ball_system = NodePath("../BallReconciler")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
 offset_left = -900.0

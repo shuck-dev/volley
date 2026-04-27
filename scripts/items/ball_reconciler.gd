@@ -1,21 +1,22 @@
 class_name BallReconciler
 extends Node
 
-## Owns live Ball instances for permanent on-court ball items.
+## Single ownership point for live Ball instances. Drives lifecycle (spawn, art, freeing)
+## from `on_court[&ball]` and exposes `current_ball` so callers don't reach into the scene.
 
 signal ball_spawned(item_key: String, ball: Ball)
+signal current_ball_changed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
-## Synthetic key prefix for scene-authored Balls adopted post-load so drag wiring covers them too (SH-262).
-const ADOPTED_BALL_KEY_PREFIX: String = "__adopted_ball_"
 
 @export var ball_scene: PackedScene = BallScene
 @export var spawn_for_existing_on_load: bool = false
 
+var current_ball: Ball = null
+
 var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
-var _adopted_ball_counter: int = 0
 
 
 func configure(item_manager: Node, ball_host: Node) -> void:
@@ -38,9 +39,8 @@ func _ready() -> void:
 	call_deferred(&"adopt_pre_existing_balls")
 
 
-## Scans `_ball_host` for Ball instances not yet tracked and registers each
-## under its authored item_key (or a synthetic key as a fallback), emitting
-## ball_spawned so listeners (drag controller) wire their per-ball connections.
+## Registers each authored Ball under its `item_key`, applies item art, and ensures
+## placement reflects "this ball is on court" so the rack hides the matching token.
 ## Idempotent; safe to call repeatedly.
 func adopt_pre_existing_balls() -> void:
 	if _ball_host == null:
@@ -55,24 +55,22 @@ func adopt_pre_existing_balls() -> void:
 			continue
 		if _is_tracked(ball):
 			continue
-		# Skip if a listener has already wired Ball.pressed; re-emitting would double-connect.
-		if ball.pressed.get_connections().size() > 0:
+		if ball.item_key == "":
+			push_warning("BallReconciler: skipping adoption of authored Ball with no item_key")
 			continue
-		var key: String
-		if ball.item_key != "":
-			key = ball.item_key
-		else:
-			key = "%s%d" % [ADOPTED_BALL_KEY_PREFIX, _adopted_ball_counter]
-			_adopted_ball_counter += 1
+		var key: String = ball.item_key
 		_balls_by_key[key] = ball
-		# Apply the item's authored art so the held token (and the live ball) render with the canonical visual.
 		_apply_item_art(ball, key)
-		# Mark a known-item adopted ball as on-court so the rack hides the item the player already sees in play.
-		# Without this the rack offers the same key, and a rack-to-court drag would teleport the existing ball instead of spawning a new one.
-		if ball.item_key != "" and _item_manager.has_method("activate"):
-			if _item_manager.get_level(key) > 0 and not _item_manager.is_on_court(key):
-				_item_manager.activate(key)
+		# Activating fires court_changed, which sees the ball already tracked and is a no-op for spawning.
+		# The placement flip is what lets the rack hide the token the player already sees in play.
+		if (
+			_item_manager.has_method("activate")
+			and _item_manager.get_level(key) > 0
+			and not _item_manager.is_on_court(key)
+		):
+			_item_manager.activate(key)
 		ball_spawned.emit(key, ball)
+		_set_current_ball(ball)
 
 
 func _is_tracked(ball: Ball) -> bool:
@@ -110,7 +108,17 @@ func ensure_ball_for_key(
 	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
+	_set_current_ball(ball)
 	return ball
+
+
+## Single entry point for placing a permanent ball on the court: activates the item if needed,
+## ensures one Ball at the position with the velocity, applies art. Replaces a stack of
+## activate-then-spawn sequences elsewhere.
+func bring_into_play(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+	if not _item_manager.is_on_court(item_key):
+		_item_manager.activate(item_key)
+	return ensure_ball_for_key(item_key, spawn_position, initial_velocity)
 
 
 func release_ball(item_key: String) -> Ball:
@@ -119,6 +127,8 @@ func release_ball(item_key: String) -> Ball:
 		return null
 
 	_balls_by_key.erase(item_key)
+	if current_ball == ball:
+		_set_current_ball(_pick_current_candidate())
 	return ball
 
 
@@ -136,7 +146,23 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		return
 
 	_balls_by_key.erase(item_key)
+	if current_ball == ball:
+		_set_current_ball(_pick_current_candidate())
 	ball.call_deferred("queue_free")
+
+
+func _set_current_ball(ball: Ball) -> void:
+	if current_ball == ball:
+		return
+	current_ball = ball
+	current_ball_changed.emit(ball)
+
+
+func _pick_current_candidate() -> Ball:
+	for value in _balls_by_key.values():
+		if is_instance_valid(value):
+			return value
+	return null
 
 
 func _reconcile_initial_state() -> void:
@@ -153,11 +179,23 @@ func _default_spawn_position() -> Vector2:
 	return Vector2.ZERO
 
 
+## Owns the art holder lifecycle on a Ball: frees any previous holder, instantiates the
+## item's authored art, hides the default sprite. Idempotent across re-applications.
 func _apply_item_art(ball: Ball, item_key: String) -> void:
 	var definition: ItemDefinition = _get_item_definition(item_key)
 	if definition == null or definition.art == null:
 		return
-	ball.apply_item_art(definition.art, definition.token_scale)
+	var existing: Node = ball.get_node_or_null("ItemArtHolder")
+	if existing != null:
+		existing.queue_free()
+	var holder: Node2D = Node2D.new()
+	holder.name = "ItemArtHolder"
+	holder.scale = definition.token_scale
+	holder.add_child(definition.art.instantiate())
+	ball.add_child(holder)
+	var default_sprite: Node = ball.get_node_or_null("Sprite")
+	if default_sprite != null:
+		default_sprite.visible = false
 
 
 func _get_item_definition(item_key: String) -> ItemDefinition:

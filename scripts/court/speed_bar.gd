@@ -6,7 +6,9 @@ const BAR_OVERFLOW_COLOR := Color(1.0, 0.5, 0.2)
 const BAR_BACKGROUND_COLOR := Color(0.15, 0.15, 0.15, 0.6)
 const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 
-@export var ball: Ball
+@export var ball_system: BallReconciler
+
+var ball: Ball
 
 var current_speed: float = 0.0
 var _min_speed: float = 400.0
@@ -21,9 +23,22 @@ func _ready() -> void:
 	_min_speed = GameRules.base_stats[&"ball_speed_min"]
 	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
 	_permanent_max_speed = _max_speed
-	if ball != null:
-		ball.speed_changed.connect(_on_ball_speed_changed)
+	if ball_system != null:
+		ball_system.current_ball_changed.connect(_on_current_ball_changed)
+		if ball_system.current_ball != null:
+			_on_current_ball_changed(ball_system.current_ball)
+	elif ball != null:
+		_on_current_ball_changed(ball)
 	ItemManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
+
+
+func _on_current_ball_changed(new_ball: Ball) -> void:
+	if ball != null and is_instance_valid(ball):
+		if ball.speed_changed.is_connected(_on_ball_speed_changed):
+			ball.speed_changed.disconnect(_on_ball_speed_changed)
+	ball = new_ball
+	if ball != null and not ball.speed_changed.is_connected(_on_ball_speed_changed):
+		ball.speed_changed.connect(_on_ball_speed_changed)
 
 
 func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float) -> void:

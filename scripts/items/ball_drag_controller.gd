@@ -144,7 +144,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		spawn_position = existing.global_position
 		if reconciler != null:
 			reconciler.release_ball(item_key)
-		existing.set_dragging(true)
+		existing.freeze = true
 		existing.call_deferred("queue_free")
 
 	_spawn_held_token(item_key, spawn_position, is_temporary)
@@ -206,14 +206,9 @@ func _release_onto_court(
 ) -> void:
 	if is_temporary:
 		return
-
-	# Activation happens at release-over-court so a click without movement on the rack
-	# does not introduce the ball (SH-245).
-	if not _item_manager.is_on_court(item_key):
-		_item_manager.activate(item_key)
-
-	if reconciler != null:
-		reconciler.ensure_ball_for_key(item_key, release_position, release_velocity)
+	if reconciler == null:
+		return
+	reconciler.bring_into_play(item_key, release_position, release_velocity)
 
 
 ## Clear held-token state after a successful commit (rack accept or court spawn).

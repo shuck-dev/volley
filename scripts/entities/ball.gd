@@ -9,7 +9,7 @@ signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
-## Item key this ball represents; the reconciler reads this on adoption so the held token finds the matching ItemDefinition.
+## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
 
 var speed: float = 0.0
@@ -18,8 +18,6 @@ var max_speed: float
 var speed_increment: float
 var effect_processor: BallEffectProcessor
 var is_temporary: bool = false
-var _dragging: bool = false
-var _item_art: Node2D = null
 
 var _item_manager: Node
 var _was_at_max_speed := false
@@ -66,16 +64,11 @@ func _emit_speed_changed() -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	if _dragging:
+	if freeze:
 		return
 	if body.has_method("on_ball_hit"):
 		body.on_ball_hit()
 		effect_processor.process_hit()
-
-
-## Suppresses hit processing while a drag gesture owns this ball; BallDragController toggles it on mid-rally grabs before the ball is freed.
-func set_dragging(value: bool) -> void:
-	_dragging = value
 
 
 func register_miss_zone(zone: MissZone) -> void:
@@ -144,7 +137,7 @@ func _ball_setup() -> void:
 
 ## Press on the live ball routes through here and surfaces as the `pressed` signal so the drag controller can flip into mid-rally grab mode.
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if _dragging:
+	if freeze:
 		return
 	if not (event is InputEventMouseButton):
 		return
@@ -156,23 +149,6 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	pressed.emit(self)
 
 
-## Swaps the default sprite for the item's authored art at the canonical token scale (SH-261).
-func apply_item_art(art_scene: PackedScene, token_scale: Vector2 = Vector2.ONE) -> void:
-	if art_scene == null:
-		return
-	if _item_art != null and is_instance_valid(_item_art):
-		_item_art.queue_free()
-	var holder: Node2D = Node2D.new()
-	holder.name = "ItemArtHolder"
-	holder.scale = token_scale
-	var instance: Node = art_scene.instantiate()
-	holder.add_child(instance)
-	_item_art = holder
-	add_child(holder)
-	var default_sprite: Node = get_node_or_null("Sprite")
-	if default_sprite != null:
-		default_sprite.visible = false
-
-
 func has_item_art() -> bool:
-	return _item_art != null and is_instance_valid(_item_art)
+	var holder: Node = get_node_or_null("ItemArtHolder")
+	return holder != null and is_instance_valid(holder)
