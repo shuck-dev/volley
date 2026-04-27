@@ -49,6 +49,14 @@ Review re-dispatch happens at "ready for re-review" signals from the impl, not o
 
 At most one `spike` issue per swarm dispatch. Run additional spikes sequentially.
 
+## Mergeable sweep
+
+On every challenge sweep, check `gh pr view <n> --json mergeable,mergeStateStatus` for each open challenge. There is no bot applying `zaphod-conflicts`; Gru owns it.
+
+- `mergeable: CONFLICTING` → apply `zaphod-conflicts` if not present, merge `origin/main` into the worktree branch (never rebase, per `feedback_never_rebase.md`), push, then remove `zaphod-conflicts`.
+- `mergeable: MERGEABLE` with `zaphod-conflicts` still on → remove the stale label.
+- `mergeable: UNKNOWN` → GitHub is still computing; revisit in the same sweep loop, don't act yet.
+
 ## Cleanup
 
 Worktrees come down after each stage (push, ready-for-merge, abandon). Recreate on revision; sibling to main worktree, not under `/tmp`.
