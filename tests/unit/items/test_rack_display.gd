@@ -6,7 +6,10 @@ const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd
 
 func _stub_art() -> PackedScene:
 	var scene := PackedScene.new()
-	scene.pack(Node2D.new())
+	# PackedScene.pack snapshots the node but does not take ownership; freeing avoids a CanvasItem RID leak at exit.
+	var template := Node2D.new()
+	scene.pack(template)
+	template.free()
 	return scene
 
 

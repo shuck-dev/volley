@@ -14,49 +14,50 @@ slot_container = NodePath("SlotContainer")
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1470078387]
-offset_right = 300.0
-offset_bottom = 200.0
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
 mouse_filter = 2
 color = Color(0.3, 0.5, 0.9, 0.6)
 
 [node name="Name" type="Label" parent="." unique_id=1742093710]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 10.0
-offset_bottom = 10.0
+offset_left = -140.0
+offset_top = -90.0
+offset_right = -140.0
+offset_bottom = -90.0
 theme_override_font_sizes/font_size = 36
 text = "GearRack"
 
 [node name="SlotContainer" type="Node2D" parent="." unique_id=1742093711]
 
 [node name="SlotMarker0" type="Node2D" parent="SlotContainer" unique_id=1742093720]
-position = Vector2(37.5, 50)
+position = Vector2(-112.5, -50)
 
 [node name="SlotMarker1" type="Node2D" parent="SlotContainer" unique_id=1742093721]
-position = Vector2(112.5, 50)
+position = Vector2(-37.5, -50)
 
 [node name="SlotMarker2" type="Node2D" parent="SlotContainer" unique_id=1742093722]
-position = Vector2(187.5, 50)
+position = Vector2(37.5, -50)
 
 [node name="SlotMarker3" type="Node2D" parent="SlotContainer" unique_id=1742093723]
-position = Vector2(262.5, 50)
+position = Vector2(112.5, -50)
 
 [node name="SlotMarker4" type="Node2D" parent="SlotContainer" unique_id=1742093724]
-position = Vector2(37.5, 150)
+position = Vector2(-112.5, 50)
 
 [node name="SlotMarker5" type="Node2D" parent="SlotContainer" unique_id=1742093725]
-position = Vector2(112.5, 150)
+position = Vector2(-37.5, 50)
 
 [node name="SlotMarker6" type="Node2D" parent="SlotContainer" unique_id=1742093726]
-position = Vector2(187.5, 150)
+position = Vector2(37.5, 50)
 
 [node name="SlotMarker7" type="Node2D" parent="SlotContainer" unique_id=1742093727]
-position = Vector2(262.5, 150)
+position = Vector2(112.5, 50)
 
 [node name="DropTarget" type="Area2D" parent="." unique_id=1742093712]
 monitoring = false
 monitorable = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1742093713]
-position = Vector2(150, 100)
 shape = SubResource("RectangleShape2D_gear_rack_drop")

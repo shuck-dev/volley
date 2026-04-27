@@ -45,17 +45,32 @@ Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers
 
 Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
 
+## Consensus on disagreement
+
+When two minions reach opposite conclusions on the same evidence (reviewer approves while battler blocks, two reviewers split, etc.), don't pick a side. Dispatch two more independent agents on the same question, briefed not to read each other's reports. Whichever side reaches three votes wins. Surface the consensus to Josh with the evidence each agent cited.
+
+If consensus is still split 2-2, that's a sign the question itself isn't decidable from the evidence at hand; flag for Josh and don't merge.
+
 ## Spike rule
 
 At most one `spike` issue per swarm dispatch. Run additional spikes sequentially.
 
-## Mergeable sweep
+## Hydrate before recap
 
-On every challenge sweep, check `gh pr view <n> --json mergeable,mergeStateStatus` for each open challenge. There is no bot applying `zaphod-conflicts`; Gru owns it.
+Before any recap, status report, or claim about challenge state, run `gh pr list --state open --json number,state,mergeable,labels,headRefOid` (or `gh pr view <n> --json ...` for a specific challenge). Don't recap from in-context memory of the last dispatch; dispatches and merges can happen between turns. The first action of any state-summary turn is the hydrate command, not text.
 
-- `mergeable: CONFLICTING` → apply `zaphod-conflicts` if not present, merge `origin/main` into the worktree branch (never rebase, per `feedback_never_rebase.md`), push, then remove `zaphod-conflicts`.
-- `mergeable: MERGEABLE` with `zaphod-conflicts` still on → remove the stale label.
-- `mergeable: UNKNOWN` → GitHub is still computing; revisit in the same sweep loop, don't act yet.
+Same rule for inline-comment threads: before claiming a thread is replied or unaddressed, run `gh api repos/.../pulls/<n>/comments` and read.
+
+## Challenge sweep
+
+On every challenge sweep, check `gh pr view <n> --json state,mergedAt,mergeable,labels` for each challenge in scope. Read `state` first; `mergeable` is unreliable on merged challenges and reads `UNKNOWN` post-merge.
+
+- `state: MERGED` → challenge is done. Clean up its worktree, advance the mission, do not act on `mergeable`.
+- `state: OPEN` and `mergeable: CONFLICTING` → apply `zaphod-conflicts` if missing, merge `origin/main` into the worktree branch (never rebase, per `feedback_never_rebase.md`), push, then remove `zaphod-conflicts`.
+- `state: OPEN` and `mergeable: MERGEABLE` with `zaphod-conflicts` still on → remove the stale label.
+- `state: OPEN` and `mergeable: UNKNOWN` → GitHub is still computing; revisit later, don't act yet.
+
+There is no bot applying `zaphod-conflicts`; Gru owns it.
 
 ## Cleanup
 
