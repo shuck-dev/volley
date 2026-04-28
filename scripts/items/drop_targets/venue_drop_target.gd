@@ -1,9 +1,7 @@
 class_name VenueDropTarget
 extends DropTarget
 
-## SH-314 dragged-gravity: accepts releases inside the venue rect when the at-rest projection clears,
-## so the held body can fall as a loose RigidBody2D. The controller branches on `target is VenueDropTarget`
-## to keep the body alive after release; this target's `accept` is intentionally a no-op for that reason.
+## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
 
 var _item_manager: Node
 var _reconciler: BallReconciler
@@ -24,7 +22,6 @@ func configure(
 	_court_bounds = court_bounds
 
 
-## Optional: enables body-projection on the venue rect so wall/partner overlap rejects the loose drop.
 func set_world(world: World2D) -> void:
 	_world = world
 
@@ -40,15 +37,11 @@ func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) 
 	)
 	if not inside:
 		return false
-	# Body projection: a loose drop must clear walls/partners just like a court drop.
-	# Skipped when no World2D was provided (test fixtures keep working without one).
 	if _world == null:
 		return true
 	return _projection_clear(item_key, position, scale_factor)
 
 
-## SH-314: the controller owns the loose handoff (reparents and unfreezes the held body).
-## This accept is kept for DropTarget contract symmetry but does no work.
 func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	pass
 
@@ -86,4 +79,10 @@ func _scaled_shape(source: Shape2D, scale_factor: float) -> Shape2D:
 		var scaled_rect: RectangleShape2D = RectangleShape2D.new()
 		scaled_rect.size = src_rect.size * scale_factor
 		return scaled_rect
+	push_warning(
+		(
+			"VenueDropTarget._scaled_shape: unscaled %s falls through; expansion-ring projection will be wrong."
+			% source.get_class()
+		)
+	)
 	return source

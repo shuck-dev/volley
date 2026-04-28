@@ -6,12 +6,15 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
+const AUTHORED_RADIUS: float = 9.0
+
 var _manager: Node
 var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
+var _authored_shape: CircleShape2D
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -46,6 +49,11 @@ func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
 func before_each() -> void:
 	_manager = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	# An authored at_rest_shape is part of the dragged-gravity contract; pin it on the fixture so
+	# tests fail if HeldBody ever silently falls back to its default circle.
+	_authored_shape = CircleShape2D.new()
+	_authored_shape.radius = AUTHORED_RADIUS
+	ball_alpha.at_rest_shape = _authored_shape
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
 	_manager._progression.friendship_point_balance = 10000
@@ -96,19 +104,24 @@ func test_grab_spawns_a_rigid_body_held_in_kinematic_freeze() -> void:
 		RigidBody2D.FREEZE_MODE_KINEMATIC,
 		"freeze_mode is kinematic so position writes do not fight the solver",
 	)
-	assert_eq(body.gravity_scale, 0.0, "gravity is zero during the lift; engages on settle")
+	assert_eq(body.gravity_scale, 0.0, "gravity is zero during the lift; engages on go_loose")
 	assert_eq(body.phase, HeldBody.Phase.LIFTING)
+	var collision: CollisionShape2D = body.get_node("Collision") as CollisionShape2D
+	assert_eq(
+		collision.shape, _authored_shape, "held body uses the definition's authored at_rest_shape"
+	)
 
 
-func test_lift_settle_marks_body_held_and_arms_loose_gravity() -> void:
-	# Gravity engages once the lift tween settles; the body's loose_gravity_scale stays armed
-	# for any later release-into-venue branch.
+func test_lift_settle_promotes_phase_and_arms_loose_gravity() -> void:
+	# After the lift tween settles the body's phase flips to HELD; its gravity stays off (the body
+	# is still cursor-pinned) and loose_gravity_scale stays armed for any later venue release.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha", Vector2(0, 0))
 	var body: HeldBody = _drag.get_held_token() as HeldBody
 	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
 	_drag._apply_grab_ease(_drag._grab_ease_progress(), Vector2(50, 50))
 	assert_eq(body.phase, HeldBody.Phase.HELD, "lift settle promotes phase to HELD")
+	assert_eq(body.gravity_scale, 0.0, "gravity stays off while the body is cursor-pinned")
 	assert_gt(body.loose_gravity_scale, 0.0, "loose gravity is armed for a future floor release")
 
 
@@ -158,28 +171,45 @@ func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> 
 	assert_false(_manager.is_on_court("ball_alpha"))
 
 
-func test_mid_rally_grab_spawns_held_body_at_live_ball_position() -> void:
+func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_carryover() -> void:
 	# Active-movement -> Dragged-gravity: grabbing a live ball spawns a HeldBody at the live
-	# ball's last world position (the gesture's start), with gravity off until the lift settles.
+	# ball's last world position, with the rally speed preserved into the released ball's
+	# linear_velocity after the gesture commits to a court target.
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(live)
 	live.global_position = Vector2(75, 30)
+	live.speed = 240.0
 
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
-	await get_tree().process_frame
 
 	var body: HeldBody = _drag.get_held_token() as HeldBody
 	assert_not_null(body, "mid-rally grab spawns a HeldBody, not a plain Node2D")
-	assert_eq(_drag._grab_origin_position, Vector2(75, 30))
+	assert_eq(
+		body.global_position,
+		Vector2(75, 30),
+		"held body spawns at the live ball's world position",
+	)
 	assert_eq(body.phase, HeldBody.Phase.LIFTING)
 	assert_true(body.freeze, "frozen-kinematic during the cursor follow")
+	await get_tree().process_frame
+
+	# Drive a release over the court to confirm the rally speed propagates into the new Ball.
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": Vector2(75, 30)})
+	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(155, 30)})
+	assert_true(_drag.attempt_release(Vector2(50, 25)))
+	await get_tree().process_frame
+	var released: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(released, "court release spawns the rally Ball")
+	assert_almost_eq(released.linear_velocity.length(), 240.0, 0.5)
 
 
-func test_loose_body_keeps_visual_scale_via_art_holder_after_release() -> void:
+func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> void:
 	# go_loose transfers the visible token_scale off the body onto the ArtHolder so the body
-	# itself is unscaled in world space (collision shape matches the authored at_rest_shape).
+	# itself is unscaled in world space and the collision shape matches at_rest_shape; the
+	# ArtHolder picks up the lift-time scale so the visual does not pop.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -188,9 +218,18 @@ func test_loose_body_keeps_visual_scale_via_art_holder_after_release() -> void:
 	# Settle the lift so body.scale = token_scale.
 	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
 	_drag._apply_grab_ease(1.0, Vector2(1500, 100))
+	var held: HeldBody = _drag.get_held_token() as HeldBody
+	var pre_loose_scale: Vector2 = held.scale
 
 	assert_true(_drag.attempt_release(Vector2(1500, 100)))
 	var bodies: Array = _loose_bodies_under_host()
 	assert_eq(bodies.size(), 1)
 	var body: HeldBody = bodies[0]
 	assert_eq(body.scale, Vector2.ONE, "loose body sheds its lift-time scale onto the ArtHolder")
+	var art_holder: Node2D = body.get_node("ArtHolder") as Node2D
+	assert_not_null(art_holder, "loose body keeps an ArtHolder for the visual")
+	assert_eq(
+		art_holder.scale,
+		pre_loose_scale,
+		"ArtHolder receives the body's pre-loose scale so the visual does not pop",
+	)

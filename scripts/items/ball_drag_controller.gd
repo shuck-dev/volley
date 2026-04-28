@@ -37,9 +37,6 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var expansion_ring_scale: float = 1.5
 
 var _item_manager: Node
-## SH-314: held body is a `HeldBody` (RigidBody2D) so dragged-gravity is real physics; the typed
-## reference stays Node2D so existing callers and tests reading `.global_position`/`.scale` keep working.
-var _held_token: Node2D = null
 var _held_body: HeldBody = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
@@ -104,7 +101,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if _held_token == null:
+	if _held_body == null:
 		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
 
@@ -113,7 +110,7 @@ func _process(delta: float) -> void:
 	var ease_progress: float = _grab_ease_progress()
 	_apply_grab_ease(ease_progress, cursor_target)
 
-	var follow_position: Vector2 = _held_token.global_position
+	var follow_position: Vector2 = _held_body.global_position
 	_track_cursor_motion(follow_position)
 	if _gesture_below_threshold:
 		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
@@ -138,7 +135,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	_mouse_button_down = mouse_button.pressed
-	if mouse_button.pressed or _held_token == null:
+	if mouse_button.pressed or _held_body == null:
 		return
 
 	# Use the event's own position so a Camera2D in the venue doesn't break rack hit-testing.
@@ -147,7 +144,7 @@ func _input(event: InputEvent) -> void:
 
 
 func is_dragging() -> bool:
-	return _held_token != null
+	return _held_body != null
 
 
 func get_held_key() -> String:
@@ -155,7 +152,7 @@ func get_held_key() -> String:
 
 
 func get_held_token() -> Node2D:
-	return _held_token
+	return _held_body
 
 
 func get_cursor_state() -> int:
@@ -184,7 +181,7 @@ func get_registered_targets() -> Array[DropTarget]:
 
 ## Test seam / production entry for rack-origin pickups. Activation defers to release-over-court (SH-245).
 func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
-	if _held_token != null:
+	if _held_body != null:
 		return false
 	if _item_manager.get_level(item_key) <= 0:
 		return false
@@ -205,7 +202,7 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 
 ## Test seam / production entry for mid-rally live-ball grabs.
 func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
-	if _held_token != null:
+	if _held_body != null:
 		return false
 
 	var existing: Ball = null
@@ -231,9 +228,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	return true
 
 
-## Shop-purchase entry: returns true if a court target accepted; false routes the new token to the rack.
-## SH-314: VenueDropTarget no longer brings into play (loose state instead), so the shop entry only
-## counts the court-side accept here. Loose shop-purchase flow is a separate concern.
+## Returns true if a court target accepted; false routes the new token to the rack.
 func spawn_purchased_at(
 	item_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> bool:
@@ -249,7 +244,7 @@ func spawn_purchased_at(
 
 ## Returns false on no valid target so the held token stays with the cursor.
 func attempt_release(release_position: Vector2) -> bool:
-	if _held_token == null:
+	if _held_body == null:
 		return false
 
 	var clamped_position: Vector2 = _clamp_to_venue(release_position)
@@ -263,7 +258,7 @@ func attempt_release(release_position: Vector2) -> bool:
 			clamped_position.distance_to(_press_position) < COMMIT_MOVEMENT_THRESHOLD_PX
 		)
 
-	# SH-252 a: a press-and-release without movement on a rack-origin gesture cancels back to source.
+	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court and not was_temporary:
 		_finalise_gesture(item_key, clamped_position, false)
 		return true
@@ -286,10 +281,8 @@ func attempt_release(release_position: Vector2) -> bool:
 			target.accept(item_key, clamped_position, velocity)
 			_apply_preserved_speed_after_accept(item_key)
 	elif target is VenueDropTarget:
-		# SH-314: loose-on-venue-floor. The held body unfreezes and falls under gravity.
-		_release_loose(item_key, clamped_position, was_temporary)
-		var over_court_loose: bool = false
-		_finalise_loose_gesture(item_key, clamped_position, over_court_loose)
+		_release_loose(clamped_position, was_temporary)
+		_finalise_loose_gesture(item_key, clamped_position, false)
 		return true
 	else:
 		target.accept(item_key, clamped_position, Vector2.ZERO)
@@ -301,56 +294,33 @@ func attempt_release(release_position: Vector2) -> bool:
 	return true
 
 
-## SH-314: detach the held body from the controller and unfreeze it so gravity finishes the motion.
-func _release_loose(_item_key: String, release_position: Vector2, was_temporary: bool) -> void:
-	if _held_body == null:
-		return
-	if was_temporary:
-		# Temporary held bodies do not survive the gesture; the standard finaliser will free.
+func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
+	if _held_body == null or was_temporary:
 		return
 	var release_velocity: Vector2 = _compute_release_velocity()
 	var body: HeldBody = _held_body
-	# Reparent to the reconciler's ball host (or to our parent as a fallback) so the body keeps
-	# living after the controller clears its references in _finalise_loose_gesture.
 	var host: Node = _loose_body_host()
 	if host != null and body.get_parent() != host:
 		body.get_parent().remove_child(body)
 		host.add_child(body)
 	body.global_position = release_position
-	body.scale = body.scale  # already at token_scale from the lift settle
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
-	# Drop our handle so _finalise_loose_gesture does not free the body we just released.
-	_held_token = null
+	# Drop our handle so the loose body survives gesture finalisation.
 	_held_body = null
-	# Suppress the standard finaliser's queue_free; tracked via the dropped reference above.
 
 
-## Loose finaliser: keeps state-clear semantics but never frees the held body (release_loose owns it).
 func _finalise_loose_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
-	# After _release_loose, _held_token/_held_body are already cleared. Run the rest of the
-	# state reset without touching the body so the loose body persists in the venue.
-	_held_token = null
-	_held_body = null
-	_held_key = ""
-	_held_is_temporary = false
-	_held_was_on_court = false
-	_held_origin = &"rack"
-	_held_preserved_speed = PRESERVED_SPEED_NONE
-	_cursor_samples.clear()
-	_press_position = Vector2.ZERO
-	_gesture_below_threshold = true
-	_grab_origin_position = Vector2.ZERO
-	_grab_ease_elapsed = 0.0
-	_grab_target_scale = Vector2.ONE
-	_expansion_started_at = -1.0
+	_reset_gesture_state()
 	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
 	drop_completed.emit(item_key, release_position, over_court)
 
 
 func _loose_body_host() -> Node:
-	if reconciler != null and reconciler._ball_host != null:
-		return reconciler._ball_host
+	if reconciler != null:
+		var host: Node = reconciler.get_ball_host()
+		if host != null:
+			return host
 	return get_parent()
 
 
@@ -380,22 +350,22 @@ func _find_accepting_target(
 
 ## Hover-feedback bump applied to the held token while a target accepts the current pos.
 func _update_hover_feedback(world_position: Vector2) -> void:
-	if _held_token == null:
+	if _held_body == null:
 		return
 	var hovering: bool = _find_accepting_target(_held_key, world_position, 1.0) != null
 	var definition: ItemDefinition = _get_item_definition(_held_key)
 	var base_scale: Vector2 = definition.token_scale if definition != null else Vector2.ONE
 	if hovering:
-		_held_token.scale = base_scale * HOVER_SCALE_BUMP
-		_held_token.modulate = HOVER_MODULATE
+		_held_body.scale = base_scale * HOVER_SCALE_BUMP
+		_held_body.modulate = HOVER_MODULATE
 	else:
-		_held_token.scale = base_scale
-		_held_token.modulate = NEUTRAL_MODULATE
+		_held_body.scale = base_scale
+		_held_body.modulate = NEUTRAL_MODULATE
 
 
 ## Cancels back to source after the widened poll has also failed for one full hold window.
 func _update_expansion_state(world_position: Vector2) -> void:
-	if _held_token == null:
+	if _held_body == null:
 		return
 	if _expansion_started_at < 0.0:
 		_expansion_started_at = _now_seconds()
@@ -423,7 +393,7 @@ func _cancel_to_source() -> void:
 	var was_on_court: bool = _held_was_on_court
 	var origin: StringName = _held_origin
 	var release_position: Vector2 = (
-		_held_token.global_position if _held_token != null else _press_position
+		_held_body.global_position if _held_body != null else _press_position
 	)
 
 	if origin == &"live" and was_on_court:
@@ -433,11 +403,15 @@ func _cancel_to_source() -> void:
 	_finalise_gesture(item_key, release_position, false)
 
 
-## Clear held-token state after a successful commit (rack accept or court spawn).
 func _finalise_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
-	if _held_token != null:
-		_held_token.queue_free()
-	_held_token = null
+	if _held_body != null:
+		_held_body.queue_free()
+	_reset_gesture_state()
+	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
+	drop_completed.emit(item_key, release_position, over_court)
+
+
+func _reset_gesture_state() -> void:
 	_held_body = null
 	_held_key = ""
 	_held_is_temporary = false
@@ -451,8 +425,6 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_grab_ease_elapsed = 0.0
 	_grab_target_scale = Vector2.ONE
 	_expansion_started_at = -1.0
-	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
-	drop_completed.emit(item_key, release_position, over_court)
 
 
 func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: bool) -> void:
@@ -461,15 +433,12 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	if definition != null:
 		target_scale = definition.token_scale
 
-	# SH-314: dragged-gravity body. Frozen-kinematic during lift+held so the controller drives
-	# position; release flips freeze off only for the loose-on-venue-floor branch.
 	var body: HeldBody = HeldBody.make_for(definition, item_key)
 	body.global_position = spawn_position
 	body.scale = grab_ease_start_scale * target_scale
 	body.modulate = grab_ease_start_modulate
 	add_child(body)
 
-	_held_token = body
 	_held_body = body
 	_held_key = item_key
 	_held_is_temporary = is_temporary
@@ -590,17 +559,15 @@ func _grab_ease_progress() -> float:
 
 
 func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
-	if _held_token == null:
+	if _held_body == null:
 		return
 	# Cubic ease-out: 1 - (1 - t)^3.
 	var inv: float = 1.0 - progress
 	var eased: float = 1.0 - inv * inv * inv
-	_held_token.global_position = _grab_origin_position.lerp(cursor_target, eased)
-	_held_token.scale = (grab_ease_start_scale * _grab_target_scale).lerp(_grab_target_scale, eased)
-	_held_token.modulate = grab_ease_start_modulate.lerp(grab_ease_end_modulate, eased)
-	# SH-314: gravity engages once the lift settles; the body is still cursor-pinned (frozen) but
-	# any later release into the venue floor uses its loose_gravity_scale.
-	if _held_body != null and progress >= 1.0 and _held_body.phase == HeldBody.Phase.LIFTING:
+	_held_body.global_position = _grab_origin_position.lerp(cursor_target, eased)
+	_held_body.scale = (grab_ease_start_scale * _grab_target_scale).lerp(_grab_target_scale, eased)
+	_held_body.modulate = grab_ease_start_modulate.lerp(grab_ease_end_modulate, eased)
+	if progress >= 1.0 and _held_body.phase == HeldBody.Phase.LIFTING:
 		_held_body.mark_held()
 
 
@@ -610,7 +577,7 @@ func _update_cursor_state(world_position: Vector2) -> void:
 
 
 func _derive_cursor_state(world_position: Vector2) -> int:
-	if _held_token == null:
+	if _held_body == null:
 		return CursorStateScript.State.DEFAULT
 	# The held token is clamped to venue but the raw cursor can drift outside.
 	if not _is_within_venue(_cursor_position()):

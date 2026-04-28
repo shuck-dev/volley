@@ -27,6 +27,10 @@ func configure(item_manager: Node, ball_host: Node) -> void:
 	_ball_host = ball_host
 
 
+func get_ball_host() -> Node:
+	return _ball_host
+
+
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager

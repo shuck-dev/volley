@@ -182,13 +182,13 @@ func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> voi
 	_drag.grab_from_rack("ball_alpha")
 	# Step 1: position over the rack drop target -> CAN_DROP.
 	var rack_position: Vector2 = _drop_target.global_position
-	_drag._held_token.global_position = rack_position
+	_drag._held_body.global_position = rack_position
 	_drag._update_cursor_state(rack_position)
 	# Step 2: position outside every registered DropTarget -> DRAGGING.
 	# (After SH-287, VenueDropTarget's ball-role venue rect catches positions inside it,
 	# so DRAGGING requires a held position outside the venue rect.)
 	var venue_only := Vector2(5000, 0)
-	_drag._held_token.global_position = venue_only
+	_drag._held_body.global_position = venue_only
 	_drag._update_cursor_state(venue_only)
 
 	# At least three emissions are expected: spawn/_process default, CAN_DROP, DRAGGING.
