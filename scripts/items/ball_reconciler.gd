@@ -32,11 +32,11 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
-	if spawn_for_existing_on_load:
-		_reconcile_initial_state()
-
-	# Deferred so sibling listeners connect to ball_spawned before we emit for adopted balls.
+	# Both calls deferred: adopt_pre_existing_balls so sibling listeners connect before we emit,
+	# and _reconcile_initial_state so _ball_host is fully settled in the tree first.
 	call_deferred(&"adopt_pre_existing_balls")
+	if spawn_for_existing_on_load:
+		call_deferred(&"_reconcile_initial_state")
 
 
 ## Registers each authored Ball under its `item_key`, applies item art, and ensures
