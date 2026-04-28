@@ -313,5 +313,60 @@ func test_item_definition_carries_at_rest_shape_for_ball_items() -> void:
 func test_token_scale_remains_canonical_across_items() -> void:
 	# Cross-container size identity: every container reads `token_scale` off the same
 	# definition, so any item that authors a non-default scale appears at that scale in
-	# every state. This regression-pins the field as part of the SH-287 contract.
-	assert_eq(BaseBall.token_scale, Vector2(1.5, 1.5))
+	# every state. Pins all three renderings (held token, ball_reconciler ball-holder, and
+	# rack-display slot art) against the single source of truth on the definition. This is
+	# the SH-261 + SH-287 contract: a regression that diverges any one container fails here.
+	const BallDragControllerScript: GDScript = preload(
+		"res://scripts/items/ball_drag_controller.gd"
+	)
+	const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+
+	var manager: Node = ItemFactory.create_manager(self)
+	manager.items.assign([BaseBall] as Array[ItemDefinition])
+	manager._progression.friendship_point_balance = 10000
+	manager.take("base_ball")
+
+	# 1. Held token through the drag controller.
+	var rack: RackDisplay = RackDisplayScript.new()
+	rack.role = &"ball"
+	var slot_container := Node2D.new()
+	slot_container.name = "SlotContainer"
+	rack.add_child(slot_container)
+	for index in 4:
+		var marker := Node2D.new()
+		marker.name = "SlotMarker%d" % index
+		marker.position = Vector2(index * 32, 0)
+		slot_container.add_child(marker)
+	rack.slot_container = slot_container
+	rack.configure(manager)
+	add_child_autofree(rack)
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(manager, rack, null, null)
+	add_child_autofree(drag)
+	drag._spawn_held_token("base_ball", Vector2.ZERO, false)
+	var held_token: Node2D = drag.get_held_token()
+	assert_not_null(held_token, "precondition: held token spawned")
+
+	# 2. Rack slot rendering. RackDisplay applies token_scale to ArtHolder under each Slot.
+	rack.refresh()
+	var slot_art_holder: Node2D = null
+	for slot in slot_container.get_children():
+		var holder: Node = slot.get_node_or_null("ArtHolder")
+		if holder is Node2D:
+			slot_art_holder = holder
+			break
+
+	# 3. Source of truth.
+	var canonical: Vector2 = BaseBall.token_scale
+
+	assert_eq(canonical, Vector2(1.5, 1.5), "definition pins the canonical token_scale")
+	assert_eq(
+		held_token.scale, canonical, "held-token rendering reads token_scale off the definition"
+	)
+	assert_not_null(slot_art_holder, "precondition: rack populated at least one slot art holder")
+	assert_eq(
+		slot_art_holder.scale,
+		canonical,
+		"rack slot art rendering reads token_scale off the definition",
+	)

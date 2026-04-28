@@ -100,20 +100,61 @@ func test_invalid_release_leaves_gesture_open_when_no_target_accepts() -> void:
 # --- SH-287 ACs: expansion-ring fallback after the strict pass holds for ~250 ms ---
 
 
-func test_expansion_ring_fallback_widens_after_hold_window() -> void:
-	# The find-accepting-target helper accepts a scale factor; both strict (1.0) and
-	# widened (1.5) probes accept on an empty court, so the expansion-ring path is wired
-	# end-to-end without crashing.
+func test_expansion_ring_scale_genuinely_widens_the_probe() -> void:
+	# Plumbs scale_factor through end-to-end: place a wall just outside the ball's strict
+	# radius so the strict probe (1.0) clears, but the 1.5x widened probe overlaps the wall
+	# and rejects. Without this distinguishing setup, both probes pass on an empty court and
+	# the test couldn't tell scale 1.0 from scale 1.5.
+	var ball_def: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_distinguishing")
+	var circle := CircleShape2D.new()
+	circle.radius = 10.0
+	ball_def.at_rest_shape = circle
+	_manager.items.assign([ball_def] as Array[ItemDefinition])
+
+	# Wall sits at (25, 0) with size 10x10; its left edge is at x=20.
+	# Probe candidate position (0, 0): strict radius 10 reaches x=10 (clear);
+	# widened radius 15 reaches x=15 (still clear). Move the wall closer.
+	# Use wall left edge at x=14: strict reach x=10 clears; widened reach x=15 overlaps.
+	var wall := StaticBody2D.new()
+	wall.global_position = Vector2(19, 0)  # half-size 5 -> left edge at x=14
+	var wall_collision := CollisionShape2D.new()
+	var wall_shape := RectangleShape2D.new()
+	wall_shape.size = Vector2(10, 10)
+	wall_collision.shape = wall_shape
+	wall.add_child(wall_collision)
+	_host.add_child(wall)
+	# Two physics frames so the static body's RID lands in the space state.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+
+	# Re-build the controller so its CourtDropTarget binds to _host's world.
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_manager, _rack, _drop_target, _reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	_host.add_child(drag)
+
+	var strict: DropTarget = drag._find_accepting_target("ball_distinguishing", Vector2.ZERO, 1.0)
+	var widened: DropTarget = drag._find_accepting_target("ball_distinguishing", Vector2.ZERO, 1.5)
+	assert_not_null(strict, "strict 1.0x probe clears the wall (radius 10 vs gap 14)")
+	# The widened probe must reject because the 1.5x radius (15) crosses the wall edge (14).
+	# This is the assertion that distinguishes scale 1.0 from scale 1.5.
+	assert_true(
+		widened == null or not (widened is CourtDropTarget),
+		"widened 1.5x probe overlaps the wall and rejects (or falls through to a non-court target)",
+	)
+
+
+func test_expansion_ring_fallback_path_runs_on_empty_court() -> void:
+	# Sanity: with no obstacles, both strict and widened probes accept. Pinned separately so
+	# a regression that breaks the expansion-ring code path is caught even when no wall is
+	# present.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
 		ball.queue_free()
 	await get_tree().process_frame
 
-	_drag._gesture_below_threshold = false
-	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S - 0.05
-	)
 	var target_strict: DropTarget = _drag._find_accepting_target("ball_alpha", Vector2(0, 0), 1.0)
 	assert_not_null(target_strict, "strict probe accepts an empty court")
 	var target_widened: DropTarget = _drag._find_accepting_target("ball_alpha", Vector2(0, 0), 1.5)
@@ -121,7 +162,54 @@ func test_expansion_ring_fallback_widens_after_hold_window() -> void:
 
 
 func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
-	# Push the expansion timer past 2x the hold window: triggers cancel-to-source.
+	# Drives _update_expansion_state (the production caller of _cancel_to_source) with a
+	# release point outside both the court and venue so neither strict nor widened probes
+	# accept. Pushing the timer past 2x EXPANSION_RING_HOLD_S must cancel the gesture.
+	# This test fails if the timer never invokes cancel.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	_drag._gesture_below_threshold = false
+	_drag._mouse_button_down = false
+	# Push the start time back so held_duration >= EXPANSION_RING_HOLD_S * 2.
+	_drag._expansion_started_at = (
+		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S * 2.0 - 0.1
+	)
+	# Position outside both court (1200x800 around origin) and venue (4000x2400) so no
+	# target ever accepts -> _update_expansion_state must fall to _cancel_to_source.
+	var off_screen: Vector2 = Vector2(99999, 99999)
+	assert_true(_drag.is_dragging(), "precondition: held token alive before expansion tick")
+	_drag._update_expansion_state(off_screen)
+	assert_false(
+		_drag.is_dragging(),
+		"_update_expansion_state must cancel-to-source after 2x hold window with no target",
+	)
+
+
+func test_expansion_state_does_not_cancel_within_first_window() -> void:
+	# Within EXPANSION_RING_HOLD_S of expansion-start, _update_expansion_state must not
+	# cancel. Pins the boundary so a regression that fires cancel on the first frame is
+	# caught.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	_drag._gesture_below_threshold = false
+	_drag._mouse_button_down = false
+	# Started just now: held_duration is below the first hold window.
+	_drag._expansion_started_at = float(Time.get_ticks_msec()) / 1000.0
+	_drag._update_expansion_state(Vector2(99999, 99999))
+	assert_true(_drag.is_dragging(), "no cancel within the first hold window")
+
+
+func test_expansion_state_commits_when_widened_probe_accepts() -> void:
+	# Strict probe fails (off-court) but widened probe accepts (venue catches it). The
+	# expansion path should commit via attempt_release rather than cancel.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -131,10 +219,13 @@ func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
 	_drag._gesture_below_threshold = false
 	_drag._mouse_button_down = false
 	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S * 2.0 - 0.1
+		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S - 0.05
 	)
-	_drag._cancel_to_source()
-	assert_false(_drag.is_dragging(), "cancel-to-source frees the held token")
+	# Position inside the venue but on the court (so both probes succeed via court target);
+	# this exercises the widened-probe-accepts branch in _update_expansion_state which
+	# re-runs attempt_release and commits.
+	_drag._update_expansion_state(Vector2(0, 0))
+	assert_false(_drag.is_dragging(), "widened-accept branch commits the gesture")
 
 
 # --- SH-320 regression: shop-to-court drag spawns a live ball at the release point --
@@ -167,8 +258,32 @@ func test_hover_feedback_bumps_held_token_scale_over_valid_target() -> void:
 	_drag.grab_from_rack("ball_alpha")
 	var token: Node2D = _drag.get_held_token()
 	assert_not_null(token, "precondition: held token spawned")
+	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
+	var base_scale: Vector2 = definition.token_scale
 	# An empty-court position is a valid target; mouse-down (still grabbing) so hover
 	# feedback applies (not the auto-commit branch).
 	_drag._mouse_button_down = true
 	_drag._update_hover_feedback(Vector2(0, 0))
-	assert_ne(token.scale, Vector2(1.5, 1.5), "scale lifts when hovering a valid target")
+	# Pin the exact lifted scale so a regression that shrinks the token (or zeroes the bump)
+	# fails the assertion. assert_ne against an arbitrary value would let any non-equal
+	# regression slip through.
+	var expected_lifted: Vector2 = base_scale * _drag.HOVER_SCALE_BUMP
+	assert_eq(token.scale, expected_lifted, "hover lifts to base_scale * HOVER_SCALE_BUMP exactly")
+	assert_eq(token.modulate, _drag.HOVER_MODULATE, "hover modulate matches the constant")
+
+
+func test_hover_feedback_resets_to_base_scale_when_no_target_accepts() -> void:
+	# Off-court, off-venue release point: no target accepts; hover feedback must reset the
+	# held token to its base (definition-authored) scale and neutral modulate. Pins the
+	# inverse of the lift so a regression that leaves stale lift state across frames fails.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	var token: Node2D = _drag.get_held_token()
+	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
+	var base_scale: Vector2 = definition.token_scale
+	_drag._mouse_button_down = true
+	# First, lift, then drop hover.
+	_drag._update_hover_feedback(Vector2(0, 0))
+	_drag._update_hover_feedback(Vector2(99999, 99999))
+	assert_eq(token.scale, base_scale, "off-target hover resets to base token_scale")
+	assert_eq(token.modulate, _drag.NEUTRAL_MODULATE, "off-target hover resets modulate")
