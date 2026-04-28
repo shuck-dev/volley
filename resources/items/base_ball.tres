@@ -23,6 +23,9 @@ trigger = SubResource("trigger_1")
 outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
 max_active_level = null
 
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
 [resource]
 script = ExtResource("1_item")
 key = "base_ball"
@@ -35,3 +38,4 @@ base_cost = 40
 max_level = 10
 effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])
 purchasable = false
+at_rest_shape = SubResource("at_rest_shape_1")

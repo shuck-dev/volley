@@ -146,16 +146,18 @@ func test_cursor_state_can_drop_over_rack_for_role() -> void:
 	assert_eq(state, CursorStateScript.State.CAN_DROP)
 
 
-func test_cursor_state_dragging_in_empty_court_neighbourhood() -> void:
-	# Mid-venue but not over a target: cursor reads DRAGGING.
+func test_cursor_state_dragging_outside_any_target() -> void:
+	# Cursor inside venue but no DropTarget accepts the held position: reads DRAGGING.
+	# After SH-287's VenueDropTarget joined the poll as a ball-role catch-all, DRAGGING is
+	# reachable only when the held position is outside every registered target. Pick a
+	# point outside the registered venue rect so VenueDropTarget rejects it; the cursor's
+	# own (0,0) probe stays inside venue so derivation doesn't return FORBIDDEN.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	# A point well outside court bounds (-420..420) but inside venue bounds.
-	var venue_only := Vector2(800, 0)
+	var outside_targets := Vector2(5000, 0)
 
-	var state: int = _drag._derive_cursor_state(venue_only)
+	var state: int = _drag._derive_cursor_state(outside_targets)
 
-	# venue_only is outside court rect AND not over the rack drop target.
 	assert_eq(state, CursorStateScript.State.DRAGGING)
 
 
@@ -186,8 +188,10 @@ func test_cursor_state_changed_signal_drives_overlay_through_process() -> void:
 	var rack_position: Vector2 = _drop_target.global_position
 	_drag._held_token.global_position = rack_position
 	_drag._update_cursor_state(rack_position)
-	# Step 2: venue-only position outside court and rack -> DRAGGING.
-	var venue_only := Vector2(800, 0)
+	# Step 2: position outside every registered DropTarget -> DRAGGING.
+	# (After SH-287, VenueDropTarget's ball-role venue rect catches positions inside it,
+	# so DRAGGING requires a held position outside the venue rect.)
+	var venue_only := Vector2(5000, 0)
 	_drag._held_token.global_position = venue_only
 	_drag._update_cursor_state(venue_only)
 

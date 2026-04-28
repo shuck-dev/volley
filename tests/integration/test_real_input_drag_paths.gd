@@ -402,8 +402,11 @@ func test_held_token_during_rack_drag_uses_definition_scale() -> void:
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
 	# Wait past grab_ease_duration_s so the lift ease settles via the public _process surface.
 	await get_tree().create_timer(0.1).timeout
+	# SH-297 ease lands on token_scale; SH-287 hover-feedback then bumps by HOVER_SCALE_BUMP
+	# because the cursor at default (0,0) sits inside the court drop target's bounds.
+	var expected: Vector2 = TrainingBall.token_scale * BallDragControllerScript.HOVER_SCALE_BUMP
 	assert_eq(
 		held_token.scale,
-		TrainingBall.token_scale,
+		expected,
 		"the drag controller's held token settles to token_scale after the SH-297 lift ease",
 	)

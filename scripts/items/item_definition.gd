@@ -3,8 +3,7 @@ extends Resource
 
 @export var key: String
 @export var type: StringName = &""
-## Physical role of this item: determines its natural placement target.
-## &"equipment" (default) lives on the player; &"ball" lives on the court.
+## &"equipment" lives on the player; &"ball" lives on the court.
 @export var role: StringName = &"equipment"
 @export var display_name: String
 @export var art: PackedScene
@@ -17,6 +16,8 @@ extends Resource
 @export var token_scale: Vector2 = Vector2(1.5, 1.5)
 ## False for authored starter items that are owned-from-start and never appear in the shop catalog (SH-313).
 @export var purchasable: bool = true
+## Authored at-rest shape for drop-target body projection; null falls back to bounds-only acceptance.
+@export var at_rest_shape: Shape2D
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

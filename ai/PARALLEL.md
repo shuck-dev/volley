@@ -144,7 +144,9 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 Newest at top. One line per event.
 
 ```
+[SH-297] abe: merged origin/main (SH-287 #533); collapsed _position_accepted_by_any_target stub onto _find_accepting_target
 [SH-297] abe: claimed; implementing grab ease-to-cursor tween, generous live-ball press hit-box, cursor state machine + Node2D overlay placeholder; cursor-state poll stubbed to be wired to manny's _find_accepting_target on merge of #533
+[SH-287] manny: claimed; DropTarget interface + CourtDropTarget body projection + RackDropTarget + ShopDropTarget + VenueDropTarget; expansion-ring fallback wired; ItemDefinition.at_rest_shape authored on base_ball/training_ball; SH-320 covered by spawn_purchased_at hand-off
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows
 [SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc
