@@ -87,6 +87,15 @@ Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-sco
 
 If you previously blocked and the new diff resolves your block: reply inline to each of your prior block findings, naming the fix SHA in 15 words or less. Then apply `zaphod-approved`. Don't leave block threads hanging open when the underlying issue is fixed.
 
+## Replies and labels
+
+Two surfaces, easy to confuse:
+
+1. **Reply** is a threaded comment under the original finding. Required on every addressed finding. Use `gh api repos/.../pulls/<n>/comments/<id>/replies`. Resolving the thread (the GitHub UI checkbox) is Josh's job, not the dispatcher's; the reply itself closes the loop.
+2. **Label** is the reviewer's verdict surface. `zaphod-approved` on clean, `zaphod-blocked` on findings. Verify the label actually landed; CI strips Zaphod labels on every new commit so a label applied during the Battle round may be gone after the next push. If you re-Battle, re-apply.
+
+Pre-commit hooks and the merge gate read labels, not threads. Threads are for humans.
+
 ## Mechanical fixes as commits
 
 If the finding has a one-line fix and you have Edit access, land the fix as a commit with a `[<codename>]` role tag in the subject. Reference the fix by commit SHA rather than typing the diff into the body.

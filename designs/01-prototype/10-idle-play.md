@@ -155,3 +155,13 @@ On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `la
 ## Open questions
 
 - `AI_SPEED_FRACTION` of 0.75 and `AI_REACTION_FRAMES` of 12 are starting values. Tune during Make Fun pass so the AI misses believably without feeling broken.
+
+## Design note: volley count is automated Foddian
+
+In idle mode the volley counter takes on a Foddian shape on its own. The count climbs while the AI rallies, then a miss zeroes it; the partner climbs again. The player isn't doing the climb, but they're watching the precarious ascent of a number that any single miss can erase. Same emotional contour as Getting Over It's hammer climb: long build, sudden fall, restart from a known floor.
+
+The interesting consequence: the volley count is a watchable surface during idle play. The player isn't required to act, but they're invited to notice. A long auto-rally peaks, a miss happens, and the climb starts over. Over a longer idle window this layers a second tension on top of the FP accumulation that the doc above already names.
+
+Implications for tuning: the AI's miss rate sets the Foddian frequency. Too aggressive and the climbs are short and the falls don't sting; too defensive and the counter just grinds up forever and the Foddian beat disappears. The `AI_SPEED_FRACTION` and `AI_REACTION_FRAMES` knobs at the top of the open-questions list above own this beat too.
+
+This isn't a feature to build, it's a property to preserve. When other tuning passes touch the AI miss rate, hold the Foddian read in mind.

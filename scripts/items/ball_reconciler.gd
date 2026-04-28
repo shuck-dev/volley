@@ -10,13 +10,16 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
+const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
-@export var spawn_for_existing_on_load: bool = false
 
 var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
+var _initial_reconcile_pending: bool = true
+## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
+var _adopting_pre_existing: bool = false
 
 
 func configure(item_manager: Node, ball_host: Node) -> void:
@@ -32,19 +35,16 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
-	# Both calls deferred: adopt_pre_existing_balls so sibling listeners connect before we emit,
-	# and _reconcile_initial_state so _ball_host is fully settled in the tree first.
+	# Deferred so sibling listeners connect to ball_spawned before we emit.
 	call_deferred(&"adopt_pre_existing_balls")
-	if spawn_for_existing_on_load:
-		call_deferred(&"_reconcile_initial_state")
+	call_deferred(&"_reconcile_initial_state")
 
 
-## Registers each authored Ball under its `item_key`, applies item art, and ensures
-## placement reflects "this ball is on court" so the rack hides the matching token.
-## Idempotent; safe to call repeatedly.
+## Idempotent; safe to call repeatedly across scene reloads.
 func adopt_pre_existing_balls() -> void:
 	if _ball_host == null:
 		return
+	_adopting_pre_existing = true
 	for child in _ball_host.get_children():
 		if not (child is Ball):
 			continue
@@ -61,9 +61,10 @@ func adopt_pre_existing_balls() -> void:
 		var key: String = ball.item_key
 		_balls_by_key[key] = ball
 		_apply_item_art(ball, key)
-		# Activating fires court_changed, which sees the ball already tracked and is a no-op for spawning.
-		# The placement flip is what lets the rack hide the token the player already sees in play.
-		if (
+		# Authored ball needs level >= 1 and ON_COURT so the rack hides its token.
+		if _item_manager.has_method("adopt_authored"):
+			_item_manager.adopt_authored(key)
+		elif (
 			_item_manager.has_method("activate")
 			and _item_manager.get_level(key) > 0
 			and not _item_manager.is_on_court(key)
@@ -71,6 +72,7 @@ func adopt_pre_existing_balls() -> void:
 			_item_manager.activate(key)
 		ball_spawned.emit(key, ball)
 		ball_added.emit(ball)
+	_adopting_pre_existing = false
 
 
 func _is_tracked(ball: Ball) -> bool:
@@ -96,7 +98,7 @@ func ensure_ball_for_key(
 	item_key: String,
 	spawn_position: Vector2,
 	initial_velocity: Vector2,
-	preserved_speed: float = -1.0,
+	preserved_speed: float = PRESERVED_SPEED_NONE,
 ) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
@@ -122,15 +124,14 @@ func bring_into_play(
 	item_key: String,
 	spawn_position: Vector2,
 	initial_velocity: Vector2,
-	preserved_speed: float = -1.0,
+	preserved_speed: float = PRESERVED_SPEED_NONE,
 ) -> Ball:
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
 	return ensure_ball_for_key(item_key, spawn_position, initial_velocity, preserved_speed)
 
 
-## SH-288: friendship energy persists across grab-and-release. When `preserved_speed` is non-negative,
-## the ball adopts that speed and re-magnitudes its velocity along the requested direction.
+## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
 func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 	if preserved_speed < 0.0:
 		return
@@ -144,12 +145,15 @@ func release_ball(item_key: String) -> Ball:
 	if ball == null:
 		return null
 
+	_initial_reconcile_pending = false
 	_balls_by_key.erase(item_key)
 	ball_removed.emit(ball)
 	return ball
 
 
 func _on_court_changed(item_key: String, on_court: bool) -> void:
+	if not _adopting_pre_existing:
+		_initial_reconcile_pending = false
 	if on_court:
 		if get_ball_for_key(item_key) != null:
 			return
@@ -167,7 +171,11 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	ball.call_deferred("queue_free")
 
 
+## One-shot: skipped once any signal-driven court_changed activity has begun.
 func _reconcile_initial_state() -> void:
+	if not _initial_reconcile_pending:
+		return
+	_initial_reconcile_pending = false
 	for key in _item_manager.get_court_items():
 		if get_ball_for_key(key) == null:
 			ensure_ball_for_key(

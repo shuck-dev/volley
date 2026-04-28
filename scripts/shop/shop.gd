@@ -44,6 +44,8 @@ func _spawn_items() -> void:
 func _get_visible_items() -> Array[ItemDefinition]:
 	var available: Array[ItemDefinition] = []
 	for definition: ItemDefinition in _item_manager.items:
+		if not definition.purchasable:
+			continue
 		if _item_manager.get_level(definition.key) == 0:
 			available.append(definition)
 		if available.size() >= config.display_slots:

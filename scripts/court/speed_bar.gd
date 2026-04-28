@@ -12,8 +12,7 @@ const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 var ball: Ball
 var current_speed: float = 0.0
 
-## Every tracked ball whose speed feeds the bar. Multi-ball: the bar shows the
-## **highest** current speed across the set, the rally-pressure reading the player feels.
+## Multi-ball: bar shows highest live speed across the set, not the most-recently-emitting ball.
 var _balls: Array[Ball] = []
 var _min_speed: float = 400.0
 var _max_speed: float = 700.0
@@ -77,8 +76,7 @@ func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float
 	queue_redraw()
 
 
-## Recomputes the bar reading from the current tracked set, used when a ball detaches
-## so the bar's `current_speed` doesn't latch on a value the removed ball last emitted.
+## Prevents `current_speed` latching on a value the removed ball last emitted.
 func _recompute_from_tracked() -> void:
 	var highest: float = _min_speed
 	for tracked in _balls:

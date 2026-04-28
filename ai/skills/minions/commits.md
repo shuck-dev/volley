@@ -36,6 +36,12 @@ For breaking changes (save wipes, API renames, workflow-input shifts), use `feat
 
 Let lefthook fire on commit. Do not run `lefthook run pre-commit` by hand. If a hook fails, fix the underlying issue and create a new commit; do not amend, do not `--no-verify`.
 
+## ggut runtime expectations
+
+The full GUT suite runs under a few seconds. Post-Vector-Squared budget is a hard 2 seconds, with a CI gate enforcing it. Never set multi-minute Bash timeouts on a `ggut` invocation; if the suite isn't done in 5 seconds something is wrong (test hang, init-order deadlock, infinite loop in production). Investigate the hang, don't extend the timeout. If the test count makes you suspicious, recall: 488 tests in under 2s is the post-rework normal.
+
+Don't background `ggut` to a poll-loop watching a file you didn't write. Run it foreground with a hard 5s cap: `timeout 5 godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit 2>&1 | tail -50`. If it hits the timeout, that's a real hang, not a slow suite.
+
 ## Push and merge
 
 Push the branch with `-u` on first push. Open the challenge ready-for-review (not draft) unless more commits are coming. After `gh pr create`, queue auto-merge with `gh pr merge <n> --auto`. The `gh` command names stay literal; the noun for the work in flight is "challenge."

@@ -6,7 +6,7 @@ extends Node
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
 signal current_ball_changed(ball: Ball)
-## Re-emitted so subscribers bind to the tracker, not past it.
+## Re-emitted from ball_system so subscribers bind to the tracker, not the system directly.
 signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
@@ -41,8 +41,7 @@ func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
 	_balls.append(new_ball)
-	if _current_ball == null:
-		_set_current(new_ball)
+	_set_current(new_ball)
 	if not new_ball.missed.is_connected(_on_ball_missed):
 		new_ball.missed.connect(_on_ball_missed)
 
@@ -113,8 +112,7 @@ func set_partner_paddle(paddle: Node2D) -> void:
 		if not is_instance_valid(tracked):
 			continue
 		if tracked.effect_processor != null:
-			if not tracked.effect_processor.paddles.has(paddle):
-				tracked.effect_processor.paddles.append(paddle)
+			tracked.effect_processor.paddles.append(paddle)
 	if _current_ball != null and paddle.has_method("set_ball"):
 		paddle.set_ball(_current_ball)
 

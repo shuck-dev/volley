@@ -15,6 +15,8 @@ extends Resource
 @export var effects: Array[Effect]
 ## Canonical visual scale shared by shop, rack, held token, and live ball so the views read as one object (SH-261).
 @export var token_scale: Vector2 = Vector2(1.5, 1.5)
+## False for authored starter items that are owned-from-start and never appear in the shop catalog (SH-313).
+@export var purchasable: bool = true
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

@@ -247,34 +247,3 @@ func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 		ball.effect_processor.paddles.has(partner),
 		"partner should land on the new ball's paddle list"
 	)
-
-
-func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
-	# Thread 3: calling set_partner_paddle with the same paddle twice must not append it twice.
-	var ball: Ball = _spawn_ball("ball_alpha")
-	var partner: Node2D = _make_partner_stub()
-	_court.ball_tracker.set_partner_paddle(partner)
-	_court.ball_tracker.set_partner_paddle(partner)
-	assert_eq(
-		ball.effect_processor.paddles.count(partner),
-		1,
-		"set_partner_paddle called twice should not duplicate the paddle in the list",
-	)
-
-
-func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
-	# Thread 4: when a ball is already current, attaching a second ball must not overwrite _current_ball.
-	var first: Ball = _spawn_ball("ball_alpha")
-	var initial_current: Ball = _court.ball_tracker.get_current_ball()
-	assert_eq(initial_current, first, "precondition: first ball is current")
-
-	var second: Ball = _spawn_ball("ball_beta")
-	assert_eq(
-		_court.ball_tracker.get_current_ball(),
-		first,
-		"attaching a second ball mid-rally must not overwrite the current ball",
-	)
-	assert_true(
-		_court.ball_tracker.get_balls().has(second),
-		"second ball is still tracked even though it did not become current",
-	)

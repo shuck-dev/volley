@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cgigxt4euhw51"]
+
+[ext_resource type="PackedScene" uid="uid://cu2ck5x67gono" path="res://scenes/items/training_ball.tscn" id="1_5blea"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_ijjqn"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
+
+[sub_resource type="Resource" id="outcome_1"]
+script = ExtResource("5_stat")
+stat_key = &"ball_speed_min"
+value = 30.0
+
+[sub_resource type="Resource" id="trigger_1"]
+script = ExtResource("3_trigger")
+type = &"always"
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_1")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
+max_active_level = null
+
+[resource]
+script = ExtResource("1_item")
+key = "base_ball"
+type = &"kit"
+role = &"ball"
+display_name = "Base Ball"
+art = ExtResource("1_5blea")
+descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Never cooled down"])
+base_cost = 40
+max_level = 10
+effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])
+purchasable = false

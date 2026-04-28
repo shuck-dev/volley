@@ -311,7 +311,6 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 
 	var reloaded_reconciler: BallReconciler = BallReconcilerScript.new()
 	reloaded_reconciler.configure(reloaded_manager, reloaded_host)
-	reloaded_reconciler.spawn_for_existing_on_load = true
 	add_child_autofree(reloaded_reconciler)
 	await get_tree().process_frame
 

@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
-[ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
@@ -18,10 +17,11 @@
 [ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/friendship_points.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
-[ext_resource type="Resource" uid="uid://iq04trmvlswer" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
-[ext_resource type="Script" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
-[ext_resource type="Script" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
-[ext_resource type="Script" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
+[ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
+[ext_resource type="Resource" uid="uid://07ennsehe5u8" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
+[ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
+[ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
+[ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(21.6, 883.2)
@@ -40,20 +40,20 @@ right_wall = NodePath("Bounds/Right Wall")
 partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 
-[node name="CourtBackground" type="Parallax2D" parent="." unique_id=1053024008]
-scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(4000, 4000)
+[node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
+layer = -100
 
 [node name="BackgroundColor" type="ColorRect" parent="CourtBackground" unique_id=2003900130]
-offset_left = -1200.0
-offset_top = -1200.0
-offset_right = 1200.0
-offset_bottom = 1200.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
-item_key = "training_ball"
+item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
@@ -205,10 +205,10 @@ script = ExtResource("11_2768l")
 ball_system = NodePath("../BallReconciler")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
-offset_left = -540.0
+offset_left = -599.0
 offset_top = -240.0
-offset_right = -540.0
-offset_bottom = -240.0
+offset_right = -529.0
+offset_bottom = -172.0
 
 [node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
 script = ExtResource("21_reconciler")
@@ -223,6 +223,6 @@ rack = NodePath("../BallRack")
 rack_drop_target = NodePath("../BallRack/DropTarget")
 gear_rack = NodePath("../GearRack")
 gear_rack_drop_target = NodePath("../GearRack/DropTarget")
-reconciler = NodePath("../BallReconciler")
 court_bounds = Rect2(-420, -360, 840, 720)
-venue_bounds = Rect2(-2000, -1200, 4000, 2400)
+venue_bounds = Rect2(-1200, -720, 2400, 1440)
+reconciler = NodePath("../BallReconciler")
