@@ -234,19 +234,21 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 
 
 ## Shop-purchase entry: the shop just took payment for `item_key` and wants the new ball
-## to spawn on the court at `position` (SH-320). Runs the standard target poll; if a
+## to spawn on the court at `world_position` (SH-320). Runs the standard target poll; if a
 ## court/venue target accepts, the ball spawns and we return true. Otherwise the item
 ## stays a rack-only token (the rack regrows it via `_on_court_changed` defaults).
-func spawn_purchased_at(item_key: String, position: Vector2, gesture_velocity: Vector2) -> bool:
+func spawn_purchased_at(
+	item_key: String, world_position: Vector2, gesture_velocity: Vector2
+) -> bool:
 	# No venue clamp here: the shop has already paid for the item, and a release outside
 	# the venue means the rack should take the new token. Returning false lets the caller
 	# fall back to its own rack/no-court path.
-	var target: DropTarget = _find_accepting_target(item_key, position, 1.0)
+	var target: DropTarget = _find_accepting_target(item_key, world_position, 1.0)
 	if target == null:
 		return false
 	if not (target is CourtDropTarget or target is VenueDropTarget):
 		return false
-	target.accept(item_key, position, gesture_velocity)
+	target.accept(item_key, world_position, gesture_velocity)
 	return true
 
 
@@ -324,18 +326,20 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 
 ## Returns the first registered target whose `can_accept` succeeds, or null. Targets are
 ## polled in registration order; built-ins register in priority order (court before venue).
-func _find_accepting_target(item_key: String, position: Vector2, scale_factor: float) -> DropTarget:
+func _find_accepting_target(
+	item_key: String, world_position: Vector2, scale_factor: float
+) -> DropTarget:
 	for target: DropTarget in _drop_targets:
-		if target.can_accept(item_key, position, scale_factor):
+		if target.can_accept(item_key, world_position, scale_factor):
 			return target
 	return null
 
 
 ## Hover-feedback bump applied to the held token while a target accepts the current pos.
-func _update_hover_feedback(position: Vector2) -> void:
+func _update_hover_feedback(world_position: Vector2) -> void:
 	if _held_token == null:
 		return
-	var hovering: bool = _find_accepting_target(_held_key, position, 1.0) != null
+	var hovering: bool = _find_accepting_target(_held_key, world_position, 1.0) != null
 	var definition: ItemDefinition = _get_item_definition(_held_key)
 	var base_scale: Vector2 = definition.token_scale if definition != null else Vector2.ONE
 	if hovering:
@@ -348,7 +352,7 @@ func _update_hover_feedback(position: Vector2) -> void:
 
 ## After mouse-up: maintain the expansion-ring timer. Cancels back to source if the
 ## widened poll has also failed for the same hold window.
-func _update_expansion_state(position: Vector2) -> void:
+func _update_expansion_state(world_position: Vector2) -> void:
 	if _held_token == null:
 		return
 	if _expansion_started_at < 0.0:
@@ -362,11 +366,13 @@ func _update_expansion_state(position: Vector2) -> void:
 	# Strict pass already ran in attempt_release; try the widened pass now. If it succeeds,
 	# attempt_release picks it up next frame. If the widened pass has also been failing for
 	# another full hold window, cancel back to source.
-	var widened: DropTarget = _find_accepting_target(_held_key, position, EXPANSION_RING_SCALE)
+	var widened: DropTarget = _find_accepting_target(
+		_held_key, world_position, EXPANSION_RING_SCALE
+	)
 	if widened != null:
 		# attempt_release on the next frame will use the widened scale because the timer
 		# crossed the threshold; re-running it now lets us commit immediately.
-		attempt_release(position)
+		attempt_release(world_position)
 		return
 
 	if held_duration >= EXPANSION_RING_HOLD_S * 2.0:
