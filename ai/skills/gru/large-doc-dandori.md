@@ -13,7 +13,7 @@ Examples that do NOT qualify: a one-paragraph fix, a single-file polish pass, a 
 
 ## The four beats
 
-### 1. Plan beat (organiser + Josh)
+### 1. Plan beat (dispatcher + Josh)
 
 Before any prose ships, sketch the structure. Land it in chat or a scratchpad.
 
@@ -39,7 +39,7 @@ Dispatch minions per section or per file slice. Each gets:
 - Their scope. Which section or file is theirs to author or move.
 - The cross-refs they need to land. Which other docs they must link out to, and where.
 
-Authoring minions return their draft to the organiser. The organiser stages, then dispatches review.
+Authoring minions return their draft to the dispatcher. The dispatcher stages, then dispatches review.
 
 ### 3. Multi-minion review (parallel)
 
@@ -55,14 +55,14 @@ Five lenses run on the result. Each lens is a separate dispatch; lenses run in p
 
 Each reviewer follows `ai/skills/minions/reviewers.md` for verdict shape. Approves are silent label-only; blocks post inline review comments anchored to `path:line`, never on the main PR thread.
 
-### 4. Synthesis (organiser)
+### 4. Synthesis (dispatcher)
 
 Integrate review feedback. Push corrections. Final read against the structure plan to confirm the end-state matches what was signed off in beat 1. Any drift surfaces as an explicit revision to the plan, not a quiet rewrite.
 
 ## Discipline
 
 - **No file gets touched twice for the same restructure.** If the plan needs a file's section moved AND that file's prose tightened, both happen in the same PR or the plan changes.
-- **Trim-and-verify before push.** Every diff that removes canon names where the canon now lives. The organiser checks before staging.
+- **Trim-and-verify before push.** Every diff that removes canon names where the canon now lives. The dispatcher checks before staging.
 - **The plan is the contract.** If the work reveals the plan is wrong, escalate to Josh and revise the plan. Don't drift the work.
 - **Phase folders are not canon.** If the work surfaces phase-folder material that reads as canon, the move is to promote it to the right discipline folder, not to polish it in place.
 

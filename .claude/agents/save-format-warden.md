@@ -42,7 +42,7 @@ Memory: `feedback_no_save_compat.md`. Shim-style fallbacks for old field names o
 
 ## Output
 
-Return a structured verdict to the organiser. Three fields:
+Return a structured verdict to the dispatcher. Three fields:
 
 - `verdict`: `zaphod-approved` when the diff either does not change the format or changes it with an explicit "wipes saves" call-out. `zaphod-blocked` when the format changes silently, when a compat shim appears, or when autoload order shifts without justification.
 - `summary`: one-sentence overall finding. For approved verdicts this is optional.
@@ -50,4 +50,4 @@ Return a structured verdict to the organiser. Three fields:
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-Verdict surface per `ai/skills/minions/reviewers.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the organiser re-dispatches you.
+Verdict surface per `ai/skills/minions/reviewers.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.

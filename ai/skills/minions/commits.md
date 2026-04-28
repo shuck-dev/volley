@@ -22,8 +22,8 @@ EOF
 
 - `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks challenges without it.
 - Subject prefix `[<Codename>/<role>]` for minions: codename (Feldspar, Hornfels, Trillian, etc.) plus role (general-purpose, code-quality, etc.). Codename rotates per work unit; role is stable to the agent type.
-- Subject prefix for Gru: `[Gru]` only. Gru is the singleton organiser; codename and role are the same and the slash is redundant.
-- `Agent-Role: <role>` trailer, exactly once. For Gru: `Agent-Role: organiser`.
+- Subject prefix for Gru: `[Gru]` only. Gru is the singleton dispatcher; codename and role are the same and the slash is redundant.
+- `Agent-Role: <role>` trailer, exactly once. For Gru: `Agent-Role: dispatcher`.
 - No `Co-Authored-By:` lines. Volley's swarm uses Agent-Role for attribution; Co-Authored-By creates double counting.
 
 ## What goes in the subject
