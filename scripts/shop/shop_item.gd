@@ -142,33 +142,46 @@ func start_drag() -> bool:
 	return true
 
 
-## Test seam / production entry. Returns true on commit (held token freed, gesture ends);
-## false on no valid target (held token stays following the cursor, gesture continues).
-## Inside-shop bounds is itself a valid target: cancels back to the slot. Outside-shop only
-## commits when the purchase succeeds; insufficient FP keeps the gesture open.
+## Returns true on commit; false leaves the gesture open so the player can drag back to cancel or earn FP and retry.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if inside_shop:
-		# Cancel: held token freed, slot visible again, no purchase.
 		_finalise_gesture(release_position, false)
 		visible = true
 		return true
 
-	# Outside shop: only commit if the purchase succeeds.
 	var purchased: bool = _complete_purchase()
 	if not purchased:
-		# Insufficient FP (or otherwise un-takeable). No snap-back; gesture stays open.
-		# Held token continues to follow the cursor; the player can drag back into the shop
-		# bounds to cancel, or get more FP and try again.
 		return false
 
-	# Purchased: held token freed, slot stays hidden until the next shop refresh sweeps it.
+	_route_purchased_to_court(release_position)
 	_finalise_gesture(release_position, true)
 	visible = false
 	return true
+
+
+## Hands the just-purchased item to BallDragController so a court-valid release spawns a live ball at the release point.
+func _route_purchased_to_court(release_position: Vector2) -> bool:
+	if item_definition == null:
+		return false
+	if item_definition.role != &"ball":
+		return false
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return false
+	var controller: Node = tree.get_first_node_in_group(&"drag_controller")
+	if controller == null or not controller.has_method("spawn_purchased_at"):
+		return false
+	return controller.spawn_purchased_at(item_definition.key, release_position, _release_velocity())
+
+
+func _release_velocity() -> Vector2:
+	if _item_manager != null and _item_manager.has_method("get_default_ball_launch_velocity"):
+		return _item_manager.get_default_ball_launch_velocity()
+	return Vector2.ZERO
 
 
 func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:

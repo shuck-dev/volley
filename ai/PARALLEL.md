@@ -145,6 +145,7 @@ Newest at top. One line per event.
 
 ```
 [SH-325] dave: claimed; new data-driven skill, code-comments preamble + Pickle Jar pointer, dispatch.md implementer-brief preamble
+[SH-287] manny: claimed; DropTarget interface + CourtDropTarget body projection + RackDropTarget + ShopDropTarget + VenueDropTarget; expansion-ring fallback wired; ItemDefinition.at_rest_shape authored on base_ball/training_ball; SH-320 covered by spawn_purchased_at hand-off
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows
 [SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc
