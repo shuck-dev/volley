@@ -150,6 +150,8 @@ func test_spawn_for_existing_on_load_reconciles_from_progression() -> void:
 	fresh.configure(_manager, preloaded_host)
 	fresh.spawn_for_existing_on_load = true
 	add_child_autofree(fresh)
+	# Flush deferred calls: adopt_pre_existing_balls and _reconcile_initial_state.
+	await get_tree().process_frame
 
 	var found: Ball = fresh.get_ball_for_key("ball_alpha")
 	assert_not_null(found, "on-load reconcile should spawn balls for already-on-court items")
