@@ -1,7 +1,4 @@
 ## SH-287: drop targets validate releases through bounds and body projection.
-## Covers wall-edge rejection, ball-on-ball-stack rejection, drop-on-rack/court/venue,
-## gesture-stays-open-on-invalid (delegated to BallDragController integration tests),
-## and cross-container size identity for held tokens vs slot tokens.
 extends GutTest
 
 const DropTargetScript: GDScript = preload("res://scripts/items/drop_target.gd")
@@ -58,7 +55,6 @@ func test_default_drop_target_rejects_everything() -> void:
 
 func test_default_drop_target_accept_is_a_no_op() -> void:
 	var target: DropTarget = DropTargetScript.new()
-	# Should not raise. The base class is meant to be overridden.
 	target.accept("anything", Vector2.ZERO, Vector2.ZERO)
 	assert_true(true)
 
@@ -160,7 +156,7 @@ func test_venue_drop_target_accepts_ball_inside_venue_bounds() -> void:
 	var target: VenueDropTarget = VenueDropTargetScript.new()
 	target.configure(manager, reconciler, venue, court)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
-	# Far-corner release clamped to venue still resolves (inclusive max edge).
+	# Inclusive max-edge: Rect2.has_point treats max as exclusive without the guard.
 	assert_true(target.can_accept("ball_alpha", Vector2(2000, 1200)))
 
 
@@ -182,8 +178,7 @@ func test_venue_drop_target_rejects_outside_venue() -> void:
 class _PhysicsHarness:
 	extends Node2D
 
-	## Builder for CourtDropTarget tests: parents balls/walls under a Node2D living in the
-	## scene tree so they share its `World2D`. Returns the configured target.
+	## Parents balls/walls under a tree-resident Node2D so they share its `World2D`.
 
 	static func make(test: GutTest, manager: Node, definitions: Array) -> Dictionary:
 		manager.items.assign(definitions as Array[ItemDefinition])
@@ -242,10 +237,7 @@ func test_court_target_rejects_when_wall_overlaps_projection() -> void:
 
 
 func test_court_target_rejects_ball_on_ball_stack() -> void:
-	# An existing body (a placed ball, a ball-shaped obstacle, etc.) rejects the
-	# projection at its position. We use a StaticBody2D as the stand-in for a stacked
-	# ball so the body stays put across physics frames; the projection rule itself does
-	# not care about the body type, only that a body's collision shape overlaps.
+	# StaticBody2D stands in for a placed ball so the body stays put across physics frames.
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha", 20.0)
 	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
@@ -287,15 +279,11 @@ func test_court_target_rejects_equipment_role() -> void:
 
 
 func test_court_target_widens_with_expansion_ring_scale() -> void:
-	# Strict projection rejects a position grazed by a wall; a 1.5x scaled shape rejects
-	# even harder. Confirm the shape scale is honoured (i.e. the API path runs without
-	# crashing on a non-circle authored shape).
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha", 12.0)
 	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
 	await get_tree().physics_frame
 	var target: CourtDropTarget = harness["target"]
-	# Empty court at strict scale and at 1.5x expansion: both accept.
 	assert_true(target.can_accept("ball_alpha", Vector2.ZERO, 1.0))
 	assert_true(target.can_accept("ball_alpha", Vector2.ZERO, 1.5))
 
@@ -304,18 +292,12 @@ func test_court_target_widens_with_expansion_ring_scale() -> void:
 
 
 func test_item_definition_carries_at_rest_shape_for_ball_items() -> void:
-	# Authored ball definitions land an at-rest shape so CourtDropTarget projection has
-	# a real radius to query against.
 	assert_not_null(BaseBall.at_rest_shape, "base ball should carry an at_rest_shape after SH-287")
 	assert_true(BaseBall.at_rest_shape is CircleShape2D)
 
 
 func test_token_scale_remains_canonical_across_items() -> void:
-	# Cross-container size identity: every container reads `token_scale` off the same
-	# definition, so any item that authors a non-default scale appears at that scale in
-	# every state. Pins all three renderings (held token, ball_reconciler ball-holder, and
-	# rack-display slot art) against the single source of truth on the definition. This is
-	# the SH-261 + SH-287 contract: a regression that diverges any one container fails here.
+	# Pins held-token, rack-slot, and definition scales to the single source of truth (SH-261).
 	const BallDragControllerScript: GDScript = preload(
 		"res://scripts/items/ball_drag_controller.gd"
 	)
@@ -348,7 +330,6 @@ func test_token_scale_remains_canonical_across_items() -> void:
 	var held_token: Node2D = drag.get_held_token()
 	assert_not_null(held_token, "precondition: held token spawned")
 
-	# 2. Rack slot rendering. RackDisplay applies token_scale to ArtHolder under each Slot.
 	rack.refresh()
 	var slot_art_holder: Node2D = null
 	for slot in slot_container.get_children():
@@ -357,7 +338,6 @@ func test_token_scale_remains_canonical_across_items() -> void:
 			slot_art_holder = holder
 			break
 
-	# 3. Source of truth.
 	var canonical: Vector2 = BaseBall.token_scale
 
 	assert_eq(canonical, Vector2(1.5, 1.5), "definition pins the canonical token_scale")

@@ -1,32 +1,17 @@
 class_name DropTarget
 extends RefCounted
 
-## Abstract drop target consulted by BallDragController each physics frame.
-##
-## SH-287 (designs/01-prototype/21-ball-dynamics.md, "Drop validation by body projection"):
-## the drag controller polls every registered target on the held token's world position; the
-## first target whose `can_accept` returns true takes the drop. `accept` performs the side
-## effect (spawning a ball, returning to a slot, completing a purchase, etc.). Subclasses
-## override both methods.
+## Abstract drop target consulted by BallDragController; first `can_accept` wins.
 
 
-## Returns true when this target would accept `item_key` at `position` right now.
-## Targets that are role-restricted (e.g. ball rack only takes ball-role items) gate here.
-## Court projection runs `intersect_shape` here against the item's `at_rest_shape`.
 func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
 	return false
 
 
-## Side-effect: commit the drop. Caller has already gated on `can_accept`.
 func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	pass
 
 
-# --- Shared helpers used by concrete targets ----------------------------------------
-
-
-## Resolves an `ItemDefinition` by `key` from a manager that exposes an `items` array.
-## Returns null if the manager is missing or the key is unknown.
 static func get_definition(item_manager: Node, item_key: String) -> ItemDefinition:
 	if item_manager == null:
 		return null
@@ -36,8 +21,7 @@ static func get_definition(item_manager: Node, item_key: String) -> ItemDefiniti
 	return null
 
 
-## Clamps `world_position` into `bounds`. Zero-sized bounds pass through unchanged so an
-## un-configured court does not collapse releases to the origin.
+## Zero-sized bounds pass through so an un-configured court does not collapse releases to origin.
 static func clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
 	if bounds.size == Vector2.ZERO:
 		return world_position
@@ -47,8 +31,7 @@ static func clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
 	)
 
 
-## Builds a world-space `Rect2` from an `Area2D`'s first `RectangleShape2D` child.
-## Returns an empty `Rect2()` when the area is missing/freed or has no rectangular collider.
+## Returns empty `Rect2()` when the area is missing/freed or has no rectangular collider.
 static func area_world_rect(area: Area2D) -> Rect2:
 	if not is_instance_valid(area):
 		return Rect2()

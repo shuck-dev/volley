@@ -1,8 +1,7 @@
 class_name Shop
 extends Node2D
 
-## Diegetic shop in the venue. Pressing an item starts a held-token drag; releasing
-## outside the shop area completes the purchase. See designs/01-prototype/08-shop.md.
+## Diegetic shop in the venue; see designs/01-prototype/08-shop.md.
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
@@ -13,8 +12,7 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 @export var items_anchor: Node2D
 
 var _item_manager: Node
-## Held so a tree_exiting unregister can reach the controller even after the Shop's own
-## `get_tree()` lookup would return null. Cleared in the deregistration path.
+## Cached so tree_exiting can unregister after `get_tree()` would return null.
 var _registered_target: ShopDropTarget = null
 var _registered_controller: Node = null
 
@@ -33,9 +31,7 @@ func _ready() -> void:
 		tree_exiting.connect(_on_tree_exiting)
 
 
-## Hands a ShopDropTarget to the drag controller so a release back inside the shop area
-## cancels with no purchase. Defers a frame so the controller has time to add itself to
-## the `drag_controller` group during its own `_ready`.
+## Deferred so the controller has run `_ready` and joined the `drag_controller` group.
 func _register_shop_target() -> void:
 	call_deferred(&"_do_register_shop_target")
 
@@ -53,8 +49,7 @@ func _do_register_shop_target() -> void:
 	_registered_controller = controller
 
 
-## Scene reloads can free the Shop without freeing the drag controller (different parents).
-## Without this, the controller would keep polling a target backed by a freed Area2D.
+## Scene reload can free the Shop while the controller lives on, leaving a freed Area2D in the poll.
 func _on_tree_exiting() -> void:
 	if _registered_target == null:
 		return

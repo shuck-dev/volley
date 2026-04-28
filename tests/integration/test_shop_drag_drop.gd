@@ -222,13 +222,10 @@ func test_unaffordable_item_cannot_start_drag() -> void:
 
 
 func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
-	# Re-stage with a ball-role item that has an at_rest_shape so the court target
-	# projection has a real radius. Wire a BallDragController so the shop can route the
-	# new ball through it.
+	# TrainingBall carries an at_rest_shape so CourtDropTarget has a real radius to query.
 	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
 
-	# The Shop builds its child items in `_ready`; respawning is the cleanest way to
-	# pick up the swapped item list under the integration harness.
+	# Shop builds children in `_ready`; respawn picks up the swapped item list.
 	_shop.queue_free()
 	await get_tree().process_frame
 	_shop = ShopScene.instantiate()
@@ -246,13 +243,12 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	add_child_autofree(drag)
-	# Wait one frame so _ready has run and added the controller to drag_controller group.
+	# Wait one frame so _ready joins the drag_controller group.
 	await get_tree().process_frame
 
 	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
 	item.start_drag()
 
-	# Release inside the court interior but outside the shop area's 500x400 rect.
 	var court_release: Vector2 = _shop.shop_area.global_position + Vector2(0, 300)
 	item.attempt_release(court_release)
 
@@ -267,10 +263,7 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 
 
 func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
-	# A release into a nonsensical far-corner position passes the venue-bounds check on
-	# VenueDropTarget at its corner, but a position outside the venue entirely falls
-	# through; spawn_purchased_at returns false and the rack regrows the token via the
-	# existing court_changed -> rack-refresh path.
+	# Outside the venue rejects every target; rack regrows via the court_changed path.
 	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
 	_shop.queue_free()
 	await get_tree().process_frame
@@ -294,11 +287,9 @@ func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
 
 	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
 	item.start_drag()
-	# Far outside the venue: target poll cannot accept; falls through to rack-default.
 	item.attempt_release(Vector2(99999, 99999))
 
 	assert_eq(_item_manager.get_level("training_ball"), 1, "purchase still committed")
-	# spawn_purchased_at returned false; ball did not spawn through the controller.
 	assert_null(
 		reconciler.get_ball_for_key("training_ball"),
 		"far-outside release falls through to the rack-default path, not court spawn",

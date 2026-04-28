@@ -30,8 +30,7 @@ var _held_key: String = ""
 var _held_is_temporary: bool = false
 ## Was the item on-court before the gesture? Rack pickups defer activation, so a click-without-movement is a no-op.
 var _held_was_on_court: bool = false
-## Origin tag for the current gesture: &"rack" (default), &"live" (mid-rally grab).
-## Drives the SH-252 click-without-movement no-op gate (rack-only) and future hooks.
+## &"rack" or &"live"; rack origins gate the SH-252 click-without-movement no-op.
 var _held_origin: StringName = &"rack"
 var _cursor_samples: Array = []
 ## Cursor position when the held token spawned; gates the SH-252 a click-without-movement no-op.
@@ -39,16 +38,13 @@ var _press_position: Vector2 = Vector2.ZERO
 var _gesture_below_threshold: bool = true
 ## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
-## SH-288: friendship energy captured at mid-rally grab; forwarded to bring_into_play so the
-## released ball inherits the rally speed. Negative means no preserved energy.
+## Mid-rally rally speed inherited by the released ball; negative means none preserved.
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
-## SH-287: monotonic time in seconds when the controller began trying expansion-ring polling
-## (i.e. mouse-up with strict projection failing). Negative means not yet timing.
+## Monotonic seconds when expansion-ring polling started; negative means not yet timing.
 var _expansion_started_at: float = -1.0
 
 var _drop_targets: Array[DropTarget] = []
-## Targets the controller authored from its own exports; rebuilt on `_ready` and not
-## removed by the public `unregister_target` API.
+## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
 var _builtin_targets: Array[DropTarget] = []
 
 
@@ -68,8 +64,7 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
-	# Group lookup so Shop (and any future origin) can hand presses to the controller
-	# without an explicit NodePath in court.tscn.
+	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")
 
 	if rack != null and not rack.slot_pressed.is_connected(_on_rack_slot_pressed):
@@ -96,8 +91,6 @@ func _process(_delta: float) -> void:
 		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
 			_gesture_below_threshold = false
 
-	# SH-287: when mouse is up and the held position is over a valid target, commit.
-	# Otherwise keep the held token following the cursor and update hover feedback.
 	if not _mouse_button_down:
 		if not attempt_release(follow_position):
 			_update_expansion_state(follow_position)
@@ -217,8 +210,7 @@ func spawn_purchased_at(
 	return true
 
 
-## Try to commit the held gesture at the given position. Returns true on commit (held token
-## freed, gesture ends), false on no valid target (held token stays, gesture continues).
+## Returns false on no valid target so the held token stays with the cursor.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
@@ -239,8 +231,6 @@ func attempt_release(release_position: Vector2) -> bool:
 		_finalise_gesture(item_key, clamped_position, false)
 		return true
 
-	# Strict pass first; on miss the caller (process loop) decides whether to start the
-	# expansion-ring timer.
 	var target: DropTarget = _find_accepting_target(item_key, clamped_position, 1.0)
 	if target == null and _expansion_started_at >= 0.0:
 		var held_duration: float = _now_seconds() - _expansion_started_at
@@ -282,8 +272,7 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 
 
-## Returns the first registered target whose `can_accept` succeeds, or null. Targets are
-## polled in registration order; built-ins register in priority order (court before venue).
+## Polled in registration order; built-ins register court before venue.
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
@@ -308,8 +297,7 @@ func _update_hover_feedback(world_position: Vector2) -> void:
 		_held_token.modulate = NEUTRAL_MODULATE
 
 
-## After mouse-up: maintain the expansion-ring timer. Cancels back to source if the
-## widened poll has also failed for the same hold window.
+## Cancels back to source after the widened poll has also failed for one full hold window.
 func _update_expansion_state(world_position: Vector2) -> void:
 	if _held_token == null:
 		return
@@ -321,15 +309,11 @@ func _update_expansion_state(world_position: Vector2) -> void:
 	if held_duration < expansion_ring_hold_s:
 		return
 
-	# Strict pass already ran in attempt_release; try the widened pass now. If it succeeds,
-	# attempt_release picks it up next frame. If the widened pass has also been failing for
-	# another full hold window, cancel back to source.
 	var widened: DropTarget = _find_accepting_target(
 		_held_key, world_position, expansion_ring_scale
 	)
 	if widened != null:
-		# attempt_release on the next frame will use the widened scale because the timer
-		# crossed the threshold; re-running it now lets us commit immediately.
+		# Re-run now so the commit lands this frame instead of waiting for the next attempt_release.
 		attempt_release(world_position)
 		return
 
@@ -337,8 +321,7 @@ func _update_expansion_state(world_position: Vector2) -> void:
 		_cancel_to_source()
 
 
-## Two-window expansion fail -> cancel-to-source. Free the held token; deactivate any
-## on-court placement that a live-ball grab would have moved so the rack regrows it.
+## Live-ball grabs that cancel must deactivate the on-court placement so the rack regrows it.
 func _cancel_to_source() -> void:
 	var item_key: String = _held_key
 	var was_on_court: bool = _held_was_on_court
