@@ -309,8 +309,9 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	var viewport: Viewport = live.get_viewport()
 
 	# Press on the live ball routes through Ball._on_input_event → emits `pressed` →
-	# BallDragController.grab_live_ball.
-	live.input_event.emit(viewport, _press_event(), 0)
+	# BallDragController.grab_live_ball. SH-297: routing lives on the child PressArea.
+	var press_area: Area2D = live.get_node("PressArea") as Area2D
+	press_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")
 
 	await get_tree().process_frame
@@ -399,8 +400,12 @@ func test_held_token_during_rack_drag_uses_definition_scale() -> void:
 	_drag.grab_from_rack("training_ball")
 	var held_token: Node2D = _drag.get_held_token()
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
+	# SH-297: the lift ease drives the held token from a slightly smaller starting scale
+	# up to `token_scale` across ~80 ms; settle the ease before reading the canonical scale.
+	_drag._grab_ease_elapsed = _drag.GRAB_EASE_DURATION_S
+	_drag._apply_grab_ease(1.0, held_token.global_position)
 	assert_eq(
 		held_token.scale,
 		TrainingBall.token_scale,
-		"the drag controller's held token reads token_scale from the definition",
+		"the drag controller's held token settles to token_scale after the SH-297 lift ease",
 	)

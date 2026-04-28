@@ -22,6 +22,7 @@
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
+[ext_resource type="Script" path="res://scripts/hud/cursor_overlay.gd" id="24_cursor"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(21.6, 883.2)
@@ -217,7 +218,7 @@ script = ExtResource("21_reconciler")
 script = ExtResource("23_tracker")
 ball_system = NodePath("../BallReconciler")
 
-[node name="BallDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "gear_rack", "gear_rack_drop_target", "reconciler")]
+[node name="BallDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "gear_rack", "gear_rack_drop_target", "reconciler", "cursor_overlay")]
 script = ExtResource("22_drag")
 rack = NodePath("../BallRack")
 rack_drop_target = NodePath("../BallRack/DropTarget")
@@ -226,3 +227,7 @@ gear_rack_drop_target = NodePath("../GearRack/DropTarget")
 court_bounds = Rect2(-420, -360, 840, 720)
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
 reconciler = NodePath("../BallReconciler")
+cursor_overlay = NodePath("CursorOverlay")
+
+[node name="CursorOverlay" type="Node2D" parent="BallDragController" unique_id=1902001004]
+script = ExtResource("24_cursor")

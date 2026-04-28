@@ -124,6 +124,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 | Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
 | Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
 | Slartibartfast | SH-100 | feature/sh-100-shop-arrivals-inactive | tests/integration/test_shop_arrivals_inactive.gd, ai/PARALLEL.md | 2026-04-23 | shop arrivals land inactive on rack |
+| Abe | SH-297 | feature/sh-297-grab-feel-ease-to-cursor-hit-box-cursor-states | scripts/items/ball_drag_controller.gd, scripts/entities/ball.gd, scripts/hud/cursor_overlay.gd, scenes/court.tscn, scenes/ball.tscn | 2026-04-28 | grab ease-to-cursor + press hit-box + cursor state machine; runs alongside SH-287 PR #533 |
 
 ## Done (recent)
 
@@ -143,6 +144,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 Newest at top. One line per event.
 
 ```
+[SH-297] abe: claimed; implementing grab ease-to-cursor tween, generous live-ball press hit-box, cursor state machine + Node2D overlay placeholder; cursor-state poll stubbed to be wired to manny's _find_accepting_target on merge of #533
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows
 [SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc

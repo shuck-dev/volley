@@ -388,13 +388,17 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	_manager.activate("training_ball")
 	var live: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(live, "precondition: live ball exists")
-	assert_true(live.input_pickable, "live ball must be input_pickable so a press routes through")
+	# SH-297: press routing moved off the rigid body's input_event onto a generous
+	# child Area2D so a press near a moving ball lands without pixel precision.
+	var press_area: Area2D = live.get_node_or_null("PressArea") as Area2D
+	assert_not_null(press_area, "live ball must own a PressArea for press routing (SH-297)")
+	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
 
-	# Drive a real press through the Ball's input_event signal.
+	# Drive a real press through the press area's input_event signal.
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	live.input_event.emit(get_viewport(), press, 0)
+	press_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode (SH-247)")
 	await get_tree().process_frame
@@ -435,16 +439,17 @@ func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
 	await get_tree().process_frame
 
 	assert_eq(_permanent_balls().size(), 1, "precondition: pre-existing Ball lives under host")
-	assert_true(
-		pre_existing.input_pickable, "Ball must be input_pickable for press to route through"
-	)
+	# SH-297: press routing lives on the child Area2D, not on the rigid body itself.
+	var press_area: Area2D = pre_existing.get_node_or_null("PressArea") as Area2D
+	assert_not_null(press_area, "Ball must own a PressArea for press routing (SH-297)")
+	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
 	assert_false(_drag.is_dragging(), "precondition: no drag in progress before the press")
 
-	# Drive a real press on the pre-existing Ball.
+	# Drive a real press through the press area's input_event signal.
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	pre_existing.input_event.emit(get_viewport(), press, 0)
+	press_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(
 		_drag.is_dragging(),

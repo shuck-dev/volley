@@ -8,6 +8,11 @@ signal speed_changed(speed: float, min_speed: float, max_speed: float)
 signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
+## SH-297: factor by which the press hit-box inflates the ball's authored physics radius.
+## A live ball is small and moving, so a pixel-precise press misses more often than not.
+## Inflating the press surface (without touching the physics shape) lets a press near a
+## moving ball land cleanly. Tune surface; do not couple to physics-collider scale.
+const PRESS_HITBOX_INFLATION: float = 1.6
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
@@ -24,6 +29,10 @@ var _was_at_max_speed := false
 var _last_emitted_speed: float = 0.0
 var _last_emitted_min: float = 0.0
 var _last_emitted_max: float = 0.0
+## SH-297: child Area2D carrying the generous press hit-box. Larger than the visible body
+## so a press near a moving ball lands without pixel-precision. Built lazily in
+## `_ball_setup` so the press surface tracks the ball's authored collision radius.
+var _press_area: Area2D
 
 
 func _ready() -> void:
@@ -122,6 +131,48 @@ func _setup_effect_processor() -> void:
 	add_child(effect_processor)
 
 
+## SH-297: builds the inflated press hit-box as an Area2D child. Reads the ball's authored
+## CollisionShape2D radius so the press surface scales with the ball's physics size, then
+## inflates by `PRESS_HITBOX_INFLATION`. The Area2D doesn't collide with anything; its
+## only job is to surface left-mouse-button presses through `_on_input_event`.
+func _setup_press_area() -> void:
+	if _press_area != null and is_instance_valid(_press_area):
+		return
+	var press_radius: float = _authored_collision_radius() * PRESS_HITBOX_INFLATION
+	if press_radius <= 0.0:
+		return
+	var area: Area2D = Area2D.new()
+	area.name = "PressArea"
+	area.input_pickable = true
+	area.monitoring = false
+	area.monitorable = false
+	var shape_node: CollisionShape2D = CollisionShape2D.new()
+	var circle: CircleShape2D = CircleShape2D.new()
+	circle.radius = press_radius
+	shape_node.shape = circle
+	area.add_child(shape_node)
+	add_child(area)
+	if not area.input_event.is_connected(_on_input_event):
+		area.input_event.connect(_on_input_event)
+	_press_area = area
+
+
+## SH-297: resolves the ball's authored physics radius from its CollisionShape2D so the
+## press hit-box is a multiple of it. Falls back to the SPEED_EMIT_THRESHOLD-era default
+## of 10 px if the body has no resolvable circle (defensive only; the authored ball.tscn
+## ships a CircleShape2D).
+func _authored_collision_radius() -> float:
+	for child in get_children():
+		if child is CollisionShape2D:
+			var shape_node: CollisionShape2D = child
+			var circle: CircleShape2D = shape_node.shape as CircleShape2D
+			if circle == null:
+				continue
+			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
+			return circle.radius * maxf(axis_scale, 0.001)
+	return 10.0
+
+
 func _ball_setup() -> void:
 	speed = min_speed
 	effect_processor.sync_base_speed()
@@ -134,9 +185,13 @@ func _ball_setup() -> void:
 		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(reset_speed):
 		missed.connect(reset_speed)
-	input_pickable = true
-	if not input_event.is_connected(_on_input_event):
-		input_event.connect(_on_input_event)
+	# SH-297: press routing moves to the inflated `PressArea` so the player can grab a
+	# moving ball without a pixel-precise hit. The rigid body itself stops accepting
+	# pointer events; physics collisions still flow through `_on_body_entered`.
+	input_pickable = false
+	if input_event.is_connected(_on_input_event):
+		input_event.disconnect(_on_input_event)
+	_setup_press_area()
 
 
 ## Press on the live ball routes through here and surfaces as the `pressed` signal so the drag controller can flip into mid-rally grab mode.
