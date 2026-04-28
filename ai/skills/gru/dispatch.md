@@ -103,6 +103,8 @@ Do not `run(play)` until Josh answers.
 
 Three dispatch shapes for code work, picked by issue type. The cognitive separation between test and impl is the point; pick the shape that achieves it for the kind of issue at hand.
 
+Author specialists, by scope: `gdscript-implementer` for broad GDScript + scene implementation that ends with a PR (`.claude/agents/gdscript-implementer.md`); `test-author` for GUT unit tests only; `integration-scenario-author` for integration scenarios only. Pick the narrowest fit; fall back to `general-purpose` only when nothing fits.
+
 ### User stories: blind test-author handoff
 
 For tickets with player-observable ACs ("ball appears on rack after buy," "drag from court back to rack works mid-rally"):
