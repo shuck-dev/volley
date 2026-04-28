@@ -6,6 +6,9 @@ extends Node2D
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
+const ShopDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/shop_drop_target.gd"
+)
 
 @export var config: ShopConfig = DEFAULT_CONFIG
 @export var shop_area: Area2D
@@ -24,6 +27,25 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_update_friendship_label(_item_manager.get_friendship_point_balance())
 	_spawn_items()
+	_register_shop_target()
+
+
+## Hands a ShopDropTarget to the drag controller so a release back inside the shop area
+## cancels with no purchase. Defers a frame so the controller has time to add itself to
+## the `drag_controller` group during its own `_ready`.
+func _register_shop_target() -> void:
+	call_deferred(&"_do_register_shop_target")
+
+
+func _do_register_shop_target() -> void:
+	var controller: Node = get_tree().get_first_node_in_group(&"drag_controller")
+	if controller == null:
+		return
+	if not controller.has_method("register_target"):
+		return
+	var target: ShopDropTarget = ShopDropTargetScript.new()
+	target.configure(shop_area)
+	controller.register_target(target)
 
 
 func _spawn_items() -> void:

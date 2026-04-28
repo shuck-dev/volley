@@ -165,10 +165,36 @@ func attempt_release(release_position: Vector2) -> bool:
 		# bounds to cancel, or get more FP and try again.
 		return false
 
-	# Purchased: held token freed, slot stays hidden until the next shop refresh sweeps it.
+	# Purchased: hand the held position off to BallDragController so the body-projection
+	# target loop decides whether the new ball lands on the court (SH-287, SH-320 fix) or
+	# falls through to the rack as a token. Held visual freed by the controller's
+	# bring_into_play flow when the court accepts; otherwise we free it locally.
+	_route_purchased_to_court(release_position)
 	_finalise_gesture(release_position, true)
 	visible = false
 	return true
+
+
+## Hands off to BallDragController so the just-purchased item can land on the court at
+## the released position when the body projection passes (SH-320).
+func _route_purchased_to_court(release_position: Vector2) -> bool:
+	if item_definition == null:
+		return false
+	if item_definition.role != &"ball":
+		return false
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return false
+	var controller: Node = tree.get_first_node_in_group(&"drag_controller")
+	if controller == null or not controller.has_method("spawn_purchased_at"):
+		return false
+	return controller.spawn_purchased_at(item_definition.key, release_position, _release_velocity())
+
+
+func _release_velocity() -> Vector2:
+	if _item_manager != null and _item_manager.has_method("get_default_ball_launch_velocity"):
+		return _item_manager.get_default_ball_launch_velocity()
+	return Vector2.ZERO
 
 
 func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:

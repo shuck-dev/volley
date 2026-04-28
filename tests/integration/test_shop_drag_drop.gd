@@ -8,6 +8,9 @@ const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weight
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 const DoubleKnot: ItemDefinition = preload("res://resources/items/double_knot.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
+const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 
 var _shop: Shop
 var _item_manager: Node
@@ -213,6 +216,93 @@ func test_unaffordable_item_cannot_start_drag() -> void:
 
 	assert_false(ok, "unaffordable items reject the drag-out gesture")
 	assert_false(item.is_dragging(), "no held token when unaffordable")
+
+
+# --- SH-320: shop-to-court drag must spawn a live ball, not route to the rack -------
+
+
+func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
+	# Re-stage with a ball-role item that has an at_rest_shape so the court target
+	# projection has a real radius. Wire a BallDragController so the shop can route the
+	# new ball through it.
+	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
+
+	# The Shop builds its child items in `_ready`; respawning is the cleanest way to
+	# pick up the swapped item list under the integration harness.
+	_shop.queue_free()
+	await get_tree().process_frame
+	_shop = ShopScene.instantiate()
+	_shop._item_manager = _item_manager
+	add_child_autofree(_shop)
+
+	var host := Node2D.new()
+	add_child_autofree(host)
+	var reconciler: BallReconciler = BallReconcilerScript.new()
+	reconciler.configure(_item_manager, host)
+	add_child_autofree(reconciler)
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_item_manager, null, null, reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	add_child_autofree(drag)
+	# Wait one frame so _ready has run and added the controller to drag_controller group.
+	await get_tree().process_frame
+
+	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
+	item.start_drag()
+
+	# Release inside the court interior but outside the shop area's 500x400 rect.
+	var court_release: Vector2 = _shop.shop_area.global_position + Vector2(0, 300)
+	item.attempt_release(court_release)
+
+	assert_eq(
+		_item_manager.get_level("training_ball"), 1, "purchase committed at outside-shop release"
+	)
+	var ball: Ball = reconciler.get_ball_for_key("training_ball")
+	assert_not_null(
+		ball, "shop-to-court release spawns a live ball through the drag controller (SH-320)"
+	)
+	assert_eq(ball.global_position, court_release, "live ball lands at the released cursor point")
+
+
+func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
+	# A release into a nonsensical far-corner position passes the venue-bounds check on
+	# VenueDropTarget at its corner, but a position outside the venue entirely falls
+	# through; spawn_purchased_at returns false and the rack regrows the token via the
+	# existing court_changed -> rack-refresh path.
+	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
+	_shop.queue_free()
+	await get_tree().process_frame
+	_shop = ShopScene.instantiate()
+	_shop._item_manager = _item_manager
+	add_child_autofree(_shop)
+
+	var host := Node2D.new()
+	add_child_autofree(host)
+	var reconciler: BallReconciler = BallReconcilerScript.new()
+	reconciler.configure(_item_manager, host)
+	add_child_autofree(reconciler)
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_item_manager, null, null, reconciler)
+	# Tight venue/court so the far-out position lands clearly outside.
+	drag.court_bounds = Rect2(Vector2(-100, -100), Vector2(200, 200))
+	drag.venue_bounds = Rect2(Vector2(-200, -200), Vector2(400, 400))
+	add_child_autofree(drag)
+	await get_tree().process_frame
+
+	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
+	item.start_drag()
+	# Far outside the venue: target poll cannot accept; falls through to rack-default.
+	item.attempt_release(Vector2(99999, 99999))
+
+	assert_eq(_item_manager.get_level("training_ball"), 1, "purchase still committed")
+	# spawn_purchased_at returned false; ball did not spawn through the controller.
+	assert_null(
+		reconciler.get_ball_for_key("training_ball"),
+		"far-outside release falls through to the rack-default path, not court spawn",
+	)
 
 
 # --- helpers ---

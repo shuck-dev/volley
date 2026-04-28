@@ -17,6 +17,11 @@ extends Resource
 @export var token_scale: Vector2 = Vector2(1.5, 1.5)
 ## False for authored starter items that are owned-from-start and never appear in the shop catalog (SH-313).
 @export var purchasable: bool = true
+## SH-287: authored at-rest collision shape used for drop-target body projection.
+## Ball items wire to their `CircleShape2D`; equipment items to their token bounds.
+## Items whose at-rest representation is not a physics body may leave this null and the
+## bounds check on the destination target alone decides acceptance.
+@export var at_rest_shape: Shape2D
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:
