@@ -22,20 +22,34 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
    - **Mechanical fixes** (typos, dead code, obvious bugs, style): commit on the PR branch.
    - **Everything else**: short line-anchored review comments following [Conventional Comments](https://conventionalcomments.org/) (`praise:`, `nitpick:`, `suggestion:`, `issue:`, `question:`, `thought:`, `chore:`, `note:`, with decorators like `(non-blocking)`). **One idea per comment, two sentences max.** If it needs more context, open an issue and link from the comment.
 
-   After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. `zaphod-blocked` supersedes `zaphod-approved`: if a later specialist finds blocking issues, add `zaphod-blocked` and the race-resolver workflow strips the earlier `zaphod-approved`. A later clean pass never downgrades a prior blocked verdict; the blocked stands until a new commit triggers a fresh review. No `LGTM` or summary comments. Line-anchored comment template:
+   After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. `zaphod-blocked` supersedes `zaphod-approved`: if a later specialist finds blocking issues, add `zaphod-blocked` and the race-resolver workflow strips the earlier `zaphod-approved`. A later clean pass never downgrades a prior blocked verdict; the blocked stands until a new commit triggers a fresh review. No `LGTM` or summary comments.
 
-   ```
-   gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments \
-     -f body=$'**<commenter>**\n\n<type>: <body>' \
-     -f commit_id="<sha>" -f path="<file>" \
-     -F line=<line> -f side=RIGHT
+   **One review per agent's pass, many comments inside.** Each reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, not N standalone comments (SH-326, sharpened SH-327). When the fan-out dispatches N reviewers, each agent posts its own Review; six reviewers in flight produce six Reviews on the PR. The Reviews API (`pulls/<N>/reviews`) groups findings under one review header and one notification. Build the JSON payload and pipe it via `--input -` so reviewer text never interpolates into the shell:
+
+   ```bash
+   jq -n --arg sha "<sha>" '{
+     event: "COMMENT",
+     commit_id: $sha,
+     body: "",
+     comments: [
+       {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<commenter>**\n\n<type>: <body>"},
+       {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<commenter>**\n\n<type>: <body>"}
+     ]
+   }' | gh api -X POST repos/shuck-dev/volley/pulls/<N>/reviews --input -
    ```
 
-   ANSI-C quoting (`$'...'`) expands `\n\n` into real newlines, so the bold name sits on its own line above the Conventional Comment. `<commenter>` is a rotating codename for implementation agents (`trillian`, `abe`, `manny`), the role name for review specialists (`ci-and-workflows`, `docs-and-writing`, `code-quality`, etc.), or `josh` for Josh. Replies to existing comments use the same prefix so threaded context stays legible.
+   The review `body` stays empty; top-level summary comments are forbidden per `ai/skills/minions/reviewers.md`. The Review wrapper is just the grouping container; all content lives in the `comments` array. `<commenter>` is a rotating codename for implementation agents (`trillian`, `abe`, `manny`), the role name for review specialists (`ci-and-workflows`, `docs-and-writing`, `code-quality`, etc.), or `josh` for Josh. The `\n\n` in each comment body sits inside JSON, so jq emits it as a real newline and the bold name renders on its own line above the Conventional Comment.
+
+   **Replies to an existing thread** stay on the comments endpoint, since a reply anchors to one prior comment rather than opening a new review:
+
+   ```bash
+   gh api -X POST repos/shuck-dev/volley/pulls/<N>/comments/<comment-id>/replies \
+     -f body=$'**<commenter>**\n\nresolved: <body>'
+   ```
 6. **Hand off.** Re-sync against main, then report the PR to Josh. Don't flag comments in chat; the PR is the source of truth.
 7. **Block or spin.** Loop on the same issue twice → escalate (see below). Do not try a third variant silently.
 
-**Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post each finding as a line-anchored comment using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
+**Follow-up review** (Josh asks for another pass on an existing PR): dispatch a fresh reviewer, post all findings as a single Review wrapping line comments using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
 **Human verdict labels.** Josh's review applies one of two mutually exclusive labels: `approved-human` (sign-off, required for merge) or `action-required-human` (address comments before merge). Both strip on every new commit, so pushing a fix naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with a "Changes requested" message whenever `action-required-human` is present and fails with a "Needs human review" message when neither label is set. Only Josh may apply either label; the approver-check workflow strips unauthorised applications.
 
@@ -124,7 +138,9 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 | Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
 | Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
 | Slartibartfast | SH-100 | feature/sh-100-shop-arrivals-inactive | tests/integration/test_shop_arrivals_inactive.gd, ai/PARALLEL.md | 2026-04-23 | shop arrivals land inactive on rack |
-| Abe | SH-297 | feature/sh-297-grab-feel-ease-to-cursor-hit-box-cursor-states | scripts/items/ball_drag_controller.gd, scripts/entities/ball.gd, scripts/hud/cursor_overlay.gd, scenes/court.tscn, scenes/ball.tscn | 2026-04-28 | grab ease-to-cursor + press hit-box + cursor state machine; runs alongside SH-287 PR #533 |
+| Norbert | SH-326 | feature/sh-326-reviewers-post-one-review-wrapping-many-comments | ai/PARALLEL.md, ai/skills/minions/reviewers.md | 2026-04-28 | reviewers post one Review wrapping many comments |
+| Manny | SH-287 | feature/sh-287-drag-drops-validated-by-body-projection | scripts/items/{ball_drag_controller,item_definition,drop_target}.gd, scripts/items/drop_targets/*.gd, scripts/shop/{shop,shop_item}.gd, resources/items/{base_ball,training_ball}.tres, tests/unit/items/test_drop_targets.gd, tests/unit/items/test_ball_drag_controller_sh287.gd, tests/integration/test_shop_drag_drop.gd | 2026-04-28 | DropTarget interface + body-projection refactor; SH-320 closed |
+| Kevin | SH-327 | feature/sh-327-sharpen-reviewer-canon-one-review-per-agent | ai/PARALLEL.md, ai/skills/minions/reviewers.md | 2026-04-28 | sharpen "one review per agent's pass" wording |
 
 ## Done (recent)
 
@@ -144,9 +160,9 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 Newest at top. One line per event.
 
 ```
-[SH-297] abe: merged origin/main (SH-287 #533); collapsed _position_accepted_by_any_target stub onto _find_accepting_target
-[SH-297] abe: claimed; implementing grab ease-to-cursor tween, generous live-ball press hit-box, cursor state machine + Node2D overlay placeholder; cursor-state poll stubbed to be wired to manny's _find_accepting_target on merge of #533
+[SH-327] kevin: claimed; sharpening "one review per pass" so it cannot be misread as one Review across the whole fan-out
 [SH-287] manny: claimed; DropTarget interface + CourtDropTarget body projection + RackDropTarget + ShopDropTarget + VenueDropTarget; expansion-ring fallback wired; ItemDefinition.at_rest_shape authored on base_ball/training_ball; SH-320 covered by spawn_purchased_at hand-off
+[SH-326] norbert: claimed; replacing per-comment template with one-Review-many-comments canon in PARALLEL.md and reviewers.md
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows
 [SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc

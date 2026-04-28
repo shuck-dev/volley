@@ -57,16 +57,32 @@ No audit enumerations. No restatement of the challenge description or the impl p
 
 All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main challenge thread.
 
-```
-gh api repos/<owner>/<repo>/pulls/<n>/comments \
-  -f commit_id="<sha>" \
-  -f path="<file>" \
-  -F line=<line> \
-  -f side=RIGHT \
-  -f body="**<codename>** <label>: <one-sentence concern; fix in 15 words>."
+## One review per agent per pass
+
+A reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, one per agent. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. Reviewer agents run in isolated contexts and cannot share a Review object. When the swarm fans out N reviewers, each posts its own Review; the conversation tab groups by review header, and the author scans one reviewer at a time. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 (origin) or SH-327 (sharpening) if you need the canon's history.
+
+```bash
+jq -n --arg sha "<sha>" '{
+  event: "COMMENT",
+  commit_id: $sha,
+  body: "",
+  comments: [
+    {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<codename>** <label>: <one-sentence concern; fix in 15 words>."},
+    {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<codename>** <label>: <one-sentence concern; fix in 15 words>."}
+  ]
+}' | gh api -X POST repos/<owner>/<repo>/pulls/<n>/reviews --input -
 ```
 
-Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>/replies`. All replies stay inline.
+Never post one `gh api` call per finding; that creates N standalone PullRequestReviewComment threads with N notifications, which is the shape SH-326 retired.
+
+The one exception is replying to an existing inline thread. A reply anchors to a single prior comment, not a new pass, so it stays on the comments endpoint:
+
+```bash
+gh api -X POST repos/<owner>/<repo>/pulls/<n>/comments/<comment-id>/replies \
+  -f body=$'**<codename>**\n\nresolved: <fix SHA and 15-word description>'
+```
+
+All replies stay inline.
 
 ## Inline finding shape
 
