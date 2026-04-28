@@ -1,8 +1,7 @@
 class_name Shop
 extends Node2D
 
-## Diegetic shop in the venue. Pressing an item starts a held-token drag; releasing
-## outside the shop area completes the purchase. See designs/01-prototype/08-shop.md.
+## Diegetic shop in the venue; see designs/01-prototype/08-shop.md.
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
@@ -13,6 +12,9 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 @export var items_anchor: Node2D
 
 var _item_manager: Node
+## Cached so tree_exiting can unregister after `get_tree()` would return null.
+var _registered_target: ShopDropTarget = null
+var _registered_controller: Node = null
 
 
 func _ready() -> void:
@@ -24,6 +26,40 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_update_friendship_label(_item_manager.get_friendship_point_balance())
 	_spawn_items()
+	_register_shop_target()
+	if not tree_exiting.is_connected(_on_tree_exiting):
+		tree_exiting.connect(_on_tree_exiting)
+
+
+## Deferred so the controller has run `_ready` and joined the `drag_controller` group.
+func _register_shop_target() -> void:
+	call_deferred(&"_do_register_shop_target")
+
+
+func _do_register_shop_target() -> void:
+	var controller: Node = get_tree().get_first_node_in_group(&"drag_controller")
+	if controller == null:
+		return
+	if not controller.has_method("register_target"):
+		return
+	var target: ShopDropTarget = ShopDropTarget.new()
+	target.configure(shop_area)
+	controller.register_target(target)
+	_registered_target = target
+	_registered_controller = controller
+
+
+## Scene reload can free the Shop while the controller lives on, leaving a freed Area2D in the poll.
+func _on_tree_exiting() -> void:
+	if _registered_target == null:
+		return
+	if (
+		is_instance_valid(_registered_controller)
+		and _registered_controller.has_method("unregister_target")
+	):
+		_registered_controller.unregister_target(_registered_target)
+	_registered_target = null
+	_registered_controller = null
 
 
 func _spawn_items() -> void:

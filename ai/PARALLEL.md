@@ -124,6 +124,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 | Feldspar | SH-107 | sh-107-court-bounds-and-miss | designs/01-prototype/08-court-bounds.md | 2026-04-21 | spike: bounds, miss, rest, upgrade path |
 | Ford | SH-169 | sh-169-prefix-pr-comments-with-commenter-name | ai/PARALLEL.md, ai/swarm/README.md, scripts/swarm/post-review.sh | 2026-04-21 | commenter-name prefix on PR comments |
 | Slartibartfast | SH-100 | feature/sh-100-shop-arrivals-inactive | tests/integration/test_shop_arrivals_inactive.gd, ai/PARALLEL.md | 2026-04-23 | shop arrivals land inactive on rack |
+| Manny | SH-287 | feature/sh-287-drag-drops-validated-by-body-projection | scripts/items/{ball_drag_controller,item_definition,drop_target}.gd, scripts/items/drop_targets/*.gd, scripts/shop/{shop,shop_item}.gd, resources/items/{base_ball,training_ball}.tres, tests/unit/items/test_drop_targets.gd, tests/unit/items/test_ball_drag_controller_sh287.gd, tests/integration/test_shop_drag_drop.gd | 2026-04-28 | DropTarget interface + body-projection refactor; SH-320 closed |
 
 ## Done (recent)
 
@@ -143,6 +144,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 Newest at top. One line per event.
 
 ```
+[SH-287] manny: claimed; DropTarget interface + CourtDropTarget body projection + RackDropTarget + ShopDropTarget + VenueDropTarget; expansion-ring fallback wired; ItemDefinition.at_rest_shape authored on base_ball/training_ball; SH-320 covered by spawn_purchased_at hand-off
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows
 [SH-80] glottis: claimed; drafting tech-pipeline.md partner doc to the bible
 [SH-88] Riebeck: claim; drafting ball speed tier design doc
