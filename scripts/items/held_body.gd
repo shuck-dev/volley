@@ -3,6 +3,8 @@ extends RigidBody2D
 
 enum Phase { LIFTING, HELD, LOOSE }
 
+const HELD_BODY_SCENE: PackedScene = preload("res://scenes/items/held_body.tscn")
+
 @export_range(0.0, 4.0, 0.05) var loose_gravity_scale: float = 1.0
 
 var phase: Phase = Phase.LIFTING
@@ -10,31 +12,14 @@ var item_key: String = ""
 
 
 static func make_for(definition: ItemDefinition, item_key: String) -> HeldBody:
-	var body: HeldBody = HeldBody.new()
+	var body: HeldBody = HELD_BODY_SCENE.instantiate()
 	body.name = "HeldBody_%s" % item_key
 	body.item_key = item_key
-	body.gravity_scale = 0.0
-	body.lock_rotation = true
-	body.linear_damp = 1.0
-	body.contact_monitor = false
-	body.freeze = true
-	body.freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
-	body.input_pickable = false
-	# Collision stays disabled until go_loose so the body cannot push the cursor-driven motion around.
-	body.collision_layer = 0
-	body.collision_mask = 0
+	var collision: CollisionShape2D = body.get_node("Collision")
+	# Per-instance shape so expansion-ring inflation cannot leak across held bodies.
+	collision.shape = definition.at_rest_shape.duplicate()
 
-	var collision: CollisionShape2D = CollisionShape2D.new()
-	collision.name = "Collision"
-	if definition != null and definition.at_rest_shape != null:
-		collision.shape = definition.at_rest_shape
-	else:
-		var fallback: CircleShape2D = CircleShape2D.new()
-		fallback.radius = 12.0
-		collision.shape = fallback
-	body.add_child(collision)
-
-	if definition != null and definition.art != null:
+	if definition.art != null:
 		var art_holder: Node2D = Node2D.new()
 		art_holder.name = "ArtHolder"
 		art_holder.add_child(definition.art.instantiate())

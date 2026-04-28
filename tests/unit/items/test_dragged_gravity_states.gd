@@ -104,8 +104,15 @@ func test_grab_spawns_a_rigid_body_held_in_kinematic_freeze() -> void:
 	assert_eq(body.gravity_scale, 0.0, "gravity is zero during the lift; engages on go_loose")
 	assert_eq(body.phase, HeldBody.Phase.LIFTING)
 	var collision: CollisionShape2D = body.get_node("Collision") as CollisionShape2D
-	assert_eq(
-		collision.shape, _authored_shape, "held body uses the definition's authored at_rest_shape"
+	assert_true(
+		collision.shape is CircleShape2D, "held body uses the definition's authored shape type"
+	)
+	var circle: CircleShape2D = collision.shape
+	assert_almost_eq(
+		circle.radius,
+		AUTHORED_RADIUS,
+		0.001,
+		"held body collision radius matches the authored at_rest_shape, not a fallback default",
 	)
 
 
@@ -120,6 +127,12 @@ func test_lift_settle_promotes_phase_and_arms_loose_gravity() -> void:
 	assert_gt(body.loose_gravity_scale, 0.0, "loose gravity is armed for a future floor release")
 
 
+func _seed_release_velocity(start: Vector2, end: Vector2) -> void:
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": start})
+	_drag._cursor_samples.append({"time": 0.04, "position": end})
+
+
 func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
@@ -128,9 +141,7 @@ func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -
 	await get_tree().process_frame
 	var held: HeldBody = _drag.get_held_body()
 	assert_not_null(held)
-	_drag._cursor_samples.clear()
-	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
-	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(80, 0)})
+	_seed_release_velocity(Vector2.ZERO, Vector2(80, 0))
 
 	var court_point := Vector2(50, 25)
 	assert_true(_drag.attempt_release(court_point))
@@ -182,9 +193,7 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 	assert_true(body.freeze, "frozen-kinematic during the cursor follow")
 	await get_tree().process_frame
 
-	_drag._cursor_samples.clear()
-	_drag._cursor_samples.append({"time": 0.0, "position": Vector2(75, 30)})
-	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(155, 30)})
+	_seed_release_velocity(Vector2(75, 30), Vector2(155, 30))
 	assert_true(_drag.attempt_release(Vector2(50, 25)))
 	await get_tree().process_frame
 	var released: Ball = _reconciler.get_ball_for_key("ball_alpha")

@@ -22,4 +22,8 @@ static func make_ball_item(key: String) -> ItemDefinition:
 	item.max_level = 3
 	item.effects = []
 	item.art = stub_art()
+	# Production ball items always ship an at_rest_shape; fixtures match that contract.
+	var default_shape := CircleShape2D.new()
+	default_shape.radius = 7.2
+	item.at_rest_shape = default_shape
 	return item
