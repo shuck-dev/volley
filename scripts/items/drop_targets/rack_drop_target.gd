@@ -36,7 +36,7 @@ func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) ->
 
 
 func _is_role_match(item_key: String) -> bool:
-	var definition: ItemDefinition = _get_definition(item_key)
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	if definition == null:
 		# Default to ball-role for backward compat with tests that don't author the field.
 		return _role == &"ball"
@@ -44,30 +44,4 @@ func _is_role_match(item_key: String) -> bool:
 
 
 func _position_inside_area(world_position: Vector2) -> bool:
-	var rect: Rect2 = _world_rect()
-	return rect.has_point(world_position)
-
-
-func _world_rect() -> Rect2:
-	var shape_owner: CollisionShape2D = null
-	for child in _drop_area.get_children():
-		if child is CollisionShape2D:
-			shape_owner = child
-			break
-	if shape_owner == null:
-		return Rect2()
-	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
-	if rectangle == null:
-		return Rect2()
-	var half_extents: Vector2 = rectangle.size * 0.5
-	var center: Vector2 = _drop_area.global_position + shape_owner.position
-	return Rect2(center - half_extents, rectangle.size)
-
-
-func _get_definition(item_key: String) -> ItemDefinition:
-	if _item_manager == null:
-		return null
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
-			return item
-	return null
+	return DropTarget.area_world_rect(_drop_area).has_point(world_position)

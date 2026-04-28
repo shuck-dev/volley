@@ -18,28 +18,17 @@ func configure(shop_area: Area2D) -> void:
 
 
 func can_accept(_item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
-	if _shop_area == null:
+	# is_instance_valid guards against a freed Shop leaving a stale target registered (the
+	# Shop also unregisters on tree_exiting; this is the belt to that suspenders).
+	if not is_instance_valid(_shop_area):
 		return false
-	return _position_inside_area(position)
+	var rect: Rect2 = DropTarget.area_world_rect(_shop_area)
+	if rect.size == Vector2.ZERO:
+		return false
+	return rect.has_point(position)
 
 
 func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	# No side effect on cancel-back: the gesture clears and the source slot becomes visible
 	# again via the controller's finalisation hook.
 	pass
-
-
-func _position_inside_area(world_position: Vector2) -> bool:
-	var shape_owner: CollisionShape2D = null
-	for child in _shop_area.get_children():
-		if child is CollisionShape2D:
-			shape_owner = child
-			break
-	if shape_owner == null:
-		return false
-	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
-	if rectangle == null:
-		return false
-	var half_extents: Vector2 = rectangle.size * 0.5
-	var center: Vector2 = _shop_area.global_position + shape_owner.position
-	return Rect2(center - half_extents, rectangle.size).has_point(world_position)

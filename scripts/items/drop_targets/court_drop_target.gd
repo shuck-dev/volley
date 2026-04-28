@@ -36,7 +36,7 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not _is_ball_role(item_key):
 		return false
-	var clamped: Vector2 = _clamp_to_court(position)
+	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
 	if clamped != position:
 		# Projection runs at the held position, not the clamped one; if the cursor is
 		# outside the court, the target does not accept here. (Inside-venue-but-outside-court
@@ -48,12 +48,12 @@ func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) 
 func accept(item_key: String, position: Vector2, gesture_velocity: Vector2) -> void:
 	if _reconciler == null:
 		return
-	var clamped: Vector2 = _clamp_to_court(position)
+	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
 	_reconciler.bring_into_play(item_key, clamped, gesture_velocity)
 
 
 func _is_ball_role(item_key: String) -> bool:
-	var definition: ItemDefinition = _get_definition(item_key)
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	if definition == null:
 		return false
 	return definition.role == &"ball"
@@ -65,7 +65,7 @@ func _projection_clear(item_key: String, position: Vector2, scale_factor: float)
 	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
 	if space == null:
 		return true
-	var definition: ItemDefinition = _get_definition(item_key)
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	var shape: Shape2D = null
 	if definition != null and definition.at_rest_shape != null:
 		shape = _scaled_shape(definition.at_rest_shape, scale_factor)
@@ -106,29 +106,3 @@ func _scaled_shape(source: Shape2D, scale_factor: float) -> Shape2D:
 		return scaled_cap
 	# Unknown shape type: fall back to the un-scaled source rather than guessing.
 	return source
-
-
-func _clamp_to_court(world_position: Vector2) -> Vector2:
-	if _court_bounds.size == Vector2.ZERO:
-		return world_position
-	return Vector2(
-		clampf(
-			world_position.x,
-			_court_bounds.position.x,
-			_court_bounds.position.x + _court_bounds.size.x
-		),
-		clampf(
-			world_position.y,
-			_court_bounds.position.y,
-			_court_bounds.position.y + _court_bounds.size.y
-		),
-	)
-
-
-func _get_definition(item_key: String) -> ItemDefinition:
-	if _item_manager == null:
-		return null
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
-			return item
-	return null

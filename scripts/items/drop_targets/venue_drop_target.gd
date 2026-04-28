@@ -48,38 +48,12 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 func accept(item_key: String, position: Vector2, gesture_velocity: Vector2) -> void:
 	if _reconciler == null:
 		return
-	var clamped: Vector2 = _clamp_to_court(position)
+	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
 	_reconciler.bring_into_play(item_key, clamped, gesture_velocity)
 
 
 func _is_ball_role(item_key: String) -> bool:
-	var definition: ItemDefinition = _get_definition(item_key)
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	if definition == null:
 		return true
 	return definition.role == &"ball"
-
-
-func _clamp_to_court(world_position: Vector2) -> Vector2:
-	if _court_bounds.size == Vector2.ZERO:
-		return world_position
-	return Vector2(
-		clampf(
-			world_position.x,
-			_court_bounds.position.x,
-			_court_bounds.position.x + _court_bounds.size.x
-		),
-		clampf(
-			world_position.y,
-			_court_bounds.position.y,
-			_court_bounds.position.y + _court_bounds.size.y
-		),
-	)
-
-
-func _get_definition(item_key: String) -> ItemDefinition:
-	if _item_manager == null:
-		return null
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
-			return item
-	return null

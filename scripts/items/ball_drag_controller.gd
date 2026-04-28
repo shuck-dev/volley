@@ -23,16 +23,6 @@ extends Node2D
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 
-const CourtDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/court_drop_target.gd"
-)
-const RackDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/rack_drop_target.gd"
-)
-const VenueDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/venue_drop_target.gd"
-)
-
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
@@ -444,26 +434,26 @@ func _register_builtin_targets() -> void:
 	_builtin_targets.clear()
 
 	if reconciler != null:
-		var court_target: CourtDropTarget = CourtDropTargetScript.new()
+		var court_target: CourtDropTarget = CourtDropTarget.new()
 		var world: World2D = get_world_2d()
 		court_target.configure(_item_manager, reconciler, world, court_bounds)
 		_drop_targets.append(court_target)
 		_builtin_targets.append(court_target)
 
 	if rack_drop_target != null:
-		var ball_rack_target: RackDropTarget = RackDropTargetScript.new()
+		var ball_rack_target: RackDropTarget = RackDropTarget.new()
 		ball_rack_target.configure(_item_manager, rack_drop_target, &"ball")
 		_drop_targets.append(ball_rack_target)
 		_builtin_targets.append(ball_rack_target)
 
 	if gear_rack_drop_target != null:
-		var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
+		var gear_rack_target: RackDropTarget = RackDropTarget.new()
 		gear_rack_target.configure(_item_manager, gear_rack_drop_target, &"equipment")
 		_drop_targets.append(gear_rack_target)
 		_builtin_targets.append(gear_rack_target)
 
 	if reconciler != null:
-		var venue_target: VenueDropTarget = VenueDropTargetScript.new()
+		var venue_target: VenueDropTarget = VenueDropTarget.new()
 		venue_target.configure(_item_manager, reconciler, venue_bounds, court_bounds)
 		_drop_targets.append(venue_target)
 		_builtin_targets.append(venue_target)
@@ -512,16 +502,7 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 
 
 func _clamp_to_venue(world_position: Vector2) -> Vector2:
-	return _clamp_to_rect(world_position, venue_bounds)
-
-
-func _clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
-	if bounds.size == Vector2.ZERO:
-		return world_position
-	return Vector2(
-		clampf(world_position.x, bounds.position.x, bounds.position.x + bounds.size.x),
-		clampf(world_position.y, bounds.position.y, bounds.position.y + bounds.size.y),
-	)
+	return DropTarget.clamp_to_rect(world_position, venue_bounds)
 
 
 func _get_item_definition(item_key: String) -> ItemDefinition:

@@ -6,9 +6,6 @@ extends Node2D
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
-const ShopDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/shop_drop_target.gd"
-)
 
 @export var config: ShopConfig = DEFAULT_CONFIG
 @export var shop_area: Area2D
@@ -16,6 +13,10 @@ const ShopDropTargetScript: GDScript = preload(
 @export var items_anchor: Node2D
 
 var _item_manager: Node
+## Held so a tree_exiting unregister can reach the controller even after the Shop's own
+## `get_tree()` lookup would return null. Cleared in the deregistration path.
+var _registered_target: ShopDropTarget = null
+var _registered_controller: Node = null
 
 
 func _ready() -> void:
@@ -28,6 +29,8 @@ func _ready() -> void:
 	_update_friendship_label(_item_manager.get_friendship_point_balance())
 	_spawn_items()
 	_register_shop_target()
+	if not tree_exiting.is_connected(_on_tree_exiting):
+		tree_exiting.connect(_on_tree_exiting)
 
 
 ## Hands a ShopDropTarget to the drag controller so a release back inside the shop area
@@ -43,9 +46,25 @@ func _do_register_shop_target() -> void:
 		return
 	if not controller.has_method("register_target"):
 		return
-	var target: ShopDropTarget = ShopDropTargetScript.new()
+	var target: ShopDropTarget = ShopDropTarget.new()
 	target.configure(shop_area)
 	controller.register_target(target)
+	_registered_target = target
+	_registered_controller = controller
+
+
+## Scene reloads can free the Shop without freeing the drag controller (different parents).
+## Without this, the controller would keep polling a target backed by a freed Area2D.
+func _on_tree_exiting() -> void:
+	if _registered_target == null:
+		return
+	if (
+		is_instance_valid(_registered_controller)
+		and _registered_controller.has_method("unregister_target")
+	):
+		_registered_controller.unregister_target(_registered_target)
+	_registered_target = null
+	_registered_controller = null
 
 
 func _spawn_items() -> void:
