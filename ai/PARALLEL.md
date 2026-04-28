@@ -24,7 +24,7 @@ Live scratchpad for parallel agent work. One agent per Linear ticket. Log progre
 
    After all specialists finish: clean → `gh pr edit <N> --add-label 'zaphod-approved'`. Any comments → `--add-label 'zaphod-blocked'` instead. `zaphod-blocked` supersedes `zaphod-approved`: if a later specialist finds blocking issues, add `zaphod-blocked` and the race-resolver workflow strips the earlier `zaphod-approved`. A later clean pass never downgrades a prior blocked verdict; the blocked stands until a new commit triggers a fresh review. No `LGTM` or summary comments.
 
-   **One review per pass, many comments inside.** Each reviewer pass posts a single GitHub Review wrapping all its findings, not N standalone comments (SH-326). The Reviews API (`pulls/<N>/reviews`) groups findings under one review header and one notification. Build the JSON payload and pipe it via `--input -` so reviewer text never interpolates into the shell:
+   **One review per agent's pass, many comments inside.** Each reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, not N standalone comments (SH-326, sharpened SH-327). When the fan-out dispatches N reviewers, each agent posts its own Review; six reviewers in flight produce six Reviews on the PR. The Reviews API (`pulls/<N>/reviews`) groups findings under one review header and one notification. Build the JSON payload and pipe it via `--input -` so reviewer text never interpolates into the shell:
 
    ```bash
    jq -n --arg sha "<sha>" '{
@@ -140,6 +140,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 | Slartibartfast | SH-100 | feature/sh-100-shop-arrivals-inactive | tests/integration/test_shop_arrivals_inactive.gd, ai/PARALLEL.md | 2026-04-23 | shop arrivals land inactive on rack |
 | Norbert | SH-326 | feature/sh-326-reviewers-post-one-review-wrapping-many-comments | ai/PARALLEL.md, ai/skills/minions/reviewers.md | 2026-04-28 | reviewers post one Review wrapping many comments |
 | Manny | SH-287 | feature/sh-287-drag-drops-validated-by-body-projection | scripts/items/{ball_drag_controller,item_definition,drop_target}.gd, scripts/items/drop_targets/*.gd, scripts/shop/{shop,shop_item}.gd, resources/items/{base_ball,training_ball}.tres, tests/unit/items/test_drop_targets.gd, tests/unit/items/test_ball_drag_controller_sh287.gd, tests/integration/test_shop_drag_drop.gd | 2026-04-28 | DropTarget interface + body-projection refactor; SH-320 closed |
+| Kevin | SH-327 | feature/sh-327-sharpen-reviewer-canon-one-review-per-agent | ai/PARALLEL.md, ai/skills/minions/reviewers.md | 2026-04-28 | sharpen "one review per agent's pass" wording |
 
 ## Done (recent)
 
@@ -159,6 +160,7 @@ The Active table on `origin/main` is the source of truth. A fresh worktree reads
 Newest at top. One line per event.
 
 ```
+[SH-327] kevin: claimed; sharpening "one review per pass" so it cannot be misread as one Review across the whole fan-out
 [SH-287] manny: claimed; DropTarget interface + CourtDropTarget body projection + RackDropTarget + ShopDropTarget + VenueDropTarget; expansion-ring fallback wired; ItemDefinition.at_rest_shape authored on base_ball/training_ball; SH-320 covered by spawn_purchased_at hand-off
 [SH-326] norbert: claimed; replacing per-comment template with one-Review-many-comments canon in PARALLEL.md and reviewers.md
 [SH-100] slartibartfast: claimed; SH-96 activate/deactivate and SH-99 rack display already land the behavior, adding integration tests to pin shop->rack and dev-panel purchase flows

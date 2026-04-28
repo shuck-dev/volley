@@ -57,9 +57,9 @@ No audit enumerations. No restatement of the challenge description or the impl p
 
 All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main challenge thread.
 
-## One review per pass, many comments inside
+## One review per agent per pass
 
-A reviewer pass posts a single GitHub Review wrapping every finding, not one `gh api` call per comment. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 if you need the canon's origin.
+A reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, one per agent. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. Reviewer agents run in isolated contexts and cannot share a Review object. When the swarm fans out N reviewers, each posts its own Review; the conversation tab groups by review header, and the author scans one reviewer at a time. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 (origin) or SH-327 (sharpening) if you need the canon's history.
 
 ```bash
 jq -n --arg sha "<sha>" '{
