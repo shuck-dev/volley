@@ -1,13 +1,7 @@
 class_name RackDropTarget
 extends DropTarget
 
-## Rack target: accepts items whose role matches the rack's role at any position inside
-## the rack's drop area.
-##
-## On accept, deactivates the item if it was on-court so the rack regrows the token.
-## Pickup-without-movement (a press-release on the source rack with no cursor travel) is
-## handled by the drag controller as a bare gesture-cancel; this target is the standard
-## return-to-rack drop.
+## Accepts role-matched items inside the rack's drop area; deactivates on-court items so the rack regrows.
 
 var _item_manager: Node
 var _drop_area: Area2D

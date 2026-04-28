@@ -1,12 +1,7 @@
 class_name CourtDropTarget
 extends DropTarget
 
-## Court target: accepts ball-role items at positions that pass a body projection.
-##
-## SH-287: `can_accept` runs `PhysicsDirectSpaceState2D.intersect_shape` with the item's
-## authored `at_rest_shape` at the candidate position; rejects on overlap with walls,
-## partners, other balls. `scale_factor` widens the shape for the expansion-ring fallback
-## documented in `designs/01-prototype/22-equip-loop-regime.md`.
+## Accepts ball-role items at positions whose authored shape clears walls, partners, and other balls.
 
 var _item_manager: Node
 var _reconciler: BallReconciler
@@ -27,8 +22,7 @@ func configure(
 	_court_bounds = court_bounds
 
 
-## Held-body grabs free their live ball before polling resumes; pass any RIDs that should
-## not count as overlaps (e.g. the held item's own existing body, when it has one).
+## RIDs to exclude from the projection (e.g. the held item's own body).
 func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 
@@ -38,9 +32,7 @@ func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) 
 		return false
 	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
 	if clamped != position:
-		# Projection runs at the held position, not the clamped one; if the cursor is
-		# outside the court, the target does not accept here. (Inside-venue-but-outside-court
-		# release lands via VenueDropTarget, which clamps to court for ball items.)
+		# Off-court cursor falls through to VenueDropTarget for clamping.
 		return false
 	return _projection_clear(item_key, clamped, scale_factor)
 
@@ -70,8 +62,7 @@ func _projection_clear(item_key: String, position: Vector2, scale_factor: float)
 	if definition != null and definition.at_rest_shape != null:
 		shape = _scaled_shape(definition.at_rest_shape, scale_factor)
 	if shape == null:
-		# Fallback: a small circle keeps the legacy probe behaviour for items missing an
-		# authored shape (the test fixture path) without lying about clearance.
+		# Legacy probe radius for items (e.g. test fixtures) missing an authored shape.
 		var circle: CircleShape2D = CircleShape2D.new()
 		circle.radius = 14.0 * scale_factor
 		shape = circle
