@@ -390,9 +390,8 @@ func test_token_scale_matches_across_shop_held_and_rack() -> void:
 	)
 
 
-func test_held_token_during_rack_drag_uses_definition_scale() -> void:
-	# The drag controller spawns its held token with the canonical scale, so a
-	# rack-origin drag matches the rack slot it came from.
+func test_held_token_during_rack_drag_settles_to_token_scale_with_hover_bump() -> void:
+	# Rack-origin drag eases to canonical token_scale, then hover-feedback bumps it because the cursor sits over the court drop target.
 	_setup_ball_drag()
 	_manager.take("training_ball")
 	await get_tree().process_frame
@@ -400,10 +399,7 @@ func test_held_token_during_rack_drag_uses_definition_scale() -> void:
 	_drag.grab_from_rack("training_ball")
 	var held_token: Node2D = _drag.get_held_token()
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
-	# Wait past grab_ease_duration_s so the lift ease settles via the public _process surface.
 	await get_tree().create_timer(0.1).timeout
-	# SH-297 ease lands on token_scale; SH-287 hover-feedback then bumps by HOVER_SCALE_BUMP
-	# because the cursor at default (0,0) sits inside the court drop target's bounds.
 	var expected: Vector2 = TrainingBall.token_scale * BallDragControllerScript.HOVER_SCALE_BUMP
 	assert_eq(
 		held_token.scale,

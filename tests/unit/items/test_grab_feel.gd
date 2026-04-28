@@ -97,11 +97,7 @@ func test_held_token_modulation_starts_transparent_and_eases_in() -> void:
 
 
 func test_held_token_settles_on_cursor_without_teleporting() -> void:
-	# Behaviour: the lift moves the held token from press-origin to the cursor over the ease
-	# window. At the end the token sits on the cursor with full alpha, and no single tick
-	# during the window jumps more than half the total origin-to-target distance (rules out
-	# snap and linear-fast regressions; a continuous ease never moves more than ~ half the
-	# remaining distance in one frame for a sub-millisecond tick budget).
+	# Asserts the player-visible promise: lands on cursor with full alpha and no mid-window teleport.
 	_manager.take("ball_alpha")
 	var origin := Vector2(100, 0)
 	var cursor_target := Vector2(500, 200)
@@ -175,7 +171,7 @@ func test_cursor_state_forbidden_when_cursor_outside_venue() -> void:
 	assert_eq(state, CursorStateScript.State.FORBIDDEN)
 
 
-func test_cursor_state_changed_signal_drives_overlay_through_process() -> void:
+func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> void:
 	# End-to-end: a real grab, two _process steps with cursor at rack-only and
 	# venue-only positions, and the signal fires with the expected payloads. This pins the
 	# overlay-via-signal path, not just the derivation.
