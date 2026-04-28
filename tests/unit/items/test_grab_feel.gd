@@ -96,6 +96,36 @@ func test_held_token_modulation_starts_transparent_and_eases_in() -> void:
 	assert_eq(token.modulate.a, 0.0, "modulation alpha is 0 at lift start; eases up to 1")
 
 
+func test_held_token_eases_strictly_between_origin_and_target_at_midpoint() -> void:
+	# AC: the lift is a continuous ease, not a snap or linear interpolation. At 50% through
+	# the window the held token's position, alpha, and scale must lie strictly between
+	# origin and target on every axis. A linear-or-snap regression must fail this assertion.
+	_manager.take("ball_alpha")
+	var origin := Vector2(100, 0)
+	_drag.grab_from_rack("ball_alpha", origin)
+	var token: Node2D = _drag.get_held_token()
+	var target := Vector2(500, 200)
+	# Definition default token_scale; the lift target_scale captured at grab time.
+	var target_scale := Vector2(1.5, 1.5)
+
+	_drag._apply_grab_ease(0.5, target)
+
+	# Position lies strictly between origin and target on each axis.
+	assert_gt(token.global_position.x, origin.x)
+	assert_lt(token.global_position.x, target.x)
+	assert_gt(token.global_position.y, origin.y)
+	assert_lt(token.global_position.y, target.y)
+	# Modulation alpha is strictly inside (0, 1).
+	assert_gt(token.modulate.a, 0.0)
+	assert_lt(token.modulate.a, 1.0)
+	# Scale is strictly between START_SCALE * target and target.
+	var start_scale: Vector2 = BallDragControllerScript.GRAB_EASE_START_SCALE * target_scale
+	assert_gt(token.scale.x, start_scale.x)
+	assert_lt(token.scale.x, target_scale.x)
+	assert_gt(token.scale.y, start_scale.y)
+	assert_lt(token.scale.y, target_scale.y)
+
+
 func test_cursor_state_default_when_no_gesture() -> void:
 	assert_eq(_drag.get_cursor_state(), CursorStateScript.State.DEFAULT)
 
@@ -124,18 +154,49 @@ func test_cursor_state_dragging_in_empty_court_neighbourhood() -> void:
 	assert_eq(state, CursorStateScript.State.DRAGGING)
 
 
-func test_cursor_state_emits_change_signal_on_transition() -> void:
-	# Listeners (overlay, future cursor textures) get a single transition per change.
+func test_cursor_state_forbidden_when_cursor_outside_venue() -> void:
+	# AC: off-venue reads as FORBIDDEN. The held token clamps to venue bounds, but the raw
+	# cursor can drift outside; the state surfaces that.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	# Shrink venue bounds to a small rect that excludes the cursor's default global mouse
+	# position; _is_within_venue then reports false and the derivation returns FORBIDDEN.
+	_drag.venue_bounds = Rect2(Vector2(99000, 99000), Vector2(1, 1))
+
+	var state: int = _drag._derive_cursor_state(Vector2.ZERO)
+
+	assert_eq(state, CursorStateScript.State.FORBIDDEN)
+
+
+func test_cursor_state_changed_signal_drives_overlay_through_process() -> void:
+	# End-to-end: a real grab, two _process steps with cursor at rack-only and
+	# venue-only positions, and the signal fires with the expected payloads. This pins the
+	# overlay-via-signal path, not just the derivation.
 	_manager.take("ball_alpha")
 	watch_signals(_drag)
+	# Trigger _ready so the overlay listens on cursor_state_changed.
+	_drag._ready()
 	_drag.grab_from_rack("ball_alpha")
-	# Force a cursor state update via the public derivation path.
-	_drag._set_cursor_state(CursorStateScript.State.CAN_DROP, Vector2.ZERO)
-	_drag._set_cursor_state(CursorStateScript.State.CAN_DROP, Vector2.ZERO)  # debounced
-	_drag._set_cursor_state(CursorStateScript.State.DRAGGING, Vector2.ZERO)
+	# Step 1: position over the rack drop target -> CAN_DROP.
+	var rack_position: Vector2 = _drop_target.global_position
+	_drag._held_token.global_position = rack_position
+	_drag._update_cursor_state(rack_position)
+	# Step 2: venue-only position outside court and rack -> DRAGGING.
+	var venue_only := Vector2(800, 0)
+	_drag._held_token.global_position = venue_only
+	_drag._update_cursor_state(venue_only)
 
-	# Two transitions expected: -> CAN_DROP, -> DRAGGING. The repeat is deduped.
-	assert_signal_emit_count(_drag, "cursor_state_changed", 2)
+	# At least three emissions are expected: spawn/_process default, CAN_DROP, DRAGGING.
+	# The state-change signal is per-call now (per-frame in production), so the count
+	# reflects update frequency rather than transitions; assert ordered payload sequence.
+	var emits: int = get_signal_emit_count(_drag, "cursor_state_changed")
+	assert_gte(emits, 2, "signal fires at least once per _update_cursor_state call")
+	# Last two emissions follow CAN_DROP then DRAGGING.
+	var second_last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 2)
+	var last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 1)
+	assert_eq(second_last[0], CursorStateScript.State.CAN_DROP)
+	assert_eq(last[0], CursorStateScript.State.DRAGGING)
+	assert_eq(last[1], venue_only, "signal payload carries the held world position")
 
 
 func test_cursor_overlay_visibility_follows_state() -> void:

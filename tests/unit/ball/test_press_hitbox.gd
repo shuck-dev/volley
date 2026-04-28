@@ -50,8 +50,6 @@ func test_rigidbody_input_pickable_disabled_so_press_routes_through_area() -> vo
 
 
 func test_press_radius_is_inflated_versus_physics_radius() -> void:
-	# The hit-box is wider than the visible (physics) radius. Inflation factor lives on
-	# the ball as a tuning const.
 	_ball = _spawn_authored_ball()
 	var press_area: Area2D = _ball.get_node("PressArea") as Area2D
 	var press_shape: CollisionShape2D = null
@@ -62,7 +60,25 @@ func test_press_radius_is_inflated_versus_physics_radius() -> void:
 	assert_not_null(press_shape)
 	var press_circle: CircleShape2D = press_shape.shape as CircleShape2D
 	assert_not_null(press_circle, "press hit-box is a CircleShape2D")
-	assert_gt(press_circle.radius, 10.0, "press radius is wider than the bare ball authored radius")
+	var authored_radius: float = _authored_radius_from_ball(_ball)
+	assert_almost_eq(
+		press_circle.radius,
+		authored_radius * Ball.PRESS_HITBOX_INFLATION,
+		0.001,
+		"press radius equals authored radius * PRESS_HITBOX_INFLATION",
+	)
+
+
+func _authored_radius_from_ball(ball: Ball) -> float:
+	for child in ball.get_children():
+		if child is CollisionShape2D:
+			var shape_node: CollisionShape2D = child
+			var circle: CircleShape2D = shape_node.shape as CircleShape2D
+			if circle == null:
+				continue
+			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
+			return circle.radius * maxf(axis_scale, 0.001)
+	return 0.0
 
 
 func test_press_emits_pressed_signal() -> void:
