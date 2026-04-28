@@ -87,6 +87,8 @@ func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:
 
 func _refresh_buttons() -> void:
 	for item in ItemManager.items:
+		if not _buttons.has(item.key):
+			continue
 		var button: Button = _buttons[item.key]
 		var level := ItemManager.get_level(item.key)
 		var cost := ItemManager.calculate_cost(item.key)

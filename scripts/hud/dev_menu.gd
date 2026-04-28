@@ -44,5 +44,9 @@ func _add_toggle(panel: Control) -> void:
 	checkbox.text = str(panel.name)
 	checkbox.button_pressed = panel.visible
 	checkbox.focus_mode = Control.FOCUS_NONE
-	checkbox.toggled.connect(func(pressed: bool) -> void: panel.visible = pressed)
+	checkbox.toggled.connect(
+		func(pressed: bool) -> void:
+			if is_instance_valid(panel):
+				panel.visible = pressed
+	)
 	_content.add_child(checkbox)
