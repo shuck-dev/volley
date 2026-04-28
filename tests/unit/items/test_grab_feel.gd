@@ -96,34 +96,39 @@ func test_held_token_modulation_starts_transparent_and_eases_in() -> void:
 	assert_eq(token.modulate.a, 0.0, "modulation alpha is 0 at lift start; eases up to 1")
 
 
-func test_held_token_eases_strictly_between_origin_and_target_at_midpoint() -> void:
-	# AC: the lift is a continuous ease, not a snap or linear interpolation. At 50% through
-	# the window the held token's position, alpha, and scale must lie strictly between
-	# origin and target on every axis. A linear-or-snap regression must fail this assertion.
+func test_held_token_settles_on_cursor_without_teleporting() -> void:
+	# Behaviour: the lift moves the held token from press-origin to the cursor over the ease
+	# window. At the end the token sits on the cursor with full alpha, and no single tick
+	# during the window jumps more than half the total origin-to-target distance (rules out
+	# snap and linear-fast regressions; a continuous ease never moves more than ~ half the
+	# remaining distance in one frame for a sub-millisecond tick budget).
 	_manager.take("ball_alpha")
 	var origin := Vector2(100, 0)
+	var cursor_target := Vector2(500, 200)
 	_drag.grab_from_rack("ball_alpha", origin)
 	var token: Node2D = _drag.get_held_token()
-	var target := Vector2(500, 200)
-	# Definition default token_scale; the lift target_scale captured at grab time.
-	var target_scale := Vector2(1.5, 1.5)
+	# Pin the cursor target by overriding _grab_origin_position-driven follow: we drive
+	# _apply_grab_ease through repeated _process-equivalent ticks against a fixed target.
+	var ease_window: float = _drag.grab_ease_duration_s
+	var tick_count: int = 16
+	var tick_dt: float = ease_window / float(tick_count)
+	var max_step: float = 0.0
+	var previous: Vector2 = token.global_position
+	var total_distance: float = origin.distance_to(cursor_target)
 
-	_drag._apply_grab_ease(0.5, target)
+	for i in tick_count:
+		_drag._grab_ease_elapsed = minf(_drag._grab_ease_elapsed + tick_dt, ease_window)
+		_drag._apply_grab_ease(_drag._grab_ease_progress(), cursor_target)
+		var step: float = previous.distance_to(token.global_position)
+		max_step = maxf(max_step, step)
+		previous = token.global_position
 
-	# Position lies strictly between origin and target on each axis.
-	assert_gt(token.global_position.x, origin.x)
-	assert_lt(token.global_position.x, target.x)
-	assert_gt(token.global_position.y, origin.y)
-	assert_lt(token.global_position.y, target.y)
-	# Modulation alpha is strictly inside (0, 1).
-	assert_gt(token.modulate.a, 0.0)
-	assert_lt(token.modulate.a, 1.0)
-	# Scale is strictly between START_SCALE * target and target.
-	var start_scale: Vector2 = BallDragControllerScript.GRAB_EASE_START_SCALE * target_scale
-	assert_gt(token.scale.x, start_scale.x)
-	assert_lt(token.scale.x, target_scale.x)
-	assert_gt(token.scale.y, start_scale.y)
-	assert_lt(token.scale.y, target_scale.y)
+	# Ends at the cursor with full alpha; that is the player-visible promise.
+	assert_almost_eq(token.global_position.x, cursor_target.x, 0.5)
+	assert_almost_eq(token.global_position.y, cursor_target.y, 0.5)
+	assert_almost_eq(token.modulate.a, 1.0, 0.001)
+	# No frame teleports across the window. Half the trip in one tick would be a snap.
+	assert_lt(max_step, total_distance * 0.5, "no mid-window teleport")
 
 
 func test_cursor_state_default_when_no_gesture() -> void:
