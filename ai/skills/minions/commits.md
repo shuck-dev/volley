@@ -32,9 +32,19 @@ Imperative mood, present tense. No file paths, no symptom descriptions, no issue
 
 For breaking changes (save wipes, API renames, workflow-input shifts), use `feat!:` or `fix!:` on the subject. Autolabel aliases the bang.
 
+## Branch discipline
+
+- **Never rebase; merge `main` in.** Use `git merge main`, never `git rebase`. If a rebase is genuinely needed, stop and ask Josh. Josh merges challenges, not minions.
+- **No amending, no force-push.** Add a new commit on top instead of `--amend`. Don't `push --force` or `--force-with-lease`. Intermediate noise is fine; squash-merge collapses it. Only amend or force-push when Josh explicitly asks.
+- **Fresh branch after a challenge merges.** Never pile commits onto a branch whose challenge already merged. If `git push` reports `remote: Create a pull request for '<branch>'` on a branch the minion thought was live, origin deleted it; stop and cut a fresh branch off `origin/main`.
+
 ## Hooks
 
 Let lefthook fire on commit. Do not run `lefthook run pre-commit` by hand. If a hook fails, fix the underlying issue and create a new commit; do not amend, do not `--no-verify`.
+
+## Tests after every code change
+
+Run `./scripts/ci/run_gut.sh` after every code change. Iterate until green. Lefthook fires GUT on `git commit`; that is the gate, not a manual sweep.
 
 ## ggut runtime expectations
 
@@ -64,3 +74,7 @@ Consolidates:
 - `feedback_enable_auto_merge_on_create.md`
 - `feedback_merge_not_done.md`
 - `feedback_never_merge_prs.md`
+- `feedback_never_rebase.md`
+- `feedback_run_tests_after_changes.md`
+
+It also absorbs the commit-side ground rules (never-rebase, no-amend, no-force, fresh branch after merge, ggut after every code change) that previously lived in `ai/PARALLEL.md`.

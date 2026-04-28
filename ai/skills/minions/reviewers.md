@@ -93,7 +93,15 @@ All replies stay inline.
 
 ## Labels
 
-Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human`; that's Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the blocked-supersedes-approved job anyway; still apply it so your verdict is recorded.
+Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human` or `action-required-human`; those are Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the race-resolver workflow anyway; still apply it so your verdict is recorded.
+
+`zaphod-blocked` supersedes `zaphod-approved`. If a later specialist finds blocking issues after an earlier pass approved, the race-resolver strips the `zaphod-approved`. A later clean pass never downgrades a prior block; the block stands until a new commit triggers a fresh review.
+
+Human verdict labels are mutually exclusive: `approved-human` (sign-off, required for merge) and `action-required-human` (address comments before merge). Both strip on every new commit, so a fix push naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with "Changes requested" while `action-required-human` is present, and "Needs human review" when neither human label is set. The approver-check workflow strips unauthorised applications.
+
+## Follow-up review
+
+When Josh asks for another pass on an existing challenge (not a re-review on a fresh push, but a deliberate second look), dispatch a fresh reviewer and post all findings as a single Review wrapping line comments using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
 ## Re-review protocol
 

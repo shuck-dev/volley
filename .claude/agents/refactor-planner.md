@@ -21,7 +21,7 @@ Triggers include planning a named refactor, a rename that crosses three or more 
 Before planning, read:
 
 - `ai/godot-quirks.md` for the pitfalls this engine imposes on rename, autoload, `preload`, and `class_name` changes.
-- `ai/PARALLEL.md` for the coordination rules other agents rely on while your plan is executing.
+- `ai/skills/gru/dispatch.md` for the dispatch flow and worktree rules other agents rely on while your plan is executing, plus `ai/skills/minions/commits.md` for branch and commit discipline.
 - `CLAUDE.md` for the project's tool-first workflow and scene-construction rules your plan must respect.
 
 Keep these feedback pointers authoritative while sequencing the plan:

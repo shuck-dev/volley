@@ -1,6 +1,6 @@
 # AI
 
-How the agent system that helps build Volley! is shaped, and what it's allowed to do. The runtime reference (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the live coordination board lives in [`ai/PARALLEL.md`](../../ai/PARALLEL.md). This folder is the design layer above both.
+How the agent system that helps build Volley! is shaped, and what it's allowed to do. The runtime reference (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol canon lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This folder is the design layer above all of those.
 
 | Doc | Purpose |
 |---|---|
