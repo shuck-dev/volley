@@ -11,7 +11,7 @@ const SPEED_EMIT_THRESHOLD := 10.0
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
 ## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
-@export var press_hitbox_inflation: float = 1.6
+@export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 1.6
 
 var speed: float = 0.0
 var min_speed: float
@@ -124,29 +124,30 @@ func _setup_effect_processor() -> void:
 	add_child(effect_processor)
 
 
-func _setup_press_area() -> void:
-	if _press_area != null and is_instance_valid(_press_area):
+func _wire_press_area() -> void:
+	var area: Area2D = get_node_or_null("PressArea") as Area2D
+	if area == null:
 		return
-	var press_radius: float = _authored_collision_radius() * press_hitbox_inflation
-	if press_radius <= 0.0:
-		return
-	var area: Area2D = Area2D.new()
-	area.name = "PressArea"
-	area.input_pickable = true
-	area.monitoring = false
-	area.monitorable = false
-	var shape_node: CollisionShape2D = CollisionShape2D.new()
-	var circle: CircleShape2D = CircleShape2D.new()
-	circle.radius = press_radius
-	shape_node.shape = circle
-	area.add_child(shape_node)
-	add_child(area)
+	_press_area = area
+	var press_shape: CollisionShape2D = null
+	for child in area.get_children():
+		if child is CollisionShape2D:
+			press_shape = child
+			break
+	if press_shape != null:
+		var circle: CircleShape2D = press_shape.shape as CircleShape2D
+		if circle != null:
+			var authored_radius: float = _baseline_collision_radius()
+			if authored_radius > 0.0:
+				# Duplicate so per-instance inflation does not mutate the shared sub-resource.
+				var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
+				local_circle.radius = authored_radius * press_hitbox_inflation
+				press_shape.shape = local_circle
 	if not area.input_event.is_connected(_on_input_event):
 		area.input_event.connect(_on_input_event)
-	_press_area = area
 
 
-func _authored_collision_radius() -> float:
+func _baseline_collision_radius() -> float:
 	for child in get_children():
 		if child is CollisionShape2D:
 			var shape_node: CollisionShape2D = child
@@ -155,7 +156,6 @@ func _authored_collision_radius() -> float:
 				continue
 			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
 			return circle.radius * maxf(axis_scale, 0.001)
-	# No authored CircleShape2D; press area skips construction on radius <= 0.
 	return 0.0
 
 
@@ -175,7 +175,7 @@ func _ball_setup() -> void:
 	input_pickable = false
 	if input_event.is_connected(_on_input_event):
 		input_event.disconnect(_on_input_event)
-	_setup_press_area()
+	_wire_press_area()
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
