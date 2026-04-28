@@ -5,6 +5,8 @@ description: Code-comment policy every minion follows when writing code. One lin
 
 # Code comments
 
+Before you write any line of code, read this and `data-driven.md`.
+
 Default to no comments. Most code shouldn't carry any.
 
 ## When to write one
@@ -33,7 +35,7 @@ One line max. If the WHY needs a paragraph, write a doc and link from the challe
 
 ## Why this rule keeps slipping
 
-Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the violation still appears in fresh challenges. The cause is "I'll explain my approach" instinct overriding the policy. Treat any urge to write more than one line of comment as a signal to either rename the identifier, extract a helper, or move the explanation to the challenge description.
+Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the violation still appears in fresh challenges. The cause is "I'll explain my approach" instinct overriding the policy. Treat any urge to write more than one line of comment as a signal to either rename the identifier, extract a helper, or move the explanation to the challenge description. Pickle Jar (PR #533 SH-287, PR #535 SH-297) is the most recent corpus where multi-line docstrings landed despite this rule and required refine rounds.
 
 ## What this skill replaces
 

@@ -47,6 +47,10 @@ Append one line per dispatched minion to `ai/scratchpads/agent-codenames.tsv`:
 
 The scratchpad is gitignored and per-session; do not put this in memory (it doesn't persist usefully across sessions). Scrub the file when the session's work closes, same rule as other agent scratchpads.
 
+## Implementer brief preamble
+
+Every implementer brief opens with: read `ai/skills/minions/code-comments.md` and `ai/skills/minions/data-driven.md` in full before writing the first line of code. Both rules keep slipping into fresh challenges and need refine rounds; making the read mandatory at brief-open is cheaper than catching the same violation in review again. Test-authors and refiners get the same line.
+
 ## Paired dispatch
 
 Three dispatch shapes for code work, picked by issue type. The cognitive separation between test and impl is the point; pick the shape that achieves it for the kind of issue at hand.
