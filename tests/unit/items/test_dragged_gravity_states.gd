@@ -1,0 +1,196 @@
+## SH-314: dragged-gravity state-machine transitions; canon at designs/01-prototype/21-ball-dynamics.md.
+extends GutTest
+
+const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+
+var _manager: Node
+var _host: Node2D
+var _rack: RackDisplay
+var _drop_target: Area2D
+var _reconciler: BallReconciler
+var _drag: BallDragController
+
+
+func _make_rack(manager: Node) -> RackDisplay:
+	var rack: RackDisplay = RackDisplayScript.new()
+	rack.role = &"ball"
+	var slot_container := Node2D.new()
+	slot_container.name = "SlotContainer"
+	rack.add_child(slot_container)
+	for index in 4:
+		var marker := Node2D.new()
+		marker.name = "SlotMarker%d" % index
+		marker.position = Vector2(index * 32, 0)
+		slot_container.add_child(marker)
+	rack.slot_container = slot_container
+	rack.configure(manager)
+	add_child_autofree(rack)
+	return rack
+
+
+func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
+	var area := Area2D.new()
+	area.global_position = position
+	var collision := CollisionShape2D.new()
+	var rectangle := RectangleShape2D.new()
+	rectangle.size = size
+	collision.shape = rectangle
+	area.add_child(collision)
+	add_child_autofree(area)
+	return area
+
+
+func before_each() -> void:
+	_manager = ItemFactory.create_manager(self)
+	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	var typed_items: Array[ItemDefinition] = [ball_alpha]
+	_manager.items.assign(typed_items)
+	_manager._progression.friendship_point_balance = 10000
+
+	_host = Node2D.new()
+	add_child_autofree(_host)
+
+	_rack = _make_rack(_manager)
+	_drop_target = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))
+
+	_reconciler = BallReconcilerScript.new()
+	_reconciler.configure(_manager, _host)
+	add_child_autofree(_reconciler)
+
+	_drag = BallDragControllerScript.new()
+	_drag.configure(_manager, _rack, _drop_target, _reconciler)
+	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	add_child_autofree(_drag)
+
+
+func _permanent_balls() -> Array:
+	var result: Array = []
+	for child in _host.get_children():
+		if child is Ball:
+			result.append(child)
+	return result
+
+
+func _loose_bodies_under_host() -> Array:
+	var result: Array = []
+	for child in _host.get_children():
+		if child is HeldBody:
+			result.append(child)
+	return result
+
+
+func test_grab_spawns_a_rigid_body_held_in_kinematic_freeze() -> void:
+	# Token -> Dragged-gravity: held body is a RigidBody2D, frozen-kinematic so the controller
+	# drives position; gravity_scale is zero during the lift so it does not fall mid-tween.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	var body: HeldBody = _drag.get_held_token() as HeldBody
+	assert_not_null(body, "held body is a HeldBody (RigidBody2D), not a plain Node2D")
+	assert_true(body.freeze, "held body stays frozen-kinematic so the controller drives position")
+	assert_eq(
+		body.freeze_mode,
+		RigidBody2D.FREEZE_MODE_KINEMATIC,
+		"freeze_mode is kinematic so position writes do not fight the solver",
+	)
+	assert_eq(body.gravity_scale, 0.0, "gravity is zero during the lift; engages on settle")
+	assert_eq(body.phase, HeldBody.Phase.LIFTING)
+
+
+func test_lift_settle_marks_body_held_and_arms_loose_gravity() -> void:
+	# Gravity engages once the lift tween settles; the body's loose_gravity_scale stays armed
+	# for any later release-into-venue branch.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha", Vector2(0, 0))
+	var body: HeldBody = _drag.get_held_token() as HeldBody
+	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
+	_drag._apply_grab_ease(_drag._grab_ease_progress(), Vector2(50, 50))
+	assert_eq(body.phase, HeldBody.Phase.HELD, "lift settle promotes phase to HELD")
+	assert_gt(body.loose_gravity_scale, 0.0, "loose gravity is armed for a future floor release")
+
+
+func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -> void:
+	# Dragged-gravity -> Active-movement: the rigid held body is freed, the reconciler
+	# instantiates a Ball at the release point with gesture velocity. Active-movement has
+	# gravity off (Ball.gravity_scale == 0) per the rally configuration.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+	var held: HeldBody = _drag.get_held_token() as HeldBody
+	assert_not_null(held)
+	_drag._cursor_samples.clear()
+	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
+	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(80, 0)})
+
+	var court_point := Vector2(50, 25)
+	assert_true(_drag.attempt_release(court_point))
+	await get_tree().process_frame
+
+	assert_false(is_instance_valid(held), "held body is freed after a court release")
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "court release spawns the rally Ball")
+	assert_eq(ball.gravity_scale, 0.0, "active-movement has gravity off (frictionless rally)")
+
+
+func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> void:
+	# Dragged-gravity -> loose-on-venue-floor: the held body unfreezes, gravity engages, the
+	# body falls. The reconciler does not spawn a Ball; placement state stays off-court.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+
+	var loose_position := Vector2(1500, 100)
+	assert_true(_drag.attempt_release(loose_position))
+	var loose_bodies: Array = _loose_bodies_under_host()
+	assert_eq(loose_bodies.size(), 1)
+	var body: HeldBody = loose_bodies[0]
+	assert_eq(body.phase, HeldBody.Phase.LOOSE)
+	assert_false(body.freeze)
+	assert_gt(body.gravity_scale, 0.0)
+	assert_null(_reconciler.get_ball_for_key("ball_alpha"), "loose drop bypasses the reconciler")
+	assert_false(_manager.is_on_court("ball_alpha"))
+
+
+func test_mid_rally_grab_spawns_held_body_at_live_ball_position() -> void:
+	# Active-movement -> Dragged-gravity: grabbing a live ball spawns a HeldBody at the live
+	# ball's last world position (the gesture's start), with gravity off until the lift settles.
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(live)
+	live.global_position = Vector2(75, 30)
+
+	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	await get_tree().process_frame
+
+	var body: HeldBody = _drag.get_held_token() as HeldBody
+	assert_not_null(body, "mid-rally grab spawns a HeldBody, not a plain Node2D")
+	assert_eq(_drag._grab_origin_position, Vector2(75, 30))
+	assert_eq(body.phase, HeldBody.Phase.LIFTING)
+	assert_true(body.freeze, "frozen-kinematic during the cursor follow")
+
+
+func test_loose_body_keeps_visual_scale_via_art_holder_after_release() -> void:
+	# go_loose transfers the visible token_scale off the body onto the ArtHolder so the body
+	# itself is unscaled in world space (collision shape matches the authored at_rest_shape).
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+	# Settle the lift so body.scale = token_scale.
+	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
+	_drag._apply_grab_ease(1.0, Vector2(1500, 100))
+
+	assert_true(_drag.attempt_release(Vector2(1500, 100)))
+	var bodies: Array = _loose_bodies_under_host()
+	assert_eq(bodies.size(), 1)
+	var body: HeldBody = bodies[0]
+	assert_eq(body.scale, Vector2.ONE, "loose body sheds its lift-time scale onto the ArtHolder")

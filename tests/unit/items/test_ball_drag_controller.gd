@@ -75,6 +75,14 @@ func _permanent_balls() -> Array:
 	return result
 
 
+func _loose_bodies_under_host() -> Array:
+	var result: Array = []
+	for child in _host.get_children():
+		if child is HeldBody:
+			result.append(child)
+	return result
+
+
 func test_grab_from_rack_spawns_held_token_without_activating_item() -> void:
 	_manager.take("ball_alpha")
 	assert_false(_manager.is_on_court("ball_alpha"), "precondition: item is on the rack")
@@ -171,7 +179,9 @@ func test_release_without_gesture_uses_default_launch_velocity() -> void:
 	assert_eq(ball.linear_velocity, expected, "fallback path should match ItemManager default")
 
 
-func test_release_far_outside_court_clamps_to_bounds() -> void:
+func test_release_far_outside_court_falls_loose_inside_venue() -> void:
+	# SH-314: release inside venue but outside court no longer clamps to court; the held body
+	# unfreezes and falls as a loose RigidBody2D under gravity per the regime canon.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -181,11 +191,18 @@ func test_release_far_outside_court_clamps_to_bounds() -> void:
 
 	var released: bool = _drag.attempt_release(off_world)
 
-	assert_true(released, "any release not over the rack resolves as a court release")
-	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(ball)
-	# Court bounds max corner is (600, 400); far-off position should clamp to it.
-	assert_eq(ball.global_position, Vector2(600, 400), "spawn clamps to court bounds")
+	assert_true(released, "venue-clamped release resolves as a loose drop")
+	assert_null(
+		_reconciler.get_ball_for_key("ball_alpha"),
+		"loose release does not bring the item into play",
+	)
+	assert_false(_manager.is_on_court("ball_alpha"), "loose release does not flip placement state")
+	# A HeldBody (RigidBody2D) was reparented to the ball host and unfrozen.
+	var loose_bodies: Array = _loose_bodies_under_host()
+	assert_eq(loose_bodies.size(), 1, "exactly one loose body lands in the venue")
+	var body: HeldBody = loose_bodies[0]
+	assert_false(body.freeze, "loose body unfreezes so gravity integrates")
+	assert_gt(body.gravity_scale, 0.0, "loose body has gravity active")
 
 
 func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
@@ -262,7 +279,9 @@ func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() 
 	)
 
 
-func test_release_inside_venue_outside_court_spawns_at_court_clamped_position() -> void:
+func test_release_inside_venue_outside_court_drops_loose() -> void:
+	# SH-314: a release inside the venue but outside the court spawns a loose body that falls
+	# under gravity, not a court-clamped Ball.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -274,10 +293,14 @@ func test_release_inside_venue_outside_court_spawns_at_court_clamped_position() 
 	var released: bool = _drag.attempt_release(in_venue_out_of_court)
 	assert_true(released, "release inside venue always resolves, never a no-op")
 
-	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(ball, "release inside venue but outside court still spawns a ball")
-	assert_eq(ball.global_position.x, 600.0, "x clamps to the right edge of court_bounds")
-	assert_eq(ball.global_position.y, 50.0, "in-bounds axes pass through unchanged")
+	assert_null(
+		_reconciler.get_ball_for_key("ball_alpha"),
+		"loose release does not bring the item into play",
+	)
+	assert_false(_manager.is_on_court("ball_alpha"))
+	var loose_bodies: Array = _loose_bodies_under_host()
+	assert_eq(loose_bodies.size(), 1, "loose body lands at the release position")
+	assert_eq(loose_bodies[0].global_position, in_venue_out_of_court)
 
 
 func test_mouse_button_release_event_triggers_release() -> void:

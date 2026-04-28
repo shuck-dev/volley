@@ -1,12 +1,15 @@
 class_name VenueDropTarget
 extends DropTarget
 
-## Lowest-priority fallback: ball-role releases inside the venue rect clamp to the court edge.
+## SH-314 dragged-gravity: accepts releases inside the venue rect when the at-rest projection clears,
+## so the held body can fall as a loose RigidBody2D. The controller branches on `target is VenueDropTarget`
+## to keep the body alive after release; this target's `accept` is intentionally a no-op for that reason.
 
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
 var _court_bounds: Rect2
+var _world: World2D
 
 
 func configure(
@@ -21,26 +24,66 @@ func configure(
 	_court_bounds = court_bounds
 
 
-func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
-	if not _is_ball_role(item_key):
-		return false
+## Optional: enables body-projection on the venue rect so wall/partner overlap rejects the loose drop.
+func set_world(world: World2D) -> void:
+	_world = world
+
+
+func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
 	if _venue_bounds.size == Vector2.ZERO:
 		return false
 	# Inclusive max-edge check; Rect2.has_point treats max as exclusive.
 	var lo: Vector2 = _venue_bounds.position
 	var hi: Vector2 = lo + _venue_bounds.size
-	return position.x >= lo.x and position.x <= hi.x and position.y >= lo.y and position.y <= hi.y
-
-
-func accept(item_key: String, position: Vector2, gesture_velocity: Vector2) -> void:
-	if _reconciler == null:
-		return
-	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
-	_reconciler.bring_into_play(item_key, clamped, gesture_velocity)
-
-
-func _is_ball_role(item_key: String) -> bool:
-	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
-	if definition == null:
+	var inside: bool = (
+		position.x >= lo.x and position.x <= hi.x and position.y >= lo.y and position.y <= hi.y
+	)
+	if not inside:
+		return false
+	# Body projection: a loose drop must clear walls/partners just like a court drop.
+	# Skipped when no World2D was provided (test fixtures keep working without one).
+	if _world == null:
 		return true
-	return definition.role == &"ball"
+	return _projection_clear(item_key, position, scale_factor)
+
+
+## SH-314: the controller owns the loose handoff (reparents and unfreezes the held body).
+## This accept is kept for DropTarget contract symmetry but does no work.
+func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
+	pass
+
+
+func _projection_clear(item_key: String, position: Vector2, scale_factor: float) -> bool:
+	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
+	if space == null:
+		return true
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
+	var shape: Shape2D = null
+	if definition != null and definition.at_rest_shape != null:
+		shape = _scaled_shape(definition.at_rest_shape, scale_factor)
+	if shape == null:
+		var fallback: CircleShape2D = CircleShape2D.new()
+		fallback.radius = 14.0 * scale_factor
+		shape = fallback
+	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	params.shape = shape
+	params.transform = Transform2D(0.0, position)
+	params.collide_with_bodies = true
+	params.collide_with_areas = false
+	return space.intersect_shape(params, 1).is_empty()
+
+
+func _scaled_shape(source: Shape2D, scale_factor: float) -> Shape2D:
+	if is_equal_approx(scale_factor, 1.0):
+		return source
+	if source is CircleShape2D:
+		var src_circle: CircleShape2D = source
+		var scaled_circle: CircleShape2D = CircleShape2D.new()
+		scaled_circle.radius = src_circle.radius * scale_factor
+		return scaled_circle
+	if source is RectangleShape2D:
+		var src_rect: RectangleShape2D = source
+		var scaled_rect: RectangleShape2D = RectangleShape2D.new()
+		scaled_rect.size = src_rect.size * scale_factor
+		return scaled_rect
+	return source
