@@ -3,7 +3,7 @@
 
 # GodotIQ — AI-Assisted Godot Development
 
-Before ticketed work where another agent may be active, read `ai/PARALLEL.md` and claim your ticket there.
+Before ticketed work where another agent may be active, read `ai/skills/gru/dispatch.md` for the seven-step minion flow and check `gh pr list --state open --json files,headRefName,number` plus `mcp__linear__list_issues(state="Dispatched", cycle="active")` for what's already in flight.
 
 Prefer GodotIQ MCP tools over raw file operations. Don't `Read`/`cat` `.tscn`/`.gd`/`.tres` (use `file_context`, `scene_map`, `scene_tree`). Don't grep for signals/callers (use `dependency_graph`, `signal_map`). Don't guess positions/scales (use `placement`, `suggest_scale`, `scene_map`).
 

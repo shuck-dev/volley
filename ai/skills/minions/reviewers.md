@@ -57,16 +57,32 @@ No audit enumerations. No restatement of the challenge description or the impl p
 
 All findings live as inline review comments anchored to the relevant `path:line`. Never post in the main challenge thread.
 
-```
-gh api repos/<owner>/<repo>/pulls/<n>/comments \
-  -f commit_id="<sha>" \
-  -f path="<file>" \
-  -F line=<line> \
-  -f side=RIGHT \
-  -f body="**<codename>** <label>: <one-sentence concern; fix in 15 words>."
+## One review per agent per pass
+
+A reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, one per agent. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. Reviewer agents run in isolated contexts and cannot share a Review object. When the swarm fans out N reviewers, each posts its own Review; the conversation tab groups by review header, and the author scans one reviewer at a time. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 (origin) or SH-327 (sharpening) if you need the canon's history.
+
+```bash
+jq -n --arg sha "<sha>" '{
+  event: "COMMENT",
+  commit_id: $sha,
+  body: "",
+  comments: [
+    {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<codename>** <label>: <one-sentence concern; fix in 15 words>."},
+    {"path": "<file>", "line": <line>, "side": "RIGHT", "body": "**<codename>** <label>: <one-sentence concern; fix in 15 words>."}
+  ]
+}' | gh api -X POST repos/<owner>/<repo>/pulls/<n>/reviews --input -
 ```
 
-Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>/replies`. All replies stay inline.
+Never post one `gh api` call per finding; that creates N standalone PullRequestReviewComment threads with N notifications, which is the shape SH-326 retired.
+
+The one exception is replying to an existing inline thread. A reply anchors to a single prior comment, not a new pass, so it stays on the comments endpoint:
+
+```bash
+gh api -X POST repos/<owner>/<repo>/pulls/<n>/comments/<comment-id>/replies \
+  -f body=$'**<codename>**\n\nresolved: <fix SHA and 15-word description>'
+```
+
+All replies stay inline.
 
 ## Inline finding shape
 
@@ -77,7 +93,15 @@ Reply to an existing inline thread via `gh api repos/.../pulls/<n>/comments/<id>
 
 ## Labels
 
-Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human`; that's Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the blocked-supersedes-approved job anyway; still apply it so your verdict is recorded.
+Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human` or `action-required-human`; those are Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the race-resolver workflow anyway; still apply it so your verdict is recorded.
+
+`zaphod-blocked` supersedes `zaphod-approved`. If a later specialist finds blocking issues after an earlier pass approved, the race-resolver strips the `zaphod-approved`. A later clean pass never downgrades a prior block; the block stands until a new commit triggers a fresh review.
+
+Human verdict labels are mutually exclusive: `approved-human` (sign-off, required for merge) and `action-required-human` (address comments before merge). Both strip on every new commit, so a fix push naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with "Changes requested" while `action-required-human` is present, and "Needs human review" when neither human label is set. The approver-check workflow strips unauthorised applications.
+
+## Follow-up review
+
+When Josh asks for another pass on an existing challenge (not a re-review on a fresh push, but a deliberate second look), dispatch a fresh reviewer and post all findings as a single Review wrapping line comments using the template above. If nothing to say, post nothing. Do not auto-apply fixes on follow-ups; Josh responds inline or marks threads Resolved.
 
 ## Re-review protocol
 
