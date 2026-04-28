@@ -58,14 +58,9 @@ func _projection_clear(item_key: String, position: Vector2, scale_factor: float)
 	if space == null:
 		return true
 	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
-	var shape: Shape2D = null
-	if definition != null and definition.at_rest_shape != null:
-		shape = _scaled_shape(definition.at_rest_shape, scale_factor)
-	if shape == null:
-		# Legacy probe radius for items (e.g. test fixtures) missing an authored shape.
-		var circle: CircleShape2D = CircleShape2D.new()
-		circle.radius = 14.0 * scale_factor
-		shape = circle
+	if definition == null or definition.at_rest_shape == null:
+		return false
+	var shape: Shape2D = _scaled_shape(definition.at_rest_shape, scale_factor)
 	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	params.shape = shape
 	params.transform = Transform2D(0.0, position)

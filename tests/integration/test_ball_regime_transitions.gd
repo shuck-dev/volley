@@ -1,4 +1,4 @@
-## SH-218 end-to-end ball regime transitions; see designs/01-prototype/21-ball-dynamics.md#regime-unification.
+## End-to-end ball regime transitions; see designs/01-prototype/21-ball-dynamics.md#regime-unification.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -119,7 +119,7 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 	var released: bool = _drag.attempt_release(court_point)
 
 	assert_true(released, "release over court should resolve")
-	assert_false(_drag.is_dragging(), "held token destroyed on release")
+	assert_false(_drag.is_dragging(), "held body destroyed on release")
 	assert_true(_manager.is_on_court("training_ball"), "placement state settles on court")
 	var live: Array = _permanent_balls()
 	assert_eq(live.size(), 1, "exactly one Ball for the key after the drop")
@@ -173,33 +173,30 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 	)
 
 
-# --- Scenario 3: rack -> mid-venue release clamps to court edge ------------
+# --- Scenario 3: rack -> mid-venue release drops loose (SH-314) -------------
 
 
-func test_drag_ball_onto_mid_venue_position_spawns_at_court_edge() -> void:
+func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 	_manager.take("training_ball")
 	_drag.grab_from_rack("training_ball")
 	for ball in _all_balls_under_host():
 		ball.queue_free()
 	await get_tree().process_frame
 
-	# Inside VENUE_BOUNDS.x (-2000..2000) but outside COURT_BOUNDS.x (-600..600).
 	var in_venue_outside_court := Vector2(1500, 50)
 	var released: bool = _drag.attempt_release(in_venue_outside_court)
 
 	assert_true(released, "release inside venue always resolves")
-	assert_true(_manager.is_on_court("training_ball"), "placement should settle on court")
-	var live: Array = _permanent_balls()
-	assert_eq(live.size(), 1, "exactly one permanent Ball for the key")
-	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
-	assert_not_null(ball)
-	var court_right_edge: float = COURT_BOUNDS.position.x + COURT_BOUNDS.size.x
-	assert_eq(
-		ball.global_position.x,
-		court_right_edge,
-		"x should clamp to the court's right edge",
-	)
-	assert_eq(ball.global_position.y, 50.0, "in-bounds y should pass through unchanged")
+	assert_false(_manager.is_on_court("training_ball"), "loose release does not flip placement")
+	assert_eq(_permanent_balls().size(), 0, "no rally Ball spawns from a loose release")
+	var loose_under_host: Array = []
+	for child in _host.get_children():
+		if child is HeldBody:
+			loose_under_host.append(child)
+	assert_eq(loose_under_host.size(), 1, "loose body is reparented under the ball host")
+	var body: HeldBody = loose_under_host[0]
+	assert_false(body.freeze, "loose body unfreezes so gravity integrates")
+	assert_gt(body.gravity_scale, 0.0)
 
 
 # --- Scenario 4: temporary balls live outside the reconciler's set ---------
@@ -238,7 +235,7 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	)
 
 	_drag.grab_live_ball("training_ball", true)
-	assert_true(_drag.is_dragging(), "temporary drag starts the held-token gesture")
+	assert_true(_drag.is_dragging(), "temporary drag starts the held-body gesture")
 
 	var released: bool = _drag.attempt_release(Vector2(0, 0))
 
@@ -257,7 +254,7 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 # --- Scenario 5: release from outside venue still lands on the court -------
 
 
-func test_release_from_far_outside_cursor_spawns_ball_at_court_corner() -> void:
+func test_release_from_far_outside_cursor_drops_loose_at_venue_edge() -> void:
 	_manager.take("training_ball")
 	_drag.grab_from_rack("training_ball")
 	for ball in _all_balls_under_host():
@@ -268,17 +265,18 @@ func test_release_from_far_outside_cursor_spawns_ball_at_court_corner() -> void:
 	var released: bool = _drag.attempt_release(far_outside)
 
 	assert_true(released, "release always resolves, even from a far-outside cursor")
-	assert_true(
-		_manager.is_on_court("training_ball"),
-		"placement settles on court despite the out-of-bounds cursor",
-	)
-	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
-	assert_not_null(ball, "release still spawns a live ball")
-	var court_max: Vector2 = COURT_BOUNDS.position + COURT_BOUNDS.size
+	assert_false(_manager.is_on_court("training_ball"))
+	assert_eq(_permanent_balls().size(), 0, "loose drop does not spawn a rally Ball")
+	var venue_max: Vector2 = VENUE_BOUNDS.position + VENUE_BOUNDS.size
+	var loose_under_host: Array = []
+	for child in _host.get_children():
+		if child is HeldBody:
+			loose_under_host.append(child)
+	assert_eq(loose_under_host.size(), 1)
 	assert_eq(
-		ball.global_position,
-		court_max,
-		"ball lands at the court corner after the out-of-bounds release",
+		loose_under_host[0].global_position,
+		venue_max,
+		"loose body lands at the venue's far corner after the cursor clamp",
 	)
 
 
@@ -336,15 +334,11 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 
 
 func test_real_press_drag_release_on_rack_spawns_live_ball_with_item_art() -> void:
-	# Drives the actual InputEventMouseButton path on the rack token: press,
-	# move, release. Asserts the released live ball lands at the release position
-	# AND wears the item's authored art (SH-244).
 	_manager.take("training_ball")
 	await get_tree().process_frame
 	var displayed: Array[String] = _rack.get_displayed_keys()
 	assert_eq(displayed, ["training_ball"], "precondition: rack shows the token")
 
-	# Resolve the slot's click area and feed it a mouse-down event.
 	var slot: Node2D = _find_slot_for_key("training_ball")
 	assert_not_null(slot, "rack slot exists for the owned key")
 	var click_area: Area2D = slot.get_node("ClickArea")
@@ -353,18 +347,16 @@ func test_real_press_drag_release_on_rack_spawns_live_ball_with_item_art() -> vo
 	press.pressed = true
 	click_area.input_event.emit(get_viewport(), press, 0)
 
-	assert_true(_drag.is_dragging(), "press on the rack token starts the held-token gesture")
+	assert_true(_drag.is_dragging(), "press on the rack token starts the held-body gesture")
 	assert_false(
 		_manager.is_on_court("training_ball"),
-		"press alone must not introduce the ball (SH-245)",
+		"press alone must not introduce the ball",
 	)
 
-	# Simulate cursor motion across a window so release velocity is non-zero.
 	_drag._cursor_samples.clear()
 	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
 	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(200, 0)})
 
-	# Release over the court. Drive the actual mouse-button-up path through _input.
 	for ball in _all_balls_under_host():
 		ball.queue_free()
 	await get_tree().process_frame
@@ -377,7 +369,7 @@ func test_real_press_drag_release_on_rack_spawns_live_ball_with_item_art() -> vo
 	assert_true(_manager.is_on_court("training_ball"), "release over court activates the item")
 	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(ball, "reconciler should own the live ball after release")
-	assert_true(ball.has_item_art(), "live ball must render the item's authored art (SH-244)")
+	assert_true(ball.has_item_art(), "live ball must render the item's authored art")
 
 
 # --- Scenario 8 (SH-247): real press on a live Ball flips into mid-rally grab --
@@ -388,26 +380,22 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	_manager.activate("training_ball")
 	var live: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(live, "precondition: live ball exists")
-	# SH-297: press routing moved off the rigid body's input_event onto a generous
-	# child Area2D so a press near a moving ball lands without pixel precision.
 	var press_area: Area2D = live.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "live ball must own a PressArea for press routing (SH-297)")
+	assert_not_null(press_area, "live ball must own a PressArea for press routing")
 	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
 
-	# Drive a real press through the press area's input_event signal.
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
 	press_area.input_event.emit(get_viewport(), press, 0)
 
-	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode (SH-247)")
+	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode")
 	await get_tree().process_frame
 	assert_false(
 		is_instance_valid(live),
-		"the live ball is freed during the hold; held token takes over the cursor",
+		"the live ball is freed during the hold; held body takes over the cursor",
 	)
 
-	# Release over the court reinstates a live ball at the cursor.
 	var court_point := Vector2(50, -25)
 	var released: bool = _drag.attempt_release(court_point)
 	assert_true(released)
@@ -415,37 +403,26 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	var reinstated: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(reinstated, "court release should reinstate a Ball via the reconciler")
 	assert_eq(reinstated.global_position, court_point)
-	assert_true(reinstated.has_item_art(), "reinstated ball preserves the item's art (SH-244)")
+	assert_true(reinstated.has_item_art(), "reinstated ball preserves the item's art")
 
 
-# --- Scenario 9 (SH-262): pre-existing scene Ball is grabbable mid-rally ----
-
-
-# The live court scene ships with a Ball node already in the tree (see scenes/court.tscn).
-# That ball never went through ensure_ball_for_key, so the reconciler never emitted
-# ball_spawned for it, so the drag controller never wired its `pressed` signal. Players
-# pressed mid-rally and nothing happened. Reproduce by parenting a fresh Ball under the
-# host BEFORE the reconciler ever spawns one, then drive a real press through it.
 func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
-	# Mirror the scene-load shape: Ball is already a child of the host with its authored item_key
-	# (court.tscn sets training_ball), reconciler never invoked ensure_ball_for_key for this instance.
+	# Mirror the scene-load shape: a Ball authored under the host that the reconciler never spawned.
 	_manager.take("training_ball")
 	var pre_existing: Ball = BallScene.instantiate()
 	pre_existing.item_key = "training_ball"
 	_host.add_child(pre_existing)
 	pre_existing.global_position = Vector2(0, 0)
 	await get_tree().process_frame
-	# Allow any deferred adoption pass to run before we drive input.
+	# Wait an extra frame so any deferred adoption pass runs before input drives.
 	await get_tree().process_frame
 
 	assert_eq(_permanent_balls().size(), 1, "precondition: pre-existing Ball lives under host")
-	# SH-297: press routing lives on the child Area2D, not on the rigid body itself.
 	var press_area: Area2D = pre_existing.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "Ball must own a PressArea for press routing (SH-297)")
+	assert_not_null(press_area, "Ball must own a PressArea for press routing")
 	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
 	assert_false(_drag.is_dragging(), "precondition: no drag in progress before the press")
 
-	# Drive a real press through the press area's input_event signal.
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
@@ -453,12 +430,12 @@ func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
 
 	assert_true(
 		_drag.is_dragging(),
-		"pressing a pre-existing scene Ball must flip the drag controller into mid-rally grab (SH-262)",
+		"pressing a pre-existing scene Ball must flip the drag controller into mid-rally grab",
 	)
 	await get_tree().process_frame
 	assert_false(
 		is_instance_valid(pre_existing),
-		"the pre-existing ball is freed during the hold; held token takes over the cursor",
+		"the pre-existing ball is freed during the hold; held body takes over the cursor",
 	)
 
 

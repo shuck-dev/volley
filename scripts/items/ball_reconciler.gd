@@ -27,6 +27,10 @@ func configure(item_manager: Node, ball_host: Node) -> void:
 	_ball_host = ball_host
 
 
+func get_ball_host() -> Node:
+	return _ball_host
+
+
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
@@ -136,6 +140,10 @@ func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 	if preserved_speed < 0.0:
 		return
 	ball.speed = preserved_speed
+	# Re-sync the effect processor's base so the next physics frame's speed-limit clamp
+	# does not snap us back to ball_speed_min.
+	if ball.effect_processor != null:
+		ball.effect_processor.sync_base_speed()
 	if ball.linear_velocity.length() > 0.0:
 		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 

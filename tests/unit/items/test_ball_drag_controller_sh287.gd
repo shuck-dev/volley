@@ -85,7 +85,7 @@ func test_invalid_release_leaves_gesture_open_when_no_target_accepts() -> void:
 
 	_manager.take("ball_alpha")
 	# Bypass grab_from_rack so the no-target controller still reaches held state.
-	drag._spawn_held_token("ball_alpha", Vector2.ZERO, false)
+	drag._spawn_held_body("ball_alpha", Vector2.ZERO, false)
 	drag._mouse_button_down = false
 	drag._gesture_below_threshold = false
 
@@ -222,7 +222,7 @@ func test_shop_purchase_falls_through_when_no_target_accepts() -> void:
 func test_hover_feedback_bumps_held_token_scale_over_valid_target() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	var token: Node2D = _drag.get_held_token()
+	var token: Node2D = _drag.get_held_body()
 	assert_not_null(token, "precondition: held token spawned")
 	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
 	var base_scale: Vector2 = definition.token_scale
@@ -237,7 +237,7 @@ func test_hover_feedback_bumps_held_token_scale_over_valid_target() -> void:
 func test_hover_feedback_resets_to_base_scale_when_no_target_accepts() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	var token: Node2D = _drag.get_held_token()
+	var token: Node2D = _drag.get_held_body()
 	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
 	var base_scale: Vector2 = definition.token_scale
 	_drag._mouse_button_down = true
