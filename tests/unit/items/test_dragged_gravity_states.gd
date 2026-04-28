@@ -178,7 +178,9 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(live)
 	live.global_position = Vector2(75, 30)
-	live.speed = 240.0
+	# Use a speed within [ball_speed_min, max_speed_min + max_range] so the speed-limit clamp
+	# in BallEffectProcessor leaves the carryover untouched on the next physics tick.
+	live.speed = 600.0
 
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 
@@ -198,7 +200,7 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 	await get_tree().process_frame
 	var released: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(released, "court release spawns the rally Ball")
-	assert_almost_eq(released.linear_velocity.length(), 240.0, 0.5)
+	assert_almost_eq(released.linear_velocity.length(), 600.0, 0.5)
 
 
 func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> void:

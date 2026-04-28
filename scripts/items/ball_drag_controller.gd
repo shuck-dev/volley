@@ -323,6 +323,10 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 	if ball == null:
 		return
 	ball.speed = _held_preserved_speed
+	# Re-sync the effect processor's base so the next physics frame's speed-limit clamp
+	# does not snap us back to ball_speed_min.
+	if ball.effect_processor != null:
+		ball.effect_processor.sync_base_speed()
 	if ball.linear_velocity.length() > 0.0:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 
