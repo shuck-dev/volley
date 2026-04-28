@@ -1,6 +1,6 @@
 # Swarm Architecture
 
-How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the live coordination board lives in [`ai/PARALLEL.md`](../../ai/PARALLEL.md). This doc is the design layer above both.
+How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol canon lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them.
 
 ## The Gru model
 
@@ -21,11 +21,11 @@ Everything lives under `ai/swarm/`. Three kinds of file, one tracked surface, an
 - `agents/{name}.md`: per-minion working state, gitignored, private to the worktree that owns it. Appends only.
 - `tasks/{id}.md`: per-task work, one file per ticket, gitignored today. Carries claims, blocked-by, rich context for the minion working the ticket. Scrubs on ticket close.
 - `README.md`: the tracked reference for how the swarm works. Stable; changes rarely.
-- `ai/PARALLEL.md`: the tracked live board. Cycle header, Active, Done recent, Blocked, Activity log. Volatile; rewritten constantly.
+- Live state: not a tracked file. Linear's `Dispatched` status names the active minions; `gh pr list --json files,headRefName,number --state open` names the open challenges and the files each one touches. Cross-referencing those two queries is the modern equivalent of an Active table, without the merge-conflict tax.
 
 Point-to-point minion messaging is not in the design. Handoffs go through Gru, who acts as the switchboard. An earlier `inbox/{name}.md` mailbox surface was reserved for directed handoffs but stayed empty across several swarms, so it was dropped. If a concrete minion-to-minion use case shows up it can return cleanly; for now Gru is sufficient.
 
-The split between tracked and gitignored matters. PARALLEL.md is the one surface where siblings can see each other's claims, which means every concurrent-claim write is a merge conflict in waiting. That pressure keeps the board small and pushes rich structured state into per-task files instead.
+The split between tracked and gitignored mattered when there was a tracked live board. `ai/PARALLEL.md` was that board until SH-328: every concurrent claim wrote a row, every merge wrote an Activity Log line, and every challenge picked up the same file as a conflict. Linear and `gh pr list` already carry that state authoritatively, so the tracked board retired and the per-claim conflict tax went with it. Rich per-minion state still lives in gitignored per-task scratchpads.
 
 ## Worktree discipline
 
@@ -74,22 +74,22 @@ Minions never apply either human label. The `zaphod-*` namespace strips on every
 
 ## Live state versus stable protocol
 
-The board bloats if protocol lives with state. `ai/PARALLEL.md` carries only live state: the cycle header, Active, Done recent, Blocked, Activity log. The stable how-to (roles, tiers, PR comment templates, commit discipline) lives in `ai/swarm/README.md`. The design rationale (this doc) lives under `designs/`.
+The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, label flips) lives in the canon skills under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
 
 This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two minions claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
 
 ## Freshness and cleanup
 
-The live board is scoped to the current cycle. `ai/PARALLEL.md` opens with `**Cycle:** <name> (<start> → <end>)` pulled from Linear's active cycle. That line is the freshness check: if it does not match the current cycle on read, the Tuesday sweep was skipped.
+Freshness is a query, not a header line. `mcp__linear__list_issues(state: "Dispatched", cycle: "active")` reads the live set; if the result is empty when minions are mid-flight, the cycle hasn't been promoted, not the board. The Tuesday sweep that used to rewrite a header still happens; it just no longer leaves a tracked artefact.
 
 The sweep rules:
 
-- Active to Done recent: the row moves when the Dandori Challenge merges and the Linear ticket closes.
-- Done recent to removed: the rows rotate out at cycle close, as part of the Tuesday cycle-cut.
-- Blocked: cleared manually when the blocker lifts.
-- Activity log: truncated to the current cycle at cycle close.
+- A challenge merge moves its Linear ticket to Done. No table row to migrate.
+- Cycle close clears `Dispatched` issues that did not finish. Carry-over rolls into the next cycle.
+- Blocks live as Linear comments on the ticket, escalated when needed; no Blocked table to clear.
+- The narrative history is the git log plus Linear comments; nothing gets truncated.
 
-Gru runs the sweep during cycle-cut, the same turn it lists candidates for the new cycle.
+Gru runs the cycle-cut the same turn it lists candidates for the new cycle.
 
 ## No Claude from PR-triggered workflows
 

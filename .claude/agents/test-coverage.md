@@ -48,4 +48,4 @@ Coverage numbers are a sanity check, not the verdict. A changed file at 80% cove
 
 ## Output
 
-Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, following Conventional Comments per `ai/PARALLEL.md`. Verdict surface per `ai/skills/minions/reviewers.md`.
+Add small missing tests inline as commits when you have the context. Everything else ("this new feature has no test for X", "the assertion here checks implementation, not behaviour") as short line-anchored review comments on the source or test file, per `ai/skills/minions/reviewers.md`.
