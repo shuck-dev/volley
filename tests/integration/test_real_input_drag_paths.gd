@@ -400,7 +400,7 @@ func test_held_token_during_rack_drag_uses_definition_scale() -> void:
 	_drag.grab_from_rack("training_ball")
 	var held_token: Node2D = _drag.get_held_token()
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
-	# Wait past GRAB_EASE_DURATION_S so the lift ease settles via the public _process surface.
+	# Wait past grab_ease_duration_s so the lift ease settles via the public _process surface.
 	await get_tree().create_timer(0.1).timeout
 	assert_eq(
 		held_token.scale,

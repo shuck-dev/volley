@@ -15,10 +15,14 @@ const PRESERVED_SPEED_NONE: float = -1.0
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 ## SH-287 patch: probe radius for the pre-spawn body projection; slightly larger than authored ball radius.
 const COURT_BLOCKED_PROBE_RADIUS_PX: float = 14.0
-const GRAB_EASE_DURATION_S: float = 0.08
-const GRAB_EASE_START_SCALE: Vector2 = Vector2(0.85, 0.85)
-const GRAB_EASE_START_MODULATE: Color = Color(1.0, 1.0, 1.0, 0.0)
-const GRAB_EASE_END_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
+## Duration of the grab ease-to-cursor lift; the held token tweens for this long after a press.
+@export var grab_ease_duration_s: float = 0.08
+## Scale multiplier on the held token at the start of the lift; eases up to 1.0 over the window.
+@export var grab_ease_start_scale: Vector2 = Vector2(0.85, 0.85)
+## Modulate at the start of the lift; the alpha eases up to grab_ease_end_modulate.
+@export var grab_ease_start_modulate: Color = Color(1.0, 1.0, 1.0, 0.0)
+## Modulate at the end of the lift.
+@export var grab_ease_end_modulate: Color = Color(1.0, 1.0, 1.0, 1.0)
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -87,7 +91,7 @@ func _process(delta: float) -> void:
 		return
 
 	var cursor_target: Vector2 = _clamp_to_venue(_cursor_position())
-	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, GRAB_EASE_DURATION_S)
+	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, grab_ease_duration_s)
 	var ease_progress: float = _grab_ease_progress()
 	_apply_grab_ease(ease_progress, cursor_target)
 
@@ -287,8 +291,8 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	var target_scale: Vector2 = Vector2.ONE
 	if definition != null:
 		target_scale = definition.token_scale
-	token.scale = GRAB_EASE_START_SCALE * target_scale
-	token.modulate = GRAB_EASE_START_MODULATE
+	token.scale = grab_ease_start_scale * target_scale
+	token.modulate = grab_ease_start_modulate
 	if definition != null and definition.art != null:
 		var art_instance: Node = definition.art.instantiate()
 		token.add_child(art_instance)
@@ -415,9 +419,9 @@ func _get_item_role(item_key: String) -> StringName:
 
 
 func _grab_ease_progress() -> float:
-	if GRAB_EASE_DURATION_S <= 0.0:
+	if grab_ease_duration_s <= 0.0:
 		return 1.0
-	return clampf(_grab_ease_elapsed / GRAB_EASE_DURATION_S, 0.0, 1.0)
+	return clampf(_grab_ease_elapsed / grab_ease_duration_s, 0.0, 1.0)
 
 
 func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
@@ -427,8 +431,8 @@ func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
 	var inv: float = 1.0 - progress
 	var eased: float = 1.0 - inv * inv * inv
 	_held_token.global_position = _grab_origin_position.lerp(cursor_target, eased)
-	_held_token.scale = (GRAB_EASE_START_SCALE * _grab_target_scale).lerp(_grab_target_scale, eased)
-	_held_token.modulate = GRAB_EASE_START_MODULATE.lerp(GRAB_EASE_END_MODULATE, eased)
+	_held_token.scale = (grab_ease_start_scale * _grab_target_scale).lerp(_grab_target_scale, eased)
+	_held_token.modulate = grab_ease_start_modulate.lerp(grab_ease_end_modulate, eased)
 
 
 func _update_cursor_state(world_position: Vector2) -> void:

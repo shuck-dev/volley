@@ -7,11 +7,11 @@ signal speed_changed(speed: float, min_speed: float, max_speed: float)
 signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
-## Tuning surface for the press hit-box; do not couple to physics-collider scale.
-const PRESS_HITBOX_INFLATION: float = 1.6
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
+## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
+@export var press_hitbox_inflation: float = 1.6
 
 var speed: float = 0.0
 var min_speed: float
@@ -127,7 +127,7 @@ func _setup_effect_processor() -> void:
 func _setup_press_area() -> void:
 	if _press_area != null and is_instance_valid(_press_area):
 		return
-	var press_radius: float = _authored_collision_radius() * PRESS_HITBOX_INFLATION
+	var press_radius: float = _authored_collision_radius() * press_hitbox_inflation
 	if press_radius <= 0.0:
 		return
 	var area: Area2D = Area2D.new()

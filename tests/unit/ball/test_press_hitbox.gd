@@ -63,9 +63,9 @@ func test_press_radius_is_inflated_versus_physics_radius() -> void:
 	var authored_radius: float = _authored_radius_from_ball(_ball)
 	assert_almost_eq(
 		press_circle.radius,
-		authored_radius * Ball.PRESS_HITBOX_INFLATION,
+		authored_radius * _ball.press_hitbox_inflation,
 		0.001,
-		"press radius equals authored radius * PRESS_HITBOX_INFLATION",
+		"press radius equals authored radius * press_hitbox_inflation",
 	)
 
 
