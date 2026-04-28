@@ -142,41 +142,28 @@ func start_drag() -> bool:
 	return true
 
 
-## Test seam / production entry. Returns true on commit (held token freed, gesture ends);
-## false on no valid target (held token stays following the cursor, gesture continues).
-## Inside-shop bounds is itself a valid target: cancels back to the slot. Outside-shop only
-## commits when the purchase succeeds; insufficient FP keeps the gesture open.
+## Returns true on commit; false leaves the gesture open so the player can drag back to cancel or earn FP and retry.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if inside_shop:
-		# Cancel: held token freed, slot visible again, no purchase.
 		_finalise_gesture(release_position, false)
 		visible = true
 		return true
 
-	# Outside shop: only commit if the purchase succeeds.
 	var purchased: bool = _complete_purchase()
 	if not purchased:
-		# Insufficient FP (or otherwise un-takeable). No snap-back; gesture stays open.
-		# Held token continues to follow the cursor; the player can drag back into the shop
-		# bounds to cancel, or get more FP and try again.
 		return false
 
-	# Purchased: hand the held position off to BallDragController so the body-projection
-	# target loop decides whether the new ball lands on the court (SH-287, SH-320 fix) or
-	# falls through to the rack as a token. Held visual freed by the controller's
-	# bring_into_play flow when the court accepts; otherwise we free it locally.
 	_route_purchased_to_court(release_position)
 	_finalise_gesture(release_position, true)
 	visible = false
 	return true
 
 
-## Hands off to BallDragController so the just-purchased item can land on the court at
-## the released position when the body projection passes (SH-320).
+## Hands the just-purchased item to BallDragController so a court-valid release spawns a live ball at the release point.
 func _route_purchased_to_court(release_position: Vector2) -> bool:
 	if item_definition == null:
 		return false

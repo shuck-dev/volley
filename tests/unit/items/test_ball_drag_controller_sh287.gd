@@ -164,7 +164,7 @@ func test_expansion_ring_fallback_path_runs_on_empty_court() -> void:
 func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
 	# Drives _update_expansion_state (the production caller of _cancel_to_source) with a
 	# release point outside both the court and venue so neither strict nor widened probes
-	# accept. Pushing the timer past 2x EXPANSION_RING_HOLD_S must cancel the gesture.
+	# accept. Pushing the timer past 2x expansion_ring_hold_s must cancel the gesture.
 	# This test fails if the timer never invokes cancel.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
@@ -174,9 +174,9 @@ func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
 
 	_drag._gesture_below_threshold = false
 	_drag._mouse_button_down = false
-	# Push the start time back so held_duration >= EXPANSION_RING_HOLD_S * 2.
+	# Push the start time back so held_duration >= expansion_ring_hold_s * 2.
 	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S * 2.0 - 0.1
+		float(Time.get_ticks_msec()) / 1000.0 - _drag.expansion_ring_hold_s * 2.0 - 0.1
 	)
 	# Position outside both court (1200x800 around origin) and venue (4000x2400) so no
 	# target ever accepts -> _update_expansion_state must fall to _cancel_to_source.
@@ -190,7 +190,7 @@ func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
 
 
 func test_expansion_state_does_not_cancel_within_first_window() -> void:
-	# Within EXPANSION_RING_HOLD_S of expansion-start, _update_expansion_state must not
+	# Within expansion_ring_hold_s of expansion-start, _update_expansion_state must not
 	# cancel. Pins the boundary so a regression that fires cancel on the first frame is
 	# caught.
 	_manager.take("ball_alpha")
@@ -219,7 +219,7 @@ func test_expansion_state_commits_when_widened_probe_accepts() -> void:
 	_drag._gesture_below_threshold = false
 	_drag._mouse_button_down = false
 	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.EXPANSION_RING_HOLD_S - 0.05
+		float(Time.get_ticks_msec()) / 1000.0 - _drag.expansion_ring_hold_s - 0.05
 	)
 	# Position inside the venue but on the court (so both probes succeed via court target);
 	# this exercises the widened-probe-accepts branch in _update_expansion_state which

@@ -1,24 +1,7 @@
 class_name BallDragController
 extends Node2D
 
-## Owns the held-token visual during a ball or equipment drag gesture.
-##
-## SH-287 (designs/01-prototype/21-ball-dynamics.md, "Drop validation by body projection"
-## and "No restore on invalid release"; designs/01-prototype/22-equip-loop-regime.md,
-## "Failure modes"):
-##
-## * Press starts a hold (held token follows cursor).
-## * The controller polls every registered `DropTarget` each physics frame on the held
-##   token's world position; the first target whose `can_accept` returns true commits.
-## * Mouse-up over an invalid spot does not end the gesture; the held token keeps following
-##   the cursor and the controller keeps polling. The source rack/shop is itself a target,
-##   giving the player a no-teleport escape valve.
-## * Expansion-ring fallback: if strict projection fails for ~250 ms after mouse-up, retry
-##   with a 1.5x scaled shape; if that also fails, cancel the gesture back to the source.
-## * Hover feedback: the held token's modulation/scale lifts when over a valid target.
-## * Shop releases call `spawn_purchased_at` after committing the purchase, threading the
-##   new ball through the same target-poll so shop-to-court drag spawns a live ball at the
-##   release point instead of routing to the rack (SH-320).
+## Owns the held-token visual during a ball or equipment drag gesture and polls every registered DropTarget for a valid commit.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
@@ -27,11 +10,6 @@ const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
-## Seconds the controller waits with the strict projection failing before widening to
-## the expansion ring. Tuned per `22-equip-loop-regime.md` "Failure modes".
-const EXPANSION_RING_HOLD_S: float = 0.25
-const EXPANSION_RING_SCALE: float = 1.5
-## Held-token visual lift when hovering a valid target.
 const HOVER_SCALE_BUMP: Vector2 = Vector2(1.08, 1.08)
 const HOVER_MODULATE: Color = Color(1.15, 1.15, 1.15, 1.0)
 const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
@@ -43,6 +21,8 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
+@export var expansion_ring_hold_s: float = 0.25
+@export var expansion_ring_scale: float = 1.5
 
 var _item_manager: Node
 var _held_token: Node2D = null
@@ -223,16 +203,11 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	return true
 
 
-## Shop-purchase entry: the shop just took payment for `item_key` and wants the new ball
-## to spawn on the court at `world_position` (SH-320). Runs the standard target poll; if a
-## court/venue target accepts, the ball spawns and we return true. Otherwise the item
-## stays a rack-only token (the rack regrows it via `_on_court_changed` defaults).
+## Shop-purchase entry: returns true if a court/venue target accepted; false routes the new token to the rack.
 func spawn_purchased_at(
 	item_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> bool:
-	# No venue clamp here: the shop has already paid for the item, and a release outside
-	# the venue means the rack should take the new token. Returning false lets the caller
-	# fall back to its own rack/no-court path.
+	# No venue clamp: a release outside the venue should fall through to the rack.
 	var target: DropTarget = _find_accepting_target(item_key, world_position, 1.0)
 	if target == null:
 		return false
@@ -269,8 +244,8 @@ func attempt_release(release_position: Vector2) -> bool:
 	var target: DropTarget = _find_accepting_target(item_key, clamped_position, 1.0)
 	if target == null and _expansion_started_at >= 0.0:
 		var held_duration: float = _now_seconds() - _expansion_started_at
-		if held_duration >= EXPANSION_RING_HOLD_S:
-			target = _find_accepting_target(item_key, clamped_position, EXPANSION_RING_SCALE)
+		if held_duration >= expansion_ring_hold_s:
+			target = _find_accepting_target(item_key, clamped_position, expansion_ring_scale)
 
 	if target == null:
 		return false
@@ -278,29 +253,22 @@ func attempt_release(release_position: Vector2) -> bool:
 	if target is CourtDropTarget or target is VenueDropTarget:
 		var velocity: Vector2 = _compute_release_velocity()
 		if was_temporary:
-			# Temporary balls bypass the reconciler; calling target.accept would spawn a
-			# permanent ball through the reconciler. Drop the held token cleanly instead.
+			# Temporary balls bypass the reconciler so they don't survive the gesture.
 			pass
 		else:
 			target.accept(item_key, clamped_position, velocity)
-			# Reconciler.bring_into_play takes a preserved-speed argument; the simpler
-			# route here is to re-apply it after the spawn so the target signature stays
-			# narrow.
 			_apply_preserved_speed_after_accept(item_key)
 	else:
 		target.accept(item_key, clamped_position, Vector2.ZERO)
 
 	var over_court: bool = target is CourtDropTarget or target is VenueDropTarget
-	# Suppress the over_court flag for temporary balls so downstream listeners don't double-spawn.
 	if was_temporary:
 		over_court = false
 	_finalise_gesture(item_key, clamped_position, over_court)
 	return true
 
 
-## After a court/venue accept, ensure preserved rally speed lands on the spawned ball.
-## bring_into_play is what runs inside accept; this re-applies for the case where speed
-## was set after the spawn (mid-rally grab path).
+## Re-applies mid-rally preserved speed to the freshly spawned ball after a court/venue accept.
 func _apply_preserved_speed_after_accept(item_key: String) -> void:
 	if _held_preserved_speed < 0.0:
 		return
@@ -350,14 +318,14 @@ func _update_expansion_state(world_position: Vector2) -> void:
 		return
 
 	var held_duration: float = _now_seconds() - _expansion_started_at
-	if held_duration < EXPANSION_RING_HOLD_S:
+	if held_duration < expansion_ring_hold_s:
 		return
 
 	# Strict pass already ran in attempt_release; try the widened pass now. If it succeeds,
 	# attempt_release picks it up next frame. If the widened pass has also been failing for
 	# another full hold window, cancel back to source.
 	var widened: DropTarget = _find_accepting_target(
-		_held_key, world_position, EXPANSION_RING_SCALE
+		_held_key, world_position, expansion_ring_scale
 	)
 	if widened != null:
 		# attempt_release on the next frame will use the widened scale because the timer
@@ -365,7 +333,7 @@ func _update_expansion_state(world_position: Vector2) -> void:
 		attempt_release(world_position)
 		return
 
-	if held_duration >= EXPANSION_RING_HOLD_S * 2.0:
+	if held_duration >= expansion_ring_hold_s * 2.0:
 		_cancel_to_source()
 
 
@@ -426,37 +394,45 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	_track_cursor_motion(spawn_position)
 
 
-## Registers the controller's authored targets in priority order: court strict projection
-## first, then the role-aware racks, then the venue catch-all. Subsystems with their own
-## area resources (Shop) `register_target` after `_ready`.
+## Registers the controller's authored targets in priority order: court strict projection first, role-aware racks, venue catch-all.
 func _register_builtin_targets() -> void:
 	_drop_targets.clear()
 	_builtin_targets.clear()
 
-	if reconciler != null:
-		var court_target: CourtDropTarget = CourtDropTarget.new()
-		var world: World2D = get_world_2d()
-		court_target.configure(_item_manager, reconciler, world, court_bounds)
-		_drop_targets.append(court_target)
-		_builtin_targets.append(court_target)
+	for target: DropTarget in [
+		_make_court_target(),
+		_make_rack_target(rack_drop_target, &"ball"),
+		_make_rack_target(gear_rack_drop_target, &"equipment"),
+		_make_venue_target(),
+	]:
+		if target == null:
+			continue
+		_drop_targets.append(target)
+		_builtin_targets.append(target)
 
-	if rack_drop_target != null:
-		var ball_rack_target: RackDropTarget = RackDropTarget.new()
-		ball_rack_target.configure(_item_manager, rack_drop_target, &"ball")
-		_drop_targets.append(ball_rack_target)
-		_builtin_targets.append(ball_rack_target)
 
-	if gear_rack_drop_target != null:
-		var gear_rack_target: RackDropTarget = RackDropTarget.new()
-		gear_rack_target.configure(_item_manager, gear_rack_drop_target, &"equipment")
-		_drop_targets.append(gear_rack_target)
-		_builtin_targets.append(gear_rack_target)
+func _make_court_target() -> CourtDropTarget:
+	if reconciler == null:
+		return null
+	var court_target: CourtDropTarget = CourtDropTarget.new()
+	court_target.configure(_item_manager, reconciler, get_world_2d(), court_bounds)
+	return court_target
 
-	if reconciler != null:
-		var venue_target: VenueDropTarget = VenueDropTarget.new()
-		venue_target.configure(_item_manager, reconciler, venue_bounds, court_bounds)
-		_drop_targets.append(venue_target)
-		_builtin_targets.append(venue_target)
+
+func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
+	if area == null:
+		return null
+	var rack_target: RackDropTarget = RackDropTarget.new()
+	rack_target.configure(_item_manager, area, role)
+	return rack_target
+
+
+func _make_venue_target() -> VenueDropTarget:
+	if reconciler == null:
+		return null
+	var venue_target: VenueDropTarget = VenueDropTarget.new()
+	venue_target.configure(_item_manager, reconciler, venue_bounds, court_bounds)
+	return venue_target
 
 
 ## Records cursor positions across a short rolling window so release velocity can be derived from recent motion.
