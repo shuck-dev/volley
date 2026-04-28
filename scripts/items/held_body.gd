@@ -9,7 +9,7 @@ enum Phase { LIFTING, HELD, LOOSE }
 
 @export_range(0.0, 4.0, 0.05) var loose_gravity_scale: float = 1.0
 
-var phase: int = Phase.LIFTING
+var phase: Phase = Phase.LIFTING
 var item_key: String = ""
 
 
