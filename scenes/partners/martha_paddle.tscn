@@ -8,10 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://c833m4yxk2atr" path="res://assets/art/martha_bow.svg" id="6_bow"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_martha"]
-size = Vector2(40, 100)
+size = Vector2(24, 60)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
-size = Vector2(40, 100)
+size = Vector2(24, 60)
 
 [node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker")]
 script = ExtResource("1_script")
@@ -26,8 +26,9 @@ metadata/_edit_group_ = true
 texture = SubResource("PlaceholderTexture2D_martha")
 
 [node name="Bow" type="Sprite2D" parent="." unique_id=708370465]
-position = Vector2(14, -40)
+position = Vector2(8.4, -24)
 rotation = 0.436
+scale = Vector2(0.6, 0.6)
 texture = ExtResource("6_bow")
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=746316974]

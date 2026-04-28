@@ -33,13 +33,14 @@ func _ready() -> void:
 	_apply_size()
 
 
-func on_ball_hit() -> void:
+func on_ball_hit() -> bool:
 	if not tracker.try_hit():
-		return
+		return false
 
 	hit_sound.pitch_scale = 1.0 + (tracker.streak * 0.05)
 	hit_sound.play()
 	paddle_hit.emit()
+	return true
 
 
 func reset_streak() -> void:

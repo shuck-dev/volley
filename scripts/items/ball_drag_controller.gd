@@ -12,6 +12,7 @@ signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
+const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 ## SH-287 patch: probe radius for the pre-spawn body projection; slightly larger than authored ball radius.
@@ -37,6 +38,9 @@ var _press_position: Vector2 = Vector2.ZERO
 var _gesture_below_threshold: bool = true
 ## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
+## SH-288: friendship energy captured at mid-rally grab; forwarded to bring_into_play so the
+## released ball inherits the rally speed. Negative means no preserved energy (rack-origin gesture).
+var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 
 
 func configure(
@@ -142,9 +146,12 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	var spawn_position: Vector2 = _cursor_position()
 	if existing != null:
 		spawn_position = existing.global_position
+		# SH-288: capture the rally's friendship energy before freeing the live ball so the
+		# released ball inherits it. Reset only on miss, never on grab-and-release.
+		_held_preserved_speed = existing.speed
 		if reconciler != null:
 			reconciler.release_ball(item_key)
-		existing.set_dragging(true)
+		existing.freeze = true
 		existing.call_deferred("queue_free")
 
 	_spawn_held_token(item_key, spawn_position, is_temporary)
@@ -206,14 +213,9 @@ func _release_onto_court(
 ) -> void:
 	if is_temporary:
 		return
-
-	# Activation happens at release-over-court so a click without movement on the rack
-	# does not introduce the ball (SH-245).
-	if not _item_manager.is_on_court(item_key):
-		_item_manager.activate(item_key)
-
-	if reconciler != null:
-		reconciler.ensure_ball_for_key(item_key, release_position, release_velocity)
+	if reconciler == null:
+		return
+	reconciler.bring_into_play(item_key, release_position, release_velocity, _held_preserved_speed)
 
 
 ## Clear held-token state after a successful commit (rack accept or court spawn).
@@ -224,6 +226,7 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_held_key = ""
 	_held_is_temporary = false
 	_held_was_on_court = false
+	_held_preserved_speed = PRESERVED_SPEED_NONE
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true

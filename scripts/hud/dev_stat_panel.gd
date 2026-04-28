@@ -117,7 +117,7 @@ func _refresh() -> void:
 
 
 func _refresh_speed_label() -> void:
-	if _speed_label != null and _speed_bar != null:
+	if _speed_label != null and is_instance_valid(_speed_bar):
 		_speed_label.text = "ball_speed: %.1f" % _speed_bar.current_speed
 
 

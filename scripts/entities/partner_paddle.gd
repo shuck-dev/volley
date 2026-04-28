@@ -12,5 +12,5 @@ func _bind_stat_updates() -> void:
 	pass
 
 
-func set_ball(value: RigidBody2D) -> void:
-	controller.enable_with_ball(value)
+func set_ball(_value: RigidBody2D) -> void:
+	pass

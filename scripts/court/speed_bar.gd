@@ -6,9 +6,14 @@ const BAR_OVERFLOW_COLOR := Color(1.0, 0.5, 0.2)
 const BAR_BACKGROUND_COLOR := Color(0.15, 0.15, 0.15, 0.6)
 const PERMANENT_MAX_MARKER_COLOR := Color(1.0, 1.0, 1.0, 0.4)
 
-@export var ball: Ball
+@export var ball_system: BallReconciler
 
+## Back-compat seam for tests; production sets this through the reconciler's `ball_added`.
+var ball: Ball
 var current_speed: float = 0.0
+
+## Multi-ball: bar shows highest live speed across the set, not the most-recently-emitting ball.
+var _balls: Array[Ball] = []
 var _min_speed: float = 400.0
 var _max_speed: float = 700.0
 var _permanent_max_speed: float = _max_speed
@@ -21,21 +26,65 @@ func _ready() -> void:
 	_min_speed = GameRules.base_stats[&"ball_speed_min"]
 	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
 	_permanent_max_speed = _max_speed
-	if ball != null:
-		ball.speed_changed.connect(_on_ball_speed_changed)
+	if ball_system != null:
+		ball_system.ball_added.connect(_attach_ball)
+		ball_system.ball_removed.connect(_detach_ball)
+	if ball != null and not _balls.has(ball):
+		var pre_set: Ball = ball
+		ball = null
+		_attach_ball(pre_set)
 	ItemManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
 
 
+func _attach_ball(new_ball: Ball) -> void:
+	if new_ball == null or _balls.has(new_ball):
+		return
+	_balls.append(new_ball)
+	ball = new_ball
+	if not new_ball.speed_changed.is_connected(_on_ball_speed_changed):
+		new_ball.speed_changed.connect(_on_ball_speed_changed)
+
+
+func _detach_ball(old_ball: Ball) -> void:
+	if old_ball == null:
+		return
+	_balls.erase(old_ball)
+	if is_instance_valid(old_ball) and old_ball.speed_changed.is_connected(_on_ball_speed_changed):
+		old_ball.speed_changed.disconnect(_on_ball_speed_changed)
+	if ball == old_ball:
+		ball = _balls.back() if not _balls.is_empty() else null
+	# A removed ball's speed no longer counts; rebuild the reading from what remains.
+	_recompute_from_tracked()
+
+
 func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float) -> void:
+	# Multi-ball: the bar shows the highest live-ball speed; min/max bands track the
+	# emitting ball, which is fine because every ball reads the same ItemManager stats.
+	var highest: float = new_speed
+	for tracked in _balls:
+		if is_instance_valid(tracked) and tracked.speed > highest:
+			highest = tracked.speed
 	if (
-		is_equal_approx(new_speed, current_speed)
+		is_equal_approx(highest, current_speed)
 		and is_equal_approx(min_speed, _min_speed)
 		and is_equal_approx(max_speed, _max_speed)
 	):
 		return
-	current_speed = new_speed
+	current_speed = highest
 	_min_speed = min_speed
 	_max_speed = max_speed
+	queue_redraw()
+
+
+## Prevents `current_speed` latching on a value the removed ball last emitted.
+func _recompute_from_tracked() -> void:
+	var highest: float = _min_speed
+	for tracked in _balls:
+		if is_instance_valid(tracked) and tracked.speed > highest:
+			highest = tracked.speed
+	if is_equal_approx(highest, current_speed):
+		return
+	current_speed = highest
 	queue_redraw()
 
 

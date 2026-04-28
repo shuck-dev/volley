@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
-[ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
@@ -18,19 +17,22 @@
 [ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/friendship_points.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
-[ext_resource type="Resource" uid="uid://iq04trmvlswer" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
-[ext_resource type="Script" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
-[ext_resource type="Script" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
+[ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
+[ext_resource type="Resource" uid="uid://07ennsehe5u8" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
+[ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
+[ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
+[ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
-size = Vector2(36, 1472)
+size = Vector2(21.6, 883.2)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
-size = Vector2(36, 1172)
+size = Vector2(21.6, 703.2)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller")]
 script = ExtResource("1_tbgi4")
-ball = NodePath("Ball")
+ball_system = NodePath("BallReconciler")
+ball_tracker = NodePath("BallTracker")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
@@ -38,84 +40,84 @@ right_wall = NodePath("Bounds/Right Wall")
 partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 
-[node name="CourtBackground" type="Parallax2D" parent="." unique_id=1053024008]
-scroll_scale = Vector2(0, 0)
-repeat_size = Vector2(4000, 4000)
+[node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
+layer = -100
 
 [node name="BackgroundColor" type="ColorRect" parent="CourtBackground" unique_id=2003900130]
-offset_left = -2000.0
-offset_top = -2000.0
-offset_right = 2000.0
-offset_bottom = 2000.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
 
 [node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
-item_key = "training_ball"
+item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
-position = Vector2(736, -586)
+position = Vector2(441.6, -351.6)
 rotation = 1.5707964
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
-offset_right = 36.0
-offset_bottom = 1472.0
+offset_right = 21.6
+offset_bottom = 883.2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
-position = Vector2(18, 736)
+position = Vector2(10.8, 441.6)
 shape = SubResource("RectangleShape2D_horz")
 
 [node name="Bottom Wall" type="StaticBody2D" parent="Bounds" unique_id=743283118]
-position = Vector2(-736, 586)
+position = Vector2(-441.6, 351.6)
 rotation = -1.5707964
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Bottom Wall" unique_id=1810122737]
-offset_right = 36.0
-offset_bottom = 1472.0
+offset_right = 21.6
+offset_bottom = 883.2
 mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom Wall" unique_id=1261402091]
-position = Vector2(18, 736)
+position = Vector2(10.8, 441.6)
 shape = SubResource("RectangleShape2D_horz")
 
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(700, -586)
+position = Vector2(420, -351.6)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
-offset_right = 36.0
-offset_bottom = 1172.0
+offset_right = 21.6
+offset_bottom = 703.2
 mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
-position = Vector2(18, 586)
+position = Vector2(10.8, 351.6)
 shape = SubResource("RectangleShape2D_vert")
 
 [node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
-position = Vector2(-736, -586)
+position = Vector2(-441.6, -351.6)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
-offset_right = 36.0
-offset_bottom = 1172.0
+offset_right = 21.6
+offset_bottom = 703.2
 mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
-position = Vector2(18, 586)
+position = Vector2(10.8, 351.6)
 shape = SubResource("RectangleShape2D_vert")
 
 [node name="MissZone" parent="Bounds/Back Wall" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
-position = Vector2(18, 586)
+position = Vector2(10.8, 351.6)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
@@ -126,90 +128,94 @@ script = ExtResource("19_timeout")
 config = ExtResource("20_timeout_cfg")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
-position = Vector2(500, 0)
+position = Vector2(300, 0)
 
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
-position = Vector2(-500, 0)
+position = Vector2(-300, 0)
 
 [node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
-position = Vector2(-1000, 583)
+position = Vector2(-600, 349.8)
 
 [node name="GearRack" parent="." unique_id=445509089 instance=ExtResource("9_c7axm")]
-position = Vector2(1000, 583)
+position = Vector2(600, 349.8)
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
-position = Vector2(1450, 583)
+position = Vector2(870, 349.8)
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=1644947756 node_paths=PackedStringArray("court")]
-offset_left = -150.0
-offset_top = -760.695
-offset_right = 174.0
-offset_bottom = -661.695
-theme_override_font_sizes/font_size = 72
+offset_left = -90.0
+offset_top = -456.417
+offset_right = 104.4
+offset_bottom = -397.017
+theme_override_font_sizes/font_size = 43
 text = "Volleys: 0"
 horizontal_alignment = 1
 script = ExtResource("14_vc")
 court = NodePath("..")
 
 [node name="PersonalVolleyBestLabel" type="Label" parent="." unique_id=2015920781 node_paths=PackedStringArray("court")]
-offset_left = 350.0
-offset_top = -755.0
-offset_right = 550.0
-offset_bottom = -688.0
-theme_override_font_sizes/font_size = 48
+offset_left = 210.0
+offset_top = -453.0
+offset_right = 330.0
+offset_bottom = -412.8
+theme_override_font_sizes/font_size = 29
 text = "PB: 0"
 script = ExtResource("15_pb")
 court = NodePath("..")
 
 [node name="FriendshipTotalLabel" type="Label" parent="." unique_id=95972184]
-offset_left = 350.0
-offset_top = -700.0
-offset_right = 550.0
-offset_bottom = -670.0
-theme_override_font_sizes/font_size = 48
+offset_left = 210.0
+offset_top = -420.0
+offset_right = 330.0
+offset_bottom = -402.0
+theme_override_font_sizes/font_size = 29
 text = "FP: 0"
 script = ExtResource("16_fp")
 
 [node name="AutoLabel" type="Label" parent="." unique_id=171294256 node_paths=PackedStringArray("court")]
-offset_left = -282.0
-offset_top = -824.905
-offset_right = 118.0
-offset_bottom = -757.905
-theme_override_font_sizes/font_size = 48
+offset_left = -169.2
+offset_top = -494.943
+offset_right = 70.8
+offset_bottom = -454.743
+theme_override_font_sizes/font_size = 29
 text = "AUTO"
 horizontal_alignment = 1
 script = ExtResource("17_auto")
 court = NodePath("..")
 
 [node name="FPBonusLabel" type="Label" parent="." unique_id=1233964651 node_paths=PackedStringArray("court")]
-offset_left = -700.0
-offset_top = -740.0
-offset_right = -500.0
-offset_bottom = -710.0
+offset_left = -420.0
+offset_top = -444.0
+offset_right = -300.0
+offset_bottom = -426.0
 theme_override_colors/font_color = Color(0.91, 0.36, 0.46, 1)
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 29
 text = "+0% FP"
 script = ExtResource("18_fpb")
 court = NodePath("..")
 
-[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball")]
+[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball_system")]
 layout_mode = 3
 anchors_preset = 0
-offset_left = -150.0
-offset_top = -634.0
-offset_right = 150.0
-offset_bottom = -624.0
+offset_left = -90.0
+offset_top = -380.4
+offset_right = 90.0
+offset_bottom = -374.4
 script = ExtResource("11_2768l")
-ball = NodePath("../Ball")
+ball_system = NodePath("../BallReconciler")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
-offset_left = -900.0
-offset_top = -400.0
-offset_right = -900.0
-offset_bottom = -400.0
+offset_left = -599.0
+offset_top = -240.0
+offset_right = -529.0
+offset_bottom = -172.0
 
 [node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
 script = ExtResource("21_reconciler")
+
+[node name="BallTracker" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("ball_system")]
+script = ExtResource("23_tracker")
+ball_system = NodePath("../BallReconciler")
 
 [node name="BallDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "gear_rack", "gear_rack_drop_target", "reconciler")]
 script = ExtResource("22_drag")
@@ -217,6 +223,6 @@ rack = NodePath("../BallRack")
 rack_drop_target = NodePath("../BallRack/DropTarget")
 gear_rack = NodePath("../GearRack")
 gear_rack_drop_target = NodePath("../GearRack/DropTarget")
+court_bounds = Rect2(-420, -360, 840, 720)
+venue_bounds = Rect2(-1200, -720, 2400, 1440)
 reconciler = NodePath("../BallReconciler")
-court_bounds = Rect2(-700, -600, 1400, 1200)
-venue_bounds = Rect2(-2000, -1200, 4000, 2400)

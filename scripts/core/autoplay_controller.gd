@@ -4,9 +4,13 @@ extends PaddleAIController
 signal autoplay_toggled(autoplay: bool)
 
 
+## Silent no-op when no ball is bound; set_enabled rejects the enable so dead-ball key presses don't crash.
 func toggle() -> void:
-	set_enabled(!_enabled)
-	paddle.set_physics_process(!_enabled)
+	var desired: bool = not _enabled
+	set_enabled(desired)
+	# `paddle.set_physics_process` mirrors the actual enabled state so we
+	# don't disable player input just because set_enabled refused.
+	paddle.set_physics_process(not _enabled)
 	autoplay_toggled.emit(_enabled)
 
 

@@ -311,7 +311,6 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 
 	var reloaded_reconciler: BallReconciler = BallReconcilerScript.new()
 	reloaded_reconciler.configure(reloaded_manager, reloaded_host)
-	reloaded_reconciler.spawn_for_existing_on_load = true
 	add_child_autofree(reloaded_reconciler)
 	await get_tree().process_frame
 
@@ -424,9 +423,11 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 # pressed mid-rally and nothing happened. Reproduce by parenting a fresh Ball under the
 # host BEFORE the reconciler ever spawns one, then drive a real press through it.
 func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
-	# Mirror the scene-load shape: Ball is already a child of the host, no item activated,
-	# reconciler never invoked ensure_ball_for_key for this instance.
+	# Mirror the scene-load shape: Ball is already a child of the host with its authored item_key
+	# (court.tscn sets training_ball), reconciler never invoked ensure_ball_for_key for this instance.
+	_manager.take("training_ball")
 	var pre_existing: Ball = BallScene.instantiate()
+	pre_existing.item_key = "training_ball"
 	_host.add_child(pre_existing)
 	pre_existing.global_position = Vector2(0, 0)
 	await get_tree().process_frame

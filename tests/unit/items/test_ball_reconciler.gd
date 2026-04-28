@@ -2,6 +2,7 @@
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 var _manager: Node
@@ -141,18 +142,23 @@ func test_off_event_without_tracked_ball_is_noop() -> void:
 	assert_eq(_permanent_ball_count(), 0, "off events for untracked keys should not spawn anything")
 
 
-func test_spawn_for_existing_on_load_reconciles_from_progression() -> void:
+func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
+	# Simulates a session reload where training_ball is ON_COURT in the save but
+	# has no authored Ball child in the scene (SH-289 GONE-on-buy regression).
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var preloaded_host := Node2D.new()
 	add_child_autofree(preloaded_host)
 	var fresh: BallReconciler = BallReconcilerScript.new()
 	fresh.configure(_manager, preloaded_host)
-	fresh.spawn_for_existing_on_load = true
 	add_child_autofree(fresh)
+	# Flush deferred calls (adopt_pre_existing_balls + _reconcile_initial_state).
+	await get_tree().process_frame
 
 	var found: Ball = fresh.get_ball_for_key("ball_alpha")
-	assert_not_null(found, "on-load reconcile should spawn balls for already-on-court items")
+	assert_not_null(
+		found, "reload reconcile should spawn balls for on-court items with no authored node"
+	)
 
 
 func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> void:
@@ -165,6 +171,111 @@ func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> voi
 		non_spatial._default_spawn_position(),
 		Vector2.ZERO,
 		"non-Node2D hosts yield the zero-vector fallback",
+	)
+
+
+func test_bring_into_play_propagates_preserved_speed_for_spawn_and_existing_ball() -> void:
+	# SH-288: friendship energy carries through bring_into_play onto both newly spawned and
+	# already-tracked balls; both branches must re-magnitude linear_velocity along its direction.
+	_manager.take("ball_alpha")
+	var spawned: Ball = _reconciler.bring_into_play(
+		"ball_alpha", Vector2(10, 20), Vector2(120, 0), 600.0
+	)
+	assert_not_null(spawned)
+	assert_eq(spawned.speed, 600.0, "preserved_speed should set the spawned ball's speed")
+	assert_almost_eq(
+		spawned.linear_velocity.length(),
+		600.0,
+		0.001,
+		"spawned ball's velocity is re-magnituded to the preserved speed",
+	)
+
+	# Existing-ball branch: ensure_ball_for_key reuses the tracked ball and still re-magnitudes.
+	var existing: Ball = _reconciler.bring_into_play(
+		"ball_alpha", Vector2(0, 0), Vector2(100, 0), 450.0
+	)
+	assert_eq(existing, spawned, "existing tracked ball is reused, not duplicated")
+	assert_eq(existing.speed, 450.0)
+	assert_almost_eq(existing.linear_velocity.length(), 450.0, 0.001)
+
+
+func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
+	# SH-288: spawn, release, and deactivate each emit the matching lifecycle signal exactly once
+	# with the matching Ball argument; downstream wiring relies on per-event single emissions.
+	watch_signals(_reconciler)
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_added"),
+		1,
+		"spawn emits ball_added once",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_added", [live])
+
+	var released: Ball = _reconciler.release_ball("ball_alpha")
+	assert_eq(released, live)
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_removed"),
+		1,
+		"release emits ball_removed once",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [live])
+
+	# Spawn a second ball under a different key and drive the deactivate removal path.
+	_manager.take("ball_beta")
+	_manager.activate("ball_beta")
+	var beta_live: Ball = _reconciler.get_ball_for_key("ball_beta")
+	_manager.deactivate("ball_beta")
+	assert_eq(
+		get_signal_emit_count(_reconciler, "ball_removed"),
+		2,
+		"deactivate emits a second ball_removed",
+	)
+	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [beta_live])
+	await get_tree().process_frame
+
+
+## SH-289: when base_ball is authored and training_ball is ON_COURT in the save,
+## the initial reconcile must spawn training_ball even though adopt_pre_existing_balls
+## fires court_changed for base_ball first.
+func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_court_changed(
+) -> void:
+	# Fresh manager with both ball items; no friendship points needed — we set placements directly.
+	var saved_manager: Node = ItemManagerScript.new()
+	var mock_storage: SaveStorage = double(SaveStorage).new()
+	stub(mock_storage.write).to_return(true)
+	stub(mock_storage.read).to_return("")
+	saved_manager._progression = ProgressionData.new(mock_storage)
+	saved_manager._effect_manager = EffectManager.new()
+	var base_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
+	var training_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("training_ball")
+	var typed_items: Array[ItemDefinition] = [base_ball_item, training_ball_item]
+	saved_manager.items.assign(typed_items)
+	add_child_autofree(saved_manager)
+
+	# Simulate saved state: training_ball ON_COURT, base_ball level set so adopt_authored works.
+	saved_manager._progression.item_levels["base_ball"] = 1
+	saved_manager._progression.item_levels["training_ball"] = 1
+	saved_manager._progression.item_placements["training_ball"] = Placement.ON_COURT
+
+	# Host has one authored Ball child for base_ball (the always-present authored scene child).
+	var fresh_host := Node2D.new()
+	add_child_autofree(fresh_host)
+	var authored_ball: Ball = preload("res://scenes/ball.tscn").instantiate()
+	authored_ball.item_key = "base_ball"
+	fresh_host.add_child(authored_ball)
+
+	var fresh_reconciler: BallReconciler = BallReconcilerScript.new()
+	fresh_reconciler.configure(saved_manager, fresh_host)
+	add_child_autofree(fresh_reconciler)
+
+	# Flush both deferred calls: adopt_pre_existing_balls then _reconcile_initial_state.
+	await get_tree().process_frame
+
+	assert_not_null(
+		fresh_reconciler.get_ball_for_key("training_ball"),
+		"reconcile must spawn training_ball even when base_ball adopt triggers court_changed first",
 	)
 
 

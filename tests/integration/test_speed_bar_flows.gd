@@ -4,6 +4,11 @@ extends GutTest
 # bar, missing resets it, and rallies that crack the ceiling via Cadence push
 # the bar's max above its permanent-cap marker.
 
+const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
+const SpeedBarScript: GDScript = preload("res://scripts/court/speed_bar.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const Cadence: Resource = preload("res://resources/items/cadence.tres")
+
 var _ball: Ball
 var _paddle: Paddle
 var _bar: Control
@@ -17,10 +22,10 @@ func before_each() -> void:
 	stub(_mock_storage.write).to_return(true)
 	stub(_mock_storage.read).to_return("")
 
-	_manager = load("res://scripts/items/item_manager.gd").new()
+	_manager = ItemManagerScript.new()
 	_manager._progression = ProgressionData.new(_mock_storage)
 	_manager._effect_manager = EffectManager.new()
-	_manager.items.assign([preload("res://resources/items/cadence.tres")])
+	_manager.items.assign([Cadence])
 	add_child_autofree(_manager)
 
 	_ball = load("res://scripts/entities/ball.gd").new()
@@ -50,14 +55,15 @@ func before_each() -> void:
 	_ball.gravity_scale = 0.0
 	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
 
-	_bar = load("res://scripts/court/speed_bar.gd").new()
+	_bar = SpeedBarScript.new()
 	_bar.ball = _ball
 	_bar.size = Vector2(200, 10)
 	add_child_autofree(_bar)
 
 
 func _hit_once() -> void:
-	_paddle.paddle_hit.emit()
+	# Per-ball ownership: drive a real paddle collision so the ball advances its own speed.
+	_ball._on_body_entered(_paddle)
 	_paddle.tracker._process(HitTracker.COOLDOWN)
 
 
@@ -76,3 +82,34 @@ func test_bar_resets_on_miss() -> void:
 	_ball.missed.emit()
 	assert_lt(_bar.current_speed, mid_rally_speed)
 	assert_eq(_bar.current_speed, _ball.min_speed)
+
+
+func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
+	# SH-288 multi-ball: with two balls at different speeds, the bar reads the highest.
+	# Use a real reconciler so `ball_added` drives attachment, mirroring production wiring.
+	var multi_manager: Node = ItemManagerScript.new()
+	multi_manager._progression = ProgressionData.new(_mock_storage)
+	multi_manager._effect_manager = EffectManager.new()
+	multi_manager.items.assign([Cadence])
+	add_child_autofree(multi_manager)
+
+	var host := Node2D.new()
+	add_child_autofree(host)
+	var reconciler: BallReconciler = BallReconcilerScript.new()
+	reconciler.configure(multi_manager, host)
+	add_child_autofree(reconciler)
+
+	var bar: Control = SpeedBarScript.new()
+	bar.ball_system = reconciler
+	bar.size = Vector2(200, 10)
+	add_child_autofree(bar)
+
+	# Spawn two balls and assign distinct speeds.
+	var slow: Ball = reconciler.ensure_ball_for_key("ball_a", Vector2.ZERO, Vector2(100, 0))
+	var fast: Ball = reconciler.ensure_ball_for_key("ball_b", Vector2.ZERO, Vector2(100, 0))
+	slow.speed = 500.0
+	fast.speed = 650.0
+
+	# Drive a speed_changed emit on the slower ball; bar must still show the faster ball's speed.
+	slow.speed_changed.emit(slow.speed, slow.min_speed, slow.max_speed)
+	assert_eq(bar.current_speed, 650.0, "bar should reflect the highest speed across tracked balls")

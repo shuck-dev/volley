@@ -1,4 +1,4 @@
-## SH-218 a ball marked as dragging ignores paddle body_entered during drag handoff.
+## SH-288 a frozen ball ignores paddle body_entered during drag handoff.
 extends GutTest
 
 var _ball: Ball
@@ -9,8 +9,9 @@ class StubPaddle:
 	extends Node2D
 	var hit_count: int = 0
 
-	func on_ball_hit() -> void:
+	func on_ball_hit() -> bool:
 		hit_count += 1
+		return true
 
 
 func before_each() -> void:
@@ -34,16 +35,16 @@ func test_body_entered_ignored_while_dragging() -> void:
 	var paddle := StubPaddle.new()
 	add_child_autofree(paddle)
 
-	_ball.set_dragging(true)
+	_ball.freeze = true
 	_ball._on_body_entered(paddle)
-	assert_eq(paddle.hit_count, 0, "dragging ball must ignore paddle contacts")
+	assert_eq(paddle.hit_count, 0, "frozen ball must ignore paddle contacts")
 
 
 func test_body_entered_registers_after_drag_ends() -> void:
 	var paddle := StubPaddle.new()
 	add_child_autofree(paddle)
 
-	_ball.set_dragging(true)
-	_ball.set_dragging(false)
+	_ball.freeze = true
+	_ball.freeze = false
 	_ball._on_body_entered(paddle)
-	assert_eq(paddle.hit_count, 1, "contacts register once dragging clears")
+	assert_eq(paddle.hit_count, 1, "contacts register once unfrozen")

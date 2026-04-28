@@ -30,8 +30,9 @@ fi
 
 CURRENT_MSG=$(cat "$COMMIT_MSG_FILE")
 
-# Don't prepend if the prefix is already present at the start of the message
-if echo "$CURRENT_MSG" | grep -qiE "^${PREFIX}([^0-9]|$)"; then
+# Don't prepend if the prefix is already present at the start of the message,
+# either bare (`SH-123 ...` / `#123 ...`) or bracketed from a manual write.
+if echo "$CURRENT_MSG" | grep -qiE "^\[?${PREFIX}\]?([^0-9]|$)"; then
     exit 0
 fi
 

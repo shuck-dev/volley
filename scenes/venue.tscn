@@ -22,7 +22,6 @@ script = ExtResource("1_qaugd")
 shop = NodePath("Shop")
 
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
-scale = Vector2(0.6, 0.6)
 
 [node name="DevHUD" parent="." unique_id=720275437 instance=ExtResource("4_hud")]
 

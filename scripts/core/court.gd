@@ -9,7 +9,8 @@ signal partner_changed
 
 const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 
-@export var ball: Ball
+@export var ball_system: BallReconciler
+@export var ball_tracker: BallTracker
 @export var player_paddle_scene: PackedScene
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
@@ -17,6 +18,8 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 
+## Back-compat handle for tests; canonical live-ball set lives on `ball_tracker`.
+var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
@@ -44,28 +47,39 @@ func _ready() -> void:
 		player_paddle.position = player_spawn.position
 		add_child(player_paddle)
 
-	autoplay_controller.ball = ball
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
-	ball.effect_processor.paddles = [player_paddle]
 
 	if timeout_controller != null:
 		timeout_controller.configure(player_paddle)
 
-	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
-		ball.register_miss_zone(zone)
+	if ball_tracker == null:
+		ball_tracker = BallTracker.new()
+		ball_tracker.ball_system = ball_system
+		add_child(ball_tracker)
+	ball_tracker.configure(player_paddle)
+	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
+	ball_tracker.ball_missed.connect(_on_ball_missed)
+	autoplay_controller.bind_tracker(ball_tracker)
+	ball_tracker.ball_at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
+	ball_tracker.register_miss_zone_globally()
+	if ball != null:
+		var pre_set: Ball = ball
+		ball = null
+		ball_tracker.attach(pre_set)
 
 	if ProgressionManager.is_partner_unlocked(_progression.active_partner):
 		_activate_partner()
 
 	ProgressionManager.partner_recruited.connect(_on_partner_recruited)
 
-	ball.missed.connect(_on_ball_missed)
-	ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
-
 	autoplay_controller.autoplay_toggled.connect(_on_auto_play_changed)
 
 	personal_volley_best_changed.emit(_progression.personal_volley_best)
+
+
+func _on_current_ball_changed(new_ball: Ball) -> void:
+	ball = new_ball
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -91,11 +105,6 @@ func _on_paddle_hit() -> void:
 		personal_volley_best_changed.emit(_progression.personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
-	# Court.ball can be freed mid-rally by a live-ball grab; the @export reference
-	# does not auto-update when the reconciler swaps the live ball.
-	if ball == null or not is_instance_valid(ball):
-		return
-	ball.increase_speed()
 
 
 func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
@@ -105,9 +114,8 @@ func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
 
 
 func _on_ball_missed() -> void:
-	# process_event before reset_speed: temporary modifiers clear first,
-	# then reset uses the post-clear min_speed. Reversing this order would
-	# reset to a stale min before modifiers are removed.
+	# Each ball owns its speed: it resets itself off its own `missed` signal.
+	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
 	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
 	var should_halve: bool = actions.has(&"halve_streak")
 
@@ -118,11 +126,6 @@ func _on_ball_missed() -> void:
 
 	_friendship_point_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
-
-	if should_halve and _volley_count > 0:
-		ball.set_speed_for_streak(_volley_count)
-	else:
-		ball.reset_speed()
 
 	player_paddle.reset_streak()
 	if partner_paddle != null:
@@ -154,15 +157,16 @@ func _activate_partner() -> void:
 	add_child(partner_paddle)
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
-	ball.effect_processor.paddles.append(partner_paddle)
-	partner_paddle.set_ball(ball)
+	ball_tracker.set_partner_paddle(partner_paddle)
+	if partner_paddle.controller != null:
+		partner_paddle.controller.bind_tracker(ball_tracker)
 
 	_item_manager.register_partner(partner_definition)
 
 	if right_wall != null:
 		_partner_miss_zone = MissZoneScene.instantiate()
 		right_wall.add_child(_partner_miss_zone)
-		ball.register_miss_zone(_partner_miss_zone)
+		ball_tracker.register_miss_zone(_partner_miss_zone)
 
 	partner_changed.emit()
 
@@ -174,21 +178,22 @@ func _deactivate_partner() -> void:
 		_item_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
-	ball.effect_processor.paddles.erase(partner_paddle)
+	if partner_paddle.controller != null:
+		partner_paddle.controller.bind_tracker(null)
+	ball_tracker.clear_partner_paddle(partner_paddle)
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null
 
 	if _partner_miss_zone != null:
+		ball_tracker.unregister_miss_zone(_partner_miss_zone)
 		_partner_miss_zone.queue_free()
 		_partner_miss_zone = null
 
 	partner_changed.emit()
 
 
-## Fractional accumulation;
-## remainder from a reduced autoplay rate carries between hits and resets on miss
-## a missed rally never pays out
+## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
 	var base_points: float = _item_manager.get_stat(&"friendship_points_per_hit")

@@ -256,6 +256,16 @@ Release rules:
 
 Nothing crosses boundaries by mutating a shared body. Each owner only creates and frees its own shape.
 
+### Multi-ball wiring
+
+The reconciler tracks N concurrent balls; consumers subscribe per-ball, not to a single "current ball." `BallReconciler` emits `ball_added(ball)` and `ball_removed(ball)` whenever the tracked set changes (spawn, ensure, adoption, release, deactivate). The previous `current_ball` / `current_ball_changed` single-var concept is removed; the reconciler keeps no opinion about which ball is "the" one.
+
+- **Court** subscribes to every tracked ball's `missed` and `at_max_speed_changed` for HUD and item-event purposes, but speed lives on each ball. Each `Ball` advances its own `speed` from its own paddle-collision path (`_on_body_entered`) and resets its own `speed` from its own `missed` signal. The streak counter is shared rally state on Court (it halves or zeroes on any miss and drives the volley HUD), but speed magnitudes are no longer fanned out across balls. A miss on one ball does not slow another; a hit on one ball does not accelerate another. With multi-ball items like The Stray this reads as each ball carrying its own rally pressure, layered onto a single streak readout.
+- **SpeedBar** subscribes to every tracked ball's `speed_changed` and renders the **highest** current speed across the set. The bar reads as rally pressure: the most energetic ball drives the visual, the calmer ones live underneath it.
+- **Partner targeting** still picks one ball at a time today (back-compat handle on Court). The smarter "nearest projected intercept" selection is a separate ticket; see Q6.
+
+This is design intent, not a bug to prevent: the prototype has always wanted The Stray (SH-54) and similar multi-ball items to layer cleanly on top of the rally. Single-ball-on-court was an accidental constraint that fell out of consumer wiring, not a rule the system was trying to keep.
+
 ### Transition seams
 
 `court_changed` is the join point. A new `BallReconciler` listens to it and reconciles the live ball set to match `on_court[&ball]`. When a permanent ball becomes on-court, the reconciler hands out a `Ball` instance. When one leaves, the reconciler `queue_free`s the excess. Everything else about ball lifetime flows through this node, so nothing outside it needs to know about counts.
@@ -297,6 +307,8 @@ Transitions between states happen at container boundaries. Every transition is e
 - **Token → Dragged-gravity.** On grab, the source container's token is vacated and a `RigidBody2D` body spawns at the token's last world position. The body eases onto the cursor over a short tween (~80 ms) rather than teleporting; the player sees the body "lift" off the slot. Gravity engages once the tween settles. Because the body eases to the cursor rather than snapping under it, the press hit box can be generous (wider than the visible body) and the body still arrives at the cursor cleanly. This matters most for balls in flight: the player presses near a moving ball and the body eases over to the pointer rather than the press requiring a pixel-precise hit on a body the rally is already moving.
 - **Dragged-gravity → Token.** On release into a non-court container (rack, shop, workshop), the held body eases into the destination's slot position over a short tween, scale matching `token_scale` at landing. The `RigidBody2D` is replaced by the slot token only after the tween settles, so the visual is one continuous motion.
 - **Dragged-gravity → Active-movement.** On release of a ball onto the court, gravity flips off and the rally takes the body's release-gesture velocity as its starting motion. No tween needed; the velocity itself is the continuity.
+
+Ball speed is friendship. It carries through grab-and-release: the magnitude the rally had built up before the grab is the magnitude the released ball resumes at, with the gesture choosing only the direction. It resets only on miss. A mid-rally grab is a redirect, not a reset; the streak's accumulated friendship survives the held-token detour.
 - **Active-movement → Dragged-gravity.** When a ball rolls off the court (stray), gravity flips back on as the body crosses the court boundary; the velocity at the boundary carries through, the deceleration on the venue floor is the continuity. The same transition fires when the player grabs a live ball mid-rally; the body's current world position is the gesture's start position, and the held tween eases the body onto the cursor as in the token-grab case.
 
 Easing keeps the diegetic feel: the body is one physical thing moving through the world. A snap (instant teleport from slot to cursor, or slot to court) breaks that read; the player sees a discrete event rather than a continuous motion.
