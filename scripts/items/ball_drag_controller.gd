@@ -12,6 +12,7 @@ signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
+const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag (SH-252 a).
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 ## SH-287 patch: probe radius for the pre-spawn body projection; slightly larger than authored ball radius.
@@ -39,7 +40,7 @@ var _gesture_below_threshold: bool = true
 var _mouse_button_down: bool = false
 ## SH-288: friendship energy captured at mid-rally grab; forwarded to bring_into_play so the
 ## released ball inherits the rally speed. Negative means no preserved energy (rack-origin gesture).
-var _held_preserved_speed: float = -1.0
+var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 
 
 func configure(
@@ -225,7 +226,7 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_held_key = ""
 	_held_is_temporary = false
 	_held_was_on_court = false
-	_held_preserved_speed = -1.0
+	_held_preserved_speed = PRESERVED_SPEED_NONE
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true

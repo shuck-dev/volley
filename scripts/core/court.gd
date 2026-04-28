@@ -18,8 +18,7 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 
-## Back-compat handle for tests and partner targeting; the canonical live-ball set lives on
-## `ball_tracker`. Kept in sync via `current_ball_changed`.
+## Back-compat handle for tests; canonical live-ball set lives on `ball_tracker`.
 var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
@@ -50,10 +49,6 @@ func _ready() -> void:
 
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
-
-	# Each AI controller owns its own ball ref and enable/disable state via
-	# the tracker; Court no longer mediates `controller.ball = ...` per the
-	# per-ball-ownership rule. See designs/01-prototype/21-ball-dynamics.md.
 
 	if timeout_controller != null:
 		timeout_controller.configure(player_paddle)

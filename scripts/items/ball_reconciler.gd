@@ -10,6 +10,7 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
+const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
 
@@ -17,8 +18,7 @@ var _item_manager: Node
 var _ball_host: Node
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
-## True while adopt_pre_existing_balls is running; prevents court_changed from
-## clearing _initial_reconcile_pending before _reconcile_initial_state runs.
+## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
 var _adopting_pre_existing: bool = false
 
 
@@ -40,9 +40,7 @@ func _ready() -> void:
 	call_deferred(&"_reconcile_initial_state")
 
 
-## Registers each authored Ball under its `item_key`, applies item art, and ensures
-## placement reflects "this ball is on court" so the rack hides the matching token.
-## Idempotent; safe to call repeatedly.
+## Idempotent; safe to call repeatedly across scene reloads.
 func adopt_pre_existing_balls() -> void:
 	if _ball_host == null:
 		return
@@ -100,7 +98,7 @@ func ensure_ball_for_key(
 	item_key: String,
 	spawn_position: Vector2,
 	initial_velocity: Vector2,
-	preserved_speed: float = -1.0,
+	preserved_speed: float = PRESERVED_SPEED_NONE,
 ) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
@@ -126,15 +124,14 @@ func bring_into_play(
 	item_key: String,
 	spawn_position: Vector2,
 	initial_velocity: Vector2,
-	preserved_speed: float = -1.0,
+	preserved_speed: float = PRESERVED_SPEED_NONE,
 ) -> Ball:
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
 	return ensure_ball_for_key(item_key, spawn_position, initial_velocity, preserved_speed)
 
 
-## SH-288: friendship energy persists across grab-and-release. When `preserved_speed` is non-negative,
-## the ball adopts that speed and re-magnitudes its velocity along the requested direction.
+## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
 func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 	if preserved_speed < 0.0:
 		return
@@ -174,8 +171,7 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	ball.call_deferred("queue_free")
 
 
-## One-shot recovery for saved-on-court keys without an authored Ball child.
-## Skipped once any signal-driven activity has begun.
+## One-shot: skipped once any signal-driven court_changed activity has begun.
 func _reconcile_initial_state() -> void:
 	if not _initial_reconcile_pending:
 		return

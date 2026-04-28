@@ -1,15 +1,6 @@
 class_name PaddleAIController
 extends Node
 
-## Abstract base for paddle AI controllers. Owns the shared tracking,
-## reaction delay, and drift algorithm. Subclasses override
-## _ball_approaching(), _get_paddle_speed(), and _is_ball_behind().
-##
-## Each controller manages its own state per the per-ball-ownership rule:
-## subscribe to a BallTracker via `bind_tracker()` and the controller will
-## attach to the freshest ball, disable itself when no balls exist, and
-## refuse to enable while no ball is held.
-
 @export var paddle: CharacterBody2D
 @export var config: PaddleAIConfig
 
@@ -36,9 +27,7 @@ func _init_position_buffer() -> void:
 	_position_buffer.fill(0.0)
 
 
-## Wire the controller to a BallTracker. The controller picks up new balls
-## from `ball_added` and disables itself when the tracker empties via
-## `ball_removed`. Replaces Court-mediated `controller.ball = ...` injection.
+## Replaces Court-mediated `controller.ball = ...` injection; the tracker drives enable/disable lifecycle.
 func bind_tracker(tracker: BallTracker) -> void:
 	if _tracker == tracker:
 		return
@@ -84,9 +73,7 @@ func _physics_process(_delta: float) -> void:
 		_drift_to_center()
 
 
-## Refuses to enable when no ball is held; disabling is always allowed.
-## Logs a warning instead of asserting so toggle key presses with no live
-## ball are silent no-ops rather than crashes.
+## Warning not assert: toggle key presses with no live ball must be silent no-ops.
 func set_enabled(value: bool) -> void:
 	if value and ball == null:
 		push_warning("PaddleAIController.set_enabled(true) ignored: no ball bound")

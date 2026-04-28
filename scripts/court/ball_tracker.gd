@@ -6,8 +6,7 @@ extends Node
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
 signal current_ball_changed(ball: Ball)
-## Re-emitted from the underlying ball_system so subscribers (AI controllers,
-## UI elements) bind to the tracker rather than reaching past it.
+## Re-emitted from ball_system so subscribers bind to the tracker, not the system directly.
 signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
