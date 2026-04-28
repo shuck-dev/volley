@@ -1,21 +1,10 @@
 class_name CursorOverlay
 extends Node2D
 
-## SH-297: placeholder visual for the grab cursor state machine.
-##
-## The cursor textures (SH-298 art study) drop into this node later; for now each state
-## renders as a simple primitive with a state-coloured tint so the state machine can be
-## verified end-to-end without art. The visual layer is replaceable; the contract is
-## `set_state(int_state, world_position)`.
-##
-## The overlay parents under the drag controller and follows the held position, not the
-## OS cursor. State `DEFAULT` hides the overlay so the OS cursor reads cleanly when no
-## gesture is in flight.
+## Placeholder visual for the grab cursor state machine; replaced by SH-298 textures.
 
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 
-## Radius of the placeholder ring drawn around the held position. Replaced by the
-## software-cursor textures in SH-298.
 const CURSOR_RADIUS_PX: float = 18.0
 const RING_WIDTH_PX: float = 3.0
 
@@ -33,8 +22,6 @@ func _ready() -> void:
 	visible = false
 
 
-## Called by BallDragController each physics frame. Position is in world coordinates so
-## the overlay tracks the held token, not the OS cursor.
 func set_state(state: int, world_position: Vector2) -> void:
 	global_position = world_position
 	if state == _state:

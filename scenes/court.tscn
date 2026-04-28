@@ -22,7 +22,7 @@
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
-[ext_resource type="Script" path="res://scripts/hud/cursor_overlay.gd" id="24_cursor"]
+[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/cursor_overlay.gd" id="24_cursor"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
 size = Vector2(21.6, 883.2)

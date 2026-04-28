@@ -2,17 +2,10 @@ class_name BallDragController
 extends Node2D
 
 ## Owns the held-token visual during a ball or equipment drag gesture.
-##
-## Press starts a hold (held token follows cursor); release commits only at a valid target.
-## No-restore principle (SH-287): mouse-up over an invalid spot does not end the gesture;
-## the held token keeps following the cursor and the controller polls per frame for a valid
-## target. The source rack is itself a target, giving the player a no-teleport escape valve.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
-## SH-297: emitted on every transition of the cursor state machine so the cursor overlay
-## (and any other listener) can re-render. The integer follows `CursorState.State`.
-signal cursor_state_changed(state: int)
+signal cursor_state_changed(state: int, world_position: Vector2)
 
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 
@@ -22,13 +15,7 @@ const PRESERVED_SPEED_NONE: float = -1.0
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 ## SH-287 patch: probe radius for the pre-spawn body projection; slightly larger than authored ball radius.
 const COURT_BLOCKED_PROBE_RADIUS_PX: float = 14.0
-## SH-297: duration of the eased lift from the spawn position onto the cursor on grab.
-## Position, scale, and modulation interpolate continuously across this window so the
-## body reads as one continuous lift, not a snap.
 const GRAB_EASE_DURATION_S: float = 0.08
-## SH-297: scale and modulation the held body holds at lift start. The body eases from
-## these values up to its definition's `token_scale` and full modulation across
-## `GRAB_EASE_DURATION_S`.
 const GRAB_EASE_START_SCALE: Vector2 = Vector2(0.85, 0.85)
 const GRAB_EASE_START_MODULATE: Color = Color(1.0, 1.0, 1.0, 0.0)
 const GRAB_EASE_END_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
@@ -40,10 +27,7 @@ const GRAB_EASE_END_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
-## SH-297: optional cursor overlay node. When unset the controller still derives the
-## cursor state, emits `cursor_state_changed`, and exposes `get_cursor_state()`; only the
-## visual driving step is skipped. Tests don't need to wire this.
-@export var cursor_overlay: Node2D
+@export var cursor_overlay: CursorOverlay
 
 var _item_manager: Node
 var _held_token: Node2D = null
@@ -60,17 +44,9 @@ var _mouse_button_down: bool = false
 ## SH-288: friendship energy captured at mid-rally grab; forwarded to bring_into_play so the
 ## released ball inherits the rally speed. Negative means no preserved energy (rack-origin gesture).
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
-## SH-297: world position the held body lifts from. Position eases from here onto the
-## cursor over `GRAB_EASE_DURATION_S` so the lift reads as continuous motion, not a snap.
 var _grab_origin_position: Vector2 = Vector2.ZERO
-## SH-297: seconds elapsed inside the grab-ease window. Held body's position, scale, and
-## modulation derive from `_grab_ease_progress() ∈ [0, 1]`.
 var _grab_ease_elapsed: float = 0.0
-## SH-297: target scale captured from `ItemDefinition.token_scale` at grab time. The held
-## body eases from `GRAB_EASE_START_SCALE` up to this value across the lift window.
 var _grab_target_scale: Vector2 = Vector2.ONE
-## SH-297: last cursor state emitted; lets the controller debounce `cursor_state_changed`
-## and gives tests a polling handle via `get_cursor_state()`.
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 
 
@@ -100,6 +76,10 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
+	if cursor_overlay != null:
+		if not cursor_state_changed.is_connected(cursor_overlay.set_state):
+			cursor_state_changed.connect(cursor_overlay.set_state)
+
 
 func _process(delta: float) -> void:
 	if _held_token == null:
@@ -107,8 +87,6 @@ func _process(delta: float) -> void:
 		return
 
 	var cursor_target: Vector2 = _clamp_to_venue(_cursor_position())
-	# SH-297: position, scale, and modulation read continuously across the ~80 ms grab
-	# lift. Once the ease window closes, follow the cursor directly.
 	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, GRAB_EASE_DURATION_S)
 	var ease_progress: float = _grab_ease_progress()
 	_apply_grab_ease(ease_progress, cursor_target)
@@ -119,9 +97,6 @@ func _process(delta: float) -> void:
 		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
 			_gesture_below_threshold = false
 
-	# SH-297: cursor state polls in lockstep with the body-projection target poll. The
-	# state is what the player sees on the cursor; the commit decision still lives in
-	# `attempt_release` (SH-287's release-path territory).
 	_update_cursor_state(follow_position)
 
 	# SH-287: when mouse is up and the held position is over a valid target, commit.
@@ -157,7 +132,6 @@ func get_held_token() -> Node2D:
 	return _held_token
 
 
-## SH-297: current cursor state; one of `CursorState.State`. Test seam.
 func get_cursor_state() -> int:
 	return _cursor_state
 
@@ -281,8 +255,6 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_grab_origin_position = Vector2.ZERO
 	_grab_ease_elapsed = 0.0
 	_grab_target_scale = Vector2.ONE
-	# SH-297: gesture closed; cursor falls back to default. `_process` will re-emit on
-	# the next held gesture; emit explicitly here so listeners hear the transition.
 	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
 	drop_completed.emit(item_key, release_position, over_court)
 
@@ -315,8 +287,6 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	var target_scale: Vector2 = Vector2.ONE
 	if definition != null:
 		target_scale = definition.token_scale
-	# SH-297: start the body slightly small and transparent so the ease lift reads as
-	# continuous; `_apply_grab_ease` interpolates up to `target_scale` across the window.
 	token.scale = GRAB_EASE_START_SCALE * target_scale
 	token.modulate = GRAB_EASE_START_MODULATE
 	if definition != null and definition.art != null:
@@ -444,18 +414,12 @@ func _get_item_role(item_key: String) -> StringName:
 	return definition.role
 
 
-## SH-297: progress through the grab-ease window in [0, 1]. 0 at the moment of grab,
-## 1 once the body has fully eased onto the cursor. Linear here; cubic ease-out applied
-## in `_apply_grab_ease` keeps the math single-sourced.
 func _grab_ease_progress() -> float:
 	if GRAB_EASE_DURATION_S <= 0.0:
 		return 1.0
 	return clampf(_grab_ease_elapsed / GRAB_EASE_DURATION_S, 0.0, 1.0)
 
 
-## SH-297: drives held-token position, scale, and modulation across the grab-ease window.
-## `progress` is the linear t; we apply a cubic ease-out so the body decelerates onto the
-## cursor rather than arriving at a constant speed.
 func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
 	if _held_token == null:
 		return
@@ -467,24 +431,15 @@ func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
 	_held_token.modulate = GRAB_EASE_START_MODULATE.lerp(GRAB_EASE_END_MODULATE, eased)
 
 
-## SH-297: cursor state derivation. Pre-merge of SH-287 PR #533 the controller has no
-## generalised target poll, so the state is approximated from the gesture-in-flight flag
-## plus the existing rack/court signals; once #533 lands, the wiring updates to consume
-## the per-frame `_find_accepting_target` result so the state precisely tracks
-## `can_accept`. The contract on this side is the state name, not the derivation; visuals
-## drop in unchanged.
 func _update_cursor_state(world_position: Vector2) -> void:
 	var state: int = _derive_cursor_state(world_position)
 	_set_cursor_state(state, world_position)
 
 
-## Pure derivation; broken out so tests can drive it without spinning the full loop.
 func _derive_cursor_state(world_position: Vector2) -> int:
 	if _held_token == null:
 		return CursorStateScript.State.DEFAULT
-	# Off-venue is forbidden by definition: the controller already clamps the held token
-	# to venue bounds, but the underlying cursor can be outside; reading the unclamped
-	# cursor here lets the state surface the forbidden read.
+	# The held token is clamped to venue but the raw cursor can drift outside.
 	if not _is_within_venue(_cursor_position()):
 		return CursorStateScript.State.FORBIDDEN
 	if _position_accepted_by_any_target(_held_key, world_position):
@@ -492,11 +447,6 @@ func _derive_cursor_state(world_position: Vector2) -> int:
 	return CursorStateScript.State.DRAGGING
 
 
-## Pre-merge stub. Today this reuses the legacy `attempt_release` predicate signals: it
-## reports CAN_DROP when the position is over the rack-for-role or over a court spot
-## that `_release_position_clear` accepts. After SH-287 PR #533 merges, this routes
-## through `_find_accepting_target(item_key, world_position, 1.0) != null` and the
-## predicate below collapses to one line.
 func _position_accepted_by_any_target(item_key: String, world_position: Vector2) -> bool:
 	if item_key.is_empty():
 		return false
@@ -505,9 +455,7 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 		return true
 	if item_role == &"ball":
 		var court_position: Vector2 = _clamp_to_court(world_position)
-		# Ball target accepts only when the body projection is clear AND the original
-		# (unclamped) press lands within the court rect; otherwise the cursor reads as
-		# DRAGGING (over the venue but not over a target).
+		# CAN_DROP needs both the unclamped press inside the court rect and a clear projection.
 		if court_bounds.has_point(world_position) and _release_position_clear(court_position):
 			return true
 	return false
@@ -520,12 +468,8 @@ func _is_within_venue(world_position: Vector2) -> bool:
 
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
-	if cursor_overlay != null and cursor_overlay.has_method("set_state"):
-		cursor_overlay.call("set_state", state, world_position)
-	if state == _cursor_state:
-		return
 	_cursor_state = state
-	cursor_state_changed.emit(state)
+	cursor_state_changed.emit(state, world_position)
 
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
