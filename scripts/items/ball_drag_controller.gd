@@ -76,10 +76,10 @@ var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 ## (i.e. mouse-up with strict projection failing). Negative means not yet timing.
 var _expansion_started_at: float = -1.0
 
-var _drop_targets: Array = []
+var _drop_targets: Array[DropTarget] = []
 ## Targets the controller authored from its own exports; rebuilt on `_ready` and not
 ## removed by the public `unregister_target` API.
-var _builtin_targets: Array = []
+var _builtin_targets: Array[DropTarget] = []
 
 
 func configure(
@@ -180,7 +180,7 @@ func unregister_target(target: DropTarget) -> void:
 	_drop_targets.erase(target)
 
 
-func get_registered_targets() -> Array:
+func get_registered_targets() -> Array[DropTarget]:
 	return _drop_targets.duplicate()
 
 
@@ -325,10 +325,9 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 ## Returns the first registered target whose `can_accept` succeeds, or null. Targets are
 ## polled in registration order; built-ins register in priority order (court before venue).
 func _find_accepting_target(item_key: String, position: Vector2, scale_factor: float) -> DropTarget:
-	for target in _drop_targets:
-		var dt: DropTarget = target
-		if dt.can_accept(item_key, position, scale_factor):
-			return dt
+	for target: DropTarget in _drop_targets:
+		if target.can_accept(item_key, position, scale_factor):
+			return target
 	return null
 
 
