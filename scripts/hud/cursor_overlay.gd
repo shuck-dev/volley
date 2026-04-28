@@ -4,21 +4,19 @@ extends Node2D
 ## Placeholder visual for the grab cursor state machine; replaced by SH-298 textures.
 
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
+const DEFAULT_PALETTE: CursorOverlayPalette = preload(
+	"res://resources/hud/cursor_overlay_palette.tres"
+)
 
-## Ring radius for the placeholder cursor overlay; tunable per-scene.
-@export var cursor_radius_px: float = 18.0
-## Ring stroke width for the placeholder cursor overlay.
-@export var ring_width_px: float = 3.0
-## Tint per cursor state; alpha 0 hides the default state.
-@export var color_default: Color = Color(1.0, 1.0, 1.0, 0.0)
-@export var color_dragging: Color = Color(0.85, 0.85, 0.85, 0.85)
-@export var color_can_drop: Color = Color(0.45, 0.95, 0.55, 0.95)
-@export var color_forbidden: Color = Color(0.95, 0.35, 0.35, 0.95)
+## Colour cluster + ring metrics; tunable per-scene by swapping the palette resource.
+@export var palette: CursorOverlayPalette = DEFAULT_PALETTE
 
 var _state: int = CursorStateScript.State.DEFAULT
 
 
 func _ready() -> void:
+	if palette == null:
+		palette = DEFAULT_PALETTE
 	z_index = 4096
 	top_level = true
 	visible = false
@@ -41,18 +39,27 @@ func _draw() -> void:
 	if _state == CursorStateScript.State.DEFAULT:
 		return
 	var ring_color: Color = _color_for_state(_state)
-	draw_arc(Vector2.ZERO, cursor_radius_px, 0.0, TAU, 32, ring_color, ring_width_px, true)
+	draw_arc(
+		Vector2.ZERO,
+		palette.cursor_radius_px,
+		0.0,
+		TAU,
+		32,
+		ring_color,
+		palette.ring_width_px,
+		true
+	)
 	# Centre dot reads as the press point regardless of which state is active.
-	draw_circle(Vector2.ZERO, ring_width_px, ring_color)
+	draw_circle(Vector2.ZERO, palette.ring_width_px, ring_color)
 
 
 func _color_for_state(state: int) -> Color:
 	match state:
 		CursorStateScript.State.DRAGGING:
-			return color_dragging
+			return palette.color_dragging
 		CursorStateScript.State.CAN_DROP:
-			return color_can_drop
+			return palette.color_can_drop
 		CursorStateScript.State.FORBIDDEN:
-			return color_forbidden
+			return palette.color_forbidden
 		_:
-			return color_default
+			return palette.color_default

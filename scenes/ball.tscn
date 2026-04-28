@@ -9,10 +9,11 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_press"]
 radius = 11.52
 
-[node name="Ball" type="RigidBody2D" unique_id=1842167380]
+[node name="Ball" type="RigidBody2D" unique_id=1842167380 node_paths=PackedStringArray("press_area")]
 physics_material_override = ExtResource("1_cxlvu")
 gravity_scale = 0.0
 script = ExtResource("1_7s4qf")
+press_area = NodePath("PressArea")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=160689379]
 scale = Vector2(0.72, 0.72)

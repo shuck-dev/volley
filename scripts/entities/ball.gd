@@ -12,6 +12,8 @@ const SPEED_EMIT_THRESHOLD := 10.0
 @export var item_key: String = ""
 ## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
 @export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 1.6
+## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
+@export var press_area: Area2D
 
 var speed: float = 0.0
 var min_speed: float
@@ -25,7 +27,6 @@ var _was_at_max_speed := false
 var _last_emitted_speed: float = 0.0
 var _last_emitted_min: float = 0.0
 var _last_emitted_max: float = 0.0
-var _press_area: Area2D
 
 
 func _ready() -> void:
@@ -125,12 +126,10 @@ func _setup_effect_processor() -> void:
 
 
 func _wire_press_area() -> void:
-	var area: Area2D = get_node_or_null("PressArea") as Area2D
-	if area == null:
+	if press_area == null:
 		return
-	_press_area = area
 	var press_shape: CollisionShape2D = null
-	for child in area.get_children():
+	for child in press_area.get_children():
 		if child is CollisionShape2D:
 			press_shape = child
 			break
@@ -143,8 +142,8 @@ func _wire_press_area() -> void:
 				var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
 				local_circle.radius = authored_radius * press_hitbox_inflation
 				press_shape.shape = local_circle
-	if not area.input_event.is_connected(_on_input_event):
-		area.input_event.connect(_on_input_event)
+	if not press_area.input_event.is_connected(_on_input_event):
+		press_area.input_event.connect(_on_input_event)
 
 
 func _baseline_collision_radius() -> float:
