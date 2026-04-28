@@ -4,13 +4,16 @@ extends RigidBody2D
 signal missed
 signal at_max_speed_changed(is_at_max: bool)
 signal speed_changed(speed: float, min_speed: float, max_speed: float)
-## Mid-rally grab entry: emitted when the player presses the live ball.
 signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
+## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
+@export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 1.6
+## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
+@export var press_area: Area2D
 
 var speed: float = 0.0
 var min_speed: float
@@ -122,6 +125,39 @@ func _setup_effect_processor() -> void:
 	add_child(effect_processor)
 
 
+func _wire_press_area() -> void:
+	if press_area == null:
+		return
+	var press_shape: CollisionShape2D = null
+	for child in press_area.get_children():
+		if child is CollisionShape2D:
+			press_shape = child
+			break
+	if press_shape != null:
+		var circle: CircleShape2D = press_shape.shape as CircleShape2D
+		if circle != null:
+			var authored_radius: float = _baseline_collision_radius()
+			if authored_radius > 0.0:
+				# Duplicate so per-instance inflation does not mutate the shared sub-resource.
+				var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
+				local_circle.radius = authored_radius * press_hitbox_inflation
+				press_shape.shape = local_circle
+	if not press_area.input_event.is_connected(_on_input_event):
+		press_area.input_event.connect(_on_input_event)
+
+
+func _baseline_collision_radius() -> float:
+	for child in get_children():
+		if child is CollisionShape2D:
+			var shape_node: CollisionShape2D = child
+			var circle: CircleShape2D = shape_node.shape as CircleShape2D
+			if circle == null:
+				continue
+			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
+			return circle.radius * maxf(axis_scale, 0.001)
+	return 0.0
+
+
 func _ball_setup() -> void:
 	speed = min_speed
 	effect_processor.sync_base_speed()
@@ -134,12 +170,13 @@ func _ball_setup() -> void:
 		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(reset_speed):
 		missed.connect(reset_speed)
-	input_pickable = true
-	if not input_event.is_connected(_on_input_event):
-		input_event.connect(_on_input_event)
+	# Press routing lives on PressArea; the rigid body stops accepting pointer events.
+	input_pickable = false
+	if input_event.is_connected(_on_input_event):
+		input_event.disconnect(_on_input_event)
+	_wire_press_area()
 
 
-## Press on the live ball routes through here and surfaces as the `pressed` signal so the drag controller can flip into mid-rally grab mode.
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if freeze:
 		return

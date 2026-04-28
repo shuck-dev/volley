@@ -5,6 +5,9 @@ extends Node2D
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
+signal cursor_state_changed(state: int, world_position: Vector2)
+
+const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -13,6 +16,14 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 const HOVER_SCALE_BUMP: Vector2 = Vector2(1.08, 1.08)
 const HOVER_MODULATE: Color = Color(1.15, 1.15, 1.15, 1.0)
 const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
+## Duration of the grab ease-to-cursor lift; the held token tweens for this long after a press.
+@export var grab_ease_duration_s: float = 0.08
+## Scale multiplier on the held token at the start of the lift; eases up to 1.0 over the window.
+@export var grab_ease_start_scale: Vector2 = Vector2(0.85, 0.85)
+## Modulate at the start of the lift; the alpha eases up to grab_ease_end_modulate.
+@export var grab_ease_start_modulate: Color = Color(1.0, 1.0, 1.0, 0.0)
+## Modulate at the end of the lift.
+@export var grab_ease_end_modulate: Color = Color(1.0, 1.0, 1.0, 1.0)
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -21,6 +32,7 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
+@export var cursor_overlay: CursorOverlay
 @export var expansion_ring_hold_s: float = 0.25
 @export var expansion_ring_scale: float = 1.5
 
@@ -40,6 +52,10 @@ var _gesture_below_threshold: bool = true
 var _mouse_button_down: bool = false
 ## Mid-rally rally speed inherited by the released ball; negative means none preserved.
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
+var _grab_origin_position: Vector2 = Vector2.ZERO
+var _grab_ease_elapsed: float = 0.0
+var _grab_target_scale: Vector2 = Vector2.ONE
+var _cursor_state: int = CursorStateScript.State.DEFAULT
 ## Monotonic seconds when expansion-ring polling started; negative means not yet timing.
 var _expansion_started_at: float = -1.0
 
@@ -77,24 +93,36 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
+	if cursor_overlay != null:
+		if not cursor_state_changed.is_connected(cursor_overlay.set_state):
+			cursor_state_changed.connect(cursor_overlay.set_state)
+
 	_register_builtin_targets()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if _held_token == null:
+		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
 
-	var follow_position: Vector2 = _clamp_to_venue(_cursor_position())
-	_held_token.global_position = follow_position
+	var cursor_target: Vector2 = _clamp_to_venue(_cursor_position())
+	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, grab_ease_duration_s)
+	var ease_progress: float = _grab_ease_progress()
+	_apply_grab_ease(ease_progress, cursor_target)
+
+	var follow_position: Vector2 = _held_token.global_position
 	_track_cursor_motion(follow_position)
 	if _gesture_below_threshold:
 		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
 			_gesture_below_threshold = false
 
+	_update_cursor_state(follow_position)
+
 	if not _mouse_button_down:
 		if not attempt_release(follow_position):
 			_update_expansion_state(follow_position)
-	else:
+	elif ease_progress >= 1.0:
+		# Hover feedback is suppressed while the SH-297 lift ease is still settling.
 		_update_hover_feedback(follow_position)
 
 
@@ -125,6 +153,10 @@ func get_held_key() -> String:
 
 func get_held_token() -> Node2D:
 	return _held_token
+
+
+func get_cursor_state() -> int:
+	return _cursor_state
 
 
 ## Public registration so subsystems with their own area resources (Shop) can join the
@@ -350,7 +382,11 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
+	_grab_origin_position = Vector2.ZERO
+	_grab_ease_elapsed = 0.0
+	_grab_target_scale = Vector2.ONE
 	_expansion_started_at = -1.0
+	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
 	drop_completed.emit(item_key, release_position, over_court)
 
 
@@ -360,8 +396,11 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	token.global_position = spawn_position
 
 	var definition: ItemDefinition = _get_item_definition(item_key)
+	var target_scale: Vector2 = Vector2.ONE
 	if definition != null:
-		token.scale = definition.token_scale
+		target_scale = definition.token_scale
+	token.scale = grab_ease_start_scale * target_scale
+	token.modulate = grab_ease_start_modulate
 	if definition != null and definition.art != null:
 		var art_instance: Node = definition.art.instantiate()
 		token.add_child(art_instance)
@@ -372,6 +411,9 @@ func _spawn_held_token(item_key: String, spawn_position: Vector2, is_temporary: 
 	_held_is_temporary = is_temporary
 	_press_position = spawn_position
 	_gesture_below_threshold = true
+	_grab_origin_position = spawn_position
+	_grab_ease_elapsed = 0.0
+	_grab_target_scale = target_scale
 	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
@@ -473,6 +515,57 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 
 func _now_seconds() -> float:
 	return float(Time.get_ticks_msec()) / 1000.0
+
+
+func _grab_ease_progress() -> float:
+	if grab_ease_duration_s <= 0.0:
+		return 1.0
+	return clampf(_grab_ease_elapsed / grab_ease_duration_s, 0.0, 1.0)
+
+
+func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
+	if _held_token == null:
+		return
+	# Cubic ease-out: 1 - (1 - t)^3.
+	var inv: float = 1.0 - progress
+	var eased: float = 1.0 - inv * inv * inv
+	_held_token.global_position = _grab_origin_position.lerp(cursor_target, eased)
+	_held_token.scale = (grab_ease_start_scale * _grab_target_scale).lerp(_grab_target_scale, eased)
+	_held_token.modulate = grab_ease_start_modulate.lerp(grab_ease_end_modulate, eased)
+
+
+func _update_cursor_state(world_position: Vector2) -> void:
+	var state: int = _derive_cursor_state(world_position)
+	_set_cursor_state(state, world_position)
+
+
+func _derive_cursor_state(world_position: Vector2) -> int:
+	if _held_token == null:
+		return CursorStateScript.State.DEFAULT
+	# The held token is clamped to venue but the raw cursor can drift outside.
+	if not _is_within_venue(_cursor_position()):
+		return CursorStateScript.State.FORBIDDEN
+	if _position_accepted_by_any_target(_held_key, world_position):
+		return CursorStateScript.State.CAN_DROP
+	return CursorStateScript.State.DRAGGING
+
+
+func _position_accepted_by_any_target(item_key: String, world_position: Vector2) -> bool:
+	if item_key.is_empty():
+		return false
+	# SH-287: delegate to the registered DropTarget poll so cursor state mirrors release acceptance exactly.
+	return _find_accepting_target(item_key, world_position, 1.0) != null
+
+
+func _is_within_venue(world_position: Vector2) -> bool:
+	if venue_bounds.size == Vector2.ZERO:
+		return true
+	return venue_bounds.has_point(world_position)
+
+
+func _set_cursor_state(state: int, world_position: Vector2) -> void:
+	_cursor_state = state
+	cursor_state_changed.emit(state, world_position)
 
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:

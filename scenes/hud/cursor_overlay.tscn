@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://dq3kw7n8sh297"]
+
+[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/cursor_overlay.gd" id="1_cursor"]
+[ext_resource type="Resource" uid="uid://d24d8dno1pta4" path="res://resources/hud/cursor_overlay_palette.tres" id="2_palet"]
+
+[node name="CursorOverlay" type="Node2D"]
+script = ExtResource("1_cursor")
+palette = ExtResource("2_palet")

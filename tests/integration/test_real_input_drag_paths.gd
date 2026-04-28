@@ -309,8 +309,9 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	var viewport: Viewport = live.get_viewport()
 
 	# Press on the live ball routes through Ball._on_input_event → emits `pressed` →
-	# BallDragController.grab_live_ball.
-	live.input_event.emit(viewport, _press_event(), 0)
+	# BallDragController.grab_live_ball. SH-297: routing lives on the child PressArea.
+	var press_area: Area2D = live.get_node("PressArea") as Area2D
+	press_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")
 
 	await get_tree().process_frame
@@ -389,9 +390,8 @@ func test_token_scale_matches_across_shop_held_and_rack() -> void:
 	)
 
 
-func test_held_token_during_rack_drag_uses_definition_scale() -> void:
-	# The drag controller spawns its held token with the canonical scale, so a
-	# rack-origin drag matches the rack slot it came from.
+func test_held_token_during_rack_drag_settles_to_token_scale_with_hover_bump() -> void:
+	# Rack-origin drag eases to canonical token_scale, then hover-feedback bumps it because the cursor sits over the court drop target.
 	_setup_ball_drag()
 	_manager.take("training_ball")
 	await get_tree().process_frame
@@ -399,8 +399,10 @@ func test_held_token_during_rack_drag_uses_definition_scale() -> void:
 	_drag.grab_from_rack("training_ball")
 	var held_token: Node2D = _drag.get_held_token()
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
+	await get_tree().create_timer(0.1).timeout
+	var expected: Vector2 = TrainingBall.token_scale * BallDragControllerScript.HOVER_SCALE_BUMP
 	assert_eq(
 		held_token.scale,
-		TrainingBall.token_scale,
-		"the drag controller's held token reads token_scale from the definition",
+		expected,
+		"the drag controller's held token settles to token_scale after the SH-297 lift ease",
 	)

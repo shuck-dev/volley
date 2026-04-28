@@ -341,8 +341,13 @@ func test_token_scale_remains_canonical_across_items() -> void:
 	var canonical: Vector2 = BaseBall.token_scale
 
 	assert_eq(canonical, Vector2(1.5, 1.5), "definition pins the canonical token_scale")
+	# Settle the lift past its window so the held token lands on canonical, mirroring the post-ease state.
+	drag._grab_ease_elapsed = drag.grab_ease_duration_s
+	drag._apply_grab_ease(1.0, held_token.global_position)
 	assert_eq(
-		held_token.scale, canonical, "held-token rendering reads token_scale off the definition"
+		held_token.scale,
+		canonical,
+		"held-token settles on the canonical token_scale after the SH-297 lift ease",
 	)
 	assert_not_null(slot_art_holder, "precondition: rack populated at least one slot art holder")
 	assert_eq(
