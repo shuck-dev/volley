@@ -35,6 +35,18 @@ When dispatching a minion onto a Linear issue, brief the agent to create the wor
 
 Every Agent call uses `run_in_background: true`. Coordinate multiple background minions via a shared scratchpad if their work touches.
 
+## Codename log
+
+The Agent tool names isolated worktrees `agent-<systemAgentId>` from a hash, not the codename in the brief. After a session those directories read as opaque junk. Stamp a session-scoped mapping at dispatch time so cleanup later can attribute the dirs.
+
+Append one line per dispatched minion to `ai/scratchpads/agent-codenames.tsv`:
+
+```
+<agentId>\t<codename>\t<ticket-or-task>\t<dispatched-at-ISO>
+```
+
+The scratchpad is gitignored and per-session; do not put this in memory (it doesn't persist usefully across sessions). Scrub the file when the session's work closes, same rule as other agent scratchpads.
+
 ## Paired dispatch
 
 Three dispatch shapes for code work, picked by issue type. The cognitive separation between test and impl is the point; pick the shape that achieves it for the kind of issue at hand.
