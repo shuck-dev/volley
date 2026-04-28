@@ -1,4 +1,3 @@
-## SH-218 drag controller owns the held token and reconciles rack <-> court transitions.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -83,7 +82,7 @@ func _loose_bodies_under_host() -> Array:
 	return result
 
 
-func test_grab_from_rack_spawns_held_token_without_activating_item() -> void:
+func test_grab_from_rack_spawns_held_body_without_activating_item() -> void:
 	_manager.take("ball_alpha")
 	assert_false(_manager.is_on_court("ball_alpha"), "precondition: item is on the rack")
 
@@ -91,8 +90,6 @@ func test_grab_from_rack_spawns_held_token_without_activating_item() -> void:
 	assert_true(ok)
 	assert_true(_drag.is_dragging(), "drag controller should be mid-gesture after rack pickup")
 	assert_eq(_drag.get_held_key(), "ball_alpha")
-	# SH-245: a press alone must not introduce the ball; activation is deferred to
-	# release-over-court so a click-without-movement leaves the rack untouched.
 	assert_false(
 		_manager.is_on_court("ball_alpha"),
 		"rack pickup is press-hold-release; activation only fires at release over court",
@@ -100,8 +97,6 @@ func test_grab_from_rack_spawns_held_token_without_activating_item() -> void:
 
 
 func test_click_on_rack_without_movement_does_not_introduce_ball() -> void:
-	# SH-245 regression guard: press, then immediately release at the same rack position.
-	# The held token must clear and no ball should land on the court.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -113,7 +108,7 @@ func test_click_on_rack_without_movement_does_not_introduce_ball() -> void:
 	var released: bool = _drag.attempt_release(rack_position)
 
 	assert_true(released)
-	assert_false(_drag.is_dragging(), "held token cleared on release")
+	assert_false(_drag.is_dragging(), "held body cleared on release")
 	assert_false(
 		_manager.is_on_court("ball_alpha"),
 		"no movement, no court release: the item must not be activated",
@@ -180,8 +175,6 @@ func test_release_without_gesture_uses_default_launch_velocity() -> void:
 
 
 func test_release_far_outside_court_falls_loose_inside_venue() -> void:
-	# SH-314: release inside venue but outside court no longer clamps to court; the held body
-	# unfreezes and falls as a loose RigidBody2D under gravity per the regime canon.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -197,7 +190,6 @@ func test_release_far_outside_court_falls_loose_inside_venue() -> void:
 		"loose release does not bring the item into play",
 	)
 	assert_false(_manager.is_on_court("ball_alpha"), "loose release does not flip placement state")
-	# A HeldBody (RigidBody2D) was reparented to the ball host and unfrozen.
 	var loose_bodies: Array = _loose_bodies_under_host()
 	assert_eq(loose_bodies.size(), 1, "exactly one loose body lands in the venue")
 	var body: HeldBody = loose_bodies[0]
@@ -206,8 +198,6 @@ func test_release_far_outside_court_falls_loose_inside_venue() -> void:
 
 
 func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
-	# Grabbing a live ball that was already on court and releasing over the rack
-	# must deactivate the item so the rack regrows the token.
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	assert_true(_manager.is_on_court("ball_alpha"), "precondition: item is on court")
@@ -219,7 +209,7 @@ func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
 	var released: bool = _drag.attempt_release(over_rack)
 
 	assert_true(released)
-	assert_false(_drag.is_dragging(), "held token destroyed on rack release")
+	assert_false(_drag.is_dragging(), "held body destroyed on rack release")
 	assert_false(
 		_manager.is_on_court("ball_alpha"),
 		"release onto rack should deactivate a permanent ball item",
@@ -260,8 +250,8 @@ func test_mid_rally_grab_then_release_over_court_reinstates_a_ball() -> void:
 
 func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() -> void:
 	_drag.grab_live_ball("ball_alpha", true)
-	assert_true(_drag.is_dragging(), "precondition: held token exists for the temporary drag")
-	var token_before: Node2D = _drag.get_held_token()
+	assert_true(_drag.is_dragging(), "precondition: held body exists for the temporary drag")
+	var body_before: HeldBody = _drag.get_held_body()
 	var court_point := Vector2(0, 0)
 
 	var released: bool = _drag.attempt_release(court_point)
@@ -273,15 +263,13 @@ func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() 
 	)
 	assert_false(_drag.is_dragging(), "temporary release clears the drag state")
 	await get_tree().process_frame
-	assert_false(is_instance_valid(token_before), "held token should be freed on release")
+	assert_false(is_instance_valid(body_before), "held body should be freed on release")
 	assert_eq(
 		_permanent_balls().size(), 0, "temporary release should not leave a permanent Ball behind"
 	)
 
 
 func test_release_inside_venue_outside_court_drops_loose() -> void:
-	# SH-314: a release inside the venue but outside the court spawns a loose body that falls
-	# under gravity, not a court-clamped Ball.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -310,8 +298,7 @@ func test_mouse_button_release_event_triggers_release() -> void:
 		ball.queue_free()
 	await get_tree().process_frame
 
-	# Release event must carry a position past the movement threshold so the controller
-	# treats it as a real drag rather than a click-without-movement no-op (SH-252 a).
+	# Release position must clear the movement threshold so the controller treats it as a real drag.
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = false
@@ -325,13 +312,12 @@ func test_mouse_button_release_event_triggers_release() -> void:
 	)
 
 
-func test_process_follow_clamps_held_token_to_venue_bounds() -> void:
+func test_process_follow_clamps_held_body_to_venue_bounds() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	var token: Node2D = _drag.get_held_token()
-	assert_not_null(token, "precondition: held token exists")
+	var body: HeldBody = _drag.get_held_body()
+	assert_not_null(body, "precondition: held body exists")
 
-	# _clamp_to_venue is the pure function behind _process follow; drive it directly.
 	var clamped: Vector2 = _drag._clamp_to_venue(Vector2(99999, -99999))
 	assert_eq(clamped, Vector2(2000, -1200), "clamp pulls to the venue rect corner")
 
@@ -344,9 +330,6 @@ func test_clamp_to_venue_is_identity_when_bounds_unset() -> void:
 
 
 func test_grab_and_release_preserves_live_ball_speed_through_to_reinstated_ball() -> void:
-	# SH-288: friendship energy persists across mid-rally grab + release-over-court.
-	# Capture a non-default rally speed, drive grab + release through _input, and assert the
-	# reinstated ball inherits that speed on both `speed` and `linear_velocity` magnitude.
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -356,7 +339,6 @@ func test_grab_and_release_preserves_live_ball_speed_through_to_reinstated_ball(
 	var grabbed: bool = _drag.grab_live_ball("ball_alpha", false)
 	assert_true(grabbed)
 	await get_tree().process_frame
-	# Feed a small gesture so the release gets a non-zero launch direction.
 	_drag._cursor_samples.clear()
 	_drag._cursor_samples.append({"time": 0.0, "position": Vector2(0, 0)})
 	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(40, 0)})

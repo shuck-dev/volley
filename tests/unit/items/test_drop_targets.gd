@@ -326,8 +326,8 @@ func test_token_scale_remains_canonical_across_items() -> void:
 	var drag: BallDragController = BallDragControllerScript.new()
 	drag.configure(manager, rack, null, null)
 	add_child_autofree(drag)
-	drag._spawn_held_token("base_ball", Vector2.ZERO, false)
-	var held_token: Node2D = drag.get_held_token()
+	drag._spawn_held_body("base_ball", Vector2.ZERO, false)
+	var held_token: Node2D = drag.get_held_body()
 	assert_not_null(held_token, "precondition: held token spawned")
 
 	rack.refresh()

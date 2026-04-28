@@ -1,4 +1,4 @@
-## SH-314: dragged-gravity state-machine transitions; canon at designs/01-prototype/21-ball-dynamics.md.
+## Dragged-gravity state-machine transitions; canon at designs/01-prototype/21-ball-dynamics.md.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -49,8 +49,7 @@ func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
 func before_each() -> void:
 	_manager = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	# An authored at_rest_shape is part of the dragged-gravity contract; pin it on the fixture so
-	# tests fail if HeldBody ever silently falls back to its default circle.
+	# Pin an authored at_rest_shape so a future fallback-to-default-circle regression fails here.
 	_authored_shape = CircleShape2D.new()
 	_authored_shape.radius = AUTHORED_RADIUS
 	ball_alpha.at_rest_shape = _authored_shape
@@ -92,11 +91,9 @@ func _loose_bodies_under_host() -> Array:
 
 
 func test_grab_spawns_a_rigid_body_held_in_kinematic_freeze() -> void:
-	# Token -> Dragged-gravity: held body is a RigidBody2D, frozen-kinematic so the controller
-	# drives position; gravity_scale is zero during the lift so it does not fall mid-tween.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	var body: HeldBody = _drag.get_held_token() as HeldBody
+	var body: HeldBody = _drag.get_held_body()
 	assert_not_null(body, "held body is a HeldBody (RigidBody2D), not a plain Node2D")
 	assert_true(body.freeze, "held body stays frozen-kinematic so the controller drives position")
 	assert_eq(
@@ -113,11 +110,9 @@ func test_grab_spawns_a_rigid_body_held_in_kinematic_freeze() -> void:
 
 
 func test_lift_settle_promotes_phase_and_arms_loose_gravity() -> void:
-	# After the lift tween settles the body's phase flips to HELD; its gravity stays off (the body
-	# is still cursor-pinned) and loose_gravity_scale stays armed for any later venue release.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha", Vector2(0, 0))
-	var body: HeldBody = _drag.get_held_token() as HeldBody
+	var body: HeldBody = _drag.get_held_body()
 	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
 	_drag._apply_grab_ease(_drag._grab_ease_progress(), Vector2(50, 50))
 	assert_eq(body.phase, HeldBody.Phase.HELD, "lift settle promotes phase to HELD")
@@ -126,15 +121,12 @@ func test_lift_settle_promotes_phase_and_arms_loose_gravity() -> void:
 
 
 func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -> void:
-	# Dragged-gravity -> Active-movement: the rigid held body is freed, the reconciler
-	# instantiates a Ball at the release point with gesture velocity. Active-movement has
-	# gravity off (Ball.gravity_scale == 0) per the rally configuration.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
 		ball.queue_free()
 	await get_tree().process_frame
-	var held: HeldBody = _drag.get_held_token() as HeldBody
+	var held: HeldBody = _drag.get_held_body()
 	assert_not_null(held)
 	_drag._cursor_samples.clear()
 	_drag._cursor_samples.append({"time": 0.0, "position": Vector2.ZERO})
@@ -151,8 +143,6 @@ func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -
 
 
 func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> void:
-	# Dragged-gravity -> loose-on-venue-floor: the held body unfreezes, gravity engages, the
-	# body falls. The reconciler does not spawn a Ball; placement state stays off-court.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -172,9 +162,6 @@ func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> 
 
 
 func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_carryover() -> void:
-	# Active-movement -> Dragged-gravity: grabbing a live ball spawns a HeldBody at the live
-	# ball's last world position, with the rally speed preserved into the released ball's
-	# linear_velocity after the gesture commits to a court target.
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -184,7 +171,7 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 
-	var body: HeldBody = _drag.get_held_token() as HeldBody
+	var body: HeldBody = _drag.get_held_body()
 	assert_not_null(body, "mid-rally grab spawns a HeldBody, not a plain Node2D")
 	assert_eq(
 		body.global_position,
@@ -195,7 +182,6 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 	assert_true(body.freeze, "frozen-kinematic during the cursor follow")
 	await get_tree().process_frame
 
-	# Drive a release over the court to confirm the rally speed propagates into the new Ball.
 	_drag._cursor_samples.clear()
 	_drag._cursor_samples.append({"time": 0.0, "position": Vector2(75, 30)})
 	_drag._cursor_samples.append({"time": 0.04, "position": Vector2(155, 30)})
@@ -207,18 +193,15 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 
 
 func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> void:
-	# go_loose transfers the visible token_scale off the body onto the ArtHolder so the body
-	# itself is unscaled in world space and the collision shape matches at_rest_shape; the
-	# ArtHolder picks up the lift-time scale so the visual does not pop.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
 		ball.queue_free()
 	await get_tree().process_frame
-	# Settle the lift so body.scale = token_scale.
+	# Settle the lift so body.scale equals token_scale before the release.
 	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
 	_drag._apply_grab_ease(1.0, Vector2(1500, 100))
-	var held: HeldBody = _drag.get_held_token() as HeldBody
+	var held: HeldBody = _drag.get_held_body()
 	var pre_loose_scale: Vector2 = held.scale
 
 	assert_true(_drag.attempt_release(Vector2(1500, 100)))

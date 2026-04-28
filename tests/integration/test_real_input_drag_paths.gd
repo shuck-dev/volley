@@ -397,7 +397,7 @@ func test_held_token_during_rack_drag_settles_to_token_scale_with_hover_bump() -
 	await get_tree().process_frame
 
 	_drag.grab_from_rack("training_ball")
-	var held_token: Node2D = _drag.get_held_token()
+	var held_token: Node2D = _drag.get_held_body()
 	assert_not_null(held_token, "rack-origin drag spawns a held token")
 	await get_tree().create_timer(0.1).timeout
 	var expected: Vector2 = TrainingBall.token_scale * BallDragControllerScript.HOVER_SCALE_BUMP
