@@ -4,13 +4,15 @@ The canonical outline of the story Volley! tells. The art bible (`../art/bible.m
 
 ## Story
 
-A small seaside town. Painted terraces, palm trees in places, a wooden stall in the garden where the friend behind the counter calls a name across the court when the rally lands. The protagonist is chasing the world volley record. Partners arrive one by one and the count climbs. The garden is warm; the chime is bright; the friend at the stall watches every rally. This place is Construction, the world the protagonist has built around what they had. Then a light cools where it should not. A partner's tilt holds a beat too long. A UI element blinks the wrong colour. The cracks read as flourish, then as flicker, then as the construct failing to hold its own shape. The championship final lands. The protagonist beats the champ. The win was supposed to fix things and does not. The construct lets go.
+The protagonist wants the world volley record. The court is in a garden, in Construction. The friend at the counter calls a name across the court when the rally lands. The garden has one locked gate, and the protagonist passes it every day. Partners arrive, one by one. The count climbs. The garden is warm. The chime is bright.
 
-The protagonist walks through the actual hometown for the first time. The shop is closed. The delivery slips on the door are a week old. This is Reality, which Construction had been a substitute for. Part 2 runs on dread. The work is a search: rallies surface memories, memories surface as photos, photos unlock rooms in the hometown the protagonist has been avoiding. Through the trail the player learns what the protagonist already knows. A close friend died cliff-jumping years ago. The protagonist was not there. The shopkeeper was. The asymmetry of that day has sat between them since, and Part 1 was the protagonist building a place where it did not have to.
+Then a light at the corner of the court cools. A partner's tilt holds a beat too long. A UI element blinks the wrong colour. The championship lands. The protagonist beats the champ. The win was meant to fix things. It does not.
 
-The unnamed number sits in the phone the whole game, dialable, never picked up. The album fills. The hidden compartment opens. The sister hands over the key. The protagonist walks through the one locked gate, and the cliff is just the cliff, and the bench is real, and the shopkeeper is on it. The protagonist dials. The shopkeeper's phone rings beside them. They could ignore it like they have been ignoring the others. They look up. They pick up.
+The protagonist walks through the actual hometown for the first time. The shop is closed. The delivery slips on the door are a week old. Rallies surface memories. Memories surface as photos. Photos unlock rooms the protagonist has been avoiding. A close friend died cliff-jumping years ago. The protagonist was not there. The shopkeeper was.
 
-The world volley record was the shopkeeper's phone number all along. The rally the protagonist did alone every day was a daily reaching that never connected. Credits roll over the two of them rallying together: Construction's championship spot now occupied by the actual person, Reality's texture worn into Construction's saturated light. The cliff stays returnable. Construction has its centre back, as the relationship rather than the substitute.
+The album fills. The compartment opens. The sister hands over the key. The protagonist unlocks the one locked gate and walks through. The cliff is just the cliff. The bench is real. The shopkeeper is on it. The protagonist takes out their phone and dials a number that has sat unnamed in the call log the whole game. The phone on the bench rings. The shopkeeper looks up. They pick up.
+
+The world volley record was the shopkeeper's phone number all along. The rally the protagonist did alone every day was a daily reaching. Now the reach lands. The gate stays open.
 
 ## Setting
 
@@ -20,53 +22,57 @@ The protagonist's hometown is a small coastal town, the Welsh and Cornish coast 
 
 ## Two worlds
 
-Volley! has two worlds, two visual treatments, two maps: Construction and Reality.
+Volley! is set across two worlds. The player meets only one to start.
 
-The player meets Construction first. The premise is that this is the world. Through cracks, a second reading lands: Construction is a construct, not the real world. The garden the player has been rallying in is built from the protagonist's memory of their actual garden in Reality, sprucing it up. The constructed garden and the real garden remain separate places.
+Construction is what they meet first: a small seaside town with a court in the garden, the world the protagonist is rallying through. Through the cracks of Part 1, a second reading lands. Construction is a construct, not the actual hometown. The garden in Construction is built from the protagonist's memory of their real garden, sprucing it up. The two gardens remain separate places.
+
+The world Construction was a substitute for is Reality.
 
 ## The garden as meeting point
 
-The garden is the one venue where construct and reality meet. Other Construction venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden's "out of place out of time" feel comes from being the one venue grounded in the real hometown.
+Construction's other venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden does. It is the one place where the constructed world and the real one share a footprint, and the "out of place out of time" feel of the venue comes from being grounded.
 
 The title carries the weight of that doubling. A literal place. A tended thing, the protagonist's daily care. Where things grow: the rally, the obsession, the memories. A pre-Fall innocence preserved. A walled enclosure.
 
 ## One locked gate
 
-There is exactly one locked gate in the whole game. It sits in the garden. Walking through it transitions to Reality. The cliff is on the other side.
+The garden has one locked gate. The player sees it from Part 1. It does not unlock until the album fills and the sister hands over the key. The cliff is on the other side.
 
 ## Friendship as force
 
-Friendship, treated as a force, is the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. The treetop venue's wind is the bond with the coach who teaches there. The underwater venue's wind is the bond with the coach who teaches there. The protagonist's bonds, taken together, carry the rally across the whole game.
+Friendship is a force, the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. Each other venue's wind is the bond with the coach who teaches there. Together, those bonds carry the rally across the whole game.
 
-The friendships are not metaphorically present in the rally. They are the rally's invisible structure. The shopkeeper bond is the load-bearing one for the story arc, the warm centre Construction is built around. The coach bonds are real in their own right, each one the wind in its own venue.
+The friendships are not metaphorically present. They are the rally's invisible structure. The shopkeeper bond is load-bearing for the arc; the coach bonds are real in their own right, each one the wind in its own venue.
 
-When a bond thins, the rally still happens, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
+When a bond thins, the rally continues, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
 
 The mechanical and visual shape of this bond-as-medium (the apex return, the bloom and chime at each rally point, the per-venue reaction work) lives in the system docs. Court physics in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md). Reaction-beat staging in [`../art/bible.md`](../art/bible.md) § 17.
 
 ## Cast
 
-The protagonist is the player's avatar, drawn like any other character in both styles: a Construction render and a Reality render. Visible throughout. Picked up a racquet long ago and never quite put it down. Lost their best friend years ago to a cliff-jumping accident. Pushed away the shopkeeper. Physical canon lives in [`../characters/protagonist.md`](../characters/protagonist.md).
+Listed in the order the player meets them. Backstory lands where the player learns it, not here. Physical canon for the protagonist lives in [`../characters/protagonist.md`](../characters/protagonist.md).
 
-The shopkeeper stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. In Reality, alive, in the hometown, withdrawn, the person the protagonist pushed away. Was cliff-jumping with the friend the day they died; the protagonist was not there. The protagonist's relationship to them is the load-bearing emotional shape of the game.
+**The protagonist** is the player's avatar. Visible throughout, in both styles. Picked up a racquet long ago and never quite put it down.
 
-The sister is the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo album. The bridge.
+**The shopkeeper** stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. Calls a name across the court when the rally lands. Their relationship to the protagonist is the load-bearing emotional shape of the game.
 
-Martha and the partners are real people from the protagonist's life, summoned into Construction as coach-partners. Each teaches one mechanic through the rally. Each has a Reality render at their actual age, in their actual life. The naming convention: each partner is named for a character from a science-fiction author's work.
+**Martha and the partners** are the coaches across Construction's venues. Each teaches one mechanic through the rally. Each is a real person from the protagonist's life, with a Reality render at their actual age in their actual life. Each partner is named for a character from a science-fiction author's work.
 
-The dead friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group: dangerous, but routine, until it wasn't. The reason the protagonist built Construction.
+**The champ** holds the championship final spot. Construction-only, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player beats the champ; the champ exits at the end of Part 1.
 
-The champ is the dead friend rendered into Construction as the championship final. A Construction-only construct, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player wins the championship by beating them; the champ exits at the end of Part 1.
+**The tinkerer** runs a workshop in another corner of the garden. A Construction figure with a Reality counterpart, met in Part 2.
 
-The tinkerer is the sister's Construction render. Workshop in another corner of the garden.
+**The sister** enters in Part 2 as the bridge into Reality. Holds the photo album that gates the search. Less weighted by the loss than the shopkeeper. Her Construction render is the tinkerer.
 
-## The unnamed number
+**The dead friend** is named in Part 2, when the trail surfaces them. They died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group, dangerous and routine, until it wasn't. The reason the protagonist built Construction.
 
-The shopkeeper's phone number is in the protagonist's phone, sitting in the call log or contacts list, unnamed. The protagonist either deleted the contact, never saved the name, or the device just holds digits without labels. Period-appropriate.
+## The phone
 
-The player has full control of the phone throughout. The number is dialable any time: Construction, Reconstruction, before the cliff. It never connects. The shopkeeper has withdrawn and isn't picking up.
+A number sits in the protagonist's phone. Just digits: no contact, no label. The protagonist deleted it, never saved it, or the device holds digits without naming them. Period-appropriate.
 
-The unnamed number is the load-bearing mechanic across both acts. The player's reaching out, with no answer back, is the protagonist's reaching out, with no answer back.
+The player has full control of the phone throughout. The number is dialable any time, in Construction and Reconstruction, before the cliff. It never connects.
+
+This is the load-bearing mechanic across both acts. The player's reaching out, with no answer back, is the protagonist's reaching out, with no answer back. Whose number it is surfaces at the cliff.
 
 ## Part 1: Construction
 
