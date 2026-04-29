@@ -14,15 +14,11 @@ The friend at the counter keeps the count. They wipe the counter when there is n
 
 ---
 
-Small things start arriving wrong, quietly enough that the first one is almost not anything.
-
-The protagonist is between rallies, walking back across the court for water, when something at the corner of the court catches their eye. They turn their head. By the time their eyes find it, there is nothing there to find. The protagonist stands a second with the racquet against their leg. They drink the water. They go back to the rally.
+The protagonist is between rallies, walking back across the court for water, when something at the corner of the court catches their eye. They turn their head. By the time their eyes find it, there is nothing there to find. They stand a second with the racquet against their leg. They drink the water. They go back to the rally.
 
 Three sessions later, a coach holds the line on a return one beat too long. Their head is tilted toward the protagonist. Their mouth is open. Then the coach blinks and serves and the rally goes on. The protagonist returns the serve. After, walking home, the protagonist almost rings a number they still have. They stop with their thumb above the green button.
 
 A week after that the friend at the counter says the protagonist's name out loud. They say it like they meant to say something else. The protagonist looks at the friend. The friend looks at the protagonist. Neither of them speaks. Then the friend says, "Eleven hundred today, do you think," and starts folding the rag again. The protagonist goes to the court. They miss the next return.
-
-They keep going to the garden anyway.
 
 ---
 
