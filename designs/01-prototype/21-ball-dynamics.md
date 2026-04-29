@@ -348,7 +348,7 @@ A press on any container's at-rest representation lifts the held preview, but th
 
 ## Friendship-bound apex return
 
-The narrative canon in [`../narrative/outline.md`](../narrative/outline.md) treats the top of the court as sky, not surface: nothing physical bounces the ball back. The ball travels up to apex and returns under gravity and the friendship-bound. Whichever bond is in play in that venue is the medium the rally lives inside, and the bond's reach is what the ball cannot escape.
+The narrative canon in [`../story/outline.md`](../story/outline.md) treats the top of the court as sky, not surface: nothing physical bounces the ball back. The ball travels up to apex and returns under gravity and the friendship-bound. Whichever bond is in play in that venue is the medium the rally lives inside, and the bond's reach is what the ball cannot escape.
 
 Mechanically the ball changes direction at apex. Diegetically nothing physical bounces it. The current prototype implementation (top edge as hard ceiling, see `08-court-bounds.md`) is the placeholder; the friendship-bound apex return is the target shape, scoped past the prototype.
 

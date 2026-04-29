@@ -11,9 +11,9 @@ Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the
 
 ## What this skill is for
 
-Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
+Volley's creative surfaces include the story summary at the head of [`designs/story/outline.md`](../../designs/story/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the canonical voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The canonical voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
+For Volley specifically: the canonical voice sample for creative prose is the story summary in [`designs/story/outline.md`](../../designs/story/outline.md). When in doubt, read it. The canonical voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 

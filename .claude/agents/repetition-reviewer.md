@@ -61,9 +61,9 @@ Per `ai/skills/minions/reviewers.md`. Approve is silent (label only). Block post
 
 > **Marvin** blocked at `ab62b90`.
 >
-> - `concept/01-construction.md:27`: shopkeeper interior ("the shopkeeper was on the cliff with the friend") restates `characters/shopkeeper.md:11`. Drop the duplicate; link to the character file.
-> - `art/bible.md:142`: this paragraph was removed from `narrative/outline.md` and not added to any other doc. The "bidirectional carry" mechanic is now homeless.
+> - `narrative/01-construction.md:27`: shopkeeper interior ("the shopkeeper was on the cliff with the friend") restates `characters/shopkeeper.md:11`. Drop the duplicate; link to the character file.
+> - `art/bible.md:142`: this paragraph was removed from `story/outline.md` and not added to any other doc. The "bidirectional carry" mechanic is now homeless.
 
-Inline on `concept/01-construction.md:27`:
+Inline on `narrative/01-construction.md:27`:
 
 > **Marvin** issue (blocking): restates `characters/shopkeeper.md:11` ("the wedge"). Concept docs hold structure, not character interior. Drop the paragraph and link to the character file.

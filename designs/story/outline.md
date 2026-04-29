@@ -1,6 +1,6 @@
 # Volley! narrative outline
 
-The canonical narrative outline. Setting, worlds, cast, mechanics, act-by-act spine: everything a designer or writer needs to know about how the story is shaped, rather than how it feels. The story itself, told as prose, lives in [`story.md`](story.md). The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`.
+The canonical narrative outline. Setting, worlds, cast, mechanics, act-by-act spine: everything a designer or writer needs to know about how the story is shaped, rather than how it feels. The story itself, told as prose, lives in [`story.md`](story.md). The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../narrative/`.
 
 ## Setting
 
@@ -176,4 +176,4 @@ Rallying with the shopkeeper as the championship-spot partner. The cliff stays r
 
 ## Cross-references
 
-The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`.
+The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../narrative/`.

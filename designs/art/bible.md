@@ -4,7 +4,7 @@ The canonical art document for Volley!. Every concept study and production asset
 
 The bible holds the world the art has to render: what it is, who is in it, what happens, and the visual craft that serves the telling. The story drives; the craft sections name how the art carries the story.
 
-The protagonist's interior sits in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine sits across [`../concept/`](../concept/). Tech pipeline sits in [`tech-pipeline.md`](tech-pipeline.md). Audio direction lives in SH-281.
+The protagonist's interior sits in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine sits across [`../narrative/`](../narrative/). Tech pipeline sits in [`tech-pipeline.md`](tech-pipeline.md). Audio direction lives in SH-281.
 
 ## Contents
 
@@ -57,9 +57,9 @@ The garden in Construction draws from this geography. Construction's other venue
 
 Construction and Reality are distinct worlds. Two styles, two visual treatments, two ways the player engages.
 
-**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in [`../concept/01-construction.md`](../concept/01-construction.md).
+**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in [`../narrative/01-construction.md`](../narrative/01-construction.md).
 
-**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in [`../concept/04-reality.md`](../concept/04-reality.md).
+**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in [`../narrative/04-reality.md`](../narrative/04-reality.md).
 
 Silhouettes and visual DNA hold across both styles. What shifts is saturation, edge quality, lighting intention, level of detail, and arrangement. Same shapes; different weight.
 
@@ -129,7 +129,7 @@ Saturated colour, generous light, surfaces that gleam. Shadows held warm. Charac
 
 The protagonist is actively maintaining Construction; tennis lives here and only here. The pretense is the rendering, not the protagonist's care. Construction needs to feel like somewhere the player wants to be, before the cracks ever come. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
-Story shape (the tournament, the climb, the championship goal, the world record as phone number) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/01-construction.md`](../concept/01-construction.md).
+Story shape (the tournament, the climb, the championship goal, the world record as phone number) lives in [`../story/outline.md`](../story/outline.md) and [`../narrative/01-construction.md`](../narrative/01-construction.md).
 
 ---
 
@@ -143,7 +143,7 @@ Reality leaks into Construction. Two flavours, both authored, both deniable. The
 
 The hardest visual discipline: tonal cracks read as oddness without ever reading as a mistake. The deniability is what does the work. Cracks stay tonal, never literal. A coffee mug from the protagonist's kitchen sitting on the equipment rack would collapse the deniability.
 
-Pacing across the climb, escalation rules, and the cumulative-shape principle live in [`../concept/02-cracks-and-break.md`](../concept/02-cracks-and-break.md).
+Pacing across the climb, escalation rules, and the cumulative-shape principle live in [`../narrative/02-cracks-and-break.md`](../narrative/02-cracks-and-break.md).
 
 ---
 
@@ -155,7 +155,7 @@ After the rupture the player walks through the protagonist's hometown for the fi
 
 The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre is hollowed out; the rallies render that absence.
 
-Story shape (championship win, win lands wrong, shopkeeper missing, champ exits) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/02-cracks-and-break.md`](../concept/02-cracks-and-break.md).
+Story shape (championship win, win lands wrong, shopkeeper missing, champ exits) lives in [`../story/outline.md`](../story/outline.md) and [`../narrative/02-cracks-and-break.md`](../narrative/02-cracks-and-break.md).
 
 ---
 
@@ -167,7 +167,7 @@ Construction weathers as the arc proceeds. Saturation drops a notch, line weight
 
 Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
-Story shape (the search for the shopkeeper, dread, the photo book mechanic, the unnamed number staying unnamed, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
+Story shape (the search for the shopkeeper, dread, the photo book mechanic, the unnamed number staying unnamed, the score migrating to Reality, the audio shift toward acoustic) lives in [`../story/outline.md`](../story/outline.md) and [`../narrative/03-reconstruction.md`](../narrative/03-reconstruction.md).
 
 ---
 
@@ -181,7 +181,7 @@ One image, two presences. The composition splits the frame across the bench area
 
 The call ends. The protagonist walks the few steps to the bench and sits beside the shopkeeper. Coming home is the call.
 
-Story shape (the dial, recognition landing, the shopkeeper picking up) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/05-postgame.md`](../concept/05-postgame.md).
+Story shape (the dial, recognition landing, the shopkeeper picking up) lives in [`../story/outline.md`](../story/outline.md) and [`../narrative/05-postgame.md`](../narrative/05-postgame.md).
 
 ---
 
@@ -191,7 +191,7 @@ Credits play over a rally. The protagonist on the left, the shopkeeper on the ri
 
 Postgame is rallying with the shopkeeper, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
-Full canon for the call and postgame in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/05-postgame.md`](../concept/05-postgame.md).
+Full canon for the call and postgame in [`../story/outline.md`](../story/outline.md) and [`../narrative/05-postgame.md`](../narrative/05-postgame.md).
 
 ---
 
@@ -335,7 +335,7 @@ A note on cost. Minimal animation per character keeps the labour budget where it
 
 ### The apex-return beat
 
-Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../narrative/outline.md`](../narrative/outline.md); the ball-side mechanics live in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md).
+Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../story/outline.md`](../story/outline.md); the ball-side mechanics live in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md).
 
 The bond doing the work changes by venue. The garden runs the beat through the shopkeeper at the stall. The treetop, underwater, and meteor venues run it through the coach who teaches there. The pattern is the same; the character carrying it is whoever the venue's wind belongs to.
 

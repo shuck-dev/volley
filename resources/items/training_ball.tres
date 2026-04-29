@@ -8,6 +8,9 @@
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
 
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_stat")
 stat_key = &"ball_speed_min"
@@ -22,9 +25,6 @@ script = ExtResource("2_effect")
 trigger = SubResource("trigger_1")
 outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
 max_active_level = null
-
-[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
-radius = 7.2
 
 [resource]
 script = ExtResource("1_item")

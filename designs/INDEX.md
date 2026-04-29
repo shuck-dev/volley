@@ -12,9 +12,9 @@ If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) fi
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) for the shape of the game, [Tech-art / INDEX](tech-art/INDEX.md) for the rendering side, and the active phase folder ([01-prototype/](01-prototype/INDEX.md) at the moment) for what the team is building this cycle.
 
-If you are a **writer** working on copy, beats, or character voice, read [Narrative / Story](narrative/story.md) for the felt arc, [Narrative / Outline](narrative/outline.md) for the structural canon, and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
+If you are a **writer** working on copy, beats, or character voice, read [Story / Story](story/story.md) for the felt arc, [Story / Outline](story/outline.md) for the structural canon, and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
 
-If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `narrative/`, pipeline questions in `tech-art/`.
+If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `story/`, world-design questions in `narrative/`, pipeline questions in `tech-art/`.
 
 If you are an **open-source visitor**, [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
 
@@ -22,7 +22,7 @@ If you are an **open-source visitor**, [The Case for Open Development](research/
 
 Two kinds of folder.
 
-**Discipline folders** hold canonical work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
+**Discipline folders** hold canonical work, owned by the people who do that discipline. `art/`, `story/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`. When something here changes, the next brief and the next ticket pick the change up.
 
 **Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `02-alpha/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
 
@@ -40,12 +40,23 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
+### Story
+
+| Doc | Purpose |
+|---|---|
+| [Story](story/story.md) | The felt arc told as prose. Player chronology; the spine of the game on a single page. |
+| [Outline](story/outline.md) | The structural canon. Setting, two worlds, garden and gate, cast, the phone, the act-by-act spine, the cliff and the call, credits, postgame. |
+
 ### Narrative
 
 | Doc | Purpose |
 |---|---|
-| [Story](narrative/story.md) | The felt arc told as prose. Player chronology; the spine of the game on a single page. |
-| [Outline](narrative/outline.md) | The structural canon. Setting, two worlds, garden and gate, cast, the phone, the act-by-act spine, the cliff and the call, credits, postgame. |
+| [00 Two styles](narrative/00-two-styles.md) | The doubling at the heart of the game: Construction and Reality, what they are to each other. |
+| [01 Construction](narrative/01-construction.md) | The first world the player meets. Warmth, rally, the championship climb. |
+| [02 Cracks and break](narrative/02-cracks-and-break.md) | How Construction starts giving way. The flicker, the win that does not land. |
+| [03 Reconstruction](narrative/03-reconstruction.md) | Free travel between worlds. The search through memory, photo, and room. |
+| [04 Reality](narrative/04-reality.md) | The actual hometown. What it carries that Construction was a substitute for. |
+| [05 Postgame](narrative/05-postgame.md) | What the rally looks like once the gate stays open. |
 
 ### Tech-art
 
@@ -81,10 +92,6 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Sister (the tinkerer)](characters/sister.md) | The shopkeeper's younger sister. The bridge across Reconstruction. |
 | [Martha and the partners](characters/partners.md) | Coaches in Construction; people the protagonist knew in Reality. |
 | [Champ](characters/champ.md) | The dead friend, rendered into Construction as the championship final. |
-
-### Concept
-
-The concept folder runs from [00-two-styles](concept/00-two-styles.md) through [05-postgame](concept/05-postgame.md). Earliest framing of the two-style world, the rally, the partners, the break, the reconstruction, and what the game looks like once the credits have rolled.
 
 ### AI
 

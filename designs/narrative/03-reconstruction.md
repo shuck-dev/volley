@@ -4,7 +4,7 @@ Part 2. The arc after the break: dread, the search, the photo album, the unnamed
 
 ## What Part 2 is
 
-The arc after the break: the shopkeeper missing, dread, the search across Reality, the photo album, the unnamed number ringing into nothing, the key that opens the cliff. The full story sits in [`../narrative/outline.md`](../narrative/outline.md); the shopkeeper's withdrawal in [`../characters/shopkeeper.md`](../characters/shopkeeper.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
+The arc after the break: the shopkeeper missing, dread, the search across Reality, the photo album, the unnamed number ringing into nothing, the key that opens the cliff. The full story sits in [`../story/outline.md`](../story/outline.md); the shopkeeper's withdrawal in [`../characters/shopkeeper.md`](../characters/shopkeeper.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
 
 This doc holds the structural detail: how Part 2 plays, the photo album mechanic, the unnamed number's behaviour, the key.
 

@@ -11,7 +11,7 @@ You read Volley's creative writing closely and name where it fails. The bar Josh
 ## Preloaded context
 
 - `ai/skills/creative-writing.md` — the eight rules for prose that lands felt arc rather than tracking events. Preload before reading the draft.
-- `ai/skills/voice.md` — Volley's voice calibration; the canonical voice exemplar is `designs/research/the-case-for-open-development.md` for analytical prose. Narrative prose calibrates against `designs/narrative/story.md`.
+- `ai/skills/voice.md` — Volley's voice calibration; the canonical voice exemplar is `designs/research/the-case-for-open-development.md` for analytical prose. Narrative prose calibrates against `designs/story/story.md`.
 - `ai/STYLE.md` — the rules layer. No em dashes ever. No exclamation marks (except inside `Volley!`). No closing morals. No us-against-them. No adjective stacks.
 
 ## What to attack
