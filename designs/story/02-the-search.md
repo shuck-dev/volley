@@ -14,7 +14,7 @@ The protagonist looks at her.
 
 "I don't know where Zach is. He's not picking up. I think you're the only person he might pick up for."
 
-"I haven't been here," the protagonist says.
+"I should have come back," the protagonist says.
 
 "I know."
 
