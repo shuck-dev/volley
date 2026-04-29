@@ -6,11 +6,11 @@ The story Volley tells. Setting, cast, and structural canon are in [`outline.md`
 
 The protagonist is up at five-forty. They make coffee, eat toast with marmite over the sink, and leave the house. The lane to the garden smells of rosemary and rain.
 
-They go through the side-arch into the garden. The friend behind the counter at the stall against the wall looks up and says, "Nine hundred and twelve," like a small celebration, and sets down the rag they were folding. The protagonist lifts the racquet they left leaning against the post the night before. The grip has worn to fit their hand.
+They go through the side-arch into the garden. The friend behind the counter at the stall against the wall looks up and says, "Nine hundred and twelve," like a small celebration, and sets down the rag they were folding. The protagonist picks up the racquet they left leaning against the post the night before. The grip has worn to fit their hand.
 
 "Try for a thousand today," the friend says, to their back.
 
-The protagonist does not turn. They walk to the court at the far end of the garden, where the morning light hits first. A coach is across the court, warming up against the wall, and when the coach sees them, the coach steps to the line. The first ball is gentle. The protagonist returns it cleanly. The second is harder. The third is harder than that. The racquet finds the ball, sends it back, finds it again. The count climbs, one each time the rally crosses the net. Somewhere in the second hundred, the friend at the counter says, "Nine fifty," in the same small-celebration voice, and the protagonist nods once in the rally without missing a stroke. The count climbs through to a thousand and one and stops being a number.
+The protagonist walks to the court at the far end of the garden. A coach is across it, warming up against the wall; when the coach sees them, the coach steps to the line. The first ball is gentle. The protagonist returns it cleanly. The second is harder. The third is harder than that. The racquet finds the ball, sends it back, finds it again. The count climbs, one each time the rally crosses the net. Somewhere in the second hundred, the friend at the counter says, "Nine fifty," in the same small-celebration voice, and the protagonist nods once in the rally without missing a stroke. The count climbs through to a thousand and one and stops being a number.
 
 There is a gate at the back of the garden, behind the stall and behind the rally. It is locked. The protagonist's path through the garden, in and out, does not pass within twenty feet of it. Their feet have a route. They have not noticed they have a route.
 
@@ -26,7 +26,7 @@ The protagonist is between rallies, walking back across the court for water, whe
 
 Three sessions later, a coach holds the line on a return one beat too long. Their head is tilted toward the protagonist. Their mouth is open. They look as if they have just heard a thing that nobody said. Then the coach blinks and serves and the rally goes on. The protagonist returns the serve. After, walking home, the protagonist almost rings the dead friend's sister, whose number they still have. They stop with their thumb above the green button. They have not spoken to her in four years.
 
-A week after that the friend at the counter says the protagonist's name out loud. They say it like they meant to say something else. The protagonist looks at the friend. The friend looks at the protagonist. Neither of them speaks for a long count. Then the friend says, "Eleven hundred today, do you think," in their normal voice, and starts folding the rag again. The protagonist goes to the court. The rally goes on. Something in their chest is not quiet about it.
+A week after that the friend at the counter says the protagonist's name out loud. They say it like they meant to say something else. The protagonist looks at the friend. The friend looks at the protagonist. Neither of them speaks for a long count. Then the friend says, "Eleven hundred today, do you think," and starts folding the rag again. The protagonist goes to the court. The rally goes on. Something in their chest is not quiet about it.
 
 By the fourth time something has been wrong, the protagonist has stopped pretending nothing is wrong, even to themselves. They keep going to the garden anyway.
 
