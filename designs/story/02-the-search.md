@@ -28,11 +28,11 @@ The protagonist sits down.
 
 The protagonist starts going to the garden again. They do not know why. The count is no longer on the wall. The friend says nothing about it. The friend says, "Hello, you."
 
-The rally is different. The protagonist serves. Mid-swing, they see an elbow on a counter. They miss the return. They serve again. They see a sleeve folded twice at the cuff. They miss again. They serve again. They see a racquet handed back grip first, by Adrian, who never let them carry the bag home.
+The rally is different. The protagonist serves. Mid-swing, they see an elbow on a counter. They miss the return. They serve again. They see a sleeve folded twice at the cuff. They miss again. They serve again. They see a racquet handed back grip first, by Fern, who never let them carry the bag home.
 
-Adrian was a year older. Small wrists, a laugh too loud for any room they were in, a habit of folding their sleeves twice instead of once. Held the racquet by the throat when they walked, never the grip, because they had read somewhere that holding it by the grip wore the leather, and they cared about things like that.
+Fern was a year older. Small wrists, a laugh too loud for any room they were in, a habit of folding their sleeves twice instead of once. Held the racquet by the throat when they walked, never the grip, because they had read somewhere that holding it by the grip wore the leather, and they cared about things like that.
 
-Adrian went off the cliff the summer the protagonist had stopped going. The friend group had jumped from that cliff for years; the protagonist had stopped a year before. There had been a row by the harbour: Adrian had asked the protagonist to come, and the protagonist had said something they should not have said. Adrian did not ask again. The morning of the day, they rang anyway. The protagonist said no. Adrian was quiet on the other end before they hung up. The protagonist cannot remember what they said. They remember the quiet.
+Fern went off the cliff the summer the protagonist had stopped going. The friend group had jumped from that cliff for years; the protagonist had stopped a year before. There had been a row by the harbour: Fern had asked the protagonist to come, and the protagonist had said something they should not have said. Fern did not ask again. The morning of the day, they rang anyway. The protagonist said no. Fern was quiet on the other end before they hung up. The protagonist cannot remember what they said. They remember the quiet.
 
 The shopkeeper was on the cliff that day. The shopkeeper came down. The protagonist did not come home for weeks.
 
@@ -42,7 +42,7 @@ Four years passed. The shop stayed open. The shopkeeper stayed. The protagonist 
 
 ---
 
-The album fills slow. The shopkeeper has been keeping the photographs. The sister sits at the kitchen table on the afternoons the protagonist comes round and slides them across the wood: Adrian at fifteen with the racquet; Adrian at twenty on the cliff in summer; the shopkeeper last year at a wedding in a shirt the protagonist has never seen. The compartment at the back of the album opens once the book is mostly full. The sister does not look up when it opens. She slides the key across the table. The key is brass, small, dark with age in the grooves.
+The album fills slow. The shopkeeper has been keeping the photographs. The sister sits at the kitchen table on the afternoons the protagonist comes round and slides them across the wood: Fern at fifteen with the racquet; Fern at twenty on the cliff in summer; the shopkeeper last year at a wedding in a shirt the protagonist has never seen. The compartment at the back of the album opens once the book is mostly full. The sister does not look up when it opens. She slides the key across the table. The key is brass, small, dark with age in the grooves.
 
 The protagonist takes it.
 

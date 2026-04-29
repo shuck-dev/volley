@@ -1,6 +1,6 @@
 # The call
 
-On the other side, the path is short. Grass and rosemary, a low wall at the cliff, a bench against the wall. The bench has a plaque on the back of it. The plaque says Adrian's name.
+On the other side, the path is short. Grass and rosemary, a low wall at the cliff, a bench against the wall. The bench has a plaque on the back of it. The plaque says Fern's name.
 
 Zach is on the bench, smaller than the protagonist remembers. He is wearing a shirt the protagonist has never seen. He is holding a phone. The wind is coming from the sea.
 
