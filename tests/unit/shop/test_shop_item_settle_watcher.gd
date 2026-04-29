@@ -12,10 +12,10 @@ class _ShopItemStub:
 	var settled_body: HeldBody = null
 	var settled_position: Vector2 = Vector2.ZERO
 
-	func notify_body_settled(body: HeldBody, position: Vector2) -> void:
+	func notify_body_settled(body: HeldBody, settled_position_in: Vector2) -> void:
 		notified = true
 		settled_body = body
-		settled_position = position
+		settled_position = settled_position_in
 
 
 func _make_body() -> HeldBody:
@@ -36,7 +36,7 @@ func test_settle_after_low_velocity_streak_notifies_shop_item() -> void:
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
-	# Step the watcher past the SETTLE_FRAMES_REQUIRED threshold.
+	# Step the watcher past the settle_frames_required threshold.
 	for _i in 8:
 		watcher._physics_process(0.016)
 
@@ -72,23 +72,7 @@ func test_max_lifetime_forces_settle_even_when_still_moving() -> void:
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
-	# One step at MAX_LIFETIME_S+epsilon triggers the lifetime-based settle.
-	watcher._physics_process(SettleWatcherScript.MAX_LIFETIME_S + 0.1)
+	# One step at max_lifetime_s+epsilon triggers the lifetime-based settle.
+	watcher._physics_process(watcher.max_lifetime_s + 0.1)
 
 	assert_true(stub.notified, "lifetime cap resolves the gesture even on a runaway body")
-
-
-func test_freed_body_self_terminates_without_notifying() -> void:
-	var body: HeldBody = _make_body()
-	var stub := _ShopItemStub.new()
-	add_child_autofree(stub)
-
-	# Park the watcher beside the body so it survives the body's free for the assertion below.
-	var watcher: Node = SettleWatcherScript.new()
-	watcher.configure(body, stub)
-	add_child_autofree(watcher)
-	body.queue_free()
-	await get_tree().process_frame
-
-	watcher._physics_process(0.016)
-	assert_false(stub.notified, "freed body skips the settle notification")

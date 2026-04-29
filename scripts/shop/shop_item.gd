@@ -219,7 +219,6 @@ func _drop_falling_body(release_position: Vector2) -> void:
 	var root: Node = _scene_host()
 	root.add_child(body)
 	body.go_loose(_release_velocity())
-	body.tree_exiting.connect(_on_falling_body_exiting)
 	# Subscribe controller for re-grab so the dropped body acts like any other loose body.
 	var controller: Node = _drag_controller()
 	if controller != null and controller.has_method("track_loose_body"):
@@ -235,15 +234,10 @@ func _scene_host() -> Node:
 	return get_tree().root
 
 
-func _on_falling_body_exiting() -> void:
-	# Hook reserved for future cleanup; explicit signal connection keeps the body's lifetime traceable.
-	pass
-
-
 func _watch_for_settle(body: HeldBody) -> void:
 	# Poll until the body's velocity falls below a settle threshold or it is freed.
 	var watcher := preload("res://scripts/shop/shop_item_settle_watcher.gd").new()
-	watcher.configure(body, self, _shop_area)
+	watcher.configure(body, self)
 	body.add_child(watcher)
 
 
@@ -257,9 +251,8 @@ func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 		return
 
 	if _is_position_inside_shop(settled_position):
-		# Inside shop on rest: no purchase commits. Refund any taken cost and return the slot.
+		# Inside shop on rest: no purchase commits, slot returns.
 		body.queue_free()
-		_refund_if_owned()
 		visible = true
 		return
 
@@ -272,12 +265,6 @@ func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 			return
 	visible = false
 	drop_completed.emit(item_definition.key, settled_position, true)
-
-
-func _refund_if_owned() -> void:
-	# We never charge until the body settles outside the shop, so there is nothing to refund here.
-	# Method kept as the canonical seam for future "took FP optimistically" flows.
-	pass
 
 
 func _release_velocity() -> Vector2:

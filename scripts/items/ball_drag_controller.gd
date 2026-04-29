@@ -257,7 +257,7 @@ func _spawn_loose_body_at(
 	var host: Node = _loose_body_host()
 	host.add_child(body)
 	body.go_loose(gesture_velocity)
-	_subscribe_loose_press(body)
+	track_loose_body(body)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -324,19 +324,13 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 	body.global_position = release_position
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
-	_subscribe_loose_press(body)
+	track_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
 	_held_body = null
 
 
-func _subscribe_loose_press(body: HeldBody) -> void:
-	track_loose_body(body)
-
-
 ## Public seam so subsystems that spawn their own loose bodies (Shop) can wire re-grab through this controller.
 func track_loose_body(body: HeldBody) -> void:
-	if body == null:
-		return
 	if not body.pressed.is_connected(_on_loose_body_pressed):
 		body.pressed.connect(_on_loose_body_pressed)
 
@@ -355,11 +349,7 @@ func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
 func _on_loose_body_pressed(body: HeldBody) -> void:
 	if _held_body != null:
 		return
-	if body == null or not is_instance_valid(body):
-		return
 	var item_key: String = body.item_key
-	if item_key.is_empty():
-		return
 
 	var spawn_position: Vector2 = body.global_position
 	body.pressed.disconnect(_on_loose_body_pressed)
