@@ -12,7 +12,7 @@ If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) fi
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) for the shape of the game, [Tech-art / INDEX](tech-art/INDEX.md) for the rendering side, and the active phase folder ([01-prototype/](01-prototype/INDEX.md) at the moment) for what the team is building this cycle.
 
-If you are a **writer** working on copy, beats, or character voice, read [Narrative / Outline](narrative/outline.md) for the story, [Narrative / Discipline](narrative/discipline.md) for craft notes, and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
+If you are a **writer** working on copy, beats, or character voice, read [Narrative / Story](narrative/story.md) for the felt arc, [Narrative / Outline](narrative/outline.md) for the structural canon, and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
 
 If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `narrative/`, pipeline questions in `tech-art/`.
 
@@ -44,8 +44,8 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Outline](narrative/outline.md) | The story beats, in order. Construction's climb, the break at the championship, Reconstruction's search, and the call at the cliff bench. |
-| [Discipline](narrative/discipline.md) | Writing craft notes for the project: scene construction, dialogue, tone modulation, memory surfacings, line-level cracks, pacing. |
+| [Story](narrative/story.md) | The felt arc told as prose. Player chronology; the spine of the game on a single page. |
+| [Outline](narrative/outline.md) | The structural canon. Setting, two worlds, garden and gate, cast, the phone, the act-by-act spine, the cliff and the call, credits, postgame. |
 
 ### Tech-art
 

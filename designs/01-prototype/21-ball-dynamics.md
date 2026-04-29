@@ -345,3 +345,16 @@ The escape valve from this rule is that the source container is itself a target.
 ### Press without movement does not drop
 
 A press on any container's at-rest representation lifts the held preview, but the drop gate stays closed until the gesture moves past the drag movement threshold. A press-and-immediate-release on a rack slot returns the item to the rack with no activation; on a shop slot it cancels back to the slot with no purchase (the press never built up enough motion to drop a body in the shop area); on a live ball it puts the ball back through the same target-accept loop without flipping placement state.
+
+## Friendship-bound apex return
+
+The narrative canon in [`../narrative/00-two-styles.md`](../narrative/00-two-styles.md) treats the top of the court as sky, not surface: nothing physical bounces the ball back. The ball travels up to apex and returns under gravity and the friendship-bound. Whichever bond is in play in that venue is the medium the rally lives inside, and the bond's reach is what the ball cannot escape.
+
+Mechanically the ball changes direction at apex. Diegetically nothing physical bounces it. The current prototype implementation (top edge as hard ceiling, see `08-court-bounds.md`) is the placeholder; the friendship-bound apex return is the target shape, scoped past the prototype.
+
+Implementation notes:
+
+- The active-movement state already covers it. The body is a `RigidBody2D` with `gravity_scale = 0` and frictionless momentum (see "Containers and the swap pattern" above); the apex return is a vertical-velocity flip at the bound's height rather than a wall collision.
+- The bound's height per venue is data, not a global constant. Each venue's bond has its own reach.
+- The bottom edge of the court stays physical: the ground, the mat, the surface where the racquet meets the ball. Left and right remain open as miss zones.
+- The visible beat at apex (bloom, arc, chime, partner reaction) is art-bible scope; see [`../art/bible.md`](../art/bible.md) § 17.

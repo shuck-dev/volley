@@ -333,6 +333,16 @@ Each animation state reads as a different emotion, not a different sprite.
 
 A note on cost. Minimal animation per character keeps the labour budget where it belongs while painted backgrounds carry the world's weight. A production decision, made deliberately. The expressive range comes from the choice of pose and the timing between poses.
 
+### The apex-return beat
+
+Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../narrative/outline.md`](../narrative/outline.md); the ball-side mechanics live in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md).
+
+The bond doing the work changes by venue. The garden runs the beat through the shopkeeper at the stall. The treetop, underwater, and meteor venues run it through the coach who teaches there. The pattern is the same; the character carrying it is whoever the venue's wind belongs to.
+
+The Reconstruction implication follows. Once the shopkeeper is gone, the garden's bloom and chime thin or fall silent; the rally returns mechanically and the celebratory beat does not. The hollow at Construction's warm centre lands in the rally's own texture. The other Construction venues, with their coaches still present, keep their wind.
+
+A reaction per rally point is animated state on whichever character holds the bond in that venue. Even one looped frame plus a short return reaction is per-frame work the artist signs up for, multiplied across every venue. Worth scoping with Aubrey before this lands as a hard requirement.
+
 ---
 
 ## 18. Touchstones
