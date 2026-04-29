@@ -6,7 +6,7 @@ The canonical narrative outline. Setting, worlds, cast, mechanics, act-by-act sp
 
 Pre-smartphone era. Late 90s into early 2000s. Phones are flip, candy-bar, and land-line. Numbers live in heads or on paper, never in pocket databases that auto-name themselves. Period feel runs through the art direction: clothes, signage, phone hardware, photo prints with the date in the corner.
 
-The protagonist's hometown is a small coastal town, the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls. Palm trees in places. The high street smells of rain and citrus. Mediterranean light on a British coastline. Ordinary, lived-in, faded grandeur with sun on it. The reference points are real; the town sits on no map.
+The protagonist's hometown is a small coastal town, the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the palette of Tenby and Aberaeron. Whitewashed walls. Palm trees in places. The high street smells of rain and citrus. Mediterranean light on a British coastline. The reference points are real; the town sits on no map.
 
 ## Two worlds
 
