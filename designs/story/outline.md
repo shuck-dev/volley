@@ -20,7 +20,7 @@ The world Construction was a substitute for is Reality.
 
 Construction's other venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden does. It is the one place where the constructed world and the real one share a footprint, and the "out of place out of time" feel of the venue comes from being grounded.
 
-The title carries the weight of that doubling. A literal place. A tended thing, the protagonist's daily care. Where things grow: the rally, the obsession, the memories. A pre-Fall innocence preserved. A walled enclosure.
+The title carries the weight of that doubling. A literal place. A tended thing, the protagonist's daily care. Where things grow: the rally, the obsession, the memories.
 
 ## One locked gate
 
@@ -86,15 +86,15 @@ The protagonist climbs every round. The obsession with becoming champ deepens. T
 
 The player wins the championship. They beat the champ.
 
-The win feels off. It was supposed to fix the protagonist; it didn't. Both pulls of "becoming champ" satisfy, and neither was the thing.
+The win does not land. It was supposed to fix the protagonist; it does not. Both meanings of "becoming champ" resolve, and neither was the thing.
 
-The win is the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless.
+The win breaks the construct. The construct cannot hold itself together once its central goal has been achieved and proved meaningless.
 
 At the win moment, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
 
 ### After the win
 
-The player is pulled into Reality involuntarily for the first time. Walks through the protagonist's hometown. Sees the people behind the partners. Discovers that the shopkeeper is missing. The shop is empty. The family is worried. The person the protagonist was reaching for without admitting it has actually disappeared.
+The player crosses into Reality for the first time. Walks the protagonist's hometown. Sees the people behind the partners. Finds the shop closed and the family without word for a week. The person the protagonist was reaching for has actually gone.
 
 The cliff sits beyond the town's edge but is not visited yet. The friend died there, and the shopkeeper has gone there, and it waits.
 
@@ -152,11 +152,11 @@ The Act 2 dread inverts. Relief. The fear was wrong. They've been here, withdraw
 
 ### The dial
 
-The protagonist sees the shopkeeper on the bench. Recognition lands at the cliff for the first time: the unnamed number in their phone, the world record they reached, the digits the championship match resolved on, the shopkeeper sitting in front of them, all of it the same number. Held in the phone the whole game, never named, only now legible.
+The protagonist sees the shopkeeper on the bench. The recognition lands here for the first time: the number in the phone, the world record, the digits the championship landed on, the shopkeeper across the grass. The same number. Held in the phone the whole game, never named.
 
-The protagonist takes out their phone. They could walk up silently. They don't. They dial the unnamed number, knowing now whose it is. The shopkeeper's phone rings on the bench beside them. They could ignore it like they've been ignoring all the others. They don't. They look up at the sound. See the protagonist. Pick up.
+The protagonist takes out their phone and dials. The shopkeeper's phone rings on the bench. The shopkeeper has been letting calls ring for months. They could let this one ring. They look up. They pick up.
 
-The dial does two things at once: chosen presence, and finally attaching the name to the number. The phone log entry is no longer just digits.
+The dial chooses presence and gives the number a name. The call log entry is no longer digits.
 
 ### Staging
 
