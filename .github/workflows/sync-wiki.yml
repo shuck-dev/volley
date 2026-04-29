@@ -43,11 +43,28 @@ jobs:
             #   - strip .md extension
             #   - flatten internal slashes to dashes
             #   - prefix bare relative links with the source file's folder
+            #   - apply Title Case (with small-word filter) to match flat filenames
             # [^):] in the character class excludes "://" so http URLs are untouched.
             # Slurp mode (-0777) lets us also strip the file's leading H1 in one pass:
             # the wiki publisher injects the page title from the filename, so leaving
             # the source's first `# Heading` produces a duplicate title row.
             DIR="$dir" perl -0777 -pe '
+              BEGIN {
+                our %SMALL = map { $_ => 1 } qw(a an the and or but of in on to by at for with is as if vs from into);
+                sub title_case {
+                  my @segs = split /-/, $_[0];
+                  for my $i (0..$#segs) {
+                    my $w = $segs[$i];
+                    next unless length $w;
+                    if ($i == 0 || $i == $#segs || !exists $SMALL{lc $w}) {
+                      $segs[$i] = uc(substr($w,0,1)) . substr($w,1) if substr($w,0,1) =~ /[a-z]/;
+                    } else {
+                      $segs[$i] = lc $w;
+                    }
+                  }
+                  join("-", @segs);
+                }
+              }
               s{\]\(([^):\s]+)\.md(\#[^)]*)?\)}{
                 my ($p, $a) = ($1, $2 // "");
                 my @dir = split m{/}, ($ENV{DIR} // "");
@@ -56,17 +73,14 @@ jobs:
                 my @combined = (@dir, @parts);
                 my $target;
                 if (@combined > 1 && $combined[-1] eq "INDEX") {
-                  # designs/<sub>/INDEX.md publishes as <Sub>.md (titlecased leaf).
+                  # designs/<sub>/INDEX.md publishes as <Sub>.md.
                   pop @combined;
-                  my $leaf = pop @combined;
-                  $leaf =~ s/^([a-z])/uc($1)/e;
-                  $leaf =~ s/(-)([a-z])/$1 . uc($2)/ge;
-                  $target = join("-", @combined, $leaf);
+                  $target = title_case(join("-", @combined));
                 } elsif (@combined == 1 && $combined[0] eq "INDEX") {
                   # designs/INDEX.md publishes as Home.
                   $target = "Home";
                 } else {
-                  $target = join("-", @combined);
+                  $target = title_case(join("-", @combined));
                 }
                 "]($target$a)"
               }ge;
@@ -78,9 +92,29 @@ jobs:
             ' "$src" > "$dest"
           }
 
-          # Titlecase a hyphen-separated dir name: 01-prototype -> 01-Prototype, art -> Art.
-          titlecase_dir() {
-            python3 -c 'import sys; print("-".join(p[:1].upper()+p[1:] if p and p[0].islower() else p for p in sys.argv[1].split("-")))' "$1"
+          # Title Case a hyphen-separated name with a small-word filter.
+          # "title-is-this" -> "Title-is-This"; "01-prototype" -> "01-Prototype";
+          # "narrative-discipline" -> "Narrative-Discipline".
+          # First and last words always capped (when the leading char is a lowercase
+          # letter); middle small words ("a", "an", "the", "and", "or", "but", "of",
+          # "in", "on", "to", "by", "at", "for", "with", "is", "as", "if", "vs",
+          # "from", "into") stay lowercase.
+          title_case() {
+            python3 -c '
+import sys
+small = {"a","an","the","and","or","but","of","in","on","to","by","at","for","with","is","as","if","vs","from","into"}
+parts = sys.argv[1].split("-")
+out = []
+for i, p in enumerate(parts):
+    if not p:
+        out.append(p)
+        continue
+    if i in (0, len(parts)-1) or p.lower() not in small:
+        out.append(p[0].upper() + p[1:] if p[0].isalpha() and p[0].islower() else p)
+    else:
+        out.append(p.lower())
+print("-".join(out))
+' "$1"
           }
 
           for src in designs/**/*.md; do
@@ -91,9 +125,10 @@ jobs:
             if [ "$base" = "INDEX.md" ] && [ "$dir" != "." ]; then
               # designs/<sub>/INDEX.md becomes wiki/<Sub>.md so the wiki page
               # title is "Sub" instead of "sub-INDEX".
-              flat="$(titlecase_dir "${dir//\//-}").md"
+              flat="$(title_case "${dir//\//-}").md"
             else
-              flat="${rel//\//-}"
+              flat_stem="$(title_case "${rel//\//-}")"
+              flat="${flat_stem%.Md}.md"
             fi
             [ "$dir" = "." ] && dir=""
             copy_with_rewrite "$src" "wiki/$flat" "$dir"

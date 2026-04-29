@@ -1,6 +1,6 @@
 # Volley! narrative outline
 
-The canonical outline of the story Volley! tells. The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
+The canonical narrative outline. Setting, worlds, cast, mechanics, act-by-act spine: everything a designer or writer needs to know about how the story is shaped, rather than how it feels. The story itself, told as prose, lives in [`story.md`](story.md). The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`.
 
 ## Setting
 
@@ -10,65 +10,57 @@ The protagonist's hometown is a small coastal town, the Welsh and Cornish coast 
 
 ## Two worlds
 
-Volley! has two worlds, two visual treatments, two maps: Construction and Reality.
+Volley! is set across two worlds. The player meets only one to start.
 
-The player meets Construction first. The premise is that this is the world. Through cracks, a second reading lands: Construction is a construct, not the real world. The garden the player has been rallying in is built from the protagonist's memory of their actual garden in Reality, sprucing it up. The constructed garden and the real garden remain separate places.
+Construction is what they meet first: a small seaside town with a court in the garden, the world the protagonist is rallying through. Through the cracks of Part 1, a second reading lands. Construction is a construct, not the actual hometown. The garden in Construction is built from the protagonist's memory of their real garden, sprucing it up. The two gardens remain separate places.
+
+The world Construction was a substitute for is Reality.
 
 ## The garden as meeting point
 
-The garden is the one venue where construct and reality meet. Other Construction venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden's "out of place out of time" feel comes from being the one venue grounded in the real hometown.
+Construction's other venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden does. It is the one place where the constructed world and the real one share a footprint, and the "out of place out of time" feel of the venue comes from being grounded.
 
 The title carries the weight of that doubling. A literal place. A tended thing, the protagonist's daily care. Where things grow: the rally, the obsession, the memories. A pre-Fall innocence preserved. A walled enclosure.
 
 ## One locked gate
 
-There is exactly one locked gate in the whole game. It sits in the garden. Walking through it transitions to Reality. The cliff is on the other side.
+The garden has one locked gate. The player sees it from Part 1. It does not unlock until the album fills and the sister hands over the key. The cliff is on the other side.
 
-## The court has no top wall
+## Friendship as force
 
-The top edge of the court is sky, not surface. The ball travels up to apex and returns under gravity and the friendship-bound: whichever bond is in play in that venue is what the rally lives inside, and the bond's reach is what the ball cannot escape. Mechanically the ball changes direction at apex; diegetically nothing physical bounces it.
+Friendship is a force, the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. Each other venue's wind is the bond with the coach who teaches there. Together, those bonds carry the rally across the whole game.
 
-The moment of return is a visible beat in Construction's style. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the present friend: eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
+The friendships are not metaphorically present. They are the rally's invisible structure. The shopkeeper bond is load-bearing for the arc; the coach bonds are real in their own right, each one the wind in its own venue.
 
-The garden's version of the apex event runs through the shopkeeper's reaction at the stall, since the venue has no physical ceiling and the shopkeeper is the bond the garden holds. Other Construction venues run the same beat through the coach who teaches there: the partner's reaction at the treetop canopy, at the underwater surface, in the meteor field. The bond doing the work changes by venue. The pattern is the same.
+When a bond thins, the rally continues, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
 
-The Reconstruction implication follows from the same logic. The garden's bloom and chime thin or fall silent once the shopkeeper is gone, because the bond that carried them is broken. The rally returns mechanically, and the celebratory beat does not. The hollow in Construction's warm centre lands in the rally's own texture. The other Construction venues, with their coaches still present, keep their wind.
-
-The bottom edge of the court stays physical: the ground, the mat, the surface where the racquet meets the ball. Left and right remain open as miss zones.
-
-A reaction per rally point is animated state on whichever character holds the bond in that venue: the shopkeeper at the stall in the garden, the coach in their own venue elsewhere. Even one looped frame plus a short return reaction is per-frame work the artist signs up for, multiplied across every venue. Worth scoping with Aubrey before this lands as a hard requirement.
-
-## Friendship as wind
-
-Friendship, treated as a force, is the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. The treetop venue's wind is the bond with the coach who teaches there. The underwater venue's wind is the bond with the coach who teaches there. The protagonist's bonds, taken together, carry the rally across the whole game.
-
-The friendships are not metaphorically present in the rally. They are the rally's invisible structure. The shopkeeper bond is the load-bearing one for the story arc, the warm centre Construction is built around. The coach bonds are real in their own right, each one the wind in its own venue.
-
-When a bond thins, the rally still happens, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
+The mechanical and visual shape of this bond-as-medium (the apex return, the bloom and chime at each rally point, the per-venue reaction work) lives in the system docs. Court physics in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md). Reaction-beat staging in [`../art/bible.md`](../art/bible.md) § 17.
 
 ## Cast
 
-The protagonist is mid-30s, androgynous, agender, less athletic than they used to be. Drawn like any other character in both styles: a Construction render and a Reality render. Visible throughout. Picked up a racquet long ago and never quite put it down. Lost their best friend years ago to a cliff-jumping accident. Pushed away the shopkeeper.
+Listed in the order the player meets them. Backstory lands where the player learns it, not here. Physical canon for the protagonist lives in [`../characters/protagonist.md`](../characters/protagonist.md).
 
-The shopkeeper stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. In Reality, alive, in the hometown, withdrawn, the person the protagonist pushed away. Was cliff-jumping with the friend the day they died; the protagonist was not there. The protagonist's relationship to them is the load-bearing emotional shape of the game.
+**The protagonist** is the player's avatar. Visible throughout, in both styles. Picked up a racquet long ago and never quite put it down.
 
-The sister is the tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo album. The bridge.
+**The shopkeeper** stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. Calls a name across the court when the rally lands. Their relationship to the protagonist is the load-bearing emotional shape of the game.
 
-Martha and the partners are real people from the protagonist's life, summoned into Construction as coach-partners. Each teaches one mechanic through the rally. Each has a Reality render at their actual age, in their actual life. The naming convention: each partner is named for a character from a science-fiction author's work.
+**Martha and the partners** are the coaches across Construction's venues. Each teaches one mechanic through the rally. Each is a real person from the protagonist's life, with a Reality render at their actual age in their actual life. Each partner is named for a character from a science-fiction author's work.
 
-The dead friend died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group: dangerous, but routine, until it wasn't. The reason the protagonist built Construction.
+**The champ** holds the championship final spot. Construction-only, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player beats the champ; the champ exits at the end of Part 1.
 
-The champ is the dead friend rendered into Construction as the championship final. A Construction-only construct, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player wins the championship by beating them; the champ exits at the end of Part 1.
+**The tinkerer** runs a workshop in another corner of the garden. A Construction figure with a Reality counterpart, met in Part 2.
 
-The tinkerer is the sister's Construction render. Workshop in another corner of the garden.
+**The sister** enters in Part 2 as the bridge into Reality. Holds the photo album that gates the search. Less weighted by the loss than the shopkeeper. Her Construction render is the tinkerer.
 
-## The unnamed number
+**The dead friend** is named in Part 2, when the trail surfaces them. They died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group, dangerous and routine, until it wasn't. The reason the protagonist built Construction.
 
-The shopkeeper's phone number is in the protagonist's phone, sitting in the call log or contacts list, unnamed. The protagonist either deleted the contact, never saved the name, or the device just holds digits without labels. Period-appropriate.
+## The phone
 
-The player has full control of the phone throughout. The number is dialable any time: Construction, Reconstruction, before the cliff. It never connects. The shopkeeper has withdrawn and isn't picking up.
+A number sits in the protagonist's phone. Just digits: no contact, no label. The protagonist deleted it, never saved it, or the device holds digits without naming them. Period-appropriate.
 
-The unnamed number is the load-bearing mechanic across both acts. The player's reaching out, with no answer back, is the protagonist's reaching out, with no answer back.
+The player has full control of the phone throughout. The number is dialable any time, in Construction and Reconstruction, before the cliff. It never connects.
+
+This is the load-bearing mechanic across both acts. The player's reaching out, with no answer back, is the protagonist's reaching out, with no answer back. Whose number it is surfaces at the cliff.
 
 ## Part 1: Construction
 
@@ -184,4 +176,4 @@ Rallying with the shopkeeper as the championship-spot partner. The cliff stays r
 
 ## Cross-references
 
-The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`. The discipline doc at `discipline.md` is the parallel branch on player practice and ritual.
+The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`.
