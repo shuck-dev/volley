@@ -10,8 +10,6 @@ The protagonist walks to the court. A coach is across it, warming up against the
 
 There is a gate at the back of the garden, behind the stall and behind the rally. It is locked. The protagonist's feet have a route through the garden that does not pass within twenty feet of it.
 
-The garden does not have phones. The phone the protagonist carries is the one piece of outside they bring through the side-arch every morning. After the rally, in the shade behind the court, they take it out. They open the call log and scroll past every call they have made and received in the last few months. There is a row of digits with no contact name. Their thumb rests above the green button. The screen waits. The screen times out and goes black. The protagonist puts the phone away. They have been doing this for years.
-
 The friend at the counter keeps the count. They wipe the counter when there is nothing to wipe, look up when the rally lands, hand the protagonist water without being asked and a towel that has been in the sun. They have a name the protagonist remembers from somewhere.
 
 ---
