@@ -22,7 +22,7 @@ The protagonist sits down.
 
 ---
 
-The protagonist starts going to the garden again. They do not know why. The stall is closed. The counter is empty. The count is no longer on the wall.
+The protagonist starts going back. The walk to the garden takes them through the lane, then through the side-arch, and on the other side of the side-arch the seashell walls are still the same walls and the air is still the same yellow air. The stall is closed. The counter is empty. The count is no longer on the wall.
 
 The rally is different. The protagonist serves. Mid-swing, they see an elbow on the empty counter. They miss the return. They serve again. They see a sleeve folded twice at the cuff. They miss again. They serve again. They see a racquet handed back grip first, by Fern, who never let them carry the bag home.
 
@@ -38,7 +38,7 @@ Four years passed. The shop stayed open. The shopkeeper stayed. The protagonist 
 
 ---
 
-The album fills slow. Zach has been keeping the photographs. She sits at the kitchen table on the afternoons the protagonist comes round and slides them across the wood: Fern at fifteen with the racquet; Fern at twenty on the cliff in summer; Zach last year at a wedding in a shirt the protagonist has never seen. The compartment at the back of the album opens once the book is mostly full. She does not look up when it opens. She slides the key across the table. The key is brass, small, dark with age in the grooves.
+In the kitchen, in the afternoons, the album fills slow. Zach has been keeping the photographs. She sits at the kitchen table and slides them across the wood: Fern at fifteen with the racquet; Fern at twenty on the cliff in summer; Zach last year at a wedding in a shirt the protagonist has never seen. The compartment at the back of the album opens once the book is mostly full. She does not look up when it opens. She slides the key across the table. The key is brass, small, dark with age in the grooves.
 
 The protagonist takes it.
 
