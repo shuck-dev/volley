@@ -28,9 +28,9 @@ The rally is different. The protagonist serves. Mid-swing, they see an elbow on 
 
 Fern was a year older. Small wrists, a laugh too loud for any room they were in, a habit of folding their sleeves twice instead of once. Held the racquet by the throat when they walked, never the grip, because they had read somewhere that holding it by the grip wore the leather, and they cared about things like that.
 
-Fern went off the cliff the summer the protagonist had stopped going. The friend group had jumped from that cliff for years; the protagonist had stopped a year before. There had been a row by the harbour: Fern had asked the protagonist to come, and the protagonist had said something they should not have said. Fern did not ask again. The morning of the day, they rang anyway. The protagonist said no. Fern was quiet on the other end before they hung up. The protagonist cannot remember what they said. They remember the quiet.
+There had been a row by the harbour at the start of that summer. Fern had asked the protagonist to come, and the protagonist had said something they should not have said. Fern did not ask again. The morning of the day, they rang anyway. The protagonist said no. Fern was quiet on the other end before they hung up. The protagonist cannot remember what they said. They remember the quiet.
 
-The shopkeeper was on the cliff that day. The shopkeeper came down. The protagonist did not come home for weeks.
+Zach was on the cliff that day. Zach came down. The protagonist did not come home for weeks.
 
 The funeral was the only time. They stood at the back of the church, by the door. The shopkeeper was at the front, by the coffin, in a black suit that did not fit. The shopkeeper looked across the rows of heads and found the protagonist's face. They held the look. The protagonist left through the side door before the first hymn.
 
