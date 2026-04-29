@@ -33,6 +33,16 @@ The title carries the weight. Literal place. Tended thing. Where things grow: ra
 
 There is one locked gate in the whole game. In the garden. Walking through it transitions to Reality. The cliff is on the other side. The gate opens once, late, when the sister hands over the key.
 
+## Friendship as force
+
+Friendship is a force, the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. Each other venue's wind is the bond with the coach who teaches there. Together those bonds carry the rally across the whole game.
+
+The friendships are not metaphorically present. They are the rally's invisible structure. The shopkeeper bond is load-bearing for the arc; the coach bonds are real in their own right, each one the wind in its own venue.
+
+When a bond thins, the rally continues, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
+
+The mechanical and visual shape of this bond-as-medium (the apex return, the bloom and chime at each rally point, the per-venue reaction work) lives in the system docs. Court physics in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md). Reaction-beat staging in [`../art/bible.md`](../art/bible.md) § 17.
+
 ## The two-act spine
 
 Volley is shaped in two acts.

@@ -24,7 +24,7 @@ The structural shape: the win IS the break. The construct cannot hold itself tog
 
 At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. Recognition is held until the cliff.
 
-The full beat (climbing every round, the doubled meaning of "becoming champ", the win landing wrong, the walk through the hometown, the shopkeeper missing, the champ exiting) sits in [`../story/outline.md`](../story/outline.md). The visual moment of the break is in [`../art/bible.md`](../art/bible.md) § 7.
+The full beat (climbing every round, the doubled meaning of "becoming champ", the win landing wrong, the walk through the hometown, the shopkeeper missing, the champ exiting) sits in this doc. The visual moment of the break is in [`../art/bible.md`](../art/bible.md) § 7.
 
 The break ends with the player back in Construction, the shop closed, the friend at the stall gone. End of Part 1. Part 2 begins (`03-reconstruction.md`).
 

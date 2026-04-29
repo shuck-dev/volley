@@ -4,9 +4,13 @@ Part 2. The arc after the break: dread, the search, the photo album, the unnamed
 
 ## What Part 2 is
 
-The arc after the break: the shopkeeper missing, dread, the search across Reality, the photo album, the unnamed number ringing into nothing, the key that opens the cliff. The full story sits in [`../story/outline.md`](../story/outline.md); the shopkeeper's withdrawal in [`../characters/shopkeeper.md`](../characters/shopkeeper.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
+The arc after the break: the shopkeeper missing, dread, the search across Reality, the photo album, the unnamed number ringing into nothing, the key that opens the cliff. The story prose for this act lives in [`../story/02-the-search.md`](../story/02-the-search.md); the shopkeeper's withdrawal in [`../characters/shopkeeper.md`](../characters/shopkeeper.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
 
 This doc holds the structural detail: how Part 2 plays, the photo album mechanic, the unnamed number's behaviour, the key.
+
+## The carry
+
+Reconstruction adds free travel between Construction and Reality, and a bidirectional curated bridge between them. Specific things from Construction can be brought into Reality and used in specific scenes there; specific acknowledgements from Reality feed back into Construction, unlocking new venues, new lines from coaches, new affordances. Each carry is a narrative beat, not an open mechanic.
 
 ## Three play-level changes
 

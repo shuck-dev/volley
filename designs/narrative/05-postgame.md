@@ -6,7 +6,7 @@ The ending and what comes after. The cliff is the chosen-acceptance bookend to t
 
 The structural shape: the album fills, the compartment opens, the sister hands over the key. The protagonist unlocks the garden gate and walks through to the cliff. The shopkeeper is on the bench. The dread inverts to relief. Recognition lands; the protagonist dials the unnamed number; the shopkeeper picks up. The call ends. The protagonist sits beside them.
 
-The full beat (recognition, the dial, what the dial is doing, what the call resolves) lives in [`../story/outline.md`](../story/outline.md). The split-frame staging at the bench lives in [`../art/bible.md`](../art/bible.md) § 9.
+The full beat (recognition, the dial, what the dial is doing, what the call resolves) lives in this doc. The split-frame staging at the bench lives in [`../art/bible.md`](../art/bible.md) § 9.
 
 ## Credits
 
