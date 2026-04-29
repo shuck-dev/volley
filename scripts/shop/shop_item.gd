@@ -142,40 +142,142 @@ func start_drag() -> bool:
 	return true
 
 
-## Returns true on commit; false leaves the gesture open so the player can drag back to cancel or earn FP and retry.
+## Outside-shop release commits the purchase immediately. Inside-shop release on a ball-role
+## item with an authored at_rest_shape drops a falling body whose settled position decides
+## commit vs cancel (AC4). All other inside-shop releases keep the original cancel-to-slot.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
-	if inside_shop:
+	if not inside_shop and _route_purchased_to_court(release_position):
+		_finalise_gesture(release_position, true)
+		visible = false
+		return true
+
+	if not inside_shop:
+		var purchased: bool = _complete_purchase()
+		if not purchased:
+			return false
+		_finalise_gesture(release_position, true)
+		visible = false
+		return true
+
+	var supports_drop: bool = (
+		item_definition != null
+		and item_definition.role == &"ball"
+		and item_definition.at_rest_shape != null
+	)
+	if not supports_drop or not can_be_owned():
 		_finalise_gesture(release_position, false)
 		visible = true
 		return true
 
-	var purchased: bool = _complete_purchase()
-	if not purchased:
-		return false
-
-	_route_purchased_to_court(release_position)
-	_finalise_gesture(release_position, true)
-	visible = false
+	_drop_falling_body(release_position)
+	_finalise_gesture(release_position, false)
+	# Visibility flip waits on the settle decision; the body's settle watcher resolves it.
 	return true
 
 
-## Hands the just-purchased item to BallDragController so a court-valid release spawns a live ball at the release point.
+## Returns true only when a Court target accepts the release directly; otherwise the caller falls back to a dropped body.
 func _route_purchased_to_court(release_position: Vector2) -> bool:
-	if item_definition == null:
+	if not _can_route_to_court():
 		return false
-	if item_definition.role != &"ball":
+	var controller: Node = _drag_controller()
+	if not controller.can_court_accept_at(item_definition.key, release_position):
 		return false
-	var tree: SceneTree = get_tree()
-	if tree == null:
-		return false
-	var controller: Node = tree.get_first_node_in_group(&"drag_controller")
-	if controller == null or not controller.has_method("spawn_purchased_at"):
+	if not _complete_purchase():
 		return false
 	return controller.spawn_purchased_at(item_definition.key, release_position, _release_velocity())
+
+
+func _can_route_to_court() -> bool:
+	if item_definition == null or item_definition.role != &"ball":
+		return false
+	var controller: Node = _drag_controller()
+	if controller == null:
+		return false
+	return (
+		controller.has_method("can_court_accept_at") and controller.has_method("spawn_purchased_at")
+	)
+
+
+func _drag_controller() -> Node:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return null
+	return tree.get_first_node_in_group(&"drag_controller")
+
+
+## Drops a HeldBody that falls under gravity; the body's settled position decides purchase vs refund.
+func _drop_falling_body(release_position: Vector2) -> void:
+	if item_definition == null:
+		return
+	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
+	body.global_position = release_position
+	# Park under the scene root so the body is not freed when this shop item hides itself.
+	var root: Node = _scene_host()
+	root.add_child(body)
+	body.go_loose(_release_velocity())
+	body.tree_exiting.connect(_on_falling_body_exiting)
+	# Subscribe controller for re-grab so the dropped body acts like any other loose body.
+	var controller: Node = _drag_controller()
+	if controller != null and controller.has_method("track_loose_body"):
+		controller.track_loose_body(body)
+	# Defer the settle watch so the body has a frame to acquire its first velocity sample.
+	_watch_for_settle(body)
+
+
+func _scene_host() -> Node:
+	var current: Node = get_tree().current_scene
+	if current != null:
+		return current
+	return get_tree().root
+
+
+func _on_falling_body_exiting() -> void:
+	# Hook reserved for future cleanup; explicit signal connection keeps the body's lifetime traceable.
+	pass
+
+
+func _watch_for_settle(body: HeldBody) -> void:
+	# Poll until the body's velocity falls below a settle threshold or it is freed.
+	var watcher := preload("res://scripts/shop/shop_item_settle_watcher.gd").new()
+	watcher.configure(body, self, _shop_area)
+	body.add_child(watcher)
+
+
+## Called by the settle watcher with the body's resting position.
+func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
+	if item_definition == null:
+		if is_instance_valid(body):
+			body.queue_free()
+		return
+	if not is_instance_valid(body):
+		return
+
+	if _is_position_inside_shop(settled_position):
+		# Inside shop on rest: no purchase commits. Refund any taken cost and return the slot.
+		body.queue_free()
+		_refund_if_owned()
+		visible = true
+		return
+
+	# Outside shop: commit the purchase and leave the body where it settled.
+	if not is_owned():
+		if not _complete_purchase():
+			# Could not afford; treat as cancel.
+			body.queue_free()
+			visible = true
+			return
+	visible = false
+	drop_completed.emit(item_definition.key, settled_position, true)
+
+
+func _refund_if_owned() -> void:
+	# We never charge until the body settles outside the shop, so there is nothing to refund here.
+	# Method kept as the canonical seam for future "took FP optimistically" flows.
+	pass
 
 
 func _release_velocity() -> Vector2:

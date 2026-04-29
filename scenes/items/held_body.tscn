@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dxwfoo1jc2set" path="res://scripts/items/held_body.gd" id="1_held"]
 
-[node name="HeldBody" type="RigidBody2D"]
+[node name="HeldBody" type="RigidBody2D" node_paths=PackedStringArray("press_area", "press_collision")]
 collision_layer = 0
 collision_mask = 0
 input_pickable = false
@@ -13,5 +13,14 @@ freeze = true
 freeze_mode = 1
 linear_damp = 1.0
 script = ExtResource("1_held")
+press_area = NodePath("PressArea")
+press_collision = NodePath("PressArea/Collision")
 
 [node name="Collision" type="CollisionShape2D" parent="."]
+
+[node name="PressArea" type="Area2D" parent="."]
+input_pickable = false
+monitoring = false
+monitorable = false
+
+[node name="Collision" type="CollisionShape2D" parent="PressArea"]
