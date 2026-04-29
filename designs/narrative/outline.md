@@ -4,7 +4,7 @@ The canonical outline of the story Volley! tells. The art bible (`../art/bible.m
 
 ## Story
 
-The protagonist is mid-thirties, agender, less athletic than they used to be. Years ago a close friend died cliff-jumping; the protagonist was not there. In the wake of it they pushed away the shopkeeper who had been jumping that day, the person closest to the loss. They built a place to live in instead: Construction, the warm seaside town of their memory, where the friend who died is the championship the player chases and the shopkeeper still leans on the counter of a small wooden stall in the garden.
+Years ago a close friend died cliff-jumping; the protagonist was not there. In the wake of it they pushed away the shopkeeper who had been jumping that day, the person closest to the loss. They built a place to live in instead: Construction, the warm seaside town of their memory, where the friend who died is the championship the player chases and the shopkeeper still leans on the counter of a small wooden stall in the garden.
 
 The player meets that town first. The stated goal is the world volley record. Coaches arrive one by one, partners in the rally, each teaching a piece of the kit. The count climbs. Cracks accumulate at the edges of the frame: a light cools where it should not, a UI element blinks the wrong colour, a partner's tilt holds a beat too long. The championship lands at the top of the ladder. The protagonist beats the champ. The win is supposed to fix things and does not. The construct cannot hold itself together once its central goal has proved meaningless. The protagonist is pulled into Reality for the first time, walks through the actual hometown, and discovers the shopkeeper is gone.
 
@@ -46,7 +46,7 @@ The mechanical and visual shape of this bond-as-medium (the apex return, the blo
 
 ## Cast
 
-The protagonist is mid-30s, androgynous, agender, less athletic than they used to be. Drawn like any other character in both styles: a Construction render and a Reality render. Visible throughout. Picked up a racquet long ago and never quite put it down. Lost their best friend years ago to a cliff-jumping accident. Pushed away the shopkeeper.
+The protagonist is the player's avatar, drawn like any other character in both styles: a Construction render and a Reality render. Visible throughout. Picked up a racquet long ago and never quite put it down. Lost their best friend years ago to a cliff-jumping accident. Pushed away the shopkeeper. Physical canon lives in [`../characters/protagonist.md`](../characters/protagonist.md).
 
 The shopkeeper stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. In Reality, alive, in the hometown, withdrawn, the person the protagonist pushed away. Was cliff-jumping with the friend the day they died; the protagonist was not there. The protagonist's relationship to them is the load-bearing emotional shape of the game.
 
