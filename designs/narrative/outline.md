@@ -34,7 +34,7 @@ The title carries the weight of that doubling. A literal place. A tended thing, 
 
 There is exactly one locked gate in the whole game. It sits in the garden. Walking through it transitions to Reality. The cliff is on the other side.
 
-## Friendship as wind
+## Friendship as force
 
 Friendship, treated as a force, is the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. The treetop venue's wind is the bond with the coach who teaches there. The underwater venue's wind is the bond with the coach who teaches there. The protagonist's bonds, taken together, carry the rally across the whole game.
 
