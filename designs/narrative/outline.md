@@ -4,7 +4,7 @@ The canonical outline of the story Volley! tells. The art bible (`../art/bible.m
 
 ## Story
 
-Every day, the protagonist trains in the garden. They are chasing the world volley record. The friend behind the counter knows them by name and calls it across the court each time the rally lands. There is a gate at the back of the garden. The protagonist's days do not include it. Partners arrive over the months. Each one teaches another part of the rally; the count climbs. The garden is warm. The chime is bright. Something the protagonist does not name is at work underneath.
+Every day, the protagonist trains in the garden. They are chasing the world volley record. The friend behind the counter calls their name across the court each time the rally lands. There is a gate at the back of the garden. The protagonist's days do not include it. Partners arrive over the months. Each one teaches another part of the rally; the count climbs. The garden is warm. The chime is bright. Something the protagonist does not name is at work underneath.
 
 Then small things start arriving wrong. A light at the corner of the court cools and does not warm. A partner's tilt is held a beat too long. A UI element blinks the wrong colour. It reads like flourish at first, then like cracks. The championship arrives. The protagonist beats the champ. The thing that was supposed to happen does not happen, and the construct breaks.
 
