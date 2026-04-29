@@ -4,7 +4,7 @@ The story Volley tells. Setting, cast, and structural canon are in [`outline.md`
 
 ---
 
-The protagonist is up at five-forty. They make coffee, eat toast with marmite over the sink, and leave the house. The walk to the garden is twelve minutes. The lane at the end smells of rosemary and rain.
+The protagonist is up at five-forty. They make coffee, eat toast with marmite over the sink, and leave the house. The lane to the garden smells of rosemary and rain.
 
 They go through the side-arch into the garden. The friend behind the counter at the stall against the wall looks up and says, "Nine hundred and twelve," like a small celebration, and sets down the rag they were folding. The protagonist lifts the racquet they left leaning against the post the night before. The grip has worn to fit their hand.
 
@@ -14,7 +14,7 @@ The protagonist does not turn. They walk to the court at the far end of the gard
 
 There is a gate at the back of the garden, behind the stall and behind the rally. It is locked. The protagonist's path through the garden, in and out, does not pass within twenty feet of it. Their feet have a route. They have not noticed they have a route.
 
-After the rally, in the shade behind the court, the protagonist takes out their phone. They open the call log and scroll. Fifteen rows down, after every other call they have made and received in the last few months, there is a row of digits with no contact name. They stop the scroll. Their thumb rests above the green button. The screen waits. The protagonist looks at the digits without pressing. The phone screen times out and goes black. The protagonist puts the phone away. They have been doing this for years. They believe it is a habit.
+After the rally, in the shade behind the court, the protagonist takes out their phone. They open the call log and scroll past every call they have made and received in the last few months. There is a row of digits with no contact name. They stop the scroll. Their thumb rests above the green button. The screen waits. The protagonist looks at the digits without pressing. The phone screen times out and goes black. The protagonist puts the phone away. They have been doing this for years. They believe it is a habit.
 
 The friend at the counter is the one who keeps the count. The friend wipes the counter when there is nothing to wipe, looks up when the rally lands, says the round numbers, hands the protagonist water without being asked and a towel that has been in the sun. The friend is funny without performing. They have the same name as somebody the protagonist used to know. They wear their hair the same way and laugh the same laugh. The protagonist has not put it together. Nothing in the garden asks them to.
 
@@ -106,11 +106,11 @@ They put the key in the lock. It fits. They turn it. The bolt slides back. The g
 
 ---
 
-On the other side, the path is short. Twenty feet of grass and rosemary, a low wall, a bench against the wall. There are no other people. The wall is at the cliff. The bench has a dedication plaque on the back of it. The name on the plaque is the friend's name. The shopkeeper is on the bench, alive, smaller than the protagonist remembers.
+On the other side, the path is short. Grass and rosemary, a low wall, a bench against the wall. There are no other people. The wall is at the cliff. The bench has a dedication plaque on the back of it. The name on the plaque is the friend's name. The shopkeeper is on the bench, alive, smaller than the protagonist remembers.
 
 The shopkeeper is wearing a shirt the protagonist has never seen. They are holding a phone. They are not looking at the path. The wind is coming from the sea.
 
-The protagonist stops a few feet from the bench. They take out their own phone. The screen lights. The number is fifteen rows down, with no contact name. Their thumb has hovered above it for years. They press it.
+The protagonist stops a few feet from the bench. They take out their own phone. The screen lights. The number is in the call log without a contact name. Their thumb has hovered above it for years. They press it.
 
 The phone in the shopkeeper's hand rings.
 
@@ -124,7 +124,7 @@ The shopkeeper picks up.
 
 ---
 
-The line opens. Neither of them speaks. The shopkeeper's hand is on the bench beside them, holding the phone. The protagonist's hand is at their ear. They are looking at each other across twelve feet of grass. The line stays open.
+The line opens. Neither of them speaks. The shopkeeper's hand is on the bench, holding the phone. The protagonist's hand is at their ear. They are looking at each other across the grass. The line stays open.
 
 After a long time, the protagonist crosses the grass. They do not lower the phone. They sit down on the bench. The shopkeeper does not move. The phone is between them, in two hands, the line open.
 
