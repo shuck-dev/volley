@@ -2,6 +2,16 @@
 
 The canonical outline of the story Volley! tells. The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`. This document holds the shape of the whole.
 
+## Story
+
+The protagonist is mid-thirties, agender, less athletic than they used to be. Years ago a close friend died cliff-jumping; the protagonist was not there. In the wake of it they pushed away the shopkeeper who had been jumping that day, the person closest to the loss. They built a place to live in instead: Construction, the warm seaside town of their memory, where the friend who died is the championship the player chases and the shopkeeper still leans on the counter of a small wooden stall in the garden.
+
+The player meets that town first. The stated goal is the world volley record. Coaches arrive one by one, partners in the rally, each teaching a piece of the kit. The count climbs. Cracks accumulate at the edges of the frame: a light cools where it should not, a UI element blinks the wrong colour, a partner's tilt holds a beat too long. The championship lands at the top of the ladder. The protagonist beats the champ. The win is supposed to fix things and does not. The construct cannot hold itself together once its central goal has proved meaningless. The protagonist is pulled into Reality for the first time, walks through the actual hometown, and discovers the shopkeeper is gone.
+
+Part 2 runs on dread. The player believes the shopkeeper has followed the friend to the cliff. The work is the search: rallies surface memories, memories become photos, photos unlock hand-crafted Reality scenes, the trail compounds. The unnamed number sits in the protagonist's phone the whole game, dialable, never picked up. The album fills, the hidden compartment opens, the sister hands over the key. The protagonist returns to the garden, unlocks the one gate the game has, and walks through to the cliff. The shopkeeper is on the bench beside the friend's dedication, alive, withdrawn, refusing calls. The protagonist dials. The shopkeeper's phone rings beside them. They could ignore it like they have been ignoring the others. They look up. They pick up.
+
+What the player carries away is what the protagonist does. The world volley record was the shopkeeper's phone number all along. The rally the protagonist did alone every day was a daily reaching that never connected. The dial, when it lands, attaches the name to the number for the first time. Credits play over the protagonist and the shopkeeper rallying together: Construction's championship spot now occupied by the actual person, Reality's texture worn into Construction's saturated light, the synthesis the game has been working toward. The cliff stays returnable. Construction has its centre back, as the relationship rather than the substitute.
+
 ## Setting
 
 Pre-smartphone era. Late 90s into early 2000s. Phones are flip, candy-bar, and land-line. Numbers live in heads or on paper, never in pocket databases that auto-name themselves. Period feel runs through the art direction: clothes, signage, phone hardware, photo prints with the date in the corner.
@@ -24,20 +34,6 @@ The title carries the weight of that doubling. A literal place. A tended thing, 
 
 There is exactly one locked gate in the whole game. It sits in the garden. Walking through it transitions to Reality. The cliff is on the other side.
 
-## The court has no top wall
-
-The top edge of the court is sky, not surface. The ball travels up to apex and returns under gravity and the friendship-bound: whichever bond is in play in that venue is what the rally lives inside, and the bond's reach is what the ball cannot escape. Mechanically the ball changes direction at apex; diegetically nothing physical bounces it.
-
-The moment of return is a visible beat in Construction's style. A bloom of light, a brief connecting arc, a satisfying synth chime, a reaction from the present friend: eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. Each rally point closes on this beat. The friend is a co-celebrant of the return, not scenery.
-
-The garden's version of the apex event runs through the shopkeeper's reaction at the stall, since the venue has no physical ceiling and the shopkeeper is the bond the garden holds. Other Construction venues run the same beat through the coach who teaches there: the partner's reaction at the treetop canopy, at the underwater surface, in the meteor field. The bond doing the work changes by venue. The pattern is the same.
-
-The Reconstruction implication follows from the same logic. The garden's bloom and chime thin or fall silent once the shopkeeper is gone, because the bond that carried them is broken. The rally returns mechanically, and the celebratory beat does not. The hollow in Construction's warm centre lands in the rally's own texture. The other Construction venues, with their coaches still present, keep their wind.
-
-The bottom edge of the court stays physical: the ground, the mat, the surface where the racquet meets the ball. Left and right remain open as miss zones.
-
-A reaction per rally point is animated state on whichever character holds the bond in that venue: the shopkeeper at the stall in the garden, the coach in their own venue elsewhere. Even one looped frame plus a short return reaction is per-frame work the artist signs up for, multiplied across every venue. Worth scoping with Aubrey before this lands as a hard requirement.
-
 ## Friendship as wind
 
 Friendship, treated as a force, is the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. The treetop venue's wind is the bond with the coach who teaches there. The underwater venue's wind is the bond with the coach who teaches there. The protagonist's bonds, taken together, carry the rally across the whole game.
@@ -45,6 +41,8 @@ Friendship, treated as a force, is the medium the ball moves through. Each bond 
 The friendships are not metaphorically present in the rally. They are the rally's invisible structure. The shopkeeper bond is the load-bearing one for the story arc, the warm centre Construction is built around. The coach bonds are real in their own right, each one the wind in its own venue.
 
 When a bond thins, the rally still happens, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
+
+The mechanical and visual shape of this bond-as-medium (the apex return, the bloom and chime at each rally point, the per-venue reaction work) lives in the system docs. Court physics in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md). Reaction-beat staging in [`../art/bible.md`](../art/bible.md) § 17.
 
 ## Cast
 
