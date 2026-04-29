@@ -4,15 +4,15 @@ The story Volley tells. Setting, cast, and structural canon are in [`outline.md`
 
 ---
 
-The protagonist is up at five-forty. They make coffee in the percolator on the gas hob, eat a slice of toast with marmite over the kitchen sink, put the cup in the basin, and leave the house. The walk to the garden is twelve minutes. Down the hill, past the fishmonger and the shut bakery, left at the war memorial, along the lane where the rosemary grows over the wall. The lane smells of rosemary and rain. The garden is at the end of it.
+The protagonist is up at five-forty. They make coffee, eat toast with marmite over the sink, and leave the house. The walk to the garden is twelve minutes. The lane at the end smells of rosemary and rain.
 
-They go through the wooden side-arch and stand for a second on the gravel inside. The friend behind the counter at the stall against the wall looks up and says, "Nine hundred and twelve," like a small celebration, and sets down the rag they were folding. The protagonist lifts the racquet they left leaning against the post the night before. The grip has worn to fit their hand. It is warm from having been in the sun on the post the day before.
+They go through the side-arch into the garden. The friend behind the counter at the stall against the wall looks up and says, "Nine hundred and twelve," like a small celebration, and sets down the rag they were folding. The protagonist lifts the racquet they left leaning against the post the night before. The grip has worn to fit their hand.
 
 "Try for a thousand today," the friend says, to their back.
 
 The protagonist does not turn. They walk to the court at the far end of the garden, where the morning light hits first. A coach is across the court, warming up against the wall, and when the coach sees them, the coach steps to the line. The first ball is gentle. The protagonist returns it cleanly. The second is harder. The third is harder than that. The racquet finds the ball, sends it back, finds it again. The count climbs, one each time the rally crosses the net. Somewhere in the second hundred, the friend at the counter says, "Nine fifty," in the same small-celebration voice, and the protagonist nods once in the rally without missing a stroke. The count climbs through to a thousand and one and stops being a number.
 
-There is a gate set into the wall at the back of the garden, behind the stall and behind the rally. It is a wooden gate, painted once a long time ago, with a heavy iron lock that has been there longer than the gate. The protagonist's path through the garden, in and out, does not pass within twenty feet of it. Their feet have a route. They have not noticed they have a route. The gate is locked. They have not had a reason to check.
+There is a gate at the back of the garden, behind the stall and behind the rally. It is locked. The protagonist's path through the garden, in and out, does not pass within twenty feet of it. Their feet have a route. They have not noticed they have a route.
 
 After the rally, in the shade behind the court, the protagonist takes out their phone. They open the call log and scroll. Fifteen rows down, after every other call they have made and received in the last few months, there is a row of digits with no contact name. They stop the scroll. Their thumb rests above the green button. The screen waits. The protagonist looks at the digits without pressing. The phone screen times out and goes black. The protagonist puts the phone away. They have been doing this for years. They believe it is a habit.
 
@@ -26,7 +26,7 @@ The protagonist is between rallies, walking back across the court for water, whe
 
 Three sessions later, a coach holds the line on a return one beat too long. Their head is tilted toward the protagonist. Their mouth is open. They look as if they have just heard a thing that nobody said. Then the coach blinks and serves and the rally goes on. The protagonist returns the serve. After, walking home, the protagonist almost rings the dead friend's sister, whose number they still have. They stop with their thumb above the green button. They have not spoken to her in four years.
 
-A week after that, on a Wednesday, the friend at the counter says the protagonist's name out loud. They say it like they meant to say something else. The protagonist looks at the friend. The friend looks at the protagonist. Neither of them speaks for a long count. Then the friend says, "Eleven hundred today, do you think," in their normal voice, and starts folding the rag again. The protagonist goes to the court. The rally goes on. Something in their chest is not quiet about it.
+A week after that the friend at the counter says the protagonist's name out loud. They say it like they meant to say something else. The protagonist looks at the friend. The friend looks at the protagonist. Neither of them speaks for a long count. Then the friend says, "Eleven hundred today, do you think," in their normal voice, and starts folding the rag again. The protagonist goes to the court. The rally goes on. Something in their chest is not quiet about it.
 
 By the fourth time something has been wrong, the protagonist has stopped pretending nothing is wrong, even to themselves. They keep going to the garden anyway.
 
@@ -40,7 +40,7 @@ The protagonist stands at the line.
 
 They wait for the inside of them to lift. The chime is on. The crowd that does not exist is roaring. The friend at the counter has stopped saying numbers. The protagonist can see them through the gap between the battle court and the garden, holding the rag in two hands. The lift does not come. The protagonist waits longer. It still does not come.
 
-The champ is across the court, having finished the match a moment ago, not moving. The champ is looking at the protagonist. The champ is looking at the protagonist the way somebody looks at a person who has done a thing it took the looking-person their whole life to teach them how to do. The champ is looking at the protagonist the way the dead friend used to look at the protagonist when the protagonist landed a return they should not have landed.
+The champ is across the court, not moving, looking at the protagonist the way the dead friend used to look at them when they landed a return they should not have landed.
 
 The protagonist puts down the racquet. They take a step. Their first step is on the battle court. Their second step is on the gravel of the garden side-arch. The light goes from court-light to morning-light without changing. The body is doing it.
 
@@ -50,7 +50,7 @@ They are walking the way they have been not walking for years.
 
 The protagonist is in their actual hometown.
 
-The streets are the streets they grew up on. The rain is colder here than it has been in a long time. There are gulls. There is the smell of the harbour, the smell of someone making coffee somewhere up the hill, and the smell of the rain that has stopped half an hour ago drying off the painted terraces. The protagonist walks slow. They pass the newsagent where the cashier they used to be afraid of has been replaced by someone they remember from school. They pass the pub. They pass the corner where their mother used to wait for them after primary school in the green car the protagonist's mother no longer has. They are walking toward the shop without having decided to.
+The streets are the streets they grew up on. The rain is colder here than it has been in a long time. There are gulls. There is the smell of the harbour and the smell of rain drying off the painted terraces. The protagonist walks slow. They pass the newsagent where the cashier they used to be afraid of has been replaced by someone they remember from school. They pass the pub. They pass the corner where their mother used to wait for them after primary school in the green car the protagonist's mother no longer has. They are walking toward the shop without having decided to.
 
 The shop is closed.
 
@@ -134,7 +134,7 @@ After a longer time, the shopkeeper puts the phone down on the bench between the
 
 ---
 
-The credits play over the two of them on the same court. The rally between them is uneven. The shopkeeper is not as fast as they used to be. The protagonist is rusty in a way they would not have admitted. The rally goes long anyway because both of them are trying. The light on the court is the light the garden has had all this time, and there is something else in it now: the texture the actual hometown has worn into it over the months of going back and forth. The friend at the counter is at the counter, and the friend is glad to be there, and the friend does not need to call any names today.
+The credits play over the two of them on the same court. The rally between them is uneven. The shopkeeper is not as fast as they used to be. The protagonist is rusty in a way they would not have admitted. The rally goes long anyway because both of them are trying. The light on the court is the light the garden has had all this time, and there is something else in it now: the texture the actual hometown has worn into it over the months of going back and forth. The friend at the counter is glad to be there and does not need to call any names today.
 
 The cliff is behind them, returnable. The bench is there. The number in the protagonist's phone has a contact name now.
 
