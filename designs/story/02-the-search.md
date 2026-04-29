@@ -8,7 +8,7 @@ The shop is closed.
 
 The protagonist stops on the step. The window is dark. The door has three slips of paper wedged into the frame, deliveries from a wine merchant the shop has used for twenty years. The slip on top is dated a week ago Tuesday. The protagonist stands and looks at the slips. After a minute the side door behind the shop opens, the door into the family kitchen, and the sister is there.
 
-The sister is the dead friend's sister. The protagonist has not seen her in four years.
+The sister is Zach's sister. The protagonist has not seen her in four years.
 
 She does not look surprised. The kettle has just clicked off. "Come in," she says. The protagonist comes in. There is an album on the table, half open, half full. She puts a cup in front of the protagonist and does not pour anything into it.
 
