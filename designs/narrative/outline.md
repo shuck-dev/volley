@@ -12,7 +12,7 @@ The protagonist walks the actual hometown for the first time in years. The shop 
 
 The protagonist does the work. The album fills with photographs they did not know they had been collecting. A compartment in the back of it opens. The sister hands them the key without asking what it is for. The protagonist returns to the garden, walks past the court without stopping to play, and stands at the gate they have not opened in their life. They open it. On the other side, the path is short. The cliff is just the cliff. The bench is real. The shopkeeper is on it, alive, smaller than the protagonist remembers. The protagonist takes out their phone and dials the number that has been there the whole game. The phone on the bench rings. The shopkeeper has been letting calls ring. They could let this one ring. They do not. They look up. They pick up.
 
-The world volley record was the shopkeeper's phone number all along. Every rally was a daily call to the friend the protagonist could not call. Now the call goes through. The credits play over the two of them on the same court. The gate stays open.
+The number the protagonist was chasing and the number on the bench are the same number. Every rally was a daily call to the friend the protagonist could not call. Now the call goes through. The credits play over the two of them on the same court. The gate stays open.
 
 ## Setting
 
