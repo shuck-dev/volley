@@ -1,8 +1,8 @@
 # Notes on writing Volley
 
-This is how Volley wants to be written. Not as rules, as the patterns that hold up when the prose is doing what the game asks of it. The story lives in [`outline.md`](outline.md). The world is in [`../art/bible.md`](../art/bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this is the companion that helps the rest land.
+Notes I keep on writing Volley. Not rules; the patterns that hold up for me when the prose is doing what the game asks. The story lives in [`outline.md`](outline.md). The world is in [`../art/bible.md`](../art/bible.md). The protagonist's interior is in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine is in [`../concept/`](../concept/). Read those first; this is what I keep beside them.
 
-The principles are short on purpose. Each one points at a pattern the writer recognises in the moment; the worked example lives in the scene you are writing, not here. Expect them to sharpen and shift as the story does.
+Each principle points at a pattern. The worked example lives in the scene I'm writing, not here. They sharpen and shift as the story does.
 
 ## Scene construction
 
