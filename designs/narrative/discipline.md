@@ -6,11 +6,6 @@ The prose voice lives in [`../../ai/STYLE.md`](../../ai/STYLE.md). The world can
 
 Each principle below is one line. Applications and worked examples live in actual scene drafts, not here. This doc is a quick reference; expect it to sharpen and shift as the story does.
 
-## Names and canon
-
-- **Describe before naming.** Open with what the place feels like; introduce the canon proper noun (Construction, Reality, Reconstruction) only after the reader has the picture. Leading with the canon name in summary prose spoils the structure.
-- **Physical canon lives in the character profile.** Outline and discipline summaries do not restate the protagonist's physical detail; point at `designs/characters/protagonist.md` when role-shape needs context.
-
 ## Scene construction
 
 - **Layer first, prune second.** A scene runs more than the player will touch in one visit; the unengaged pieces are the room.
