@@ -22,9 +22,9 @@ The protagonist sits down.
 
 ---
 
-The protagonist starts going to the garden again. They do not know why. The count is no longer on the wall. The friend says nothing about it. The friend says, "Hello, you."
+The protagonist starts going to the garden again. They do not know why. The stall is closed. The counter is empty. The count is no longer on the wall.
 
-The rally is different. The protagonist serves. Mid-swing, they see an elbow on a counter. They miss the return. They serve again. They see a sleeve folded twice at the cuff. They miss again. They serve again. They see a racquet handed back grip first, by Fern, who never let them carry the bag home.
+The rally is different. The protagonist serves. Mid-swing, they see an elbow on the empty counter. They miss the return. They serve again. They see a sleeve folded twice at the cuff. They miss again. They serve again. They see a racquet handed back grip first, by Fern, who never let them carry the bag home.
 
 Fern was a year older. Small wrists, a laugh too loud for any room they were in, a habit of folding their sleeves twice instead of once. Held the racquet by the throat when they walked, never the grip, because they had read somewhere that holding it by the grip wore the leather, and they cared about things like that.
 
@@ -48,8 +48,8 @@ The protagonist says, "Yes."
 
 ---
 
-The protagonist walks back to the garden, the long way, through the wooden side-arch. The friend at the counter looks up as they come through. Something in the friend's face has shifted. The friend wipes the counter that does not need wiping. The friend says nothing.
+The protagonist walks back to the garden, the long way, through the wooden side-arch. The stall is still closed. The counter is still empty.
 
-The protagonist does not pick up the racquet. They walk past the court, where a rally is happening without them, and they walk past the stall, and for the first time in years their feet take them along a path that does not go around. The grass is shorter at the back of the garden. The wall is closer than they remembered.
+The protagonist does not pick up the racquet. They walk past the court, where a rally is happening without them, and they walk past the empty stall, and for the first time in years their feet take them along a path that does not go around. The grass is shorter at the back of the garden. The wall is closer than they remembered.
 
 They put the key in the lock. It fits. They turn it. The bolt slides back. The gate opens.

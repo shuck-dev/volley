@@ -30,7 +30,7 @@ After a while Zach puts the phone down between them, screen up, the call still r
 
 ---
 
-The credits play over the two of them on the same court. The rally between them is uneven. Zach has lost a step. The protagonist is rustier than they would have admitted. The rally goes long anyway. The friend at the counter is folding a rag.
+The credits play over the two of them on the same court. The rally between them is uneven. Zach has lost a step. The protagonist is rustier than they would have admitted. The rally goes long anyway.
 
 The cliff is behind them. The bench is there. The number in the protagonist's phone has Zach's name on it now.
 
