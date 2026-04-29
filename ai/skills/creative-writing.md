@@ -1,23 +1,23 @@
 ---
-name: narrative-summary
-description: How to write a short-form story summary, treatment, pitch, or design-doc story section that lands the felt arc rather than tracking events. Read before writing or revising any prose summary on `designs/narrative/**`, the story section of an outline, a pitch doc, or a back-cover-shaped paragraph. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing canon on synopsis form.
+name: creative-writing
+description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing canon on story compression and prose craft.
 ---
 
-# Narrative summary
+# Creative writing
 
-You are about to write a short-form story summary. A few hundred words that have to make a reader feel the arc of a much longer work without listing what happens. The bar is high. If a reader who has never seen the game finishes the summary and is not moved, the summary has failed.
+You are about to write Volley creatively. A scene, a summary, a character moment, a piece of dialogue, a narrative outline. Whatever the form, the bar is the same: the reader (or player) finishes it with the protagonist's pressure on their chest, not with a list of plot points in their head. If a reader who has never seen the game is not moved by what you wrote, you wrote the wrong thing.
 
-Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules and the calibration for prose voice across the project. This skill is what those rules look like when applied to summary form specifically.
+Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
 
-## What a summary is for
+## What this skill is for
 
-A summary delivers the *spine* of the story compressed to its felt charge. The reader must finish the summary with the protagonist's pressure on their chest, not with a list of plot points in their head. Designers reading it pick up emotional palette, mood, pacing; writers downstream pick up voice.
+Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the canonical summary is the opening of [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it.
+For Volley specifically: the canonical voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The canonical voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 
-Ranked by impact. If a draft fails a higher rule, fix that before the lower ones.
+Ranked by impact across creative writing generally. If a draft fails a higher rule, fix that before the lower ones.
 
 ### 1. One beat per paragraph; name the beat before you write it
 

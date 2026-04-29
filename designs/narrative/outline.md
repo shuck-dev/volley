@@ -4,15 +4,15 @@ The canonical outline of the story Volley! tells. The art bible (`../art/bible.m
 
 ## Story
 
-The protagonist wants the world volley record. The court is in a garden, in Construction. The friend at the counter calls a name across the court when the rally lands. The garden has one locked gate, and the protagonist passes it every day. Partners arrive, one by one. The count climbs. The garden is warm. The chime is bright.
+The protagonist is chasing the world volley record. They play in a garden, where the friend behind the counter calls a name across the court each time the rally lands. The garden has one locked gate, and the protagonist passes it every day without thinking about it. Partners arrive one by one to teach the rally; with each one, the count climbs. The chime is bright. The garden is warm.
 
-Then a light at the corner of the court cools. A partner's tilt holds a beat too long. A UI element blinks the wrong colour. The championship lands. The protagonist beats the champ. The win was meant to fix things. It does not.
+Then a light at the corner of the court cools where it should not, a partner's tilt holds a beat too long, and a UI element blinks the wrong colour. The cracks read as flourish at first, then as flicker, then as the world failing to keep its shape. The championship lands at the top of the ladder. The protagonist beats the champ. The win was meant to fix things. It does not.
 
-The protagonist walks through the actual hometown for the first time. The shop is closed. The delivery slips on the door are a week old. Rallies surface memories. Memories surface as photos. Photos unlock rooms the protagonist has been avoiding. A close friend died cliff-jumping years ago. The protagonist was not there. The shopkeeper was.
+The protagonist walks through the actual hometown for the first time, and the shop is closed; the delivery slips on the door are a week old. The search begins. Rallies surface memories, memories surface as photos, photos unlock rooms the protagonist has been avoiding. A close friend died cliff-jumping years ago. The protagonist was not there. The shopkeeper was.
 
-The album fills. The compartment opens. The sister hands over the key. The protagonist unlocks the one locked gate and walks through. The cliff is just the cliff. The bench is real. The shopkeeper is on it. The protagonist takes out their phone and dials a number that has sat unnamed in the call log the whole game. The phone on the bench rings. The shopkeeper looks up. They pick up.
+The album fills. The compartment opens. The sister hands over the key, and the protagonist returns to the garden and unlocks the one locked gate. On the other side: the cliff, just the cliff. The bench is real, and the shopkeeper is on it. The protagonist takes out their phone and dials a number that has sat unnamed in the call log the whole game. The phone on the bench rings. The shopkeeper looks up. They pick up.
 
-The world volley record was the shopkeeper's phone number all along. The rally the protagonist did alone every day was a daily reaching. Now the reach lands. The gate stays open.
+The world volley record was the shopkeeper's phone number all along. The rally the protagonist did alone every day was a daily reaching, and now the reach lands. Credits roll over the two of them rallying together. The gate stays open.
 
 ## Setting
 
