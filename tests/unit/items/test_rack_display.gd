@@ -195,3 +195,41 @@ func test_rack_exposes_a_drop_target_child() -> void:
 		gear_rack_instance.get_node("DropTarget") is Area2D,
 		"gear rack DropTarget should be an Area2D",
 	)
+
+
+func test_hide_slot_for_hides_only_the_matching_item() -> void:
+	# SH-332: rack hides the source slot during a grab so the player sees one body, not two.
+	var alpha := _make_item("ball_alpha", &"ball")
+	var beta := _make_item("ball_beta", &"ball")
+	var manager: Node = _make_manager_with([alpha, beta])
+	manager._progression.friendship_point_balance = 10000
+	var rack := _make_rack(&"ball", manager)
+	manager.take(alpha.key)
+	manager.take(beta.key)
+	await get_tree().process_frame
+
+	rack.hide_slot_for(alpha.key)
+
+	for child in rack.slot_container.get_children():
+		if child is Node2D and String(child.name).begins_with("Slot_"):
+			var key: String = child.get_meta(&"item_key", "")
+			if key == alpha.key:
+				assert_false(child.visible, "grabbed slot is hidden during the gesture")
+			elif key == beta.key:
+				assert_true(child.visible, "non-grabbed slots stay visible")
+
+
+func test_reveal_slot_for_restores_visibility() -> void:
+	var alpha := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([alpha])
+	manager._progression.friendship_point_balance = 10000
+	var rack := _make_rack(&"ball", manager)
+	manager.take(alpha.key)
+	await get_tree().process_frame
+
+	rack.hide_slot_for(alpha.key)
+	rack.reveal_slot_for(alpha.key)
+
+	for child in rack.slot_container.get_children():
+		if child is Node2D and String(child.name).begins_with("Slot_"):
+			assert_true(child.visible, "drop_completed reveals the slot again")

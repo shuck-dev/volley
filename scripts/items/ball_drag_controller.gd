@@ -82,6 +82,12 @@ func _ready() -> void:
 	if gear_rack != null and not gear_rack.slot_pressed.is_connected(_on_rack_slot_pressed):
 		gear_rack.slot_pressed.connect(_on_rack_slot_pressed)
 
+	# Hide rack slots while their item is held so the player sees one body, not two.
+	if not pickup_started.is_connected(_on_pickup_started):
+		pickup_started.connect(_on_pickup_started)
+	if not drop_completed.is_connected(_on_drop_completed):
+		drop_completed.connect(_on_drop_completed)
+
 	if reconciler != null:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
@@ -207,6 +213,9 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		_held_preserved_speed = existing.speed
 		if reconciler != null:
 			reconciler.release_ball(item_key)
+		# The frozen body lingers a frame before queue_free settles; exclude its RID so
+		# the projection at release does not self-overlap and snap the cursor off-court.
+		_set_court_exclude_rids([existing.get_rid()])
 		existing.freeze = true
 		existing.call_deferred("queue_free")
 
@@ -218,18 +227,37 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	return true
 
 
-## Returns true if a court target accepted; false routes the new item to the rack.
+## Routes a just-purchased item to whatever target accepts the release position; venue/rack/court all valid.
 func spawn_purchased_at(
 	item_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> bool:
-	# No venue clamp: a release outside the venue should fall through to the rack.
 	var target: DropTarget = _find_accepting_target(item_key, world_position, 1.0)
 	if target == null:
 		return false
-	if not (target is CourtDropTarget):
-		return false
+	if target is CourtDropTarget:
+		target.accept(item_key, world_position, gesture_velocity)
+		return true
+	if target is VenueDropTarget:
+		# Venue accepts as a loose-body release; spawn a HeldBody and let it fall.
+		_spawn_loose_body_at(item_key, world_position, gesture_velocity)
+		return true
+	# Rack/shop targets accept by activating; the ball reconciler handles the live spawn.
 	target.accept(item_key, world_position, gesture_velocity)
 	return true
+
+
+func _spawn_loose_body_at(
+	item_key: String, world_position: Vector2, gesture_velocity: Vector2
+) -> void:
+	var definition: ItemDefinition = _get_item_definition(item_key)
+	if definition == null:
+		return
+	var body: HeldBody = HeldBody.make_for(definition, item_key)
+	body.global_position = world_position
+	var host: Node = _loose_body_host()
+	host.add_child(body)
+	body.go_loose(gesture_velocity)
+	track_loose_body(body)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -296,8 +324,67 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 	body.global_position = release_position
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
+	track_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
 	_held_body = null
+
+
+## Public seam so subsystems that spawn their own loose bodies (Shop) can wire re-grab through this controller.
+func track_loose_body(body: HeldBody) -> void:
+	if not body.pressed.is_connected(_on_loose_body_pressed):
+		body.pressed.connect(_on_loose_body_pressed)
+
+
+## Returns true if a release at `world_position` would be accepted by the court drop target.
+func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
+	for target: DropTarget in _drop_targets:
+		if target is CourtDropTarget:
+			if target.can_accept(item_key, world_position, 1.0):
+				return true
+			return false
+	return false
+
+
+## Re-grabs a loose body the player pressed; reuses the same body so the gesture stays diegetic.
+func _on_loose_body_pressed(body: HeldBody) -> void:
+	if _held_body != null:
+		return
+	var item_key: String = body.item_key
+
+	var spawn_position: Vector2 = body.global_position
+	body.pressed.disconnect(_on_loose_body_pressed)
+	_adopt_loose_body_as_held(body)
+
+	_held_body = body
+	_held_key = item_key
+	_held_is_temporary = false
+	_held_was_on_court = false
+	_held_origin = &"live"
+	_press_position = spawn_position
+	_gesture_below_threshold = true
+	_grab_origin_position = spawn_position
+	_grab_ease_elapsed = 0.0
+	var definition: ItemDefinition = _get_item_definition(item_key)
+	_grab_target_scale = definition.token_scale if definition != null else Vector2.ONE
+	_expansion_started_at = -1.0
+	_cursor_samples.clear()
+	_track_cursor_motion(spawn_position)
+	_mouse_button_down = true
+	pickup_started.emit(item_key)
+
+
+func _adopt_loose_body_as_held(body: HeldBody) -> void:
+	body.phase = HeldBody.Phase.LIFTING
+	body.linear_velocity = Vector2.ZERO
+	body.gravity_scale = 0.0
+	body.freeze = true
+	body.collision_layer = 0
+	body.collision_mask = 0
+	body._enable_press_area(false)
+	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
+	if body.get_parent() != self:
+		body.get_parent().remove_child(body)
+		add_child(body)
 
 
 func _finalise_loose_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
@@ -414,6 +501,13 @@ func _reset_gesture_state() -> void:
 	_grab_ease_elapsed = 0.0
 	_grab_target_scale = Vector2.ONE
 	_expansion_started_at = -1.0
+	_set_court_exclude_rids([])
+
+
+func _set_court_exclude_rids(rids: Array[RID]) -> void:
+	for target: DropTarget in _drop_targets:
+		if target is CourtDropTarget:
+			(target as CourtDropTarget).set_exclude_rids(rids)
 
 
 func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> void:
@@ -602,3 +696,17 @@ func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
 
 func _on_live_ball_pressed(_ball: Ball, item_key: String) -> void:
 	grab_live_ball(item_key, false)
+
+
+func _on_pickup_started(item_key: String) -> void:
+	if rack != null:
+		rack.hide_slot_for(item_key)
+	if gear_rack != null:
+		gear_rack.hide_slot_for(item_key)
+
+
+func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
+	if rack != null:
+		rack.reveal_slot_for(item_key)
+	if gear_rack != null:
+		gear_rack.reveal_slot_for(item_key)

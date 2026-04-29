@@ -1,6 +1,6 @@
 # The shopkeeper
 
-The friend at the stall in Construction. The person the protagonist pushed away in Reality. The world record is their phone number.
+Zach. The friend at the stall in Construction. The person the protagonist pushed away in Reality. The world record is their phone number.
 
 The art bible at [`../art/bible.md`](../art/bible.md) § 4 names the body and the visual role; this profile holds the relationship and the arc.
 
