@@ -6,7 +6,7 @@ She comes early because she is one of the lowest-risk memories. No history to un
 
 Her voice: kind, slightly sharp, particular. The kind of person who would tell the truth and then make a cup of tea. She speaks rarely. Her silences are characterisation; not a coach in the speech-making sense, a friend who happens to be on the right side of the court.
 
-The Caribbean-British shape is shorthand the writing has to earn. The risk is archetype; the work is one specific detail at a time — a turn of phrase, a thing kept by the till, a way of pronouncing the protagonist's name — that belongs to her and not to a type. The warmth is the easy part. The particularity is the job.
+The Caribbean-British shape is shorthand the writing has to earn. The risk is archetype; the work is one specific detail at a time: a turn of phrase, a thing kept by the till, a way of pronouncing the protagonist's name. Each detail belongs to her and not to a type. The warmth is the easy part. The particularity is the job.
 
 Working age range 45 to 60.
 
@@ -22,6 +22,4 @@ See [`partners.md`](partners.md) § Lineage rule for how this applies across the
 
 **Reconstruction** (Part 2). Carries memories of the shopkeeper into the rally between points. Her lines soften, lengthen, surface what she remembers.
 
-**The cliff and the call.** Off-screen.
-
-**Postgame.** Still rotating in Construction's other venues.
+The cliff/call and Postgame beats are the cast-wide shape; see [`partners.md`](partners.md) § Across the arc.
