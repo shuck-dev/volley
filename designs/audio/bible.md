@@ -12,7 +12,7 @@ Once the piano reduction is fleshed out, Construction is the multi-genre half. T
 
 The grounded half. After the protagonist's breakdown reveals the game-as-construct, the player is catapulted into reality. Less intense, more acoustic, natural soundscapes. References: Joe Hisaishi, Philip Glass.
 
-Setting is a fictional seaside town with the geography of Cornwall or Wales and the warmth of the Mediterranean. The piano gets softer and sparser. Whatever electronic colour Construction had recedes; what carries the room in its place is open, and the room itself, the wind and the water, is part of the answer.
+The setting is held by [`../narrative/outline.md`](../narrative/outline.md) § Setting and the [`../art/bible.md`](../art/bible.md) § 2; what audio takes from it is the room. The piano gets softer and sparser. Whatever electronic colour Construction had recedes; what carries the room in its place is open, and the room itself, the wind and the water, is part of the answer.
 
 ## Reconciliation
 
