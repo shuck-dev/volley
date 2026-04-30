@@ -14,7 +14,7 @@ pre-commit:
   piped: true
   commands:
     gitleaks:
-      run: gitleaks protect --staged --redact --no-banner
+      run: gitleaks protect --staged --redact --no-banner --config=.gitleaks.toml
     codespell:
       exclude:
         - "addons/**"
