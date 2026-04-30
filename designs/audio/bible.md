@@ -6,9 +6,9 @@ This document is the why behind the score, written for the composer reading it f
 
 ## Construction
 
-The lulling half. The player is inside a constructed world the protagonist has built and tended, and they do not know it yet. The score is part of how the construct holds. Bright, propulsive, unbothered in the early venues; intense by the late ones; off the chain at the championship. The reference is Koji Kondo in the Mario Kart era: a score that hides what it is doing while it does it.
+The lulling half. The player is inside a constructed world the protagonist has built and tended, and they do not know it yet. The score is part of how the construct holds. Bright, propulsive, unbothered in the early venues; intense by the late ones; off the chain at the championship. The reference is the Nintendo first-party tradition Koji Kondo helped set: foregrounded motifs the player can hum after one playthrough, propulsion that feels like the thing it accompanies, joy that does not apologise for itself. The Mario Kart line is the racing-game cousin of that tradition (Soyo Oka, Kenta Nagata, Asuka Hayazaki across the eras): the same propulsion, dialled for speed.
 
-This is also the multi-genre half of the game. The principle: an under-utilised instrument carries the line and the piano answers it, or the inverse. The principle is settled; the instruments are not. Vibraphone, talk box, harp, a wild synth: prompts thrown across the table to Patrick, not picks. The choice is the composer's, made against what each candidate can actually do for the piece.
+This is also the multi-genre half of the game. The principle: an under-utilised instrument carries the line and the piano answers it, or the inverse. The principle is settled; the instruments are not. Vibraphone, talk box, harp, a wild synth: prompts on the table, not picks. The choice is the composer's, made against what each candidate can actually do for the piece.
 
 Each Construction venue gets a treatment. Same melodic material, different palette, different tempo, different instrument carrying the line. The garden sounds like late afternoon on a stone tile. The underwater venue, if that is the second leap, sounds like the same song heard through deep green water. Whatever the leap is, the score follows the art's leap into it. The bigger the wonder, the more elaborate the arrangement; the construction reaches further every time.
 
@@ -64,7 +64,7 @@ Postgame is rallying with the shopkeeper at the championship spot. The cliff sta
 
 ## Form
 
-The piano reduction is the compromise for now. Patrick's natural instrument is piano and the project does not yet have the surface to commission a full ensemble, so the music gets written and shipped at the keyboard first. The reduction has to hold up alone, because for a stretch of the project it is the only version that exists.
+The piano reduction is the compromise for now. The composer who picks this up first is most fluent at the keyboard and the project does not yet have the surface to commission a full ensemble, so the music gets written and shipped at the keyboard first. The reduction has to hold up alone, because for a stretch of the project it is the only version that exists.
 
 Long term the score is multi-genre and the unusual instruments do real work. The reduction is the seed of that work, not the destination. As the project grows, the palette branches out from the keyboard, and the bible's job is to keep the principle steady while the palette changes.
 
