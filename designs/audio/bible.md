@@ -6,13 +6,13 @@ Two halves of the game, two voices. They do not blend at first. By the end they 
 
 The lulling half. The player is inside the protagonist's mental construct and does not know it yet. The reference is Koji Kondo's Nintendo work, Mario Kart-era: bright, propulsive, the kind of score that hides what it is doing. High intensity by the late venues. Off-the-chain by the championship.
 
-Once the piano reduction is fleshed out, Construction is the multi-genre half. The palette is the place to deploy the under-utilised instruments: vibraphone, talk box, harp, wild synth. The melody can be carried by an unusual instrument and answered by piano, or the inverse.
+Once the piano reduction is fleshed out, Construction is the multi-genre half. The principle: an under-utilised instrument carries the line and the piano answers it, or the inverse. The principle is settled; the instruments are not. Vibraphone, talk box, harp, a wild synth: prompts thrown across the table to Patrick, not picks. The selection is the composer's, made against what each candidate can actually do for the piece.
 
 ## Reality (Part 2)
 
 The grounded half. After the protagonist's breakdown reveals the game-as-construct, the player is catapulted into reality. Less intense, more acoustic, natural soundscapes. References: Joe Hisaishi, Philip Glass.
 
-Setting is a fictional seaside town with the geography of Cornwall or Wales and the warmth of the Mediterranean. The piano gets softer and sparser. Wind and water do work the synth used to do.
+Setting is a fictional seaside town with the geography of Cornwall or Wales and the warmth of the Mediterranean. The piano gets softer and sparser. Whatever electronic colour Construction had recedes; what carries the room in its place is open, and the room itself, the wind and the water, is part of the answer.
 
 ## Reconciliation
 
