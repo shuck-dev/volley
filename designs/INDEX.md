@@ -40,6 +40,12 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
+### Audio
+
+| Doc | Purpose |
+|---|---|
+| [Bible](audio/bible.md) | The score canon. Two halves, two voices, eventual reconciliation. Construction (Kondo / multi-genre / unusual instruments), Reality (Hisaishi, Glass / acoustic / sparse), reconciliation by Reconstruction. Piano reduction is the seed. |
+
 ### Narrative
 
 | Doc | Purpose |
