@@ -1,36 +1,17 @@
 # Audio tech pipeline
 
-How the bible's sound lives inside Godot. The seam between composition and engine.
+How the bible's sound lives inside Godot. The seam between composition and engine, at high level. The specifics will be argued through with the engineer who wires it; this doc holds the position, not the spec.
 
-## Hand-off
+## The seam
 
-The composer delivers two layers per piece.
+The score is composed, not procedurally generated. The composer hands deliveries to the engine team; the engine plays them. The piano reduction is the canonical track until the full instrumentation lands (see the [bible's](bible.md) Form section), and the engine team holds the swap when it does.
 
-1. The piano reduction. A single stem, exported lossless. For now this is the version that ships, because the full ensemble does not exist yet (see the [bible's](bible.md) Form section). Treat the reduction as the canonical track until the multi-genre work catches up.
-2. The full instrumentation, when it lands. Stems by family (piano, percussion, the unusual instrument, the room), so the mix can branch by venue or by half without re-rendering. The full version supersedes the reduction once the engine team wires it in.
-
-Each delivery sits under `assets/audio/<half>/<venue-or-scene>/`. The half is `construction` or `reality`. The venue or scene names match the [art bible's](../art/bible.md) venue list.
-
-## Format
-
-Lossless source stems in WAV. Engine ingest is Ogg Vorbis at the import step (Godot's default for streaming). The lossless stems stay in the repo's audio asset folder so re-mixing does not need to find the originals elsewhere.
-
-## Buses
-
-Three top-level buses.
-
-- **Score.** The composer's work. Carries the leitmotifs. Volume is the player's main music slider.
-- **Sound design.** Diegetic and UI sound: the rally, the counter, the stall, the shop. Volume is the player's effects slider. ([Sound Design](sound-design.md) holds the canon.)
-- **Voice.** Reserved. Volley does not currently have voice acting; the bus exists so it can be added without a rewire.
-
-## The half-shift
-
-The transition from Construction to Reality is a hard cut, not a crossfade. The break is silent, the room is the first thing the player hears, and the Reality theme arrives only when a person is in the frame. The engine handles this by stopping the Construction bus at the break event and not starting the Reality bus until the room scene is loaded.
+Stems by family, when the full version arrives, so the mix can branch by venue or by half without re-rendering. The exact stem layout, the bus graph, the import format, the file conventions: all of these get settled when the engineer picks them up.
 
 ## What we are not building
 
-No middleware (Wwise, FMOD). Godot's native AudioStream is enough for the surface area. No procedural generation. No adaptive layering driven by gameplay state. The score is composed; the engine plays it.
+No middleware (Wwise, FMOD). Godot's native audio is enough for the surface area. No procedural generation. No adaptive layering driven by gameplay state. The score is composed; the engine plays it.
 
 ## Owners
 
-The composer owns the deliverables and the mix targets. The engine team owns the import settings, the bus graph, and the half-shift wiring. The bible holds the why; this doc holds the how.
+The composer owns the deliverables and the mix targets. The engine team owns the engine seam. The bible holds the why; this doc holds the position the engineering pass starts from.
