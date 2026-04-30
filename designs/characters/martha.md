@@ -4,17 +4,13 @@ The first partner. A Black British woman of Caribbean descent, second-generation
 
 She comes early because she is one of the lowest-risk memories. No history to untangle, no falling out, no guilt. Reaching for her does not require facing anything heavier yet. The partners later carry more.
 
-Her voice: kind, slightly sharp, particular. The kind of person who would tell the truth and then make a cup of tea. She speaks rarely. Her silences are characterisation; not a coach in the speech-making sense, a friend who happens to be on the right side of the court.
+Behind the counter, the same arrangement every morning. Scratchcards under the glass, a jar of pennies for the people who are short, the radio on a phone-in nobody is really listening to. She calls every regular *love*. She has never once mispronounced the protagonist's name, and she said it right the first time, when they were small enough to need a hand reaching the counter. A pen lives tucked in her cardigan, never above her ear. When she does not feel like talking she turns the radio up; the shop fills with someone else's argument and she nods along and rings you through. The warmth is real and it is not on tap.
 
-The Caribbean-British shape is shorthand the writing has to earn. The risk is archetype; the work is one specific detail at a time: a turn of phrase, a thing kept by the till, a way of pronouncing the protagonist's name. Each detail belongs to her and not to a type. The warmth is the easy part. The particularity is the job.
-
-Working age range 45 to 60.
+In Construction she takes the other side of the court. Between points she lines up the ball, looks at the protagonist over the top of her glasses, and serves without saying the thing they were waiting for her to say. The rally carries the rest. She speaks rarely; what she does not say is also her.
 
 ## Lineage
 
-Martha shares her name with the protagonist of Octavia Butler's "The Book of Martha" (2003; collected 2005). Butler's Martha is a Black woman writer summoned by God to change humanity, with one rule: people must still find some happiness. The link to Volley's Martha is quieter than narrative; Butler is the patron saint of the character.
-
-See [`partners.md`](partners.md) § Lineage rule for how this applies across the rest of the cast.
+Octavia Butler's "The Book of Martha" (2003) gives the name. In Butler's story God summons Martha, a Black woman novelist, and asks her to make a single change to humanity, on the condition that *people must still find some happiness*. Martha gives humanity dreams: every night, vivid, the thing each person most loves to do. Volley's Martha works at a smaller scale and the same one. A till in a small shop is where a person, on the worst day they are having, gets called *love* and walks back out into it. She is not the architect of happiness; she is the small mercy that keeps the day liveable. That is the thread the name carries. The rest of the cast extends the [partner-lineage rule](partners.md#lineage); Butler is Martha's alone.
 
 ## Across the arc
 
@@ -23,3 +19,5 @@ See [`partners.md`](partners.md) § Lineage rule for how this applies across the
 **Reconstruction** (Part 2). Carries memories of the shopkeeper into the rally between points. Her lines soften, lengthen, surface what she remembers.
 
 The cliff/call and Postgame beats are the cast-wide shape; see [`partners.md`](partners.md) § Across the arc.
+
+Working age range 45 to 60.
