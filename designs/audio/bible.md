@@ -20,7 +20,9 @@ The two leitmotifs do not work together at first. By Reconstruction they begin t
 
 ## Form
 
-Piano is the seed. The composer starts from a piano reduction, because piano carries both halves: the propulsive Kondo register on one side and the Hisaishi sparseness on the other. The full score grows from the reduction outwards. The reduction is the version that has to hold up before any other instrument arrives.
+The piano reduction is the compromise for now. The composer's natural instrument is piano and the project does not yet have the surface to commission a full ensemble, so the music gets written and shipped at the keyboard first. The reduction has to hold up alone, because for a stretch of the project it is the only version that exists.
+
+Long term the score is multi-genre and the unusual instruments do real work. The reduction is the seed of that work, not the destination. As the project grows, the palette branches out from the keyboard.
 
 ## What we are not
 

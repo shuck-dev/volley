@@ -45,7 +45,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | Doc | Purpose |
 |---|---|
 | [INDEX](audio/INDEX.md) | What audio owns: the bible, the score structure, the engine seam, sound design, reference tracks. |
-| [Bible](audio/bible.md) | The score canon. Two halves, two voices, eventual reconciliation. Construction (Kondo / multi-genre / unusual instruments), Reality (Hisaishi, Glass / acoustic / sparse), reconciliation by Reconstruction. Piano reduction is the seed. |
+| [Bible](audio/bible.md) | The score canon. Two halves, two voices, eventual reconciliation. Construction (Kondo / multi-genre / unusual instruments), Reality (Hisaishi, Glass / acoustic / sparse), reconciliation by Reconstruction. The piano reduction is the compromise for now; multi-genre is the destination. |
 | [Score Structure](audio/score-structure.md) | Leitmotifs, themes, where they appear in the arc, how the two halves' material reconciles. |
 | [Tech Pipeline](audio/tech-pipeline.md) | How audio is implemented in Godot: hand-off, formats, bus graph, the half-shift. |
 | [Sound Design](audio/sound-design.md) | Diegetic and UI sound: the rally, the counter, the stall, menu and shop. |

@@ -6,8 +6,8 @@ How the bible's sound lives inside Godot. The seam between composition and engin
 
 The composer delivers two layers per piece.
 
-1. The piano reduction. A single stem, exported lossless, that the engine can play as the fall-back if the full mix is not yet built. The reduction is the version that has to hold up alone.
-2. The full instrumentation. Stems by family (piano, percussion, the unusual instrument, the room), so the mix can branch by venue or by half without re-rendering.
+1. The piano reduction. A single stem, exported lossless. For now this is the version that ships, because the full ensemble does not exist yet (see the [bible's](bible.md) Form section). Treat the reduction as the canonical track until the multi-genre work catches up.
+2. The full instrumentation, when it lands. Stems by family (piano, percussion, the unusual instrument, the room), so the mix can branch by venue or by half without re-rendering. The full version supersedes the reduction once the engine team wires it in.
 
 Each delivery sits under `assets/audio/<half>/<venue-or-scene>/`. The half is `construction` or `reality`. The venue or scene names match the [art bible's](../art/bible.md) venue list.
 
