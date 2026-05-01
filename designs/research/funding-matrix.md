@@ -29,6 +29,20 @@ The Steam release sits at Band 4 or above; earlier bands stay on itch only. Band
 
 The £2M ceiling is anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and matches *Caves of Qud* and *Massive Chalice* from comparable tiers. Above £2M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
 
+## Employees and contractors
+
+The studio's people across the bands fall into five disciplines: **tech**, **art**, **sound design**, **music**, and **marketing / PR / community**. Every discipline is present at Band 0; none get added or removed as the bands climb. What changes is how the work is staffed.
+
+**At Band 0, every discipline is a contractor.** Including tech in part: Josh handles tech on the lower end, and external tech help (engine specialists, infra, porting) is brought in as the work demands. The reason is rotational: the work is bursty. The composer needs to write for a few weeks for a cue and then there is no music work for a month. The artist needs a sprint of pieces and then nothing for a stretch. Marketing needs a push around a release, then quiet. None of this is a full-time job for a full-time person at Band 0; running it as commissions to specialists who swap in when needed is honest to the actual shape of the work and to the budget.
+
+**From Band 1 onwards, FTE hires begin.** The first hire is whichever discipline has stopped being bursty and started being constant; production and tech are typical first FTEs. Specialist commissions (composer, lead artist, marketing partner) continue alongside the FTEs at every band, sized to the band's scope.
+
+**By Band 4 (Steam-launch headcount):** tech, production, design have FTE leads; art and music carry FTE seats with contractors filling specialist work; marketing / PR / community is at minimum a part-time FTE through launch, often a launch-window contractor uplift on top.
+
+**By Band 5:** the studio has senior leads in every discipline, with contractors brought in for specialist work that doesn't justify a permanent seat (multi-genre score work, one-off art commissions, ports, regional marketing).
+
+The studio's hiring posture for FTE roles is **high-talent juniors with growth runway, treated well** — junior loaded cost ~£32K–£45K means more bodies per band, and the team that grew up with the studio becomes its senior leadership at higher bands. Specialist commissions are senior-from-day-one because they are commissioned for specific work.
+
 ## What the matrix does not promise
 
 The matrix is not a roadmap; it does not commit the studio to reaching any particular band by any particular date. It is not a paywall; the web build is free at every band, the source is open at every band, the escape hatch never closes. It is not an excuse; if the studio reaches Band 4 funding but the work that band represents is not done, the price does not climb. The studio reaches a band by *building the band's product*, not by collecting the band's cash. The price changes only at milestone releases, when a band's full scope ships.
