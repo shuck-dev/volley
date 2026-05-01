@@ -81,14 +81,6 @@ The studio's hiring posture for FTE roles is **high-talent juniors with growth r
 
 The matrix is not a roadmap; it does not commit the studio to reaching any particular band by any particular date. It is not a paywall; the web build is free at every band, the source is open at every band, the escape hatch never closes. It is not an excuse; if the studio reaches Band 4 funding but the work that band represents is not done, the price does not climb. The studio reaches a band by *building the band's product*, not by collecting the band's cash. The price changes only at milestone releases, when a band's full scope ships.
 
-## Sales and discounts
-
-The price is the price. Volley participates in Steam seasonal sales at a flat 10% maximum, never deeper, and does not stack discounts. itch tracks Steam at parity, with the same 10% ceiling. This is stricter than the median Steam indie, in line with Bay 12, Aseprite, and Mindustry.
-
-## Regional pricing
-
-The studio accepts Valve's recommended regional price matrix wholesale at every band. No territory overrides, no "premium market" uplift. Valve refreshes; Volley follows.
-
 ## Open questions
 
 - The exact dollar boundaries of each band. Current numbers are guesses; the studio replaces them with real cost figures as quotes arrive.
