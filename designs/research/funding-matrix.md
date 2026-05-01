@@ -39,14 +39,16 @@ Both the score and the art scale with the bands. Each is a separate table becaus
 
 ### Score
 
+What actually scales is **ensemble size and orchestration depth**: piano alone, piano plus one or two players, small ensemble, full ensemble, full ensemble plus an orchestral section. Unusual instruments (vibraphone, talk box, harp, wild synth, the kinds named in the [audio bible](../audio/bible.md)) are *cheap* — a session for one of them is hours of studio time, not weeks — and can land at any band when the piece calls for one. The expensive scaling is musicians, sessions, and mixing.
+
 | Band | Score scope |
 |---|---|
 | 0 | Compact commissioned piano cues |
-| 1 | Compact commissioned piano cues at slightly larger scope |
-| 2 | Commissioned piano across the game |
-| 3 | Piano plus small ensemble for selected cues |
-| 4 | Full ensemble across the game |
-| 5 | Multi-genre: ensemble, orchestra, the unusual instruments the [audio bible](../audio/bible.md) reaches for |
+| 1 | Compact commissioned piano cues at slightly larger scope; one unusual instrument can layer in where a piece needs it |
+| 2 | Commissioned piano across the game; one or two additional players where the piece calls for them |
+| 3 | Piano plus a small ensemble for selected cues |
+| 4 | Full ensemble across the game; longer mixing passes |
+| 5 | Full ensemble plus orchestral sections (strings, brass); the multi-genre work the [audio bible](../audio/bible.md) reaches for |
 
 ### Art
 
