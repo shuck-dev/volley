@@ -8,15 +8,13 @@ The studio's pricing posture is the [open-development essay's](the-case-for-open
 
 This document is the team's opening position on how funding maps to product. Nothing here is settled. The bands and the corresponding scope are guesses the studio will firm up against real quotes and real sales data. The structure is the canon; the numbers are the working draft.
 
-## What this matrix is not for
+## How to read the bands
 
-The matrix funds the journey from prototype-shipped to V1-shipped. It does not fund the prototype itself.
+Each band is a possible final shape of the game. The matrix is a function: funding determines what the full game gets to be, and the price reflects what the full game actually is at that band. There is no fixed aspirational V1 sitting at Band 4 that earlier bands are climbing toward. If funding never grows past Band 2, the game ships as the Band 2 shape, the price stays at $5, and that is the full game.
 
-The **prototype** is the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. The prototype ships free (or near-free) on itch's web build for that purpose. It is *upstream* of the matrix: its job is to build the audience that will then fund V1 across Bands 0–5. The studio pays for the prototype out of the developer's own time, before the bands begin counting.
+Band 0 is what the developer's own time can produce: the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. If no funding ever arrives, Band 0 is what the game is. Each subsequent band is what the game becomes if funding reaches that level. Above £1M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
 
-The **matrix** picks up the day the prototype is out and the question becomes "what does it take to get from here to V1?" Band 0 is the floor of that journey, not the floor of the project. Band 5 is V1 at Steam-parity polish — the destination the journey ends at. Above £1M the studio is post-V1, working at multi-game scale, and a different planning document takes over.
-
-This distinction matters because it changes what each band is *for*. The bands are not increments of prototype scope; they are increments of V1 build-out. A buyer at Band 0 is buying a prototype-plus-first-paid-work; a buyer at Band 5 is buying V1.
+This is the strict reading of "price = function of funded work." The work that funding paid for is the work that exists; the game at any moment is that work; the price reflects that game.
 
 ## The matrix
 
@@ -24,18 +22,18 @@ Funding is the input. The product the audience eventually buys is the output. Th
 
 Cumulative-funding bands are denominated in GBP; the download price stays in USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP).
 
-Each band's "what it pays for" describes the work that band's funding adds *on top of the prototype that already shipped*. Each band's "resulting product shape" describes where V1 stands after that work lands.
+Each band describes the *full game at that funding level*. "What it pays for" names the work the band's funding can produce; "the game at this band" names the shape the full game takes if funding stops here.
 
-| Band | Cumulative funding to date (GBP) | What it pays for | Resulting product shape | Download price (USD) |
+| Band | Cumulative funding to date (GBP) | What this band's funding pays for | The game at this band | Download price (USD) |
 |---|---|---|---|---|
-| 0 | Up to £500 | Solo work by the developer past the prototype; first small commissions | Prototype hardened, first paid work attached | $2 |
-| 1 | £500 to £2,500 | First commissioned cue from a composer (Construction theme proper, replacing the placeholder reduction) | Prototype with the first piece of real score | $3 |
+| 0 | Up to £500 | Solo developer time only | Playable proof-of-concept: the rally, the counter, the cliff and the call as a sketch. Placeholder score and art beyond what one person can do alone | $2 |
+| 1 | £500 to £2,500 | First commissioned cue from a composer (Construction theme proper, replacing the placeholder reduction) | Band 0's game with the first piece of real score | $3 |
 | 2 | £2,500 to £10,000 | Composer commission for the Reality theme; a second venue rendered to art-bible standard; first art collaborator | Construction-as-vertical-slice; Reality entered but thin | $5 |
 | 3 | £10,000 to £50,000 | The full Construction venue set; the break landed; small ensemble commission for one or two cues | Construction content-complete; the break playable end-to-end | $7 |
-| 4 | £50,000 to £200,000 | Reconstruction landed; the cliff and the call written and mixed; the postgame loop; Steam release prep | V1: full arc playable end-to-end, ready for Steam | $9.99 |
-| 5 | £200,000 to £1,000,000 | Sustained post-V1 content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | V1 at Steam-parity polish; the score the bible names actually built; the studio operating at the *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once the Band 5 scope ships; existing owners get the climb free) |
+| 4 | £50,000 to £200,000 | Reconstruction landed; the cliff and the call written and mixed; the postgame loop; Steam release prep | Full arc playable end-to-end; ready for Steam | $9.99 |
+| 5 | £200,000 to £1,000,000 | Sustained content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | The full arc at Steam-parity polish; the score the bible names actually built; the studio operating at the *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
-The ceiling is **£1,000,000 cumulative**. Above that, the studio is post-V1 and operating at multi-game scale; a different planning document takes over. The price ceiling at Band 5 is **$14.99**, anchored to *Broken Age*'s release price (the case the [open-development essay](the-case-for-open-development.md) names at lines 53–57 as the documentary-Kickstarter precedent for this kind of work). *Massive Chalice* shipped at $19.99 from a similar funding tier; $14.99 is the conservative end of that range.
+The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$14.99**, anchored to *Broken Age*'s release price (the case the [open-development essay](the-case-for-open-development.md) names at lines 53–57 as the documentary-Kickstarter precedent for this kind of work). *Massive Chalice* shipped at $19.99 from a similar funding tier; $14.99 is the conservative end of that range.
 
 Existing owners are never asked to top up. The price climb at any band applies to *new buyers*; people who paid $2 in Band 0 keep the game at every band that follows, including the work funded after they bought.
 
