@@ -21,9 +21,11 @@ Cumulative-funding bands are denominated in GBP; the download price stays in USD
 | 2 | £2,500 to £10,000 | Composer commission for the Reality theme; a second venue rendered to art-bible standard; first art collaborator | Construction-as-vertical-slice; Reality entered but thin | $5 |
 | 3 | £10,000 to £50,000 | The full Construction venue set; the break landed; small ensemble commission for one or two cues | Construction content-complete; the break playable end-to-end | $7 |
 | 4 | £50,000 to £200,000 | Reconstruction landed; the cliff and the call written and mixed; the postgame loop; Steam release prep | Full arc playable end-to-end; ready for Steam | $9.99 |
-| 5 | £200,000 to £1,000,000 | Sustained postgame content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | Steam-parity polish; the score the bible names actually built | $9.99 (steady; further work free to existing owners) |
+| 5 | £200,000 to £1,000,000 | Sustained postgame content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | Steam-parity polish; the score the bible names actually built; the studio operating at the *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once the Band 5 scope ships; existing owners get the climb free) |
 
-The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer a one-game prototype operation and a different planning document takes over. Within that ceiling, the price ladder caps at $9.99: more funding past Band 4 buys more *work*, not a higher *price*. Existing owners get the further work free.
+The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer a one-game prototype operation and a different planning document takes over. The price ceiling at Band 5 is **$14.99**, anchored to *Broken Age*'s release price (the case the [open-development essay](the-case-for-open-development.md) names at lines 53–57 as the documentary-Kickstarter precedent for this kind of work). *Massive Chalice* shipped at $19.99 from a similar funding tier; $14.99 is the conservative end of that range, picked because Volley is one game's prototype, not a studio's catalogue.
+
+Existing owners are never asked to top up. The price climb at any band applies to *new buyers*; people who paid $2 in Band 0 keep the game at every band that follows, including the work funded after they bought.
 
 The Steam release sits at Band 4 or above. Earlier bands stay on itch only.
 
