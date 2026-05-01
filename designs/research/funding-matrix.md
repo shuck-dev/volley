@@ -24,16 +24,18 @@ Cumulative-funding bands are denominated in GBP; the download price stays in USD
 
 **Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content) and *polish* (placeholder versus commissioned score, solo art versus collaborator art versus full team, sketch versus art-bible standard).
 
+Band 0 is anchored to baseline-only funding: roughly the first year of the £700/month baseline (~£8,400) plus margin, rounded to £10K. The bands scale geometrically toward the £1M ceiling.
+
 | Band | Cumulative funding to date (GBP) | Scope | Polish | Download price (USD) |
 |---|---|---|---|---|
-| 0 | Up to £500 | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
-| 1 | £500 to £2,500 | Compact, same as Band 0 | First commissioned score work replaces placeholder; everything else still solo | $3 |
-| 2 | £2,500 to £10,000 | Modest: more venues and partners than Band 0 | First art collaborator joins; commissioned score across more of the game | $5 |
-| 3 | £10,000 to £50,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
-| 4 | £50,000 to £200,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
-| 5 | £200,000 to £1,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
+| 0 | Up to £10,000 (≈ baseline year 1) | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
+| 1 | £10,000 to £25,000 | Compact, same as Band 0 | First commissioned score work replaces placeholder; everything else still solo | $3 |
+| 2 | £25,000 to £75,000 | Modest: more venues and partners than Band 0 | First art collaborator joins; commissioned score across more of the game | $5 |
+| 3 | £75,000 to £200,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
+| 4 | £200,000 to £500,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
+| 5 | £500,000 to £1,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Aseprite* / *Caves of Qud* / *Massive Chalice* tier of work | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
-The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$14.99**, anchored to *Broken Age*'s release price (the case the [open-development essay](the-case-for-open-development.md) names at lines 53–57 as the documentary-Kickstarter precedent for this kind of work). *Massive Chalice* shipped at $19.99 from a similar funding tier; $14.99 is the conservative end of that range.
+The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$19.99**, anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and reinforced by *Caves of Qud* and *Massive Chalice* (both $19.99 from comparable funding tiers). The [open-development essay](the-case-for-open-development.md) names *Broken Age* (lines 53–57) as the documentary-Kickstarter precedent for this kind of work; Broken Age launched at $24.99 with the special edition, settled at $14.99 on Steam later. $19.99 sits between those reference points and matches the studio's chosen analogue exactly.
 
 Existing owners are never asked to top up. The price climb at any band applies to *new buyers*; people who paid $2 in Band 0 keep the game at every band that follows, including the work funded after they bought.
 
@@ -83,7 +85,7 @@ The studio accepts Valve's recommended regional price matrix wholesale at every 
 
 ## A note on the ceiling
 
-The Band 5 ceiling at $14.99 is anchored to *Broken Age* (essay lines 53–57). It also sits at the upper edge of the 2026 indie market: median best-seller indie price has fallen in the last two years, and $14.99 from an unknown studio is a harder ask than it was in 2014. The studio is comfortable with the ceiling because Band 5 by definition means the studio is no longer unknown — but the position is the *upper* edge of defensible, not the middle.
+The Band 5 ceiling at $19.99 matches Aseprite (the matrix's named per-product analogue) exactly, and matches *Caves of Qud* and *Massive Chalice* from comparable funding tiers. The 2026 indie market has softened on prices above $20 from unknown studios; $19.99 sits at the upper edge of where that market still buys, and Band 5 by definition means the studio is no longer unknown. A buyer at Band 5 is buying the multi-genre work the audio bible reaches for at *Broken Age* / *Massive Chalice* tier of polish, paying the same price they would for Aseprite or Caves of Qud. The position is defensible in the middle of the comparable set, not the upper edge of the broader market.
 
 ## What replaces this document
 
