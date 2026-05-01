@@ -52,16 +52,44 @@ What actually scales is **ensemble size and orchestration depth**: piano alone, 
 
 ### Art
 
-Animation is a Band 0 concern: the rally itself is animated, characters swing a racquet, the ball moves. The minimum animation set (idle, swing, recover, ball flight, ball bounce) ships at Band 0. What scales with funding is *animation scope* (more characters, more contextual animations, secondary motion) and *art fidelity* (compact set → art-bible standard → polish + lighting), in parallel.
-
 | Band | Art scope |
 |---|---|
-| 0 | Compact commissioned art set; minimum animation (rally motion, swing, ball, basic character poses) |
-| 1 | Compact commissioned art set at slightly larger scope; animation as Band 0 |
-| 2 | First full art set across the venues; expanded animation (more poses, basic contextual animations) |
-| 3 | Art-bible standard across the venues that ship; animation across the partner cast |
-| 4 | Art-bible polish on every layer; full animation (idle variations, contextual responses) |
-| 5 | Studio-wide art polish; full animation with secondary motion (cloth, hair) and full lighting |
+| 0 | Compact commissioned art set |
+| 1 | Compact commissioned art set at slightly larger scope |
+| 2 | First full art set across the venues |
+| 3 | Art-bible standard across the venues that ship |
+| 4 | Art-bible polish on every layer; lighting passes |
+| 5 | Studio-wide art polish; full lighting at art-bible standard |
+
+## Animation
+
+Animation is a Band 0 concern: the rally itself is animated, characters swing a racquet, the ball moves. The minimum animation set ships at Band 0. What scales with funding is the number of characters animated, the depth of contextual response, and secondary motion (cloth, hair).
+
+| Band | Animation scope |
+|---|---|
+| 0 | Minimum set: rally motion, swing, recover, ball flight, ball bounce, basic character poses |
+| 1 | Minimum set across slightly more characters |
+| 2 | Expanded poses; first contextual animations (winning, losing a point) |
+| 3 | Animation across the partner cast; idle variations |
+| 4 | Full animation across every character; richer contextual responses |
+| 5 | Secondary motion (cloth, hair); full character animation at *Aseprite* / *Caves of Qud* / *Massive Chalice* tier |
+
+## Marketing
+
+The studio's marketing principle: **every marketing action nets some public good**. A devlog leaves a piece of writing behind. A research essay outlives the launch. An open-source tool the studio built helps other devs. A free track from the score under a permissive licence travels on its own. A postmortem with real numbers becomes someone else's reference. The audience that receives these things does not need to buy Volley to benefit, and the goodwill that compounds from giving is the marketing.
+
+The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Channels with per-unit cost and conversion rates are the wrong shape for an audience being built on trust. Marketing budget goes to making the public-good artefacts good, not to amplifying them.
+
+| Band | Marketing scope |
+|---|---|
+| 0 | Devlogs and the open repo; the open-development essay; small free artefacts (one-off tools, songs, postmortems) released as work happens |
+| 1 | Same as Band 0 with slightly more cadence; first community jam or sponsored fan event if it lands naturally |
+| 2 | Devlog cadence formal; first part-time community contractor; release of a substantive free artefact (a tool, a research piece, a playable side-thing) |
+| 3 | Marketing FTE or long-term contractor; sustained free-artefact stream; community-led tournaments and modding hosted by the studio |
+| 4 | Launch-window contractor uplift on top of the FTE; free V1-launch artefact (documentary, score-release, tool, dataset); press strategy that leans on the artefact |
+| 5 | Studio's marketing surface is mature: ongoing sponsorship of community work, jams, tooling, education; specific channel choices the band's research will firm up |
+
+A research pass on guerrilla examples that actually worked for studios sharing this posture lives in `ai/scratchpads/marketing-public-good-research-2026-05-01.md` (when complete); the band rows above will tighten as the research lands.
 
 ## Employees and contractors
 
