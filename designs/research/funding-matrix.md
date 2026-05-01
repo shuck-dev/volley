@@ -76,22 +76,22 @@ Animation is a Band 0 concern: the rally itself is animated, characters swing a 
 
 ## Marketing
 
-The studio's marketing principle: **every marketing action helps actual people**. Charity events, in-person game days, tournaments where the proceeds go somewhere real, merch collaborations with small craftspeople where the collaborator gets a meaningful cut, sponsorship of community fundraisers, hosting space at events the studio can lift attention onto. The studio is always in a position to help a person or a group of someones, and the marketing happens because the help happens.
+The studio's marketing principle: **every marketing action puts money or time in real places**. Charity events, in-person game days, tournaments where the proceeds go somewhere named, merch collaborations with small craftspeople where the collaborator gets a meaningful cut, sponsorship of community fundraisers, hosting space at events the studio can lift attention onto. The studio is always in a position to show up alongside a person or a group of someones, and the marketing happens because the showing-up happens.
 
-This is the civic axis, distinct from the open-development thesis (devlogs, free tools, postmortems, open repo) the studio also operates on. Open-development artefacts are valuable on their own track; they are not what marketing-as-public-good means here. Marketing-as-public-good is real people getting real help that costs the studio money or time, and the studio's marketing surface gets to point at that help honestly.
+This is the civic axis, distinct from the open-development thesis (devlogs, free tools, postmortems, open repo) the studio also operates on. Open-development artefacts are valuable on their own track; they are not what marketing-as-public-good means here. Marketing-as-public-good is real money or time landing in real places, and the studio's marketing surface gets to point at the work honestly.
 
-The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Marketing budget goes to the help itself (the charity donation, the venue rental for the game day, the merch print run with the small collaborator), not to amplifying it. The amplification comes from the help being good.
+The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Marketing budget goes to the work itself (the charity donation, the venue rental, the merch print run with the small collaborator), not to amplifying it. The amplification comes from the work being good.
 
 | Band | Marketing scope |
 |---|---|
-| 0 | Time-and-low-money help: a Saturday at a local racquet-sport club, a low-margin merch run with one craftsperson, sponsorship-in-kind at small community events |
-| 1 | Same shape with slightly larger budget; first paid charity entry-fee tournament if it lands naturally |
-| 2 | First named partnership with a small UK collaborator (printer, illustrator, enamel-pin maker); first sponsored community fundraiser |
-| 3 | Marketing FTE or long-term contractor coordinating help; sustained partnerships with two or three small collaborators; recurring local events |
-| 4 | Launch-window contractor uplift; V1-launch tied to a specific charity / community / collaborator partnership; bigger merch collab with revenue-share to the maker |
-| 5 | Studio's civic surface is mature: ongoing sponsored programmes, sustained partnerships, real budget for the help; specific channel choices the band's research will firm up |
+| 0 | Time-and-low-money work: a Saturday at a local racquet-sport club, a low-margin merch run with one craftsperson, sponsorship-in-kind at small community events; first **One Special Day**-style one-day-revenue pledge to a named UK charity |
+| 1 | Same shape with slightly larger budget; first **Volley Open**-style charity tournament at a named Edinburgh racquet-sports club, entry fees direct to **Give It Your Max** or comparable named charity; matched amplification when a community streamer runs a Volley charity stream |
+| 2 | First named partnership with a small UK collaborator (printer, illustrator, enamel-pin maker) on a fixed-edition prize-pin run with revenue-share to the maker; recurring tournament cadence; donate Volley copies into Yogscast Jingle Jam |
+| 3 | Marketing FTE or long-term contractor coordinating partnerships; two or three sustained named collaborators; recurring local events with consistent named beneficiaries |
+| 4 | Launch-window contractor uplift; V1-launch tied to a specific charity, community, or collaborator partnership; bigger merch collab with revenue-share to the maker; in-game cosmetic auction-as-fundraiser shape (Fall Guys / SpecialEffect precedent) if it fits the game |
+| 5 | Studio's civic surface is mature: ongoing sponsored programmes (e.g. funding a ConcernedApe-style sustained role somewhere named), sustained partnerships, real budget; specific channel choices firmed up by the band's research |
 
-A research pass on civic-public-good examples that actually worked for indie studios lives in `ai/scratchpads/marketing-public-good-research-2026-05-01.md` (when complete); the band rows above will tighten as the research lands.
+The research pass behind the band rows lives in `ai/scratchpads/marketing-public-good-research-2026-05-01.md` (named precedents: AGDQ + Prevent Cancer Foundation, Yogscast Jingle Jam, Fall Guys + SpecialEffect Battle of the Brands, Kwalee + SpecialEffect One Special Day, ConcernedApe + UW Tacoma Giving Garden, Fangamer's credit-the-artist pattern).
 
 ## Employees and contractors
 
