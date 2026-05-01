@@ -65,7 +65,7 @@ This claim is **inferred**, not anchored to a practitioner Band-1-2 Free Weekend
 
 Volley's bands need a simple model. Take the lower funding threshold of each band, divide by Steam's net to the developer (about 70 percent of $price after Valve's 30 percent cut, with USD/GBP at ~0.80 throughout), get a paid-unit floor. Cap total giveaway keys at the conversion-adjusted equivalent of **5 percent of paid units** for Band 0 to 2, **3 percent** for Band 3+. The conversion adjustment uses a **10 percent blended cannibalisation rate**.
 
-That 10 percent figure assumes a channel mix of roughly **50 percent streamer (10% prior), 25 percent press (5% prior), 15 percent charity bundle (15% prior), 10 percent personal gift (30% prior)** — weighted blend ≈ 10 percent. A studio with a heavier personal-gift mix gets a higher blended rate and the caps shrink proportionally; recompute if Volley's actual mix drifts.
+That 10 percent figure assumes a channel mix of roughly **50 percent streamer (10% prior), 25 percent press (5% prior), 15 percent charity bundle (15% prior), 10 percent personal gift (30% prior)**: weighted blend ≈ 10 percent. A studio with a heavier personal-gift mix gets a higher blended rate and the caps shrink proportionally; recompute if Volley's actual mix drifts.
 
 The caps below use each band's **floor** (the lower funding threshold). At the *upper* end of a band, the paid-unit floor rises and the cap rises with it; Band 5 at £2M cumulative computes to ~178,700 paid units, which gives a 3% cap of ~5,361 keys and an effective key cap of ~53,610 (about 2.5x the table's floor-based 20,110). Use the floor numbers as conservative working bounds; the higher numbers are headroom available once the studio is genuinely at the top of a band.
 
