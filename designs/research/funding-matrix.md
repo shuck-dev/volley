@@ -39,12 +39,12 @@ Both the score and the art scale with the bands. Each is a separate table becaus
 
 ### Score
 
-What actually scales is **ensemble size and orchestration depth**: piano alone, piano plus one or two players, small ensemble, full ensemble, full ensemble plus an orchestral section. Unusual instruments (vibraphone, talk box, harp, wild synth, the kinds named in the [audio bible](../audio/bible.md)) are *cheap* — a session for one of them is hours of studio time, not weeks — and can land at any band when the piece calls for one. The expensive scaling is musicians, sessions, and mixing.
+What actually scales is **ensemble size and orchestration depth**: piano alone, piano plus a couple of players, small ensemble, full ensemble, full ensemble plus an orchestral section. Unusual instruments (vibraphone, talk box, harp, wild synth, the kinds named in the [audio bible](../audio/bible.md)) can land at any band including Band 0; a single session is small enough that the band's budget is not the constraint. What constrains them is whether the piece calls for one.
 
 | Band | Score scope |
 |---|---|
-| 0 | Compact commissioned piano cues |
-| 1 | Compact commissioned piano cues at slightly larger scope; one unusual instrument can layer in where a piece needs it |
+| 0 | Compact commissioned piano cues; an unusual instrument can layer in where a piece needs it |
+| 1 | Compact commissioned piano cues at slightly larger scope; same instrument flexibility |
 | 2 | Commissioned piano across the game; one or two additional players where the piece calls for them |
 | 3 | Piano plus a small ensemble for selected cues |
 | 4 | Full ensemble across the game; longer mixing passes |
@@ -75,7 +75,7 @@ The studio's people across the bands fall into five disciplines: **tech**, **art
 
 **By Band 5:** the studio has senior leads in every discipline, with contractors brought in for specialist work that doesn't justify a permanent seat (multi-genre score work, one-off art commissions, ports, regional marketing).
 
-The studio's hiring posture for FTE roles is **high-talent juniors with growth runway, treated well** — junior loaded cost ~£32K–£45K means more bodies per band, and the team that grew up with the studio becomes its senior leadership at higher bands. Specialist commissions are senior-from-day-one because they are commissioned for specific work.
+The studio's hiring posture for FTE roles is **high-talent juniors with growth runway, treated well**. Junior loaded cost ~£32K to £45K means more bodies per band, and the team that grew up with the studio becomes its senior leadership at higher bands. Specialist commissions are senior-from-day-one because they are commissioned for specific work.
 
 ## What the matrix does not promise
 
@@ -87,7 +87,7 @@ Three sources, all counted equally:
 
 1. **The developer's own monthly contribution from passive income.** Minimum **£700/month**, possibly more. Committed before any external money arrives. £700 × 12 = £8,400 per year.
 2. **Download revenue.** itch and (from Band 4) Steam.
-3. **Direct support channels.** Patreon (Bay 12 precedent — see the [open-development essay](the-case-for-open-development.md) footnote 24), one-off tips.
+3. **Direct support channels.** Patreon (Bay 12 precedent: see the [open-development essay](the-case-for-open-development.md) footnote 24), one-off tips.
 
 Not counted: grants the studio has not yet won, ad revenue the studio does not run, speculative numbers from unrun campaigns. The studio reports the running total in each devlog, broken out by source.
 
