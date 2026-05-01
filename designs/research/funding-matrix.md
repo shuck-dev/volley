@@ -12,7 +12,7 @@ This document is the team's opening position on how funding maps to product. Not
 
 Each band is a possible final shape of the game. The matrix is a function: funding determines what the full game gets to be, and the price reflects what the full game actually is at that band. There is no fixed aspirational V1 sitting at Band 4 that earlier bands are climbing toward. If funding never grows past Band 2, the game ships as the Band 2 shape, the price stays at $5, and that is the full game.
 
-Band 0 is what the developer's own time and the first month or two of the £700/month baseline can produce: the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. The baseline alone moves the project past Band 0 within the first year; each subsequent band is what the game becomes when cumulative funding (baseline plus sales plus Patreon) reaches that level. Above £1M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
+Band 0 is what the developer's own time and the first month or two of the £700/month baseline can produce: the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. The baseline alone moves the project past Band 0 within the first year; each subsequent band is what the game becomes when cumulative funding (baseline plus sales plus Patreon) reaches that level. Above £2M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
 
 This is the strict reading of "price = function of funded work." The work that funding paid for is the work that exists; the game at any moment is that work; the price reflects that game.
 
@@ -24,18 +24,18 @@ Cumulative-funding bands are denominated in GBP; the download price stays in USD
 
 **Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content) and *polish* (placeholder versus commissioned score, solo art versus collaborator art versus full team, sketch versus art-bible standard).
 
-Band 0 is anchored to baseline-only funding: roughly the first year of the £700/month baseline (~£8,400) plus margin, rounded to £10K. The bands scale geometrically toward the £1M ceiling.
+Band 0 is anchored to baseline-only funding: roughly the first year of the £700/month baseline (~£8,400) plus margin, rounded to £10K. The bands scale geometrically toward the £2M ceiling.
 
 | Band | Cumulative funding to date (GBP) | Scope | Polish | Download price (USD) |
 |---|---|---|---|---|
 | 0 | Up to £10,000 (≈ baseline year 1) | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
 | 1 | £10,000 to £25,000 | Compact, same as Band 0 | First commissioned score work replaces placeholder; everything else still solo | $3 |
 | 2 | £25,000 to £75,000 | Modest: more venues and partners than Band 0 | First art collaborator joins; commissioned score across more of the game | $5 |
-| 3 | £75,000 to £200,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
-| 4 | £200,000 to £500,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
-| 5 | £500,000 to £1,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Aseprite* / *Caves of Qud* / *Massive Chalice* tier of work | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
+| 3 | £75,000 to £250,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
+| 4 | £250,000 to £750,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
+| 5 | £750,000 to £2,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Aseprite* / *Caves of Qud* / *Massive Chalice* tier of work | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
-The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$19.99**, anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and reinforced by *Caves of Qud* and *Massive Chalice* (both $19.99 from comparable funding tiers). The [open-development essay](the-case-for-open-development.md) names *Broken Age* (lines 53–57) as the documentary-Kickstarter precedent for this kind of work; Broken Age launched at $24.99 with the special edition, settled at $14.99 on Steam later. $19.99 sits between those reference points and matches the studio's chosen analogue exactly.
+The ceiling is **£2,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$19.99**, anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and reinforced by *Caves of Qud* and *Massive Chalice* (both $19.99 from comparable funding tiers). The [open-development essay](the-case-for-open-development.md) names *Broken Age* (lines 53–57) as the documentary-Kickstarter precedent for this kind of work; Broken Age launched at $24.99 with the special edition, settled at $14.99 on Steam later. $19.99 sits between those reference points and matches the studio's chosen analogue exactly.
 
 Existing owners are never asked to top up. The price climb at any band applies to *new buyers*; people who paid $2 in Band 0 keep the game at every band that follows, including the work funded after they bought.
 
