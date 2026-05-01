@@ -22,18 +22,18 @@ Funding is the input. The product the audience eventually buys is the output. Th
 
 Cumulative-funding bands are denominated in GBP; the download price stays in USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP).
 
-**Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content) and *polish* (placeholder versus commissioned score, solo art versus collaborator art versus full team, sketch versus art-bible standard).
+**Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content), *polish* (placeholder versus commissioned score, sketch versus art-bible standard), and *team shape* (solo developer at Band 0; studio with FTEs and contractors from Band 1 upward).
 
 Band 0 is anchored to baseline-only funding: roughly the first year of the £700/month baseline (~£8,400) plus margin, rounded to £10K. The bands scale geometrically toward the £2M ceiling.
 
 | Band | Cumulative funding to date (GBP) | Scope | Polish | Download price (USD) |
 |---|---|---|---|---|
 | 0 | Up to £10,000 (≈ baseline year 1) | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
-| 1 | £10,000 to £25,000 | Compact, same as Band 0 | First commissioned score work replaces placeholder; everything else still solo | $3 |
-| 2 | £25,000 to £75,000 | Modest: more venues and partners than Band 0 | First art collaborator joins; commissioned score across more of the game | $5 |
-| 3 | £75,000 to £250,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
-| 4 | £250,000 to £750,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
-| 5 | £750,000 to £2,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Aseprite* / *Caves of Qud* / *Massive Chalice* tier of work | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
+| 1 | £10,000 to £25,000 | Compact, same as Band 0 | Studio structure begins: first hire (part-time or FTE); first commissioned score work replaces placeholder | $3 |
+| 2 | £25,000 to £75,000 | Modest: more venues and partners than Band 0 | First full FTE on art or production; contractors on score; the studio is a small team | $5 |
+| 3 | £75,000 to £250,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple FTEs across art, music, production; contractors fill the rest; small ensemble for selected cues | $7 |
+| 4 | £250,000 to £750,000 | Full: every venue and partner the design names | Studio at Steam-launch-ready headcount; expanded ensemble; art-bible polish on every layer | $9.99 |
+| 5 | £750,000 to £2,000,000 | Full plus sustained postgame content additions; ports if they make sense | The studio operating at *Aseprite* / *Caves of Qud* / *Massive Chalice* tier; the multi-genre score the audio bible reaches for, actually built | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
 The ceiling is **£2,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$19.99**, anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and reinforced by *Caves of Qud* and *Massive Chalice* (both $19.99 from comparable funding tiers). The [open-development essay](the-case-for-open-development.md) names *Broken Age* (lines 53–57) as the documentary-Kickstarter precedent for this kind of work; Broken Age launched at $24.99 with the special edition, settled at $14.99 on Steam later. $19.99 sits between those reference points and matches the studio's chosen analogue exactly.
 
