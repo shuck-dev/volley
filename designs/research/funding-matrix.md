@@ -22,16 +22,16 @@ Funding is the input. The product the audience eventually buys is the output. Th
 
 Cumulative-funding bands are denominated in GBP; the download price stays in USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP).
 
-Each band describes the *full game at that funding level*. "What it pays for" names the work the band's funding can produce; "the game at this band" names the shape the full game takes if funding stops here.
+**Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content) and *polish* (placeholder versus commissioned score, solo art versus collaborator art versus full team, sketch versus art-bible standard).
 
-| Band | Cumulative funding to date (GBP) | What this band's funding pays for | The game at this band | Download price (USD) |
+| Band | Cumulative funding to date (GBP) | Scope | Polish | Download price (USD) |
 |---|---|---|---|---|
-| 0 | Up to £500 | Solo developer time only | Playable proof-of-concept: the rally, the counter, the cliff and the call as a sketch. Placeholder score and art beyond what one person can do alone | $2 |
-| 1 | £500 to £2,500 | First commissioned cue from a composer (Construction theme proper, replacing the placeholder reduction) | Band 0's game with the first piece of real score | $3 |
-| 2 | £2,500 to £10,000 | Composer commission for the Reality theme; a second venue rendered to art-bible standard; first art collaborator | Construction-as-vertical-slice; Reality entered but thin | $5 |
-| 3 | £10,000 to £50,000 | The full Construction venue set; the break landed; small ensemble commission for one or two cues | Construction content-complete; the break playable end-to-end | $7 |
-| 4 | £50,000 to £200,000 | Reconstruction landed; the cliff and the call written and mixed; the postgame loop; Steam release prep | Full arc playable end-to-end; ready for Steam | $9.99 |
-| 5 | £200,000 to £1,000,000 | Sustained content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | The full arc at Steam-parity polish; the score the bible names actually built; the studio operating at the *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
+| 0 | Up to £500 | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
+| 1 | £500 to £2,500 | Compact, same as Band 0 | First commissioned score work replaces placeholder; everything else still solo | $3 |
+| 2 | £2,500 to £10,000 | Modest: more venues and partners than Band 0 | First art collaborator joins; commissioned score across more of the game | $5 |
+| 3 | £10,000 to £50,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple collaborators across art and music; small ensemble for selected cues | $7 |
+| 4 | £50,000 to £200,000 | Full: every venue and partner the design names | Art-bible polish across the game; expanded ensemble; Steam-release-grade fidelity on every layer | $9.99 |
+| 5 | £200,000 to £1,000,000 | Full plus sustained postgame content additions; ports if they make sense | The multi-genre score the audio bible reaches for, actually built; *Broken Age* / *Massive Chalice* tier of work | $14.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
 The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$14.99**, anchored to *Broken Age*'s release price (the case the [open-development essay](the-case-for-open-development.md) names at lines 53–57 as the documentary-Kickstarter precedent for this kind of work). *Massive Chalice* shipped at $19.99 from a similar funding tier; $14.99 is the conservative end of that range.
 
