@@ -12,7 +12,7 @@ This document is the team's opening position on how funding maps to product. Not
 
 Each band is a possible final shape of the game. The matrix is a function: funding determines what the full game gets to be, and the price reflects what the full game actually is at that band. There is no fixed aspirational V1 sitting at Band 4 that earlier bands are climbing toward. If funding never grows past Band 2, the game ships as the Band 2 shape, the price stays at $5, and that is the full game.
 
-Band 0 is what the developer's own time can produce: the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. If no funding ever arrives, Band 0 is what the game is. Each subsequent band is what the game becomes if funding reaches that level. Above £1M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
+Band 0 is what the developer's own time and the first month or two of the £700/month baseline can produce: the playable proof-of-concept the studio uses to get eyes on Volley and validate the idea. The baseline alone moves the project past Band 0 within the first year; each subsequent band is what the game becomes when cumulative funding (baseline plus sales plus Patreon) reaches that level. Above £1M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
 
 This is the strict reading of "price = function of funded work." The work that funding paid for is the work that exists; the game at any moment is that work; the price reflects that game.
 
@@ -55,11 +55,15 @@ The matrix is updated in public when a band lands. The previous band's row stays
 
 ## How funding is counted
 
-Cumulative funding includes itch download revenue, Steam download revenue (when applicable), and any direct support channel the studio runs (Patreon, one-off tips). It does not include grants the studio has not yet won, ad revenue the studio does not run, or speculative numbers from unrun campaigns.
+Cumulative funding has three sources, all counted equally toward the band totals:
 
-Patreon is in scope. The studio runs (or will run) a Patreon as a sustained-support channel, with monthly receipts counted into cumulative funding the same way download revenue is. The Bay 12 precedent (cited in the [open-development essay](the-case-for-open-development.md), footnote 24) is the model: Patreon at low patron counts can meaningfully shorten the timeline to the lower bands.
+1. **The developer's own monthly contribution from passive income.** Minimum **£700 per month**, possibly more. This is the studio's baseline; it is committed before any external money arrives. £700 × 12 = £8,400 per year, which carries the project from Band 0 through mid-Band 2 in the first year on baseline alone, even if no copies sell and no patrons sign up.
+2. **Download revenue.** itch and (from Band 4) Steam.
+3. **Direct support channels.** Patreon (Bay 12 precedent — see the [open-development essay](the-case-for-open-development.md) footnote 24), one-off tips.
 
-The studio reports the running total in each devlog so the audience can verify the matrix's current band. The number is the number; transparency about the input is the only way the matrix means anything.
+Not counted: grants the studio has not yet won, ad revenue the studio does not run, speculative numbers from unrun campaigns.
+
+The studio reports the running total in each devlog, broken out by source, so the audience can verify the matrix's current band and see how much of the funding came from the audience versus the developer's own commitment. The number is the number; transparency about the input is the only way the matrix means anything.
 
 ## Sales and discounts
 
