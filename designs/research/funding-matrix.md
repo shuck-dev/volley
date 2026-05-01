@@ -52,14 +52,16 @@ What actually scales is **ensemble size and orchestration depth**: piano alone, 
 
 ### Art
 
+Animation is a Band 0 concern: the rally itself is animated, characters swing a racquet, the ball moves. The minimum animation set (idle, swing, recover, ball flight, ball bounce) ships at Band 0. What scales with funding is *animation scope* (more characters, more contextual animations, secondary motion) and *art fidelity* (compact set → art-bible standard → polish + lighting), in parallel.
+
 | Band | Art scope |
 |---|---|
-| 0 | Compact commissioned art set |
-| 1 | Compact commissioned art set at slightly larger scope |
-| 2 | First full art set across the venues |
-| 3 | Art-bible standard across the venues that ship |
-| 4 | Art-bible polish on every layer; animation |
-| 5 | Studio-wide art polish; full animation, full lighting |
+| 0 | Compact commissioned art set; minimum animation (rally motion, swing, ball, basic character poses) |
+| 1 | Compact commissioned art set at slightly larger scope; animation as Band 0 |
+| 2 | First full art set across the venues; expanded animation (more poses, basic contextual animations) |
+| 3 | Art-bible standard across the venues that ship; animation across the partner cast |
+| 4 | Art-bible polish on every layer; full animation (idle variations, contextual responses) |
+| 5 | Studio-wide art polish; full animation with secondary motion (cloth, hair) and full lighting |
 
 ## Employees and contractors
 
