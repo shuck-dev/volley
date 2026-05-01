@@ -1,0 +1,59 @@
+# Funding matrix
+
+The price of Volley reflects what the funding has actually built. Not what the team hopes to build, not what a competitive set charges, not what the storefront's algorithm rewards. The matrix is public for the same reason the source is open and the devlog runs in the open: the audience deserves to see the function that produces the number.
+
+## Why this exists
+
+The studio's pricing posture is the [open-development essay's](the-case-for-open-development.md) posture, scaled to one game. Free in the browser, paid at the download, free if you build from source. That model only holds if the price is honest: the download price has to track the work the funding actually paid for. If the funding does not arrive, the work does not happen, and the price reflects what did. If the funding arrives, the work expands, and the price moves with it.
+
+This document is the team's opening position on how funding maps to product. Nothing here is settled. The bands and the corresponding scope are guesses the studio will firm up against real quotes and real sales data. The structure is the canon; the numbers are the working draft.
+
+## The matrix
+
+Funding is the input. The product the audience eventually buys is the output. The price at any moment reflects what the funding has produced by that moment.
+
+Cumulative-funding bands are denominated in GBP; the download price stays in USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP).
+
+| Band | Cumulative funding to date (GBP) | What it pays for | Resulting product shape | Download price (USD) |
+|---|---|---|---|---|
+| 0 | Up to £500 | Solo work by the developer; placeholder score and art beyond what one person can do at the keyboard or hand-draw | Prototype scope: the rally, the counter, one or two venues, the cliff and the call as a sketch | $2 |
+| 1 | £500 to £2,500 | First commissioned cue from a composer (Construction theme proper, replacing the placeholder reduction) | Prototype scope, with the first piece of real score | $3 |
+| 2 | £2,500 to £10,000 | Composer commission for the Reality theme; a second venue rendered to art-bible standard; first art collaborator | Construction-as-vertical-slice; Reality entered but thin | $5 |
+| 3 | £10,000 to £50,000 | The full Construction venue set; the break landed; small ensemble commission for one or two cues | Construction content-complete; the break playable end-to-end | $7 |
+| 4 | £50,000 to £200,000 | Reconstruction landed; the cliff and the call written and mixed; the postgame loop; Steam release prep | Full arc playable end-to-end; ready for Steam | $9.99 |
+| 5 | £200,000 to £1,000,000 | Sustained postgame content; further venues; full ensemble for the multi-genre work the bible reaches for; ports if they make sense | Steam-parity polish; the score the bible names actually built | $9.99 (steady; further work free to existing owners) |
+
+The ceiling is **£1,000,000 cumulative**. Above that, the studio is no longer a one-game prototype operation and a different planning document takes over. Within that ceiling, the price ladder caps at $9.99: more funding past Band 4 buys more *work*, not a higher *price*. Existing owners get the further work free.
+
+The Steam release sits at Band 4 or above. Earlier bands stay on itch only.
+
+## What the matrix does not promise
+
+The matrix is not a roadmap. It does not commit the studio to reaching any particular band by any particular date. It says: *if* funding reaches Band N, *then* the product will look like the corresponding row, and the price moves with it. The studio will not pretend Band 3 has been reached when only Band 1 has.
+
+The matrix is not a paywall. The price is the price of the convenience download. The web build is free at every band. The source is open at every band. The escape hatch never closes.
+
+The matrix is not an excuse. If the studio reaches Band 4 funding and the work that band represents is not done, the price does not get to climb to Band 4 anyway. The studio reaches a band by *building the band's product*, not by collecting the band's cash.
+
+## How the price moves
+
+The price changes only at milestone releases (per the studio's [milestone-based release cadence](#)). When a milestone lands that promotes the product to the next band, the price bumps to that band's number, no sooner. Existing owners are not asked to top up; the price climbs only for new buyers.
+
+The matrix is updated in public when a band lands. The previous band's row stays in the document, struck through with the date the next band reached. The audience can read the history of the price the same way they can read the history of the code.
+
+## How funding is counted
+
+Cumulative funding includes itch download revenue, Steam download revenue (when applicable), and any direct support channel the studio runs (for example, Patreon or one-off tips). It does not include grants the studio has not yet won, ad revenue the studio does not run, or speculative numbers from unrun campaigns.
+
+The studio reports the running total in each devlog so the audience can verify the matrix's current band. The number is the number; transparency about the input is the only way the matrix means anything.
+
+## Open questions
+
+- The exact dollar boundaries of each band. The current numbers are guesses; the studio will replace them with real cost figures (composer hourly rates, art commission rates, hosting and tooling) as quotes arrive.
+- How the studio handles a band where funding arrives but a key collaborator does not (composer unavailable for the ensemble cue, artist booked through the relevant window). Probably: the band is not reached until the work is done, and the funding accumulates toward the next opportunity.
+- Whether Patreon or a similar recurring-support channel is part of Volley's surface or stays out of scope.
+- The transition rule when the studio is between bands at a milestone (e.g. the milestone lands at the end of Band 2 but only delivers half the Band 3 scope). Probably: the price does not move until the *full* band's scope is shipped.
+
+## What replaces this document
+
+Nothing replaces it. The matrix lives at this path for the life of the project, updated in place as the funding moves and the bands land. The history is the history.

@@ -71,6 +71,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Visual Positioning](research/visual-positioning.md) | Where Volley! sits visually among idle, desktop, and sport games. |
 | [Early Clone Games](research/early-clone-games.md) | Why Breakout's clone lineage outlasted Pong's. |
 | [Game Structure References](research/game-structure-references.md) | Structural reference points for the loop and the story. |
+| [Funding Matrix](research/funding-matrix.md) | The price of Volley reflects what the funding has actually built. Public bands map cumulative funding to product scope to download price; same product across web (free), download (paid), source (free build). |
 
 ### Characters
 
