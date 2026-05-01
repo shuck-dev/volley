@@ -22,18 +22,20 @@ Funding is the input. The product the audience eventually buys is the output. Th
 
 Cumulative-funding bands are denominated in GBP; the download price stays in USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP).
 
-**Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. What scales with funding is *scope* (how many venues, how many partners, how much postgame content), *polish* (placeholder versus commissioned score, sketch versus art-bible standard), and *team shape* (solo developer at Band 0; studio with FTEs and contractors from Band 1 upward).
+**Every band ships a full game.** The full narrative arc is present at every band; rally, climb, climax, postgame — none of it gets cut. Every discipline is present at every band too: there is always a composer, always an artist. What scales with funding is *scope of game* (venues, partners, postgame), *scope of score* (piano, ensemble, orchestra), *scope of art* (sketch, finished, animated), and *team shape* (solo developer at Band 0; studio with FTEs and contractors from Band 1 upward).
 
 Band 0 is anchored to baseline-only funding: roughly the first year of the £700/month baseline (~£8,400) plus margin, rounded to £10K. The bands scale geometrically toward the £2M ceiling.
 
-| Band | Cumulative funding to date (GBP) | Scope | Polish | Download price (USD) |
-|---|---|---|---|---|
-| 0 | Up to £10,000 (≈ baseline year 1) | Compact: a small handful of venues and partners | Solo developer across every layer; placeholder score, hand-drawn art | $2 |
-| 1 | £10,000 to £25,000 | Compact, same as Band 0 | Studio structure begins: first hire (part-time or FTE); first commissioned score work replaces placeholder | $3 |
-| 2 | £25,000 to £75,000 | Modest: more venues and partners than Band 0 | First full FTE on art or production; contractors on score; the studio is a small team | $5 |
-| 3 | £75,000 to £250,000 | Mid: most of the venue set; the postgame begins to fill out | Multiple FTEs across art, music, production; contractors fill the rest; small ensemble for selected cues | $7 |
-| 4 | £250,000 to £750,000 | Full: every venue and partner the design names | Studio at Steam-launch-ready headcount; expanded ensemble; art-bible polish on every layer | $9.99 |
-| 5 | £750,000 to £2,000,000 | Full plus sustained postgame content additions; ports if they make sense | The studio operating at *Aseprite* / *Caves of Qud* / *Massive Chalice* tier; the multi-genre score the audio bible reaches for, actually built | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
+Specialists (composer, lead artist) are present at every band; what scales is the *scope* of what they produce. Studio hires (FTE designers, engineers, producers) come in starting at Band 1.
+
+| Band | Cumulative funding to date (GBP) | Scope of game | Score scope | Art scope | Studio shape | Download price (USD) |
+|---|---|---|---|---|---|---|
+| 0 | Up to £10,000 (≈ baseline year 1) | Compact: a small handful of venues and partners | Piano reduction (placeholder) | Hand-drawn solo work | Solo developer | $2 |
+| 1 | £10,000 to £25,000 | Compact, same as Band 0 | Commissioned piano cues | Hand-drawn solo work | Studio begins; first hire | $3 |
+| 2 | £25,000 to £75,000 | Modest: more venues and partners | Commissioned piano across the game | First commissioned art set | Small team; first full FTE | $5 |
+| 3 | £75,000 to £250,000 | Mid: most of the venue set; postgame begins to fill | Piano plus small ensemble for selected cues | Art-bible standard across the venues that ship | Multiple FTEs; contractors fill the rest | $7 |
+| 4 | £250,000 to £750,000 | Full: every venue and partner the design names | Full ensemble across the game | Art-bible polish on every layer; animation | Studio at Steam-launch-ready headcount | $9.99 |
+| 5 | £750,000 to £2,000,000 | Full plus sustained postgame; ports if they make sense | Multi-genre score: ensemble, orchestra, the unusual instruments the audio bible reaches for | Studio-wide art polish; full animation, full lighting | Studio at *Aseprite* / *Caves of Qud* / *Massive Chalice* tier | $19.99 (climbs from $9.99 once Band 5 scope ships; existing owners get the climb free) |
 
 The ceiling is **£2,000,000 cumulative**. Above that, the studio is no longer working on this one game's funding question and a different planning document takes over. The price ceiling at Band 5 is **$19.99**, anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and reinforced by *Caves of Qud* and *Massive Chalice* (both $19.99 from comparable funding tiers). The [open-development essay](the-case-for-open-development.md) names *Broken Age* (lines 53–57) as the documentary-Kickstarter precedent for this kind of work; Broken Age launched at $24.99 with the special edition, settled at $14.99 on Steam later. $19.99 sits between those reference points and matches the studio's chosen analogue exactly.
 
@@ -82,6 +84,17 @@ The studio accepts Valve's recommended regional price matrix wholesale at every 
 - The exact dollar boundaries of each band. The current numbers are guesses; the studio will replace them with real cost figures (composer hourly rates, art commission rates, hosting and tooling) as quotes arrive.
 - How the studio handles a band where funding arrives but a key collaborator does not (composer unavailable for the ensemble cue, artist booked through the relevant window). Probably: the band is not reached until the work is done, and the funding accumulates toward the next opportunity.
 - The transition rule when the studio is between bands at a milestone (e.g. the milestone lands at the end of Band 2 but only delivers half the Band 3 scope). Probably: the price does not move until the *full* band's scope is shipped.
+
+## Mapping to a 3-year production cycle
+
+The matrix's bands are sized so the studio plans against a **3-year production cycle**: prototype → demo → V1 release on Steam by the end of year 3. The baseline alone (£700/month × 36 months = **£25,200 over 3 years**) carries the project through Band 0 and most of Band 1 with no external revenue at all. Realistic targets per year, assuming the open-development thesis holds and the audience builds:
+
+- **End of year 1:** Band 1 (~£25K cumulative). Prototype shipped, first paid downloads on itch, Patreon opened. Baseline doing most of the work.
+- **End of year 2:** Band 2 (~£75K cumulative). Audience growing through devlogs and the open repo; Patreon scaling toward the lower bands; first FTE hired.
+- **End of year 3:** Band 3 to Band 4 (~£250K–£750K cumulative). Steam launch lands during year 3 if the trajectory holds; Josh's full-time crossover lands somewhere in Band 3. V1 ships at Band 4 by end of cycle.
+- **Post-cycle (year 4 onwards):** Band 5 territory if the Steam launch performs and sustained content keeps the audience engaged.
+
+This is the *plan-against-it-to-be-safe* shape, not a forecast. If the trajectory undershoots, the studio ships at whichever band the funding actually reached — that band is the full game (per the matrix's premise). If it overshoots, the bands climb faster and the price ladder moves with them.
 
 ## A note on the ceiling
 
