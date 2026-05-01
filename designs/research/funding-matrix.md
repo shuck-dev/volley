@@ -21,7 +21,7 @@ The £700/month baseline alone produces £25,200 over 3 years (£700 × 36), whi
 | Band | Total funding over the 3-year cycle (GBP) | Scope of game | Download price (USD) |
 |---|---|---|---|
 | 0 | Up to £10,000 (around the baseline alone for one year) | Compact: a small handful of venues and partners | $2 |
-| 1 | £10,000 to £25,000 | Compact, same as Band 0 | $3 |
+| 1 | £10,000 to £25,000 | Compact with breathing room: same shape as Band 0 with a touch more venue or partner variety | $3 |
 | 2 | £25,000 to £75,000 | Modest: more venues and partners | $5 |
 | 3 | £75,000 to £250,000 | Mid: most of the venue set; postgame begins to fill | $7 |
 | 4 | £250,000 to £750,000 | Full: every venue and partner the design names; the V1 the studio aims to ship | $9.99 |
@@ -80,6 +80,8 @@ The studio's marketing principle: **every marketing action puts money or time in
 
 This is the civic axis, distinct from the open-development thesis (devlogs, free tools, postmortems, open repo) the studio also operates on. Open-development artefacts are valuable on their own track; they are not what marketing-as-public-good means here. Marketing-as-public-good is real money or time landing in real places, and the studio's marketing surface gets to point at the work honestly.
 
+Some actions live on both axes. Donating Volley keys into the Yogscast Jingle Jam is the canonical case: the keys are a free-artefact distribution (open-development shape) *and* the bundle's proceeds go to named charities (civic shape). Both readings hold; the action counts on both sides of the line.
+
 The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Marketing budget goes to the work itself (the charity donation, the venue rental, the merch print run with the small collaborator), not to amplifying it. The amplification comes from the work being good.
 
 ### Available at every band
@@ -114,7 +116,7 @@ The studio's people across the bands fall into five disciplines: **tech**, **art
 
 **At Band 0, every discipline is a contractor.** Including tech in part: Josh handles tech on the lower end, and external tech help (engine specialists, infra, porting) is brought in as the work demands. The reason is rotational: the work is bursty. The composer needs to write for a few weeks for a cue and then there is no music work for a month. The artist needs a sprint of pieces and then nothing for a stretch. Marketing needs a push around a release, then quiet. None of this is a full-time job for a full-time person at Band 0; running it as commissions to specialists who swap in when needed is honest to the actual shape of the work and to the budget.
 
-**From Band 1 onwards, FTE hires begin.** The first hire is whichever discipline has stopped being bursty and started being constant; production and tech are typical first FTEs. Specialist commissions (composer, lead artist, marketing partner) continue alongside the FTEs at every band, sized to the band's scope.
+**Band 1 funds extended contractor time, not yet a full FTE.** Band 1's £10K-£25K cumulative over three years is £3.3K-£8.3K per year of additional cash beyond the £700/month baseline, well below junior loaded cost (~£32K-£45K per the studio's hiring posture below). At Band 1, the studio extends its contractor relationships and may bring on a part-time hire; FTE hiring proper begins at **Band 2 or Band 3** depending on mix, when annual run rate clears the loaded-cost threshold. Specialist commissions (composer, lead artist, marketing partner) continue alongside the contractor and FTE seats at every band, sized to the band's scope.
 
 **By Band 4 (V1-launch headcount):** tech, production, design have FTE leads; art and music carry FTE seats with contractors filling specialist work; marketing / PR / community is at minimum a part-time FTE through the V1 launch window, often a launch-window contractor uplift on top.
 
