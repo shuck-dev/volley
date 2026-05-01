@@ -45,16 +45,31 @@ The matrix is updated in public when a band lands. The previous band's row stays
 
 ## How funding is counted
 
-Cumulative funding includes itch download revenue, Steam download revenue (when applicable), and any direct support channel the studio runs (for example, Patreon or one-off tips). It does not include grants the studio has not yet won, ad revenue the studio does not run, or speculative numbers from unrun campaigns.
+Cumulative funding includes itch download revenue, Steam download revenue (when applicable), and any direct support channel the studio runs (Patreon, one-off tips). It does not include grants the studio has not yet won, ad revenue the studio does not run, or speculative numbers from unrun campaigns.
+
+Patreon is in scope. The studio runs (or will run) a Patreon as a sustained-support channel, with monthly receipts counted into cumulative funding the same way download revenue is. The Bay 12 precedent (cited in the [open-development essay](the-case-for-open-development.md), footnote 24) is the model: Patreon at low patron counts can meaningfully shorten the timeline to the lower bands.
 
 The studio reports the running total in each devlog so the audience can verify the matrix's current band. The number is the number; transparency about the input is the only way the matrix means anything.
+
+## Sales and discounts
+
+The price is the price. Volley participates in Steam seasonal sales at a flat 10% maximum, never deeper, and does not stack discounts (no "publisher week" + "summer sale" + "loyalty bonus" compounding). The matrix's premise is that the price reflects the funded work; deep discounts would contradict the premise. itch download price tracks Steam at parity, with the same 10% maximum ceiling on any sale.
+
+This is a stricter posture than the median Steam indie. The studios whose pricing posture Volley shares (Bay 12, Aseprite, Mindustry) tend to either skip Steam sales entirely or run shallow ones; the 10% cap is the studio's working position.
+
+## Regional pricing
+
+The studio accepts Valve's recommended regional price matrix wholesale at every band. No overrides for territory, no premium for "premium" markets, no opportunistic uplift on currency dislocation. Valve refreshes the matrix periodically; Volley follows the refresh. The audience deserves to know the international price reflects Valve's PPP-adjusted recommendation, not the studio's view of what a player in their territory will pay.
 
 ## Open questions
 
 - The exact dollar boundaries of each band. The current numbers are guesses; the studio will replace them with real cost figures (composer hourly rates, art commission rates, hosting and tooling) as quotes arrive.
 - How the studio handles a band where funding arrives but a key collaborator does not (composer unavailable for the ensemble cue, artist booked through the relevant window). Probably: the band is not reached until the work is done, and the funding accumulates toward the next opportunity.
-- Whether Patreon or a similar recurring-support channel is part of Volley's surface or stays out of scope.
 - The transition rule when the studio is between bands at a milestone (e.g. the milestone lands at the end of Band 2 but only delivers half the Band 3 scope). Probably: the price does not move until the *full* band's scope is shipped.
+
+## A note on the ceiling
+
+The Band 5 ceiling at $14.99 is anchored to *Broken Age* (essay lines 53–57). It also sits at the upper edge of the 2026 indie market: median best-seller indie price has fallen in the last two years, and $14.99 from an unknown studio is a harder ask than it was in 2014. The studio is comfortable with the ceiling because Band 5 by definition means the studio is no longer unknown — but the position is the *upper* edge of defensible, not the middle.
 
 ## What replaces this document
 
