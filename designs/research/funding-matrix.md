@@ -76,20 +76,22 @@ Animation is a Band 0 concern: the rally itself is animated, characters swing a 
 
 ## Marketing
 
-The studio's marketing principle: **every marketing action nets some public good**. A devlog leaves a piece of writing behind. A research essay outlives the launch. An open-source tool the studio built helps other devs. A free track from the score under a permissive licence travels on its own. A postmortem with real numbers becomes someone else's reference. The audience that receives these things does not need to buy Volley to benefit, and the goodwill that compounds from giving is the marketing.
+The studio's marketing principle: **every marketing action helps actual people**. Charity events, in-person game days, tournaments where the proceeds go somewhere real, merch collaborations with small craftspeople where the collaborator gets a meaningful cut, sponsorship of community fundraisers, hosting space at events the studio can lift attention onto. The studio is always in a position to help a person or a group of someones, and the marketing happens because the help happens.
 
-The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Channels with per-unit cost and conversion rates are the wrong shape for an audience being built on trust. Marketing budget goes to making the public-good artefacts good, not to amplifying them.
+This is the civic axis, distinct from the open-development thesis (devlogs, free tools, postmortems, open repo) the studio also operates on. Open-development artefacts are valuable on their own track; they are not what marketing-as-public-good means here. Marketing-as-public-good is real people getting real help that costs the studio money or time, and the studio's marketing surface gets to point at that help honestly.
+
+The studio does not run paid ads, paid influencer placements, or wishlist-campaign-shaped marketing at any band. Marketing budget goes to the help itself (the charity donation, the venue rental for the game day, the merch print run with the small collaborator), not to amplifying it. The amplification comes from the help being good.
 
 | Band | Marketing scope |
 |---|---|
-| 0 | Devlogs and the open repo; the open-development essay; small free artefacts (one-off tools, songs, postmortems) released as work happens |
-| 1 | Same as Band 0 with slightly more cadence; first community jam or sponsored fan event if it lands naturally |
-| 2 | Devlog cadence formal; first part-time community contractor; release of a substantive free artefact (a tool, a research piece, a playable side-thing) |
-| 3 | Marketing FTE or long-term contractor; sustained free-artefact stream; community-led tournaments and modding hosted by the studio |
-| 4 | Launch-window contractor uplift on top of the FTE; free V1-launch artefact (documentary, score-release, tool, dataset); press strategy that leans on the artefact |
-| 5 | Studio's marketing surface is mature: ongoing sponsorship of community work, jams, tooling, education; specific channel choices the band's research will firm up |
+| 0 | Time-and-low-money help: a Saturday at a local racquet-sport club, a low-margin merch run with one craftsperson, sponsorship-in-kind at small community events |
+| 1 | Same shape with slightly larger budget; first paid charity entry-fee tournament if it lands naturally |
+| 2 | First named partnership with a small UK collaborator (printer, illustrator, enamel-pin maker); first sponsored community fundraiser |
+| 3 | Marketing FTE or long-term contractor coordinating help; sustained partnerships with two or three small collaborators; recurring local events |
+| 4 | Launch-window contractor uplift; V1-launch tied to a specific charity / community / collaborator partnership; bigger merch collab with revenue-share to the maker |
+| 5 | Studio's civic surface is mature: ongoing sponsored programmes, sustained partnerships, real budget for the help; specific channel choices the band's research will firm up |
 
-A research pass on guerrilla examples that actually worked for studios sharing this posture lives in `ai/scratchpads/marketing-public-good-research-2026-05-01.md` (when complete); the band rows above will tighten as the research lands.
+A research pass on civic-public-good examples that actually worked for indie studios lives in `ai/scratchpads/marketing-public-good-research-2026-05-01.md` (when complete); the band rows above will tighten as the research lands.
 
 ## Employees and contractors
 
