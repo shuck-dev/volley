@@ -12,22 +12,52 @@ Every band ships a full game. The full narrative arc is present at every band; r
 
 Josh's own role across the bands is **tech** (engine, gameplay code, infrastructure) plus founder and director responsibilities throughout. Tech is the only discipline he handles solo, and only at the lower bands; from Band 2 or 3 it becomes a hired role too.
 
-The studio plans against a **3-year production cycle**: prototype → demo → V1 on Steam by the end of year 3. The £700/month baseline alone produces £25,200 over 3 years (£700 × 36), which carries the project through Band 0 and most of Band 1 with no external revenue at all. The "target by" column below is plan-against-it-to-be-safe, not a forecast.
+The studio plans against a **3-year production cycle**: prototype → demo → V1 on Steam by the end of year 3. The cumulative-funding figures in each row below are *total funding raised over the full 3-year cycle*, not progressive year-by-year targets. The band the project lands at is determined by what the 3-year total actually was; whichever band that is, that is the game and the price.
+
+The £700/month baseline alone produces £25,200 over 3 years (£700 × 36), which puts the project firmly inside Band 1 with no external revenue at all.
 
 ## The matrix
 
-| Band | Cumulative funding (GBP) | Target by (3-yr cycle) | Scope of game | Score scope | Art scope | Studio shape | Download price (USD) |
-|---|---|---|---|---|---|---|---|
-| 0 | Up to £10,000 (≈ baseline year 1) | Start of cycle | Compact: a small handful of venues and partners | Compact commissioned piano cues | Compact commissioned art set | Josh on tech; composer and artist commissioned | $2 |
-| 1 | £10,000 to £25,000 | End of Y1 | Compact, same as Band 0 | Compact commissioned piano cues | Compact commissioned art set | Josh on tech; composer and artist commissioned at slightly larger scope | $3 |
-| 2 | £25,000 to £75,000 | End of Y2 | Modest: more venues and partners | Commissioned piano across the game | First full art set across the venues | Josh on tech; first FTE hire (production or second engineer); composer and artist commissioned at modest scope | $5 |
-| 3 | £75,000 to £250,000 | Mid Y3 (around Steam launch) | Mid: most of the venue set; postgame begins to fill | Piano plus small ensemble for selected cues | Art-bible standard across the venues that ship | Multiple FTEs across tech, production, design; composer and artist on larger commissions. **Josh's full-time crossover** | $7 |
-| 4 | £250,000 to £750,000 | End of Y3 (V1 / Steam launch) | Full: every venue and partner the design names | Full ensemble across the game | Art-bible polish on every layer; animation | Studio at Steam-launch-ready headcount; tech, production, design as FTEs; composer, artist, and other specialists commissioned at full scope | $9.99 |
-| 5 | £750,000 to £2,000,000 | Post-cycle (Y4+) | Full plus sustained postgame; ports if they make sense | Multi-genre score: ensemble, orchestra, the unusual instruments the audio bible reaches for | Studio-wide art polish; full animation, full lighting | Studio at *Aseprite* / *Caves of Qud* / *Massive Chalice* tier | $19.99 |
+| Band | Total funding over the 3-year cycle (GBP) | Scope of game | Download price (USD) |
+|---|---|---|---|
+| 0 | Up to £10,000 (around the baseline alone for one year) | Compact: a small handful of venues and partners | $2 |
+| 1 | £10,000 to £25,000 | Compact, same as Band 0 | $3 |
+| 2 | £25,000 to £75,000 | Modest: more venues and partners | $5 |
+| 3 | £75,000 to £250,000 | Mid: most of the venue set; postgame begins to fill | $7 |
+| 4 | £250,000 to £750,000 | Full: every venue and partner the design names; the V1 the studio aims to ship | $9.99 |
+| 5 | £750,000 to £2,000,000 | Full plus sustained postgame; ports if they make sense | $19.99 |
 
 The Steam release sits at Band 4 or above; earlier bands stay on itch only. Bands are GBP cumulative, prices USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP). The price climb at any band applies to *new buyers*; existing owners are never asked to top up.
 
 The £2M ceiling is anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and matches *Caves of Qud* and *Massive Chalice* from comparable tiers. Above £2M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
+
+What scales per band beyond game scope: score scope and art scope live in their own per-band tables under [Score and art scope](#score-and-art-scope); team shape lives under [Employees and contractors](#employees-and-contractors).
+
+## Score and art scope
+
+Both the score and the art scale with the bands. Each is a separate table because the disciplines are commissioned independently, and the work shipping at any band is the real work for that band, not a stand-in.
+
+### Score
+
+| Band | Score scope |
+|---|---|
+| 0 | Compact commissioned piano cues |
+| 1 | Compact commissioned piano cues at slightly larger scope |
+| 2 | Commissioned piano across the game |
+| 3 | Piano plus small ensemble for selected cues |
+| 4 | Full ensemble across the game |
+| 5 | Multi-genre: ensemble, orchestra, the unusual instruments the [audio bible](../audio/bible.md) reaches for |
+
+### Art
+
+| Band | Art scope |
+|---|---|
+| 0 | Compact commissioned art set |
+| 1 | Compact commissioned art set at slightly larger scope |
+| 2 | First full art set across the venues |
+| 3 | Art-bible standard across the venues that ship |
+| 4 | Art-bible polish on every layer; animation |
+| 5 | Studio-wide art polish; full animation, full lighting |
 
 ## Employees and contractors
 
