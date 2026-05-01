@@ -27,7 +27,7 @@ The £700/month baseline alone produces £25,200 over 3 years (£700 × 36), whi
 | 4 | £250,000 to £750,000 | Full: every venue and partner the design names; the V1 the studio aims to ship | $9.99 |
 | 5 | £750,000 to £2,000,000 | Full plus sustained postgame; ports if they make sense | $19.99 |
 
-The Steam release sits at Band 4 or above; earlier bands stay on itch only. Bands are GBP cumulative, prices USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP). The price climb at any band applies to *new buyers*; existing owners are never asked to top up.
+Every band gets a Steam release alongside itch and the web build. Steam Direct is a flat one-time fee, so the cost of being on Steam is essentially nothing; visibility on Steam is a separate question. Same product, same price across all three surfaces. Bands are GBP cumulative, prices USD per the studio's pricing convention (the storefronts work in USD; the studio's reporting works in GBP). The price climb at any band applies to *new buyers*; existing owners are never asked to top up.
 
 The £2M ceiling is anchored to **Aseprite** (the matrix's named per-product analogue, $19.99 on Steam) and matches *Caves of Qud* and *Massive Chalice* from comparable tiers. Above £2M cumulative, the studio is no longer working on this one game's funding question and a different planning document takes over.
 
@@ -71,7 +71,7 @@ The studio's people across the bands fall into five disciplines: **tech**, **art
 
 **From Band 1 onwards, FTE hires begin.** The first hire is whichever discipline has stopped being bursty and started being constant; production and tech are typical first FTEs. Specialist commissions (composer, lead artist, marketing partner) continue alongside the FTEs at every band, sized to the band's scope.
 
-**By Band 4 (Steam-launch headcount):** tech, production, design have FTE leads; art and music carry FTE seats with contractors filling specialist work; marketing / PR / community is at minimum a part-time FTE through launch, often a launch-window contractor uplift on top.
+**By Band 4 (V1-launch headcount):** tech, production, design have FTE leads; art and music carry FTE seats with contractors filling specialist work; marketing / PR / community is at minimum a part-time FTE through the V1 launch window, often a launch-window contractor uplift on top.
 
 **By Band 5:** the studio has senior leads in every discipline, with contractors brought in for specialist work that doesn't justify a permanent seat (multi-genre score work, one-off art commissions, ports, regional marketing).
 
@@ -80,16 +80,6 @@ The studio's hiring posture for FTE roles is **high-talent juniors with growth r
 ## What the matrix does not promise
 
 The matrix is not a roadmap; it does not commit the studio to reaching any particular band by any particular date. It is not a paywall; the web build is free at every band, the source is open at every band, the escape hatch never closes. It is not an excuse; if the studio reaches Band 4 funding but the work that band represents is not done, the price does not climb. The studio reaches a band by *building the band's product*, not by collecting the band's cash. The price changes only at milestone releases, when a band's full scope ships.
-
-## How funding is counted
-
-Three sources, all counted equally:
-
-1. **The developer's own monthly contribution from passive income.** Minimum **£700/month**, possibly more. Committed before any external money arrives. £700 × 12 = £8,400 per year.
-2. **Download revenue.** itch and (from Band 4) Steam.
-3. **Direct support channels.** Patreon (Bay 12 precedent: see the [open-development essay](the-case-for-open-development.md) footnote 24), one-off tips.
-
-Not counted: grants the studio has not yet won, ad revenue the studio does not run, speculative numbers from unrun campaigns. The studio reports the running total in each devlog, broken out by source.
 
 ## Sales and discounts
 
