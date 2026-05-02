@@ -40,6 +40,16 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
+### Audio
+
+| Doc | Purpose |
+|---|---|
+| [INDEX](audio/INDEX.md) | What audio owns: the bible, the score structure, the engine seam, sound design, reference tracks. |
+| [Bible](audio/bible.md) | The score canon. Two halves, two voices, eventual reconciliation. Construction (Kondo / multi-genre / unusual instruments), Reality (Hisaishi, Glass / acoustic / sparse), reconciliation by Reconstruction. The piano reduction is the compromise for now; multi-genre is the destination. |
+| [Score Structure](audio/score-structure.md) | Leitmotifs, themes, where they appear in the arc, how the two halves' material reconciles. |
+| [Tech Pipeline](audio/tech-pipeline.md) | How audio is implemented in Godot: hand-off, formats, bus graph, the half-shift. |
+| [Sound Design](audio/sound-design.md) | Diegetic and UI sound: the rally, the counter, the stall, menu and shop. |
+
 ### Narrative
 
 | Doc | Purpose |
