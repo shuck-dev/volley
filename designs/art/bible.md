@@ -111,7 +111,7 @@ Each partner is a coach. The visual job is two renders: the coach beside the pro
 
 Martha sets the visual bar for the rest. Three more partners arrive in the early game; from then on each new venue brings one.
 
-The relationship work, Martha's profile, and the lineage rule sit in [`../characters/partners.md`](../characters/partners.md).
+Martha's profile sits in [`../characters/martha.md`](../characters/martha.md); the lineage rule and wider partner cast sit in [`../characters/partners.md`](../characters/partners.md).
 
 ### The champ
 
