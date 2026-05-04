@@ -2,8 +2,18 @@
 extends GutTest
 
 const ShopItemDropScript: GDScript = preload("res://scripts/shop/shop_item_drop.gd")
+const ShopDragTuningScript: GDScript = preload("res://scripts/shop/shop_drag_tuning.gd")
 const HeldBodyScript: GDScript = preload("res://scripts/items/held_body.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
+
+
+func _make_tuning() -> ShopDragTuning:
+	var tuning: ShopDragTuning = ShopDragTuningScript.new()
+	tuning.drag_threshold_px = 2.0
+	tuning.settle_velocity_threshold = 4.0
+	tuning.settle_frames_required = 6
+	tuning.max_lifetime_s = 4.0
+	return tuning
 
 
 class _ShopItemStub:
@@ -33,6 +43,7 @@ func test_settle_after_low_velocity_streak_notifies_shop_item() -> void:
 	add_child_autofree(stub)
 
 	var watcher: Node = ShopItemDropScript.new()
+	watcher.tuning = _make_tuning()
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
@@ -53,6 +64,7 @@ func test_high_velocity_resets_streak_and_does_not_settle() -> void:
 	add_child_autofree(stub)
 
 	var watcher: Node = ShopItemDropScript.new()
+	watcher.tuning = _make_tuning()
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
@@ -68,11 +80,13 @@ func test_max_lifetime_forces_settle_even_when_still_moving() -> void:
 	var stub := _ShopItemStub.new()
 	add_child_autofree(stub)
 
+	var tuning: ShopDragTuning = _make_tuning()
 	var watcher: Node = ShopItemDropScript.new()
+	watcher.tuning = tuning
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
 	# One step at max_lifetime_s+epsilon triggers the lifetime-based settle.
-	watcher._physics_process(watcher.max_lifetime_s + 0.1)
+	watcher._physics_process(tuning.max_lifetime_s + 0.1)
 
 	assert_true(stub.notified, "lifetime cap resolves the gesture even on a runaway body")

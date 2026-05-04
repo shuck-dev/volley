@@ -11,6 +11,8 @@ const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
+const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 
 var _shop: Shop
 var _item_manager: Node
@@ -21,7 +23,7 @@ func before_each() -> void:
 	stub(mock_storage.write).to_return(true)
 	stub(mock_storage.read).to_return("")
 
-	_item_manager = load("res://scripts/items/item_manager.gd").new()
+	_item_manager = ItemManagerScript.new()
 	_item_manager._progression = ProgressionData.new(mock_storage)
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
@@ -133,18 +135,23 @@ func test_press_on_shop_item_starts_held_token_without_purchase() -> void:
 
 
 func test_release_inside_shop_cancels_purchase() -> void:
+	# SH-332: pure-click (sub-threshold travel) cancels with no body and no purchase.
 	var item: ShopItem = _shop_item("grip_tape")
 	item.start_drag()
+	# Anchor the press at a point that is unambiguously inside the shop area so the release-at-press
+	# point both qualifies as inside-shop and as zero-travel (a pure click).
+	var inside: Vector2 = _shop.shop_area.global_position
+	item._press_position = inside
 	var balance_before: int = _item_manager.get_friendship_point_balance()
 
-	item.attempt_release(_shop.shop_area.global_position)
+	item.attempt_release(inside)
 
 	assert_false(item.is_dragging(), "release ends the gesture")
-	assert_eq(_item_manager.get_level("grip_tape"), 0, "release inside shop must not purchase")
+	assert_eq(_item_manager.get_level("grip_tape"), 0, "pure click inside shop must not purchase")
 	assert_eq(
 		_item_manager.get_friendship_point_balance(),
 		balance_before,
-		"release inside shop must not debit FP",
+		"pure click inside shop must not debit FP",
 	)
 
 
@@ -303,3 +310,92 @@ func _drag_item_out_of_shop_area(item: ShopItem) -> void:
 	item.start_drag()
 	var outside: Vector2 = _shop.shop_area.global_position + Vector2(10000, 0)
 	item.attempt_release(outside)
+
+
+# SH-332: inside-shop drag spawns a falling body whose settled position decides commit vs cancel.
+class TestSH332InsideShopDrag:
+	extends GutTest
+
+	var _shop: Shop
+	var _item_manager: Node
+
+	func before_each() -> void:
+		var mock_storage: SaveStorage = double(SaveStorage).new()
+		stub(mock_storage.write).to_return(true)
+		stub(mock_storage.read).to_return("")
+		_item_manager = ItemManagerScript.new()
+		_item_manager._progression = ProgressionData.new(mock_storage)
+		_item_manager._effect_manager = EffectManager.new()
+		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
+		_item_manager._progression.friendship_point_balance = 10000
+		add_child_autofree(_item_manager)
+		_shop = ShopScene.instantiate()
+		_shop._item_manager = _item_manager
+		add_child_autofree(_shop)
+
+	func _shop_item(key: String) -> ShopItem:
+		return _shop.items_anchor.get_node("ShopItem_%s" % key)
+
+	func _make_body() -> HeldBody:
+		var body: HeldBody = HeldBodyScene.instantiate()
+		body.item_key = "grip_tape"
+		add_child_autofree(body)
+		return body
+
+	func test_release_inside_shop_after_drag_spawns_falling_body_not_snap_back() -> void:
+		var item: ShopItem = _shop_item("grip_tape")
+		item.start_drag()
+		var inside_press: Vector2 = _shop.shop_area.global_position
+		item._press_position = inside_press
+		# Release supra-threshold but still inside so the inside-shop drag branch triggers.
+		item.attempt_release(inside_press + Vector2(50, 0))
+		assert_false(item.is_dragging(), "release ends the gesture")
+		assert_eq(
+			_item_manager.get_level("grip_tape"),
+			0,
+			"purchase is deferred to the body's settle decision",
+		)
+		assert_false(
+			item.visible,
+			"the slot stays hidden during flight so the player only sees the falling body",
+		)
+
+	func test_inside_shop_drag_settles_inside_shop_returns_slot_no_purchase() -> void:
+		var item: ShopItem = _shop_item("grip_tape")
+		item.start_drag()
+		var body: HeldBody = _make_body()
+		item.notify_body_settled(body, _shop.shop_area.global_position)
+		assert_eq(_item_manager.get_level("grip_tape"), 0, "settle inside shop must not purchase")
+		assert_true(item.visible, "settle inside shop restores the slot")
+
+	func test_inside_shop_drag_settles_outside_shop_commits_purchase() -> void:
+		var item: ShopItem = _shop_item("grip_tape")
+		var balance_before: int = _item_manager.get_friendship_point_balance()
+		var cost: int = GripTape.base_cost
+		item.start_drag()
+		var body: HeldBody = _make_body()
+		item.notify_body_settled(body, _shop.shop_area.global_position + Vector2(10000, 0))
+		assert_eq(
+			_item_manager.get_level("grip_tape"), 1, "settle outside shop commits the purchase"
+		)
+		assert_eq(
+			_item_manager.get_friendship_point_balance(),
+			balance_before - cost,
+			"FP debits exactly the cost on settle-outside",
+		)
+
+	func test_pure_click_inside_shop_no_body_no_purchase() -> void:
+		var item: ShopItem = _shop_item("grip_tape")
+		item.start_drag()
+		var inside: Vector2 = _shop.shop_area.global_position
+		item._press_position = inside
+		var balance_before: int = _item_manager.get_friendship_point_balance()
+		item.attempt_release(inside)
+		assert_false(item.is_dragging())
+		assert_true(item.visible, "pure click restores the slot immediately")
+		assert_eq(_item_manager.get_level("grip_tape"), 0)
+		assert_eq(
+			_item_manager.get_friendship_point_balance(),
+			balance_before,
+			"no FP debit on pure click",
+		)

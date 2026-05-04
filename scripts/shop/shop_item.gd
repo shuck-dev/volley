@@ -14,6 +14,7 @@ signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 @export var art_holder: Node2D
 @export var pickup_area: Area2D
 @export var case_overlay: Node2D
+@export var tuning: ShopDragTuning
 
 var item_definition: ItemDefinition
 
@@ -24,6 +25,10 @@ var _held_token: Node2D = null
 var _last_input_frame: int = -1
 ## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
+## Cursor position when the gesture started; used to gate sub-threshold clicks from real drags.
+var _press_position: Vector2 = Vector2.ZERO
+## Maximum cursor travel seen during the gesture; out-and-back drags still spawn a body.
+var _max_travel_seen: float = 0.0
 
 
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
@@ -80,10 +85,14 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _held_token == null:
 		return
-	_held_token.global_position = _cursor_position()
+	var cursor: Vector2 = _cursor_position()
+	_held_token.global_position = cursor
+	var travel: float = cursor.distance_to(_press_position)
+	if travel > _max_travel_seen:
+		_max_travel_seen = travel
 	# SH-287: when mouse is up, poll for a valid commit position so the gesture ends the moment one is reachable.
 	if not _mouse_button_down:
-		attempt_release(_cursor_position())
+		attempt_release(cursor)
 
 
 # Release handled here so a fast drag that outruns the area still ends the drag.
@@ -142,9 +151,11 @@ func start_drag() -> bool:
 	return true
 
 
-## Outside-shop release commits the purchase immediately. Inside-shop release on a ball-role
-## item with an authored at_rest_shape drops a falling body whose settled position decides
-## commit vs cancel (AC4). All other inside-shop releases keep the original cancel-to-slot.
+## Three release outcomes:
+##   * pure click inside shop (no travel) -> no body, slot returns visible, no purchase.
+##   * inside-shop drag (travel >= drag_threshold_px) -> spawn falling body; the body's resting
+##     position decides commit (settled outside shop) vs cancel (settled inside).
+##   * outside-shop release -> route through controller.spawn_purchased_at like before.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
@@ -168,16 +179,17 @@ func attempt_release(release_position: Vector2) -> bool:
 		visible = false
 		return true
 
-	var supports_drop: bool = (
-		item_definition != null
-		and item_definition.role == &"ball"
-		and item_definition.at_rest_shape != null
-	)
-	if not supports_drop or not can_be_owned():
+	# Inside-shop branch.
+	var threshold: float = tuning.drag_threshold_px if tuning != null else 2.0
+	var release_travel: float = release_position.distance_to(_press_position)
+	var gesture_travel: float = maxf(_max_travel_seen, release_travel)
+	if gesture_travel < threshold:
+		# Pure click: no body spawned, slot returns visible, no purchase.
 		_finalise_gesture(release_position, false)
 		visible = true
 		return true
 
+	# Real drag inside shop: spawn falling body; settle decides commit-vs-cancel.
 	_drop_falling_body(release_position)
 	_finalise_gesture(release_position, false)
 	# Visibility flip waits on the settle decision; the body's settle watcher resolves it.
@@ -233,6 +245,7 @@ func _watch_for_settle(body: HeldBody) -> void:
 	# Poll until the body's velocity falls below a settle threshold or it is freed.
 	# Use load() so the class-name cache (which can be async-stale) doesn't mismatch path-based lookups.
 	var drop: Node = load("res://scripts/shop/shop_item_drop.gd").new()
+	drop.tuning = tuning
 	drop.configure(body, self)
 	body.add_child(drop)
 
@@ -252,10 +265,10 @@ func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 		visible = true
 		return
 
-	# Outside shop: commit the purchase and leave the body where it settled.
+	# Outside shop: re-check affordability at settle time. The player may have spent FP
+	# elsewhere mid-flight; in that case free the body and restore the slot rather than leak it.
 	if not is_owned():
 		if not _complete_purchase():
-			# Could not afford; treat as cancel.
 			body.queue_free()
 			visible = true
 			return
@@ -295,8 +308,11 @@ func _start_drag() -> void:
 		current_scene.add_child(token)
 	else:
 		add_child(token)
-	token.global_position = _cursor_position()
+	var cursor: Vector2 = _cursor_position()
+	token.global_position = cursor
 	_held_token = token
+	_press_position = cursor
+	_max_travel_seen = 0.0
 	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
 	_mouse_button_down = true

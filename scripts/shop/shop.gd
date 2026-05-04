@@ -5,8 +5,10 @@ extends Node2D
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
+const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_drag_tuning.tres")
 
 @export var config: ShopConfig = DEFAULT_CONFIG
+@export var drag_tuning: ShopDragTuning = DEFAULT_DRAG_TUNING
 @export var shop_area: Area2D
 @export var friendship_label: Label
 @export var items_anchor: Node2D
@@ -73,6 +75,7 @@ func _spawn_items() -> void:
 		shop_item.name = "ShopItem_%s" % definition.key
 		shop_item.position = Vector2(start_x + index * spacing, 0.0)
 		items_anchor.add_child(shop_item)
+		shop_item.tuning = drag_tuning
 		shop_item.configure(_item_manager, definition)
 		shop_item.bind_shop_area(shop_area)
 

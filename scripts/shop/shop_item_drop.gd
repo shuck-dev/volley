@@ -3,9 +3,7 @@ extends Node
 
 ## A drop in progress: rides the falling HeldBody, settles on rest, notifies the originating ShopItem.
 
-@export var settle_velocity_threshold: float = 4.0
-@export var settle_frames_required: int = 6
-@export var max_lifetime_s: float = 4.0
+@export var tuning: ShopDragTuning
 
 var _body: HeldBody
 var _shop_item: Object
@@ -23,13 +21,17 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 
+	var velocity_threshold: float = tuning.settle_velocity_threshold if tuning != null else 4.0
+	var frames_required: int = tuning.settle_frames_required if tuning != null else 6
+	var lifetime_cap: float = tuning.max_lifetime_s if tuning != null else 4.0
+
 	_elapsed += delta
-	if _body.linear_velocity.length() <= settle_velocity_threshold:
+	if _body.linear_velocity.length() <= velocity_threshold:
 		_slow_frames += 1
 	else:
 		_slow_frames = 0
 
-	if _slow_frames >= settle_frames_required or _elapsed >= max_lifetime_s:
+	if _slow_frames >= frames_required or _elapsed >= lifetime_cap:
 		_settle()
 
 
