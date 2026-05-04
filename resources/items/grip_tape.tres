@@ -31,7 +31,6 @@ max_active_level = null
 script = ExtResource("1_item")
 key = "grip_tape"
 type = &"kit"
-role = &"equipment"
 display_name = "Grip Tape"
 art = ExtResource("6_art")
 descriptions = Array[String](["Covers more than you think", "Hard to miss now", "Held it together"])

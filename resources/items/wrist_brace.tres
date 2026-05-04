@@ -46,7 +46,6 @@ max_active_level = null
 script = ExtResource("1_item")
 key = "wrist_brace"
 type = &"kit"
-role = &"equipment"
 display_name = "Wrist Brace"
 art = ExtResource("1_srhju")
 descriptions = Array[String](["Can't bend it", "Doesn't give", "Locked for good"])
