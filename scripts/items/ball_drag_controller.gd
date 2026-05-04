@@ -268,14 +268,10 @@ func _spawn_loose_body_at(
 	if body == null:
 		return
 	body.global_position = world_position
-	var host: Node = _loose_body_host()
+	var host: Node = get_loose_body_host()
 	host.add_child(body)
 	body.go_loose(gesture_velocity)
-	track_loose_body(body)
-	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(item_key)
-	if not body.tree_exited.is_connected(_on_loose_body_freed):
-		body.tree_exited.connect(_on_loose_body_freed.bind(item_key))
+	register_loose_body(body)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -335,20 +331,14 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 		return
 	var release_velocity: Vector2 = _compute_release_velocity()
 	var body: HeldBody = _held_body
-	var host: Node = _loose_body_host()
+	var host: Node = get_loose_body_host()
 	if host != null and body.get_parent() != host:
 		body.get_parent().remove_child(body)
 		host.add_child(body)
 	body.global_position = release_position
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
-	track_loose_body(body)
-	# Promote to ItemManager so RackDisplay filters this key out via get_kit_items.
-	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(body.item_key)
-	# Body free on tree_exited clears the overlay so a fresh kit doesn't keep a stale slot hidden.
-	if not body.tree_exited.is_connected(_on_loose_body_freed):
-		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
+	register_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
 	_held_body = null
 
@@ -357,6 +347,24 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 func track_loose_body(body: HeldBody) -> void:
 	if not body.pressed.is_connected(_on_loose_body_pressed):
 		body.pressed.connect(_on_loose_body_pressed)
+
+
+## Folds the three loose-body bookkeeping ops (re-grab wiring + ItemManager promotion + slot-restore on free) so callers
+## only stand a fresh body up once. Subsystems that birth their own bodies (Shop drop, venue release) call this rather
+## than re-implementing the trio.
+func register_loose_body(body: HeldBody) -> void:
+	if body == null:
+		return
+	track_loose_body(body)
+	if _item_manager != null:
+		_item_manager.mark_loose_in_venue(body.item_key)
+	if not body.tree_exited.is_connected(_on_loose_body_freed):
+		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
+
+
+## Public accessor for the venue-scoped node loose bodies parent under so they survive transient scenes (Shop teardown).
+func get_loose_body_host() -> Node:
+	return _loose_body_host()
 
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
