@@ -1,7 +1,7 @@
-class_name CursorOverlayPalette
+class_name CursorStyle
 extends Resource
 
-## Tunable colour cluster + ring metrics for the placeholder grab-cursor overlay; replaced by SH-298 textures.
+## Cursor look: colour-per-state cluster and ring metrics for the placeholder grab-cursor overlay; replaced by SH-298 textures.
 
 @export var color_default: Color = Color(1.0, 1.0, 1.0, 0.0)
 @export var color_dragging: Color = Color(1.0, 1.0, 1.0, 1.0)
