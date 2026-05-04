@@ -198,13 +198,24 @@ func _drop_falling_body(release_position: Vector2) -> void:
 	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
 	if body == null:
 		return
-	body.global_position = release_position
-	# Park under the scene root so the body is not freed when this shop item hides itself.
-	var root: Node = _scene_host()
-	root.add_child(body)
+	var controller: Node = _drag_controller()
+	# Host under the controller's venue-scoped node so the body survives shop-scene teardown mid-flight.
+	var host: Node = _scene_host()
+	var clamped_position: Vector2 = release_position
+	if controller != null:
+		if controller.has_method("get_loose_body_host"):
+			var resolved: Node = controller.get_loose_body_host()
+			if resolved != null:
+				host = resolved
+		# Clamp into the venue so a body cannot fall into off-screen void.
+		if "venue_bounds" in controller:
+			var bounds: Rect2 = controller.venue_bounds
+			if bounds.size != Vector2.ZERO:
+				clamped_position = DropTarget.clamp_to_rect(release_position, bounds)
+	body.global_position = clamped_position
+	host.add_child(body)
 	body.go_loose(_release_velocity())
 	# Subscribe controller for re-grab so the dropped body acts like any other loose body.
-	var controller: Node = _drag_controller()
 	if controller != null and controller.has_method("track_loose_body"):
 		controller.track_loose_body(body)
 	# Defer the settle watch so the body has a frame to acquire its first velocity sample.
@@ -249,6 +260,10 @@ func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 			visible = true
 			return
 	visible = false
+	# Promote the body to a loose-in-venue overlay so the rack filter and re-grab paths treat it like any other loose body.
+	var controller: Node = _drag_controller()
+	if controller != null and controller.has_method("register_loose_body"):
+		controller.register_loose_body(body)
 	drop_completed.emit(item_definition.key, settled_position, true)
 
 
