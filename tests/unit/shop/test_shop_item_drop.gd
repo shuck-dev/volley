@@ -1,7 +1,7 @@
-## SH-332: settle watcher polls a falling HeldBody and notifies its ShopItem on rest.
+## SH-332: ShopItemDrop polls a falling HeldBody and notifies its ShopItem on rest.
 extends GutTest
 
-const SettleWatcherScript: GDScript = preload("res://scripts/shop/shop_item_settle_watcher.gd")
+const ShopItemDropScript: GDScript = preload("res://scripts/shop/shop_item_drop.gd")
 const HeldBodyScript: GDScript = preload("res://scripts/items/held_body.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
 
@@ -32,7 +32,7 @@ func test_settle_after_low_velocity_streak_notifies_shop_item() -> void:
 	var stub := _ShopItemStub.new()
 	add_child_autofree(stub)
 
-	var watcher: Node = SettleWatcherScript.new()
+	var watcher: Node = ShopItemDropScript.new()
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
@@ -52,7 +52,7 @@ func test_high_velocity_resets_streak_and_does_not_settle() -> void:
 	var stub := _ShopItemStub.new()
 	add_child_autofree(stub)
 
-	var watcher: Node = SettleWatcherScript.new()
+	var watcher: Node = ShopItemDropScript.new()
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 
@@ -68,7 +68,7 @@ func test_max_lifetime_forces_settle_even_when_still_moving() -> void:
 	var stub := _ShopItemStub.new()
 	add_child_autofree(stub)
 
-	var watcher: Node = SettleWatcherScript.new()
+	var watcher: Node = ShopItemDropScript.new()
 	watcher.configure(body, stub)
 	body.add_child(watcher)
 

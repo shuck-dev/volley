@@ -139,3 +139,55 @@ class TestShopItemInputRelease:
 		_item._input(event)
 
 		assert_true(_item.is_dragging(), "right-button release must not end the gesture")
+
+
+# SH-332 Bug 3: outside-shop release commits via the controller's spawn_purchased_at.
+# The pre-fix code gated on _can_route_to_court (ball-role + court rect) and silently
+# took the rack-teleport branch for any release outside that gate.
+class TestShopItemOutsideShopReleaseRoutesThroughController:
+	extends GutTest
+
+	class _StubController:
+		extends Node
+		var spawn_calls: Array = []
+		var spawn_returns: bool = true
+
+		func spawn_purchased_at(
+			item_key: String, world_position: Vector2, velocity: Vector2
+		) -> bool:
+			spawn_calls.append({"key": item_key, "position": world_position, "velocity": velocity})
+			return spawn_returns
+
+	var _item: ShopItem
+	var _item_manager: Node
+	var _controller: _StubController
+
+	func before_each() -> void:
+		_item_manager = ItemFactory.create_manager(self)
+		_item_manager._progression.friendship_point_balance = 1000
+		var definition: ItemDefinition = _item_manager.items[0]
+		_item = ShopItemScene.instantiate()
+		_item._item_manager = _item_manager
+		add_child_autofree(_item)
+		_item.configure(_item_manager, definition)
+
+		_controller = _StubController.new()
+		_controller.add_to_group(&"drag_controller")
+		add_child_autofree(_controller)
+
+	func test_outside_shop_release_invokes_spawn_purchased_at() -> void:
+		_item.start_drag()
+		# Release at a venue-floor point clearly outside the empty shop area (no _shop_area bound = always outside).
+		var release_point := Vector2(800, 300)
+		var ok: bool = _item.attempt_release(release_point)
+		assert_true(ok, "outside-shop release returns true")
+		assert_eq(
+			_controller.spawn_calls.size(),
+			1,
+			"controller.spawn_purchased_at fires exactly once per outside-shop release",
+		)
+		assert_eq(
+			_controller.spawn_calls[0]["position"],
+			release_point,
+			"the release position is forwarded verbatim so the body lands where the player let go",
+		)

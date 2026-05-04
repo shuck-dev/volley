@@ -1,7 +1,7 @@
-class_name ShopItemSettleWatcher
+class_name ShopItemDrop
 extends Node
 
-## Polls a falling HeldBody until it settles, then notifies the originating ShopItem with the resting position.
+## A drop in progress: rides the falling HeldBody, settles on rest, notifies the originating ShopItem.
 
 @export var settle_velocity_threshold: float = 4.0
 @export var settle_frames_required: int = 6
