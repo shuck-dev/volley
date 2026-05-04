@@ -51,10 +51,15 @@ var _grab_target_scale: Vector2 = Vector2.ONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 ## Negative means expansion-ring polling has not started timing yet.
 var _expansion_started_at: float = -1.0
+## True after a real player mouse-up while no drop target accepted; the gesture stays alive
+## following the cursor until the player drags to a valid drop position. Never auto-cancels.
+var _release_pending: bool = false
 
 var _drop_targets: Array[DropTarget] = []
 ## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
 var _builtin_targets: Array[DropTarget] = []
+## Item keys whose loose body persists in the venue; rack stays hidden until the body is re-grabbed or freed.
+var _loose_in_venue_keys: Dictionary = {}
 
 
 func configure(
@@ -118,8 +123,14 @@ func _process(delta: float) -> void:
 	_update_cursor_state(follow_position)
 
 	if not _mouse_button_down:
-		if not attempt_release(follow_position):
-			_update_expansion_state(follow_position)
+		# Release-pending gestures retry at the cursor every frame so the player can drag
+		# to a valid spot after a wall-pinned release; never auto-cancel to source.
+		var release_target: Vector2 = cursor_target if _release_pending else follow_position
+		if not attempt_release(release_target):
+			if _release_pending:
+				_update_hover_feedback(release_target)
+			else:
+				_update_expansion_state(follow_position)
 	elif ease_progress >= 1.0:
 		# Hover feedback is suppressed until the lift ease settles to avoid mid-tween bumps.
 		_update_hover_feedback(follow_position)
@@ -139,7 +150,8 @@ func _input(event: InputEvent) -> void:
 
 	# Use event position so a Camera2D in the venue doesn't break rack hit-testing.
 	if not attempt_release(_clamp_to_venue(_event_world_position(mouse_button))):
-		_expansion_started_at = _now_seconds()
+		# Gesture stays alive: keep following the cursor and retry release each frame.
+		_release_pending = true
 
 
 func is_dragging() -> bool:
@@ -262,6 +274,9 @@ func _spawn_loose_body_at(
 	host.add_child(body)
 	body.go_loose(gesture_velocity)
 	track_loose_body(body)
+	_loose_in_venue_keys[item_key] = true
+	if not body.tree_exited.is_connected(_on_loose_body_freed):
+		body.tree_exited.connect(_on_loose_body_freed.bind(item_key))
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -329,6 +344,11 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
 	track_loose_body(body)
+	# Mark the key so _on_drop_completed leaves the rack slot hidden; the loose body is the visible instance.
+	_loose_in_venue_keys[body.item_key] = true
+	# Free the body on tree exit (scene reload) clears the flag so a fresh kit doesn't double-hide.
+	if not body.tree_exited.is_connected(_on_loose_body_freed):
+		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
 	# Drop the handle so finalisation does not free the loose body.
 	_held_body = null
 
@@ -357,6 +377,8 @@ func _on_loose_body_pressed(body: HeldBody) -> void:
 
 	var spawn_position: Vector2 = body.global_position
 	body.pressed.disconnect(_on_loose_body_pressed)
+	# Re-grab consumes the loose-in-venue marker so the rack reveals normally on the next release path.
+	_loose_in_venue_keys.erase(item_key)
 	_adopt_loose_body_as_held(body)
 
 	_held_body = body
@@ -505,6 +527,7 @@ func _reset_gesture_state() -> void:
 	_grab_ease_elapsed = 0.0
 	_grab_target_scale = Vector2.ONE
 	_expansion_started_at = -1.0
+	_release_pending = false
 	_set_court_exclude_rids([])
 
 
@@ -713,6 +736,19 @@ func _on_pickup_started(item_key: String) -> void:
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
+	# Loose-in-venue items keep the rack slot hidden; the body in the world is the canonical instance.
+	if _loose_in_venue_keys.has(item_key):
+		return
+	if rack != null:
+		rack.reveal_slot_for(item_key)
+	if gear_rack != null:
+		gear_rack.reveal_slot_for(item_key)
+
+
+func _on_loose_body_freed(item_key: String) -> void:
+	# Body left the tree (queue_free or re-grab adoption); reveal so the rack slot returns.
+	# Re-grab paths immediately re-hide via pickup_started so any single-frame flicker is masked.
+	_loose_in_venue_keys.erase(item_key)
 	if rack != null:
 		rack.reveal_slot_for(item_key)
 	if gear_rack != null:
