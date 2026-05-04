@@ -150,15 +150,20 @@ func attempt_release(release_position: Vector2) -> bool:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
-	if not inside_shop and _route_purchased_to_court(release_position):
-		_finalise_gesture(release_position, true)
-		visible = false
-		return true
-
 	if not inside_shop:
-		var purchased: bool = _complete_purchase()
-		if not purchased:
+		# Outside-shop release always commits the purchase and asks the controller to spawn the body.
+		# spawn_purchased_at routes to court / venue / rack targets; if no target accepts, drop a
+		# falling body at the release point so the player still sees a physical instance.
+		if not _complete_purchase() and not is_owned():
 			return false
+		var controller: Node = _drag_controller()
+		var spawned: bool = false
+		if controller != null and controller.has_method("spawn_purchased_at"):
+			spawned = controller.spawn_purchased_at(
+				item_definition.key, release_position, _release_velocity()
+			)
+		if not spawned:
+			_drop_falling_body(release_position)
 		_finalise_gesture(release_position, true)
 		visible = false
 		return true
@@ -177,29 +182,6 @@ func attempt_release(release_position: Vector2) -> bool:
 	_finalise_gesture(release_position, false)
 	# Visibility flip waits on the settle decision; the body's settle watcher resolves it.
 	return true
-
-
-## Returns true only when a Court target accepts the release directly; otherwise the caller falls back to a dropped body.
-func _route_purchased_to_court(release_position: Vector2) -> bool:
-	if not _can_route_to_court():
-		return false
-	var controller: Node = _drag_controller()
-	if not controller.can_court_accept_at(item_definition.key, release_position):
-		return false
-	if not _complete_purchase():
-		return false
-	return controller.spawn_purchased_at(item_definition.key, release_position, _release_velocity())
-
-
-func _can_route_to_court() -> bool:
-	if item_definition == null or item_definition.role != &"ball":
-		return false
-	var controller: Node = _drag_controller()
-	if controller == null:
-		return false
-	return (
-		controller.has_method("can_court_accept_at") and controller.has_method("spawn_purchased_at")
-	)
 
 
 func _drag_controller() -> Node:
@@ -238,12 +220,13 @@ func _scene_host() -> Node:
 
 func _watch_for_settle(body: HeldBody) -> void:
 	# Poll until the body's velocity falls below a settle threshold or it is freed.
-	var watcher := preload("res://scripts/shop/shop_item_settle_watcher.gd").new()
-	watcher.configure(body, self)
-	body.add_child(watcher)
+	# Use load() so the class-name cache (which can be async-stale) doesn't mismatch path-based lookups.
+	var drop: Node = load("res://scripts/shop/shop_item_drop.gd").new()
+	drop.configure(body, self)
+	body.add_child(drop)
 
 
-## Called by the settle watcher with the body's resting position.
+## Called by ShopItemDrop with the body's resting position once velocity has settled.
 func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 	if item_definition == null:
 		if is_instance_valid(body):
