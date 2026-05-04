@@ -18,6 +18,9 @@ var item_key: String = ""
 
 
 static func make_for(definition: ItemDefinition, item_key: String) -> HeldBody:
+	# Equipment without an authored at_rest_shape has no physics body to spawn; refuse rather than crash.
+	if definition == null or definition.at_rest_shape == null:
+		return null
 	var body: HeldBody = HELD_BODY_SCENE.instantiate()
 	body.name = "HeldBody_%s" % item_key
 	body.item_key = item_key

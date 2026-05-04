@@ -9,6 +9,9 @@
 [ext_resource type="Script" uid="uid://d1al3xboi8anu" path="res://scripts/items/effect/outcomes/stat_until_miss_outcome.gd" id="6_miss"]
 [ext_resource type="PackedScene" uid="uid://cw0env2emxen" path="res://scenes/items/cadence.tscn" id="7_art"]
 
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 8.0
+
 [sub_resource type="Resource" id="oscillate_outcome"]
 script = ExtResource("5_osc")
 stat_key = &"ball_speed_offset"
@@ -45,9 +48,11 @@ max_active_level = null
 script = ExtResource("1_item")
 key = "cadence"
 type = &"kit"
+role = &"equipment"
 display_name = "Cadence"
 art = ExtResource("7_art")
 descriptions = Array[String](["Sounds wrong", "Don't stop. Won't stop", "Was anyone listening?"])
 base_cost = 85
 cost_scaling = 1.5
 effects = Array[ExtResource("2_effect")]([SubResource("oscillate_effect"), SubResource("ceiling_effect")])
+at_rest_shape = SubResource("at_rest_shape_1")

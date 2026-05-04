@@ -189,7 +189,8 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	var spawn_position: Vector2 = (
 		press_position if press_position is Vector2 else _cursor_position()
 	)
-	_spawn_held_body(item_key, spawn_position, false)
+	if not _spawn_held_body(item_key, spawn_position, false):
+		return false
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
@@ -219,7 +220,8 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		existing.freeze = true
 		existing.call_deferred("queue_free")
 
-	_spawn_held_body(item_key, spawn_position, is_temporary)
+	if not _spawn_held_body(item_key, spawn_position, is_temporary):
+		return false
 	_held_was_on_court = not is_temporary
 	_held_origin = &"live"
 	_mouse_button_down = true
@@ -253,6 +255,8 @@ func _spawn_loose_body_at(
 	if definition == null:
 		return
 	var body: HeldBody = HeldBody.make_for(definition, item_key)
+	if body == null:
+		return
 	body.global_position = world_position
 	var host: Node = _loose_body_host()
 	host.add_child(body)
@@ -510,13 +514,15 @@ func _set_court_exclude_rids(rids: Array[RID]) -> void:
 			(target as CourtDropTarget).set_exclude_rids(rids)
 
 
-func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> void:
+func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
 	var definition: ItemDefinition = _get_item_definition(item_key)
 	var target_scale: Vector2 = Vector2.ONE
 	if definition != null:
 		target_scale = definition.token_scale
 
 	var body: HeldBody = HeldBody.make_for(definition, item_key)
+	if body == null:
+		return false
 	body.global_position = spawn_position
 	body.scale = grab_ease_start_scale * target_scale
 	body.modulate = grab_ease_start_modulate
@@ -533,6 +539,7 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
+	return true
 
 
 ## Priority order: court strict projection first, role-aware racks, venue catch-all last.

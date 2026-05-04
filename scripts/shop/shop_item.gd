@@ -214,6 +214,8 @@ func _drop_falling_body(release_position: Vector2) -> void:
 	if item_definition == null:
 		return
 	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
+	if body == null:
+		return
 	body.global_position = release_position
 	# Park under the scene root so the body is not freed when this shop item hides itself.
 	var root: Node = _scene_host()
