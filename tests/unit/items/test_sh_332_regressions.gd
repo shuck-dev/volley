@@ -134,14 +134,80 @@ func test_venue_release_does_not_reveal_rack_slot() -> void:
 	var released: bool = _drag.attempt_release(venue_floor)
 	assert_true(released, "venue floor release accepted by VenueDropTarget")
 	assert_false(_drag.is_dragging(), "gesture finalised on release")
-	# The loose-in-venue tracker holds the key; rack stays hidden so the body in the world is the only instance.
+	# ItemManager carries the loose-in-venue overlay; rack filter respects it via get_kit_items.
 	assert_true(
-		_drag._loose_in_venue_keys.has("ball_alpha"),
-		"loose-in-venue marker prevents _on_drop_completed from revealing the rack slot",
+		_manager.is_loose_in_venue("ball_alpha"),
+		"loose-in-venue placement prevents _on_drop_completed from revealing the rack slot",
+	)
+	assert_eq(
+		_rack.get_displayed_keys().find("ball_alpha"),
+		-1,
+		"rack does not render a slot for a loose-in-venue key",
 	)
 	# A loose body must exist under the reconciler ball-host as the canonical instance.
 	assert_eq(
 		_loose_bodies_under_host().size(), 1, "exactly one loose body persists at the release point"
+	)
+
+
+# Edith's regression: spawn_purchased_at on a venue release marks loose-in-venue so the gear rack
+# does not render a slot for the freshly-purchased equipment alongside the loose body.
+func test_purchase_spawn_at_venue_does_not_render_rack_slot() -> void:
+	# Take the equipment so the rack would otherwise pick it up after the level-changed signal.
+	_manager.take("gear_alpha")
+	var venue_floor := Vector2(800, 600)
+	var spawned: bool = _drag.spawn_purchased_at("gear_alpha", venue_floor, Vector2.ZERO)
+	assert_true(spawned, "spawn_purchased_at routes the venue release to a loose body")
+	assert_true(
+		_manager.is_loose_in_venue("gear_alpha"),
+		"placement overlay flips to LOOSE_IN_VENUE on purchase-spawn",
+	)
+	assert_eq(
+		_gear_rack.get_displayed_keys().find("gear_alpha"),
+		-1,
+		"gear rack does not render a slot for the loose-in-venue equipment",
+	)
+	assert_eq(
+		_loose_bodies_under_host().size(),
+		1,
+		"exactly one loose body lives at the release point",
+	)
+
+
+# Re-grabbing a loose body clears the LOOSE_IN_VENUE overlay so the slot returns on release.
+func test_regrab_clears_loose_in_venue_overlay() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	_drag._gesture_below_threshold = false
+	_drag.attempt_release(Vector2(800, 600))
+	assert_true(_manager.is_loose_in_venue("ball_alpha"))
+
+	var bodies: Array = _loose_bodies_under_host()
+	assert_eq(bodies.size(), 1)
+	var loose_body: HeldBody = bodies[0]
+	# Synthesise the press signal the live press area would emit.
+	loose_body.pressed.emit(loose_body)
+	assert_false(
+		_manager.is_loose_in_venue("ball_alpha"),
+		"re-grabbing a loose body clears the placement overlay",
+	)
+
+
+# Free of the loose body (queue_free outside re-grab) clears the overlay too.
+func test_loose_body_free_clears_overlay() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	_drag._gesture_below_threshold = false
+	_drag.attempt_release(Vector2(800, 600))
+	assert_true(_manager.is_loose_in_venue("ball_alpha"))
+
+	var bodies: Array = _loose_bodies_under_host()
+	assert_eq(bodies.size(), 1)
+	bodies[0].queue_free()
+	await get_tree().process_frame
+	assert_false(
+		_manager.is_loose_in_venue("ball_alpha"),
+		"freeing the loose body clears the placement overlay",
 	)
 
 

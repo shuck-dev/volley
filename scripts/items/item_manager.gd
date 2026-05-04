@@ -22,6 +22,8 @@ var items: Array[ItemDefinition] = [
 
 var _progression: ProgressionData
 var _effect_manager: EffectManager
+## Transient overlay: keys whose body lives loose on the venue floor. Not persisted; cleared on reload.
+var _loose_in_venue: Dictionary[String, bool] = {}
 
 
 func _ready() -> void:
@@ -106,13 +108,43 @@ func get_level(item_key: String) -> int:
 
 
 ## Returns the current placement of an item. Defaults to STORED (on the rack).
+## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
 func _get_placement(item_key: String) -> int:
+	if _loose_in_venue.get(item_key, false):
+		return PlacementScript.LOOSE_IN_VENUE
 	return _progression.item_placements.get(item_key, PlacementScript.STORED)
 
 
-## True when an item is currently placed (on player or court), false on the rack.
+## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
+func get_placement(item_key: String) -> int:
+	return _get_placement(item_key)
+
+
+## True when a loose body for this item exists on the venue floor.
+func is_loose_in_venue(item_key: String) -> bool:
+	return _loose_in_venue.get(item_key, false)
+
+
+## Marks an owned item as loose-in-venue. Idempotent. Emits item_placement_changed.
+func mark_loose_in_venue(item_key: String) -> void:
+	if _loose_in_venue.get(item_key, false):
+		return
+	_loose_in_venue[item_key] = true
+	item_placement_changed.emit(item_key, PlacementScript.LOOSE_IN_VENUE)
+
+
+## Clears the loose-in-venue overlay. Idempotent. Emits item_placement_changed with the underlying placement.
+func clear_loose_in_venue(item_key: String) -> void:
+	if not _loose_in_venue.get(item_key, false):
+		return
+	_loose_in_venue.erase(item_key)
+	item_placement_changed.emit(item_key, _get_placement(item_key))
+
+
+## True when an item is currently placed (on player or court), false on the rack or loose in venue.
 func is_on_court(item_key: String) -> bool:
-	return _get_placement(item_key) != PlacementScript.STORED
+	var placement: int = _get_placement(item_key)
+	return placement == PlacementScript.EQUIPPED or placement == PlacementScript.ON_COURT
 
 
 ## Returns the list of ball-role item keys currently on the court.

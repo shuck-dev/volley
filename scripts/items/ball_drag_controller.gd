@@ -58,8 +58,6 @@ var _release_pending: bool = false
 var _drop_targets: Array[DropTarget] = []
 ## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
 var _builtin_targets: Array[DropTarget] = []
-## Item keys whose loose body persists in the venue; rack stays hidden until the body is re-grabbed or freed.
-var _loose_in_venue_keys: Dictionary = {}
 
 
 func configure(
@@ -274,7 +272,8 @@ func _spawn_loose_body_at(
 	host.add_child(body)
 	body.go_loose(gesture_velocity)
 	track_loose_body(body)
-	_loose_in_venue_keys[item_key] = true
+	if _item_manager != null:
+		_item_manager.mark_loose_in_venue(item_key)
 	if not body.tree_exited.is_connected(_on_loose_body_freed):
 		body.tree_exited.connect(_on_loose_body_freed.bind(item_key))
 
@@ -344,9 +343,10 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
 	track_loose_body(body)
-	# Mark the key so _on_drop_completed leaves the rack slot hidden; the loose body is the visible instance.
-	_loose_in_venue_keys[body.item_key] = true
-	# Free the body on tree exit (scene reload) clears the flag so a fresh kit doesn't double-hide.
+	# Promote to ItemManager so RackDisplay filters this key out via get_kit_items.
+	if _item_manager != null:
+		_item_manager.mark_loose_in_venue(body.item_key)
+	# Body free on tree_exited clears the overlay so a fresh kit doesn't keep a stale slot hidden.
 	if not body.tree_exited.is_connected(_on_loose_body_freed):
 		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
 	# Drop the handle so finalisation does not free the loose body.
@@ -377,8 +377,9 @@ func _on_loose_body_pressed(body: HeldBody) -> void:
 
 	var spawn_position: Vector2 = body.global_position
 	body.pressed.disconnect(_on_loose_body_pressed)
-	# Re-grab consumes the loose-in-venue marker so the rack reveals normally on the next release path.
-	_loose_in_venue_keys.erase(item_key)
+	# Re-grab consumes the loose-in-venue overlay so the rack reveals normally on the next release path.
+	if _item_manager != null:
+		_item_manager.clear_loose_in_venue(item_key)
 	_adopt_loose_body_as_held(body)
 
 	_held_body = body
@@ -736,8 +737,8 @@ func _on_pickup_started(item_key: String) -> void:
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
-	# Loose-in-venue items keep the rack slot hidden; the body in the world is the canonical instance.
-	if _loose_in_venue_keys.has(item_key):
+	# Loose-in-venue items have their rack entry filtered out by ItemManager.get_kit_items; nothing to reveal.
+	if _item_manager != null and _item_manager.is_loose_in_venue(item_key):
 		return
 	if rack != null:
 		rack.reveal_slot_for(item_key)
@@ -746,9 +747,10 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 
 
 func _on_loose_body_freed(item_key: String) -> void:
-	# Body left the tree (queue_free or re-grab adoption); reveal so the rack slot returns.
+	# Body left the tree (queue_free or re-grab adoption); clearing restores the slot via refresh.
 	# Re-grab paths immediately re-hide via pickup_started so any single-frame flicker is masked.
-	_loose_in_venue_keys.erase(item_key)
+	if _item_manager != null:
+		_item_manager.clear_loose_in_venue(item_key)
 	if rack != null:
 		rack.reveal_slot_for(item_key)
 	if gear_rack != null:
