@@ -1,179 +1,78 @@
 # Volley! narrative outline
 
-The canonical narrative outline. Setting, worlds, cast, mechanics, act-by-act spine: everything a designer or writer needs to know about how the story is shaped, rather than how it feels. The story itself, told as prose, lives in [`story.md`](story.md). The art bible (`../art/bible.md`) covers world and tone; the protagonist profile (`../characters/protagonist.md`) covers the arc in close-up; the per-style canon sits in `../concept/`.
+This doc is a sourcebook, not a brief. It is structured by what is in the world rather than what happens in it: places, people, objects, weather, with a short timeline at the back. Each entry is a portrait, written in the same voice across the document. A writer reading any one entry should know what is true about that part of the world; a writer reading the whole document should be able to walk into it.
 
-## Setting
+The story told as prose lives in [`story.md`](story.md). World rendering and tone are in [`../art/bible.md`](../art/bible.md). The arc in close-up is in [`../characters/protagonist.md`](../characters/protagonist.md). Mechanics live in the system docs and are not repeated here.
 
-Pre-smartphone era. Late 90s into early 2000s. Phones are flip, candy-bar, and land-line. Numbers live in heads or on paper, never in pocket databases that auto-name themselves. Period feel runs through the art direction: clothes, signage, phone hardware, photo prints with the date in the corner.
+This file is the structural index. The portraits below are stubbed; prose lands in follow-up commits.
 
-The protagonist's hometown is a small coastal town, the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls. Palm trees in places. The high street smells of rain and citrus. Mediterranean light on a British coastline. Ordinary, lived-in, faded grandeur with sun on it. The reference points are real; the town sits on no map.
+## How to read this doc
 
-## Two worlds
+One paragraph on the discipline: portraits over plot, voice consistent across entries, canon locks called out inline, mechanics deliberately absent. Names a small number of conventions the writer is expected to keep.
 
-Volley! is set across two worlds. The player meets only one to start.
+## Places
 
-Construction is what they meet first: a small seaside town with a court in the garden, the world the protagonist is rallying through. Through the cracks of Part 1, a second reading lands. Construction is a construct, not the actual hometown. The garden in Construction is built from the protagonist's memory of their real garden, sprucing it up. The two gardens remain separate places.
+Each entry: a portrait of a place as it is in canon, with its sensory detail, its inhabitants in their resting state, and any canon lock that applies to it.
 
-The world Construction was a substitute for is Reality.
+- The garden, in Construction
+- The garden, in Reality
+- The shop, as a stall in Construction's garden
+- The shop, as a closed shop in Reality
+- The workshop, in the corner of the garden
+- Construction's other venues, as a set
+- The town, in Reality
+- The path, the bench, and the cliff
+- The sister's house
 
-## The garden as meeting point
+## People
 
-Construction's other venues sit in the purely fantastic: underwater, a meteor field, a treetop canopy. None have a Reality counterpart. The garden does. It is the one place where the constructed world and the real one share a footprint, and the "out of place out of time" feel of the venue comes from being grounded.
+Each entry: a portrait of a person as the player encounters them, with their voice, their relation to the protagonist, and any name or fact held back from the player.
 
-The title carries the weight of that doubling. A literal place. A tended thing, the protagonist's daily care. Where things grow: the rally, the obsession, the memories. A pre-Fall innocence preserved. A walled enclosure.
+- The protagonist
+- The shopkeeper
+- Martha
+- The other partners, as a set
+- The champ
+- The tinkerer
+- The sister
+- The dead friend
 
-## One locked gate
+## Objects
 
-The garden has one locked gate. The player sees it from Part 1. It does not unlock until the album fills and the sister hands over the key. The cliff is on the other side.
+Each entry: a portrait of a single object, what it does, where it sits, and what canon lock attaches to it.
 
-## Friendship as force
+- The gate and the padlock
+- The key
+- The phone and the unnamed number
+- The photo album and its hidden compartment
+- The racquet
+- The chalk
+- The bench plaque
 
-Friendship is a force, the medium the ball moves through. Each bond in the protagonist's life is its own wind. The garden's wind is the bond with the shopkeeper. Each other venue's wind is the bond with the coach who teaches there. Together, those bonds carry the rally across the whole game.
+## Weathers
 
-The friendships are not metaphorically present. They are the rally's invisible structure. The shopkeeper bond is load-bearing for the arc; the coach bonds are real in their own right, each one the wind in its own venue.
+Each entry: a portrait of an atmosphere or felt force in the world, written as a place or person would be.
 
-When a bond thins, the rally continues, and the air around it moves differently. The garden in Reconstruction shows this directly. The other venues, with their winds intact, still play.
+- Friendship as wind
+- The period
+- The leak between worlds
 
-The mechanical and visual shape of this bond-as-medium (the apex return, the bloom and chime at each rally point, the per-venue reaction work) lives in the system docs. Court physics in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md). Reaction-beat staging in [`../art/bible.md`](../art/bible.md) § 17.
+## Staged scenes
 
-## Cast
+Three scenes are written in full as short staged passages and placed inline at the hinges where the carrier bag wants the spear. Each entry lists the scene's anchor and what the staging is doing.
 
-Listed in the order the player meets them. Backstory lands where the player learns it, not here. Physical canon for the protagonist lives in [`../characters/protagonist.md`](../characters/protagonist.md).
+- The championship win
+- The locked gate
+- The cliff and the dial
 
-**The protagonist** is the player's avatar. Visible throughout, in both styles. Picked up a racquet long ago and never quite put it down.
+## Timeline
 
-**The shopkeeper** stands behind the counter of the small wooden stall in Construction's garden. The warm centre of the venue. Calls a name across the court when the rally lands. Their relationship to the protagonist is the load-bearing emotional shape of the game.
+A short chronological spine: the sequence of events the player encounters, named in one or two clauses each. The timeline is the back of the bag, not the canon; canon is what the portraits say.
 
-**Martha and the partners** are the coaches across Construction's venues. Each teaches one mechanic through the rally. Each is a real person from the protagonist's life, with a Reality render at their actual age in their actual life. Each partner is named for a character from a science-fiction author's work.
+## Canon locks
 
-**The champ** holds the championship final spot. Construction-only, no Reality counterpart. Someone the protagonist looks up to, painted at championship scale because that is the size the friendship sits at in the protagonist's chest. The player beats the champ; the champ exits at the end of Part 1.
-
-**The tinkerer** runs a workshop in another corner of the garden. A Construction figure with a Reality counterpart, met in Part 2.
-
-**The sister** enters in Part 2 as the bridge into Reality. Holds the photo album that gates the search. Less weighted by the loss than the shopkeeper. Her Construction render is the tinkerer.
-
-**The dead friend** is named in Part 2, when the trail surfaces them. They died years ago in a cliff-jumping accident. Cliff jumping was a normalised activity in the friend group, dangerous and routine, until it wasn't. The reason the protagonist built Construction.
-
-## The phone
-
-A number sits in the protagonist's phone. Just digits: no contact, no label. The protagonist deleted it, never saved it, or the device holds digits without naming them. Period-appropriate.
-
-The player has full control of the phone throughout. The number is dialable any time, in Construction and Reconstruction, before the cliff. It never connects.
-
-This is the load-bearing mechanic across both acts. The player's reaching out, with no answer back, is the protagonist's reaching out, with no answer back. Whose number it is surfaces at the cliff.
-
-## Part 1: Construction
-
-### The hook
-
-The protagonist's stated goal is the world volley record. Friends help along the way. The count climbs. The tournament gives the structural shape: each main venue hosts one round; coach-partners train the protagonist in mechanics that compose into the kit; the championship at the top of the ladder is the goal.
-
-What the player does not know yet: the world record is the shopkeeper's phone number.
-
-### Cracks
-
-Reality leaks into Construction in two flavours.
-
-Tonal cracks live inside Construction's fiction. A flicker in the venue light. A partner's tilt held a beat too long. A colour cooling at the edge of the frame. Atmospheric oddness.
-
-Meta-contextual cracks live outside the fiction, in the surfaces around it. A music cue that skips. A UI element that blinks the wrong colour. A loading screen that says something it should not. A pause-menu wording that shifts.
-
-Both authored, both deniable. Never concrete leakage; no real-world object literally appears inside Construction.
-
-### The championship and the win
-
-The protagonist climbs every round. The obsession with becoming champ deepens. The double meaning carries: become the champion, win the thing; and become the dead friend, the champ in their construction.
-
-The player wins the championship. They beat the champ.
-
-The win feels off. It was supposed to fix the protagonist; it didn't. Both pulls of "becoming champ" satisfy, and neither was the thing.
-
-The win is the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless.
-
-At the win moment, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. The number stays unnamed in their phone. Recognition is held until the cliff.
-
-### After the win
-
-The player is pulled into Reality involuntarily for the first time. Walks through the protagonist's hometown. Sees the people behind the partners. Discovers that the shopkeeper is missing. The shop is empty. The family is worried. The person the protagonist was reaching for without admitting it has actually disappeared.
-
-The cliff sits beyond the town's edge but is not visited yet. The friend died there, and the shopkeeper has gone there, and it waits.
-
-The champ exits at this point. Not in Part 2.
-
-End of Part 1.
-
-## Part 2: Reconstruction
-
-### Emotional state and driving force
-
-The driving feeling is dread. The player believes the shopkeeper is gone, has followed the dead friend's path, is lost. The unnamed number doesn't connect; the no-answer state is the player-facing weight of the protagonist's ineffectual reaching.
-
-The driving force is the search for what happened. Not "find the shopkeeper" generically, but "find out what they did, where they went, whether it's too late." The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
-
-### The carry
-
-Reconstruction adds free travel between Construction and Reality, and a bidirectional curated bridge between them. Specific things from Construction can be brought into Reality and used in specific scenes there; specific acknowledgements from Reality feed back into Construction, unlocking new venues, new lines from coaches, new affordances. Each carry is a narrative beat, not an open mechanic.
-
-### Mechanics
-
-The sister has the photo album. Half-filled, with a hidden compartment that won't open until enough pages are filled.
-
-Volley becomes memory recall. Each rally surfaces a memory; each memory becomes a photo, or unlocks one; each photo points to a place in Reality where the shopkeeper might be, or left a trace. Coaches share their own memories of the shopkeeper as the player rallies with them. The volley is the search done sideways.
-
-Reality scenes are hand-crafted, gated by photos. Each found photo unlocks a hand-crafted Reality scene; the photo and the scene together compound the trail.
-
-The unnamed number stays unnamed. No fragments surface. No partial recognition. The number sits in the phone throughout Construction and Reconstruction, dialable, never picked up. The reveal is held until the cliff.
-
-### Three play-level differentiators
-
-Reconstruction must feel different. Three changes carry that.
-
-The score is hidden. The count climbed visibly through Part 1; in Part 2 the number disappears from the rally HUD. The player rallies without seeing the count. The number can be checked, but only in Reality: the sister's, the closed shop, the cliff once unlocked.
-
-The champ's dialogue softens gradually. The champ exits at the end of Part 1, so this beat may shift onto a partner who absorbs some of those lines, or drop. To reconcile.
-
-Audio shifts. Construction's bright synthetic music thins; acoustic instruments arrive; balance moves toward fuller arrangement by late Part 2. Full direction sits in the audio docs.
-
-### Reaching the key
-
-The album fills. The hidden compartment opens. The key is inside.
-
-The sister hands it over.
-
-The player returns to the first venue, the garden, with the key. Walks to the locked gate. Unlocks it. Walks through to Reality.
-
-## The cliff and the call
-
-### The cliff
-
-The protagonist arrives at the cliff. The bench is there, dedicated to the friend who died. The shopkeeper is on the bench. Alive.
-
-The Act 2 dread inverts. Relief. The fear was wrong. They've been here, withdrawn, refusing calls.
-
-### The dial
-
-The protagonist sees the shopkeeper on the bench. Recognition lands at the cliff for the first time: the unnamed number in their phone, the world record they reached, the digits the championship match resolved on, the shopkeeper sitting in front of them, all of it the same number. Held in the phone the whole game, never named, only now legible.
-
-The protagonist takes out their phone. They could walk up silently. They don't. They dial the unnamed number, knowing now whose it is. The shopkeeper's phone rings on the bench beside them. They could ignore it like they've been ignoring all the others. They don't. They look up at the sound. See the protagonist. Pick up.
-
-The dial does two things at once: chosen presence, and finally attaching the name to the number. The phone log entry is no longer just digits.
-
-### Staging
-
-A split frame at the path, the bench, the phones. The protagonist outside the bench area; the shopkeeper on the bench, holding their phone. The dial bridges intention, not space. They look at each other across the small distance, both holding their phones. After the touchstone of *Broken Age*'s key art, two characters sharing one frame divided by a structural element. Then the protagonist crosses, sits beside them. The call ends.
-
-## Credits
-
-Credits play over the protagonist and the shopkeeper volleying. The first rally between them. Construction's championship spot now occupied by the actual person, not the substitute. The rally is the proof: the daily thing the protagonist did alone is finally done together.
-
-The visual style is Construction's saturated, generous light, with the texture Reality has worn into it across Reconstruction. The bench from the cliff is visible somewhere, maybe in a corner, maybe glimpsed past the gate that now stays open.
-
-The audio sits in synthesis at exactly the visual moment of synthesis. The synth warmth that opened the game returns layered with the acoustic instruments Reality brought.
-
-## Postgame
-
-Rallying with the shopkeeper as the championship-spot partner. The cliff stays returnable through the now-unlocked gate. Construction has its centre back, as the actual relationship rather than the substitute.
+The list of facts held back from the player, where each lands, and what unlocks it.
 
 ## Cross-references
 
-The art bible at `../art/bible.md` carries world rendering, the Six Marks, and tone direction. The protagonist profile at `../characters/protagonist.md` carries the arc in close-up. The per-style canon, including audio direction, sits in `../concept/`.
+Pointers to the docs this outline sits beside: `story.md`, `../art/bible.md`, `../characters/protagonist.md`, `../01-prototype/21-ball-dynamics.md`, and the research scratchpad at `../research/narrative-outline-formats.md`.
