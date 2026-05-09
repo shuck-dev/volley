@@ -155,18 +155,21 @@ func test_press_on_shop_item_hides_source_slot_during_drag() -> void:
 
 
 func test_release_inside_shop_restores_source_slot_visibility() -> void:
+	# SH-332: a pure click (release at the press position, sub-threshold travel) is the cancel path.
 	_setup_shop()
 	var item: ShopItem = _shop_item("grip_tape")
 	var viewport: Viewport = item.get_viewport()
 
 	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
-	# Release inside the shop area cancels the purchase; the item must come back into view.
-	item.attempt_release(_shop.shop_area.global_position)
+	# Anchor the press inside the shop area; release at the same point keeps travel zero (pure click).
+	var inside: Vector2 = _shop.shop_area.global_position
+	item._press_position = inside
+	item.attempt_release(inside)
 
 	assert_false(item.is_dragging(), "release ends the gesture")
 	assert_true(
 		item.visible,
-		"SH-251: cancelled purchase must restore the source slot's render",
+		"SH-251: cancelled click must restore the source slot's render",
 	)
 	assert_eq(_shop_manager.get_level("grip_tape"), 0, "cancelled gesture leaves the item unowned")
 
@@ -221,9 +224,7 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 
 
 func test_real_press_release_inside_shop_restores_visibility_via_input_path() -> void:
-	# Drives the real cancel path through ShopItem._input(InputEventMouseButton): press starts
-	# the gesture, release inside the shop bounds cancels and the source slot must come back
-	# into view without changing item level.
+	# SH-332: a pure click via real _input (release at press position, sub-threshold) cancels and restores.
 	_setup_shop()
 	var item: ShopItem = _shop_item("grip_tape")
 	var viewport: Viewport = item.get_viewport()
@@ -233,7 +234,11 @@ func test_real_press_release_inside_shop_restores_visibility_via_input_path() ->
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
 	assert_false(item.visible, "source slot is hidden during the drag")
 
-	item._input(_release_event_at(_shop.shop_area.global_position))
+	# Anchor the press inside the shop area; release at the same point keeps travel zero (pure click).
+	var inside: Vector2 = _shop.shop_area.global_position
+	item._press_position = inside
+	var canvas_transform: Transform2D = item.get_canvas_transform()
+	item._input(_release_event_at(canvas_transform * inside))
 
 	assert_false(item.is_dragging(), "real mouse-up resolves the gesture")
 	assert_true(

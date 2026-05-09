@@ -4,19 +4,17 @@ extends Node2D
 ## Placeholder visual for the grab cursor state machine; replaced by SH-298 textures.
 
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
-const DEFAULT_PALETTE: CursorOverlayPalette = preload(
-	"res://resources/hud/cursor_overlay_palette.tres"
-)
+const DEFAULT_STYLE: CursorStyle = preload("res://resources/hud/cursor_style.tres")
 
-## Colour cluster + ring metrics; tunable per-scene by swapping the palette resource.
-@export var palette: CursorOverlayPalette = DEFAULT_PALETTE
+## Colour-per-state plus ring metrics; tunable per-scene by swapping the style resource.
+@export var style: CursorStyle = DEFAULT_STYLE
 
 var _state: int = CursorStateScript.State.DEFAULT
 
 
 func _ready() -> void:
-	if palette == null:
-		palette = DEFAULT_PALETTE
+	if style == null:
+		style = DEFAULT_STYLE
 	z_index = 4096
 	top_level = true
 	visible = false
@@ -40,26 +38,19 @@ func _draw() -> void:
 		return
 	var ring_color: Color = _color_for_state(_state)
 	draw_arc(
-		Vector2.ZERO,
-		palette.cursor_radius_px,
-		0.0,
-		TAU,
-		32,
-		ring_color,
-		palette.ring_width_px,
-		true
+		Vector2.ZERO, style.cursor_radius_px, 0.0, TAU, 32, ring_color, style.ring_width_px, true
 	)
 	# Centre dot reads as the press point regardless of which state is active.
-	draw_circle(Vector2.ZERO, palette.ring_width_px, ring_color)
+	draw_circle(Vector2.ZERO, style.ring_width_px, ring_color)
 
 
 func _color_for_state(state: int) -> Color:
 	match state:
 		CursorStateScript.State.DRAGGING:
-			return palette.color_dragging
+			return style.color_dragging
 		CursorStateScript.State.CAN_DROP:
-			return palette.color_can_drop
+			return style.color_can_drop
 		CursorStateScript.State.FORBIDDEN:
-			return palette.color_forbidden
+			return style.color_forbidden
 		_:
-			return palette.color_default
+			return style.color_default

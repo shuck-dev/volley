@@ -227,3 +227,60 @@ func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> v
 		pre_loose_scale,
 		"ArtHolder receives the body's pre-loose scale so the visual does not pop",
 	)
+
+
+func test_loose_body_has_press_area_enabled_when_loose() -> void:
+	# SH-332: a loose body's PressArea is the entry point for re-grab.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+	assert_true(_drag.attempt_release(Vector2(1500, 100)), "loose drop succeeds")
+	var bodies: Array = _loose_bodies_under_host()
+	assert_eq(bodies.size(), 1)
+	var body: HeldBody = bodies[0]
+	assert_not_null(body.press_area, "loose body has a press area for re-grab")
+	assert_true(body.press_area.input_pickable, "press area is enabled when LOOSE")
+
+
+func test_loose_body_press_re_grabs_via_controller() -> void:
+	# SH-332: pressing a loose body adopts it as the held body so the player can re-grab.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
+	assert_true(_drag.attempt_release(Vector2(1500, 100)))
+	var bodies: Array = _loose_bodies_under_host()
+	var body: HeldBody = bodies[0]
+	assert_null(_drag.get_held_body(), "controller has no held body after the loose release")
+
+	body.pressed.emit(body)
+
+	assert_eq(_drag.get_held_body(), body, "loose press re-grabs the same body")
+	assert_eq(body.phase, HeldBody.Phase.LIFTING, "re-grabbed body returns to LIFTING")
+	assert_true(body.freeze, "re-grabbed body re-freezes for cursor follow")
+
+
+func test_grab_live_ball_excludes_old_body_rid_from_court_projection() -> void:
+	# SH-332: the about-to-be-freed live Ball lingers a frame; its RID must be excluded
+	# from the court projection so the next release does not self-overlap and snap off-court.
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	live.global_position = Vector2(0, 0)
+	var live_rid: RID = live.get_rid()
+
+	assert_true(_drag.grab_live_ball("ball_alpha", false))
+
+	var court_target: CourtDropTarget = null
+	for target in _drag.get_registered_targets():
+		if target is CourtDropTarget:
+			court_target = target
+			break
+	assert_not_null(court_target, "controller registers a CourtDropTarget")
+	assert_true(
+		court_target._exclude_rids.has(live_rid),
+		"old live ball's RID is excluded from the court projection during the grab",
+	)

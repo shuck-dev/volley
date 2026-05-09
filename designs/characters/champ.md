@@ -1,6 +1,6 @@
 # The champ
 
-The dead friend, rendered into Construction as the championship final. Construction-only; their Reality is the cliff.
+Fern. The dead friend, rendered into Construction as the championship final. Construction-only; their Reality is the cliff.
 
 The art bible at [`../art/bible.md`](../art/bible.md) § 4 names the body and the visual role; this profile holds the relationship and the arc.
 

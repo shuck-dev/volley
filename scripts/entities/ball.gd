@@ -11,7 +11,7 @@ const SPEED_EMIT_THRESHOLD := 10.0
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
 ## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
-@export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 1.6
+@export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 2.4
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
 @export var press_area: Area2D
 

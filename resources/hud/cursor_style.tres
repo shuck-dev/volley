@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="CursorStyle" format=3 uid="uid://d24d8dno1pta4"]
+
+[ext_resource type="Script" uid="uid://m2m8ydruyqtw7" path="res://scripts/hud/cursor_style.gd" id="1_style"]
+
+[resource]
+script = ExtResource("1_style")

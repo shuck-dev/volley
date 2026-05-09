@@ -11,6 +11,7 @@ const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 var _item_manager: Node
 var _slots: Array[Node2D] = []
 var _slot_markers: Array[Node2D] = []
+var _hidden_key: String = ""
 
 
 func _ready() -> void:
@@ -44,6 +45,7 @@ func refresh() -> void:
 		var slot: Node2D = _build_slot(definition, _slot_markers[marker_index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
+	_apply_slot_visibility()
 
 
 func get_displayed_keys() -> Array[String]:
@@ -122,6 +124,27 @@ func _on_slot_input_event(
 ## Test seam / production fallback: emits the slot_pressed signal at the supplied position.
 func press_slot(item_key: String, press_position: Vector2 = Vector2.ZERO) -> void:
 	slot_pressed.emit(item_key, press_position)
+
+
+## Hides the slot so the player sees one item (the held body), not two; mirrors ShopItem.visible=false on grab.
+func hide_slot_for(item_key: String) -> void:
+	_hidden_key = item_key
+	_apply_slot_visibility()
+
+
+func reveal_slot_for(item_key: String) -> void:
+	if _hidden_key != item_key:
+		return
+	_hidden_key = ""
+	_apply_slot_visibility()
+
+
+func _apply_slot_visibility() -> void:
+	for slot in _slots:
+		if slot == null or not is_instance_valid(slot):
+			continue
+		var key: String = slot.get_meta(&"item_key", "")
+		slot.visible = key != _hidden_key
 
 
 func _clear_slots() -> void:
