@@ -38,7 +38,7 @@ Full team per work unit:
 
 - **Impl** (writer of the change). Often folds in test authoring when the work is test code itself.
 - **Test author**, paired with impl when a hook or gate forces failing tests + impl into one commit.
-- **Reviewers**: code-quality, gdscript-conventions, test-coverage by default, plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, supply-chain-scout, docs-and-writing).
+- **Reviewers**: code-quality, gdscript-conventions, test-coverage by default, plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
 - **Battlers**: devils-advocate to challenge the approach, integration-scenario-author to write adversarial scenarios that try to expose gaps.
 
 Each minion gets a codename from the pool (Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.

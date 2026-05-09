@@ -24,12 +24,11 @@ Twelve roles, grouped by what they produce. The **impl pool** writes artefacts: 
 
 ### Reviewer pool
 
-Three new reviewers join the eight reactive ones that already ride PRs today.
+Two new reviewers join the eight reactive ones that already ride PRs today.
 
 | Role | Purpose | Trigger |
 |---|---|---|
 | [`save-format-warden`](../../.claude/agents/save-format-warden.md) | Block save-breaking diffs under the no-compat-shim rule | `scripts/progression/**` |
-| [`supply-chain-scout`](../../.claude/agents/supply-chain-scout.md) | Score provenance and SHA pinning for new deps | `addons/**`, `requirements-dev.txt`, new workflow `uses:` |
 | [`devils-advocate`](../../.claude/agents/devils-advocate.md) | Steel-man the opposing side; stress-test before commit | Proposals, designs, architectural calls |
 
 Existing reviewers, unchanged: `code-quality`, `gdscript-conventions`, `signals-lifecycle`, `test-coverage`, `godot-scene`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`.
@@ -66,7 +65,7 @@ Point-to-point minion messaging is not in the design. An earlier `inbox/{name}.m
 
 ## Worktree discipline
 
-Code-writing minions dispatch with `isolation: "worktree"` on the Agent tool. Each gets a clean tree at `/home/josh/gamedev/volley-<short-slug>/` as a sibling of the main workspace, never under `/tmp/` and never buried in `.claude/worktrees/`. Non-worktree minions stay on the main tree: `researcher`, `root-cause-analyst`, `design-doc-reader`, `devils-advocate`, `supply-chain-scout`, `save-format-warden`. Reviewers read `gh pr diff` against origin; they never take a worktree.
+Code-writing minions dispatch with `isolation: "worktree"` on the Agent tool. Each gets a clean tree at `/home/josh/gamedev/volley-<short-slug>/` as a sibling of the main workspace, never under `/tmp/` and never buried in `.claude/worktrees/`. Non-worktree minions stay on the main tree: `researcher`, `root-cause-analyst`, `design-doc-reader`, `devils-advocate`, `save-format-warden`. Reviewers read `gh pr diff` against origin; they never take a worktree.
 
 Worktrees come down at the end of each stage, not when the Dandori Challenge merges. When an impl minion pushes, Gru removes the worktree in the same turn. A revision round on the same branch creates a fresh `git worktree add` (seconds). The branch on origin carries every byte the worktree held; a worktree that lingers past its push is clutter and a drift risk. The one exception is the main workspace at `/home/josh/gamedev/volley/`, which stays.
 
@@ -109,7 +108,7 @@ PRs open as drafts so Linear transitions the ticket to In Progress without pulli
 
 The swarm inherits the session-tier system from `ai/skills/gru/dispatch.md`. Every minion declares a tier ceiling in its `.claude/agents/*.md` body; Gru respects it and never elevates silently.
 
-- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most minions live here: `ticket-writer`, `pr-describer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer in the pool (`code-quality`, `gdscript-conventions`, `godot-scene`, `signals-lifecycle`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`, `test-coverage`, `save-format-warden`, `supply-chain-scout`, plus `devils-advocate`).
+- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most minions live here: `ticket-writer`, `pr-describer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer in the pool (`code-quality`, `gdscript-conventions`, `godot-scene`, `signals-lifecycle`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`, `test-coverage`, `save-format-warden`, plus `devils-advocate`).
 - **Tier 1 (scene edits)** covers `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit`. Dispatch requires `isolation: "worktree"`; parallelism is across worktrees. Minions that may escalate here: `integration-scenario-author` when scenarios stage scenes, `test-author` when tests need scene fixtures.
 - **Tier 2 (runtime)** covers `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot`. By request only. The minion files a `RUNTIME REQUEST` per the format in `ai/skills/gru/dispatch.md` and waits for Josh's approval before `run(play)` fires. No swarm minion currently holds a Tier 2 ceiling; Josh does the play-testing.
 
@@ -139,7 +138,7 @@ A story often wants a similar shape with the reader swapped out: `design-doc-rea
 
 An audit is read-only, no worktrees. `researcher` fans out four times across different facets (point load, owners, dates, linked designs). `design-doc-reader` opens each linked design. `devils-advocate` reviews the synthesis and names what the plan is lying about. A mid-cycle health check might cast **Trillian**, **Eddie**, **Zephyr**, and **Aunt Beast** each on one facet; **Stanford** on the linked designs; **Bill** on the synthesis, flagging the project that has no acceptance criteria at all.
 
-A spike uses the support team rather than the resolver team. `researcher` gathers material, `devils-advocate` stages failure modes, `supply-chain-scout` scores options where third-party tools are on the table. Gru compiles a briefing, Josh decides, and only then does Gru draft a design stub and follow-up tickets, confirming before filing any of them. New-feature spikes split into at least two tickets before dispatch: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). The two pull in opposite directions and produce cleaner writeups apart than mashed together. Spikes on a single existing system (a perf regression, a refactor question) stay as one ticket. Picking a GDScript linter might look like **Zephyr** pulling docs for three candidates, **Bill** writing the adversarial read on each, **Abe** checking provenance and SHA pinning, Josh picking one, and **Mabel** drafting the rollout design and tickets and asking before submitting.
+A spike uses the support team rather than the resolver team. `researcher` gathers material and `devils-advocate` stages failure modes; when third-party tools are on the table, a separate `researcher` pass scores provenance, pinning, and maintainer signals. Gru compiles a briefing, Josh decides, and only then does Gru draft a design stub and follow-up tickets, confirming before filing any of them. New-feature spikes split into at least two tickets before dispatch: one design spike (shape, feel, player experience, narrative framing) and one tech spike (feasibility, architecture, dependencies). The two pull in opposite directions and produce cleaner writeups apart than mashed together. Spikes on a single existing system (a perf regression, a refactor question) stay as one ticket. Picking a GDScript linter might look like **Zephyr** pulling docs for three candidates, **Bill** writing the adversarial read on each, **Abe** running a second `researcher` pass on provenance and SHA pinning, Josh picking one, and **Mabel** drafting the rollout design and tickets and asking before submitting.
 
 ### Paired dispatch
 
@@ -218,7 +217,6 @@ flowchart LR
     Workflows[".github/**"] --> CIWorkflows[ci-and-workflows]
     Docs["**/*.md"] --> DocsWriting[docs-and-writing]
     Save["scripts/progression/**"] --> SaveWarden[save-format-warden]
-    Deps["addons/**, requirements-dev.txt, workflow uses:"] --> Supply[supply-chain-scout]
     Signals["connect(, emit(, tree_exit, autoloads"] --> SignalsLifecycle[signals-lifecycle]
 ```
 
