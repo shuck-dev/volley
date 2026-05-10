@@ -7,7 +7,6 @@ signal speed_changed(speed: float, min_speed: float, max_speed: float)
 signal pressed(ball: Ball)
 signal play_state_changed(state: PlayState)
 
-# Ball state machine. See designs/01-prototype/tech/08-court-control.md.
 enum PlayState {
 	STORED,
 	PLAY_NORMAL,
@@ -284,7 +283,7 @@ func _ball_setup() -> void:
 	max_contacts_reported = 1
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
-	# Footgun: a miss firing from PLAY-ARC overwrites the entry-speed register via reset_speed. SH-367 reworks the miss path.
+	# Footgun: a miss firing from PLAY-ARC overwrites the entry-speed register via reset_speed.
 	if not missed.is_connected(reset_speed):
 		missed.connect(reset_speed)
 	# Press routing lives on PressArea; the rigid body stops accepting pointer events.
