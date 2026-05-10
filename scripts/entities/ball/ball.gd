@@ -15,14 +15,10 @@ enum PlayState {
 	OUT_HELD,
 }
 
-const SPEED_EMIT_THRESHOLD := 10.0
-
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
-## Press hit-box radius multiplier on the authored collider; tunable per-instance for forgiving grabs.
-@export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 2.4
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
-@export var press_area: Area2D
+@export var press_area: PressArea2D
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
 
@@ -34,17 +30,15 @@ var effect_processor: BallEffectProcessor
 var is_temporary: bool = false
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
+
 # Persistent register: first NORMAL->ARC cross sets it; in-ARC speed events update it; relock targets it.
-var entry_speed: float = 0.0
+var entry_speed: float:
+	get:
+		return _relock.entry_speed
 
 var _item_manager: Node
-var _was_at_max_speed := false
-var _last_emitted_speed: float = 0.0
-var _last_emitted_min: float = 0.0
-var _last_emitted_max: float = 0.0
-var _entry_speed_initialised: bool = false
-var _relock_remaining: float = 0.0
-var _relock_from_speed: float = 0.0
+var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
+var _relock: BallRelockState = BallRelockState.new()
 
 
 func _ready() -> void:
@@ -65,7 +59,7 @@ func _physics_process(delta: float) -> void:
 	effect_processor.process_frame(delta)
 	_update_play_state(delta)
 	_emit_max_speed_if_changed()
-	if _should_emit_speed_changed():
+	if _emit_tracker.should_emit_speed(speed, min_speed, max_speed):
 		_emit_speed_changed()
 	if play_state == PlayState.PLAY_NORMAL:
 		linear_velocity = linear_velocity.normalized() * speed
@@ -84,14 +78,12 @@ func _update_play_state(delta: float) -> void:
 	if play_state == PlayState.PLAY_ARC:
 		if court_config.physics != null:
 			court_config.physics.step(self, court_config, delta)
-	elif _relock_remaining > 0.0:
+	elif _relock.is_ramping():
 		_advance_relock_ramp(delta)
 
 
 func _enter_arc() -> void:
-	if not _entry_speed_initialised:
-		entry_speed = speed
-		_entry_speed_initialised = true
+	_relock.enter_arc(speed)
 	gravity_scale = 1.0
 	play_state = PlayState.PLAY_ARC
 	play_state_changed.emit(play_state)
@@ -100,41 +92,23 @@ func _enter_arc() -> void:
 func _enter_normal() -> void:
 	gravity_scale = 0.0
 	play_state = PlayState.PLAY_NORMAL
-	_relock_remaining = 0.0
-	if _entry_speed_initialised and court_config.relock_ramp_seconds > 0.0:
-		_relock_remaining = court_config.relock_ramp_seconds
-		_relock_from_speed = linear_velocity.length()
-	elif _entry_speed_initialised:
-		speed = entry_speed
+	var should_snap: bool = _relock.enter_normal(
+		linear_velocity.length(), court_config.relock_ramp_seconds
+	)
+	if should_snap:
+		speed = _relock.entry_speed
 		linear_velocity = linear_velocity.normalized() * speed
 	play_state_changed.emit(play_state)
 
 
 func _advance_relock_ramp(delta: float) -> void:
-	_relock_remaining = maxf(_relock_remaining - delta, 0.0)
-	var ramp_total: float = court_config.relock_ramp_seconds
-	var ramp_progress: float = 1.0
-	if ramp_total > 0.0:
-		ramp_progress = clampf(1.0 - (_relock_remaining / ramp_total), 0.0, 1.0)
-	var ramped_speed: float = lerpf(_relock_from_speed, entry_speed, ramp_progress)
+	var ramped_speed: float = _relock.advance_ramp(delta, court_config.relock_ramp_seconds)
 	speed = ramped_speed
 	linear_velocity = linear_velocity.normalized() * ramped_speed
 
 
-func _should_emit_speed_changed() -> bool:
-	if absf(speed - _last_emitted_speed) >= SPEED_EMIT_THRESHOLD:
-		return true
-	if not is_equal_approx(min_speed, _last_emitted_min):
-		return true
-	if not is_equal_approx(max_speed, _last_emitted_max):
-		return true
-	return false
-
-
 func _emit_speed_changed() -> void:
-	_last_emitted_speed = speed
-	_last_emitted_min = min_speed
-	_last_emitted_max = max_speed
+	_emit_tracker.record_speed(speed, min_speed, max_speed)
 	speed_changed.emit(speed, min_speed, max_speed)
 
 
@@ -193,8 +167,7 @@ func set_speed_for_streak(count: int) -> void:
 # lands at the post-event speed rather than the pre-apex value.
 func _track_arc_speed_change() -> void:
 	if play_state == PlayState.PLAY_ARC:
-		entry_speed = speed
-		_entry_speed_initialised = true
+		_relock.track_speed_change(speed)
 
 
 func _apply_speed() -> void:
@@ -206,8 +179,7 @@ func _apply_speed() -> void:
 
 func _emit_max_speed_if_changed() -> void:
 	var is_at_max: bool = speed >= max_speed
-	if is_at_max != _was_at_max_speed:
-		_was_at_max_speed = is_at_max
+	if _emit_tracker.consume_max_change(is_at_max):
 		at_max_speed_changed.emit(is_at_max)
 
 
@@ -222,24 +194,12 @@ func _setup_effect_processor() -> void:
 func _wire_press_area() -> void:
 	if press_area == null:
 		return
-	var press_shape: CollisionShape2D = null
-	for child in press_area.get_children():
-		if child is CollisionShape2D:
-			press_shape = child
-			break
-	if press_shape != null:
-		var circle: CircleShape2D = press_shape.shape as CircleShape2D
-		if circle != null:
-			var authored_radius: float = _baseline_collision_radius()
-			if authored_radius > 0.0:
-				# Duplicate so per-instance inflation does not mutate the shared sub-resource.
-				var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
-				local_circle.radius = authored_radius * press_hitbox_inflation
-				press_shape.shape = local_circle
-	if not press_area.input_event.is_connected(_on_input_event):
-		press_area.input_event.connect(_on_input_event)
+	press_area.inflate_to(_baseline_collision_radius())
+	if not press_area.pressed.is_connected(_on_press_area_pressed):
+		press_area.pressed.connect(_on_press_area_pressed)
 
 
+# Reads the body's authored collider, not the press area's; the press area's shape is the derived one.
 func _baseline_collision_radius() -> float:
 	for child in get_children():
 		if child is CollisionShape2D:
@@ -259,11 +219,8 @@ func _ball_setup() -> void:
 	gravity_scale = 0.0
 	linear_damp = 0.0
 	play_state = PlayState.PLAY_NORMAL
-	# Reset entry-speed register so a pooled ball doesn't read its previous run's tracked value.
-	entry_speed = 0.0
-	_entry_speed_initialised = false
-	_relock_remaining = 0.0
-	_relock_from_speed = 0.0
+	# Reset relock register so a pooled ball doesn't read its previous run's tracked value.
+	_relock.reset()
 	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 	contact_monitor = true
 	max_contacts_reported = 1
@@ -273,20 +230,11 @@ func _ball_setup() -> void:
 		missed.connect(_on_missed)
 	# Press routing lives on PressArea; the rigid body stops accepting pointer events.
 	input_pickable = false
-	if input_event.is_connected(_on_input_event):
-		input_event.disconnect(_on_input_event)
 	_wire_press_area()
 
 
-func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_press_area_pressed(_area: PressArea2D) -> void:
 	if freeze:
-		return
-	if not (event is InputEventMouseButton):
-		return
-	var mouse_button: InputEventMouseButton = event
-	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
-		return
-	if not mouse_button.pressed:
 		return
 	pressed.emit(self)
 

@@ -63,9 +63,9 @@ func test_press_radius_is_inflated_versus_physics_radius() -> void:
 	var authored_radius: float = _authored_radius_from_ball(_ball)
 	assert_almost_eq(
 		press_circle.radius,
-		authored_radius * _ball.press_hitbox_inflation,
+		authored_radius * (press_area as PressArea2D).hitbox_inflation,
 		0.001,
-		"press radius equals authored radius * press_hitbox_inflation",
+		"press radius equals authored radius * hitbox_inflation",
 	)
 
 
@@ -85,11 +85,11 @@ func test_press_emits_pressed_signal() -> void:
 	# A left-mouse-down event delivered to the press area surfaces as `Ball.pressed`.
 	_ball = _spawn_authored_ball()
 	watch_signals(_ball)
-	var press_area: Area2D = _ball.get_node("PressArea") as Area2D
+	var press_area: PressArea2D = _ball.get_node("PressArea") as PressArea2D
 	var event: InputEventMouseButton = InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 
-	_ball._on_input_event(null, event, 0)
+	press_area._on_input_event(null, event, 0)
 
 	assert_signal_emitted(_ball, "pressed")

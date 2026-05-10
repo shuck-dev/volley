@@ -26,7 +26,7 @@ func before_each() -> void:
 	_manager.items.assign(items)
 	add_child_autofree(_manager)
 
-	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	add_child_autofree(_ball)
 

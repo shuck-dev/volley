@@ -27,7 +27,7 @@ func before_each() -> void:
 	_config.relock_ramp_seconds = 0.1
 	_config.physics = PARABOLIC_ARC_PHYSICS.new()
 
-	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	_ball.court_config = _config
 	add_child_autofree(_ball)

@@ -28,7 +28,7 @@ func before_each() -> void:
 	)
 	add_child_autofree(_manager)
 
-	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	add_child_autofree(_ball)
 	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)

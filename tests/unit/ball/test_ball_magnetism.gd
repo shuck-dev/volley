@@ -13,7 +13,7 @@ func before_each() -> void:
 	_manager = ItemFactory.create_manager(self, DOUBLE_KNOT.key)
 	_manager.items.assign([DOUBLE_KNOT])
 
-	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	add_child_autofree(_ball)
 
