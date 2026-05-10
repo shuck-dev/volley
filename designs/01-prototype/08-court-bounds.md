@@ -60,13 +60,17 @@ All three are audio + world-space only. No screen-space banners (per venue diege
 
 ### Physics at the court boundary
 
-While the rally is alive the ball is held in friendship's uplift: `gravity_scale` is `0` and speed is locked. Linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling.
+State applies per ball, so multi-ball mixed-state is well-defined: one ball above the bound under real gravity while another below stays in uplift.
 
-Crossing out of the play volume past either side band or above the friendship-bound flips the ball out of the uplift. `gravity_scale` rises to `1`, the speed-lock releases, damping kicks in. The ball retains its velocity at the moment of the cross, so a fast ball sails further before it lands and a slow one drops almost immediately.
+While a ball is alive inside the play volume it is held in friendship's uplift: `gravity_scale` is `0` and speed is locked. Linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling.
 
-Above the friendship-bound a centripetal force scales with speed and pulls velocity perpendicular toward the play volume. The arc is what the ball does on its way back; once it returns below the bound, friendship's uplift resumes. Past either side band there is no centripetal. The ball falls under real gravity, rolls across the venue floor, and comes to rest.
+Crossing out of the play volume past either side band or above the friendship-bound flips that ball out of the uplift. `gravity_scale` rises to `1`, the speed-lock releases, damping kicks in. The ball retains its velocity at the moment of the cross, so a fast ball sails further before it lands and a slow one drops almost immediately.
 
-The transition is a single signal on the boundary trigger: clear the in-court flag, unlock gravity, release the speed-lock, engage damping. No interpolation, no blend window. The ball was in play and now it is not.
+Above the friendship-bound a centripetal force scales with speed and pulls velocity perpendicular toward the play volume. The arc is what the ball does on its way back. Re-crossing below the bound restores the uplift on that ball; speed ramps back up to its pre-bound entry value so rally energy is preserved across the apex visit.
+
+Past either side band there is no centripetal and no ramp. The ball falls under real gravity, rolls across the venue floor, and comes to rest.
+
+The transition is a single signal on the boundary trigger per ball: clear the in-court flag, unlock gravity, release the speed-lock, engage damping. No interpolation, no blend window.
 
 ### In-world framing: the spirit of the volley
 

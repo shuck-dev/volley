@@ -350,11 +350,13 @@ A press on any container's at-rest representation lifts the held preview, but th
 
 The narrative canon in [`../narrative/00-two-styles.md`](../narrative/00-two-styles.md) treats the top of the court as sky, not surface: nothing physical bounces the ball back. The ball travels up to apex and returns under gravity and the friendship-bound. Whichever bond is in play in that venue is the medium the rally lives inside, and the bond's reach is what the ball cannot escape.
 
-Mechanically the ball changes direction at apex. Diegetically nothing physical bounces it. The current prototype implementation (top edge as hard ceiling, see `08-court-bounds.md`) is the placeholder; the friendship-bound apex return is the target shape, scoped past the prototype.
+Mechanically the ball changes direction at apex. Diegetically nothing physical bounces it. Canon shape lives in [`08-court-bounds.md`](08-court-bounds.md) under "Friendship-bound and apex return".
 
 Implementation notes:
 
-- The active-movement state already covers it. The body is a `RigidBody2D` with `gravity_scale = 0` and frictionless momentum (see "Containers and the swap pattern" above); the apex return is a vertical-velocity flip at the bound's height rather than a wall collision.
+- Per-ball state. While inside the play volume the ball is held in friendship's uplift: `gravity_scale = 0`, speed locked. State applies per-body so multi-ball mixed-state (one above the bound, one below) is well-defined.
+- Crossing above the bound releases the uplift on that ball: gravity engages at constant world value, speed-lock releases, an additional centripetal force scaled by speed pulls velocity perpendicular toward the play volume. Gravity decelerates the vertical component; the centripetal force redirects without doing work.
+- Re-crossing below the bound restores the uplift. Speed ramps back up to its pre-bound entry value as the uplift relocks; rally energy is preserved across the apex visit. Without the ramp, gravity-bleed above the bound would drain rally speed.
 - The bound's height per venue is data, not a global constant. Each venue's bond has its own reach.
 - The bottom edge of the court stays physical: the ground, the mat, the surface where the racquet meets the ball. Left and right remain open as miss zones.
 - The visible beat at apex (bloom, arc, chime, partner reaction) is art-bible scope; see [`../art/bible.md`](../art/bible.md) § 17.
