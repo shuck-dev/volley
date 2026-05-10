@@ -1,7 +1,9 @@
-## Ball state-machine, entry-value register, and relock-ramp tests.
+## Ball state-machine, entry-value register, parabolic arc invariants, and relock-ramp tests.
 extends GutTest
 
 const BOUND_Y := -100.0
+const PARABOLIC_ARC_PHYSICS := preload("res://scripts/core/physics/parabolic_arc_physics.gd")
+const COURT_PHYSICS := preload("res://scripts/core/physics/court_physics.gd")
 
 var _ball: Ball
 var _config: CourtConfig
@@ -23,7 +25,7 @@ func before_each() -> void:
 	_config = load("res://scripts/core/court_config.gd").new()
 	_config.friendship_bound_y = BOUND_Y
 	_config.relock_ramp_seconds = 0.1
-	_config.arc_centripetal_coefficient = 4.0
+	_config.physics = PARABOLIC_ARC_PHYSICS.new()
 
 	_ball = load("res://scripts/entities/ball.gd").new()
 	_ball._item_manager = _manager
@@ -80,7 +82,6 @@ func test_entry_speed_not_reset_on_subsequent_cross() -> void:
 	_ball.linear_velocity = Vector2(0.0, -600.0)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	# Drop back below the bound, then cross up again at a different speed.
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
 	_ball.speed = 800.0
@@ -99,7 +100,6 @@ func test_speed_change_in_arc_updates_entry_value() -> void:
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
 	assert_almost_eq(_ball.entry_speed, 500.0, 0.5)
-	# Paddle hit while in ARC: increase_speed updates the register.
 	_ball.increase_speed()
 	assert_almost_eq(
 		_ball.entry_speed,
@@ -109,6 +109,40 @@ func test_speed_change_in_arc_updates_entry_value() -> void:
 	)
 
 
+# --- parabolic arc invariants: ball.gd does not bend velocity or hold magnitude in ARC ---
+
+
+func test_arc_does_not_renormalise_velocity_to_entry_speed() -> void:
+	_ball.speed = 500.0
+	_ball.effect_processor.sync_base_speed()
+	# Enter ARC at speed 500.
+	_ball.linear_velocity = Vector2(0.0, -500.0)
+	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
+	_ball._physics_process(0.016)
+	assert_eq(_ball.play_state, Ball.PlayState.PLAY_ARC)
+	# Mid-arc the engine would shed vertical speed to gravity. Simulate that drift, then tick.
+	# If the dropped centripetal-reprojection were still in place this would snap back to 500.
+	_ball.linear_velocity = Vector2(0.0, -200.0)
+	_ball._physics_process(0.016)
+	assert_almost_eq(
+		_ball.linear_velocity.length(),
+		200.0,
+		0.5,
+		"in-ARC velocity is left to engine gravity; ball.gd no longer renormalises"
+	)
+
+
+func test_arc_does_not_bend_purely_vertical_velocity() -> void:
+	# Off-centre, purely vertical motion: under the old centripetal rule this gained an x-component.
+	_ball.speed = 500.0
+	_ball.effect_processor.sync_base_speed()
+	_ball.global_position = Vector2(200.0, BOUND_Y - 50.0)
+	_ball.linear_velocity = Vector2(0.0, -500.0)
+	_ball._physics_process(0.016)
+	_ball._physics_process(0.016)
+	assert_almost_eq(_ball.linear_velocity.x, 0.0, 0.001, "no centripetal bend toward centre")
+
+
 # --- relock ramp: speed ramps to entry_speed on ARC -> NORMAL cross ---
 
 
@@ -116,16 +150,13 @@ func test_relock_ramp_lands_at_entry_speed() -> void:
 	_ball.speed = 700.0
 	_ball.effect_processor.sync_base_speed()
 	_ball.linear_velocity = Vector2(0.0, -700.0)
-	# Enter ARC; entry_speed registers.
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
 	assert_almost_eq(_ball.entry_speed, 700.0, 0.5)
-	# Knock magnitude off the entry value before re-crossing (simulates damping/gravity drift).
 	_ball.linear_velocity = Vector2(0.0, 200.0)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_NORMAL)
-	# Advance the ramp past completion.
 	for _i in 12:
 		_ball._physics_process(0.016)
 	assert_almost_eq(
@@ -146,53 +177,10 @@ func test_relock_ramp_intermediate_magnitude_between_endpoints() -> void:
 	_ball.linear_velocity = Vector2(0.0, 200.0)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
-	# One short tick into a 0.1s ramp: magnitude should sit between the start and target.
 	_ball._physics_process(0.02)
 	var mid: float = _ball.linear_velocity.length()
 	assert_gt(mid, 200.0)
 	assert_lt(mid, 700.0)
-
-
-# --- arc physics: gravity engaged, magnitude held by re-projection ---
-
-
-func test_arc_holds_magnitude_via_reprojection() -> void:
-	_ball.speed = 500.0
-	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(500.0, 0.0)
-	_ball.global_position = Vector2(0.0, BOUND_Y - 50.0)
-	# First tick enters ARC and records entry_speed.
-	_ball._physics_process(0.016)
-	# Subsequent ARC ticks: speed stays close to entry_speed despite the centripetal bend.
-	for _i in 5:
-		_ball._physics_process(0.016)
-		assert_almost_eq(
-			_ball.linear_velocity.length(),
-			500.0,
-			5.0,
-			"in-ARC magnitude held to entry value tick over tick"
-		)
-
-
-func test_centripetal_bends_toward_court_centre_from_positive_x() -> void:
-	_ball.speed = 500.0
-	_ball.effect_processor.sync_base_speed()
-	# Ball on the positive-X side, moving straight up. Bend should pull X negative (toward centre).
-	_ball.global_position = Vector2(200.0, BOUND_Y - 50.0)
-	_ball.linear_velocity = Vector2(0.0, -500.0)
-	_ball._physics_process(0.016)
-	_ball._physics_process(0.016)
-	assert_lt(_ball.linear_velocity.x, 0.0, "positive-X ball bends leftward toward centre")
-
-
-func test_centripetal_bends_toward_court_centre_from_negative_x() -> void:
-	_ball.speed = 500.0
-	_ball.effect_processor.sync_base_speed()
-	_ball.global_position = Vector2(-200.0, BOUND_Y - 50.0)
-	_ball.linear_velocity = Vector2(0.0, -500.0)
-	_ball._physics_process(0.016)
-	_ball._physics_process(0.016)
-	assert_gt(_ball.linear_velocity.x, 0.0, "negative-X ball bends rightward toward centre")
 
 
 # --- in-ARC speed events: every entry-value mutation is tracked ---
@@ -224,7 +212,6 @@ func test_relock_ramp_zero_snaps_to_entry_speed() -> void:
 	_ball.linear_velocity = Vector2(0.0, -700.0)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	# Knock magnitude off then drop below the bound; with ramp==0 the snap path takes over immediately.
 	_ball.linear_velocity = Vector2(0.0, 200.0)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
@@ -233,3 +220,24 @@ func test_relock_ramp_zero_snaps_to_entry_speed() -> void:
 	assert_almost_eq(
 		_ball.linear_velocity.length(), 700.0, 1.0, "snap path lands magnitude at entry_speed"
 	)
+
+
+# --- physics seam: base-class and parabolic step are no-ops on velocity ---
+
+
+func test_court_physics_base_step_is_noop() -> void:
+	var base: CourtPhysics = COURT_PHYSICS.new()
+	var body := RigidBody2D.new()
+	add_child_autofree(body)
+	body.linear_velocity = Vector2(123.0, -456.0)
+	base.step(body, _config, 0.016)
+	assert_eq(body.linear_velocity, Vector2(123.0, -456.0))
+
+
+func test_parabolic_arc_step_is_noop() -> void:
+	var rule: ParabolicArcPhysics = PARABOLIC_ARC_PHYSICS.new()
+	var body := RigidBody2D.new()
+	add_child_autofree(body)
+	body.linear_velocity = Vector2(123.0, -456.0)
+	rule.step(body, _config, 0.016)
+	assert_eq(body.linear_velocity, Vector2(123.0, -456.0))

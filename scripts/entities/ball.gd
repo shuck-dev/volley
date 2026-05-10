@@ -82,7 +82,8 @@ func _update_play_state(delta: float) -> void:
 	elif not above_bound and play_state == PlayState.PLAY_ARC:
 		_enter_normal()
 	if play_state == PlayState.PLAY_ARC:
-		_apply_arc_physics(delta)
+		if court_config.physics != null:
+			court_config.physics.step(self, court_config, delta)
 	elif _relock_remaining > 0.0:
 		_advance_relock_ramp(delta)
 
@@ -107,32 +108,6 @@ func _enter_normal() -> void:
 		speed = entry_speed
 		linear_velocity = linear_velocity.normalized() * speed
 	play_state_changed.emit(play_state)
-
-
-## Centripetal bend perpendicular to velocity, X-component toward court centre, magnitude held by re-projection to entry_speed.
-func _apply_arc_physics(delta: float) -> void:
-	var velocity: Vector2 = linear_velocity
-	var current_speed: float = velocity.length()
-	if current_speed <= 0.0:
-		return
-	var direction: Vector2 = velocity / current_speed
-	var perpendicular: Vector2 = Vector2(-direction.y, direction.x)
-	# Tie-break assumes court centred on world x=0; off-centre venues will need a different reference point.
-	# Pick the perpendicular whose X points toward court centre (X=0). Degenerate at pos.x==0: fall back to +Y.
-	var pos_x: float = global_position.x
-	var wants_negative_x: bool = pos_x > 0.0
-	var wants_positive_x: bool = pos_x < 0.0
-	if (wants_negative_x and perpendicular.x > 0.0) or (wants_positive_x and perpendicular.x < 0.0):
-		perpendicular = -perpendicular
-	elif pos_x == 0.0 and perpendicular.y < 0.0:
-		perpendicular = -perpendicular
-	var bend: Vector2 = (
-		perpendicular * (current_speed * court_config.arc_centripetal_coefficient * delta)
-	)
-	var bent: Vector2 = velocity + bend
-	var target_speed: float = entry_speed if _entry_speed_initialised else current_speed
-	if bent.length() > 0.0:
-		linear_velocity = bent.normalized() * target_speed
 
 
 func _advance_relock_ramp(delta: float) -> void:
