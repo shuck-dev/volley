@@ -175,6 +175,33 @@ func test_register_miss_zone_is_idempotent() -> void:
 	assert_signal_emit_count(_ball, "missed", 1)
 
 
+# --- side-miss release behaviour ---
+func test_releasing_zone_raises_gravity_on_cross() -> void:
+	var zone := MissZone.new()
+	zone.releases_ball = true
+	add_child_autofree(zone)
+	_ball.register_miss_zone(zone)
+	_ball.gravity_scale = 0.0
+
+	zone.body_entered.emit(_ball)
+
+	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
+	assert_gt(_ball.linear_damp, 0.0)
+
+
+func test_non_releasing_zone_keeps_weightless_state() -> void:
+	var zone := MissZone.new()
+	add_child_autofree(zone)
+	_ball.register_miss_zone(zone)
+	_ball.gravity_scale = 0.0
+	_ball.linear_damp = 0.0
+
+	zone.body_entered.emit(_ball)
+
+	assert_almost_eq(_ball.gravity_scale, 0.0, 0.001)
+	assert_almost_eq(_ball.linear_damp, 0.0, 0.001)
+
+
 # --- speed offset oscillation ---
 func test_oscillation_never_drops_below_min_speed() -> void:
 	var effect := _make_oscillation_effect(2.0)

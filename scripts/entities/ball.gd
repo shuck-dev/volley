@@ -7,6 +7,8 @@ signal speed_changed(speed: float, min_speed: float, max_speed: float)
 signal pressed(ball: Ball)
 
 const SPEED_EMIT_THRESHOLD := 10.0
+## Side bands raise gravity so the missed ball falls out of the weightless play volume.
+const _ROLL_OUT_LINEAR_DAMP: float = 1.5
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
@@ -27,6 +29,7 @@ var _was_at_max_speed := false
 var _last_emitted_speed: float = 0.0
 var _last_emitted_min: float = 0.0
 var _last_emitted_max: float = 0.0
+var _registered_miss_zones: Array[MissZone] = []
 
 
 func _ready() -> void:
@@ -77,13 +80,20 @@ func _on_body_entered(body: Node) -> void:
 
 
 func register_miss_zone(zone: MissZone) -> void:
-	if not zone.body_entered.is_connected(_on_miss_zone_body_entered):
-		zone.body_entered.connect(_on_miss_zone_body_entered)
+	if zone == null or _registered_miss_zones.has(zone):
+		return
+	_registered_miss_zones.append(zone)
+	zone.body_entered.connect(_on_miss_zone_body_entered.bind(zone))
 
 
-func _on_miss_zone_body_entered(body: Node) -> void:
-	if body == self:
-		missed.emit()
+func _on_miss_zone_body_entered(body: Node, zone: MissZone) -> void:
+	if body != self:
+		return
+	missed.emit()
+	if zone != null and zone.releases_ball:
+		# Side-miss: leave the weightless play volume so the ball rolls onto the venue floor.
+		gravity_scale = 1.0
+		linear_damp = _ROLL_OUT_LINEAR_DAMP
 
 
 func increase_speed() -> void:

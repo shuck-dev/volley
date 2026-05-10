@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://mws700v36gko" path="res://scenes/gear_rack.tscn" id="9_c7axm"]
 [ext_resource type="PackedScene" uid="uid://3l88siilc0hu" path="res://scenes/shipment_mat.tscn" id="10_5mv5b"]
 [ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
+[ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="1_miss_zone_script"]
 [ext_resource type="Script" uid="uid://cp16q4n8se0mu" path="res://scripts/court/speed_bar.gd" id="11_2768l"]
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="12_rnrgf"]
 [ext_resource type="Script" uid="uid://b8611ynp8yggm" path="res://scripts/court/volley_counter.gd" id="14_vc"]
@@ -37,7 +38,7 @@ ball_tracker = NodePath("BallTracker")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
-right_wall = NodePath("Bounds/Right Wall")
+right_wall = NodePath("Bounds/RightMissBand")
 partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 
@@ -89,17 +90,23 @@ mouse_filter = 2
 position = Vector2(10.8, 441.6)
 shape = SubResource("RectangleShape2D_horz")
 
-[node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
+[node name="RightMissBand" type="Area2D" parent="Bounds" groups=["miss_zones"] unique_id=1091055427]
 position = Vector2(420, -351.6)
-physics_material_override = ExtResource("1_0wfyh")
+script = ExtResource("1_miss_zone_script")
+releases_ball = true
 metadata/_edit_group_ = true
 
-[node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
-offset_right = 21.6
-offset_bottom = 703.2
-mouse_filter = 2
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/RightMissBand" unique_id=2042401507]
+position = Vector2(10.8, 351.6)
+shape = SubResource("RectangleShape2D_vert")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
+[node name="LeftMissBand" type="Area2D" parent="Bounds" groups=["miss_zones"] unique_id=1091055428]
+position = Vector2(-441.6, -351.6)
+script = ExtResource("1_miss_zone_script")
+releases_ball = true
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/LeftMissBand" unique_id=2042401508]
 position = Vector2(10.8, 351.6)
 shape = SubResource("RectangleShape2D_vert")
 

@@ -14,7 +14,8 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var player_paddle_scene: PackedScene
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
-@export var right_wall: StaticBody2D
+## Right side miss band; partner miss zone re-parents here when a partner activates.
+@export var right_wall: Node2D
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 
@@ -165,6 +166,7 @@ func _activate_partner() -> void:
 
 	if right_wall != null:
 		_partner_miss_zone = MissZoneScene.instantiate()
+		_partner_miss_zone.releases_ball = true
 		right_wall.add_child(_partner_miss_zone)
 		ball_tracker.register_miss_zone(_partner_miss_zone)
 
