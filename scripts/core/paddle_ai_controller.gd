@@ -104,8 +104,10 @@ func _is_ball_behind() -> bool:
 
 
 func _track() -> void:
+	var bound_y: float = ball.court_config.friendship_bound_y
+	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 	var predicted_y: float = PaddleAIMath.predict_intercept(
-		ball.position, ball.linear_velocity, paddle.position.x
+		ball.position, ball.linear_velocity, paddle.position.x, bound_y, gravity
 	)
 	var noisy_target: float = predicted_y + _noise_offset
 
