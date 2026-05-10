@@ -9,6 +9,7 @@ const DEFAULT_STYLE: CursorStyle = preload("res://resources/hud/cursor_style.tre
 ## Colour-per-state plus ring metrics; tunable per-scene by swapping the style resource.
 @export var style: CursorStyle = DEFAULT_STYLE
 
+var dev_visible: bool = true
 var _state: int = CursorStateScript.State.DEFAULT
 
 
@@ -18,6 +19,7 @@ func _ready() -> void:
 	z_index = 4096
 	top_level = true
 	visible = false
+	add_to_group(&"dev_overlays")
 
 
 func set_state(state: int, world_position: Vector2) -> void:
@@ -25,8 +27,13 @@ func set_state(state: int, world_position: Vector2) -> void:
 	if state == _state:
 		return
 	_state = state
-	visible = state != CursorStateScript.State.DEFAULT
+	visible = dev_visible and state != CursorStateScript.State.DEFAULT
 	queue_redraw()
+
+
+func set_dev_visible(value: bool) -> void:
+	dev_visible = value
+	visible = dev_visible and _state != CursorStateScript.State.DEFAULT
 
 
 func get_state() -> int:

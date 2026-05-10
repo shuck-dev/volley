@@ -3,10 +3,19 @@ extends Area2D
 
 signal grabbed(area: GrabArea)
 
+static var debug_visible: bool = false
+
 @export_range(1.0, 4.0, 0.1) var hitbox_inflation: float = 2.4
 
 
+static func set_debug_visible(value: bool, tree: SceneTree) -> void:
+	debug_visible = value
+	if tree != null:
+		tree.call_group(&"grab_areas", "queue_redraw")
+
+
 func _ready() -> void:
+	add_to_group(&"grab_areas")
 	if not input_event.is_connected(_on_input_event):
 		input_event.connect(_on_input_event)
 
@@ -22,6 +31,18 @@ func inflate_to(authored_radius: float) -> void:
 	var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
 	local_circle.radius = authored_radius * hitbox_inflation
 	press_shape.shape = local_circle
+
+
+func _draw() -> void:
+	if not GrabArea.debug_visible:
+		return
+	var col: CollisionShape2D = _find_collision_shape()
+	if col == null:
+		return
+	var circle: CircleShape2D = col.shape as CircleShape2D
+	if circle == null:
+		return
+	draw_arc(Vector2.ZERO, circle.radius, 0.0, TAU, 32, Color.YELLOW, 1.5, true)
 
 
 func _find_collision_shape() -> CollisionShape2D:
