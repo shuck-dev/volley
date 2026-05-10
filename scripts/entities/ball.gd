@@ -100,21 +100,17 @@ func _enter_arc() -> void:
 func _enter_normal() -> void:
 	gravity_scale = 0.0
 	play_state = PlayState.PLAY_NORMAL
+	_relock_remaining = 0.0
 	if _entry_speed_initialised and court_config.relock_ramp_seconds > 0.0:
 		_relock_remaining = court_config.relock_ramp_seconds
 		_relock_from_speed = linear_velocity.length()
 	elif _entry_speed_initialised:
 		speed = entry_speed
 		linear_velocity = linear_velocity.normalized() * speed
-		_relock_remaining = 0.0
-	else:
-		_relock_remaining = 0.0
 	play_state_changed.emit(play_state)
 
 
-## Centripetal force scaled by speed, perpendicular to velocity, X-component points toward court centre.
-## Magnitude is held by re-projection to entry_speed; linear damping in PLAY-ARC is intentionally absent
-## because the re-projection would silently cancel any damped value tick-by-tick.
+## Centripetal bend perpendicular to velocity, X-component toward court centre, magnitude held by re-projection to entry_speed.
 func _apply_arc_physics(delta: float) -> void:
 	var velocity: Vector2 = linear_velocity
 	var current_speed: float = velocity.length()
@@ -122,6 +118,7 @@ func _apply_arc_physics(delta: float) -> void:
 		return
 	var direction: Vector2 = velocity / current_speed
 	var perpendicular: Vector2 = Vector2(-direction.y, direction.x)
+	# Tie-break assumes court centred on world x=0; off-centre venues will need a different reference point.
 	# Pick the perpendicular whose X points toward court centre (X=0). Degenerate at pos.x==0: fall back to +Y.
 	var pos_x: float = global_position.x
 	var wants_negative_x: bool = pos_x > 0.0
@@ -287,6 +284,7 @@ func _ball_setup() -> void:
 	max_contacts_reported = 1
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
+	# Footgun: a miss firing from PLAY-ARC overwrites the entry-speed register via reset_speed. SH-367 reworks the miss path.
 	if not missed.is_connected(reset_speed):
 		missed.connect(reset_speed)
 	# Press routing lives on PressArea; the rigid body stops accepting pointer events.

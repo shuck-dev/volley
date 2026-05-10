@@ -33,7 +33,7 @@ stateDiagram-v2
 
 **PLAY-NORMAL** (at or below the friendship-bound). `gravity_scale = 0`, speed locked, linear damping off.
 
-**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, damping on. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
+**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
 
 The ball tracks its pre-bound entry value as a persistent register on the body: the first NORMAL→ARC upward cross sets it; subsequent crosses do not reset it. Speed-change events while in ARC (paddle hit, partner-active return) update the register to the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked value; rally energy is preserved across the apex visit.
 
