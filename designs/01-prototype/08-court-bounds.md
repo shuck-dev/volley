@@ -1,177 +1,39 @@
 # Court Bounds and Miss
 
-The court is not a closed box. It sits inside the venue, bounded on three sides and open on one; missed balls leave the court and rest on the venue floor until the player puts them back.
+Court geometry, the apex return, and the miss event live in [`08-court-control.md`](08-court-control.md). This doc covers cues, the spirit-of-the-volley framing, the rest-balls flow, and the future helper.
 
-**Dependencies:** Venue (`08-venue.md`), Balls (`08-balls.md`), Kit (`08-kit.md`), Items (`08-items.md`), Roles (`08-roles.md`), Fixtures (`08-fixtures.md`).
-
----
-
-## Bounds
-
-| Edge | Bound | Behaviour |
-|---|---|---|
-| Top | The friendship-bound | Below this height friendship's uplift cancels gravity. Above it gravity engages and a centripetal force bends the ball back into play. |
-| Bottom | The ground | Physical floor; ball bounces off (pong-style). Hitting the floor does not end the rally. |
-| Back | Behind the main character's paddle lane | The miss line. Ball crossing past the paddle is a miss. |
-| Sides | Open | The ball can leave the court sideways; leaving this way is also a miss. |
-
-No side walls and no ceiling. The court visibly opens onto the rest of the venue.
-
-### Friendship-bound and apex return
-
-The friendship-bound is the height where friendship's uplift ends.
-
-Below the bound the ball is weightless and speed-locked. Friendship's uplift cancels gravity and holds the rally's energy.
-
-Above the bound the uplift falls away. Gravity engages at its constant world value. The speed-lock releases. A centripetal force scaled by speed pulls velocity perpendicular toward the play volume. Low speed gives a wide loop, high speed tightens the arc. Either way the ball returns to play and friendship's uplift resumes.
-
-Bound height is per-venue.
-
-### Miss-detection regions
-
-Two bands along the court sides detect sideways exits. Both run the full height of the play area.
-
-- **In-play region:** bounded by the top (ceiling), the ground (bounce floor), and the miss line to the paddle's court-facing side. A ball inside this region is live.
-- **Miss-line band:** a thin vertical trigger just in front of the paddle's tracking lane. A ball crossing it heading behind the paddle fires a back-miss. The paddle itself sits behind the line; the space further behind the paddle is open venue, not a wall.
-- **Side miss bands:** one on each side, just outside the court's lateral extent. Crossing either fires a side-miss.
-
-Detection uses `Area2D` triggers rather than tight collider math: the ball's centre entering a band is the event. This keeps the signal independent of ball radius or rotation quirks.
+**Dependencies:** Venue (`08-venue.md`), Balls (`08-balls.md`), Items (`08-items.md`), Roles (`08-roles.md`).
 
 ---
 
-## Miss
+## Cues
 
-A miss ends the current rally. It fires when either:
+Bounces and misses read distinctly. Bounces off the ground are a short tick and a small squash on the ground itself, no camera impact. A miss is the existing miss beat plus a flash on the player paddle's edge; the rally counter resets with its current audio. The ball is visibly still alive and rolling onto the venue floor; the cue acknowledges the rally ended without pretending the ball is gone. All cues are audio plus world-space, never screen-space banners.
 
-- The ball crosses the main character's miss line (back-miss, existing miss condition).
-- The ball leaves the court sideways without first landing back in play (side-miss).
+## Spirit of the volley
 
-On miss, the rally counter resets to zero (existing behaviour). The ball does not despawn; it keeps its velocity, rolls out of the court, loses energy on the venue floor, and comes to rest.
+A rally is how the spirit of the volley shows up. It is not owned by the player and it does not live in the ball; it answers commitment to the exchange and holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points were scored.
 
-### Cue layering
+A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do.
 
-Bounces and misses read distinctly:
+A player can call the spirit alone. Partners amplify it but do not create it. High-count rallies visibly run hotter; the ball carries the spirit's charge in how it reads. A miss drains it; the ball on the venue floor is just a ball. Items that extend or revive rallies are gestures of devotion to the spirit.
 
-- **Bounce off a bound** (top ceiling, ground): a short tick and a small squash on the bound itself. No camera impact.
-- **Back-miss:** the existing miss beat plays; the main character's wall flashes. Rally counter resets with its current audio.
-- **Side-miss:** a softer, lower-pitched variant of the miss beat. The ball is visibly still alive and rolling; the cue acknowledges the rally ended without pretending the ball is gone.
+## Resting balls
 
-All three are audio + world-space only. No screen-space banners (per venue diegetic rule).
+A ball rolled out of the court sits visibly on the venue floor wherever it stopped. The player can't serve from a rested ball; serves come from the rack. Rested balls stay put across rallies, saves, and scene reloads.
 
-### Physics at the court boundary
+Balls can rest anywhere on the venue floor; the shop, workshop, and kit zones absorb them and let them roll to a stop like any other patch. Rack footprints are drop targets, not rest surfaces; a ball that enters one snaps into the rack instead.
 
-State applies per ball, so multi-ball mixed-state is well-defined: one ball above the bound under real gravity while another below stays in uplift.
-
-While a ball is alive inside the play volume it is held in friendship's uplift: `gravity_scale` is `0` and speed is locked. Linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling.
-
-Crossing out of the play volume past either side band or above the friendship-bound flips that ball out of the uplift. `gravity_scale` rises to `1`, the speed-lock releases, damping kicks in. The ball retains its velocity at the moment of the cross, so a fast ball sails further before it lands and a slow one drops almost immediately.
-
-Above the friendship-bound a centripetal force scales with speed. The force points perpendicular to the ball's velocity, toward the play volume; it rotates velocity without doing work, so the magnitude stays where gravity left it and only direction bends. The arc is what the ball does on its way back.
-
-The ball tracks its pre-bound entry value: speed at the moment of the upward cross. Anything that changes the ball's speed above the bound updates this value, so a paddle hit above the bound or a partner-active upward arc captures the post-event speed, not the original entry.
-
-Re-crossing below the bound restores the uplift on that ball: `gravity_scale` returns to `0`, damping turns off, the speed-lock relocks, and speed ramps back up to the tracked pre-bound entry value. Rally energy is preserved across the apex visit.
-
-Past either side band there is no centripetal and no ramp. The ball falls under real gravity, rolls across the venue floor, and comes to rest.
-
-The transition is a single signal on the boundary trigger per ball: clear the in-court flag, unlock gravity, release the speed-lock, engage damping. No interpolation, no blend window.
-
-Cross-collisions between an above-bound ball and a below-bound ball resolve under each body's current physics state. Energy resolution is asymmetric across the bound and that is acceptable: the rule is per-ball, and the bound is a state line, not a collision filter.
-
-### In-world framing: the spirit of the volley
-
-A rally is how the spirit of the volley shows up. It is not owned by the player and it does not live in the ball. It answers commitment to the exchange, and it holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points you have scored.
-
-A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do. It falls, rolls, and waits to be summoned again.
-
-A player can call the spirit alone. Partners, when they arrive, do not create it; they amplify it and make it easier to sustain. High-count rallies visibly run hotter: the ball carries the spirit's charge in how it reads, with a subtle light on it and a weight to its sound. A miss drains it; the ball on the venue floor is just a ball.
-
-Later items that extend or revive rallies are gestures of devotion to the spirit. Some plead with it to stay longer. Some call it back after it leaves. Naming them that way gives the system a vocabulary the player can feel rather than read from a stat block.
-
----
-
-## Resting balls in the venue
-
-A ball that has rolled out of the court sits visibly on the venue floor wherever it stopped. The player can't serve from a rested ball; serves come from the ball rack.
-
-To bring the ball back into play, the player drags it from the venue floor onto the `BallRack`. The ball becomes inactive and is available to drag back onto the court for the next rally, or the auto-serve picks it up when the rack's turn comes round (see `08-balls.md`).
-
-Rested balls stay put across rallies, saves, and scene reloads. Persistence lives alongside the ball's own state: position on the venue floor, last velocity (zero at rest), and the `resting` flag.
-
-### Where balls can legally rest
-
-Balls can come to rest anywhere on the venue floor. They always render in the mid or foreground relative to the shop/workshop backgrounds, so they stay visible regardless of where they land. No invisible barriers around the shop, workshop, or kit areas; those zones absorb the ball and let it roll to a stop like any other floor patch.
-
-One exception: the ball rack and gear rack themselves are drop targets, not rest surfaces. A ball that enters the rack's footprint snaps into the rack (racked, not resting). This matches the existing drag-to-rack gesture.
-
-### Auto-serve interaction with a resting ball
-
-If the player owns exactly one permanent ball and it is resting on the venue floor at the moment the rally needs a serve:
-
-- The ball rack is empty (the ball is not racked), and the court is empty (the ball is not in play).
-- The main character walks to the rack, finds it empty, and idles.
-- The player must drag the resting ball onto the rack to re-enter the loop.
-
-This is intentional friction. The main character does not fetch rested balls in the prototype; that job belongs to the future helper (below). Making the player re-rack reinforces that a miss has a cost beyond the rally counter reset, and it teaches the rack gesture before the helper takes it away.
-
-If the player owns multiple permanent balls, the auto-serve picks whichever is racked. Rested balls sit out of rotation until re-racked.
-
----
+If the player owns exactly one permanent ball and it is resting, the rack is empty and the main character idles. The player drags the resting ball back to the rack to re-enter the loop. This is intentional friction: a miss has a cost beyond the counter reset, and it teaches the rack gesture before the helper takes it away.
 
 ## Drag-out distinguished from miss
 
-The player can drag a live ball off the court back onto the ball rack mid-rally (see `08-balls.md`). That is not a miss: the ball enters the inactive state cleanly and the rally continues with whatever balls remain.
-
-If the player drops the ball outside the court bounds without landing on the rack, it counts as a miss. The ball rolls to rest on the venue floor; the rally ends if it was the last live ball.
-
----
+A live ball pulled mid-rally back onto the rack is not a miss; the ball enters the inactive state cleanly and the rally continues with whatever balls remain. A live ball dropped outside the court without landing on the rack counts as a miss.
 
 ## Temporary balls
 
-Temporary balls (frenzy, etc.) clear on their authored expiry regardless of where they land. A missed temporary ball despawns on miss like any other; it does not roll out to rest. A temporary ball that leaves sideways triggers a side-miss the same way a permanent one does, then despawns instead of resting.
+Temporary balls (frenzy and similar) clear on their authored expiry regardless of where they land. A missed temporary ball despawns on miss; it does not roll out to rest. This keeps the on-floor population bounded to owned balls only.
 
-This keeps the on-floor population bounded to owned balls only.
+## Helper upgrade (future)
 
----
-
-## Visual clutter
-
-The player will never own enough balls for visual clutter to become a problem at prototype scale. No cap, decay, or cleanup pass is in scope. If later content expands the owned-ball count dramatically, the helper item (below) absorbs the clutter naturally.
-
----
-
-## Helper upgrade (future, not in prototype scope)
-
-A `court` role item: a dog that automatically fetches rested balls and returns them to the rack. Authoring follows the existing court-item shape:
-
-- `role = &"court"` so it snaps to a `Roles/Court` marker on drag-in.
-- Acts as a fixture (see `08-fixtures.md`) if the dog's prop needs to sit in the venue; if a simple behavioural item is enough, it skips the fixture scene and just attaches a controller script.
-- Behaviour: scans for balls with the `resting` flag, the dog walks or bounds to each one, and carries them back to the rack one at a time on an authored cadence.
-
-The dog reuses the bot's `court` role plumbing; it does not need a new role. Whether it uses the bot's fixture shape or a lighter behavioural item is an implementation choice for its own ticket.
-
----
-
-## Resolved questions
-
-From the spike:
-
-1. **Ball-ground interaction.** Pong-style bounce. Hitting the floor does not end the rally.
-2. **Rally-ending condition.** Back-miss (miss line) or side-miss (lateral exit). Both reset the counter.
-3. **Clutter.** Not a real problem at prototype scale. No cap or decay.
-4. **Where rested balls can sit.** Anywhere on the venue floor. No invisible barriers. Rack footprints snap-to-rack instead of resting.
-5. **Auto-serve with one ball resting.** Main character idles; player must re-rack. The helper fixes this later.
-6. **Temporary balls.** Despawn on miss as before, regardless of where they land.
-7. **Cues.** Three distinct audio/world beats: bounce, back-miss, side-miss. All diegetic.
-8. **Helper authoring.** `court` role item. Fixture or behavioural controller is its own ticket's call.
-
----
-
-## Out of scope
-
-Called out so they don't leak into implementation:
-
-- Helper upgrade item, its prop scene, and its fetch cadence tuning.
-- Miss-ending-the-rally vs miss-ending-this-ball distinction for multiball (handled in `08-balls.md`).
-- Visual polish on the rest-roll deceleration curve; tuned during implementation.
-
+A court-role item, a dog that fetches rested balls and returns them to the rack. Reuses the existing court-role plumbing; whether it ships as a fixture or a lighter behavioural item is an implementation choice for its own ticket.
