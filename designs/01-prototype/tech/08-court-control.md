@@ -48,6 +48,6 @@ The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-
 
 Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can arc past a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
 
-## Open questions
+## Rest-roll energy loss
 
-- **Energy loss on the rest-roll.** Venue-floor friction, ball damping, or both? Tuning, not correctness.
+The rolled ball loses energy to venue-floor friction. Ball damping does not handle the rest-roll.
