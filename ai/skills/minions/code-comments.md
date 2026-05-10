@@ -19,6 +19,10 @@ Only when the WHY is non-obvious from the code:
 
 If removing the comment wouldn't confuse a future reader, don't write it.
 
+The bar is high. A comment must add real value to readability or warn of a non-obvious failure mode. "Slightly clearer with the comment than without" is not enough. If you're uncertain whether the comment earns its place, drop it.
+
+A blank line precedes every comment, like any other block. File-path references inside comments are forbidden; the reader finds the spec by name, not by link.
+
 ## What not to comment
 
 - **What the code does.** Well-named identifiers already do that. `// loops over enemies and applies damage` next to a `for enemy in enemies: enemy.take_damage(d)` loop is noise.

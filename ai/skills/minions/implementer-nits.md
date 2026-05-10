@@ -9,8 +9,10 @@ Read this before pushing. Each rule names the do; the why links to the source.
 
 ## Comments
 
+- Default to none. Add a comment only when it adds real value to readability; if you are not sure, drop it.
 - One line max. Multi-line `#` blocks become a one-liner or move into a doc.
-- WHY-only. Don't narrate what well-named code already says, don't reference the current task or callers. Source: `ai/skills/minions/code-comments.md`.
+- WHY-only. Don't narrate what well-named code already says, don't reference the current task or callers, don't link to design docs (file paths in comments are forbidden). Source: `ai/skills/minions/code-comments.md`.
+- A blank line precedes every comment, like any other block.
 - Multi-line `##` docstrings on functions and headers are forbidden. One line.
 
 ## Variables and naming
