@@ -61,13 +61,13 @@ alignment = 1
 script = ExtResource("3_5ysmq")
 
 [node name="DevBallStatePanel" type="VBoxContainer" parent="." unique_id=1944203100]
+visible = false
 offset_left = 220.0
 offset_top = 10.0
 offset_right = 460.0
 offset_bottom = 140.0
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
-visible = false
 script = ExtResource("4_ballstate")
 
 [node name="ClearanceButton" type="Button" parent="." unique_id=1837706863]

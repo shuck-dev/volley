@@ -39,9 +39,41 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
+	# Position persistence: SaveManager pulls live positions from us before each
+	# disk write so balls reload where the player left them, not the spawn marker.
+	if _has_save_manager_autoload():
+		SaveManager.set_position_provider(collect_item_positions)
+
 	# Deferred so sibling listeners connect to ball_spawned before we emit.
 	call_deferred(&"adopt_pre_existing_balls")
 	call_deferred(&"_reconcile_initial_state")
+
+
+func _has_save_manager_autoload() -> bool:
+	# Tests instantiate BallReconciler without the full autoload graph; guard
+	# the wiring so unit tests do not crash on missing SaveManager.
+	return get_tree() != null and get_tree().root.has_node("SaveManager")
+
+
+## Snapshot of live ball positions keyed by item_key. Loose HeldBody children
+## of the ball host are included so dropped items reload at their resting spot.
+func collect_item_positions() -> Dictionary[String, Vector2]:
+	var positions: Dictionary[String, Vector2] = {}
+	for key: String in _balls_by_key:
+		var raw: Variant = _balls_by_key[key]
+		if not is_instance_valid(raw):
+			continue
+		var ball: Ball = raw
+		positions[key] = ball.global_position
+	if _ball_host != null:
+		for child in _ball_host.get_children():
+			if not (child is HeldBody):
+				continue
+			var body: HeldBody = child
+			if body.item_key == "" or body.phase != HeldBody.Phase.LOOSE:
+				continue
+			positions[body.item_key] = body.global_position
+	return positions
 
 
 ## Idempotent; safe to call repeatedly across scene reloads.
@@ -166,7 +198,9 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		if get_ball_for_key(item_key) != null:
 			return
 		ensure_ball_for_key(
-			item_key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
+			item_key,
+			_spawn_position_for(item_key),
+			_item_manager.get_default_ball_launch_velocity(),
 		)
 		return
 
@@ -187,7 +221,9 @@ func _reconcile_initial_state() -> void:
 	for key in _item_manager.get_court_items():
 		if get_ball_for_key(key) == null:
 			ensure_ball_for_key(
-				key, _default_spawn_position(), _item_manager.get_default_ball_launch_velocity()
+				key,
+				_spawn_position_for(key),
+				_item_manager.get_default_ball_launch_velocity(),
 			)
 
 
@@ -195,6 +231,17 @@ func _default_spawn_position() -> Vector2:
 	if _ball_host is Node2D:
 		return (_ball_host as Node2D).global_position
 	return Vector2.ZERO
+
+
+## Prefer the saved position so reloaded balls keep their last in-play spot.
+## Falls back to the default spawn when no save data exists for the key.
+func _spawn_position_for(item_key: String) -> Vector2:
+	if not _has_save_manager_autoload():
+		return _default_spawn_position()
+	var progression: ProgressionData = SaveManager.get_progression_data()
+	if progression != null and progression.item_positions.has(item_key):
+		return progression.item_positions[item_key]
+	return _default_spawn_position()
 
 
 ## Swaps the art into the authored ItemArtHolder slot on Ball; idempotent across re-applications.

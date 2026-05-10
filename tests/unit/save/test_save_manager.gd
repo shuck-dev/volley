@@ -87,3 +87,17 @@ func test_autosave_timeout_while_blocked_does_not_write() -> void:
 	_save_manager.clear_save()
 	_save_manager._autosave_timer.timeout.emit()
 	assert_called_count(_mock_storage.write, 1)
+
+
+# --- position provider ---
+func test_save_captures_positions_from_registered_provider() -> void:
+	var live: Dictionary[String, Vector2] = {"base_ball": Vector2(50.0, 75.0)}
+	_save_manager.set_position_provider(func() -> Dictionary[String, Vector2]: return live)
+	_save_manager.save()
+	assert_eq(_progression.item_positions["base_ball"], Vector2(50.0, 75.0))
+
+
+func test_save_without_provider_leaves_positions_untouched() -> void:
+	_progression.item_positions["base_ball"] = Vector2(1.0, 2.0)
+	_save_manager.save()
+	assert_eq(_progression.item_positions["base_ball"], Vector2(1.0, 2.0))

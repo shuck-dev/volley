@@ -5,6 +5,9 @@ var _progression: ProgressionData
 var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
+## Callable invoked just before each disk write so live runtime state (ball /
+## loose-body positions) is captured into ProgressionData. Empty when unset.
+var _position_provider: Callable = Callable()
 
 
 func _init(autosave_interval: float = 10.0) -> void:
@@ -28,7 +31,28 @@ func _ready() -> void:
 func save() -> void:
 	if _write_blocked:
 		return
+	_capture_live_positions()
 	_progression.save_to_disk()
+
+
+## Registers a callable that returns a Dictionary[String, Vector2] of live
+## positions. The reconciler hooks in here so positions survive scene reload.
+func set_position_provider(provider: Callable) -> void:
+	_position_provider = provider
+
+
+func _capture_live_positions() -> void:
+	if not _position_provider.is_valid():
+		return
+	var live: Variant = _position_provider.call()
+	if not live is Dictionary:
+		return
+	var typed: Dictionary[String, Vector2] = {}
+	for key: Variant in live:
+		var value: Variant = live[key]
+		if value is Vector2:
+			typed[str(key)] = value
+	_progression.item_positions = typed
 
 
 ## Clears progression and blocks writes so the scene reload that follows cannot
