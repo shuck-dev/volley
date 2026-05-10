@@ -54,9 +54,9 @@ Every item lives in one of three states:
 
 Transitions between states ease, never snap. Position, scale, and modulation read as continuous through the state change. The exception is the release-onto-court transition, where the body's velocity itself is the continuity; no tween needed.
 
-## Speed is friendship
+## Speed carries through grab-and-release
 
-Rally speed carries through grab-and-release: a mid-rally grab is a redirect, not a reset. The magnitude survives the held-token detour; the gesture chooses only the direction. Speed only resets on miss.
+A mid-rally grab is a redirect, not a reset. Rally speed magnitude survives the held-token detour; the gesture chooses only the direction. Speed resets only on miss.
 
 ## Drop validation
 
