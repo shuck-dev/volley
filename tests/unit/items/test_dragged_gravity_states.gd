@@ -229,8 +229,8 @@ func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> v
 	)
 
 
-func test_loose_body_has_press_area_enabled_when_loose() -> void:
-	# SH-332: a loose body's PressArea is the entry point for re-grab.
+func test_loose_body_has_grab_area_enabled_when_loose() -> void:
+	# SH-332: a loose body's GrabArea is the entry point for re-grab.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -240,8 +240,8 @@ func test_loose_body_has_press_area_enabled_when_loose() -> void:
 	var bodies: Array = _loose_bodies_under_host()
 	assert_eq(bodies.size(), 1)
 	var body: HeldBody = bodies[0]
-	assert_not_null(body.press_area, "loose body has a press area for re-grab")
-	assert_true(body.press_area.input_pickable, "press area is enabled when LOOSE")
+	assert_not_null(body.grab_area, "loose body has a grab area for re-grab")
+	assert_true(body.grab_area.input_pickable, "grab area is enabled when LOOSE")
 
 
 func test_loose_body_press_re_grabs_via_controller() -> void:
@@ -256,7 +256,7 @@ func test_loose_body_press_re_grabs_via_controller() -> void:
 	var body: HeldBody = bodies[0]
 	assert_null(_drag.get_held_body(), "controller has no held body after the loose release")
 
-	body.pressed.emit(body)
+	body.grabbed.emit(body)
 
 	assert_eq(_drag.get_held_body(), body, "loose press re-grabs the same body")
 	assert_eq(body.phase, HeldBody.Phase.LIFTING, "re-grabbed body returns to LIFTING")

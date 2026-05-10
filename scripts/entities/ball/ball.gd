@@ -4,7 +4,7 @@ extends RigidBody2D
 signal missed
 signal at_max_speed_changed(is_at_max: bool)
 signal speed_changed(speed: float, min_speed: float, max_speed: float)
-signal pressed(ball: Ball)
+signal grabbed(ball: Ball)
 signal play_state_changed(state: PlayState)
 
 enum PlayState {
@@ -20,8 +20,8 @@ const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
-## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
-@export var press_area: PressArea2D
+## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
+@export var grab_area: GrabArea
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
 
@@ -195,15 +195,15 @@ func _setup_effect_processor() -> void:
 	add_child(effect_processor)
 
 
-func _wire_press_area() -> void:
-	if press_area == null:
+func _wire_grab_area() -> void:
+	if grab_area == null:
 		return
-	press_area.inflate_to(_baseline_collision_radius())
-	if not press_area.pressed.is_connected(_on_press_area_pressed):
-		press_area.pressed.connect(_on_press_area_pressed)
+	grab_area.inflate_to(_baseline_collision_radius())
+	if not grab_area.grabbed.is_connected(_on_grab_area_grabbed):
+		grab_area.grabbed.connect(_on_grab_area_grabbed)
 
 
-# Reads the body's authored collider, not the press area's; the press area's shape is the derived one.
+# Reads the body's authored collider, not the grab area's; the grab area's shape is the derived one.
 func _baseline_collision_radius() -> float:
 	for child in get_children():
 		if child is CollisionShape2D:
@@ -233,15 +233,15 @@ func _ball_setup() -> void:
 		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(_on_missed):
 		missed.connect(_on_missed)
-	# Press routing lives on PressArea; the rigid body stops accepting pointer events.
+	# Press routing lives on GrabArea; the rigid body stops accepting pointer events.
 	input_pickable = false
-	_wire_press_area()
+	_wire_grab_area()
 
 
-func _on_press_area_pressed(_area: PressArea2D) -> void:
+func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	if freeze:
 		return
-	pressed.emit(self)
+	grabbed.emit(self)
 
 
 func has_item_art() -> bool:

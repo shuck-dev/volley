@@ -380,14 +380,14 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	_manager.activate("training_ball")
 	var live: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(live, "precondition: live ball exists")
-	var press_area: Area2D = live.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "live ball must own a PressArea for press routing")
-	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
+	var grab_area: Area2D = live.get_node_or_null("GrabArea") as Area2D
+	assert_not_null(grab_area, "live ball must own a GrabArea for press routing")
+	assert_true(grab_area.input_pickable, "GrabArea must accept pointer events")
 
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	press_area.input_event.emit(get_viewport(), press, 0)
+	grab_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode")
 	await get_tree().process_frame
@@ -418,15 +418,15 @@ func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
 	await get_tree().process_frame
 
 	assert_eq(_permanent_balls().size(), 1, "precondition: pre-existing Ball lives under host")
-	var press_area: Area2D = pre_existing.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "Ball must own a PressArea for press routing")
-	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
+	var grab_area: Area2D = pre_existing.get_node_or_null("GrabArea") as Area2D
+	assert_not_null(grab_area, "Ball must own a GrabArea for press routing")
+	assert_true(grab_area.input_pickable, "GrabArea must accept pointer events")
 	assert_false(_drag.is_dragging(), "precondition: no drag in progress before the press")
 
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	press_area.input_event.emit(get_viewport(), press, 0)
+	grab_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(
 		_drag.is_dragging(),

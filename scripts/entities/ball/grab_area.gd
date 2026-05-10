@@ -1,7 +1,7 @@
-class_name PressArea2D
+class_name GrabArea
 extends Area2D
 
-signal pressed(area: PressArea2D)
+signal grabbed(area: GrabArea)
 
 @export_range(1.0, 4.0, 0.1) var hitbox_inflation: float = 2.4
 
@@ -39,4 +39,4 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		return
 	if not mouse_button.pressed:
 		return
-	pressed.emit(self)
+	grabbed.emit(self)

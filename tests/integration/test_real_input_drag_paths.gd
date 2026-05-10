@@ -313,10 +313,10 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	assert_not_null(live, "precondition: live ball is on court")
 	var viewport: Viewport = live.get_viewport()
 
-	# Press on the live ball routes through Ball._on_input_event → emits `pressed` →
-	# BallDragController.grab_live_ball. SH-297: routing lives on the child PressArea.
-	var press_area: Area2D = live.get_node("PressArea") as Area2D
-	press_area.input_event.emit(viewport, _press_event(), 0)
+	# Press on the live ball routes through Ball._on_input_event → emits `grabbed` →
+	# BallDragController.grab_live_ball. SH-297: routing lives on the child GrabArea.
+	var grab_area: Area2D = live.get_node("GrabArea") as Area2D
+	grab_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")
 
 	await get_tree().process_frame

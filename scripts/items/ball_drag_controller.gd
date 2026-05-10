@@ -345,8 +345,8 @@ func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
 
 ## Public seam so subsystems that spawn their own loose bodies (Shop) can wire re-grab through this controller.
 func track_loose_body(body: HeldBody) -> void:
-	if not body.pressed.is_connected(_on_loose_body_pressed):
-		body.pressed.connect(_on_loose_body_pressed)
+	if not body.grabbed.is_connected(_on_loose_body_grabbed):
+		body.grabbed.connect(_on_loose_body_grabbed)
 
 
 ## Folds the three loose-body bookkeeping ops (re-grab wiring + ItemManager promotion + slot-restore on free) so callers
@@ -378,13 +378,13 @@ func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
 
 
 ## Re-grabs a loose body the player pressed; reuses the same body so the gesture stays diegetic.
-func _on_loose_body_pressed(body: HeldBody) -> void:
+func _on_loose_body_grabbed(body: HeldBody) -> void:
 	if _held_body != null:
 		return
 	var item_key: String = body.item_key
 
 	var spawn_position: Vector2 = body.global_position
-	body.pressed.disconnect(_on_loose_body_pressed)
+	body.grabbed.disconnect(_on_loose_body_grabbed)
 	# Re-grab consumes the loose-in-venue overlay so the rack reveals normally on the next release path.
 	if _item_manager != null:
 		_item_manager.clear_loose_in_venue(item_key)
@@ -415,7 +415,7 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 	body.freeze = true
 	body.collision_layer = 0
 	body.collision_mask = 0
-	body._enable_press_area(false)
+	body._enable_grab_area(false)
 	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
 	if body.get_parent() != self:
 		body.get_parent().remove_child(body)
@@ -730,10 +730,10 @@ func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
-	ball.pressed.connect(_on_live_ball_pressed.bind(item_key))
+	ball.grabbed.connect(_on_live_ball_grabbed.bind(item_key))
 
 
-func _on_live_ball_pressed(_ball: Ball, item_key: String) -> void:
+func _on_live_ball_grabbed(_ball: Ball, item_key: String) -> void:
 	grab_live_ball(item_key, false)
 
 

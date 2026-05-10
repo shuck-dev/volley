@@ -185,8 +185,8 @@ func test_regrab_clears_loose_in_venue_overlay() -> void:
 	var bodies: Array = _loose_bodies_under_host()
 	assert_eq(bodies.size(), 1)
 	var loose_body: HeldBody = bodies[0]
-	# Synthesise the press signal the live press area would emit.
-	loose_body.pressed.emit(loose_body)
+	# Synthesise the grab signal the live grab area would emit.
+	loose_body.grabbed.emit(loose_body)
 	assert_false(
 		_manager.is_loose_in_venue("ball_alpha"),
 		"re-grabbing a loose body clears the placement overlay",
