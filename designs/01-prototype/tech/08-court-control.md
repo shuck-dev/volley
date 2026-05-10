@@ -38,10 +38,16 @@ The bound is a state line, not a collision filter.
 
 ## Numerical stability
 
-At Tier-3 speeds the per-frame rotation is sharp. Implementation should re-project velocity onto its target direction or substep so "no work" holds numerically as well as mathematically.
+The centripetal force only acts above the friendship-bound. After each physics tick that applied it, re-project velocity to its tracked magnitude so "no work" holds numerically as well as mathematically. Below the bound the speed-lock does the same job; no separate stabilisation is needed there.
+
+## Bound-height data shape
+
+The friendship-bound height lives on a `VenueConfig` Resource from day one. Per-venue tunables cluster on this Resource alongside the bound height; `Court` reads from it. Loose `@export` on `Court` is not the path.
+
+## Drag-handoff frame window
+
+Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can cross a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
 
 ## Open questions
 
 - **Energy loss on the rest-roll.** Venue-floor friction, ball damping, or both? Tuning, not correctness.
-- **Bound-height data shape.** `VenueConfig` Resource from day one, or a loose `@export` on `Court` promoted later?
-- **Drag-handoff frame window.** When the player grabs a live ball near a side band while it is travelling outward, the swap is deferred a frame and the live ball can cross during that frame. Mandate "miss does not fire while a grab is in flight" in spec, or leave to implementer judgement?
