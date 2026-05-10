@@ -26,26 +26,17 @@ The bound height is per-venue. Small venues have a tighter ceiling, large venues
 
 ## Miss
 
-A miss is one event: the ball crosses past a paddle on either side. The counter resets, the ball retains its velocity at the moment of the cross, rolls onto the venue floor, and comes to rest. The player drags it back to the rack to re-serve.
+A miss is one event: the ball crosses past a paddle on either side. The counter resets, the ball retains its velocity at the moment of the cross, and rolls onto the venue floor.
 
 Player-side and partner-side share the same event. The ball got past a paddle, regardless of whose paddle.
 
-### Cue layering
-
-Bounces and misses read distinctly:
-
-- **Bounce off the ground.** A short tick and a small squash on the floor. No camera impact.
-- **Miss.** The existing miss beat plus a flash on the paddle the ball crossed. The ball is visibly still alive and rolling; the cue acknowledges the rally ended without pretending the ball is gone.
-
-Cues are audio plus world-space. No screen-space banners.
-
 ## Resting balls
 
-A ball rolled out of the court sits visibly on the venue floor wherever it stopped. The player can't serve from a rested ball; serves come from the rack. Rested balls stay put across rallies, saves, and scene reloads.
+A ball rolled out of the court sits visibly on the venue floor wherever it stopped. Rested balls stay put across rallies, saves, and scene reloads.
+
+To put a rested ball back into play, the player drags it onto the court for a manual serve, or drags it onto the rack to re-enter the auto-serve loop. Either path is supported and already implemented.
 
 Balls can rest anywhere on the venue floor. The shop, workshop, and kit zones absorb them and let them roll to a stop like any other patch. Rack footprints are drop targets, not rest surfaces; a ball that enters one snaps into the rack instead.
-
-If the player owns exactly one permanent ball and it is resting, the rack is empty and the main character idles. The player drags the resting ball back to the rack to re-enter the loop. This is intentional friction: a miss has a cost beyond the counter reset, and it teaches the rack gesture before the helper takes it away.
 
 ## Drag-out distinguished from miss
 
