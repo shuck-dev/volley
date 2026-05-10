@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CourtConfig" load_steps=2 format=3 uid="uid://b66666sh366cc"]
+
+[ext_resource type="Script" path="res://scripts/core/court_config.gd" id="1_courtcfg"]
+
+[resource]
+script = ExtResource("1_courtcfg")
+friendship_bound_y = -351.6
+arc_linear_damp = 0.6
+arc_centripetal_coefficient = 6.0
+relock_ramp_seconds = 0.12

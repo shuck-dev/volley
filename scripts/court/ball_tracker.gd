@@ -11,6 +11,7 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
 @export var ball_system: BallReconciler
+@export var court_config: CourtConfig
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
@@ -40,6 +41,8 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
+	if court_config != null:
+		new_ball.court_config = court_config
 	_balls.append(new_ball)
 	if _current_ball == null:
 		_set_current(new_ball)

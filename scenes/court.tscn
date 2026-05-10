@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
 [ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
 [ext_resource type="Resource" uid="uid://07ennsehe5u8" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
+[ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
@@ -34,6 +35,7 @@ size = Vector2(21.6, 703.2)
 script = ExtResource("1_tbgi4")
 ball_system = NodePath("BallReconciler")
 ball_tracker = NodePath("BallTracker")
+court_config = ExtResource("25_courtcfg")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")

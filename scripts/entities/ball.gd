@@ -5,6 +5,17 @@ signal missed
 signal at_max_speed_changed(is_at_max: bool)
 signal speed_changed(speed: float, min_speed: float, max_speed: float)
 signal pressed(ball: Ball)
+signal play_state_changed(state: int)
+
+# Ball state machine. PLAY covers NORMAL/ARC; OUT covers REST/HELD; STORED is on the rack.
+# See designs/01-prototype/tech/08-court-control.md. SH-367 lands the OUT/HELD transitions.
+enum PlayState {
+	STORED,
+	PLAY_NORMAL,
+	PLAY_ARC,
+	OUT_REST,
+	OUT_HELD,
+}
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
@@ -14,6 +25,8 @@ const SPEED_EMIT_THRESHOLD := 10.0
 @export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 2.4
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
 @export var press_area: Area2D
+## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
+@export var court_config: CourtConfig
 
 var speed: float = 0.0
 var min_speed: float
@@ -22,16 +35,26 @@ var speed_increment: float
 var effect_processor: BallEffectProcessor
 var is_temporary: bool = false
 
+# State-machine register: persists the pre-bound entry speed. First NORMAL->ARC cross sets it;
+# subsequent crosses do not reset it; speed-change events while in ARC update it.
+var play_state: int = PlayState.PLAY_NORMAL
+var entry_speed: float = 0.0
+
 var _item_manager: Node
 var _was_at_max_speed := false
 var _last_emitted_speed: float = 0.0
 var _last_emitted_min: float = 0.0
 var _last_emitted_max: float = 0.0
+var _entry_speed_initialised: bool = false
+var _relock_remaining: float = 0.0
+var _relock_from_speed: float = 0.0
 
 
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
+	if court_config == null:
+		court_config = CourtConfig.new()
 	min_speed = _item_manager.get_stat(&"ball_speed_min")
 	max_speed = min_speed + _item_manager.get_stat(&"ball_speed_max_range")
 	speed_increment = _item_manager.get_stat(&"ball_speed_increment")
@@ -43,10 +66,87 @@ func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
 	effect_processor.process_frame(delta)
+	_update_play_state(delta)
 	_emit_max_speed_if_changed()
 	if _should_emit_speed_changed():
 		_emit_speed_changed()
-	linear_velocity = linear_velocity.normalized() * speed
+	if play_state == PlayState.PLAY_NORMAL:
+		linear_velocity = linear_velocity.normalized() * speed
+
+
+# State transitions and per-state physics. Crossing is read off the body's current Y vs the bound.
+func _update_play_state(delta: float) -> void:
+	if play_state != PlayState.PLAY_NORMAL and play_state != PlayState.PLAY_ARC:
+		return
+	var bound_y: float = court_config.friendship_bound_y
+	var above_bound: bool = global_position.y < bound_y
+	if above_bound and play_state == PlayState.PLAY_NORMAL:
+		_enter_arc()
+	elif not above_bound and play_state == PlayState.PLAY_ARC:
+		_enter_normal()
+	if play_state == PlayState.PLAY_ARC:
+		_apply_arc_physics(delta)
+	elif _relock_remaining > 0.0:
+		_advance_relock_ramp(delta)
+
+
+func _enter_arc() -> void:
+	if not _entry_speed_initialised:
+		entry_speed = speed
+		_entry_speed_initialised = true
+	gravity_scale = 1.0
+	linear_damp = court_config.arc_linear_damp
+	play_state = PlayState.PLAY_ARC
+	play_state_changed.emit(play_state)
+
+
+func _enter_normal() -> void:
+	gravity_scale = 0.0
+	linear_damp = 0.0
+	play_state = PlayState.PLAY_NORMAL
+	if _entry_speed_initialised and court_config.relock_ramp_seconds > 0.0:
+		_relock_remaining = court_config.relock_ramp_seconds
+		_relock_from_speed = linear_velocity.length()
+	else:
+		# Snap when the ramp is disabled or no entry value was tracked.
+		speed = entry_speed if _entry_speed_initialised else speed
+		linear_velocity = linear_velocity.normalized() * speed
+		_relock_remaining = 0.0
+	play_state_changed.emit(play_state)
+
+
+# Centripetal force scaled by speed, perpendicular to velocity, toward the play area (downward).
+# Re-project the magnitude after integration to cancel the tick-by-tick drift, per the spec.
+func _apply_arc_physics(delta: float) -> void:
+	var velocity: Vector2 = linear_velocity
+	var current_speed: float = velocity.length()
+	if current_speed <= 0.0:
+		return
+	var direction: Vector2 = velocity / current_speed
+	# Two perpendiculars; pick the one with downward (positive Y) component, "toward play area".
+	var perpendicular: Vector2 = Vector2(-direction.y, direction.x)
+	if perpendicular.y < 0.0:
+		perpendicular = -perpendicular
+	var bend: Vector2 = (
+		perpendicular * (current_speed * court_config.arc_centripetal_coefficient * delta)
+	)
+	var bent: Vector2 = velocity + bend
+	# Re-project to the entering magnitude so the centripetal does no work.
+	var target_speed: float = entry_speed if _entry_speed_initialised else current_speed
+	if bent.length() > 0.0:
+		linear_velocity = bent.normalized() * target_speed
+
+
+func _advance_relock_ramp(delta: float) -> void:
+	_relock_remaining = maxf(_relock_remaining - delta, 0.0)
+	var ramp_total: float = court_config.relock_ramp_seconds
+	var t: float = 1.0 - (_relock_remaining / ramp_total) if ramp_total > 0.0 else 1.0
+	var ramped_speed: float = lerpf(_relock_from_speed, entry_speed, clampf(t, 0.0, 1.0))
+	speed = ramped_speed
+	linear_velocity = linear_velocity.normalized() * ramped_speed
+	if _relock_remaining <= 0.0:
+		speed = entry_speed
+		linear_velocity = linear_velocity.normalized() * speed
 
 
 func _should_emit_speed_changed() -> bool:
@@ -91,16 +191,27 @@ func increase_speed() -> void:
 		return
 	speed = min(speed + speed_increment, max_speed)
 	_apply_speed()
+	_track_arc_speed_change()
 
 
 func reset_speed() -> void:
 	speed = min_speed
 	_apply_speed()
+	_track_arc_speed_change()
 
 
 func set_speed_for_streak(count: int) -> void:
 	speed = min(min_speed + count * speed_increment, max_speed)
 	_apply_speed()
+	_track_arc_speed_change()
+
+
+# In ARC, the entry-value register tracks any speed-change event so the post-apex relock
+# lands at the post-event speed rather than the pre-apex value.
+func _track_arc_speed_change() -> void:
+	if play_state == PlayState.PLAY_ARC:
+		entry_speed = speed
+		_entry_speed_initialised = true
 
 
 func _apply_speed() -> void:
@@ -162,7 +273,10 @@ func _ball_setup() -> void:
 	speed = min_speed
 	effect_processor.sync_base_speed()
 	lock_rotation = true
+	# PLAY-NORMAL physics floor: gravity off, damping off, speed locked by _physics_process.
+	gravity_scale = 0.0
 	linear_damp = 0.0
+	play_state = PlayState.PLAY_NORMAL
 	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 	contact_monitor = true
 	max_contacts_reported = 1

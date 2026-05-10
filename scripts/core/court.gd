@@ -11,6 +11,7 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 
 @export var ball_system: BallReconciler
 @export var ball_tracker: BallTracker
+@export var court_config: CourtConfig
 @export var player_paddle_scene: PackedScene
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
@@ -57,6 +58,9 @@ func _ready() -> void:
 		ball_tracker = BallTracker.new()
 		ball_tracker.ball_system = ball_system
 		add_child(ball_tracker)
+	if court_config == null:
+		court_config = CourtConfig.new()
+	ball_tracker.court_config = court_config
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
