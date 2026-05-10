@@ -4,6 +4,10 @@ extends CharacterBody2D
 @warning_ignore("unused_signal")
 signal paddle_hit
 
+# Upper limit only; the venue floor handles the bottom physically.
+# Tuned high enough to chase arcing balls into PLAY-ARC, low enough to stay on-screen.
+const PADDLE_TOP_Y := -540.0
+
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
 @export var sprite: Sprite2D
@@ -51,6 +55,14 @@ func drive(velocity_y: float) -> void:
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
 	position.x = _lane_x
+	clamp_to_arena()
+
+
+func clamp_to_arena() -> void:
+	var paddle_half: float = 0.0
+	if _collision_shape != null:
+		paddle_half = _collision_shape.size.y / 2.0
+	position.y = maxf(position.y, PADDLE_TOP_Y + paddle_half)
 
 
 func get_speed() -> float:

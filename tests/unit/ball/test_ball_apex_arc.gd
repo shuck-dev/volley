@@ -68,38 +68,42 @@ func test_arc_to_normal_on_downward_cross() -> void:
 
 
 func test_entry_speed_set_on_first_upward_cross() -> void:
-	_ball.speed = 600.0
+	var entry: float = _ball.min_speed * 1.3
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -600.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	assert_almost_eq(_ball.entry_speed, 600.0, 0.5)
+	assert_almost_eq(_ball.entry_speed, entry, 0.5)
 
 
 func test_entry_speed_not_reset_on_subsequent_cross() -> void:
-	_ball.speed = 600.0
+	var first: float = _ball.min_speed * 1.3
+	var second: float = _ball.min_speed * 1.7
+	_ball.speed = first
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -600.0)
+	_ball.linear_velocity = Vector2(0.0, -first)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
-	_ball.speed = 800.0
-	_ball.linear_velocity = Vector2(0.0, -800.0)
+	_ball.speed = second
+	_ball.linear_velocity = Vector2(0.0, -second)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
 	assert_almost_eq(
-		_ball.entry_speed, 600.0, 0.5, "register persists across crosses; first value remains."
+		_ball.entry_speed, first, 0.5, "register persists across crosses; first value remains."
 	)
 
 
 func test_speed_change_in_arc_updates_entry_value() -> void:
-	_ball.speed = 500.0
+	var entry: float = _ball.min_speed * 1.1
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -500.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	assert_almost_eq(_ball.entry_speed, 500.0, 0.5)
+	assert_almost_eq(_ball.entry_speed, entry, 0.5)
 	_ball.increase_speed()
 	assert_almost_eq(
 		_ball.entry_speed,
@@ -113,20 +117,22 @@ func test_speed_change_in_arc_updates_entry_value() -> void:
 
 
 func test_arc_does_not_renormalise_velocity_to_entry_speed() -> void:
-	_ball.speed = 500.0
+	var entry: float = _ball.min_speed * 1.1
+	var drifted: float = entry * 0.4
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	# Enter ARC at speed 500.
-	_ball.linear_velocity = Vector2(0.0, -500.0)
+	# Enter ARC at the entry speed.
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_ARC)
 	# Mid-arc the engine would shed vertical speed to gravity. Simulate that drift, then tick.
-	# If the dropped centripetal-reprojection were still in place this would snap back to 500.
-	_ball.linear_velocity = Vector2(0.0, -200.0)
+	# If the dropped centripetal-reprojection were still in place this would snap back to entry.
+	_ball.linear_velocity = Vector2(0.0, -drifted)
 	_ball._physics_process(0.016)
 	assert_almost_eq(
 		_ball.linear_velocity.length(),
-		200.0,
+		drifted,
 		0.5,
 		"in-ARC velocity is left to engine gravity; ball.gd no longer renormalises"
 	)
@@ -134,10 +140,11 @@ func test_arc_does_not_renormalise_velocity_to_entry_speed() -> void:
 
 func test_arc_does_not_bend_purely_vertical_velocity() -> void:
 	# Off-centre, purely vertical motion: under the old centripetal rule this gained an x-component.
-	_ball.speed = 500.0
+	var entry: float = _ball.min_speed * 1.1
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
 	_ball.global_position = Vector2(200.0, BOUND_Y - 50.0)
-	_ball.linear_velocity = Vector2(0.0, -500.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball._physics_process(0.016)
 	_ball._physics_process(0.016)
 	assert_almost_eq(_ball.linear_velocity.x, 0.0, 0.001, "no centripetal bend toward centre")
@@ -147,13 +154,15 @@ func test_arc_does_not_bend_purely_vertical_velocity() -> void:
 
 
 func test_relock_ramp_lands_at_entry_speed() -> void:
-	_ball.speed = 700.0
+	var entry: float = _ball.min_speed * 1.5
+	var drifted: float = entry * 0.3
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -700.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	assert_almost_eq(_ball.entry_speed, 700.0, 0.5)
-	_ball.linear_velocity = Vector2(0.0, 200.0)
+	assert_almost_eq(_ball.entry_speed, entry, 0.5)
+	_ball.linear_velocity = Vector2(0.0, drifted)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_NORMAL)
@@ -161,26 +170,28 @@ func test_relock_ramp_lands_at_entry_speed() -> void:
 		_ball._physics_process(0.016)
 	assert_almost_eq(
 		_ball.linear_velocity.length(),
-		700.0,
+		entry,
 		1.0,
 		"post-ramp magnitude matches the tracked entry value"
 	)
-	assert_almost_eq(_ball.speed, 700.0, 0.5)
+	assert_almost_eq(_ball.speed, entry, 0.5)
 
 
 func test_relock_ramp_intermediate_magnitude_between_endpoints() -> void:
-	_ball.speed = 700.0
+	var entry: float = _ball.min_speed * 1.5
+	var drifted: float = entry * 0.3
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -700.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	_ball.linear_velocity = Vector2(0.0, 200.0)
+	_ball.linear_velocity = Vector2(0.0, drifted)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
 	_ball._physics_process(0.02)
 	var mid: float = _ball.linear_velocity.length()
-	assert_gt(mid, 200.0)
-	assert_lt(mid, 700.0)
+	assert_gt(mid, drifted)
+	assert_lt(mid, entry)
 
 
 # --- in-ARC speed events: every entry-value mutation is tracked ---
@@ -206,19 +217,21 @@ func test_set_speed_for_streak_in_arc_updates_entry_value() -> void:
 
 
 func test_relock_ramp_zero_snaps_to_entry_speed() -> void:
+	var entry: float = _ball.min_speed * 1.5
+	var drifted: float = entry * 0.3
 	_config.relock_ramp_seconds = 0.0
-	_ball.speed = 700.0
+	_ball.speed = entry
 	_ball.effect_processor.sync_base_speed()
-	_ball.linear_velocity = Vector2(0.0, -700.0)
+	_ball.linear_velocity = Vector2(0.0, -entry)
 	_ball.global_position = Vector2(0.0, BOUND_Y - 5.0)
 	_ball._physics_process(0.016)
-	_ball.linear_velocity = Vector2(0.0, 200.0)
+	_ball.linear_velocity = Vector2(0.0, drifted)
 	_ball.global_position = Vector2(0.0, BOUND_Y + 5.0)
 	_ball._physics_process(0.016)
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_NORMAL)
-	assert_almost_eq(_ball.speed, 700.0, 0.5, "snap path lands speed at entry_speed")
+	assert_almost_eq(_ball.speed, entry, 0.5, "snap path lands speed at entry_speed")
 	assert_almost_eq(
-		_ball.linear_velocity.length(), 700.0, 1.0, "snap path lands magnitude at entry_speed"
+		_ball.linear_velocity.length(), entry, 1.0, "snap path lands magnitude at entry_speed"
 	)
 
 

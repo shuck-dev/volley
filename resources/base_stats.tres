@@ -4,3 +4,4 @@
 
 [resource]
 script = ExtResource("1")
+ball_speed_min = 225.0

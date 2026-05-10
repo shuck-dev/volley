@@ -3,7 +3,6 @@
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
-[ext_resource type="Script" uid="uid://dv6u410fejjs7" path="res://scripts/entities/miss_zone.gd" id="7_l8syn"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
 [ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
@@ -77,9 +76,8 @@ shape = SubResource("RectangleShape2D_vert")
 [node name="LeftMissZone" parent="Bounds/MissZones" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
 position = Vector2(-430.8, 0)
 
-[node name="RightMissZone" type="Area2D" parent="Bounds/MissZones" unique_id=500636962 groups=["miss_zones"] instance=ExtResource("10_miss_zone")]
+[node name="RightMissZone" parent="Bounds/MissZones" unique_id=500636962 instance=ExtResource("10_miss_zone")]
 position = Vector2(430.8, 0)
-script = ExtResource("7_l8syn")
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
