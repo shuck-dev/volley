@@ -1,6 +1,6 @@
 # Court Bounds and Miss
 
-The court is open. The ball is held in by friendship, not by walls.
+The court has a friendship-bound at the top, side bands left and right, the ground at the bottom, and the paddle line at the back. No walls.
 
 Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md).
 
@@ -10,24 +10,20 @@ Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-co
 
 ## The bounds
 
-| Edge | Bound | What the player feels |
+| Edge | Bound | Behaviour |
 |---|---|---|
-| Top | The friendship-bound | The ball is held in by friendship's uplift. Past the bound, gravity takes the ball through an arc and friendship draws it home. |
-| Bottom | The ground | A pong bounce. The floor is physical, hitting it doesn't end the rally. |
+| Top | The friendship-bound | Below the bound, the ball is weightless. Above the bound, gravity engages and the ball arcs back into play. |
+| Bottom | The ground | A pong bounce. Hitting the floor does not end the rally. |
 | Back | The paddle line | The miss line. The ball getting past the paddle ends the rally. |
-| Sides | Open | A ball crossing sideways rolls onto the venue floor and lies among the items the player has placed. |
+| Sides | Open side bands | A ball crossing sideways rolls onto the venue floor and lies among the items the player has placed. |
 
 No side walls and no ceiling. The court visibly opens onto the rest of the venue.
 
-## Friendship as the upper bound
+## The friendship-bound
 
-The top of the play volume is the friendship-bound. Below it the ball is weightless under friendship's uplift. Above it gravity engages, but friendship still pulls the ball home; faster balls turn tighter, slower balls trace wider loops.
-
-Either way the ball returns and the uplift resumes.
+The top of the play volume is the friendship-bound. Below it the ball is weightless. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the weightless state resumes.
 
 The bound height is per-venue. Small venues have a tighter ceiling, large venues breathe.
-
-Above the bound the player feels friendship pulling the ball home. From the rally's side that pull reads as the spirit of the volley; the full account is in [`../../narrative/friendship.md`](../../narrative/friendship.md).
 
 ## Miss
 
