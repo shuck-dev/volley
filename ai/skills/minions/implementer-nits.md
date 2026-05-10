@@ -41,6 +41,34 @@ Read this before pushing. Each rule names the do; the why links to the source.
 - Player-observable assertions over implementation details. Don't assert internal flag values when an external behaviour proves the same thing. Source: `feedback_test_behaviour`.
 - Run `./scripts/ci/run_gut.sh` before declaring done.
 
+## Blank-line spacing inside function bodies
+
+- One blank line after an early-return guard (`if cond: return`) before the main work begins.
+- One blank line between logical clusters within a function body. Variable declarations, signal wiring, mutation, and cleanup are different clusters; visually separate them.
+- One blank line after a multi-statement `if`/`for` block before the next statement, when the next statement is a new logical step rather than a continuation.
+- gdformat preserves single blanks; it only collapses 2+ in a row. So advisory blanks survive lefthook.
+
+Calibrating example, post-Josh-edit on `scripts/hud/dev_ball_state_panel.gd`:
+
+```gdscript
+func _on_ball_removed(ball: Ball) -> void:
+    if not _rows.has(ball):
+        return
+
+    var row: Dictionary = _rows[ball]
+    var label: Label = row["label"]
+
+    if is_instance_valid(ball) and ball.play_state_changed.is_connected(row["callable"]):
+        ball.play_state_changed.disconnect(row["callable"])
+
+    if is_instance_valid(label):
+        label.queue_free()
+
+    _rows.erase(ball)
+```
+
+Four clusters: guard, var decls, signal disconnect, label free, dict erase. Each blank-separated.
+
 ## Eventually mechanical
 
 The linter (SH-372) will mechanise the highest-frequency rules above so violations cannot ship. Until then, read this file before each push and run the checklist.
