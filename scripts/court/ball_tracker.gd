@@ -25,6 +25,7 @@ func configure(player_paddle: Node2D) -> void:
 
 
 func _ready() -> void:
+	add_to_group(&"ball_trackers")
 	if ball_system != null:
 		ball_system.ball_added.connect(attach)
 		ball_system.ball_removed.connect(detach)
