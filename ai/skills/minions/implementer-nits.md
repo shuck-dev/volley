@@ -9,7 +9,7 @@ Read this before pushing. Each rule names the do; the why links to the source.
 
 ## Comments
 
-- `##` is Godot's docstring syntax: keep it tight (one line) and attach it to declarations (class, member, function, signal, enum). Editor tooltips and class reference rely on it.
+- `##` is Godot's documentation-comment syntax. Attach it to the declaration directly below (no blank line between), surfaces in the editor inspector and class reference. Volley keeps `##` to one line per declaration; multi-line blocks compress or move into a doc.
 - `#` is a narrative inline comment. Default is none. A `#` earns its place only when both: (a) the information is truly inscrutable from the code itself, and (b) it is too implementation-focused for design, tech, or narrative docs to host. If both don't hold, drop it. Source: `ai/skills/minions/code-comments.md`.
 - One line max for either kind. Multi-line blocks become a one-liner or move into a doc.
 - A blank line precedes every comment, like any other block.

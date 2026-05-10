@@ -21,7 +21,14 @@ If removing the comment wouldn't confuse a future reader, don't write it.
 
 **Two kinds of comment, two rules.**
 
-`##` is Godot's docstring syntax. `##` follows Godot's rules: attached to a declaration (class, member, function, signal, enum), used by the editor for inspector tooltips, autocomplete, and class reference. Keep `##` docstrings tight (one line) and accurate.
+`##` is Godot's documentation-comment syntax. It attaches to the declaration immediately below (class, signal, member, function, enum, const) and surfaces in the editor as inline tooltips, class reference, and autocomplete hints. Godot's rules:
+
+- One or more `##` lines directly above a declaration; the first line is the summary, subsequent lines extend it.
+- A blank line between the docstring and the declaration breaks the attachment, so keep them adjacent.
+- BBCode formatting renders in the editor (`[b]`, `[code]`, `[url]`, etc.). Use sparingly.
+- Special tags like `[param name]`, `@tutorial`, `@deprecated` are recognised; see Godot's GDScript documentation comments page for the full list.
+
+Volley tightens these: `##` is one line per declaration, full stop. Multi-line `##` blocks become a one-liner or move into a separate doc. Tutorial / param tags are out of scope until they earn their place.
 
 `#` is a narrative inline comment. `#` gets the strict bar below.
 
