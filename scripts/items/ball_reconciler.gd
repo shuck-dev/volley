@@ -97,7 +97,7 @@ func get_ball_for_key(item_key: String) -> Ball:
 	return raw
 
 
-## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries friendship energy through grab-and-release.
+## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries rally speed through grab-and-release.
 func ensure_ball_for_key(
 	item_key: String,
 	spawn_position: Vector2,

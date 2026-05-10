@@ -1,6 +1,6 @@
 # Court Bounds and Miss
 
-The court has a friendship-bound at the top, the ground at the bottom, and open sides left and right. The paddles sit on the sides; a ball that crosses either side past a paddle ends the rally. No walls.
+The court has a friendship-bound at the top, the ground at the bottom, and open sides left and right. The paddles sit on the sides; a ball that arcs past a paddle on either side ends the rally. No walls.
 
 Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md).
 
@@ -14,7 +14,7 @@ Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-co
 |---|---|---|
 | Top | The friendship-bound | Below the bound, the ball is weightless. Above the bound, gravity engages and the ball arcs back into play. |
 | Bottom | The ground | A pong bounce. Hitting the floor does not end the rally. |
-| Sides | Open side bands | The paddles sit here. A ball crossing past a paddle ends the rally and rolls onto the venue floor among the items the player has placed. |
+| Sides | Open side bands | The paddles sit here. A ball that arcs past a paddle ends the rally; gravity carries it onto the venue floor among the items the player has placed. |
 
 No walls and no ceiling. The court visibly opens onto the rest of the venue.
 
@@ -26,7 +26,7 @@ The bound height is per-venue. Small venues have a tighter ceiling, large venues
 
 ## Miss
 
-A miss is one event: the ball crosses past a paddle on either side. The counter resets, the ball retains its velocity at the moment of the cross, and rolls onto the venue floor.
+A miss is one event: the ball arcs past a paddle on either side. The counter resets, the ball keeps its velocity, falls under gravity, and rolls to rest on the venue floor.
 
 Player-side and partner-side share the same event. The ball got past a paddle, regardless of whose paddle.
 

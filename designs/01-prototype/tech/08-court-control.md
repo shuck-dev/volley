@@ -14,21 +14,21 @@ The bound is a per-Court height.
 
 ## Apex return
 
-A ball crossing upward through the bound moves into the released state. Gravity decelerates the vertical component; the centripetal force redirects.
+A ball that arcs above the bound moves into the released state. Gravity decelerates the vertical component; the centripetal force redirects.
 
-The ball tracks its pre-bound entry value: speed at the upward cross. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed.
+The ball tracks its pre-bound entry value: speed at the moment it arcs above the bound. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed.
 
-Re-crossing below the bound returns the ball to the held state: `gravity_scale = 0`, speed-lock relocks, damping disengages, speed ramps back up to the tracked entry value. Rally energy is preserved across the apex visit.
+Returning below the bound returns the ball to the held state: `gravity_scale = 0`, speed-lock relocks, damping disengages, speed ramps back up to the tracked entry value. Rally energy is preserved across the apex visit.
 
 The mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc. The ball stays a live ball throughout; paddle hits register and the volley counter increments above the bound the same as below.
 
 ## Miss
 
-A ball whose centre crosses either lateral side band fires a miss: the held state releases, gravity engages, speed-lock releases, damping engages, the rally counter resets. The ball retains its velocity at the moment of the cross, comes to rest on the venue floor, and the player drags it back to the rack via the existing live-ball drag path. Past either side band there is no centripetal and no relock ramp.
+A ball whose centre arcs past either lateral side band fires a miss: the held state releases, gravity engages, speed-lock releases, damping engages, the rally counter resets. The ball keeps its velocity at the moment it arcs past, falls under gravity, and rolls to rest on the venue floor. The player drags it back to the rack via the existing live-ball drag path. Past either side band there is no centripetal and no relock ramp.
 
 Player-side and partner-side are the same event. The partner already has its own miss zone in code; the player-side gets the same treatment when its wall is removed.
 
-A live ball pulled to the rack mid-rally is not a miss; the drag controller replaces the live ball with a held body before any band crossing fires.
+A live ball pulled to the rack mid-rally is not a miss; the drag controller replaces the live ball with a held body before any side-band miss fires.
 
 ## Cross-bound collisions
 
@@ -46,7 +46,7 @@ The friendship-bound height lives on a `VenueConfig` Resource from day one. Per-
 
 ## Drag-handoff frame window
 
-Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can cross a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
+Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can arc past a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
 
 ## Open questions
 
