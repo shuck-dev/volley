@@ -35,15 +35,15 @@ stateDiagram-v2
 
 **PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, damping on. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
 
-While in PLAY, the ball tracks its pre-bound entry value: speed at the upward cross from NORMAL to ARC. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked entry value; rally energy is preserved across the apex visit.
+While in PLAY, the ball tracks its pre-bound entry value: speed at the upward cross from NORMAL to ARC. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active return captures the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked entry value; rally energy is preserved across the apex visit.
 
-The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL.
+The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held curve. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL.
 
-**OUT-REST.** Settled on the venue floor; the ball waits to be grabbed.
+**OUT-REST.** Out of play, on the venue floor. Includes the rolling-to-rest motion after a miss as well as the settled-and-still phase that follows. The ball waits to be grabbed.
 
 **OUT-HELD.** Drag controller owns; the ball follows the cursor.
 
-**Miss (PLAY → REST).** A ball whose centre arcs past either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment it arcs past, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
+**Miss (PLAY → REST).** A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
 
 **Mid-rally grab (PLAY → HELD).** The drag controller replaces the live ball with a held body before any side-band miss fires.
 
@@ -65,7 +65,7 @@ The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-
 
 ## Drag-handoff frame window
 
-Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can arc past a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
+Miss does not fire while a grab is in flight. The drag controller's deferred swap creates a window where the live ball can cross a side band before being replaced by the held body; during that window the side-miss check skips. The check resumes once the swap completes or the gesture cancels.
 
 ## Rest-roll energy loss
 
