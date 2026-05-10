@@ -66,11 +66,17 @@ While a ball is alive inside the play volume it is held in friendship's uplift: 
 
 Crossing out of the play volume past either side band or above the friendship-bound flips that ball out of the uplift. `gravity_scale` rises to `1`, the speed-lock releases, damping kicks in. The ball retains its velocity at the moment of the cross, so a fast ball sails further before it lands and a slow one drops almost immediately.
 
-Above the friendship-bound a centripetal force scales with speed and pulls velocity perpendicular toward the play volume. The arc is what the ball does on its way back. Re-crossing below the bound restores the uplift on that ball; speed ramps back up to its pre-bound entry value so rally energy is preserved across the apex visit.
+Above the friendship-bound a centripetal force scales with speed. The force points perpendicular to the ball's velocity, toward the play volume; it rotates velocity without doing work, so the magnitude stays where gravity left it and only direction bends. The arc is what the ball does on its way back.
+
+The ball tracks its pre-bound entry value: speed at the moment of the upward cross. Anything that changes the ball's speed above the bound updates this value, so a paddle hit above the bound or a partner-active upward arc captures the post-event speed, not the original entry.
+
+Re-crossing below the bound restores the uplift on that ball: `gravity_scale` returns to `0`, damping turns off, the speed-lock relocks, and speed ramps back up to the tracked pre-bound entry value. Rally energy is preserved across the apex visit.
 
 Past either side band there is no centripetal and no ramp. The ball falls under real gravity, rolls across the venue floor, and comes to rest.
 
 The transition is a single signal on the boundary trigger per ball: clear the in-court flag, unlock gravity, release the speed-lock, engage damping. No interpolation, no blend window.
+
+Cross-collisions between an above-bound ball and a below-bound ball resolve under each body's current physics state. Energy resolution is asymmetric across the bound and that is acceptable: the rule is per-ball, and the bound is a state line, not a collision filter.
 
 ### In-world framing: the spirit of the volley
 
