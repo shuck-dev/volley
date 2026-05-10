@@ -1,26 +1,16 @@
 # Court Bounds and Miss
 
-The court has a friendship-bound at the top, the ground at the bottom, and open sides left and right. The paddles sit on the sides; a ball that arcs past a paddle on either side ends the rally. No walls.
+This doc replaces the closed court of walls and ceiling with an open one. The top becomes the friendship-bound, where the ball is held in play by friendship; above it gravity engages and the ball arcs back. The sides become open bands where the paddles sit; a ball that arcs past one rolls onto the venue floor and ends the rally. The ground stays a pong bounce.
 
-Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md).
+Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md). Narrative canon for friendship lives in [`../../narrative/friendship.md`](../../narrative/friendship.md).
 
 **Dependencies:** Venue (`../08-venue.md`), Balls (`../08-balls.md`), Items (`../08-items.md`), Roles (`../08-roles.md`).
 
 ---
 
-## The bounds
-
-| Edge | Bound | Behaviour |
-|---|---|---|
-| Top | The friendship-bound | Below the bound, the ball is weightless. Above the bound, gravity engages and the ball arcs back into play. |
-| Bottom | The ground | A pong bounce. Hitting the floor does not end the rally. |
-| Sides | Open side bands | The paddles sit here. A ball that arcs past a paddle ends the rally; gravity carries it onto the venue floor among the items the player has placed. |
-
-No walls and no ceiling. The court visibly opens onto the rest of the venue.
-
 ## The friendship-bound
 
-The top of the play area is the friendship-bound. Below it the ball is weightless. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the weightless state resumes.
+The top of the play area is the friendship-bound. Below it the ball is held by friendship. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the held state resumes.
 
 The bound height is set on the court. Later it may be upgradable.
 
