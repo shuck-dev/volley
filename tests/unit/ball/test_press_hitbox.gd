@@ -70,15 +70,13 @@ func test_press_radius_is_inflated_versus_physics_radius() -> void:
 
 
 func _authored_radius_from_ball(ball: Ball) -> float:
-	for child in ball.get_children():
-		if child is CollisionShape2D:
-			var shape_node: CollisionShape2D = child
-			var circle: CircleShape2D = shape_node.shape as CircleShape2D
-			if circle == null:
-				continue
-			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
-			return circle.radius * maxf(axis_scale, 0.001)
-	return 0.0
+	var sprite: Sprite2D = ball.get_node_or_null("Sprite") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return 0.0
+	var texture_size: Vector2 = sprite.texture.get_size()
+	var max_axis: float = maxf(texture_size.x, texture_size.y)
+	var max_scale: float = maxf(absf(sprite.scale.x), absf(sprite.scale.y))
+	return (max_axis * 0.5) * maxf(max_scale, 0.001)
 
 
 func test_press_emits_grabbed_signal() -> void:

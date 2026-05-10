@@ -203,17 +203,15 @@ func _wire_grab_area() -> void:
 		grab_area.grabbed.connect(_on_grab_area_grabbed)
 
 
-# Reads the body's authored collider, not the grab area's; the grab area's shape is the derived one.
+# Reads the visible sprite so the grab area tracks what the player sees, not the physics shape.
 func _baseline_collision_radius() -> float:
-	for child in get_children():
-		if child is CollisionShape2D:
-			var shape_node: CollisionShape2D = child
-			var circle: CircleShape2D = shape_node.shape as CircleShape2D
-			if circle == null:
-				continue
-			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
-			return circle.radius * maxf(axis_scale, 0.001)
-	return 0.0
+	var sprite: Sprite2D = get_node_or_null("Sprite") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return 0.0
+	var texture_size: Vector2 = sprite.texture.get_size()
+	var max_axis: float = maxf(texture_size.x, texture_size.y)
+	var max_scale: float = maxf(absf(sprite.scale.x), absf(sprite.scale.y))
+	return (max_axis * 0.5) * maxf(max_scale, 0.001)
 
 
 func _ball_setup() -> void:
