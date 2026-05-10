@@ -467,8 +467,8 @@ func _update_hover_feedback(world_position: Vector2) -> void:
 	if _held_body == null:
 		return
 	var hovering: bool = _find_accepting_target(_held_key, world_position, 1.0) != null
-	var definition: ItemDefinition = _get_item_definition(_held_key)
-	var base_scale: Vector2 = definition.token_scale if definition != null else Vector2.ONE
+	# Use the grab's target scale so loose-body re-grabs keep their at-rest size; rack pickups still ride token_scale.
+	var base_scale: Vector2 = _grab_target_scale
 	if hovering:
 		_held_body.scale = base_scale * HOVER_SCALE_BUMP
 		_held_body.modulate = HOVER_MODULATE
