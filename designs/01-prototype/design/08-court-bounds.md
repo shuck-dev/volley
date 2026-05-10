@@ -1,6 +1,6 @@
 # Court Bounds and Miss
 
-The court has a friendship-bound at the top, side bands left and right, the ground at the bottom, and the paddle line at the back. No walls.
+The court has a friendship-bound at the top, the ground at the bottom, and open sides left and right. The paddles sit on the sides; a ball that crosses either side past a paddle ends the rally. No walls.
 
 Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md).
 
@@ -14,10 +14,9 @@ Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-co
 |---|---|---|
 | Top | The friendship-bound | Below the bound, the ball is weightless. Above the bound, gravity engages and the ball arcs back into play. |
 | Bottom | The ground | A pong bounce. Hitting the floor does not end the rally. |
-| Back | The paddle line | The miss line. The ball getting past the paddle ends the rally. |
-| Sides | Open side bands | A ball crossing sideways rolls onto the venue floor and lies among the items the player has placed. |
+| Sides | Open side bands | The paddles sit here. A ball crossing past a paddle ends the rally and rolls onto the venue floor among the items the player has placed. |
 
-No side walls and no ceiling. The court visibly opens onto the rest of the venue.
+No walls and no ceiling. The court visibly opens onto the rest of the venue.
 
 ## The friendship-bound
 
@@ -27,24 +26,18 @@ The bound height is per-venue. Small venues have a tighter ceiling, large venues
 
 ## Miss
 
-A miss ends the rally. Two ways:
+A miss is one event: the ball crosses past a paddle on either side. The counter resets, the ball retains its velocity at the moment of the cross, rolls onto the venue floor, and comes to rest. The player drags it back to the rack to re-serve.
 
-- The ball gets past the paddle's miss line (back-miss).
-- The ball strays past either side band (side-miss).
-
-Both reset the counter. Both fire the same gravity-and-roll behaviour: the ball carries its rally momentum onto the floor, then loses it to gravity and the floor, and comes to rest. The player drags it back to the rack to re-serve.
-
-Player-side and partner-side share the same event. The ball got past a paddle's line, regardless of whose paddle.
+Player-side and partner-side share the same event. The ball got past a paddle, regardless of whose paddle.
 
 ### Cue layering
 
 Bounces and misses read distinctly:
 
 - **Bounce off the ground.** A short tick and a small squash on the floor. No camera impact.
-- **Back-miss.** The existing miss beat plus a flash on the player paddle's edge. Rally counter resets with its current audio.
-- **Side-miss.** A softer, lower-pitched variant of the miss beat. The ball is visibly still alive and rolling; the cue acknowledges the rally ended without pretending the ball is gone.
+- **Miss.** The existing miss beat plus a flash on the paddle the ball crossed. The ball is visibly still alive and rolling; the cue acknowledges the rally ended without pretending the ball is gone.
 
-All cues are audio plus world-space. No screen-space banners.
+Cues are audio plus world-space. No screen-space banners.
 
 ## Resting balls
 
