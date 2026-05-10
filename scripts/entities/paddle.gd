@@ -59,7 +59,7 @@ func clamp_to_arena() -> void:
 	var paddle_half: float = 0.0
 	if _collision_shape != null:
 		paddle_half = _collision_shape.size.y / 2.0
-	position.y = clampf(position.y, -arena_half + paddle_half, arena_half - paddle_half)
+	position.y = maxf(position.y, -arena_half + paddle_half)
 
 
 func get_speed() -> float:
