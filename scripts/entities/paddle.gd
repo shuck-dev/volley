@@ -51,6 +51,15 @@ func drive(velocity_y: float) -> void:
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
 	position.x = _lane_x
+	clamp_to_arena()
+
+
+func clamp_to_arena() -> void:
+	var arena_half: float = _get_stat(&"arena_height") / 2.0
+	var paddle_half: float = 0.0
+	if _collision_shape != null:
+		paddle_half = _collision_shape.size.y / 2.0
+	position.y = clampf(position.y, -arena_half + paddle_half, arena_half - paddle_half)
 
 
 func get_speed() -> float:
