@@ -20,7 +20,7 @@ No walls and no ceiling. The court visibly opens onto the rest of the venue.
 
 ## The friendship-bound
 
-The top of the play volume is the friendship-bound. Below it the ball is weightless. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the weightless state resumes.
+The top of the play area is the friendship-bound. Below it the ball is weightless. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the weightless state resumes.
 
 The bound height is per-venue. Small venues have a tighter ceiling, large venues breathe.
 
