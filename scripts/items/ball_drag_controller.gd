@@ -416,6 +416,7 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 	body.collision_layer = 0
 	body.collision_mask = 0
 	body._enable_grab_area(false)
+	body.reclaim_scale_from_art_holder()
 	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
 	if body.get_parent() != self:
 		body.get_parent().remove_child(body)

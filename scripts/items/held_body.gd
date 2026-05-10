@@ -64,6 +64,18 @@ func mark_held() -> void:
 	phase = Phase.HELD
 
 
+# Reverse of go_loose's scale migration: pull the ArtHolder's visual scale back
+# onto the body so the drag controller's lift ease operates on the right number.
+func reclaim_scale_from_art_holder() -> void:
+	var art_holder: Node2D = get_node_or_null("ArtHolder") as Node2D
+	if art_holder == null:
+		return
+	if art_holder.scale == Vector2.ONE:
+		return
+	scale = art_holder.scale
+	art_holder.scale = Vector2.ONE
+
+
 func _configure_press_shape(at_rest_shape: Shape2D) -> void:
 	if press_collision == null or at_rest_shape == null:
 		return
