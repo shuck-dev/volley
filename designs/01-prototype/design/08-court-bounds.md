@@ -27,6 +27,8 @@ Either way the ball returns and the uplift resumes.
 
 The bound height is per-venue. Small venues have a tighter ceiling, large venues breathe.
 
+Above the bound the player feels friendship pulling the ball home. From the rally's side that pull reads as the spirit of the volley; the full account is in [`../../narrative/friendship.md`](../../narrative/friendship.md).
+
 ## Miss
 
 A miss ends the rally. Two ways:
@@ -47,16 +49,6 @@ Bounces and misses read distinctly:
 - **Side-miss.** A softer, lower-pitched variant of the miss beat. The ball is visibly still alive and rolling; the cue acknowledges the rally ended without pretending the ball is gone.
 
 All cues are audio plus world-space. No screen-space banners.
-
-## Spirit of the volley
-
-Friendship and the spirit of the volley are the same thing. The uplift that holds the ball up is what the spirit's presence does to the rally; the geometry above is what its felt presence shows up as on the page.
-
-A rally is how the spirit shows up. It is not owned by the player and it does not live in the ball; it answers commitment to the exchange and holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points were scored.
-
-A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do.
-
-A player can call the spirit alone. Partners amplify it but do not create it. High-count rallies visibly run hotter; the ball carries the spirit's charge in how it reads. A miss drains it; the ball on the venue floor is just a ball. Items that extend or revive rallies are gestures of devotion to the spirit.
 
 ## Resting balls
 
