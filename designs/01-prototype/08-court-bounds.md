@@ -10,12 +10,22 @@ The court is not a closed box. It sits inside the venue, bounded on three sides 
 
 | Edge | Bound | Behaviour |
 |---|---|---|
-| Top | The screen edge | The camera never scrolls up; the top of the frame is a hard ceiling the ball bounces off. |
+| Top | The friendship-bound | Below this height friendship's uplift cancels gravity. Above it gravity engages and a centripetal force bends the ball back into play. |
 | Bottom | The ground | Physical floor; ball bounces off (pong-style). Hitting the floor does not end the rally. |
 | Back | Behind the main character's paddle lane | The miss line. Ball crossing past the paddle is a miss. |
 | Sides | Open | The ball can leave the court sideways; leaving this way is also a miss. |
 
-No side walls. The court visibly opens onto the rest of the venue.
+No side walls and no ceiling. The court visibly opens onto the rest of the venue.
+
+### Friendship-bound and apex return
+
+The friendship-bound is the height where friendship's uplift ends.
+
+Below the bound the ball is weightless and speed-locked. Friendship's uplift cancels gravity and holds the rally's energy.
+
+Above the bound the uplift falls away. Gravity engages at its constant world value. The speed-lock releases. A centripetal force scaled by speed pulls velocity perpendicular toward the play volume. Low speed gives a wide loop, high speed tightens the arc. Either way the ball returns to play and friendship's uplift resumes.
+
+Bound height is per-venue.
 
 ### Miss-detection regions
 
@@ -50,11 +60,13 @@ All three are audio + world-space only. No screen-space banners (per venue diege
 
 ### Physics at the court boundary
 
-While the rally is alive, balls live in a physics volume that treats them as weightless. Their `gravity_scale` is `0` and linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling. The court's `Area2D` is what applies this treatment.
+While the rally is alive the ball is held in friendship's uplift: `gravity_scale` is `0` and speed is locked. Linear damping is off; every bounce is pong-crisp, and energy comes from the paddle, not from falling.
 
-A miss trigger (miss line or side band) flips the ball out of this state. `gravity_scale` rises to `1`. Linear damping kicks in. The ball retains whatever velocity it had at the moment of the cross, so a fast ball sails further before it lands; a slow one drops almost immediately. From there it rolls across the venue floor, decelerates against friction, and comes to rest.
+Crossing out of the play volume past either side band or above the friendship-bound flips the ball out of the uplift. `gravity_scale` rises to `1`, the speed-lock releases, damping kicks in. The ball retains its velocity at the moment of the cross, so a fast ball sails further before it lands and a slow one drops almost immediately.
 
-The transition is a single signal on `Area2D.body_exited`: clear the in-court flag, unlock gravity, engage damping. No interpolation, no blend window. The ball was in play and now it is not.
+Above the friendship-bound a centripetal force scales with speed and pulls velocity perpendicular toward the play volume. The arc is what the ball does on its way back; once it returns below the bound, friendship's uplift resumes. Past either side band there is no centripetal. The ball falls under real gravity, rolls across the venue floor, and comes to rest.
+
+The transition is a single signal on the boundary trigger: clear the in-court flag, unlock gravity, release the speed-lock, engage damping. No interpolation, no blend window. The ball was in play and now it is not.
 
 ### In-world framing: the spirit of the volley
 
