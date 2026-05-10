@@ -89,6 +89,7 @@ All replies stay inline.
 - One sentence naming the concern; one short clause naming the fix.
 - Hard cap: 30 words per inline. Two lines max. Three lines is a hard block on yourself; tighten.
 - One issue per inline. If you have two findings on different lines, post two inlines.
+- Every inline anchors to a specific line in the diff. The `line` field is **required and non-null**. A comment with `line: null` becomes a file-level orphan and breaks the discipline. If a finding spans multiple lines or is structural, pick the most representative line and name the spread in the body.
 
 ## Labels
 
