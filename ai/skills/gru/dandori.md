@@ -28,7 +28,7 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 7. **Crew.** Per work unit:
    - Impl writer.
    - Test author, paired with impl when a hook forces failing tests + impl into one commit. Often folds into impl when the work itself is test code.
-   - Reviewers: code-quality, gdscript-conventions, test-coverage by default, plus domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, supply-chain-scout, docs-and-writing).
+   - Reviewers: code-quality, gdscript-conventions, test-coverage by default, plus domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
    - Battlers: devils-advocate to stress-test the approach; integration-scenario-author to write adversarial scenarios.
 
    Each minion gets a codename from the rotating pool (Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.

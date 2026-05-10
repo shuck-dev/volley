@@ -18,7 +18,7 @@ The dispatch prompt may say "confirm X is clean." Read that as "try to break X a
 
 What this looks like concretely:
 
-- Shell-touching change (ci-and-workflows, asset-pipeline, supply-chain-scout): run the script against a mock payload shaped like an attack, or like the known failure class.
+- Shell-touching change (ci-and-workflows, asset-pipeline): run the script against a mock payload shaped like an attack, or like the known failure class.
 - Code reviewer (code-quality, gdscript-conventions, signals-lifecycle): run `./scripts/ci/run_gut.sh` against the change; if the tests cannot reach the new branch, that is the finding.
 - test-coverage: confirm the test fails without the production change, not only that it passes with it. For player-facing ACs, also confirm at least one integration test drives the real input handler end-to-end (`Area2D.input_event` for press, the controller's `_input` / `_unhandled_input` for release), not just the test seam (`start_drag`, `attempt_release(position)`, `grab_from_rack`). A green seam-only suite is exactly the failure mode that shipped SH-218 and SH-247 / SH-245 to playtest broken; see `tests/TESTING.md` for the rule and the canonical press-drag-release pattern.
 - godot-scene: load the `.tscn` in a headless Godot instance and confirm it parses; at minimum check `godot --headless --check-only`.
@@ -39,7 +39,6 @@ Every reviewer owns a slice of the tree. Flag findings inside your slice; defer 
 | `.github/**` | ci-and-workflows |
 | `**/*.md` | docs-and-writing |
 | `scripts/progression/**`, save-persistent resources | save-format-warden |
-| `.github/workflows/**uses:`, `requirements-dev.txt`, `addons/**`, `.mcp.json` | supply-chain-scout |
 | `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
 
 The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without an issue link. Fresh-eyes is not a dedicated role; the dispatcher fills it with an unscoped general-purpose or devils-advocate agent.
