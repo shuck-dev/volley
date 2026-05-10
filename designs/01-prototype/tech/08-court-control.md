@@ -33,11 +33,11 @@ stateDiagram-v2
 
 **PLAY-NORMAL** (at or below the friendship-bound). `gravity_scale = 0`, speed locked, linear damping off.
 
-**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
+**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, linear damping off. Friendship pulls the ball back as engine gravity. The ball follows a parabolic arc: it climbs and decelerates, peaks, and falls back through the bound. Speed varies through the arc as kinetic energy converts to and from height. No centripetal force, no per-tick velocity re-projection.
 
 The ball tracks its pre-bound entry value as a persistent register on the body: the first NORMAL→ARC upward cross sets it; subsequent crosses do not reset it. Speed-change events while in ARC (paddle hit, partner-active return) update the register to the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked value; rally energy is preserved across the apex visit.
 
-The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held curve. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL.
+The apex mechanism is engaged-gravity, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc with weight. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL. Loops are impossible by construction; no radial force acts on the ball.
 
 **OUT-REST.** Out of play, on the venue floor. Includes the rolling-to-rest motion after a miss as well as the settled-and-still phase that follows. The ball waits to be grabbed.
 
@@ -59,13 +59,13 @@ Collisions between an above-bound ball and a below-bound ball resolve under each
 
 The bound is a state line, not a collision filter.
 
-## Keeping the speed steady above the bound
-
-The centripetal force above the friendship-bound bends velocity in theory without changing its magnitude. In practice, integrating it tick by tick drifts the magnitude up or down over time. Re-project velocity onto its tracked magnitude after each tick that applied the force to cancel the drift. Below the bound, the speed-lock already does this.
-
 ## Bound-height data shape
 
 The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-court tunables cluster on this Resource alongside the bound height; `Court` reads from it. Loose `@export` on `Court` is not the path. The bound may become upgradable later through items or progression.
+
+## Per-court physics seam
+
+The above-bound physics rule lives on a `CourtPhysics` Resource referenced by `CourtConfig.physics`. `Ball._physics_process` calls `court_physics.step(ball, config, delta)` while in PLAY-ARC. Today's implementation is `ParabolicArcPhysics` (engine gravity, no extra force, no relock). Future venues can ship alternative rules without touching `Ball.gd`.
 
 ## Drag-handoff frame window
 
