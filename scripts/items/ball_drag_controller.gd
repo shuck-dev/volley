@@ -399,8 +399,8 @@ func _on_loose_body_grabbed(body: HeldBody) -> void:
 	_gesture_below_threshold = true
 	_grab_origin_position = spawn_position
 	_grab_ease_elapsed = 0.0
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	_grab_target_scale = definition.token_scale if definition != null else Vector2.ONE
+	# Re-grab keeps the loose body's at-rest visual; rack pickups shrink to token_scale instead.
+	_grab_target_scale = body.scale
 	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
