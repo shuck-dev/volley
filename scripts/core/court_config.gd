@@ -1,7 +1,7 @@
 class_name CourtConfig
 extends Resource
 
-## Per-court tunables: friendship-bound height and PLAY-ARC physics knobs (see designs/01-prototype/tech/08-court-control.md).
+## Per-court tunables: friendship-bound height and PLAY-ARC physics knobs.
 
 ## World-space Y of the friendship-bound. Above this line (smaller Y) the ball is in PLAY-ARC.
 @export var friendship_bound_y: float = -351.6

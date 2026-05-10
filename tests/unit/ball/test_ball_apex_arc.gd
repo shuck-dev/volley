@@ -1,4 +1,4 @@
-## SH-366 Ball state-machine, entry-value register, and relock-ramp tests (see designs/01-prototype/tech/08-court-control.md).
+## Ball state-machine, entry-value register, and relock-ramp tests.
 extends GutTest
 
 const BOUND_Y := -100.0
