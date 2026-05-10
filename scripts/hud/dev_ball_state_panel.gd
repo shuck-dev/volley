@@ -3,14 +3,6 @@ extends VBoxContainer
 
 ## Live per-ball play_state readout. Debug builds only.
 
-const STATE_NAMES: Array[String] = [
-	"STORED",
-	"PLAY_NORMAL",
-	"PLAY_ARC",
-	"OUT_REST",
-	"OUT_HELD",
-]
-
 var _tracker: BallTracker
 var _rows: Dictionary = {}
 var _drag := DraggableBehavior.new()
@@ -29,6 +21,7 @@ func _ready() -> void:
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
 	if _tracker == null:
 		_tracker = await _await_tracker()
+
 	if _tracker == null:
 		return
 
@@ -60,9 +53,11 @@ func _input(event: InputEvent) -> void:
 func _physics_process(_delta: float) -> void:
 	if not visible:
 		return
+
 	for ball: Ball in _rows.keys():
 		if not is_instance_valid(ball):
 			continue
+
 		var row: Dictionary = _rows[ball]
 		var label: Label = row["label"]
 		label.text = _format_row(ball)
@@ -83,11 +78,13 @@ func _add_header() -> void:
 func _on_ball_added(ball: Ball) -> void:
 	if ball == null or _rows.has(ball):
 		return
+
 	var label := Label.new()
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	label.text = _format_row(ball)
 	add_child(label)
+
 	var callable := _on_ball_state_changed.bind(ball)
 	ball.play_state_changed.connect(callable)
 	_rows[ball] = {"label": label, "callable": callable}
@@ -96,18 +93,23 @@ func _on_ball_added(ball: Ball) -> void:
 func _on_ball_removed(ball: Ball) -> void:
 	if not _rows.has(ball):
 		return
+
 	var row: Dictionary = _rows[ball]
 	var label: Label = row["label"]
+
 	if is_instance_valid(ball) and ball.play_state_changed.is_connected(row["callable"]):
 		ball.play_state_changed.disconnect(row["callable"])
+
 	if is_instance_valid(label):
 		label.queue_free()
+
 	_rows.erase(ball)
 
 
 func _on_ball_state_changed(_state: int, ball: Ball) -> void:
 	if not _rows.has(ball) or not is_instance_valid(ball):
 		return
+
 	var row: Dictionary = _rows[ball]
 	var label: Label = row["label"]
 	label.text = _format_row(ball)
@@ -115,5 +117,5 @@ func _on_ball_state_changed(_state: int, ball: Ball) -> void:
 
 func _format_row(ball: Ball) -> String:
 	var key: String = ball.item_key if ball.item_key != "" else "ball"
-	var state_name: String = STATE_NAMES[ball.play_state]
+	var state_name: String = Ball.PlayState.find_key(ball.play_state)
 	return "%s  %s  pos=(%d, %d)" % [key, state_name, int(ball.position.x), int(ball.position.y)]
