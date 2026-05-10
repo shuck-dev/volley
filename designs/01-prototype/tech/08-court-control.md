@@ -36,9 +36,9 @@ Collisions between an above-bound ball and a below-bound ball resolve under each
 
 The bound is a state line, not a collision filter.
 
-## Numerical stability
+## Keeping the speed steady above the bound
 
-The centripetal force only acts above the friendship-bound. After each physics tick that applied it, re-project velocity to its tracked magnitude so "no work" holds numerically as well as mathematically. Below the bound the speed-lock does the same job; no separate stabilisation is needed there.
+The centripetal force above the friendship-bound bends velocity in theory without changing its magnitude. In practice, integrating it tick by tick drifts the magnitude up or down over time. Re-project velocity onto its tracked magnitude after each tick that applied the force to cancel the drift. Below the bound, the speed-lock already does this.
 
 ## Bound-height data shape
 
