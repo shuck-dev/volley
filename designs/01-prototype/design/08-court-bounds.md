@@ -1,6 +1,6 @@
 # Court Bounds and Miss
 
-This doc replaces the closed court of walls and ceiling with an open one. The top becomes the friendship-bound, where the ball is held in play by friendship; above it gravity engages and the ball arcs back. The sides become open bands where the paddles sit; a ball that arcs past one rolls onto the venue floor and ends the rally. The ground stays a pong bounce.
+The court should feel held by friendship, not by walls. This doc opens the closed pong-shape: friendship holds the ball within play, missed balls roll out into the venue.
 
 Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md). Narrative canon for friendship lives in [`../../narrative/friendship.md`](../../narrative/friendship.md).
 
