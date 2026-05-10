@@ -9,12 +9,12 @@ Read this before pushing. Each rule names the do; the why links to the source.
 
 ## Comments
 
-- Default to none. A comment earns its place only when both: (a) the information is truly inscrutable from the code itself, and (b) it is too implementation-focused for design, tech, or narrative docs to host. If both don't hold, drop it. Source: `ai/skills/minions/code-comments.md`.
-- One line max. Multi-line `#` blocks become a one-liner or move into a doc.
+- `##` is Godot's docstring syntax: keep it tight (one line) and attach it to declarations (class, member, function, signal, enum). Editor tooltips and class reference rely on it.
+- `#` is a narrative inline comment. Default is none. A `#` earns its place only when both: (a) the information is truly inscrutable from the code itself, and (b) it is too implementation-focused for design, tech, or narrative docs to host. If both don't hold, drop it. Source: `ai/skills/minions/code-comments.md`.
+- One line max for either kind. Multi-line blocks become a one-liner or move into a doc.
 - A blank line precedes every comment, like any other block.
 - File-path references inside comments are forbidden. No `designs/...md` pointers, no `.gd`/`.tscn`/`.tres` filenames; the reader finds the spec by name.
 - Don't reference tasks, tickets, or callers in comments.
-- Multi-line `##` docstrings on functions and headers are forbidden. One line.
 
 ## Variables and naming
 

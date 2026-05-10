@@ -19,7 +19,13 @@ Only when the WHY is non-obvious from the code:
 
 If removing the comment wouldn't confuse a future reader, don't write it.
 
-Default is no comment. Before writing one, try renaming the identifier, restructuring the block, or extracting a function. A comment earns its place only when both of these hold:
+**Two kinds of comment, two rules.**
+
+`##` is Godot's docstring syntax. `##` follows Godot's rules: attached to a declaration (class, member, function, signal, enum), used by the editor for inspector tooltips, autocomplete, and class reference. Keep `##` docstrings tight (one line) and accurate.
+
+`#` is a narrative inline comment. `#` gets the strict bar below.
+
+**The bar for `#`.** Default is no comment. Before writing one, try renaming the identifier, restructuring the block, or extracting a function. A `#` comment earns its place only when both of these hold:
 
 - The information is truly inscrutable from the code itself; a future reader could not deduce it by reading.
 - The information is too implementation-focused for design, tech, or narrative docs to host.
