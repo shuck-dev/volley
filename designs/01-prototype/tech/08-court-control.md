@@ -35,7 +35,7 @@ stateDiagram-v2
 
 **PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, damping on. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
 
-While in PLAY, the ball tracks its pre-bound entry value: speed at the upward cross from NORMAL to ARC. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active return captures the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked entry value; rally energy is preserved across the apex visit.
+The ball tracks its pre-bound entry value as a persistent register on the body: the first NORMAL→ARC upward cross sets it; subsequent crosses do not reset it. Speed-change events while in ARC (paddle hit, partner-active return) update the register to the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked value; rally energy is preserved across the apex visit.
 
 The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held curve. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL.
 
@@ -46,6 +46,10 @@ The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velo
 **Miss (PLAY → REST).** A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
 
 **Mid-rally grab (PLAY → HELD).** The drag controller replaces the live ball with a held body before any side-band miss fires.
+
+**Release into court (HELD → PLAY).** The cursor's Y at release decides the destination sub-state: above the friendship-bound lands in ARC, at or below lands in NORMAL.
+
+**Drop on floor (HELD → REST).** A held ball released outside the court without landing on the rack drops cleanly into REST. No miss event fires; the rally counter is not reset.
 
 The friendship-bound height lives on `CourtConfig`; see Bound-height data shape below.
 

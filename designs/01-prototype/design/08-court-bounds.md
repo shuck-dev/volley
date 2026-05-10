@@ -30,7 +30,7 @@ Balls can rest anywhere on the venue floor. The shop, workshop, and kit zones ab
 
 ## Drag-out distinguished from miss
 
-A live ball pulled mid-rally back onto the rack is not a miss. The ball enters the inactive state cleanly and the rally continues with whatever balls remain. A live ball dropped outside the court without landing on the rack counts as a miss.
+A live ball pulled mid-rally back onto the rack is not a miss; the ball enters the inactive state cleanly and the rally continues with whatever balls remain. A live ball dropped outside the court without landing on the rack also drops cleanly: it goes to rest on the venue floor and the rally counter is unchanged. Only crossing a side band fires a miss.
 
 ## Temporary balls
 
