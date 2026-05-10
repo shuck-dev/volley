@@ -15,9 +15,9 @@ const SPEED_EMIT_THRESHOLD := 10.0
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
 @export var press_area: Area2D
 ## Y-coordinate of the friendship-bound; gravity engages while the ball is above (smaller y) this height. Court overrides per attach.
-@export var apex_bound_y: float = -351.6
+@export var apex_bound_y: float = ApexDefaults.BOUND_Y
 ## Gravity scale applied while above the friendship-bound; off-bound the ball travels straight (gravity_scale = 0).
-@export_range(0.0, 8.0, 0.05) var apex_gravity_scale: float = 1.0
+@export_range(0.0, 8.0, 0.05) var apex_gravity_scale: float = ApexDefaults.GRAVITY_SCALE
 
 var speed: float = 0.0
 var min_speed: float
@@ -44,7 +44,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	_update_apex_gravity()
+	_update_apex_gravity(delta)
 	if linear_velocity == Vector2.ZERO:
 		return
 	effect_processor.process_frame(delta)
@@ -54,13 +54,17 @@ func _physics_process(delta: float) -> void:
 	linear_velocity = linear_velocity.normalized() * speed
 
 
-# Gravity-toggle apex return: above the bound the ball arcs under gravity; the per-frame speed-lock
-# then re-normalises magnitude, so gravity bends direction without changing kinetic energy.
-func _update_apex_gravity() -> void:
+# Speed-lock turns gravity into curvature, not energy gain.
+func _update_apex_gravity(delta: float = 0.0) -> void:
 	if freeze:
 		gravity_scale = 0.0
 		return
-	gravity_scale = apex_gravity_scale if position.y < apex_bound_y else 0.0
+	# Predicted next-step y closes the one-tick overshoot: a fast-rising ball that skips the above-bound
+	# sample still triggers gravity. `<=` makes the bound closed so a ball stalled at exactly the line falls.
+	var current_y: float = global_position.y
+	var predicted_y: float = current_y + linear_velocity.y * delta
+	var above_bound: bool = current_y <= apex_bound_y or predicted_y <= apex_bound_y
+	gravity_scale = apex_gravity_scale if above_bound else 0.0
 
 
 func _should_emit_speed_changed() -> bool:

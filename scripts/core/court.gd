@@ -18,9 +18,9 @@ const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 ## Friendship-bound Y; balls above (smaller y) arc under gravity back into the rally.
-@export var apex_bound_y: float = -351.6
+@export var apex_bound_y: float = ApexDefaults.BOUND_Y
 ## Gravity scale applied to balls above the friendship-bound.
-@export_range(0.0, 8.0, 0.05) var apex_gravity_scale: float = 1.0
+@export_range(0.0, 8.0, 0.05) var apex_gravity_scale: float = ApexDefaults.GRAVITY_SCALE
 
 ## Back-compat handle for tests; canonical live-ball set lives on `ball_tracker`.
 var ball: Ball
@@ -62,7 +62,7 @@ func _ready() -> void:
 		ball_tracker.ball_system = ball_system
 		add_child(ball_tracker)
 	ball_tracker.configure(player_paddle)
-	ball_tracker.set_apex(apex_bound_y, apex_gravity_scale)
+	ball_tracker.configure_apex(apex_bound_y, apex_gravity_scale)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_tracker)
