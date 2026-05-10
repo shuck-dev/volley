@@ -2,7 +2,7 @@
 
 The ball-feel decisions. Implementation detail is deliberately thin; the ideas are the canon.
 
-**Dependencies:** [Balls on the Court](08-balls.md), [Partner AI](17-partner-ai.md), [Make Fun Pass](16-make-fun.md), [Effect System](07-effect-system.md).
+**Dependencies:** [Balls on the Court](../08-balls.md), [Partner AI](../17-partner-ai.md), [Make Fun Pass](../16-make-fun.md), [Effect System](../07-effect-system.md).
 
 ---
 
@@ -74,4 +74,4 @@ A press lifts the preview but does not drop. The drop gate opens only past a mov
 
 ## Friendship-bound apex return
 
-See [`08-court-control.md`](08-court-control.md) § Apex return.
+See [`tech/08-court-control.md`](../tech/08-court-control.md) § Apex return.

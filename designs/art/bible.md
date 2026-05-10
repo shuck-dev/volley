@@ -335,7 +335,7 @@ A note on cost. Minimal animation per character keeps the labour budget where it
 
 ### The apex-return beat
 
-Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../narrative/outline.md`](../narrative/outline.md); the ball-side mechanics live in [`../01-prototype/21-ball-dynamics.md`](../01-prototype/21-ball-dynamics.md).
+Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../narrative/outline.md`](../narrative/outline.md); the ball-side mechanics live in [`../01-prototype/design/21-ball-dynamics.md`](../01-prototype/design/21-ball-dynamics.md).
 
 The bond doing the work changes by venue. The garden runs the beat through the shopkeeper at the stall. The treetop, underwater, and meteor venues run it through the coach who teaches there. The pattern is the same; the character carrying it is whoever the venue's wind belongs to.
 

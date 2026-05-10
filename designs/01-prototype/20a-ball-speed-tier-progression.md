@@ -10,7 +10,7 @@ Reaching the top of a tier is supposed to register as an event, not as a number 
 
 ## Narrative framing
 
-Volley!'s rally fiction lives in the "spirit of the volley" framing from [08 Court Bounds](08-court-bounds.md). A rally is tribute; the spirit answers sustained commitment and lifts the ball while it does. Tiers are how that answer gets louder. Tier 0 is the spirit arriving. Tier 1 is the spirit noticing. Tier 2 is the spirit leaning in. Tier 3 is the spirit fully present, and Peak is the brief window where it is saturating the exchange.
+Volley!'s rally fiction lives in the "spirit of the volley" framing from [08 Court Bounds](design/08-court-bounds.md). A rally is tribute; the spirit answers sustained commitment and lifts the ball while it does. Tiers are how that answer gets louder. Tier 0 is the spirit arriving. Tier 1 is the spirit noticing. Tier 2 is the spirit leaning in. Tier 3 is the spirit fully present, and Peak is the brief window where it is saturating the exchange.
 
 The fiction keeps the rewards diegetic. Tier payoffs are gestures the spirit makes in answer to the rally, not a banner announcing a milestone. The venue rule still holds: nothing pops onto the screen to read, everything is expressed in the court.
 

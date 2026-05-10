@@ -1,6 +1,6 @@
 # Equip-Loop Regime
 
-Adversarial review of the homes-and-loose model proposed for item movement across the venue. The aim is to settle the regime before another impl round commits to a moving target. The model under challenge sits in [21-ball-dynamics.md](21-ball-dynamics.md) under "Containers and the swap pattern"; this doc steel-mans it, attacks it, names where it breaks, sketches alternatives, and lands a recommendation.
+Adversarial review of the homes-and-loose model proposed for item movement across the venue. The aim is to settle the regime before another impl round commits to a moving target. The model under challenge sits in [21-ball-dynamics.md](design/21-ball-dynamics.md) under "Containers and the swap pattern"; this doc steel-mans it, attacks it, names where it breaks, sketches alternatives, and lands a recommendation.
 
 **Points:** Spike
 **Surfaced by:** Bedtime Story churn around Challenge #403, three rounds of impl chasing an unspecified design.
@@ -75,7 +75,7 @@ Equipment and fixtures get the same treatment. A paddle dropped on the floor is 
 
 ### 2. What happens at save / load? Does state grow unbounded?
 
-The save shape persists each loose item's position and `linear_velocity`. Restore is the same as the rally case in [21-ball-dynamics.md](21-ball-dynamics.md): reconstruct at persisted state, advance physics from there.
+The save shape persists each loose item's position and `linear_velocity`. Restore is the same as the rally case in [21-ball-dynamics.md](design/21-ball-dynamics.md): reconstruct at persisted state, advance physics from there.
 
 In practice the count never grows large enough to stress the save shape. The player has a small inventory by design, and the venue is not a shop floor. The "thousand rounds, hundred loose balls" worry is moot at the scales Volley actually plays at.
 
@@ -161,7 +161,7 @@ This alternative is the radical ship. It is more coherent than the proposed mode
 
 ## Recommendation
 
-Ship the model as proposed in [21-ball-dynamics.md](21-ball-dynamics.md), with two scoped amendments:
+Ship the model as proposed in [21-ball-dynamics.md](design/21-ball-dynamics.md), with two scoped amendments:
 
 1. Loose state applies to every diegetic item in the regime: balls, equipment, fixtures. Effects are out of scope, owned by the effect manager.
 2. Body projection on release uses an expansion-ring fallback after a short hold, then cancels to source if even the expanded shape fails.
