@@ -19,7 +19,12 @@ Only when the WHY is non-obvious from the code:
 
 If removing the comment wouldn't confuse a future reader, don't write it.
 
-The bar is high. A comment must add real value to readability or warn of a non-obvious failure mode. "Slightly clearer with the comment than without" is not enough. If you're uncertain whether the comment earns its place, drop it.
+Default is no comment. Before writing one, try renaming the identifier, restructuring the block, or extracting a function. A comment earns its place only when both of these hold:
+
+- The information is truly inscrutable from the code itself; a future reader could not deduce it by reading.
+- The information is too implementation-focused for design, tech, or narrative docs to host.
+
+If both don't hold, drop it.
 
 A blank line precedes every comment, like any other block. File-path references inside comments are forbidden; the reader finds the spec by name, not by link.
 

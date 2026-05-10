@@ -9,10 +9,11 @@ Read this before pushing. Each rule names the do; the why links to the source.
 
 ## Comments
 
-- Default to none. Add a comment only when it adds real value to readability; if you are not sure, drop it.
+- Default to none. A comment earns its place only when both: (a) the information is truly inscrutable from the code itself, and (b) it is too implementation-focused for design, tech, or narrative docs to host. If both don't hold, drop it. Source: `ai/skills/minions/code-comments.md`.
 - One line max. Multi-line `#` blocks become a one-liner or move into a doc.
-- WHY-only. Don't narrate what well-named code already says, don't reference the current task or callers, don't link to design docs (file paths in comments are forbidden). Source: `ai/skills/minions/code-comments.md`.
 - A blank line precedes every comment, like any other block.
+- File-path references inside comments are forbidden. No `designs/...md` pointers, no `.gd`/`.tscn`/`.tres` filenames; the reader finds the spec by name.
+- Don't reference tasks, tickets, or callers in comments.
 - Multi-line `##` docstrings on functions and headers are forbidden. One line.
 
 ## Variables and naming
