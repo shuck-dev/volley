@@ -1,4 +1,4 @@
-## End-to-end ball regime transitions; see designs/01-prototype/21-ball-dynamics.md#regime-unification.
+## End-to-end ball regime transitions; see designs/01-prototype/design/21-ball-dynamics.md#regime-unification.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
