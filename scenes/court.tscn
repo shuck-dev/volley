@@ -25,9 +25,6 @@
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 [ext_resource type="PackedScene" uid="uid://dq3kw7n8sh297" path="res://scenes/hud/cursor_overlay.tscn" id="24_cursor"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
-size = Vector2(21.6, 883.2)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(21.6, 703.2)
 
@@ -60,37 +57,6 @@ item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
-[node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
-position = Vector2(441.6, -351.6)
-rotation = 1.5707964
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
-
-[node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
-offset_right = 21.6
-offset_bottom = 883.2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
-position = Vector2(10.8, 441.6)
-shape = SubResource("RectangleShape2D_horz")
-
-[node name="Bottom Wall" type="StaticBody2D" parent="Bounds" unique_id=743283118]
-position = Vector2(-441.6, 351.6)
-rotation = -1.5707964
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
-
-[node name="ColorRect" type="ColorRect" parent="Bounds/Bottom Wall" unique_id=1810122737]
-offset_right = 21.6
-offset_bottom = 883.2
-mouse_filter = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom Wall" unique_id=1261402091]
-position = Vector2(10.8, 441.6)
-shape = SubResource("RectangleShape2D_horz")
-
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
 position = Vector2(420, -351.6)
 physics_material_override = ExtResource("1_0wfyh")
@@ -105,22 +71,10 @@ mouse_filter = 2
 position = Vector2(10.8, 351.6)
 shape = SubResource("RectangleShape2D_vert")
 
-[node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
-position = Vector2(-441.6, -351.6)
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
+[node name="MissZones" type="Node2D" parent="Bounds" unique_id=2106668172]
 
-[node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
-offset_right = 21.6
-offset_bottom = 703.2
-mouse_filter = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
-position = Vector2(10.8, 351.6)
-shape = SubResource("RectangleShape2D_vert")
-
-[node name="MissZone" parent="Bounds/Back Wall" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
-position = Vector2(10.8, 351.6)
+[node name="LeftMissZone" parent="Bounds/MissZones" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
+position = Vector2(-430.8, 0)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")

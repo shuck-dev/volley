@@ -168,8 +168,11 @@ func _activate_partner() -> void:
 	_item_manager.register_partner(partner_definition)
 
 	if right_wall != null:
+		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
+		right_wall.visible = false
 		_partner_miss_zone = MissZoneScene.instantiate()
-		right_wall.add_child(_partner_miss_zone)
+		_partner_miss_zone.position = right_wall.position + Vector2(10.8, 351.6)
+		right_wall.get_parent().add_child(_partner_miss_zone)
 		ball_tracker.register_miss_zone(_partner_miss_zone)
 
 	partner_changed.emit()
@@ -193,6 +196,10 @@ func _deactivate_partner() -> void:
 		ball_tracker.unregister_miss_zone(_partner_miss_zone)
 		_partner_miss_zone.queue_free()
 		_partner_miss_zone = null
+
+	if right_wall != null:
+		right_wall.process_mode = Node.PROCESS_MODE_INHERIT
+		right_wall.visible = true
 
 	partner_changed.emit()
 

@@ -183,6 +183,17 @@ func _on_miss_zone_body_entered(body: Node) -> void:
 		missed.emit()
 
 
+func _on_missed() -> void:
+	play_state = PlayState.OUT_REST
+	gravity_scale = 1.0
+	linear_damp = court_config.rest_roll_damping
+	speed = min_speed
+	effect_processor.sync_base_speed()
+	_emit_max_speed_if_changed()
+	_emit_speed_changed()
+	play_state_changed.emit(play_state)
+
+
 func increase_speed() -> void:
 	if speed >= max_speed:
 		return
@@ -283,9 +294,8 @@ func _ball_setup() -> void:
 	max_contacts_reported = 1
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
-	# Footgun: a miss firing from PLAY-ARC overwrites the entry-speed register via reset_speed.
-	if not missed.is_connected(reset_speed):
-		missed.connect(reset_speed)
+	if not missed.is_connected(_on_missed):
+		missed.connect(_on_missed)
 	# Press routing lives on PressArea; the rigid body stops accepting pointer events.
 	input_pickable = false
 	if input_event.is_connected(_on_input_event):
