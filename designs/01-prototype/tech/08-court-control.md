@@ -2,33 +2,52 @@
 
 Implementation spec for the wall-less court: friendship-bound replaces the top collider, lateral side bands replace the side wall colliders, the ground is unchanged. Drives SH-309. Player-facing design lives in [`../design/08-court-bounds.md`](../design/08-court-bounds.md).
 
-## Per-ball state
+## Ball states
 
-Each live ball is in one of two states. The rule applies per ball, so multi-ball mixed-state is well-defined.
+Each ball runs an independent state machine. Multi-ball mixed-state is well-defined.
 
-**At or below the friendship-bound (held state).** `gravity_scale = 0`, speed is locked, linear damping is off.
+```mermaid
+stateDiagram-v2
+    [*] --> STORED
 
-**Above the friendship-bound (arcing state).** `gravity_scale = 1`, speed-lock releases, linear damping engages. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area. The centripetal force rotates velocity without doing work; magnitude follows gravity, direction bends. Friendship is still acting here; the centripetal force is its work above the bound.
+    state PLAY {
+        NORMAL --> ARC: cross above bound
+        ARC --> NORMAL: cross below bound
+    }
 
-The bound is a per-Court height.
+    state OUT {
+        REST
+        HELD
+    }
 
-## Apex return
+    STORED --> PLAY: serve
+    PLAY --> REST: miss
+    PLAY --> HELD: mid-rally grab
+    REST --> HELD: rest pickup
+    HELD --> REST: drop on floor
+    HELD --> PLAY: release into court
+    HELD --> STORED: release into rack
+```
 
-A ball that arcs above the bound moves into the arcing state. Gravity decelerates the vertical component; the centripetal force redirects.
+**STORED.** On the rack, no body.
 
-The ball tracks its pre-bound entry value: speed at the moment it arcs above the bound. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed.
+**PLAY-NORMAL** (at or below the friendship-bound). `gravity_scale = 0`, speed locked, linear damping off.
 
-Returning below the bound returns the ball to the held state: `gravity_scale = 0`, speed-lock relocks, damping disengages, speed ramps back up to the tracked entry value. Rally energy is preserved across the apex visit.
+**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, damping on. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area; it rotates velocity without doing work. Friendship is still acting here; the centripetal force is its work above the bound.
 
-The mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc. The ball stays a live ball throughout; paddle hits register and the volley counter increments above the bound the same as below.
+While in PLAY, the ball tracks its pre-bound entry value: speed at the upward cross from NORMAL to ARC. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked entry value; rally energy is preserved across the apex visit.
 
-## Miss
+The apex mechanism is engaged-gravity-with-centripetal-bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL.
 
-A ball whose centre arcs past either lateral side band fires a miss: the held state releases, gravity engages, speed-lock releases, damping engages, the rally counter resets. The ball keeps its velocity at the moment it arcs past, falls under gravity, and rolls to rest on the venue floor. The player drags it back to the rack via the existing live-ball drag path. Past either side band there is no centripetal and no relock ramp.
+**OUT-REST.** Settled on the venue floor; the ball waits to be grabbed.
 
-Player-side and partner-side are the same event. The partner already has its own miss zone in code; the player-side gets the same treatment when its wall is removed.
+**OUT-HELD.** Drag controller owns; the ball follows the cursor.
 
-A live ball pulled to the rack mid-rally is not a miss; the drag controller replaces the live ball with a held body before any side-band miss fires.
+**Miss (PLAY → REST).** A ball whose centre arcs past either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment it arcs past, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
+
+**Mid-rally grab (PLAY → HELD).** The drag controller replaces the live ball with a held body before any side-band miss fires.
+
+The friendship-bound height lives on `CourtConfig`; see Bound-height data shape below.
 
 ## Cross-bound collisions
 
