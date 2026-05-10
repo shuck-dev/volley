@@ -22,7 +22,7 @@ No walls and no ceiling. The court visibly opens onto the rest of the venue.
 
 The top of the play area is the friendship-bound. Below it the ball is weightless. Above it gravity engages and the ball bends back into play; faster balls turn tighter, slower balls trace wider loops. Either way the ball returns and the weightless state resumes.
 
-The bound height is per-venue. Small venues have a tighter ceiling, large venues breathe.
+The bound height is set on the court. Later it may be upgradable.
 
 ## Miss
 
@@ -36,7 +36,7 @@ A ball rolled out of the court sits visibly on the venue floor wherever it stopp
 
 To put a rested ball back into play, the player drags it onto the court for a manual serve, or drags it onto the rack to re-enter the auto-serve loop. Either path is supported and already implemented.
 
-Balls can rest anywhere on the venue floor. The shop, workshop, and kit zones absorb them and let them roll to a stop like any other patch. Rack footprints are drop targets, not rest surfaces; a ball that enters one snaps into the rack instead.
+Balls can rest anywhere on the venue floor. The shop, workshop, and kit zones absorb them and let them roll to a stop like any other patch. The floor under a rack is a drop target, not a rest surface; a ball that enters it snaps into the rack instead.
 
 ## Drag-out distinguished from miss
 
@@ -44,7 +44,7 @@ A live ball pulled mid-rally back onto the rack is not a miss. The ball enters t
 
 ## Temporary balls
 
-Temporary balls (frenzy and similar) clear on their authored expiry regardless of where they land. A missed temporary ball despawns on miss; it does not roll out to rest. This keeps the on-floor population bounded to owned balls only.
+Temporary balls clear on their authored expiry regardless of where they land. A missed temporary ball despawns on miss; it does not roll out to rest. This keeps the on-floor population bounded to owned balls only.
 
 ## Helper upgrade (future)
 

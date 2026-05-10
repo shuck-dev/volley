@@ -42,7 +42,7 @@ The centripetal force only acts above the friendship-bound. After each physics t
 
 ## Bound-height data shape
 
-The friendship-bound height lives on a `VenueConfig` Resource from day one. Per-venue tunables cluster on this Resource alongside the bound height; `Court` reads from it. Loose `@export` on `Court` is not the path.
+The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-court tunables cluster on this Resource alongside the bound height; `Court` reads from it. Loose `@export` on `Court` is not the path. The bound may become upgradable later through items or progression.
 
 ## Drag-handoff frame window
 
