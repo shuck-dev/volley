@@ -12,17 +12,21 @@ func _ready() -> void:
 	if not OS.is_debug_build():
 		queue_free()
 		return
+
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_content = VBoxContainer.new()
 	_content.add_theme_constant_override("separation", 2)
 	_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	add_child(_content)
+
 	var header := Label.new()
 	header.text = "--- DEV ---"
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(header)
+
 	for path in managed_panels:
 		var panel: Control = get_node_or_null(path)
 		if panel != null:
@@ -50,3 +54,15 @@ func _add_toggle(panel: Control) -> void:
 				panel.visible = pressed
 	)
 	_content.add_child(checkbox)
+
+
+## Public hook so other DevHUD scripts can add non-panel toggles (overlay flags, debug switches) into the same menu list.
+func add_overlay_toggle(label: String, initial: bool, handler: Callable) -> CheckBox:
+	var checkbox := CheckBox.new()
+	checkbox.text = label
+	checkbox.button_pressed = initial
+	checkbox.focus_mode = Control.FOCUS_NONE
+	checkbox.toggled.connect(handler)
+	if _content != null:
+		_content.add_child(checkbox)
+	return checkbox

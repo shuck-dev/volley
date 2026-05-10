@@ -29,13 +29,11 @@ func after_each() -> void:
 
 
 func test_default_state_is_off() -> void:
-	assert_false(_dev_hud.debug_overlay_toggle.button_pressed, "checkbox defaults to off")
 	assert_false(GrabArea.debug_visible, "GrabArea static stays off at startup")
 	assert_false(_overlay.dev_visible, "CursorOverlay dev_visible follows checkbox at startup")
 
 
 func test_toggle_on_propagates_to_grab_area_and_overlay() -> void:
-	_dev_hud.debug_overlay_toggle.button_pressed = true
 	_dev_hud._on_debug_overlay_toggled(true)
 	assert_true(GrabArea.debug_visible, "GrabArea overlay enabled by checkbox")
 	assert_true(_overlay.dev_visible, "CursorOverlay dev_visible enabled by checkbox")

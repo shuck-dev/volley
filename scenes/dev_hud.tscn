@@ -7,10 +7,10 @@
 [ext_resource type="Script" uid="uid://cobj86hrkbj2r" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "debug_overlay_toggle")]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
 script = ExtResource("1_ahhtf")
 clearance_button = NodePath("ClearanceButton")
-debug_overlay_toggle = NodePath("DebugOverlayToggle")
+dev_menu = NodePath("DevMenu")
 
 [node name="DevItemUI" type="VBoxContainer" parent="." unique_id=1055282224]
 offset_left = 10.0
@@ -70,15 +70,3 @@ offset_bottom = -5.0
 grow_vertical = 0
 focus_mode = 0
 text = "Clearance"
-
-[node name="DebugOverlayToggle" type="CheckBox" parent="." unique_id=1837706864]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 150.0
-offset_top = -36.0
-offset_right = 320.0
-offset_bottom = -5.0
-grow_vertical = 0
-focus_mode = 0
-text = "Debug overlays"

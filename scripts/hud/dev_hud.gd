@@ -2,15 +2,16 @@ class_name DevHud
 extends CanvasLayer
 
 @export var clearance_button: Button
-@export var debug_overlay_toggle: CheckBox
+@export var dev_menu: PanelContainer
 
 
 func _ready() -> void:
 	clearance_button.visible = not ProgressionManager.is_shop_unlocked()
 	clearance_button.pressed.connect(_on_clearance_button_pressed)
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
-	debug_overlay_toggle.toggled.connect(_on_debug_overlay_toggled)
-	_apply_debug_overlay(debug_overlay_toggle.button_pressed)
+	if dev_menu != null and dev_menu.has_method("add_overlay_toggle"):
+		dev_menu.add_overlay_toggle("Debug overlays", false, _on_debug_overlay_toggled)
+	_apply_debug_overlay(false)
 
 
 func _exit_tree() -> void:
