@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://bsakcpqh60xqt" path="res://scripts/entities/ball/grab_area.gd" id="2_grab"]
 
 [node name="HeldBody" type="RigidBody2D" node_paths=PackedStringArray("grab_area", "press_collision")]
+z_index = 200
+z_as_relative = false
 collision_layer = 0
 collision_mask = 0
 input_pickable = false

@@ -11,6 +11,8 @@
 radius = 11.52
 
 [node name="Ball" type="RigidBody2D" unique_id=1842167380 node_paths=PackedStringArray("grab_area")]
+z_index = 200
+z_as_relative = false
 physics_material_override = ExtResource("1_cxlvu")
 gravity_scale = 0.0
 script = ExtResource("1_7s4qf")

@@ -65,12 +65,21 @@ func _physics_process(_delta: float) -> void:
 	# in depth against direct `_enabled = true` writes.
 	assert(ball != null, "PaddleAIController: ball must be set before enabling")
 	_maybe_resample_noise()
+	if not _ball_in_play():
+		_drift_to_center()
+		return
 	if _is_ball_behind():
 		_dodge()
 	elif _ball_approaching():
 		_track()
 	else:
 		_drift_to_center()
+
+
+func _ball_in_play() -> bool:
+	return (
+		ball.play_state == Ball.PlayState.PLAY_NORMAL or ball.play_state == Ball.PlayState.PLAY_ARC
+	)
 
 
 ## Warning not assert: toggle key presses with no live ball must be silent no-ops.
