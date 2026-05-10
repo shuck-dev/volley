@@ -14,6 +14,10 @@ const SPEED_EMIT_THRESHOLD := 10.0
 @export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 2.4
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
 @export var press_area: Area2D
+## Y-coordinate of the friendship-bound; gravity engages while the ball is above (smaller y) this height. Court overrides per attach.
+@export var apex_bound_y: float = -351.6
+## Gravity scale applied while above the friendship-bound; off-bound the ball travels straight (gravity_scale = 0).
+@export_range(0.0, 8.0, 0.05) var apex_gravity_scale: float = 1.0
 
 var speed: float = 0.0
 var min_speed: float
@@ -40,6 +44,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_update_apex_gravity()
 	if linear_velocity == Vector2.ZERO:
 		return
 	effect_processor.process_frame(delta)
@@ -47,6 +52,15 @@ func _physics_process(delta: float) -> void:
 	if _should_emit_speed_changed():
 		_emit_speed_changed()
 	linear_velocity = linear_velocity.normalized() * speed
+
+
+# Gravity-toggle apex return: above the bound the ball arcs under gravity; the per-frame speed-lock
+# then re-normalises magnitude, so gravity bends direction without changing kinetic energy.
+func _update_apex_gravity() -> void:
+	if freeze:
+		gravity_scale = 0.0
+		return
+	gravity_scale = apex_gravity_scale if position.y < apex_bound_y else 0.0
 
 
 func _should_emit_speed_changed() -> bool:

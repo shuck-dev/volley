@@ -58,22 +58,6 @@ item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
-[node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
-position = Vector2(441.6, -351.6)
-rotation = 1.5707964
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
-
-[node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
-offset_right = 21.6
-offset_bottom = 883.2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
-position = Vector2(10.8, 441.6)
-shape = SubResource("RectangleShape2D_horz")
-
 [node name="Bottom Wall" type="StaticBody2D" parent="Bounds" unique_id=743283118]
 position = Vector2(-441.6, 351.6)
 rotation = -1.5707964

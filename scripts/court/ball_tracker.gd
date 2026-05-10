@@ -17,10 +17,22 @@ var _current_ball: Ball
 var _partner_paddle: Node2D
 var _player_paddle: Node2D
 var _miss_zones: Array[MissZone] = []
+var _apex_bound_y: float = -351.6
+var _apex_gravity_scale: float = 1.0
+var _apex_configured: bool = false
 
 
 func configure(player_paddle: Node2D) -> void:
 	_player_paddle = player_paddle
+
+
+func set_apex(bound_y: float, gravity_scale: float) -> void:
+	_apex_bound_y = bound_y
+	_apex_gravity_scale = gravity_scale
+	_apex_configured = true
+	for tracked in _balls:
+		if is_instance_valid(tracked):
+			_apply_apex(tracked)
 
 
 func _ready() -> void:
@@ -41,6 +53,7 @@ func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
 	_balls.append(new_ball)
+	_apply_apex(new_ball)
 	if _current_ball == null:
 		_set_current(new_ball)
 	if not new_ball.missed.is_connected(_on_ball_missed):
@@ -140,3 +153,10 @@ func _on_ball_missed() -> void:
 
 func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
 	ball_at_max_speed_changed.emit(is_at_max)
+
+
+func _apply_apex(target: Ball) -> void:
+	if not _apex_configured:
+		return
+	target.apex_bound_y = _apex_bound_y
+	target.apex_gravity_scale = _apex_gravity_scale
