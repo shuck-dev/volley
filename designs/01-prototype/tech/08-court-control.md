@@ -8,13 +8,13 @@ Each live ball is in one of two states. The rule applies per ball, so multi-ball
 
 **At or below the friendship-bound (held state).** `gravity_scale = 0`, speed is locked, linear damping is off.
 
-**Above the friendship-bound (released state).** `gravity_scale = 1`, speed-lock releases, linear damping engages. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area. The centripetal force rotates velocity without doing work; magnitude follows gravity, direction bends.
+**Above the friendship-bound (arcing state).** `gravity_scale = 1`, speed-lock releases, linear damping engages. A centripetal force scaled by speed acts perpendicular to velocity, toward the play area. The centripetal force rotates velocity without doing work; magnitude follows gravity, direction bends. Friendship is still acting here; the centripetal force is its work above the bound.
 
 The bound is a per-Court height.
 
 ## Apex return
 
-A ball that arcs above the bound moves into the released state. Gravity decelerates the vertical component; the centripetal force redirects.
+A ball that arcs above the bound moves into the arcing state. Gravity decelerates the vertical component; the centripetal force redirects.
 
 The ball tracks its pre-bound entry value: speed at the moment it arcs above the bound. Any speed change above the bound updates this value, so a paddle hit above the bound or a partner-active arc captures the post-event speed.
 
