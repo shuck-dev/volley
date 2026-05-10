@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c4d57kq6juqi0"]
 
 [ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/entities/ball/ball.gd" id="1_7s4qf"]
-[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_cxlvu"]
+[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_cxlvu"]
 [ext_resource type="Texture2D" uid="uid://cwmjeugx3pay5" path="res://assets/sprites/ball.png" id="3_f7cbr"]
 [ext_resource type="Script" path="res://scripts/entities/ball/press_area.gd" id="4_press"]
 

@@ -15,6 +15,9 @@ enum PlayState {
 	OUT_HELD,
 }
 
+const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
+const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
+
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
 ## Authored Area2D that routes pointer presses; wired from the scene so the press hit-box stays scene-based.
@@ -136,6 +139,7 @@ func _on_missed() -> void:
 	play_state = PlayState.OUT_REST
 	gravity_scale = 1.0
 	linear_damp = court_config.rest_roll_damping
+	physics_material_override = REST_MATERIAL
 	speed = min_speed
 	effect_processor.sync_base_speed()
 	_emit_max_speed_if_changed()
@@ -218,6 +222,7 @@ func _ball_setup() -> void:
 	lock_rotation = true
 	gravity_scale = 0.0
 	linear_damp = 0.0
+	physics_material_override = PLAY_MATERIAL
 	play_state = PlayState.PLAY_NORMAL
 	# Reset relock register so a pooled ball doesn't read its previous run's tracked value.
 	_relock.reset()
