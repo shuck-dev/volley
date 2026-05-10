@@ -21,9 +21,9 @@ No side walls and no ceiling. The court visibly opens onto the rest of the venue
 
 ## Friendship as the upper bound
 
-The top of the play volume is the friendship-bound. Below it the ball is weightless under friendship's uplift. Above it gravity engages, and a centripetal force scaled by the ball's speed bends it back into play.
+The top of the play volume is the friendship-bound. Below it the ball is weightless under friendship's uplift. Above it gravity engages, but friendship still pulls the ball home; faster balls turn tighter, slower balls trace wider loops.
 
-Low speed gives a wide loop, high speed tightens the arc. Either way the ball returns and the uplift resumes.
+Either way the ball returns and the uplift resumes.
 
 The bound height is per-venue. Small venues have a tighter ceiling, large venues breathe.
 
@@ -34,7 +34,7 @@ A miss ends the rally. Two ways:
 - The ball gets past the paddle's miss line (back-miss).
 - The ball strays past either side band (side-miss).
 
-Both reset the counter. Both fire the same gravity-and-roll behaviour: the ball retains its velocity at the moment of the cross, rolls onto the venue floor, and comes to rest. The player drags it back to the rack to re-serve.
+Both reset the counter. Both fire the same gravity-and-roll behaviour: the ball carries its rally momentum onto the floor, then loses it to gravity and the floor, and comes to rest. The player drags it back to the rack to re-serve.
 
 Player-side and partner-side share the same event. The ball got past a paddle's line, regardless of whose paddle.
 
@@ -50,7 +50,9 @@ All cues are audio plus world-space. No screen-space banners.
 
 ## Spirit of the volley
 
-A rally is how the spirit of the volley shows up. It is not owned by the player and it does not live in the ball; it answers commitment to the exchange and holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points were scored.
+Friendship and the spirit of the volley are the same thing. The uplift that holds the ball up is what the spirit's presence does to the rally; the geometry above is what its felt presence shows up as on the page.
+
+A rally is how the spirit shows up. It is not owned by the player and it does not live in the ball; it answers commitment to the exchange and holds the ball up for as long as that commitment keeps paying out. Every return is tribute. The counter is how present the spirit is in this rally, not how many points were scored.
 
 A miss sends the spirit away. It does not leave in anger; it leaves because there is nothing left to answer. The ball loses what kept it weightless and does what balls do.
 

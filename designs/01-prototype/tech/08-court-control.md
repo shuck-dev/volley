@@ -32,7 +32,9 @@ A live ball pulled to the rack mid-rally is not a miss; the drag controller repl
 
 ## Cross-bound collisions
 
-Collisions between an above-bound ball and a below-bound ball resolve under each body's current physics state. Energy resolution is asymmetric across the bound and that is acceptable. The bound is a state line, not a collision filter.
+Collisions between an above-bound ball and a below-bound ball resolve under each body's current physics state. The above-bound ball's velocity changes per real physics. The below-bound ball's velocity *direction* changes per the collision; its locked *speed* (magnitude) re-asserts immediately after, since the speed-lock only constrains magnitude. Velocity and speed are distinct: the lock is on speed; direction is free.
+
+The bound is a state line, not a collision filter.
 
 ## Numerical stability
 
