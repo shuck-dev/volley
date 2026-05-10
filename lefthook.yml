@@ -5,11 +5,6 @@ output:
   - execution_out
   - skips
 
-prepare-commit-msg:
-  commands:
-    ticket-prefix:
-      run: ./scripts/ci/prepend_ticket_prefix.sh {1} {2}
-
 pre-commit:
   piped: true
   commands:

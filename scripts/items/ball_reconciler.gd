@@ -1,7 +1,7 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner; spec lives in designs/01-prototype/21-ball-dynamics.md.
+## Live-ball lifecycle owner; spec lives in designs/01-prototype/design/21-ball-dynamics.md.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
@@ -97,7 +97,7 @@ func get_ball_for_key(item_key: String) -> Ball:
 	return raw
 
 
-## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries friendship energy through grab-and-release.
+## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries rally speed through grab-and-release.
 func ensure_ball_for_key(
 	item_key: String,
 	spawn_position: Vector2,

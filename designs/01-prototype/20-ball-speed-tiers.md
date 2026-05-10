@@ -30,7 +30,7 @@ If the speed ceiling turns out too tight under real play, Godot's [`RigidBody2D.
 
 ## Tier math
 
-Ball speed is friendship. The rally's accumulated speed is the player's relationship with the ball, and the tier ladder is the shape of that friendship as it climbs. Speed resets only on miss; mid-rally grab-and-release carries the friendship through the held-token detour (see `21-ball-dynamics.md` for the regime model). Tiers compose with that semantics: a grab-and-release at Tier 2 lands at Tier 2, and misses are the only thing that takes the rally back to Tier 0.
+Rally speed accumulates across paddle hits and persists through mid-rally grab-and-release (see `design/21-ball-dynamics.md` for the regime model). Speed resets only on miss. Tiers compose with that: a grab-and-release at Tier 2 lands at Tier 2, and misses are the only thing that takes the rally back to Tier 0.
 
 Speed progression becomes a ladder of tiers. Each tier has its own floor and ceiling; reaching a ceiling fires a tier event and drops the ball to the floor of the next tier. The reward that fires alongside the event is owned by the companion progression doc.
 
@@ -54,7 +54,7 @@ Reaching a tier ceiling fires `on_tier_completed(tier_index)` on the item effect
 
 ### Tier-aware ball state
 
-`Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from 21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from 21's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` and `set_speed_for_streak` clamp against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
+`Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from design/21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from design/21-ball-dynamics.md's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` and `set_speed_for_streak` clamp against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
 
 `speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `at_max_speed_changed` is repurposed to fire only on Peak entry/exit; the Cadence "ceiling outcome" (which currently latches on `on_max_speed_reached`) moves to `on_tier_completed` with a tier filter.
 
@@ -94,7 +94,7 @@ New: unchanged. Wrist Brace compresses every tier's hits-to-climb and trades pad
 
 ## Migration notes
 
-- `ball_speed_max_range` stays as a tuning surface; it is promoted into a per-tier `max_range` field on `SpeedTierTable` rather than deleted. The flat value from 21-ball-dynamics.md rides on the Tier 0 entry so existing tuning and tests keep their meaning; the tiers above each declare their own `max_range` alongside `floor`, `ceiling`, and `reward`. The table is owned by `GameRules`. Existing callers that read `ball_speed_max_range` read `SpeedTierTable.get_tier(current_tier).max_range` (or `.get_tier(0).max_range` for the base-stats tuning surface).
+- `ball_speed_max_range` stays as a tuning surface; it is promoted into a per-tier `max_range` field on `SpeedTierTable` rather than deleted. The flat value from design/21-ball-dynamics.md rides on the Tier 0 entry so existing tuning and tests keep their meaning; the tiers above each declare their own `max_range` alongside `floor`, `ceiling`, and `reward`. The table is owned by `GameRules`. Existing callers that read `ball_speed_max_range` read `SpeedTierTable.get_tier(current_tier).max_range` (or `.get_tier(0).max_range` for the base-stats tuning surface).
 - Cadence's `on_max_speed_reached` outcome is rewritten to `on_tier_completed` with a tier filter. Court Lines' `ball_speed_max_range` stat outcome is rewritten to a new `widen_tier_floors` outcome. Training Ball and Wrist Brace unchanged.
 - Court's `_on_ball_at_max_speed_changed` splits into `_on_ball_tier_advanced` (fires per tier) and `_on_ball_peak_changed` (fires on Peak entry/exit). `on_max_speed_reached` as an event name is retired; `on_tier_completed` replaces it.
 - `ball.reset_speed` stays as miss behaviour. `ball.advance_tier` is new. `ball.set_speed_for_streak` clamps against `tier_ceiling` of the tier implied by streak count, which the tier table answers.

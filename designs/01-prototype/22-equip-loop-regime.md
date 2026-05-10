@@ -1,6 +1,6 @@
 # Equip-Loop Regime
 
-Adversarial review of the homes-and-loose model proposed for item movement across the venue. The aim is to settle the regime before another impl round commits to a moving target. The model under challenge sits in [21-ball-dynamics.md](21-ball-dynamics.md) under "Containers and the swap pattern"; this doc steel-mans it, attacks it, names where it breaks, sketches alternatives, and lands a recommendation.
+Adversarial review of the homes-and-loose model proposed for item movement across the venue. The aim is to settle the regime before another impl round commits to a moving target. The model under challenge sits in [21-ball-dynamics.md](design/21-ball-dynamics.md) under "Containers and the swap pattern"; this doc steel-mans it, attacks it, names where it breaks, sketches alternatives, and lands a recommendation.
 
 **Points:** Spike
 **Surfaced by:** Bedtime Story churn around Challenge #403, three rounds of impl chasing an unspecified design.
@@ -75,7 +75,7 @@ Equipment and fixtures get the same treatment. A paddle dropped on the floor is 
 
 ### 2. What happens at save / load? Does state grow unbounded?
 
-The save shape persists each loose item's position and `linear_velocity`. Restore is the same as the rally case in [21-ball-dynamics.md](21-ball-dynamics.md): reconstruct at persisted state, advance physics from there.
+The save shape persists each loose item's position and `linear_velocity`. Restore is the same as the rally case in [21-ball-dynamics.md](design/21-ball-dynamics.md): reconstruct at persisted state, advance physics from there.
 
 In practice the count never grows large enough to stress the save shape. The player has a small inventory by design, and the venue is not a shop floor. The "thousand rounds, hundred loose balls" worry is moot at the scales Volley actually plays at.
 
@@ -161,11 +161,11 @@ This alternative is the radical ship. It is more coherent than the proposed mode
 
 ## Recommendation
 
-Ship the model as proposed in [21-ball-dynamics.md](21-ball-dynamics.md), with two scoped amendments:
+Ship the model as proposed in [21-ball-dynamics.md](design/21-ball-dynamics.md), with two scoped amendments:
 
 1. Loose state applies to every diegetic item in the regime: balls, equipment, fixtures. Effects are out of scope, owned by the effect manager.
 2. Body projection on release uses an expansion-ring fallback after a short hold, then cancels to source if even the expanded shape fails.
 
-The hopper is the canonical serve. Player throws are honest physics, with two cases. A throw of a ball at rest takes its launch velocity from the player's release gesture, capped at a max speed so the player cannot game friendship by chaining hard throws on rest balls. A throw of a ball that is already live (mid-rally grab) preserves the friendship and speed the rally has built; the gesture chooses direction only, magnitude stays from the rally. Same rule as the existing grab-and-release. An over-throw on a rest ball smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
+The hopper is the canonical serve. Player throws are honest physics, with two cases. A throw of a ball at rest takes its launch velocity from the player's release gesture, capped at a max speed so chaining hard throws on rest balls cannot accumulate rally speed. A throw of a ball that is already live (mid-rally grab) preserves the rally's accumulated speed; the gesture chooses direction only, magnitude stays from the rally. Same rule as the existing grab-and-release. An over-throw on a rest ball smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
 
 The model is the right shape because the venue is part of the game's character, not just a backdrop. Volley's cosy register earns the loose-in-venue rule; the floor that quietly holds the player's toys is the diegetic argument, and tidying is the player's job. A less ambient game would not earn this. The amendments narrow the model only at the seam where another subsystem (the effect manager) already owns the work.

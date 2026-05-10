@@ -175,7 +175,7 @@ func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> voi
 
 
 func test_bring_into_play_propagates_preserved_speed_for_spawn_and_existing_ball() -> void:
-	# SH-288: friendship energy carries through bring_into_play onto both newly spawned and
+	# SH-288: rally speed carries through bring_into_play onto both newly spawned and
 	# already-tracked balls; both branches must re-magnitude linear_velocity along its direction.
 	_manager.take("ball_alpha")
 	var spawned: Ball = _reconciler.bring_into_play(

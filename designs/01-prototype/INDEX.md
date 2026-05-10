@@ -14,7 +14,8 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 07 | [Effect System](07-effect-system.md) |
 | 08 | **The Venue and Its Systems** |
 |    | - [The Venue](08-venue.md) |
-|    | - [Court Bounds and Miss](08-court-bounds.md) |
+|    | - [Court Bounds and Miss](design/08-court-bounds.md) |
+|    | - [Wall-less Court Control](tech/08-court-control.md) |
 |    | - [Items, the Court, and the Kit](08-items.md) |
 |    | - [ItemManager: Data Model and Runtime](08-item-manager.md) |
 |    | - [Item Roles](08-roles.md) |
@@ -37,4 +38,4 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 19 | [Minified Paddle](19-minified-paddle.md) |
 | 20 | [Ball Speed Tiers and Physics Ceiling](20-ball-speed-tiers.md) |
 | 20a | [Ball Speed Tier Progression](20a-ball-speed-tier-progression.md) |
-| 21 | [Ball Dynamics](21-ball-dynamics.md) |
+| 21 | [Ball Dynamics](design/21-ball-dynamics.md) |

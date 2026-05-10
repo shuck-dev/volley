@@ -75,4 +75,4 @@ The list of facts held back from the player, where each lands, and what unlocks 
 
 ## Cross-references
 
-Pointers to the docs this outline sits beside: `story.md`, `../art/bible.md`, `../characters/protagonist.md`, `../01-prototype/21-ball-dynamics.md`, and the research scratchpad at `../research/narrative-outline-formats.md`.
+Pointers to the docs this outline sits beside: `story.md`, `../art/bible.md`, `../characters/protagonist.md`, `../01-prototype/design/21-ball-dynamics.md`, and the research scratchpad at `../research/narrative-outline-formats.md`.

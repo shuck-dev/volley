@@ -2,7 +2,7 @@
 
 The ball-feel decisions. Implementation detail is deliberately thin; the ideas are the canon.
 
-**Dependencies:** [Balls on the Court](08-balls.md), [Partner AI](17-partner-ai.md), [Make Fun Pass](16-make-fun.md), [Effect System](07-effect-system.md).
+**Dependencies:** [Balls on the Court](../08-balls.md), [Partner AI](../17-partner-ai.md), [Make Fun Pass](../16-make-fun.md), [Effect System](../07-effect-system.md).
 
 ---
 
@@ -54,9 +54,9 @@ Every item lives in one of three states:
 
 Transitions between states ease, never snap. Position, scale, and modulation read as continuous through the state change. The exception is the release-onto-court transition, where the body's velocity itself is the continuity; no tween needed.
 
-## Speed is friendship
+## Speed carries through grab-and-release
 
-Rally speed carries through grab-and-release: a mid-rally grab is a redirect, not a reset. The magnitude survives the held-token detour; the gesture chooses only the direction. Speed only resets on miss.
+A mid-rally grab is a redirect, not a reset. Rally speed magnitude survives the held-token detour; the gesture chooses only the direction. Speed resets only on miss.
 
 ## Drop validation
 
@@ -74,4 +74,4 @@ A press lifts the preview but does not drop. The drop gate opens only past a mov
 
 ## Friendship-bound apex return
 
-See [`08-court-control.md`](08-court-control.md) § Apex return.
+See [`tech/08-court-control.md`](../tech/08-court-control.md) § Apex return.
