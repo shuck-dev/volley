@@ -10,6 +10,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(4000, 40)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s1xkn"]
+size = Vector2(4000, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j16ra"]
+size = Vector2(40, 4000)
+
 [node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop")]
 layout_mode = 3
 anchors_preset = 15
@@ -45,7 +51,7 @@ mouse_filter = 2
 color = Color(0.15, 0.1, 0.08, 1)
 
 [node name="Shop" parent="." unique_id=1688593906 instance=ExtResource("3_shop")]
-position = Vector2(1500, 3.13)
+position = Vector2(720, 3.13)
 
 [node name="Workshop" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
 position = Vector2(-1500, 0)
@@ -55,3 +61,21 @@ position = Vector2(-1700, 0)
 
 [node name="RightEdge" type="Marker2D" parent="." unique_id=858790739]
 position = Vector2(1920, 0)
+
+[node name="VenueCeiling" type="StaticBody2D" parent="." unique_id=1902326706]
+position = Vector2(0, -1500)
+
+[node name="VenueCeilingShape" type="CollisionShape2D" parent="VenueCeiling" unique_id=1648054464]
+shape = SubResource("RectangleShape2D_s1xkn")
+
+[node name="VenueLeftBound" type="StaticBody2D" parent="." unique_id=1925147373]
+position = Vector2(-1700, 0)
+
+[node name="VenueLeftBoundShape" type="CollisionShape2D" parent="VenueLeftBound" unique_id=324592534]
+shape = SubResource("RectangleShape2D_j16ra")
+
+[node name="VenueRightBound" type="StaticBody2D" parent="." unique_id=1541086575]
+position = Vector2(1920, 0)
+
+[node name="VenueRightBoundShape" type="CollisionShape2D" parent="VenueRightBound" unique_id=1823696433]
+shape = SubResource("RectangleShape2D_j16ra")
