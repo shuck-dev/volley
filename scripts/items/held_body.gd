@@ -8,9 +8,9 @@ enum Phase { LIFTING, HELD, LOOSE }
 const HELD_BODY_SCENE: PackedScene = preload("res://scenes/items/held_body.tscn")
 
 @export_range(0.0, 4.0, 0.05) var loose_gravity_scale: float = 1.0
-## Press hit-box radius multiplier on the at-rest shape; loose bodies get a generous press target.
+## Grab hit-box radius multiplier on the at-rest shape; loose bodies get a generous grab target.
 @export_range(1.0, 4.0, 0.1) var press_hitbox_inflation: float = 2.4
-@export var grab_area: Area2D
+@export var grab_area: GrabArea
 @export var press_collision: CollisionShape2D
 
 var phase: Phase = Phase.LIFTING
@@ -39,8 +39,8 @@ static func make_for(definition: ItemDefinition, item_key: String) -> HeldBody:
 
 
 func _ready() -> void:
-	if grab_area != null and not grab_area.input_event.is_connected(_on_grab_input_event):
-		grab_area.input_event.connect(_on_grab_input_event)
+	if grab_area != null and not grab_area.grabbed.is_connected(_on_grab_area_grabbed):
+		grab_area.grabbed.connect(_on_grab_area_grabbed)
 
 
 # Loose bodies live under the reconciler's ball-host subtree; that subtree is freed on scene reload, which is what cleans them up.
@@ -87,14 +87,7 @@ func _enable_grab_area(enabled: bool) -> void:
 	grab_area.monitorable = enabled
 
 
-func _on_grab_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	if phase != Phase.LOOSE:
-		return
-	if not (event is InputEventMouseButton):
-		return
-	var mouse_button: InputEventMouseButton = event
-	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
-		return
-	if not mouse_button.pressed:
 		return
 	grabbed.emit(self)

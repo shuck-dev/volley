@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7sh314heldbody"]
+[gd_scene load_steps=3 format=3 uid="uid://b7sh314heldbody"]
 
 [ext_resource type="Script" uid="uid://dxwfoo1jc2set" path="res://scripts/items/held_body.gd" id="1_held"]
+[ext_resource type="Script" uid="uid://bsakcpqh60xqt" path="res://scripts/entities/ball/grab_area.gd" id="2_grab"]
 
 [node name="HeldBody" type="RigidBody2D" node_paths=PackedStringArray("grab_area", "press_collision")]
 collision_layer = 0
@@ -22,5 +23,6 @@ press_collision = NodePath("GrabArea/Collision")
 input_pickable = false
 monitoring = false
 monitorable = false
+script = ExtResource("2_grab")
 
 [node name="Collision" type="CollisionShape2D" parent="GrabArea"]
