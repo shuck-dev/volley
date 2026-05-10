@@ -59,7 +59,7 @@ func _ready() -> void:
 		ball_tracker.ball_system = ball_system
 		add_child(ball_tracker)
 	if court_config == null:
-		court_config = CourtConfig.new()
+		court_config = load("res://scripts/core/court_config.gd").new()
 	ball_tracker.court_config = court_config
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
