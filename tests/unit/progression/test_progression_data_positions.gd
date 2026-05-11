@@ -57,3 +57,39 @@ func test_clear_resets_positions_and_loose_set() -> void:
 	_data.clear()
 	assert_eq(_data.item_positions, {} as Dictionary[String, Vector2])
 	assert_eq(_data.loose_in_venue, [] as Array[String])
+
+
+func test_rack_slot_index_by_key_defaults_empty() -> void:
+	assert_eq(_data.rack_slot_index_by_key, {} as Dictionary[String, int])
+
+
+func test_rack_slot_index_by_key_round_trips() -> void:
+	_data.rack_slot_index_by_key["base_ball"] = 0
+	_data.rack_slot_index_by_key["training_ball"] = 2
+	var restored := ProgressionData.from_dict(_data.to_dict())
+	assert_eq(restored.rack_slot_index_by_key["base_ball"], 0)
+	assert_eq(restored.rack_slot_index_by_key["training_ball"], 2)
+
+
+func test_rack_slot_index_by_key_survives_json_string_round_trip() -> void:
+	_data.rack_slot_index_by_key["base_ball"] = 1
+	var saved_json := JSON.stringify(_data.to_dict())
+	stub(_mock_storage.write).to_return(true)
+	_data.save_to_disk()
+
+	var loaded := ProgressionData.new(_mock_storage)
+	stub(_mock_storage.read).to_return(saved_json)
+	loaded.load_from_disk()
+	assert_eq(loaded.rack_slot_index_by_key["base_ball"], 1)
+
+
+func test_rack_slot_index_by_key_missing_defaults_empty() -> void:
+	var legacy: Dictionary = {"friendship_point_balance": 50}
+	var restored := ProgressionData.from_dict(legacy)
+	assert_eq(restored.rack_slot_index_by_key, {} as Dictionary[String, int])
+
+
+func test_clear_resets_rack_slot_index() -> void:
+	_data.rack_slot_index_by_key["base_ball"] = 3
+	_data.clear()
+	assert_eq(_data.rack_slot_index_by_key, {} as Dictionary[String, int])

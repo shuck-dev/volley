@@ -15,12 +15,15 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var ball_scene: PackedScene = BallScene
 ## Opt-in surface for step 7; while false, adopt_stored is a no-op so callers can be wired ahead of the flip.
 @export var stored_balls_in_registry: bool = false
+## Ball-role rack consulted for STORED slot positions when stored_balls_in_registry is true.
+@export var ball_rack: RackDisplay
 
 var _item_manager: Node
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 ## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
 var _adopting_pre_existing: bool = false
+var _stored_kit_reconciled: bool = false
 
 
 func configure(item_manager: Node) -> void:
@@ -58,6 +61,9 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 		if not is_instance_valid(raw):
 			continue
 		var ball: Ball = raw
+		# STORED entries live at rack-slot positions reconstructed from rack_slot_index_by_key on load.
+		if ball.play_state == Ball.PlayState.STORED:
+			continue
 		positions[key] = ball.global_position
 	return positions
 
@@ -236,16 +242,29 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 
 ## One-shot: skipped once any signal-driven court_changed activity has begun.
 func _reconcile_initial_state() -> void:
-	if not _initial_reconcile_pending:
+	if _initial_reconcile_pending:
+		_initial_reconcile_pending = false
+		for key in _item_manager.get_court_items():
+			if get_ball_for_key(key) == null:
+				ensure_ball_for_key(
+					key,
+					_spawn_position_for(key),
+					_item_manager.get_default_ball_launch_velocity(),
+				)
+	# STORED kit items are independent of the court-pending flag; court_changed cannot spawn them.
+	if stored_balls_in_registry and not _stored_kit_reconciled:
+		_stored_kit_reconciled = true
+		_reconcile_stored_kit_items()
+
+
+## Populates STORED Balls for kit ball-role items absent from the court. Rack owns slot→world mapping.
+func _reconcile_stored_kit_items() -> void:
+	if ball_rack == null:
 		return
-	_initial_reconcile_pending = false
-	for key in _item_manager.get_court_items():
-		if get_ball_for_key(key) == null:
-			ensure_ball_for_key(
-				key,
-				_spawn_position_for(key),
-				_item_manager.get_default_ball_launch_velocity(),
-			)
+	for key in _item_manager.get_kit_items(&"ball"):
+		if get_ball_for_key(key) != null:
+			continue
+		adopt_stored(key, ball_rack.get_slot_position_for(key))
 
 
 func _default_spawn_position() -> Vector2:

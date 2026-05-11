@@ -172,8 +172,9 @@ offset_top = -240.0
 offset_right = -529.0
 offset_bottom = -172.0
 
-[node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
+[node name="BallReconciler" type="Node" parent="." unique_id=1902001001 node_paths=PackedStringArray("ball_rack")]
 script = ExtResource("21_reconciler")
+ball_rack = NodePath("../BallRack")
 
 [node name="BallTracker" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("ball_system")]
 script = ExtResource("23_tracker")

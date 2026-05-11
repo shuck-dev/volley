@@ -7,6 +7,8 @@ var item_levels: Dictionary[String, int] = {}
 var item_placements: Dictionary[String, int] = {}
 ## Per-item world position; balls and loose bodies reload where the player left them.
 var item_positions: Dictionary[String, Vector2] = {}
+## Rack slot index per STORED item; rack owns the slot→world mapping. Production reader lands at step 7.5.
+var rack_slot_index_by_key: Dictionary[String, int] = {}
 ## Keys of items currently dropped on the venue floor; survives the session so
 ## loose bodies respawn rather than vanishing back to the rack.
 var loose_in_venue: Array[String] = []
@@ -27,6 +29,7 @@ func clear() -> void:
 	item_levels = {}
 	item_placements = {}
 	item_positions = {}
+	rack_slot_index_by_key = {}
 	loose_in_venue = []
 	personal_volley_best = 0
 	shop_unlocked = false
@@ -65,6 +68,7 @@ func _try_load_content(content: String) -> bool:
 	item_levels = loaded.item_levels
 	item_placements = loaded.item_placements
 	item_positions = loaded.item_positions
+	rack_slot_index_by_key = loaded.rack_slot_index_by_key
 	loose_in_venue = loaded.loose_in_venue
 	personal_volley_best = loaded.personal_volley_best
 	shop_unlocked = loaded.shop_unlocked
@@ -83,6 +87,7 @@ func to_dict() -> Dictionary:
 		"item_levels": item_levels,
 		"item_placements": item_placements,
 		"item_positions": _serialize_positions(item_positions),
+		"rack_slot_index_by_key": rack_slot_index_by_key,
 		"loose_in_venue": loose_in_venue,
 		"personal_volley_best": personal_volley_best,
 		"shop_unlocked": shop_unlocked,
@@ -101,6 +106,7 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.item_placements = _to_typed_dict(data.get("item_placements", {}))
 	progression.item_positions = _parse_positions(data.get("item_positions", {}))
+	progression.rack_slot_index_by_key = _to_typed_dict(data.get("rack_slot_index_by_key", {}))
 	progression.loose_in_venue = _to_typed_string_array(data.get("loose_in_venue", []))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
 	progression.shop_unlocked = data.get("shop_unlocked", false)
