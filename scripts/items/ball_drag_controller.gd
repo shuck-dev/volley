@@ -434,12 +434,12 @@ func attempt_release(release_position: Vector2) -> bool:
 		_finalise_gesture(item_key, clamped_position, false)
 		return true
 	else:
-		# Rack accept: deactivate path fires court_changed which prompts the reconciler to queue_free
-		# the live ball. The HeldBody-based rack token visual retires fully in step 7.
+		# Rack accept: deactivate fires court_changed which transitions the ball via the reconciler.
+		# Restore is the safety net for every held-ball rack release; idempotent against an already-STORED
+		# ball, catches paths where ItemManager state was already STORED for the key and target.accept's
+		# deactivate branch was a no-op.
 		target.accept(item_key, clamped_position, Vector2.ZERO)
-		# Flag-on rack-origin grabs are not on-court; rack accept is a no-op for them, so restore
-		# the held Ball to STORED at its slot explicitly.
-		if has_live_ball and _held_origin == &"rack":
+		if has_live_ball:
 			_restore_held_ball_to_stored(item_key)
 
 	var over_court: bool = target is CourtDropTarget
