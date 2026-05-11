@@ -45,7 +45,8 @@ func before_each() -> void:
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager, _host)
-	add_child_autofree(_reconciler)
+	# Mirror court.tscn topology so adopt_pre_existing_balls finds authored siblings under _host.
+	_host.add_child(_reconciler)
 
 	_drag = BallDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
@@ -84,7 +85,11 @@ func _build_drop_target(center: Vector2, size: Vector2) -> Area2D:
 
 
 func _permanent_balls() -> Array:
+	# Includes both reconciler-spawned and authored-adopted balls (the latter keep their original parent).
 	var result: Array = []
+	for child in _reconciler.get_children():
+		if child is Ball and not (child as Ball).is_temporary:
+			result.append(child)
 	for child in _host.get_children():
 		if child is Ball and not (child as Ball).is_temporary:
 			result.append(child)
@@ -93,6 +98,9 @@ func _permanent_balls() -> Array:
 
 func _all_balls_under_host() -> Array:
 	var result: Array = []
+	for child in _reconciler.get_children():
+		if child is Ball:
+			result.append(child)
 	for child in _host.get_children():
 		if child is Ball:
 			result.append(child)
@@ -189,12 +197,12 @@ func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 	assert_true(released, "release inside venue always resolves")
 	assert_false(_manager.is_on_court("training_ball"), "loose release does not flip placement")
 	assert_eq(_permanent_balls().size(), 0, "no rally Ball spawns from a loose release")
-	var loose_under_host: Array = []
-	for child in _host.get_children():
+	var loose_under_reconciler: Array = []
+	for child in _reconciler.get_children():
 		if child is HeldBody:
-			loose_under_host.append(child)
-	assert_eq(loose_under_host.size(), 1, "loose body is reparented under the ball host")
-	var body: HeldBody = loose_under_host[0]
+			loose_under_reconciler.append(child)
+	assert_eq(loose_under_reconciler.size(), 1, "loose body is parented under the reconciler")
+	var body: HeldBody = loose_under_reconciler[0]
 	assert_false(body.freeze, "loose body unfreezes so gravity integrates")
 	assert_gt(body.gravity_scale, 0.0)
 
@@ -268,13 +276,13 @@ func test_release_from_far_outside_cursor_drops_loose_at_venue_edge() -> void:
 	assert_false(_manager.is_on_court("training_ball"))
 	assert_eq(_permanent_balls().size(), 0, "loose drop does not spawn a rally Ball")
 	var venue_max: Vector2 = VENUE_BOUNDS.position + VENUE_BOUNDS.size
-	var loose_under_host: Array = []
-	for child in _host.get_children():
+	var loose_under_reconciler: Array = []
+	for child in _reconciler.get_children():
 		if child is HeldBody:
-			loose_under_host.append(child)
-	assert_eq(loose_under_host.size(), 1)
+			loose_under_reconciler.append(child)
+	assert_eq(loose_under_reconciler.size(), 1)
 	assert_eq(
-		loose_under_host[0].global_position,
+		loose_under_reconciler[0].global_position,
 		venue_max,
 		"loose body lands at the venue's far corner after the cursor clamp",
 	)
@@ -309,7 +317,7 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 
 	var reloaded_reconciler: BallReconciler = BallReconcilerScript.new()
 	reloaded_reconciler.configure(reloaded_manager, reloaded_host)
-	add_child_autofree(reloaded_reconciler)
+	reloaded_host.add_child(reloaded_reconciler)
 	await get_tree().process_frame
 
 	assert_true(
@@ -319,8 +327,8 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	var reloaded_ball: Ball = reloaded_reconciler.get_ball_for_key("training_ball")
 	assert_not_null(reloaded_ball, "reconciler re-spawned the ball from progression on load")
 	assert_true(
-		reloaded_ball.get_parent() == reloaded_host,
-		"the live ball is parented under the reloaded host",
+		reloaded_ball.get_parent() == reloaded_reconciler,
+		"the live ball is parented under the reconciler",
 	)
 	assert_almost_eq(
 		reloaded_manager.get_stat(&"ball_speed_min"),

@@ -15,27 +15,25 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var ball_scene: PackedScene = BallScene
 
 var _item_manager: Node
-var _ball_host: Node
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 ## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
 var _adopting_pre_existing: bool = false
 
 
-func configure(item_manager: Node, ball_host: Node) -> void:
+# Deprecated ball_host arg ignored; reconciler parents its own balls. Retired in step 6 of the lifecycle refactor.
+func configure(item_manager: Node, _ball_host: Node = null) -> void:
 	_item_manager = item_manager
-	_ball_host = ball_host
 
 
+# Compatibility shim for callers still enumerating loose bodies via the legacy host indirection. Retired in step 6.
 func get_ball_host() -> Node:
-	return _ball_host
+	return self
 
 
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	if _ball_host == null:
-		_ball_host = get_parent()
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
@@ -56,7 +54,7 @@ func _has_save_manager_autoload() -> bool:
 
 
 ## Snapshot of live ball positions keyed by item_key. Loose HeldBody children
-## of the ball host are included so dropped items reload at their resting spot.
+## are included so dropped items reload at their resting spot.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
 	for key: String in _balls_by_key:
@@ -65,23 +63,24 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 			continue
 		var ball: Ball = raw
 		positions[key] = ball.global_position
-	if _ball_host != null:
-		for child in _ball_host.get_children():
-			if not (child is HeldBody):
-				continue
-			var body: HeldBody = child
-			if body.item_key == "" or body.phase != HeldBody.Phase.LOOSE:
-				continue
-			positions[body.item_key] = body.global_position
+	for child in get_children():
+		if not (child is HeldBody):
+			continue
+		var body: HeldBody = child
+		if body.item_key == "" or body.phase != HeldBody.Phase.LOOSE:
+			continue
+		positions[body.item_key] = body.global_position
 	return positions
 
 
-## Idempotent; safe to call repeatedly across scene reloads.
+## Idempotent; safe to call repeatedly across scene reloads. Authored Balls live as
+## siblings of the reconciler in the scene tree, so scan the parent here.
 func adopt_pre_existing_balls() -> void:
-	if _ball_host == null:
+	var parent: Node = get_parent()
+	if parent == null:
 		return
 	_adopting_pre_existing = true
-	for child in _ball_host.get_children():
+	for child in parent.get_children():
 		if not (child is Ball):
 			continue
 		var ball: Ball = child
@@ -144,7 +143,7 @@ func ensure_ball_for_key(
 		return existing
 
 	var ball: Ball = ball_scene.instantiate()
-	_ball_host.add_child(ball)
+	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	_apply_item_art(ball, item_key)
@@ -228,8 +227,9 @@ func _reconcile_initial_state() -> void:
 
 
 func _default_spawn_position() -> Vector2:
-	if _ball_host is Node2D:
-		return (_ball_host as Node2D).global_position
+	var parent: Node = get_parent()
+	if parent is Node2D:
+		return (parent as Node2D).global_position
 	return Vector2.ZERO
 
 

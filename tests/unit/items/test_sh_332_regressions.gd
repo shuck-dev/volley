@@ -95,7 +95,7 @@ func before_each() -> void:
 
 func _loose_bodies_under_host() -> Array:
 	var result: Array = []
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is HeldBody:
 			result.append(child)
 	return result

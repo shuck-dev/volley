@@ -28,7 +28,7 @@ func before_each() -> void:
 
 func _permanent_ball_count() -> int:
 	var count := 0
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is Ball:
 			count += 1
 	return count
@@ -268,7 +268,8 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 
 	var fresh_reconciler: BallReconciler = BallReconcilerScript.new()
 	fresh_reconciler.configure(saved_manager, fresh_host)
-	add_child_autofree(fresh_reconciler)
+	# Reconciler parented under the host so adopt_pre_existing_balls sees the authored sibling.
+	fresh_host.add_child(fresh_reconciler)
 
 	# Flush both deferred calls: adopt_pre_existing_balls then _reconcile_initial_state.
 	await get_tree().process_frame
@@ -286,3 +287,17 @@ func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
 	assert_eq(second.global_position, Vector2(42, -7))
 	assert_eq(second.linear_velocity, Vector2(3, 4))
 	assert_eq(_permanent_ball_count(), 1)
+
+
+func test_reconciler_parents_new_balls_and_ignores_ball_host_arg() -> void:
+	var first: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
+	assert_eq(first.get_parent(), _reconciler, "ensure_ball_for_key parents under the reconciler")
+	assert_eq(_reconciler.get_ball_host(), _reconciler, "get_ball_host is a self-shim until step 6")
+
+	# Re-configure with an unrelated host; the reconciler must still own parenting.
+	var stranger := Node2D.new()
+	add_child_autofree(stranger)
+	_reconciler.configure(_manager, stranger)
+	var second: Ball = _reconciler.ensure_ball_for_key("ball_beta", Vector2.ZERO, Vector2.ZERO)
+	assert_eq(second.get_parent(), _reconciler, "ball_host arg is ignored on subsequent configure")
+	assert_eq(stranger.get_child_count(), 0, "stranger host receives no balls")

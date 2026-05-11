@@ -69,7 +69,7 @@ func before_each() -> void:
 
 func _permanent_balls() -> Array:
 	var result: Array = []
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is Ball:
 			result.append(child)
 	return result
