@@ -1,6 +1,6 @@
 # Rituals calendar
 
-The cadence the named rituals fire on. Definitions are owned elsewhere: the rituals themselves (Carnival, Heist, Battle, Ride, Cycle retro, Mission debrief) live in `ai/lair/guide.md`; cycle mechanics (Tuesday-to-Monday, Monday buffer, alphabetical puppet naming) live in `project-management.md`. This doc lands the calendar.
+The cadence the named rituals fire on.
 
 ## Two Mondays per cycle
 
