@@ -209,8 +209,20 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	var spawn_position: Vector2 = (
 		press_position if press_position is Vector2 else _cursor_position()
 	)
-	if not _spawn_held_body(item_key, spawn_position, false):
+
+	var stored: Ball = null
+	if reconciler != null and reconciler.stored_balls_in_registry:
+		stored = reconciler.get_ball_for_key(item_key)
+
+	if stored != null:
+		# Flag-on rack pickup: the STORED Ball IS the drag target. No HeldBody spawn; the ball
+		# stays in _balls_by_key, transitioned to OUT_HELD until release.
+		stored.enter_out_held()
+		_set_court_exclude_rids([stored.get_rid()])
+		_adopt_live_ball_as_held(stored, item_key)
+	elif not _spawn_held_body(item_key, spawn_position, false):
 		return false
+
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
@@ -375,6 +387,8 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court and not was_temporary:
+		if has_live_ball:
+			_restore_held_ball_to_stored(item_key)
 		_finalise_gesture(item_key, clamped_position, false)
 		return true
 
@@ -413,6 +427,10 @@ func attempt_release(release_position: Vector2) -> bool:
 		# Rack accept: deactivate path fires court_changed which prompts the reconciler to queue_free
 		# the live ball. The HeldBody-based rack token visual retires fully in step 7.
 		target.accept(item_key, clamped_position, Vector2.ZERO)
+		# Flag-on rack-origin grabs are not on-court; rack accept is a no-op for them, so restore
+		# the held Ball to STORED at its slot explicitly.
+		if has_live_ball and _held_origin == &"rack":
+			_restore_held_ball_to_stored(item_key)
 
 	var over_court: bool = target is CourtDropTarget
 	if was_temporary:
@@ -596,6 +614,7 @@ func _update_expansion_state(world_position: Vector2) -> void:
 
 
 ## Live-ball cancels deactivate the on-court placement so the rack regrows the at-rest token.
+## STORED-origin cancels transition the held Ball back to STORED at its rack slot.
 func _cancel_to_source() -> void:
 	var item_key: String = _held_key
 	var was_on_court: bool = _held_was_on_court
@@ -608,8 +627,20 @@ func _cancel_to_source() -> void:
 	if origin == &"live" and was_on_court:
 		if _item_manager != null and _item_manager.is_on_court(item_key):
 			_item_manager.deactivate(item_key)
+	elif origin == &"rack" and _held_ball != null:
+		_restore_held_ball_to_stored(item_key)
 
 	_finalise_gesture(item_key, release_position, false)
+
+
+## Returns a STORED-origin held Ball to its rack slot in STORED state. Rack accept is a no-op for
+## items not on court, so flag-on rack-origin grabs reach this from cancel and release-over-rack.
+func _restore_held_ball_to_stored(item_key: String) -> void:
+	if _held_ball == null:
+		return
+	_held_ball.enter_stored()
+	if rack != null:
+		_held_ball.global_position = rack.get_slot_position_for(item_key)
 
 
 func _finalise_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
