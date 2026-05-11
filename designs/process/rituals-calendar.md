@@ -10,10 +10,19 @@ Shuck cycles are two weeks long, Tuesday to Monday. Each cycle has two ritual Mo
 
 The build's Monday.
 
-- **Morning: Carnival.** Full playtest gate on the assembled build. The three Gru Sisters are dispatched and take the whole game from their own angle. Carnival passes when each sister has nodded.
+- **Morning: Carnival.** Playtest gate focused on the player-facing changes that landed since the previous cycle's deploy. The three Gru Sisters are dispatched and take those changes from their own angle. Carnival passes when each sister has nodded. Whole-game regression is the per-PR Battle's job; Carnival reads the cycle's deltas in the player's hand.
 - **Afternoon: Return.** Prod deploy of the build Carnival just cleared. If Carnival surfaces a blocking finding, the deploy waits and fix work becomes the priority for week two.
 
 If Carnival clears clean, the rest of week two is for the next cycle's setup work and any milestone-shaped release that earned its own moment.
+
+## Between the Mondays
+
+The Mondays carry the heavy rituals. The rest of the cycle runs the continuous ones, which are per-PR or per-feature rather than per-cycle.
+
+- **Battle.** The adversarial review round inside every Dandori Challenge. Runs whenever a PR opens. Reviewer minions post verdicts; blocks supersede approves; the Battle resolves when the diff is clean and Josh signs off. The build entering Carnival is presumed to have cleared its Battles.
+- **Ride.** Single-feature smoke test on a merged build after a Challenge lands. Per feature, not per cycle. The Ride confirms the feature reads right in-game before the next mission opens.
+
+A cycle whose Battles and Rides were clean is the cycle most likely to clear its mid-cycle Carnival.
 
 ### Cycle-close Monday (day 14)
 
