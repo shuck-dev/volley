@@ -3,10 +3,10 @@ extends RefCounted
 
 const SPEED_EMIT_THRESHOLD := 10.0
 
-var _last_speed: float = 0.0
-var _last_min: float = 0.0
-var _last_max: float = 0.0
-var _was_at_max: bool = false
+var _last_speed := 0.0
+var _last_min := 0.0
+var _last_max := 0.0
+var _was_at_max := false
 
 
 func should_emit_speed(speed: float, min_speed: float, max_speed: float) -> bool:

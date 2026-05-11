@@ -14,23 +14,36 @@ static func predict_intercept(
 	bound_y: float,
 	gravity: float,
 ) -> float:
-	var velocity_x_abs: float = abs(ball_velocity.x)
-	if velocity_x_abs < 1.0:
+	var horizontal_speed: float = abs(ball_velocity.x)
+	if horizontal_speed < 1.0:
 		return ball_position.y
 
 	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
-	var time_to_reach: float = abs(target_x - ball_position.x) / velocity_x_abs
+	var time_to_reach: float = abs(target_x - ball_position.x) / horizontal_speed
+	var intercept_y: float = _simulate_intercept_y(
+		ball_position.y, ball_velocity.y, bound_y, gravity, time_to_reach
+	)
+	return clampf(intercept_y, -arena_half, arena_half)
 
-	var sim_y: float = ball_position.y
-	var sim_vy: float = ball_velocity.y
+
+static func _simulate_intercept_y(
+	start_y: float,
+	start_vertical_velocity: float,
+	bound_y: float,
+	gravity: float,
+	time_to_reach: float,
+) -> float:
 	var step_count: int = 32
-	var dt: float = time_to_reach / float(step_count)
-	for _step in range(step_count):
-		if sim_y < bound_y:
-			sim_vy += gravity * dt
-		sim_y += sim_vy * dt
+	var step_seconds: float = time_to_reach / float(step_count)
+	var current_y: float = start_y
+	var vertical_velocity: float = start_vertical_velocity
 
-	return clampf(sim_y, -arena_half, arena_half)
+	for _step in range(step_count):
+		if current_y < bound_y:
+			vertical_velocity += gravity * step_seconds
+		current_y += vertical_velocity * step_seconds
+
+	return current_y
 
 
 ## Returns a random offset in pixels from a normal distribution,

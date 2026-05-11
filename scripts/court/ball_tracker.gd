@@ -1,7 +1,7 @@
 class_name BallTracker
 extends Node
 
-## Multi-ball ownership; spec lives in designs/01-prototype/tech/02-ball-lifecycle.md.
+## Multi-ball ownership.
 
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
@@ -44,9 +44,11 @@ func attach(new_ball: Ball) -> void:
 		return
 	if court_config != null:
 		new_ball.court_config = court_config
+
 	_balls.append(new_ball)
 	if _current_ball == null:
 		_set_current(new_ball)
+
 	if not new_ball.missed.is_connected(_on_ball_missed):
 		new_ball.missed.connect(_on_ball_missed)
 

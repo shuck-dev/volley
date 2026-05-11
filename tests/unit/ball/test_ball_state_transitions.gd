@@ -64,8 +64,8 @@ func test_enter_play_normal_sets_property_bundle() -> void:
 	assert_almost_eq(_ball.gravity_scale, 0.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, 0.0, 0.001)
 	assert_eq(_ball.physics_material_override, Ball.PLAY_MATERIAL)
-	assert_eq(_ball.collision_layer, Ball.PLAY_COLLISION_LAYER)
-	assert_eq(_ball.collision_mask, Ball.PLAY_COLLISION_MASK)
+	assert_eq(_ball.collision_layer, 1)
+	assert_eq(_ball.collision_mask, 1)
 
 
 func test_enter_play_arc_when_above_bound() -> void:
@@ -99,8 +99,8 @@ func test_enter_out_rest_sets_property_bundle() -> void:
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, REST_DAMPING, 0.001)
 	assert_eq(_ball.physics_material_override, Ball.REST_MATERIAL)
-	assert_eq(_ball.collision_layer, Ball.PLAY_COLLISION_LAYER)
-	assert_eq(_ball.collision_mask, Ball.PLAY_COLLISION_MASK)
+	assert_eq(_ball.collision_layer, 1)
+	assert_eq(_ball.collision_mask, 1)
 
 
 func test_enter_out_rest_emits_once() -> void:
@@ -157,8 +157,8 @@ func test_play_restores_collision_after_held() -> void:
 	_ball.enter_out_held()
 	_ball.global_position = Vector2.ZERO
 	_ball.enter_play()
-	assert_eq(_ball.collision_layer, Ball.PLAY_COLLISION_LAYER)
-	assert_eq(_ball.collision_mask, Ball.PLAY_COLLISION_MASK)
+	assert_eq(_ball.collision_layer, 1)
+	assert_eq(_ball.collision_mask, 1)
 	assert_false(_ball.freeze)
 
 

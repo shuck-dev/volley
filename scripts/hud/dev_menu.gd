@@ -63,6 +63,8 @@ func add_overlay_toggle(label: String, initial: bool, handler: Callable) -> Chec
 	checkbox.button_pressed = initial
 	checkbox.focus_mode = Control.FOCUS_NONE
 	checkbox.toggled.connect(handler)
+
 	if _content != null:
 		_content.add_child(checkbox)
+
 	return checkbox

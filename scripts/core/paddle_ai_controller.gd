@@ -60,10 +60,13 @@ func _on_tracker_ball_removed(_old_ball: Ball) -> void:
 func _physics_process(_delta: float) -> void:
 	if not _enabled or ball == null:
 		return
+
 	_maybe_resample_noise()
+
 	if not _ball_in_play():
 		_drift_to_center()
 		return
+
 	if _is_ball_behind():
 		_dodge()
 	elif _ball_approaching():
@@ -73,9 +76,8 @@ func _physics_process(_delta: float) -> void:
 
 
 func _ball_in_play() -> bool:
-	return (
-		ball.play_state == Ball.PlayState.PLAY_NORMAL or ball.play_state == Ball.PlayState.PLAY_ARC
-	)
+	var state: Ball.PlayState = ball.play_state
+	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
 ## Warning not assert: toggle key presses with no live ball must be silent no-ops.

@@ -1,7 +1,7 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner; spec lives in designs/01-prototype/tech/02-ball-lifecycle.md.
+## Live-ball lifecycle owner.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
@@ -45,8 +45,6 @@ func _ready() -> void:
 
 
 func _has_save_manager_autoload() -> bool:
-	# Tests instantiate BallReconciler without the full autoload graph; guard
-	# the wiring so unit tests do not crash on missing SaveManager.
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
@@ -58,10 +56,12 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 		var raw: Variant = _balls_by_key[key]
 		if not is_instance_valid(raw):
 			continue
+
 		var ball: Ball = raw
 		# STORED entries live at rack-slot positions reconstructed from rack_slot_index_by_key on load.
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
+
 		positions[key] = ball.global_position
 	return positions
 
@@ -72,10 +72,12 @@ func adopt_pre_existing_balls() -> void:
 	var parent: Node = get_parent()
 	if parent == null:
 		return
+
 	_adopting_pre_existing = true
 	for child in parent.get_children():
 		if not (child is Ball):
 			continue
+
 		var ball: Ball = child
 		if ball.is_temporary:
 			continue
@@ -86,6 +88,7 @@ func adopt_pre_existing_balls() -> void:
 		if ball.item_key == "":
 			push_warning("BallReconciler: skipping adoption of authored Ball with no item_key")
 			continue
+
 		var key: String = ball.item_key
 		_balls_by_key[key] = ball
 		_apply_item_art(ball, key)
@@ -153,9 +156,7 @@ func ensure_ball_for_key(
 	return ball
 
 
-## Venue-floor release path. Ensures a registry Ball at `position`, in OUT_REST,
-## carrying `velocity`. Does not touch ItemManager state; callers flip loose-in-venue / on-court
-## overlays as appropriate so the rack filters render the right slots.
+## Ensures a registry Ball at `position`, in OUT_REST, carrying `velocity`.
 func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var ball: Ball = get_ball_for_key(item_key)
 	if ball == null:
@@ -165,6 +166,7 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 		_balls_by_key[item_key] = ball
 		ball_spawned.emit(item_key, ball)
 		ball_added.emit(ball)
+
 	ball.global_position = position
 	ball.enter_out_rest()
 	ball.linear_velocity = velocity
@@ -178,6 +180,7 @@ func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	ball.enter_stored()
 	ball.global_position = spawn_position
 	_apply_item_art(ball, item_key)
+
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
 	ball_added.emit(ball)

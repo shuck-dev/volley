@@ -114,10 +114,12 @@ func get_slot_position_for(item_key: String) -> Vector2:
 		return Vector2.ZERO
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
+
 	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
 	var index: int = kit_keys.find(item_key)
 	if index < 0 or _slot_markers.is_empty():
 		return Vector2.ZERO
+
 	var marker_index: int = min(index, _slot_markers.size() - 1)
 	return _slot_markers[marker_index].global_position
 

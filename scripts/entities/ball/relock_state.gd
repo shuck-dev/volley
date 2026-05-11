@@ -30,10 +30,12 @@ func enter_normal(velocity_length: float, ramp_seconds: float) -> bool:
 	_remaining = 0.0
 	if not initialised:
 		return false
+
 	if ramp_seconds > 0.0:
 		_remaining = ramp_seconds
 		_from_speed = velocity_length
 		return false
+
 	return true
 
 

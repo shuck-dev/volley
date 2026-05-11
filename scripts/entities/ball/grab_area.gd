@@ -25,9 +25,11 @@ func inflate_to(authored_radius: float) -> void:
 	var press_shape: CollisionShape2D = _find_collision_shape()
 	if press_shape == null:
 		return
+
 	var circle: CircleShape2D = press_shape.shape as CircleShape2D
 	if circle == null or authored_radius <= 0.0:
 		return
+
 	var local_circle: CircleShape2D = circle.duplicate() as CircleShape2D
 	local_circle.radius = authored_radius * hitbox_inflation
 	press_shape.shape = local_circle
@@ -36,12 +38,15 @@ func inflate_to(authored_radius: float) -> void:
 func _draw() -> void:
 	if not GrabArea.debug_visible:
 		return
+
 	var col: CollisionShape2D = _find_collision_shape()
 	if col == null:
 		return
+
 	var circle: CircleShape2D = col.shape as CircleShape2D
 	if circle == null:
 		return
+
 	draw_arc(Vector2.ZERO, circle.radius, 0.0, TAU, 32, Color.YELLOW, 1.5, true)
 
 
@@ -55,9 +60,11 @@ func _find_collision_shape() -> CollisionShape2D:
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if not (event is InputEventMouseButton):
 		return
+
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 	if not mouse_button.pressed:
 		return
+
 	grabbed.emit(self)

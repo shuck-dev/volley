@@ -9,8 +9,10 @@ func _ready() -> void:
 	clearance_button.visible = not ProgressionManager.is_shop_unlocked()
 	clearance_button.pressed.connect(_on_clearance_button_pressed)
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
+
 	if dev_menu != null and dev_menu.has_method("add_overlay_toggle"):
 		dev_menu.add_overlay_toggle("Debug overlays", false, _on_debug_overlay_toggled)
+
 	_apply_debug_overlay(false)
 
 
