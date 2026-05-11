@@ -13,6 +13,8 @@ const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
+## Opt-in surface for step 7; while false, adopt_stored is a no-op so callers can be wired ahead of the flip.
+@export var stored_balls_in_registry: bool = false
 
 var _item_manager: Node
 var _balls_by_key: Dictionary = {}
@@ -141,7 +143,7 @@ func ensure_ball_for_key(
 	return ball
 
 
-## Step 5: venue-floor release path. Ensures a registry Ball at `position`, in OUT_REST,
+## Venue-floor release path. Ensures a registry Ball at `position`, in OUT_REST,
 ## carrying `velocity`. Does not touch ItemManager state; callers flip loose-in-venue / on-court
 ## overlays as appropriate so the rack filters render the right slots.
 func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -> Ball:
@@ -156,6 +158,21 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	ball.global_position = position
 	ball.enter_out_rest()
 	ball.linear_velocity = velocity
+	return ball
+
+
+## Spawns a STORED ball at `spawn_position` and registers it under `item_key`. Step 7 flips the opt-in flag and wires production callers.
+func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
+	if not stored_balls_in_registry:
+		return null
+	var ball: Ball = ball_scene.instantiate()
+	add_child(ball)
+	ball.enter_stored()
+	ball.global_position = spawn_position
+	_apply_item_art(ball, item_key)
+	_balls_by_key[item_key] = ball
+	ball_spawned.emit(item_key, ball)
+	ball_added.emit(ball)
 	return ball
 
 
