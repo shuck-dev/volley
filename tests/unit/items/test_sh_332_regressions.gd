@@ -81,7 +81,7 @@ func before_each() -> void:
 	_gear_drop_target = _make_drop_target(Vector2(1000, 0), Vector2(300, 200))
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 	_drag = BallDragControllerScript.new()
@@ -95,8 +95,16 @@ func before_each() -> void:
 
 func _loose_bodies_under_host() -> Array:
 	var result: Array = []
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is HeldBody:
+			result.append(child)
+	return result
+
+
+func _rest_balls_under_host() -> Array:
+	var result: Array = []
+	for child in _reconciler.get_children():
+		if child is Ball and (child as Ball).play_state == Ball.PlayState.OUT_REST:
 			result.append(child)
 	return result
 
@@ -144,9 +152,12 @@ func test_venue_release_does_not_reveal_rack_slot() -> void:
 		-1,
 		"rack does not render a slot for a loose-in-venue key",
 	)
-	# A loose body must exist under the reconciler ball-host as the canonical instance.
+	# Step 5: the canonical instance is a Ball in OUT_REST under the reconciler.
+	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body lingers post-release")
 	assert_eq(
-		_loose_bodies_under_host().size(), 1, "exactly one loose body persists at the release point"
+		_rest_balls_under_host().size(),
+		1,
+		"exactly one OUT_REST Ball persists at the release point"
 	)
 
 
@@ -174,7 +185,7 @@ func test_purchase_spawn_at_venue_does_not_render_rack_slot() -> void:
 	)
 
 
-# Re-grabbing a loose body clears the LOOSE_IN_VENUE overlay so the slot returns on release.
+# Step 5: re-grabbing the OUT_REST Ball clears the LOOSE_IN_VENUE overlay so a non-venue release restores the slot.
 func test_regrab_clears_loose_in_venue_overlay() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
@@ -182,32 +193,31 @@ func test_regrab_clears_loose_in_venue_overlay() -> void:
 	_drag.attempt_release(Vector2(800, 600))
 	assert_true(_manager.is_loose_in_venue("ball_alpha"))
 
-	var bodies: Array = _loose_bodies_under_host()
-	assert_eq(bodies.size(), 1)
-	var loose_body: HeldBody = bodies[0]
-	# Synthesise the press signal the live press area would emit.
-	loose_body.pressed.emit(loose_body)
+	var resting_balls: Array = _rest_balls_under_host()
+	assert_eq(resting_balls.size(), 1)
+	var ball: Ball = resting_balls[0]
+	# Synthesise the grab signal the Ball's grab area would emit on press.
+	ball.grabbed.emit(ball)
 	assert_false(
 		_manager.is_loose_in_venue("ball_alpha"),
-		"re-grabbing a loose body clears the placement overlay",
+		"re-grabbing an OUT_REST Ball clears the placement overlay",
 	)
 
 
-# Free of the loose body (queue_free outside re-grab) clears the overlay too.
-func test_loose_body_free_clears_overlay() -> void:
+# Step 5 obsoletes the "free the loose HeldBody" test — the loose Ball lives in the registry
+# under reconciler control, not as a free-standing HeldBody, so there is no tree_exited handler
+# to assert here. Re-grab and rack-release exercise the lifecycle now.
+func test_clear_loose_in_venue_restores_rack_filter() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	_drag._gesture_below_threshold = false
 	_drag.attempt_release(Vector2(800, 600))
 	assert_true(_manager.is_loose_in_venue("ball_alpha"))
 
-	var bodies: Array = _loose_bodies_under_host()
-	assert_eq(bodies.size(), 1)
-	bodies[0].queue_free()
-	await get_tree().process_frame
+	_manager.clear_loose_in_venue("ball_alpha")
 	assert_false(
 		_manager.is_loose_in_venue("ball_alpha"),
-		"freeing the loose body clears the placement overlay",
+		"clearing the placement overlay returns the rack slot to the kit view",
 	)
 
 

@@ -2,7 +2,7 @@
 
 The court should feel held by friendship, not by walls. This doc opens the closed pong-shape: friendship holds the ball within play, missed balls roll out into the venue.
 
-Implementation spec lives in [`../tech/08-court-control.md`](../tech/08-court-control.md). Narrative canon for friendship lives in [`../../narrative/friendship.md`](../../narrative/friendship.md).
+Implementation spec lives in [`../tech/01-court-control.md`](../tech/01-court-control.md). Narrative canon for friendship lives in [`../../narrative/friendship.md`](../../narrative/friendship.md).
 
 **Dependencies:** Venue (`../08-venue.md`), Balls (`../08-balls.md`), Items (`../08-items.md`), Roles (`../08-roles.md`).
 

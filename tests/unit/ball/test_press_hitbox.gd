@@ -36,24 +36,24 @@ func _spawn_authored_ball() -> Ball:
 	return ball
 
 
-func test_press_area_exists_after_setup() -> void:
+func test_grab_area_exists_after_setup() -> void:
 	_ball = _spawn_authored_ball()
-	var press_area: Area2D = _ball.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "ball spawns a child Area2D named 'PressArea'")
-	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
+	var grab_area: Area2D = _ball.get_node_or_null("GrabArea") as Area2D
+	assert_not_null(grab_area, "ball spawns a child Area2D named 'GrabArea'")
+	assert_true(grab_area.input_pickable, "GrabArea must accept pointer events")
 
 
 func test_rigidbody_input_pickable_disabled_so_press_routes_through_area() -> void:
 	# The rigid body must not double-fire presses; routing lives on the Area2D alone.
 	_ball = _spawn_authored_ball()
-	assert_false(_ball.input_pickable, "rigid body input_pickable disabled in favour of PressArea")
+	assert_false(_ball.input_pickable, "rigid body input_pickable disabled in favour of GrabArea")
 
 
 func test_press_radius_is_inflated_versus_physics_radius() -> void:
 	_ball = _spawn_authored_ball()
-	var press_area: Area2D = _ball.get_node("PressArea") as Area2D
+	var grab_area: Area2D = _ball.get_node("GrabArea") as Area2D
 	var press_shape: CollisionShape2D = null
-	for child in press_area.get_children():
+	for child in grab_area.get_children():
 		if child is CollisionShape2D:
 			press_shape = child
 			break
@@ -63,33 +63,31 @@ func test_press_radius_is_inflated_versus_physics_radius() -> void:
 	var authored_radius: float = _authored_radius_from_ball(_ball)
 	assert_almost_eq(
 		press_circle.radius,
-		authored_radius * _ball.press_hitbox_inflation,
+		authored_radius * (grab_area as GrabArea).hitbox_inflation,
 		0.001,
-		"press radius equals authored radius * press_hitbox_inflation",
+		"press radius equals authored radius * hitbox_inflation",
 	)
 
 
 func _authored_radius_from_ball(ball: Ball) -> float:
-	for child in ball.get_children():
-		if child is CollisionShape2D:
-			var shape_node: CollisionShape2D = child
-			var circle: CircleShape2D = shape_node.shape as CircleShape2D
-			if circle == null:
-				continue
-			var axis_scale: float = maxf(absf(shape_node.scale.x), absf(shape_node.scale.y))
-			return circle.radius * maxf(axis_scale, 0.001)
-	return 0.0
+	var sprite: Sprite2D = ball.get_node_or_null("Sprite") as Sprite2D
+	if sprite == null or sprite.texture == null:
+		return 0.0
+	var texture_size: Vector2 = sprite.texture.get_size()
+	var max_axis: float = maxf(texture_size.x, texture_size.y)
+	var max_scale: float = maxf(absf(sprite.scale.x), absf(sprite.scale.y))
+	return (max_axis * 0.5) * maxf(max_scale, 0.001)
 
 
-func test_press_emits_pressed_signal() -> void:
-	# A left-mouse-down event delivered to the press area surfaces as `Ball.pressed`.
+func test_press_emits_grabbed_signal() -> void:
+	# A left-mouse-down event delivered to the grab area surfaces as `Ball.grabbed`.
 	_ball = _spawn_authored_ball()
 	watch_signals(_ball)
-	var press_area: Area2D = _ball.get_node("PressArea") as Area2D
+	var grab_area: GrabArea = _ball.get_node("GrabArea") as GrabArea
 	var event: InputEventMouseButton = InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 
-	_ball._on_input_event(null, event, 0)
+	grab_area._on_input_event(null, event, 0)
 
-	assert_signal_emitted(_ball, "pressed")
+	assert_signal_emitted(_ball, "grabbed")

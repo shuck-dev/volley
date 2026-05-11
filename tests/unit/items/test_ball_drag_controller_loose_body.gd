@@ -33,12 +33,12 @@ func test_register_loose_body_marks_item_loose_in_venue() -> void:
 	)
 
 
-func test_register_loose_body_wires_press_for_regrab() -> void:
+func test_register_loose_body_wires_grab_for_regrab() -> void:
 	var body: HeldBody = _make_body()
 	_controller.register_loose_body(body)
 	assert_true(
-		body.pressed.get_connections().size() > 0,
-		"register_loose_body subscribes to the body's press signal for re-grab",
+		body.grabbed.get_connections().size() > 0,
+		"register_loose_body subscribes to the body's grab signal for re-grab",
 	)
 
 

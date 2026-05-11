@@ -203,35 +203,68 @@ func _drag_controller() -> Node:
 	return tree.get_first_node_in_group(&"drag_controller")
 
 
-## Drops a HeldBody that falls under gravity; the body's settled position decides purchase vs refund.
+## Drops a falling body for the inside-shop or fallthrough case; ball-role lands as a registry Ball
+## in OUT_REST, equipment keeps the HeldBody loose path.
 func _drop_falling_body(release_position: Vector2) -> void:
 	if item_definition == null:
 		return
+	var controller: Node = _drag_controller()
+	var clamped_position: Vector2 = _clamp_release_into_venue(release_position, controller)
+	if _is_ball_role():
+		_drop_ball_role(clamped_position, controller)
+		return
+	_drop_equipment_body(clamped_position, controller)
+
+
+func _is_ball_role() -> bool:
+	return item_definition != null and item_definition.role == &"ball"
+
+
+func _clamp_release_into_venue(release_position: Vector2, controller: Node) -> Vector2:
+	if controller == null or not ("venue_bounds" in controller):
+		return release_position
+	var bounds: Rect2 = controller.venue_bounds
+	if bounds.size == Vector2.ZERO:
+		return release_position
+	return DropTarget.clamp_to_rect(release_position, bounds)
+
+
+func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
 	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
 	if body == null:
 		return
-	var controller: Node = _drag_controller()
-	# Host under the controller's venue-scoped node so the body survives shop-scene teardown mid-flight.
 	var host: Node = _scene_host()
-	var clamped_position: Vector2 = release_position
-	if controller != null:
-		if controller.has_method("get_loose_body_host"):
-			var resolved: Node = controller.get_loose_body_host()
-			if resolved != null:
-				host = resolved
-		# Clamp into the venue so a body cannot fall into off-screen void.
-		if "venue_bounds" in controller:
-			var bounds: Rect2 = controller.venue_bounds
-			if bounds.size != Vector2.ZERO:
-				clamped_position = DropTarget.clamp_to_rect(release_position, bounds)
+	if controller != null and controller.has_method("get_loose_body_host"):
+		var resolved: Node = controller.get_loose_body_host()
+		if resolved != null:
+			host = resolved
 	body.global_position = clamped_position
 	host.add_child(body)
 	body.go_loose(_release_velocity())
-	# Subscribe controller for re-grab so the dropped body acts like any other loose body.
 	if controller != null and controller.has_method("track_loose_body"):
 		controller.track_loose_body(body)
-	# Defer the settle watch so the body has a frame to acquire its first velocity sample.
 	_watch_for_settle(body)
+
+
+## Spawns the Ball directly in OUT_REST via the reconciler; if it settles inside-shop the Ball is
+## torn down for refund, otherwise the purchase commits and the Ball stays in the registry.
+func _drop_ball_role(clamped_position: Vector2, controller: Node) -> void:
+	var reconciler: Node = _resolve_reconciler(controller)
+	if reconciler == null:
+		# No reconciler reachable (test isolation, broken venue): bail without leaking a HeldBody.
+		return
+	var ball: Ball = reconciler.release_into_rest(
+		item_definition.key, clamped_position, _release_velocity()
+	)
+	if ball == null:
+		return
+	_watch_for_settle(ball)
+
+
+func _resolve_reconciler(controller: Node) -> Node:
+	if controller != null and "reconciler" in controller and controller.reconciler != null:
+		return controller.reconciler
+	return null
 
 
 func _scene_host() -> Node:
@@ -241,7 +274,7 @@ func _scene_host() -> Node:
 	return get_tree().root
 
 
-func _watch_for_settle(body: HeldBody) -> void:
+func _watch_for_settle(body: RigidBody2D) -> void:
 	# Poll until the body's velocity falls below a settle threshold or it is freed.
 	# Use load() so the class-name cache (which can be async-stale) doesn't mismatch path-based lookups.
 	var drop: Node = load("res://scripts/shop/shop_item_drop.gd").new()
@@ -251,12 +284,16 @@ func _watch_for_settle(body: HeldBody) -> void:
 
 
 ## Called by ShopItemDrop with the body's resting position once velocity has settled.
-func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
+func notify_body_settled(body: RigidBody2D, settled_position: Vector2) -> void:
 	if item_definition == null:
 		if is_instance_valid(body):
 			body.queue_free()
 		return
 	if not is_instance_valid(body):
+		return
+
+	if body is Ball:
+		_notify_ball_settled(body, settled_position)
 		return
 
 	if _is_position_inside_shop(settled_position):
@@ -278,6 +315,36 @@ func notify_body_settled(body: HeldBody, settled_position: Vector2) -> void:
 	if controller != null and controller.has_method("register_loose_body"):
 		controller.register_loose_body(body)
 	drop_completed.emit(item_definition.key, settled_position, true)
+
+
+## Ball-role settle: registry-resident Ball is either kept (purchase commits) or released (refund).
+func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
+	var controller: Node = _drag_controller()
+	var reconciler: Node = _resolve_reconciler(controller)
+
+	if _is_position_inside_shop(settled_position):
+		_release_ball_from_registry(reconciler, ball)
+		visible = true
+		return
+
+	if not is_owned():
+		if not _complete_purchase():
+			_release_ball_from_registry(reconciler, ball)
+			visible = true
+			return
+
+	visible = false
+	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
+	if _item_manager != null and _item_manager.has_method("mark_loose_in_venue"):
+		_item_manager.mark_loose_in_venue(item_definition.key)
+	drop_completed.emit(item_definition.key, settled_position, true)
+
+
+func _release_ball_from_registry(reconciler: Node, ball: Ball) -> void:
+	if reconciler != null and reconciler.has_method("release_ball"):
+		reconciler.release_ball(item_definition.key)
+	if is_instance_valid(ball):
+		ball.queue_free()
 
 
 func _release_velocity() -> Vector2:

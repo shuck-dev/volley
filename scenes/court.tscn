@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ctjs62ui6cpso"]
 
-[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/bouncy.tres" id="1_0wfyh"]
+[ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
@@ -22,10 +22,8 @@
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/ball_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
-[ext_resource type="PackedScene" uid="uid://dq3kw7n8sh297" path="res://scenes/hud/cursor_overlay.tscn" id="24_cursor"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_horz"]
-size = Vector2(21.6, 883.2)
+[ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/cursor_overlay.tscn" id="24_cursor"]
+[ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(21.6, 703.2)
@@ -34,6 +32,7 @@ size = Vector2(21.6, 703.2)
 script = ExtResource("1_tbgi4")
 ball_system = NodePath("BallReconciler")
 ball_tracker = NodePath("BallTracker")
+court_config = ExtResource("25_courtcfg")
 player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
@@ -58,39 +57,8 @@ item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
-[node name="Top Wall" type="StaticBody2D" parent="Bounds" unique_id=1297110620]
-position = Vector2(441.6, -351.6)
-rotation = 1.5707964
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
-
-[node name="ColorRect" type="ColorRect" parent="Bounds/Top Wall" unique_id=1483069279]
-offset_right = 21.6
-offset_bottom = 883.2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top Wall" unique_id=2125011239]
-position = Vector2(10.8, 441.6)
-shape = SubResource("RectangleShape2D_horz")
-
-[node name="Bottom Wall" type="StaticBody2D" parent="Bounds" unique_id=743283118]
-position = Vector2(-441.6, 351.6)
-rotation = -1.5707964
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
-
-[node name="ColorRect" type="ColorRect" parent="Bounds/Bottom Wall" unique_id=1810122737]
-offset_right = 21.6
-offset_bottom = 883.2
-mouse_filter = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom Wall" unique_id=1261402091]
-position = Vector2(10.8, 441.6)
-shape = SubResource("RectangleShape2D_horz")
-
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(420, -351.6)
+position = Vector2(400, -351.6)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
@@ -103,22 +71,13 @@ mouse_filter = 2
 position = Vector2(10.8, 351.6)
 shape = SubResource("RectangleShape2D_vert")
 
-[node name="Back Wall" type="StaticBody2D" parent="Bounds" unique_id=288656821]
-position = Vector2(-441.6, -351.6)
-physics_material_override = ExtResource("1_0wfyh")
-metadata/_edit_group_ = true
+[node name="MissZones" type="Node2D" parent="Bounds" unique_id=2106668172]
 
-[node name="ColorRect" type="ColorRect" parent="Bounds/Back Wall" unique_id=252694040]
-offset_right = 21.6
-offset_bottom = 703.2
-mouse_filter = 2
+[node name="LeftMissZone" parent="Bounds/MissZones" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
+position = Vector2(-430.8, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Back Wall" unique_id=1455034467]
-position = Vector2(10.8, 351.6)
-shape = SubResource("RectangleShape2D_vert")
-
-[node name="MissZone" parent="Bounds/Back Wall" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
-position = Vector2(10.8, 351.6)
+[node name="RightMissZone" parent="Bounds/MissZones" unique_id=500636962 instance=ExtResource("10_miss_zone")]
+position = Vector2(430.8, 0)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
@@ -134,11 +93,13 @@ position = Vector2(300, 0)
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-300, 0)
 
-[node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
+[node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
 position = Vector2(-600, 349.8)
+reconciler = NodePath("../BallReconciler")
 
-[node name="GearRack" parent="." unique_id=445509089 instance=ExtResource("9_c7axm")]
+[node name="GearRack" parent="." unique_id=445509089 node_paths=PackedStringArray("reconciler") instance=ExtResource("9_c7axm")]
 position = Vector2(600, 349.8)
+reconciler = NodePath("../BallReconciler")
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
 position = Vector2(870, 349.8)
@@ -211,8 +172,9 @@ offset_top = -240.0
 offset_right = -529.0
 offset_bottom = -172.0
 
-[node name="BallReconciler" type="Node" parent="." unique_id=1902001001]
+[node name="BallReconciler" type="Node" parent="." unique_id=1902001001 node_paths=PackedStringArray("ball_rack")]
 script = ExtResource("21_reconciler")
+ball_rack = NodePath("../BallRack")
 
 [node name="BallTracker" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("ball_system")]
 script = ExtResource("23_tracker")
@@ -229,4 +191,4 @@ venue_bounds = Rect2(-1200, -720, 2400, 1440)
 reconciler = NodePath("../BallReconciler")
 cursor_overlay = NodePath("CursorOverlay")
 
-[node name="CursorOverlay" parent="BallDragController" instance=ExtResource("24_cursor")]
+[node name="CursorOverlay" parent="BallDragController" unique_id=1431747376 instance=ExtResource("24_cursor")]

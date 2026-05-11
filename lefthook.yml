@@ -1,3 +1,8 @@
+# Auto-sync re-runs installHooks() on every git command, and 2.1.x refuses to
+# write while core.hooksPath is set locally — printing "Skipping hook sync" on
+# every invocation. Disable it; run `lefthook install` manually after edits here.
+no_auto_install: true
+
 output:
   - summary
   - success

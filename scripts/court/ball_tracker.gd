@@ -1,7 +1,7 @@
 class_name BallTracker
 extends Node
 
-## Multi-ball ownership; spec lives in designs/01-prototype/design/21-ball-dynamics.md.
+## Multi-ball ownership.
 
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
@@ -11,6 +11,7 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 
 @export var ball_system: BallReconciler
+@export var court_config: CourtConfig
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
@@ -24,6 +25,7 @@ func configure(player_paddle: Node2D) -> void:
 
 
 func _ready() -> void:
+	add_to_group(&"ball_trackers")
 	if ball_system != null:
 		ball_system.ball_added.connect(attach)
 		ball_system.ball_removed.connect(detach)
@@ -40,9 +42,13 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
+	if court_config != null:
+		new_ball.court_config = court_config
+
 	_balls.append(new_ball)
 	if _current_ball == null:
 		_set_current(new_ball)
+
 	if not new_ball.missed.is_connected(_on_ball_missed):
 		new_ball.missed.connect(_on_ball_missed)
 

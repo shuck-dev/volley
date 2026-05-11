@@ -7,6 +7,8 @@ const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
 @export var role: StringName = &"ball"
 @export var slot_container: Node2D
+## Optional. When set, the rack can source slot art from STORED Balls in the registry (step 7.1+).
+@export var reconciler: BallReconciler
 
 var _item_manager: Node
 var _slots: Array[Node2D] = []
@@ -20,12 +22,20 @@ func _ready() -> void:
 	_cache_slot_markers()
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_item_manager.item_placement_changed.connect(_on_item_placement_changed)
+	if reconciler != null:
+		reconciler.ball_spawned.connect(_on_ball_spawned)
+		reconciler.ball_removed.connect(_on_ball_removed)
 	refresh()
 
 
 ## Injects a non-autoload ItemManager for tests. Must be called before adding to tree.
 func configure(item_manager: Node) -> void:
 	_item_manager = item_manager
+
+
+## Injects a reconciler so the rack can source STORED-ball art from the registry. Test seam.
+func configure_reconciler(p_reconciler: BallReconciler) -> void:
+	reconciler = p_reconciler
 
 
 func refresh() -> void:
@@ -77,11 +87,41 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
 	art_holder.scale = definition.token_scale
-	var art_instance: Node = definition.art.instantiate()
-	art_holder.add_child(art_instance)
+	_populate_art_holder(art_holder, definition)
 	slot.add_child(art_holder)
 	_attach_slot_input(slot, definition.key)
 	return slot
+
+
+## Slot stays empty when the registry owns a Ball for this key; the Ball renders the art itself.
+func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> void:
+	if _registered_ball_for(definition.key) != null:
+		art_holder.set_meta(&"source", &"ball")
+		return
+	art_holder.set_meta(&"source", &"definition")
+	art_holder.add_child(definition.art.instantiate())
+
+
+func _registered_ball_for(item_key: String) -> Ball:
+	if reconciler == null:
+		return null
+	return reconciler.get_ball_for_key(item_key)
+
+
+## World position of the slot for `item_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.
+func get_slot_position_for(item_key: String) -> Vector2:
+	if slot_container == null:
+		return Vector2.ZERO
+	if _slot_markers.is_empty():
+		_cache_slot_markers()
+
+	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
+	var index: int = kit_keys.find(item_key)
+	if index < 0 or _slot_markers.is_empty():
+		return Vector2.ZERO
+
+	var marker_index: int = min(index, _slot_markers.size() - 1)
+	return _slot_markers[marker_index].global_position
 
 
 func _attach_slot_input(slot: Node2D, item_key: String) -> void:
@@ -150,6 +190,7 @@ func _apply_slot_visibility() -> void:
 func _clear_slots() -> void:
 	for slot in _slots:
 		if slot != null and is_instance_valid(slot):
+			slot_container.remove_child(slot)
 			slot.queue_free()
 	_slots.clear()
 
@@ -166,4 +207,12 @@ func _on_item_level_changed(_item_key: String) -> void:
 
 
 func _on_item_placement_changed(_item_key: String, _placement: int) -> void:
+	refresh()
+
+
+func _on_ball_spawned(_item_key: String, _ball: Ball) -> void:
+	refresh()
+
+
+func _on_ball_removed(_ball: Ball) -> void:
 	refresh()

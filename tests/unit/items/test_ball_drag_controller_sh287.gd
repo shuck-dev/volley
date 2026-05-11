@@ -57,7 +57,7 @@ func before_each() -> void:
 	_drop_target = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 	_drag = BallDragControllerScript.new()
@@ -69,7 +69,7 @@ func before_each() -> void:
 
 func _permanent_balls() -> Array:
 	var result: Array = []
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is Ball:
 			result.append(child)
 	return result

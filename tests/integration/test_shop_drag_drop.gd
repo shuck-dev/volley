@@ -242,7 +242,7 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(_item_manager, host)
+	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
 	var drag: BallDragController = BallDragControllerScript.new()
@@ -269,8 +269,9 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	assert_eq(ball.global_position, court_release, "live ball lands at the released cursor point")
 
 
-func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
-	# Outside the venue rejects every target; rack regrows via the court_changed path.
+func test_shop_release_outside_court_spawns_ball_in_registry_via_falling_body() -> void:
+	# Outside the venue rejects every drop target; the ball-role fallthrough drops a Ball directly
+	# into the registry (OUT_REST) via release_into_rest instead of the retired HeldBody loose path.
 	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
 	_shop.queue_free()
 	await get_tree().process_frame
@@ -281,7 +282,7 @@ func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(_item_manager, host)
+	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
 	var drag: BallDragController = BallDragControllerScript.new()
@@ -296,10 +297,10 @@ func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
 	item.start_drag()
 	item.attempt_release(Vector2(99999, 99999))
 
-	assert_eq(_item_manager.get_level("training_ball"), 1, "purchase still committed")
-	assert_null(
+	# Purchase commits inside notify_body_settled, not at release; only the registry Ball must exist now.
+	assert_not_null(
 		reconciler.get_ball_for_key("training_ball"),
-		"far-outside release falls through to the rack-default path, not court spawn",
+		"ball-role fallthrough lands a registry Ball, not a HeldBody",
 	)
 
 

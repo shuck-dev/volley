@@ -28,7 +28,7 @@ func before_each() -> void:
 	_manager.items.assign([Cadence])
 	add_child_autofree(_manager)
 
-	_ball = load("res://scripts/entities/ball.gd").new()
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
@@ -96,7 +96,7 @@ func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(multi_manager, host)
+	reconciler.configure(multi_manager)
 	add_child_autofree(reconciler)
 
 	var bar: Control = SpeedBarScript.new()

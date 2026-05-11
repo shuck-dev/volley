@@ -2,6 +2,7 @@
 extends GutTest
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 
 
 func _stub_art() -> PackedScene:
@@ -233,3 +234,104 @@ func test_reveal_slot_for_restores_visibility() -> void:
 	for child in rack.slot_container.get_children():
 		if child is Node2D and String(child.name).begins_with("Slot_"):
 			assert_true(child.visible, "drop_completed reveals the slot again")
+
+
+func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
+	var ball := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([ball])
+	manager._progression.friendship_point_balance = 1000
+	var rack := _make_rack(&"ball", manager)
+	manager.take(ball.key)
+
+	var position: Vector2 = rack.get_slot_position_for(ball.key)
+	# First slot marker sits at local (0, 0); rack is at the origin so global == local.
+	assert_eq(position, Vector2.ZERO, "first kit item resolves to the first slot marker")
+
+
+func test_get_slot_position_for_returns_zero_for_unknown_key() -> void:
+	var manager: Node = _make_manager_with([])
+	var rack := _make_rack(&"ball", manager)
+
+	assert_eq(
+		rack.get_slot_position_for("nonexistent"),
+		Vector2.ZERO,
+		"unknown keys return the sentinel Vector2.ZERO",
+	)
+
+
+func _make_reconciler(manager: Node) -> BallReconciler:
+	var reconciler: BallReconciler = BallReconcilerScript.new()
+	reconciler.configure(manager)
+	add_child_autofree(reconciler)
+	return reconciler
+
+
+func _make_rack_with_reconciler(
+	role: StringName, manager: Node, reconciler: BallReconciler
+) -> Node2D:
+	var rack: Node2D = RackDisplayScript.new()
+	rack.role = role
+	var slot_container := Node2D.new()
+	slot_container.name = "SlotContainer"
+	rack.add_child(slot_container)
+	for index in 4:
+		var marker := Node2D.new()
+		marker.name = "SlotMarker%d" % index
+		marker.position = Vector2(index * 32, 0)
+		slot_container.add_child(marker)
+	rack.slot_container = slot_container
+	rack.configure(manager)
+	rack.configure_reconciler(reconciler)
+	add_child_autofree(rack)
+	return rack
+
+
+func test_rack_with_stored_ball_sources_art_from_ball() -> void:
+	var ball_item := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([ball_item])
+	manager._progression.friendship_point_balance = 1000
+	var reconciler: BallReconciler = _make_reconciler(manager)
+	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
+	manager.take(ball_item.key)
+	var stored: Ball = reconciler.adopt_stored(ball_item.key, Vector2.ZERO)
+	assert_not_null(stored, "adopt_stored returns a Ball")
+
+	var slot: Node2D = _find_slot(rack, ball_item.key)
+	assert_not_null(slot, "slot was rendered")
+	var art_holder: Node2D = slot.get_node("ArtHolder")
+	assert_eq(
+		art_holder.get_meta(&"source", ""),
+		&"ball",
+		"the rack reads art from the STORED Ball when one is registered",
+	)
+	assert_eq(
+		art_holder.get_child_count(), 0, "rack leaves slot art empty when the Ball owns the visual"
+	)
+
+
+func test_rack_keeps_slot_empty_when_ball_is_held() -> void:
+	var ball_item := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([ball_item])
+	manager._progression.friendship_point_balance = 1000
+	var reconciler: BallReconciler = _make_reconciler(manager)
+	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
+	manager.take(ball_item.key)
+	var ball: Ball = reconciler.adopt_stored(ball_item.key, Vector2.ZERO)
+	ball.enter_out_held()
+	rack.refresh()
+
+	var slot: Node2D = _find_slot(rack, ball_item.key)
+	assert_not_null(slot, "slot stays in the kit while the ball is held")
+	var art_holder: Node2D = slot.get_node("ArtHolder")
+	assert_eq(
+		art_holder.get_child_count(),
+		0,
+		"rack does not bake duplicate art when the registered ball is OUT_HELD",
+	)
+
+
+func _find_slot(rack: Node2D, item_key: String) -> Node2D:
+	for child in rack.slot_container.get_children():
+		if child is Node2D and child.get_meta(&"item_key", "") == item_key:
+			return child
+	return null

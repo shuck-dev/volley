@@ -7,10 +7,9 @@ signal ball_at_max_speed_changed(is_at_max: bool)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
 
-const MissZoneScene: PackedScene = preload("res://scenes/miss_zone.tscn")
-
 @export var ball_system: BallReconciler
 @export var ball_tracker: BallTracker
+@export var court_config: CourtConfig
 @export var player_paddle_scene: PackedScene
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
@@ -25,7 +24,6 @@ var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
 var _active_partner_definition: Resource
-var _partner_miss_zone: MissZone
 var _progression: ProgressionData
 var _progression_config: ProgressionConfig
 var _item_manager: Node
@@ -57,6 +55,10 @@ func _ready() -> void:
 		ball_tracker = BallTracker.new()
 		ball_tracker.ball_system = ball_system
 		add_child(ball_tracker)
+
+	if court_config == null:
+		court_config = load("res://scripts/core/court_config.gd").new()
+	ball_tracker.court_config = court_config
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
@@ -164,9 +166,8 @@ func _activate_partner() -> void:
 	_item_manager.register_partner(partner_definition)
 
 	if right_wall != null:
-		_partner_miss_zone = MissZoneScene.instantiate()
-		right_wall.add_child(_partner_miss_zone)
-		ball_tracker.register_miss_zone(_partner_miss_zone)
+		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
+		right_wall.visible = false
 
 	partner_changed.emit()
 
@@ -185,10 +186,9 @@ func _deactivate_partner() -> void:
 	partner_paddle = null
 	_active_partner_definition = null
 
-	if _partner_miss_zone != null:
-		ball_tracker.unregister_miss_zone(_partner_miss_zone)
-		_partner_miss_zone.queue_free()
-		_partner_miss_zone = null
+	if right_wall != null:
+		right_wall.process_mode = Node.PROCESS_MODE_INHERIT
+		right_wall.visible = true
 
 	partner_changed.emit()
 

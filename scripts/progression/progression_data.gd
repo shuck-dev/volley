@@ -5,6 +5,13 @@ var friendship_point_balance := 0
 var total_friendship_points_earned := 0
 var item_levels: Dictionary[String, int] = {}
 var item_placements: Dictionary[String, int] = {}
+## Per-item world position; balls and loose bodies reload where the player left them.
+var item_positions: Dictionary[String, Vector2] = {}
+## Rack slot index per STORED item; rack owns the slot→world mapping. Production reader lands at step 7.5.
+var rack_slot_index_by_key: Dictionary[String, int] = {}
+## Keys of items currently dropped on the venue floor; survives the session so
+## loose bodies respawn rather than vanishing back to the rack.
+var loose_in_venue: Array[String] = []
 var personal_volley_best := 0
 var shop_unlocked := false
 var recruit_offered_partners: Array[StringName] = []
@@ -21,6 +28,9 @@ func clear() -> void:
 	total_friendship_points_earned = 0
 	item_levels = {}
 	item_placements = {}
+	item_positions = {}
+	rack_slot_index_by_key = {}
+	loose_in_venue = []
 	personal_volley_best = 0
 	shop_unlocked = false
 	recruit_offered_partners = []
@@ -57,6 +67,9 @@ func _try_load_content(content: String) -> bool:
 	total_friendship_points_earned = loaded.total_friendship_points_earned
 	item_levels = loaded.item_levels
 	item_placements = loaded.item_placements
+	item_positions = loaded.item_positions
+	rack_slot_index_by_key = loaded.rack_slot_index_by_key
+	loose_in_venue = loaded.loose_in_venue
 	personal_volley_best = loaded.personal_volley_best
 	shop_unlocked = loaded.shop_unlocked
 	recruit_offered_partners = loaded.recruit_offered_partners
@@ -73,6 +86,9 @@ func to_dict() -> Dictionary:
 		"total_friendship_points_earned": total_friendship_points_earned,
 		"item_levels": item_levels,
 		"item_placements": item_placements,
+		"item_positions": _serialize_positions(item_positions),
+		"rack_slot_index_by_key": rack_slot_index_by_key,
+		"loose_in_venue": loose_in_venue,
 		"personal_volley_best": personal_volley_best,
 		"shop_unlocked": shop_unlocked,
 		"recruit_offered_partners": recruit_offered_partners,
@@ -89,6 +105,9 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	progression.total_friendship_points_earned = data.get("total_friendship_points_earned", 0)
 	progression.item_levels = _to_typed_dict(data.get("item_levels", {}))
 	progression.item_placements = _to_typed_dict(data.get("item_placements", {}))
+	progression.item_positions = _parse_positions(data.get("item_positions", {}))
+	progression.rack_slot_index_by_key = _to_typed_dict(data.get("rack_slot_index_by_key", {}))
+	progression.loose_in_venue = _to_typed_string_array(data.get("loose_in_venue", []))
 	progression.personal_volley_best = data.get("personal_volley_best", 0)
 	progression.shop_unlocked = data.get("shop_unlocked", false)
 	progression.recruit_offered_partners = _to_typed_string_name_array(
@@ -128,4 +147,32 @@ static func _to_typed_dict(raw: Dictionary) -> Dictionary[String, int]:
 	for key: String in raw:
 		typed[key] = int(raw[key])
 
+	return typed
+
+
+static func _to_typed_string_array(raw: Array) -> Array[String]:
+	var typed: Array[String] = []
+	for value in raw:
+		typed.append(str(value))
+	return typed
+
+
+## Vector2 has no native JSON representation; nest as {"x", "y"} floats so the
+## round-trip survives stringify+parse without lossy string coercion.
+static func _serialize_positions(positions: Dictionary[String, Vector2]) -> Dictionary:
+	var raw: Dictionary = {}
+	for key: String in positions:
+		var v: Vector2 = positions[key]
+		raw[key] = {"x": v.x, "y": v.y}
+	return raw
+
+
+static func _parse_positions(raw: Dictionary) -> Dictionary[String, Vector2]:
+	var typed: Dictionary[String, Vector2] = {}
+	for key: String in raw:
+		var entry: Variant = raw[key]
+		if not entry is Dictionary:
+			continue
+		var dict: Dictionary = entry
+		typed[key] = Vector2(float(dict.get("x", 0.0)), float(dict.get("y", 0.0)))
 	return typed

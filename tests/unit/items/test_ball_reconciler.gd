@@ -22,13 +22,13 @@ func before_each() -> void:
 	add_child_autofree(_host)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 
 func _permanent_ball_count() -> int:
 	var count := 0
-	for child in _host.get_children():
+	for child in _reconciler.get_children():
 		if child is Ball:
 			count += 1
 	return count
@@ -45,15 +45,19 @@ func test_activating_a_ball_item_spawns_a_live_ball() -> void:
 	)
 
 
-func test_deactivating_a_ball_item_removes_its_live_ball() -> void:
+func test_deactivating_a_ball_item_transitions_to_stored() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	assert_eq(_permanent_ball_count(), 1)
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 
 	_manager.deactivate("ball_alpha")
 	await get_tree().process_frame
-	assert_eq(_permanent_ball_count(), 0, "deactivation should remove the live ball")
-	assert_null(_reconciler.get_ball_for_key("ball_alpha"))
+	assert_eq(
+		_permanent_ball_count(), 1, "deactivation keeps the Ball; registry membership is existence"
+	)
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha"), live, "same Ball instance survives")
+	assert_eq(live.play_state, Ball.PlayState.STORED, "deactivate transitions to STORED")
 
 
 func test_second_activation_does_not_duplicate_the_live_ball() -> void:
@@ -94,13 +98,15 @@ func test_release_ball_returns_and_drops_tracking() -> void:
 	assert_null(_reconciler.get_ball_for_key("ball_alpha"))
 
 
-func test_removing_a_deactivated_ball_deferred_frees_it() -> void:
+func test_deactivated_ball_survives_a_frame() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	_manager.deactivate("ball_alpha")
 	await get_tree().process_frame
-	assert_false(is_instance_valid(live), "deactivated ball should be freed after a frame")
+	assert_true(
+		is_instance_valid(live), "deactivated Ball survives; same instance through PLAY->STORED"
+	)
 
 
 func test_duplicate_court_changed_signal_does_not_spawn_a_second_ball() -> void:
@@ -150,7 +156,7 @@ func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
 	var preloaded_host := Node2D.new()
 	add_child_autofree(preloaded_host)
 	var fresh: BallReconciler = BallReconcilerScript.new()
-	fresh.configure(_manager, preloaded_host)
+	fresh.configure(_manager)
 	add_child_autofree(fresh)
 	# Flush deferred calls (adopt_pre_existing_balls + _reconcile_initial_state).
 	await get_tree().process_frame
@@ -161,16 +167,16 @@ func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
 	)
 
 
-func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> void:
-	var plain_host := Node.new()
-	add_child_autofree(plain_host)
+func test_default_spawn_position_falls_back_to_zero_for_non_node2d_parent() -> void:
+	var plain_parent := Node.new()
+	add_child_autofree(plain_parent)
 	var non_spatial: BallReconciler = BallReconcilerScript.new()
-	non_spatial.configure(_manager, plain_host)
-	add_child_autofree(non_spatial)
+	non_spatial.configure(_manager)
+	plain_parent.add_child(non_spatial)
 	assert_eq(
 		non_spatial._default_spawn_position(),
 		Vector2.ZERO,
-		"non-Node2D hosts yield the zero-vector fallback",
+		"non-Node2D parents yield the zero-vector fallback",
 	)
 
 
@@ -222,17 +228,15 @@ func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
 	)
 	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [live])
 
-	# Spawn a second ball under a different key and drive the deactivate removal path.
+	# Deactivate is now a state transition; ball_removed must NOT fire on it. Registry membership = existence.
 	_manager.take("ball_beta")
 	_manager.activate("ball_beta")
-	var beta_live: Ball = _reconciler.get_ball_for_key("ball_beta")
 	_manager.deactivate("ball_beta")
 	assert_eq(
 		get_signal_emit_count(_reconciler, "ball_removed"),
-		2,
-		"deactivate emits a second ball_removed",
+		1,
+		"deactivate transitions to STORED instead of emitting ball_removed",
 	)
-	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [beta_live])
 	await get_tree().process_frame
 
 
@@ -267,8 +271,9 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	fresh_host.add_child(authored_ball)
 
 	var fresh_reconciler: BallReconciler = BallReconcilerScript.new()
-	fresh_reconciler.configure(saved_manager, fresh_host)
-	add_child_autofree(fresh_reconciler)
+	fresh_reconciler.configure(saved_manager)
+	# Reconciler parented under the host so adopt_pre_existing_balls sees the authored sibling.
+	fresh_host.add_child(fresh_reconciler)
 
 	# Flush both deferred calls: adopt_pre_existing_balls then _reconcile_initial_state.
 	await get_tree().process_frame
@@ -286,3 +291,14 @@ func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
 	assert_eq(second.global_position, Vector2(42, -7))
 	assert_eq(second.linear_velocity, Vector2(3, 4))
 	assert_eq(_permanent_ball_count(), 1)
+
+
+func test_reconciler_parents_new_balls_under_itself() -> void:
+	var first: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
+	assert_eq(first.get_parent(), _reconciler, "ensure_ball_for_key parents under the reconciler")
+	var second: Ball = _reconciler.ensure_ball_for_key("ball_beta", Vector2.ZERO, Vector2.ZERO)
+	assert_eq(
+		second.get_parent(),
+		_reconciler,
+		"subsequent ensure_ball_for_key also parents under the reconciler"
+	)

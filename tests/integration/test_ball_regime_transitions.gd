@@ -44,8 +44,9 @@ func before_each() -> void:
 	_drop_target = _build_drop_target(RACK_CENTER, RACK_SIZE)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
-	add_child_autofree(_reconciler)
+	_reconciler.configure(_manager)
+	# Mirror court.tscn topology so adopt_pre_existing_balls finds authored siblings under _host.
+	_host.add_child(_reconciler)
 
 	_drag = BallDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
@@ -84,7 +85,11 @@ func _build_drop_target(center: Vector2, size: Vector2) -> Area2D:
 
 
 func _permanent_balls() -> Array:
+	# Includes both reconciler-spawned and authored-adopted balls (the latter keep their original parent).
 	var result: Array = []
+	for child in _reconciler.get_children():
+		if child is Ball and not (child as Ball).is_temporary:
+			result.append(child)
 	for child in _host.get_children():
 		if child is Ball and not (child as Ball).is_temporary:
 			result.append(child)
@@ -93,6 +98,9 @@ func _permanent_balls() -> Array:
 
 func _all_balls_under_host() -> Array:
 	var result: Array = []
+	for child in _reconciler.get_children():
+		if child is Ball:
+			result.append(child)
 	for child in _host.get_children():
 		if child is Ball:
 			result.append(child)
@@ -157,11 +165,13 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 		_manager.is_on_court("training_ball"),
 		"rack release should deactivate a permanent ball",
 	)
-	assert_null(
-		_reconciler.get_ball_for_key("training_ball"),
-		"reconciler should drop tracking after the ball leaves the court",
+	# Registry membership = existence; the Ball survives, transitioned to STORED at its rack slot.
+	var stored: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(stored, "reconciler keeps tracking; deactivate transitions to STORED")
+	assert_eq(
+		stored.play_state, Ball.PlayState.STORED, "rack release transitions the Ball to STORED"
 	)
-	assert_eq(_permanent_balls().size(), 0, "no live Ball instances remain under the host")
+	assert_eq(_permanent_balls().size(), 1, "one Ball instance persists through court -> rack")
 	assert_lt(
 		_manager.get_stat(&"ball_speed_min"),
 		placed_min,
@@ -187,16 +197,18 @@ func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 	var released: bool = _drag.attempt_release(in_venue_outside_court)
 
 	assert_true(released, "release inside venue always resolves")
-	assert_false(_manager.is_on_court("training_ball"), "loose release does not flip placement")
-	assert_eq(_permanent_balls().size(), 0, "no rally Ball spawns from a loose release")
-	var loose_under_host: Array = []
-	for child in _host.get_children():
-		if child is HeldBody:
-			loose_under_host.append(child)
-	assert_eq(loose_under_host.size(), 1, "loose body is reparented under the ball host")
-	var body: HeldBody = loose_under_host[0]
-	assert_false(body.freeze, "loose body unfreezes so gravity integrates")
-	assert_gt(body.gravity_scale, 0.0)
+	# Step 5: the at-rest ball lives as a Ball in OUT_REST in the registry, not a HeldBody.
+	assert_false(
+		_manager.is_on_court("training_ball"), "rack-origin venue release does not flip on-court"
+	)
+	assert_true(
+		_manager.is_loose_in_venue("training_ball"), "rack filter relies on loose-in-venue overlay"
+	)
+	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(ball, "venue release registers the Ball with the reconciler")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
+	assert_false(ball.freeze, "OUT_REST unfreezes so gravity integrates")
+	assert_gt(ball.gravity_scale, 0.0, "OUT_REST has gravity engaged")
 
 
 # --- Scenario 4: temporary balls live outside the reconciler's set ---------
@@ -266,17 +278,15 @@ func test_release_from_far_outside_cursor_drops_loose_at_venue_edge() -> void:
 
 	assert_true(released, "release always resolves, even from a far-outside cursor")
 	assert_false(_manager.is_on_court("training_ball"))
-	assert_eq(_permanent_balls().size(), 0, "loose drop does not spawn a rally Ball")
+	# Step 5: the cursor-clamped venue release lands the OUT_REST Ball at the venue corner.
 	var venue_max: Vector2 = VENUE_BOUNDS.position + VENUE_BOUNDS.size
-	var loose_under_host: Array = []
-	for child in _host.get_children():
-		if child is HeldBody:
-			loose_under_host.append(child)
-	assert_eq(loose_under_host.size(), 1)
+	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(ball, "venue release puts the Ball into the registry")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
 	assert_eq(
-		loose_under_host[0].global_position,
+		ball.global_position,
 		venue_max,
-		"loose body lands at the venue's far corner after the cursor clamp",
+		"Ball lands at the venue's far corner after the cursor clamp"
 	)
 
 
@@ -308,8 +318,8 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	add_child_autofree(reloaded_host)
 
 	var reloaded_reconciler: BallReconciler = BallReconcilerScript.new()
-	reloaded_reconciler.configure(reloaded_manager, reloaded_host)
-	add_child_autofree(reloaded_reconciler)
+	reloaded_reconciler.configure(reloaded_manager)
+	reloaded_host.add_child(reloaded_reconciler)
 	await get_tree().process_frame
 
 	assert_true(
@@ -319,8 +329,8 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	var reloaded_ball: Ball = reloaded_reconciler.get_ball_for_key("training_ball")
 	assert_not_null(reloaded_ball, "reconciler re-spawned the ball from progression on load")
 	assert_true(
-		reloaded_ball.get_parent() == reloaded_host,
-		"the live ball is parented under the reloaded host",
+		reloaded_ball.get_parent() == reloaded_reconciler,
+		"the live ball is parented under the reconciler",
 	)
 	assert_almost_eq(
 		reloaded_manager.get_stat(&"ball_speed_min"),
@@ -380,21 +390,23 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 	_manager.activate("training_ball")
 	var live: Ball = _reconciler.get_ball_for_key("training_ball")
 	assert_not_null(live, "precondition: live ball exists")
-	var press_area: Area2D = live.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "live ball must own a PressArea for press routing")
-	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
+	var grab_area: Area2D = live.get_node_or_null("GrabArea") as Area2D
+	assert_not_null(grab_area, "live ball must own a GrabArea for press routing")
+	assert_true(grab_area.input_pickable, "GrabArea must accept pointer events")
 
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	press_area.input_event.emit(get_viewport(), press, 0)
+	grab_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode")
 	await get_tree().process_frame
-	assert_false(
+	# Step 3: the live Ball IS the drag target; it survives the grab in OUT_HELD until release.
+	assert_true(
 		is_instance_valid(live),
-		"the live ball is freed during the hold; held body takes over the cursor",
+		"live ball survives the mid-rally grab as the drag target",
 	)
+	assert_eq(live.play_state, Ball.PlayState.OUT_HELD)
 
 	var court_point := Vector2(50, -25)
 	var released: bool = _drag.attempt_release(court_point)
@@ -418,25 +430,27 @@ func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
 	await get_tree().process_frame
 
 	assert_eq(_permanent_balls().size(), 1, "precondition: pre-existing Ball lives under host")
-	var press_area: Area2D = pre_existing.get_node_or_null("PressArea") as Area2D
-	assert_not_null(press_area, "Ball must own a PressArea for press routing")
-	assert_true(press_area.input_pickable, "PressArea must accept pointer events")
+	var grab_area: Area2D = pre_existing.get_node_or_null("GrabArea") as Area2D
+	assert_not_null(grab_area, "Ball must own a GrabArea for press routing")
+	assert_true(grab_area.input_pickable, "GrabArea must accept pointer events")
 	assert_false(_drag.is_dragging(), "precondition: no drag in progress before the press")
 
 	var press := InputEventMouseButton.new()
 	press.button_index = MOUSE_BUTTON_LEFT
 	press.pressed = true
-	press_area.input_event.emit(get_viewport(), press, 0)
+	grab_area.input_event.emit(get_viewport(), press, 0)
 
 	assert_true(
 		_drag.is_dragging(),
 		"pressing a pre-existing scene Ball must flip the drag controller into mid-rally grab",
 	)
 	await get_tree().process_frame
-	assert_false(
+	# Step 3: the pre-existing Ball IS the drag target; it survives the grab in OUT_HELD.
+	assert_true(
 		is_instance_valid(pre_existing),
-		"the pre-existing ball is freed during the hold; held body takes over the cursor",
+		"the pre-existing Ball survives the grab as the drag target",
 	)
+	assert_eq(pre_existing.play_state, Ball.PlayState.OUT_HELD)
 
 
 func _find_slot_for_key(item_key: String) -> Node2D:
