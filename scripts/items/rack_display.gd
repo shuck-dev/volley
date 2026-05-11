@@ -93,16 +93,12 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	return slot
 
 
-## When the registry owns STORED balls, the Ball's ItemArtHolder is the visual source of truth.
+## When the registry owns STORED balls, the Ball renders its own ItemArtHolder at the slot position;
+## the rack leaves art empty so the slot draws exactly once.
 func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> void:
-	var ball: Ball = _stored_ball_for(definition.key)
-	if ball != null:
-		var source: Node = ball.get_node_or_null("ItemArtHolder")
-		if source != null:
-			art_holder.set_meta(&"source", &"ball")
-			for child in source.get_children():
-				art_holder.add_child(child.duplicate())
-			return
+	if _stored_ball_for(definition.key) != null:
+		art_holder.set_meta(&"source", &"ball")
+		return
 	art_holder.set_meta(&"source", &"definition")
 	art_holder.add_child(definition.art.instantiate())
 

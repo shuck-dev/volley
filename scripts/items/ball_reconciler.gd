@@ -13,8 +13,8 @@ const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
-## Opt-in surface for step 7; while false, adopt_stored is a no-op so callers can be wired ahead of the flip.
-@export var stored_balls_in_registry: bool = false
+## Registry owns STORED balls when true; rack pickup, court_changed deactivate, and initial kit-walk all light up.
+@export var stored_balls_in_registry: bool = true
 ## Ball-role rack consulted for STORED slot positions when stored_balls_in_registry is true.
 @export var ball_rack: RackDisplay
 
@@ -228,8 +228,17 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if not _adopting_pre_existing:
 		_initial_reconcile_pending = false
 	if on_court:
-		# Flag-off keeps today's no-op-on-existing behaviour; flag-on routes through ensure_ball_for_key's reuse path (enter_play + reposition).
-		if not stored_balls_in_registry and get_ball_for_key(item_key) != null:
+		var existing: Ball = get_ball_for_key(item_key)
+		# Existing PLAY balls (authored, mid-rally) already live at the right spot; reposition would clobber them.
+		if (
+			existing != null
+			and (
+				existing.play_state == Ball.PlayState.PLAY_NORMAL
+				or existing.play_state == Ball.PlayState.PLAY_ARC
+			)
+		):
+			return
+		if not stored_balls_in_registry and existing != null:
 			return
 		ensure_ball_for_key(
 			item_key,

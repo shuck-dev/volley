@@ -332,9 +332,13 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 		_manager.is_on_court("training_ball"),
 		"SH-252 b: live ball dragged to rack must leave court so the rack regrows the token",
 	)
-	assert_null(
-		_reconciler.get_ball_for_key("training_ball"),
-		"no Ball should remain tracked after the rack-out release",
+	# Registry keeps the Ball; rack-return is a STORED transition, not destruction (DevBallStatePanel persists).
+	var still_tracked: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(still_tracked, "Ball stays in registry after rack-return")
+	assert_eq(
+		still_tracked.play_state,
+		Ball.PlayState.STORED,
+		"rack-return transitions the Ball to STORED"
 	)
 
 

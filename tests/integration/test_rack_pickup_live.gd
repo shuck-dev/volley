@@ -88,9 +88,9 @@ func test_flag_on_rack_grab_adopts_stored_ball_no_held_body() -> void:
 
 
 func test_flag_off_rack_grab_spawns_held_body() -> void:
+	# Legacy rack-pickup path stays correct until step 7.6 retires HeldBody for ball-role.
+	_reconciler.stored_balls_in_registry = false
 	_manager.take("ball_alpha")
-	# Flag stays false; reconciler holds no STORED ball.
-	assert_false(_reconciler.stored_balls_in_registry)
 
 	assert_true(_drag.grab_from_rack("ball_alpha", Vector2(50, 0)))
 

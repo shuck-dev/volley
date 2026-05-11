@@ -56,6 +56,8 @@ func _ball_count() -> int:
 
 
 func test_flag_off_does_not_populate_stored_kit_items() -> void:
+	# Legacy flag-off path stays correct until step 7.6 retires the opt-in branches.
+	_reconciler.stored_balls_in_registry = false
 	# Owned but not on-court; with flag off, no STORED ball spawns.
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")

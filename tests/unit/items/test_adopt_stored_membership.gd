@@ -42,7 +42,7 @@ func _on_ball_spawned(item_key: String, ball: Ball) -> void:
 
 
 func test_adopt_stored_is_inert_when_flag_off() -> void:
-	assert_false(_reconciler.stored_balls_in_registry, "precondition: opt-in flag defaults off")
+	_reconciler.stored_balls_in_registry = false
 	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2(10, 20))
 	assert_null(ball, "adopt_stored returns null when the flag is off")
 	assert_eq(_added_count, 0, "ball_added must not fire when flag is off")

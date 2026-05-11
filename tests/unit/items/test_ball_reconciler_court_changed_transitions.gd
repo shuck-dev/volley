@@ -153,7 +153,8 @@ func test_bring_into_play_reuses_out_rest_ball_via_enter_play() -> void:
 
 
 func test_flag_off_destroy_on_deactivate_path_still_fires() -> void:
-	# Flag stays false; existing destroy-on-deactivate behaviour must continue to hold.
+	# Legacy destroy-on-deactivate path stays correct until step 7.6 retires it.
+	_reconciler.stored_balls_in_registry = false
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	assert_eq(_ball_count(), 1, "precondition: one live ball before deactivate")

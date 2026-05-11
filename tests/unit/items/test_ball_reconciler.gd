@@ -45,15 +45,19 @@ func test_activating_a_ball_item_spawns_a_live_ball() -> void:
 	)
 
 
-func test_deactivating_a_ball_item_removes_its_live_ball() -> void:
+func test_deactivating_a_ball_item_transitions_to_stored() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	assert_eq(_permanent_ball_count(), 1)
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 
 	_manager.deactivate("ball_alpha")
 	await get_tree().process_frame
-	assert_eq(_permanent_ball_count(), 0, "deactivation should remove the live ball")
-	assert_null(_reconciler.get_ball_for_key("ball_alpha"))
+	assert_eq(
+		_permanent_ball_count(), 1, "deactivation keeps the Ball; registry membership is existence"
+	)
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha"), live, "same Ball instance survives")
+	assert_eq(live.play_state, Ball.PlayState.STORED, "deactivate transitions to STORED")
 
 
 func test_second_activation_does_not_duplicate_the_live_ball() -> void:
@@ -94,13 +98,15 @@ func test_release_ball_returns_and_drops_tracking() -> void:
 	assert_null(_reconciler.get_ball_for_key("ball_alpha"))
 
 
-func test_removing_a_deactivated_ball_deferred_frees_it() -> void:
+func test_deactivated_ball_survives_a_frame() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	_manager.deactivate("ball_alpha")
 	await get_tree().process_frame
-	assert_false(is_instance_valid(live), "deactivated ball should be freed after a frame")
+	assert_true(
+		is_instance_valid(live), "deactivated Ball survives; same instance through PLAY->STORED"
+	)
 
 
 func test_duplicate_court_changed_signal_does_not_spawn_a_second_ball() -> void:
@@ -222,17 +228,15 @@ func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
 	)
 	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [live])
 
-	# Spawn a second ball under a different key and drive the deactivate removal path.
+	# Deactivate is now a state transition; ball_removed must NOT fire on it. Registry membership = existence.
 	_manager.take("ball_beta")
 	_manager.activate("ball_beta")
-	var beta_live: Ball = _reconciler.get_ball_for_key("ball_beta")
 	_manager.deactivate("ball_beta")
 	assert_eq(
 		get_signal_emit_count(_reconciler, "ball_removed"),
-		2,
-		"deactivate emits a second ball_removed",
+		1,
+		"deactivate transitions to STORED instead of emitting ball_removed",
 	)
-	assert_signal_emitted_with_parameters(_reconciler, "ball_removed", [beta_live])
 	await get_tree().process_frame
 
 

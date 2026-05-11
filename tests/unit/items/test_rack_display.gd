@@ -325,6 +325,10 @@ func test_flag_on_with_stored_ball_rack_sources_art_from_ball() -> void:
 		&"ball",
 		"with the flag on and a STORED ball registered the rack reads art from the Ball",
 	)
+	# Ball renders its own ItemArtHolder at the slot position; rack must not duplicate art.
+	assert_eq(
+		art_holder.get_child_count(), 0, "rack leaves slot art empty when the Ball owns the visual"
+	)
 
 
 func _find_slot(rack: Node2D, item_key: String) -> Node2D:

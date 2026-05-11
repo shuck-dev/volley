@@ -165,11 +165,13 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 		_manager.is_on_court("training_ball"),
 		"rack release should deactivate a permanent ball",
 	)
-	assert_null(
-		_reconciler.get_ball_for_key("training_ball"),
-		"reconciler should drop tracking after the ball leaves the court",
+	# Registry membership = existence; the Ball survives, transitioned to STORED at its rack slot.
+	var stored: Ball = _reconciler.get_ball_for_key("training_ball")
+	assert_not_null(stored, "reconciler keeps tracking; deactivate transitions to STORED")
+	assert_eq(
+		stored.play_state, Ball.PlayState.STORED, "rack release transitions the Ball to STORED"
 	)
-	assert_eq(_permanent_balls().size(), 0, "no live Ball instances remain under the host")
+	assert_eq(_permanent_balls().size(), 1, "one Ball instance persists through court -> rack")
 	assert_lt(
 		_manager.get_stat(&"ball_speed_min"),
 		placed_min,
