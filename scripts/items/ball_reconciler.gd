@@ -146,6 +146,7 @@ func ensure_ball_for_key(
 
 	var ball: Ball = ball_scene.instantiate()
 	add_child(ball)
+	ball.item_key = item_key
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	_apply_item_art(ball, item_key)
@@ -162,6 +163,7 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	if ball == null:
 		ball = ball_scene.instantiate()
 		add_child(ball)
+		ball.item_key = item_key
 		_apply_item_art(ball, item_key)
 		_balls_by_key[item_key] = ball
 		ball_spawned.emit(item_key, ball)
@@ -177,6 +179,7 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = ball_scene.instantiate()
 	add_child(ball)
+	ball.item_key = item_key
 	ball.enter_stored()
 	ball.global_position = spawn_position
 	_apply_item_art(ball, item_key)
