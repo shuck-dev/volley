@@ -37,7 +37,8 @@ func test_save_writes_current_data_as_json() -> void:
 
 # --- autosave timer ---
 func test_autosave_timer_triggers_save() -> void:
-	await wait_seconds(0.2)
+	# Emit the timer's timeout directly; the wall-clock 0.2s wait was 176ms of fat.
+	_save_manager._autosave_timer.timeout.emit()
 	assert_called(_mock_storage, "write")
 
 

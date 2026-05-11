@@ -28,6 +28,8 @@ func before_each() -> void:
 	_game = load("res://scripts/core/court.gd").new()
 	_game.autoplay_controller = autoplay_controller_stub
 	_game.timeout_controller = _timeout
+	# Pre-assign player_paddle so Court._ready skips its scene-instantiate branch.
+	_game.player_paddle = _paddle
 	add_child_autofree(_paddle)
 	add_child_autofree(_timeout)
 	add_child_autofree(_game)
