@@ -185,16 +185,18 @@ func test_release_far_outside_court_falls_loose_inside_venue() -> void:
 	var released: bool = _drag.attempt_release(off_world)
 
 	assert_true(released, "venue-clamped release resolves as a loose drop")
-	assert_null(
-		_reconciler.get_ball_for_key("ball_alpha"),
-		"loose release does not bring the item into play",
+	# Step 5: venue-floor release routes through reconciler; the Ball lives in OUT_REST in the registry.
+	assert_false(
+		_manager.is_on_court("ball_alpha"), "rack-origin venue release does not flip on-court"
 	)
-	assert_false(_manager.is_on_court("ball_alpha"), "loose release does not flip placement state")
-	var loose_bodies: Array = _loose_bodies_under_host()
-	assert_eq(loose_bodies.size(), 1, "exactly one loose body lands in the venue")
-	var body: HeldBody = loose_bodies[0]
-	assert_false(body.freeze, "loose body unfreezes so gravity integrates")
-	assert_gt(body.gravity_scale, 0.0, "loose body has gravity active")
+	assert_true(
+		_manager.is_loose_in_venue("ball_alpha"),
+		"rack-origin venue release marks loose-in-venue so the rack filter hides the slot",
+	)
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "venue release puts the Ball into the registry")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST, "venue Ball is OUT_REST")
+	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body left behind")
 
 
 func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
@@ -293,14 +295,14 @@ func test_release_inside_venue_outside_court_drops_loose() -> void:
 	var released: bool = _drag.attempt_release(in_venue_out_of_court)
 	assert_true(released, "release inside venue always resolves, never a no-op")
 
-	assert_null(
-		_reconciler.get_ball_for_key("ball_alpha"),
-		"loose release does not bring the item into play",
-	)
+	# Step 5: rack-origin venue release produces an OUT_REST Ball in the registry, not a HeldBody.
 	assert_false(_manager.is_on_court("ball_alpha"))
-	var loose_bodies: Array = _loose_bodies_under_host()
-	assert_eq(loose_bodies.size(), 1, "loose body lands at the release position")
-	assert_eq(loose_bodies[0].global_position, in_venue_out_of_court)
+	assert_true(_manager.is_loose_in_venue("ball_alpha"))
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "Ball lives in the registry at the release point")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
+	assert_eq(ball.global_position, in_venue_out_of_court)
+	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body left behind")
 
 
 func test_mouse_button_release_event_triggers_release() -> void:

@@ -153,7 +153,8 @@ func test_release_over_court_frees_held_body_and_spawns_active_movement_ball() -
 	assert_eq(ball.gravity_scale, 0.0, "active-movement has gravity off (frictionless rally)")
 
 
-func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> void:
+func test_release_into_venue_floor_lands_ball_in_out_rest() -> void:
+	# Step 5: rack-origin venue release transitions to an OUT_REST Ball, not a loose HeldBody.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
@@ -162,14 +163,14 @@ func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> 
 
 	var loose_position := Vector2(1500, 100)
 	assert_true(_drag.attempt_release(loose_position))
-	var loose_bodies: Array = _loose_bodies_under_host()
-	assert_eq(loose_bodies.size(), 1)
-	var body: HeldBody = loose_bodies[0]
-	assert_eq(body.phase, HeldBody.Phase.LOOSE)
-	assert_false(body.freeze)
-	assert_gt(body.gravity_scale, 0.0)
-	assert_null(_reconciler.get_ball_for_key("ball_alpha"), "loose drop bypasses the reconciler")
+	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body lingers post-release")
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "Ball lives in the registry at the release position")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
+	assert_false(ball.freeze)
+	assert_gt(ball.gravity_scale, 0.0)
 	assert_false(_manager.is_on_court("ball_alpha"))
+	assert_true(_manager.is_loose_in_venue("ball_alpha"))
 
 
 func test_mid_rally_grab_keeps_same_ball_in_out_held_with_velocity_carryover() -> void:
@@ -201,64 +202,47 @@ func test_mid_rally_grab_keeps_same_ball_in_out_held_with_velocity_carryover() -
 	assert_almost_eq(released.linear_velocity.length(), carry_speed, 0.5)
 
 
-func test_loose_body_transfers_visual_scale_onto_art_holder_after_release() -> void:
+func test_out_rest_ball_has_grab_area_enabled() -> void:
+	# Step 5: the OUT_REST Ball's grab area routes pickups through the live-grab path.
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	for ball in _permanent_balls():
 		ball.queue_free()
 	await get_tree().process_frame
-	# Settle the lift so body.scale equals token_scale before the release.
-	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
-	_drag._apply_grab_ease(1.0, Vector2(1500, 100))
-	var held: HeldBody = _drag.get_held_body()
-	var pre_loose_scale: Vector2 = held.scale
+	assert_true(_drag.attempt_release(Vector2(1500, 100)), "venue release succeeds")
+	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(ball, "venue release puts a Ball into the registry")
+	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
+	assert_not_null(ball.grab_area, "Ball ships with a grab area for re-grab")
 
+
+func test_out_rest_ball_press_re_grabs_through_live_grab_path() -> void:
+	# Step 5: pressing an OUT_REST Ball routes through grab_live_ball, preserving identity.
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	for ball in _permanent_balls():
+		ball.queue_free()
+	await get_tree().process_frame
 	assert_true(_drag.attempt_release(Vector2(1500, 100)))
-	var bodies: Array = _loose_bodies_under_host()
-	assert_eq(bodies.size(), 1)
-	var body: HeldBody = bodies[0]
-	assert_eq(body.scale, Vector2.ONE, "loose body sheds its lift-time scale onto the ArtHolder")
-	var art_holder: Node2D = body.get_node("ArtHolder") as Node2D
-	assert_not_null(art_holder, "loose body keeps an ArtHolder for the visual")
+	var resting: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(resting)
+	assert_eq(resting.play_state, Ball.PlayState.OUT_REST)
+
+	# Synthesise the grab signal the ball's grab area would emit.
+	resting.grabbed.emit(resting)
+	await get_tree().process_frame
+
 	assert_eq(
-		art_holder.scale,
-		pre_loose_scale,
-		"ArtHolder receives the body's pre-loose scale so the visual does not pop",
+		_reconciler.get_ball_for_key("ball_alpha"),
+		resting,
+		"OUT_REST re-grab keeps the same Ball instance — live-grab path",
 	)
-
-
-func test_loose_body_has_grab_area_enabled_when_loose() -> void:
-	# SH-332: a loose body's GrabArea is the entry point for re-grab.
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-	assert_true(_drag.attempt_release(Vector2(1500, 100)), "loose drop succeeds")
-	var bodies: Array = _loose_bodies_under_host()
-	assert_eq(bodies.size(), 1)
-	var body: HeldBody = bodies[0]
-	assert_not_null(body.grab_area, "loose body has a grab area for re-grab")
-	assert_true(body.grab_area.input_pickable, "grab area is enabled when LOOSE")
-
-
-func test_loose_body_press_re_grabs_via_controller() -> void:
-	# SH-332: pressing a loose body adopts it as the held body so the player can re-grab.
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-	assert_true(_drag.attempt_release(Vector2(1500, 100)))
-	var bodies: Array = _loose_bodies_under_host()
-	var body: HeldBody = bodies[0]
-	assert_null(_drag.get_held_body(), "controller has no held body after the loose release")
-
-	body.grabbed.emit(body)
-
-	assert_eq(_drag.get_held_body(), body, "loose press re-grabs the same body")
-	assert_eq(body.phase, HeldBody.Phase.LIFTING, "re-grabbed body returns to LIFTING")
-	assert_true(body.freeze, "re-grabbed body re-freezes for cursor follow")
+	assert_eq(resting.play_state, Ball.PlayState.OUT_HELD, "re-grab transitions to OUT_HELD")
+	assert_true(resting.freeze, "OUT_HELD freezes the body for controller follow")
+	assert_false(
+		_manager.is_loose_in_venue("ball_alpha"),
+		"grab clears the loose-in-venue overlay so a later non-venue release restores the rack slot",
+	)
 
 
 func test_grab_live_ball_excludes_held_ball_rid_from_court_projection() -> void:

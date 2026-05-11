@@ -53,8 +53,8 @@ func _has_save_manager_autoload() -> bool:
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
-## Snapshot of live ball positions keyed by item_key. Loose HeldBody children
-## are included so dropped items reload at their resting spot.
+## Snapshot of live ball positions keyed by item_key. Every loose / at-rest / in-play
+## ball lives in the registry post-step-5, so the registry walk is the whole story.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
 	for key: String in _balls_by_key:
@@ -63,13 +63,6 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 			continue
 		var ball: Ball = raw
 		positions[key] = ball.global_position
-	for child in get_children():
-		if not (child is HeldBody):
-			continue
-		var body: HeldBody = child
-		if body.item_key == "" or body.phase != HeldBody.Phase.LOOSE:
-			continue
-		positions[body.item_key] = body.global_position
 	return positions
 
 
@@ -151,6 +144,24 @@ func ensure_ball_for_key(
 	ball_spawned.emit(item_key, ball)
 	ball_added.emit(ball)
 	_apply_preserved_speed(ball, preserved_speed)
+	return ball
+
+
+## Step 5: venue-floor release path. Ensures a registry Ball at `position`, in OUT_REST,
+## carrying `velocity`. Does not touch ItemManager state; callers flip loose-in-venue / on-court
+## overlays as appropriate so the rack filters render the right slots.
+func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball == null:
+		ball = ball_scene.instantiate()
+		add_child(ball)
+		_apply_item_art(ball, item_key)
+		_balls_by_key[item_key] = ball
+		ball_spawned.emit(item_key, ball)
+		ball_added.emit(ball)
+	ball.global_position = position
+	ball.enter_out_rest()
+	ball.linear_velocity = velocity
 	return ball
 
 

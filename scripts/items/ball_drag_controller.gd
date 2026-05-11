@@ -243,6 +243,10 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 
 	# Live grab: the existing Ball IS the drag target across the whole gesture. No HeldBody spawn,
 	# no queue_free, no ball_removed; the ball stays in _balls_by_key in OUT_HELD state.
+	# OUT_REST pickup also routes through here; clear the loose-in-venue overlay so a release-over-rack
+	# (or any non-venue target) restores the slot exactly like a live-grab originating from the court.
+	if _item_manager != null:
+		_item_manager.clear_loose_in_venue(item_key)
 	existing.enter_out_held()
 	# Self-overlap exclusion: the held ball's own body would otherwise reject the release projection.
 	_set_court_exclude_rids([existing.get_rid()])
@@ -281,15 +285,55 @@ func spawn_purchased_at(
 		target.accept(item_key, world_position, gesture_velocity)
 		return true
 	if target is VenueDropTarget:
-		# Venue accepts as a loose-body release; spawn a HeldBody and let it fall.
-		_spawn_loose_body_at(item_key, world_position, gesture_velocity)
+		# Ball-role venue releases lift the entity into the registry as OUT_REST; equipment keeps the
+		# legacy HeldBody loose path until step 7 unifies it.
+		if _is_ball_role(item_key):
+			_release_to_rest(item_key, world_position, gesture_velocity, false)
+		else:
+			_release_loose_body_at(item_key, world_position, gesture_velocity)
 		return true
 	# Rack/shop targets accept by activating; the ball reconciler handles the live spawn.
 	target.accept(item_key, world_position, gesture_velocity)
 	return true
 
 
-func _spawn_loose_body_at(
+## Step 5: ball-role venue-floor releases funnel here. Equipment retains the HeldBody path until step 7.
+## Reconciler creates or transitions the Ball into OUT_REST; the rack hides via on-court (live grab)
+## or loose-in-venue (rack origin), so the player never sees both a slot and a venue body.
+func _release_to_rest(
+	item_key: String, world_position: Vector2, gesture_velocity: Vector2, was_live: bool
+) -> void:
+	if reconciler == null:
+		return
+	reconciler.release_into_rest(item_key, world_position, gesture_velocity)
+	# Rack-origin paths arrive with the item not on-court; flip the overlay so the rack filter hides
+	# the slot. Live grabs keep their on-court flag — touching it would tear the Ball down via the
+	# reconciler's court_changed handler.
+	if not was_live and _item_manager != null:
+		_item_manager.mark_loose_in_venue(item_key)
+
+
+## Equipment attempt_release: rehome the in-flight HeldBody as loose at the release point.
+func _release_held_body_as_loose(release_position: Vector2) -> void:
+	if _held_body == null:
+		return
+	var release_velocity: Vector2 = _compute_release_velocity()
+	var body: HeldBody = _held_body
+	var host: Node = get_loose_body_host()
+	if host != null and body.get_parent() != host:
+		body.get_parent().remove_child(body)
+		host.add_child(body)
+	body.global_position = release_position
+	body.modulate = grab_ease_end_modulate
+	body.go_loose(release_velocity)
+	register_loose_body(body)
+	# Drop the handle so finalisation does not free the loose body.
+	_held_body = null
+
+
+## Equipment still rides the HeldBody path; step 7 unifies the surfaces. Spawns a loose body at the
+## release point, wires re-grab + loose-in-venue overlay through register_loose_body.
+func _release_loose_body_at(
 	item_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> void:
 	var definition: ItemDefinition = _get_item_definition(item_key)
@@ -303,6 +347,13 @@ func _spawn_loose_body_at(
 	host.add_child(body)
 	body.go_loose(gesture_velocity)
 	register_loose_body(body)
+
+
+func _is_ball_role(item_key: String) -> bool:
+	var definition: ItemDefinition = _get_item_definition(item_key)
+	if definition == null:
+		return false
+	return definition.role == &"ball"
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -348,12 +399,15 @@ func attempt_release(release_position: Vector2) -> bool:
 			target.accept(item_key, clamped_position, velocity)
 			_apply_preserved_speed_after_accept(item_key)
 	elif target is VenueDropTarget:
-		if has_live_ball:
-			_release_live_ball_to_rest(clamped_position, _compute_release_velocity())
-			_finalise_gesture(item_key, clamped_position, false)
-			return true
-		_release_loose(clamped_position, was_temporary)
-		_finalise_loose_gesture(item_key, clamped_position, false)
+		if was_temporary:
+			# Temporary balls never join the registry; fall through to finalise (which frees the HeldBody).
+			pass
+		elif _is_ball_role(item_key):
+			_release_to_rest(item_key, clamped_position, _compute_release_velocity(), has_live_ball)
+		else:
+			# Equipment keeps the HeldBody loose path; rehome the existing held body rather than spawning a new one.
+			_release_held_body_as_loose(clamped_position)
+		_finalise_gesture(item_key, clamped_position, false)
 		return true
 	else:
 		# Rack accept: deactivate path fires court_changed which prompts the reconciler to queue_free
@@ -389,34 +443,10 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 		ball.effect_processor.sync_base_speed()
 
 
-# Transitions the held Ball from OUT_HELD → OUT_REST so a floor drop rolls to rest in the venue.
-func _release_live_ball_to_rest(release_position: Vector2, velocity: Vector2) -> void:
-	var ball: Ball = _held_ball
-	if ball == null:
-		return
-	ball.global_position = release_position
-	ball.enter_out_rest()
-	ball.linear_velocity = velocity
-
-
-func _release_loose(release_position: Vector2, was_temporary: bool) -> void:
-	if _held_body == null or was_temporary:
-		return
-	var release_velocity: Vector2 = _compute_release_velocity()
-	var body: HeldBody = _held_body
-	var host: Node = get_loose_body_host()
-	if host != null and body.get_parent() != host:
-		body.get_parent().remove_child(body)
-		host.add_child(body)
-	body.global_position = release_position
-	body.modulate = grab_ease_end_modulate
-	body.go_loose(release_velocity)
-	register_loose_body(body)
-	# Drop the handle so finalisation does not free the loose body.
-	_held_body = null
-
-
-## Public seam so subsystems that spawn their own loose bodies (Shop) can wire re-grab through this controller.
+## Step 5 seam: venue-floor releases no longer spawn loose HeldBodies, but Shop's `_drop_falling_body`
+## still does (retires at step 7). The five helpers below — track_loose_body, register_loose_body,
+## get_loose_body_host, _on_loose_body_grabbed, _adopt_loose_body_as_held, _on_loose_body_freed — keep
+## that path alive. Removing them would crash purchased-item drops.
 func track_loose_body(body: HeldBody) -> void:
 	if not body.grabbed.is_connected(_on_loose_body_grabbed):
 		body.grabbed.connect(_on_loose_body_grabbed)
@@ -494,12 +524,6 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 	if body.get_parent() != self:
 		body.get_parent().remove_child(body)
 		add_child(body)
-
-
-func _finalise_loose_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
-	_reset_gesture_state()
-	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
-	drop_completed.emit(item_key, release_position, over_court)
 
 
 func _loose_body_host() -> Node:
