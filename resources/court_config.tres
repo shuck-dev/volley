@@ -1,8 +1,6 @@
 [gd_resource type="Resource" script_class="CourtConfig" format=3 uid="uid://b66666sh366cc"]
 
 [ext_resource type="Script" uid="uid://c4ayxy1m7fhfn" path="res://scripts/core/court_config.gd" id="1_courtcfg"]
-[ext_resource type="Resource" uid="uid://b366phys0001a" path="res://resources/parabolic_arc_physics.tres" id="2_physics"]
 
 [resource]
 script = ExtResource("1_courtcfg")
-physics = ExtResource("2_physics")

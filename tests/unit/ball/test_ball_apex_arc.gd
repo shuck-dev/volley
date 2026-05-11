@@ -2,8 +2,6 @@
 extends GutTest
 
 const BOUND_Y := -100.0
-const PARABOLIC_ARC_PHYSICS := preload("res://scripts/core/physics/parabolic_arc_physics.gd")
-const COURT_PHYSICS := preload("res://scripts/core/physics/court_physics.gd")
 
 var _ball: Ball
 var _config: CourtConfig
@@ -25,7 +23,6 @@ func before_each() -> void:
 	_config = load("res://scripts/core/court_config.gd").new()
 	_config.friendship_bound_y = BOUND_Y
 	_config.relock_ramp_seconds = 0.1
-	_config.physics = PARABOLIC_ARC_PHYSICS.new()
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -233,24 +230,3 @@ func test_relock_ramp_zero_snaps_to_entry_speed() -> void:
 	assert_almost_eq(
 		_ball.linear_velocity.length(), entry, 1.0, "snap path lands magnitude at entry_speed"
 	)
-
-
-# --- physics seam: base-class and parabolic step are no-ops on velocity ---
-
-
-func test_court_physics_base_step_is_noop() -> void:
-	var base: CourtPhysics = COURT_PHYSICS.new()
-	var body := RigidBody2D.new()
-	add_child_autofree(body)
-	body.linear_velocity = Vector2(123.0, -456.0)
-	base.step(body, _config, 0.016)
-	assert_eq(body.linear_velocity, Vector2(123.0, -456.0))
-
-
-func test_parabolic_arc_step_is_noop() -> void:
-	var rule: ParabolicArcPhysics = PARABOLIC_ARC_PHYSICS.new()
-	var body := RigidBody2D.new()
-	add_child_autofree(body)
-	body.linear_velocity = Vector2(123.0, -456.0)
-	rule.step(body, _config, 0.016)
-	assert_eq(body.linear_velocity, Vector2(123.0, -456.0))

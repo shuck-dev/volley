@@ -85,10 +85,7 @@ func _update_play_state(delta: float) -> void:
 		_enter_arc()
 	elif not above_bound and play_state == PlayState.PLAY_ARC:
 		_enter_normal()
-	if play_state == PlayState.PLAY_ARC:
-		if court_config.physics != null:
-			court_config.physics.step(self, court_config, delta)
-	elif _relock.is_ramping():
+	if play_state != PlayState.PLAY_ARC and _relock.is_ramping():
 		_advance_relock_ramp(delta)
 
 
