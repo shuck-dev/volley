@@ -67,7 +67,7 @@ Volley's bands need a simple model. Take the lower funding threshold of each ban
 
 That 10 percent figure assumes a channel mix of roughly **50 percent streamer (10% prior), 25 percent press (5% prior), 15 percent charity bundle (15% prior), 10 percent personal gift (30% prior)**: weighted blend ≈ 10 percent. A studio with a heavier personal-gift mix gets a higher blended rate and the caps shrink proportionally; recompute if Volley's actual mix drifts.
 
-The caps below use each band's **floor** (the lower funding threshold). At the *upper* end of a band, the paid-unit floor rises and the cap rises with it; Band 4 at the £500,000 cap computes to ~44,683 paid units, which gives a 3% cap of ~1,340 keys and an effective key cap of ~13,400 (about 2.5x the table's floor-based 5,360). Use the floor numbers as conservative working bounds; the higher numbers are headroom available once the studio is genuinely at the top of a band.
+The caps below use each band's **floor** (the lower funding threshold). At the *upper* end of a band, the paid-unit floor rises and the cap rises with it; Band 3 at the £500,000 cap computes to ~89,445 paid units, which gives a 3% cap of ~2,683 keys and an effective key cap of ~26,830 (about 6.7x the table's floor-based 4,025). Use the floor numbers as conservative working bounds; the higher numbers are headroom available once the studio is genuinely at the top of a band.
 
 | Band | Price (USD) | Funding floor (GBP) | Net per unit (~GBP) | Paid units floor | Raw % cap | Effective key cap |
 |---|---|---|---|---|---|---|
@@ -75,7 +75,6 @@ The caps below use each band's **floor** (the lower funding threshold). At the *
 | 1 | $3 | £10,000 | £1.68 | ~5,950 | 5% = ~298 | **~2,975 keys** |
 | 2 | $5 | £25,000 | £2.80 | ~8,930 | 5% = ~447 | **~4,465 keys** |
 | 3 | $9.99 | £75,000 | £5.59 | ~13,420 | 3% = ~403 | **~4,025 keys** |
-| 4 | $19.99 | £200,000 | £11.19 | ~17,873 | 3% = ~536 | **~5,360 keys** |
 
 Arithmetic check, Band 1: £10,000 ÷ £1.68 = 5,952 units; 5 percent = 297.6; ÷ 10 percent cannibalisation rate = 2,976. Verified.
 
