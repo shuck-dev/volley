@@ -10,7 +10,7 @@ Shuck cycles are two weeks long, Tuesday to Monday. Each cycle has two ritual Mo
 
 The build's Monday.
 
-- **Morning: Carnival.** Playtest gate focused on the player-facing changes that landed since the previous cycle's deploy. The three Gru Sisters are dispatched and take those changes from their own angle. Carnival passes when each sister has nodded. Whole-game regression is the per-PR Battle's job; Carnival reads the cycle's deltas in the player's hand.
+- **Morning: Carnival.** Playtest gate focused on the player-facing changes that landed since the previous cycle's deploy. The three Gru Sisters are dispatched and take those changes from their own angle. Carnival passes when each sister has nodded. Whole-game regression is the per-PR Battle's job; Carnival reads the cycle's deltas.
 - **Afternoon: Return.** Prod deploy of the build Carnival just cleared. Each cycle ships its mid-cycle Monday deploy as the routine release; the question of *what* ships is whatever player-facing changes landed since the previous cycle's deploy. If Carnival fails, the deploy waits, fix work becomes the priority for week two, and the slot rolls to the next cycle's mid-cycle Monday.
 
 If Carnival clears, week two continues with the cycle's in-flight work. The cycle continues; the deploy is mid-cycle, the plan is end-cycle. Week two carries the work that will land in the next cycle's mid-cycle Carnival.
