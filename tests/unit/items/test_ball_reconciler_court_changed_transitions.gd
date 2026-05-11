@@ -1,4 +1,4 @@
-## SH-374 step 7.3: court_changed transitions instead of destroying when stored_balls_in_registry is on.
+## court_changed transitions a registry ball between STORED and PLAY states; the entry survives deactivate.
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
@@ -63,7 +63,6 @@ func _ball_count() -> int:
 
 
 func test_flag_on_on_court_true_transitions_stored_ball_to_play() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	await get_tree().process_frame
 
@@ -85,7 +84,6 @@ func test_flag_on_on_court_true_transitions_stored_ball_to_play() -> void:
 
 
 func test_flag_on_on_court_false_transitions_play_ball_to_stored() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	await get_tree().process_frame
@@ -112,7 +110,6 @@ func test_flag_on_on_court_false_transitions_play_ball_to_stored() -> void:
 
 
 func test_flag_on_round_trip_stored_play_stored_keeps_single_instance() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	await get_tree().process_frame
 	var instance_id := _reconciler.get_ball_for_key("ball_alpha").get_instance_id()
@@ -135,7 +132,6 @@ func test_flag_on_round_trip_stored_play_stored_keeps_single_instance() -> void:
 
 
 func test_bring_into_play_reuses_out_rest_ball_via_enter_play() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	await get_tree().process_frame
 	# Start at rest so reuse must transition; release_into_rest lands an OUT_REST Ball under the same key.
@@ -150,18 +146,3 @@ func test_bring_into_play_reuses_out_rest_ball_via_enter_play() -> void:
 		or played.play_state == Ball.PlayState.PLAY_ARC
 	)
 	assert_true(is_play_state, "reuse path runs enter_play, leaving a PLAY state")
-
-
-func test_flag_off_destroy_on_deactivate_path_still_fires() -> void:
-	# Legacy destroy-on-deactivate path stays correct until step 7.6 retires it.
-	_reconciler.stored_balls_in_registry = false
-	_manager.take("ball_alpha")
-	_manager.activate("ball_alpha")
-	assert_eq(_ball_count(), 1, "precondition: one live ball before deactivate")
-
-	_manager.deactivate("ball_alpha")
-	await get_tree().process_frame
-
-	assert_eq(_ball_count(), 0, "flag-off path still destroys on deactivate")
-	assert_null(_reconciler.get_ball_for_key("ball_alpha"))
-	assert_eq(_ball_removed_count, 1, "ball_removed still fires on flag-off destroy")

@@ -55,18 +55,7 @@ func _ball_count() -> int:
 	return count
 
 
-func test_flag_off_does_not_populate_stored_kit_items() -> void:
-	# Legacy flag-off path stays correct until step 7.6 retires the opt-in branches.
-	_reconciler.stored_balls_in_registry = false
-	# Owned but not on-court; with flag off, no STORED ball spawns.
-	_manager.take("ball_alpha")
-	_manager.take("ball_beta")
-	await get_tree().process_frame
-	assert_eq(_ball_count(), 0, "flag off keeps stored-population dormant")
-
-
-func test_flag_on_populates_stored_balls_for_kit_ball_items() -> void:
-	_reconciler.stored_balls_in_registry = true
+func test_populates_stored_balls_for_kit_ball_items() -> void:
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
 	await get_tree().process_frame
@@ -87,7 +76,6 @@ func test_flag_on_populates_stored_balls_for_kit_ball_items() -> void:
 
 
 func test_mixed_kit_and_court_population_uses_both_branches() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
 	# Drive ball_alpha onto the court; the existing court branch handles it, kit branch handles ball_beta.
@@ -107,7 +95,6 @@ func test_mixed_kit_and_court_population_uses_both_branches() -> void:
 
 
 func test_collect_item_positions_skips_stored_balls() -> void:
-	_reconciler.stored_balls_in_registry = true
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
 	_manager.activate("ball_alpha")

@@ -1,5 +1,4 @@
-## Step 4 of the ball-lifecycle refactor: stored-surface opt-in.
-## Verifies BallReconciler.adopt_stored honours the stored_balls_in_registry flag.
+## Verifies BallReconciler.adopt_stored spawns and registers a STORED Ball.
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
@@ -41,18 +40,7 @@ func _on_ball_spawned(item_key: String, ball: Ball) -> void:
 	_last_spawned_ball = ball
 
 
-func test_adopt_stored_is_inert_when_flag_off() -> void:
-	_reconciler.stored_balls_in_registry = false
-	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2(10, 20))
-	assert_null(ball, "adopt_stored returns null when the flag is off")
-	assert_eq(_added_count, 0, "ball_added must not fire when flag is off")
-	assert_eq(_spawned_count, 0, "ball_spawned must not fire when flag is off")
-	assert_null(_reconciler.get_ball_for_key("ball_alpha"), "no registry entry when flag is off")
-
-
-func test_adopt_stored_spawns_and_registers_when_flag_on() -> void:
-	_reconciler.stored_balls_in_registry = true
-
+func test_adopt_stored_spawns_and_registers() -> void:
 	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2(10, 20))
 	assert_not_null(ball, "adopt_stored returns the spawned ball when flag is on")
 	assert_eq(ball.get_parent(), _reconciler, "spawned ball parented to the reconciler")

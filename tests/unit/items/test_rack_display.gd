@@ -286,36 +286,16 @@ func _make_rack_with_reconciler(
 	return rack
 
 
-func test_flag_off_rack_sources_art_from_definition() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
-	var manager: Node = _make_manager_with([ball])
-	manager._progression.friendship_point_balance = 1000
-	var reconciler: BallReconciler = _make_reconciler(manager)
-	reconciler.stored_balls_in_registry = false
-	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
-	manager.take(ball.key)
-
-	var slot: Node2D = _find_slot(rack, ball.key)
-	assert_not_null(slot, "slot was rendered")
-	var art_holder: Node2D = slot.get_node("ArtHolder")
-	assert_eq(
-		art_holder.get_meta(&"source", ""),
-		&"definition",
-		"with the flag off the rack sources art from the ItemDefinition",
-	)
-
-
-func test_flag_on_with_stored_ball_rack_sources_art_from_ball() -> void:
+func test_rack_with_stored_ball_sources_art_from_ball() -> void:
 	var ball_item := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball_item])
 	manager._progression.friendship_point_balance = 1000
 	var reconciler: BallReconciler = _make_reconciler(manager)
-	reconciler.stored_balls_in_registry = true
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball_item.key)
 	# adopt_stored registers a STORED Ball under the key; rack picks it up via ball_spawned.
 	var stored: Ball = reconciler.adopt_stored(ball_item.key, Vector2.ZERO)
-	assert_not_null(stored, "adopt_stored returns a Ball when the flag is on")
+	assert_not_null(stored, "adopt_stored returns a Ball")
 
 	var slot: Node2D = _find_slot(rack, ball_item.key)
 	assert_not_null(slot, "slot was rendered")
@@ -323,7 +303,7 @@ func test_flag_on_with_stored_ball_rack_sources_art_from_ball() -> void:
 	assert_eq(
 		art_holder.get_meta(&"source", ""),
 		&"ball",
-		"with the flag on and a STORED ball registered the rack reads art from the Ball",
+		"the rack reads art from the STORED Ball when one is registered",
 	)
 	# Ball renders its own ItemArtHolder at the slot position; rack must not duplicate art.
 	assert_eq(

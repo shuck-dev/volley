@@ -211,16 +211,17 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	)
 
 	var stored: Ball = null
-	if reconciler != null and reconciler.stored_balls_in_registry:
+	if reconciler != null:
 		stored = reconciler.get_ball_for_key(item_key)
 
 	if stored != null:
-		# Flag-on rack pickup: the STORED Ball IS the drag target. No HeldBody spawn; the ball
+		# Ball-role rack pickup: the STORED Ball IS the drag target. No HeldBody spawn; the ball
 		# stays in _balls_by_key, transitioned to OUT_HELD until release.
 		stored.enter_out_held()
 		_set_court_exclude_rids([stored.get_rid()])
 		_adopt_live_ball_as_held(stored, item_key)
 	elif not _spawn_held_body(item_key, spawn_position, false):
+		# Equipment-role rack pickup still rides HeldBody; the shop spawn path retires it in a future step.
 		return false
 
 	_held_was_on_court = false
@@ -239,19 +240,18 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	if reconciler != null:
 		existing = reconciler.get_ball_for_key(item_key)
 
-	# Temporary balls bypass the reconciler; keep the legacy HeldBody spawn so the gesture
-	# does not survive into a tracked entity.
-	if is_temporary or existing == null:
-		var spawn_position: Vector2 = (
-			existing.global_position if existing != null else _cursor_position()
-		)
-		if not _spawn_held_body(item_key, spawn_position, is_temporary):
+	# Temporary balls bypass the reconciler; spawn a HeldBody so the gesture does not survive into a tracked entity.
+	if is_temporary:
+		if not _spawn_held_body(item_key, _cursor_position(), is_temporary):
 			return false
-		_held_was_on_court = not is_temporary
+		_held_was_on_court = false
 		_held_origin = &"live"
 		_mouse_button_down = true
 		pickup_started.emit(item_key)
 		return true
+
+	if existing == null:
+		return false
 
 	# Live grab: the existing Ball IS the drag target across the whole gesture. No HeldBody spawn,
 	# no queue_free, no ball_removed; the ball stays in _balls_by_key in OUT_HELD state.

@@ -13,9 +13,7 @@ const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
-## Registry owns STORED balls when true; rack pickup, court_changed deactivate, and initial kit-walk all light up.
-@export var stored_balls_in_registry: bool = true
-## Ball-role rack consulted for STORED slot positions when stored_balls_in_registry is true.
+## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
 @export var ball_rack: RackDisplay
 
 var _item_manager: Node
@@ -173,10 +171,8 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Spawns a STORED ball at `spawn_position` and registers it under `item_key`. Step 7 flips the opt-in flag and wires production callers.
+## Spawns a STORED ball at `spawn_position` and registers it under `item_key`.
 func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
-	if not stored_balls_in_registry:
-		return null
 	var ball: Ball = ball_scene.instantiate()
 	add_child(ball)
 	ball.enter_stored()
@@ -238,8 +234,6 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		if not stored_balls_in_registry and existing != null:
-			return
 		ensure_ball_for_key(
 			item_key,
 			_spawn_position_for(item_key),
@@ -251,16 +245,10 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if ball == null:
 		return
 
-	if stored_balls_in_registry:
-		# Membership = existence; deactivate becomes a state change, registry entry survives.
-		ball.enter_stored()
-		if ball_rack != null:
-			ball.global_position = ball_rack.get_slot_position_for(item_key)
-		return
-
-	_balls_by_key.erase(item_key)
-	ball_removed.emit(ball)
-	ball.call_deferred("queue_free")
+	# Membership = existence; deactivate becomes a state change, registry entry survives.
+	ball.enter_stored()
+	if ball_rack != null:
+		ball.global_position = ball_rack.get_slot_position_for(item_key)
 
 
 ## One-shot: skipped once any signal-driven court_changed activity has begun.
@@ -275,7 +263,7 @@ func _reconcile_initial_state() -> void:
 					_item_manager.get_default_ball_launch_velocity(),
 				)
 	# STORED kit items are independent of the court-pending flag; court_changed cannot spawn them.
-	if stored_balls_in_registry and not _stored_kit_reconciled:
+	if not _stored_kit_reconciled:
 		_stored_kit_reconciled = true
 		_reconcile_stored_kit_items()
 

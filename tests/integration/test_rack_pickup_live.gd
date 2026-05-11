@@ -1,4 +1,4 @@
-# Step 7.4: flag-on rack pickups grab the STORED Ball directly; no HeldBody spawn.
+# Rack pickups grab the STORED Ball directly; no HeldBody spawn for ball-role.
 # Canon: designs/01-prototype/tech/02-ball-lifecycle.md.
 extends GutTest
 
@@ -66,13 +66,12 @@ func before_each() -> void:
 
 func _seed_stored_ball() -> Ball:
 	_manager.take("ball_alpha")
-	_reconciler.stored_balls_in_registry = true
 	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2(50, 0))
-	assert_not_null(ball, "precondition: adopt_stored returns a Ball when the flag is on")
+	assert_not_null(ball, "precondition: adopt_stored returns a Ball")
 	return ball
 
 
-func test_flag_on_rack_grab_adopts_stored_ball_no_held_body() -> void:
+func test_rack_grab_adopts_stored_ball_no_held_body() -> void:
 	var stored: Ball = _seed_stored_ball()
 
 	var removed_count: int = 0
@@ -80,22 +79,11 @@ func test_flag_on_rack_grab_adopts_stored_ball_no_held_body() -> void:
 
 	assert_true(_drag.grab_from_rack("ball_alpha", Vector2(50, 0)))
 
-	assert_eq(_drag._held_ball, stored, "flag-on rack grab adopts the STORED Ball as held")
-	assert_null(_drag._held_body, "no HeldBody spawn on flag-on rack grab")
+	assert_eq(_drag._held_ball, stored, "rack grab adopts the STORED Ball as held")
+	assert_null(_drag._held_body, "no HeldBody spawn on ball-role rack grab")
 	assert_eq(stored.play_state, Ball.PlayState.OUT_HELD)
 	assert_eq(removed_count, 0, "rack pickup does not emit ball_removed")
 	assert_eq(_reconciler.get_ball_for_key("ball_alpha"), stored, "ball stays in registry")
-
-
-func test_flag_off_rack_grab_spawns_held_body() -> void:
-	# Legacy rack-pickup path stays correct until step 7.6 retires HeldBody for ball-role.
-	_reconciler.stored_balls_in_registry = false
-	_manager.take("ball_alpha")
-
-	assert_true(_drag.grab_from_rack("ball_alpha", Vector2(50, 0)))
-
-	assert_not_null(_drag._held_body, "flag-off rack grab spawns a HeldBody")
-	assert_null(_drag._held_ball, "no Ball adopted when flag is off")
 
 
 func test_rack_grab_release_over_court_transitions_to_play() -> void:

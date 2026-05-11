@@ -104,7 +104,7 @@ func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> voi
 
 
 func _stored_ball_for(item_key: String) -> Ball:
-	if reconciler == null or not reconciler.stored_balls_in_registry:
+	if reconciler == null:
 		return null
 	var ball: Ball = reconciler.get_ball_for_key(item_key)
 	if ball == null:
