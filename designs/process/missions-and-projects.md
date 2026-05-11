@@ -2,6 +2,8 @@
 
 The four nouns that organise work in Volley, and how they relate.
 
+For the shape of work *inside* a mission, see [`flow-shapes.md`](flow-shapes.md): the bug, spike, and feature flows each carry a distinct entry, deliverable, and "done."
+
 ## Mission
 
 A scoped goal with a codename, surfaced as a **Linear milestone** in its owning project. The milestone name is the mission codename.
