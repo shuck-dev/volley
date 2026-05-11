@@ -53,7 +53,7 @@ Streamer key services: **Keymailer** (founded by the Yogscast CEO), **Lurkit**, 
 
 ## Free weekend dynamics
 
-Steamworks documents Free Weekends as best-suited to **replayable or multiplayer games** with paired discounts to convert trial players ([Steam partner docs](https://partner.steamgames.com/doc/marketing/discounts/freeweekends)). Post-promotion review-velocity bump runs about four weeks. *Among Us* and *Fall Guys* going free-to-play are not analogues for paid-indie free weekends; both relied on cosmetic or platform-fee monetisation. **Inference for Volley: a Free Weekend is a Band 3+ tool.** Below that the audience is too small to absorb the post-promo dip.
+Steamworks documents Free Weekends as best-suited to **replayable or multiplayer games** with paired discounts to convert trial players ([Steam partner docs](https://partner.steamgames.com/doc/marketing/discounts/freeweekends)). Post-promotion review-velocity bump runs about four weeks. *Among Us* and *Fall Guys* going free-to-play are not analogues for paid-indie free weekends; both relied on cosmetic or platform-fee monetisation. **Inference for Volley: a Free Weekend is a Band 2 tool.** Below that the audience is too small to absorb the post-promo dip.
 
 This claim is **inferred**, not anchored to a practitioner Band-1-2 Free Weekend postmortem; the closest adjacent voice is Cliff Harris's writing against deep discounts ([The deep discount era is over, 2016](https://www.positech.co.uk/cliffsblog/2016/01/01/the-deep-discount-era-is-over/)), which speaks to discount discipline broadly rather than Free Weekend specifically. Treat with appropriate confidence and revisit when a small-indie Free Weekend postmortem surfaces.
 
@@ -63,20 +63,19 @@ This claim is **inferred**, not anchored to a practitioner Band-1-2 Free Weekend
 
 ## Per-band give-ceilings
 
-Volley's bands need a simple model. Take the lower funding threshold of each band, divide by Steam's net to the developer (about 70 percent of $price after Valve's 30 percent cut, with USD/GBP at ~0.80 throughout), get a paid-unit floor. Cap total giveaway keys at the conversion-adjusted equivalent of **5 percent of paid units** for Band 0 to 2, **3 percent** for Band 3+. The conversion adjustment uses a **10 percent blended cannibalisation rate**.
+Volley's bands need a simple model. Take the lower funding threshold of each band, divide by Steam's net to the developer (about 70 percent of $price after Valve's 30 percent cut, with USD/GBP at ~0.80 throughout), get a paid-unit floor. Cap total giveaway keys at the conversion-adjusted equivalent of **5 percent of paid units** for Bands 0 and 1, **3 percent** for Band 2. The conversion adjustment uses a **10 percent blended cannibalisation rate**.
 
 That 10 percent figure assumes a channel mix of roughly **50 percent streamer (10% prior), 25 percent press (5% prior), 15 percent charity bundle (15% prior), 10 percent personal gift (30% prior)**: weighted blend ≈ 10 percent. A studio with a heavier personal-gift mix gets a higher blended rate and the caps shrink proportionally; recompute if Volley's actual mix drifts.
 
-The caps below use each band's **floor** (the lower funding threshold). At the *upper* end of a band, the paid-unit floor rises and the cap rises with it; Band 3 at the £500,000 cap computes to ~89,445 paid units, which gives a 3% cap of ~2,683 keys and an effective key cap of ~26,830 (about 6.7x the table's floor-based 4,025). Use the floor numbers as conservative working bounds; the higher numbers are headroom available once the studio is genuinely at the top of a band.
+The caps below use each band's **floor** (the lower funding threshold). At the *upper* end of a band, the paid-unit floor rises and the cap rises with it; Band 2 at the £500,000 cap computes to ~89,445 paid units, which gives a 3% cap of ~2,683 keys and an effective key cap of ~26,830 (about 6.7x the table's floor-based 4,025). Use the floor numbers as conservative working bounds; the higher numbers are headroom available once the studio is genuinely at the top of a band.
 
 | Band | Price (USD) | Funding floor (GBP) | Net per unit (~GBP) | Paid units floor | Raw % cap | Effective key cap |
 |---|---|---|---|---|---|---|
-| 0 | $2 | £0 | £1.12 | 0 (baseline-funded) | n/a | ~500 keys ceiling regardless |
-| 1 | $3 | £10,000 | £1.68 | ~5,950 | 5% = ~298 | **~2,975 keys** |
-| 2 | $5 | £25,000 | £2.80 | ~8,930 | 5% = ~447 | **~4,465 keys** |
-| 3 | $9.99 | £75,000 | £5.59 | ~13,420 | 3% = ~403 | **~4,025 keys** |
+| 0 | $2.99 | £0 | £1.67 | 0 (baseline-funded) | n/a | ~500 keys ceiling regardless |
+| 1 | $4.99 | £25,000 | £2.79 | ~8,961 | 5% = ~448 | **~4,480 keys** |
+| 2 | $9.99 | £75,000 | £5.59 | ~13,420 | 3% = ~403 | **~4,025 keys** |
 
-Arithmetic check, Band 1: £10,000 ÷ £1.68 = 5,952 units; 5 percent = 297.6; ÷ 10 percent cannibalisation rate = 2,976. Verified.
+Arithmetic check, Band 1: £25,000 ÷ £2.79 = 8,961 units; 5 percent = 448; ÷ 10 percent cannibalisation rate = 4,480. Verified.
 
 The key cap is the *upper bound* at which giving everything away still leaves the band's revenue intact assuming 10 percent of recipients would have actually bought. The studio runs well under it. **Recommended operating budget: a quarter to a third of the cap.**
 
