@@ -2,7 +2,7 @@ extends GutTest
 
 # Tests that PaddleAIController self-wires to a BallTracker:
 # - ball_added attaches the controller's ball ref
-# - ball_removed detaches and disables when no balls remain
+# - ball_removed clears the ball ref but preserves the autoplay toggle
 # - set_enabled(true) is a silent no-op when no ball is bound
 
 const BallTrackerScript: GDScript = preload("res://scripts/court/ball_tracker.gd")
@@ -63,7 +63,10 @@ func test_ball_added_through_tracker_populates_controller_ball() -> void:
 	assert_eq(_controller.ball, ball, "controller picks up the freshly-attached ball")
 
 
-func test_ball_removed_clears_ball_and_disables_when_tracker_empties() -> void:
+func test_ball_removed_clears_ball_ref_but_preserves_autoplay_toggle() -> void:
+	# Grab + drop replaces the live Ball instance: ball_removed fires for the
+	# old ball, ball_added fires for the new one. The autoplay toggle is a
+	# player intent that must survive that transient gap.
 	_controller.bind_tracker(_tracker)
 	var ball: Ball = _spawn_ball()
 	_tracker.attach(ball)
@@ -73,7 +76,23 @@ func test_ball_removed_clears_ball_and_disables_when_tracker_empties() -> void:
 	_tracker.detach(ball)
 
 	assert_null(_controller.ball, "controller drops its ball ref when tracker empties")
-	assert_false(_controller.is_enabled(), "controller auto-disables when the last ball departs")
+	assert_true(_controller.is_enabled(), "autoplay toggle survives transient ball removal")
+
+
+func test_autoplay_resumes_on_replacement_ball_after_grab_drop_cycle() -> void:
+	# Models the grab-drop lifecycle: old Ball detaches, new Ball attaches.
+	# The controller must end up bound to the new ball, still enabled.
+	_controller.bind_tracker(_tracker)
+	var first: Ball = _spawn_ball()
+	_tracker.attach(first)
+	_controller.set_enabled(true)
+
+	_tracker.detach(first)
+	var replacement: Ball = _spawn_ball()
+	_tracker.attach(replacement)
+
+	assert_eq(_controller.ball, replacement, "controller rebinds to the replacement ball")
+	assert_true(_controller.is_enabled(), "autoplay continues across the grab-drop boundary")
 
 
 func test_bind_tracker_inherits_already_attached_ball() -> void:

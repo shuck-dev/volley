@@ -51,19 +51,15 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 	ball = new_ball
 
 
+## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
 	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
 	ball = fallback
-	if ball == null and _enabled:
-		set_enabled(false)
 
 
 func _physics_process(_delta: float) -> void:
-	if not _enabled:
+	if not _enabled or ball == null:
 		return
-	# Belt-and-braces: set_enabled refuses null-ball enable, so this is defence
-	# in depth against direct `_enabled = true` writes.
-	assert(ball != null, "PaddleAIController: ball must be set before enabling")
 	_maybe_resample_noise()
 	if not _ball_in_play():
 		_drift_to_center()
