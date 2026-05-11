@@ -30,10 +30,6 @@ The Mondays carry the heavy rituals. The rest of the cycle runs the continuous o
 
 Work that misses a cycle's release slot rolls into the next cycle's release slot. The Tuesday-to-mid-cycle-Monday window of the new cycle is the next chance to ride the coaster; the second-half window of the current cycle is the one after that.
 
-## How the Carnival issue lands
-
-Linear's recurring-issue feature fires the Carnival issue every cycle on the cycle-start Tuesday. The body, the `carnival` label, and the due-date offset (`+6 days` from creation, landing the mid-cycle Monday) all live in the Linear recurring-issue config. Planning fleshes out the fired issue: what this cycle's Carnival is covering, where the testing focus should land, what player-facing changes the build carries.
-
 ## Hotfixes
 
 Hotfixes ship when needed, on any day, on their own clock, and supersede the routine release. A hotfix moves to production the moment it's clean, regardless of where the cycle is in its calendar. The routine release continues on its slot once the hotfix is out.
