@@ -93,11 +93,13 @@ position = Vector2(300, 0)
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-300, 0)
 
-[node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
+[node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
 position = Vector2(-600, 349.8)
+reconciler = NodePath("../BallReconciler")
 
-[node name="GearRack" parent="." unique_id=445509089 instance=ExtResource("9_c7axm")]
+[node name="GearRack" parent="." unique_id=445509089 node_paths=PackedStringArray("reconciler") instance=ExtResource("9_c7axm")]
 position = Vector2(600, 349.8)
+reconciler = NodePath("../BallReconciler")
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
 position = Vector2(870, 349.8)
