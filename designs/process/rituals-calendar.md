@@ -9,7 +9,7 @@ Each cycle has two ritual Mondays.
 ### Mid-cycle Monday (day 7): Carnival, then Heist
 
 - **Morning: Carnival.** The cycle's playtest gate fires on the mid-cycle Monday. The build that goes in is the player-facing work that landed since the previous release.
-- **Afternoon: Heist.** If the Carnival clears, the Heist runs the same afternoon and the release lands. If the Carnival fails, the Heist waits, fix work becomes the priority for week two, and the release slot rolls to the next cycle's mid-cycle Monday.
+- **Afternoon: Heist.** If the Carnival clears, the Heist runs the same afternoon and the release lands. If the Carnival fails, the Heist is aborted, fix work becomes the priority for week two, and the release slot rolls to the next cycle's mid-cycle Monday.
 
 If the Carnival clears, week two carries on with the cycle's in-flight work; the release is mid-cycle, the cycle is not done.
 
