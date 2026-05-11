@@ -132,6 +132,12 @@ func ensure_ball_for_key(
 ) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
+		# Re-entry from STORED/OUT_REST/OUT_HELD goes through enter_play so physics flags flip cleanly.
+		if (
+			existing.play_state != Ball.PlayState.PLAY_NORMAL
+			and existing.play_state != Ball.PlayState.PLAY_ARC
+		):
+			existing.enter_play()
 		existing.global_position = spawn_position
 		existing.linear_velocity = initial_velocity
 		_apply_preserved_speed(existing, preserved_speed)
@@ -222,7 +228,8 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if not _adopting_pre_existing:
 		_initial_reconcile_pending = false
 	if on_court:
-		if get_ball_for_key(item_key) != null:
+		# Flag-off keeps today's no-op-on-existing behaviour; flag-on routes through ensure_ball_for_key's reuse path (enter_play + reposition).
+		if not stored_balls_in_registry and get_ball_for_key(item_key) != null:
 			return
 		ensure_ball_for_key(
 			item_key,
@@ -233,6 +240,13 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 
 	var ball: Ball = get_ball_for_key(item_key)
 	if ball == null:
+		return
+
+	if stored_balls_in_registry:
+		# Membership = existence; deactivate becomes a state change, registry entry survives.
+		ball.enter_stored()
+		if ball_rack != null:
+			ball.global_position = ball_rack.get_slot_position_for(item_key)
 		return
 
 	_balls_by_key.erase(item_key)
