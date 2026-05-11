@@ -24,12 +24,9 @@ The end of the cycle. No release; the focus is on closing this cycle and shaping
 
 ## Between the Mondays
 
-The Mondays carry the heavy rituals. The rest of the cycle runs the continuous ones, which fire per pull request or per feature.
+The Mondays carry the heavy rituals. The rest of the cycle runs the continuous ones, which fire per pull request or per feature: the Battle (per-PR review) and the Ride (per-feature smoke test). Both are defined in `ai/lair/guide.md`.
 
-- **Per-PR review.** Every pull request gets an adversarial review pass before merge. Code-quality, signal-lifecycle, conventions, and scene-shape checks run alongside human review; merging happens once the diff is clean and approved.
-- **Per-feature smoke test.** After a merged feature lands, a single-feature playtest confirms it reads right in the game before the next mission opens.
-
-A cycle whose pull requests and feature smoke tests were clean is the cycle most likely to clear its mid-cycle playtest gate.
+A cycle whose Battles and Rides were clean is the cycle most likely to clear its mid-cycle playtest gate.
 
 ## What rolls forward
 
