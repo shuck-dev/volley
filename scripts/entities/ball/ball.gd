@@ -151,7 +151,19 @@ func set_play_state(new_state: PlayState) -> void:
 	if play_state == new_state:
 		return
 	play_state = new_state
+	_apply_grab_area_pickable()
 	play_state_changed.emit(new_state)
+
+
+# Grab area swallows clicks even while frozen; disable it when the ball isn't grabbable so the rack slot below stays reachable.
+func _apply_grab_area_pickable() -> void:
+	if grab_area == null:
+		return
+	grab_area.input_pickable = (
+		play_state == PlayState.PLAY_NORMAL
+		or play_state == PlayState.PLAY_ARC
+		or play_state == PlayState.OUT_REST
+	)
 
 
 # STORED: body frozen, collision off. Position handled by the caller (rack slot).
