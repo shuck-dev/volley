@@ -1,26 +1,21 @@
 # Rituals calendar
 
-The cadence Volley runs on, written as part of the open-development practice the studio leans into. Anyone reading the repo can see when builds ship, when code gets reviewed, and when the studio looks back at what landed. The named rituals (Carnival, Battle, Ride) are defined in `ai/lair/guide.md`; cycle mechanics live in `project-management.md`. This doc lands the calendar they fire on.
+The cadence the named rituals fire on. Definitions are owned elsewhere: the rituals themselves (Carnival, Heist, Battle, Ride, Cycle retro, Mission debrief) live in `ai/lair/guide.md`; cycle mechanics (Tuesday-to-Monday, Monday buffer, alphabetical puppet naming) live in `project-management.md`. This doc lands the calendar.
 
 ## Two Mondays per cycle
 
-Shuck cycles are two weeks long, Tuesday to Monday. Each cycle has two ritual Mondays.
+Each cycle has two ritual Mondays.
 
-### Mid-cycle Monday (day 7): Carnival and release
+### Mid-cycle Monday (day 7): Carnival, then Heist
 
-Halfway through the cycle, the build is played end-to-end and released to the public.
+- **Morning: Carnival.** The cycle's playtest gate fires on the mid-cycle Monday. The build that goes in is the player-facing work that landed since the previous release.
+- **Afternoon: Heist.** If the Carnival clears, the Heist runs the same afternoon and the release lands. If the Carnival fails, the Heist waits, fix work becomes the priority for week two, and the release slot rolls to the next cycle's mid-cycle Monday.
 
-- **Morning: Carnival.** A focused playtest gate against the player-facing changes that landed since the previous release. Three angles run in parallel: a systems read, an abuse-vector pass, and a feel pass on the controller. Whole-game regression is the Battle's job during the cycle; the Carnival reads the deltas.
-- **Afternoon: release.** If the Carnival passes, the build deploys to production the same afternoon. Each cycle has one routine release on its mid-cycle Monday. If the Carnival surfaces a blocking finding, the release waits, fix work becomes the priority for week two, and the slot rolls to the next cycle's mid-cycle Monday.
+If the Carnival clears, week two carries on with the cycle's in-flight work; the release is mid-cycle, the cycle is not done.
 
-If the Carnival clears, week two continues with the cycle's in-flight work. The cycle continues; the release is mid-cycle, the plan is end-cycle. Week two carries the work that will land in the next cycle's release.
+### Cycle-close Monday (day 14): Cycle retro
 
-### Cycle-close Monday (day 14): retro and plan
-
-The end of the cycle. The focus is on closing this cycle and shaping the next one.
-
-- **Retro.** Look back. What landed, what stuck, what process changes the studio wants to keep.
-- **Plan.** Look forward. Ready the next cycle's issues, name the new cycle, set its description.
+The end-of-cycle reflection fires on the cycle-close Monday. Per `project-management.md`, the buffer day also covers next-cycle setup.
 
 ## What rolls forward
 
@@ -28,4 +23,4 @@ Work that misses a cycle's release slot rolls into the next cycle's release slot
 
 ## Hotfixes
 
-Hotfixes ship when needed, on any day, on their own clock, and supersede the routine release. A hotfix moves to production the moment it's clean, regardless of where the cycle is in its calendar. The routine release continues on its slot once the hotfix is out.
+Hotfixes ship when needed, on any day, on their own clock, and supersede the routine release. The routine release continues on its slot once the hotfix is out.
