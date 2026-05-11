@@ -56,11 +56,9 @@ Each cycle is two weeks. The beats are the same every time.
 
 **The Ride.** A single-feature smoke test on the built game, triggered after a Dandori Challenge merges. The Ride confirms the feature behaves in the hand, not only in the diff. The Gru Sisters are dispatched as special agents to review the freshly merged work from their angles.
 
-**The Carnival.** The build as a playable experience, and the full playtest gate before a release. Every release candidate is its own Carnival. The Gru Sisters are dispatched again for the Carnival, each taking the whole game from her own angle; the Return waits on their nod.
+**The Carnival.** The build as a playable experience, and the full playtest gate before a release. Every release candidate is its own Carnival. The Gru Sisters are dispatched again for the Carnival, each taking the whole game from her own angle; the release waits on their nod.
 
-**The Heist.** The release operation. Named after Gru's moon heist, with the polarity flipped: this one gives the prize to the world instead of taking it.
-
-**The Return.** The release moment itself. Named for the end of *Despicable Me 1*, when Gru returns the moon. It is the only heist that ends by handing the loot over.
+**The Heist.** The release operation. Named after Gru's moon heist, with the polarity flipped: this one gives the prize to the world instead of taking it. The Heist ends with the build going to production.
 
 **Mission debrief.** After a mission closes, the crew debriefs. What shipped, what surprised, what to do differently.
 
@@ -88,7 +86,7 @@ Margo, Edith, and Agnes are special agents alongside the minions; not under them
 
 ## The public
 
-The players who get to play what the Return brings them. The reason any of this happens.
+The players who get to play what the release brings them. The reason any of this happens.
 
 ## The cast, in one glance
 
@@ -127,8 +125,7 @@ The players who get to play what the Return brings them. The reason any of this 
 | Dandori Battle | The adversarial review round inside a Dandori Challenge. |
 | The Ride | Single-feature smoke on the built game, after a Challenge merges. |
 | The Carnival | Full playtest gate before a release. Each RC is its own Carnival. |
-| The Heist | The release operation. Inverted polarity: gives to the world. |
-| The Return | The release moment itself. |
+| The Heist | The release operation. Inverted polarity: gives to the world. Ends with the build going to production. |
 | Complete | Mission state: every issue merged. Work timer stops. |
 | Closed | Mission state: complete plus debrief posted. Terminal. |
 | Mission debrief | The beat between complete and closed. |
@@ -140,7 +137,7 @@ Usage examples, so the words feel natural:
 - "SH-321 opened its Dandori Challenge this morning; Trillian and Marvin are in the Battle."
 - "The Carnival on `rc-0.4` passed Margo's test. Edith is on it next."
 - "Operation Banana Stand went on the Ride this morning; Agnes is on it first."
-- "The Return ships Monday if nothing blocks."
+- "The release ships Monday if nothing blocks."
 - "Nefario added a new MCP server; the minions pick it up next session."
 
 ## What stays the same
