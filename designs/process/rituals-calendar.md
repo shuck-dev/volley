@@ -4,7 +4,7 @@ The cadence the named rituals run on. Ritual definitions live in `ai/lair/guide.
 
 ## Two Mondays per cycle
 
-Shuck cycles are two weeks long, Tuesday to Monday. Each cycle has two ritual Mondays. Each one carries one heavy ritual; the rituals stay on their own day.
+Shuck cycles are two weeks long, Tuesday to Monday. Each cycle has two ritual Mondays.
 
 ### Mid-cycle Monday (day 7)
 
