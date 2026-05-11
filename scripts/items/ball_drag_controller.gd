@@ -297,16 +297,26 @@ func spawn_purchased_at(
 		target.accept(item_key, world_position, gesture_velocity)
 		return true
 	if target is VenueDropTarget:
-		# Ball-role venue releases lift the entity into the registry as OUT_REST; equipment keeps the
-		# legacy HeldBody loose path until step 7 unifies it.
 		if _is_ball_role(item_key):
 			_release_to_rest(item_key, world_position, gesture_velocity, false)
 		else:
 			_release_loose_body_at(item_key, world_position, gesture_velocity)
 		return true
-	# Rack/shop targets accept by activating; the ball reconciler handles the live spawn.
+	if target is RackDropTarget and _is_ball_role(item_key):
+		# Ball-role rack landing adopts a STORED Ball at the slot; rack accept's deactivate branch
+		# is a no-op for a just-purchased, not-on-court item.
+		_adopt_purchased_into_rack(item_key)
+		return true
 	target.accept(item_key, world_position, gesture_velocity)
 	return true
+
+
+func _adopt_purchased_into_rack(item_key: String) -> void:
+	if reconciler == null or rack == null:
+		return
+	if reconciler.get_ball_for_key(item_key) != null:
+		return
+	reconciler.adopt_stored(item_key, rack.get_slot_position_for(item_key))
 
 
 ## Step 5: ball-role venue-floor releases funnel here. Equipment retains the HeldBody path until step 7.

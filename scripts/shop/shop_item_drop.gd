@@ -1,17 +1,18 @@
 class_name ShopItemDrop
 extends Node
 
-## A drop in progress: rides the falling HeldBody, settles on rest, notifies the originating ShopItem.
+## A drop in progress: rides the falling body, settles on rest, notifies the originating ShopItem.
+## Body is RigidBody2D (HeldBody for equipment, Ball for ball-role).
 
 @export var tuning: ShopDragTuning
 
-var _body: HeldBody
+var _body: RigidBody2D
 var _shop_item: Object
 var _slow_frames: int = 0
 var _elapsed: float = 0.0
 
 
-func configure(body: HeldBody, shop_item: Object) -> void:
+func configure(body: RigidBody2D, shop_item: Object) -> void:
 	_body = body
 	_shop_item = shop_item
 
