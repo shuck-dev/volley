@@ -1,7 +1,7 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner; spec lives in designs/01-prototype/design/21-ball-dynamics.md.
+## Live-ball lifecycle owner; spec lives in designs/01-prototype/tech/21-ball-lifecycle.md.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).

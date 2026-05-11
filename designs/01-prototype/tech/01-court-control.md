@@ -4,52 +4,21 @@ Implementation spec for the wall-less court: friendship-bound replaces the top c
 
 ## Ball states
 
-Each ball runs an independent state machine. Multi-ball mixed-state is well-defined.
+Ball lifecycle and the per-state physics rules live in [`21-ball-lifecycle.md`](21-ball-lifecycle.md). This doc covers only the court-control mechanics that drive transitions: the friendship-bound crossing, the side-band miss, and the apex return.
 
-```mermaid
-stateDiagram-v2
-    [*] --> STORED
+## Friendship-bound apex return
 
-    state PLAY {
-        NORMAL --> ARC: cross above bound
-        ARC --> NORMAL: cross below bound
-    }
-
-    state OUT {
-        REST
-        HELD
-    }
-
-    STORED --> PLAY: serve
-    PLAY --> REST: miss
-    PLAY --> HELD: mid-rally grab
-    REST --> HELD: rest pickup
-    HELD --> REST: drop on floor
-    HELD --> PLAY: release into court
-    HELD --> STORED: release into rack
-```
-
-**STORED.** On the rack, no body.
-
-**PLAY-NORMAL** (at or below the friendship-bound). `gravity_scale = 0`, speed locked, linear damping off.
-
-**PLAY-ARC** (above the friendship-bound). `gravity_scale = 1`, speed-lock off, linear damping off. Friendship pulls the ball back as engine gravity. The ball follows a parabolic arc: it climbs and decelerates, peaks, and falls back through the bound. Speed varies through the arc as kinetic energy converts to and from height. No centripetal force, no per-tick velocity re-projection.
+PLAY-NORMAL (at or below the friendship-bound) runs `gravity_scale = 0` with the speed locked. PLAY-ARC (above the bound) runs `gravity_scale = 1` with the speed-lock off; friendship pulls the ball back as engine gravity. The ball follows a parabolic arc, climbs and decelerates, peaks, and falls back through the bound. Speed varies through the arc as kinetic energy converts to and from height. No centripetal force, no per-tick velocity re-projection.
 
 The ball tracks its pre-bound entry value as a persistent register on the body: the first NORMAL→ARC upward cross sets it; subsequent crosses do not reset it. Speed-change events while in ARC (paddle hit, partner-active return) update the register to the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked value; rally energy is preserved across the apex visit.
 
 The apex mechanism is engaged-gravity, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc with weight. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL. Loops are impossible by construction; no radial force acts on the ball.
 
-**OUT-REST.** Out of play, on the venue floor. Includes the rolling-to-rest motion after a miss as well as the settled-and-still phase that follows. The ball waits to be grabbed.
+## Side-band miss
 
-**OUT-HELD.** Drag controller owns; the ball follows the cursor.
+A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
 
-**Miss (PLAY → REST).** A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
-
-**Mid-rally grab (PLAY → HELD).** The drag controller replaces the live ball with a held body before any side-band miss fires.
-
-**Release into court (HELD → PLAY).** The cursor's Y at release decides the destination sub-state: above the friendship-bound lands in ARC, at or below lands in NORMAL.
-
-**Drop on floor (HELD → REST).** A held ball released outside the court without landing on the rack drops cleanly into REST. No miss event fires; the rally counter is not reset.
+The miss transitions the ball PLAY → OUT-REST; the state-transition handling itself lives in [`21-ball-lifecycle.md`](21-ball-lifecycle.md).
 
 The friendship-bound height lives on `CourtConfig`; see Bound-height data shape below.
 
