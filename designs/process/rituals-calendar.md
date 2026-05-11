@@ -22,10 +22,6 @@ The end of the cycle. The focus is on closing this cycle and shaping the next on
 - **Retro.** Look back. What landed, what stuck, what process changes the studio wants to keep.
 - **Plan.** Look forward. Ready the next cycle's issues, name the new cycle, set its description.
 
-## Between the Mondays
-
-The Mondays carry the heavy rituals. The rest of the cycle runs the continuous ones, which fire per PR or per feature: the Battle (per-PR review, a PR being the same thing as a Dandori Challenge) and the Ride (per-feature smoke test). A cycle whose Battles and Rides were clean is the cycle most likely to clear its mid-cycle Carnival.
-
 ## What rolls forward
 
 Work that misses a cycle's release slot rolls into the next cycle's release slot. The Tuesday-to-mid-cycle-Monday window of the new cycle is the next chance to ride the coaster; the second-half window of the current cycle is the one after that.
