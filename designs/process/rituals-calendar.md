@@ -13,7 +13,7 @@ The build's Monday.
 - **Morning: Carnival.** Playtest gate focused on the player-facing changes that landed since the previous cycle's deploy. The three Gru Sisters are dispatched and take those changes from their own angle. Carnival passes when each sister has nodded. Whole-game regression is the per-PR Battle's job; Carnival reads the cycle's deltas in the player's hand.
 - **Afternoon: Return.** Prod deploy of the build Carnival just cleared. If Carnival surfaces a blocking finding, the deploy waits and fix work becomes the priority for week two.
 
-If Carnival clears clean, the rest of week two is for the next cycle's setup work and any milestone-shaped release that earned its own moment.
+If Carnival clears clean, week two continues with the cycle's in-flight work. The cycle hasn't ended; the deploy is mid-cycle, the plan is end-cycle. Week two carries the work that will land in the next cycle's mid-cycle Carnival.
 
 ## Between the Mondays
 
