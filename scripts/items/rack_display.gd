@@ -93,25 +93,19 @@ func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	return slot
 
 
-## When the registry owns STORED balls, the Ball renders its own ItemArtHolder at the slot position;
-## the rack leaves art empty so the slot draws exactly once.
+## Slot stays empty when the registry owns a Ball for this key; the Ball renders the art itself.
 func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> void:
-	if _stored_ball_for(definition.key) != null:
+	if _registered_ball_for(definition.key) != null:
 		art_holder.set_meta(&"source", &"ball")
 		return
 	art_holder.set_meta(&"source", &"definition")
 	art_holder.add_child(definition.art.instantiate())
 
 
-func _stored_ball_for(item_key: String) -> Ball:
+func _registered_ball_for(item_key: String) -> Ball:
 	if reconciler == null:
 		return null
-	var ball: Ball = reconciler.get_ball_for_key(item_key)
-	if ball == null:
-		return null
-	if ball.play_state != Ball.PlayState.STORED:
-		return null
-	return ball
+	return reconciler.get_ball_for_key(item_key)
 
 
 ## World position of the slot for `item_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.

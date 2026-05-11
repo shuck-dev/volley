@@ -49,7 +49,7 @@ The scratchpad is gitignored and per-session; do not put this in memory (it does
 
 ## Implementer brief preamble
 
-Every implementer brief opens with: read `ai/skills/minions/code-comments.md` and `ai/skills/minions/data-driven.md` in full before writing the first line of code. Both rules keep slipping into fresh challenges and need refine rounds; making the read mandatory at brief-open is cheaper than catching the same violation in review again. Test-authors and refiners get the same line.
+Every implementer brief opens with: read `ai/skills/minions/code-comments.md`, `ai/skills/minions/data-driven.md`, and `ai/skills/minions/test-churn-limits.md` in full before writing the first line of code. Comment and data-driven rules keep slipping into fresh challenges and need refine rounds; the churn limits stop implementers grinding past the parent thread's tolerance when a test stays red. Making the read mandatory at brief-open is cheaper than catching the same violation in review again. Test-authors and refiners get the same line.
 
 ## The seven-step minion flow
 
