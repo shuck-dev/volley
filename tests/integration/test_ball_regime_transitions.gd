@@ -399,10 +399,12 @@ func test_real_press_on_live_ball_starts_mid_rally_grab_and_release_reinstates()
 
 	assert_true(_drag.is_dragging(), "press on a live ball flips into drag mode")
 	await get_tree().process_frame
-	assert_false(
+	# Step 3: the live Ball IS the drag target; it survives the grab in OUT_HELD until release.
+	assert_true(
 		is_instance_valid(live),
-		"the live ball is freed during the hold; held body takes over the cursor",
+		"live ball survives the mid-rally grab as the drag target",
 	)
+	assert_eq(live.play_state, Ball.PlayState.OUT_HELD)
 
 	var court_point := Vector2(50, -25)
 	var released: bool = _drag.attempt_release(court_point)
@@ -441,10 +443,12 @@ func test_pre_existing_court_ball_is_grabbable_mid_rally() -> void:
 		"pressing a pre-existing scene Ball must flip the drag controller into mid-rally grab",
 	)
 	await get_tree().process_frame
-	assert_false(
+	# Step 3: the pre-existing Ball IS the drag target; it survives the grab in OUT_HELD.
+	assert_true(
 		is_instance_valid(pre_existing),
-		"the pre-existing ball is freed during the hold; held body takes over the cursor",
+		"the pre-existing Ball survives the grab as the drag target",
 	)
+	assert_eq(pre_existing.play_state, Ball.PlayState.OUT_HELD)
 
 
 func _find_slot_for_key(item_key: String) -> Node2D:

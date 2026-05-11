@@ -172,7 +172,7 @@ func test_release_into_venue_floor_unfreezes_held_body_with_gravity_active() -> 
 	assert_false(_manager.is_on_court("ball_alpha"))
 
 
-func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_carryover() -> void:
+func test_mid_rally_grab_keeps_same_ball_in_out_held_with_velocity_carryover() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -185,22 +185,19 @@ func test_mid_rally_grab_spawns_held_body_at_live_ball_position_with_velocity_ca
 
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 
-	var body: HeldBody = _drag.get_held_body()
-	assert_not_null(body, "mid-rally grab spawns a HeldBody, not a plain Node2D")
-	assert_eq(
-		body.global_position,
-		Vector2(75, 30),
-		"held body spawns at the live ball's world position",
-	)
-	assert_eq(body.phase, HeldBody.Phase.LIFTING)
-	assert_true(body.freeze, "frozen-kinematic during the cursor follow")
+	# Step 3: no HeldBody spawn on a live grab; the Ball is the drag target.
+	assert_null(_drag.get_held_body(), "live grab does not spawn a HeldBody")
+	assert_eq(live.play_state, Ball.PlayState.OUT_HELD, "grabbed ball transitions to OUT_HELD")
+	assert_eq(live.global_position, Vector2(75, 30), "ball stays at its pre-grab world position")
+	assert_true(live.freeze, "OUT_HELD freezes the body so the controller drives position")
+	assert_eq(live.collision_layer, 0, "OUT_HELD suppresses collision")
 	await get_tree().process_frame
 
 	_seed_release_velocity(Vector2(75, 30), Vector2(155, 30))
 	assert_true(_drag.attempt_release(Vector2(50, 25)))
 	await get_tree().process_frame
 	var released: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(released, "court release spawns the rally Ball")
+	assert_eq(released, live, "same Ball instance survives the grab → court release")
 	assert_almost_eq(released.linear_velocity.length(), carry_speed, 0.5)
 
 
@@ -264,9 +261,9 @@ func test_loose_body_press_re_grabs_via_controller() -> void:
 	assert_true(body.freeze, "re-grabbed body re-freezes for cursor follow")
 
 
-func test_grab_live_ball_excludes_old_body_rid_from_court_projection() -> void:
-	# SH-332: the about-to-be-freed live Ball lingers a frame; its RID must be excluded
-	# from the court projection so the next release does not self-overlap and snap off-court.
+func test_grab_live_ball_excludes_held_ball_rid_from_court_projection() -> void:
+	# Step 3: the held Ball is the same instance across the gesture; its RID must be excluded from
+	# the court projection so the next release does not self-overlap and snap off-court.
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -283,5 +280,5 @@ func test_grab_live_ball_excludes_old_body_rid_from_court_projection() -> void:
 	assert_not_null(court_target, "controller registers a CourtDropTarget")
 	assert_true(
 		court_target._exclude_rids.has(live_rid),
-		"old live ball's RID is excluded from the court projection during the grab",
+		"the held Ball's RID is excluded from the court projection during the grab",
 	)

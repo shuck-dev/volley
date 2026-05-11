@@ -226,16 +226,22 @@ func test_mid_rally_grab_suspends_live_ball_and_takes_over_cursor() -> void:
 	assert_true(ok)
 	assert_true(_drag.is_dragging())
 	await get_tree().process_frame
-	assert_false(is_instance_valid(live), "live ball should be freed on mid-rally grab")
-	assert_null(
+	# Step 3: the live Ball is the drag target across the gesture; no queue_free on grab.
+	assert_true(
+		is_instance_valid(live), "live ball must survive the grab (single-entity ball model)"
+	)
+	assert_eq(live.play_state, Ball.PlayState.OUT_HELD, "grabbed ball transitions to OUT_HELD")
+	assert_eq(
 		_reconciler.get_ball_for_key("ball_alpha"),
-		"reconciler should release its tracked live ball during the hold",
+		live,
+		"reconciler keeps the same instance tracked through the gesture",
 	)
 
 
 func test_mid_rally_grab_then_release_over_court_reinstates_a_ball() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
+	var live_before: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	_drag.grab_live_ball("ball_alpha", false)
 	await get_tree().process_frame
 
@@ -244,8 +250,14 @@ func test_mid_rally_grab_then_release_over_court_reinstates_a_ball() -> void:
 
 	assert_true(released)
 	var reinstated: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(reinstated, "court release should reinstate a Ball via the reconciler")
+	assert_not_null(reinstated, "court release should keep the Ball tracked by the reconciler")
+	assert_eq(reinstated, live_before, "same Ball instance survives the grab → court release")
 	assert_eq(reinstated.global_position, court_point)
+	assert_ne(
+		reinstated.play_state,
+		Ball.PlayState.OUT_HELD,
+		"court release transitions the Ball out of OUT_HELD into PLAY",
+	)
 
 
 func test_temporary_ball_release_over_court_does_not_spawn_through_reconciler() -> void:

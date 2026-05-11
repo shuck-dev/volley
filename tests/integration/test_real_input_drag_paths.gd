@@ -320,7 +320,9 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")
 
 	await get_tree().process_frame
-	assert_false(is_instance_valid(live), "live ball must be freed during the mid-rally grab")
+	# Step 3: the live Ball IS the drag target; it survives the grab in OUT_HELD until release.
+	assert_true(is_instance_valid(live), "live ball survives the mid-rally grab as the drag target")
+	assert_eq(live.play_state, Ball.PlayState.OUT_HELD)
 
 	# Release at the rack drop target via a real mouse-up event with the rack as cursor.
 	_drag._input(_release_event_at(RACK_CENTER))
