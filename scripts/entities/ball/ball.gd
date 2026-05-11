@@ -18,6 +18,11 @@ enum PlayState {
 const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
 const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
+# Default layer/mask the body holds while in PLAY/STORED/OUT_REST. HELD snapshots and restores from these
+# so per-ball authored values aren't required (ball.tscn ships with Godot defaults of 1/1).
+const PLAY_COLLISION_LAYER: int = 1
+const PLAY_COLLISION_MASK: int = 1
+
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
 ## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
@@ -42,6 +47,8 @@ var entry_speed: float:
 var _item_manager: Node
 var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
 var _relock: BallRelockState = BallRelockState.new()
+# HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
+var _suppress_miss_detection: bool = false
 
 
 func _ready() -> void:
@@ -88,20 +95,18 @@ func _update_play_state(delta: float) -> void:
 func _enter_arc() -> void:
 	_relock.enter_arc(speed)
 	gravity_scale = 1.0
-	play_state = PlayState.PLAY_ARC
-	play_state_changed.emit(play_state)
+	set_play_state(PlayState.PLAY_ARC)
 
 
 func _enter_normal() -> void:
 	gravity_scale = 0.0
-	play_state = PlayState.PLAY_NORMAL
 	var should_snap: bool = _relock.enter_normal(
 		linear_velocity.length(), court_config.relock_ramp_seconds
 	)
 	if should_snap:
 		speed = _relock.entry_speed
 		linear_velocity = linear_velocity.normalized() * speed
-	play_state_changed.emit(play_state)
+	set_play_state(PlayState.PLAY_NORMAL)
 
 
 func _advance_relock_ramp(delta: float) -> void:
@@ -131,12 +136,59 @@ func register_miss_zone(zone: MissZone) -> void:
 
 
 func _on_miss_zone_body_entered(body: Node) -> void:
+	if _suppress_miss_detection:
+		return
 	if body == self:
 		missed.emit()
 
 
 func _on_missed() -> void:
-	play_state = PlayState.OUT_REST
+	enter_out_rest()
+
+
+# Single funnel for play_state writes. Idempotent: a same-state call is a no-op.
+func set_play_state(new_state: PlayState) -> void:
+	if play_state == new_state:
+		return
+	play_state = new_state
+	play_state_changed.emit(new_state)
+
+
+# STORED: body frozen, collision off. Position handled by the caller (rack slot).
+func enter_stored() -> void:
+	_suppress_miss_detection = false
+	freeze = true
+	collision_layer = 0
+	collision_mask = 0
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	set_play_state(PlayState.STORED)
+
+
+# PLAY: selects NORMAL or ARC by current Y vs the friendship bound.
+func enter_play() -> void:
+	_suppress_miss_detection = false
+	freeze = false
+	collision_layer = PLAY_COLLISION_LAYER
+	collision_mask = PLAY_COLLISION_MASK
+	linear_damp = 0.0
+	physics_material_override = PLAY_MATERIAL
+	var bound_y: float = court_config.friendship_bound_y if court_config != null else 0.0
+	var above_bound: bool = global_position.y < bound_y
+	if above_bound:
+		gravity_scale = 1.0
+		set_play_state(PlayState.PLAY_ARC)
+	else:
+		gravity_scale = 0.0
+		set_play_state(PlayState.PLAY_NORMAL)
+
+
+# OUT_REST: gravity on, REST material, damping engaged. Body keeps its current velocity.
+func enter_out_rest() -> void:
+	_suppress_miss_detection = false
+	freeze = false
+	collision_layer = PLAY_COLLISION_LAYER
+	collision_mask = PLAY_COLLISION_MASK
 	gravity_scale = 1.0
 	linear_damp = court_config.rest_roll_damping
 	physics_material_override = REST_MATERIAL
@@ -144,7 +196,18 @@ func _on_missed() -> void:
 	effect_processor.sync_base_speed()
 	_emit_max_speed_if_changed()
 	_emit_speed_changed()
-	play_state_changed.emit(play_state)
+	set_play_state(PlayState.OUT_REST)
+
+
+# OUT_HELD: body frozen, collision and miss-detection suppressed. Drag controller drives position.
+func enter_out_held() -> void:
+	_suppress_miss_detection = true
+	freeze = true
+	collision_layer = 0
+	collision_mask = 0
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	set_play_state(PlayState.OUT_HELD)
 
 
 func increase_speed() -> void:
@@ -218,12 +281,9 @@ func _ball_setup() -> void:
 	speed = min_speed
 	effect_processor.sync_base_speed()
 	lock_rotation = true
-	gravity_scale = 0.0
-	linear_damp = 0.0
-	physics_material_override = PLAY_MATERIAL
-	play_state = PlayState.PLAY_NORMAL
 	# Reset relock register so a pooled ball doesn't read its previous run's tracked value.
 	_relock.reset()
+	enter_play()
 	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 	contact_monitor = true
 	max_contacts_reported = 1
