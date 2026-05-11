@@ -4,7 +4,7 @@ Implementation spec for the wall-less court: friendship-bound replaces the top c
 
 ## Ball states
 
-Ball lifecycle and the per-state physics rules live in [`21-ball-lifecycle.md`](21-ball-lifecycle.md). This doc covers only the court-control mechanics that drive transitions: the friendship-bound crossing, the side-band miss, and the apex return.
+Ball lifecycle and the per-state physics rules live in [`02-ball-lifecycle.md`](02-ball-lifecycle.md). This doc covers only the court-control mechanics that drive transitions: the friendship-bound crossing, the side-band miss, and the apex return.
 
 ## Friendship-bound apex return
 
@@ -18,7 +18,7 @@ The apex mechanism is engaged-gravity, not a vertical-velocity flip. A flip read
 
 A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
 
-The miss transitions the ball PLAY → OUT-REST; the state-transition handling itself lives in [`21-ball-lifecycle.md`](21-ball-lifecycle.md).
+The miss transitions the ball PLAY → OUT-REST; the state-transition handling itself lives in [`02-ball-lifecycle.md`](02-ball-lifecycle.md).
 
 The friendship-bound height lives on `CourtConfig`; see Bound-height data shape below.
 

@@ -1,7 +1,7 @@
 class_name BallTracker
 extends Node
 
-## Multi-ball ownership; spec lives in designs/01-prototype/tech/21-ball-lifecycle.md.
+## Multi-ball ownership; spec lives in designs/01-prototype/tech/02-ball-lifecycle.md.
 
 signal ball_missed
 signal ball_at_max_speed_changed(is_at_max: bool)
