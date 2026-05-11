@@ -19,6 +19,28 @@ Only when the WHY is non-obvious from the code:
 
 If removing the comment wouldn't confuse a future reader, don't write it.
 
+**Two kinds of comment, two rules.**
+
+`##` is Godot's documentation-comment syntax. It attaches to the declaration immediately below (class, signal, member, function, enum, const) and surfaces in the editor as inline tooltips, class reference, and autocomplete hints. Godot's rules:
+
+- One or more `##` lines directly above a declaration; the first line is the summary, subsequent lines extend it.
+- A blank line between the docstring and the declaration breaks the attachment, so keep them adjacent.
+- BBCode formatting renders in the editor (`[b]`, `[code]`, `[url]`, etc.). Use sparingly.
+- Special tags like `[param name]`, `@tutorial`, `@deprecated` are recognised; see Godot's GDScript documentation comments page for the full list.
+
+Volley tightens these: `##` is one line per declaration, full stop. Multi-line `##` blocks become a one-liner or move into a separate doc. Tutorial / param tags are out of scope until they earn their place.
+
+`#` is a narrative inline comment. `#` gets the strict bar below.
+
+**The bar for `#`.** Default is no comment. Before writing one, try renaming the identifier, restructuring the block, or extracting a function. A `#` comment earns its place only when both of these hold:
+
+- The information is truly inscrutable from the code itself; a future reader could not deduce it by reading.
+- The information is too implementation-focused for design, tech, or narrative docs to host.
+
+If both don't hold, drop it.
+
+A blank line precedes every comment, like any other block. File-path references inside comments are forbidden; the reader finds the spec by name, not by link.
+
 ## What not to comment
 
 - **What the code does.** Well-named identifiers already do that. `// loops over enemies and applies damage` next to a `for enemy in enemies: enemy.take_damage(d)` loop is noise.

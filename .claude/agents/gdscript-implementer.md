@@ -22,6 +22,7 @@ Triggers include "implement SH-N", "refactor X to do Y", "wire this scene up", o
 
 Before writing any code, read these in full:
 
+- `ai/skills/minions/implementer-nits.md` for the pre-push checklist. Skim before declaring done; many of the rules are mechanically enforced via lint, the rest are conventions reviewers will flag.
 - `ai/skills/minions/code-comments.md` for the comment policy. One line max, WHY-only, no narration of what the code does.
 - `ai/skills/minions/data-driven.md` for the data-vs-code rule. Numbers, thresholds, tuning live in `.tres` resources, not in `const` blocks scattered through scripts.
 - `ai/skills/minions/commits.md` for commit shape, DCO sign-off, and the `Agent-Role` trailer.

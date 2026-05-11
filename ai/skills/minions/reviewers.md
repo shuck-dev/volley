@@ -85,7 +85,7 @@ All replies stay inline.
 
 ## Inline finding shape
 
-- **Label**: `issue`, `suggestion`, `nitpick`, `question`.
+- **Label**: `issue`, `suggestion`, `question`. Conventional Comments vocab, minus `nitpick` — Volley reviews don't post nitpicks. The bar for any finding: name the concrete consequence in one clause (player-visible bug, future-maintainer trap, silent save corruption, contract violation). If you can't, drop it. Style preferences, alternative phrasings, taste calls, "could also" suggestions, and questions you could have answered yourself by reading one more file all stay out of the review. Review churn is the cost of low-value findings; err toward silence.
 - One sentence naming the concern; one short clause naming the fix.
 - Hard cap: 30 words per inline. Two lines max. Three lines is a hard block on yourself; tighten.
 - One issue per inline. If you have two findings on different lines, post two inlines.
