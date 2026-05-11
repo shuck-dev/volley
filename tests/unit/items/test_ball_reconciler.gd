@@ -22,7 +22,7 @@ func before_each() -> void:
 	add_child_autofree(_host)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 
@@ -150,7 +150,7 @@ func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
 	var preloaded_host := Node2D.new()
 	add_child_autofree(preloaded_host)
 	var fresh: BallReconciler = BallReconcilerScript.new()
-	fresh.configure(_manager, preloaded_host)
+	fresh.configure(_manager)
 	add_child_autofree(fresh)
 	# Flush deferred calls (adopt_pre_existing_balls + _reconcile_initial_state).
 	await get_tree().process_frame
@@ -161,16 +161,16 @@ func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
 	)
 
 
-func test_default_spawn_position_falls_back_to_zero_for_non_node2d_host() -> void:
-	var plain_host := Node.new()
-	add_child_autofree(plain_host)
+func test_default_spawn_position_falls_back_to_zero_for_non_node2d_parent() -> void:
+	var plain_parent := Node.new()
+	add_child_autofree(plain_parent)
 	var non_spatial: BallReconciler = BallReconcilerScript.new()
-	non_spatial.configure(_manager, plain_host)
-	add_child_autofree(non_spatial)
+	non_spatial.configure(_manager)
+	plain_parent.add_child(non_spatial)
 	assert_eq(
 		non_spatial._default_spawn_position(),
 		Vector2.ZERO,
-		"non-Node2D hosts yield the zero-vector fallback",
+		"non-Node2D parents yield the zero-vector fallback",
 	)
 
 
@@ -267,7 +267,7 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	fresh_host.add_child(authored_ball)
 
 	var fresh_reconciler: BallReconciler = BallReconcilerScript.new()
-	fresh_reconciler.configure(saved_manager, fresh_host)
+	fresh_reconciler.configure(saved_manager)
 	# Reconciler parented under the host so adopt_pre_existing_balls sees the authored sibling.
 	fresh_host.add_child(fresh_reconciler)
 
@@ -289,15 +289,12 @@ func test_ensure_ball_for_key_moves_existing_ball_without_duplicating() -> void:
 	assert_eq(_permanent_ball_count(), 1)
 
 
-func test_reconciler_parents_new_balls_and_ignores_ball_host_arg() -> void:
+func test_reconciler_parents_new_balls_under_itself() -> void:
 	var first: Ball = _reconciler.ensure_ball_for_key("ball_alpha", Vector2.ZERO, Vector2.ZERO)
 	assert_eq(first.get_parent(), _reconciler, "ensure_ball_for_key parents under the reconciler")
-	assert_eq(_reconciler.get_ball_host(), _reconciler, "get_ball_host is a self-shim until step 6")
-
-	# Re-configure with an unrelated host; the reconciler must still own parenting.
-	var stranger := Node2D.new()
-	add_child_autofree(stranger)
-	_reconciler.configure(_manager, stranger)
 	var second: Ball = _reconciler.ensure_ball_for_key("ball_beta", Vector2.ZERO, Vector2.ZERO)
-	assert_eq(second.get_parent(), _reconciler, "ball_host arg is ignored on subsequent configure")
-	assert_eq(stranger.get_child_count(), 0, "stranger host receives no balls")
+	assert_eq(
+		second.get_parent(),
+		_reconciler,
+		"subsequent ensure_ball_for_key also parents under the reconciler"
+	)

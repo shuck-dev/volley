@@ -528,9 +528,7 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 
 func _loose_body_host() -> Node:
 	if reconciler != null:
-		var host: Node = reconciler.get_ball_host()
-		if host != null:
-			return host
+		return reconciler
 	return get_parent()
 
 

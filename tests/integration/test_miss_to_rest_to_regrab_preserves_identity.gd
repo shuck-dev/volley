@@ -42,7 +42,7 @@ func before_each() -> void:
 	_drop_target = _build_drop_target(Vector2(-1500, 0), Vector2(300, 200))
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	_host.add_child(_reconciler)
 
 	_drag = BallDragControllerScript.new()

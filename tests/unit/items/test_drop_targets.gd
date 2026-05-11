@@ -148,7 +148,7 @@ func test_venue_drop_target_accepts_ball_inside_venue_bounds() -> void:
 	var host := Node.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(manager, host)
+	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 
 	var venue := Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
@@ -185,7 +185,7 @@ class _PhysicsHarness:
 		var host := Node2D.new()
 		test.add_child_autofree(host)
 		var reconciler: BallReconciler = BallReconcilerScript.new()
-		reconciler.configure(manager, host)
+		reconciler.configure(manager)
 		test.add_child_autofree(reconciler)
 		var target: CourtDropTarget = CourtDropTargetScript.new()
 		(

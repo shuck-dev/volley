@@ -44,7 +44,7 @@ func before_each() -> void:
 	_drop_target = _build_drop_target(RACK_CENTER, RACK_SIZE)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	# Mirror court.tscn topology so adopt_pre_existing_balls finds authored siblings under _host.
 	_host.add_child(_reconciler)
 
@@ -316,7 +316,7 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	add_child_autofree(reloaded_host)
 
 	var reloaded_reconciler: BallReconciler = BallReconcilerScript.new()
-	reloaded_reconciler.configure(reloaded_manager, reloaded_host)
+	reloaded_reconciler.configure(reloaded_manager)
 	reloaded_host.add_child(reloaded_reconciler)
 	await get_tree().process_frame
 

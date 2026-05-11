@@ -242,7 +242,7 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(_item_manager, host)
+	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
 	var drag: BallDragController = BallDragControllerScript.new()
@@ -281,7 +281,7 @@ func test_shop_release_outside_court_falls_through_to_rack_default() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(_item_manager, host)
+	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
 	var drag: BallDragController = BallDragControllerScript.new()

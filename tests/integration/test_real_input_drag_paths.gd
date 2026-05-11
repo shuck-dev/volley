@@ -118,7 +118,7 @@ func _setup_ball_drag() -> void:
 	add_child_autofree(_drop_target)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 	_drag = BallDragControllerScript.new()

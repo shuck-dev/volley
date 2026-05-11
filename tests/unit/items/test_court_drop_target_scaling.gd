@@ -34,7 +34,7 @@ func _make_harness(definitions: Array) -> Dictionary:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(manager, host)
+	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	(
@@ -95,7 +95,7 @@ func test_court_target_zero_bounds_guard_passes_through_position() -> void:
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(manager, host)
+	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	target.configure(manager, reconciler, host.get_world_2d(), Rect2())

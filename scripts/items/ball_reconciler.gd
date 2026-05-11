@@ -21,14 +21,8 @@ var _initial_reconcile_pending: bool = true
 var _adopting_pre_existing: bool = false
 
 
-# Deprecated ball_host arg ignored; reconciler parents its own balls. Retired in step 6 of the lifecycle refactor.
-func configure(item_manager: Node, _ball_host: Node = null) -> void:
+func configure(item_manager: Node) -> void:
 	_item_manager = item_manager
-
-
-# Compatibility shim for callers still enumerating loose bodies via the legacy host indirection. Retired in step 6.
-func get_ball_host() -> Node:
-	return self
 
 
 func _ready() -> void:

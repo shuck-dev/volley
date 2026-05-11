@@ -33,7 +33,7 @@ func before_each() -> void:
 	add_child_autofree(_host)
 
 	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager, _host)
+	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
