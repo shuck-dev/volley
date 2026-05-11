@@ -15,7 +15,7 @@ class-definitions-order:
 - others
 class-load-variable-name: (([A-Z][a-z0-9]*)+|_?[a-z][a-z0-9]*(_[a-z0-9]+)*)
 class-name: ([A-Z][a-z0-9]*)+
-class-variable-name: (_[a-z][a-z0-9]*|[a-z][a-z0-9]+)(_[a-z0-9]+)*
+class-variable-name: (_[a-z][a-z0-9]*|[a-z][a-z0-9]*)(_[a-z0-9]+)*
 comparison-with-itself: null
 constant-name: _?[A-Z][A-Z0-9]*(_[A-Z0-9]+)*
 disable: []
@@ -26,11 +26,11 @@ excluded_directories: !!set
   .git: null
   addons: null
 expression-not-assigned: null
-function-argument-name: (_[a-z][a-z0-9]*|[a-z][a-z0-9]+)(_[a-z0-9]+)*
+function-argument-name: (_[a-z][a-z0-9]*|[a-z][a-z0-9]*)(_[a-z0-9]+)*
 function-arguments-number: 10
 function-name: (_on_([A-Z][a-z0-9]*)+(_[a-z0-9]+)*|_?[a-z][a-z0-9]*(_[a-z0-9]+)*)
 function-preload-variable-name: ([A-Z][a-z0-9]*)+
-function-variable-name: '(_[a-z][a-z0-9]*|[a-z][a-z0-9]+)(_[a-z0-9]+)*'
+function-variable-name: '(_[a-z][a-z0-9]*|[a-z][a-z0-9]*)(_[a-z0-9]+)*'
 load-constant-name: (([A-Z][a-z0-9]*)+|_?[A-Z][A-Z0-9]*(_[A-Z0-9]+)*)
 loop-variable-name: _?[a-z][a-z0-9]*(_[a-z0-9]+)*
 max-file-lines: 1000
