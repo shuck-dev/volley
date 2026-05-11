@@ -469,6 +469,9 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 	ball.speed = preserved_speed
 	if ball.effect_processor != null:
 		ball.effect_processor.sync_base_speed()
+	# Keep ItemManager in sync: a rack-origin gesture leaves placement=STORED until activate runs.
+	if _item_manager != null and not _item_manager.is_on_court(_held_key):
+		_item_manager.activate(_held_key)
 
 
 ## Step 5 seam: venue-floor releases no longer spawn loose HeldBodies, but Shop's `_drop_falling_body`
