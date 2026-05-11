@@ -2,7 +2,7 @@
 
 The interrogation order for planning a new mission. Walk the steps in order; don't skip to filing or dispatch.
 
-Pairs with `missions-and-projects.md` (the taxonomy) and the swarm conventions in `ai/`.
+Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (bug / spike / feature, the shape of work inside a mission), and the swarm conventions in `ai/`.
 
 ## 1. Mission or ticket?
 
