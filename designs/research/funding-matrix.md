@@ -7,5 +7,4 @@ The price of Volley reflects what the funding has actually built. The matrix is 
 | 0 | Up to £10,000 | $2 |
 | 1 | £10,000 to £25,000 | $3 |
 | 2 | £25,000 to £75,000 | $5 |
-| 3 | £75,000 to £200,000 | $9.99 |
-| 4 | £200,000 to £500,000 | $19.99 |
+| 3 | £75,000 to £500,000 | $9.99 |
