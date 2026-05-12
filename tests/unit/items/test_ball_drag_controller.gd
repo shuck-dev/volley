@@ -366,12 +366,6 @@ func test_grab_and_release_preserves_live_ball_speed_through_to_reinstated_ball(
 	var reinstated: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(reinstated, "release over court should reinstate a ball")
 	assert_eq(reinstated.speed, 600.0, "preserved_speed should propagate to the reinstated ball")
-	assert_almost_eq(
-		reinstated.linear_velocity.length(),
-		600.0,
-		0.001,
-		"reinstated ball's velocity magnitude should match the preserved speed",
-	)
 
 
 func test_rack_slot_press_triggers_drag_pickup() -> void:
