@@ -13,10 +13,6 @@ func before_each() -> void:
 	_ball_stub = load("res://tests/stubs/ball_stub.gd").new()
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(autoplay_controller_stub)
 
@@ -25,7 +21,7 @@ func before_each() -> void:
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = autoplay_controller_stub
 	_game._progression_config = ProgressionConfig.new()
-	_game._progression = ProgressionData.new(mock_storage)
+	_game._progression = ProgressionData.new()
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)

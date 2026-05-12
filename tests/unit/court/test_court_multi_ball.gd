@@ -11,16 +11,11 @@ var _host: Node2D
 var _reconciler: BallReconciler
 var _court: Court
 var _paddle: Paddle
-var _storage: SaveStorage
 
 
 func before_each() -> void:
-	_storage = double(SaveStorage).new()
-	stub(_storage.write).to_return(true)
-	stub(_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(_storage)
+	_manager._progression = ProgressionData.new()
 	_manager._effect_manager = EffectManager.new()
 	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
@@ -54,7 +49,7 @@ func before_each() -> void:
 	_court.autoplay_controller = autoplay_stub
 	_court._progression_config = ProgressionConfig.new()
 	_court._item_manager = _manager
-	_court._progression = ProgressionData.new(_storage)
+	_court._progression = ProgressionData.new()
 	add_child_autofree(_court)
 
 
