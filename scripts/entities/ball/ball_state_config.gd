@@ -1,6 +1,4 @@
-## Declarative bundle of physics+collision properties for a single Ball.PlayState.
-## State entry methods call apply(self) and keep ordering-sensitive steps (velocity zero,
-## suppression flag, signal emit) in the imperative tail.
+## Per-PlayState physics+collision bundle; ordering-sensitive steps stay imperative around apply().
 class_name BallStateConfig
 extends Resource
 

@@ -18,8 +18,7 @@ enum PlayState {
 const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
 const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
-# Per-state physics+collision bundles. apply() writes six properties; ordering-sensitive steps
-# (velocity zero, suppression flag, speed reset, signal emit) stay imperative around the call.
+# Per-state bundles; ordering-sensitive steps stay imperative around apply().
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
 const PLAY_NORMAL_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_normal.tres")
 const PLAY_ARC_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_arc.tres")
@@ -101,9 +100,7 @@ func _update_play_state(delta: float) -> void:
 
 func _enter_arc() -> void:
 	_relock.enter_arc(speed)
-	# Hot per-frame path: direct write of the only NORMAL/ARC delta. Canonical bundle lives in
-	# res://resources/ball/states/play_arc.tres — if a second property starts differing between
-	# NORMAL and ARC, this single-property write goes stale silently.
+	# Hot path: only NORMAL/ARC delta. Canonical bundle play_arc.tres — second diverging property goes stale silently.
 	gravity_scale = 1.0
 	set_play_state(PlayState.PLAY_ARC)
 
