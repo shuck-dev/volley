@@ -35,7 +35,7 @@ func _sync_speed_limits() -> void:
 	ball.speed = clampf(_base_speed + _applied_offset, ball.min_speed, ball.max_speed)
 
 
-func process_hit(struck_paddle: Node2D = null) -> void:
+func process_hit(struck_paddle: Paddle) -> void:
 	_apply_paddle_offset_return(struck_paddle)
 
 
@@ -68,16 +68,11 @@ func _apply_magnetism(delta: float) -> void:
 
 
 # Where on the paddle the ball struck drives the return angle; centre returns flat, edges steepen.
-func _apply_paddle_offset_return(struck_paddle: Node2D) -> void:
-	if struck_paddle == null:
-		return
-
+func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	var max_degrees: float = item_manager.get_stat(&"paddle_return_angle_max_degrees")
 	if max_degrees <= 0.0:
 		return
 
-	if not struck_paddle.has_method(&"get_half_height"):
-		return
 	var half_height: float = struck_paddle.get_half_height()
 	if half_height <= 0.0:
 		return

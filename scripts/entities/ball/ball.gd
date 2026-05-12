@@ -129,7 +129,7 @@ func _on_body_entered(body: Node) -> void:
 		var hit_registered: bool = body.on_ball_hit()
 		if hit_registered:
 			increase_speed()
-		effect_processor.process_hit(body as Node2D)
+		effect_processor.process_hit(body as Paddle)
 
 
 func register_miss_zone(zone: MissZone) -> void:
