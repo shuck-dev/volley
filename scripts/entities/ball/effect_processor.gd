@@ -35,8 +35,8 @@ func _sync_speed_limits() -> void:
 	ball.speed = clampf(_base_speed + _applied_offset, ball.min_speed, ball.max_speed)
 
 
-func process_hit() -> void:
-	_apply_return_angle_influence()
+func process_hit(struck_paddle: Node2D = null) -> void:
+	_apply_paddle_offset_return(struck_paddle)
 
 
 func _apply_magnetism(delta: float) -> void:
@@ -67,15 +67,28 @@ func _apply_magnetism(delta: float) -> void:
 	ball.linear_velocity = new_direction * ball.speed
 
 
-func _apply_return_angle_influence() -> void:
-	var influence: float = item_manager.get_stat(&"return_angle_influence")
-	if influence <= 0.0:
+# Where on the paddle the ball struck drives the return angle; centre returns flat, edges steepen.
+func _apply_paddle_offset_return(struck_paddle: Node2D) -> void:
+	if struck_paddle == null:
 		return
 
-	var horizontal := Vector2(signf(ball.linear_velocity.x), 0.0)
-	if horizontal == Vector2.ZERO:
+	var max_degrees: float = item_manager.get_stat(&"paddle_return_angle_max_degrees")
+	if max_degrees <= 0.0:
 		return
 
-	var current_direction: Vector2 = ball.linear_velocity.normalized()
-	var biased_direction: Vector2 = current_direction.lerp(horizontal, influence).normalized()
-	ball.linear_velocity = biased_direction * ball.speed
+	if not struck_paddle.has_method(&"get_half_height"):
+		return
+	var half_height: float = struck_paddle.get_half_height()
+	if half_height <= 0.0:
+		return
+
+	var horizontal_sign: float = signf(ball.linear_velocity.x)
+	if horizontal_sign == 0.0:
+		return
+
+	var offset_norm: float = clampf(
+		(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
+	)
+	var target_angle: float = offset_norm * deg_to_rad(max_degrees)
+	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
+	ball.linear_velocity = direction * ball.speed

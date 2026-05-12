@@ -14,7 +14,6 @@ const TrainingBall: ItemDefinition = preload("res://resources/items/training_bal
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
-const DoubleKnot: ItemDefinition = preload("res://resources/items/double_knot.tres")
 
 var _shop: Shop
 var _item_manager: Node
@@ -30,7 +29,7 @@ func before_each() -> void:
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
 	_item_manager._progression = ProgressionData.new(mock_storage)
 	_item_manager._effect_manager = EffectManager.new()
-	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence, DoubleKnot])
+	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence])
 	_item_manager._progression.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 

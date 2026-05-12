@@ -298,7 +298,7 @@ EffectState is key-agnostic. Game systems register base values at startup. New k
 | `ball_speed_increment` | 15.0 | px/s |
 | `friendship_points_per_hit` | 1.0 | FP |
 | `ball_magnetism` | 0.0 | force |
-| `return_angle_influence` | 0.0 | factor (0-1) |
+| `paddle_return_angle_max_degrees` | 0.0 | degrees |
 | `ball_speed_offset` | 0.0 | px/s |
 | `arena_height` | 986.0 | px |
 

@@ -69,6 +69,13 @@ func get_speed() -> float:
 	return _paddle_speed
 
 
+# Half of the collider's vertical extent; the normalised denominator for contact-offset return angle.
+func get_half_height() -> float:
+	if _collision_shape == null:
+		return 0.0
+	return _collision_shape.size.y * 0.5
+
+
 func _get_stat(key: StringName) -> float:
 	if _item_manager == null:
 		_item_manager = ItemManager

@@ -215,7 +215,7 @@ All values items can target via `modify_stat` or `modify_stat_temporary`.
 | `ball_speed_increment` | Speed increase per paddle hit | 15.0 | px/s |
 | `friendship_points_per_hit` | FP awarded per paddle hit | 1 | FP |
 | `ball_magnetism` | Pull strength toward paddle when ball is near | 0.0 | force |
-| `return_angle_influence` | Bias toward favorable return angles on hit | 0.0 | factor (0-1) |
+| `paddle_return_angle_max_degrees` | Max return angle at the paddle's edge; 0 disables offset-driven returns | 0.0 | degrees |
 | `ball_speed_offset` | Applied as a delta to current ball speed each frame, clamped to min/max | 0.0 | px/s |
 | `arena_height` | Vertical play area between top and bottom walls | 986.0 | px |
 
@@ -539,48 +539,6 @@ Effect 3 (broken state)
 ```
 
 Base cost: 90 FP | Scaling: 1.5
-
----
-
-### Double Knot
-
-Friendship bracelet + double knotted | Woven bracelet, faded colours, knotted twice at the clasp. Your partner wears the other one.
-
-| State | Description |
-|---|---|
-| Default | "Made two" |
-| After magnetism pull felt | "Closer than before" |
-| Post-Break | "Still wearing it" |
-
-Buffs both paddles equally. The connection strengthens with each level.
-
-| Level | Buff (both paddles) |
-|---|---|
-| 1 | Ball magnetism: slight pull toward paddle when ball is near |
-| 2 | + Return angle influence: hits send ball at more favorable angles |
-| 3 | + Stat sharing + temporary momentum boost on edge hits |
-
-At level 3, the partner receives all your stat buffs. Edge hits (clutch saves at the paddle's extreme) trigger a temporary surge for both paddles.
-
-```
-Effect 1
-  trigger: always
-  outcome: stat(ball_magnetism, delta) [both paddles, scales with level]
-
-Effect 2 (level 2+)
-  trigger: always
-  outcome: stat(return_angle_influence, delta) [both paddles]
-
-Effect 3 (level 3)
-  trigger: always
-  outcome: share_stats_with_partner
-
-Effect 4 (level 3)
-  trigger: on_edge_hit
-  outcome: momentum_boost(both paddles, duration: tuning_target)
-```
-
-Base cost: 120 FP | Scaling: 1.6
 
 ---
 
