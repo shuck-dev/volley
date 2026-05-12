@@ -28,12 +28,9 @@ var _removed_count: int
 func before_each() -> void:
 	_added_count = 0
 	_removed_count = 0
-	var storage: SaveStorage = double(SaveStorage).new()
-	stub(storage.write).to_return(true)
-	stub(storage.read).to_return("")
 
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(storage)
+	_manager._progression = ProgressionData.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)

@@ -23,12 +23,8 @@ var _gear_rack: Node2D
 
 
 func before_each() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager._progression = ProgressionData.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence, DoubleKnot])
 	_item_manager._progression.friendship_point_balance = 10000

@@ -19,12 +19,8 @@ var _item_manager: Node
 
 
 func before_each() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_item_manager = ItemManagerScript.new()
-	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager._progression = ProgressionData.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
 	_item_manager._progression.friendship_point_balance = 10000
@@ -321,11 +317,8 @@ class TestSH332InsideShopDrag:
 	var _item_manager: Node
 
 	func before_each() -> void:
-		var mock_storage: SaveStorage = double(SaveStorage).new()
-		stub(mock_storage.write).to_return(true)
-		stub(mock_storage.read).to_return("")
 		_item_manager = ItemManagerScript.new()
-		_item_manager._progression = ProgressionData.new(mock_storage)
+		_item_manager._progression = ProgressionData.new()
 		_item_manager._effect_manager = EffectManager.new()
 		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
 		_item_manager._progression.friendship_point_balance = 10000

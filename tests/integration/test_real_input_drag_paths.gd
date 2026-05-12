@@ -33,12 +33,8 @@ var _drag: BallDragController
 
 
 func _setup_shop() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_shop_manager = ItemManagerScript.new()
-	_shop_manager._progression = ProgressionData.new(mock_storage)
+	_shop_manager._progression = ProgressionData.new()
 	_shop_manager._effect_manager = EffectManager.new()
 	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
 	_shop_manager._progression.friendship_point_balance = 10000
@@ -79,12 +75,8 @@ func _release_event_at(position: Vector2) -> InputEventMouseButton:
 
 
 func _setup_ball_drag() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(mock_storage)
+	_manager._progression = ProgressionData.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
