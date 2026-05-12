@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BallStateConfig" load_steps=3 format=3 uid="uid://bballstateoutrs"]
+[gd_resource type="Resource" script_class="BallStateConfig" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/entities/ball/ball_state_config.gd" id="1"]
 [ext_resource type="PhysicsMaterial" uid="uid://b0volleyrestmt" path="res://resources/ball/rest.tres" id="2"]
