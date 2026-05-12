@@ -19,8 +19,6 @@ var unlocked_partners: Array[StringName] = []
 var active_partner: StringName = &""
 var partner_volley_totals: Dictionary[StringName, int] = {}
 
-var _storage: SaveStorage
-
 
 ## Resets progression fields to defaults; caller decides whether to persist.
 func clear() -> void:
@@ -37,46 +35,6 @@ func clear() -> void:
 	unlocked_partners = []
 	active_partner = &""
 	partner_volley_totals = {}
-
-
-func save_to_disk() -> bool:
-	return _storage.write(JSON.stringify(to_dict()))
-
-
-## Loads from storage, falling back to rolling backups if primary fails to parse.
-func load_from_disk() -> bool:
-	if _try_load_content(_storage.read()):
-		return true
-	var fallbacks: Variant = _storage.read_fallbacks()
-	if fallbacks is Array:
-		for content: Variant in fallbacks:
-			if content is String and _try_load_content(content):
-				return true
-	return false
-
-
-func _try_load_content(content: String) -> bool:
-	if content == "":
-		return false
-	var parsed: Variant = JSON.parse_string(content)
-	if not parsed is Dictionary:
-		return false
-	var data: Dictionary = parsed
-	var loaded := from_dict(data)
-	friendship_point_balance = loaded.friendship_point_balance
-	total_friendship_points_earned = loaded.total_friendship_points_earned
-	item_levels = loaded.item_levels
-	item_placements = loaded.item_placements
-	item_positions = loaded.item_positions
-	rack_slot_index_by_key = loaded.rack_slot_index_by_key
-	loose_in_venue = loaded.loose_in_venue
-	personal_volley_best = loaded.personal_volley_best
-	shop_unlocked = loaded.shop_unlocked
-	recruit_offered_partners = loaded.recruit_offered_partners
-	unlocked_partners = loaded.unlocked_partners
-	active_partner = loaded.active_partner
-	partner_volley_totals = loaded.partner_volley_totals
-	return true
 
 
 ## Parses the game data into a dictionary
@@ -120,11 +78,6 @@ static func from_dict(data: Dictionary) -> ProgressionData:
 	)
 
 	return progression
-
-
-## Used for mocking
-func _init(storage: SaveStorage = null) -> void:
-	_storage = storage if storage != null else FileSaveStorage.new()
 
 
 static func _to_typed_string_name_array(raw: Array) -> Array[StringName]:

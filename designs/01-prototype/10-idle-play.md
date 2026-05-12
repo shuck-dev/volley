@@ -136,7 +136,7 @@ Include both fields in `to_dict()` / `from_dict()`.
 
 `idle_fp_per_minute` is updated in `game.gd`: sample FP earned in idle mode over 60s intervals and write the result back to `ProgressionData` via `SaveManager`.
 
-On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `last_quit_at = Time.get_unix_time_from_system()` and call `save_to_disk()`.
+On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `last_quit_at = Time.get_unix_time_from_system()` and call `SaveManager.save()`.
 
 ## Test plan
 
