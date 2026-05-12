@@ -10,10 +10,11 @@ func before_each() -> void:
 	stub(_mock_storage.write).to_return(true)
 	stub(_mock_storage.read).to_return("")
 
-	_progression = ProgressionData.new(_mock_storage)
+	_progression = ProgressionData.new()
 
 	_save_manager = load("res://scripts/progression/save_manager.gd").new(0.05)
 	_save_manager._progression = _progression
+	_save_manager.set_storage(_mock_storage)
 	add_child_autofree(_save_manager)
 
 
