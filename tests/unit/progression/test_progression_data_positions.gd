@@ -5,12 +5,10 @@ extends GutTest
 # survive stringify+parse; older saves without the new keys must still load.
 
 var _data: ProgressionData
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	_data = ProgressionData.new(_mock_storage)
+	_data = ProgressionData.new()
 
 
 func test_item_positions_default_empty() -> void:
@@ -28,12 +26,7 @@ func test_item_positions_round_trip_via_dict() -> void:
 func test_item_positions_survives_json_string_round_trip() -> void:
 	_data.item_positions["base_ball"] = Vector2(640.25, 360.75)
 	var saved_json := JSON.stringify(_data.to_dict())
-	stub(_mock_storage.write).to_return(true)
-	_data.save_to_disk()
-
-	var loaded := ProgressionData.new(_mock_storage)
-	stub(_mock_storage.read).to_return(saved_json)
-	loaded.load_from_disk()
+	var loaded := ProgressionData.from_dict(JSON.parse_string(saved_json))
 	assert_eq(loaded.item_positions["base_ball"], Vector2(640.25, 360.75))
 
 
@@ -74,12 +67,7 @@ func test_rack_slot_index_by_key_round_trips() -> void:
 func test_rack_slot_index_by_key_survives_json_string_round_trip() -> void:
 	_data.rack_slot_index_by_key["base_ball"] = 1
 	var saved_json := JSON.stringify(_data.to_dict())
-	stub(_mock_storage.write).to_return(true)
-	_data.save_to_disk()
-
-	var loaded := ProgressionData.new(_mock_storage)
-	stub(_mock_storage.read).to_return(saved_json)
-	loaded.load_from_disk()
+	var loaded := ProgressionData.from_dict(JSON.parse_string(saved_json))
 	assert_eq(loaded.rack_slot_index_by_key["base_ball"], 1)
 
 

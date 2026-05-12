@@ -19,16 +19,11 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
-var _storage: SaveStorage
 
 
 func before_each() -> void:
-	_storage = double(SaveStorage).new()
-	stub(_storage.write).to_return(true)
-	stub(_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(_storage)
+	_manager._progression = ProgressionData.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
@@ -301,13 +296,8 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 
 	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
 
-	var reload_storage: SaveStorage = double(SaveStorage).new()
-	stub(reload_storage.write).to_return(true)
-	stub(reload_storage.read).to_return(saved_blob)
-
 	var reloaded_manager: Node = ItemManagerScript.new()
-	reloaded_manager._progression = ProgressionData.new(reload_storage)
-	assert_true(reloaded_manager._progression.load_from_disk(), "reload must parse the saved blob")
+	reloaded_manager._progression = ProgressionData.from_dict(JSON.parse_string(saved_blob))
 	reloaded_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	reloaded_manager.items.assign(typed_items)

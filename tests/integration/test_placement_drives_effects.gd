@@ -18,16 +18,11 @@ const TrainingBall: ItemDefinition = preload("res://resources/items/training_bal
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager._progression = ProgressionData.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
 	_manager._progression.friendship_point_balance = 100000
@@ -183,14 +178,9 @@ func test_level_up_on_racked_item_does_not_start_effects() -> void:
 # storage into a fresh ItemManager, the same items are on the court and the
 # same effects are running.
 func test_save_and_reload_preserves_placement_and_effects() -> void:
-	# Real ProgressionData-style storage round-trip: capture the JSON written
-	# by save_to_disk() and hand it back on read().
-	var captured_json: Array[String] = []
-	var capturing_storage: SaveStorage = double(SaveStorage).new()
-	stub(capturing_storage.write).to_do_nothing()
-	stub(capturing_storage.read).to_return("")
-
-	_manager._progression = ProgressionData.new(capturing_storage)
+	# Pure JSON round-trip: stringify ProgressionData, parse it back into a fresh
+	# instance. The test exercises ItemManager re-hydration, not the storage seam.
+	_manager._progression = ProgressionData.new()
 	_manager._progression.friendship_point_balance = 100000
 	_manager._register_existing_items()
 
@@ -206,15 +196,10 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 
 	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
 
-	# Fresh ItemManager + fresh ProgressionData, reading the saved blob.
+	# Fresh ItemManager + fresh ProgressionData, hydrated from the saved blob.
 	# Simulates a scene reload / process restart.
-	var reload_storage: SaveStorage = double(SaveStorage).new()
-	stub(reload_storage.write).to_return(true)
-	stub(reload_storage.read).to_return(saved_blob)
-
 	var reloaded: Node = load("res://scripts/items/item_manager.gd").new()  # gdlint:ignore = duplicated-load
-	reloaded._progression = ProgressionData.new(reload_storage)
-	assert_true(reloaded._progression.load_from_disk(), "reload must parse the saved blob")
+	reloaded._progression = ProgressionData.from_dict(JSON.parse_string(saved_blob))
 	reloaded._effect_manager = EffectManager.new()
 	reloaded.items.assign([GripTape, TrainingBall, AnkleWeights])
 	add_child_autofree(reloaded)

@@ -1,49 +1,10 @@
 extends GutTest
 
 var _data: ProgressionData
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	_data = ProgressionData.new(_mock_storage)
-
-
-# --- save_to_disk / load_from_disk ---
-func test_save_to_disk_returns_true() -> void:
-	_data.friendship_point_balance = 100
-	stub(_mock_storage.write).to_return(true)
-	assert_true(_data.save_to_disk())
-
-
-func test_save_to_disk_returns_false_on_failure() -> void:
-	stub(_mock_storage.write).to_return(false)
-	assert_false(_data.save_to_disk())
-
-
-func test_load_from_disk_returns_default_when_no_content() -> void:
-	stub(_mock_storage.read).to_return("")
-	_data.load_from_disk()
-	assert_eq(_data.friendship_point_balance, 0)
-	assert_eq(_data.item_levels, {} as Dictionary[String, int])
-	assert_eq(_data.personal_volley_best, 0)
-
-
-func test_save_and_load_round_trip() -> void:
-	_data.friendship_point_balance = 500
-	_data.item_levels["paddle_speed"] = 3
-	_data.personal_volley_best = 42
-
-	var saved_json := JSON.stringify(_data.to_dict())
-	stub(_mock_storage.write).to_return(true)
-	_data.save_to_disk()
-
-	var loaded := ProgressionData.new(_mock_storage)
-	stub(_mock_storage.read).to_return(saved_json)
-	loaded.load_from_disk()
-	assert_eq(loaded.friendship_point_balance, 500)
-	assert_eq(loaded.item_levels, {"paddle_speed": 3} as Dictionary[String, int])
-	assert_eq(loaded.personal_volley_best, 42)
+	_data = ProgressionData.new()
 
 
 # --- to_dict ---
@@ -138,33 +99,17 @@ func test_clear_resets_partner_fields() -> void:
 	assert_eq(_data.partner_volley_totals, {} as Dictionary[StringName, int])
 
 
-func test_partner_save_and_load_round_trip() -> void:
-	_data.unlocked_partners = [&"martha"] as Array[StringName]
-	_data.active_partner = &"martha"
-	_data.partner_volley_totals = {&"martha": 500} as Dictionary[StringName, int]
-
-	var saved_json := JSON.stringify(_data.to_dict())
-	stub(_mock_storage.write).to_return(true)
-	_data.save_to_disk()
-
-	var loaded := ProgressionData.new(_mock_storage)
-	stub(_mock_storage.read).to_return(saved_json)
-	loaded.load_from_disk()
-	assert_eq(loaded.unlocked_partners, [&"martha"] as Array[StringName])
-	assert_eq(loaded.active_partner, "martha")
-	assert_eq(loaded.partner_volley_totals, {&"martha": 500} as Dictionary[StringName, int])
-
-
-func test_cleared_data_round_trip_keeps_partner_fields_empty() -> void:
+# Cleared-state JSON round-trip stays here: the serialisation contract for empty
+# partner fields is a ProgressionData concern, not a SaveManager concern.
+func test_cleared_data_dict_round_trip_keeps_partner_fields_empty() -> void:
 	_data.unlocked_partners = [&"martha"] as Array[StringName]
 	_data.active_partner = &"martha"
 	_data.partner_volley_totals = {&"martha": 500} as Dictionary[StringName, int]
 	_data.clear()
 
 	var cleared_json := JSON.stringify(_data.to_dict())
-	var loaded := ProgressionData.new(_mock_storage)
-	stub(_mock_storage.read).to_return(cleared_json)
-	loaded.load_from_disk()
+	var parsed: Variant = JSON.parse_string(cleared_json)
+	var loaded := ProgressionData.from_dict(parsed)
 	assert_eq(loaded.unlocked_partners, [] as Array[StringName])
 	assert_eq(loaded.active_partner, &"")
 	assert_eq(loaded.partner_volley_totals, {} as Dictionary[StringName, int])
