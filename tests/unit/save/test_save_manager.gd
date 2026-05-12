@@ -103,3 +103,35 @@ func test_save_without_provider_leaves_positions_untouched() -> void:
 	_progression.item_positions["base_ball"] = Vector2(1.0, 2.0)
 	_save_manager.save()
 	assert_eq(_progression.item_positions["base_ball"], Vector2(1.0, 2.0))
+
+
+# --- load_from_disk ---
+func test_load_from_disk_applies_stored_blob() -> void:
+	var stored := ProgressionData.new()
+	stored.friendship_point_balance = 42
+	stored.active_partner = &"martha"
+	var blob := JSON.stringify(stored.to_dict())
+	stub(_mock_storage.read).to_return(blob)
+
+	_save_manager.load_from_disk()
+
+	assert_eq(_progression.friendship_point_balance, 42)
+	assert_eq(_progression.active_partner, &"martha")
+
+
+# Guards against a future refactor replacing _progression instead of mutating it
+# in place. Four call sites (court, item_manager, ball_reconciler,
+# progression_manager) cache the ref; a replace would silently stale them.
+func test_load_preserves_progression_instance_identity() -> void:
+	var stored := ProgressionData.new()
+	stored.friendship_point_balance = 99
+	stored.active_partner = &"reese"
+	var blob := JSON.stringify(stored.to_dict())
+	stub(_mock_storage.read).to_return(blob)
+
+	var held_ref: ProgressionData = _save_manager._progression
+	_save_manager.load_from_disk()
+
+	assert_eq(held_ref, _save_manager._progression)
+	assert_eq(held_ref.friendship_point_balance, 99)
+	assert_eq(held_ref.active_partner, &"reese")
