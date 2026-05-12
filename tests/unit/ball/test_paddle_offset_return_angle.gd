@@ -6,12 +6,12 @@ const PADDLE_HALF_HEIGHT := 27.0
 const MAX_DEGREES := 30.0
 
 var _ball: Ball
-var _paddle: Node2D
+var _paddle: Paddle
 var _manager: Node
 
 
 class PaddleDouble:
-	extends Node2D
+	extends Paddle
 	var half_height: float = PADDLE_HALF_HEIGHT
 
 	func get_half_height() -> float:
@@ -125,12 +125,46 @@ func test_zero_stat_is_dormant() -> void:
 	assert_eq(_ball.linear_velocity, original_velocity)
 
 
-func test_null_paddle_is_dormant() -> void:
-	_build_with_max_degrees(MAX_DEGREES)
-	_ball.linear_velocity = Vector2(100, 80)
+func test_angle_scales_linearly_with_max_degrees() -> void:
+	# Same edge offset at two non-zero max-degree settings; resulting angle should scale linearly.
+	_build_with_max_degrees(20.0)
+	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	var original_velocity: Vector2 = _ball.linear_velocity
+	_ball.effect_processor.process_hit(_paddle)
+	var angle_20: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 
-	_ball.effect_processor.process_hit(null)
+	_build_with_max_degrees(40.0)
+	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+	_ball.effect_processor.process_hit(_paddle)
+	var angle_40: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 
-	assert_eq(_ball.linear_velocity, original_velocity)
+	assert_almost_eq(rad_to_deg(angle_20), 20.0, 0.01)
+	assert_almost_eq(rad_to_deg(angle_40), 40.0, 0.01)
+
+
+func test_real_paddle_get_half_height_drives_return_angle() -> void:
+	# Exercises Paddle.get_half_height() against the production code path (real _collision_shape).
+	var real_paddle: Paddle = load("res://tests/stubs/paddle_stub.gd").new()
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(20.0, PADDLE_HALF_HEIGHT * 2.0)
+	shape.shape = rect
+	real_paddle.collision = shape
+	real_paddle.add_child(shape)
+	add_child_autofree(real_paddle)
+	# Override post-_ready sizing so the half-height under test is deterministic.
+	real_paddle._collision_shape.size.y = PADDLE_HALF_HEIGHT * 2.0
+	real_paddle.global_position = Vector2(0, 0)
+
+	_build_with_max_degrees(MAX_DEGREES)
+	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(real_paddle)
+
+	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MAX_DEGREES, 0.01)
