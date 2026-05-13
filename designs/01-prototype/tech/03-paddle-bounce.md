@@ -8,7 +8,7 @@ The paddle is a tool the player aims with. Where the ball touches the paddle dec
 
 ## Genre convention
 
-The reference games and tutorials surveyed (Pong 1972's 8-segment lookup, Breakout / Arkanoid family, MDN Phaser Breakout, CS50 Breakout, StudyPlan SDL2, MonoGame Breakernoid, Lethal League, Windjammers, Wii / Switch Sports tennis) all discard the incoming angle on paddle contact and compute the post-bounce direction from contact offset, player input at contact, or both. Pure mirror reflection is described in the source material as "boring" and "the most simplistic Pong" — the design Alcorn explicitly moved away from in 1972. Sources cited in `ai/scratchpads/paddle-bounce-research.md`.
+The reference games and tutorials surveyed (Pong 1972's 8-segment lookup, Breakout / Arkanoid family, MDN Phaser Breakout, CS50 Breakout, StudyPlan SDL2, MonoGame Breakernoid, Lethal League, Windjammers, Wii / Switch Sports tennis) all discard the incoming angle on paddle contact and compute the post-bounce direction from contact offset, player input at contact, or both. Pure mirror reflection is described in the source material as "boring" and "the most simplistic Pong", the design Alcorn explicitly moved away from in 1972. Background reading with citations: [`designs/research/paddle-bounce.md`](../../research/paddle-bounce.md).
 
 So Volley's bounce replaces the incoming angle. That's the natural shape; preserving the incoming angle is the unnatural one.
 
@@ -27,7 +27,7 @@ The direction is built from three contributions:
 
 ### 1. Contact offset
 
-Normalise the contact point against paddle half-height: `offset_norm = clamp((ball.y - paddle.y) / paddle.half_height, -1, +1)`. This is the primary aim signal. The mapping from `offset_norm` to the vertical component of the new direction is governed by `paddle_return_angle_max_degrees` — the steepest angle off horizontal an extreme edge hit can produce. Centre hit (`offset_norm = 0`) returns flat across the court; edge hit (`offset_norm = ±1`) returns at the configured max.
+Normalise the contact point against paddle half-height: `offset_norm = clamp((ball.y - paddle.y) / paddle.half_height, -1, +1)`. This is the primary aim signal. The mapping from `offset_norm` to the vertical component of the new direction is governed by `paddle_return_angle_max_degrees`, the steepest angle off horizontal an extreme edge hit can produce. Centre hit (`offset_norm = 0`) returns flat across the court; edge hit (`offset_norm = ±1`) returns at the configured max.
 
 ### 2. Paddle velocity at contact
 
@@ -50,13 +50,13 @@ direction     = Vector2(-sign_x * cos(target_angle), sin(target_angle))
 ball.linear_velocity = direction * ball.speed
 ```
 
-The exact form of `clamp_off_horizontal_and_vertical` and the units of `paddle_english_coefficient` are tuning decisions, not architectural ones — the implementer picks the cleanest forms and exposes them as tunables.
+The exact form of `clamp_off_horizontal_and_vertical` and the units of `paddle_english_coefficient` are tuning decisions, not architectural ones. The implementer picks the cleanest forms and exposes them as tunables.
 
 ## Tunables
 
-- `paddle_return_angle_max_degrees` — already on `BaseStatsConfig`. Maximum angle off horizontal an extreme edge hit produces.
-- `paddle_english_coefficient` — new. Multiplier on paddle vertical velocity when computing the bounce angle bias.
-- Min-angle floor and max-angle ceiling — new constants on the bounce module (not item-tunable; safety guards).
+- `paddle_return_angle_max_degrees`: already on `BaseStatsConfig`. Maximum angle off horizontal an extreme edge hit produces.
+- `paddle_english_coefficient`: new. Multiplier on paddle vertical velocity when computing the bounce angle bias.
+- Min-angle floor and max-angle ceiling: new constants on the bounce module (not item-tunable; safety guards).
 
 ## Out of scope
 
