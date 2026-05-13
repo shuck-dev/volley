@@ -75,20 +75,20 @@ func process_frame(delta: float) -> void:
 	_effect_manager.process_frame(delta)
 
 
-## Returns the resolved stat value after all active modifiers
-func get_stat(key: StringName) -> float:
-	return _effect_manager.get_stat(key)
-
-
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
 func get_default_ball_launch_velocity() -> Vector2:
-	var min_speed: float = get_stat(&"ball_speed_min")
+	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min")
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
-## Returns the stat value excluding temporary (until-miss) modifiers
-func get_base_stat(key: StringName) -> float:
-	return _effect_manager.get_base_stat(key)
+## Returns the summed additive modifiers (including oscillations) for a stat key.
+func get_modifier(key: StringName) -> float:
+	return _effect_manager.get_modifier(key)
+
+
+## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
+func get_permanent_modifier(key: StringName) -> float:
+	return _effect_manager.get_permanent_modifier(key)
 
 
 ## Returns the summed percentage offset for a stat (e.g. 0.8 means +80%)
