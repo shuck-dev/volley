@@ -31,8 +31,7 @@ func _build_with_max_degrees(degrees: float) -> void:
 
 
 func _build_with_stats(degrees: float, english: float) -> void:
-	# Builds items whose `always` triggers contribute the requested stat values, so the resolved
-	# stats carry the test values the same way real items would.
+	# Builds items whose `always` triggers contribute the requested stat values like real items would.
 	_manager = ItemFactory.create_manager(
 		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", degrees
 	)
@@ -221,3 +220,63 @@ func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:
 
 	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), MAX_ANGLE_DEG, 0.01)
+
+
+func test_english_only_no_offset_is_dormant() -> void:
+	# With paddle_return_angle_max_degrees=0 the early return fires before english is read, so
+	# english alone cannot bias the bounce.
+	_build_with_stats(0.0, 0.01)
+	_paddle.velocity = Vector2(0.0, 400.0)
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 80)
+	_ball.speed = _ball.linear_velocity.length()
+	var original_velocity: Vector2 = _ball.linear_velocity
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_eq(_ball.linear_velocity, original_velocity)
+
+
+# --- centre-hit tiebreaker: incoming y-direction carries through ---
+func test_descending_ball_centre_hit_returns_downward() -> void:
+	# Dead-centre offset, still paddle: target angle is 0; incoming descending y should keep the
+	# bounce descending past the min-angle floor.
+	_build_with_stats(MAX_DEGREES, 0.0)
+	_paddle.velocity = Vector2.ZERO
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 60)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_gt(_ball.linear_velocity.y, 0.0, "Descending centre hit should leave descending")
+	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+
+
+func test_ascending_ball_centre_hit_returns_upward() -> void:
+	_build_with_stats(MAX_DEGREES, 0.0)
+	_paddle.velocity = Vector2.ZERO
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, -60)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_lt(_ball.linear_velocity.y, 0.0, "Ascending centre hit should leave ascending")
+	var angle: float = atan2(-_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+
+
+func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
+	# Degenerate degenerate: both target angle and incoming y are zero; default to +MIN_ANGLE_DEG.
+	_build_with_stats(MAX_DEGREES, 0.0)
+	_paddle.velocity = Vector2.ZERO
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
