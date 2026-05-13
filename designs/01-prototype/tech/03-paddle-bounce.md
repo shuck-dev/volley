@@ -43,7 +43,7 @@ After combining offset and english, clamp the vertical component so the post-bou
 sign_x        = sign(ball.vx_at_contact)        # away from paddle
 offset_norm   = clamp((ball.y - paddle.y) / paddle.half_height, -1, +1)
 offset_angle  = offset_norm * deg_to_rad(paddle_return_angle_max_degrees)
-english_angle = paddle.linear_velocity.y * paddle_english_coefficient
+english_angle = paddle.velocity.y * paddle_english_coefficient
 target_angle  = offset_angle + english_angle
 target_angle  = clamp_off_horizontal_and_vertical(target_angle)
 direction     = Vector2(-sign_x * cos(target_angle), sin(target_angle))
