@@ -91,16 +91,23 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
 	var english_coefficient: float = item_manager.get_stat(&"paddle_english_coefficient")
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
-	var target_angle: float = _clamp_off_horizontal_and_vertical(offset_angle + english_angle)
+	var incoming_y_sign: float = signf(ball.linear_velocity.y)
+	var target_angle: float = _clamp_off_horizontal_and_vertical(
+		offset_angle + english_angle, incoming_y_sign
+	)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 	ball.linear_velocity = direction * ball.speed
 
 
 # Floors the magnitude off horizontal and ceilings it off vertical so the return reads directed but unstuck.
-func _clamp_off_horizontal_and_vertical(angle: float) -> float:
+# When the target angle is exactly zero, the incoming ball's y-direction breaks the tie so descending
+# balls keep descending and ascending balls keep ascending; a horizontal incoming ball defaults to +sign.
+func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) -> float:
 	var min_magnitude: float = deg_to_rad(MIN_ANGLE_OFF_HORIZONTAL_DEGREES)
 	var max_magnitude: float = deg_to_rad(MAX_ANGLE_OFF_HORIZONTAL_DEGREES)
 	var sign_y: float = signf(angle)
+	if sign_y == 0.0:
+		sign_y = incoming_y_sign
 	if sign_y == 0.0:
 		sign_y = 1.0
 	var magnitude: float = clampf(absf(angle), min_magnitude, max_magnitude)
