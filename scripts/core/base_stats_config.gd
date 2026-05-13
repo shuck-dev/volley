@@ -10,6 +10,7 @@ extends Resource
 @export var friendship_points_per_hit := 1.0
 @export var ball_magnetism := 0.0
 @export var paddle_return_angle_max_degrees := 0.0
+@export var paddle_english_coefficient := 0.0
 @export var kit_slots := 3.0
 @export var ball_speed_offset := 0.0
 @export var arena_height := 660.0
@@ -26,6 +27,7 @@ func to_dict() -> Dictionary:
 		&"friendship_points_per_hit": friendship_points_per_hit,
 		&"ball_magnetism": ball_magnetism,
 		&"paddle_return_angle_max_degrees": paddle_return_angle_max_degrees,
+		&"paddle_english_coefficient": paddle_english_coefficient,
 		&"kit_slots": kit_slots,
 		&"ball_speed_offset": ball_speed_offset,
 		&"arena_height": arena_height,

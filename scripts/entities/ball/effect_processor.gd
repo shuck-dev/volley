@@ -84,6 +84,9 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	var offset_norm: float = clampf(
 		(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
 	)
-	var target_angle: float = offset_norm * deg_to_rad(max_degrees)
+	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
+	var english_coefficient: float = item_manager.get_stat(&"paddle_english_coefficient")
+	var english_angle: float = struck_paddle.velocity.y * english_coefficient
+	var target_angle: float = offset_angle + english_angle
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 	ball.linear_velocity = direction * ball.speed
