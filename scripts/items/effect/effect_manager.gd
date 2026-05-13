@@ -6,7 +6,8 @@ var _event_effects: Array[Dictionary] = []
 
 
 func _ready() -> void:
-	_effect_state.register_base_values(GameRules.base_stats)
+	_effect_state.register_base_values(GameRules.BASE_CONFIG.to_dict())
+	_effect_state.register_base_values(GameRules.PADDLE_CONFIG.to_dict())
 
 
 func get_stat(key: StringName) -> float:
@@ -15,6 +16,14 @@ func get_stat(key: StringName) -> float:
 
 func get_base_stat(key: StringName) -> float:
 	return _effect_state.get_base_stat(key)
+
+
+func get_modifier(key: StringName) -> float:
+	return _effect_state.get_modifier(key)
+
+
+func get_permanent_modifier(key: StringName) -> float:
+	return _effect_state.get_permanent_modifier(key)
 
 
 func get_percentage_offset(key: StringName) -> float:

@@ -42,6 +42,16 @@ func get_percentage_offset(key: StringName) -> float:
 	return _sum_modifiers(key, _percentage_modifiers, false)
 
 
+## Sum of additive modifiers and oscillations for a stat key, range-resolved.
+func get_modifier(key: StringName) -> float:
+	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, false)
+
+
+## Same as `get_modifier` but excludes temporary (until-miss) modifiers.
+func get_permanent_modifier(key: StringName) -> float:
+	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, true)
+
+
 func add_modifier(modifier: StatModifier) -> void:
 	_array_for_operation(modifier.operation).append(modifier)
 	_refresh_oscillation_range_values()
