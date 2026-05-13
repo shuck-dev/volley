@@ -28,14 +28,23 @@ func sync_base_speed() -> void:
 
 
 func _sync_speed_limits() -> void:
-	var new_min: float = item_manager.get_stat(&"ball_speed_min")
+	var new_min: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager
+	)
 	if not is_equal_approx(new_min, ball.min_speed):
 		_base_speed += new_min - ball.min_speed
 		ball.min_speed = new_min
-	ball.max_speed = ball.min_speed + item_manager.get_stat(&"ball_speed_max_range")
-	ball.speed_increment = item_manager.get_stat(&"ball_speed_increment")
+	ball.max_speed = (
+		ball.min_speed
+		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", item_manager)
+	)
+	ball.speed_increment = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", item_manager
+	)
 
-	_applied_offset = item_manager.get_stat(&"ball_speed_offset")
+	_applied_offset = Stats.resolve(
+		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager
+	)
 	ball.speed = clampf(_base_speed + _applied_offset, ball.min_speed, ball.max_speed)
 
 
@@ -44,7 +53,9 @@ func process_hit(struck_paddle: Paddle) -> void:
 
 
 func _apply_magnetism(delta: float) -> void:
-	var magnetism: float = item_manager.get_stat(&"ball_magnetism")
+	var magnetism: float = Stats.resolve(
+		GameRules.base.ball_magnetism, &"ball_magnetism", item_manager
+	)
 	if magnetism <= 0.0 or paddles.is_empty():
 		return
 
@@ -73,7 +84,14 @@ func _apply_magnetism(delta: float) -> void:
 
 # Where on the paddle the ball struck drives the return angle; centre returns flat, edges steepen.
 func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
-	var max_degrees: float = item_manager.get_stat(&"paddle_return_angle_max_degrees")
+	var max_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_return_angle_max_degrees,
+			&"paddle_return_angle_max_degrees",
+			item_manager,
+		)
+	)
 	if max_degrees <= 0.0:
 		return
 
@@ -89,7 +107,9 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 		(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
 	)
 	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
-	var english_coefficient: float = item_manager.get_stat(&"paddle_english_coefficient")
+	var english_coefficient: float = Stats.resolve(
+		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", item_manager
+	)
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
 	var incoming_y_sign: float = signf(ball.linear_velocity.y)
 	var target_angle: float = _clamp_off_horizontal_and_vertical(
@@ -99,9 +119,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	ball.linear_velocity = direction * ball.speed
 
 
-# Floors the magnitude off horizontal and ceilings it off vertical so the return reads directed but unstuck.
-# When the target angle is exactly zero, the incoming ball's y-direction breaks the tie so descending
-# balls keep descending and ascending balls keep ascending; a horizontal incoming ball defaults to +sign.
+# Clamps magnitude off horizontal/vertical; on zero angle the incoming y-sign breaks the tie.
 func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) -> float:
 	var min_magnitude: float = deg_to_rad(MIN_ANGLE_OFF_HORIZONTAL_DEGREES)
 	var max_magnitude: float = deg_to_rad(MAX_ANGLE_OFF_HORIZONTAL_DEGREES)

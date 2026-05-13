@@ -135,7 +135,7 @@ func _track() -> void:
 
 
 func _dodge() -> void:
-	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
+	var arena_half: float = GameRules.base.arena_height / 2.0
 	var target_y: float = arena_half if ball.position.y < 0.0 else -arena_half
 	var difference: float = target_y - paddle.position.y
 	var max_speed: float = _get_paddle_speed() * config.speed_scale

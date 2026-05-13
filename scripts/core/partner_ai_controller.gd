@@ -20,4 +20,4 @@ func _is_ball_behind() -> bool:
 
 
 func _get_paddle_speed() -> float:
-	return GameRules.base_stats[&"paddle_speed"]
+	return GameRules.paddle.paddle_speed
