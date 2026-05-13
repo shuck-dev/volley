@@ -4,6 +4,8 @@ extends GutTest
 
 const PADDLE_HALF_HEIGHT := 27.0
 const MAX_DEGREES := 30.0
+const MIN_ANGLE_DEG := 3.0
+const MAX_ANGLE_DEG := 87.0
 
 var _ball: Ball
 var _paddle: Paddle
@@ -25,13 +27,24 @@ func before_each() -> void:
 
 
 func _build_with_max_degrees(degrees: float) -> void:
-	# Builds an item whose `always` trigger contributes the requested max-degrees value,
-	# so the resolved stat carries the test value the same way a real item would.
+	_build_with_stats(degrees, 0.0)
+
+
+func _build_with_stats(degrees: float, english: float) -> void:
+	# Builds items whose `always` triggers contribute the requested stat values, so the resolved
+	# stats carry the test values the same way real items would.
 	_manager = ItemFactory.create_manager(
 		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", degrees
 	)
+	if english != 0.0:
+		var english_item := ItemFactory.create(
+			"english_kit", &"paddle_english_coefficient", &"add", english
+		)
+		_manager.items.append(english_item)
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("max_angle_kit")
+	if english != 0.0:
+		_manager.purchase("english_kit")
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -39,7 +52,9 @@ func _build_with_max_degrees(degrees: float) -> void:
 
 
 # --- offset-driven angle ---
-func test_centre_hit_keeps_incoming_direction() -> void:
+func test_centre_hit_returns_within_min_angle_band() -> void:
+	# Centre hit, no english: the min-angle clamp keeps the return off pure horizontal so the bounce
+	# reads as directed rather than as the ball ignoring the paddle.
 	_build_with_max_degrees(MAX_DEGREES)
 	_ball.global_position = Vector2(0, 0)
 	_ball.linear_velocity = Vector2(100, 60)
@@ -47,8 +62,8 @@ func test_centre_hit_keeps_incoming_direction() -> void:
 
 	_ball.effect_processor.process_hit(_paddle)
 
-	# Centre offset = 0 ⇒ target angle = 0 ⇒ pure horizontal at the same speed.
-	assert_almost_eq(_ball.linear_velocity.y, 0.0, 0.01)
+	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
 	assert_gt(_ball.linear_velocity.x, 0.0)
 
 
@@ -168,3 +183,41 @@ func test_real_paddle_get_half_height_drives_return_angle() -> void:
 
 	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), MAX_DEGREES, 0.01)
+
+
+# --- english (paddle vertical velocity at contact) ---
+func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
+	# Centre hit baseline gets a small min-angle nudge; paddle moving downward should bias the
+	# return downward beyond that floor, more than the centre-hit baseline.
+	var english := 0.001
+	_build_with_stats(MAX_DEGREES, english)
+	_paddle.velocity = Vector2(0.0, 400.0)
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	# Downward paddle motion (positive y in screen space) → bounce angle positive y.
+	assert_gt(_ball.linear_velocity.y, 0.0, "Paddle moving down should bias bounce downward")
+	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
+	assert_gt(
+		rad_to_deg(angle),
+		MIN_ANGLE_DEG + 0.01,
+		"English should push beyond the centre-hit min-angle floor"
+	)
+
+
+func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:
+	# Edge hit with maxed-out english added on top should never return near-vertical; the
+	# max-angle ceiling kicks in to keep the ball from wall-bouncing off the back wall.
+	_build_with_stats(MAX_DEGREES, 0.01)
+	_paddle.velocity = Vector2(0.0, 10000.0)
+	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
+	assert_almost_eq(rad_to_deg(angle), MAX_ANGLE_DEG, 0.01)
