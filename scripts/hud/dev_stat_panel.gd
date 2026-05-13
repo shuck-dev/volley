@@ -5,13 +5,16 @@ var _labels: Dictionary = {}
 var _speed_label: Label
 var _speed_bar: Control
 var _drag := DraggableBehavior.new()
-
-
 # Debug-only: flattened view of every stat's base value for diff readouts.
-static func _base_values() -> Dictionary:
-	var values: Dictionary = GameRules.BASE_CONFIG.to_dict()
-	values.merge(GameRules.PADDLE_CONFIG.to_dict())
-	return values
+# Cached once because `_refresh` hits this per stat per frame.
+var _cached_base_values: Dictionary = {}
+
+
+func _base_values() -> Dictionary:
+	if _cached_base_values.is_empty():
+		_cached_base_values = GameRules.BASE_CONFIG.to_dict()
+		_cached_base_values.merge(GameRules.PADDLE_CONFIG.to_dict())
+	return _cached_base_values
 
 
 func _ready() -> void:
