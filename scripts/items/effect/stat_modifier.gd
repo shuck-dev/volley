@@ -1,11 +1,10 @@
 class_name StatModifier
 extends RefCounted
 
-enum Operation { ADD, MULTIPLY, PERCENTAGE }
+enum Operation { ADD, PERCENTAGE }
 
 const OPERATION_BY_NAME: Dictionary = {
 	&"add": Operation.ADD,
-	&"multiply": Operation.MULTIPLY,
 	&"percentage": Operation.PERCENTAGE,
 }
 

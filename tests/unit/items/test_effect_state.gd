@@ -36,24 +36,6 @@ func test_multiple_add_modifiers_stack() -> void:
 	assert_eq(_state.get_stat(&"speed"), 150.0)
 
 
-func test_multiply_modifier_scales_stat() -> void:
-	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
-	assert_eq(_state.get_stat(&"speed"), 200.0)
-
-
-func test_multiple_multiply_modifiers_stack() -> void:
-	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
-	_state.add_modifier(_make_modifier("item_b", &"speed", StatModifier.Operation.MULTIPLY, 3.0))
-	assert_eq(_state.get_stat(&"speed"), 600.0)
-
-
-func test_add_is_applied_before_multiply() -> void:
-	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
-	_state.add_modifier(_make_modifier("item_b", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
-	# (100 + 50) * 2 = 300, not (100 * 2) + 50 = 250
-	assert_eq(_state.get_stat(&"speed"), 300.0)
-
-
 func test_percentage_modifier_applies_offset_from_one() -> void:
 	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.PERCENTAGE, 0.5))
 	# 100 * (1.0 + 0.5) = 150
@@ -67,12 +49,11 @@ func test_multiple_percentage_modifiers_sum_additively() -> void:
 	assert_eq(_state.get_stat(&"speed"), 130.0)
 
 
-func test_percentage_applies_after_add_before_multiply() -> void:
+func test_percentage_applies_after_add() -> void:
 	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
 	_state.add_modifier(_make_modifier("item_b", &"speed", StatModifier.Operation.PERCENTAGE, 0.5))
-	_state.add_modifier(_make_modifier("item_c", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
-	# ((100 + 50) * 1.5) * 2 = 450
-	assert_eq(_state.get_stat(&"speed"), 450.0)
+	# (100 + 50) * 1.5 = 225
+	assert_eq(_state.get_stat(&"speed"), 225.0)
 
 
 func test_modifier_for_one_stat_does_not_affect_another() -> void:
@@ -96,7 +77,7 @@ func test_remove_modifiers_by_source_keeps_other_sources() -> void:
 
 func test_remove_modifiers_by_source_removes_across_operations() -> void:
 	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.ADD, 50.0))
-	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.MULTIPLY, 2.0))
+	_state.add_modifier(_make_modifier("item_a", &"speed", StatModifier.Operation.PERCENTAGE, 0.5))
 	_state.remove_modifiers_by_source("item_a")
 	assert_eq(_state.get_stat(&"speed"), 100.0)
 

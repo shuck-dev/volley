@@ -52,8 +52,8 @@ func test_register_source_applies_always_modify_stat_effect() -> void:
 	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 50.0)
 
 
-func test_register_source_applies_multiply_effect() -> void:
-	var effect := _make_always_modify_stat_effect(&"paddle_speed", &"multiply", 2.0)
+func test_register_source_applies_percentage_effect() -> void:
+	var effect := _make_always_modify_stat_effect(&"paddle_speed", &"percentage", 1.0)
 	var item := _make_item("test_item", [effect])
 
 	_manager.register_source(item, 1)
