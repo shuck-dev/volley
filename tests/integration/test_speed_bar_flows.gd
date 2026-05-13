@@ -53,7 +53,9 @@ func before_each() -> void:
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
 	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
 
 	_bar = SpeedBarScript.new()
 	_bar.ball = _ball

@@ -31,18 +31,24 @@ func before_each() -> void:
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	add_child_autofree(_ball)
-	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
 
 
 func _effective_max_speed() -> float:
-	return _manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_max_range")
+	return (
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
+	)
 
 
 # --- increase_speed ---
 func test_increase_speed_adds_increment() -> void:
 	_ball.increase_speed()
 	var expected: float = (
-		_manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_increment")
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+		+ Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager)
 	)
 	assert_almost_eq(_ball.speed, expected, 0.01)
 
@@ -63,7 +69,9 @@ func test_increase_speed_does_not_exceed_max_near_ceiling() -> void:
 func test_reset_speed_returns_to_min() -> void:
 	_ball.speed = _effective_max_speed()
 	_ball.reset_speed()
-	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_min"), 0.01)
+	assert_almost_eq(
+		_ball.speed, Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.01
+	)
 
 
 func test_reset_speed_preserves_direction() -> void:
@@ -76,24 +84,32 @@ func test_reset_speed_preserves_direction() -> void:
 # --- item level changes (applied on next physics frame via effect processor) ---
 func test_min_speed_purchase_increases_speed() -> void:
 	var speed_before_purchase: float = _ball.speed
-	var min_before_purchase: float = _manager.get_stat(&"ball_speed_min")
+	var min_before_purchase: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
-	var min_after_purchase: float = _manager.get_stat(&"ball_speed_min")
+	var min_after_purchase: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
 	assert_almost_eq(_ball.speed, expected_speed, 0.01)
 
 
 func test_min_speed_purchase_increases_speed_above_new_min() -> void:
-	_ball.speed = _manager.get_stat(&"ball_speed_min") + 200.0
+	_ball.speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager) + 200.0
 	_ball.effect_processor.sync_base_speed()
 	var speed_before_purchase: float = _ball.speed
-	var min_before_purchase: float = _manager.get_stat(&"ball_speed_min")
+	var min_before_purchase: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
-	var min_after_purchase: float = _manager.get_stat(&"ball_speed_min")
+	var min_after_purchase: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
 	assert_almost_eq(_ball.speed, expected_speed, 0.01)
 
@@ -119,7 +135,9 @@ func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 # --- set_speed_for_streak ---
 func test_set_speed_for_streak_zero_equals_min_speed() -> void:
 	_ball.set_speed_for_streak(0)
-	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_min"), 0.01)
+	assert_almost_eq(
+		_ball.speed, Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.01
+	)
 
 
 func test_set_speed_for_streak_matches_incremental_hits() -> void:
@@ -186,7 +204,7 @@ func test_oscillation_never_drops_below_min_speed() -> void:
 	_manager._progression.friendship_point_balance = 10000
 	_manager.purchase("big_oscillation")
 
-	var min_speed: float = _manager.get_stat(&"ball_speed_min")
+	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 	for frame_index in range(300):
 		_ball._physics_process(0.016)
 		assert_true(

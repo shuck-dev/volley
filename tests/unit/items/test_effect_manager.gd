@@ -39,7 +39,7 @@ func _make_always_modify_stat_effect(
 
 # --- base stats ---
 func test_base_stat_values_are_registered_from_game_rules() -> void:
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed)
 
 
 # --- register_source ---
@@ -49,7 +49,7 @@ func test_register_source_applies_always_modify_stat_effect() -> void:
 
 	_manager.register_source(item, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 50.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 50.0)
 
 
 func test_register_source_applies_multiply_effect() -> void:
@@ -58,7 +58,7 @@ func test_register_source_applies_multiply_effect() -> void:
 
 	_manager.register_source(item, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] * 2.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed * 2.0)
 
 
 func test_register_source_ignores_effects_outside_level_range() -> void:
@@ -68,7 +68,7 @@ func test_register_source_ignores_effects_outside_level_range() -> void:
 
 	_manager.register_source(item, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed)
 
 
 func test_register_source_applies_multiple_effects() -> void:
@@ -78,8 +78,8 @@ func test_register_source_applies_multiple_effects() -> void:
 
 	_manager.register_source(item, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 20.0)
-	assert_eq(_manager.get_stat(&"paddle_size"), GameRules.base_stats[&"paddle_size"] + 10.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 20.0)
+	assert_eq(_manager.get_stat(&"paddle_size"), GameRules.paddle.paddle_size + 10.0)
 
 
 func test_multiple_items_stack_modifiers() -> void:
@@ -91,7 +91,7 @@ func test_multiple_items_stack_modifiers() -> void:
 	_manager.register_source(item_a, 1)
 	_manager.register_source(item_b, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 50.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 50.0)
 
 
 # --- unregister_source ---
@@ -102,7 +102,7 @@ func test_unregister_source_removes_modifiers() -> void:
 	_manager.register_source(item, 1)
 	_manager.unregister_source(item)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed)
 
 
 func test_unregister_source_keeps_other_items() -> void:
@@ -115,7 +115,7 @@ func test_unregister_source_keeps_other_items() -> void:
 	_manager.register_source(item_b, 1)
 	_manager.unregister_source(item_a)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 30.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 30.0)
 
 
 func _make_partner(partner_key: StringName, effects: Array[Effect]) -> PartnerDefinition:
@@ -132,7 +132,7 @@ func test_register_source_accepts_partner_definition() -> void:
 
 	_manager.register_source(partner, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"] + 50.0)
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 50.0)
 
 
 func test_unregister_source_accepts_partner_definition() -> void:
@@ -142,7 +142,7 @@ func test_unregister_source_accepts_partner_definition() -> void:
 	_manager.register_source(partner, 1)
 	_manager.unregister_source(partner)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed)
 
 
 # --- non-always triggers ---
@@ -163,4 +163,4 @@ func test_register_source_ignores_non_always_triggers() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.base_stats[&"paddle_speed"])
+	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed)

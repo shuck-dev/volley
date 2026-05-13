@@ -127,12 +127,14 @@ func test_equipment_item_taken_from_shop_does_not_appear_on_ball_rack() -> void:
 
 
 func test_shop_take_does_not_apply_stat_effects() -> void:
-	var base_paddle_size: float = _item_manager.get_stat(&"paddle_size")
+	var base_paddle_size: float = Stats.resolve(
+		GameRules.paddle.paddle_size, &"paddle_size", _item_manager
+	)
 
 	_take_from_shop(_shop_item(GripTape.key))
 
 	assert_eq(
-		_item_manager.get_stat(&"paddle_size"),
+		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _item_manager),
 		base_paddle_size,
 		"shop arrivals must not register effects until the player activates them",
 	)
@@ -191,12 +193,14 @@ func test_dev_panel_purchase_equips_equipment_not_on_rack() -> void:
 
 
 func test_dev_panel_purchase_applies_stat_effects_immediately() -> void:
-	var base_paddle_size: float = _item_manager.get_stat(&"paddle_size")
+	var base_paddle_size: float = Stats.resolve(
+		GameRules.paddle.paddle_size, &"paddle_size", _item_manager
+	)
 
 	_item_manager.purchase(GripTape.key)
 
 	assert_ne(
-		_item_manager.get_stat(&"paddle_size"),
+		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _item_manager),
 		base_paddle_size,
 		"dev-panel purchase should register effects on the same call",
 	)

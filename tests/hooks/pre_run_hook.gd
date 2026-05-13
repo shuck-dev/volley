@@ -17,7 +17,7 @@ const EXCLUDE_PATHS = [
 	"res://scripts/progression/save_storage.gd",
 	# Autoload, not unit-testable
 	"res://scripts/progression/save_manager.gd",
-	# Pure data resource, exercised through GameRules.base_stats
+	# Pure data resource, exercised through GameRules.base / GameRules.paddle
 	"res://scripts/core/base_stats_config.gd",
 	"res://scripts/core/paddle_config.gd",
 	# Abstract base class; subclasses override apply() and describe()

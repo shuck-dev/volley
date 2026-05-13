@@ -52,8 +52,7 @@ func _build_with_stats(degrees: float, english: float) -> void:
 
 # --- offset-driven angle ---
 func test_centre_hit_returns_within_min_angle_band() -> void:
-	# Centre hit, no english: the min-angle clamp keeps the return off pure horizontal so the bounce
-	# reads as directed rather than as the ball ignoring the paddle.
+	# Centre hit: the min-angle clamp keeps the bounce off pure horizontal.
 	_build_with_max_degrees(MAX_DEGREES)
 	_ball.global_position = Vector2(0, 0)
 	_ball.linear_velocity = Vector2(100, 60)
@@ -186,8 +185,7 @@ func test_real_paddle_get_half_height_drives_return_angle() -> void:
 
 # --- english (paddle vertical velocity at contact) ---
 func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
-	# Centre hit baseline gets a small min-angle nudge; paddle moving downward should bias the
-	# return downward beyond that floor, more than the centre-hit baseline.
+	# Paddle moving down should bias bounce past the centre-hit min-angle floor.
 	var english := 0.001
 	_build_with_stats(MAX_DEGREES, english)
 	_paddle.velocity = Vector2(0.0, 400.0)
@@ -208,8 +206,7 @@ func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 
 
 func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:
-	# Edge hit with maxed-out english added on top should never return near-vertical; the
-	# max-angle ceiling kicks in to keep the ball from wall-bouncing off the back wall.
+	# Edge hit with maxed-out english is clamped to the max-angle ceiling, not near-vertical.
 	_build_with_stats(MAX_DEGREES, 0.01)
 	_paddle.velocity = Vector2(0.0, 10000.0)
 	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
@@ -223,8 +220,7 @@ func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:
 
 
 func test_english_only_no_offset_is_dormant() -> void:
-	# With paddle_return_angle_max_degrees=0 the early return fires before english is read, so
-	# english alone cannot bias the bounce.
+	# Max-degrees=0 early-returns before english is read, so english alone cannot bias the bounce.
 	_build_with_stats(0.0, 0.01)
 	_paddle.velocity = Vector2(0.0, 400.0)
 	_ball.global_position = Vector2(0, 0)
@@ -239,8 +235,7 @@ func test_english_only_no_offset_is_dormant() -> void:
 
 # --- centre-hit tiebreaker: incoming y-direction carries through ---
 func test_descending_ball_centre_hit_returns_downward() -> void:
-	# Dead-centre offset, still paddle: target angle is 0; incoming descending y should keep the
-	# bounce descending past the min-angle floor.
+	# Dead-centre on a still paddle: incoming descending y should keep the bounce descending.
 	_build_with_stats(MAX_DEGREES, 0.0)
 	_paddle.velocity = Vector2.ZERO
 	_ball.global_position = Vector2(0, 0)
@@ -269,7 +264,7 @@ func test_ascending_ball_centre_hit_returns_upward() -> void:
 
 
 func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
-	# Degenerate degenerate: both target angle and incoming y are zero; default to +MIN_ANGLE_DEG.
+	# Degenerate case: both target angle and incoming y are zero; default to +MIN_ANGLE_DEG.
 	_build_with_stats(MAX_DEGREES, 0.0)
 	_paddle.velocity = Vector2.ZERO
 	_ball.global_position = Vector2(0, 0)
@@ -278,5 +273,8 @@ func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
 
 	_ball.effect_processor.process_hit(_paddle)
 
+	assert_gt(
+		_ball.linear_velocity.y, 0.0, "Default tiebreaker should send bounce below horizontal"
+	)
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)

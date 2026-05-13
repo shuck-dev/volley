@@ -152,7 +152,7 @@ func test_noise_resamples_during_drift_when_direction_changes() -> void:
 func test_speed_never_exceeds_configured_scale() -> void:
 	_ball.position = Vector2(100.0, 9999.0)
 	_ball.linear_velocity = BALL_APPROACHING_PARTNER
-	var max_allowed: float = GameRules.base_stats[&"paddle_speed"] * _config.speed_scale
+	var max_allowed: float = GameRules.paddle.paddle_speed * _config.speed_scale
 	_run_frames(50)
 	for _check in range(50):
 		_controller._physics_process(PHYSICS_DELTA)

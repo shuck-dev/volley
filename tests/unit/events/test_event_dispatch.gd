@@ -63,8 +63,8 @@ func test_process_event_fires_matching_trigger() -> void:
 	_manager.process_event(&"on_max_speed_reached")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"] + 30.0,
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range + 30.0,
 	)
 
 
@@ -76,8 +76,8 @@ func test_process_event_ignores_non_matching_trigger() -> void:
 	_manager.process_event(&"on_hit")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
@@ -87,8 +87,8 @@ func test_event_effect_not_applied_on_register() -> void:
 	_manager.register_source(item, 1)
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
@@ -100,8 +100,8 @@ func test_process_event_scales_value_by_level() -> void:
 	_manager.process_event(&"on_max_speed_reached")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"] + 60.0,
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range + 60.0,
 	)
 
 
@@ -116,8 +116,8 @@ func test_modify_stat_until_miss_stacks_on_repeated_events() -> void:
 	_manager.process_event(&"on_max_speed_reached")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"] + 90.0,
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range + 90.0,
 	)
 
 
@@ -131,8 +131,8 @@ func test_miss_event_clears_until_miss_modifiers() -> void:
 	_manager.process_event(&"on_miss")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
@@ -158,8 +158,8 @@ func test_miss_preserves_permanent_modifiers() -> void:
 	_manager.process_event(&"on_miss")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"] + 50.0,
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range + 50.0,
 	)
 
 
@@ -172,8 +172,8 @@ func test_unregister_removes_event_effects() -> void:
 	_manager.unregister_source(item)
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
@@ -183,11 +183,14 @@ func test_oscillate_stat_changes_value_over_time() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	var base_value: float = GameRules.base_stats[&"ball_speed_offset"]
+	var base_value: float = GameRules.base.ball_speed_offset
 	var found_different := false
 	for frame_index in range(60):
 		_manager.process_frame(0.016)
-		if not is_equal_approx(_manager.get_stat(&"ball_speed_offset"), base_value):
+		if not is_equal_approx(
+			Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
+			base_value
+		):
 			found_different = true
 			break
 
@@ -200,15 +203,17 @@ func test_oscillate_stat_stays_within_amplitude() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	var range_value: float = GameRules.base_stats[&"ball_speed_max_range"]
+	var range_value: float = GameRules.base.ball_speed_max_range
 	var effective_amplitude: float = amplitude * range_value
-	var base_value: float = GameRules.base_stats[&"ball_speed_offset"]
+	var base_value: float = GameRules.base.ball_speed_offset
 	var min_observed := base_value
 	var max_observed := base_value
 
 	for frame_index in range(300):
 		_manager.process_frame(0.016)
-		var current_value: float = _manager.get_stat(&"ball_speed_offset")
+		var current_value: float = Stats.resolve(
+			GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager
+		)
 		min_observed = minf(min_observed, current_value)
 		max_observed = maxf(max_observed, current_value)
 
@@ -228,13 +233,15 @@ func test_oscillate_stat_scales_range_by_level() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 2)
 
-	var range_value: float = GameRules.base_stats[&"ball_speed_max_range"]
+	var range_value: float = GameRules.base.ball_speed_max_range
 	var effective_amplitude: float = amplitude * 2.0 * range_value
-	var base_value: float = GameRules.base_stats[&"ball_speed_offset"]
+	var base_value: float = GameRules.base.ball_speed_offset
 
 	for frame_index in range(300):
 		_manager.process_frame(0.016)
-		var current_value: float = _manager.get_stat(&"ball_speed_offset")
+		var current_value: float = Stats.resolve(
+			GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager
+		)
 		assert_true(
 			(
 				current_value >= base_value - effective_amplitude
@@ -332,6 +339,6 @@ func test_unregister_stops_oscillation() -> void:
 	_manager.unregister_source(item)
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_offset"),
-		GameRules.base_stats[&"ball_speed_offset"],
+		Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
+		GameRules.base.ball_speed_offset,
 	)
