@@ -8,5 +8,4 @@ freeze = true
 collision_layer = 0
 collision_mask = 0
 gravity_scale = 0.0
-linear_damp = 0.0
 physics_material_override = null

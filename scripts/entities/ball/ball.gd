@@ -19,11 +19,11 @@ const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
 const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
 # Per-state bundles; ordering-sensitive steps stay imperative around apply().
+# STORED and OUT_HELD share the same physics setup (frozen, no-collide); one .tres covers both.
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
 const PLAY_NORMAL_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_normal.tres")
 const PLAY_ARC_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_arc.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
-const OUT_HELD_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_held.tres")
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
@@ -218,7 +218,7 @@ func enter_out_rest() -> void:
 # OUT_HELD: body frozen, collision and miss-detection suppressed. Drag controller drives position.
 func enter_out_held() -> void:
 	_suppress_miss_detection = true
-	OUT_HELD_CONFIG.apply(self)
+	STORED_CONFIG.apply(self)
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0.0
 	set_play_state(PlayState.OUT_HELD)
