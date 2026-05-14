@@ -10,8 +10,7 @@ signal bounce_resolved(
 	horizontal_sign: float
 )
 
-# Safety floors that keep every active bounce visibly directional without dead-straight or wall-sticking returns.
-const MIN_ANGLE_OFF_HORIZONTAL_DEGREES := 3.0
+# Ceiling stays a const; the floor is tunable via PaddleConfig.paddle_bounce_min_angle_degrees so items can grow the dead zone.
 const MAX_ANGLE_OFF_HORIZONTAL_DEGREES := 87.0
 
 var ball: Ball
@@ -137,7 +136,15 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 
 # Clamps magnitude off horizontal/vertical; on zero angle the incoming y-sign breaks the tie.
 func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) -> float:
-	var min_magnitude: float = deg_to_rad(MIN_ANGLE_OFF_HORIZONTAL_DEGREES)
+	var min_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_bounce_min_angle_degrees,
+			&"paddle_bounce_min_angle_degrees",
+			item_manager,
+		)
+	)
+	var min_magnitude: float = deg_to_rad(min_degrees)
 	var max_magnitude: float = deg_to_rad(MAX_ANGLE_OFF_HORIZONTAL_DEGREES)
 	var sign_y: float = signf(angle)
 	if sign_y == 0.0:

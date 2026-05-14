@@ -31,6 +31,12 @@ func _build_with_max_degrees(degrees: float) -> void:
 
 
 func _build_with_stats(degrees: float, english: float) -> void:
+	_build_with_stats_and_min_angle(degrees, english, 0.0)
+
+
+func _build_with_stats_and_min_angle(
+	degrees: float, english: float, min_angle_bonus: float
+) -> void:
 	# Builds items whose `always` triggers contribute the requested stat values like real items would.
 	_manager = ItemFactory.create_manager(
 		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", degrees
@@ -40,10 +46,17 @@ func _build_with_stats(degrees: float, english: float) -> void:
 			"english_kit", &"paddle_english_coefficient", &"add", english
 		)
 		_manager.items.append(english_item)
+	if min_angle_bonus != 0.0:
+		var min_item := ItemFactory.create(
+			"min_angle_kit", &"paddle_bounce_min_angle_degrees", &"add", min_angle_bonus
+		)
+		_manager.items.append(min_item)
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("max_angle_kit")
 	if english != 0.0:
 		_manager.purchase("english_kit")
+	if min_angle_bonus != 0.0:
+		_manager.purchase("min_angle_kit")
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -204,6 +217,29 @@ func test_ascending_ball_centre_hit_returns_upward() -> void:
 	assert_lt(_ball.linear_velocity.y, 0.0, "Ascending centre hit should leave ascending")
 	var angle: float = atan2(-_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+
+
+# --- min-angle dead zone is tunable ---
+func test_raising_min_angle_floor_steepens_centre_hit() -> void:
+	# Centre hit at default 3 deg floor.
+	_build_with_stats(MAX_DEGREES, 0.0)
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+	_ball.effect_processor.process_hit(_paddle)
+	var baseline_y: float = absf(_ball.linear_velocity.y)
+
+	# Same centre hit with the floor raised by an item modifier.
+	_build_with_stats_and_min_angle(MAX_DEGREES, 0.0, 17.0)
+	_ball.global_position = Vector2(0, 0)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+	_ball.effect_processor.process_hit(_paddle)
+	var raised_y: float = absf(_ball.linear_velocity.y)
+
+	assert_gt(
+		raised_y, baseline_y, "Raising paddle_bounce_min_angle_degrees should steepen a centre hit"
+	)
 
 
 func test_horizontal_incoming_centre_hit_defaults_downward() -> void:

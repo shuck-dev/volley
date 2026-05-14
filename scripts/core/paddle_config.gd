@@ -13,6 +13,8 @@ extends Resource
 @export_range(0.0, 90.0) var paddle_return_angle_max_degrees := 0.0
 ## Scales paddle vertical velocity into a bounce-angle bias (radians per pixel/sec).
 @export_range(0.0, 0.05) var paddle_english_coefficient := 0.0
+## Dead-zone floor (degrees off horizontal); bounces never land closer than this to pure horizontal.
+@export_range(0.0, 30.0) var paddle_bounce_min_angle_degrees := 3.0
 
 
 func to_dict() -> Dictionary:
@@ -22,4 +24,5 @@ func to_dict() -> Dictionary:
 		&"paddle_size_min": paddle_size_min,
 		&"paddle_return_angle_max_degrees": paddle_return_angle_max_degrees,
 		&"paddle_english_coefficient": paddle_english_coefficient,
+		&"paddle_bounce_min_angle_degrees": paddle_bounce_min_angle_degrees,
 	}
