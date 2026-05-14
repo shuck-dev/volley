@@ -41,14 +41,17 @@ func _build_with_stats(degrees: float, english: float) -> void:
 func _build_with_stats_and_min_angle(
 	degrees: float, english: float, min_angle_bonus: float
 ) -> void:
-	# Builds items whose `always` triggers contribute the requested stat values like real items would.
+	# Items add a DELTA from the live base so the test lands at the requested absolute value,
+	# independent of the production paddle_stats.tres tuning.
+	var max_degrees_delta: float = degrees - GameRules.paddle.paddle_return_angle_max_degrees
+	var english_delta: float = english - GameRules.paddle.paddle_english_coefficient
 	_manager = ItemFactory.create_manager(
-		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", degrees
+		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", max_degrees_delta
 	)
 
-	if english != 0.0:
+	if english_delta != 0.0:
 		var english_item := ItemFactory.create(
-			"english_kit", &"paddle_english_coefficient", &"add", english
+			"english_kit", &"paddle_english_coefficient", &"add", english_delta
 		)
 		_manager.items.append(english_item)
 
@@ -60,7 +63,7 @@ func _build_with_stats_and_min_angle(
 	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("max_angle_kit")
 
-	if english != 0.0:
+	if english_delta != 0.0:
 		_manager.purchase("english_kit")
 
 	if min_angle_bonus != 0.0:
