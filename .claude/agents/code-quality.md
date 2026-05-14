@@ -32,6 +32,6 @@ Do not re-report any of the above.
 
 ## Output
 
-Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments per `ai/skills/minions/reviewers.md`.
+Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments per `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`.
 
-Never flag an item that is already covered by `ai/skills/gru/dispatch.md`, `ai/skills/minions/commits.md`, `ai/skills/minions/reviewers.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.
+Never flag an item that is already covered by `ai/skills/gru/dispatch.md`, `ai/skills/minions/commits.md`, `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.
