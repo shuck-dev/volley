@@ -109,6 +109,20 @@ func test_save_without_provider_leaves_positions_untouched() -> void:
 	assert_eq(_save_manager.items.ball_positions["base_ball"], Vector2(1.0, 2.0))
 
 
+# --- play_state provider ---
+func test_save_captures_play_states_from_registered_provider() -> void:
+	var live: Dictionary[String, int] = {"base_ball": Ball.PlayState.OUT_REST}
+	_save_manager.set_play_state_provider(func() -> Dictionary[String, int]: return live)
+	_save_manager.save()
+	assert_eq(_save_manager.items.ball_play_states["base_ball"], int(Ball.PlayState.OUT_REST))
+
+
+func test_save_without_play_state_provider_leaves_states_untouched() -> void:
+	_save_manager.items.ball_play_states["base_ball"] = Ball.PlayState.PLAY_ARC
+	_save_manager.save()
+	assert_eq(_save_manager.items.ball_play_states["base_ball"], int(Ball.PlayState.PLAY_ARC))
+
+
 # --- load_from_disk ---
 func test_load_from_disk_applies_stored_blob() -> void:
 	var blob_dict: Dictionary = {
