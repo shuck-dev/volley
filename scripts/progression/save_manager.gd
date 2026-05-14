@@ -117,28 +117,39 @@ func set_play_state_provider(provider: Callable) -> void:
 
 
 func _capture_live_positions() -> void:
-	if _position_provider.is_valid():
-		var live: Variant = _position_provider.call()
+	_capture_positions()
+	_capture_play_states()
 
-		if live is Dictionary:
-			var typed: Dictionary[String, Vector2] = {}
 
-			for key: Variant in live:
-				var value: Variant = live[key]
+func _capture_positions() -> void:
+	if not _position_provider.is_valid():
+		return
+	var live: Variant = _position_provider.call()
 
-				if value is Vector2:
-					typed[str(key)] = value
-			items.ball_positions = typed
+	if not (live is Dictionary):
+		return
+	var typed: Dictionary[String, Vector2] = {}
 
-	if _play_state_provider.is_valid():
-		var live_states: Variant = _play_state_provider.call()
+	for key: Variant in live:
+		var value: Variant = live[key]
 
-		if live_states is Dictionary:
-			var typed_states: Dictionary[String, int] = {}
+		if value is Vector2:
+			typed[str(key)] = value
+	items.ball_positions = typed
 
-			for key: Variant in live_states:
-				typed_states[str(key)] = int(live_states[key])
-			items.ball_play_states = typed_states
+
+func _capture_play_states() -> void:
+	if not _play_state_provider.is_valid():
+		return
+	var live: Variant = _play_state_provider.call()
+
+	if not (live is Dictionary):
+		return
+	var typed: Dictionary[String, int] = {}
+
+	for key: Variant in live:
+		typed[str(key)] = int(live[key])
+	items.ball_play_states = typed
 
 
 ## Clears progression and blocks writes until unblock_writes(); call_deferred after reload_current_scene.
@@ -168,12 +179,16 @@ func _notification(what: int) -> void:
 func _ensure_slices() -> void:
 	if economy == null:
 		economy = _SLICE_SCRIPTS["economy"].new()
+
 	if items == null:
 		items = _SLICE_SCRIPTS["items"].new()
+
 	if records == null:
 		records = _SLICE_SCRIPTS["records"].new()
+
 	if unlocks == null:
 		unlocks = _SLICE_SCRIPTS["unlocks"].new()
+
 	if partners == null:
 		partners = _SLICE_SCRIPTS["partners"].new()
 
