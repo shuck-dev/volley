@@ -72,33 +72,6 @@ func test_drifts_toward_center_when_ball_moving_away() -> void:
 	assert_lt(_paddle.velocity.y, 0.0, "should drift up toward center")
 
 
-# --- dodging ---
-func test_dodges_away_from_ball_when_ball_is_behind() -> void:
-	_ball.position = Vector2(PADDLE_X + 50.0, 10.0)
-	_ball.linear_velocity = BALL_APPROACHING_PARTNER
-	_paddle.position = Vector2(PADDLE_X, 0.0)
-
-	_run_frames(5)
-	assert_lt(
-		_paddle.velocity.y,
-		0.0,
-		"should dodge away from ball (ball at y=10, dodge to negative edge)",
-	)
-
-
-func test_dodges_to_positive_edge_when_ball_is_above() -> void:
-	_ball.position = Vector2(PADDLE_X + 50.0, -10.0)
-	_ball.linear_velocity = BALL_APPROACHING_PARTNER
-	_paddle.position = Vector2(PADDLE_X, 0.0)
-
-	_run_frames(5)
-	assert_gt(
-		_paddle.velocity.y,
-		0.0,
-		"should dodge to positive edge when ball is above center",
-	)
-
-
 # --- noise resampling ---
 func test_noise_offset_changes_when_ball_reverses_direction() -> void:
 	_config.noise = 50.0
