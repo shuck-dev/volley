@@ -15,9 +15,6 @@ enum PlayState {
 	OUT_HELD,
 }
 
-const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
-const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
-
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")

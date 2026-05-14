@@ -63,7 +63,6 @@ func test_enter_play_normal_sets_property_values() -> void:
 	assert_false(_ball.freeze)
 	assert_almost_eq(_ball.gravity_scale, 0.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, 0.0, 0.001)
-	assert_eq(_ball.physics_material_override, Ball.PLAY_MATERIAL)
 	assert_eq(_ball.collision_layer, 1)
 	assert_eq(_ball.collision_mask, 1)
 
@@ -88,7 +87,6 @@ func test_enter_play_idempotent() -> void:
 	watch_signals(_ball)
 	_ball.enter_play()
 	assert_signal_emit_count(_ball, "play_state_changed", 0)
-	assert_eq(_ball.physics_material_override, Ball.PLAY_MATERIAL)
 
 
 # --- enter_out_rest ---
@@ -98,7 +96,6 @@ func test_enter_out_rest_sets_property_values() -> void:
 	assert_false(_ball.freeze)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, REST_DAMPING, 0.001)
-	assert_eq(_ball.physics_material_override, Ball.REST_MATERIAL)
 	assert_eq(_ball.collision_layer, 1)
 	assert_eq(_ball.collision_mask, 1)
 
@@ -116,7 +113,6 @@ func test_enter_out_rest_idempotent() -> void:
 	_ball.enter_out_rest()
 	assert_signal_emit_count(_ball, "play_state_changed", 0)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
-	assert_eq(_ball.physics_material_override, Ball.REST_MATERIAL)
 
 
 # --- enter_out_held ---
