@@ -11,7 +11,7 @@ Two actors to keep straight:
 
 Details live in sibling docs:
 
-- Where on the court: `08-roles.md`
+- Where on the court: `tech/06-roles.md`
 - Physical props: `08-fixtures.md`
 - Storage for inactive items, passive FP: `08-kit.md`
 - Ball items: `08-balls.md`

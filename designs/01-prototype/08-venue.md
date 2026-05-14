@@ -29,7 +29,7 @@ venue.tscn
 │   ├── Workbench
 │   ├── DoneTray
 │   └── DropOffBasket
-├── Roles                      (court-fixture markers; see 08-roles.md)
+├── Roles                      (court-fixture markers; see tech/06-roles.md)
 ├── DevHUD                     (CanvasLayer; screen-space dev overlay only)
 └── Camera                     (single framing for the whole diorama)
 ```
