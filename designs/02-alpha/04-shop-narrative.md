@@ -10,9 +10,9 @@ How the player acquires items changes with each phase. The shop is a pre-break m
 
 | Phase | Acquisition method |
 |---|---|
-| Pre-break | Shop: rotating items purchased with FP |
+| Pre-break | Shop: rotating items purchased with friendship |
 | Post-break | Rummaging: searching old boxes in the basement for items |
-| Post-game | Partners: significant items gifted by partners, still purchased with FP |
+| Post-game | Partners: significant items gifted by partners, still purchased with friendship |
 
 ---
 
@@ -33,7 +33,7 @@ The deterioration should be felt before it completes. When it finally closes it 
 
 The shop is closed. The player discovers post-break items by rummaging through old boxes left in the basement. The narrative framing: these are things from before the friendship ended, things the main character's projection of the friend left behind. Going through them is clinging to the past.
 
-Mechanically: the player initiates a rummage action (once per session, or on a timer, mirrors the shop refresh model). Each rummage surfaces one item from the post-break pool for potential purchase. The item can be bought with FP or passed over. Passing does not mean it is gone; it may surface again in a future rummage.
+Mechanically: the player initiates a rummage action (once per session, or on a timer, mirrors the shop refresh model). Each rummage surfaces one item from the post-break pool for potential purchase. The item can be bought with friendship or passed over. Passing does not mean it is gone; it may surface again in a future rummage.
 
 The Tinkerer is still available throughout post-break for levelling and synergy attempts.
 
@@ -41,7 +41,7 @@ The Tinkerer is still available throughout post-break for levelling and synergy 
 
 ## Post-game: Partner gifts
 
-The shop remains closed. Partners give the player significant items as the game progresses, not as drops, but as deliberate gifts tied to relationship moments. These items are still purchased with FP (the partner gives you the item, you pay what it is worth to you and to them). The exchange is relational, not transactional.
+The shop remains closed. Partners give the player significant items as the game progresses, not as drops, but as deliberate gifts tied to relationship moments. These items are still purchased with friendship (the partner gives you the item, you pay what it is worth to you and to them). The exchange is relational, not transactional.
 
 New synergies discovered in post-game are brought to the Shopkeeper or Tinkerer once they have been won back. The act of bringing the item to them is part of the reconciliation, not separate from it.
 

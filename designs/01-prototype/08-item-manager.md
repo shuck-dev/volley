@@ -1,6 +1,6 @@
 # ItemManager: Data Model and Runtime
 
-Runtime layer behind `08-items.md`. Role logic lives in `tech/06-roles.md`, fixtures in `08-fixtures.md`, kit passive FP in `08-kit.md`, balls in `08-balls.md`.
+Runtime layer behind `08-items.md`. Role logic lives in `tech/06-roles.md`, fixtures in `08-fixtures.md`, kit passive friendship in `08-kit.md`, balls in `08-balls.md`.
 
 **Dependencies:** Effect System (`07`), Items (`08-items.md`), Venue (`08-venue.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`).
 
@@ -49,7 +49,7 @@ Both are called by drag-and-drop handlers (see `08-kit.md` for the player-side f
 4. If `role == &"court"`, `FixtureManager` spawns the prop (see `08-fixtures.md`). For `ball` and `equipment`, the parent scene (ball rack or paddle) hosts the prop directly; no fixture manager involvement.
 5. Save. Emit `court_changed`.
 
-Activation has no FP cost; the friction is the animation beat on equipment.
+Activation has no friendship cost; the friction is the animation beat on equipment.
 
 ### Deactivate
 
@@ -83,9 +83,9 @@ Existing `friendship_point_balance_changed` and `item_level_changed` are unchang
 
 ## Testing
 
-- `activate` / `deactivate` state transitions and FP debits.
+- `activate` / `deactivate` state transitions and friendship debits.
 - Role occupancy (append, remove, overflow stack).
-- Kit passive FP (see `08-kit.md`).
+- Kit passive friendship (see `08-kit.md`).
 - Ball reconciliation (see `08-balls.md`).
 
 ---

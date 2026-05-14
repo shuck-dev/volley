@@ -48,7 +48,7 @@ One camera holds the whole venue as a readable diorama. Every interactive surfac
 
 ## Diegetic signage on the court
 
-Volley counter, personal best, and friendship-point balance live on the court as world-space elements: a scoreboard, a plaque, a counter. They are children of `Court`, so they ride with it through milestone redressing. Every one of these is a candidate for replacement by a later system (a partner announcing the streak, a character handing over FP, etc.); the court-children arrangement is the starting point, not the final form.
+Volley counter, personal best, and friendship balance live on the court as world-space elements: a scoreboard, a plaque, a counter. They are children of `Court`, so they ride with it through milestone redressing. Every one of these is a candidate for replacement by a later system (a partner announcing the streak, a character handing over friendship, etc.); the court-children arrangement is the starting point, not the final form.
 
 New-arrival cues (a shipment landing, a commission finishing, a character unlocking) also play in world space: a small pulse on the relevant object, no screen-space banner.
 
@@ -72,8 +72,8 @@ Persisted. Each character has a key (`&"friend"`, `&"tinkerer"`).
 
 | Character | Trigger | Arrives with |
 |---|---|---|
-| Friend | First FP threshold, or scripted early beat | The shop |
-| Tinkerer | Later FP threshold or post-friend beat | The workshop |
+| Friend | First friendship threshold, or scripted early beat | The shop |
+| Tinkerer | Later friendship threshold or post-friend beat | The workshop |
 | Partners | Existing partner track (see `11-first-partner-unlock.md`) | Themselves |
 
 On unlock: arrival animation plays once, the area becomes visible, future loads start with the character already present.
@@ -97,7 +97,7 @@ Migration redresses `venue.tscn` rather than relocating characters. Shipments an
 
 ## Offline catch-up
 
-All wall-clock systems (kit passive FP, shipments, tinkerer commissions) share a single offline cap constant:
+All wall-clock systems (kit passive friendship, shipments, tinkerer commissions) share a single offline cap constant:
 
 ```
 offline_cap_seconds: int = 28800   # 8 hours

@@ -4,16 +4,12 @@ extends GutTest
 # Uses real item .tres resources so stat values drive expectations.
 
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager
@@ -54,7 +50,7 @@ func test_apply_size_sets_collision_to_base_value_at_level_zero() -> void:
 
 
 func test_apply_size_increases_by_effect_per_level_after_purchase() -> void:
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 
 	var paddle := _create_paddle()
@@ -70,7 +66,7 @@ func test_size_updates_live_on_purchase() -> void:
 		0.01
 	)
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 	assert_almost_eq(
 		paddle.collision.shape.size.y,
@@ -80,7 +76,7 @@ func test_size_updates_live_on_purchase() -> void:
 
 
 func test_size_updates_live_on_remove_level() -> void:
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 	var paddle := _create_paddle()
 

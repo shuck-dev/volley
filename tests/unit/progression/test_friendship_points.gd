@@ -15,12 +15,9 @@ func before_each() -> void:
 	_ball_stub = load("res://tests/stubs/ball_stub.gd").new()
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager.state = ItemState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	add_child_autofree(_item_manager)
 
@@ -34,7 +31,8 @@ func before_each() -> void:
 	_game.ball = _ball_stub
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = _autoplay_controller_stub
-	_game._progression = ProgressionData.new(mock_storage)
+	_game._records = RecordsState.new()
+	_game._partners = PartnersState.new()
 	_game._progression_config = progression_config
 	_game._item_manager = _item_manager
 	add_child_autofree(_ball_stub)

@@ -1,10 +1,6 @@
-## SH-100 shop arrivals land inactive on the matching rack.
-##
-## Exercises the full shop -> item manager -> rack display chain so the
-## contract holds end-to-end, not only in unit-level stubs. The dev panel's
-## one-click purchase path must keep auto-placing to the natural target
-## (ball on court, equipment on player), skipping the rack entirely.
 extends GutTest
+
+## Shop arrivals land inactive on the matching rack; dev-panel one-click still auto-places.
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const BallRackScene: PackedScene = preload("res://scenes/ball_rack.tscn")
@@ -22,15 +18,12 @@ var _gear_rack: Node2D
 
 
 func before_each() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager.state = ItemState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence])
-	_item_manager._progression.friendship_point_balance = 10000
+	_item_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()

@@ -5,16 +5,12 @@ extends GutTest
 
 var _ball: Ball
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager
@@ -87,7 +83,7 @@ func test_min_speed_purchase_increases_speed() -> void:
 	var min_before_purchase: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
 	var min_after_purchase: float = Stats.resolve(
@@ -104,7 +100,7 @@ func test_min_speed_purchase_increases_speed_above_new_min() -> void:
 	var min_before_purchase: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
 	var min_after_purchase: float = Stats.resolve(
@@ -115,7 +111,7 @@ func test_min_speed_purchase_increases_speed_above_new_min() -> void:
 
 
 func test_min_speed_purchase_also_raises_max_speed() -> void:
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
 	var expected_max: float = _effective_max_speed()
@@ -126,7 +122,7 @@ func test_min_speed_purchase_also_raises_max_speed() -> void:
 
 func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
 	_ball.speed = _effective_max_speed()
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	_manager.purchase("court_lines")
 	_ball._physics_process(0.016)
 	assert_true(_ball.speed <= _effective_max_speed())
@@ -201,7 +197,7 @@ func test_oscillation_never_drops_below_min_speed() -> void:
 	item.max_level = 1
 	item.effects = [effect]
 	_manager.items.append(item)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	_manager.purchase("big_oscillation")
 
 	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)

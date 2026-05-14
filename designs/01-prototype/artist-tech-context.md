@@ -12,7 +12,7 @@ The engine has two layers, and they do different jobs.
 
 The world layer holds the fiction. Painted backgrounds, the court, the racquets, the ball, the friend at her stall, the feeders, the workshop, the characters: all of it sits in the world layer, and the camera carries the layer with it as it moves and zooms. Anything the player can see in-fiction lives here.
 
-The screen-space layer is a separate `CanvasLayer` that ignores the camera. Only the developer HUD sits on it: framerate, debug toggles, state inspection. Player-facing state never lives there. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship-point balance is a counter the friend keeps. A shipment landing is a thump and a small pulse on the mat. The world tells the player what is happening, in objects the player can point at.
+The screen-space layer is a separate `CanvasLayer` that ignores the camera. Only the developer HUD sits on it: framerate, debug toggles, state inspection. Player-facing state never lives there. The volley counter is a wooden plaque on the court. The personal best is a sign on the wall. The friendship balance is a counter the friend keeps. A shipment landing is a thump and a small pulse on the mat. The world tells the player what is happening, in objects the player can point at.
 
 ---
 

@@ -24,7 +24,8 @@ var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
 var _active_partner_definition: Resource
-var _progression: ProgressionData
+var _records: RecordsState
+var _partners: PartnersState
 var _progression_config: ProgressionConfig
 var _item_manager: Node
 var _is_autoplay_active := false
@@ -33,10 +34,16 @@ var _friendship_point_accumulator := 0.0
 
 func _ready() -> void:
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
-	if _progression == null:
-		_progression = SaveManager.get_progression_data()
+
+	if _records == null:
+		_records = SaveManager.records
+
+	if _partners == null:
+		_partners = SaveManager.partners
+
 	if _progression_config == null:
 		_progression_config = ProgressionManager.get_config()
+
 	if _item_manager == null:
 		_item_manager = ItemManager
 
@@ -70,14 +77,14 @@ func _ready() -> void:
 		ball = null
 		ball_tracker.attach(pre_set)
 
-	if ProgressionManager.is_partner_unlocked(_progression.active_partner):
+	if ProgressionManager.is_partner_unlocked(_partners.active_partner):
 		_activate_partner()
 
 	ProgressionManager.partner_recruited.connect(_on_partner_recruited)
 
 	autoplay_controller.autoplay_toggled.connect(_on_auto_play_changed)
 
-	personal_volley_best_changed.emit(_progression.personal_volley_best)
+	personal_volley_best_changed.emit(_records.personal_volley_best)
 
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
@@ -102,9 +109,9 @@ func _on_paddle_hit() -> void:
 	_volley_count += 1
 	_accumulate_friendship_points()
 
-	if _volley_count > _progression.personal_volley_best:
-		_progression.personal_volley_best = _volley_count
-		personal_volley_best_changed.emit(_progression.personal_volley_best)
+	if _volley_count > _records.personal_volley_best:
+		_records.personal_volley_best = _volley_count
+		personal_volley_best_changed.emit(_records.personal_volley_best)
 
 	volley_count_changed.emit(_volley_count)
 
@@ -149,7 +156,7 @@ func _activate_partner() -> void:
 	if partner_paddle != null:
 		_deactivate_partner()
 
-	var partner_definition: Resource = ProgressionManager.get_partner(_progression.active_partner)
+	var partner_definition: Resource = ProgressionManager.get_partner(_partners.active_partner)
 	if partner_definition == null or partner_definition.paddle_scene == null:
 		return
 

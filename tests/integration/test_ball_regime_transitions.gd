@@ -19,20 +19,16 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
-var _storage: SaveStorage
 
 
 func before_each() -> void:
-	_storage = double(SaveStorage).new()
-	stub(_storage.write).to_return(true)
-	stub(_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -303,15 +299,12 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	)
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
-	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
-
-	var reload_storage: SaveStorage = double(SaveStorage).new()
-	stub(reload_storage.write).to_return(true)
-	stub(reload_storage.read).to_return(saved_blob)
+	var saved_blob: String = JSON.stringify(_manager.state.to_save_dict())
 
 	var reloaded_manager: Node = ItemManagerScript.new()
-	reloaded_manager._progression = ProgressionData.new(reload_storage)
-	assert_true(reloaded_manager._progression.load_from_disk(), "reload must parse the saved blob")
+	reloaded_manager.state = ItemState.new()
+	reloaded_manager.state.apply_save_dict(JSON.parse_string(saved_blob))
+	reloaded_manager.economy = EconomyState.new()
 	reloaded_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	reloaded_manager.items.assign(typed_items)

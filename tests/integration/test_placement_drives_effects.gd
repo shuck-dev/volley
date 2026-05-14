@@ -1,36 +1,21 @@
 extends GutTest
 
 # Integration: placement drives effects.
-#
-# Rule: an item's effects run only while it is physically on the player
-# (equipment) or on the court (balls). Racks are inert. Placement is the
-# only active/inactive signal — there is no separate flag.
-#
-# Scenarios cover the full lifecycle through the ItemManager public API:
-# activate/deactivate (driven by drag-and-drop in production), level
-# changes while placed, and save/reload round-trips.
-#
-# Fails first against current ItemManager: activate/deactivate, is_on_court,
-# get_court_items, and placement persistence are the surfaces SH-96 introduces.
 
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	add_child_autofree(_manager)
 
 
@@ -38,8 +23,6 @@ func before_each() -> void:
 
 
 # Taking an equipment item owns it but leaves it on the rack; no effect runs
-# until the player drags it onto their character. Dragging it back to the
-# rack stops the effect. Dragging it back on resumes it.
 func test_equipment_lifecycle_rack_player_rack_player() -> void:
 	var base_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
 
@@ -82,8 +65,6 @@ func test_equipment_lifecycle_rack_player_rack_player() -> void:
 
 
 # A ball on the rack has no influence on ball-speed stats. Dragging it onto
-# the court registers its effect and marks it as on-court. Removing it from
-# the court reverses both.
 func test_ball_lifecycle_rack_court_rack() -> void:
 	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
@@ -182,18 +163,11 @@ func test_level_up_on_racked_item_does_not_start_effects() -> void:
 
 
 # Placement is part of the saved progression: after a round-trip through
-# storage into a fresh ItemManager, the same items are on the court and the
-# same effects are running.
 func test_save_and_reload_preserves_placement_and_effects() -> void:
-	# Real ProgressionData-style storage round-trip: capture the JSON written
-	# by save_to_disk() and hand it back on read().
-	var captured_json: Array[String] = []
-	var capturing_storage: SaveStorage = double(SaveStorage).new()
-	stub(capturing_storage.write).to_do_nothing()
-	stub(capturing_storage.read).to_return("")
-
-	_manager._progression = ProgressionData.new(capturing_storage)
-	_manager._progression.friendship_point_balance = 100000
+	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
+	_manager.economy.friendship_point_balance = 100000
 	_manager._register_existing_items()
 
 	# Place one equipment item and one ball; leave a third owned on the rack.
@@ -208,17 +182,14 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
 
-	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
+	var saved_blob: String = JSON.stringify(_manager.state.to_save_dict())
 
-	# Fresh ItemManager + fresh ProgressionData, reading the saved blob.
+	# Fresh ItemManager + fresh ItemState, hydrated from the saved blob.
 	# Simulates a scene reload / process restart.
-	var reload_storage: SaveStorage = double(SaveStorage).new()
-	stub(reload_storage.write).to_return(true)
-	stub(reload_storage.read).to_return(saved_blob)
-
 	var reloaded: Node = load("res://scripts/items/item_manager.gd").new()  # gdlint:ignore = duplicated-load
-	reloaded._progression = ProgressionData.new(reload_storage)
-	assert_true(reloaded._progression.load_from_disk(), "reload must parse the saved blob")
+	reloaded.state = ItemState.new()
+	reloaded.state.apply_save_dict(JSON.parse_string(saved_blob))
+	reloaded.economy = EconomyState.new()
 	reloaded._effect_manager = EffectManager.new()
 	reloaded.items.assign([GripTape, TrainingBall, AnkleWeights])
 	add_child_autofree(reloaded)

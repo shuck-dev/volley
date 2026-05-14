@@ -17,21 +17,17 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
-var _storage: SaveStorage
 
 
 func before_each() -> void:
-	_storage = double(SaveStorage).new()
-	stub(_storage.write).to_return(true)
-	stub(_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()

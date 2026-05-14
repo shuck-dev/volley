@@ -15,12 +15,9 @@ class StubPaddle:
 
 
 func before_each() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var items: Array[ItemDefinition] = [preload("res://resources/items/training_ball.tres")]
 	_manager.items.assign(items)

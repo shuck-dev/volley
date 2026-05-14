@@ -4,22 +4,22 @@
 Make the game play itself so it feels alive on your desktop, and reward the player for time away.
 
 **Points:** 1 (Spike)
-**Dependencies:** Progression System (FP economy, save/load), Ball Scaling (streak difficulty)
-**Unlocks:** nothing directly, but enables passive FP accumulation as a game feel feature
+**Dependencies:** Progression System (friendship economy, save/load), Ball Scaling (streak difficulty)
+**Unlocks:** nothing directly, but enables passive friendship accumulation as a game feel feature
 
 ## Current state
 
-The paddle moves via `Input.get_axis("paddle_up", "paddle_down")` in `paddle.gd`. If no input is detected the paddle sits still. There is no AI, no idle detection, and no concept of FP rate multipliers.
+The paddle moves via `Input.get_axis("paddle_up", "paddle_down")` in `paddle.gd`. If no input is detected the paddle sits still. There is no AI, no idle detection, and no concept of friendship rate multipliers.
 
 ## Scope
 
 ### In scope
 1. Auto-play: paddle tracks the ball when the player is idle
 2. Player takeover: manual input immediately resumes control
-3. Idle FP rate: auto-play earns at a reduced rate
+3. Idle friendship rate: auto-play earns at a reduced rate
 4. HUD indicator: "AUTO" label visible while auto-play is active
-5. Background play: game keeps running and earning FP when the window is minimized or unfocused
-6. Offline rewards: FP earned based on time away after closing the game, shown on next launch
+5. Background play: game keeps running and earning friendship when the window is minimized or unfocused
+6. Offline rewards: friendship earned based on time away after closing the game, shown on next launch
 
 ### Out of scope
 - AI difficulty scaling by upgrade level (deferred to Make Fun pass)
@@ -43,9 +43,9 @@ The AI moves the paddle toward the ball's Y position each frame. It is intention
 
 The ball's position is already accessible via the `ball` export on `game.gd`. The auto-play logic needs a reference to the ball's Y.
 
-### 3. FP rate in idle mode
+### 3. Friendship rate in idle mode
 
-`game.gd` currently awards `1 FP` per `paddle_hit`. Add an `_fp_multiplier: float` to `game.gd` that defaults to `1.0`. When the paddle is in auto-play mode, use `0.5`. The multiplier applies fractional FP via accumulation: track `_fp_accumulator: float`, add `1.0 * _fp_multiplier` each hit, award `floor(_fp_accumulator)` and keep the remainder.
+`game.gd` currently awards `1` friendship per `paddle_hit`. Add an `_fp_multiplier: float` to `game.gd` that defaults to `1.0`. When the paddle is in auto-play mode, use `0.5`. The multiplier applies fractional friendship via accumulation: track `_fp_accumulator: float`, add `1.0 * _fp_multiplier` each hit, award `floor(_fp_accumulator)` and keep the remainder.
 
 ### 4. HUD indicator
 
@@ -60,22 +60,22 @@ When the window loses focus or is minimized, the game keeps running. Godot 4's d
 The window focus state is tracked via `get_tree().get_root().focus_exited` / `focus_entered` signals (or `_notification(NOTIFICATION_WM_WINDOW_FOCUS_OUT/IN)`). When unfocused:
 
 - Physics and auto-play AI keep running normally.
-- FP continues accumulating at the idle rate.
+- Friendship continues accumulating at the idle rate.
 - No visual changes are needed for prototype (the game just runs invisibly).
 
-The idle FP rate is already lower than active play, so no separate background multiplier is needed.
+The idle friendship rate is already lower than active play, so no separate background multiplier is needed.
 
 ### 6. Offline rewards
 
-When the game launches, check how long the player was away and award FP for that time.
+When the game launches, check how long the player was away and award friendship for that time.
 
-**Rate baseline:** track `idle_fp_per_minute: float` in `ProgressionData`. Update it periodically during auto-play (e.g. every 60s) by sampling the actual FP earned in idle mode. This makes the offline rate reflect the player's current paddle performance naturally.
+**Rate baseline:** track `idle_fp_per_minute: float` in `ProgressionData`. Update it periodically during auto-play (e.g. every 60s) by sampling the actual friendship earned in idle mode. This makes the offline rate reflect the player's current paddle performance naturally.
 
 **On quit:** save `last_quit_at: int` (Unix timestamp via `Time.get_unix_time_from_system()`) to `ProgressionData`.
 
-**On load:** if `last_quit_at > 0`, calculate `seconds_away = now - last_quit_at`. Cap at `MAX_OFFLINE_SECONDS` (8 hours = 28800). Award `floor(seconds_away / 60.0 * idle_fp_per_minute)` FP. Reset `last_quit_at` to 0. Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal from `SaveManager` so the HUD can show a summary.
+**On load:** if `last_quit_at > 0`, calculate `seconds_away = now - last_quit_at`. Cap at `MAX_OFFLINE_SECONDS` (8 hours = 28800). Award `floor(seconds_away / 60.0 * idle_fp_per_minute)` friendship. Reset `last_quit_at` to 0. Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal from `SaveManager` so the HUD can show a summary.
 
-**Welcome back display:** print a one-line message to the HUD: "Welcome back! +N FP". No animation, no popup. The polished version (fade, layout, milestone callouts) is deferred to a later HUD pass.
+**Welcome back display:** print a one-line message to the HUD: "Welcome back! +N friendship". No animation, no popup. The polished version (fade, layout, milestone callouts) is deferred to a later HUD pass.
 
 ## Architecture
 
@@ -99,7 +99,7 @@ Add a `toggle_auto_play()` method that flips `_is_idle` and emits `idle_mode_cha
 1. If `_is_idle` is false: read input axis and move manually.
 2. If `_is_idle` is true: push ball's current Y to ring buffer, target the oldest Y in the buffer, move toward it at `_paddle_speed * AI_SPEED_FRACTION`.
 
-Emit a `idle_mode_changed(is_idle: bool)` signal so `game.gd` can adjust the FP multiplier.
+Emit a `idle_mode_changed(is_idle: bool)` signal so `game.gd` can adjust the friendship multiplier.
 
 ### Changes to `game.gd`
 
@@ -132,25 +132,25 @@ var idle_fp_per_minute: float = 0.0
 
 Include both fields in `to_dict()` / `from_dict()`.
 
-`SaveManager` gains a `calculate_offline_rewards() -> int` method called during `_ready` before emitting any ready signals. It reads `last_quit_at`, computes FP owed, adds it to `friendship_point_balance`, clears `last_quit_at`, and returns the FP awarded (0 if none). Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal if `fp_earned > 0`.
+`SaveManager` gains a `calculate_offline_rewards() -> int` method called during `_ready` before emitting any ready signals. It reads `last_quit_at`, computes friendship owed, adds it to `friendship_point_balance`, clears `last_quit_at`, and returns the friendship awarded (0 if none). Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal if `fp_earned > 0`.
 
-`idle_fp_per_minute` is updated in `game.gd`: sample FP earned in idle mode over 60s intervals and write the result back to `ProgressionData` via `SaveManager`.
+`idle_fp_per_minute` is updated in `game.gd`: sample friendship earned in idle mode over 60s intervals and write the result back to `ProgressionData` via `SaveManager`.
 
-On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `last_quit_at = Time.get_unix_time_from_system()` and call `save_to_disk()`.
+On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `last_quit_at = Time.get_unix_time_from_system()` and call `SaveManager.save()`.
 
 ## Test plan
 
 - **Unit:** `toggle_auto_play`: switches to idle on first call, back to manual on second call
 - **Unit:** AI movement: paddle moves toward delayed ball Y, does not exceed speed cap
-- **Unit:** FP accumulation: `1.0 * 1.0` multiplier awards 1 FP per hit; `1.0 * 0.5` accumulates fractional FP correctly over multiple hits
+- **Unit:** friendship accumulation: `1.0 * 1.0` multiplier awards 1 friendship per hit; `1.0 * 0.5` accumulates fractional friendship correctly over multiple hits
 - **Unit:** `idle_mode_changed` signal fires on transition in both directions
 - **In-game:** press space, observe paddle tracking the ball
 - **In-game:** press space again, confirm paddle returns to manual control
-- **In-game:** verify FP increments slower during auto-play than during manual play
-- **In-game:** minimize window, wait 30s, restore: FP should have incremented during background time
-- **Unit:** `calculate_offline_rewards`: returns 0 when `last_quit_at` is 0; returns correct FP for a 1-hour gap; caps at 8 hours; clears `last_quit_at` after calculation
+- **In-game:** verify friendship increments slower during auto-play than during manual play
+- **In-game:** minimize window, wait 30s, restore: friendship should have incremented during background time
+- **Unit:** `calculate_offline_rewards`: returns 0 when `last_quit_at` is 0; returns correct friendship for a 1-hour gap; caps at 8 hours; clears `last_quit_at` after calculation
 - **Unit:** `ProgressionData` round-trip includes `last_quit_at` and `idle_fp_per_minute`
-- **In-game:** close game, wait a few minutes, reopen: welcome back label appears with correct FP amount
+- **In-game:** close game, wait a few minutes, reopen: welcome back label appears with correct friendship amount
 
 ## Open questions
 
@@ -160,7 +160,7 @@ On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `la
 
 In idle mode the volley counter takes on a Foddian shape on its own. The count climbs while the AI rallies, then a miss zeroes it; the partner climbs again. The player isn't doing the climb, but they're watching the precarious ascent of a number that any single miss can erase. Same emotional contour as Getting Over It's hammer climb: long build, sudden fall, restart from a known floor.
 
-The interesting consequence: the volley count is a watchable surface during idle play. The player isn't required to act, but they're invited to notice. A long auto-rally peaks, a miss happens, and the climb starts over. Over a longer idle window this layers a second tension on top of the FP accumulation that the doc above already names.
+The interesting consequence: the volley count is a watchable surface during idle play. The player isn't required to act, but they're invited to notice. A long auto-rally peaks, a miss happens, and the climb starts over. Over a longer idle window this layers a second tension on top of the friendship accumulation that the doc above already names.
 
 Implications for tuning: the AI's miss rate sets the Foddian frequency. Too aggressive and the climbs are short and the falls don't sting; too defensive and the counter just grinds up forever and the Foddian beat disappears. The `AI_SPEED_FRACTION` and `AI_REACTION_FRAMES` knobs at the top of the open-questions list above own this beat too.
 

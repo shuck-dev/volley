@@ -118,7 +118,7 @@ func test_rack_drop_target_accept_deactivates_an_on_court_item() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha")
 	manager.items.assign([ball_alpha] as Array[ItemDefinition])
-	manager._progression.friendship_point_balance = 10000
+	manager.economy.friendship_point_balance = 10000
 	manager.take("ball_alpha")
 	manager.activate("ball_alpha")
 	assert_true(manager.is_on_court("ball_alpha"), "precondition: on court")
@@ -305,7 +305,7 @@ func test_token_scale_remains_canonical_across_items() -> void:
 
 	var manager: Node = ItemFactory.create_manager(self)
 	manager.items.assign([BaseBall] as Array[ItemDefinition])
-	manager._progression.friendship_point_balance = 10000
+	manager.economy.friendship_point_balance = 10000
 	manager.take("base_ball")
 
 	# 1. Held token through the drag controller.

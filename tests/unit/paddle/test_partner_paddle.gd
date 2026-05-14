@@ -3,16 +3,12 @@ extends GutTest
 # Verifies the partner paddle uses base stats and ignores player upgrades.
 
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager
@@ -63,7 +59,7 @@ func test_speed_unchanged_after_player_purchases_ankle_weights() -> void:
 	var paddle := _create_partner_paddle()
 	var speed_before: float = paddle.get_speed()
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("ankle_weights")
 
 	assert_almost_eq(paddle.get_speed(), speed_before, 0.01)
@@ -80,7 +76,7 @@ func test_size_unchanged_after_player_purchases_grip_tape() -> void:
 	var paddle := _create_partner_paddle()
 	var size_before: float = paddle.collision.shape.size.y
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 
 	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)

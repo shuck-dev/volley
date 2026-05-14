@@ -1,6 +1,4 @@
 ## Step 7.7: shop purchases route ball-role items into the BallReconciler registry directly.
-## Three destinations are exercised: rack -> STORED, court -> PLAY, venue floor -> OUT_REST.
-## Equipment-role purchases keep their existing HeldBody loose-body path (regression).
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -58,7 +56,7 @@ func before_each() -> void:
 	equipment_def.at_rest_shape = gear_shape
 	var typed_items: Array[ItemDefinition] = [ball_def, equipment_def]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 
 	_rack = _make_rack(_manager)
 	# Rack drop area at -1000,0 with a 300x200 footprint; comfortably away from court/venue.

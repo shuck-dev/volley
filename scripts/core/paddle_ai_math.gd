@@ -4,9 +4,7 @@ extends RefCounted
 ## Pure math functions for paddle AI: ball intercept prediction and noise sampling.
 
 
-## Predicts where the ball will cross target_x under PLAY-ARC parabolic physics.
-## Above bound_y (smaller y), gravity acts on vy; below, constant velocity.
-## Returns the y-position of the intercept, clamped to the arena range.
+## Predicts ball intercept y at target_x under PLAY-ARC physics, clamped to arena range.
 static func predict_intercept(
 	ball_position: Vector2,
 	ball_velocity: Vector2,

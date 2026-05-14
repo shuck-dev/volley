@@ -11,22 +11,18 @@ var _host: Node2D
 var _reconciler: BallReconciler
 var _court: Court
 var _paddle: Paddle
-var _storage: SaveStorage
 
 
 func before_each() -> void:
-	_storage = double(SaveStorage).new()
-	stub(_storage.write).to_return(true)
-	stub(_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
 	var typed_items: Array[ItemDefinition] = [alpha, beta]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -54,7 +50,8 @@ func before_each() -> void:
 	_court.autoplay_controller = autoplay_stub
 	_court._progression_config = ProgressionConfig.new()
 	_court._item_manager = _manager
-	_court._progression = ProgressionData.new(_storage)
+	_court._records = RecordsState.new()
+	_court._partners = PartnersState.new()
 	add_child_autofree(_court)
 
 
@@ -80,8 +77,6 @@ func test_each_ball_owns_its_own_speed_state() -> void:
 
 func test_paddle_collision_advances_only_the_hit_ball_speed() -> void:
 	# Drive a real paddle collision against one ball; only that ball's speed should advance.
-	# Verifies per-ball wiring end-to-end: the ball's own _on_body_entered drives its own
-	# increase_speed, with no batch fan-out across other tracked balls.
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	var first_before: float = first.speed

@@ -12,11 +12,9 @@ static func create_manager(
 	value: float = 50.0,
 ) -> Node:
 	var item := create(item_key, stat_key, operation, value)
-	var mock_storage: SaveStorage = gut_test.double(SaveStorage).new()
-	gut_test.stub(mock_storage.write).to_return(true)
-	gut_test.stub(mock_storage.read).to_return("")
 	var manager: Node = ItemManagerScript.new()
-	manager._progression = ProgressionData.new(mock_storage)
+	manager.state = ItemState.new()
+	manager.economy = EconomyState.new()
 	manager._effect_manager = EffectManager.new()
 	manager.items.assign([item])
 	gut_test.add_child_autofree(manager)

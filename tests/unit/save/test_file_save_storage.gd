@@ -87,17 +87,19 @@ func test_read_fallbacks_returns_backups_newest_first() -> void:
 	assert_eq(_storage.read_fallbacks(), ["two", "one"] as Array[String])
 
 
-# --- fallback path via ProgressionData ---
-func test_progression_data_loads_from_backup_when_primary_corrupt() -> void:
+# --- fallback path via SaveManager ---
+func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
 	# Two writes so the valid JSON lands in backup slot 1; then trash primary
-	# with still-structurally-parseable-but-wrong-schema content. The {} parses
-	# cleanly but lacks friendship_point_balance, forcing a backup fallback.
-	_storage.write('{"friendship_point_balance":100}')
-	_storage.write('{"friendship_point_balance":100}')
+	var blob := '{"economy":{"friendship_point_balance":100}}'
+	_storage.write(blob)
+	_storage.write(blob)
 	_write_raw(TEST_PATH, "")
-	var data := ProgressionData.new(_storage)
-	assert_true(data.load_from_disk())
-	assert_eq(data.friendship_point_balance, 100)
+
+	var save_manager: Node = load("res://scripts/progression/save_manager.gd").new(0.05)
+	save_manager.set_storage(_storage)
+	add_child_autofree(save_manager)
+	assert_true(save_manager.load_from_disk())
+	assert_eq(save_manager.economy.friendship_point_balance, 100)
 
 
 # --- helpers ---

@@ -1,23 +1,23 @@
 # Upgrade Shop
 
 ## Goal
-Design and implement the player-facing shop: a rotating selection of items the player can browse and purchase with FP. The rotation system ensures the right items appear at the right moments without feeling scripted.
+Design and implement the player-facing shop: a rotating selection of items the player can browse and purchase with friendship. The rotation system ensures the right items appear at the right moments without feeling scripted.
 
 **Points:** 5
-**Dependencies:** Upgrade Mechanics (item data model), Progression System (FP economy)
+**Dependencies:** Upgrade Mechanics (item data model), Progression System (friendship economy)
 **Unlocks:** The Shopkeeper and the Tinkerer (character integration), UX Design (shop UI pass)
 
 ---
 
 ## Shop unlock
 
-The shop is not available from game start. It unlocks when the player hits a specific milestone. Before that point the player earns FP but has nowhere to spend it, which creates anticipation. The exact milestone is a narrative and balance decision (see Milestone Design).
+The shop is not available from game start. It unlocks when the player hits a specific milestone. Before that point the player earns friendship but has nowhere to spend it, which creates anticipation. The exact milestone is a narrative and balance decision (see Milestone Design).
 
-**Prototype:** The full milestone system is a Beta feature. For prototype, the shop unlocks at a hardcoded FP threshold. The threshold is a tuning target for the Make Fun pass; the default starting point is 50 FP. The shop panel is hidden and the HUD button is absent until this threshold is crossed.
+**Prototype:** The full milestone system is a Beta feature. For prototype, the shop unlocks at a hardcoded friendship threshold. The threshold is a tuning target for the Make Fun pass; the default starting point is 50 friendship. The shop panel is hidden and the HUD button is absent until this threshold is crossed.
 
 ## Shop display
 
-The shop shows 5 item slots at a time. The player sees the item name, description, and FP cost. There is no mechanical description. The player discovers what an item does by owning it.
+The shop shows 5 item slots at a time. The player sees the item name, description, and friendship cost. There is no mechanical description. The player discovers what an item does by owning it.
 
 Items can be purchased directly from the shop. Purchased items are added to the player's inventory immediately and their effects apply from that moment. Each item can only be purchased once. Owned items are excluded from the rotation.
 
@@ -40,11 +40,11 @@ Both conditions must be satisfied before the rotation changes. Opening and immed
 
 ## Idle economy and item cost
 
-**Open problem.** FP accumulates during idle play. If item costs are too low relative to idle FP rates, the player can passively afford items without engagement, draining the shop without the decision-making that makes purchasing feel meaningful.
+**Open problem.** Friendship accumulates during idle play. If item costs are too low relative to idle friendship rates, the player can passively afford items without engagement, draining the shop without the decision-making that makes purchasing feel meaningful.
 
-The rotation already limits access (the player can only buy what is currently displayed), which helps. But item costs must be tuned high enough that idle FP represents meaningful progress toward a purchase, not trivial pocket change. This is a Make Fun pass tuning target.
+The rotation already limits access (the player can only buy what is currently displayed), which helps. But item costs must be tuned high enough that idle friendship represents meaningful progress toward a purchase, not trivial pocket change. This is a Make Fun pass tuning target.
 
-One mitigation: levelling items at the Tinkerer is the primary ongoing FP sink. Buying a new item is a decision; levelling it to max is the sustained investment. If levelling costs are appropriately steep, the economy remains meaningful even when idle FP builds up.
+One mitigation: levelling items at the Tinkerer is the primary ongoing friendship sink. Buying a new item is a decision; levelling it to max is the sustained investment. If levelling costs are appropriately steep, the economy remains meaningful even when idle friendship builds up.
 
 ---
 

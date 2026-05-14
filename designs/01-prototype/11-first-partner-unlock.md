@@ -1,10 +1,10 @@
 # First Partner Unlock
 
 ## Goal
-Let the player spend FP to recruit Martha, their first partner, adding a second paddle on the right side of the net. When Martha is active, the right wall becomes a miss zone instead of a bounce surface. This is the first moment the game's cast exists in the world.
+Let the player spend friendship to recruit Martha, their first partner, adding a second paddle on the right side of the net. When Martha is active, the right wall becomes a miss zone instead of a bounce surface. This is the first moment the game's cast exists in the world.
 
 **Points:** Spike
-**Dependencies:** Progression System (FP economy, save/load), Progression Manager (unlock tiers), Effect System (partner as effect source)
+**Dependencies:** Progression System (friendship economy, save/load), Progression Manager (unlock tiers), Effect System (partner as effect source)
 
 ## Current state
 
@@ -48,7 +48,7 @@ Martha's effects reinforce the feeling that she is a good partner to have around
 - Multiple partners or partner selection
 - Partner visual identity or character art (art work)
 - Partner HUD presence beyond recruit prompt (art/UI work)
-- Shop-based unlock flow (the shop is a separate system; prototype uses a direct FP spend)
+- Shop-based unlock flow (the shop is a separate system; prototype uses a direct friendship spend)
 
 ## Features
 
@@ -67,11 +67,11 @@ The `Partner` resource (as defined in the effect system design) provides `effect
 
 The partner unlock is a tier in the Progression Manager, the same system used for the shop unlock (see `03-progression-manager.md`). The Progression Manager listens to `ItemManager.friendship_point_balance_changed`, checks whether the partner unlock threshold has been reached, flips `martha_unlocked` in `ProgressionData`, persists, and emits `partner_unlocked_changed`.
 
-**Threshold:** Defined in `ProgressionConfig`, not hardcoded. Higher than the shop unlock threshold (shop is 50 FP). Starting point is a tuning target for the Make Fun pass.
+**Threshold:** Defined in `ProgressionConfig`, not hardcoded. Higher than the shop unlock threshold (shop is 50 friendship). Starting point is a tuning target for the Make Fun pass.
 
 **Unlock cost:** Uses the same cost system as items. The base cost is defined on the partner resource, keeping the economy consistent.
 
-**Permanent:** Like the shop unlock, the partner unlock does not re-lock if FP drops below the threshold after purchase.
+**Permanent:** Like the shop unlock, the partner unlock does not re-lock if friendship drops below the threshold after purchase.
 
 ### 3. Partner paddle
 
@@ -97,11 +97,11 @@ The partner AI drives the partner paddle via `drive()` each physics frame. All p
 
 Martha is an effect source, registered with `EffectManager` when active and unregistered when not. Effects are defined on the `Partner` resource using the same `Effect` structure as items: trigger, conditions, outcomes.
 
-Martha has two effects: one FP bonus and one causality effect.
+Martha has two effects: one friendship bonus and one causality effect.
 
-**Effect 1: FP bonus (always)**
+**Effect 1: friendship bonus (always)**
 
-A percentage increase to `friendship_points_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other FP modifiers: as the player acquires items that boost FP per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
+A percentage increase to `friendship_points_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other friendship modifiers: as the player acquires items that boost friendship per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
 
 ```
 Effect 1
@@ -427,7 +427,7 @@ Pool 5: Idle chatter (post-break)
 
 ### 7. Partner volley contribution
 
-Martha's paddle emits `paddle_hit` when she hits the ball. `game.gd` connects to both paddles' `paddle_hit` signals and increments the volley count for either. FP is earned on both player and partner hits using the same accumulation logic. The autoplay FP rate reduction is a game state: when the player is in autoplay, all FP earning is affected regardless of which paddle hit the ball.
+Martha's paddle emits `paddle_hit` when she hits the ball. `game.gd` connects to both paddles' `paddle_hit` signals and increments the volley count for either. Friendship is earned on both player and partner hits using the same accumulation logic. The autoplay friendship rate reduction is a game state: when the player is in autoplay, all friendship earning is affected regardless of which paddle hit the ball.
 
 **Miss behaviour:**
 
@@ -441,7 +441,7 @@ Martha's paddle is visually distinct from the player's paddle. For prototype, a 
 
 ### 8. Recruit HUD
 
-When the unlock threshold is reached and Martha is not yet unlocked, a recruit prompt appears: her name, the FP cost, and a recruit button. The prompt is dismissible but reappears next session if not acted on. It does not interrupt gameplay.
+When the unlock threshold is reached and Martha is not yet unlocked, a recruit prompt appears: her name, the friendship cost, and a recruit button. The prompt is dismissible but reappears next session if not acted on. It does not interrupt gameplay.
 
 ### 9. Partner intro sound
 
@@ -496,14 +496,14 @@ The partner unlock flow (triggered from recruit HUD) calls a method on `game.gd`
 
 ## Test plan
 
-- Partner unlock deducts FP and persists across save/load
-- Partner unlock is rejected when FP is insufficient
+- Partner unlock deducts friendship and persists across save/load
+- Partner unlock is rejected when friendship is insufficient
 - Partner paddle returns the ball and increments the volley streak
-- FP accumulates on partner hits
+- Friendship accumulates on partner hits
 - Ball hitting the right wall is a miss when a partner is active
 - Ball hitting the right wall bounces when no partner is active
 - Partner effects apply to stat queries while active and are removed when not
-- Recruit prompt appears when FP threshold is reached
+- Recruit prompt appears when friendship threshold is reached
 - Partner intro sound plays on recruit
 
 ## Lineage

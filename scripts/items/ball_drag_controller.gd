@@ -252,9 +252,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	if existing == null:
 		return false
 
-	# Live grab: the existing Ball IS the drag target across the whole gesture. No HeldBody spawn,
-	# no queue_free, no ball_removed; the ball stays in _balls_by_key in OUT_HELD state.
-	# Capture on-court state before the overlay clear so OUT_REST origins skip the deactivate branch on cancel.
+	# Capture on-court state before clearing the overlay; OUT_REST cancels must skip deactivate.
 	var was_on_court: bool = _item_manager != null and _item_manager.is_on_court(item_key)
 	# OUT_REST pickup also routes through here; clear the loose-in-venue overlay so a release-over-rack
 	# (or any non-venue target) restores the slot exactly like a live-grab originating from the court.
@@ -328,7 +326,7 @@ func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocit
 	# Loose-in-venue overlay makes is_on_court return false regardless of placement, so save/reload
 	# skips the spurious court-spawn at the saved venue-floor position.
 	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(item_key)
+		_item_manager.mark_loose_in_venue(item_key, world_position)
 
 
 ## Equipment attempt_release: rehome the in-flight HeldBody as loose at the release point.
@@ -429,10 +427,7 @@ func attempt_release(release_position: Vector2) -> bool:
 		_finalise_gesture(item_key, clamped_position, false)
 		return true
 	else:
-		# Rack accept: deactivate fires court_changed which transitions the ball via the reconciler.
-		# Restore is the safety net for every held-ball rack release; idempotent against an already-STORED
-		# ball, catches paths where ItemManager state was already STORED for the key and target.accept's
-		# deactivate branch was a no-op.
+		# Restore is the safety net when ItemManager was already STORED so accept's deactivate was a no-op.
 		target.accept(item_key, clamped_position, Vector2.ZERO)
 		if has_live_ball:
 			_restore_held_ball_to_stored(item_key)
@@ -481,7 +476,7 @@ func register_loose_body(body: HeldBody) -> void:
 		return
 	track_loose_body(body)
 	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(body.item_key)
+		_item_manager.mark_loose_in_venue(body.item_key, body.global_position)
 	if not body.tree_exited.is_connected(_on_loose_body_freed):
 		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
 

@@ -2,9 +2,7 @@ class_name PartnerAIController
 extends PaddleAIController
 
 
-## Auto-enables on the first ball it sees from the bound tracker; auto-disables
-## when the tracker empties (handled by the base class). Court calls
-## `bind_tracker()` after activating the partner.
+## Auto-enables on the first tracker-visible ball; base class handles auto-disable on empty.
 func _on_tracker_ball_added(new_ball: Ball) -> void:
 	super(new_ball)
 	if not _enabled:

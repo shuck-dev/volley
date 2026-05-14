@@ -1,12 +1,7 @@
 class_name ShopItem
 extends Node2D
 
-## Diegetic shop item: pressing starts a held-token drag, releasing outside the
-## shop bounds completes the purchase. The drag IS the buy gesture (SH-246).
-##
-## Shop items are non-physics tokens (SH-258). Only the live `Ball` carries a
-## RigidBody2D anywhere in the game; on the table the item is a `Node2D` plus
-## art, with an `Area2D` doing input picking.
+## Diegetic shop item; the drag IS the buy gesture, release outside shop commits.
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, purchased: bool)
@@ -151,20 +146,14 @@ func start_drag() -> bool:
 	return true
 
 
-## Three release outcomes:
-##   * pure click inside shop (no travel) -> no body, slot returns visible, no purchase.
-##   * inside-shop drag (travel >= drag_threshold_px) -> spawn falling body; the body's resting
-##     position decides commit (settled outside shop) vs cancel (settled inside).
-##   * outside-shop release -> route through controller.spawn_purchased_at like before.
+## Release outcomes branch on inside-shop vs outside, plus travel-threshold for inside drags.
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		# Outside-shop release always commits the purchase and asks the controller to spawn the body.
-		# spawn_purchased_at routes to court / venue / rack targets; if no target accepts, drop a
-		# falling body at the release point so the player still sees a physical instance.
+		# Fall back to a dropped body if no controller target accepts the spawn.
 		if not _complete_purchase() and not is_owned():
 			return false
 		var controller: Node = _drag_controller()
@@ -336,7 +325,7 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 	visible = false
 	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
 	if _item_manager != null and _item_manager.has_method("mark_loose_in_venue"):
-		_item_manager.mark_loose_in_venue(item_definition.key)
+		_item_manager.mark_loose_in_venue(item_definition.key, settled_position)
 	drop_completed.emit(item_definition.key, settled_position, true)
 
 

@@ -18,15 +18,12 @@ var _item_manager: Node
 
 
 func before_each() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_item_manager = ItemManagerScript.new()
-	_item_manager._progression = ProgressionData.new(mock_storage)
+	_item_manager.state = ItemState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
-	_item_manager._progression.friendship_point_balance = 10000
+	_item_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()
@@ -84,7 +81,7 @@ func test_exiting_shop_area_does_not_affect_other_items() -> void:
 
 
 func test_exiting_shop_area_when_unaffordable_does_not_purchase() -> void:
-	_item_manager._progression.friendship_point_balance = 0
+	_item_manager.economy.friendship_point_balance = 0
 	var item: ShopItem = _shop_item("grip_tape")
 	await _drag_item_out_of_shop_area(item)
 	assert_eq(_item_manager.get_level("grip_tape"), 0)
@@ -99,9 +96,6 @@ func test_exiting_shop_area_when_already_owned_does_nothing() -> void:
 
 
 # --- input wiring ---
-# Regression guard: every ShopItem must route its Area2D input_event into the
-# drag handler. After SH-258 the shop item is a Node2D with a child PickupArea,
-# so the wiring lives on that area.
 func test_each_shop_item_responds_to_input_event_signal() -> void:
 	var viewport: Viewport = _shop.get_viewport()
 	for child in _shop.items_anchor.get_children():
@@ -215,7 +209,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 
 
 func test_unaffordable_item_cannot_start_drag() -> void:
-	_item_manager._progression.friendship_point_balance = 0
+	_item_manager.economy.friendship_point_balance = 0
 	var item: ShopItem = _shop_item("grip_tape")
 
 	var ok: bool = item.start_drag()
@@ -320,14 +314,12 @@ class TestSH332InsideShopDrag:
 	var _item_manager: Node
 
 	func before_each() -> void:
-		var mock_storage: SaveStorage = double(SaveStorage).new()
-		stub(mock_storage.write).to_return(true)
-		stub(mock_storage.read).to_return("")
 		_item_manager = ItemManagerScript.new()
-		_item_manager._progression = ProgressionData.new(mock_storage)
+		_item_manager.state = ItemState.new()
+		_item_manager.economy = EconomyState.new()
 		_item_manager._effect_manager = EffectManager.new()
 		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
-		_item_manager._progression.friendship_point_balance = 10000
+		_item_manager.economy.friendship_point_balance = 10000
 		add_child_autofree(_item_manager)
 		_shop = ShopScene.instantiate()
 		_shop._item_manager = _item_manager

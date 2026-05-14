@@ -1,6 +1,4 @@
 ## SH-251 + SH-252: drives real `_input(InputEventMouseButton)` through shop and rack drag paths.
-## Validates the visibility swap on shop slots, the click-without-movement no-op for rack tokens,
-## and the missing rack-out drag for live balls. Mirrors shop drag-as-purchase under real input.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -32,15 +30,12 @@ var _drag: BallDragController
 
 
 func _setup_shop() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_shop_manager = ItemManagerScript.new()
-	_shop_manager._progression = ProgressionData.new(mock_storage)
+	_shop_manager.state = ItemState.new()
+	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
 	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
-	_shop_manager._progression.friendship_point_balance = 10000
+	_shop_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_shop_manager)
 
 	_shop = ShopScene.instantiate()
@@ -78,16 +73,13 @@ func _release_event_at(position: Vector2) -> InputEventMouseButton:
 
 
 func _setup_ball_drag() -> void:
-	var mock_storage: SaveStorage = double(SaveStorage).new()
-	stub(mock_storage.write).to_return(true)
-	stub(mock_storage.read).to_return("")
-
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new(mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -261,8 +253,6 @@ func test_real_press_release_inside_shop_restores_visibility_via_input_path() ->
 
 func test_real_press_release_on_rack_token_does_not_spawn_a_ball() -> void:
 	# Real player path: rack slot press emits via input_event signal, then the controller's
-	# _input handler receives the matching release at the same cursor position. No movement
-	# means no commit (SH-252 a).
 	_setup_ball_drag()
 	_manager.take("training_ball")
 	for ball in _permanent_balls():
@@ -303,8 +293,6 @@ func test_real_press_release_on_rack_token_does_not_spawn_a_ball() -> void:
 
 func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	# Press the live ball through Ball.input_event (the real player path), follow with a
-	# release at the rack drop target via the drag controller's _input. Asserts the ball is
-	# freed and the item leaves court so the rack regrows the token (SH-252 b).
 	_setup_ball_drag()
 	_manager.take("training_ball")
 	_manager.activate("training_ball")

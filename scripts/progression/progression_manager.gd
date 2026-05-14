@@ -1,5 +1,7 @@
 extends Node
 
+# todo: split this autoload by domain (PartnersManager, EconomyManager); the four slices here do not share a concern.
+
 signal shop_unlocked_changed(is_unlocked: bool)
 signal partner_recruit_available(partner: PartnerDefinition)
 signal partner_recruited(partner_key: StringName)
@@ -9,35 +11,51 @@ signal partner_recruited(partner_key: StringName)
 const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
 const DEFAULT_CONFIG: ProgressionConfig = preload("res://resources/progression_config.tres")
 
-var partners: Array[PartnerDefinition] = [
+var partners_roster: Array[PartnerDefinition] = [
 	preload("res://resources/partners/martha.tres"),
 ]
 
-var _progression: ProgressionData
+var economy: EconomyState
+var records: RecordsState
+var unlocks: UnlocksState
+var partners: PartnersState
+
 var _config: ProgressionConfig
 var _item_manager: Node
 var _save_manager: Node
 
 
 func _ready() -> void:
-	if _progression == null:
-		_progression = SaveManager.get_progression_data()
-	if _config == null:
-		_config = DEFAULT_CONFIG
-	if _item_manager == null:
-		_item_manager = ItemManager
 	if _save_manager == null:
 		_save_manager = SaveManager
 
+	if economy == null:
+		economy = _save_manager.economy
+
+	if records == null:
+		records = _save_manager.records
+
+	if unlocks == null:
+		unlocks = _save_manager.unlocks
+
+	if partners == null:
+		partners = _save_manager.partners
+
+	if _config == null:
+		_config = DEFAULT_CONFIG
+
+	if _item_manager == null:
+		_item_manager = ItemManager
+
 	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
 
-	if _progression.shop_unlocked:
+	if unlocks.shop_unlocked:
 		shop_unlocked_changed.emit.call_deferred(true)
 
-	for partner in partners:
-		if partner.key in _progression.unlocked_partners:
+	for partner in partners_roster:
+		if partner.key in partners.unlocked_partners:
 			continue
-		if partner.key in _progression.recruit_offered_partners:
+		if partner.key in partners.recruit_offered_partners:
 			partner_recruit_available.emit.call_deferred(partner)
 
 
@@ -47,26 +65,26 @@ func get_config() -> ProgressionConfig:
 
 ## Returns whether the shop has been unlocked
 func is_shop_unlocked() -> bool:
-	return _progression.shop_unlocked
+	return unlocks.shop_unlocked
 
 
 func unlock_shop() -> void:
-	if _progression.shop_unlocked:
+	if unlocks.shop_unlocked:
 		return
-	_progression.shop_unlocked = true
-	SaveManager.save()
+	unlocks.shop_unlocked = true
+	_save_manager.save()
 	shop_unlocked_changed.emit(true)
 
 
 func get_partner(partner_key: StringName) -> PartnerDefinition:
-	for partner in partners:
+	for partner in partners_roster:
 		if partner.key == partner_key:
 			return partner
 	return null
 
 
 func is_partner_unlocked(partner_key: StringName) -> bool:
-	return partner_key in _progression.unlocked_partners
+	return partner_key in partners.unlocked_partners
 
 
 func can_recruit_partner(partner_key: StringName) -> bool:
@@ -75,8 +93,8 @@ func can_recruit_partner(partner_key: StringName) -> bool:
 		return false
 	return (
 		not is_partner_unlocked(partner_key)
-		and _progression.total_friendship_points_earned >= partner.unlock_threshold
-		and _progression.friendship_point_balance >= partner.unlock_cost
+		and economy.total_friendship_points_earned >= partner.unlock_threshold
+		and economy.friendship_point_balance >= partner.unlock_cost
 	)
 
 
@@ -85,8 +103,8 @@ func recruit_partner(partner_key: StringName) -> bool:
 		return false
 	var partner: PartnerDefinition = get_partner(partner_key)
 	_item_manager.subtract_friendship_points(partner.unlock_cost)
-	_progression.unlocked_partners.append(partner_key)
-	_progression.active_partner = partner_key
+	partners.unlocked_partners.append(partner_key)
+	partners.active_partner = partner_key
 	_save_manager.save()
 	partner_recruited.emit(partner_key)
 	return true
@@ -98,23 +116,23 @@ func _on_friendship_point_balance_changed(_balance: int) -> void:
 
 
 func _check_shop_unlock() -> void:
-	if _progression.shop_unlocked:
+	if unlocks.shop_unlocked:
 		return
-	if _progression.total_friendship_points_earned >= _config.shop_unlock_threshold:
-		_progression.shop_unlocked = true
+	if economy.total_friendship_points_earned >= _config.shop_unlock_threshold:
+		unlocks.shop_unlocked = true
 		_save_manager.save()
 		shop_unlocked_changed.emit(true)
 
 
 func _check_partner_unlocks() -> void:
 	var newly_offered := false
-	for partner in partners:
-		if partner.key in _progression.unlocked_partners:
+	for partner in partners_roster:
+		if partner.key in partners.unlocked_partners:
 			continue
-		if partner.key in _progression.recruit_offered_partners:
+		if partner.key in partners.recruit_offered_partners:
 			continue
-		if _progression.total_friendship_points_earned >= partner.unlock_threshold:
-			_progression.recruit_offered_partners.append(partner.key)
+		if economy.total_friendship_points_earned >= partner.unlock_threshold:
+			partners.recruit_offered_partners.append(partner.key)
 			newly_offered = true
 			partner_recruit_available.emit(partner)
 	if newly_offered:

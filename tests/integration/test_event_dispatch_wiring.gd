@@ -7,16 +7,12 @@ var _game: Node2D
 var _ball: Ball
 var _paddle: Paddle
 var _manager: Node
-var _mock_storage: SaveStorage
 
 
 func before_each() -> void:
-	_mock_storage = double(SaveStorage).new()
-	stub(_mock_storage.write).to_return(true)
-	stub(_mock_storage.read).to_return("")
-
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new(_mock_storage)
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([preload("res://resources/items/cadence.tres")])
 	add_child_autofree(_manager)
@@ -51,7 +47,7 @@ func before_each() -> void:
 
 
 func _purchase_cadence() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("cadence")
 
 

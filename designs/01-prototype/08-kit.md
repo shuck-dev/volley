@@ -1,6 +1,6 @@
 # The Kit
 
-The kit is every item the player owns. This doc covers where inactive items sit, how the player moves items between inactive and active, and the passive FP they generate while inactive.
+The kit is every item the player owns. This doc covers where inactive items sit, how the player moves items between inactive and active, and the passive friendship they generate while inactive.
 
 **Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Venue (`08-venue.md`).
 
@@ -42,13 +42,13 @@ Requires the main character to step off:
 
 ### Drag preview
 
-During any drag, the preview shows the item being moved. Activation has no FP cost; the animation beat on equip is the friction.
+During any drag, the preview shows the item being moved. Activation has no friendship cost; the animation beat on equip is the friction.
 
 ---
 
-## Passive FP
+## Passive friendship
 
-Inactive items generate FP over time. Rate scales with item cost and level. A well-stocked set of inactive items sustains the economy when the loadout is locked in. Active items (including all court items) do not generate passive FP.
+Inactive items generate friendship over time. Rate scales with item cost and level. A well-stocked set of inactive items sustains the economy when the loadout is locked in. Active items (including all court items) do not generate passive friendship.
 
 **Signal layer** (the player never has to notice):
 
@@ -73,7 +73,7 @@ Each whole-unit crossing adds 1 to the balance via `add_friendship_points`. The 
 ### Formula
 
 ```gdscript
-@export var kit_rate_override: float = 0.0  # FP/sec; 0 means use default
+@export var kit_rate_override: float = 0.0  # friendship/sec; 0 means use default
 
 func _kit_rate_for(item: ItemDefinition) -> float:
     var level := get_level(item.key)
@@ -111,4 +111,4 @@ Not filing yet.
 
 1. `BallRack` and `GearRack` in `court.tscn`; drag targets wired per role.
 2. Timeout gesture: main character walks off on timeout call, back on at timeout end.
-3. Passive FP (cadence, formula, offline catch-up, save throttling).
+3. Passive friendship (cadence, formula, offline catch-up, save throttling).

@@ -17,10 +17,10 @@ These are the three things the prototype must deliver. Everything in this pass i
 The player picks up the paddle, keeps a streak going, and wants to keep going. The difficulty ramp from ball scaling should create tension without feeling unfair. When the streak ends, the player's first thought should be "I need to upgrade" — not "that was random."
 
 ### 2. The idle loop delivers on "come back to good news"
-Player leaves the game running or closes it. When they return, something is waiting: FP earned, a milestone approaching, a streak that ended naturally. The return moment should feel like a small reward, not a chore to process.
+Player leaves the game running or closes it. When they return, something is waiting: friendship earned, a milestone approaching, a streak that ended naturally. The return moment should feel like a small reward, not a chore to process.
 
 ### 3. Upgrades make a noticeable difference
-After spending FP and upgrading, the player feels the change immediately. Paddle is faster, bigger, or the ball starts slower — something concrete shifts. The loop of "struggle → upgrade → feel good → hit a new wall → upgrade again" should complete at least once in a single session.
+After spending friendship and upgrading, the player feels the change immediately. Paddle is faster, bigger, or the ball starts slower — something concrete shifts. The loop of "struggle → upgrade → feel good → hit a new wall → upgrade again" should complete at least once in a single session.
 
 ---
 
@@ -42,7 +42,7 @@ Start from Session A save. Buy the first item, play until the streak noticeably 
 
 What to observe:
 - Does each item feel impactful or marginal?
-- Is the FP curve right? (Too fast = items feel trivial. Too slow = player gives up before buying anything.)
+- Is the friendship curve right? (Too fast = items feel trivial. Too slow = player gives up before buying anything.)
 - Do the available item choices feel meaningfully different from each other?
 - Is there a moment where the player thinks "I know what I want next"?
 
@@ -50,16 +50,16 @@ What to observe:
 Leave the game running for 30 minutes (active window, no input). Return and review.
 
 What to observe:
-- Is the auto-play AI competent enough to earn FP but not so good it trivialises active play?
-- Is the FP earned in 30 minutes idle proportionate to active play?
-- Does the gap between idle FP rate and active FP rate create a reason to jump in?
+- Is the auto-play AI competent enough to earn friendship but not so good it trivialises active play?
+- Is the friendship earned in 30 minutes idle proportionate to active play?
+- Does the gap between idle friendship rate and active friendship rate create a reason to jump in?
 
 ### Session D — Offline return
 Close the game. Wait at least 2 hours. Reopen.
 
 What to observe:
 - Does the welcome back screen feel like a gift?
-- Is the offline FP amount satisfying without feeling broken?
+- Is the offline friendship amount satisfying without feeling broken?
 - Is the return-to-gameplay flow smooth? (No friction before you see the ball bouncing again.)
 
 ---
@@ -71,10 +71,10 @@ These are the numbers most likely to need adjustment. Change one at a time, repl
 | Variable | File | What it affects | Warning signs |
 |---|---|---|---|
 | Ball speed increment per hit | `ball.gd` / `GameRules` | Tension ramp, natural streak ceiling | Too fast: streaks always end at ~10. Too slow: ball never feels threatening. |
-| FP per hit (base) | `game.gd` | Time to first item purchase | Too high: items feel trivial. Too low: player quits before buying anything. |
-| Item FP costs | `ItemDefinition` | Progression pacing | Too cheap: all items gone in one session. Too expensive: player never progresses. |
+| Friendship per hit (base) | `game.gd` | Time to first item purchase | Too high: items feel trivial. Too low: player quits before buying anything. |
+| Item friendship costs | `ItemDefinition` | Progression pacing | Too cheap: all items gone in one session. Too expensive: player never progresses. |
 | Item effect values | `ItemDefinition` / `ItemEffect` | Upgrade impact | Too small: player can't feel the difference. Too large: game becomes trivial fast. |
-| Idle FP rate (% of active) | `idle_play.gd` | Reason to play actively | Too high: active play not worth it. Too low: idle feels pointless. |
+| Idle friendship rate (% of active) | `idle_play.gd` | Reason to play actively | Too high: active play not worth it. Too low: idle feels pointless. |
 | Offline earnings cap (hours) | `progression_data.gd` | Return reward size | Too high: feels broken. Too low: returning after a day feels bad. |
 | Auto-play miss rate | AI constants | Idle streak length | Too accurate: idle earns too much. Too clumsy: idle feels broken. |
 
@@ -86,7 +86,7 @@ The prototype is done when all three play goals are met:
 
 - [ ] A player unfamiliar with the game (or you, after a week away) can pick it up and have a satisfying 10-minute active session without guidance
 - [ ] Leaving the game for 2+ hours and returning produces a moment that feels good, not neutral
-- [ ] The upgrade loop completes naturally in a 20-minute session (spend FP on an item, feel improvement, hit a new wall, want to buy again)
+- [ ] The upgrade loop completes naturally in a 20-minute session (spend friendship on an item, feel improvement, hit a new wall, want to buy again)
 
 If any criterion fails after tuning, identify the root cause and fix it before declaring the prototype done. This is the gate before v0.5.
 

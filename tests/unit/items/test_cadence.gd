@@ -1,8 +1,6 @@
 extends GutTest
 
 # Verifies Cadence item: ball speed oscillation and ceiling raise on max speed reached.
-# Effect 1: always -> oscillate_stat(ball_speed_offset)
-# Effect 2: on_max_speed_reached -> modify_stat_until_miss(ball_speed_max_range)
 
 var _item: ItemDefinition
 var _manager: Node
@@ -15,7 +13,7 @@ func before_each() -> void:
 
 
 func _purchase() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("cadence")
 
 
@@ -151,7 +149,7 @@ func test_ceiling_raise_resets_after_miss_allowing_new_cap() -> void:
 
 
 func test_higher_level_raises_ceiling_more() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var level_one_raise: float = (
