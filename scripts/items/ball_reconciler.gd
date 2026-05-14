@@ -339,6 +339,10 @@ func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
 	match play_state:
 		Ball.PlayState.OUT_REST:
 			ball.enter_out_rest()
+			# Velocity is not persisted yet; without zeroing, the body keeps the integration-frame
+			# momentum it picked up between scene spawn and adopt, and visibly hops on load.
+			ball.linear_velocity = Vector2.ZERO
+			ball.angular_velocity = 0.0
 		Ball.PlayState.OUT_HELD:
 			ball.enter_out_held()
 		Ball.PlayState.PLAY_NORMAL, Ball.PlayState.PLAY_ARC:
