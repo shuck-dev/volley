@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://cwuynn50ikjek" path="res://scripts/hud/dev_menu.gd" id="3_devmenu"]
 [ext_resource type="Script" uid="uid://cobj86hrkbj2r" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
 [ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/hud/dev_ball_state_panel.gd" id="4_ballstate"]
+[ext_resource type="Script" uid="uid://bkfp6d5w1iaip" path="res://scripts/hud/dev_bounce_panel.gd" id="5_bouncepanel"]
+[ext_resource type="Script" uid="uid://ce43fqg0u1yhu" path="res://scripts/hud/dev_bounce_overlay.gd" id="6_bounceover"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
@@ -41,7 +43,7 @@ offset_right = 210.0
 offset_bottom = 620.0
 theme = ExtResource("7_debug")
 script = ExtResource("3_devmenu")
-managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel")])
+managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel")])
 
 [node name="DevStatPanel" type="VBoxContainer" parent="." unique_id=425250304]
 anchors_preset = 3
@@ -69,6 +71,19 @@ offset_bottom = 140.0
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
 script = ExtResource("4_ballstate")
+
+[node name="DevBouncePanel" type="VBoxContainer" parent="." unique_id=1944203101]
+visible = false
+offset_left = 220.0
+offset_top = 150.0
+offset_right = 460.0
+offset_bottom = 260.0
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("5_bouncepanel")
+
+[node name="DevBounceOverlay" type="Node2D" parent="." unique_id=1944203102]
+script = ExtResource("6_bounceover")
 
 [node name="ClearanceButton" type="Button" parent="." unique_id=1837706863]
 anchors_preset = 2
