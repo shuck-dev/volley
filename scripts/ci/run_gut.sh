@@ -15,8 +15,16 @@ plain=$(printf '%s\n' "$output" | sed -E 's/\x1b\[[0-9;]*m//g')
 
 fail=0
 
-if printf '%s\n' "$plain" | grep -qE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):'; then
-	printf '%s\n' "$plain" | grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' | head -30
+# Filter out the cold-cache UID warning class (godot#101677, godot#115205, godot#109636).
+# See ai/scratchpads/godot-ci-uid-cache.md.
+warnings=$(printf '%s\n' "$plain" \
+	| grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' \
+	| grep -vE 'ext_resource, invalid UID:' \
+	| grep -vE 'Failed loading resource: res://' \
+	|| true)
+
+if [ -n "$warnings" ]; then
+	printf '%s\n' "$warnings" | head -30
 	echo "ci gate: warnings or errors in test output"
 	fail=1
 fi

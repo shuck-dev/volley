@@ -69,9 +69,14 @@ jobs:
           set -e
           sed -E 's/\x1b\[[0-9;]*m//g' test_output.txt > test_output.plain
           fail=0
-          if grep -qE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' test_output.plain; then
+          # Filter cold-cache UID warnings (godot#101677, #115205, #109636); see ai/scratchpads/godot-ci-uid-cache.md.
+          warnings=$(grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' test_output.plain \
+            | grep -vE 'ext_resource, invalid UID:' \
+            | grep -vE 'Failed loading resource: res://' \
+            || true)
+          if [ -n "$warnings" ]; then
             echo "::error::Warnings or errors in test output"
-            grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' test_output.plain | head -30
+            printf '%s\n' "$warnings" | head -30
             fail=1
           fi
           if grep -qE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain; then
