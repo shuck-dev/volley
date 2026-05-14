@@ -4,21 +4,16 @@ extends RefCounted
 var item_levels: Dictionary[String, int] = {}
 var item_placements: Dictionary[String, int] = {}
 
-## Per-ball world position; every non-STORED ball reloads where it was, across
-## OUT_REST, OUT_HELD, PLAY_NORMAL, and PLAY_ARC. STORED balls reconstruct from
-## rack_slot_index_by_key instead.
+## Last in-play position for every non-STORED ball; STORED reconstructs from rack_slot_index_by_key.
 var ball_positions: Dictionary[String, Vector2] = {}
 
-## Per-ball PlayState enum int. Restores the play regime so an OUT_REST ball does
-## not re-enter court flow as PLAY_NORMAL by default on load.
+## PlayState enum per ball so OUT_REST does not re-enter court flow as PLAY_NORMAL on load.
 var ball_play_states: Dictionary[String, int] = {}
 
 ## Rack slot index per STORED item; rack owns the slot→world mapping.
 var rack_slot_index_by_key: Dictionary[String, int] = {}
 
-## Keys of drag-token items currently dropped on the venue floor, with their
-## last position. Membership is the loose-state flag; value is the respawn
-## position. Single source for runtime and persistence.
+## Loose drag-token items keyed by item key, value is their drop position.
 var loose_in_venue: Dictionary[String, Vector2] = {}
 
 

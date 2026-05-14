@@ -51,7 +51,7 @@ Cross-references between slices are all ID-typed (`String` item keys, `StringNam
 
 ### When versioning activates
 
-Prototype-phase Volley (today) follows `feedback_no_save_compat`: no migrations, no shims, **and no `schema_version` field**. Once a version stamp lands on saves in the field, that version is an immutable contract; any subsequent schema change without a migration produces inconsistent v=N files with different shapes. The hedge of "stamp early just in case" defeats itself.
+Prototype-phase Volley (today) carries no migrations, no compatibility shims, **and no `schema_version` field**. Schema changes wipe dev saves and the team accepts that. Once a version stamp lands on saves in the field, that version is an immutable contract; any subsequent schema change without a migration produces inconsistent v=N files with different shapes. The hedge of "stamp early just in case" defeats itself.
 
 The migration infrastructure and the `schema_version` field both activate together at v1, with the first wave of stamped saves carrying `schema_version = 1`. Until then, the save is a plain nested dict-of-slices that breaks freely on schema change.
 
@@ -153,7 +153,5 @@ This is a tripwire, not a load gate. If validation fails, log loudly, fall back 
 
 ## References
 
-- `feedback_no_save_compat`: prototype-phase rule (no shims, no migrations, accept dev save breaks).
 - [Godot saving games tutorial](https://docs.godotengine.org/en/stable/tutorials/io/saving_games.html): official recommendation to "store a version number and write your own compatibility code", which Volley implements per this doc.
 - [godot-proposals #7567](https://github.com/godotengine/godot-proposals/discussions/7567): discussion of first-class versioned Resources; not merged.
-- `ai/scratchpads/godot-save-migration-research.md`: addon research; no maintained Godot 4 migrator exists.

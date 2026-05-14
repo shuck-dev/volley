@@ -263,9 +263,7 @@ func remove_level(item_key: String) -> void:
 		SaveManager.save()
 
 
-## Adopts an authored on-court item: ensures level >= 1 and on-court placement.
-## Idempotent. Used by BallReconciler for balls that exist in the scene before
-## any purchase, so racks and progression have a real placement to register.
+## Adopts an authored on-court item at level >= 1 with on-court placement; idempotent.
 func adopt_authored(item_key: String) -> void:
 	if get_level(item_key) <= 0:
 		state.item_levels[item_key] = 1

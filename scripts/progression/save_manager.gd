@@ -141,9 +141,7 @@ func _capture_live_positions() -> void:
 			items.ball_play_states = typed_states
 
 
-## Clears progression and blocks writes so the scene reload that follows cannot
-## autosave stale state back to disk. Callers must invoke unblock_writes() (via
-## call_deferred after reload_current_scene) to resume normal saving.
+## Clears progression and blocks writes until unblock_writes(); call_deferred after reload_current_scene.
 func clear_save() -> void:
 	_write_blocked = true
 	if _autosave_timer != null:
