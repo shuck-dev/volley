@@ -1,12 +1,30 @@
 # Effect System Class Design
 
-Technical design for the unified effect framework. All gameplay modifiers (items, partners, future sources) flow through one system.
+Technical design for the unified effect framework. All gameplay modifiers (items, partners, future sources) flow through one system. Per-item effect blocks and cost tables live in [`05-items.md`](05-items.md); player-facing item flavour lives in [`../design/items.md`](../design/items.md).
 
 ---
 
 ## Core principle
 
 Effects are data, not code. No per-item scripts. Every effect is a combination of trigger + conditions + outcomes defined in resources. The evaluation loop is centralized. Adding a new item means adding data, not writing a new class.
+
+Every item effect resolves to **trigger + condition + outcome**. A passive stat modifier is a causality effect with trigger `always`; there is no separate system.
+
+---
+
+## Level scaling
+
+Each outcome has a `level_scaling` property (default 1.0) that controls how its value grows across item levels.
+
+```
+effective_value = base_value * (1.0 + level_scaling * (level - 1))
+```
+
+Level 1 always applies the base value. `level_scaling` controls growth per additional level:
+
+- `1.0` (default): linear scaling (x1, x2, x3)
+- `0.5`: half growth (x1, x1.5, x2)
+- `0.0`: no scaling, same value at all levels
 
 ---
 
@@ -208,7 +226,7 @@ set_ball_speed
 halve_streak
 ```
 
-`expand_kit_slots` is removed under the new model (`08-items.md`). Kit slots as counted capacity no longer exist; authored item roles (see `08-roles.md`) with per-role capacity rules replace them. Items that once expanded slots (e.g. Spare) become stat or fixture items.
+`expand_kit_slots` is removed under the new model (`../08-items.md`). Kit slots as counted capacity no longer exist; authored item roles (see [`06-roles.md`](06-roles.md)) with per-role capacity rules replace them. Items that once expanded slots (e.g. Spare) become stat or fixture items.
 
 ### ModifierOp
 
@@ -420,6 +438,21 @@ flowchart LR
 
 All signals include `item_key` so consumers can differentiate sources without knowing the effect system internals.
 
+### Signal payloads
+
+| Signal | Payload | When |
+|---|---|---|
+| `game_state_entered(state, item_key)` | `state: String`, `item_key: String` | Named game state activated; drives frenzy fire VFX and equivalent |
+| `game_state_exited(state, item_key)` | `state: String`, `item_key: String` | Named game state deactivated; drives explosion VFX and equivalent |
+| `ball_spawned(item_key)` | `item_key: String` | Extra ball added to the game |
+| `extra_balls_cleared(item_key)` | `item_key: String` | All extra balls removed |
+| `item_buff_started(stat_key, duration, item_key)` | `stat_key: String`, `duration: float`, `item_key: String` | Temporary stat modification begins; entity starts visual state, duration drives countdown |
+| `item_buff_expired(stat_key, item_key)` | `stat_key: String`, `item_key: String` | Temporary stat modification ends; entity stops visual state |
+| `ball_deflected(item_key)` | `item_key: String` | Ball direction changed by item; drives flash VFX on ball |
+| `gravity_well_spawned(position, item_key)` | `position: Vector2`, `item_key: String` | Gravity point placed on court; drives distortion VFX |
+| `gravity_well_intensified(item_key)` | `item_key: String` | Gravity well pull spiked; drives surge VFX on well |
+| `roll_result(outcome_name, item_key)` | `outcome_name: String`, `item_key: String` | Roll table resolved; drives colour flash or result reveal VFX |
+
 ---
 
 ## Oscillation model
@@ -484,3 +517,22 @@ Effects, items, and partners are `.tres` resource files. Authored in data, loade
 - `EffectManager.get_stat()` is the single source of truth for all gameplay values. Game systems must never hardcode stats.
 - Degradation is a stat in EffectState, keyed per item (e.g. `degradation:seven_years`). The `increment_degradation` outcome is `modify_stat` on this key. The `degradation_at` and `degradation_below` conditions check it via `get_stat`.
 - Partner effects use the same Effect resources. The only difference is the source: `Partner` provides `relationship_level` as the level parameter to `get_effects_for_level()`.
+
+---
+
+## Implementation status
+
+### Implemented (SH-41, SH-43)
+
+- All stat keys exposed via `GameRules.BASE_STATS` and queried through `ItemManager.get_stat()`.
+- Event dispatch: `ItemManager.process_event()` fires registered effects with matching triggers. Game.gd wires ball signals (`at_max_speed_changed`, `missed`) to dispatch `on_max_speed_reached` and `on_miss`.
+- Named game states tracked in `EffectState` via `set_state()`/`clear_state()`/`is_state_active()`.
+- Ball reads speed limits every physics frame via `BallEffectProcessor._sync_speed_limits()`, enabling dynamic stat changes (oscillation, ceiling raises) to take effect immediately.
+- `GameRules.BALL_SPEED_MIN` and `BALL_SPEED_MAX` constants removed; replaced by stat-driven values.
+- Percentage modifier operation: values are summed into a single offset, then applied as `result *= (1.0 + total_offset)`. Evaluation order: add, then percentage, then multiply. Used by Grip Tape and Wrist Brace for paddle size scaling.
+- `paddle_size_min` base stat (50.0) clamps the paddle so percentage reductions cannot shrink it below a playable size.
+
+### Remaining
+
+- Causality items need temporary outcome expiry (timer or per-frame tick) for `multiply_stat_temporary`.
+- Multi-ball requires a ball spawner and a reference list of active balls in the scene. `clear_extra_balls` removes all but the original.
