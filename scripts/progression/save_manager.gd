@@ -35,6 +35,7 @@ func set_storage(storage: SaveStorage) -> void:
 	_storage = storage
 
 
+# todo: SH-400 stamp schema_version and run the migration chain on load at v1.
 ## Saves game. No-op while writes are blocked by a pending clear.
 func save() -> void:
 	if _write_blocked:

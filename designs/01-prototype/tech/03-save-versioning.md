@@ -51,7 +51,9 @@ Cross-references between slices are all ID-typed (`String` item keys, `StringNam
 
 ### When versioning activates
 
-Prototype-phase Volley (today) follows [`feedback_no_save_compat`](../../../ai/skills/voice.md): no migrations, no shims, dev saves break when the schema changes. The migration infrastructure activates at v1 because shipped players cannot tolerate save wipes on every update.
+Prototype-phase Volley (today) follows `feedback_no_save_compat`: no migrations, no shims, **and no `schema_version` field**. Once a version stamp lands on saves in the field, that version is an immutable contract; any subsequent schema change without a migration produces inconsistent v=N files with different shapes. The hedge of "stamp early just in case" defeats itself.
+
+The migration infrastructure and the `schema_version` field both activate together at v1, with the first wave of stamped saves carrying `schema_version = 1`. Until then, the save is a plain nested dict-of-slices that breaks freely on schema change.
 
 ### The migration chain
 
