@@ -18,11 +18,11 @@ enum PlayState {
 const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
 const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
-# Per-state bundles; ordering-sensitive steps stay imperative around apply().
+# Per-state configs; ordering-sensitive steps stay imperative around apply().
 # STORED and OUT_HELD share the same physics setup (frozen, no-collide); one .tres covers both.
+# PLAY_NORMAL and PLAY_ARC share PLAY_ACTIVE_CONFIG; only gravity_scale differs, set imperatively after apply.
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
-const PLAY_NORMAL_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_normal.tres")
-const PLAY_ARC_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_arc.tres")
+const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
@@ -100,13 +100,13 @@ func _update_play_state(delta: float) -> void:
 
 func _enter_arc() -> void:
 	_relock.enter_arc(speed)
-	# Hot path: only NORMAL/ARC delta. Canonical bundle play_arc.tres — second diverging property goes stale silently.
+	# Hot path: only NORMAL/ARC delta. Direct write here goes stale if a second property starts differing between NORMAL and ARC.
 	gravity_scale = 1.0
 	set_play_state(PlayState.PLAY_ARC)
 
 
 func _enter_normal() -> void:
-	# See _enter_arc above for the canonical bundle pointer and staleness warning.
+	# See _enter_arc above for the staleness warning.
 	gravity_scale = 0.0
 	var should_snap: bool = _relock.enter_normal(
 		linear_velocity.length(), court_config.relock_ramp_seconds
@@ -188,17 +188,19 @@ func enter_stored() -> void:
 	set_play_state(PlayState.STORED)
 
 
-# PLAY: selects NORMAL or ARC by current Y vs the friendship bound.
+# PLAY: selects NORMAL or ARC by current Y vs the friendship bound. NORMAL/ARC share the active
+# config and differ only by gravity_scale, which is set after apply().
 func enter_play() -> void:
 	_suppress_miss_detection = false
+	PLAY_ACTIVE_CONFIG.apply(self)
 	var bound_y: float = court_config.friendship_bound_y if court_config != null else 0.0
 	var above_bound: bool = global_position.y < bound_y
 
 	if above_bound:
-		PLAY_ARC_CONFIG.apply(self)
+		gravity_scale = 1.0
 		set_play_state(PlayState.PLAY_ARC)
 	else:
-		PLAY_NORMAL_CONFIG.apply(self)
+		gravity_scale = 0.0
 		set_play_state(PlayState.PLAY_NORMAL)
 
 

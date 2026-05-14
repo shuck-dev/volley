@@ -1,4 +1,4 @@
-## State-transition surface: enter_stored / enter_play / enter_out_rest / enter_out_held property bundles.
+## State-transition surface: enter_stored / enter_play / enter_out_rest / enter_out_held property values.
 extends GutTest
 
 const REST_DAMPING := 1.5
@@ -30,7 +30,7 @@ func before_each() -> void:
 
 
 # --- enter_stored ---
-func test_enter_stored_sets_property_bundle() -> void:
+func test_enter_stored_sets_property_values() -> void:
 	_ball.enter_stored()
 	assert_eq(_ball.play_state, Ball.PlayState.STORED)
 	assert_true(_ball.freeze)
@@ -56,7 +56,7 @@ func test_enter_stored_idempotent() -> void:
 
 
 # --- enter_play (NORMAL branch — global_position.y >= bound_y) ---
-func test_enter_play_normal_sets_property_bundle() -> void:
+func test_enter_play_normal_sets_property_values() -> void:
 	_ball.global_position = Vector2(0.0, 0.0)
 	_ball.enter_play()
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_NORMAL)
@@ -92,7 +92,7 @@ func test_enter_play_idempotent() -> void:
 
 
 # --- enter_out_rest ---
-func test_enter_out_rest_sets_property_bundle() -> void:
+func test_enter_out_rest_sets_property_values() -> void:
 	_ball.enter_out_rest()
 	assert_eq(_ball.play_state, Ball.PlayState.OUT_REST)
 	assert_false(_ball.freeze)
@@ -120,7 +120,7 @@ func test_enter_out_rest_idempotent() -> void:
 
 
 # --- enter_out_held ---
-func test_enter_out_held_sets_property_bundle() -> void:
+func test_enter_out_held_sets_property_values() -> void:
 	_ball.enter_out_held()
 	assert_eq(_ball.play_state, Ball.PlayState.OUT_HELD)
 	assert_true(_ball.freeze)
