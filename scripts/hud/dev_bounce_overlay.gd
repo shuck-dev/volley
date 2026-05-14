@@ -1,10 +1,7 @@
 class_name DevBounceOverlay
 extends Node2D
 
-## Debug-only overlay: draws the reachable bounce cone on each paddle and a
-## post-resolve marker arrow from the last contact point. Subscribes to
-## `BallEffectProcessor.bounce_resolved` per ball so the marker echoes the
-## resolved direction the ball actually flies.
+## Debug overlay: paddle bounce cones and a resolved-direction marker per last hit.
 
 const MARKER_ARROW_LENGTH := 90.0
 const MARKER_ARROW_HEAD := 14.0

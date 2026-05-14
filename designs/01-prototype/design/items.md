@@ -1,6 +1,6 @@
 # Items
 
-Player-facing design for the prototype's item set. Item effects are gameplay-first: the effect is immediately perceptible. The player figures out what an item does by owning it, not by reading a description. Most items are causality-driven; passive stat boosts are a subset of the same system.
+Design for the prototype's item set. Item effects are gameplay-first: the effect is immediately perceptible. The player figures out what an item does by owning it, not by reading a description. Most items are causality-driven; passive stat boosts are a subset of the same system.
 
 The Tinkerer carries the narrative meaning of each item. The item itself just does its thing.
 

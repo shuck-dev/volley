@@ -42,6 +42,7 @@ func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager
 	)
+
 	if not is_equal_approx(new_min, ball.min_speed):
 		_base_speed += new_min - ball.min_speed
 		ball.min_speed = new_min
@@ -72,6 +73,7 @@ func _apply_magnetism(delta: float) -> void:
 	var magnetism: float = Stats.resolve(
 		GameRules.base.ball_magnetism, &"ball_magnetism", item_manager
 	)
+
 	if magnetism <= 0.0 or paddles.is_empty():
 		return
 
@@ -81,6 +83,7 @@ func _apply_magnetism(delta: float) -> void:
 		if not is_instance_valid(paddle):
 			continue
 		var distance: float = ball.global_position.distance_to(paddle.global_position)
+
 		if distance < closest_distance:
 			closest_distance = distance
 			closest_paddle = paddle
@@ -108,16 +111,20 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 			item_manager,
 		)
 	)
+
 	if max_degrees <= 0.0:
 		return
+
 	if struck_paddle == null:
 		return
 
 	var half_height: float = struck_paddle.get_half_height()
+
 	if half_height <= 0.0:
 		return
 
 	var horizontal_sign: float = signf(ball.linear_velocity.x)
+
 	if horizontal_sign == 0.0:
 		return
 
@@ -130,16 +137,23 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	)
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
 	var incoming_y_sign: float = signf(ball.linear_velocity.y)
-	# Moving paddle forces the bounce into its motion hemisphere so the english never cancels offset.
-	var blended_angle: float
-	if not is_zero_approx(english_angle):
-		blended_angle = (absf(offset_angle) + absf(english_angle)) * signf(english_angle)
-	else:
-		blended_angle = offset_angle
+	var blended_angle: float = _blend_english_into_offset(offset_angle, english_angle)
 	var target_angle: float = _clamp_off_horizontal_and_vertical(blended_angle, incoming_y_sign)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 	ball.linear_velocity = direction * ball.speed
-	bounce_resolved.emit(struck_paddle, offset_norm, target_angle, incoming_y_sign, horizontal_sign)
+
+	if OS.is_debug_build():
+		bounce_resolved.emit(
+			struck_paddle, offset_norm, target_angle, incoming_y_sign, horizontal_sign
+		)
+
+
+# Moving paddle forces the bounce into its motion hemisphere so the english never cancels offset.
+func _blend_english_into_offset(offset_angle: float, english_angle: float) -> float:
+	if is_zero_approx(english_angle):
+		return offset_angle
+
+	return (absf(offset_angle) + absf(english_angle)) * signf(english_angle)
 
 
 # Clamps magnitude off horizontal/vertical; on zero angle the incoming y-sign breaks the tie.
@@ -163,9 +177,12 @@ func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) ->
 	var min_magnitude: float = deg_to_rad(min_degrees)
 	var max_magnitude: float = deg_to_rad(max_degrees)
 	var sign_y: float = signf(angle)
+
 	if sign_y == 0.0:
 		sign_y = incoming_y_sign
+
 	if sign_y == 0.0:
 		sign_y = 1.0
+
 	var magnitude: float = clampf(absf(angle), min_magnitude, max_magnitude)
 	return sign_y * magnitude
