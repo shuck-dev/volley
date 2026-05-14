@@ -4,3 +4,4 @@
 
 [resource]
 script = ExtResource("1_paddlecfg")
+paddle_return_angle_max_degrees = 50.0
