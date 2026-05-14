@@ -15,8 +15,9 @@ enum PlayState {
 	OUT_HELD,
 }
 
-const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
-const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
+const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
+const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
+const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
@@ -98,11 +99,13 @@ func _update_play_state(delta: float) -> void:
 
 func _enter_arc() -> void:
 	_relock.enter_arc(speed)
+	# Hot path: only NORMAL/ARC delta. Direct write here goes stale if a second property starts differing between NORMAL and ARC.
 	gravity_scale = 1.0
 	set_play_state(PlayState.PLAY_ARC)
 
 
 func _enter_normal() -> void:
+	# See _enter_arc above for the staleness warning.
 	gravity_scale = 0.0
 	var should_snap: bool = _relock.enter_normal(
 		linear_velocity.length(), court_config.relock_ramp_seconds
@@ -178,23 +181,17 @@ func _apply_grab_area_pickable() -> void:
 # STORED: body frozen, collision off. Position handled by the caller (rack slot).
 func enter_stored() -> void:
 	_suppress_miss_detection = false
-	freeze = true
-	collision_layer = 0
-	collision_mask = 0
+	STORED_CONFIG.apply(self)
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0.0
 	set_play_state(PlayState.STORED)
 
 
-# PLAY: selects NORMAL or ARC by current Y vs the friendship bound.
+# PLAY: selects NORMAL or ARC by current Y vs the friendship bound. NORMAL/ARC share the active
+# config and differ only by gravity_scale, which is set after apply().
 func enter_play() -> void:
 	_suppress_miss_detection = false
-	freeze = false
-	collision_layer = 1
-	collision_mask = 1
-	linear_damp = 0.0
-	physics_material_override = PLAY_MATERIAL
-
+	PLAY_ACTIVE_CONFIG.apply(self)
 	var bound_y: float = court_config.friendship_bound_y if court_config != null else 0.0
 	var above_bound: bool = global_position.y < bound_y
 
@@ -209,12 +206,9 @@ func enter_play() -> void:
 # OUT_REST: gravity on, REST material, damping engaged. Body keeps its current velocity.
 func enter_out_rest() -> void:
 	_suppress_miss_detection = false
-	freeze = false
-	collision_layer = 1
-	collision_mask = 1
-	gravity_scale = 1.0
+	OUT_REST_CONFIG.apply(self)
+	# Damping is a court-tunable, not a ball-state-tunable; override the .tres default with the court value.
 	linear_damp = court_config.rest_roll_damping
-	physics_material_override = REST_MATERIAL
 	speed = min_speed
 	effect_processor.sync_base_speed()
 	_emit_max_speed_if_changed()
@@ -225,9 +219,7 @@ func enter_out_rest() -> void:
 # OUT_HELD: body frozen, collision and miss-detection suppressed. Drag controller drives position.
 func enter_out_held() -> void:
 	_suppress_miss_detection = true
-	freeze = true
-	collision_layer = 0
-	collision_mask = 0
+	STORED_CONFIG.apply(self)
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0.0
 	set_play_state(PlayState.OUT_HELD)
