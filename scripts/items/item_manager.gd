@@ -22,8 +22,6 @@ var items: Array[ItemDefinition] = [
 var items_world: ItemWorldState
 var economy: EconomyState
 var _effect_manager: EffectManager
-## Transient overlay: keys whose body lives loose on the venue floor. Not persisted; cleared on reload.
-var _loose_in_venue: Dictionary[String, bool] = {}
 
 
 func _ready() -> void:
@@ -112,7 +110,7 @@ func get_level(item_key: String) -> int:
 ## Returns the current placement of an item. Defaults to STORED (on the rack).
 ## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
 func _get_placement(item_key: String) -> int:
-	if _loose_in_venue.get(item_key, false):
+	if items_world != null and items_world.loose_in_venue.has(item_key):
 		return PlacementScript.LOOSE_IN_VENUE
 	return items_world.item_placements.get(item_key, PlacementScript.STORED)
 
@@ -124,22 +122,23 @@ func get_placement(item_key: String) -> int:
 
 ## True when a loose body for this item exists on the venue floor.
 func is_loose_in_venue(item_key: String) -> bool:
-	return _loose_in_venue.get(item_key, false)
+	return items_world != null and items_world.loose_in_venue.has(item_key)
 
 
-## Marks an owned item as loose-in-venue. Idempotent. Emits item_placement_changed.
-func mark_loose_in_venue(item_key: String) -> void:
-	if _loose_in_venue.get(item_key, false):
+## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.
+func mark_loose_in_venue(item_key: String, position: Vector2 = Vector2.ZERO) -> void:
+	if items_world.loose_in_venue.has(item_key):
+		items_world.loose_in_venue[item_key] = position
 		return
-	_loose_in_venue[item_key] = true
+	items_world.loose_in_venue[item_key] = position
 	item_placement_changed.emit(item_key, PlacementScript.LOOSE_IN_VENUE)
 
 
-## Clears the loose-in-venue overlay. Idempotent. Emits item_placement_changed with the underlying placement.
+## Clears the loose-in-venue entry. Idempotent. Emits item_placement_changed with the underlying placement.
 func clear_loose_in_venue(item_key: String) -> void:
-	if not _loose_in_venue.get(item_key, false):
+	if not items_world.loose_in_venue.has(item_key):
 		return
-	_loose_in_venue.erase(item_key)
+	items_world.loose_in_venue.erase(item_key)
 	item_placement_changed.emit(item_key, _get_placement(item_key))
 
 

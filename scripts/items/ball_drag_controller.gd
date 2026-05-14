@@ -328,7 +328,7 @@ func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocit
 	# Loose-in-venue overlay makes is_on_court return false regardless of placement, so save/reload
 	# skips the spurious court-spawn at the saved venue-floor position.
 	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(item_key)
+		_item_manager.mark_loose_in_venue(item_key, world_position)
 
 
 ## Equipment attempt_release: rehome the in-flight HeldBody as loose at the release point.
@@ -481,7 +481,7 @@ func register_loose_body(body: HeldBody) -> void:
 		return
 	track_loose_body(body)
 	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(body.item_key)
+		_item_manager.mark_loose_in_venue(body.item_key, body.global_position)
 	if not body.tree_exited.is_connected(_on_loose_body_freed):
 		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
 

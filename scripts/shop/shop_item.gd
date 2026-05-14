@@ -336,7 +336,7 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 	visible = false
 	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
 	if _item_manager != null and _item_manager.has_method("mark_loose_in_venue"):
-		_item_manager.mark_loose_in_venue(item_definition.key)
+		_item_manager.mark_loose_in_venue(item_definition.key, settled_position)
 	drop_completed.emit(item_definition.key, settled_position, true)
 
 

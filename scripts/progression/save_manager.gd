@@ -122,7 +122,7 @@ func _capture_live_positions() -> void:
 		var value: Variant = live[key]
 		if value is Vector2:
 			typed[str(key)] = value
-	items_world.item_positions = typed
+	items_world.ball_positions = typed
 
 
 ## Clears progression and blocks writes so the scene reload that follows cannot
