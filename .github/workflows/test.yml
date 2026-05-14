@@ -62,6 +62,25 @@ jobs:
           set -o pipefail
           godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit 2>&1 | tee test_output.txt
 
+      - name: Leak gate
+        run: |
+          set -e
+          sed -E 's/\x1b\[[0-9;]*m//g' test_output.txt > test_output.plain
+          fail=0
+          if grep -qE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' test_output.plain; then
+            echo "::error::Warnings or errors in test output"
+            grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' test_output.plain | head -30
+            fail=1
+          fi
+          if grep -qE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain; then
+            echo "::error::Per-test orphans detected; see ai/scratchpads/gut-orphans-research.md"
+            grep -nE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain | head -30
+            fail=1
+          fi
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
+
       - name: Coverage Report
         if: always()
         run: |

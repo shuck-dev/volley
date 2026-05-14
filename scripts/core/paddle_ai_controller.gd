@@ -80,10 +80,9 @@ func _ball_in_play() -> bool:
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
-## Warning not assert: toggle key presses with no live ball must be silent no-ops.
+## Silent no-op when enabling with no live ball: toggle key presses must not crash or warn.
 func set_enabled(value: bool) -> void:
 	if value and ball == null:
-		push_warning("PaddleAIController.set_enabled(true) ignored: no ball bound")
 		return
 	_enabled = value
 
