@@ -337,14 +337,14 @@ func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
 
 func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
 	match play_state:
-		Ball.PlayState.OUT_REST:
+		# OUT_HELD demotes to OUT_REST because the drag-controller context is gone on load;
+		# restoring HELD would leave the ball frozen mid-air with miss-detection suppressed.
+		Ball.PlayState.OUT_REST, Ball.PlayState.OUT_HELD:
 			ball.enter_out_rest()
 			# Velocity is not persisted yet; without zeroing, the body keeps the integration-frame
 			# momentum it picked up between scene spawn and adopt, and visibly hops on load.
 			ball.linear_velocity = Vector2.ZERO
 			ball.angular_velocity = 0.0
-		Ball.PlayState.OUT_HELD:
-			ball.enter_out_held()
 		Ball.PlayState.PLAY_NORMAL, Ball.PlayState.PLAY_ARC:
 			ball.enter_play()
 		_:
