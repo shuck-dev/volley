@@ -50,7 +50,11 @@ jobs:
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', '**/*.uid', 'assets/**', 'art/**', 'resources/**') }}
 
       - name: Import Project
-        run: godot --headless --path . --import
+        # First pass populates the UID cache from .import files; second pass uses it
+        # so subsequent loads do not fall back to text paths and emit UID warnings.
+        run: |
+          godot --headless --path . --import
+          godot --headless --path . --import
 
       - name: Run Tests
         env:
