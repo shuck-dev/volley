@@ -74,9 +74,9 @@ func _draw() -> void:
 		_draw_last_hit(paddle)
 
 
-# top_level Node2D in a CanvasLayer draws in screen space, so world coords need the viewport transform.
+# Map world to screen via the main canvas (camera applied); overlay's own canvas is the CanvasLayer's, not the world's.
 func _project_to_canvas(world_pos: Vector2) -> Vector2:
-	return get_viewport_transform() * world_pos
+	return get_viewport().get_canvas_transform() * world_pos
 
 
 func _draw_cone(paddle: Paddle) -> void:

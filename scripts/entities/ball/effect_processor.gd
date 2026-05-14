@@ -103,6 +103,8 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	)
 	if max_degrees <= 0.0:
 		return
+	if struck_paddle == null:
+		return
 
 	var half_height: float = struck_paddle.get_half_height()
 	if half_height <= 0.0:

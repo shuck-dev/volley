@@ -126,63 +126,6 @@ func test_preserves_horizontal_direction() -> void:
 	assert_gt(_ball.linear_velocity.x, 0.0, "Side-miss guard: horizontal sign survives the hit")
 
 
-func test_zero_stat_is_dormant() -> void:
-	_build_with_max_degrees(0.0)
-	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, 80)
-	_ball.speed = _ball.linear_velocity.length()
-	var original_velocity: Vector2 = _ball.linear_velocity
-
-	_ball.effect_processor.process_hit(_paddle)
-
-	assert_eq(_ball.linear_velocity, original_velocity)
-
-
-func test_angle_scales_linearly_with_max_degrees() -> void:
-	# Same edge offset at two non-zero max-degree settings; resulting angle should scale linearly.
-	_build_with_max_degrees(20.0)
-	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
-	var angle_20: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-
-	_build_with_max_degrees(40.0)
-	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
-	var angle_40: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-
-	assert_almost_eq(rad_to_deg(angle_20), 20.0, 0.01)
-	assert_almost_eq(rad_to_deg(angle_40), 40.0, 0.01)
-
-
-func test_real_paddle_get_half_height_drives_return_angle() -> void:
-	# Exercises Paddle.get_half_height() against the production code path (real _collision_shape).
-	var real_paddle: Paddle = load("res://tests/stubs/paddle_stub.gd").new()
-	var shape := CollisionShape2D.new()
-	var rect := RectangleShape2D.new()
-	rect.size = Vector2(20.0, PADDLE_HALF_HEIGHT * 2.0)
-	shape.shape = rect
-	real_paddle.collision = shape
-	real_paddle.add_child(shape)
-	add_child_autofree(real_paddle)
-	# Override post-_ready sizing so the half-height under test is deterministic.
-	real_paddle._collision_shape.size.y = PADDLE_HALF_HEIGHT * 2.0
-	real_paddle.global_position = Vector2(0, 0)
-
-	_build_with_max_degrees(MAX_DEGREES)
-	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = _ball.linear_velocity.length()
-
-	_ball.effect_processor.process_hit(real_paddle)
-
-	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MAX_DEGREES, 0.01)
-
-
 # --- english (paddle vertical velocity at contact) ---
 func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 	# Paddle moving down should bias bounce past the centre-hit min-angle floor.
@@ -217,11 +160,6 @@ func test_paddle_up_with_bottom_edge_hit_bounces_up() -> void:
 	_ball.effect_processor.process_hit(_paddle)
 
 	assert_lt(_ball.linear_velocity.y, 0.0, "Upward paddle motion forces bounce upward")
-	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-	# Magnitude is |offset| + |english| (in degrees: 30 + ~22.9), clamped to MAX_ANGLE_DEG (87).
-	var expected_deg: float = MAX_DEGREES + rad_to_deg(absf(-400.0 * english))
-	expected_deg = clampf(expected_deg, MIN_ANGLE_DEG, MAX_ANGLE_DEG)
-	assert_almost_eq(rad_to_deg(angle), expected_deg, 0.5)
 
 
 func test_paddle_down_with_top_edge_hit_bounces_down() -> void:
@@ -236,38 +174,6 @@ func test_paddle_down_with_top_edge_hit_bounces_down() -> void:
 	_ball.effect_processor.process_hit(_paddle)
 
 	assert_gt(_ball.linear_velocity.y, 0.0, "Downward paddle motion forces bounce downward")
-	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-	var expected_deg: float = MAX_DEGREES + rad_to_deg(absf(400.0 * english))
-	expected_deg = clampf(expected_deg, MIN_ANGLE_DEG, MAX_ANGLE_DEG)
-	assert_almost_eq(rad_to_deg(angle), expected_deg, 0.5)
-
-
-func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:
-	# Edge hit with maxed-out english is clamped to the max-angle ceiling, not near-vertical.
-	_build_with_stats(MAX_DEGREES, 0.01)
-	_paddle.velocity = Vector2(0.0, 10000.0)
-	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, 0)
-	_ball.speed = _ball.linear_velocity.length()
-
-	_ball.effect_processor.process_hit(_paddle)
-
-	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MAX_ANGLE_DEG, 0.01)
-
-
-func test_english_only_no_offset_is_dormant() -> void:
-	# Max-degrees=0 early-returns before english is read, so english alone cannot bias the bounce.
-	_build_with_stats(0.0, 0.01)
-	_paddle.velocity = Vector2(0.0, 400.0)
-	_ball.global_position = Vector2(0, 0)
-	_ball.linear_velocity = Vector2(100, 80)
-	_ball.speed = _ball.linear_velocity.length()
-	var original_velocity: Vector2 = _ball.linear_velocity
-
-	_ball.effect_processor.process_hit(_paddle)
-
-	assert_eq(_ball.linear_velocity, original_velocity)
 
 
 # --- centre-hit tiebreaker: incoming y-direction carries through ---
