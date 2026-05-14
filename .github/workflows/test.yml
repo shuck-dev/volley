@@ -47,9 +47,7 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .godot
-          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
-          restore-keys: |
-            godot-import-${{ env.GODOT_VERSION }}-
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', '**/*.uid', 'assets/**', 'art/**', 'resources/**') }}
 
       - name: Import Project
         run: godot --headless --path . --import
