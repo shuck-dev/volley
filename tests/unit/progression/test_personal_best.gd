@@ -29,8 +29,12 @@ func before_each() -> void:
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
-	_game.personal_volley_best_changed.connect(func(best): _last_personal_volley_best = best)
+	_game.personal_volley_best_changed.connect(_on_personal_volley_best_changed)
 	_ball_stub.gravity_scale = 0.0
+
+
+func _on_personal_volley_best_changed(best: int) -> void:
+	_last_personal_volley_best = best
 
 
 func _hit() -> void:

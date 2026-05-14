@@ -42,7 +42,11 @@ func before_each() -> void:
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
 
-	_game.volley_count_changed.connect(func(count: int) -> void: _last_volley_count = count)
+	_game.volley_count_changed.connect(_on_volley_count_changed)
+
+
+func _on_volley_count_changed(count: int) -> void:
+	_last_volley_count = count
 
 
 func _hit() -> void:
