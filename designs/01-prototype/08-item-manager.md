@@ -1,6 +1,6 @@
 # ItemManager: Data Model and Runtime
 
-Runtime layer behind `08-items.md`. Role logic lives in `08-roles.md`, fixtures in `08-fixtures.md`, kit passive FP in `08-kit.md`, balls in `08-balls.md`.
+Runtime layer behind `08-items.md`. Role logic lives in `tech/06-roles.md`, fixtures in `08-fixtures.md`, kit passive FP in `08-kit.md`, balls in `08-balls.md`.
 
 **Dependencies:** Effect System (`07`), Items (`08-items.md`), Venue (`08-venue.md`), Shop Drag-and-Drop (`04-shop-drag-drop.md`).
 

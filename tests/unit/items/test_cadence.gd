@@ -40,11 +40,15 @@ func test_cost_scaling_matches_design() -> void:
 func test_oscillation_active_after_purchase() -> void:
 	_purchase()
 
-	var base_value: float = GameRules.base_stats[&"ball_speed_offset"]
+	var base_value: float = GameRules.base.ball_speed_offset
 	var found_different := false
 	for frame_index in range(60):
 		_manager._effect_manager.process_frame(0.016)
-		if not is_equal_approx(_manager.get_stat(&"ball_speed_offset"), base_value):
+
+		if not is_equal_approx(
+			Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
+			base_value
+		):
 			found_different = true
 			break
 
@@ -56,8 +60,8 @@ func test_oscillation_inactive_before_purchase() -> void:
 		_manager._effect_manager.process_frame(0.016)
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_offset"),
-		GameRules.base_stats[&"ball_speed_offset"],
+		Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
+		GameRules.base.ball_speed_offset,
 	)
 
 
@@ -68,20 +72,24 @@ func test_ceiling_raises_on_max_speed_reached() -> void:
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 
 	assert_gt(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
 func test_ceiling_raise_stacks_up_to_cap() -> void:
 	_purchase()
-	var base_range: float = GameRules.base_stats[&"ball_speed_max_range"]
+	var base_range: float = GameRules.base.ball_speed_max_range
 
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var after_first: float = _manager.get_stat(&"ball_speed_max_range")
+	var after_first: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var after_second: float = _manager.get_stat(&"ball_speed_max_range")
+	var after_second: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 
 	assert_gt(after_first, base_range)
 	assert_gt(after_second, after_first, "Should stack before reaching cap")
@@ -92,10 +100,14 @@ func test_ceiling_raise_stops_at_cap() -> void:
 
 	for trigger_index in range(10):
 		_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var at_cap: float = _manager.get_stat(&"ball_speed_max_range")
+	var at_cap: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var after_extra: float = _manager.get_stat(&"ball_speed_max_range")
+	var after_extra: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 
 	assert_almost_eq(after_extra, at_cap, 0.01, "Should not exceed cap")
 
@@ -108,25 +120,33 @@ func test_ceiling_raise_clears_on_miss() -> void:
 	_manager._effect_manager.process_event(&"on_miss")
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 	)
 
 
 func test_ceiling_raise_resets_after_miss_allowing_new_cap() -> void:
 	_purchase()
-	var base_range: float = GameRules.base_stats[&"ball_speed_max_range"]
+	var base_range: float = GameRules.base.ball_speed_max_range
 
 	for trigger_index in range(10):
 		_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var at_cap: float = _manager.get_stat(&"ball_speed_max_range")
+	var at_cap: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 
 	_manager._effect_manager.process_event(&"on_miss")
-	assert_almost_eq(_manager.get_stat(&"ball_speed_max_range"), base_range, 0.01)
+	assert_almost_eq(
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		base_range,
+		0.01
+	)
 
 	for trigger_index in range(10):
 		_manager._effect_manager.process_event(&"on_max_speed_reached")
-	var after_new_rally: float = _manager.get_stat(&"ball_speed_max_range")
+	var after_new_rally: float = Stats.resolve(
+		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
+	)
 	assert_almost_eq(after_new_rally, at_cap, 0.01, "Cap should allow full raise again after miss")
 
 
@@ -135,14 +155,16 @@ func test_higher_level_raises_ceiling_more() -> void:
 	_manager.purchase("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var level_one_raise: float = (
-		_manager.get_stat(&"ball_speed_max_range") - GameRules.base_stats[&"ball_speed_max_range"]
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
+		- GameRules.base.ball_speed_max_range
 	)
 
 	_manager._effect_manager.process_event(&"on_miss")
 	_manager.purchase("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")
 	var level_two_raise: float = (
-		_manager.get_stat(&"ball_speed_max_range") - GameRules.base_stats[&"ball_speed_max_range"]
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
+		- GameRules.base.ball_speed_max_range
 	)
 
 	assert_gt(level_two_raise, level_one_raise)

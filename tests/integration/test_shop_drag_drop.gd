@@ -6,7 +6,6 @@ const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
-const DoubleKnot: ItemDefinition = preload("res://resources/items/double_knot.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -23,7 +22,7 @@ func before_each() -> void:
 	_item_manager.items_world = ItemWorldState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
-	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
+	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
 	_item_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 
@@ -38,7 +37,7 @@ func _shop_item(key: String) -> ShopItem:
 
 # --- spawn ---
 func test_shop_spawns_one_item_per_visible_definition() -> void:
-	assert_eq(_shop.items_anchor.get_child_count(), 5)
+	assert_eq(_shop.items_anchor.get_child_count(), 4)
 
 
 func test_shop_item_names_use_definition_keys() -> void:
@@ -322,7 +321,7 @@ class TestSH332InsideShopDrag:
 		_item_manager.items_world = ItemWorldState.new()
 		_item_manager.economy = EconomyState.new()
 		_item_manager._effect_manager = EffectManager.new()
-		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
+		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
 		_item_manager.economy.friendship_point_balance = 10000
 		add_child_autofree(_item_manager)
 		_shop = ShopScene.instantiate()

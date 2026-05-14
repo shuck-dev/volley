@@ -476,7 +476,7 @@ Extract a shared interface from the current `Paddle` class. Both the player padd
 
 A `PartnerAIController` (see `17-partner-ai.md`) drives the partner paddle. It extends the shared `PaddleAIController` interface and uses a `PaddleAIConfig` resource for tuning. Separate from `AutoplayController`; always active.
 
-Martha's AI config starting values are tuning targets for the Make Fun pass. See `17-partner-ai.md` for the config resource fields, miss philosophy, and how partner competence scales with the player through stat sharing (`18-partner-upgrade-strategy.md`).
+Martha's AI config starting values are tuning targets for the Make Fun pass. See `17-partner-ai.md` for the config resource fields, miss philosophy, and how partner competence scales with the player through stat sharing (`design/partner-upgrade-strategy.md`).
 
 ### Effect registration
 

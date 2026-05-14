@@ -36,7 +36,7 @@ func test_gravity_pulls_ball_back_when_above_bound() -> void:
 
 
 func test_prediction_clamped_within_arena() -> void:
-	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
+	var arena_half: float = GameRules.base.arena_height / 2.0
 	var intercept: float = PaddleAIMath.predict_intercept(
 		Vector2(200.0, 0.0), Vector2(-1.0, 9999.0), 0.0, BOUND_Y, GRAVITY
 	)

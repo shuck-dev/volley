@@ -4,7 +4,6 @@ extends RefCounted
 var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _percentage_modifiers: Array[StatModifier] = []
-var _multiply_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
 var _oscillations: Array[StatOscillation] = []
 var _resolving_keys: Array[StringName] = []
@@ -17,7 +16,6 @@ func get_stat(key: StringName) -> float:
 	result += _sum_oscillations(key)
 	result += _sum_modifiers(key, _add_modifiers, false)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false)
-	result *= _product_modifiers(key, _multiply_modifiers, false)
 	return result
 
 
@@ -33,13 +31,22 @@ func get_base_stat(key: StringName) -> float:
 	result += _sum_oscillations(key)
 	result += _sum_modifiers(key, _add_modifiers, true)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true)
-	result *= _product_modifiers(key, _multiply_modifiers, true)
 	_resolving_keys.erase(key)
 	return result
 
 
 func get_percentage_offset(key: StringName) -> float:
 	return _sum_modifiers(key, _percentage_modifiers, false)
+
+
+## Sum of additive modifiers and oscillations for a stat key, range-resolved.
+func get_modifier(key: StringName) -> float:
+	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, false)
+
+
+## Same as `get_modifier` but excludes temporary (until-miss) modifiers.
+func get_permanent_modifier(key: StringName) -> float:
+	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, true)
 
 
 func add_modifier(modifier: StatModifier) -> void:
@@ -50,7 +57,6 @@ func add_modifier(modifier: StatModifier) -> void:
 func remove_modifiers_by_source(source_key: String) -> void:
 	_add_modifiers = _add_modifiers.filter(_exclude_source.bind(source_key))
 	_percentage_modifiers = _percentage_modifiers.filter(_exclude_source.bind(source_key))
-	_multiply_modifiers = _multiply_modifiers.filter(_exclude_source.bind(source_key))
 	_oscillations = _oscillations.filter(
 		func(oscillation: StatOscillation) -> bool: return oscillation.source_key != source_key
 	)
@@ -73,7 +79,6 @@ func clear_temporary_modifiers() -> void:
 	var keep_permanent := func(modifier: StatModifier) -> bool: return not modifier.temporary
 	_add_modifiers = _add_modifiers.filter(keep_permanent)
 	_percentage_modifiers = _percentage_modifiers.filter(keep_permanent)
-	_multiply_modifiers = _multiply_modifiers.filter(keep_permanent)
 	_refresh_oscillation_range_values()
 
 
@@ -112,8 +117,6 @@ func _array_for_operation(operation: StatModifier.Operation) -> Array[StatModifi
 			return _add_modifiers
 		StatModifier.Operation.PERCENTAGE:
 			return _percentage_modifiers
-		StatModifier.Operation.MULTIPLY:
-			return _multiply_modifiers
 	return _add_modifiers
 
 
@@ -139,16 +142,6 @@ func _sum_modifiers(
 		if modifier.stat_key == key and not (exclude_temporary and modifier.temporary):
 			total += _resolve_value(modifier)
 	return total
-
-
-func _product_modifiers(
-	key: StringName, modifiers: Array[StatModifier], exclude_temporary: bool
-) -> float:
-	var result := 1.0
-	for modifier in modifiers:
-		if modifier.stat_key == key and not (exclude_temporary and modifier.temporary):
-			result *= _resolve_value(modifier)
-	return result
 
 
 func _resolve_value(modifier: StatModifier) -> float:

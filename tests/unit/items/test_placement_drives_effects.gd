@@ -49,10 +49,10 @@ func test_equipment_on_player_registers_effects_at_level() -> void:
 	var item := _make_item("equip_a", &"equipment")
 	var manager: Node = _make_manager_with([item])
 	manager.items_world.item_levels[item.key] = 1
-	var base_speed: float = GameRules.base_stats[STAT_KEY]
+	var base_speed: float = GameRules.paddle.paddle_speed
 	manager.activate(item.key)
 	assert_eq(
-		manager.get_stat(STAT_KEY),
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
 		base_speed + EFFECT_VALUE,
 		"activating equipment on the player should register its effects",
 	)
@@ -63,10 +63,10 @@ func test_removing_equipment_from_player_unregisters_effects() -> void:
 	var manager: Node = _make_manager_with([item])
 	manager.items_world.item_levels[item.key] = 1
 	manager.activate(item.key)
-	var base_speed: float = GameRules.base_stats[STAT_KEY]
+	var base_speed: float = GameRules.paddle.paddle_speed
 	manager.deactivate(item.key)
 	assert_eq(
-		manager.get_stat(STAT_KEY),
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
 		base_speed,
 		"deactivating equipment should unregister its effects",
 	)
@@ -76,11 +76,11 @@ func test_ball_on_court_registers_effects_and_enters_play() -> void:
 	var item := _make_item("ball_a", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
 	var manager: Node = _make_manager_with([item])
 	manager.items_world.item_levels[item.key] = 1
-	var base_value: float = GameRules.base_stats[BALL_STAT_KEY]
+	var base_value: float = GameRules.base.ball_speed_min
 	watch_signals(manager)
 	manager.activate(item.key)
 	assert_eq(
-		manager.get_stat(BALL_STAT_KEY),
+		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
 		base_value + BALL_EFFECT_VALUE,
 		"activating a ball on the court should register its effects",
 	)
@@ -100,11 +100,11 @@ func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void
 	var manager: Node = _make_manager_with([item])
 	manager.items_world.item_levels[item.key] = 1
 	manager.activate(item.key)
-	var base_value: float = GameRules.base_stats[BALL_STAT_KEY]
+	var base_value: float = GameRules.base.ball_speed_min
 	watch_signals(manager)
 	manager.deactivate(item.key)
 	assert_eq(
-		manager.get_stat(BALL_STAT_KEY),
+		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
 		base_value,
 		"deactivating a ball should unregister its effects",
 	)
@@ -126,15 +126,15 @@ func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 	# Owned (i.e. sitting on the rack after purchase) but never activated.
 	manager.items_world.item_levels[equipment.key] = 1
 	manager.items_world.item_levels[ball.key] = 1
-	var base_paddle: float = GameRules.base_stats[STAT_KEY]
-	var base_ball: float = GameRules.base_stats[BALL_STAT_KEY]
+	var base_paddle: float = GameRules.paddle.paddle_speed
+	var base_ball: float = GameRules.base.ball_speed_min
 	assert_eq(
-		manager.get_stat(STAT_KEY),
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
 		base_paddle,
 		"owned but un-activated equipment should be inert on the rack",
 	)
 	assert_eq(
-		manager.get_stat(BALL_STAT_KEY),
+		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
 		base_ball,
 		"owned but un-activated balls should be inert on the rack",
 	)
@@ -154,9 +154,9 @@ func test_levelling_equipment_on_player_updates_running_effects() -> void:
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(equipment.key)
 	manager.activate(equipment.key)
-	var base_speed: float = GameRules.base_stats[STAT_KEY]
+	var base_speed: float = GameRules.paddle.paddle_speed
 	assert_eq(
-		manager.get_stat(STAT_KEY),
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
 		base_speed + EFFECT_VALUE,
 		"precondition: level 1 equipment grants one stack of its effect",
 	)
@@ -167,7 +167,7 @@ func test_levelling_equipment_on_player_updates_running_effects() -> void:
 		"precondition: purchase should raise the level to 2",
 	)
 	assert_eq(
-		manager.get_stat(STAT_KEY),
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
 		base_speed + 2.0 * EFFECT_VALUE,
 		"levelling placed equipment should update its running effects",
 	)
@@ -179,15 +179,15 @@ func test_levelling_ball_on_court_updates_running_effects() -> void:
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(ball.key)
 	manager.activate(ball.key)
-	var base_value: float = GameRules.base_stats[BALL_STAT_KEY]
+	var base_value: float = GameRules.base.ball_speed_min
 	assert_eq(
-		manager.get_stat(BALL_STAT_KEY),
+		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
 		base_value + BALL_EFFECT_VALUE,
 		"precondition: level 1 ball grants one stack of its effect",
 	)
 	manager.purchase(ball.key)
 	assert_eq(
-		manager.get_stat(BALL_STAT_KEY),
+		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
 		base_value + 2.0 * BALL_EFFECT_VALUE,
 		"levelling a ball on the court should update its running effects",
 	)

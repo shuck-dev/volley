@@ -5,6 +5,16 @@ var _labels: Dictionary = {}
 var _speed_label: Label
 var _speed_bar: Control
 var _drag := DraggableBehavior.new()
+# Debug-only: flattened view of every stat's base value for diff readouts.
+# Cached once because `_refresh` hits this per stat per frame.
+var _cached_base_values: Dictionary = {}
+
+
+func _base_values() -> Dictionary:
+	if _cached_base_values.is_empty():
+		_cached_base_values = GameRules.BASE_CONFIG.to_dict()
+		_cached_base_values.merge(GameRules.PADDLE_CONFIG.to_dict())
+	return _cached_base_values
 
 
 func _ready() -> void:
@@ -56,9 +66,10 @@ func _build_placeholder_labels() -> void:
 		child.queue_free()
 
 	_add_header()
-	for stat_key: StringName in GameRules.base_stats:
+	var bases: Dictionary = _base_values()
+	for stat_key: StringName in bases:
 		var label := _make_stat_label()
-		label.text = "%s: %.1f" % [stat_key, GameRules.base_stats[stat_key]]
+		label.text = "%s: %.1f" % [stat_key, bases[stat_key]]
 		add_child(label)
 
 
@@ -67,7 +78,7 @@ func _build_live_labels() -> void:
 	_speed_label = _make_stat_label()
 	_speed_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
 	add_child(_speed_label)
-	for stat_key: StringName in GameRules.base_stats:
+	for stat_key: StringName in _base_values():
 		var label := _make_stat_label()
 		add_child(label)
 		_labels[stat_key] = label
@@ -122,8 +133,8 @@ func _refresh_speed_label() -> void:
 
 
 func _refresh_stat_label(stat_key: StringName) -> void:
-	var current_value: float = ItemManager.get_stat(stat_key)
-	var base_value: float = GameRules.base_stats[stat_key]
+	var base_value: float = _base_values()[stat_key]
+	var current_value: float = Stats.resolve(base_value, stat_key)
 	var label: Label = _labels[stat_key]
 	if is_equal_approx(current_value, base_value):
 		label.text = "%s: %.1f" % [stat_key, current_value]

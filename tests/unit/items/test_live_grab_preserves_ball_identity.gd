@@ -12,6 +12,7 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: BallDragController
+var _removed_count: int = 0
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -95,15 +96,19 @@ func test_court_release_keeps_same_ball_instance() -> void:
 func test_ball_removed_does_not_fire_on_live_grab() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
-	var removed_count: int = 0
-	_reconciler.ball_removed.connect(func(_ball: Ball) -> void: removed_count += 1)
+	_removed_count = 0
+	_reconciler.ball_removed.connect(_on_ball_removed)
 
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 	await get_tree().process_frame
 
 	assert_eq(
-		removed_count, 0, "live grab must not emit ball_removed; the Ball stays in the registry"
+		_removed_count, 0, "live grab must not emit ball_removed; the Ball stays in the registry"
 	)
+
+
+func _on_ball_removed(_ball: Ball) -> void:
+	_removed_count += 1
 
 
 func test_venue_drop_transitions_live_ball_to_out_rest() -> void:

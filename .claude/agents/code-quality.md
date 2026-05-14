@@ -32,6 +32,14 @@ Do not re-report any of the above.
 
 ## Output
 
-Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments per `ai/skills/minions/reviewers.md`.
+Mechanical fixes (typos in identifier names, obvious dead code, clear duplication with an obvious dedupe) as commits. Everything else (naming debates, design tradeoffs, architectural suggestions) as short line-anchored review comments per `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`.
 
-Never flag an item that is already covered by `ai/skills/gru/dispatch.md`, `ai/skills/minions/commits.md`, `ai/skills/minions/reviewers.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.
+Never flag an item that is already covered by `ai/skills/gru/dispatch.md`, `ai/skills/minions/commits.md`, `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`, `CLAUDE.md`, or CI hooks. Those rules exist; your value is pattern-matching against the diff.
+
+## Bash discipline
+
+Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.
+
+## Style discipline
+
+Read `ai/skills/minions/implementer-nits.md` before writing or accepting GDScript. Blank-line-before-`if`, comment policy, naming, exports, resources, class-name async cache. The rules reviewers flag round after round, consolidated.

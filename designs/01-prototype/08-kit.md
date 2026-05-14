@@ -2,7 +2,7 @@
 
 The kit is every item the player owns. This doc covers where inactive items sit, how the player moves items between inactive and active, and the passive FP they generate while inactive.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Venue (`08-venue.md`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Venue (`08-venue.md`).
 
 ---
 

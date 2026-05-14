@@ -23,8 +23,8 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		current_speed = 550.0
 		return
-	_min_speed = GameRules.base_stats[&"ball_speed_min"]
-	_max_speed = _min_speed + GameRules.base_stats[&"ball_speed_max_range"]
+	_min_speed = GameRules.base.ball_speed_min
+	_max_speed = _min_speed + GameRules.base.ball_speed_max_range
 	_permanent_max_speed = _max_speed
 	if ball_system != null:
 		ball_system.ball_added.connect(_attach_ball)
@@ -89,9 +89,14 @@ func _recompute_from_tracked() -> void:
 
 
 func _on_item_level_changed() -> void:
-	var base_min: float = ItemManager.get_base_stat(&"ball_speed_min")
-	var base_max_range: float = ItemManager.get_base_stat(&"ball_speed_max_range")
-	_permanent_max_speed = base_min + base_max_range
+	var min_with_perm: float = (
+		GameRules.base.ball_speed_min + ItemManager.get_permanent_modifier(&"ball_speed_min")
+	)
+	var range_with_perm: float = (
+		GameRules.base.ball_speed_max_range
+		+ ItemManager.get_permanent_modifier(&"ball_speed_max_range")
+	)
+	_permanent_max_speed = min_with_perm + range_with_perm
 	queue_redraw()
 
 

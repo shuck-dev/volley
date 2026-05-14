@@ -111,7 +111,7 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 	assert_eq(
 		_rack.get_displayed_keys(), ["training_ball"], "precondition: rack shows the owned token"
 	)
-	var base_min: float = _manager.get_stat(&"ball_speed_min")
+	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
 	_drag.grab_from_rack("training_ball")
 	# Drain activation-spawn balls to isolate the release outcome.
@@ -131,7 +131,7 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 	assert_not_null(ball, "reconciler tracks the live ball by key")
 	assert_eq(ball.global_position, court_point, "ball lands at the release point")
 	assert_gt(
-		_manager.get_stat(&"ball_speed_min"),
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
 		base_min,
 		"ball effect should be registered while the item is on court",
 	)
@@ -147,7 +147,9 @@ func test_place_ball_drags_onto_court_and_reconciler_spawns_live_ball() -> void:
 func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 	_manager.take("training_ball")
 	_manager.activate("training_ball")
-	var placed_min: float = _manager.get_stat(&"ball_speed_min")
+	var placed_min: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	assert_true(_manager.is_on_court("training_ball"), "precondition: ball placed")
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
@@ -169,7 +171,7 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 	)
 	assert_eq(_permanent_balls().size(), 1, "one Ball instance persists through court -> rack")
 	assert_lt(
-		_manager.get_stat(&"ball_speed_min"),
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
 		placed_min,
 		"effect should deregister once the ball is stored again",
 	)
@@ -213,7 +215,7 @@ func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 # todo: SH-224 drive the spawn through SpawnBallOutcome once it lands
 func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 	assert_false(_manager.is_on_court("training_ball"))
-	var base_min: float = _manager.get_stat(&"ball_speed_min")
+	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
 	var temp: Ball = BallScene.instantiate()
 	temp.is_temporary = true
@@ -236,7 +238,7 @@ func test_temporary_ball_does_not_touch_placement_or_reconciler() -> void:
 		"temporary spawn must not mark the item as placed",
 	)
 	assert_almost_eq(
-		_manager.get_stat(&"ball_speed_min"),
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
 		base_min,
 		0.01,
 		"temporary ball has no item-level placement, so no extra effect registers",
@@ -292,7 +294,9 @@ func test_release_from_far_outside_cursor_drops_loose_at_venue_edge() -> void:
 func test_save_round_trip_preserves_live_ball_placement() -> void:
 	_manager.take("training_ball")
 	_manager.activate("training_ball")
-	var placed_min: float = _manager.get_stat(&"ball_speed_min")
+	var placed_min: float = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
+	)
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
 	var saved_blob: String = JSON.stringify(_manager.items_world.to_save_dict())
@@ -326,7 +330,7 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 		"the live ball is parented under the reconciler",
 	)
 	assert_almost_eq(
-		reloaded_manager.get_stat(&"ball_speed_min"),
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", reloaded_manager),
 		placed_min,
 		0.01,
 		"reloaded ball item must run the same effect as before the save",

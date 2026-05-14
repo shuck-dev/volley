@@ -67,9 +67,7 @@ func _physics_process(_delta: float) -> void:
 		_drift_to_center()
 		return
 
-	if _is_ball_behind():
-		_dodge()
-	elif _ball_approaching():
+	if _ball_approaching():
 		_track()
 	else:
 		_drift_to_center()
@@ -80,10 +78,9 @@ func _ball_in_play() -> bool:
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
-## Warning not assert: toggle key presses with no live ball must be silent no-ops.
+## Silent no-op when enabling with no live ball: toggle key presses must not crash or warn.
 func set_enabled(value: bool) -> void:
 	if value and ball == null:
-		push_warning("PaddleAIController.set_enabled(true) ignored: no ball bound")
 		return
 	_enabled = value
 
@@ -104,12 +101,6 @@ func _get_paddle_speed() -> float:
 	return 0.0
 
 
-## Override: is the ball behind this paddle (missed, heading to wall).
-func _is_ball_behind() -> bool:
-	assert(false, "PaddleAIController._is_ball_behind() is abstract")
-	return false
-
-
 func _track() -> void:
 	var bound_y: float = ball.court_config.friendship_bound_y
 	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -128,18 +119,6 @@ func _track() -> void:
 	else:
 		target_velocity = sign(difference) * max_speed
 
-	var smoothed_velocity: float = lerpf(
-		paddle.velocity.y, target_velocity, config.velocity_smoothing
-	)
-	paddle.drive(smoothed_velocity)
-
-
-func _dodge() -> void:
-	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
-	var target_y: float = arena_half if ball.position.y < 0.0 else -arena_half
-	var difference: float = target_y - paddle.position.y
-	var max_speed: float = _get_paddle_speed() * config.speed_scale
-	var target_velocity: float = sign(difference) * max_speed
 	var smoothed_velocity: float = lerpf(
 		paddle.velocity.y, target_velocity, config.velocity_smoothing
 	)

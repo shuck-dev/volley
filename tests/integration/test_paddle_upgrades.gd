@@ -45,7 +45,7 @@ func _create_paddle() -> CharacterBody2D:
 # --- size ---
 func test_apply_size_sets_collision_to_base_value_at_level_zero() -> void:
 	var paddle := _create_paddle()
-	var expected: float = _manager.get_stat(&"paddle_size")
+	var expected: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
 	assert_almost_eq(paddle.collision.shape.size.y, expected, 0.01)
 
 
@@ -54,17 +54,25 @@ func test_apply_size_increases_by_effect_per_level_after_purchase() -> void:
 	_manager.purchase("grip_tape")
 
 	var paddle := _create_paddle()
-	var expected: float = _manager.get_stat(&"paddle_size")
+	var expected: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
 	assert_almost_eq(paddle.collision.shape.size.y, expected, 0.01)
 
 
 func test_size_updates_live_on_purchase() -> void:
 	var paddle := _create_paddle()
-	assert_almost_eq(paddle.collision.shape.size.y, _manager.get_stat(&"paddle_size"), 0.01)
+	assert_almost_eq(
+		paddle.collision.shape.size.y,
+		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
+		0.01
+	)
 
 	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
-	assert_almost_eq(paddle.collision.shape.size.y, _manager.get_stat(&"paddle_size"), 0.01)
+	assert_almost_eq(
+		paddle.collision.shape.size.y,
+		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
+		0.01
+	)
 
 
 func test_size_updates_live_on_remove_level() -> void:
@@ -73,4 +81,8 @@ func test_size_updates_live_on_remove_level() -> void:
 	var paddle := _create_paddle()
 
 	_manager.remove_level("grip_tape")
-	assert_almost_eq(paddle.collision.shape.size.y, _manager.get_stat(&"paddle_size"), 0.01)
+	assert_almost_eq(
+		paddle.collision.shape.size.y,
+		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
+		0.01
+	)

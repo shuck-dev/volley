@@ -188,10 +188,11 @@ func _apply_slot_visibility() -> void:
 
 
 func _clear_slots() -> void:
+	# free, not queue_free: remove_child already detached, so the idle-frame gap orphans the slot.
 	for slot in _slots:
 		if slot != null and is_instance_valid(slot):
 			slot_container.remove_child(slot)
-			slot.queue_free()
+			slot.free()
 	_slots.clear()
 
 

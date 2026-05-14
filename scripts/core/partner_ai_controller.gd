@@ -15,9 +15,5 @@ func _ball_approaching() -> bool:
 	return ball.linear_velocity.x > 0.0 and ball.position.x < paddle.position.x
 
 
-func _is_ball_behind() -> bool:
-	return ball.position.x > paddle.position.x
-
-
 func _get_paddle_speed() -> float:
-	return GameRules.base_stats[&"paddle_speed"]
+	return GameRules.paddle.paddle_speed

@@ -1,11 +1,8 @@
 # Partner Upgrade Strategy
 
-## Goal
+How partners scale with the player so no partner becomes a bottleneck or obsolete as the game advances. The mechanism is the `share_stats_with_partner` outcome on the effect system; this doc covers the design call. Effect-system framework lives in [`../tech/04-effect-system.md`](../tech/04-effect-system.md).
 
-Define how partners scale with the player's progression so that no partner becomes a bottleneck or obsolete as the game advances.
-
-**Points:** Spike
-**Dependencies:** Partner AI (`17-partner-ai.md`), First Partner Unlock (`11-first-partner-unlock.md`), Effect System (`07-effect-system.md`), Tinkerer Prestige (SH-81)
+**Dependencies:** Partner AI (`../17-partner-ai.md`), First Partner Unlock (`../11-first-partner-unlock.md`), Effect System (`../tech/04-effect-system.md`), Tinkerer Prestige (SH-81)
 
 ## Problem
 
@@ -29,7 +26,7 @@ Stat sharing avoids both. Every investment in the player's own stats also invest
 
 The primary stat is `paddle_speed`, because it directly determines the partner's physical ceiling: which balls are reachable. Other stats (paddle size, reaction improvements) could be shared in future, but speed is the one that matters for the miss profile.
 
-The existing `share_stats_with_partner` outcome type in the effect system handles the mechanics. Double Knot (level 3) already uses this to share all player stat buffs within a cycle. The prestige reward provides the permanent baseline that carries across cycles.
+The existing `share_stats_with_partner` outcome type in the effect system handles the mechanics. The prestige reward provides the permanent baseline that carries across cycles.
 
 ### How it affects the AI
 

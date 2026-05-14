@@ -2,7 +2,7 @@
 
 A `court` item whose fixture is a paddle-driver. Takes over the court when the player goes idle.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Fixtures (`08-fixtures.md`), Venue (`08-venue.md`), Shop (`08-shop.md`), Idle Play (`10-idle-play.md`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Fixtures (`08-fixtures.md`), Venue (`08-venue.md`), Shop (`08-shop.md`), Idle Play (`10-idle-play.md`).
 
 ---
 

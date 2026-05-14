@@ -12,7 +12,6 @@ const TrainingBall: ItemDefinition = preload("res://resources/items/training_bal
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
-const DoubleKnot: ItemDefinition = preload("res://resources/items/double_knot.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
 
 const COURT_BOUNDS: Rect2 = Rect2(Vector2(-600, -400), Vector2(1200, 800))
@@ -37,7 +36,7 @@ func _setup_shop() -> void:
 	_shop_manager.items_world = ItemWorldState.new()
 	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
-	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
+	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
 	_shop_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_shop_manager)
 

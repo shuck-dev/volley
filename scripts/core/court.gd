@@ -199,7 +199,9 @@ func _deactivate_partner() -> void:
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
-	var base_points: float = _item_manager.get_stat(&"friendship_points_per_hit")
+	var base_points: float = Stats.resolve(
+		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+	)
 	var points_to_add: float = (base_points * rate) if _is_autoplay_active else base_points
 	_friendship_point_accumulator += points_to_add
 	var whole_points: int = int(_friendship_point_accumulator)

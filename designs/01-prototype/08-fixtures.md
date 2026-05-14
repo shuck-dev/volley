@@ -4,7 +4,7 @@ Court items (role = `court`) with a physical prop carry a `Fixture` resource. `F
 
 Ball items and equipment items do not use fixtures; their parent scenes (ball rack and court for balls; gear rack and paddle for equipment) host their props directly.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`08-roles.md`), Venue (`08-venue.md`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Venue (`08-venue.md`).
 
 ---
 
@@ -28,7 +28,7 @@ Runtime state, signals, and system overrides live on the prop scene's root scrip
 
 ## Position
 
-Court fixtures spawn at the next free marker under `Roles/Court` (see `08-roles.md`). `dock_marker` forces a named marker regardless of occupancy order.
+Court fixtures spawn at the next free marker under `Roles/Court` (see `tech/06-roles.md`). `dock_marker` forces a named marker regardless of occupancy order.
 
 ---
 

@@ -41,7 +41,9 @@ func before_each() -> void:
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
 	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
 
 
 func _purchase_cadence() -> void:
@@ -58,12 +60,12 @@ func _hit_until_max_speed() -> void:
 # --- on_max_speed_reached wiring ---
 func test_ceiling_raises_when_ball_reaches_max_speed() -> void:
 	_purchase_cadence()
-	var base_range: float = GameRules.base_stats[&"ball_speed_max_range"]
+	var base_range: float = GameRules.base.ball_speed_max_range
 
 	_hit_until_max_speed()
 
 	assert_gt(
-		_manager.get_stat(&"ball_speed_max_range"),
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
 		base_range,
 		"ball_speed_max_range should increase after ball hits ceiling",
 	)
@@ -77,7 +79,7 @@ func test_ceiling_raise_resets_on_miss() -> void:
 	_ball.missed.emit()
 
 	assert_eq(
-		_manager.get_stat(&"ball_speed_max_range"),
-		GameRules.base_stats[&"ball_speed_max_range"],
+		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
+		GameRules.base.ball_speed_max_range,
 		"ball_speed_max_range should reset to base after miss",
 	)

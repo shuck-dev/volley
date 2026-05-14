@@ -17,9 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GodotIQRuntime="*uid://5f55jejx8ekg"
-SaveManager="*uid://dk8i5dnut5fu0"
-ItemManager="*uid://csp168hb63ubx"
+GodotIQRuntime="*res://addons/godotiq/godotiq_runtime.gd"
+SaveManager="*res://scripts/progression/save_manager.gd"
+ItemManager="*res://scripts/items/item_manager.gd"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
 ConfigHotReload="*res://addons/config_hot_reload/config_hot_reload.gd"
 
