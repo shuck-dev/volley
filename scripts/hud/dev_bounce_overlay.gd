@@ -9,7 +9,6 @@ extends Node2D
 const MARKER_ARROW_LENGTH := 90.0
 const MARKER_ARROW_HEAD := 14.0
 const CONE_LENGTH := 140.0
-const CONE_COLOR := Color(1.0, 1.0, 0.4, 0.18)
 const CONE_EDGE_COLOR := Color(1.0, 1.0, 0.4, 0.55)
 const MARKER_DOT_COLOR := Color(1.0, 0.4, 0.4, 0.9)
 const MARKER_ARROW_COLOR := Color(0.4, 1.0, 0.6, 0.9)
@@ -18,7 +17,7 @@ var dev_visible: bool = false
 
 var _tracker: BallTracker
 var _ball_subscriptions: Dictionary = {}
-# struck_paddle -> { contact_y: float, target_angle: float, horizontal_sign: float }
+# Paddle-relative offset_norm so the marker tracks the paddle: { offset_norm, target_angle, horizontal_sign }.
 var _last_hits: Dictionary = {}
 
 
@@ -96,7 +95,11 @@ func _draw_cone(paddle: Paddle) -> void:
 	if return_sign == 0.0:
 		return_sign = -1.0
 
-	var floor_rad: float = deg_to_rad(BallEffectProcessor.MIN_ANGLE_OFF_HORIZONTAL_DEGREES)
+	# Dead-zone floor reads the same tunable as runtime so the inner V tracks the clamp as Josh tunes.
+	var min_degrees: float = Stats.resolve(
+		GameRules.paddle.paddle_bounce_min_angle_degrees, &"paddle_bounce_min_angle_degrees"
+	)
+	var floor_rad: float = deg_to_rad(min_degrees)
 	var ceil_rad: float = deg_to_rad(BallEffectProcessor.MAX_ANGLE_OFF_HORIZONTAL_DEGREES)
 	var requested_rad: float = deg_to_rad(max_degrees)
 	# Reachable cone half-angle is the requested max, clamped by the global floor/ceiling.
@@ -108,10 +111,6 @@ func _draw_cone(paddle: Paddle) -> void:
 	var floor_upper := Vector2(return_sign * cos(floor_rad), -sin(floor_rad)) * CONE_LENGTH
 	var floor_lower := Vector2(return_sign * cos(floor_rad), sin(floor_rad)) * CONE_LENGTH
 
-	# Wedge fill: shaded reachable arc.
-	draw_polygon(
-		PackedVector2Array([origin, origin + upper, origin + lower]), PackedColorArray([CONE_COLOR])
-	)
 	# Edge lines mark the ceiling; thin secondary lines mark the floor.
 	draw_line(origin, origin + upper, CONE_EDGE_COLOR, 1.5)
 	draw_line(origin, origin + lower, CONE_EDGE_COLOR, 1.5)
@@ -123,7 +122,10 @@ func _draw_last_hit(paddle: Paddle) -> void:
 	if not _last_hits.has(paddle):
 		return
 	var hit: Dictionary = _last_hits[paddle]
-	var world_contact := Vector2(paddle.global_position.x, hit["contact_y"])
+	# Recompute contact world position fresh each frame so the marker stays glued to the paddle.
+	var offset_norm: float = hit["offset_norm"]
+	var contact_y_world: float = paddle.global_position.y + offset_norm * paddle.get_half_height()
+	var world_contact := Vector2(paddle.global_position.x, contact_y_world)
 	var contact: Vector2 = _project_to_canvas(world_contact)
 	var target_angle: float = hit["target_angle"]
 	var horizontal_sign: float = hit["horizontal_sign"]
@@ -174,10 +176,8 @@ func _on_bounce_resolved(
 ) -> void:
 	if not is_instance_valid(struck_paddle):
 		return
-	var half_height: float = struck_paddle.get_half_height()
-	var contact_y: float = struck_paddle.global_position.y + offset_norm * half_height
 	_last_hits[struck_paddle] = {
-		"contact_y": contact_y,
+		"offset_norm": offset_norm,
 		"target_angle": target_angle,
 		"horizontal_sign": horizontal_sign,
 	}
