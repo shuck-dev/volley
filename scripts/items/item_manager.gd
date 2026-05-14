@@ -110,7 +110,7 @@ func get_level(item_key: String) -> int:
 ## Returns the current placement of an item. Defaults to STORED (on the rack).
 ## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
 func _get_placement(item_key: String) -> int:
-	if items_world != null and items_world.loose_in_venue.has(item_key):
+	if items_world.loose_in_venue.has(item_key):
 		return PlacementScript.LOOSE_IN_VENUE
 	return items_world.item_placements.get(item_key, PlacementScript.STORED)
 
@@ -122,7 +122,7 @@ func get_placement(item_key: String) -> int:
 
 ## True when a loose body for this item exists on the venue floor.
 func is_loose_in_venue(item_key: String) -> bool:
-	return items_world != null and items_world.loose_in_venue.has(item_key)
+	return items_world.loose_in_venue.has(item_key)
 
 
 ## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.

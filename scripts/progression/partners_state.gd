@@ -32,13 +32,15 @@ func apply_save_dict(data: Dictionary) -> void:
 
 static func _to_typed_string_name_array(raw: Array) -> Array[StringName]:
 	var typed: Array[StringName] = []
-	for value in raw:
+
+	for value: Variant in raw:
 		typed.append(StringName(str(value)))
 	return typed
 
 
 static func _to_typed_string_name_dict(raw: Dictionary) -> Dictionary[StringName, int]:
 	var typed: Dictionary[StringName, int] = {}
-	for key in raw:
+
+	for key: Variant in raw:
 		typed[StringName(str(key))] = int(raw[key])
 	return typed
