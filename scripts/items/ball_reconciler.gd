@@ -38,6 +38,7 @@ func _ready() -> void:
 	# disk write so balls reload where the player left them, not the spawn marker.
 	if _has_save_manager_autoload():
 		SaveManager.set_position_provider(collect_item_positions)
+		SaveManager.set_play_state_provider(collect_ball_play_states)
 
 	# Deferred so sibling listeners connect to ball_spawned before we emit.
 	call_deferred(&"adopt_pre_existing_balls")
@@ -64,6 +65,24 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 
 		positions[key] = ball.global_position
 	return positions
+
+
+## Snapshot of live ball PlayState enums keyed by item_key. Mirrors collect_item_positions;
+## STORED balls are reconstructed from the rack so they do not need a play-state entry.
+func collect_ball_play_states() -> Dictionary[String, int]:
+	var states: Dictionary[String, int] = {}
+	for key: String in _balls_by_key:
+		var raw: Variant = _balls_by_key[key]
+		if not is_instance_valid(raw):
+			continue
+
+		var ball: Ball = raw
+
+		if ball.play_state == Ball.PlayState.STORED:
+			continue
+
+		states[key] = int(ball.play_state)
+	return states
 
 
 ## Idempotent; safe to call repeatedly across scene reloads. Authored Balls live as
@@ -294,19 +313,38 @@ func _default_spawn_position() -> Vector2:
 
 
 ## Post-adoption placement: STORED snaps to its rack slot; other placements use the saved
-## position if SaveManager has one, otherwise the ball keeps its scene-marker position.
+## position AND play state if SaveManager has them, otherwise the ball keeps its scene state.
 func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
 	if _item_manager.get_placement(item_key) == Placement.STORED:
 		if ball_rack != null:
 			ball.global_position = ball_rack.get_slot_position_for(item_key)
+		ball.enter_stored()
 		return
 
 	if not _has_save_manager_autoload():
 		return
 	var saved: ItemWorldState = SaveManager.items
 
-	if saved != null and saved.ball_positions.has(item_key):
+	if saved == null:
+		return
+
+	if saved.ball_positions.has(item_key):
 		ball.global_position = saved.ball_positions[item_key]
+
+	if saved.ball_play_states.has(item_key):
+		_apply_saved_play_state(ball, saved.ball_play_states[item_key])
+
+
+func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
+	match play_state:
+		Ball.PlayState.OUT_REST:
+			ball.enter_out_rest()
+		Ball.PlayState.OUT_HELD:
+			ball.enter_out_held()
+		Ball.PlayState.PLAY_NORMAL, Ball.PlayState.PLAY_ARC:
+			ball.enter_play()
+		_:
+			pass
 
 
 ## Prefer the saved position so reloaded balls keep their last in-play spot.

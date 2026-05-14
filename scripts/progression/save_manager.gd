@@ -21,9 +21,10 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
-## Callable invoked just before each disk write so live runtime state (ball /
-## loose-body positions) is captured into the items slice. Empty when unset.
+## Callables invoked just before each disk write so live runtime state (ball
+## positions and play states) is captured into the items slice. Empty when unset.
 var _position_provider: Callable = Callable()
+var _play_state_provider: Callable = Callable()
 
 
 func _init(autosave_interval: float = 10.0) -> void:
@@ -105,24 +106,39 @@ func _dispatch_save_dict(data: Dictionary) -> void:
 			_slices[key].apply_save_dict({})
 
 
-## Registers a callable that returns a Dictionary[String, Vector2] of live
-## positions. The reconciler hooks in here so positions survive scene reload.
+## Registers a callable that returns a Dictionary[String, Vector2] of live ball positions.
 func set_position_provider(provider: Callable) -> void:
 	_position_provider = provider
 
 
+## Registers a callable that returns a Dictionary[String, int] of live ball PlayState enum ints.
+func set_play_state_provider(provider: Callable) -> void:
+	_play_state_provider = provider
+
+
 func _capture_live_positions() -> void:
-	if not _position_provider.is_valid():
-		return
-	var live: Variant = _position_provider.call()
-	if not live is Dictionary:
-		return
-	var typed: Dictionary[String, Vector2] = {}
-	for key: Variant in live:
-		var value: Variant = live[key]
-		if value is Vector2:
-			typed[str(key)] = value
-	items.ball_positions = typed
+	if _position_provider.is_valid():
+		var live: Variant = _position_provider.call()
+
+		if live is Dictionary:
+			var typed: Dictionary[String, Vector2] = {}
+
+			for key: Variant in live:
+				var value: Variant = live[key]
+
+				if value is Vector2:
+					typed[str(key)] = value
+			items.ball_positions = typed
+
+	if _play_state_provider.is_valid():
+		var live_states: Variant = _play_state_provider.call()
+
+		if live_states is Dictionary:
+			var typed_states: Dictionary[String, int] = {}
+
+			for key: Variant in live_states:
+				typed_states[str(key)] = int(live_states[key])
+			items.ball_play_states = typed_states
 
 
 ## Clears progression and blocks writes so the scene reload that follows cannot
