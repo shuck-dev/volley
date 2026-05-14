@@ -70,20 +70,7 @@ func _apply_loaded_content(content: String) -> bool:
 	if not parsed is Dictionary:
 		return false
 	var data: Dictionary = parsed
-	var loaded := ProgressionData.from_dict(data)
-	_progression.friendship_point_balance = loaded.friendship_point_balance
-	_progression.total_friendship_points_earned = loaded.total_friendship_points_earned
-	_progression.item_levels = loaded.item_levels
-	_progression.item_placements = loaded.item_placements
-	_progression.item_positions = loaded.item_positions
-	_progression.rack_slot_index_by_key = loaded.rack_slot_index_by_key
-	_progression.loose_in_venue = loaded.loose_in_venue
-	_progression.personal_volley_best = loaded.personal_volley_best
-	_progression.shop_unlocked = loaded.shop_unlocked
-	_progression.recruit_offered_partners = loaded.recruit_offered_partners
-	_progression.unlocked_partners = loaded.unlocked_partners
-	_progression.active_partner = loaded.active_partner
-	_progression.partner_volley_totals = loaded.partner_volley_totals
+	_progression.copy_from(ProgressionData.from_dict(data))
 	return true
 
 

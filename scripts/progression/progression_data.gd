@@ -20,6 +20,24 @@ var active_partner: StringName = &""
 var partner_volley_totals: Dictionary[StringName, int] = {}
 
 
+## Overwrites every field with the values from `other`. SaveManager uses this to rehydrate
+## the autoload instance without breaking references held by consumers.
+func copy_from(other: ProgressionData) -> void:
+	friendship_point_balance = other.friendship_point_balance
+	total_friendship_points_earned = other.total_friendship_points_earned
+	item_levels = other.item_levels
+	item_placements = other.item_placements
+	item_positions = other.item_positions
+	rack_slot_index_by_key = other.rack_slot_index_by_key
+	loose_in_venue = other.loose_in_venue
+	personal_volley_best = other.personal_volley_best
+	shop_unlocked = other.shop_unlocked
+	recruit_offered_partners = other.recruit_offered_partners
+	unlocked_partners = other.unlocked_partners
+	active_partner = other.active_partner
+	partner_volley_totals = other.partner_volley_totals
+
+
 ## Resets progression fields to defaults; caller decides whether to persist.
 func clear() -> void:
 	friendship_point_balance = 0
