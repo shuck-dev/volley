@@ -8,9 +8,7 @@ The paddle is a tool the player aims with. Where the ball touches the paddle dec
 
 ## Genre convention
 
-The reference games and tutorials surveyed (Pong 1972's 8-segment lookup, Breakout / Arkanoid family, MDN Phaser Breakout, CS50 Breakout, StudyPlan SDL2, MonoGame Breakernoid, Lethal League, Windjammers, Wii / Switch Sports tennis) all discard the incoming angle on paddle contact and compute the post-bounce direction from contact offset, player input at contact, or both. Pure mirror reflection is described in the source material as "boring" and "the most simplistic Pong", the design Alcorn explicitly moved away from in 1972. Background reading with citations: [`designs/research/paddle-bounce.md`](../../research/paddle-bounce.md).
-
-So Volley's bounce replaces the incoming angle. That's the natural shape; preserving the incoming angle is the unnatural one.
+Volley's bounce replaces the incoming angle rather than reflecting it. That's the natural shape for the genre; preserving the incoming angle is the unnatural one. See [`designs/research/paddle-bounce.md`](../../research/paddle-bounce.md) for the survey and citations.
 
 ## Geometry
 
