@@ -195,7 +195,7 @@ func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 
 	_ball.effect_processor.process_hit(_paddle)
 
-	# Downward paddle motion (positive y in screen space) → bounce angle positive y.
+	# Moving paddle forces hemisphere by motion direction: downward paddle → positive y bounce.
 	assert_gt(_ball.linear_velocity.y, 0.0, "Paddle moving down should bias bounce downward")
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
 	assert_gt(
@@ -203,6 +203,43 @@ func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 		MIN_ANGLE_DEG + 0.01,
 		"English should push beyond the centre-hit min-angle floor"
 	)
+
+
+func test_paddle_up_with_bottom_edge_hit_bounces_up() -> void:
+	# Regression: paddle motion direction wins; offset's hemisphere does not cancel english.
+	var english := 0.001
+	_build_with_stats(MAX_DEGREES, english)
+	_paddle.velocity = Vector2(0.0, -400.0)
+	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_lt(_ball.linear_velocity.y, 0.0, "Upward paddle motion forces bounce upward")
+	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
+	# Magnitude is |offset| + |english| (in degrees: 30 + ~22.9), clamped to MAX_ANGLE_DEG (87).
+	var expected_deg: float = MAX_DEGREES + rad_to_deg(absf(-400.0 * english))
+	expected_deg = clampf(expected_deg, MIN_ANGLE_DEG, MAX_ANGLE_DEG)
+	assert_almost_eq(rad_to_deg(angle), expected_deg, 0.5)
+
+
+func test_paddle_down_with_top_edge_hit_bounces_down() -> void:
+	# Regression mirror: paddle moving down + top-edge contact bounces downward.
+	var english := 0.001
+	_build_with_stats(MAX_DEGREES, english)
+	_paddle.velocity = Vector2(0.0, 400.0)
+	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
+	_ball.linear_velocity = Vector2(100, 0)
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_gt(_ball.linear_velocity.y, 0.0, "Downward paddle motion forces bounce downward")
+	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
+	var expected_deg: float = MAX_DEGREES + rad_to_deg(absf(400.0 * english))
+	expected_deg = clampf(expected_deg, MIN_ANGLE_DEG, MAX_ANGLE_DEG)
+	assert_almost_eq(rad_to_deg(angle), expected_deg, 0.5)
 
 
 func test_max_angle_clamp_caps_extreme_english_plus_offset() -> void:

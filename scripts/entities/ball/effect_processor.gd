@@ -121,9 +121,13 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	)
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
 	var incoming_y_sign: float = signf(ball.linear_velocity.y)
-	var target_angle: float = _clamp_off_horizontal_and_vertical(
-		offset_angle + english_angle, incoming_y_sign
-	)
+	# Moving paddle forces the bounce into its motion hemisphere so the english never cancels offset.
+	var blended_angle: float
+	if not is_zero_approx(english_angle):
+		blended_angle = (absf(offset_angle) + absf(english_angle)) * signf(english_angle)
+	else:
+		blended_angle = offset_angle
+	var target_angle: float = _clamp_off_horizontal_and_vertical(blended_angle, incoming_y_sign)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 	ball.linear_velocity = direction * ball.speed
 	bounce_resolved.emit(struck_paddle, offset_norm, target_angle, incoming_y_sign, horizontal_sign)
