@@ -18,7 +18,7 @@ static func predict_intercept(
 	if horizontal_speed < 1.0:
 		return ball_position.y
 
-	var arena_half: float = GameRules.base_stats[&"arena_height"] / 2.0
+	var arena_half: float = GameRules.base.arena_height / 2.0
 	var time_to_reach: float = abs(target_x - ball_position.x) / horizontal_speed
 	var intercept_y: float = _simulate_intercept_y(
 		ball_position.y, ball_velocity.y, bound_y, gravity, time_to_reach

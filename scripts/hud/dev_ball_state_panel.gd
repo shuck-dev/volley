@@ -19,26 +19,34 @@ func _ready() -> void:
 	_add_header()
 
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
-	if _tracker == null:
-		_tracker = await _await_tracker()
 
-	if _tracker == null:
+	if _tracker != null:
+		_attach_to_tracker()
+	else:
+		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
+
+
+func _exit_tree() -> void:
+	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
+		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+
+
+func _on_node_added_waiting_for_tracker(node: Node) -> void:
+	var tracker := node as BallTracker
+
+	if tracker == null:
 		return
+	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+	_tracker = tracker
+	_attach_to_tracker()
 
+
+func _attach_to_tracker() -> void:
 	_tracker.ball_added.connect(_on_ball_added)
 	_tracker.ball_removed.connect(_on_ball_removed)
 
 	for ball in _tracker.get_balls():
 		_on_ball_added(ball)
-
-
-func _await_tracker() -> BallTracker:
-	while is_inside_tree():
-		var found := get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
-		if found != null:
-			return found
-		await get_tree().process_frame
-	return null
 
 
 func _gui_input(event: InputEvent) -> void:

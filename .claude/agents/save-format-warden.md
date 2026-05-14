@@ -50,4 +50,4 @@ Return a structured verdict to the dispatcher. Three fields:
 
 Never propose the `approved-human` label. That gate is Josh's alone.
 
-Verdict surface per `ai/skills/minions/reviewers.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.
+Verdict surface per `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.

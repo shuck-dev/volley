@@ -42,7 +42,11 @@ func before_each() -> void:
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
 
-	_game.volley_count_changed.connect(func(count: int) -> void: _last_volley_count = count)
+	_game.volley_count_changed.connect(_on_volley_count_changed)
+
+
+func _on_volley_count_changed(count: int) -> void:
+	_last_volley_count = count
 
 
 func _hit() -> void:
@@ -135,8 +139,10 @@ func test_activate_partner_registers_effects() -> void:
 	var martha: Resource = MARTHA_RESOURCE
 	_item_manager._effect_manager.register_source(martha, 1)
 
-	var fp_stat: float = _item_manager.get_stat(&"friendship_points_per_hit")
-	var base_fp: float = GameRules.base_stats[&"friendship_points_per_hit"]
+	var fp_stat: float = Stats.resolve(
+		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+	)
+	var base_fp: float = GameRules.base.friendship_points_per_hit
 
 	assert_almost_eq(fp_stat, base_fp * 1.25, 0.001)
 
@@ -146,7 +152,9 @@ func test_deactivate_partner_unregisters_effects() -> void:
 	_item_manager._effect_manager.register_source(martha, 1)
 	_item_manager._effect_manager.unregister_source(martha)
 
-	var fp_stat: float = _item_manager.get_stat(&"friendship_points_per_hit")
-	var base_fp: float = GameRules.base_stats[&"friendship_points_per_hit"]
+	var fp_stat: float = Stats.resolve(
+		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+	)
+	var base_fp: float = GameRules.base.friendship_points_per_hit
 
 	assert_almost_eq(fp_stat, base_fp, 0.001)

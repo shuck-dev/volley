@@ -34,3 +34,11 @@ Assert on externally visible outcomes: emitted signals with their parameters, sa
 Keep each scenario focused on one flow. If the ticket describes two flows that happen to share setup, write two scenarios that share a helper rather than one test that branches. Name the file and the tests after the scenario in plain words: `test_rally_win_updates_score_and_streak.gd` beats a cryptic module name.
 
 After writing, run the GUT integration target, iterate until green, then run the pre-commit hooks. Report the scenario file, the systems it crosses, the outcomes it asserts on, and any stub you inserted with its justification.
+
+## Bash discipline
+
+Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.
+
+## Style discipline
+
+Read `ai/skills/minions/implementer-nits.md` before writing or accepting GDScript. Blank-line-before-`if`, comment policy, naming, exports, resources, class-name async cache. The rules reviewers flag round after round, consolidated.

@@ -47,12 +47,14 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .godot
-          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', 'assets/**', 'art/**', 'resources/**') }}
-          restore-keys: |
-            godot-import-${{ env.GODOT_VERSION }}-
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', '**/*.tscn', '**/*.tres', '**/*.gd', '**/*.uid', 'assets/**', 'art/**', 'resources/**') }}
 
       - name: Import Project
-        run: godot --headless --path . --import
+        # First pass populates the UID cache from .import files; second pass uses it
+        # so subsequent loads do not fall back to text paths and emit UID warnings.
+        run: |
+          godot --headless --path . --import
+          godot --headless --path . --import
 
       - name: Run Tests
         env:
@@ -61,6 +63,43 @@ jobs:
           mkdir -p logs
           set -o pipefail
           godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit 2>&1 | tee test_output.txt
+
+      - name: Leak gate
+        run: |
+          set -e
+          sed -E 's/\x1b\[[0-9;]*m//g' test_output.txt > test_output.plain
+          fail=0
+          # Filter cold-cache UID warning class (godot#101677, #115205, #109636);
+          # see ai/scratchpads/godot-ci-uid-cache.md. WARNING pattern is unique
+          # enough to filter unconditionally. Failed-loading-resource ERROR is
+          # filtered only when its path matches a UID warning seen earlier in the
+          # run; standalone Failed-loading ERRORs still fail the gate.
+          warnings=$(awk '
+          {
+            if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
+              cold_paths[m[1]] = 1
+              next
+            }
+            if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
+              if (m[1] in cold_paths) next
+              print NR ":" $0
+              next
+            }
+            if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
+          }' test_output.plain || true)
+          if [ -n "$warnings" ]; then
+            echo "::error::Warnings or errors in test output"
+            printf '%s\n' "$warnings" | head -30
+            fail=1
+          fi
+          if grep -qE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain; then
+            echo "::error::Per-test orphans detected; see ai/scratchpads/gut-orphans-research.md"
+            grep -nE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain | head -30
+            fail=1
+          fi
+          if [ "$fail" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Coverage Report
         if: always()

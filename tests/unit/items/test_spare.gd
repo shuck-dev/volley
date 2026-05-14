@@ -28,6 +28,6 @@ func test_adds_kit_slot_on_purchase() -> void:
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("spare")
 	assert_eq(
-		_manager.get_stat(&"kit_slots"),
-		GameRules.base_stats[&"kit_slots"] + 1.0,
+		Stats.resolve(GameRules.base.kit_slots, &"kit_slots", _manager),
+		GameRules.base.kit_slots + 1.0,
 	)

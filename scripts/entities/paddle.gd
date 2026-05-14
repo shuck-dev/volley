@@ -22,8 +22,9 @@ var _sprite_natural_height := 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"paddles")
 	_lane_x = position.x
-	_paddle_speed = _get_stat(&"paddle_speed")
+	_paddle_speed = _resolved_paddle_speed()
 	_bind_stat_updates()
 
 	if collision != null:
@@ -59,20 +60,28 @@ func drive(velocity_y: float) -> void:
 
 
 func clamp_to_arena() -> void:
-	var paddle_half: float = 0.0
-	if _collision_shape != null:
-		paddle_half = _collision_shape.size.y / 2.0
-	position.y = maxf(position.y, PADDLE_TOP_Y + paddle_half)
+	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
 
 
 func get_speed() -> float:
 	return _paddle_speed
 
 
-func _get_stat(key: StringName) -> float:
+# Half of the collider's vertical extent; the normalised denominator for contact-offset return angle.
+func get_half_height() -> float:
+	if _collision_shape == null:
+		return 0.0
+	return _collision_shape.size.y * 0.5
+
+
+func _resolved_paddle_speed() -> float:
+	return _resolve(GameRules.paddle.paddle_speed, &"paddle_speed")
+
+
+func _resolve(base: float, key: StringName) -> float:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	return _item_manager.get_stat(key)
+	return Stats.resolve(base, key, _item_manager)
 
 
 func _bind_stat_updates() -> void:
@@ -83,16 +92,17 @@ func _bind_stat_updates() -> void:
 
 func _on_item_level_changed(_item_key: String) -> void:
 	_apply_size()
-	_paddle_speed = _get_stat(&"paddle_speed")
+	_paddle_speed = _resolved_paddle_speed()
 
 
 func _apply_size() -> void:
 	if _collision_shape == null:
 		return
 
-	var arena_height: float = _get_stat(&"arena_height")
-	var paddle_size_min: float = _get_stat(&"paddle_size_min")
-	var new_size: float = clampf(_get_stat(&"paddle_size"), paddle_size_min, arena_height)
+	var arena_height: float = _resolve(GameRules.base.arena_height, &"arena_height")
+	var paddle_size_min: float = _resolve(GameRules.paddle.paddle_size_min, &"paddle_size_min")
+	var paddle_size: float = _resolve(GameRules.paddle.paddle_size, &"paddle_size")
+	var new_size: float = clampf(paddle_size, paddle_size_min, arena_height)
 
 	_collision_shape.size.y = new_size
 

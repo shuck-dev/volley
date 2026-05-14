@@ -57,3 +57,7 @@ Before starting, read `ai/godot-quirks.md`. Known engine traps live there; rule 
 ## Output
 
 Write the diagnosis to `ai/swarm/tasks/{bug-id}-cause.md`: symptom, ruled-out quirks, cause, suggested fix, adjacent defects. Append-only. The impl agent reads this before touching code.
+
+## Bash discipline
+
+Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.

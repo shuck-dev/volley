@@ -12,6 +12,7 @@ func _ready() -> void:
 
 	if dev_menu != null and dev_menu.has_method("add_overlay_toggle"):
 		dev_menu.add_overlay_toggle("Debug overlays", false, _on_debug_overlay_toggled)
+		dev_menu.add_overlay_toggle("Cone follows last hit", false, _on_cone_follow_toggled)
 
 	_apply_debug_overlay(false)
 
@@ -31,6 +32,13 @@ func _on_shop_unlocked_changed(is_unlocked: bool) -> void:
 
 func _on_debug_overlay_toggled(pressed: bool) -> void:
 	_apply_debug_overlay(pressed)
+
+
+func _on_cone_follow_toggled(pressed: bool) -> void:
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay is DevBounceOverlay:
+			overlay.follow_last_hit = pressed
+			overlay.queue_redraw()
 
 
 func _apply_debug_overlay(pressed: bool) -> void:

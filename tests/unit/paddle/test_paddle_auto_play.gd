@@ -13,7 +13,7 @@ var _config: PaddleAIConfig
 
 static func ball_below_paddle() -> float:
 	# Quarter-arena below paddle: always in-arena, always saturates speed.
-	return GameRules.base_stats[&"arena_height"] * 0.25
+	return GameRules.base.arena_height * 0.25
 
 
 func before_each() -> void:

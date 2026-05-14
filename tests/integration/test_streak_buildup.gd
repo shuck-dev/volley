@@ -54,7 +54,9 @@ func before_each() -> void:
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
 	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
 
 
 func test_ball_speed_increases_across_three_hits() -> void:
@@ -65,10 +67,19 @@ func test_ball_speed_increases_across_three_hits() -> void:
 	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_ball._on_body_entered(_paddle)
 	var effective_max: float = (
-		_manager.get_stat(&"ball_speed_min") + _manager.get_stat(&"ball_speed_max_range")
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
 	)
 	var expected := minf(
-		_manager.get_stat(&"ball_speed_min") + 3.0 * _manager.get_stat(&"ball_speed_increment"),
+		(
+			Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+			+ (
+				3.0
+				* Stats.resolve(
+					GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+				)
+			)
+		),
 		effective_max
 	)
 	assert_almost_eq(_ball.speed, expected, 0.01)

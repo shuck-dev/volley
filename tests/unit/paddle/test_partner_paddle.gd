@@ -55,7 +55,7 @@ func _create_partner_paddle() -> PartnerPaddle:
 # --- speed uses base stats ---
 func test_speed_equals_base_stat() -> void:
 	var paddle := _create_partner_paddle()
-	var expected: float = GameRules.base_stats[&"paddle_speed"]
+	var expected: float = GameRules.paddle.paddle_speed
 	assert_almost_eq(paddle.get_speed(), expected, 0.01)
 
 
@@ -72,7 +72,7 @@ func test_speed_unchanged_after_player_purchases_ankle_weights() -> void:
 # --- size uses base stats ---
 func test_size_equals_base_stat() -> void:
 	var paddle := _create_partner_paddle()
-	var expected: float = GameRules.base_stats[&"paddle_size"]
+	var expected: float = GameRules.paddle.paddle_size
 	assert_almost_eq(paddle.collision.shape.size.y, expected, 0.01)
 
 

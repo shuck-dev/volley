@@ -4,8 +4,9 @@ extends Paddle
 @export var controller: PartnerAIController
 
 
-func _get_stat(key: StringName) -> float:
-	return GameRules.base_stats[key]
+# Partners use unmodified base values; ItemManager modifiers belong to the player paddle.
+func _resolve(base: float, _key: StringName) -> float:
+	return base
 
 
 func _bind_stat_updates() -> void:

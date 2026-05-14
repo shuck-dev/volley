@@ -56,7 +56,9 @@ func before_each() -> void:
 	add_child_autofree(_game)
 	_game.volley_count_changed.connect(func(count): _last_count = count)
 	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(_manager.get_stat(&"ball_speed_min"), 0.0)
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
 
 
 func _build_streak(hits: int) -> void:
@@ -69,7 +71,9 @@ func _build_streak(hits: int) -> void:
 func test_ball_speed_resets_after_miss() -> void:
 	_build_streak(2)
 	_ball.missed.emit()
-	assert_almost_eq(_ball.speed, _manager.get_stat(&"ball_speed_min"), 0.01)
+	assert_almost_eq(
+		_ball.speed, Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.01
+	)
 
 
 func test_hud_resets_after_miss() -> void:

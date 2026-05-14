@@ -52,9 +52,14 @@ func _ready() -> void:
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
-	min_speed = _item_manager.get_stat(&"ball_speed_min")
-	max_speed = min_speed + _item_manager.get_stat(&"ball_speed_max_range")
-	speed_increment = _item_manager.get_stat(&"ball_speed_increment")
+	min_speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager)
+	max_speed = (
+		min_speed
+		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _item_manager)
+	)
+	speed_increment = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _item_manager
+	)
 
 	_setup_effect_processor()
 	_ball_setup()
@@ -129,7 +134,7 @@ func _on_body_entered(body: Node) -> void:
 		var hit_registered: bool = body.on_ball_hit()
 		if hit_registered:
 			increase_speed()
-		effect_processor.process_hit()
+		effect_processor.process_hit(body as Paddle)
 
 
 func register_miss_zone(zone: MissZone) -> void:
