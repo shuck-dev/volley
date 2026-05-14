@@ -38,3 +38,7 @@ Cover the happy path, at least one failure or empty-state path, and any edge cas
 Name tests and variables in full words. `test_score_emits_on_rally_won` beats `test_score_1`; `spawned_ball` beats `b`. Keep each test narrow: one behaviour per test, arranged-acted-asserted in that order, no shared mutable state between tests in the file.
 
 After writing, run the repo's GUT command and iterate until green, then run the pre-commit hooks so `gdlint` and friends catch what the runner misses. Report the test file path, the behaviours covered, and anything you chose not to cover with a one-line reason.
+
+## Bash discipline
+
+Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.

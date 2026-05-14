@@ -122,3 +122,7 @@ When the PR is open and auto-merge queued, report:
 - One paragraph summarising what shipped and why.
 - Anything you chose to defer with a one-line reason and a follow-up issue if appropriate.
 - The worktree path so the organiser can clean it up after merge.
+
+## Bash discipline
+
+Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.
