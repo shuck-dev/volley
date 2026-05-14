@@ -16,7 +16,7 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager.state = ItemWorldState.new()
+	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([Cadence])
@@ -85,7 +85,7 @@ func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
 	# SH-288 multi-ball: with two balls at different speeds, the bar reads the highest.
 	# Use a real reconciler so `ball_added` drives attachment, mirroring production wiring.
 	var multi_manager: Node = ItemManagerScript.new()
-	multi_manager.state = ItemWorldState.new()
+	multi_manager.state = ItemState.new()
 	multi_manager.economy = EconomyState.new()
 	multi_manager._effect_manager = EffectManager.new()
 	multi_manager.items.assign([Cadence])

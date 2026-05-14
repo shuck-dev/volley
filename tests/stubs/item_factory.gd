@@ -13,7 +13,7 @@ static func create_manager(
 ) -> Node:
 	var item := create(item_key, stat_key, operation, value)
 	var manager: Node = ItemManagerScript.new()
-	manager.state = ItemWorldState.new()
+	manager.state = ItemState.new()
 	manager.economy = EconomyState.new()
 	manager._effect_manager = EffectManager.new()
 	manager.items.assign([item])

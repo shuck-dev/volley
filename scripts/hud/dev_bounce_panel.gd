@@ -1,9 +1,7 @@
 class_name DevBouncePanel
 extends VBoxContainer
 
-## Debug-only numeric readout: current paddle-bounce tunables plus the last
-## resolved bounce parameters. Subscribes to each ball's `bounce_resolved` to
-## echo per-hit values.
+## Debug numeric readout of paddle-bounce tunables plus per-hit resolved values.
 
 var _drag := DraggableBehavior.new()
 var _tracker: BallTracker

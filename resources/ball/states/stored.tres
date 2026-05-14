@@ -1,11 +1,9 @@
-[gd_resource type="Resource" script_class="BallStateConfig" load_steps=2 format=3 uid="uid://bballstatestor0"]
+[gd_resource type="Resource" script_class="BallStateConfig" format=3 uid="uid://d2dmpxm2fqy48"]
 
-[ext_resource type="Script" path="res://scripts/entities/ball/ball_state_config.gd" id="1"]
+[ext_resource type="Script" uid="uid://crmt1lslcq7mq" path="res://scripts/entities/ball/ball_state_config.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
 freeze = true
 collision_layer = 0
 collision_mask = 0
-gravity_scale = 0.0
-physics_material_override = null

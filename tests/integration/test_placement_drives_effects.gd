@@ -11,7 +11,7 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager.state = ItemWorldState.new()
+	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
@@ -165,7 +165,7 @@ func test_level_up_on_racked_item_does_not_start_effects() -> void:
 # Placement is part of the saved progression: after a round-trip through
 func test_save_and_reload_preserves_placement_and_effects() -> void:
 	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
-	_manager.state = ItemWorldState.new()
+	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager.economy.friendship_point_balance = 100000
 	_manager._register_existing_items()
@@ -184,10 +184,10 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 
 	var saved_blob: String = JSON.stringify(_manager.state.to_save_dict())
 
-	# Fresh ItemManager + fresh ItemWorldState, hydrated from the saved blob.
+	# Fresh ItemManager + fresh ItemState, hydrated from the saved blob.
 	# Simulates a scene reload / process restart.
 	var reloaded: Node = load("res://scripts/items/item_manager.gd").new()  # gdlint:ignore = duplicated-load
-	reloaded.state = ItemWorldState.new()
+	reloaded.state = ItemState.new()
 	reloaded.state.apply_save_dict(JSON.parse_string(saved_blob))
 	reloaded.economy = EconomyState.new()
 	reloaded._effect_manager = EffectManager.new()

@@ -31,7 +31,7 @@ var _drag: BallDragController
 
 func _setup_shop() -> void:
 	_shop_manager = ItemManagerScript.new()
-	_shop_manager.state = ItemWorldState.new()
+	_shop_manager.state = ItemState.new()
 	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
 	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
@@ -74,7 +74,7 @@ func _release_event_at(position: Vector2) -> InputEventMouseButton:
 
 func _setup_ball_drag() -> void:
 	_manager = ItemManagerScript.new()
-	_manager.state = ItemWorldState.new()
+	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]

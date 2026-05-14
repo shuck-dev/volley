@@ -1,9 +1,7 @@
 class_name DraggableBehavior
 extends RefCounted
 
-## Mixin: call `try_start(control, event)` from `_gui_input` to begin a drag,
-## and `update(control, event)` from `_input` so motion and release track the
-## cursor even when it outruns the control's bounds.
+## Drag mixin; `update` must run from `_input` so release tracks beyond control bounds.
 
 var _dragging: bool = false
 var _drag_offset: Vector2 = Vector2.ZERO

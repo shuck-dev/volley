@@ -323,7 +323,7 @@ func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
 
 	if not _has_save_manager_autoload():
 		return
-	var saved: ItemWorldState = SaveManager.items
+	var saved: ItemState = SaveManager.items
 
 	if saved == null:
 		return
@@ -356,7 +356,7 @@ func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
 func _spawn_position_for(item_key: String) -> Vector2:
 	if not _has_save_manager_autoload():
 		return _default_spawn_position()
-	var state: ItemWorldState = SaveManager.items
+	var state: ItemState = SaveManager.items
 	if state != null and state.ball_positions.has(item_key):
 		return state.ball_positions[item_key]
 	return _default_spawn_position()

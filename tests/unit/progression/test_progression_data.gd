@@ -36,18 +36,18 @@ func test_economy_clear() -> void:
 	assert_eq(economy.total_friendship_points_earned, 0)
 
 
-# --- ItemWorldState ---
+# --- ItemState ---
 func test_items_default_values() -> void:
-	var items := ItemWorldState.new()
+	var items := ItemState.new()
 	assert_eq(items.item_levels, {} as Dictionary[String, int])
 	assert_eq(items.item_placements, {} as Dictionary[String, int])
 
 
 func test_items_round_trip() -> void:
-	var items := ItemWorldState.new()
+	var items := ItemState.new()
 	items.item_levels["paddle_size"] = 2
 	items.item_placements["paddle_size"] = 1
-	var restored := ItemWorldState.new()
+	var restored := ItemState.new()
 	restored.apply_save_dict(items.to_save_dict())
 	assert_eq(restored.item_levels, {"paddle_size": 2})
 	assert_eq(restored.item_placements, {"paddle_size": 1})

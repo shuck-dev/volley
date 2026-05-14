@@ -12,10 +12,7 @@ func _init(path: String = "user://save_data.json") -> void:
 	_path = path
 
 
-## Atomic write with rolling backups. The temp file is fully written and flushed,
-## the primary is parked to an incoming slot, the new save is committed, and only
-## then does the backup chain rotate: a failure before commit leaves the previous
-## save and all existing backups untouched.
+## Atomic write with rolling backups; pre-commit failure leaves prior save and backups intact.
 func write(content: String) -> bool:
 	var temp_path: String = _path + TEMP_SUFFIX
 	var file := FileAccess.open(temp_path, FileAccess.WRITE)

@@ -25,7 +25,7 @@ func before_each() -> void:
 	_removed_count = 0
 
 	_manager = ItemManagerScript.new()
-	_manager.state = ItemWorldState.new()
+	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]

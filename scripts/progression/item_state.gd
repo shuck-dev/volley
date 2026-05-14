@@ -1,4 +1,4 @@
-class_name ItemWorldState
+class_name ItemState
 extends RefCounted
 
 var item_levels: Dictionary[String, int] = {}

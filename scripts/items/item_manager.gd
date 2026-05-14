@@ -19,7 +19,7 @@ var items: Array[ItemDefinition] = [
 	preload("res://resources/items/wrist_brace.tres"),
 ]
 
-var state: ItemWorldState
+var state: ItemState
 var economy: EconomyState
 var _effect_manager: EffectManager
 

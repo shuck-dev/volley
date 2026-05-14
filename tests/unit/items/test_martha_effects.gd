@@ -20,7 +20,7 @@ func before_each() -> void:
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager.state = ItemWorldState.new()
+	_item_manager.state = ItemState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	add_child_autofree(_item_manager)

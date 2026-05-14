@@ -245,7 +245,7 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 ) -> void:
 	# Fresh manager with both ball items; no friendship points needed — we set placements directly.
 	var saved_manager: Node = ItemManagerScript.new()
-	saved_manager.state = ItemWorldState.new()
+	saved_manager.state = ItemState.new()
 	saved_manager.economy = EconomyState.new()
 	saved_manager._effect_manager = EffectManager.new()
 	var base_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
