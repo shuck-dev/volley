@@ -11,7 +11,8 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([preload("res://resources/items/cadence.tres")])
 	add_child_autofree(_manager)
@@ -44,7 +45,7 @@ func before_each() -> void:
 
 
 func _purchase_cadence() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("cadence")
 
 

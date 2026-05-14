@@ -296,9 +296,9 @@ func _default_spawn_position() -> Vector2:
 func _spawn_position_for(item_key: String) -> Vector2:
 	if not _has_save_manager_autoload():
 		return _default_spawn_position()
-	var progression: ProgressionData = SaveManager.get_progression_data()
-	if progression != null and progression.item_positions.has(item_key):
-		return progression.item_positions[item_key]
+	var items_world: ItemWorldState = SaveManager.items_world
+	if items_world != null and items_world.item_positions.has(item_key):
+		return items_world.item_positions[item_key]
 	return _default_spawn_position()
 
 

@@ -29,20 +29,20 @@ class TestShopItemContract:
 		assert_false(bare_item.can_be_owned())
 
 	func test_can_be_owned_returns_false_when_balance_too_low() -> void:
-		_item_manager._progression.friendship_point_balance = 0
+		_item_manager.economy.friendship_point_balance = 0
 		assert_false(_item.can_be_owned())
 
 	func test_can_be_owned_returns_true_when_affordable_and_unowned() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		assert_true(_item.can_be_owned())
 
 	func test_can_be_owned_returns_false_when_already_owned() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_false(_item.can_be_owned())
 
 	func test_can_be_owned_returns_false_after_take() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_false(_item.can_be_owned())
 
@@ -50,29 +50,29 @@ class TestShopItemContract:
 		assert_false(_item.is_owned())
 
 	func test_is_owned_returns_true_after_take() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_true(_item.is_owned())
 
 	func test_can_be_dragged_mirrors_can_be_owned_when_not_owned() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		assert_true(_item.can_be_dragged())
 
 	func test_can_be_dragged_returns_false_when_unaffordable_and_not_owned() -> void:
-		_item_manager._progression.friendship_point_balance = 0
+		_item_manager.economy.friendship_point_balance = 0
 		assert_false(_item.can_be_dragged())
 
 	func test_can_be_dragged_returns_true_when_owned_even_if_unaffordable() -> void:
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
-		_item_manager._progression.friendship_point_balance = 0
+		_item_manager.economy.friendship_point_balance = 0
 		assert_true(_item.can_be_dragged())
 
 	func test_purchase_hides_case_overlay() -> void:
 		# After SH-258 the shop item is a plain Node2D, so the freeze state on a
 		# RigidBody2D no longer applies. The case overlay still flips off when
 		# the player owns the item.
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_false(_item.case_overlay.visible)
 
@@ -86,7 +86,7 @@ class TestShopItemArt:
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
 		_item_manager.items.assign([GripTape])
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
 		add_child_autofree(_item)
@@ -107,7 +107,7 @@ class TestShopItemInputRelease:
 
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		var definition: ItemDefinition = _item_manager.items[0]
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
@@ -166,7 +166,7 @@ class TestShopItemOutsideShopReleaseRoutesThroughController:
 
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
-		_item_manager._progression.friendship_point_balance = 1000
+		_item_manager.economy.friendship_point_balance = 1000
 		var definition: ItemDefinition = _item_manager.items[0]
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
@@ -218,7 +218,7 @@ class TestShopItemInsideShopDrag:
 	func _build_item(definition: ItemDefinition) -> ShopItem:
 		_item_manager = ItemFactory.create_manager(self)
 		_item_manager.items.assign([definition])
-		_item_manager._progression.friendship_point_balance = 10000
+		_item_manager.economy.friendship_point_balance = 10000
 		var item: ShopItem = ShopItemScene.instantiate()
 		item._item_manager = _item_manager
 		item.tuning = ShopDragTuningScript.new()
@@ -316,7 +316,7 @@ class TestShopItemNotifyBodySettled:
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
 		_item_manager.items.assign([GripTape])
-		_item_manager._progression.friendship_point_balance = 10000
+		_item_manager.economy.friendship_point_balance = 10000
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
 		add_child_autofree(_item)
@@ -350,7 +350,7 @@ class TestShopItemNotifyBodySettled:
 
 	func test_settle_outside_shop_when_unaffordable_frees_body_and_restores_slot() -> void:
 		# Drain FP after the gesture started so the player can no longer afford the item.
-		_item_manager._progression.friendship_point_balance = 0
+		_item_manager.economy.friendship_point_balance = 0
 		var body: HeldBody = _make_body()
 		_item.notify_body_settled(body, Vector2(9999, 9999))
 		assert_eq(

@@ -24,10 +24,11 @@ var _gear_rack: Node2D
 
 func before_each() -> void:
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager._progression = ProgressionData.new()
+	_item_manager.items_world = ItemWorldState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence, DoubleKnot])
-	_item_manager._progression.friendship_point_balance = 10000
+	_item_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()

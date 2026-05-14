@@ -58,7 +58,7 @@ func before_each() -> void:
 	equipment_def.at_rest_shape = gear_shape
 	var typed_items: Array[ItemDefinition] = [ball_def, equipment_def]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 
 	_rack = _make_rack(_manager)
 	# Rack drop area at -1000,0 with a 300x200 footprint; comfortably away from court/venue.

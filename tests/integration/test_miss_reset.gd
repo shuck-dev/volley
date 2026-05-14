@@ -12,7 +12,8 @@ var _last_count := -1
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager

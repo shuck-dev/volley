@@ -10,7 +10,7 @@ class TestPartnerRecruit:
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
 		_progression_manager = ProgressionManagerFactory.create_manager(self, _item_manager)
-		_martha = _progression_manager.partners[0]
+		_martha = _progression_manager.partners_roster[0]
 
 	func test_partner_not_unlocked_by_default() -> void:
 		assert_false(_progression_manager.is_partner_unlocked(&"martha"))
@@ -36,12 +36,12 @@ class TestPartnerRecruit:
 	func test_recruit_sets_active_partner() -> void:
 		_item_manager.add_friendship_points(_martha.unlock_cost)
 		_progression_manager.recruit_partner(&"martha")
-		assert_eq(_item_manager._progression.active_partner, &"martha")
+		assert_eq(_progression_manager.partners.active_partner, &"martha")
 
 	func test_recruit_adds_to_unlocked_partners() -> void:
 		_item_manager.add_friendship_points(_martha.unlock_cost)
 		_progression_manager.recruit_partner(&"martha")
-		assert_true(&"martha" in _item_manager._progression.unlocked_partners)
+		assert_true(&"martha" in _progression_manager.partners.unlocked_partners)
 
 	func test_recruit_emits_partner_recruited() -> void:
 		_item_manager.add_friendship_points(_martha.unlock_cost)
@@ -71,7 +71,7 @@ class TestPartnerRecruit:
 
 	func test_threshold_persists_recruit_offered() -> void:
 		_item_manager.add_friendship_points(_martha.unlock_threshold)
-		assert_true(&"martha" in _item_manager._progression.recruit_offered_partners)
+		assert_true(&"martha" in _progression_manager.partners.recruit_offered_partners)
 
 	func test_recruit_available_not_emitted_after_recruited() -> void:
 		_item_manager.add_friendship_points(_martha.unlock_cost)
@@ -86,18 +86,24 @@ class TestPartnerRecruitPersistence:
 
 	func test_deferred_recruit_available_emitted_for_threshold_met_save() -> void:
 		var item_manager: Node = ItemFactory.create_manager(self)
-		item_manager._progression.total_friendship_points_earned = 200
-		item_manager._progression.recruit_offered_partners = [&"martha"] as Array[StringName]
-		var progression_manager: Node = ProgressionManagerFactory.create_manager(self, item_manager)
+		item_manager.economy.total_friendship_points_earned = 200
+		var partners := PartnersState.new()
+		partners.recruit_offered_partners = [&"martha"] as Array[StringName]
+		var progression_manager: Node = ProgressionManagerFactory.create_manager(
+			self, item_manager, {"partners": partners}
+		)
 		watch_signals(progression_manager)
 		await get_tree().process_frame
 		assert_signal_emitted(progression_manager, "partner_recruit_available")
 
 	func test_deferred_recruit_available_not_emitted_when_already_recruited() -> void:
 		var item_manager: Node = ItemFactory.create_manager(self)
-		item_manager._progression.total_friendship_points_earned = 200
-		item_manager._progression.unlocked_partners = [&"martha"] as Array[StringName]
-		var progression_manager: Node = ProgressionManagerFactory.create_manager(self, item_manager)
+		item_manager.economy.total_friendship_points_earned = 200
+		var partners := PartnersState.new()
+		partners.unlocked_partners = [&"martha"] as Array[StringName]
+		var progression_manager: Node = ProgressionManagerFactory.create_manager(
+			self, item_manager, {"partners": partners}
+		)
 		watch_signals(progression_manager)
 		await get_tree().process_frame
 		assert_signal_not_emitted(progression_manager, "partner_recruit_available")

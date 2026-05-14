@@ -8,7 +8,8 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager
@@ -49,7 +50,7 @@ func test_apply_size_sets_collision_to_base_value_at_level_zero() -> void:
 
 
 func test_apply_size_increases_by_effect_per_level_after_purchase() -> void:
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 
 	var paddle := _create_paddle()
@@ -61,13 +62,13 @@ func test_size_updates_live_on_purchase() -> void:
 	var paddle := _create_paddle()
 	assert_almost_eq(paddle.collision.shape.size.y, _manager.get_stat(&"paddle_size"), 0.01)
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 	assert_almost_eq(paddle.collision.shape.size.y, _manager.get_stat(&"paddle_size"), 0.01)
 
 
 func test_size_updates_live_on_remove_level() -> void:
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 	var paddle := _create_paddle()
 

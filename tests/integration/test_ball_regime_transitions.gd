@@ -23,11 +23,12 @@ var _drag: BallDragController
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -294,10 +295,12 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	var placed_min: float = _manager.get_stat(&"ball_speed_min")
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
-	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
+	var saved_blob: String = JSON.stringify(_manager.items_world.to_save_dict())
 
 	var reloaded_manager: Node = ItemManagerScript.new()
-	reloaded_manager._progression = ProgressionData.from_dict(JSON.parse_string(saved_blob))
+	reloaded_manager.items_world = ItemWorldState.new()
+	reloaded_manager.items_world.apply_save_dict(JSON.parse_string(saved_blob))
+	reloaded_manager.economy = EconomyState.new()
 	reloaded_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	reloaded_manager.items.assign(typed_items)

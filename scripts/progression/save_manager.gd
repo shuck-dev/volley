@@ -1,27 +1,42 @@
 extends Node
 
-var _progression: ProgressionData
+const _SLICE_SCRIPTS := {
+	"economy": preload("res://scripts/progression/economy_state.gd"),
+	"items": preload("res://scripts/progression/item_world_state.gd"),
+	"records": preload("res://scripts/progression/records_state.gd"),
+	"unlocks": preload("res://scripts/progression/unlocks_state.gd"),
+	"partners": preload("res://scripts/progression/partners_state.gd"),
+}
+
+var economy: EconomyState
+var items_world: ItemWorldState
+var records: RecordsState
+var unlocks: UnlocksState
+var partners: PartnersState
+
+var _slices: Dictionary = {}
 var _storage: SaveStorage
 
 var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
+
 ## Callable invoked just before each disk write so live runtime state (ball /
-## loose-body positions) is captured into ProgressionData. Empty when unset.
+## loose-body positions) is captured into the items slice. Empty when unset.
 var _position_provider: Callable = Callable()
 
 
 func _init(autosave_interval: float = 10.0) -> void:
 	_autosave_interval = autosave_interval
+	_ensure_slices()
 
 
 func _ready() -> void:
 	if _storage == null:
 		_storage = FileSaveStorage.new()
-	# Allows direct injection of progression for tests
-	if _progression == null:
-		_progression = ProgressionData.new()
-		load_from_disk()
+
+	_ensure_slices()
+	load_from_disk()
 
 	_autosave_timer = Timer.new()
 	_autosave_timer.wait_time = _autosave_interval
@@ -45,8 +60,7 @@ func save() -> void:
 
 
 ## Loads from storage, falling back to rolling backups if primary fails to parse.
-## Mutates the held _progression in place so cached refs across the project
-## (court, progression_manager, item_manager, ball_reconciler) stay valid.
+## Mutates each slice in place so cached refs across the project stay valid.
 func load_from_disk() -> bool:
 	if _apply_loaded_content(_storage.read()):
 		return true
@@ -60,7 +74,7 @@ func load_from_disk() -> bool:
 
 
 func _write_to_disk() -> bool:
-	return _storage.write(JSON.stringify(_progression.to_dict()))
+	return _storage.write(JSON.stringify(_assemble_save_dict()))
 
 
 func _apply_loaded_content(content: String) -> bool:
@@ -71,8 +85,24 @@ func _apply_loaded_content(content: String) -> bool:
 	if not parsed is Dictionary:
 		return false
 	var data: Dictionary = parsed
-	_progression.copy_from(ProgressionData.from_dict(data))
+	_dispatch_save_dict(data)
 	return true
+
+
+func _assemble_save_dict() -> Dictionary:
+	var assembled: Dictionary = {}
+	for key: String in _slices:
+		assembled[key] = _slices[key].to_save_dict()
+	return assembled
+
+
+func _dispatch_save_dict(data: Dictionary) -> void:
+	for key: String in _slices:
+		var slice_data: Variant = data.get(key, {})
+		if slice_data is Dictionary:
+			_slices[key].apply_save_dict(slice_data)
+		else:
+			_slices[key].apply_save_dict({})
 
 
 ## Registers a callable that returns a Dictionary[String, Vector2] of live
@@ -92,7 +122,7 @@ func _capture_live_positions() -> void:
 		var value: Variant = live[key]
 		if value is Vector2:
 			typed[str(key)] = value
-	_progression.item_positions = typed
+	items_world.item_positions = typed
 
 
 ## Clears progression and blocks writes so the scene reload that follows cannot
@@ -102,7 +132,8 @@ func clear_save() -> void:
 	_write_blocked = true
 	if _autosave_timer != null:
 		_autosave_timer.stop()
-	_progression.clear()
+	for key: String in _slices:
+		_slices[key].clear()
 	_write_to_disk()
 
 
@@ -120,6 +151,22 @@ func _notification(what: int) -> void:
 		save()
 
 
-## Returns the currently stored [ProgressionData]
-func get_progression_data() -> ProgressionData:
-	return _progression
+func _ensure_slices() -> void:
+	if economy == null:
+		economy = _SLICE_SCRIPTS["economy"].new()
+	if items_world == null:
+		items_world = _SLICE_SCRIPTS["items"].new()
+	if records == null:
+		records = _SLICE_SCRIPTS["records"].new()
+	if unlocks == null:
+		unlocks = _SLICE_SCRIPTS["unlocks"].new()
+	if partners == null:
+		partners = _SLICE_SCRIPTS["partners"].new()
+
+	_slices = {
+		"economy": economy,
+		"items": items_world,
+		"records": records,
+		"unlocks": unlocks,
+		"partners": partners,
+	}

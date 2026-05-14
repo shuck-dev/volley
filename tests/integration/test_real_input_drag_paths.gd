@@ -34,10 +34,11 @@ var _drag: BallDragController
 
 func _setup_shop() -> void:
 	_shop_manager = ItemManagerScript.new()
-	_shop_manager._progression = ProgressionData.new()
+	_shop_manager.items_world = ItemWorldState.new()
+	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
 	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
-	_shop_manager._progression.friendship_point_balance = 10000
+	_shop_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_shop_manager)
 
 	_shop = ShopScene.instantiate()
@@ -76,11 +77,12 @@ func _release_event_at(position: Vector2) -> InputEventMouseButton:
 
 func _setup_ball_drag() -> void:
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()

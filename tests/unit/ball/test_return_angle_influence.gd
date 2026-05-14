@@ -19,7 +19,7 @@ func before_each() -> void:
 
 # --- return angle ---
 func test_no_influence_before_level_two() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 
 	_ball.linear_velocity = Vector2(100, 80)
@@ -31,7 +31,7 @@ func test_no_influence_before_level_two() -> void:
 
 
 func test_influence_reduces_vertical_component() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 	_manager.purchase("double_knot")
 
@@ -49,7 +49,7 @@ func test_influence_reduces_vertical_component() -> void:
 
 
 func test_influence_preserves_speed() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 	_manager.purchase("double_knot")
 
@@ -63,7 +63,7 @@ func test_influence_preserves_speed() -> void:
 
 
 func test_influence_preserves_horizontal_direction() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 	_manager.purchase("double_knot")
 

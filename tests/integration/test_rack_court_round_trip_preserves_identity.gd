@@ -25,11 +25,12 @@ func before_each() -> void:
 	_removed_count = 0
 
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()

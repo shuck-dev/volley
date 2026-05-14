@@ -7,7 +7,8 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	(
 		_manager
@@ -58,7 +59,7 @@ func test_speed_unchanged_after_player_purchases_ankle_weights() -> void:
 	var paddle := _create_partner_paddle()
 	var speed_before: float = paddle.get_speed()
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("ankle_weights")
 
 	assert_almost_eq(paddle.get_speed(), speed_before, 0.01)
@@ -75,7 +76,7 @@ func test_size_unchanged_after_player_purchases_grip_tape() -> void:
 	var paddle := _create_partner_paddle()
 	var size_before: float = paddle.collision.shape.size.y
 
-	_manager._progression.friendship_point_balance = 1000
+	_manager.economy.friendship_point_balance = 1000
 	_manager.purchase("grip_tape")
 
 	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)

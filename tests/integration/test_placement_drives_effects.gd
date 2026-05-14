@@ -22,10 +22,11 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	add_child_autofree(_manager)
 
 
@@ -178,10 +179,10 @@ func test_level_up_on_racked_item_does_not_start_effects() -> void:
 # storage into a fresh ItemManager, the same items are on the court and the
 # same effects are running.
 func test_save_and_reload_preserves_placement_and_effects() -> void:
-	# Pure JSON round-trip: stringify ProgressionData, parse it back into a fresh
-	# instance. The test exercises ItemManager re-hydration, not the storage seam.
-	_manager._progression = ProgressionData.new()
-	_manager._progression.friendship_point_balance = 100000
+	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
+	_manager.economy.friendship_point_balance = 100000
 	_manager._register_existing_items()
 
 	# Place one equipment item and one ball; leave a third owned on the rack.
@@ -194,12 +195,14 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	var equipped_size: float = _manager.get_stat(&"paddle_size")
 	var court_ball_min: float = _manager.get_stat(&"ball_speed_min")
 
-	var saved_blob: String = JSON.stringify(_manager._progression.to_dict())
+	var saved_blob: String = JSON.stringify(_manager.items_world.to_save_dict())
 
-	# Fresh ItemManager + fresh ProgressionData, hydrated from the saved blob.
+	# Fresh ItemManager + fresh ItemWorldState, hydrated from the saved blob.
 	# Simulates a scene reload / process restart.
 	var reloaded: Node = load("res://scripts/items/item_manager.gd").new()  # gdlint:ignore = duplicated-load
-	reloaded._progression = ProgressionData.from_dict(JSON.parse_string(saved_blob))
+	reloaded.items_world = ItemWorldState.new()
+	reloaded.items_world.apply_save_dict(JSON.parse_string(saved_blob))
+	reloaded.economy = EconomyState.new()
 	reloaded._effect_manager = EffectManager.new()
 	reloaded.items.assign([GripTape, TrainingBall, AnkleWeights])
 	add_child_autofree(reloaded)

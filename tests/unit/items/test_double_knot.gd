@@ -14,7 +14,7 @@ func before_each() -> void:
 
 # --- level-gated effect ---
 func test_return_angle_influence_inactive_at_level_one() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 	assert_eq(
 		_manager.get_stat(&"return_angle_influence"),
@@ -23,7 +23,7 @@ func test_return_angle_influence_inactive_at_level_one() -> void:
 
 
 func test_return_angle_influence_active_at_level_two() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 	_manager.purchase("double_knot")
 	assert_gt(

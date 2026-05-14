@@ -57,42 +57,48 @@ class TestShopUnlock:
 	func test_spending_does_not_reduce_total_earned() -> void:
 		_item_manager.add_friendship_points(100)
 		_item_manager.subtract_friendship_points(100)
-		assert_eq(_item_manager._progression.total_friendship_points_earned, 100)
+		assert_eq(_item_manager.economy.total_friendship_points_earned, 100)
 
 	func test_refund_does_not_count_as_earning() -> void:
 		_item_manager.add_friendship_points(200)
-		var total_before: int = _item_manager._progression.total_friendship_points_earned
+		var total_before: int = _item_manager.economy.total_friendship_points_earned
 		_item_manager._refund_friendship_points(50)
 		assert_eq(
-			_item_manager._progression.total_friendship_points_earned,
+			_item_manager.economy.total_friendship_points_earned,
 			total_before,
 			"refunds must not inflate the cumulative earned counter"
 		)
-		assert_eq(_item_manager._progression.friendship_point_balance, 250, "balance should refund")
+		assert_eq(_item_manager.economy.friendship_point_balance, 250, "balance should refund")
 
 
 class TestShopPersistence:
 	extends GutTest
 
 	func test_shop_unlocked_defaults_to_false_from_empty_dict() -> void:
-		var progression := ProgressionData.from_dict({})
-		assert_false(progression.shop_unlocked)
+		var unlocks := UnlocksState.new()
+		unlocks.apply_save_dict({})
+		assert_false(unlocks.shop_unlocked)
 
 	func test_shop_unlocked_round_trips_through_dict() -> void:
-		var progression := ProgressionData.from_dict({"shop_unlocked": true})
-		var restored := ProgressionData.from_dict(progression.to_dict())
+		var unlocks := UnlocksState.new()
+		unlocks.apply_save_dict({"shop_unlocked": true})
+		var restored := UnlocksState.new()
+		restored.apply_save_dict(unlocks.to_save_dict())
 		assert_true(restored.shop_unlocked)
 
 	func test_shop_unlock_persists_in_progression_data() -> void:
 		var item_manager: Node = ItemFactory.create_manager(self)
 		var progression_manager: Node = ProgressionManagerFactory.create_manager(self, item_manager)
 		item_manager.add_friendship_points(progression_manager._config.shop_unlock_threshold)
-		assert_true(item_manager._progression.shop_unlocked)
+		assert_true(progression_manager.unlocks.shop_unlocked)
 
 	func test_deferred_unlock_signal_emitted_for_preunlocked_save() -> void:
 		var item_manager: Node = ItemFactory.create_manager(self)
-		item_manager._progression.shop_unlocked = true
-		var progression_manager: Node = ProgressionManagerFactory.create_manager(self, item_manager)
+		var unlocks := UnlocksState.new()
+		unlocks.shop_unlocked = true
+		var progression_manager: Node = ProgressionManagerFactory.create_manager(
+			self, item_manager, {"unlocks": unlocks}
+		)
 		watch_signals(progression_manager)
 		await get_tree().process_frame
 		assert_signal_emitted_with_parameters(progression_manager, "shop_unlocked_changed", [true])

@@ -18,7 +18,8 @@ var _manager: Node
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([Cadence])
 	add_child_autofree(_manager)
@@ -43,7 +44,8 @@ func before_each() -> void:
 	_game.autoplay_controller = autoplay_controller_stub
 	_game._progression_config = ProgressionConfig.new()
 	_game._item_manager = _manager
-	_game._progression = ProgressionData.new()
+	_game._records = RecordsState.new()
+	_game._partners = PartnersState.new()
 	add_child_autofree(_ball)
 	add_child_autofree(_paddle)
 	add_child_autofree(_game)
@@ -83,7 +85,8 @@ func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
 	# SH-288 multi-ball: with two balls at different speeds, the bar reads the highest.
 	# Use a real reconciler so `ball_added` drives attachment, mirroring production wiring.
 	var multi_manager: Node = ItemManagerScript.new()
-	multi_manager._progression = ProgressionData.new()
+	multi_manager.items_world = ItemWorldState.new()
+	multi_manager.economy = EconomyState.new()
 	multi_manager._effect_manager = EffectManager.new()
 	multi_manager.items.assign([Cadence])
 	add_child_autofree(multi_manager)

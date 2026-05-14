@@ -92,16 +92,16 @@ func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
 	# Two writes so the valid JSON lands in backup slot 1; then trash primary
 	# with empty content so SaveManager.load_from_disk() must fall through to
 	# the backup chain to recover the last good state.
-	_storage.write('{"friendship_point_balance":100}')
-	_storage.write('{"friendship_point_balance":100}')
+	var blob := '{"economy":{"friendship_point_balance":100}}'
+	_storage.write(blob)
+	_storage.write(blob)
 	_write_raw(TEST_PATH, "")
 
 	var save_manager: Node = load("res://scripts/progression/save_manager.gd").new(0.05)
-	save_manager._progression = ProgressionData.new()
 	save_manager.set_storage(_storage)
 	add_child_autofree(save_manager)
 	assert_true(save_manager.load_from_disk())
-	assert_eq(save_manager.get_progression_data().friendship_point_balance, 100)
+	assert_eq(save_manager.economy.friendship_point_balance, 100)
 
 
 # --- helpers ---

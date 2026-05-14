@@ -16,7 +16,8 @@ func before_each() -> void:
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager._progression = ProgressionData.new()
+	_item_manager.items_world = ItemWorldState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	add_child_autofree(_item_manager)
 
@@ -30,7 +31,8 @@ func before_each() -> void:
 	_game.ball = _ball_stub
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = _autoplay_controller_stub
-	_game._progression = ProgressionData.new()
+	_game._records = RecordsState.new()
+	_game._partners = PartnersState.new()
 	_game._progression_config = progression_config
 	_game._item_manager = _item_manager
 	add_child_autofree(_ball_stub)

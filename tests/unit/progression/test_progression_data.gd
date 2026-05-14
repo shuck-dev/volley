@@ -1,115 +1,128 @@
 extends GutTest
 
-var _data: ProgressionData
+# Round-trip tests for the five progression slices: EconomyState, ItemWorldState,
+# RecordsState, UnlocksState, PartnersState. Each slice owns its own to_save_dict /
+# apply_save_dict; SaveManager just coordinates.
 
 
-func before_each() -> void:
-	_data = ProgressionData.new()
+# --- EconomyState ---
+func test_economy_default_values() -> void:
+	var economy := EconomyState.new()
+	assert_eq(economy.friendship_point_balance, 0)
+	assert_eq(economy.total_friendship_points_earned, 0)
 
 
-# --- to_dict ---
-func test_default_values_return_vaild_dict() -> void:
-	var result := _data.to_dict()
-	assert_eq(result["friendship_point_balance"], 0)
-	assert_eq(result["item_levels"], {})
-	assert_eq(result["personal_volley_best"], 0)
-
-
-func test_to_dict_with_modified_values() -> void:
-	_data.friendship_point_balance = 500
-	_data.item_levels["paddle_speed"] = 3
-	_data.personal_volley_best = 42
-
-	var result := _data.to_dict()
-	assert_eq(result["friendship_point_balance"], 500)
-	assert_eq(result["item_levels"], {"paddle_speed": 3})
-	assert_eq(result["personal_volley_best"], 42)
-
-
-# --- from_dict ---
-func test_from_dict_round_trip() -> void:
-	_data.friendship_point_balance = 250
-	_data.item_levels["paddle_size"] = 2
-	_data.personal_volley_best = 10
-
-	var restored := ProgressionData.from_dict(_data.to_dict())
-	assert_eq(restored.friendship_point_balance, 250)
-	assert_eq(restored.item_levels, {"paddle_size": 2})
-	assert_eq(restored.personal_volley_best, 10)
-
-
-func test_from_dict_missing_keys_use_defaults() -> void:
-	var restored := ProgressionData.from_dict({})
-	assert_eq(restored.friendship_point_balance, 0)
-	assert_eq(restored.item_levels, {})
-	assert_eq(restored.personal_volley_best, 0)
-
-
-# --- total_friendship_points_earned ---
-func test_total_friendship_points_earned_default_zero() -> void:
-	assert_eq(_data.total_friendship_points_earned, 0)
-
-
-func test_total_friendship_points_earned_round_trips() -> void:
-	_data.total_friendship_points_earned = 1234
-	var restored := ProgressionData.from_dict(_data.to_dict())
+func test_economy_round_trip() -> void:
+	var economy := EconomyState.new()
+	economy.friendship_point_balance = 500
+	economy.total_friendship_points_earned = 1234
+	var restored := EconomyState.new()
+	restored.apply_save_dict(economy.to_save_dict())
+	assert_eq(restored.friendship_point_balance, 500)
 	assert_eq(restored.total_friendship_points_earned, 1234)
 
 
-func test_clear_resets_total_friendship_points_earned() -> void:
-	_data.total_friendship_points_earned = 500
-	_data.clear()
-	assert_eq(_data.total_friendship_points_earned, 0)
+func test_economy_missing_keys_use_defaults() -> void:
+	var restored := EconomyState.new()
+	restored.apply_save_dict({})
+	assert_eq(restored.friendship_point_balance, 0)
+	assert_eq(restored.total_friendship_points_earned, 0)
 
 
-# --- partner fields ---
-func test_partner_fields_default_empty() -> void:
-	assert_eq(_data.unlocked_partners, [] as Array[StringName])
-	assert_eq(_data.active_partner, &"")
-	assert_eq(_data.partner_volley_totals, {} as Dictionary[StringName, int])
+func test_economy_clear() -> void:
+	var economy := EconomyState.new()
+	economy.friendship_point_balance = 500
+	economy.total_friendship_points_earned = 999
+	economy.clear()
+	assert_eq(economy.friendship_point_balance, 0)
+	assert_eq(economy.total_friendship_points_earned, 0)
 
 
-func test_partner_fields_round_trip() -> void:
-	_data.unlocked_partners = [&"martha"] as Array[StringName]
-	_data.active_partner = &"martha"
-	_data.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
-	_data.recruit_offered_partners = [&"martha"] as Array[StringName]
+# --- ItemWorldState ---
+func test_items_default_values() -> void:
+	var items := ItemWorldState.new()
+	assert_eq(items.item_levels, {} as Dictionary[String, int])
+	assert_eq(items.item_placements, {} as Dictionary[String, int])
 
-	var restored := ProgressionData.from_dict(_data.to_dict())
+
+func test_items_round_trip() -> void:
+	var items := ItemWorldState.new()
+	items.item_levels["paddle_size"] = 2
+	items.item_placements["paddle_size"] = 1
+	var restored := ItemWorldState.new()
+	restored.apply_save_dict(items.to_save_dict())
+	assert_eq(restored.item_levels, {"paddle_size": 2})
+	assert_eq(restored.item_placements, {"paddle_size": 1})
+
+
+# --- RecordsState ---
+func test_records_round_trip() -> void:
+	var records := RecordsState.new()
+	records.personal_volley_best = 42
+	var restored := RecordsState.new()
+	restored.apply_save_dict(records.to_save_dict())
+	assert_eq(restored.personal_volley_best, 42)
+
+
+# --- UnlocksState ---
+func test_unlocks_round_trip() -> void:
+	var unlocks := UnlocksState.new()
+	unlocks.shop_unlocked = true
+	var restored := UnlocksState.new()
+	restored.apply_save_dict(unlocks.to_save_dict())
+	assert_true(restored.shop_unlocked)
+
+
+# --- PartnersState ---
+func test_partners_default_empty() -> void:
+	var partners := PartnersState.new()
+	assert_eq(partners.unlocked_partners, [] as Array[StringName])
+	assert_eq(partners.active_partner, &"")
+	assert_eq(partners.partner_volley_totals, {} as Dictionary[StringName, int])
+
+
+func test_partners_round_trip() -> void:
+	var partners := PartnersState.new()
+	partners.unlocked_partners = [&"martha"] as Array[StringName]
+	partners.active_partner = &"martha"
+	partners.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
+	partners.recruit_offered_partners = [&"martha"] as Array[StringName]
+
+	var restored := PartnersState.new()
+	restored.apply_save_dict(partners.to_save_dict())
 	assert_eq(restored.unlocked_partners, [&"martha"] as Array[StringName])
-	assert_eq(restored.active_partner, "martha")
+	assert_eq(restored.active_partner, &"martha")
 	assert_eq(restored.partner_volley_totals, {&"martha": 150} as Dictionary[StringName, int])
 	assert_eq(restored.recruit_offered_partners, [&"martha"] as Array[StringName])
 
 
-func test_partner_fields_missing_from_dict_use_defaults() -> void:
-	var restored := ProgressionData.from_dict({})
+func test_partners_missing_keys_use_defaults() -> void:
+	var restored := PartnersState.new()
+	restored.apply_save_dict({})
 	assert_eq(restored.unlocked_partners, [] as Array[StringName])
 	assert_eq(restored.active_partner, &"")
 	assert_eq(restored.partner_volley_totals, {} as Dictionary[StringName, int])
 
 
-func test_clear_resets_partner_fields() -> void:
-	_data.unlocked_partners = [&"martha"] as Array[StringName]
-	_data.active_partner = &"martha"
-	_data.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
-	_data.clear()
-	assert_eq(_data.unlocked_partners, [] as Array[StringName])
-	assert_eq(_data.active_partner, &"")
-	assert_eq(_data.partner_volley_totals, {} as Dictionary[StringName, int])
+func test_partners_clear() -> void:
+	var partners := PartnersState.new()
+	partners.unlocked_partners = [&"martha"] as Array[StringName]
+	partners.active_partner = &"martha"
+	partners.partner_volley_totals = {&"martha": 150} as Dictionary[StringName, int]
+	partners.clear()
+	assert_eq(partners.unlocked_partners, [] as Array[StringName])
+	assert_eq(partners.active_partner, &"")
+	assert_eq(partners.partner_volley_totals, {} as Dictionary[StringName, int])
 
 
-# Cleared-state JSON round-trip stays here: the serialisation contract for empty
-# partner fields is a ProgressionData concern, not a SaveManager concern.
-func test_cleared_data_dict_round_trip_keeps_partner_fields_empty() -> void:
-	_data.unlocked_partners = [&"martha"] as Array[StringName]
-	_data.active_partner = &"martha"
-	_data.partner_volley_totals = {&"martha": 500} as Dictionary[StringName, int]
-	_data.clear()
+func test_partners_cleared_dict_round_trip_keeps_fields_empty() -> void:
+	var partners := PartnersState.new()
+	partners.unlocked_partners = [&"martha"] as Array[StringName]
+	partners.clear()
 
-	var cleared_json := JSON.stringify(_data.to_dict())
+	var cleared_json := JSON.stringify(partners.to_save_dict())
 	var parsed: Variant = JSON.parse_string(cleared_json)
-	var loaded := ProgressionData.from_dict(parsed)
+	var loaded := PartnersState.new()
+	loaded.apply_save_dict(parsed)
 	assert_eq(loaded.unlocked_partners, [] as Array[StringName])
 	assert_eq(loaded.active_partner, &"")
-	assert_eq(loaded.partner_volley_totals, {} as Dictionary[StringName, int])

@@ -20,10 +20,11 @@ var _item_manager: Node
 
 func before_each() -> void:
 	_item_manager = ItemManagerScript.new()
-	_item_manager._progression = ProgressionData.new()
+	_item_manager.items_world = ItemWorldState.new()
+	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
-	_item_manager._progression.friendship_point_balance = 10000
+	_item_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()
@@ -81,7 +82,7 @@ func test_exiting_shop_area_does_not_affect_other_items() -> void:
 
 
 func test_exiting_shop_area_when_unaffordable_does_not_purchase() -> void:
-	_item_manager._progression.friendship_point_balance = 0
+	_item_manager.economy.friendship_point_balance = 0
 	var item: ShopItem = _shop_item("grip_tape")
 	await _drag_item_out_of_shop_area(item)
 	assert_eq(_item_manager.get_level("grip_tape"), 0)
@@ -212,7 +213,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 
 
 func test_unaffordable_item_cannot_start_drag() -> void:
-	_item_manager._progression.friendship_point_balance = 0
+	_item_manager.economy.friendship_point_balance = 0
 	var item: ShopItem = _shop_item("grip_tape")
 
 	var ok: bool = item.start_drag()
@@ -318,10 +319,11 @@ class TestSH332InsideShopDrag:
 
 	func before_each() -> void:
 		_item_manager = ItemManagerScript.new()
-		_item_manager._progression = ProgressionData.new()
+		_item_manager.items_world = ItemWorldState.new()
+		_item_manager.economy = EconomyState.new()
 		_item_manager._effect_manager = EffectManager.new()
 		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, DoubleKnot, Spare])
-		_item_manager._progression.friendship_point_balance = 10000
+		_item_manager.economy.friendship_point_balance = 10000
 		add_child_autofree(_item_manager)
 		_shop = ShopScene.instantiate()
 		_shop._item_manager = _item_manager

@@ -16,7 +16,7 @@ func before_each() -> void:
 	var ball_beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
 	var typed_items: Array[ItemDefinition] = [ball_alpha, ball_beta]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 
 	_host = Node2D.new()
 	add_child_autofree(_host)
@@ -247,7 +247,8 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 ) -> void:
 	# Fresh manager with both ball items; no friendship points needed — we set placements directly.
 	var saved_manager: Node = ItemManagerScript.new()
-	saved_manager._progression = ProgressionData.new()
+	saved_manager.items_world = ItemWorldState.new()
+	saved_manager.economy = EconomyState.new()
 	saved_manager._effect_manager = EffectManager.new()
 	var base_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
 	var training_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("training_ball")
@@ -256,9 +257,9 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	add_child_autofree(saved_manager)
 
 	# Simulate saved state: training_ball ON_COURT, base_ball level set so adopt_authored works.
-	saved_manager._progression.item_levels["base_ball"] = 1
-	saved_manager._progression.item_levels["training_ball"] = 1
-	saved_manager._progression.item_placements["training_ball"] = Placement.ON_COURT
+	saved_manager.items_world.item_levels["base_ball"] = 1
+	saved_manager.items_world.item_levels["training_ball"] = 1
+	saved_manager.items_world.item_placements["training_ball"] = Placement.ON_COURT
 
 	# Host has one authored Ball child for base_ball (the always-present authored scene child).
 	var fresh_host := Node2D.new()

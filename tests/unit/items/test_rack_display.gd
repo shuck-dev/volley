@@ -55,7 +55,7 @@ func _make_rack(role: StringName, manager: Node) -> Node2D:
 func test_adding_a_ball_item_shows_a_slot_on_the_ball_rack() -> void:
 	var ball := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
 
 	manager.take(ball.key)
@@ -68,7 +68,7 @@ func test_adding_a_ball_item_shows_a_slot_on_the_ball_rack() -> void:
 func test_adding_an_equipment_item_shows_a_slot_on_the_gear_rack() -> void:
 	var gear := _make_item("gear_alpha", &"equipment")
 	var manager: Node = _make_manager_with([gear])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"equipment", manager)
 
 	manager.take(gear.key)
@@ -81,7 +81,7 @@ func test_adding_an_equipment_item_shows_a_slot_on_the_gear_rack() -> void:
 func test_ball_items_do_not_appear_on_the_gear_rack() -> void:
 	var ball := _make_item("ball_beta", &"ball")
 	var manager: Node = _make_manager_with([ball])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"equipment", manager)
 
 	manager.take(ball.key)
@@ -96,7 +96,7 @@ func test_ball_items_do_not_appear_on_the_gear_rack() -> void:
 func test_equipment_items_do_not_appear_on_the_ball_rack() -> void:
 	var gear := _make_item("gear_beta", &"equipment")
 	var manager: Node = _make_manager_with([gear])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
 
 	manager.take(gear.key)
@@ -111,7 +111,7 @@ func test_equipment_items_do_not_appear_on_the_ball_rack() -> void:
 func test_activating_an_item_removes_its_slot() -> void:
 	var ball := _make_item("ball_gamma", &"ball")
 	var manager: Node = _make_manager_with([ball])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
 	manager.take(ball.key)
 	assert_eq(
@@ -132,7 +132,7 @@ func test_activating_an_item_removes_its_slot() -> void:
 func test_deactivating_an_item_restores_its_slot() -> void:
 	var gear := _make_item("gear_gamma", &"equipment")
 	var manager: Node = _make_manager_with([gear])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"equipment", manager)
 	manager.take(gear.key)
 	manager.activate(gear.key)
@@ -155,7 +155,7 @@ func test_deactivating_an_item_restores_its_slot() -> void:
 func test_court_role_items_never_appear_on_either_rack() -> void:
 	var court_item := _make_item("court_alpha", &"court")
 	var manager: Node = _make_manager_with([court_item])
-	manager._progression.item_levels[court_item.key] = 1
+	manager.items_world.item_levels[court_item.key] = 1
 
 	var ball_rack := _make_rack(&"ball", manager)
 	var gear_rack := _make_rack(&"equipment", manager)
@@ -203,7 +203,7 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	var alpha := _make_item("ball_alpha", &"ball")
 	var beta := _make_item("ball_beta", &"ball")
 	var manager: Node = _make_manager_with([alpha, beta])
-	manager._progression.friendship_point_balance = 10000
+	manager.economy.friendship_point_balance = 10000
 	var rack := _make_rack(&"ball", manager)
 	manager.take(alpha.key)
 	manager.take(beta.key)
@@ -223,7 +223,7 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 func test_reveal_slot_for_restores_visibility() -> void:
 	var alpha := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([alpha])
-	manager._progression.friendship_point_balance = 10000
+	manager.economy.friendship_point_balance = 10000
 	var rack := _make_rack(&"ball", manager)
 	manager.take(alpha.key)
 	await get_tree().process_frame
@@ -239,7 +239,7 @@ func test_reveal_slot_for_restores_visibility() -> void:
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
 	var ball := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var rack := _make_rack(&"ball", manager)
 	manager.take(ball.key)
 
@@ -289,7 +289,7 @@ func _make_rack_with_reconciler(
 func test_rack_with_stored_ball_sources_art_from_ball() -> void:
 	var ball_item := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball_item])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var reconciler: BallReconciler = _make_reconciler(manager)
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball_item.key)
@@ -312,7 +312,7 @@ func test_rack_with_stored_ball_sources_art_from_ball() -> void:
 func test_rack_keeps_slot_empty_when_ball_is_held() -> void:
 	var ball_item := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball_item])
-	manager._progression.friendship_point_balance = 1000
+	manager.economy.friendship_point_balance = 1000
 	var reconciler: BallReconciler = _make_reconciler(manager)
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball_item.key)

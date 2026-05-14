@@ -15,13 +15,14 @@ var _paddle: Paddle
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
 	var typed_items: Array[ItemDefinition] = [alpha, beta]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -49,7 +50,8 @@ func before_each() -> void:
 	_court.autoplay_controller = autoplay_stub
 	_court._progression_config = ProgressionConfig.new()
 	_court._item_manager = _manager
-	_court._progression = ProgressionData.new()
+	_court._records = RecordsState.new()
+	_court._partners = PartnersState.new()
 	add_child_autofree(_court)
 
 

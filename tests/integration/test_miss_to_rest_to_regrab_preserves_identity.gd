@@ -21,12 +21,13 @@ var _drag: BallDragController
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager._progression = ProgressionData.new()
+	_manager.items_world = ItemWorldState.new()
+	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()

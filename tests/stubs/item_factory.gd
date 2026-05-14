@@ -13,7 +13,8 @@ static func create_manager(
 ) -> Node:
 	var item := create(item_key, stat_key, operation, value)
 	var manager: Node = ItemManagerScript.new()
-	manager._progression = ProgressionData.new()
+	manager.items_world = ItemWorldState.new()
+	manager.economy = EconomyState.new()
 	manager._effect_manager = EffectManager.new()
 	manager.items.assign([item])
 	gut_test.add_child_autofree(manager)

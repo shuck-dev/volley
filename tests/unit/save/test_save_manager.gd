@@ -2,7 +2,6 @@ extends GutTest
 
 var _save_manager: Node
 var _mock_storage: SaveStorage
-var _progression: ProgressionData
 
 
 func before_each() -> void:
@@ -10,17 +9,18 @@ func before_each() -> void:
 	stub(_mock_storage.write).to_return(true)
 	stub(_mock_storage.read).to_return("")
 
-	_progression = ProgressionData.new()
-
 	_save_manager = load("res://scripts/progression/save_manager.gd").new(0.05)
-	_save_manager._progression = _progression
 	_save_manager.set_storage(_mock_storage)
 	add_child_autofree(_save_manager)
 
 
-# --- get_progression_data ---
-func test_get_progression_data_returns_injected_progression() -> void:
-	assert_eq(_save_manager.get_progression_data(), _progression)
+# --- slice accessors ---
+func test_slices_are_created_on_ready() -> void:
+	assert_not_null(_save_manager.economy)
+	assert_not_null(_save_manager.items_world)
+	assert_not_null(_save_manager.records)
+	assert_not_null(_save_manager.unlocks)
+	assert_not_null(_save_manager.partners)
 
 
 # --- save ---
@@ -29,16 +29,21 @@ func test_save_calls_write_on_storage() -> void:
 	assert_called(_mock_storage, "write")
 
 
-func test_save_writes_current_data_as_json() -> void:
-	_progression.friendship_point_balance = 300
+func test_save_writes_assembled_per_slice_json() -> void:
+	_save_manager.economy.friendship_point_balance = 300
 	_save_manager.save()
-	var expected_json := JSON.stringify(_progression.to_dict())
-	assert_called(_mock_storage, "write", [expected_json])
+	var expected: Dictionary = {
+		"economy": _save_manager.economy.to_save_dict(),
+		"items": _save_manager.items_world.to_save_dict(),
+		"records": _save_manager.records.to_save_dict(),
+		"unlocks": _save_manager.unlocks.to_save_dict(),
+		"partners": _save_manager.partners.to_save_dict(),
+	}
+	assert_called(_mock_storage, "write", [JSON.stringify(expected)])
 
 
 # --- autosave timer ---
 func test_autosave_timer_triggers_save() -> void:
-	# Emit the timer's timeout directly; the wall-clock 0.2s wait was 176ms of fat.
 	_save_manager._autosave_timer.timeout.emit()
 	assert_called(_mock_storage, "write")
 
@@ -50,21 +55,22 @@ func test_quit_notification_triggers_save() -> void:
 
 
 # --- clear_save / write-guard ---
-func test_clear_save_writes_cleared_state() -> void:
-	_progression.friendship_point_balance = 500
+func test_clear_save_resets_every_slice() -> void:
+	_save_manager.economy.friendship_point_balance = 500
+	_save_manager.unlocks.shop_unlocked = true
+	_save_manager.partners.active_partner = &"martha"
 	_save_manager.clear_save()
-	var cleared_json := JSON.stringify(_progression.to_dict())
-	assert_called(_mock_storage, "write", [cleared_json])
+	assert_eq(_save_manager.economy.friendship_point_balance, 0)
+	assert_false(_save_manager.unlocks.shop_unlocked)
+	assert_eq(_save_manager.partners.active_partner, &"")
 
 
-# clear_save writes once; a follow-up save() while blocked must not write again.
 func test_save_is_noop_after_clear_save_until_unblocked() -> void:
 	_save_manager.clear_save()
 	_save_manager.save()
 	assert_called_count(_mock_storage.write, 1)
 
 
-# clear_save writes once, then unblock + save writes a second time.
 func test_unblock_writes_resumes_saves() -> void:
 	_save_manager.clear_save()
 	_save_manager.unblock_writes()
@@ -83,8 +89,6 @@ func test_unblock_writes_restarts_autosave_timer() -> void:
 	assert_false(_save_manager._autosave_timer.is_stopped())
 
 
-# If the autosave timer somehow fires while blocked (e.g. a deferred timeout
-# queued before clear_save stopped it), the write guard must still suppress it.
 func test_autosave_timeout_while_blocked_does_not_write() -> void:
 	_save_manager.clear_save()
 	_save_manager._autosave_timer.timeout.emit()
@@ -96,42 +100,44 @@ func test_save_captures_positions_from_registered_provider() -> void:
 	var live: Dictionary[String, Vector2] = {"base_ball": Vector2(50.0, 75.0)}
 	_save_manager.set_position_provider(func() -> Dictionary[String, Vector2]: return live)
 	_save_manager.save()
-	assert_eq(_progression.item_positions["base_ball"], Vector2(50.0, 75.0))
+	assert_eq(_save_manager.items_world.item_positions["base_ball"], Vector2(50.0, 75.0))
 
 
 func test_save_without_provider_leaves_positions_untouched() -> void:
-	_progression.item_positions["base_ball"] = Vector2(1.0, 2.0)
+	_save_manager.items_world.item_positions["base_ball"] = Vector2(1.0, 2.0)
 	_save_manager.save()
-	assert_eq(_progression.item_positions["base_ball"], Vector2(1.0, 2.0))
+	assert_eq(_save_manager.items_world.item_positions["base_ball"], Vector2(1.0, 2.0))
 
 
 # --- load_from_disk ---
 func test_load_from_disk_applies_stored_blob() -> void:
-	var stored := ProgressionData.new()
-	stored.friendship_point_balance = 42
-	stored.active_partner = &"martha"
-	var blob := JSON.stringify(stored.to_dict())
-	stub(_mock_storage.read).to_return(blob)
+	var blob_dict: Dictionary = {
+		"economy": {"friendship_point_balance": 42, "total_friendship_points_earned": 100},
+		"partners": {"active_partner": "martha"},
+	}
+	stub(_mock_storage.read).to_return(JSON.stringify(blob_dict))
 
 	_save_manager.load_from_disk()
 
-	assert_eq(_progression.friendship_point_balance, 42)
-	assert_eq(_progression.active_partner, &"martha")
+	assert_eq(_save_manager.economy.friendship_point_balance, 42)
+	assert_eq(_save_manager.partners.active_partner, &"martha")
 
 
-# Guards against a future refactor replacing _progression instead of mutating it
-# in place. Four call sites (court, item_manager, ball_reconciler,
-# progression_manager) cache the ref; a replace would silently stale them.
-func test_load_preserves_progression_instance_identity() -> void:
-	var stored := ProgressionData.new()
-	stored.friendship_point_balance = 99
-	stored.active_partner = &"reese"
-	var blob := JSON.stringify(stored.to_dict())
-	stub(_mock_storage.read).to_return(blob)
+# Guards against a future refactor replacing slice instances instead of mutating in place.
+# Multiple consumers (court, item_manager, progression_manager) cache slice refs;
+# a replace would silently stale them.
+func test_load_preserves_slice_instance_identity() -> void:
+	var blob_dict: Dictionary = {
+		"economy": {"friendship_point_balance": 99},
+		"partners": {"active_partner": "reese"},
+	}
+	stub(_mock_storage.read).to_return(JSON.stringify(blob_dict))
 
-	var held_ref: ProgressionData = _save_manager._progression
+	var held_economy: EconomyState = _save_manager.economy
+	var held_partners: PartnersState = _save_manager.partners
 	_save_manager.load_from_disk()
 
-	assert_eq(held_ref, _save_manager._progression)
-	assert_eq(held_ref.friendship_point_balance, 99)
-	assert_eq(held_ref.active_partner, &"reese")
+	assert_eq(held_economy, _save_manager.economy)
+	assert_eq(held_partners, _save_manager.partners)
+	assert_eq(held_economy.friendship_point_balance, 99)
+	assert_eq(held_partners.active_partner, &"reese")

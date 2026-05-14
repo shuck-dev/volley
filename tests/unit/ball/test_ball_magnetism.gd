@@ -36,7 +36,7 @@ func test_no_magnetism_before_purchase() -> void:
 
 
 func test_magnetism_bends_toward_paddle() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 
 	var test_speed: float = _manager.get_stat(&"ball_speed_min")
@@ -51,7 +51,7 @@ func test_magnetism_bends_toward_paddle() -> void:
 
 
 func test_magnetism_preserves_speed() -> void:
-	_manager._progression.friendship_point_balance = 100000
+	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("double_knot")
 
 	var test_speed: float = _manager.get_stat(&"ball_speed_min")

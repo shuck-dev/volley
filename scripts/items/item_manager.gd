@@ -20,15 +20,18 @@ var items: Array[ItemDefinition] = [
 	preload("res://resources/items/wrist_brace.tres"),
 ]
 
-var _progression: ProgressionData
+var items_world: ItemWorldState
+var economy: EconomyState
 var _effect_manager: EffectManager
 ## Transient overlay: keys whose body lives loose on the venue floor. Not persisted; cleared on reload.
 var _loose_in_venue: Dictionary[String, bool] = {}
 
 
 func _ready() -> void:
-	if _progression == null:
-		_progression = SaveManager.get_progression_data()
+	if items_world == null:
+		items_world = SaveManager.items_world
+	if economy == null:
+		economy = SaveManager.economy
 	if _effect_manager == null:
 		_effect_manager = EffectManager.new()
 		_effect_manager.name = "EffectManager"
@@ -48,10 +51,10 @@ func _register_existing_items() -> void:
 func reload_from_progression() -> void:
 	for item in items:
 		_effect_manager.unregister_source(item)
-	for partner in ProgressionManager.partners:
+	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
 	_register_existing_items()
-	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+	friendship_point_balance_changed.emit(economy.friendship_point_balance)
 	for item in items:
 		item_level_changed.emit(item.key)
 
@@ -104,7 +107,7 @@ func is_game_state_active(state: StringName) -> bool:
 
 ## Returns current level of an item (0 if not owned)
 func get_level(item_key: String) -> int:
-	return _progression.item_levels.get(item_key, 0)
+	return items_world.item_levels.get(item_key, 0)
 
 
 ## Returns the current placement of an item. Defaults to STORED (on the rack).
@@ -112,7 +115,7 @@ func get_level(item_key: String) -> int:
 func _get_placement(item_key: String) -> int:
 	if _loose_in_venue.get(item_key, false):
 		return PlacementScript.LOOSE_IN_VENUE
-	return _progression.item_placements.get(item_key, PlacementScript.STORED)
+	return items_world.item_placements.get(item_key, PlacementScript.STORED)
 
 
 ## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
@@ -194,17 +197,14 @@ func calculate_cost(item_key: String) -> int:
 
 ## Returns true if the item is unowned and affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
-	return (
-		get_level(item_key) == 0
-		and _progression.friendship_point_balance >= calculate_cost(item_key)
-	)
+	return get_level(item_key) == 0 and economy.friendship_point_balance >= calculate_cost(item_key)
 
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
 	var item := _get_item(item_key)
 	return (
-		_progression.friendship_point_balance >= calculate_cost(item_key)
+		economy.friendship_point_balance >= calculate_cost(item_key)
 		and get_level(item_key) < item.max_level
 	)
 
@@ -216,7 +216,7 @@ func purchase(item_key: String) -> bool:
 	var was_unowned := get_level(item_key) == 0
 	subtract_friendship_points(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
-	_progression.item_levels[item_key] = new_level
+	items_world.item_levels[item_key] = new_level
 	if was_unowned:
 		# First purchase lands the item on its natural target, skipping the rack.
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
@@ -229,21 +229,21 @@ func purchase(item_key: String) -> bool:
 
 ## Returns current friendship point balance
 func get_friendship_point_balance() -> int:
-	return _progression.friendship_point_balance
+	return economy.friendship_point_balance
 
 
 ## Only earning path. Increments `total_friendship_points_earned` so the shop
 ## unlock check stays correct across spending. Refunds use `_refund_friendship_points`.
 func add_friendship_points(points: int) -> void:
-	_progression.friendship_point_balance += points
-	_progression.total_friendship_points_earned += points
-	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+	economy.friendship_point_balance += points
+	economy.total_friendship_points_earned += points
+	friendship_point_balance_changed.emit(economy.friendship_point_balance)
 
 
 ## Subtracts friendship points (clamped to zero) and emits balance changed signal
 func subtract_friendship_points(points: int) -> void:
-	_progression.friendship_point_balance = max(0, _progression.friendship_point_balance - points)
-	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+	economy.friendship_point_balance = max(0, economy.friendship_point_balance - points)
+	friendship_point_balance_changed.emit(economy.friendship_point_balance)
 
 
 ## Removes one level from an item (dev/debug only)
@@ -268,7 +268,7 @@ func remove_level(item_key: String) -> void:
 ## any purchase, so racks and progression have a real placement to register.
 func adopt_authored(item_key: String) -> void:
 	if get_level(item_key) <= 0:
-		_progression.item_levels[item_key] = 1
+		items_world.item_levels[item_key] = 1
 		item_level_changed.emit(item_key)
 	if not is_on_court(item_key):
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
@@ -279,10 +279,10 @@ func adopt_authored(item_key: String) -> void:
 func take(item_key: String) -> bool:
 	if get_level(item_key) >= 1:
 		return false
-	if _progression.friendship_point_balance < calculate_cost(item_key):
+	if economy.friendship_point_balance < calculate_cost(item_key):
 		return false
 	subtract_friendship_points(calculate_cost(item_key))
-	_progression.item_levels[item_key] = 1
+	items_world.item_levels[item_key] = 1
 	item_level_changed.emit(item_key)
 	SaveManager.save()
 	return true
@@ -291,12 +291,12 @@ func take(item_key: String) -> bool:
 ## Returns points to the balance without counting them as newly earned.
 ## Used for undo flows (dev level removal, future kit swaps); not a public API.
 func _refund_friendship_points(points: int) -> void:
-	_progression.friendship_point_balance += points
-	friendship_point_balance_changed.emit(_progression.friendship_point_balance)
+	economy.friendship_point_balance += points
+	friendship_point_balance_changed.emit(economy.friendship_point_balance)
 
 
 func _set_level(item_key: String, level: int) -> void:
-	_progression.item_levels[item_key] = level
+	items_world.item_levels[item_key] = level
 	if _is_placed(item_key):
 		_refresh_registration(item_key)
 	item_level_changed.emit(item_key)
@@ -308,10 +308,10 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		return
 	var item := _get_item(item_key)
 	if placement == PlacementScript.STORED:
-		_progression.item_placements.erase(item_key)
+		items_world.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
 	else:
-		_progression.item_placements[item_key] = placement
+		items_world.item_placements[item_key] = placement
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
 	item_placement_changed.emit(item_key, placement)

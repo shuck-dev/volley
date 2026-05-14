@@ -48,7 +48,7 @@ func before_each() -> void:
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
-	_manager._progression.friendship_point_balance = 10000
+	_manager.economy.friendship_point_balance = 10000
 
 	_rack = _make_rack(_manager)
 	_drop_target = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))

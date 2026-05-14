@@ -21,7 +21,8 @@ func before_each() -> void:
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = autoplay_controller_stub
 	_game._progression_config = ProgressionConfig.new()
-	_game._progression = ProgressionData.new()
+	_game._records = RecordsState.new()
+	_game._partners = PartnersState.new()
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)

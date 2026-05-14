@@ -56,7 +56,7 @@ func test_applies_stat_at_level_one() -> void:
 		var manager := _create_manager(item)
 		var stat := _stat_key(item)
 		var delta := _value_per_level(item)
-		manager._progression.friendship_point_balance = 100000
+		manager.economy.friendship_point_balance = 100000
 		manager.purchase(item.key)
 		assert_almost_eq(
 			manager.get_stat(stat),
@@ -72,7 +72,7 @@ func test_stacks_linearly_across_levels() -> void:
 		var manager := _create_manager(item)
 		var stat := _stat_key(item)
 		var delta := _value_per_level(item)
-		manager._progression.friendship_point_balance = 100000
+		manager.economy.friendship_point_balance = 100000
 		manager.purchase(item.key)
 		manager.purchase(item.key)
 		manager.purchase(item.key)
@@ -87,7 +87,7 @@ func test_stacks_linearly_across_levels() -> void:
 # --- percentage items ---
 func test_grip_tape_increases_paddle_size_on_purchase() -> void:
 	var manager := _create_manager(_grip_tape)
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
 	assert_gt(
 		manager.get_stat(&"paddle_size"),
@@ -98,7 +98,7 @@ func test_grip_tape_increases_paddle_size_on_purchase() -> void:
 
 func test_grip_tape_grows_with_level() -> void:
 	var manager := _create_manager(_grip_tape)
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
 	var size_at_level_one: float = manager.get_stat(&"paddle_size")
 	manager.purchase(_grip_tape.key)
@@ -112,7 +112,7 @@ func test_grip_tape_grows_with_level() -> void:
 func test_equal_percentage_modifiers_cancel_out() -> void:
 	var manager: Node = ItemFactory.create_manager(self, _grip_tape.key)
 	manager.items.assign([_grip_tape, _wrist_brace])
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
 	manager.purchase(_wrist_brace.key)
 	assert_almost_eq(
@@ -132,7 +132,7 @@ func test_wrist_brace_has_negative_effect_value() -> void:
 
 func test_wrist_brace_reduces_paddle_size_on_purchase() -> void:
 	var manager := _create_manager(_wrist_brace)
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
 	assert_lt(
 		manager.get_stat(&"paddle_size"),
@@ -143,7 +143,7 @@ func test_wrist_brace_reduces_paddle_size_on_purchase() -> void:
 
 func test_wrist_brace_increases_ball_speed_increment_on_purchase() -> void:
 	var manager := _create_manager(_wrist_brace)
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
 	assert_gt(
 		manager.get_stat(&"ball_speed_increment"),
@@ -154,7 +154,7 @@ func test_wrist_brace_increases_ball_speed_increment_on_purchase() -> void:
 
 func test_wrist_brace_cursed_penalty_scales_with_level() -> void:
 	var manager := _create_manager(_wrist_brace)
-	manager._progression.friendship_point_balance = 100000
+	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
 	var size_at_level_one: float = manager.get_stat(&"paddle_size")
 	manager.purchase(_wrist_brace.key)
