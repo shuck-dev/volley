@@ -15,13 +15,34 @@ plain=$(printf '%s\n' "$output" | sed -E 's/\x1b\[[0-9;]*m//g')
 
 fail=0
 
-# Filter out the cold-cache UID warning class (godot#101677, godot#115205, godot#109636).
-# See ai/scratchpads/godot-ci-uid-cache.md.
-warnings=$(printf '%s\n' "$plain" \
-	| grep -nE '^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):' \
-	| grep -vE 'ext_resource, invalid UID:' \
-	| grep -vE 'Failed loading resource: res://' \
-	|| true)
+# Filter out the cold-cache UID warning + paired Failed-loading-resource ERROR
+# (godot#101677, godot#115205, godot#109636); see ai/scratchpads/godot-ci-uid-cache.md.
+# Pair-match: drop the ERROR only when its path matches the immediately preceding
+# UID-warning's text-path target; standalone Failed-loading-resource ERRORs still fail the gate.
+warnings=$(printf '%s\n' "$plain" | awk '
+function warn_path(line,   m) {
+	if (match(line, /using text path instead: (res:\/\/[^ ]+)/, m)) return m[1]
+	return ""
+}
+function err_path(line,   m) {
+	if (match(line, /Failed loading resource: (res:\/\/[^ ]+)\./, m)) return m[1]
+	return ""
+}
+{
+	if (pending != "") {
+		if (err_path($0) == pending_path) {
+			pending = ""; pending_path = ""; next
+		}
+		print pending_lineno ":" pending
+		pending = ""; pending_path = ""
+	}
+	if ($0 ~ /^WARNING: .* ext_resource, invalid UID: .* using text path instead: res:\/\//) {
+		pending = $0; pending_lineno = NR; pending_path = warn_path($0); next
+	}
+	if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
+}
+END { if (pending != "") print pending_lineno ":" pending }
+' || true)
 
 if [ -n "$warnings" ]; then
 	printf '%s\n' "$warnings" | head -30

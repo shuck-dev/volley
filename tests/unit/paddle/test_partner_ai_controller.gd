@@ -72,6 +72,19 @@ func test_drifts_toward_center_when_ball_moving_away() -> void:
 	assert_lt(_paddle.velocity.y, 0.0, "should drift up toward center")
 
 
+func test_drifts_toward_center_when_ball_is_behind_paddle() -> void:
+	# Ball past the paddle's x position (was the _dodge trigger pre-removal). The fallback now drifts
+	# the paddle toward y=0 so it's ready for the next serve.
+	_ball.position = Vector2(PADDLE_X + 50.0, 0.0)
+	_ball.linear_velocity = BALL_APPROACHING_PARTNER
+	_paddle.position = Vector2(PADDLE_X, 200.0)
+
+	_run_frames(10)
+	assert_lt(
+		_paddle.velocity.y, 0.0, "ball-behind paddle should drift toward center, not move freely"
+	)
+
+
 # --- noise resampling ---
 func test_noise_offset_changes_when_ball_reverses_direction() -> void:
 	_config.noise = 50.0
