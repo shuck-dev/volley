@@ -69,24 +69,24 @@ jobs:
           set -e
           sed -E 's/\x1b\[[0-9;]*m//g' test_output.txt > test_output.plain
           fail=0
-          # Pair-match filter: drop cold-cache UID warning + adjacent matching Failed-loading-resource
-          # ERROR only when paths align (godot#101677, #115205, #109636). Standalone Failed-loading
-          # errors still fail the gate. See ai/scratchpads/godot-ci-uid-cache.md.
+          # Filter cold-cache UID warning class (godot#101677, #115205, #109636);
+          # see ai/scratchpads/godot-ci-uid-cache.md. WARNING pattern is unique
+          # enough to filter unconditionally. Failed-loading-resource ERROR is
+          # filtered only when its path matches a UID warning seen earlier in the
+          # run; standalone Failed-loading ERRORs still fail the gate.
           warnings=$(awk '
-          function warn_path(line,   m) { if (match(line, /using text path instead: (res:\/\/[^ ]+)/, m)) return m[1]; return "" }
-          function err_path(line,   m)  { if (match(line, /Failed loading resource: (res:\/\/[^ ]+)\./, m)) return m[1]; return "" }
           {
-            if (pending != "") {
-              if (err_path($0) == pending_path) { pending = ""; pending_path = ""; next }
-              print pending_lineno ":" pending; pending = ""; pending_path = ""
+            if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
+              cold_paths[m[1]] = 1
+              next
             }
-            if ($0 ~ /^WARNING: .* ext_resource, invalid UID: .* using text path instead: res:\/\//) {
-              pending = $0; pending_lineno = NR; pending_path = warn_path($0); next
+            if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
+              if (m[1] in cold_paths) next
+              print NR ":" $0
+              next
             }
             if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
-          }
-          END { if (pending != "") print pending_lineno ":" pending }
-          ' test_output.plain || true)
+          }' test_output.plain || true)
           if [ -n "$warnings" ]; then
             echo "::error::Warnings or errors in test output"
             printf '%s\n' "$warnings" | head -30

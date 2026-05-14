@@ -15,34 +15,24 @@ plain=$(printf '%s\n' "$output" | sed -E 's/\x1b\[[0-9;]*m//g')
 
 fail=0
 
-# Filter out the cold-cache UID warning + paired Failed-loading-resource ERROR
-# (godot#101677, godot#115205, godot#109636); see ai/scratchpads/godot-ci-uid-cache.md.
-# Pair-match: drop the ERROR only when its path matches the immediately preceding
-# UID-warning's text-path target; standalone Failed-loading-resource ERRORs still fail the gate.
+# Filter cold-cache UID warning class (godot#101677, godot#115205, godot#109636);
+# see ai/scratchpads/godot-ci-uid-cache.md. The WARNING pattern is unique enough to
+# filter unconditionally. Filter the paired Failed-loading-resource ERROR only when
+# its path matches a UID warning seen earlier in the run; standalone Failed-loading
+# ERRORs (broken .tres, missing scenes) still fail the gate.
 warnings=$(printf '%s\n' "$plain" | awk '
-function warn_path(line,   m) {
-	if (match(line, /using text path instead: (res:\/\/[^ ]+)/, m)) return m[1]
-	return ""
-}
-function err_path(line,   m) {
-	if (match(line, /Failed loading resource: (res:\/\/[^ ]+)\./, m)) return m[1]
-	return ""
-}
 {
-	if (pending != "") {
-		if (err_path($0) == pending_path) {
-			pending = ""; pending_path = ""; next
-		}
-		print pending_lineno ":" pending
-		pending = ""; pending_path = ""
+	if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
+		cold_paths[m[1]] = 1
+		next
 	}
-	if ($0 ~ /^WARNING: .* ext_resource, invalid UID: .* using text path instead: res:\/\//) {
-		pending = $0; pending_lineno = NR; pending_path = warn_path($0); next
+	if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
+		if (m[1] in cold_paths) next
+		print NR ":" $0
+		next
 	}
 	if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
-}
-END { if (pending != "") print pending_lineno ":" pending }
-' || true)
+}' || true)
 
 if [ -n "$warnings" ]; then
 	printf '%s\n' "$warnings" | head -30
