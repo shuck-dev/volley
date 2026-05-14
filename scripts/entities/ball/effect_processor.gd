@@ -1,6 +1,15 @@
 class_name BallEffectProcessor
 extends Node
 
+## Debug-only signal: fired after every paddle bounce, post-clamp and post-english, so dev overlays can echo the resolved direction.
+signal bounce_resolved(
+	struck_paddle: Paddle,
+	offset_norm: float,
+	target_angle: float,
+	incoming_y_sign: float,
+	horizontal_sign: float
+)
+
 # Safety floors that keep every active bounce visibly directional without dead-straight or wall-sticking returns.
 const MIN_ANGLE_OFF_HORIZONTAL_DEGREES := 3.0
 const MAX_ANGLE_OFF_HORIZONTAL_DEGREES := 87.0
@@ -117,6 +126,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 	ball.linear_velocity = direction * ball.speed
+	bounce_resolved.emit(struck_paddle, offset_norm, target_angle, incoming_y_sign, horizontal_sign)
 
 
 # Clamps magnitude off horizontal/vertical; on zero angle the incoming y-sign breaks the tie.
