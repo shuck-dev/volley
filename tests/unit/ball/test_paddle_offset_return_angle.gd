@@ -4,12 +4,15 @@ extends GutTest
 
 const PADDLE_HALF_HEIGHT := 27.0
 const MAX_DEGREES := 30.0
-const MIN_ANGLE_DEG := 3.0
-const MAX_ANGLE_DEG := 87.0
 
 var _ball: Ball
 var _paddle: Paddle
 var _manager: Node
+var _min_angle_deg: float
+
+
+func _live_min_angle_deg() -> float:
+	return GameRules.paddle.paddle_bounce_min_angle_degrees
 
 
 class PaddleDouble:
@@ -24,6 +27,7 @@ func before_each() -> void:
 	_paddle = PaddleDouble.new()
 	add_child_autofree(_paddle)
 	_paddle.global_position = Vector2(0, 0)
+	_min_angle_deg = _live_min_angle_deg()
 
 
 func _build_with_max_degrees(degrees: float) -> void:
@@ -41,6 +45,7 @@ func _build_with_stats_and_min_angle(
 	_manager = ItemFactory.create_manager(
 		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", degrees
 	)
+
 	if english != 0.0:
 		var english_item := ItemFactory.create(
 			"english_kit", &"paddle_english_coefficient", &"add", english
@@ -74,7 +79,7 @@ func test_centre_hit_returns_within_min_angle_band() -> void:
 	_ball.effect_processor.process_hit(_paddle)
 
 	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
 	assert_gt(_ball.linear_velocity.x, 0.0)
 
 
@@ -156,7 +161,7 @@ func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
 	assert_gt(
 		rad_to_deg(angle),
-		MIN_ANGLE_DEG + 0.01,
+		_min_angle_deg + 0.01,
 		"English should push beyond the centre-hit min-angle floor"
 	)
 
@@ -202,7 +207,7 @@ func test_descending_ball_centre_hit_returns_downward() -> void:
 
 	assert_gt(_ball.linear_velocity.y, 0.0, "Descending centre hit should leave descending")
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
 
 
 func test_ascending_ball_centre_hit_returns_upward() -> void:
@@ -216,7 +221,7 @@ func test_ascending_ball_centre_hit_returns_upward() -> void:
 
 	assert_lt(_ball.linear_velocity.y, 0.0, "Ascending centre hit should leave ascending")
 	var angle: float = atan2(-_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
 
 
 # --- min-angle dead zone is tunable ---
@@ -243,7 +248,7 @@ func test_raising_min_angle_floor_steepens_centre_hit() -> void:
 
 
 func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
-	# Degenerate case: both target angle and incoming y are zero; default to +MIN_ANGLE_DEG.
+	# Degenerate case: both target angle and incoming y are zero; default to +_min_angle_deg.
 	_build_with_stats(MAX_DEGREES, 0.0)
 	_paddle.velocity = Vector2.ZERO
 	_ball.global_position = Vector2(0, 0)
@@ -256,4 +261,19 @@ func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
 		_ball.linear_velocity.y, 0.0, "Default tiebreaker should send bounce below horizontal"
 	)
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
-	assert_almost_eq(rad_to_deg(angle), MIN_ANGLE_DEG, 0.01)
+	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
+
+
+# --- early-return gate: max=0 silences english too ---
+func test_zero_max_degrees_with_english_and_paddle_motion_leaves_velocity_untouched() -> void:
+	# Early-return on max_degrees=0 keeps english dormant even with paddle vertical velocity.
+	_build_with_stats(0.0, 0.001)
+	_paddle.velocity = Vector2(0.0, 400.0)
+	_ball.global_position = Vector2(0, 0)
+	var incoming := Vector2(100, 0)
+	_ball.linear_velocity = incoming
+	_ball.speed = _ball.linear_velocity.length()
+
+	_ball.effect_processor.process_hit(_paddle)
+
+	assert_eq(_ball.linear_velocity, incoming, "max_degrees=0 short-circuits english entirely")

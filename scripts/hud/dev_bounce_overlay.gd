@@ -101,7 +101,10 @@ func _draw_cone(paddle: Paddle) -> void:
 		GameRules.paddle.paddle_bounce_min_angle_degrees, &"paddle_bounce_min_angle_degrees"
 	)
 	var floor_rad: float = deg_to_rad(min_degrees)
-	var ceil_rad: float = deg_to_rad(BallEffectProcessor.MAX_ANGLE_OFF_HORIZONTAL_DEGREES)
+	var max_degrees_off: float = Stats.resolve(
+		GameRules.paddle.paddle_bounce_max_angle_degrees, &"paddle_bounce_max_angle_degrees"
+	)
+	var ceil_rad: float = deg_to_rad(max_degrees_off)
 	var requested_rad: float = deg_to_rad(max_degrees)
 	# Reachable cone half-angle is the requested max, clamped by the global floor/ceiling.
 	var reachable: float = clampf(requested_rad, floor_rad, ceil_rad)

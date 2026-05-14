@@ -10,9 +10,6 @@ signal bounce_resolved(
 	horizontal_sign: float
 )
 
-# Ceiling stays a const; the floor is tunable via PaddleConfig.paddle_bounce_min_angle_degrees so items can grow the dead zone.
-const MAX_ANGLE_OFF_HORIZONTAL_DEGREES := 87.0
-
 var ball: Ball
 var paddles: Array[Node2D] = []
 var item_manager: Node
@@ -36,12 +33,21 @@ func sync_base_speed() -> void:
 
 
 func _sync_speed_limits() -> void:
+	_sync_min_speed()
+	_sync_max_speed()
+	_apply_speed_offset()
+
+
+func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager
 	)
 	if not is_equal_approx(new_min, ball.min_speed):
 		_base_speed += new_min - ball.min_speed
 		ball.min_speed = new_min
+
+
+func _sync_max_speed() -> void:
 	ball.max_speed = (
 		ball.min_speed
 		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", item_manager)
@@ -50,6 +56,8 @@ func _sync_speed_limits() -> void:
 		GameRules.base.ball_speed_increment, &"ball_speed_increment", item_manager
 	)
 
+
+func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
 		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager
 	)
@@ -144,8 +152,16 @@ func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) ->
 			item_manager,
 		)
 	)
+	var max_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_bounce_max_angle_degrees,
+			&"paddle_bounce_max_angle_degrees",
+			item_manager,
+		)
+	)
 	var min_magnitude: float = deg_to_rad(min_degrees)
-	var max_magnitude: float = deg_to_rad(MAX_ANGLE_OFF_HORIZONTAL_DEGREES)
+	var max_magnitude: float = deg_to_rad(max_degrees)
 	var sign_y: float = signf(angle)
 	if sign_y == 0.0:
 		sign_y = incoming_y_sign

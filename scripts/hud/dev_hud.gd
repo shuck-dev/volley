@@ -37,7 +37,7 @@ func _on_debug_overlay_toggled(pressed: bool) -> void:
 func _on_cone_follow_toggled(pressed: bool) -> void:
 	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
 		if overlay is DevBounceOverlay:
-			(overlay as DevBounceOverlay).follow_last_hit = pressed
+			overlay.follow_last_hit = pressed
 			overlay.queue_redraw()
 
 
