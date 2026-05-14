@@ -15,7 +15,7 @@ var _paddle: Paddle
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager.items_world = ItemWorldState.new()
+	_manager.state = ItemWorldState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")

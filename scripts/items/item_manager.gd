@@ -19,14 +19,14 @@ var items: Array[ItemDefinition] = [
 	preload("res://resources/items/wrist_brace.tres"),
 ]
 
-var items_world: ItemWorldState
+var state: ItemWorldState
 var economy: EconomyState
 var _effect_manager: EffectManager
 
 
 func _ready() -> void:
-	if items_world == null:
-		items_world = SaveManager.items_world
+	if state == null:
+		state = SaveManager.items
 	if economy == null:
 		economy = SaveManager.economy
 	if _effect_manager == null:
@@ -98,21 +98,21 @@ func get_percentage_offset(key: StringName) -> float:
 
 
 ## Returns whether a named game state is currently active
-func is_game_state_active(state: StringName) -> bool:
-	return _effect_manager.is_game_state_active(state)
+func is_game_state_active(game_state: StringName) -> bool:
+	return _effect_manager.is_game_state_active(game_state)
 
 
 ## Returns current level of an item (0 if not owned)
 func get_level(item_key: String) -> int:
-	return items_world.item_levels.get(item_key, 0)
+	return state.item_levels.get(item_key, 0)
 
 
 ## Returns the current placement of an item. Defaults to STORED (on the rack).
 ## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
 func _get_placement(item_key: String) -> int:
-	if items_world.loose_in_venue.has(item_key):
+	if state.loose_in_venue.has(item_key):
 		return PlacementScript.LOOSE_IN_VENUE
-	return items_world.item_placements.get(item_key, PlacementScript.STORED)
+	return state.item_placements.get(item_key, PlacementScript.STORED)
 
 
 ## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
@@ -122,23 +122,23 @@ func get_placement(item_key: String) -> int:
 
 ## True when a loose body for this item exists on the venue floor.
 func is_loose_in_venue(item_key: String) -> bool:
-	return items_world.loose_in_venue.has(item_key)
+	return state.loose_in_venue.has(item_key)
 
 
 ## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.
 func mark_loose_in_venue(item_key: String, position: Vector2 = Vector2.ZERO) -> void:
-	if items_world.loose_in_venue.has(item_key):
-		items_world.loose_in_venue[item_key] = position
+	if state.loose_in_venue.has(item_key):
+		state.loose_in_venue[item_key] = position
 		return
-	items_world.loose_in_venue[item_key] = position
+	state.loose_in_venue[item_key] = position
 	item_placement_changed.emit(item_key, PlacementScript.LOOSE_IN_VENUE)
 
 
 ## Clears the loose-in-venue entry. Idempotent. Emits item_placement_changed with the underlying placement.
 func clear_loose_in_venue(item_key: String) -> void:
-	if not items_world.loose_in_venue.has(item_key):
+	if not state.loose_in_venue.has(item_key):
 		return
-	items_world.loose_in_venue.erase(item_key)
+	state.loose_in_venue.erase(item_key)
 	item_placement_changed.emit(item_key, _get_placement(item_key))
 
 
@@ -214,7 +214,7 @@ func purchase(item_key: String) -> bool:
 	var was_unowned := get_level(item_key) == 0
 	subtract_friendship_points(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
-	items_world.item_levels[item_key] = new_level
+	state.item_levels[item_key] = new_level
 	if was_unowned:
 		# First purchase lands the item on its natural target, skipping the rack.
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
@@ -266,7 +266,7 @@ func remove_level(item_key: String) -> void:
 ## any purchase, so racks and progression have a real placement to register.
 func adopt_authored(item_key: String) -> void:
 	if get_level(item_key) <= 0:
-		items_world.item_levels[item_key] = 1
+		state.item_levels[item_key] = 1
 		item_level_changed.emit(item_key)
 	if not is_on_court(item_key):
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
@@ -280,7 +280,7 @@ func take(item_key: String) -> bool:
 	if economy.friendship_point_balance < calculate_cost(item_key):
 		return false
 	subtract_friendship_points(calculate_cost(item_key))
-	items_world.item_levels[item_key] = 1
+	state.item_levels[item_key] = 1
 	item_level_changed.emit(item_key)
 	SaveManager.save()
 	return true
@@ -294,7 +294,7 @@ func _refund_friendship_points(points: int) -> void:
 
 
 func _set_level(item_key: String, level: int) -> void:
-	items_world.item_levels[item_key] = level
+	state.item_levels[item_key] = level
 	if _is_placed(item_key):
 		_refresh_registration(item_key)
 	item_level_changed.emit(item_key)
@@ -306,10 +306,10 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		return
 	var item := _get_item(item_key)
 	if placement == PlacementScript.STORED:
-		items_world.item_placements.erase(item_key)
+		state.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
 	else:
-		items_world.item_placements[item_key] = placement
+		state.item_placements[item_key] = placement
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
 	item_placement_changed.emit(item_key, placement)

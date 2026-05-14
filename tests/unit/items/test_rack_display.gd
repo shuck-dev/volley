@@ -155,7 +155,7 @@ func test_deactivating_an_item_restores_its_slot() -> void:
 func test_court_role_items_never_appear_on_either_rack() -> void:
 	var court_item := _make_item("court_alpha", &"court")
 	var manager: Node = _make_manager_with([court_item])
-	manager.items_world.item_levels[court_item.key] = 1
+	manager.state.item_levels[court_item.key] = 1
 
 	var ball_rack := _make_rack(&"ball", manager)
 	var gear_rack := _make_rack(&"equipment", manager)

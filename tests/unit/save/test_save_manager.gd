@@ -17,7 +17,7 @@ func before_each() -> void:
 # --- slice accessors ---
 func test_slices_are_created_on_ready() -> void:
 	assert_not_null(_save_manager.economy)
-	assert_not_null(_save_manager.items_world)
+	assert_not_null(_save_manager.items)
 	assert_not_null(_save_manager.records)
 	assert_not_null(_save_manager.unlocks)
 	assert_not_null(_save_manager.partners)
@@ -34,7 +34,7 @@ func test_save_writes_assembled_per_slice_json() -> void:
 	_save_manager.save()
 	var expected: Dictionary = {
 		"economy": _save_manager.economy.to_save_dict(),
-		"items": _save_manager.items_world.to_save_dict(),
+		"items": _save_manager.items.to_save_dict(),
 		"records": _save_manager.records.to_save_dict(),
 		"unlocks": _save_manager.unlocks.to_save_dict(),
 		"partners": _save_manager.partners.to_save_dict(),
@@ -100,13 +100,13 @@ func test_save_captures_positions_from_registered_provider() -> void:
 	var live: Dictionary[String, Vector2] = {"base_ball": Vector2(50.0, 75.0)}
 	_save_manager.set_position_provider(func() -> Dictionary[String, Vector2]: return live)
 	_save_manager.save()
-	assert_eq(_save_manager.items_world.ball_positions["base_ball"], Vector2(50.0, 75.0))
+	assert_eq(_save_manager.items.ball_positions["base_ball"], Vector2(50.0, 75.0))
 
 
 func test_save_without_provider_leaves_positions_untouched() -> void:
-	_save_manager.items_world.ball_positions["base_ball"] = Vector2(1.0, 2.0)
+	_save_manager.items.ball_positions["base_ball"] = Vector2(1.0, 2.0)
 	_save_manager.save()
-	assert_eq(_save_manager.items_world.ball_positions["base_ball"], Vector2(1.0, 2.0))
+	assert_eq(_save_manager.items.ball_positions["base_ball"], Vector2(1.0, 2.0))
 
 
 # --- load_from_disk ---

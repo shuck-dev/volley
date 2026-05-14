@@ -23,7 +23,7 @@ var _drag: BallDragController
 
 func before_each() -> void:
 	_manager = ItemManagerScript.new()
-	_manager.items_world = ItemWorldState.new()
+	_manager.state = ItemWorldState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
@@ -299,11 +299,11 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	)
 	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
 
-	var saved_blob: String = JSON.stringify(_manager.items_world.to_save_dict())
+	var saved_blob: String = JSON.stringify(_manager.state.to_save_dict())
 
 	var reloaded_manager: Node = ItemManagerScript.new()
-	reloaded_manager.items_world = ItemWorldState.new()
-	reloaded_manager.items_world.apply_save_dict(JSON.parse_string(saved_blob))
+	reloaded_manager.state = ItemWorldState.new()
+	reloaded_manager.state.apply_save_dict(JSON.parse_string(saved_blob))
 	reloaded_manager.economy = EconomyState.new()
 	reloaded_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]

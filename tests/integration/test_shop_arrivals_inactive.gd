@@ -23,7 +23,7 @@ var _gear_rack: Node2D
 
 func before_each() -> void:
 	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager.items_world = ItemWorldState.new()
+	_item_manager.state = ItemWorldState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence])

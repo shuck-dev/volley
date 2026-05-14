@@ -278,8 +278,8 @@ class TestReloadFromProgression:
 			"no level, no effect"
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
-		_manager.items_world.item_levels[TEST_KEY] = 1
-		_manager.items_world.item_placements[TEST_KEY] = (
+		_manager.state.item_levels[TEST_KEY] = 1
+		_manager.state.item_placements[TEST_KEY] = (
 			preload("res://scripts/items/placement.gd").EQUIPPED
 		)
 		_manager.reload_from_progression()
@@ -298,7 +298,7 @@ class TestReloadFromProgression:
 			base_speed + 50.0
 		)
 		# Simulate progression data being rewritten externally
-		_manager.items_world.item_levels.clear()
+		_manager.state.item_levels.clear()
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),

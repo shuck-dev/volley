@@ -9,7 +9,7 @@ const _SLICE_SCRIPTS := {
 }
 
 var economy: EconomyState
-var items_world: ItemWorldState
+var items: ItemWorldState
 var records: RecordsState
 var unlocks: UnlocksState
 var partners: PartnersState
@@ -122,7 +122,7 @@ func _capture_live_positions() -> void:
 		var value: Variant = live[key]
 		if value is Vector2:
 			typed[str(key)] = value
-	items_world.ball_positions = typed
+	items.ball_positions = typed
 
 
 ## Clears progression and blocks writes so the scene reload that follows cannot
@@ -154,8 +154,8 @@ func _notification(what: int) -> void:
 func _ensure_slices() -> void:
 	if economy == null:
 		economy = _SLICE_SCRIPTS["economy"].new()
-	if items_world == null:
-		items_world = _SLICE_SCRIPTS["items"].new()
+	if items == null:
+		items = _SLICE_SCRIPTS["items"].new()
 	if records == null:
 		records = _SLICE_SCRIPTS["records"].new()
 	if unlocks == null:
@@ -165,7 +165,7 @@ func _ensure_slices() -> void:
 
 	_slices = {
 		"economy": economy,
-		"items": items_world,
+		"items": items,
 		"records": records,
 		"unlocks": unlocks,
 		"partners": partners,

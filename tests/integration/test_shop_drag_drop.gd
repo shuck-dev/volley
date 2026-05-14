@@ -19,7 +19,7 @@ var _item_manager: Node
 
 func before_each() -> void:
 	_item_manager = ItemManagerScript.new()
-	_item_manager.items_world = ItemWorldState.new()
+	_item_manager.state = ItemWorldState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
@@ -318,7 +318,7 @@ class TestSH332InsideShopDrag:
 
 	func before_each() -> void:
 		_item_manager = ItemManagerScript.new()
-		_item_manager.items_world = ItemWorldState.new()
+		_item_manager.state = ItemWorldState.new()
 		_item_manager.economy = EconomyState.new()
 		_item_manager._effect_manager = EffectManager.new()
 		_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
