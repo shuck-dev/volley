@@ -22,6 +22,18 @@ func test_overlay_instantiates_without_tracker() -> void:
 	assert_true(overlay.is_in_group(&"dev_overlays"), "overlay joins dev_overlays group")
 
 
+func test_overlay_projects_world_to_canvas() -> void:
+	# Overlay sits in screen space (top_level Node2D); world coords must pass through the viewport transform.
+	var overlay: DevBounceOverlay = DevBounceOverlayScript.new()
+	add_child_autofree(overlay)
+	await get_tree().process_frame
+	var world_pos := Vector2(400.0, -200.0)
+	var expected: Vector2 = overlay.get_viewport_transform() * world_pos
+	var projected: Vector2 = overlay._project_to_canvas(world_pos)
+	assert_almost_eq(projected.x, expected.x, 0.01)
+	assert_almost_eq(projected.y, expected.y, 0.01)
+
+
 func test_panel_receives_bounce_signal() -> void:
 	# Forward a bounce_resolved payload manually and confirm the panel formats it without erroring.
 	var panel: DevBouncePanel = DevBouncePanelScript.new()

@@ -74,6 +74,11 @@ func _draw() -> void:
 		_draw_last_hit(paddle)
 
 
+# top_level Node2D in a CanvasLayer draws in screen space, so world coords need the viewport transform.
+func _project_to_canvas(world_pos: Vector2) -> Vector2:
+	return get_viewport_transform() * world_pos
+
+
 func _draw_cone(paddle: Paddle) -> void:
 	var max_degrees: float = Stats.resolve(
 		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
@@ -97,7 +102,7 @@ func _draw_cone(paddle: Paddle) -> void:
 	# Reachable cone half-angle is the requested max, clamped by the global floor/ceiling.
 	var reachable: float = clampf(requested_rad, floor_rad, ceil_rad)
 
-	var origin: Vector2 = paddle.global_position
+	var origin: Vector2 = _project_to_canvas(paddle.global_position)
 	var upper := Vector2(return_sign * cos(reachable), -sin(reachable)) * CONE_LENGTH
 	var lower := Vector2(return_sign * cos(reachable), sin(reachable)) * CONE_LENGTH
 	var floor_upper := Vector2(return_sign * cos(floor_rad), -sin(floor_rad)) * CONE_LENGTH
@@ -118,7 +123,8 @@ func _draw_last_hit(paddle: Paddle) -> void:
 	if not _last_hits.has(paddle):
 		return
 	var hit: Dictionary = _last_hits[paddle]
-	var contact: Vector2 = Vector2(paddle.global_position.x, hit["contact_y"])
+	var world_contact := Vector2(paddle.global_position.x, hit["contact_y"])
+	var contact: Vector2 = _project_to_canvas(world_contact)
 	var target_angle: float = hit["target_angle"]
 	var horizontal_sign: float = hit["horizontal_sign"]
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
