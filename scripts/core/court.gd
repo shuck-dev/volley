@@ -34,12 +34,16 @@ var _friendship_point_accumulator := 0.0
 
 func _ready() -> void:
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
+
 	if _records == null:
 		_records = SaveManager.records
+
 	if _partners == null:
 		_partners = SaveManager.partners
+
 	if _progression_config == null:
 		_progression_config = ProgressionManager.get_config()
+
 	if _item_manager == null:
 		_item_manager = ItemManager
 

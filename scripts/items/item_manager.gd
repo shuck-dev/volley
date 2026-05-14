@@ -27,8 +27,10 @@ var _effect_manager: EffectManager
 func _ready() -> void:
 	if state == null:
 		state = SaveManager.items
+
 	if economy == null:
 		economy = SaveManager.economy
+
 	if _effect_manager == null:
 		_effect_manager = EffectManager.new()
 		_effect_manager.name = "EffectManager"

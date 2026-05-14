@@ -1,5 +1,7 @@
 extends Node
 
+# todo: split this autoload by domain (PartnersManager, EconomyManager); the four slices here do not share a concern.
+
 signal shop_unlocked_changed(is_unlocked: bool)
 signal partner_recruit_available(partner: PartnerDefinition)
 signal partner_recruited(partner_key: StringName)
@@ -26,16 +28,22 @@ var _save_manager: Node
 func _ready() -> void:
 	if _save_manager == null:
 		_save_manager = SaveManager
+
 	if economy == null:
 		economy = _save_manager.economy
+
 	if records == null:
 		records = _save_manager.records
+
 	if unlocks == null:
 		unlocks = _save_manager.unlocks
+
 	if partners == null:
 		partners = _save_manager.partners
+
 	if _config == null:
 		_config = DEFAULT_CONFIG
+
 	if _item_manager == null:
 		_item_manager = ItemManager
 
