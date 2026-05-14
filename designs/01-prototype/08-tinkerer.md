@@ -81,7 +81,7 @@ On load: resume the state with remaining duration.
 ### Commission kinds
 
 - **Level up:** `item_levels[item_key]` += 1. Ball and equipment items return inactive (to `BallRack` or `GearRack`); court items return to a free `Roles/Court` marker.
-- **Destroy:** `item_levels[item_key] = 0`, append to `destroyed_items`, partial FP refund, any secret unlock enters the shop pool (see `04-upgrade-shop.md`). The tinkerer's dialogue holds its tongue on secret unlocks.
+- **Destroy:** `item_levels[item_key] = 0`, append to `destroyed_items`, partial friendship refund, any secret unlock enters the shop pool (see `04-upgrade-shop.md`). The tinkerer's dialogue holds its tongue on secret unlocks.
 
 ---
 

@@ -13,7 +13,7 @@ Reaching the top of a tier is supposed to register as an event, not as a number 
 Rewards are what fires on `on_tier_completed`. They are tuned for first playtest, not for final balance.
 
 - **Tier 0 peak** (entering Tier 1). Baseline rally state. No reward fires. The band shift is its own felt beat: the ball arrives in the next register, audio brightens a step, the trail gets a little longer. The rally counter ticks in its normal rhythm.
-- **Tier 1 peak** (entering Tier 2). Small cheer and a sparkle off the ball at the moment of the transition. One FP tick lands on the next paddle hit. The rally counter flourishes, a single beat bigger than its usual tick. No currency, no unlock.
+- **Tier 1 peak** (entering Tier 2). Small cheer and a sparkle off the ball at the moment of the transition. One friendship tick lands on the next paddle hit. The rally counter flourishes, a single beat bigger than its usual tick. No currency, no unlock.
 - **Tier 2 peak** (entering Tier 3). A bigger audio beat on the transition and a brief aura around the ball that reads through the next few hits. A small currency reward drops as a diegetic shard or coin that arcs into the HUD counter (no banner).
 - **Tier 3 peak** (Peak window opens). The rare, shop-tier beat. The aura holds for the full Peak window, paddle hits inside Peak play a richer return sound, and the window closes with a banked reward: a shop voucher, an item unlock signal, or a mid-sized currency drop that the player feels in the next shop. Only one Peak reward banks per rally.
 
@@ -31,4 +31,4 @@ Across a full run the player's felt arc is: Tier 0 is the warm-up, Tier 1 is the
 
 - Shop-tier reward shape at Tier 3. A voucher (choose next shop slot), an unlock token (advance a partner track), and a banked-currency drop are all viable. Pick one for first playtest; the others become event-bus reward handlers later.
 - Peak-miss penalty. A "crash" that halves this rally's coin take would give Peak risk. Start without it; revisit once the reward ladder has playtest data.
-- Tier 0 peak is currently rewardless. If playtest shows Tier 1 entry feels abrupt, a very small fiction-only beat (a single sparkle, no FP, no coin) can fill the gap without changing the ladder's economy.
+- Tier 0 peak is currently rewardless. If playtest shows Tier 1 entry feels abrupt, a very small fiction-only beat (a single sparkle, no friendship, no coin) can fill the gap without changing the ladder's economy.

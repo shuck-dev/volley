@@ -179,7 +179,7 @@ Unchanged in behaviour: spawns items, updates friendship label, exposes `preferr
 
 ## Take flow on drop
 
-On a successful drop, `TakeBox.accept()` calls `ItemManager.take(key)`. That method deducts FP, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
+On a successful drop, `TakeBox.accept()` calls `ItemManager.take(key)`. That method deducts friendship, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
 
 UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
 
@@ -189,7 +189,7 @@ UI listeners react to the existing `friendship_point_balance_changed` and `item_
 
 The current `ItemManager.purchase(item_key)` conflates owning an item with equipping its effects. That is fine for the dev item panel (which wants both in one click) but wrong for the shop: per 04-kit-and-locker, only equipped kit items fire effects, and equipping is a separate action the kit/locker UI owns.
 
-SH-66 adds a new `take(item_key)` method that deducts FP, marks the item as owned, saves, and emits `item_level_changed`, but deliberately does **not** register effects with `EffectManager`. The shop calls this instead of `purchase()`.
+SH-66 adds a new `take(item_key)` method that deducts friendship, marks the item as owned, saves, and emits `item_level_changed`, but deliberately does **not** register effects with `EffectManager`. The shop calls this instead of `purchase()`.
 
 The existing `purchase()` method stays unchanged so the dev panel and existing tests continue to work. The eventual kit/locker ticket will replace the dev panel's reliance on auto-equipping and `purchase()` can be deleted then.
 
@@ -205,7 +205,7 @@ Why a fresh build each time: the preview is consumed by Godot's internal drag st
 
 ## Edge cases
 
-Godot's built-in drag protocol handles cancellation silently: dropping outside any Control, on a Control that does not accept the payload, or on a target whose `can_accept` returns false at drop time all cancel the drag with no code. `_can_drop_data` is called repeatedly during hover, so a mid-drag state change (FP dips below cost, item becomes owned via another path) is caught at release and the drop is refused.
+Godot's built-in drag protocol handles cancellation silently: dropping outside any Control, on a Control that does not accept the payload, or on a target whose `can_accept` returns false at drop time all cancel the drag with no code. `_can_drop_data` is called repeatedly during hover, so a mid-drag state change (friendship dips below cost, item becomes owned via another path) is caught at release and the drop is refused.
 
 ---
 

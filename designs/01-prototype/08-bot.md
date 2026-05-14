@@ -36,7 +36,7 @@ Pure standard-item path:
 - Player drags the bot from the box directly onto the court. `activate(bot_key)` fires at the `court` role; `FixtureManager` spawns `bot_dock.tscn` at `BotDock`.
 - Court items never leave the court except through the Tinkerer. Drag the bot to the workshop drop-off basket for level-up (returns to a court marker when done) or destruction (permanent removal).
 
-The bot does not generate passive FP; only kit items do.
+The bot does not generate passive friendship; only kit items do.
 
 ---
 
@@ -98,7 +98,7 @@ A future `bot_manually_paused: bool` on `ProgressionData` would let the player d
 ## Open questions
 
 1. **Bot paddle visible while the player plays?** Leaning off-scene.
-2. **Bot-earned FP modifier?** Leaning 0.7x at level 1, parity at max.
+2. **Bot-earned friendship modifier?** Leaning 0.7x at level 1, parity at max.
 3. **Endurance in prototype?** Leaning flat (schema ready for later).
 4. **Multiple bots in Alpha?** Leaning one.
 

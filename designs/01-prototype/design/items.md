@@ -4,7 +4,7 @@ Design for the prototype's item set. Item effects are gameplay-first: the effect
 
 The Tinkerer carries the narrative meaning of each item. The item itself just does its thing.
 
-FP is the pre-break incentive currency. Post-break phases may introduce different objectives, so items designed for those phases may target different incentives entirely. Pre-break prototype items are FP-focused, but the framework must not assume FP is always the reward worth designing around. Items that carry across phases should stay useful under different objective conditions.
+Friendship is the pre-break incentive currency. Post-break phases may introduce different objectives, so items designed for those phases may target different incentives entirely. Pre-break prototype items are friendship-focused, but the framework must not assume friendship is always the reward worth designing around. Items that carry across phases should stay useful under different objective conditions.
 
 Implementation spec lives in [`../tech/05-items.md`](../tech/05-items.md). Effect-system framework lives in [`../tech/04-effect-system.md`](../tech/04-effect-system.md).
 
@@ -76,7 +76,7 @@ Referee card + shifting colour. Battered card, creased at the corners, colour di
 | After first colour change | "That wasn't green" |
 | Post-Break | "Why wasn't I there?" |
 
-Every n-th hit, the card flips to a random colour. Each colour sets the FP-per-hit multiplier until the next flip. Every flip also deflects the ball to a random angle. The player learns colours through play, not a legend.
+Every n-th hit, the card flips to a random colour. Each colour sets the friendship-per-hit multiplier until the next flip. Every flip also deflects the ball to a random angle. The player learns colours through play, not a legend.
 
 Blue and Gold do not exist in refereeing. The card is showing calls that cannot exist.
 
@@ -90,7 +90,7 @@ Medicine ball + dense metal. Small, impossibly heavy, dull grey surface with no 
 | After first gravity-warped hit | "Why does my hand look weird?" |
 | Post-Break | "Still there" |
 
-A gravity well sits on the court, curving ball trajectory toward it. Hits on faster balls earn bonus FP. At max level, the well surges when the ball passes behind a paddle.
+A gravity well sits on the court, curving ball trajectory toward it. Hits on faster balls earn bonus friendship. At max level, the well surges when the ball passes behind a paddle.
 
 ### Spare
 
@@ -118,7 +118,7 @@ Each rally starts a hidden timer (random delay). If the timer fires before you m
 
 | Roll | Effect |
 |---|---|
-| **Payout** | FP burst |
+| **Payout** | Friendship burst |
 | **Photo Finish** | Temporary ball speed boost |
 | **Dead Heat** | Temporary paddle size increase |
 | **False Start** | Ball speed immediately set to max |
@@ -144,7 +144,7 @@ Mirror + no end. Small rectangular locker mirror, scratched frame. Looks normal 
 | Power revealed (curse felt, or Tinkerer levels it) | "Sharper than before" |
 | Post-Break | "Some things don't heal" |
 
-Passive FP multiplier that scales with hidden crack count. Each miss adds a crack. The player never sees the number. More cracks means more fractal reflections, higher multiplier. At 100 cracks the mirror breaks and becomes a cursed item with a slight debuff. The broken state persists until dealt with.
+Passive friendship multiplier that scales with hidden crack count. Each miss adds a crack. The player never sees the number. More cracks means more fractal reflections, higher multiplier. At 100 cracks the mirror breaks and becomes a cursed item with a slight debuff. The broken state persists until dealt with.
 
 Leveling fully repairs the mirror, resetting cracks to zero and the multiplier back to base. The player chooses when to level: push the cracked multiplier higher, or repair before it breaks.
 

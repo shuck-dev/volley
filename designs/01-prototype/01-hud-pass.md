@@ -9,7 +9,7 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 
 **Points:** 2
 **Dependencies:** Pong Prototype (done)
-**Unlocks:** Ball Scaling, Progression System (FP display, high score persistence)
+**Unlocks:** Ball Scaling, Progression System (friendship display, high score persistence)
 
 ## Current state
 - Ball emits `paddle_hit` on paddle contact — working
@@ -27,7 +27,7 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 4. HUD wiring and high score display
 
 ### Out of scope
-- FP display (Progression System)
+- Friendship display (Progression System)
 - Streak-based visual feedback or animations (UI Polish in v0.5)
 - Ball speed changes during streak (Ball Scaling)
 - Save/load of high score (Progression System)

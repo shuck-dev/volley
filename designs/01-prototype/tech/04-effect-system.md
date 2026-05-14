@@ -154,7 +154,7 @@ classDiagram
 | `Trigger` | When the effect fires (always, on_miss, on_hit, etc.). Type is a StringName, not an enum |
 | `Condition` | Optional gate that must pass before outcomes execute. Type is a StringName |
 | `Outcome` | What happens when the effect fires (modify_stat, spawn_ball, etc.). Type is a StringName |
-| `ItemManager` | Ownership and economy: tracks what the player owns, levels, FP balance. Delegates stat effects to EffectManager on level change |
+| `ItemManager` | Ownership and economy: tracks what the player owns, levels, friendship balance. Delegates stat effects to EffectManager on level change |
 | `EffectManager` | Evaluation engine and public stat API: registers/unregisters effect sources, dispatches outcomes by trigger type, delegates stat queries to internal EffectState |
 | `EffectState` | Internal to EffectManager: holds base values (from GameRules.BASE_STATS), modifier arrays (one per operation type), oscillations, and named game states. Not a separate autoload. `get_stat` includes temporary modifiers, `get_base_stat` excludes them |
 | `StatModifier` | A single stat change: additive, percentage, or multiplicative. `temporary` flag marks modifiers cleared on miss. `range_stat_key` defers value resolution to query time |
@@ -314,7 +314,7 @@ EffectState is key-agnostic. Game systems register base values at startup. New k
 | `ball_speed_min` | 400.0 | px/s |
 | `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
-| `friendship_points_per_hit` | 1.0 | FP |
+| `friendship_points_per_hit` | 1.0 | friendship |
 | `ball_magnetism` | 0.0 | force |
 | `paddle_return_angle_max_degrees` | 0.0 | degrees |
 | `ball_speed_offset` | 0.0 | px/s |

@@ -18,7 +18,7 @@ Stat sharing is a permanent upgrade earned from the Tinkerer's prestige system (
 
 Partner-specific upgrades ("Martha's speed +10%") have two problems:
 - They don't transfer. Recruiting a new partner means the investment is wasted.
-- They create a parallel progression track competing with the player's own upgrades for FP.
+- They create a parallel progression track competing with the player's own upgrades for friendship.
 
 Stat sharing avoids both. Every investment in the player's own stats also invests in every current and future partner. The progression feels like "we're getting better together."
 
@@ -39,7 +39,7 @@ Example: base paddle speed is 500, the player upgrades to 600 (delta of 100). Wi
 ## Progression stages
 
 **First cycle (no prestige yet):**
-Martha arrives at base stats. The player has few upgrades. Both struggle at similar speeds. No stat sharing needed. Martha's effects (+25% FP, `halve_streak`) make her a net positive regardless.
+Martha arrives at base stats. The player has few upgrades. Both struggle at similar speeds. No stat sharing needed. Martha's effects (+25% friendship, `halve_streak`) make her a net positive regardless.
 
 **First prestige:**
 The player completes a cycle, visits the Tinkerer, and chooses stat sharing as their permanent upgrade. Next cycle, every paddle speed upgrade the player buys also lifts the partner. The gap that opened in the previous cycle doesn't reappear.

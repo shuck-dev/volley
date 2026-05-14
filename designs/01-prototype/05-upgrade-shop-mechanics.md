@@ -4,14 +4,14 @@
 Replace the attribute upgrade system with an item-based system. Items are objects with narrative identity: they affect the paddle's mechanical performance without describing how, and carry character context through their description and the Tinkerer's dialogue when levelling them. This is the economic and narrative backbone for the shop, the Tinkerer, and the signal layer.
 
 **Points:** 8
-**Dependencies:** Progression System (FP economy, save/load)
+**Dependencies:** Progression System (friendship economy, save/load)
 **Unlocks:** Upgrade Shop (rotation, display), The Shopkeeper and the Tinkerer (character integration), Upgrade Art (item visuals)
 
 ---
 
 ## Why items instead of attributes
 
-The previous design (Paddle Speed Lv2 [40 FP]) has no narrative surface. Items give every upgrade a name, a presence, and a description that can carry meaning without explaining mechanics. A player reads "your friend's spare headphones, still charged" and feels something before they feel the effect. The mechanical effect is discovered through play. The description is a clue.
+The previous design (Paddle Speed Lv2 [40 friendship]) has no narrative surface. Items give every upgrade a name, a presence, and a description that can carry meaning without explaining mechanics. A player reads "your friend's spare headphones, still charged" and feels something before they feel the effect. The mechanical effect is discovered through play. The description is a clue.
 
 This also enables synergies (deferred to Beta) and world causality to extend the same data model without structural changes.
 
@@ -24,7 +24,7 @@ This also enables synergies (deferred to Beta) and world causality to extend the
 2. 24 pre-break items (other pools deferred to post-break)
 3. A default description per item, with optional per-phase overrides
 4. Items affect AI paddle identically to player paddle
-5. FP cost per item purchase and per level upgrade (scale-based)
+5. Friendship cost per item purchase and per level upgrade (scale-based)
 6. Item levelling (3 levels: base, upgraded, max) via the Tinkerer
 7. Item inventory (owned items persist, effects scale with current level)
 8. One world causality item in prototype (exact form determined by design spike)
@@ -51,7 +51,7 @@ Each item is a resource with the following fields. The effect system must be ext
 ItemDefinition (scripts/items/item_definition.gd) [Resource]
   - id: String
   - display_name: String
-  - purchase_cost: int                  # FP cost to buy from the shop
+  - purchase_cost: int                  # friendship cost to buy from the shop
   - level_cost_scale: float             # multiplier applied to purchase_cost per level upgrade
   - max_level: int                      # always 3 for prototype
   - pool: String                        # availability gate: "act1", "act2", "act3", "peace"

@@ -32,7 +32,7 @@ Effect 3
   outcome: set_game_state(null)
 ```
 
-Base cost: 60 FP | Scaling: 1.7
+Base cost: 60 friendship | Scaling: 1.7
 
 ---
 
@@ -51,17 +51,17 @@ Effect 1
   outcome: deflect_ball
 ```
 
-Base cost: 80 FP | Scaling: 1.5
+Base cost: 80 friendship | Scaling: 1.5
 
 ---
 
 ## Dead Weight
 
-| Level | Gravity | FP bonus | Rescue pull |
+| Level | Gravity | Friendship bonus | Rescue pull |
 |---|---|---|---|
-| 1 | Mild pull, fixed position | FP scales with ball speed at hit | No |
-| 2 | Stronger pull, point drifts | Better FP scaling | No |
-| 3 | Stronger pull, point drifts | Better FP scaling | Intense temporary pull when ball passes behind paddle |
+| 1 | Mild pull, fixed position | Friendship scales with ball speed at hit | No |
+| 2 | Stronger pull, point drifts | Better friendship scaling | No |
+| 3 | Stronger pull, point drifts | Better friendship scaling | Intense temporary pull when ball passes behind paddle |
 
 ```
 Effect 1
@@ -71,14 +71,14 @@ Effect 1
 Effect 2
   trigger: on_hit
   outcome: award_friendship_points(scale_by: ball_speed)
-  tuning: on_hit fires every hit, so FP generation rate climbs sharply at high ball speeds. Cap or diminishing returns may be needed to keep FP economy balanced.
+  tuning: on_hit fires every hit, so friendship generation rate climbs sharply at high ball speeds. Cap or diminishing returns may be needed to keep friendship economy balanced.
 
 Effect 3 (level 3 only)
   trigger: on_ball_behind_paddle
   outcome: intensify_gravity_well(multiplier: tuning_target, duration: tuning_target)
 ```
 
-Base cost: 100 FP | Scaling: 1.8
+Base cost: 100 friendship | Scaling: 1.8
 
 ---
 
@@ -92,7 +92,7 @@ Effect 1
   outcome: expand_kit_slots(1)
 ```
 
-Base cost: 150 FP
+Base cost: 150 friendship
 
 The `expand_kit_slots` outcome is deprecated under the role model in [`06-roles.md`](06-roles.md); kit-slot enforcement for Spare is tracked in Linear (Kit slot enforcement).
 
@@ -113,7 +113,7 @@ Effect 1
   outcome: roll_table([outcomes per level, equal weight])
 ```
 
-Base cost: 70 FP | Scaling: 1.6
+Base cost: 70 friendship | Scaling: 1.6
 
 ---
 
@@ -121,7 +121,7 @@ Base cost: 70 FP | Scaling: 1.6
 
 | Level | Repair | Multiplier range (0-100 cracks) | Broken debuff |
 |---|---|---|---|
-| 1 | Fresh | x1.0 to x1.5 (tuning target) | Slight FP reduction |
+| 1 | Fresh | x1.0 to x1.5 (tuning target) | Slight friendship reduction |
 | 2 | Full repair | x1.0 to x2.0 | Same |
 | 3 | Full repair | x1.0 to x3.0 | Same |
 
@@ -141,7 +141,7 @@ Effect 3 (broken state)
   outcome: stat(friendship_points_per_hit, -debuff)
 ```
 
-Base cost: 90 FP | Scaling: 1.5
+Base cost: 90 friendship | Scaling: 1.5
 
 ---
 
@@ -163,7 +163,7 @@ Effect 2
   outcome: stat_until_miss(ball_speed_max_range, +25 per level) [uncapped, stacks]
 ```
 
-Base cost: 85 FP | Scaling: 1.5
+Base cost: 85 friendship | Scaling: 1.5
 
 ---
 
@@ -183,7 +183,7 @@ Effect 1
   outcome: stat(paddle_speed, +50 per level)
 ```
 
-Base cost: 30 FP | Scaling: 1.5
+Base cost: 30 friendship | Scaling: 1.5
 
 ### Grip Tape
 
@@ -197,7 +197,7 @@ Effect 1
   outcome: percentage(paddle_size, +140% per level)
 ```
 
-Base cost: 30 FP | Scaling: 1.5
+Base cost: 30 friendship | Scaling: 1.5
 
 ### Training Ball
 
@@ -211,7 +211,7 @@ Effect 1
   outcome: stat(ball_speed_min, +30 per level)
 ```
 
-Base cost: 40 FP | Scaling: 1.6
+Base cost: 40 friendship | Scaling: 1.6
 
 ### Court Lines
 
@@ -225,7 +225,7 @@ Effect 1
   outcome: stat(ball_speed_max_range, +50 per level)
 ```
 
-Base cost: 40 FP | Scaling: 1.6
+Base cost: 40 friendship | Scaling: 1.6
 
 ### Wrist Brace
 
@@ -245,4 +245,4 @@ Effect 2
   outcome: percentage(paddle_size, -140% per level) [cursed]
 ```
 
-Base cost: 35 FP | Scaling: 1.5
+Base cost: 35 friendship | Scaling: 1.5

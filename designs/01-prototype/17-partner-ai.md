@@ -223,7 +223,7 @@ Overrides:
 - `_ball_approaching()`: `ball.linear_velocity.x < 0`
 - `_get_paddle_speed()`: `paddle.get_speed()` (upgraded via ItemManager)
 
-`friendship_point_rate` does not belong on the controller. It's a game economy value: `game.gd` already decides the FP multiplier based on autoplay state. The rate should live on `game.gd` (or `ProgressionConfig` alongside other economy thresholds). The controller's only economy responsibility is emitting `autoplay_toggled` so `game.gd` knows which rate to apply. This is a cleanup from the current `AutoPlayConfig` which bundled AI tuning and economy values in the same resource.
+`friendship_point_rate` does not belong on the controller. It's a game economy value: `game.gd` already decides the friendship multiplier based on autoplay state. The rate should live on `game.gd` (or `ProgressionConfig` alongside other economy thresholds). The controller's only economy responsibility is emitting `autoplay_toggled` so `game.gd` knows which rate to apply. This is a cleanup from the current `AutoPlayConfig` which bundled AI tuning and economy values in the same resource.
 
 ### `PartnerAIController`
 
@@ -240,7 +240,7 @@ The partner's speed ceiling comes from the same stat system as the player's, jus
 1. Create `PaddleAIConfig` resource and `PaddleAIController` abstract base class.
 2. Rewrite `AutoplayController` as a thin subclass (toggle, input, direction overrides).
 3. Remove `AutoPlayConfig` class. Create `autoplay_config.tres` as a `PaddleAIConfig` instance with current values + `noise = 0`.
-4. Move `friendship_point_rate` from `AutoPlayConfig` to `game.gd` (or `ProgressionConfig`). `game.gd` already owns the FP accumulation logic; it just needs to own the rate constant too.
+4. Move `friendship_point_rate` from `AutoPlayConfig` to `game.gd` (or `ProgressionConfig`). `game.gd` already owns the friendship accumulation logic; it just needs to own the rate constant too.
 5. Update `game.gd`: replace `autoplay_config: AutoPlayConfig` export with reading config from the controller directly.
 
 With noise = 0 and interval = 1, the prediction reduces to equivalent behaviour to today for straight-line ball paths, and is strictly better (handles wall bounces) for angled paths. The autoplay will be slightly more competent at returning wall bounces than it is today. If this needs to be preserved exactly, a `prediction_interval_frames = 0` sentinel could fall back to raw position tracking.
@@ -257,7 +257,7 @@ Two principles guide the miss design:
 
 The partner should be tuned so they almost never miss at speeds the player can comfortably handle. At the point where the partner starts failing, the ball should be fast enough that the player is also struggling or would have missed shortly after. The streak ends because it got hard for both of them, not because the partner let the player down.
 
-Each partner's config values should be tuned so their miss threshold overlaps with the player's difficulty curve at the stage of the game where that partner is active. A partner's effects (FP bonuses, streak protection, etc.) should make them a clear net positive even when their misses cap the streak lower than the wall would.
+Each partner's config values should be tuned so their miss threshold overlaps with the player's difficulty curve at the stage of the game where that partner is active. A partner's effects (friendship bonuses, streak protection, etc.) should make them a clear net positive even when their misses cap the streak lower than the wall would.
 
 ### Principle 2: Stat sharing scales partners with the player
 
@@ -285,7 +285,7 @@ All three factors scale naturally with ball speed. The AI algorithm is unchanged
 
 ### Why this works for idle play
 
-In idle mode (autoplay + partner), both AI systems have similar limitations at a given upgrade level. Neither is dramatically worse than the other: they fail at similar speeds and the game ticks along naturally. The player returns to good news (FP earned, streak progress) regardless of whose miss ended a rally.
+In idle mode (autoplay + partner), both AI systems have similar limitations at a given upgrade level. Neither is dramatically worse than the other: they fail at similar speeds and the game ticks along naturally. The player returns to good news (friendship earned, streak progress) regardless of whose miss ended a rally.
 
 ## Extensibility
 

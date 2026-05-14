@@ -39,7 +39,7 @@ Unaffordable items show the display-case overlay from `04-shop-drag-drop.md`; ca
 Bigger items: the bot, jukebox, training wall, paddle upgrades.
 
 - Tap the catalog → opens inline (no camera move). Pages show art, name, description, price. Returning reopens on the last page.
-- Confirm → FP deducted → `ShipmentManager.create(contents, duration_seconds)` starts a shipment.
+- Confirm → friendship deducted → `ShipmentManager.create(contents, duration_seconds)` starts a shipment.
 - Friend walks the sealed box to the shipping counter; the box vanishes as the wall-clock countdown begins.
 - On arrival, the box lands on the shipment mat. The player drags the item from the box: ball items into `BallRack`, equipment items into `GearRack`, court items (e.g. the bot) directly onto the court.
 
@@ -84,5 +84,5 @@ Not filing yet.
 1. Shop child scene: table, shop boundary trigger, catalog stub, shipping counter, friend placement.
 2. Friend unlock beat, `unlocked_characters` gate, show/hide.
 3. `catalog_only` flag on `ItemDefinition`; author one catalog item (the bot).
-4. Catalog browse: inline open, paginate, tap to order, confirm, FP deduct.
+4. Catalog browse: inline open, paginate, tap to order, confirm, friendship deduct.
 5. Catalog ordering plumbing: `ShipmentManager.create`, friend-to-counter animation.
