@@ -1,6 +1,4 @@
 ## Step 7.7: shop purchases route ball-role items into the BallReconciler registry directly.
-## Three destinations are exercised: rack -> STORED, court -> PLAY, venue floor -> OUT_REST.
-## Equipment-role purchases keep their existing HeldBody loose-body path (regression).
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")

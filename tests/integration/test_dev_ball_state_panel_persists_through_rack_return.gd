@@ -1,6 +1,4 @@
 ## Sub-step 7.5: court grab + rack drop preserves the Ball in the registry.
-## DevBallStatePanel sources its rows from BallTracker.ball_added/ball_removed; if ball_removed
-## fires on the rack-return path the row vanishes mid-gesture. Asserts the row count is stable.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")

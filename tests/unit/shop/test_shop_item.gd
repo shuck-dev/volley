@@ -70,8 +70,6 @@ class TestShopItemContract:
 
 	func test_purchase_hides_case_overlay() -> void:
 		# After SH-258 the shop item is a plain Node2D, so the freeze state on a
-		# RigidBody2D no longer applies. The case overlay still flips off when
-		# the player owns the item.
 		_item_manager.economy.friendship_point_balance = 1000
 		_item_manager.take(_definition.key)
 		assert_false(_item.case_overlay.visible)
@@ -144,8 +142,6 @@ class TestShopItemInputRelease:
 
 
 # SH-332 Bug 3: outside-shop release commits via the controller's spawn_purchased_at.
-# The pre-fix code gated on _can_route_to_court (ball-role + court rect) and silently
-# took the rack-teleport branch for any release outside that gate.
 class TestShopItemOutsideShopReleaseRoutesThroughController:
 	extends GutTest
 

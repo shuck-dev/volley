@@ -241,8 +241,6 @@ func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
 
 
 ## SH-289: when base_ball is authored and training_ball is ON_COURT in the save,
-## the initial reconcile must spawn training_ball even though adopt_pre_existing_balls
-## fires court_changed for base_ball first.
 func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_court_changed(
 ) -> void:
 	# Fresh manager with both ball items; no friendship points needed — we set placements directly.

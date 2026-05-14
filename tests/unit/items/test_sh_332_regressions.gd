@@ -205,8 +205,6 @@ func test_regrab_clears_loose_in_venue_overlay() -> void:
 
 
 # Step 5 obsoletes the "free the loose HeldBody" test — the loose Ball lives in the registry
-# under reconciler control, not as a free-standing HeldBody, so there is no tree_exited handler
-# to assert here. Re-grab and rack-release exercise the lifecycle now.
 func test_clear_loose_in_venue_restores_rack_filter() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")

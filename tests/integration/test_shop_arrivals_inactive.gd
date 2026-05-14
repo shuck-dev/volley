@@ -1,10 +1,6 @@
-## SH-100 shop arrivals land inactive on the matching rack.
-##
-## Exercises the full shop -> item manager -> rack display chain so the
-## contract holds end-to-end, not only in unit-level stubs. The dev panel's
-## one-click purchase path must keep auto-placing to the natural target
-## (ball on court, equipment on player), skipping the rack entirely.
 extends GutTest
+
+## Shop arrivals land inactive on the matching rack; dev-panel one-click still auto-places.
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const BallRackScene: PackedScene = preload("res://scenes/ball_rack.tscn")

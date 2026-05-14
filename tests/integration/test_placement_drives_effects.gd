@@ -1,17 +1,6 @@
 extends GutTest
 
 # Integration: placement drives effects.
-#
-# Rule: an item's effects run only while it is physically on the player
-# (equipment) or on the court (balls). Racks are inert. Placement is the
-# only active/inactive signal — there is no separate flag.
-#
-# Scenarios cover the full lifecycle through the ItemManager public API:
-# activate/deactivate (driven by drag-and-drop in production), level
-# changes while placed, and save/reload round-trips.
-#
-# Fails first against current ItemManager: activate/deactivate, is_on_court,
-# get_court_items, and placement persistence are the surfaces SH-96 introduces.
 
 const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
@@ -34,8 +23,6 @@ func before_each() -> void:
 
 
 # Taking an equipment item owns it but leaves it on the rack; no effect runs
-# until the player drags it onto their character. Dragging it back to the
-# rack stops the effect. Dragging it back on resumes it.
 func test_equipment_lifecycle_rack_player_rack_player() -> void:
 	var base_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
 
@@ -78,8 +65,6 @@ func test_equipment_lifecycle_rack_player_rack_player() -> void:
 
 
 # A ball on the rack has no influence on ball-speed stats. Dragging it onto
-# the court registers its effect and marks it as on-court. Removing it from
-# the court reverses both.
 func test_ball_lifecycle_rack_court_rack() -> void:
 	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
@@ -178,8 +163,6 @@ func test_level_up_on_racked_item_does_not_start_effects() -> void:
 
 
 # Placement is part of the saved progression: after a round-trip through
-# storage into a fresh ItemManager, the same items are on the court and the
-# same effects are running.
 func test_save_and_reload_preserves_placement_and_effects() -> void:
 	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
 	_manager.state = ItemWorldState.new()

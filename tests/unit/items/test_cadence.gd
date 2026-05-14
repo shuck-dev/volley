@@ -1,8 +1,6 @@
 extends GutTest
 
 # Verifies Cadence item: ball speed oscillation and ceiling raise on max speed reached.
-# Effect 1: always -> oscillate_stat(ball_speed_offset)
-# Effect 2: on_max_speed_reached -> modify_stat_until_miss(ball_speed_max_range)
 
 var _item: ItemDefinition
 var _manager: Node

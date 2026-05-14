@@ -77,8 +77,6 @@ func test_each_ball_owns_its_own_speed_state() -> void:
 
 func test_paddle_collision_advances_only_the_hit_ball_speed() -> void:
 	# Drive a real paddle collision against one ball; only that ball's speed should advance.
-	# Verifies per-ball wiring end-to-end: the ball's own _on_body_entered drives its own
-	# increase_speed, with no batch fan-out across other tracked balls.
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	var first_before: float = first.speed

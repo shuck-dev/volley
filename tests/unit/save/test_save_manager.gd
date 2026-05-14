@@ -138,8 +138,6 @@ func test_load_from_disk_applies_stored_blob() -> void:
 
 
 # Guards against a future refactor replacing slice instances instead of mutating in place.
-# Multiple consumers (court, item_manager, progression_manager) cache slice refs;
-# a replace would silently stale them.
 func test_load_preserves_slice_instance_identity() -> void:
 	var blob_dict: Dictionary = {
 		"economy": {"friendship_point_balance": 99},

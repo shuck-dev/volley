@@ -90,8 +90,6 @@ func test_read_fallbacks_returns_backups_newest_first() -> void:
 # --- fallback path via SaveManager ---
 func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
 	# Two writes so the valid JSON lands in backup slot 1; then trash primary
-	# with empty content so SaveManager.load_from_disk() must fall through to
-	# the backup chain to recover the last good state.
 	var blob := '{"economy":{"friendship_point_balance":100}}'
 	_storage.write(blob)
 	_storage.write(blob)

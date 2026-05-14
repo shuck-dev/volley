@@ -1,8 +1,6 @@
 extends GutTest
 
-# Integration tests for the speed bar across player flows: rallying raises the
-# bar, missing resets it, and rallies that crack the ceiling via Cadence push
-# the bar's max above its permanent-cap marker.
+# Integration: speed bar raises on rally, resets on miss, Cadence cracks the ceiling.
 
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const SpeedBarScript: GDScript = preload("res://scripts/court/speed_bar.gd")

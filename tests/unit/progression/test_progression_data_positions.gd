@@ -1,8 +1,6 @@
 extends GutTest
 
 # Position, rack-slot, and loose-body persistence on ItemWorldState.
-# Vector2 has no native JSON representation, so the {"x", "y"} nesting must
-# survive stringify+parse.
 
 var _data: ItemWorldState
 

@@ -1,8 +1,6 @@
 extends GutTest
 
 # Round-trip tests for the five progression slices: EconomyState, ItemWorldState,
-# RecordsState, UnlocksState, PartnersState. Each slice owns its own to_save_dict /
-# apply_save_dict; SaveManager just coordinates.
 
 
 # --- EconomyState ---

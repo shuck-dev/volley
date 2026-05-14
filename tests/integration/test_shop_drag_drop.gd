@@ -96,9 +96,6 @@ func test_exiting_shop_area_when_already_owned_does_nothing() -> void:
 
 
 # --- input wiring ---
-# Regression guard: every ShopItem must route its Area2D input_event into the
-# drag handler. After SH-258 the shop item is a Node2D with a child PickupArea,
-# so the wiring lives on that area.
 func test_each_shop_item_responds_to_input_event_signal() -> void:
 	var viewport: Viewport = _shop.get_viewport()
 	for child in _shop.items_anchor.get_children():
