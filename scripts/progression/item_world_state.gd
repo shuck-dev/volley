@@ -54,8 +54,7 @@ static func _to_typed_int_dict(raw: Dictionary) -> Dictionary[String, int]:
 	return typed
 
 
-## Vector2 has no native JSON representation; nest as {"x", "y"} floats so the
-## round-trip survives stringify+parse without lossy string coercion.
+## Vector2 nested as {"x", "y"} floats so stringify+parse round-trips without lossy string coercion.
 static func _serialize_positions(positions: Dictionary[String, Vector2]) -> Dictionary:
 	var raw: Dictionary = {}
 

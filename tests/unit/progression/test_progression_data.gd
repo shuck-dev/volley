@@ -1,6 +1,6 @@
 extends GutTest
 
-# Round-trip tests for the five progression slices: EconomyState, ItemWorldState,
+# Round-trip tests for the five progression slices; each owns its own to_save_dict / apply_save_dict.
 
 
 # --- EconomyState ---
