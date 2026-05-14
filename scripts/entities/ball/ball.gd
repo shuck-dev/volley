@@ -18,9 +18,6 @@ enum PlayState {
 const PLAY_MATERIAL: PhysicsMaterial = preload("res://resources/ball/play.tres")
 const REST_MATERIAL: PhysicsMaterial = preload("res://resources/ball/rest.tres")
 
-# Per-state configs; ordering-sensitive steps stay imperative around apply().
-# STORED and OUT_HELD share the same physics setup (frozen, no-collide); one .tres covers both.
-# PLAY_NORMAL and PLAY_ARC share PLAY_ACTIVE_CONFIG; only gravity_scale differs, set imperatively after apply.
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
