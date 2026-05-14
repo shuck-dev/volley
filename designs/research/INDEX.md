@@ -16,6 +16,7 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 | [Visual Positioning](visual-positioning.md) | Where Volley! sits visually among idle, desktop, and sport games. Reasoning behind the hand-drawn, live-scene direction. |
 | [Early Clone Games](early-clone-games.md) | Why Breakout's clone lineage outlasted Pong's, and what cloning shaped in the early industry. |
 | [Open Development Plan](open-development-plan.md) | Earlier internal plan that seeded the essay. |
+| [Paddle Bounce](paddle-bounce.md) | How paddle-and-ball games actually compute return angle. Background for `01-prototype/tech/03-paddle-bounce.md`. |
 
 ## Working folders
 
