@@ -101,6 +101,8 @@ func adopt_pre_existing_balls() -> void:
 			and not _item_manager.is_on_court(key)
 		):
 			_item_manager.activate(key)
+
+		_apply_post_adopt_position(ball, key)
 		ball_spawned.emit(key, ball)
 		ball_added.emit(ball)
 	_adopting_pre_existing = false
@@ -289,6 +291,22 @@ func _default_spawn_position() -> Vector2:
 	if parent is Node2D:
 		return (parent as Node2D).global_position
 	return Vector2.ZERO
+
+
+## Post-adoption placement: STORED snaps to its rack slot; other placements use the saved
+## position if SaveManager has one, otherwise the ball keeps its scene-marker position.
+func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
+	if _item_manager.get_placement(item_key) == Placement.STORED:
+		if ball_rack != null:
+			ball.global_position = ball_rack.get_slot_position_for(item_key)
+		return
+
+	if not _has_save_manager_autoload():
+		return
+	var saved: ItemWorldState = SaveManager.items
+
+	if saved != null and saved.ball_positions.has(item_key):
+		ball.global_position = saved.ball_positions[item_key]
 
 
 ## Prefer the saved position so reloaded balls keep their last in-play spot.
