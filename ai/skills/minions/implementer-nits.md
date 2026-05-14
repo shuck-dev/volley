@@ -41,6 +41,22 @@ Read this before pushing. Each rule names the do; the why links to the source.
 - Player-observable assertions over implementation details. Don't assert internal flag values when an external behaviour proves the same thing. Source: `feedback_test_behaviour`.
 - Run `./scripts/ci/run_gut.sh` before declaring done.
 
+## Test output is clean
+
+CI fails on **any** of these in the GUT output. The gate lives in `scripts/ci/run_gut.sh` and `.github/workflows/test.yml`:
+
+- `WARNING:` / `ERROR:` / `SCRIPT ERROR:` / `USER WARNING:` / `USER ERROR:` lines (Godot's `push_warning` / `push_error`, addon noise, `ObjectDB instances leaked at exit`).
+- Per-test orphan counts > 0 (yellow `N Orphans` lines after each test method).
+
+What that means for the code:
+
+- **Don't `push_warning` for a design-intended silent no-op.** If the contract is "refuse and stay quiet," the code must stay quiet. Use a return value or state flag the caller / test can assert on.
+- **Don't `queue_free` a node you just `remove_child`'d** unless it has live consumers (`_process`, `_physics_process`, or pending signals). The idle-frame gap leaves it orphaned. Use `free()` when ownership is exclusive.
+- **Don't `await get_tree().process_frame` inside `while is_inside_tree():` polling loops.** When the host is freed mid-await, the coroutine state survives. Use a signal (`get_tree().node_added`, a typed ready-signal on the producer) and disconnect in `_exit_tree`.
+- **In test files, route every `Node.new()` / `add_child` / `PackedScene.instantiate()` through `autofree` / `add_child_autofree`** unless GUT already manages the host (e.g. doubles, which are auto-freed).
+
+See `ai/scratchpads/gut-orphans-research.md` for the diagnostic recipe and Volley-specific suspect list.
+
 ## Blank-line spacing inside function bodies
 
 - **One blank line before every `if` statement.** Exceptions: the first statement of a function body, and `elif`/`else` continuations. Applies whether the preceding statement is one line or many.
