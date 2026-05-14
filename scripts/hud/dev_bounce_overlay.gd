@@ -30,30 +30,39 @@ func _ready() -> void:
 	add_to_group(&"dev_overlays")
 
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
-	if _tracker == null:
-		_tracker = await _await_tracker()
 
-	if _tracker == null:
+	if _tracker != null:
+		_attach_to_tracker()
+	else:
+		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
+
+
+func _exit_tree() -> void:
+	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
+		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+
+
+func _on_node_added_waiting_for_tracker(node: Node) -> void:
+	var tracker := node as BallTracker
+
+	if tracker == null:
 		return
+	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+	_tracker = tracker
+	_attach_to_tracker()
 
+
+func _attach_to_tracker() -> void:
 	_tracker.ball_added.connect(_on_ball_added)
 	_tracker.ball_removed.connect(_on_ball_removed)
 	for ball in _tracker.get_balls():
 		_on_ball_added(ball)
 
 
-func _await_tracker() -> BallTracker:
-	while is_inside_tree():
-		var found := get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
-		if found != null:
-			return found
-		await get_tree().process_frame
-	return null
-
-
 func set_dev_visible(value: bool) -> void:
 	dev_visible = value
 	visible = value
+
 	if value:
 		queue_redraw()
 
@@ -80,16 +89,19 @@ func _draw_cone(paddle: Paddle) -> void:
 	var max_degrees: float = Stats.resolve(
 		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
 	)
+
 	if max_degrees <= 0.0:
 		return
 
 	var half_height: float = paddle.get_half_height()
+
 	if half_height <= 0.0:
 		return
 
 	# Cone direction: away from the paddle's lane, toward the centre of the court.
 	# Player paddle sits to the right (x>0), bounces left; partner mirrors. Pick by global_position.x sign.
 	var return_sign: float = -signf(paddle.global_position.x)
+
 	if return_sign == 0.0:
 		return_sign = -1.0
 
@@ -108,6 +120,7 @@ func _draw_cone(paddle: Paddle) -> void:
 
 	# In follow mode the cone slides along the paddle to the last contact offset; falls back to absolute if no hit recorded yet.
 	var origin_world: Vector2 = paddle.global_position
+
 	if follow_last_hit and _last_hits.has(paddle):
 		var hit: Dictionary = _last_hits[paddle]
 		var offset_norm: float = hit["offset_norm"]
@@ -151,9 +164,11 @@ func _draw_last_hit(paddle: Paddle) -> void:
 func _on_ball_added(ball: Ball) -> void:
 	if ball == null or _ball_subscriptions.has(ball):
 		return
+
 	if ball.effect_processor == null:
 		# Effect processor spawns in Ball._ready; defer one frame.
 		await get_tree().process_frame
+
 		if not is_instance_valid(ball) or ball.effect_processor == null:
 			return
 	var callable := _on_bounce_resolved
@@ -165,6 +180,7 @@ func _on_ball_removed(ball: Ball) -> void:
 	if not _ball_subscriptions.has(ball):
 		return
 	var callable: Callable = _ball_subscriptions[ball]
+
 	if (
 		is_instance_valid(ball)
 		and ball.effect_processor != null

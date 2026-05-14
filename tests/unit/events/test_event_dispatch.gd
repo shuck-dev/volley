@@ -187,6 +187,7 @@ func test_oscillate_stat_changes_value_over_time() -> void:
 	var found_different := false
 	for frame_index in range(60):
 		_manager.process_frame(0.016)
+
 		if not is_equal_approx(
 			Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
 			base_value

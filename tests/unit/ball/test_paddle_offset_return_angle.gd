@@ -51,6 +51,7 @@ func _build_with_stats_and_min_angle(
 			"english_kit", &"paddle_english_coefficient", &"add", english
 		)
 		_manager.items.append(english_item)
+
 	if min_angle_bonus != 0.0:
 		var min_item := ItemFactory.create(
 			"min_angle_kit", &"paddle_bounce_min_angle_degrees", &"add", min_angle_bonus
@@ -58,8 +59,10 @@ func _build_with_stats_and_min_angle(
 		_manager.items.append(min_item)
 	_manager._progression.friendship_point_balance = 100000
 	_manager.purchase("max_angle_kit")
+
 	if english != 0.0:
 		_manager.purchase("english_kit")
+
 	if min_angle_bonus != 0.0:
 		_manager.purchase("min_angle_kit")
 
