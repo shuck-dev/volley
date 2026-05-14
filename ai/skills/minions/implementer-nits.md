@@ -43,6 +43,7 @@ Read this before pushing. Each rule names the do; the why links to the source.
 
 ## Blank-line spacing inside function bodies
 
+- **One blank line before every `if` statement.** Exceptions: the first statement of a function body, and `elif`/`else` continuations. Applies whether the preceding statement is one line or many.
 - One blank line after an early-return guard (`if cond: return`) before the main work begins.
 - One blank line between logical clusters within a function body. Variable declarations, signal wiring, mutation, and cleanup are different clusters; visually separate them.
 - One blank line after a multi-statement `if`/`for` block before the next statement, when the next statement is a new logical step rather than a continuation.

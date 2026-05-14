@@ -42,3 +42,7 @@ After writing, run the repo's GUT command and iterate until green, then run the 
 ## Bash discipline
 
 Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volley GUT runs are ~2.5s; budget 3000ms. A TIMEOUT means something is hung, not slow.
+
+## Style discipline
+
+Read `ai/skills/minions/implementer-nits.md` before writing or accepting GDScript. Blank-line-before-`if`, comment policy, naming, exports, resources, class-name async cache. The rules reviewers flag round after round, consolidated.
