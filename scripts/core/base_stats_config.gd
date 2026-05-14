@@ -1,13 +1,21 @@
 class_name BaseStatsConfig
 extends Resource
 
+## Slowest a ball ever travels; reset target on miss-to-rest and rally start.
 @export var ball_speed_min := 450.0
+## Range above ball_speed_min; effective max ball speed = min + this.
 @export var ball_speed_max_range := 340.0
+## Speed bump applied to the ball on each successful paddle hit.
 @export var ball_speed_increment := 17.0
+## Friendship points awarded per paddle hit; items can percentage-modify.
 @export var friendship_points_per_hit := 1.0
+## Per-frame pull strength of the ball toward the nearest paddle; 0.0 disables magnetism.
 @export var ball_magnetism := 0.0
+## Number of equipment slots in the player's kit; item-tunable, not yet read in production.
 @export var kit_slots := 3.0
+## Additive offset applied on top of ball_speed_min when computing the rally floor.
 @export var ball_speed_offset := 0.0
+## Arena vertical extent in pixels; upper bound for paddle_size and the AI math half-height.
 @export var arena_height := 660.0
 
 
