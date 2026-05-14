@@ -50,6 +50,7 @@ func load_from_disk() -> bool:
 	if _apply_loaded_content(_storage.read()):
 		return true
 	var fallbacks: Variant = _storage.read_fallbacks()
+
 	if fallbacks is Array:
 		for content: Variant in fallbacks:
 			if content is String and _apply_loaded_content(content):
@@ -65,6 +66,7 @@ func _apply_loaded_content(content: String) -> bool:
 	if content == "":
 		return false
 	var parsed: Variant = JSON.parse_string(content)
+
 	if not parsed is Dictionary:
 		return false
 	var data: Dictionary = parsed
