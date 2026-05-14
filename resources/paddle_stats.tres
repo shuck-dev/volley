@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="PaddleConfig" format=3 uid="uid://b0ckcnhi7txw1"]
+[gd_resource type="Resource" script_class="PaddleConfig" format=3 uid="uid://b8paddl3stats1"]
 
 [ext_resource type="Script" uid="uid://svj0ppajmpw" path="res://scripts/core/paddle_config.gd" id="1_paddlecfg"]
 
