@@ -14,6 +14,7 @@ const MARKER_DOT_COLOR := Color(1.0, 0.4, 0.4, 0.9)
 const MARKER_ARROW_COLOR := Color(0.4, 1.0, 0.6, 0.9)
 
 var dev_visible: bool = false
+var follow_last_hit: bool = false
 
 var _tracker: BallTracker
 var _ball_subscriptions: Dictionary = {}
@@ -105,7 +106,13 @@ func _draw_cone(paddle: Paddle) -> void:
 	# Reachable cone half-angle is the requested max, clamped by the global floor/ceiling.
 	var reachable: float = clampf(requested_rad, floor_rad, ceil_rad)
 
-	var origin: Vector2 = _project_to_canvas(paddle.global_position)
+	# In follow mode the cone slides along the paddle to the last contact offset; falls back to absolute if no hit recorded yet.
+	var origin_world: Vector2 = paddle.global_position
+	if follow_last_hit and _last_hits.has(paddle):
+		var hit: Dictionary = _last_hits[paddle]
+		var offset_norm: float = hit["offset_norm"]
+		origin_world.y += offset_norm * half_height
+	var origin: Vector2 = _project_to_canvas(origin_world)
 	var upper := Vector2(return_sign * cos(reachable), -sin(reachable)) * CONE_LENGTH
 	var lower := Vector2(return_sign * cos(reachable), sin(reachable)) * CONE_LENGTH
 	var floor_upper := Vector2(return_sign * cos(floor_rad), -sin(floor_rad)) * CONE_LENGTH
