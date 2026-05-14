@@ -1,0 +1,156 @@
+class_name DevBouncePanel
+extends VBoxContainer
+
+## Debug-only numeric readout: current paddle-bounce tunables plus the last
+## resolved bounce parameters. Subscribes to each ball's `bounce_resolved` to
+## echo per-hit values.
+
+var _drag := DraggableBehavior.new()
+var _tracker: BallTracker
+var _ball_subscriptions: Dictionary = {}
+var _label_max_degrees: Label
+var _label_english: Label
+var _label_last_hit: Label
+var _last_offset_norm: float = 0.0
+var _last_target_angle_deg: float = 0.0
+var _last_incoming_y_sign: float = 0.0
+var _has_last_hit: bool = false
+
+
+func _ready() -> void:
+	if not OS.is_debug_build():
+		queue_free()
+		return
+
+	mouse_filter = Control.MOUSE_FILTER_PASS
+	add_theme_constant_override("separation", 2)
+	resized.connect(queue_redraw)
+	_build_labels()
+
+	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
+	if _tracker == null:
+		_tracker = await _await_tracker()
+	if _tracker == null:
+		return
+
+	_tracker.ball_added.connect(_on_ball_added)
+	_tracker.ball_removed.connect(_on_ball_removed)
+	for ball in _tracker.get_balls():
+		_on_ball_added(ball)
+
+
+func _await_tracker() -> BallTracker:
+	while is_inside_tree():
+		var found := get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
+		if found != null:
+			return found
+		await get_tree().process_frame
+	return null
+
+
+func _gui_input(event: InputEvent) -> void:
+	if _drag.try_start(self, event):
+		accept_event()
+
+
+func _input(event: InputEvent) -> void:
+	if _drag.update(self, event):
+		get_viewport().set_input_as_handled()
+
+
+func _process(_delta: float) -> void:
+	if not visible:
+		return
+	_refresh_tunables()
+
+
+func _draw() -> void:
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+
+
+func _build_labels() -> void:
+	_add_header()
+	_label_max_degrees = _make_label()
+	add_child(_label_max_degrees)
+	_label_english = _make_label()
+	add_child(_label_english)
+	_label_last_hit = _make_label()
+	_label_last_hit.add_theme_color_override("font_color", Color(0.6, 1.0, 0.6))
+	add_child(_label_last_hit)
+	_refresh_tunables()
+	_refresh_last_hit()
+
+
+func _add_header() -> void:
+	var header := Label.new()
+	header.text = "--- DEBUG: Bounce ---"
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
+	add_child(header)
+
+
+func _make_label() -> Label:
+	var label := Label.new()
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
+	return label
+
+
+func _refresh_tunables() -> void:
+	var max_degrees: float = Stats.resolve(
+		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
+	)
+	var english: float = Stats.resolve(
+		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient"
+	)
+	_label_max_degrees.text = "return_angle_max: %.1f deg" % max_degrees
+	_label_english.text = "english_coef: %.4f" % english
+
+
+func _refresh_last_hit() -> void:
+	if not _has_last_hit:
+		_label_last_hit.text = "last_hit: (none)"
+		return
+	_label_last_hit.text = (
+		"last_hit: off=%+.2f  angle=%+.1f deg  in_y=%+.0f"
+		% [_last_offset_norm, _last_target_angle_deg, _last_incoming_y_sign]
+	)
+
+
+func _on_ball_added(ball: Ball) -> void:
+	if ball == null or _ball_subscriptions.has(ball):
+		return
+	if ball.effect_processor == null:
+		await get_tree().process_frame
+		if not is_instance_valid(ball) or ball.effect_processor == null:
+			return
+	var callable := _on_bounce_resolved
+	ball.effect_processor.bounce_resolved.connect(callable)
+	_ball_subscriptions[ball] = callable
+
+
+func _on_ball_removed(ball: Ball) -> void:
+	if not _ball_subscriptions.has(ball):
+		return
+	var callable: Callable = _ball_subscriptions[ball]
+	if (
+		is_instance_valid(ball)
+		and ball.effect_processor != null
+		and ball.effect_processor.bounce_resolved.is_connected(callable)
+	):
+		ball.effect_processor.bounce_resolved.disconnect(callable)
+	_ball_subscriptions.erase(ball)
+
+
+func _on_bounce_resolved(
+	_struck_paddle: Paddle,
+	offset_norm: float,
+	target_angle: float,
+	incoming_y_sign: float,
+	_horizontal_sign: float,
+) -> void:
+	_last_offset_norm = offset_norm
+	_last_target_angle_deg = rad_to_deg(target_angle)
+	_last_incoming_y_sign = incoming_y_sign
+	_has_last_hit = true
+	_refresh_last_hit()
