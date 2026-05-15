@@ -12,7 +12,7 @@ Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md
 
 ## Drop target on the character
 
-The character scene exposes one `Area2D` named `EquipDropTarget` covering the character's silhouette. A `CharacterDropTarget` (`scripts/items/drop_targets/character_drop_target.gd`) extends `DropTarget` and binds to it.
+The character scene exposes one `Area2D` named `CharacterDropTarget` covering the character's silhouette. A `CharacterDropTarget` script (`scripts/items/drop_targets/character_drop_target.gd`) extends `DropTarget` and binds to it.
 
 `can_accept(item_key, position, scale_factor)` (matching the `DropTarget` base signature) returns true when:
 
