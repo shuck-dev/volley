@@ -12,4 +12,4 @@ Anatomical positions: hands, wrists, ankles, head. The item set already implies 
 
 ## Equipping
 
-Registers the item's effects via the existing effect manager while the item lives on the body; unequipping unregisters. Swap freely: drag on, drag off, effects update in place. The kit reads from the silhouette; the build is visible on the character. The unkitted character plays the complete baseline; gear sculpts on top.
+Timeout opens the equip window: the character walks off the court to the equip pose, and the rack-to-body drag becomes available. Equipping registers the item's effects via the existing effect manager while the item lives on the body; unequipping unregisters. Swap freely within the window: drag on, drag off, effects update in place. The kit reads from the silhouette; the build is visible on the character. The unkitted character plays the complete baseline; gear sculpts on top.
