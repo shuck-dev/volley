@@ -6,7 +6,7 @@ Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md
 
 `BaseStatsConfig.kit_slots` (existing) is the cap on equipped equipment items. Each equipped item counts as one. The cap on day one is 3; training raises it.
 
-`ItemManager.get_kit_capacity()` reads the active character's `kit_slots`. `ItemManager.get_kit_used()` counts items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the count unchanged; capacity reflects the kit on the body, frozen mid-gesture). `get_kit_remaining()` returns the difference.
+`ItemManager.get_kit_remaining()` returns `kit_slots` minus the count of items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the count unchanged; capacity reflects the kit on the body, frozen mid-gesture).
 
 `kit_slots` is currently typed `float` for stat-percentage modifiers; callers floor it on read for the integer comparison.
 
@@ -52,9 +52,9 @@ func unequip(item_key: String) -> bool:
 
 ## Save shape
 
-No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `kit_used` is derived per query; no new persisted field, no version bump, no wipe.
+No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `kit_remaining` is derived per query; no new persisted field, no version bump, no wipe.
 
-Over-capacity state across designer changes (an equipped item retired, `kit_slots` lowered) persists on load: equipped items stay equipped, `kit_used` reports the overspent total honestly, and `equip` of any new item is blocked until the player unequips enough to fit. The kit on the body is preserved; the gate is only on adding more.
+Over-capacity state across designer changes (an equipped item retired, `kit_slots` lowered) persists on load: equipped items stay equipped, and `equip` of any new item is blocked until the player unequips enough to fit. The kit on the body is preserved; the gate is only on adding more.
 
 ## Timeout gate
 
