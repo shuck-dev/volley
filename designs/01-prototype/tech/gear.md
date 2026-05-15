@@ -1,22 +1,22 @@
 # Gear
 
-Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the capacity counter, per-item friendship-power cost, the drop target on the character, the `ItemManager` surface, save shape, and the timeout gate.
+Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the capacity counter, per-item friendship cost, the drop target on the character, the `ItemManager` surface, save shape, and the timeout gate.
 
 ## Capacity and cost
 
 `ItemDefinition` gains:
 
 ```gdscript
-@export var friendship_power_cost: int = 1
+@export var friendship_cost: int = 1
 ```
 
 `CharacterStatsConfig` (existing) gains:
 
 ```gdscript
-@export var friendship_power_capacity: int = 3
+@export var friendship_capacity: int = 3
 ```
 
-The cap on day one is 3; training raises it. `ItemManager.get_friendship_power_capacity()` reads the active character's stat through the existing partner/character stat path; `ItemManager.get_friendship_power_used()` sums `friendship_power_cost` across currently equipped items. `get_friendship_power_remaining()` returns the difference.
+The cap on day one is 3; training raises it. `ItemManager.get_friendship_capacity()` reads the active character's stat through the existing partner/character stat path; `ItemManager.get_friendship_used()` sums `friendship_cost` across currently equipped items. `get_friendship_remaining()` returns the difference.
 
 ## Drop target on the character
 
@@ -25,7 +25,7 @@ The character scene exposes one `Area2D` named `EquipDropTarget` covering the ch
 `can_accept(item)` returns true when:
 
 - the item's `role == &"equipment"`,
-- `friendship_power_remaining >= item.friendship_power_cost`,
+- `friendship_remaining >= item.friendship_cost`,
 - the timeout controller reports `AT_EQUIP_POSE`.
 
 When `can_accept` returns false because of capacity, the controller still routes the release to the character; `accept` triggers a refusal animation and bounces the held token back to the rack. This keeps the gesture diegetic: the player drops on the character, the character refuses.
