@@ -6,4 +6,4 @@ Each piece of gear is imbued with friendship. The friendship inside the piece is
 
 The protagonist can hold only so much imbued friendship at once. Each piece adds its share to what the protagonist is channelling; past a point, the combined load is too much to handle. Capacity grows with training.
 
-When the protagonist reaches for a piece that would push them past handling, the piece stays on its hook. The protagonist's body refuses the lift, and they turn back to what their shoulders already know how to carry.
+When a piece offered to the protagonist would push them past handling, their body refuses the fit and the piece returns to the rack. The protagonist turns back to what their shoulders already know how to carry.
