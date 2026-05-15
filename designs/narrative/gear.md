@@ -1,6 +1,6 @@
 # Gear
 
-Gear is what the world hands the protagonist to wear into the rally. Each piece is a thing in the world; each piece has a place it goes on the body when the protagonist takes it up.
+Gear hangs on the rack at the edge of the court. Each piece is a thing in the world; each piece has a place it goes on the body when the protagonist takes it up to wear into the rally.
 
 Friendship lifts the gear into place. The protagonist channels what the meetings between beings have made; the gear rises to the body and settles where it belongs. The visible work of putting on equipment is the visible work of being met. The gear stays on the rack until friendship reaches for it.
 
