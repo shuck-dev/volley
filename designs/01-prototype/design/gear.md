@@ -4,7 +4,7 @@ Gear is what the player attaches to the main character to change how that charac
 
 ## Capacity
 
-The character has a friendship capacity. Each piece of gear carries a friendship cost; equipping draws from the capacity. When the next item would exceed the capacity, the character refuses with an animation: the item bounces back to the rack, the character reads as "I can't carry this yet."
+The character has a friendship capacity. Each piece of gear carries a friendship cost; equipping draws from the capacity. When the next item would exceed the capacity, the character refuses with an animation; the held item stays on the cursor for the player to place elsewhere.
 
 Capacity grows through training. The cap on day one is small; it expands as the player invests in the character.
 
