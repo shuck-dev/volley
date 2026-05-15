@@ -1,6 +1,6 @@
 # Gear
 
-Gear is what the player attaches to the main character to change how that character plays. Tech spec follows in [`../tech/gear.md`](../tech/gear.md); narrative grounding sits in [`../../narrative/gear.md`](../../narrative/gear.md).
+Gear is what the player attaches to the main character to change how that character plays. Tech spec follows in [`../tech/gear.md`](../tech/gear.md); narrative grounding sits in [`../narrative/gear.md`](../narrative/gear.md).
 
 ## Capacity
 
