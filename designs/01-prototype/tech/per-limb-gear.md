@@ -61,7 +61,7 @@ func unequip(slot_name: StringName) -> bool
 Migration runs in `ItemState._post_load` under a save-version bump:
 
 - For each entry in legacy `item_placements` whose value is `EQUIPPED`, look up the item's first compatible slot on the active `CharacterSlotConfig` and write it to `slot_occupants`. Erase the legacy entry.
-- Drop the legacy entry on the floor when no compatible slot exists in the current build (item retired, slot kind retired, or the character now lacks that limb). The item returns to `STORED` and the player re-equips through the rack on next timeout.
+- When the active build offers no matching slot, the item returns to `STORED`; the player re-equips through the rack on next timeout.
 
 `LOOSE_IN_VENUE` and `STORED` keep their current shape.
 
