@@ -10,19 +10,21 @@ Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md
 @export var friendship_cost: int = 1
 ```
 
-`BaseStatsConfig` (existing) carries the cap. The current `kit_slots` field is reinterpreted as `friendship_capacity` (cost-weighted, replacing the count-of-items reading); the field itself can be renamed in the same change or kept under the existing name with the new meaning. The cap on day one is 3; training raises it.
+`BaseStatsConfig` (existing) carries the cap. The current `kit_slots` field is reinterpreted as `friendship_capacity` (cost-weighted, replacing the count-of-items reading) and retyped from `float` to `int` in the same change; the historical float was carried for stat-percentage modifiers, irrelevant for an integer cap. The cap on day one is 3; training raises it.
 
-`ItemManager.get_friendship_capacity()` reads the active character's stat. `ItemManager.get_friendship_used()` sums `friendship_cost` across items currently at the `EQUIPPED` placement. `get_friendship_remaining()` returns the difference.
+`ItemManager.get_friendship_capacity()` reads the active character's stat. `ItemManager.get_friendship_used()` sums `friendship_cost` across items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the sum unchanged; capacity reflects the kit on the body, frozen mid-gesture). `get_friendship_remaining()` returns the difference.
 
 ## Drop target on the character
 
 The character scene exposes one `Area2D` named `EquipDropTarget` covering the character's silhouette. A `CharacterDropTarget` (`scripts/items/drop_targets/character_drop_target.gd`) extends `DropTarget` and binds to it.
 
-`can_accept(item)` returns true when:
+`can_accept(item_key, position, scale_factor)` (matching the `DropTarget` base signature) returns true when:
 
-- the item's `role == &"equipment"`,
+- the item resolved by `item_key` has `role == &"equipment"`,
 - `friendship_remaining >= item.friendship_cost`,
 - the timeout controller reports `AT_EQUIP_POSE`.
+
+The `position` and `scale_factor` arguments are unused for character drops (the `Area2D` already filters by overlap), kept for signature parity.
 
 When `can_accept` returns false, the character's body acts as a wall to the held token: the home-and-loose collision-projection regime in [`../22-equip-loop-regime.md`](../22-equip-loop-regime.md) holds the token on the cursor, retries projection, and finally cancels back to source. Per-item visual placement: each gear `ItemDefinition` declares an `anchor_node_path: NodePath`; on equip, the item's visual reparents to the named anchor on the character.
 
@@ -53,6 +55,8 @@ func unequip(item_key: String) -> bool:
 ## Save shape
 
 No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `friendship_used` is derived per query; no new persisted field, no version bump, no wipe.
+
+Over-capacity state across designer changes (cost raised on an existing item; capacity lowered on the character) persists on load: equipped items stay equipped, `friendship_used` reports the overspent total honestly, and `equip` of any new item is blocked until the player unequips enough to fit. The kit on the body is preserved; the gate is only on adding more.
 
 ## Timeout gate
 
