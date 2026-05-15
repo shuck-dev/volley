@@ -49,14 +49,9 @@ A new signal `equip_refused(item_key, reason)` fires when capacity blocks an equ
 
 ## Save shape
 
-`ItemState.equipped_items: Dictionary[String, bool]` replaces the equipment side of `item_placements`. Ball-role placement keeps `item_placements` with `ON_COURT`.
+`ItemState.equipped_items: Dictionary[String, bool]` replaces the equipment side of `item_placements`. Ball-role placement keeps `item_placements` with `ON_COURT`. `LOOSE_IN_VENUE` and `STORED` keep their current shape.
 
-Migration runs in `ItemState._post_load` under a save-version bump:
-
-- For each entry in legacy `item_placements` whose value is `EQUIPPED`, set `equipped_items[item_key] = true`. Erase the legacy entry.
-- When the cumulative cost of migrated items would exceed the active capacity, equip in declaration order until the cap is hit; remaining items return to `STORED` and the player re-equips through the rack on next timeout.
-
-`LOOSE_IN_VENUE` and `STORED` keep their current shape.
+This is a breaking save change. Bump the save version, ship the change with a `feat!:` commit, wipe existing saves on load. Volley's prototype phase accepts wipes; no migration logic.
 
 ## Timeout gate
 
