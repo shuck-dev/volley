@@ -12,4 +12,4 @@ The cap grows through training. The cap on day one is small; it expands as the p
 
 The timeout opens the equip window. The player drags gear from the rack onto the character; the gear's effect registers via the existing effect manager and the gear's visual lands at its art-anchor on the body. Drag the gear back to the rack to unequip. Swap freely within the window.
 
-The kit reads from the character: each visible item is one piece of gear in play. The unkitted character plays the complete baseline; gear sculpts on top, within whatever the character can currently carry.
+The kit reads from the character: each visible item is one piece of gear in play. The unkitted character plays the complete baseline; gear fits on top, within whatever the character can currently carry.
