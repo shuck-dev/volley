@@ -58,6 +58,18 @@ Push the branch with `-u` on first push. Open the challenge ready-for-review (no
 
 Do not merge yourself. Only Josh applies `approved-human` to release auto-merge.
 
+## PR title and body shape
+
+The PR is a public surface. Linear is private; the open repo is the audience. Apply on every `gh pr create` and `gh pr edit`.
+
+**Title.** Bare conventional commit: `type: subject`. No `(sh-N)` scope, no `[Codename]` prefix, no GitHub-state words like `(draft)` or `[WIP]` (GitHub already tracks PR state). One example: `docs: per-limb equip design`. Not `docs(sh-404): per-limb equip design (draft)`.
+
+**Body.** Narrative prose. One short paragraph is usually the whole body. No `## Summary` header, no `## Test plan`, no checklist of verification steps. Player-facing verification belongs in the mission's Ride, not in every PR body. AC lives on the Linear issue.
+
+**IDs in body.** Reference GitHub issue/PR numbers (`#346`, Challenge `#403`), never Linear IDs (`SH-211`, `SH-403`). A reader of the open repo cannot follow Linear IDs.
+
+**Trailers.** `Agent-Role: <role>` exactly once. No `Co-Authored-By:`.
+
 ## Replying to Josh's review comments
 
 When a fix lands that resolves an inline review comment from Josh, reply to that comment via `gh api repos/.../pulls/<n>/comments/<id>/replies`. Lead with your codename in bold (`**Feldspar**`, `**Hornfels**`, `**Gru**`); name the fix SHA in short form (7 chars); under 30 words. Don't silently push and let the thread hang open.
