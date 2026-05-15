@@ -8,8 +8,8 @@ The class of items attached to the character to change how that character plays.
 
 ## Slots
 
-Anatomical positions: hands, wrists, ankles, head. Not abstract categories, not generic indices, not roles. The item set already implies anatomy (grip tape on hands, ankle weights on ankles); the body's symmetry carries the constraint without a tutorial. Symmetric pairs are two slots that take the same kind of item.
+Anatomical positions: hands, wrists, ankles, head. The item set already implies anatomy (grip tape on hands, ankle weights on ankles); the body's symmetry carries the constraint by itself. Symmetric pairs are two slots that take the same kind of item.
 
 ## Equipping
 
-Registers the item's effects via the existing effect manager while the item lives on the body; unequipping unregisters. Reversible at no cost. The kit reads from the silhouette; the build is visible on the character. The unkitted character is the complete baseline; gear is additive sculpting, never a hole to fill.
+Registers the item's effects via the existing effect manager while the item lives on the body; unequipping unregisters. Swap freely: drag on, drag off, effects update in place. The kit reads from the silhouette; the build is visible on the character. The unkitted character plays the complete baseline; gear sculpts on top.
