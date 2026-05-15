@@ -1,18 +1,14 @@
 # Gear
 
-Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the friendship cost on items, the capacity stat on the character, the drop target on the character, the `ItemManager` surface, and the timeout gate.
+Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the capacity stat on the character, the drop target on the character, the `ItemManager` surface, and the timeout gate.
 
-## Capacity and cost
+## Capacity
 
-`ItemDefinition` gains:
+`BaseStatsConfig.kit_slots` (existing) is the cap on equipped equipment items. Each equipped item counts as one. The cap on day one is 3; training raises it.
 
-```gdscript
-@export var friendship_cost: int = 1
-```
+`ItemManager.get_kit_capacity()` reads the active character's `kit_slots`. `ItemManager.get_kit_used()` counts items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the count unchanged; capacity reflects the kit on the body, frozen mid-gesture). `get_kit_remaining()` returns the difference.
 
-`BaseStatsConfig` (existing) carries the cap. The current `kit_slots` field is reinterpreted as `friendship_capacity` (cost-weighted, replacing the count-of-items reading) and retyped from `float` to `int` in the same change; the historical float was carried for stat-percentage modifiers, irrelevant for an integer cap. The cap on day one is 3; training raises it.
-
-`ItemManager.get_friendship_capacity()` reads the active character's stat. `ItemManager.get_friendship_used()` sums `friendship_cost` across items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the sum unchanged; capacity reflects the kit on the body, frozen mid-gesture). `get_friendship_remaining()` returns the difference.
+`kit_slots` is currently typed `float` for stat-percentage modifiers; callers floor it on read for the integer comparison.
 
 ## Drop target on the character
 
@@ -21,14 +17,16 @@ The character scene exposes one `Area2D` named `EquipDropTarget` covering the ch
 `can_accept(item_key, position, scale_factor)` (matching the `DropTarget` base signature) returns true when:
 
 - the item resolved by `item_key` has `role == &"equipment"`,
-- `friendship_remaining >= item.friendship_cost`,
+- `kit_remaining >= 1`,
 - the timeout controller reports `AT_EQUIP_POSE`.
 
 The `position` and `scale_factor` arguments are unused for character drops (the `Area2D` already filters by overlap), kept for signature parity.
 
-When `can_accept` returns false, the character's body acts as a wall to the held token: the home-and-loose collision-projection regime in [`../22-equip-loop-regime.md`](../22-equip-loop-regime.md) holds the token on the cursor, retries projection, and finally cancels back to source. Per-item visual placement: each gear `ItemDefinition` declares an `anchor_node_path: NodePath`; on equip, the item's visual reparents to the named anchor on the character.
+When `can_accept` returns false, the character's body acts as a wall to the held token: the home-and-loose collision-projection regime in [`../22-equip-loop-regime.md`](../22-equip-loop-regime.md) holds the token on the cursor, retries projection, and finally cancels back to source.
 
 When the rejection is specifically capacity-exceeded (the other two `can_accept` clauses passed), `CharacterDropTarget` emits `equip_refused(item_key, &"capacity_exceeded")` so the character scene can play a refusal animation. Other rejections (wrong role, wrong window) stay silent; the held token already communicates the projection failure.
+
+Per-item visual placement: each gear `ItemDefinition` declares an `anchor_node_path: NodePath`; on equip, the item's visual reparents to the named anchor on the character.
 
 ## ItemManager surface
 
@@ -39,7 +37,7 @@ func equip(item_key: String) -> bool:
     var item := _get_item(item_key)
     if item.role != &"equipment":
         return false
-    if get_friendship_remaining() < item.friendship_cost:
+    if get_kit_remaining() < 1:
         equip_refused.emit(item_key, &"capacity_exceeded")
         return false
     return activate(item_key)
@@ -54,12 +52,12 @@ func unequip(item_key: String) -> bool:
 
 ## Save shape
 
-No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `friendship_used` is derived per query; no new persisted field, no version bump, no wipe.
+No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `kit_used` is derived per query; no new persisted field, no version bump, no wipe.
 
-Over-capacity state across designer changes (cost raised on an existing item; capacity lowered on the character) persists on load: equipped items stay equipped, `friendship_used` reports the overspent total honestly, and `equip` of any new item is blocked until the player unequips enough to fit. The kit on the body is preserved; the gate is only on adding more.
+Over-capacity state across designer changes (an equipped item retired, `kit_slots` lowered) persists on load: equipped items stay equipped, `kit_used` reports the overspent total honestly, and `equip` of any new item is blocked until the player unequips enough to fit. The kit on the body is preserved; the gate is only on adding more.
 
 ## Timeout gate
 
 The equip window opens on `TimeoutController.main_character_reached_equip_pose` and closes on `timeout_ended`. `CharacterDropTarget.can_accept` reads `TimeoutController.get_state() == AT_EQUIP_POSE` directly. Off-court releases hit other targets.
 
-Unequip is symmetric: dragging an equipped item back to the rack within the same window calls `unequip` and frees its capacity. Outside the window, the character's drop target stays inert and the dragged item passes through to the next target in the priority list.
+Unequip is symmetric: dragging an equipped item back to the rack within the same window calls `unequip` and frees its slot. Outside the window, the character's drop target stays inert and the dragged item passes through to the next target in the priority list.
