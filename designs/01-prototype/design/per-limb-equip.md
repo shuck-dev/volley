@@ -1,10 +1,8 @@
 # Per-Limb Equipment
 
-Settles the equipment model so SH-211 (drag-equip from rack onto the character) can ship against a fixed shape. The home-and-loose regime in [22-equip-loop-regime.md](../22-equip-loop-regime.md) already names equipment as a class of item with the character as its active home. This doc says what that means.
+Equipment lives on the main character at named positions on the body. The home-and-loose regime in [22-equip-loop-regime.md](../22-equip-loop-regime.md) already names equipment as a class of item with the character as its active home; this doc says what that means: what equipment is, what a slot is, what equipping does.
 
-Scope: the concept, not the data model. Tech doc follows.
-
----
+Implementation spec follows in `../tech/per-limb-equip.md`.
 
 ## What equipment is
 
@@ -42,6 +40,6 @@ The unkitted character is not a deficient character. It plays the base game with
 
 ---
 
-## What this leaves to the tech doc
+## Tech doc scope
 
 The data shape (how a slot is named, where the assignment is stored, how pair-slots are addressed), the drop-target authoring (which nodes on the character scene accept which items, what hover feedback shows), the save migration from the existing `EQUIPPED` enum to per-slot assignments, the failure mode when a saved item's slot no longer exists. None of these change the shape above; they implement it.
