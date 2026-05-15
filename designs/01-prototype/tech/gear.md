@@ -1,6 +1,6 @@
 # Gear
 
-Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the capacity counter, per-item friendship cost, the drop target on the character, the `ItemManager` surface, save shape, and the timeout gate.
+Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the friendship cost on items, the capacity stat on the character, the drop target on the character, the `ItemManager` surface, and the timeout gate.
 
 ## Capacity and cost
 
@@ -10,13 +10,9 @@ Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md
 @export var friendship_cost: int = 1
 ```
 
-`CharacterStatsConfig` (existing) gains:
+`BaseStatsConfig` (existing) carries the cap. The current `kit_slots` field is reinterpreted as `friendship_capacity` (cost-weighted, replacing the count-of-items reading); the field itself can be renamed in the same change or kept under the existing name with the new meaning. The cap on day one is 3; training raises it.
 
-```gdscript
-@export var friendship_capacity: int = 3
-```
-
-The cap on day one is 3; training raises it. `ItemManager.get_friendship_capacity()` reads the active character's stat through the existing partner/character stat path; `ItemManager.get_friendship_used()` sums `friendship_cost` across currently equipped items. `get_friendship_remaining()` returns the difference.
+`ItemManager.get_friendship_capacity()` reads the active character's stat. `ItemManager.get_friendship_used()` sums `friendship_cost` across items currently at the `EQUIPPED` placement. `get_friendship_remaining()` returns the difference.
 
 ## Drop target on the character
 
@@ -28,33 +24,38 @@ The character scene exposes one `Area2D` named `EquipDropTarget` covering the ch
 - `friendship_remaining >= item.friendship_cost`,
 - the timeout controller reports `AT_EQUIP_POSE`.
 
-When `can_accept` returns false because of capacity, the controller still routes the release to the character; `accept` triggers a refusal animation and bounces the held token back to the rack. This keeps the gesture diegetic: the player drops on the character, the character refuses.
+When `can_accept` returns false, the character's body acts as a wall to the held token: the home-and-loose collision-projection regime in [`../22-equip-loop-regime.md`](../22-equip-loop-regime.md) holds the token on the cursor, retries projection, and finally cancels back to source. Per-item visual placement: each gear `ItemDefinition` declares an `anchor_node_path: NodePath`; on equip, the item's visual reparents to the named anchor on the character.
 
-Per-item visual placement is per-item: each gear `ItemDefinition` declares an `anchor_node_path: NodePath` (or null for items with no anatomical anchor, like Cadence). On equip, the item's visual reparents to the named anchor on the character; if no anchor is set, the visual lands at a default carry position.
+When the rejection is specifically capacity-exceeded (the other two `can_accept` clauses passed), `CharacterDropTarget` emits `equip_refused(item_key, &"capacity_exceeded")` so the character scene can play a refusal animation. Other rejections (wrong role, wrong window) stay silent; the held token already communicates the projection failure.
 
 ## ItemManager surface
 
+`equip(item_key)` and `unequip(item_key)` are public wrappers that gate equipment placement on capacity:
+
 ```gdscript
-func equip(item_key: String) -> bool
-func unequip(item_key: String) -> bool
+func equip(item_key: String) -> bool:
+    var item := _get_item(item_key)
+    if item.role != &"equipment":
+        return false
+    if get_friendship_remaining() < item.friendship_cost:
+        equip_refused.emit(item_key, &"capacity_exceeded")
+        return false
+    return activate(item_key)
+
+func unequip(item_key: String) -> bool:
+    return deactivate(item_key)
 ```
 
-`equip` validates ownership and capacity headroom; on success, marks `state.equipped_items[item_key] = true`, calls `_effect_manager.register_source(item, get_level(item_key))`, and emits `item_placement_changed(item_key, EQUIPPED)`.
+`activate` and `deactivate` stay as the universal placement / effect-registration primitive (per [`04-effect-system.md`](04-effect-system.md)). Ball-role items continue calling `activate` directly. Equipment goes through `equip` / `unequip` so capacity is checked on the way in.
 
-`unequip` clears the entry, calls `_effect_manager.unregister_source(item)`, and emits the same.
-
-`activate` / `deactivate` retire for equipment; ball-role items keep the existing `_set_item_placement` path with `ON_COURT`.
-
-A new signal `equip_refused(item_key, reason)` fires when capacity blocks an equip; the character scene listens and plays the refusal animation.
+`equip_refused(item_key, reason: StringName)` signal: `reason` is currently `&"capacity_exceeded"` (the sole case). Listeners switch on it. New `reason` values land here as the model grows.
 
 ## Save shape
 
-`ItemState.equipped_items: Dictionary[String, bool]` replaces the equipment side of `item_placements`. Ball-role placement keeps `item_placements` with `ON_COURT`. `LOOSE_IN_VENUE` and `STORED` keep their current shape.
-
-This is a breaking save change. Bump the save version, ship the change with a `feat!:` commit, wipe existing saves on load. Volley's prototype phase accepts wipes; no migration logic.
+No change. Equipment placement continues to live in `ItemState.item_placements` with the `EQUIPPED` enum. `friendship_used` is derived per query; no new persisted field, no version bump, no wipe.
 
 ## Timeout gate
 
-The equip window opens on `TimeoutController.main_character_reached_equip_pose` and closes on `timeout_ended`. `CharacterDropTarget.can_accept` reads `TimeoutController.get_state() == AT_EQUIP_POSE` directly; off-court releases hit the venue or rack targets exactly as today.
+The equip window opens on `TimeoutController.main_character_reached_equip_pose` and closes on `timeout_ended`. `CharacterDropTarget.can_accept` reads `TimeoutController.get_state() == AT_EQUIP_POSE` directly. Off-court releases hit other targets.
 
-Unequip is symmetric: dragging an equipped item back to the rack within the same window calls `ItemManager.unequip(item_key)` and frees its capacity. Outside the window, the character's drop target stays inert and the dragged item passes through to the next target in the priority list.
+Unequip is symmetric: dragging an equipped item back to the rack within the same window calls `unequip` and frees its capacity. Outside the window, the character's drop target stays inert and the dragged item passes through to the next target in the priority list.
