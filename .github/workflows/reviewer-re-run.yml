@@ -2,9 +2,10 @@ name: Reviewer Re-run
 
 # Label lifecycle for the zaphod-* verdicts. Two reconcilers live here:
 #
-#   - strip-zaphod-on-push: new commit strips both labels; the AI verdict
-#     must be re-earned against the new HEAD. Re-dispatch is manual, by
-#     the organiser (main Claude thread), never CI; PR-triggered workflows
+#   - strip-zaphod-on-push: new commit strips all three zaphod-* labels
+#     (requested, approved, blocked); the request and any verdict must be
+#     re-earned against the new HEAD. Re-dispatch is manual, by the
+#     organiser (main Claude thread), never CI; PR-triggered workflows
 #     do not run Claude because outside PRs are a prompt-injection surface.
 #   - blocked-supersedes-approved (SH-166): when two specialists race and
 #     one lands blocked after the other landed approved, the blocker wins.
@@ -36,11 +37,11 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Remove zaphod-approved and zaphod-blocked
+      - name: Remove zaphod-requested, zaphod-approved, zaphod-blocked
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            const labels = ['zaphod-approved', 'zaphod-blocked'];
+            const labels = ['zaphod-requested', 'zaphod-approved', 'zaphod-blocked'];
             for (const name of labels) {
               try {
                 await github.rest.issues.removeLabel({
