@@ -23,6 +23,9 @@ var _sprite_natural_height := 0.0
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var _drive_blocked: bool = false
 
+# False until the first _apply_size lands; the initial call is sizing, not a resize.
+var _size_initialised: bool = false
+
 
 func _ready() -> void:
 	add_to_group(&"paddles")
@@ -111,7 +114,13 @@ func _apply_size() -> void:
 	var paddle_size: float = _resolve(GameRules.paddle.paddle_size, &"paddle_size")
 	var new_size: float = clampf(paddle_size, paddle_size_min, arena_height)
 
+	# Anchor the collider's foot: RectangleShape2D is centred on the body, so growing size.y without
+	# shifting position.y plants half the delta below the floor and traps depenetration during AT_EQUIP_POSE.
+	var old_size: float = _collision_shape.size.y
 	_collision_shape.size.y = new_size
+	if _size_initialised:
+		position.y -= (new_size - old_size) * 0.5
+	_size_initialised = true
 
 	if sprite != null and _sprite_natural_height > 0.0:
 		sprite.scale.y = new_size / _sprite_natural_height
