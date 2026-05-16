@@ -135,11 +135,11 @@ The physics dispatch path (`body_entered` -> `_on_body_entered` -> duck-typed me
 
 ## Test budget
 
-The full GUT suite is fast, and we like it that way. The fast feedback loop is one of the reasons working on this codebase feels light, and it only stays fast if every new case respects that. The rule of thumb: a new case should not push the per-case average up. The suite currently runs in roughly two seconds across about seven hundred tests, so each case averages somewhere around three milliseconds.
+The full GUT suite is fast, and we like it that way. The fast feedback loop is one of the reasons working on this codebase feels light, and it only stays fast if every new case respects that. The rule of thumb: a new case should not push the per-case average up. Run the suite, note the wall time, add your case, run it again; if the average per test got slower, the fixture is doing too much real-time work.
 
-If your case is taking noticeably longer than that, the fixture is almost always doing too much real-time work. Swap `await get_tree().physics_frame` loops for deterministic stepping: call the controller's `_physics_process(virtual_delta)` directly with a chosen delta, advance tweens with `tween.custom_step(...)`, step the physics server with `PhysicsServer2D.step`. The production code is unchanged; the test just stops paying the wall-clock cost of waiting for real frames.
+The usual culprit is waiting for real frames. Swap `await get_tree().physics_frame` loops for deterministic stepping: call the controller's `_physics_process(virtual_delta)` directly with a chosen delta, advance tweens with `tween.custom_step(...)`, step the physics server with `PhysicsServer2D.step`. The production code is unchanged; the test just stops paying the wall-clock cost of waiting for real frames.
 
-When a change moves the suite, report the exact wall times. `11.6s` reads better than `~12s`, and giving both the before and after numbers lets the reviewer (and the next person diagnosing a regression) see the shape of the change.
+When a change moves the suite, report the exact wall times. Specific numbers are more useful than approximations, and giving both the before and after lets the reviewer (and the next person diagnosing a regression) see the shape of the change.
 
 ## CI
 
