@@ -33,7 +33,7 @@ The shape is scrum-style. Open with blockers, name the improvements they earn, r
 
 - **Blockers.** What slowed the work down. Reviewer round-trips, wrong-shape PRs, repeated voice corrections, surface-state bleeds, advisory-not-blocking caveats that turned out to be load-bearing. Named concretely with PR / SHA citations.
 - **Improvements.** What is different now. Memory rules added or sharpened, skills consolidated, hooks added. Each improvement names the blocker it addresses.
-- **Action items.** Per `feedback_debrief_action_items`: every follow-up routed Filed / Memory-only / Parked. No unstructured prose.
+- **Action items.** Process levers, NOT deliverable follow-ups. A new memory rule, a new skill, a new hook, a new convention, a new audit pass over existing artefacts. "Sweep the suite for tautology smells", "tighten the hook regex", "amend the reviewer brief to escalate global-state caveats." NOT "file SH-405 AC #4" or "rewrite the oscillator test"; those are next-mission backlog, not retro material. Action items compound; deliverable follow-ups grow linearly. Filed / Memory-only / Parked per `feedback_debrief_action_items`.
 - **Flags.** Per `feedback_flags_surface_or_skip`: every flag added during the mission, or "none added" explicitly.
 
 What does NOT belong in a debrief: a "what shipped" headline, a PR list narrating the deliverables, a milestone-close summary. Those are status report content. A debrief that opens with merge counts and feature names is a self-flattering status report wearing a retro label.
