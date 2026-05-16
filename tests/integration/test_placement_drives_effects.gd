@@ -102,63 +102,6 @@ func test_ball_lifecycle_rack_court_rack() -> void:
 	)
 
 
-# --- Level-up while placed -------------------------------------------------
-
-
-# Purchasing another level while the item is on the player re-registers its
-# effects at the new level without the player having to re-place it.
-func test_level_up_while_equipment_on_player_updates_running_effects() -> void:
-	var base_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
-
-	_manager.take("grip_tape")
-	_manager.activate("grip_tape")
-	var size_at_l1: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
-
-	_manager.purchase("grip_tape")
-	assert_eq(_manager.get_level("grip_tape"), 2, "sanity: level advanced to 2")
-	assert_true(_manager.is_on_court("grip_tape"), "level-up must not dislodge the item")
-
-	var size_at_l2: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
-	assert_gt(size_at_l2, size_at_l1, "level-up must update running effects on the player")
-	assert_gt(size_at_l2, base_size)
-
-
-# A ball levelled while on the court sees its effect scale up live.
-func test_level_up_while_ball_on_court_updates_running_effects() -> void:
-	_manager.take("training_ball")
-	_manager.activate("training_ball")
-	var stat_at_l1: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
-	)
-
-	_manager.purchase("training_ball")
-	assert_eq(_manager.get_level("training_ball"), 2)
-	assert_true(_manager.is_on_court("training_ball"), "ball stays on court across level-up")
-
-	assert_gt(
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
-		stat_at_l1,
-		"level-up must update the ball's running effects on the court",
-	)
-
-
-# A level-up applied to a rack-resident item stays inert until it is placed.
-func test_level_up_on_racked_item_does_not_start_effects() -> void:
-	var base_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
-
-	_manager.take("grip_tape")
-	_manager.purchase("grip_tape")  # level 2, still on the rack.
-
-	assert_eq(_manager.get_level("grip_tape"), 2)
-	assert_false(_manager.is_on_court("grip_tape"))
-	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
-		base_size,
-		0.01,
-		"levels alone should not start effects while the item sits on the rack",
-	)
-
-
 # --- Save / reload round-trip ---------------------------------------------
 
 

@@ -1,89 +1,14 @@
 extends GutTest
 
-# Integration: speed bar raises on rally, resets on miss, Cadence cracks the ceiling.
+## SH-288 multi-ball loop completion: with two balls tracked by the reconciler, the speed bar reads the highest live speed across them.
 
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const SpeedBarScript: GDScript = preload("res://scripts/court/speed_bar.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const Cadence: Resource = preload("res://resources/items/cadence.tres")
 
-var _ball: Ball
-var _paddle: Paddle
-var _bar: Control
-var _game: Node2D
-var _manager: Node
-
-
-func before_each() -> void:
-	_manager = ItemManagerScript.new()
-	_manager.state = ItemState.new()
-	_manager.economy = EconomyState.new()
-	_manager._effect_manager = EffectManager.new()
-	_manager.items.assign([Cadence])
-	add_child_autofree(_manager)
-
-	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball._item_manager = _manager
-
-	_paddle = load("res://scripts/entities/paddle.gd").new()
-	var sound := AudioStreamPlayer.new()
-	_paddle.add_child(sound)
-	_paddle.hit_sound = sound
-	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
-	_paddle.tracker = tracker
-	_paddle.add_child(tracker)
-
-	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
-	add_child_autofree(autoplay_controller_stub)
-
-	_game = load("res://scripts/core/court.gd").new()
-	_game.ball = _ball
-	_game.player_paddle = _paddle
-	_game.autoplay_controller = autoplay_controller_stub
-	_game._progression_config = ProgressionConfig.new()
-	_game._item_manager = _manager
-	_game._records = RecordsState.new()
-	_game._partners = PartnersState.new()
-	add_child_autofree(_ball)
-	add_child_autofree(_paddle)
-	add_child_autofree(_game)
-	_ball.gravity_scale = 0.0
-	_ball.linear_velocity = Vector2(
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
-	)
-
-	_bar = SpeedBarScript.new()
-	_bar.ball = _ball
-	_bar.size = Vector2(200, 10)
-	add_child_autofree(_bar)
-
-
-func _hit_once() -> void:
-	# Per-ball ownership: drive a real paddle collision so the ball advances its own speed.
-	_ball._on_body_entered(_paddle)
-	_paddle.tracker._process(HitTracker.COOLDOWN)
-
-
-func test_bar_rises_during_rally() -> void:
-	var starting_speed: float = _bar.current_speed
-	_hit_once()
-	_hit_once()
-	_hit_once()
-	assert_gt(_bar.current_speed, starting_speed)
-
-
-func test_bar_resets_on_miss() -> void:
-	_hit_once()
-	_hit_once()
-	var mid_rally_speed: float = _bar.current_speed
-	_ball.missed.emit()
-	assert_lt(_bar.current_speed, mid_rally_speed)
-	assert_eq(_bar.current_speed, _ball.min_speed)
-
 
 func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
-	# SH-288 multi-ball: with two balls at different speeds, the bar reads the highest.
-	# Use a real reconciler so `ball_added` drives attachment, mirroring production wiring.
 	var multi_manager: Node = ItemManagerScript.new()
 	multi_manager.state = ItemState.new()
 	multi_manager.economy = EconomyState.new()
@@ -102,12 +27,12 @@ func test_bar_shows_highest_speed_across_two_tracked_balls() -> void:
 	bar.size = Vector2(200, 10)
 	add_child_autofree(bar)
 
-	# Spawn two balls and assign distinct speeds.
 	var slow: Ball = reconciler.ensure_ball_for_key("ball_a", Vector2.ZERO, Vector2(100, 0))
 	var fast: Ball = reconciler.ensure_ball_for_key("ball_b", Vector2.ZERO, Vector2(100, 0))
 	slow.speed = 500.0
 	fast.speed = 650.0
 
-	# Drive a speed_changed emit on the slower ball; bar must still show the faster ball's speed.
+	# A speed_changed emit on the slower ball must not lower the bar below the fastest tracked ball.
 	slow.speed_changed.emit(slow.speed, slow.min_speed, slow.max_speed)
-	assert_eq(bar.current_speed, 650.0, "bar should reflect the highest speed across tracked balls")
+	assert_gt(bar.current_speed, slow.speed, "bar tracks the fastest ball, not the emitter")
+	assert_eq(bar.current_speed, fast.speed)

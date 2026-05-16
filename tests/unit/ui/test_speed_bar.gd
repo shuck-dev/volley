@@ -68,6 +68,29 @@ func test_no_overflow_fill_when_speed_below_permanent_max() -> void:
 	assert_false(_bar.current_speed > _bar._permanent_max_speed)
 
 
+# --- multi-ball highest-speed reading (SH-288) ---
+# Replacement for the integration `bar_shows_highest_speed_across_two_tracked_balls`,
+# pinning the highest-speed selection logic directly on the bar without a reconciler.
+func test_bar_reads_highest_speed_when_slower_ball_emits() -> void:
+	var ball_script: GDScript = load("res://scripts/entities/ball/ball.gd")
+	var slow: Ball = ball_script.new()
+	var fast: Ball = ball_script.new()
+	add_child_autofree(slow)
+	add_child_autofree(fast)
+	slow.gravity_scale = 0.0
+	fast.gravity_scale = 0.0
+	# Direct attach mirrors what BallReconciler.ball_added would do.
+	_bar._attach_ball(slow)
+	_bar._attach_ball(fast)
+	slow.speed = 500.0
+	fast.speed = 650.0
+
+	slow.speed_changed.emit(slow.speed, 400.0, 700.0)
+
+	assert_gt(_bar.current_speed, slow.speed, "bar tracks the fastest ball, not the emitter")
+	assert_eq(_bar.current_speed, fast.speed)
+
+
 # --- helpers ---
 func _fill_ratio() -> float:
 	var speed_range: float = _bar._max_speed - _bar._min_speed
