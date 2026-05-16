@@ -133,6 +133,20 @@ For bug reports where the steps-to-reproduce already define the failing case:
 
 Doc-only fix, test-only refactor, scene-only restructure with no script edits. Flag the deviation.
 
+## Concurrent fan-out: declare the file split
+
+When fanning N write-capable minions on the same branch in one turn, the dispatch brief must name the slice each minion owns and the slice it must not touch. Concurrent writes to the same file silently overwrite (per `CLAUDE.md`), and worktree isolation does not protect against same-branch fan-out on a branch that is already checked out in the main tree.
+
+Rules:
+
+1. **Split by file.** Each concurrent write-capable minion gets a named, non-overlapping list of paths. "Penny: `character_drop_target.gd`, `test_drop_targets.gd`. Otis: `timeout_controller.gd`, `paddle.gd`." Read-only minions (reviewers, devils-advocate) can share paths freely; the rule applies to minions with Edit or Write.
+2. **Name the sibling slices in each brief.** Every minion's brief explicitly lists the other minions in flight and the paths they own, so the minion knows where its slice ends. "Sibling agent Otis is concurrently editing `timeout_controller.gd` plus `paddle.gd`. Do not touch those files."
+3. **Abort on slice violation.** Brief the minion to stop and report if it needs to touch a file outside its declared slice. Do not let it "just edit the one extra file"; that is the failure mode the split is preventing.
+4. **One writer per branch in the main worktree.** If the main worktree is on the branch a minion needs to edit, only one minion can write there at a time. Additional writers go in `isolation: "worktree"` on the same branch (Git allows multiple worktrees on one branch only via `--force`; do not force unless Josh asks). The cleaner pattern: serialise writers, parallelise readers.
+5. **Reviewers can fan freely.** Reviewer specialists, devils-advocate, and test-coverage are read-only; fan as many as the scope justifies. The split rule applies only to Edit / Write minions.
+
+If the fan would require any file to appear in two slices, the work is not fan-shaped; sequence it, or refactor the dispatch so each minion owns a coherent unit.
+
 ## Reviewer dispatch
 
 Reviewers fire after the impl challenge opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The full path → specialist map and the reviewer contract (verdict shape, inline-finding shape, label flips, race resolver) live in `ai/skills/minions/reviewers.md`.
