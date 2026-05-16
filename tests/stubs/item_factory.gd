@@ -39,6 +39,7 @@ static func create(
 
 	var item := ItemDefinition.new()
 	item.key = item_key
+	item.role = &"equipment"
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
