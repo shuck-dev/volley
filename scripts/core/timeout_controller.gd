@@ -70,6 +70,7 @@ func call_timeout() -> void:
 	# Resting items live on layer 2; mask them off so they act as walls for drops, not body-blockers for the walk.
 	_saved_collision_mask = main_character.collision_mask
 	main_character.set_collision_mask_value(2, false)
+	main_character._drive_blocked = true
 	timeout_started.emit()
 	_begin_walk_off()
 
@@ -196,5 +197,6 @@ func _finish_at_lane() -> void:
 	if is_instance_valid(main_character):
 		main_character.velocity = Vector2.ZERO
 		main_character.collision_mask = _saved_collision_mask
+		main_character._drive_blocked = false
 		main_character.set_physics_process(true)
 	timeout_ended.emit()

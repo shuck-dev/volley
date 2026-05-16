@@ -58,6 +58,7 @@ func _ready() -> void:
 	_setup_friendship_point_controls()
 	_setup_clear_save_control()
 
+	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
 

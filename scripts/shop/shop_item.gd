@@ -412,6 +412,7 @@ func _on_balance_changed(_balance: int) -> void:
 	_refresh_case_overlay()
 
 
+# Case overlay gates on ownership and affordability; neither changes on equip/unequip.
 func _on_item_level_changed(item_key: String) -> void:
 	if item_definition != null and item_key == item_definition.key:
 		_refresh_case_overlay()

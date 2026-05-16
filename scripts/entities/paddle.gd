@@ -20,6 +20,9 @@ var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
 var _sprite_natural_height := 0.0
 
+## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
+var _drive_blocked: bool = false
+
 
 func _ready() -> void:
 	add_to_group(&"paddles")
@@ -53,6 +56,9 @@ func reset_streak() -> void:
 
 
 func drive(velocity_y: float) -> void:
+	if _drive_blocked:
+		return
+
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
 	position.x = _lane_x
@@ -87,10 +93,11 @@ func _resolve(base: float, key: StringName) -> float:
 func _bind_stat_updates() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_item_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
+	_item_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
 
 
-func _on_item_level_changed(_item_key: String) -> void:
+func _refresh_from_stats() -> void:
 	_apply_size()
 	_paddle_speed = _resolved_paddle_speed()
 

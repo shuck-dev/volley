@@ -101,6 +101,7 @@ func _on_friendship_point_balance_changed(balance: int) -> void:
 
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.
+# Equip/unequip leaves level unchanged, so no item_placement_changed subscription.
 func _on_item_level_changed(item_key: String) -> void:
 	if _item_manager.get_level(item_key) <= 0:
 		return
