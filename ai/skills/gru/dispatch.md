@@ -223,6 +223,10 @@ On every challenge sweep, check `gh pr view <n> --json state,mergedAt,mergeable,
 
 There is no bot applying `zaphod-conflicts`; Gru owns it.
 
+## Mission close
+
+When the mission's work is done, read `ai/skills/gru/debrief.md`.
+
 ## Cleanup
 
 Worktrees come down after each stage (push, ready-for-merge, abandon). Recreate on revision; sibling to main worktree, not under `/tmp`.
