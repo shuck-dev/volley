@@ -25,7 +25,12 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	if _item_manager == null:
 		return
-	if _item_manager.is_on_court(item_key):
+	if not _item_manager.is_on_court(item_key):
+		return
+	# Equipment teardown is signal-driven: CharacterDropTarget frees the visual on the EQUIPPED -> STORED transition.
+	if _role == &"equipment":
+		_item_manager.unequip(item_key)
+	else:
 		_item_manager.deactivate(item_key)
 
 

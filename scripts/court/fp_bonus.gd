@@ -6,6 +6,7 @@ extends Label
 func _ready() -> void:
 	court.partner_changed.connect(_refresh)
 	ItemManager.item_level_changed.connect(_refresh.unbind(1))
+	ItemManager.item_placement_changed.connect(_refresh.unbind(2))
 	_refresh()
 
 

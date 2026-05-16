@@ -1,4 +1,3 @@
-@tool
 extends VBoxContainer
 
 var _buttons: Dictionary = {}
@@ -6,10 +5,6 @@ var _drag := DraggableBehavior.new()
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint():
-		_build_placeholder()
-		return
-
 	if not OS.is_debug_build():
 		queue_free()
 		return
@@ -58,6 +53,7 @@ func _ready() -> void:
 	_setup_friendship_point_controls()
 	_setup_clear_save_control()
 
+	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
 
@@ -175,35 +171,3 @@ func _add_header() -> void:
 	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
 	add_child(header)
-
-
-func _build_placeholder() -> void:
-	for child in get_children():
-		child.queue_free()
-	resized.connect(queue_redraw)
-	_add_header()
-
-	for path in _find_item_resources():
-		var item: ItemDefinition = load(path)
-		if item == null:
-			continue
-		var label := Label.new()
-		label.text = "%s Lv0 [%d FP]" % [item.display_name, item.base_cost]
-		label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
-		add_child(label)
-
-	var footer := Label.new()
-	footer.text = "Add/Remove FP"
-	footer.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
-	add_child(footer)
-
-
-func _find_item_resources() -> Array[String]:
-	var paths: Array[String] = []
-	var directory := DirAccess.open("res://resources/items")
-	if directory == null:
-		return paths
-	for file_name in directory.get_files():
-		if file_name.ends_with(".tres"):
-			paths.append("res://resources/items/%s" % file_name)
-	return paths

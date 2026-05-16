@@ -62,12 +62,15 @@ func _build_with_stats_and_min_angle(
 		_manager.items.append(min_item)
 	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("max_angle_kit")
+	_manager.activate("max_angle_kit")
 
 	if english_delta != 0.0:
 		_manager.purchase("english_kit")
+		_manager.activate("english_kit")
 
 	if min_angle_bonus != 0.0:
 		_manager.purchase("min_angle_kit")
+		_manager.activate("min_angle_kit")
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager

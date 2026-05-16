@@ -80,12 +80,3 @@ func test_size_unchanged_after_player_purchases_grip_tape() -> void:
 	_manager.purchase("grip_tape")
 
 	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)
-
-
-# --- not connected to item_level_changed ---
-func test_not_connected_to_item_level_changed() -> void:
-	var paddle := _create_partner_paddle()
-	assert_false(
-		_manager.item_level_changed.is_connected(paddle._on_item_level_changed),
-		"Partner paddle should not connect to item_level_changed"
-	)

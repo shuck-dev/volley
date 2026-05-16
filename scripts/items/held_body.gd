@@ -54,7 +54,8 @@ func go_loose(release_velocity: Vector2) -> void:
 		art_holder.scale = pre_loose_scale
 	freeze = false
 	gravity_scale = loose_gravity_scale
-	collision_layer = 1
+	# Layer 2 is the items layer; paddle masks it off during timeout so resting items can't body-block the walk.
+	collision_layer = 2
 	collision_mask = 1
 	linear_velocity = release_velocity
 	_enable_grab_area(true)

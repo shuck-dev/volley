@@ -13,12 +13,18 @@ const PADDLE_TOP_Y := -540.0
 @export var sprite: Sprite2D
 @export var tracker: HitTracker
 
+## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
+var drive_blocked: bool = false
+
 var _item_manager: Node
 
 var _lane_x := 0.0
 var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
 var _sprite_natural_height := 0.0
+
+# False until the first _apply_size lands; the initial call is sizing, not a resize.
+var _size_initialised: bool = false
 
 
 func _ready() -> void:
@@ -53,6 +59,9 @@ func reset_streak() -> void:
 
 
 func drive(velocity_y: float) -> void:
+	if drive_blocked:
+		return
+
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
 	position.x = _lane_x
@@ -87,10 +96,11 @@ func _resolve(base: float, key: StringName) -> float:
 func _bind_stat_updates() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_item_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
+	_item_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
 
 
-func _on_item_level_changed(_item_key: String) -> void:
+func _refresh_from_stats() -> void:
 	_apply_size()
 	_paddle_speed = _resolved_paddle_speed()
 
@@ -104,7 +114,15 @@ func _apply_size() -> void:
 	var paddle_size: float = _resolve(GameRules.paddle.paddle_size, &"paddle_size")
 	var new_size: float = clampf(paddle_size, paddle_size_min, arena_height)
 
+	# Anchor the collider's foot: RectangleShape2D is centred on the body, so growing size.y without
+	# shifting position.y plants half the delta below the floor and traps depenetration during AT_EQUIP_POSE.
+	var old_size: float = _collision_shape.size.y
+	if _size_initialised and is_equal_approx(new_size, old_size):
+		return
 	_collision_shape.size.y = new_size
+	if _size_initialised:
+		position.y -= (new_size - old_size) * 0.5
+	_size_initialised = true
 
 	if sprite != null and _sprite_natural_height > 0.0:
 		sprite.scale.y = new_size / _sprite_natural_height

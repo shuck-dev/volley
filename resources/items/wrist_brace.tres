@@ -54,3 +54,4 @@ cost_scaling = 1.5
 max_level = 10
 effects = Array[ExtResource("2_effect")]([SubResource("increment_boost_effect"), SubResource("size_penalty_effect")])
 at_rest_shape = SubResource("at_rest_shape_1")
+anchor_node_path = NodePath("WristAnchor")
