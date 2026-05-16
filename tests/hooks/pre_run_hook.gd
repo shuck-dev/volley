@@ -30,9 +30,4 @@ const EXCLUDE_PATHS = [
 
 
 func run():
-	# Doubling the physics tick rate (60 -> 120 Hz) halves the wall-clock cost of every
-	# `await get_tree().physics_frame` from ~16ms to ~8ms. Higher rates (240 Hz) shrink
-	# `move_and_slide` per-step displacement enough that fixed-step tests overshoot their
-	# step budget; 120 Hz is the largest safe bump for this suite.
-	Engine.physics_ticks_per_second = 120
 	CoverageScript.new(gut.get_tree(), EXCLUDE_PATHS).instrument_scripts("res://")
