@@ -27,9 +27,13 @@ EOF
 
 ## What goes in the subject
 
-Imperative mood, present tense, lowercase. Conventional Commit type required: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `perf`. No file paths, no symptom descriptions, no issue numbers (Linear autolinks the branch name, GitHub autolinks `#N` in the body). Example: `feat: fast timeout tests via custom_step`.
+Imperative mood, present tense, lowercase. Conventional Commit type required: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `perf`. No file paths, no symptom descriptions, no issue numbers in the subject. Example: `feat: fast timeout tests via custom_step`.
 
 For breaking changes (save wipes, API renames, workflow-input shifts), use `feat!:` or `fix!:` on the subject. Autolabel maps the bang to the `breaking` label and release-drafter groups it under Breaking Changes.
+
+## Issue references
+
+**GitHub issue IDs (`#N`) are the primary surface.** The repo is open source; readers of commits and PRs follow GitHub links, not Linear. Reference the GitHub issue in the commit body or PR body with `closes #123` (or `fixes`, `resolves`) so GitHub links them and closes the issue on merge. Linear IDs (`SH-N`) are private and never appear in commit messages or PR bodies. The branch name carries the Linear context for internal tooling; that is enough.
 
 ## Branch discipline
 
