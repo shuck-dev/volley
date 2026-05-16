@@ -32,7 +32,9 @@ Wire child node references through `@export var name: NodeType` (or `@export var
 @export var collision: CollisionShape2D
 ```
 
-The project has no `@onready` in production code today, and you should not need to add one. If you find a case where `@export` genuinely cannot cover the dependency, flag it in the PR thread and we will sort it out together.
+`@onready` exists in GDScript for a real reason: deferring evaluation of an arbitrary expression until the node enters the tree, not just caching child references. Something like `@onready var damage = base_damage * difficulty_multiplier` waits for dependencies to populate. That use case is what `@onready` was designed for, and `@export` cannot replace it.
+
+The project has no `@onready` in production code today, including the deferred-computation case, so you should not need to add one. If you find a case where `@export` genuinely cannot cover the dependency, flag it in the PR thread and we will sort it out together.
 
 ## Full words
 
