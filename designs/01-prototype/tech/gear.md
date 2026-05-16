@@ -24,9 +24,9 @@ The `position` and `scale_factor` arguments are unused for character drops (the 
 
 When `can_accept` returns false, the character's body acts as a wall to the held token: the home-and-loose collision-projection regime in [`../22-equip-loop-regime.md`](../22-equip-loop-regime.md) holds the token on the cursor, retries projection, and finally cancels back to source.
 
-When the rejection is specifically capacity-exceeded (the other two `can_accept` clauses passed), `CharacterDropTarget` emits `equip_refused(item_key, &"capacity_exceeded")` so the character scene can play a refusal animation. Other rejections (wrong role, wrong window) stay silent; the held token already communicates the projection failure.
+Capacity refusal is signalled by `ItemManager.equip_refused`, not by the drop target. The character scene (or any future animation listener) connects to `ItemManager`; the drop target stays silent. Other rejections (wrong role, wrong window) emit nothing; the held token already communicates the projection failure.
 
-Per-item visual placement: each gear `ItemDefinition` declares an `anchor_node_path: NodePath`; on equip, the item's visual reparents to the named anchor on the character.
+Each gear `ItemDefinition` declares an `anchor_node_path: NodePath` naming a child `Node2D` on the character sprite where its visual mounts. This is presentation only, not capacity; the paddle has no anatomy, but ankle weights still want to sit at the foot and grip tape at the handle so the silhouette reads. Empty path falls back to the sprite root.
 
 ## ItemManager surface
 
