@@ -9,8 +9,9 @@ signal main_character_reached_equip_pose
 signal timeout_ended
 
 ## Phases of the main character's timeout; IDLE means no timeout is in flight.
-## DESCENDING applies downward velocity until `is_on_floor()`; WALKING_OFF / WALKING_ON run horizontal walks.
-enum State { IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
+## DESCENDING applies downward velocity until `is_on_floor()`; ASCENDING slides
+## back up to the lane y; WALKING_OFF / WALKING_ON run horizontal walks.
+enum State { IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON, ASCENDING }
 
 @export var main_character: Paddle
 @export var config: TimeoutConfig
@@ -122,6 +123,8 @@ func _physics_process(delta: float) -> void:
 	match _state:
 		State.DESCENDING:
 			_step_descent(delta)
+		State.ASCENDING:
+			_step_ascent(delta)
 		State.WALKING_OFF, State.WALKING_ON:
 			_step_horizontal_walk(delta)
 		_:
@@ -134,6 +137,20 @@ func _step_descent(_delta: float) -> void:
 	if main_character.is_on_floor():
 		main_character.velocity = Vector2.ZERO
 		_start_horizontal_walk(_equip_pose_x, _on_reached_equip_pose, State.WALKING_OFF)
+
+
+func _step_ascent(delta: float) -> void:
+	var current_y: float = main_character.position.y
+	var remaining: float = _lane_y - current_y
+	var step: float = config.descent_speed * delta
+	if absf(remaining) <= step:
+		main_character.position.y = _lane_y
+		main_character.velocity = Vector2.ZERO
+		set_physics_process(false)
+		_finish_at_lane()
+		return
+	main_character.velocity = Vector2(0.0, -config.descent_speed)
+	main_character.move_and_slide()
 
 
 func _step_horizontal_walk(delta: float) -> void:
@@ -162,9 +179,16 @@ func _on_reached_equip_pose() -> void:
 
 
 func _on_reached_lane() -> void:
+	if not is_instance_valid(main_character):
+		_finish_at_lane()
+		return
+	_state = State.ASCENDING
+	set_physics_process(true)
+
+
+func _finish_at_lane() -> void:
 	_state = State.IDLE
 	if is_instance_valid(main_character):
-		main_character.position.y = _lane_y
 		main_character.velocity = Vector2.ZERO
 		main_character.set_physics_process(true)
 	timeout_ended.emit()
