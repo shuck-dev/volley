@@ -7,6 +7,9 @@ version-resolver:
   default: patch
 
 categories:
+  - title: "Breaking Changes"
+    labels:
+      - "breaking"
   - title: "Features"
     labels:
       - "feature"
@@ -46,6 +49,13 @@ autolabeler:
       - "/^fix(\\(.+\\))?:/i"
       - "/^fix(\\(.+\\))?!:/i"
       - "/^SH-\\d+ fix(\\(.+\\))?:/i"
+  # Conventional Commits ! suffix on a known type: lands the breaking label so
+  # release-drafter groups it under Breaking Changes at the top. Explicit type
+  # list avoids labelling `Merge!:` / `WIP!:` style titles as breaking.
+  - label: "breaking"
+    title:
+      - "/^(feat|fix|refactor|perf|chore|build|ci|docs|style|test|revert)(\\(.+\\))?!:/i"
+      - "/^SH-\\d+ (feat|fix|refactor|perf|chore|build|ci|docs|style|test|revert)(\\(.+\\))?!:/i"
 
 change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
 change-title-escapes: '\<*_&'
@@ -59,5 +69,13 @@ template: |
   ## What changed
 
   $CHANGES
+
+  ## Contributors
+
+  Thanks to everyone whose work shipped in this release:
+
+  <!-- CONTRIBUTORS_LIST -->
+  $CONTRIBUTORS
+  <!-- /CONTRIBUTORS_LIST -->
 
   **Full changelog:** https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

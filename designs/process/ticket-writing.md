@@ -241,6 +241,25 @@ So that [downstream decision that depends on the answer]
 - [ ] No regression in related systems
 ```
 
+### Worked example
+
+A template is easier to follow with a filled-in version next to it, so here is the user-story shape applied to a real ticket. Title under fifty characters, body under twelve lines, and acceptance criteria written so anyone with a build of the game can check each line by playing.
+
+> **Title:** Equip flow with kit cap
+>
+> As the player,
+> I want to drag gear onto the character during the timeout window.
+> So that I can shape my kit between rallies.
+>
+> **Acceptance Criteria:**
+>
+> - [ ] During the equip window, dragging a gear item onto the character equips it.
+> - [ ] When the kit is full, the character refuses the drop and the item bounces back to where the drag started.
+> - [ ] Dragging an equipped item back to the rack unequips it and frees its slot.
+> - [ ] Outside the equip window, the character does not accept or react to dropped gear.
+
+Notice that the criteria name what the player sees, not the classes, signals, or fields underneath. That is the part that matters: a contributor verifying their own work, or a reviewer signing off, can answer each line by playing rather than by reading source. It also means the ticket survives a refactor; if the implementation changes but the player experience does not, the AC is still met.
+
 ---
 
 ## Writing for open-source contributors

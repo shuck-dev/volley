@@ -133,6 +133,18 @@ Every integration test that exercises a player-facing AC drives the real input h
 
 The physics dispatch path (`body_entered` -> `_on_body_entered` -> duck-typed method call) is not covered by automated tests. It requires real physics collisions and is intentionally left as a manual QA item; it's two lines that rarely change.
 
+## Test budget
+
+The full GUT suite is fast, and we like it that way. The fast feedback loop is one of the reasons working on this codebase feels light, and it only stays fast if every new case respects that. The rule of thumb: a new case should not push the per-case average up. Run the suite, note the wall time, add your case, run it again; if the average per test got slower, the fixture is doing too much real-time work.
+
+The usual culprit is waiting for real frames. Swap `await get_tree().physics_frame` loops for deterministic stepping: call the controller's `_physics_process(virtual_delta)` directly with a chosen delta, advance tweens with `tween.custom_step(...)`, step the physics server with `PhysicsServer2D.step`. The production code is unchanged; the test just stops paying the wall-clock cost of waiting for real frames.
+
 ## CI
 
 Tests run on every push to non-main branches via `.github/workflows/test.yml`. The `logs/` directory must be created before running GUT (`mkdir -p logs`) to prevent a crash from GUT's file logger.
+
+CI is strict about output noise. The build fails on any `WARNING`, `ERROR`, `SCRIPT ERROR`, `USER WARNING`, or `USER ERROR` line in the GUT output, and on any orphan count (per-test `N Orphans` where `N > 0`) or exit-time `ObjectDB instances leaked at exit`. We are strict because leaks compound: a few orphans per test become impossible to triage later, and warnings hide real regressions in the noise.
+
+If your change introduces a leak, fix it before pushing rather than carrying it forward. The two surfaces, per-test orphans and exit-time leaks, are independent, so it is worth checking both; grepping one will not catch the other.
+
+There is one warning class we deliberately filter: Godot's cold-cache UID lookup, which fires on a first-run `--import` even when the project is valid. The filter lives in the workflow's `Leak gate` step and matches the warning pattern plus the paired `Failed loading resource` ERROR that follows it. The upstream Godot issues that track this are [#101677](https://github.com/godotengine/godot/issues/101677), [#115205](https://github.com/godotengine/godot/issues/115205), [#109636](https://github.com/godotengine/godot/issues/109636), and [#100228](https://github.com/godotengine/godot/issues/100228). The workaround in the project is to declare autoloads with `res://` paths rather than `uid://` paths so the import order does not depend on the cache; if you are adding a new autoload, follow that pattern and you will not trip the filter.
