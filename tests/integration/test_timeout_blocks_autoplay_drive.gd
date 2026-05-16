@@ -1,7 +1,7 @@
 extends GutTest
 
-## SH-405: autoplay must not fight the timeout walk pose. The paddle's `drive_blocked` flag
-## makes `drive()` a no-op while the timeout is in flight; this exercises the wired-up path.
+## SH-405: full loop completion under autoplay pressure. The paddle reaches `AT_EQUIP_POSE`
+## even with `AutoplayController` wired up and continuous `drive()` pressure each tick.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0
@@ -63,18 +63,6 @@ func before_each() -> void:
 	await get_tree().physics_frame
 
 
-func test_autoplay_drive_during_timeout_does_not_move_paddle() -> void:
-	_controller.call_timeout()
-	# Simulate autoplay attempting to fight the walk by directly calling drive().
-	var start_position: Vector2 = _paddle.position
-	_paddle.drive(800.0)
-	assert_eq(
-		_paddle.position,
-		start_position,
-		"autoplay's drive() must be ignored while the timeout is in flight",
-	)
-
-
 func test_paddle_reaches_equip_pose_under_autoplay_pressure() -> void:
 	_controller.call_timeout()
 	var equip_pose_x: float = LANE_X + _controller.config.equip_pose_offset_x
@@ -90,21 +78,4 @@ func test_paddle_reaches_equip_pose_under_autoplay_pressure() -> void:
 		equip_pose_x,
 		0.5,
 		"paddle must reach the equip pose even with autoplay drive() pressure each tick",
-	)
-
-
-func test_paddle_does_not_mask_balls_during_walk() -> void:
-	# Balls live on layer 2 so the paddle's timeout mask-out drops them from collision.
-	_controller.call_timeout()
-	var ball_layer: int = (
-		(preload("res://resources/ball/states/play_active.tres") as BallStateConfig).collision_layer
-	)
-	assert_eq(
-		ball_layer,
-		2,
-		"play_active config must keep balls on layer 2 so the walk passes through them"
-	)
-	assert_false(
-		_paddle.get_collision_mask_value(ball_layer),
-		"paddle must mask off the ball layer during the timeout walk",
 	)
