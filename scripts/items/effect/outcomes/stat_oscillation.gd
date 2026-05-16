@@ -26,9 +26,14 @@ func set_range_value(value: float) -> void:
 
 
 func get_offset() -> float:
+	return sample_at(_time)
+
+
+## Pure read at time `t`; lets tests probe extrema without stepping `advance` across many frames.
+func sample_at(t: float) -> float:
 	var wave: float = (
-		sin(_time * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
-		+ sin(_time * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
-		+ sin(_time * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
+		sin(t * PRIMARY_FREQUENCY) * PRIMARY_WEIGHT
+		+ sin(t * SECONDARY_FREQUENCY) * SECONDARY_WEIGHT
+		+ sin(t * TERTIARY_FREQUENCY) * TERTIARY_WEIGHT
 	)
 	return wave * amplitude * _range_value
