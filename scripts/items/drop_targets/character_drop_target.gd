@@ -19,12 +19,14 @@ func configure(
 	_item_manager = item_manager
 	_drop_area = drop_area
 	_timeout_controller = timeout_controller
+
 	# Live placement transitions drive mount/unmount so rack-side teardown stays symmetric with equip.
 	if (
 		_item_manager != null
 		and not _item_manager.item_placement_changed.is_connected(_on_item_placement_changed)
 	):
 		_item_manager.item_placement_changed.connect(_on_item_placement_changed)
+
 	_hydrate_equipped_visuals()
 
 
@@ -80,17 +82,21 @@ func _mount_equipped_visual(item_key: String) -> void:
 		return
 	if _drop_area == null or not _drop_area.is_inside_tree():
 		return
+
 	# Idempotency guard: hydrate + signal can both fire for the same item; second call must no-op.
 	if not _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)).is_empty():
 		return
+
 	var paddle: Node = _drop_area.get_parent()
 	if paddle == null:
 		return
+
 	var anchor: Node = paddle
 	if not definition.anchor_node_path.is_empty():
 		var resolved: Node = paddle.get_node_or_null(definition.anchor_node_path)
 		if resolved != null:
 			anchor = resolved
+
 	var visual: Node = definition.art.instantiate()
 	visual.add_to_group(equipped_art_group(item_key))
 	anchor.add_child(visual)
@@ -103,15 +109,18 @@ func _attach_press_area(visual: Node, definition: ItemDefinition, item_key: Stri
 		return
 	if not visual is Node2D:
 		return
+
 	var press: Area2D = Area2D.new()
 	press.name = "EquippedPressArea"
 	# Defaults give broadphase presence + collision_layer 1, which input picking needs; mask 0 and monitoring off keep it from driving physics.
 	press.collision_mask = 0
 	press.monitoring = false
 	press.input_pickable = true
+
 	var collision: CollisionShape2D = CollisionShape2D.new()
 	collision.shape = definition.at_rest_shape.duplicate()
 	press.add_child(collision)
+
 	visual.add_child(press)
 	press.input_event.connect(_on_equipped_press_input.bind(item_key))
 
@@ -121,9 +130,11 @@ func _on_equipped_press_input(
 ) -> void:
 	if not (event is InputEventMouseButton):
 		return
+
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT or not mouse_button.pressed:
 		return
+
 	equipped_art_pressed.emit(item_key)
 
 

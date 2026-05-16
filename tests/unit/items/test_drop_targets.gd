@@ -41,11 +41,13 @@ func _make_equipment_definition(key: String) -> ItemDefinition:
 func _make_drop_area(position: Vector2, size: Vector2) -> Area2D:
 	var area := Area2D.new()
 	area.global_position = position
+
 	var collision := CollisionShape2D.new()
 	var rectangle := RectangleShape2D.new()
 	rectangle.size = size
 	collision.shape = rectangle
 	area.add_child(collision)
+
 	add_child_autofree(area)
 	return area
 
@@ -65,6 +67,7 @@ func test_shop_drop_target_accepts_inside_shop_area() -> void:
 	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(200, 100))
 	var target: ShopDropTarget = ShopDropTargetScript.new()
 	target.configure(area)
+
 	assert_true(target.can_accept("ball_alpha", Vector2(120, 0)))
 
 
@@ -72,6 +75,7 @@ func test_shop_drop_target_rejects_outside_shop_area() -> void:
 	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(50, 50))
 	var target: ShopDropTarget = ShopDropTargetScript.new()
 	target.configure(area)
+
 	assert_false(target.can_accept("ball_alpha", Vector2(500, 500)))
 
 
@@ -91,6 +95,7 @@ func test_rack_drop_target_accepts_role_match_inside_area() -> void:
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.configure(manager, area, &"ball")
+
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 
 
@@ -102,6 +107,7 @@ func test_rack_drop_target_rejects_role_mismatch() -> void:
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
 	var ball_target: RackDropTarget = RackDropTargetScript.new()
 	ball_target.configure(manager, area, &"ball")
+
 	assert_false(ball_target.can_accept("grip_x", Vector2(-500, 0)))
 
 
@@ -117,7 +123,9 @@ func test_rack_drop_target_accept_deactivates_an_on_court_item() -> void:
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.configure(manager, area, &"ball")
+
 	target.accept("ball_alpha", Vector2.ZERO, Vector2.ZERO)
+
 	assert_false(manager.is_on_court("ball_alpha"))
 
 
@@ -125,6 +133,7 @@ func test_rack_drop_target_without_drop_area_rejects() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.configure(manager, null, &"ball")
+
 	assert_false(target.can_accept("ball_alpha", Vector2.ZERO))
 
 
@@ -135,10 +144,13 @@ func _make_character_target_harness(
 	manager: Node, area_position: Vector2 = Vector2.ZERO
 ) -> Dictionary:
 	var area: Area2D = _make_drop_area(area_position, Vector2(40, 80))
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var target: DropTarget = CharacterDropTargetScript.new()
 	target.configure(manager, area, timeout)
+
 	return {"area": area, "timeout": timeout, "target": target}
 
 
@@ -153,8 +165,10 @@ func test_character_drop_target_accepts_equipment_at_equip_pose_with_capacity() 
 	manager.items.assign([equipment] as Array[ItemDefinition])
 	manager.economy.friendship_point_balance = 10000
 	manager.take("gear_a")
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
+
 	assert_true(harness["target"].can_accept("gear_a", Vector2.ZERO))
 
 
@@ -164,6 +178,7 @@ func test_character_drop_target_rejects_outside_equip_pose() -> void:
 	manager.items.assign([equipment] as Array[ItemDefinition])
 	manager.economy.friendship_point_balance = 10000
 	manager.take("gear_b")
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	# Timeout left in IDLE.
 	assert_false(harness["target"].can_accept("gear_b", Vector2.ZERO))
@@ -175,8 +190,10 @@ func test_character_drop_target_rejects_ball_role() -> void:
 	manager.items.assign([ball] as Array[ItemDefinition])
 	manager.economy.friendship_point_balance = 10000
 	manager.take("ball_alpha")
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
+
 	assert_false(harness["target"].can_accept("ball_alpha", Vector2.ZERO))
 
 
@@ -186,12 +203,15 @@ func test_character_drop_target_rejects_when_capacity_zero() -> void:
 	manager.items.assign([equipment] as Array[ItemDefinition])
 	manager.economy.friendship_point_balance = 10000
 	manager.take("gear_c")
+
 	# Force capacity to zero by stuffing the persisted-EQUIPPED set.
 	var cap: int = int(floor(GameRules.base.kit_slots))
 	for i in cap:
 		manager.state.item_placements["pad_%d" % i] = Placement.EQUIPPED
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
+
 	assert_false(harness["target"].can_accept("gear_c", Vector2.ZERO))
 
 
@@ -201,8 +221,10 @@ func test_character_drop_target_rejects_position_outside_area() -> void:
 	manager.items.assign([equipment] as Array[ItemDefinition])
 	manager.economy.friendship_point_balance = 10000
 	manager.take("gear_d")
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
+
 	assert_false(harness["target"].can_accept("gear_d", Vector2(9999, 9999)))
 
 
@@ -213,10 +235,13 @@ func test_character_drop_target_accept_equips_and_emits_no_refusal() -> void:
 	manager.economy.friendship_point_balance = 10000
 	manager.take("gear_e")
 	var before: int = manager.get_kit_remaining()
+
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
 	watch_signals(manager)
+
 	harness["target"].accept("gear_e", Vector2.ZERO, Vector2.ZERO)
+
 	assert_true(manager.is_on_court("gear_e"))
 	assert_eq(manager.get_kit_remaining(), before - 1)
 	assert_signal_not_emitted(manager, "equip_refused")
@@ -246,11 +271,13 @@ func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> v
 
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: DropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
 	_force_at_equip_pose(timeout)
 
 	character_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
+
 	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_mount")
 	var mounted: Array = get_tree().get_nodes_in_group(group)
 	assert_eq(mounted.size(), 1, "equip mounts one visual under the anchor")
@@ -263,6 +290,7 @@ func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> v
 	rack_target.configure(manager, rack_area, &"equipment")
 	rack_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
 	await get_tree().process_frame
+
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "unequip frees the mounted visual")
 
 
@@ -287,8 +315,10 @@ func test_character_drop_target_hydrates_equipped_visuals_on_configure() -> void
 	sprite.add_child(ankle_anchor)
 	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
 	area.reparent(paddle)
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: DropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
 
@@ -312,15 +342,19 @@ func test_character_drop_target_unmounts_on_placement_change_to_stored() -> void
 	add_child_autofree(paddle)
 	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
 	area.reparent(paddle)
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: DropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
+
 	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_unmount")
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "precondition: hydrated")
 
 	manager.unequip("gear_unmount")
 	await get_tree().process_frame
+
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "EQUIPPED->STORED frees the visual")
 
 
@@ -338,12 +372,15 @@ func test_character_drop_target_mount_is_idempotent_on_repeat_equipped_signal() 
 	add_child_autofree(paddle)
 	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
 	area.reparent(paddle)
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: DropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
 
 	manager.item_placement_changed.emit("gear_idem", Placement.EQUIPPED)
+
 	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_idem")
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "second mount is suppressed")
 
@@ -361,13 +398,16 @@ func test_character_drop_target_falls_back_to_paddle_when_anchor_path_empty() ->
 	add_child_autofree(paddle)
 	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
 	area.reparent(paddle)
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: DropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
 	_force_at_equip_pose(timeout)
 
 	character_target.accept("gear_root", Vector2.ZERO, Vector2.ZERO)
+
 	var mounted: Array = get_tree().get_nodes_in_group(
 		CharacterDropTargetScript.equipped_art_group("gear_root")
 	)
@@ -381,8 +421,10 @@ func test_character_drop_target_without_drop_area_rejects() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var target: DropTarget = CharacterDropTargetScript.new()
 	target.configure(manager, null, timeout)
+
 	assert_false(target.can_accept("anything", Vector2.ZERO))
 
 
@@ -400,8 +442,10 @@ func test_equipped_visual_carries_press_area_for_regrab() -> void:
 	add_child_autofree(paddle)
 	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
 	area.reparent(paddle)
+
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
 	character_target.configure(manager, area, timeout)
 
@@ -422,10 +466,12 @@ func test_equipped_visual_carries_press_area_for_regrab() -> void:
 	)
 
 	watch_signals(character_target)
+
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
 	character_target._on_equipped_press_input(null, event, 0, "gear_press")
+
 	assert_signal_emit_count(character_target, "equipped_art_pressed", 1)
 
 
