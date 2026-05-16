@@ -247,6 +247,28 @@ func test_end_timeout_returns_to_lane_position() -> void:
 	)
 
 
+# ASCENDING derives its target from the cached lane-foot minus current half-height, so a
+# mid-pose resize is absorbed: whatever the paddle's half-height is at ASCENDING, the foot
+# returns to the cached lane-foot. This is the invariant; the test asserts the contract
+# rather than driving a manual resize (the autoload's _refresh_from_stats fights manual
+# shape mutations mid-drive).
+func test_ascending_lands_foot_on_cached_lane_foot() -> void:
+	_controller.call_timeout()
+	var cached_lane_foot: float = _controller._lane_foot_y
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_controller.end_timeout()
+	_drive_until(_at_state(TimeoutController.State.IDLE))
+
+	var rect: RectangleShape2D = _paddle.collision.shape as RectangleShape2D
+	var final_foot: float = _paddle.position.y + rect.size.y * 0.5
+	assert_almost_eq(
+		final_foot,
+		cached_lane_foot,
+		0.5,
+		"ASCENDING must land paddle foot on the cached lane-foot regardless of paddle size",
+	)
+
+
 # SH-405: items resting in the walk path must not body-block the timeout paddle.
 func test_timeout_walk_passes_through_resting_items() -> void:
 	_paddle.collision_mask = 3

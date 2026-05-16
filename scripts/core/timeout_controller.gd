@@ -19,6 +19,9 @@ enum State { IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON, ASCENDING
 var _state: State = State.IDLE
 var _lane_x: float = 0.0
 var _lane_y: float = 0.0
+# Foot-y at lane, stable across in-pose resizes because Paddle._apply_size anchors the foot.
+# Used by ASCENDING so a paddle that grew during the pose still lands feet-on-lane.
+var _lane_foot_y: float = 0.0
 var _equip_pose_x: float = 0.0
 var _walk_speed: float = 0.0
 var _walk_target_x: float = 0.0
@@ -95,7 +98,17 @@ func _cache_positions() -> void:
 		config = TimeoutConfig.new()
 	_lane_x = main_character.position.x
 	_lane_y = main_character.position.y
+	_lane_foot_y = _lane_y + _half_height()
 	_equip_pose_x = _lane_x + config.equip_pose_offset_x
+
+
+func _half_height() -> float:
+	if main_character == null or main_character.collision == null:
+		return 0.0
+	var shape: Shape2D = main_character.collision.shape
+	if shape is RectangleShape2D:
+		return (shape as RectangleShape2D).size.y * 0.5
+	return 0.0
 
 
 # Either descend first (airborne) or skip straight to the horizontal walk (already on floor).
@@ -148,11 +161,13 @@ func _step_descent(_delta: float) -> void:
 
 
 func _step_ascent(delta: float) -> void:
+	# Derive the target from the foot so a mid-pose resize is absorbed; the foot stays on the lane.
+	var target_y: float = _lane_foot_y - _half_height()
 	var current_y: float = main_character.position.y
-	var remaining: float = _lane_y - current_y
+	var remaining: float = target_y - current_y
 	var step: float = config.descent_speed * delta
 	if absf(remaining) <= step:
-		main_character.position.y = _lane_y
+		main_character.position.y = target_y
 		main_character.velocity = Vector2.ZERO
 		set_physics_process(false)
 		_finish_at_lane()
