@@ -85,6 +85,8 @@ camera_right={
 [physics]
 
 3d/physics_engine="Jolt Physics"
+2d/layer_names/layer_1="world"
+2d/layer_names/layer_2="items"
 
 [rendering]
 
