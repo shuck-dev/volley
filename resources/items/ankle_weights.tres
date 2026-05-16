@@ -30,6 +30,7 @@ max_active_level = null
 script = ExtResource("1_item")
 key = "ankle_weights"
 type = &"kit"
+role = &"equipment"
 display_name = "Ankle Weights"
 art = ExtResource("6_art")
 descriptions = Array[String](["Heavy steps", "Didn't notice the difference until I took them off", "Still wearing them"])

@@ -194,6 +194,7 @@ func test_oscillation_never_drops_below_min_speed() -> void:
 	var effect := _make_oscillation_effect(2.0)
 	var item := ItemDefinition.new()
 	item.key = "big_oscillation"
+	item.role = &"equipment"
 	item.max_level = 1
 	item.effects = [effect]
 	_manager.items.append(item)

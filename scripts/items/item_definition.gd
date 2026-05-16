@@ -4,7 +4,8 @@ extends Resource
 @export var key: String
 @export var type: StringName = &""
 ## &"equipment" lives on the player; &"ball" lives on the court.
-@export var role: StringName = &"equipment"
+## Required; missing role fails the placement assertion (SH-414 oscillator-seam regression).
+@export var role: StringName = &""
 @export var display_name: String
 @export var art: PackedScene
 @export var descriptions: Array[String]

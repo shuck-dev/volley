@@ -337,6 +337,7 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 	if previous == placement:
 		return
 	var item := _get_item(item_key)
+	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
 	if placement == PlacementScript.STORED:
 		state.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
