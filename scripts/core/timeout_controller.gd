@@ -9,7 +9,8 @@ signal main_character_reached_equip_pose
 signal timeout_ended
 
 ## Phases of the main character's timeout; IDLE means no timeout is in flight.
-enum State { IDLE, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
+## DESCENDING applies downward velocity until `is_on_floor()`; WALKING_OFF / WALKING_ON run horizontal walks.
+enum State { IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON }
 
 @export var main_character: Paddle
 @export var config: TimeoutConfig
@@ -18,12 +19,15 @@ var _state: State = State.IDLE
 var _lane_x: float = 0.0
 var _lane_y: float = 0.0
 var _equip_pose_x: float = 0.0
-var _walk_tween: Tween
+var _walk_speed: float = 0.0
+var _walk_target_x: float = 0.0
+var _on_walk_finished: Callable
 
 
 func _ready() -> void:
 	if config == null:
 		config = TimeoutConfig.new()
+	set_physics_process(false)
 	if main_character == null:
 		return
 	_cache_positions()
@@ -58,11 +62,10 @@ func call_timeout() -> void:
 	if main_character == null:
 		push_warning("TimeoutController.call_timeout: main_character is null")
 		return
-	_state = State.WALKING_OFF
 	main_character.set_physics_process(false)
 	main_character.velocity = Vector2.ZERO
 	timeout_started.emit()
-	_ground_then_walk_to(_equip_pose_x, _on_reached_equip_pose)
+	_begin_walk_off()
 
 
 ## Ends a timeout and walks the main character back on court. No-op unless at the equip pose.
@@ -73,8 +76,7 @@ func end_timeout() -> void:
 		main_character != null,
 		"TimeoutController invariant: active state with null main_character",
 	)
-	_state = State.WALKING_ON
-	_walk_to_position(Vector2(_lane_x, _lane_y), _on_reached_lane)
+	_begin_walk_back()
 
 
 func _cache_positions() -> void:
@@ -87,25 +89,69 @@ func _cache_positions() -> void:
 	_equip_pose_x = _lane_x + config.equip_pose_offset_x
 
 
-func _ground_then_walk_to(target_x: float, on_finished: Callable) -> void:
-	if _walk_tween != null and _walk_tween.is_valid():
-		_walk_tween.kill()
-	_walk_tween = create_tween()
-	var floor_y: float = config.floor_y
-	if not is_equal_approx(main_character.position.y, floor_y):
-		_walk_tween.tween_property(
-			main_character, "position:y", floor_y, config.walk_duration_seconds
-		)
-	_walk_tween.tween_property(main_character, "position:x", target_x, config.walk_duration_seconds)
-	_walk_tween.finished.connect(on_finished)
+# Either descend first (airborne) or skip straight to the horizontal walk (already on floor).
+func _begin_walk_off() -> void:
+	if main_character.is_on_floor():
+		_start_horizontal_walk(_equip_pose_x, _on_reached_equip_pose, State.WALKING_OFF)
+	else:
+		_state = State.DESCENDING
+		set_physics_process(true)
 
 
-func _walk_to_position(target: Vector2, on_finished: Callable) -> void:
-	if _walk_tween != null and _walk_tween.is_valid():
-		_walk_tween.kill()
-	_walk_tween = create_tween()
-	_walk_tween.tween_property(main_character, "position", target, config.walk_duration_seconds)
-	_walk_tween.finished.connect(on_finished)
+func _begin_walk_back() -> void:
+	_start_horizontal_walk(_lane_x, _on_reached_lane, State.WALKING_ON)
+
+
+func _start_horizontal_walk(target_x: float, on_finished: Callable, walk_state: State) -> void:
+	_state = walk_state
+	_walk_target_x = target_x
+	_on_walk_finished = on_finished
+	var distance: float = absf(target_x - main_character.position.x)
+	# Avoid divide-by-zero when already at target; finish on next frame.
+	if config.walk_duration_seconds <= 0.0 or distance <= 0.0:
+		_walk_speed = 0.0
+	else:
+		_walk_speed = distance / config.walk_duration_seconds
+	set_physics_process(true)
+
+
+func _physics_process(delta: float) -> void:
+	if main_character == null:
+		set_physics_process(false)
+		return
+	match _state:
+		State.DESCENDING:
+			_step_descent(delta)
+		State.WALKING_OFF, State.WALKING_ON:
+			_step_horizontal_walk(delta)
+		_:
+			set_physics_process(false)
+
+
+func _step_descent(_delta: float) -> void:
+	main_character.velocity = Vector2(0.0, config.descent_speed)
+	main_character.move_and_slide()
+	if main_character.is_on_floor():
+		main_character.velocity = Vector2.ZERO
+		_start_horizontal_walk(_equip_pose_x, _on_reached_equip_pose, State.WALKING_OFF)
+
+
+func _step_horizontal_walk(delta: float) -> void:
+	var current_x: float = main_character.position.x
+	var remaining: float = _walk_target_x - current_x
+	var step: float = _walk_speed * delta
+	if _walk_speed <= 0.0 or absf(remaining) <= step:
+		main_character.position.x = _walk_target_x
+		main_character.velocity = Vector2.ZERO
+		set_physics_process(false)
+		var callback: Callable = _on_walk_finished
+		_on_walk_finished = Callable()
+		if callback.is_valid():
+			callback.call()
+		return
+	var direction: float = signf(remaining)
+	main_character.velocity = Vector2(direction * _walk_speed, 0.0)
+	main_character.move_and_slide()
 
 
 func _on_reached_equip_pose() -> void:
@@ -118,5 +164,7 @@ func _on_reached_equip_pose() -> void:
 func _on_reached_lane() -> void:
 	_state = State.IDLE
 	if is_instance_valid(main_character):
+		main_character.position.y = _lane_y
+		main_character.velocity = Vector2.ZERO
 		main_character.set_physics_process(true)
 	timeout_ended.emit()
