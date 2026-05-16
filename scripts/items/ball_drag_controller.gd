@@ -255,8 +255,7 @@ func grab_equipped_from_character(item_key: String, press_position: Variant = nu
 	if not _spawn_held_body(item_key, spawn_position, false):
 		return false
 
-	# `live` + on_court so an expansion-ring timeout routes through deactivate (= unequip);
-	# Rack drops also call unequip via RackDropTarget. Non-accepting drops keep EQUIPPED intact.
+	# `live` + on_court so rack and timeout drops both reach unequip; cancel keeps EQUIPPED.
 	_held_was_on_court = true
 	_held_origin = &"live"
 	_mouse_button_down = true

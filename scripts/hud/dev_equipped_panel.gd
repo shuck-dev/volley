@@ -1,7 +1,6 @@
 extends VBoxContainer
 
-## Dev-only readout of the kit: which items are currently EQUIPPED and how many slots remain.
-## Equip-time visuals do not persist across runs yet (per SH-405 follow-up); this panel makes the state inspectable.
+## Dev-only readout of the kit: items currently EQUIPPED and how many slots remain.
 
 var _list: VBoxContainer
 var _cap_label: Label
@@ -19,8 +18,8 @@ func _ready() -> void:
 	add_child(_cap_label)
 	_list = VBoxContainer.new()
 	add_child(_list)
-	ItemManager.item_placement_changed.connect(_on_placement_changed)
-	ItemManager.item_level_changed.connect(_on_level_changed)
+	ItemManager.item_placement_changed.connect(_refresh.unbind(2))
+	ItemManager.item_level_changed.connect(_refresh.unbind(1))
 	_refresh()
 
 
@@ -52,14 +51,6 @@ func _make_label() -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	return label
-
-
-func _on_placement_changed(_item_key: String, _placement: int) -> void:
-	_refresh()
-
-
-func _on_level_changed(_item_key: String) -> void:
-	_refresh()
 
 
 func _refresh() -> void:

@@ -191,8 +191,7 @@ func deactivate(item_key: String) -> bool:
 	return true
 
 
-## Free equipment-kit slots: kit_slots floored minus persisted-EQUIPPED count; clamped to zero so
-## over-capacity loads (designer lowered kit_slots) report 0 rather than negative.
+## Free kit slots; clamped at zero so over-capacity loads do not report negative.
 func get_kit_remaining() -> int:
 	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
 	var equipped_count: int = 0

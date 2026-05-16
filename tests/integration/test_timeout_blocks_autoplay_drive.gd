@@ -1,6 +1,6 @@
 extends GutTest
 
-## SH-405: autoplay must not fight the timeout walk pose. The paddle's `_drive_blocked` flag
+## SH-405: autoplay must not fight the timeout walk pose. The paddle's `drive_blocked` flag
 ## makes `drive()` a no-op while the timeout is in flight; this exercises the wired-up path.
 
 const LANE_X: float = -500.0

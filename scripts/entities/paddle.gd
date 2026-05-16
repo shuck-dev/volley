@@ -13,15 +13,15 @@ const PADDLE_TOP_Y := -540.0
 @export var sprite: Sprite2D
 @export var tracker: HitTracker
 
+## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
+var drive_blocked: bool = false
+
 var _item_manager: Node
 
 var _lane_x := 0.0
 var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
 var _sprite_natural_height := 0.0
-
-## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
-var _drive_blocked: bool = false
 
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
@@ -59,7 +59,7 @@ func reset_streak() -> void:
 
 
 func drive(velocity_y: float) -> void:
-	if _drive_blocked:
+	if drive_blocked:
 		return
 
 	velocity = Vector2(0.0, velocity_y)
@@ -117,6 +117,8 @@ func _apply_size() -> void:
 	# Anchor the collider's foot: RectangleShape2D is centred on the body, so growing size.y without
 	# shifting position.y plants half the delta below the floor and traps depenetration during AT_EQUIP_POSE.
 	var old_size: float = _collision_shape.size.y
+	if _size_initialised and is_equal_approx(new_size, old_size):
+		return
 	_collision_shape.size.y = new_size
 	if _size_initialised:
 		position.y -= (new_size - old_size) * 0.5

@@ -271,7 +271,7 @@ func test_timeout_walk_passes_through_resting_items() -> void:
 
 
 func test_drive_blocked_flag_makes_paddle_drive_a_noop() -> void:
-	_paddle._drive_blocked = true
+	_paddle.drive_blocked = true
 	var start_position: Vector2 = _paddle.position
 	_paddle.drive(500.0)
 	assert_eq(_paddle.velocity, Vector2.ZERO, "drive() must not write velocity while blocked")
@@ -280,11 +280,11 @@ func test_drive_blocked_flag_makes_paddle_drive_a_noop() -> void:
 
 func test_call_timeout_sets_drive_blocked_and_finish_clears_it() -> void:
 	_controller.call_timeout()
-	assert_true(_paddle._drive_blocked, "drive must be blocked during the timeout walk")
+	assert_true(_paddle.drive_blocked, "drive must be blocked during the timeout walk")
 	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	_controller.end_timeout()
 	_drive_until(_at_state(TimeoutController.State.IDLE))
-	assert_false(_paddle._drive_blocked, "finishing the timeout must unblock drive")
+	assert_false(_paddle.drive_blocked, "finishing the timeout must unblock drive")
 
 
 func test_finish_at_lane_restores_collision_mask() -> void:

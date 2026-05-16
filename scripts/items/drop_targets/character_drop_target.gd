@@ -48,7 +48,7 @@ func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) ->
 	# equip emits equip_refused on capacity races; no-op on failure so the held token stays put.
 	if not _item_manager.equip(item_key):
 		return
-	# Signal handler mounts on the EQUIPPED transition; explicit mount here would double up without the group guard.
+	# Mount happens via item_placement_changed → EQUIPPED, keeping equip and unequip symmetric.
 
 
 # Group lookup keeps the visual discoverable by RackDropTarget without state on either target.
@@ -105,7 +105,7 @@ func _attach_press_area(visual: Node, definition: ItemDefinition, item_key: Stri
 		return
 	var press: Area2D = Area2D.new()
 	press.name = "EquippedPressArea"
-	# Input picking requires broadphase presence (monitorable) + a non-zero collision_layer; the defaults satisfy both.
+	# Defaults give broadphase presence + collision_layer 1, which input picking needs; mask 0 and monitoring off keep it from driving physics.
 	press.collision_mask = 0
 	press.monitoring = false
 	press.input_pickable = true
