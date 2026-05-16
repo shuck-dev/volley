@@ -139,8 +139,6 @@ The full GUT suite is fast, and we like it that way. The fast feedback loop is o
 
 The usual culprit is waiting for real frames. Swap `await get_tree().physics_frame` loops for deterministic stepping: call the controller's `_physics_process(virtual_delta)` directly with a chosen delta, advance tweens with `tween.custom_step(...)`, step the physics server with `PhysicsServer2D.step`. The production code is unchanged; the test just stops paying the wall-clock cost of waiting for real frames.
 
-When a change moves the suite, report the exact wall times. Specific numbers are more useful than approximations, and giving both the before and after lets the reviewer (and the next person diagnosing a regression) see the shape of the change.
-
 ## CI
 
 Tests run on every push to non-main branches via `.github/workflows/test.yml`. The `logs/` directory must be created before running GUT (`mkdir -p logs`) to prevent a crash from GUT's file logger.
