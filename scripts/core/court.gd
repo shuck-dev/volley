@@ -16,6 +16,7 @@ signal partner_changed
 @export var right_wall: StaticBody2D
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
+@export var drag_controller: BallDragController
 
 ## Back-compat handle for tests; canonical live-ball set lives on `ball_tracker`.
 var ball: Ball
@@ -57,6 +58,11 @@ func _ready() -> void:
 
 	if timeout_controller != null:
 		timeout_controller.configure(player_paddle)
+
+	if drag_controller != null:
+		var character_area: Area2D = player_paddle.get_node_or_null("CharacterDropTarget")
+		if character_area != null:
+			drag_controller.set_character_drop_target(character_area)
 
 	if ball_tracker == null:
 		ball_tracker = BallTracker.new()

@@ -8,6 +8,9 @@ signal drop_completed(item_key: String, release_position: Vector2, over_court: b
 signal cursor_state_changed(state: int, world_position: Vector2)
 
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
+const CharacterDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/character_drop_target.gd"
+)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -25,6 +28,7 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var rack_drop_target: Area2D
 @export var gear_rack: RackDisplay
 @export var gear_rack_drop_target: Area2D
+@export var timeout_controller: TimeoutController
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
@@ -59,6 +63,9 @@ var _release_pending: bool = false
 var _drop_targets: Array[DropTarget] = []
 ## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
 var _builtin_targets: Array[DropTarget] = []
+
+## Set after the player paddle spawns so the character target can find a live Area2D.
+var _character_drop_area: Area2D
 
 
 func configure(
@@ -707,13 +714,20 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	return true
 
 
-## Priority order: court strict projection first, role-aware racks, venue catch-all last.
+## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
+func set_character_drop_target(area: Area2D) -> void:
+	_character_drop_area = area
+	_register_builtin_targets()
+
+
+## Priority order: court strict projection first, character equip, role-aware racks, venue catch-all last.
 func _register_builtin_targets() -> void:
 	_drop_targets.clear()
 	_builtin_targets.clear()
 
 	for target: DropTarget in [
 		_make_court_target(),
+		_make_character_target(),
 		_make_rack_target(rack_drop_target, &"ball"),
 		_make_rack_target(gear_rack_drop_target, &"equipment"),
 		_make_venue_target(),
@@ -730,6 +744,14 @@ func _make_court_target() -> CourtDropTarget:
 	var court_target: CourtDropTarget = CourtDropTarget.new()
 	court_target.configure(_item_manager, reconciler, get_world_2d(), court_bounds)
 	return court_target
+
+
+func _make_character_target() -> DropTarget:
+	if _character_drop_area == null or timeout_controller == null:
+		return null
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(_item_manager, _character_drop_area, timeout_controller)
+	return character_target
 
 
 func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:

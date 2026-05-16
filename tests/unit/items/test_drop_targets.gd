@@ -1,3 +1,4 @@
+# gdlint:ignore = max-public-methods
 ## SH-287: drop targets validate releases through bounds and body projection.
 extends GutTest
 
@@ -14,6 +15,10 @@ const ShopDropTargetScript: GDScript = preload(
 const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
 )
+const CharacterDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/character_drop_target.gd"
+)
+const TimeoutControllerScript: GDScript = preload("res://scripts/core/timeout_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 const BaseBall: ItemDefinition = preload("res://resources/items/base_ball.tres")
@@ -135,6 +140,109 @@ func test_rack_drop_target_without_drop_area_rejects() -> void:
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.configure(manager, null, &"ball")
 	assert_false(target.can_accept("ball_alpha", Vector2.ZERO))
+
+
+# --- CharacterDropTarget --------------------------------------------------------------
+
+
+func _make_character_target_harness(
+	manager: Node, area_position: Vector2 = Vector2.ZERO
+) -> Dictionary:
+	var area: Area2D = _make_drop_area(area_position, Vector2(40, 80))
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var target: DropTarget = CharacterDropTargetScript.new()
+	target.configure(manager, area, timeout)
+	return {"area": area, "timeout": timeout, "target": target}
+
+
+# Forces the timeout state machine into AT_EQUIP_POSE without driving a tween-driven walk.
+func _force_at_equip_pose(timeout: TimeoutController) -> void:
+	timeout._state = TimeoutController.State.AT_EQUIP_POSE
+
+
+func test_character_drop_target_accepts_equipment_at_equip_pose_with_capacity() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_a")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_a")
+	var harness: Dictionary = _make_character_target_harness(manager)
+	_force_at_equip_pose(harness["timeout"])
+	assert_true(harness["target"].can_accept("gear_a", Vector2.ZERO))
+
+
+func test_character_drop_target_rejects_outside_equip_pose() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_b")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_b")
+	var harness: Dictionary = _make_character_target_harness(manager)
+	# Timeout left in IDLE.
+	assert_false(harness["target"].can_accept("gear_b", Vector2.ZERO))
+
+
+func test_character_drop_target_rejects_ball_role() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var ball: ItemDefinition = _make_ball_definition("ball_alpha")
+	manager.items.assign([ball] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("ball_alpha")
+	var harness: Dictionary = _make_character_target_harness(manager)
+	_force_at_equip_pose(harness["timeout"])
+	assert_false(harness["target"].can_accept("ball_alpha", Vector2.ZERO))
+
+
+func test_character_drop_target_rejects_when_capacity_zero() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_c")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_c")
+	# Force capacity to zero by stuffing the persisted-EQUIPPED set.
+	var cap: int = int(floor(GameRules.base.kit_slots))
+	for i in cap:
+		manager.state.item_placements["pad_%d" % i] = Placement.EQUIPPED
+	var harness: Dictionary = _make_character_target_harness(manager)
+	_force_at_equip_pose(harness["timeout"])
+	assert_false(harness["target"].can_accept("gear_c", Vector2.ZERO))
+
+
+func test_character_drop_target_rejects_position_outside_area() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_d")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_d")
+	var harness: Dictionary = _make_character_target_harness(manager)
+	_force_at_equip_pose(harness["timeout"])
+	assert_false(harness["target"].can_accept("gear_d", Vector2(9999, 9999)))
+
+
+func test_character_drop_target_accept_equips_and_emits_no_refusal() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_e")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_e")
+	var before: int = manager.get_kit_remaining()
+	var harness: Dictionary = _make_character_target_harness(manager)
+	_force_at_equip_pose(harness["timeout"])
+	watch_signals(manager)
+	harness["target"].accept("gear_e", Vector2.ZERO, Vector2.ZERO)
+	assert_true(manager.is_on_court("gear_e"))
+	assert_eq(manager.get_kit_remaining(), before - 1)
+	assert_signal_not_emitted(manager, "equip_refused")
+
+
+func test_character_drop_target_without_drop_area_rejects() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var target: DropTarget = CharacterDropTargetScript.new()
+	target.configure(manager, null, timeout)
+	assert_false(target.can_accept("anything", Vector2.ZERO))
 
 
 # --- VenueDropTarget -----------------------------------------------------------------
