@@ -118,16 +118,17 @@ The same shape applies to shop drag-as-purchase: press via `pickup_area.input_ev
 
 ## Audit of `tests/integration/`
 
-Every integration test that exercises a player-facing AC drives the real input handler at least once. Tests that use the seam-only path are limited to tuning isolation, with the seam justified by a comment.
+Integration tests are reserved for full player-loop completions (per `memory/feedback_integration_tests_loop_completion_only.md`): a rally, an equip cycle, a save/load round-trip, a shop-to-court spawn, a real-input drag from rack to court. Two-component glue and signal-handoff coverage lives in `tests/unit/`. Every player-facing AC drives the real input handler at least once.
 
-| File | Real-input coverage | Seam-only tests | Why seam is acceptable |
-|---|---|---|---|
-| `test_real_input_drag_paths.gd` | Shop press-drag-release (purchase + cancel), rack click-without-movement no-op (SH-252a), live-ball mid-rally grab to rack (SH-252b). | None. | Reference file for the canonical pattern. |
-| `test_ball_regime_transitions.gd` | Scenario 7 (SH-245) drives `Area2D.input_event` for press and `_drag._input` for release. Scenarios 8 (SH-247) and 9 (SH-262) drive `Area2D.input_event` for press; Scenario 8 then releases through the seam (`attempt_release`), and Scenario 9 asserts only on the press flip and held-token takeover. | Scenarios 1–6 use `grab_from_rack`/`grab_live_ball` + `attempt_release`. | Scenarios 1–6 isolate placement state, court-edge clamping, save round-trip, and temporary-ball semantics. Scenario 7 covers the full press-drag-release path end-to-end; Scenarios 8 and 9 target the press-side flip behaviour their tickets specify, with the release seam acceptable because the end-to-end release is already covered by Scenario 7 and `test_real_input_drag_paths.gd`. |
-| `test_shop_drag_drop.gd` | `test_real_press_on_shop_item_starts_drag_and_release_outside_purchases` drives `pickup_area.input_event` for press and `ShopItem._input` for release. | The pre-SH-258 unit-style tests still call `start_drag()` / `attempt_release()`. | They cover affordability gating, cancel-inside-shop, and fresh-balance assertions; the player-AC press-drag-release is covered by the real-input variant in the same file. |
-| `test_shop_arrivals_inactive.gd` | `_take_from_shop` now drives `pickup_area.input_event` + `ShopItem._input`, so every rack-arrival assertion runs through real input. | None. | All player-AC paths drive real input. |
-| `test_timeout_wiring.gd` | `_press()` builds an `InputEventAction` and feeds `_game._unhandled_input(event)` directly. | None. | Already on the real handler. |
-| `test_event_dispatch_wiring.gd`, `test_miss_reset.gd`, `test_paddle_upgrades.gd`, `test_placement_drives_effects.gd`, `test_speed_bar_flows.gd`, `test_streak_buildup.gd` | Drive paddle-hit, miss, and placement signals directly; no mouse input is part of the AC. | All. | These ACs are about the post-hit / post-placement dispatch chain. The player's input is the racket swing, which the engine's physics dispatches via `body_entered` (covered manually, see Known gaps). |
+| File | Loop completion(s) covered | Real-input coverage |
+|---|---|---|
+| `test_real_input_drag_paths.gd` | Shop press-drag-release purchase loop (SH-253), live-ball mid-rally grab → rack-return loop (SH-252b). | All cases drive `pickup_area.input_event` / `Area2D.input_event` and `_input(InputEventMouseButton)`. Reference file for the canonical pattern. |
+| `test_ball_regime_transitions.gd` | Rack → court spawn, court → rack regrow, rack → mid-venue OUT_REST, save/reload preserves live ball, real press-drag-release on rack (SH-245), real press on live ball mid-rally (SH-247), pre-existing scene Ball grabbable mid-rally. | SH-245 / SH-247 / SH-262 scenarios drive `Area2D.input_event`; the earlier scenarios pin placement-state outcomes that the real-input scenarios then exercise end-to-end. |
+| `test_placement_drives_effects.gd` | Equipment rack → player → rack cycle, ball rack → court → rack cycle, save/reload preserves placement and running effects. | None needed; placement is data, not pointer input. |
+| `test_miss_to_rest_to_regrab_preserves_identity.gd` | PLAY → OUT_REST → OUT_HELD → PLAY on a single Ball instance. | Drives the production drag-controller path. |
+| `test_shop_drag_drop.gd` | Real-input shop press-drag-release (SH-253), shop-to-court ball spawn (SH-320), shop-to-venue OUT_REST spawn. | All three drive real `_input` or the production drag-controller path. |
+| `test_shop_arrivals_inactive.gd` | Shop take → ball-rack arrival, shop take → gear-rack arrival, dev-panel purchase → court-spawn (ball) and gear-rack landing (equipment, kit-cap gated). | `_take_from_shop` drives `pickup_area.input_event` + `ShopItem._input`. |
+| `test_timeout_blocks_autoplay_drive.gd` | SH-405 autoplay vs timeout: drive call during in-flight timeout is a no-op via `drive_blocked`. | Drives the production paddle.drive() path; timeout is real `TimeoutController`. |
 
 ## Known gaps
 

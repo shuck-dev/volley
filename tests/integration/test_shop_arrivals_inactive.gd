@@ -72,30 +72,6 @@ func test_ball_item_taken_from_shop_appears_on_ball_rack() -> void:
 	assert_eq(displayed[0], TrainingBall.key)
 
 
-func test_ball_item_taken_from_shop_does_not_appear_on_gear_rack() -> void:
-	_take_from_shop(_shop_item(TrainingBall.key))
-
-	assert_eq(
-		_gear_rack.get_displayed_keys().size(),
-		0,
-		"gear rack should ignore ball-role arrivals",
-	)
-
-
-func test_ball_item_taken_from_shop_is_not_on_court() -> void:
-	_take_from_shop(_shop_item(TrainingBall.key))
-
-	assert_false(
-		_item_manager.is_on_court(TrainingBall.key),
-		"shop arrivals stay stored until the player activates them",
-	)
-	assert_eq(
-		_item_manager.get_court_items().size(),
-		0,
-		"no ball items should enter the court from a shop take",
-	)
-
-
 # --- gear rack arrivals ----------------------------------------------------
 
 
@@ -105,50 +81,6 @@ func test_equipment_item_taken_from_shop_appears_on_gear_rack() -> void:
 	var displayed: Array[String] = _gear_rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "gear rack should gain a slot for the taken equipment item")
 	assert_eq(displayed[0], GripTape.key)
-
-
-func test_equipment_item_taken_from_shop_does_not_appear_on_ball_rack() -> void:
-	_take_from_shop(_shop_item(GripTape.key))
-
-	assert_eq(
-		_ball_rack.get_displayed_keys().size(),
-		0,
-		"ball rack should ignore equipment-role arrivals",
-	)
-
-
-# --- inert until activated -------------------------------------------------
-
-
-func test_shop_take_does_not_apply_stat_effects() -> void:
-	var base_paddle_size: float = Stats.resolve(
-		GameRules.paddle.paddle_size, &"paddle_size", _item_manager
-	)
-
-	_take_from_shop(_shop_item(GripTape.key))
-
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _item_manager),
-		base_paddle_size,
-		"shop arrivals must not register effects until the player activates them",
-	)
-
-
-func test_activating_a_shop_arrival_removes_it_from_the_rack() -> void:
-	_take_from_shop(_shop_item(GripTape.key))
-	assert_eq(
-		_gear_rack.get_displayed_keys().size(),
-		1,
-		"precondition: shop arrival sits on the gear rack",
-	)
-
-	_item_manager.activate(GripTape.key)
-
-	assert_eq(
-		_gear_rack.get_displayed_keys().size(),
-		0,
-		"activating should move the item off the rack onto the player",
-	)
 
 
 # --- dev panel one-click path ----------------------------------------------
@@ -180,18 +112,4 @@ func test_dev_panel_purchase_lands_equipment_on_gear_rack() -> void:
 		_item_manager.get_kit_items(&"equipment").size(),
 		1,
 		"equipment kit holds the unactivated purchase",
-	)
-
-
-func test_dev_panel_equipment_purchase_does_not_apply_stat_effects() -> void:
-	var base_paddle_size: float = Stats.resolve(
-		GameRules.paddle.paddle_size, &"paddle_size", _item_manager
-	)
-
-	_item_manager.purchase(GripTape.key)
-
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _item_manager),
-		base_paddle_size,
-		"equipment effects stay inert until the player drags from rack to paddle",
 	)
