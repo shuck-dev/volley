@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/hud/dev_ball_state_panel.gd" id="4_ballstate"]
 [ext_resource type="Script" uid="uid://bkfp6d5w1iaip" path="res://scripts/hud/dev_bounce_panel.gd" id="5_bouncepanel"]
 [ext_resource type="Script" uid="uid://ce43fqg0u1yhu" path="res://scripts/hud/dev_bounce_overlay.gd" id="6_bounceover"]
+[ext_resource type="Script" path="res://scripts/hud/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
@@ -43,7 +44,17 @@ offset_right = 210.0
 offset_bottom = 620.0
 theme = ExtResource("7_debug")
 script = ExtResource("3_devmenu")
-managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel")])
+managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../DevEquippedPanel")])
+
+[node name="DevEquippedPanel" type="VBoxContainer" parent="." unique_id=1944203103]
+visible = false
+offset_left = 220.0
+offset_top = 270.0
+offset_right = 460.0
+offset_bottom = 400.0
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("8_equipped")
 
 [node name="DevStatPanel" type="VBoxContainer" parent="." unique_id=425250304]
 anchors_preset = 3
