@@ -1,4 +1,3 @@
-@tool
 extends VBoxContainer
 
 var _labels: Dictionary = {}
@@ -19,10 +18,6 @@ func _base_values() -> Dictionary:
 
 func _ready() -> void:
 	_apply_background()
-
-	if Engine.is_editor_hint():
-		_build_placeholder_labels()
-		return
 
 	if not OS.is_debug_build():
 		queue_free()
@@ -46,7 +41,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if Engine.is_editor_hint() or not visible:
+	if not visible:
 		return
 	_refresh()
 
@@ -59,18 +54,6 @@ func _apply_background() -> void:
 	alignment = BoxContainer.ALIGNMENT_CENTER
 	add_theme_constant_override("separation", 2)
 	resized.connect(queue_redraw)
-
-
-func _build_placeholder_labels() -> void:
-	for child in get_children():
-		child.queue_free()
-
-	_add_header()
-	var bases: Dictionary = _base_values()
-	for stat_key: StringName in bases:
-		var label := _make_stat_label()
-		label.text = "%s: %.1f" % [stat_key, bases[stat_key]]
-		add_child(label)
 
 
 func _build_live_labels() -> void:

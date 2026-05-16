@@ -1,4 +1,3 @@
-@tool
 extends VBoxContainer
 
 ## Dev-only readout of the kit: which items are currently EQUIPPED and how many slots remain.
@@ -10,10 +9,6 @@ var _drag := DraggableBehavior.new()
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint():
-		_build_placeholder()
-		return
-
 	if not OS.is_debug_build():
 		queue_free()
 		return
@@ -41,13 +36,6 @@ func _input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
-
-
-func _build_placeholder() -> void:
-	_add_header()
-	var label := _make_label()
-	label.text = "(empty kit)"
-	add_child(label)
 
 
 func _add_header() -> void:
