@@ -425,6 +425,15 @@ func test_equipped_visual_carries_press_area_for_regrab() -> void:
 	var press: Area2D = visual.get_node_or_null("EquippedPressArea") as Area2D
 	assert_not_null(press, "mounted visual must carry an EquippedPressArea for regrab")
 	assert_true(press.input_pickable, "press area must accept mouse input")
+	# Picker invariant: needs broadphase presence (monitorable) + a non-zero collision_layer to receive input_event.
+	assert_true(
+		press.monitorable, "press area must be monitorable so the picker sees it in the broadphase"
+	)
+	assert_ne(
+		press.collision_layer,
+		0,
+		"press area needs a collision_layer for the input picker to intersect"
+	)
 
 	watch_signals(character_target)
 	var event := InputEventMouseButton.new()

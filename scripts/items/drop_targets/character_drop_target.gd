@@ -108,10 +108,9 @@ func _attach_press_area(visual: Node, definition: ItemDefinition, item_key: Stri
 		return
 	var press: Area2D = Area2D.new()
 	press.name = "EquippedPressArea"
-	press.collision_layer = 0
+	# Input picking requires broadphase presence (monitorable) + a non-zero collision_layer; the defaults satisfy both.
 	press.collision_mask = 0
 	press.monitoring = false
-	press.monitorable = false
 	press.input_pickable = true
 	var collision: CollisionShape2D = CollisionShape2D.new()
 	collision.shape = definition.at_rest_shape.duplicate()
