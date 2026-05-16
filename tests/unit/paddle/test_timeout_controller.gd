@@ -1,14 +1,21 @@
 # gdlint:ignore = max-public-methods
 extends GutTest
 
-## Drives the paddle through physics frames; a StaticBody2D floor in the fixture
-## stands in for venue.tscn's VenueFloor.
+## Drives the controller's `_physics_process` directly with a chosen virtual delta;
+## a StaticBody2D floor in the fixture stands in for venue.tscn's VenueFloor.
+## Avoids `await get_tree().physics_frame` loops so the suite stays inside the
+## sub-3s budget per `ai/skills/minions/commits.md`.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0
 const FLOOR_Y: float = 200.0
 const AIRBORNE_Y: float = -240.0
 const PADDLE_HALF_HEIGHT: float = 27.0
+
+# Large enough that descent (1200 px/s over ~440 px) and the horizontal walk
+# (200 px at 400 px/s) each finish in a single step; the controller clamps.
+const VIRTUAL_DELTA: float = 0.6
+const MAX_STEPS: int = 32
 
 var _paddle: Paddle
 var _controller: TimeoutController
@@ -53,14 +60,19 @@ func before_each() -> void:
 	_controller.configure(_paddle)
 	add_child_autofree(_controller)
 
+	# One real physics frame so the server registers both bodies; without it the
+	# first `move_and_slide` call sees no collisions and the paddle never grounds.
+	await get_tree().physics_frame
 
-# Yields physics frames until either `predicate` returns true or `max_frames` elapses.
-func _step_until(predicate: Callable, max_frames: int = 240) -> bool:
-	for _i in range(max_frames):
-		await get_tree().physics_frame
+
+# Drives the controller forward by ticking `_physics_process` with a virtual
+# delta until `predicate` is true. Returns false if `MAX_STEPS` is exhausted.
+func _drive_until(predicate: Callable, max_steps: int = MAX_STEPS) -> bool:
+	for _i in range(max_steps):
 		if predicate.call():
 			return true
-	return false
+		_controller._physics_process(VIRTUAL_DELTA)
+	return predicate.call()
 
 
 func _at_state(target: TimeoutController.State) -> Callable:
@@ -108,14 +120,14 @@ func test_cannot_call_timeout_while_descending() -> void:
 func test_main_character_reaches_equip_pose_after_walk() -> void:
 	watch_signals(_controller)
 	_controller.call_timeout()
-	var reached := await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
-	assert_true(reached, "controller should reach AT_EQUIP_POSE within frame budget")
+	var reached := _drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	assert_true(reached, "controller should reach AT_EQUIP_POSE within step budget")
 	assert_signal_emitted(_controller, "main_character_reached_equip_pose")
 
 
 func test_equip_pose_is_off_the_lane() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	assert_ne(
 		_paddle.position.x,
 		LANE_X,
@@ -133,17 +145,17 @@ func test_end_timeout_before_reaching_pose_is_ignored() -> void:
 
 func test_end_timeout_walks_main_character_back_to_lane() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	_controller.end_timeout()
-	await _step_until(_at_state(TimeoutController.State.IDLE))
+	_drive_until(_at_state(TimeoutController.State.IDLE))
 	assert_almost_eq(_paddle.position.x, LANE_X, 0.5)
 
 
 func test_end_timeout_restores_main_character_physics() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	_controller.end_timeout()
-	await _step_until(_at_state(TimeoutController.State.IDLE))
+	_drive_until(_at_state(TimeoutController.State.IDLE))
 	assert_true(
 		_paddle.is_physics_processing(),
 		"main character should defend again after the timeout ends",
@@ -152,18 +164,18 @@ func test_end_timeout_restores_main_character_physics() -> void:
 
 func test_end_timeout_emits_ended_signal_after_walk_on() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	watch_signals(_controller)
 	_controller.end_timeout()
-	await _step_until(_at_state(TimeoutController.State.IDLE))
+	_drive_until(_at_state(TimeoutController.State.IDLE))
 	assert_signal_emitted(_controller, "timeout_ended")
 
 
 func test_controller_returns_to_idle_after_full_cycle() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	_controller.end_timeout()
-	await _step_until(_at_state(TimeoutController.State.IDLE))
+	_drive_until(_at_state(TimeoutController.State.IDLE))
 	assert_false(_controller.is_active())
 	assert_true(_controller.can_call_timeout())
 
@@ -171,7 +183,7 @@ func test_controller_returns_to_idle_after_full_cycle() -> void:
 # SH-405: physics, not a y target, lands the paddle on the venue floor.
 func test_lane_call_timeout_lands_on_floor_collider() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	assert_true(_paddle.is_on_floor(), "main character must end up grounded after the walk-off")
 	# Resting paddle base is at or above the floor top surface; never below.
 	assert_lt(
@@ -184,7 +196,7 @@ func test_lane_call_timeout_lands_on_floor_collider() -> void:
 func test_airborne_call_timeout_descends_before_walking_off() -> void:
 	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.WALKING_OFF))
+	_drive_until(_at_state(TimeoutController.State.WALKING_OFF))
 	# During descent the horizontal stays pinned on the lane.
 	# We only assert that the descent phase actually ran (state advanced from DESCENDING).
 	assert_true(_paddle.is_on_floor(), "descent phase must leave paddle grounded")
@@ -194,7 +206,7 @@ func test_airborne_call_timeout_eventually_reaches_equip_pose() -> void:
 	watch_signals(_controller)
 	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
 	_controller.call_timeout()
-	var reached := await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	var reached := _drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	assert_true(reached, "airborne timeout should eventually reach equip pose")
 	assert_signal_emitted(_controller, "main_character_reached_equip_pose")
 	assert_ne(_paddle.position.x, LANE_X)
@@ -205,8 +217,9 @@ func test_airborne_call_timeout_defers_equip_pose_signal_until_grounded() -> voi
 	watch_signals(_controller)
 	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
 	_controller.call_timeout()
-	# One physics frame is not enough to descend and walk; signal must not yet fire.
-	await get_tree().physics_frame
+	# A descent step alone (no walk-off) must not yet fire the equip-pose signal;
+	# use a small delta so the descent doesn't overshoot into WALKING_OFF.
+	_controller._physics_process(0.05)
 	assert_signal_emit_count(
 		_controller,
 		"main_character_reached_equip_pose",
@@ -235,16 +248,16 @@ func test_repeated_call_timeout_while_airborne_stays_single_run() -> void:
 	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
 	_controller.call_timeout()
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	assert_signal_emit_count(_controller, "timeout_started", 1)
 	assert_signal_emit_count(_controller, "main_character_reached_equip_pose", 1)
 
 
 func test_end_timeout_returns_to_lane_position() -> void:
 	_controller.call_timeout()
-	await _step_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
 	_controller.end_timeout()
-	await _step_until(_at_state(TimeoutController.State.IDLE))
+	_drive_until(_at_state(TimeoutController.State.IDLE))
 	assert_almost_eq(_paddle.position.x, LANE_X, 0.5)
 	assert_almost_eq(
 		_paddle.position.y,
