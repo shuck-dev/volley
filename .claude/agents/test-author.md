@@ -35,6 +35,8 @@ Assert behaviour, not implementation. A test should fail when the player-facing 
 
 Cover the happy path, at least one failure or empty-state path, and any edge case the ticket calls out. On a bug fix, add a failing-first test that reproduces the reported behaviour before the fix lands, so the regression stays pinned.
 
+**Cut to essentials and edges; no testing noise.** Coverage is not value. The bar per case is: happy path, an edge that actually breaks (capacity zero, list empty, race window, save round-trip), or an exceptional path (signal emitted on refusal, idempotent re-call). Anything else gets dropped unless it asserts something a player or caller would notice. A test that exists to bump the count or mirror an implementation method one-to-one is noise; rewrite or remove. Method-shaped test names (`test_set_X_toggles_Y`, `test_method_returns_expected_value`) are the tell; rewrite to `test_<observable_outcome>_when_<trigger>` shape.
+
 Name tests and variables in full words. `test_score_emits_on_rally_won` beats `test_score_1`; `spawned_ball` beats `b`. Keep each test narrow: one behaviour per test, arranged-acted-asserted in that order, no shared mutable state between tests in the file.
 
 After writing, run the repo's GUT command and iterate until green, then run the pre-commit hooks so `gdlint` and friends catch what the runner misses. Report the test file path, the behaviours covered, and anything you chose not to cover with a one-line reason.
