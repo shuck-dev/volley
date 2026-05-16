@@ -225,7 +225,7 @@ There is no bot applying `zaphod-conflicts`; Gru owns it.
 
 ## Mission close
 
-When the mission's work is done (PRs merged, issue Closed, swarm dispersed), read `ai/skills/gru/debrief.md` and run the six-step flow. The skill consolidates `git status` first, three independent agents in parallel, fold their drafts, post via `save_status_update` on the relevant project, route every action item, list every flag. Do not write the orchestrator's inline summary; that draft is biased and the rule exists because the orchestrator-draft failure mode keeps recurring.
+When the mission's work is done, read `ai/skills/gru/debrief.md`.
 
 ## Cleanup
 
