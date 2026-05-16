@@ -34,6 +34,7 @@ func _ready() -> void:
 		ball = null
 		_attach_ball(pre_set)
 	ItemManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
+	ItemManager.item_placement_changed.connect(_on_item_level_changed.unbind(2))
 
 
 func _attach_ball(new_ball: Ball) -> void:

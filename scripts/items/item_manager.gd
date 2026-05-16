@@ -5,6 +5,8 @@ signal friendship_point_balance_changed(balance: int)
 signal item_level_changed(item_key: String)
 signal item_placement_changed(item_key: String, placement: int)
 signal court_changed(item_key: String, on_court: bool)
+## Emitted when equip refuses; reason is currently &"capacity_exceeded" (sole case).
+signal equip_refused(item_key: String, reason: StringName)
 
 const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
@@ -189,6 +191,34 @@ func deactivate(item_key: String) -> bool:
 	return true
 
 
+## Free kit slots; clamped at zero so over-capacity loads do not report negative.
+func get_kit_remaining() -> int:
+	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
+	var equipped_count: int = 0
+	for key: String in state.item_placements:
+		if int(state.item_placements[key]) == PlacementScript.EQUIPPED:
+			equipped_count += 1
+	return max(0, cap - equipped_count)
+
+
+## Equipment-role placement gated by kit capacity; emits `equip_refused` on capacity rejection.
+## Returns false silently on role mismatch so callers can fall through to other targets.
+func equip(item_key: String) -> bool:
+	var item: ItemDefinition = _get_item(item_key)
+	if item.role != &"equipment":
+		return false
+
+	if get_kit_remaining() < 1:
+		equip_refused.emit(item_key, &"capacity_exceeded")
+		return false
+	return activate(item_key)
+
+
+## Symmetric wrapper over `deactivate`; named for intent at equip/unequip call sites.
+func unequip(item_key: String) -> bool:
+	return deactivate(item_key)
+
+
 ## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
 	var item: ItemDefinition = _get_item(item_key)
@@ -218,8 +248,10 @@ func purchase(item_key: String) -> bool:
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
 	if was_unowned:
-		# First purchase lands the item on its natural target, skipping the rack.
-		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+		var item := _get_item(item_key)
+		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
+		var landing: int = PlacementScript.STORED if goes_to_rack else _natural_target(item)
+		_set_item_placement(item_key, landing)
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
 	item_level_changed.emit(item_key)

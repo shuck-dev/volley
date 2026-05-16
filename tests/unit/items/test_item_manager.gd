@@ -65,6 +65,54 @@ class TestPurchase:
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
 
 
+class TestPurchasePlacement:
+	extends GutTest
+
+	## Purchase routes equipment-role items to the rack (STORED) so the kit cap gates equipping;
+	## ball-role items still skip to ON_COURT.
+
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var gear := ItemDefinition.new()
+		gear.key = "gear_a"
+		gear.role = &"equipment"
+		gear.base_cost = 10
+		gear.cost_scaling = 2.0
+		gear.max_level = 3
+		gear.effects = []
+		var ball := ItemDefinition.new()
+		ball.key = "ball_a"
+		ball.role = &"ball"
+		ball.base_cost = 10
+		ball.cost_scaling = 2.0
+		ball.max_level = 3
+		ball.effects = []
+		_manager.items.assign([gear, ball])
+		_manager.economy.friendship_point_balance = 100000
+
+	func test_purchase_lands_equipment_on_rack() -> void:
+		_manager.purchase("gear_a")
+		assert_eq(_manager.get_placement("gear_a"), Placement.STORED)
+
+	func test_purchase_does_not_consume_kit_slot_for_equipment() -> void:
+		var before: int = _manager.get_kit_remaining()
+		_manager.purchase("gear_a")
+		assert_eq(_manager.get_kit_remaining(), before)
+
+	func test_purchase_then_equip_lands_equipment_in_kit() -> void:
+		_manager.purchase("gear_a")
+		var before: int = _manager.get_kit_remaining()
+		assert_true(_manager.equip("gear_a"))
+		assert_eq(_manager.get_placement("gear_a"), Placement.EQUIPPED)
+		assert_eq(_manager.get_kit_remaining(), before - 1)
+
+	func test_purchase_lands_ball_on_court() -> void:
+		_manager.purchase("ball_a")
+		assert_eq(_manager.get_placement("ball_a"), Placement.ON_COURT)
+
+
 class TestStats:
 	extends GutTest
 	const TEST_KEY := "test_speed"
@@ -82,6 +130,7 @@ class TestStats:
 	func test_purchase_applies_stat_modifier() -> void:
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
 			GameRules.paddle.paddle_speed + 50.0
@@ -90,6 +139,7 @@ class TestStats:
 	func test_multiple_purchases_stack_modifiers() -> void:
 		_manager.economy.friendship_point_balance = 10000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		_manager.purchase(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -99,6 +149,7 @@ class TestStats:
 	func test_remove_level_reverts_stat_modifier() -> void:
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -279,9 +330,7 @@ class TestReloadFromProgression:
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
 		_manager.state.item_levels[TEST_KEY] = 1
-		_manager.state.item_placements[TEST_KEY] = (
-			preload("res://scripts/items/placement.gd").EQUIPPED
-		)
+		_manager.state.item_placements[TEST_KEY] = Placement.EQUIPPED
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -293,6 +342,7 @@ class TestReloadFromProgression:
 		var base_speed: float = GameRules.paddle.paddle_speed
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
 			base_speed + 50.0
@@ -399,3 +449,103 @@ class TestKitItemsEquipment:
 		var kit: Array[String] = _manager.get_kit_items(&"equipment")
 		assert_eq(kit.size(), 1)
 		assert_eq(kit[0], "kit_gear")
+
+
+class TestEquipFlow:
+	extends GutTest
+
+	## Equip/unequip/get_kit_remaining gate equipment placement on the kit_slots cap.
+
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var gear_a := ItemDefinition.new()
+		gear_a.key = "gear_a"
+		gear_a.role = &"equipment"
+		gear_a.base_cost = 10
+		gear_a.cost_scaling = 2.0
+		gear_a.max_level = 3
+		gear_a.effects = []
+		var gear_b := ItemDefinition.new()
+		gear_b.key = "gear_b"
+		gear_b.role = &"equipment"
+		gear_b.base_cost = 10
+		gear_b.cost_scaling = 2.0
+		gear_b.max_level = 3
+		gear_b.effects = []
+		var ball := ItemDefinition.new()
+		ball.key = "ball_a"
+		ball.role = &"ball"
+		ball.base_cost = 10
+		ball.cost_scaling = 2.0
+		ball.max_level = 3
+		ball.effects = []
+		_manager.items.assign([gear_a, gear_b, ball])
+		_manager.economy.friendship_point_balance = 100000
+
+	func test_get_kit_remaining_starts_at_floored_kit_slots() -> void:
+		var expected: int = int(floor(GameRules.base.kit_slots))
+		assert_eq(_manager.get_kit_remaining(), expected)
+
+	func test_equip_reduces_kit_remaining() -> void:
+		_manager.take("gear_a")
+		var before: int = _manager.get_kit_remaining()
+		assert_true(_manager.equip("gear_a"))
+		assert_eq(_manager.get_kit_remaining(), before - 1)
+
+	func test_unequip_restores_kit_remaining() -> void:
+		_manager.take("gear_a")
+		var before: int = _manager.get_kit_remaining()
+		_manager.equip("gear_a")
+		assert_true(_manager.unequip("gear_a"))
+		assert_eq(_manager.get_kit_remaining(), before)
+
+	func test_loose_in_venue_overlay_does_not_affect_kit_remaining() -> void:
+		# Ball-role overlay must not change the equipment-kit count.
+		_manager.take("ball_a")
+		var before: int = _manager.get_kit_remaining()
+		_manager.mark_loose_in_venue("ball_a")
+		assert_eq(_manager.get_kit_remaining(), before)
+
+	func test_equip_rejects_ball_role_silently() -> void:
+		_manager.take("ball_a")
+		watch_signals(_manager)
+		assert_false(_manager.equip("ball_a"))
+		assert_signal_not_emitted(_manager, "equip_refused")
+
+	func test_equip_rejects_when_capacity_zero_and_emits_refused() -> void:
+		# Force capacity to zero by stuffing the persisted-EQUIPPED set up to the cap.
+		var cap: int = int(floor(GameRules.base.kit_slots))
+		var pad_items: Array[ItemDefinition] = []
+		for i in cap:
+			var pad := ItemDefinition.new()
+			pad.key = "pad_%d" % i
+			pad.role = &"equipment"
+			pad.base_cost = 10
+			pad.cost_scaling = 2.0
+			pad.max_level = 3
+			pad.effects = []
+			pad_items.append(pad)
+		for pad: ItemDefinition in pad_items:
+			_manager.items.append(pad)
+			_manager.take(pad.key)
+			_manager.equip(pad.key)
+		assert_eq(_manager.get_kit_remaining(), 0, "precondition: cap reached")
+
+		_manager.take("gear_a")
+		watch_signals(_manager)
+		assert_false(_manager.equip("gear_a"))
+		assert_signal_emitted_with_parameters(
+			_manager, "equip_refused", ["gear_a", &"capacity_exceeded"]
+		)
+
+	func test_over_capacity_load_clamps_kit_remaining_to_zero() -> void:
+		# Simulate a save with more EQUIPPED items than the current cap supports.
+		var cap: int = int(floor(GameRules.base.kit_slots))
+		for i in cap + 2:
+			_manager.state.item_placements["over_%d" % i] = Placement.EQUIPPED
+		assert_eq(_manager.get_kit_remaining(), 0)
+
+	func test_unequip_on_unowned_returns_false() -> void:
+		assert_false(_manager.unequip("gear_a"))

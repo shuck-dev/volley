@@ -86,3 +86,21 @@ func test_size_updates_live_on_remove_level() -> void:
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
 		0.01
 	)
+
+
+func test_size_updates_live_on_unequip_and_reequip() -> void:
+	_manager.economy.friendship_point_balance = 1000
+	_manager.purchase("grip_tape")
+	_manager.equip("grip_tape")
+	var paddle := _create_paddle()
+	var equipped_size: float = paddle.collision.shape.size.y
+
+	_manager.unequip("grip_tape")
+	var unequipped_size: float = paddle.collision.shape.size.y
+	assert_almost_eq(
+		unequipped_size, Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager), 0.01
+	)
+	assert_ne(unequipped_size, equipped_size, "unequipping grip_tape must shrink the paddle")
+
+	_manager.equip("grip_tape")
+	assert_almost_eq(paddle.collision.shape.size.y, equipped_size, 0.01)
