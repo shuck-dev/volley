@@ -65,6 +65,7 @@ func test_applies_stat_at_level_one() -> void:
 		var delta := _value_per_level(item)
 		manager.economy.friendship_point_balance = 100000
 		manager.purchase(item.key)
+		manager.activate(item.key)
 		assert_almost_eq(
 			Stats.resolve(_base_value(stat), stat, manager),
 			_base_value(stat) + delta,
@@ -81,8 +82,11 @@ func test_stacks_linearly_across_levels() -> void:
 		var delta := _value_per_level(item)
 		manager.economy.friendship_point_balance = 100000
 		manager.purchase(item.key)
+		manager.activate(item.key)
 		manager.purchase(item.key)
+		manager.activate(item.key)
 		manager.purchase(item.key)
+		manager.activate(item.key)
 		assert_almost_eq(
 			Stats.resolve(_base_value(stat), stat, manager),
 			_base_value(stat) + (delta * 3),
@@ -96,6 +100,7 @@ func test_grip_tape_increases_paddle_size_on_purchase() -> void:
 	var manager := _create_manager(_grip_tape)
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
+	manager.activate(_grip_tape.key)
 	assert_gt(
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", manager),
 		GameRules.paddle.paddle_size,
@@ -107,10 +112,12 @@ func test_grip_tape_grows_with_level() -> void:
 	var manager := _create_manager(_grip_tape)
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
+	manager.activate(_grip_tape.key)
 	var size_at_level_one: float = Stats.resolve(
 		GameRules.paddle.paddle_size, &"paddle_size", manager
 	)
 	manager.purchase(_grip_tape.key)
+	manager.activate(_grip_tape.key)
 	assert_gt(
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", manager),
 		size_at_level_one,
@@ -123,7 +130,9 @@ func test_equal_percentage_modifiers_cancel_out() -> void:
 	manager.items.assign([_grip_tape, _wrist_brace])
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_grip_tape.key)
+	manager.activate(_grip_tape.key)
 	manager.purchase(_wrist_brace.key)
+	manager.activate(_wrist_brace.key)
 	assert_almost_eq(
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", manager),
 		GameRules.paddle.paddle_size,
@@ -143,6 +152,7 @@ func test_wrist_brace_reduces_paddle_size_on_purchase() -> void:
 	var manager := _create_manager(_wrist_brace)
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
+	manager.activate(_wrist_brace.key)
 	assert_lt(
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", manager),
 		GameRules.paddle.paddle_size,
@@ -154,6 +164,7 @@ func test_wrist_brace_increases_ball_speed_increment_on_purchase() -> void:
 	var manager := _create_manager(_wrist_brace)
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
+	manager.activate(_wrist_brace.key)
 	assert_gt(
 		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", manager),
 		GameRules.base.ball_speed_increment,
@@ -165,10 +176,12 @@ func test_wrist_brace_cursed_penalty_scales_with_level() -> void:
 	var manager := _create_manager(_wrist_brace)
 	manager.economy.friendship_point_balance = 100000
 	manager.purchase(_wrist_brace.key)
+	manager.activate(_wrist_brace.key)
 	var size_at_level_one: float = Stats.resolve(
 		GameRules.paddle.paddle_size, &"paddle_size", manager
 	)
 	manager.purchase(_wrist_brace.key)
+	manager.activate(_wrist_brace.key)
 	var size_at_level_two: float = Stats.resolve(
 		GameRules.paddle.paddle_size, &"paddle_size", manager
 	)

@@ -116,6 +116,7 @@ func test_fp_per_hit_uses_effect_system_stat() -> void:
 	_item_manager.items.assign([item])
 	_item_manager.add_friendship_points(item.base_cost)
 	_item_manager.purchase(item.key)
+	_item_manager.activate(item.key)
 
 	_hit()
 	_hit()
@@ -128,6 +129,7 @@ func test_fp_per_hit_with_quarter_bonus() -> void:
 	_item_manager.items.assign([item])
 	_item_manager.add_friendship_points(item.base_cost)
 	_item_manager.purchase(item.key)
+	_item_manager.activate(item.key)
 
 	_hit()
 	_hit()

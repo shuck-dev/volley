@@ -49,6 +49,7 @@ func before_each() -> void:
 func _purchase_cadence() -> void:
 	_manager.economy.friendship_point_balance = 100000
 	_manager.purchase("cadence")
+	_manager.activate("cadence")
 
 
 func _hit_until_max_speed() -> void:

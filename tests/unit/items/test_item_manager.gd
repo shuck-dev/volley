@@ -65,6 +65,54 @@ class TestPurchase:
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
 
 
+class TestPurchasePlacement:
+	extends GutTest
+
+	## Purchase routes equipment-role items to the rack (STORED) so the kit cap gates equipping;
+	## ball-role items still skip to ON_COURT.
+
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var gear := ItemDefinition.new()
+		gear.key = "gear_a"
+		gear.role = &"equipment"
+		gear.base_cost = 10
+		gear.cost_scaling = 2.0
+		gear.max_level = 3
+		gear.effects = []
+		var ball := ItemDefinition.new()
+		ball.key = "ball_a"
+		ball.role = &"ball"
+		ball.base_cost = 10
+		ball.cost_scaling = 2.0
+		ball.max_level = 3
+		ball.effects = []
+		_manager.items.assign([gear, ball])
+		_manager.economy.friendship_point_balance = 100000
+
+	func test_purchase_lands_equipment_on_rack() -> void:
+		_manager.purchase("gear_a")
+		assert_eq(_manager.get_placement("gear_a"), Placement.STORED)
+
+	func test_purchase_does_not_consume_kit_slot_for_equipment() -> void:
+		var before: int = _manager.get_kit_remaining()
+		_manager.purchase("gear_a")
+		assert_eq(_manager.get_kit_remaining(), before)
+
+	func test_purchase_then_equip_lands_equipment_in_kit() -> void:
+		_manager.purchase("gear_a")
+		var before: int = _manager.get_kit_remaining()
+		assert_true(_manager.equip("gear_a"))
+		assert_eq(_manager.get_placement("gear_a"), Placement.EQUIPPED)
+		assert_eq(_manager.get_kit_remaining(), before - 1)
+
+	func test_purchase_lands_ball_on_court() -> void:
+		_manager.purchase("ball_a")
+		assert_eq(_manager.get_placement("ball_a"), Placement.ON_COURT)
+
+
 class TestStats:
 	extends GutTest
 	const TEST_KEY := "test_speed"
@@ -82,6 +130,7 @@ class TestStats:
 	func test_purchase_applies_stat_modifier() -> void:
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
 			GameRules.paddle.paddle_speed + 50.0
@@ -90,6 +139,7 @@ class TestStats:
 	func test_multiple_purchases_stack_modifiers() -> void:
 		_manager.economy.friendship_point_balance = 10000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		_manager.purchase(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -99,6 +149,7 @@ class TestStats:
 	func test_remove_level_reverts_stat_modifier() -> void:
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -279,9 +330,7 @@ class TestReloadFromProgression:
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
 		_manager.state.item_levels[TEST_KEY] = 1
-		_manager.state.item_placements[TEST_KEY] = (
-			preload("res://scripts/items/placement.gd").EQUIPPED
-		)
+		_manager.state.item_placements[TEST_KEY] = Placement.EQUIPPED
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -293,6 +342,7 @@ class TestReloadFromProgression:
 		var base_speed: float = GameRules.paddle.paddle_speed
 		_manager.economy.friendship_point_balance = 1000
 		_manager.purchase(TEST_KEY)
+		_manager.activate(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
 			base_speed + 50.0

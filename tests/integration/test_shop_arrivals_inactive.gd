@@ -1,6 +1,7 @@
 extends GutTest
 
-## Shop arrivals land inactive on the matching rack; dev-panel one-click still auto-places.
+## Shop arrivals land inactive on the matching rack. Dev-panel purchase auto-places balls on
+## the court; equipment lands on the gear rack so the player still chooses what fills the kit.
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const BallRackScene: PackedScene = preload("res://scenes/ball_rack.tscn")
@@ -154,8 +155,6 @@ func test_activating_a_shop_arrival_removes_it_from_the_rack() -> void:
 
 
 func test_dev_panel_purchase_places_ball_on_court_not_on_rack() -> void:
-	# The dev panel calls ItemManager.purchase(); the one-click contract is that
-	# first purchase auto-activates to the natural target for quick iteration.
 	_item_manager.purchase(TrainingBall.key)
 
 	assert_true(
@@ -169,31 +168,30 @@ func test_dev_panel_purchase_places_ball_on_court_not_on_rack() -> void:
 	)
 
 
-func test_dev_panel_purchase_equips_equipment_not_on_rack() -> void:
+func test_dev_panel_purchase_lands_equipment_on_gear_rack() -> void:
 	_item_manager.purchase(GripTape.key)
 
-	# An equipped item has a non-STORED placement, so get_kit_items omits it.
 	assert_eq(
-		_gear_rack.get_displayed_keys().size(),
-		0,
-		"dev-panel purchase should skip the rack and equip directly",
+		_gear_rack.get_displayed_keys(),
+		[GripTape.key],
+		"equipment purchases land on the gear rack so the kit cap still gates equipping",
 	)
 	assert_eq(
 		_item_manager.get_kit_items(&"equipment").size(),
-		0,
-		"equipment kit should be empty after a dev-panel purchase auto-equips",
+		1,
+		"equipment kit holds the unactivated purchase",
 	)
 
 
-func test_dev_panel_purchase_applies_stat_effects_immediately() -> void:
+func test_dev_panel_equipment_purchase_does_not_apply_stat_effects() -> void:
 	var base_paddle_size: float = Stats.resolve(
 		GameRules.paddle.paddle_size, &"paddle_size", _item_manager
 	)
 
 	_item_manager.purchase(GripTape.key)
 
-	assert_ne(
+	assert_eq(
 		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _item_manager),
 		base_paddle_size,
-		"dev-panel purchase should register effects on the same call",
+		"equipment effects stay inert until the player drags from rack to paddle",
 	)

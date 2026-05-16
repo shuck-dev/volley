@@ -249,8 +249,10 @@ func purchase(item_key: String) -> bool:
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
 	if was_unowned:
-		# First purchase lands the item on its natural target, skipping the rack.
-		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+		var item := _get_item(item_key)
+		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
+		var landing: int = PlacementScript.STORED if goes_to_rack else _natural_target(item)
+		_set_item_placement(item_key, landing)
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
 	item_level_changed.emit(item_key)
