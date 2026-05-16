@@ -1,10 +1,7 @@
 # gdlint:ignore = max-public-methods
 extends GutTest
 
-## Drives the controller's `_physics_process` directly with a chosen virtual delta;
-## a StaticBody2D floor in the fixture stands in for venue.tscn's VenueFloor.
-## Avoids `await get_tree().physics_frame` loops so the suite stays inside the
-## sub-3s budget per `ai/skills/minions/commits.md`.
+## Drives `_physics_process` with a virtual delta to stay inside the suite budget.
 
 const LANE_X: float = -500.0
 const LANE_Y: float = 0.0

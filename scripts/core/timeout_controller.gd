@@ -163,6 +163,7 @@ func _step_horizontal_walk(delta: float) -> void:
 	var current_x: float = main_character.position.x
 	var remaining: float = _walk_target_x - current_x
 	var step: float = _walk_speed * delta
+
 	if _walk_speed <= 0.0 or absf(remaining) <= step:
 		main_character.position.x = _walk_target_x
 		main_character.velocity = Vector2.ZERO
