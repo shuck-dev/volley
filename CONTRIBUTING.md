@@ -67,21 +67,19 @@ The GitHub issue thread is the right place. Decisions live there, future contrib
 
 ## Commit messages
 
-We use [Conventional Commits](https://www.conventionalcommits.org). The first line is `<type>: <subject>`, present tense, lowercase. Types in regular use: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `perf`.
+We follow [Conventional Commits](https://www.conventionalcommits.org) so the history reads cleanly and the changelog can write itself. The first line is `<type>: <subject>`, in the present tense and lowercase. The types you will reach for most are `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, and `perf`.
 
 ```
 feat: ascend back to the lane via physics after walking on
 ```
 
-For breaking changes (save format wipe, public API rename, workflow input shift), suffix the type with `!`:
+When a change breaks compatibility (a save format wipe, a public API rename, a workflow input shift, anything a downstream reader needs to act on), add `!` after the type. The bang is what our autolabeller picks up, and what surfaces in the squash-merge commit and the changelog so the people who care can find it.
 
 ```
 feat!: drop floor_y from TimeoutConfig; descent grounds on physics
 ```
 
-The `!` is the autolabel signal that the change is breaking; readers see it in the squash-merge commit and in the changelog.
-
-Keep the subject under ~70 characters. If a body is needed, write it as one or two sentences explaining the why.
+Aim for a subject under about seventy characters. If there is more to say, a short body of one or two sentences explaining the why goes a long way; reviewers love the context.
 
 ## Sign your commits (DCO)
 

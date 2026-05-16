@@ -24,6 +24,35 @@ jobs:
       pull-requests: read
     steps:
       - name: Draft release notes
+        id: draft
         uses: release-drafter/release-drafter@5de93583980a40bd78603b6dfdcda5b4df377b32 # v7.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bullet the contributors block and credit Claude
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_ID: ${{ steps.draft.outputs.id }}
+          RELEASE_BODY: ${{ steps.draft.outputs.body }}
+        # The drafter renders $CONTRIBUTORS as `@a, @b, @c` between marker
+        # comments. Convert to one bullet per author (bots included), append
+        # Claude as a fixed credit for swarm-authored commits, and PATCH the
+        # release body so the published notes carry the reshaped section.
+        run: |
+          python3 <<'PY' > new_body.md
+          import os, re
+          body = os.environ["RELEASE_BODY"]
+          pattern = re.compile(
+              r"(<!-- CONTRIBUTORS_LIST -->\n)(.*?)(\n<!-- /CONTRIBUTORS_LIST -->)",
+              re.DOTALL,
+          )
+          def reshape(match):
+              names = [n.strip() for n in match.group(2).split(",") if n.strip()]
+              if "Claude" not in names:
+                  names.append("Claude")
+              bullets = "\n".join(f"- {n}" for n in names)
+              return f"{match.group(1)}{bullets}{match.group(3)}"
+          print(pattern.sub(reshape, body), end="")
+          PY
+          gh api -X PATCH "/repos/${{ github.repository }}/releases/${RELEASE_ID}" \
+            -f body="$(cat new_body.md)" >/dev/null

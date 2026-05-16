@@ -243,7 +243,7 @@ So that [downstream decision that depends on the answer]
 
 ### Worked example
 
-Filled-in user story so the shape reads in context. Title under 50 characters; body under twelve lines; acceptance criteria are player-observable, not implementation-shaped.
+A template is easier to follow with a filled-in version next to it, so here is the user-story shape applied to a real ticket. Title under fifty characters, body under twelve lines, and acceptance criteria written so anyone with a build of the game can check each line by playing.
 
 > **Title:** Equip flow with kit cap
 >
@@ -258,7 +258,7 @@ Filled-in user story so the shape reads in context. Title under 50 characters; b
 > - [ ] Dragging an equipped item back to the rack unequips it and frees its slot.
 > - [ ] Outside the equip window, the character does not accept or react to dropped gear.
 
-The acceptance criteria name what the player sees, not the classes, signals, or fields that implement them. A reviewer (or a contributor verifying their own work) can run the game and check each line by playing.
+Notice that the criteria name what the player sees, not the classes, signals, or fields underneath. That is the part that matters: a contributor verifying their own work, or a reviewer signing off, can answer each line by playing rather than by reading source. It also means the ticket survives a refactor; if the implementation changes but the player experience does not, the AC is still met.
 
 ---
 
