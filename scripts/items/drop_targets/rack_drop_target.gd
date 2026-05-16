@@ -27,20 +27,11 @@ func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) ->
 		return
 	if not _item_manager.is_on_court(item_key):
 		return
-	# Equipment goes through unequip so the rack reads as the inverse of CharacterDropTarget's equip.
+	# Equipment teardown is signal-driven: CharacterDropTarget frees the visual on the EQUIPPED -> STORED transition.
 	if _role == &"equipment":
 		_item_manager.unequip(item_key)
-		_free_equipped_visual(item_key)
 	else:
 		_item_manager.deactivate(item_key)
-
-
-func _free_equipped_visual(item_key: String) -> void:
-	if _drop_area == null or not _drop_area.is_inside_tree():
-		return
-	var group: StringName = CharacterDropTarget.equipped_art_group(item_key)
-	for visual: Node in _drop_area.get_tree().get_nodes_in_group(group):
-		visual.queue_free()
 
 
 func _is_role_match(item_key: String) -> bool:

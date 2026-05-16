@@ -280,6 +280,88 @@ func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> v
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "unequip frees the mounted visual")
 
 
+func test_character_drop_target_hydrates_equipped_visuals_on_configure() -> void:
+	# Save-and-reload path: placement is already EQUIPPED before the target wires up.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_hydrate")
+	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_hydrate")
+	manager.state.item_placements["gear_hydrate"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var sprite := Node2D.new()
+	sprite.name = "Sprite"
+	paddle.add_child(sprite)
+	var ankle_anchor := Node2D.new()
+	ankle_anchor.name = "AnkleAnchor"
+	sprite.add_child(ankle_anchor)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+
+	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_hydrate")
+	var mounted: Array = get_tree().get_nodes_in_group(group)
+	assert_eq(mounted.size(), 1, "configure hydrates one visual for the persisted EQUIPPED entry")
+	assert_eq((mounted[0] as Node).get_parent(), ankle_anchor)
+
+
+func test_character_drop_target_unmounts_on_placement_change_to_stored() -> void:
+	# Signal-driven teardown: unequip flips placement, handler frees the art.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_unmount")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_unmount")
+	manager.state.item_placements["gear_unmount"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_unmount")
+	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "precondition: hydrated")
+
+	manager.unequip("gear_unmount")
+	await get_tree().process_frame
+	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "EQUIPPED->STORED frees the visual")
+
+
+func test_character_drop_target_mount_is_idempotent_on_repeat_equipped_signal() -> void:
+	# Hydrate + a duplicate EQUIPPED emission must not double-mount.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_idem")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_idem")
+	manager.state.item_placements["gear_idem"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+
+	manager.item_placement_changed.emit("gear_idem", Placement.EQUIPPED)
+	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_idem")
+	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "second mount is suppressed")
+
+
 func test_character_drop_target_falls_back_to_paddle_when_anchor_path_empty() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_root")
