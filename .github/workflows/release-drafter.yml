@@ -29,15 +29,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Bullet the contributors block and credit Claude
+      - name: Bullet the contributors block
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_ID: ${{ steps.draft.outputs.id }}
           RELEASE_BODY: ${{ steps.draft.outputs.body }}
         # The drafter renders $CONTRIBUTORS as `@a, @b, @c` between marker
-        # comments. Convert to one bullet per author (bots included), append
-        # Claude as a fixed credit for swarm-authored commits, and PATCH the
-        # release body so the published notes carry the reshaped section.
+        # comments. Convert to one bullet per author (bots included) and
+        # PATCH the release body so the published notes carry the reshaped
+        # section.
         run: |
           python3 <<'PY' > new_body.md
           import os, re
@@ -48,8 +48,6 @@ jobs:
           )
           def reshape(match):
               names = [n.strip() for n in match.group(2).split(",") if n.strip()]
-              if "Claude" not in names:
-                  names.append("Claude")
               bullets = "\n".join(f"- {n}" for n in names)
               return f"{match.group(1)}{bullets}{match.group(3)}"
           print(pattern.sub(reshape, body), end="")
