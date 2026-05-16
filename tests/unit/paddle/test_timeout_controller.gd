@@ -265,3 +265,43 @@ func test_end_timeout_returns_to_lane_position() -> void:
 		0.1,
 		"walk-on must restore the main character to the playing lane y",
 	)
+
+
+# SH-405: items resting in the walk path must not body-block the timeout paddle.
+func test_timeout_walk_passes_through_resting_items() -> void:
+	_paddle.collision_mask = 3
+	var item: StaticBody2D = StaticBody2D.new()
+	item.collision_layer = 2
+	item.collision_mask = 0
+	var item_collision := CollisionShape2D.new()
+	var item_shape := RectangleShape2D.new()
+	item_shape.size = Vector2(60.0, 40.0)
+	item_collision.shape = item_shape
+	item.add_child(item_collision)
+	# Place the item halfway between the lane and the equip pose, sitting on the floor.
+	var item_start := Vector2(LANE_X - 100.0, FLOOR_Y - 20.0)
+	item.position = item_start
+	add_child_autofree(item)
+	await get_tree().physics_frame
+
+	_controller.call_timeout()
+	var reached := _drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	assert_true(reached, "paddle must reach equip pose past the resting item")
+	assert_eq(item.position, item_start, "resting item must not be shoved by the paddle")
+
+
+func test_finish_at_lane_restores_collision_mask() -> void:
+	_paddle.collision_mask = 3
+	_controller.call_timeout()
+	assert_false(
+		_paddle.get_collision_mask_value(2),
+		"items layer must be masked off while the timeout is active",
+	)
+	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
+	_controller.end_timeout()
+	_drive_until(_at_state(TimeoutController.State.IDLE))
+	assert_eq(
+		_paddle.collision_mask,
+		3,
+		"finishing at the lane must restore the pre-timeout collision mask",
+	)

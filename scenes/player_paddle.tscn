@@ -14,6 +14,7 @@ size = Vector2(21.6, 54)
 size = Vector2(26, 60)
 
 [node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker")]
+collision_mask = 3
 script = ExtResource("1_mo4dg")
 hit_sound = NodePath("HitSound")
 collision = NodePath("Collision")
