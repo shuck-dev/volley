@@ -31,14 +31,13 @@ The shape is scrum-style. Open with blockers, name the improvements they earn, r
 
 ## Body sections
 
-A debrief is brief: tight bullets, not long-form prose. Each blocker is one or two sentences. Each improvement is the memory-rule name plus a half-line. Each action item is the lever, not a paragraph.
+A debrief surfaces the two or three load-bearing levers the session earned, not an enumeration of every blocker, every memory rule, every reviewer round. Pick the meta-shifts that compound. Implementation detail lives in the memory files the levers cite.
 
-- **Blockers.** What slowed the work down. PR / SHA citation per bullet.
-- **Improvements.** Memory rules added or sharpened, skills consolidated, hooks added. One bullet per rule.
-- **Action items.** Process levers, not deliverable follow-ups: rules, skills, hooks, conventions, audits. "Sweep N-iteration tests for tautology smell"; not "file SH-405 AC #4". Filed / Memory-only / Parked per `feedback_debrief_action_items`.
+- **Levers.** Two or three patterns the session revealed. Each one names the shift in how we work and points at the memory rule that captures it. Not "we added eight rules"; "we learned to read the body, not the label."
+- **Action items.** Process levers, not deliverable follow-ups: rules, skills, hooks, conventions, audits. Filed / Memory-only / Parked per `feedback_debrief_action_items`.
 - **Flags.** Every flag added or "none added", per `feedback_flags_surface_or_skip`.
 
-What does NOT belong: a "what shipped" headline, a PR list narrating deliverables, a milestone summary, paragraph-shaped retro prose.
+What does NOT belong: a "what shipped" headline, a PR list narrating deliverables, a milestone summary, an exhaustive blocker list, a complete improvements catalogue. A debrief that enumerates is a punch list wearing a retro label.
 
 ## Triggers
 
