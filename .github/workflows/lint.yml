@@ -67,10 +67,10 @@ jobs:
             | tar -xz -C ~/.local/bin actionlint
 
       - name: gdformat
-        run: find scripts tests -name '*.gd' | xargs gdformat --check
+        run: find scripts tests -name '*.gd' -print0 | xargs -0 gdformat --check
 
       - name: gdlint
-        run: find scripts tests -name '*.gd' | xargs gdlint
+        run: find scripts tests -name '*.gd' -print0 | xargs -0 gdlint
 
       - name: codespell
         run: codespell
