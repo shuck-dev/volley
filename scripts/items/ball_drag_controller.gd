@@ -11,6 +11,7 @@ const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
+const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -66,6 +67,7 @@ var _builtin_targets: Array[DropTarget] = []
 
 ## Set after the player paddle spawns so the character target can find a live Area2D.
 var _character_drop_area: Area2D
+var _character_target: CharacterDropTargetScript = null
 
 
 func configure(
@@ -233,6 +235,30 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
+	_mouse_button_down = true
+	pickup_started.emit(item_key)
+	return true
+
+
+## Press on the mounted equipped art: spawn a HeldBody for the equipment and start a drag whose cancel restores EQUIPPED.
+func grab_equipped_from_character(item_key: String, press_position: Variant = null) -> bool:
+	if _drag_target() != null:
+		return false
+	if _item_manager == null or _item_manager.get_level(item_key) <= 0:
+		return false
+	if _item_manager.get_placement(item_key) != PlacementScript.EQUIPPED:
+		return false
+
+	var spawn_position: Vector2 = (
+		press_position if press_position is Vector2 else _cursor_position()
+	)
+	if not _spawn_held_body(item_key, spawn_position, false):
+		return false
+
+	# `live` + on_court so an expansion-ring timeout routes through deactivate (= unequip);
+	# Rack drops also call unequip via RackDropTarget. Non-accepting drops keep EQUIPPED intact.
+	_held_was_on_court = true
+	_held_origin = &"live"
 	_mouse_button_down = true
 	pickup_started.emit(item_key)
 	return true
@@ -724,6 +750,7 @@ func set_character_drop_target(area: Area2D) -> void:
 func _register_builtin_targets() -> void:
 	_drop_targets.clear()
 	_builtin_targets.clear()
+	_character_target = null
 
 	for target: DropTarget in [
 		_make_court_target(),
@@ -749,8 +776,12 @@ func _make_court_target() -> CourtDropTarget:
 func _make_character_target() -> DropTarget:
 	if _character_drop_area == null or timeout_controller == null:
 		return null
-	var character_target: DropTarget = CharacterDropTargetScript.new()
+	var character_target: CharacterDropTargetScript = CharacterDropTargetScript.new()
 	character_target.configure(_item_manager, _character_drop_area, timeout_controller)
+	# Track the live target so equipped-art presses route into grab_equipped_from_character.
+	_character_target = character_target
+	if not character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+		character_target.equipped_art_pressed.connect(_on_equipped_art_pressed)
 	return character_target
 
 
@@ -898,6 +929,8 @@ func _on_pickup_started(item_key: String) -> void:
 		rack.hide_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.hide_slot_for(item_key)
+	if _character_target != null:
+		_character_target.set_equipped_visual_visibility(item_key, false)
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
@@ -908,6 +941,14 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 		rack.reveal_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.reveal_slot_for(item_key)
+	if _character_target != null:
+		# Visual was freed by the EQUIPPED -> STORED signal handler on a successful unequip;
+		# this reveal targets the survive-and-snap-back case where placement is still EQUIPPED.
+		_character_target.set_equipped_visual_visibility(item_key, true)
+
+
+func _on_equipped_art_pressed(item_key: String) -> void:
+	grab_equipped_from_character(item_key)
 
 
 func _on_loose_body_freed(item_key: String) -> void:

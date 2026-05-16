@@ -13,6 +13,7 @@ size = Vector2(36, 180)
 size = Vector2(36, 180)
 
 [node name="PartnerPaddle" type="CharacterBody2D" unique_id=775348359 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker")]
+collision_mask = 3
 script = ExtResource("1_unscj")
 controller = NodePath("PartnerAIController")
 hit_sound = NodePath("HitSound")

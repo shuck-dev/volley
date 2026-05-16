@@ -3,6 +3,8 @@ extends DropTarget
 
 ## Accepts equipment-role items dropped on the main character during the equip pose; capacity gate lives in ItemManager.equip.
 
+signal equipped_art_pressed(item_key: String)
+
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
 const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
@@ -95,6 +97,47 @@ func _mount_equipped_visual(item_key: String) -> void:
 	var visual: Node = definition.art.instantiate()
 	visual.add_to_group(equipped_art_group(item_key))
 	anchor.add_child(visual)
+	_attach_press_area(visual, definition, item_key)
+
+
+# Sub-Area2D that emits equipped_art_pressed on left-click; layers off so it can't drive physics.
+func _attach_press_area(visual: Node, definition: ItemDefinition, item_key: String) -> void:
+	if definition.at_rest_shape == null:
+		return
+	if not visual is Node2D:
+		return
+	var press: Area2D = Area2D.new()
+	press.name = "EquippedPressArea"
+	press.collision_layer = 0
+	press.collision_mask = 0
+	press.monitoring = false
+	press.monitorable = false
+	press.input_pickable = true
+	var collision: CollisionShape2D = CollisionShape2D.new()
+	collision.shape = definition.at_rest_shape.duplicate()
+	press.add_child(collision)
+	visual.add_child(press)
+	press.input_event.connect(_on_equipped_press_input.bind(item_key))
+
+
+func _on_equipped_press_input(
+	_viewport: Node, event: InputEvent, _shape_idx: int, item_key: String
+) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mouse_button: InputEventMouseButton = event
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT or not mouse_button.pressed:
+		return
+	equipped_art_pressed.emit(item_key)
+
+
+## Toggles visibility of the mounted art; used during a drag-from-character gesture so the player sees one body, not two.
+func set_equipped_visual_visibility(item_key: String, visible_state: bool) -> void:
+	if _drop_area == null or not _drop_area.is_inside_tree():
+		return
+	for visual: Node in _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)):
+		if visual is CanvasItem:
+			(visual as CanvasItem).visible = visible_state
 
 
 func _free_equipped_visual(item_key: String) -> void:

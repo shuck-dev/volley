@@ -1,3 +1,4 @@
+# gdlint:ignore = max-public-methods
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
@@ -375,3 +376,100 @@ func test_rack_slot_press_triggers_drag_pickup() -> void:
 
 	assert_true(_drag.is_dragging(), "rack slot press should start the drag gesture")
 	assert_eq(_drag.get_held_key(), "ball_alpha")
+
+
+# --- grab_equipped_from_character (SH-405 reverse-equip path) -----------------------
+
+
+func _add_equipment_to_manager(key: String) -> ItemDefinition:
+	var equipment: ItemDefinition = ItemTestHelpersScript.make_ball_item(key)
+	equipment.role = &"equipment"
+	var typed_items: Array[ItemDefinition] = [equipment]
+	for existing in _manager.items:
+		typed_items.append(existing)
+	_manager.items.assign(typed_items)
+	_manager.take(key)
+	return equipment
+
+
+func _wire_character_drop_target() -> Area2D:
+	var timeout: TimeoutController = load("res://scripts/core/timeout_controller.gd").new()
+	add_child_autofree(timeout)
+	_drag.timeout_controller = timeout
+	_drag.gear_rack = _rack
+	_drag.gear_rack_drop_target = _drop_target
+	var character_area: Area2D = _make_drop_target(Vector2(0, 0), Vector2(40, 80))
+	_drag.set_character_drop_target(character_area)
+	return character_area
+
+
+func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> void:
+	_add_equipment_to_manager("gear_x")
+	_manager.state.item_placements["gear_x"] = Placement.EQUIPPED
+	_wire_character_drop_target()
+
+	var ok: bool = _drag.grab_equipped_from_character("gear_x", Vector2.ZERO)
+
+	assert_true(ok, "press on equipped art should start a drag")
+	assert_true(_drag.is_dragging())
+	assert_eq(_drag.get_held_key(), "gear_x")
+	assert_eq(
+		_manager.get_placement("gear_x"),
+		Placement.EQUIPPED,
+		"the item stays equipped throughout the gesture; only rack accept calls unequip",
+	)
+
+
+func test_grab_equipped_refuses_when_item_not_equipped() -> void:
+	_add_equipment_to_manager("gear_y")
+	# Item is owned but on the rack (STORED). Pressing the character has no source to grab from.
+	_wire_character_drop_target()
+
+	var ok: bool = _drag.grab_equipped_from_character("gear_y", Vector2.ZERO)
+
+	assert_false(ok, "no equipped source -> refuse the grab")
+	assert_false(_drag.is_dragging())
+
+
+func test_grab_equipped_release_on_rack_unequips() -> void:
+	_add_equipment_to_manager("gear_z")
+	_manager.state.item_placements["gear_z"] = Placement.EQUIPPED
+	_wire_character_drop_target()
+	_drag.grab_equipped_from_character("gear_z", Vector2.ZERO)
+
+	# Release over the gear rack drop target (mirrors _drop_target position).
+	var rack_position: Vector2 = _drop_target.global_position
+	# Move cursor past the commit-threshold first so the no-op gate doesn't swallow this.
+	_drag._track_cursor_motion(rack_position)
+	_drag._gesture_below_threshold = false
+
+	var released: bool = _drag.attempt_release(rack_position)
+
+	assert_true(released)
+	assert_eq(
+		_manager.get_placement("gear_z"),
+		Placement.STORED,
+		"drop on the rack must unequip the gear (placement returns to STORED)",
+	)
+	assert_false(_drag.is_dragging())
+
+
+func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void:
+	# Zero venue bounds disables the venue catch-all; every remaining built-in target refuses,
+	# so placement stays EQUIPPED (only rack accept calls unequip).
+	_add_equipment_to_manager("gear_w")
+	_manager.state.item_placements["gear_w"] = Placement.EQUIPPED
+	_drag.venue_bounds = Rect2()
+	_wire_character_drop_target()
+	_drag.grab_equipped_from_character("gear_w", Vector2.ZERO)
+	_drag._gesture_below_threshold = false
+
+	# Release inside the court (which rejects equipment-role) far from the gear rack.
+	var released: bool = _drag.attempt_release(Vector2.ZERO)
+
+	assert_false(released, "no target accepted -> gesture stays alive (release pending)")
+	assert_eq(
+		_manager.get_placement("gear_w"),
+		Placement.EQUIPPED,
+		"unaccepted release must NOT unequip the gear",
+	)

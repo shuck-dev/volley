@@ -400,6 +400,68 @@ func test_character_drop_target_without_drop_area_rejects() -> void:
 	assert_false(target.can_accept("anything", Vector2.ZERO))
 
 
+func test_equipped_visual_carries_press_area_for_regrab() -> void:
+	# Mounted art needs a sub-Area2D so the player can press it to unequip via drag.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_press")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_press")
+	manager.state.item_placements["gear_press"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+
+	var visual: Node = (
+		get_tree().get_nodes_in_group(CharacterDropTargetScript.equipped_art_group("gear_press"))[0]
+	)
+	var press: Area2D = visual.get_node_or_null("EquippedPressArea") as Area2D
+	assert_not_null(press, "mounted visual must carry an EquippedPressArea for regrab")
+	assert_true(press.input_pickable, "press area must accept mouse input")
+
+	watch_signals(character_target)
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	character_target._on_equipped_press_input(null, event, 0, "gear_press")
+	assert_signal_emit_count(character_target, "equipped_art_pressed", 1)
+
+
+func test_set_equipped_visual_visibility_toggles_the_mounted_art() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_vis")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_vis")
+	manager.state.item_placements["gear_vis"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+
+	character_target.set_equipped_visual_visibility("gear_vis", false)
+	var visual: CanvasItem = (
+		get_tree().get_nodes_in_group(CharacterDropTargetScript.equipped_art_group("gear_vis"))[0]
+		as CanvasItem
+	)
+	assert_false(visual.visible, "hide hook flips visibility off")
+	character_target.set_equipped_visual_visibility("gear_vis", true)
+	assert_true(visual.visible, "reveal hook flips visibility back on")
+
+
 # --- VenueDropTarget -----------------------------------------------------------------
 
 

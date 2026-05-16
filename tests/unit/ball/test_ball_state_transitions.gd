@@ -2,6 +2,8 @@
 extends GutTest
 
 const REST_DAMPING := 1.5
+const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
+const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
 var _ball: Ball
 var _config: CourtConfig
@@ -59,9 +61,8 @@ func test_enter_play_normal_sets_property_values() -> void:
 	assert_false(_ball.freeze)
 	assert_almost_eq(_ball.gravity_scale, 0.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, 0.0, 0.001)
-	assert_eq(_ball.collision_layer, 1)
-	# Mask 3 = layer 1 (floor/walls/paddle) + layer 2 (resting items).
-	assert_eq(_ball.collision_mask, 3)
+	assert_eq(_ball.collision_layer, PLAY_ACTIVE_CONFIG.collision_layer)
+	assert_eq(_ball.collision_mask, PLAY_ACTIVE_CONFIG.collision_mask)
 
 
 func test_enter_play_arc_when_above_bound() -> void:
@@ -93,8 +94,8 @@ func test_enter_out_rest_sets_property_values() -> void:
 	assert_false(_ball.freeze)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
 	assert_almost_eq(_ball.linear_damp, REST_DAMPING, 0.001)
-	assert_eq(_ball.collision_layer, 1)
-	assert_eq(_ball.collision_mask, 3)
+	assert_eq(_ball.collision_layer, OUT_REST_CONFIG.collision_layer)
+	assert_eq(_ball.collision_mask, OUT_REST_CONFIG.collision_mask)
 
 
 func test_enter_out_rest_emits_once() -> void:
@@ -150,8 +151,8 @@ func test_play_restores_collision_after_held() -> void:
 	_ball.enter_out_held()
 	_ball.global_position = Vector2.ZERO
 	_ball.enter_play()
-	assert_eq(_ball.collision_layer, 1)
-	assert_eq(_ball.collision_mask, 3)
+	assert_eq(_ball.collision_layer, PLAY_ACTIVE_CONFIG.collision_layer)
+	assert_eq(_ball.collision_mask, PLAY_ACTIVE_CONFIG.collision_mask)
 	assert_false(_ball.freeze)
 
 

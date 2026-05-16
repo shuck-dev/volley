@@ -91,3 +91,20 @@ func test_paddle_reaches_equip_pose_under_autoplay_pressure() -> void:
 		0.5,
 		"paddle must reach the equip pose even with autoplay drive() pressure each tick",
 	)
+
+
+func test_paddle_does_not_mask_balls_during_walk() -> void:
+	# Balls live on layer 2 so the paddle's timeout mask-out drops them from collision.
+	_controller.call_timeout()
+	var ball_layer: int = (
+		(preload("res://resources/ball/states/play_active.tres") as BallStateConfig).collision_layer
+	)
+	assert_eq(
+		ball_layer,
+		2,
+		"play_active config must keep balls on layer 2 so the walk passes through them"
+	)
+	assert_false(
+		_paddle.get_collision_mask_value(ball_layer),
+		"paddle must mask off the ball layer during the timeout walk",
+	)
