@@ -236,6 +236,79 @@ func test_character_drop_target_accept_equips_and_emits_no_refusal() -> void:
 	assert_signal_not_emitted(manager, "equip_refused")
 
 
+func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> void:
+	# Equip parents the art at the anchor; rack accept frees it via the equipped_art group.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_mount")
+	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_mount")
+
+	# Minimal paddle fixture: parent owns the drop area as a sibling of Sprite/AnkleAnchor.
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var sprite := Node2D.new()
+	sprite.name = "Sprite"
+	paddle.add_child(sprite)
+	var ankle_anchor := Node2D.new()
+	ankle_anchor.name = "AnkleAnchor"
+	sprite.add_child(ankle_anchor)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+	_force_at_equip_pose(timeout)
+
+	character_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
+	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_mount")
+	var mounted: Array = get_tree().get_nodes_in_group(group)
+	assert_eq(mounted.size(), 1, "equip mounts one visual under the anchor")
+	assert_eq(
+		(mounted[0] as Node).get_parent(), ankle_anchor, "visual parents at the resolved anchor"
+	)
+
+	var rack_area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
+	var rack_target: RackDropTarget = RackDropTargetScript.new()
+	rack_target.configure(manager, rack_area, &"equipment")
+	rack_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
+	await get_tree().process_frame
+	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "unequip frees the mounted visual")
+
+
+func test_character_drop_target_falls_back_to_paddle_when_anchor_path_empty() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_root")
+	# anchor_node_path left as the default empty NodePath.
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.friendship_point_balance = 10000
+	manager.take("gear_root")
+
+	var paddle := Node2D.new()
+	paddle.name = "PaddleFixture"
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var character_target: DropTarget = CharacterDropTargetScript.new()
+	character_target.configure(manager, area, timeout)
+	_force_at_equip_pose(timeout)
+
+	character_target.accept("gear_root", Vector2.ZERO, Vector2.ZERO)
+	var mounted: Array = get_tree().get_nodes_in_group(
+		CharacterDropTargetScript.equipped_art_group("gear_root")
+	)
+	assert_eq(mounted.size(), 1)
+	assert_eq(
+		(mounted[0] as Node).get_parent(), paddle, "empty anchor path falls back to paddle root"
+	)
+
+
 func test_character_drop_target_without_drop_area_rejects() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var timeout: TimeoutController = TimeoutControllerScript.new()

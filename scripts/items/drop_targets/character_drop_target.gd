@@ -3,6 +3,8 @@ extends DropTarget
 
 ## Accepts equipment-role items dropped on the main character during the equip pose; capacity gate lives in ItemManager.equip.
 
+const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
+
 var _item_manager: Node
 var _drop_area: Area2D
 var _timeout_controller: TimeoutController
@@ -34,7 +36,31 @@ func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) ->
 	if _item_manager == null:
 		return
 	# equip emits equip_refused on capacity races; no-op on failure so the held token stays put.
-	_item_manager.equip(item_key)
+	if not _item_manager.equip(item_key):
+		return
+	_mount_equipped_visual(item_key)
+
+
+# Group lookup keeps the visual discoverable by RackDropTarget without state on either target.
+static func equipped_art_group(item_key: String) -> StringName:
+	return StringName(_EQUIPPED_ART_GROUP_PREFIX + item_key)
+
+
+func _mount_equipped_visual(item_key: String) -> void:
+	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
+	if definition == null or definition.art == null:
+		return
+	var paddle: Node = _drop_area.get_parent()
+	if paddle == null:
+		return
+	var anchor: Node = paddle
+	if not definition.anchor_node_path.is_empty():
+		var resolved: Node = paddle.get_node_or_null(definition.anchor_node_path)
+		if resolved != null:
+			anchor = resolved
+	var visual: Node = definition.art.instantiate()
+	visual.add_to_group(equipped_art_group(item_key))
+	anchor.add_child(visual)
 
 
 func _is_equipment_role(item_key: String) -> bool:
