@@ -22,6 +22,10 @@ Volley! is developed in the open and contributions are warmly welcome, whether t
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to pick up a ticket, run the project, and submit your work, and [`designs/process/ticket-writing.md`](designs/process/ticket-writing.md) for how tickets are structured.
 
+## How AI is used
+
+Volley! is developed with an AI orchestration pipeline (Claude Code and a swarm of specialist sub-agents) folded into the open-development practice. The maintainer signs off every commit, AI does not author canon or art, and merge decisions stay human. See [AI.md](AI.md) for the full picture, and [The Case for Open Development](designs/research/the-case-for-open-development.md) for why building in the open is the bigger move underneath this one.
+
 ## Security
 
 Found a security issue? See [SECURITY.md](SECURITY.md) for how to report it privately.
