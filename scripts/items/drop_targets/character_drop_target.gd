@@ -61,16 +61,11 @@ func _hydrate_equipped_visuals() -> void:
 	if _item_manager == null:
 		return
 	for key: String in _item_manager.state.item_placements.keys():
-		if int(_item_manager.state.item_placements[key]) != PlacementScript.EQUIPPED:
-			continue
-		if not _is_equipment_role(key):
-			continue
-		_mount_equipped_visual(key)
+		if int(_item_manager.state.item_placements[key]) == PlacementScript.EQUIPPED:
+			_mount_equipped_visual(key)
 
 
 func _on_item_placement_changed(item_key: String, placement: int) -> void:
-	if not _is_equipment_role(item_key):
-		return
 	if placement == PlacementScript.EQUIPPED:
 		_mount_equipped_visual(item_key)
 	else:
@@ -78,6 +73,8 @@ func _on_item_placement_changed(item_key: String, placement: int) -> void:
 
 
 func _mount_equipped_visual(item_key: String) -> void:
+	if not _is_equipment_role(item_key):
+		return
 	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	if definition == null or definition.art == null:
 		return
