@@ -1,8 +1,6 @@
 # How AI is used on Volley!
 
-Volley! is built in the open. The repository is public, the design documents are public, the issue tracker is public, the conversations on every pull request are public. The thinking behind that posture, why a new indie studio benefits more from being seen at work than from running a marketing campaign in the dark, lives in the essay [The Case for Open Development](designs/research/the-case-for-open-development.md). Read it for the long view; this page covers one specific question the essay raises and that any reader of the repo deserves a clean answer to: where does AI sit in the project, what does it do, and what does it not do.
-
-The short version. AI is a tool the maintainer uses to write code, generate drafts of internal documentation, and run reviews. It does not author the world, the art, the music, the public voice, or the merge decision. Every change it produces is signed off by a person under the Developer Certificate of Origin, and the history is honest about which agent type produced which commit. The rest of this page is the detail.
+This page is for anyone landing on the repo and wanting to know where AI sits in the project: what it does, what it does not do, and how that lines up with our practice of building in the open. The longer view, on why this kind of practice matters for indie games in 2026, lives in the essay [The Case for Open Development](designs/research/the-case-for-open-development.md); this file just covers what is happening here, day to day.
 
 ## What AI does on the project
 
