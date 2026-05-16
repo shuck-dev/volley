@@ -11,10 +11,8 @@ const PADDLE_HALF_HEIGHT: float = 27.0
 
 # Large enough that descent (1200 px/s over ~440 px) and the horizontal walk
 # (200 px at 400 px/s) each finish in a single step; the controller clamps.
-# Descent uses the engine's physics delta (not VIRTUAL_DELTA) inside move_and_slide,
-# so the step count scales with `Engine.physics_ticks_per_second`; the suite hook bumps that.
 const VIRTUAL_DELTA: float = 0.6
-const MAX_STEPS: int = 64
+const MAX_STEPS: int = 32
 
 var _paddle: Paddle
 var _controller: TimeoutController
