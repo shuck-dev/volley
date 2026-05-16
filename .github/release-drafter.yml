@@ -49,12 +49,13 @@ autolabeler:
       - "/^fix(\\(.+\\))?:/i"
       - "/^fix(\\(.+\\))?!:/i"
       - "/^SH-\\d+ fix(\\(.+\\))?:/i"
-  # Conventional Commits ! suffix: any type with a bang lands the breaking label
-  # so the release-drafter groups it under Breaking Changes at the top.
+  # Conventional Commits ! suffix on a known type: lands the breaking label so
+  # release-drafter groups it under Breaking Changes at the top. Explicit type
+  # list avoids labelling `Merge!:` / `WIP!:` style titles as breaking.
   - label: "breaking"
     title:
-      - "/^[a-z]+(\\(.+\\))?!:/i"
-      - "/^SH-\\d+ [a-z]+(\\(.+\\))?!:/i"
+      - "/^(feat|fix|refactor|perf|chore|build|ci|docs|style|test|revert)(\\(.+\\))?!:/i"
+      - "/^SH-\\d+ (feat|fix|refactor|perf|chore|build|ci|docs|style|test|revert)(\\(.+\\))?!:/i"
 
 change-template: "- $TITLE (#$NUMBER) by @$AUTHOR"
 change-title-escapes: '\<*_&'
