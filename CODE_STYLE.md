@@ -23,7 +23,7 @@ if remaining <= step:
     return
 ```
 
-## `@export` over `@onready` for child nodes
+## `@export` for child nodes, not `@onready`
 
 Wire child node references through `@export var name: NodeType` (or `@export var name: NodePath`) rather than `@onready var name = $Path`. Exports survive scene renames, fail loudly when the wire breaks, and show the dependency in the inspector, all of which save time the next time someone reorganises a scene.
 
@@ -32,7 +32,7 @@ Wire child node references through `@export var name: NodeType` (or `@export var
 @export var collision: CollisionShape2D
 ```
 
-`@onready` still has its place: things the script genuinely owns, like a Timer it creates, or a value computed once at ready time.
+The project has no `@onready` in production code today, and you should not need to add one. If you find a case where `@export` genuinely cannot cover the dependency, flag it in the PR thread and we will sort it out together.
 
 ## Full words
 
