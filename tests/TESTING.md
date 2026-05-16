@@ -128,7 +128,6 @@ Integration tests are reserved for full player-loop completions (per `memory/fee
 | `test_miss_to_rest_to_regrab_preserves_identity.gd` | PLAY → OUT_REST → OUT_HELD → PLAY on a single Ball instance. | Drives the production drag-controller path. |
 | `test_shop_drag_drop.gd` | Real-input shop press-drag-release (SH-253), shop-to-court ball spawn (SH-320), shop-to-venue OUT_REST spawn. | All three drive real `_input` or the production drag-controller path. |
 | `test_shop_arrivals_inactive.gd` | Shop take → ball-rack arrival, shop take → gear-rack arrival. | `_take_from_shop` drives `pickup_area.input_event` + `ShopItem._input`. |
-| `test_speed_bar_flows.gd` | SH-288 multi-ball loop: two live balls tracked by the reconciler, bar reads highest live speed. | None; UI binding loop. |
 
 ## Known gaps
 

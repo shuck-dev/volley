@@ -3,11 +3,13 @@ extends GutTest
 # Verifies speed bar fill and marker calculations.
 # Bar shows progress from min_speed (empty) to max_speed (full).
 
+const SpeedBarScript: GDScript = preload("res://scripts/court/speed_bar.gd")
+
 var _bar: Control
 
 
 func before_each() -> void:
-	_bar = load("res://scripts/court/speed_bar.gd").new()
+	_bar = SpeedBarScript.new()
 	_bar.size = Vector2(200, 10)
 	add_child_autofree(_bar)
 
@@ -69,7 +71,8 @@ func test_no_overflow_fill_when_speed_below_permanent_max() -> void:
 
 
 # --- multi-ball highest-speed reading ---
-# Pins the highest-speed selection logic directly on the bar without a reconciler.
+# Drives the production `ball_added` connection: bar subscribes via its `ball_system`
+# in `_ready`, so a fresh bar must be wired here rather than reusing the before_each one.
 func test_bar_reads_highest_speed_when_slower_ball_emits() -> void:
 	var ball_script: GDScript = load("res://scripts/entities/ball/ball.gd")
 	var slow: Ball = ball_script.new()
@@ -78,16 +81,34 @@ func test_bar_reads_highest_speed_when_slower_ball_emits() -> void:
 	add_child_autofree(fast)
 	slow.gravity_scale = 0.0
 	fast.gravity_scale = 0.0
-	# Direct attach mirrors what BallReconciler.ball_added would do.
-	_bar._attach_ball(slow)
-	_bar._attach_ball(fast)
+
+	var ball_source: BallReconciler = BallSignalSource.new()
+	add_child_autofree(ball_source)
+	var bar: Control = SpeedBarScript.new()
+	bar.ball_system = ball_source
+	bar.size = Vector2(200, 10)
+	add_child_autofree(bar)
+
+	ball_source.ball_added.emit(slow)
+	ball_source.ball_added.emit(fast)
 	slow.speed = 500.0
 	fast.speed = 650.0
 
 	slow.speed_changed.emit(slow.speed, 400.0, 700.0)
 
-	assert_gt(_bar.current_speed, slow.speed, "bar tracks the fastest ball, not the emitter")
-	assert_eq(_bar.current_speed, fast.speed)
+	assert_gt(bar.current_speed, slow.speed, "bar tracks the fastest ball, not the emitter")
+	assert_eq(bar.current_speed, fast.speed)
+
+
+# Stand-in reconciler at unit scope: extends BallReconciler so the bar's typed
+# `ball_system` slot accepts it, but overrides `_ready` to skip the ItemManager
+# / SaveManager autoload coupling. The inherited `ball_added` signal is what
+# the bar's production `_ready` wiring connects to.
+class BallSignalSource:
+	extends BallReconciler
+
+	func _ready() -> void:
+		pass
 
 
 # --- helpers ---
