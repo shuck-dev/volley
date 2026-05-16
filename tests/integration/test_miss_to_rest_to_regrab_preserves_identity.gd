@@ -92,14 +92,13 @@ func test_miss_to_rest_to_regrab_preserves_identity() -> void:
 	assert_not_null(live, "precondition: an in-play Ball exists")
 	var live_id: int = live.get_instance_id()
 
-	# 1. Player drags the live ball to the venue floor (OUT_REST).
+	# 1. Player drags the live ball to the venue floor (OUT_REST). State transitions land
+	# inline through the drag controller's synchronous signals; no idle yield required.
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
-	await get_tree().process_frame
 	_drag._gesture_below_threshold = false
 	_seed_release_velocity(Vector2.ZERO, Vector2(10, 0))
 	var venue_floor := Vector2(1500, 100)
 	assert_true(_drag.attempt_release(venue_floor))
-	await get_tree().process_frame
 
 	var at_rest: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_eq(
@@ -110,7 +109,6 @@ func test_miss_to_rest_to_regrab_preserves_identity() -> void:
 
 	# 2. Player picks the at-rest ball back up via grab_live_ball (the OUT_REST grab path).
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
-	await get_tree().process_frame
 	var held: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_eq(
 		held.get_instance_id(), live_id, "registry still tracks the same Ball during OUT_HELD"
@@ -122,7 +120,6 @@ func test_miss_to_rest_to_regrab_preserves_identity() -> void:
 	_seed_release_velocity(Vector2(1500, 100), Vector2(1580, 100))
 	var court_point := Vector2(50, 25)
 	assert_true(_drag.attempt_release(court_point))
-	await get_tree().process_frame
 
 	var played: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(played, "Ball survives the venue → court round trip")

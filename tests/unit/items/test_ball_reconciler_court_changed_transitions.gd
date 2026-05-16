@@ -70,8 +70,8 @@ func test_flag_on_on_court_true_transitions_stored_ball_to_play() -> void:
 	assert_eq(stored.play_state, Ball.PlayState.STORED, "precondition: ball starts STORED")
 	var instance_id := stored.get_instance_id()
 
+	# court_changed is emitted synchronously by activate(); _on_court_changed runs inline.
 	_manager.activate("ball_alpha")
-	await get_tree().process_frame
 
 	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(ball, "registry entry survives state flip")
@@ -93,8 +93,8 @@ func test_flag_on_on_court_false_transitions_play_ball_to_stored() -> void:
 	var instance_id := ball_before.get_instance_id()
 	var removed_before: int = _ball_removed_count
 
+	# court_changed runs synchronously; the registry flip lands before deactivate() returns.
 	_manager.deactivate("ball_alpha")
-	await get_tree().process_frame
 
 	var ball_after: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(ball_after, "registry entry survives deactivate")
@@ -115,12 +115,10 @@ func test_flag_on_round_trip_stored_play_stored_keeps_single_instance() -> void:
 	var instance_id := _reconciler.get_ball_for_key("ball_alpha").get_instance_id()
 	var removed_baseline: int = _ball_removed_count
 
+	# Each court_changed flip runs inline; the registry assertions stay valid without yielding.
 	_manager.activate("ball_alpha")
-	await get_tree().process_frame
 	_manager.deactivate("ball_alpha")
-	await get_tree().process_frame
 	_manager.activate("ball_alpha")
-	await get_tree().process_frame
 
 	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(ball)
