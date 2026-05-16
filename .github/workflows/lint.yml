@@ -15,6 +15,7 @@ permissions:
 
 env:
   GITLEAKS_VERSION: "8.28.0"
+  ACTIONLINT_VERSION: "1.7.12"
 
 jobs:
   lint:
@@ -51,6 +52,20 @@ jobs:
           curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v${{ env.GITLEAKS_VERSION }}/gitleaks_${{ env.GITLEAKS_VERSION }}_linux_x64.tar.gz \
             | tar -xz -C ~/.local/bin gitleaks
 
+      - name: Cache actionlint
+        id: cache-actionlint
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.local/bin/actionlint
+          key: actionlint-${{ env.ACTIONLINT_VERSION }}
+
+      - name: Install actionlint
+        if: steps.cache-actionlint.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.local/bin
+          curl -sSfL https://github.com/rhysd/actionlint/releases/download/v${{ env.ACTIONLINT_VERSION }}/actionlint_${{ env.ACTIONLINT_VERSION }}_linux_amd64.tar.gz \
+            | tar -xz -C ~/.local/bin actionlint
+
       - name: gdformat
         run: find scripts tests -name '*.gd' | xargs gdformat --check
 
@@ -62,3 +77,6 @@ jobs:
 
       - name: gitleaks
         run: gitleaks detect --redact --verbose --no-banner
+
+      - name: actionlint
+        run: actionlint -color
