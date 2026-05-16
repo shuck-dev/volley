@@ -65,6 +65,24 @@ Full list of labels in [`designs/process/labels.md`](designs/process/labels.md).
 
 The GitHub issue thread is the right place. Decisions live there, future contributors can find them, and maintainers read everything. No question is too small.
 
+## Commit messages
+
+We use [Conventional Commits](https://www.conventionalcommits.org). The first line is `<type>: <subject>`, present tense, lowercase. Types in regular use: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `perf`.
+
+```
+feat: ascend back to the lane via physics after walking on
+```
+
+For breaking changes (save format wipe, public API rename, workflow input shift), suffix the type with `!`:
+
+```
+feat!: drop floor_y from TimeoutConfig; descent grounds on physics
+```
+
+The `!` is the autolabel signal that the change is breaking; readers see it in the squash-merge commit and in the changelog.
+
+Keep the subject under ~70 characters. If a body is needed, write it as one or two sentences explaining the why.
+
 ## Sign your commits (DCO)
 
 We use the [Developer Certificate of Origin](https://developercertificate.org) instead of a Contributor License Agreement. It is a lightweight way of saying "I wrote this, or I have the right to submit it under the project's license." Every commit needs a `Signed-off-by:` line, added automatically with:

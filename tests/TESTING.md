@@ -133,6 +133,21 @@ Every integration test that exercises a player-facing AC drives the real input h
 
 The physics dispatch path (`body_entered` -> `_on_body_entered` -> duck-typed method call) is not covered by automated tests. It requires real physics collisions and is intentionally left as a manual QA item; it's two lines that rarely change.
 
+## Test budget
+
+The full GUT suite is fast and we keep it that way. A new test case should not push the per-case average up. Concretely: at the time of writing the suite runs in roughly two seconds across ~700 tests, so each case averages about three milliseconds. If your new case takes noticeably longer than the existing average, the fixture is doing too much real-time work; switch to deterministic stepping (`controller._physics_process(virtual_delta)`, `tween.custom_step(...)`, manual `PhysicsServer2D.step`) instead of awaiting real frames.
+
+Report exact wall times when a change moves the suite. Quote `11.6s` not `~12s`, and give before and after when you have both numbers.
+
 ## CI
 
 Tests run on every push to non-main branches via `.github/workflows/test.yml`. The `logs/` directory must be created before running GUT (`mkdir -p logs`) to prevent a crash from GUT's file logger.
+
+CI fails the build on any of the following in GUT output:
+
+- A `WARNING`, `ERROR`, `SCRIPT ERROR`, `USER WARNING`, or `USER ERROR` line.
+- An orphan count (per-test `N Orphans` where `N > 0`) or exit-time `ObjectDB instances leaked at exit`.
+
+Fix new leaks inline; do not carry them forward. The two surfaces (per-test orphans and exit-time leaks) are independent; grepping one does not catch the other, so check both.
+
+The one known WARNING class that CI filters is Godot's cold-cache UID lookup, which fires on first-run `--import` even when the project is valid. The filter in the workflow's `Leak gate` step matches the warning pattern and the paired `Failed loading resource` ERROR. Tracked upstream as [godot#101677](https://github.com/godotengine/godot/issues/101677), [godot#115205](https://github.com/godotengine/godot/issues/115205), [godot#109636](https://github.com/godotengine/godot/issues/109636), and [godot#100228](https://github.com/godotengine/godot/issues/100228). The workaround is to declare autoloads with `res://` paths, not `uid://` paths, so the import order does not depend on the cache.

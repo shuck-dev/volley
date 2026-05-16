@@ -241,6 +241,25 @@ So that [downstream decision that depends on the answer]
 - [ ] No regression in related systems
 ```
 
+### Worked example
+
+Filled-in user story so the shape reads in context. Title under 50 characters; body under twelve lines; acceptance criteria are player-observable, not implementation-shaped.
+
+> **Title:** Equip flow with kit cap
+>
+> As the player,
+> I want to drag gear onto the character during the timeout window.
+> So that I can shape my kit between rallies.
+>
+> **Acceptance Criteria:**
+>
+> - [ ] During the equip window, dragging a gear item onto the character equips it.
+> - [ ] When the kit is full, the character refuses the drop and the item bounces back to where the drag started.
+> - [ ] Dragging an equipped item back to the rack unequips it and frees its slot.
+> - [ ] Outside the equip window, the character does not accept or react to dropped gear.
+
+The acceptance criteria name what the player sees, not the classes, signals, or fields that implement them. A reviewer (or a contributor verifying their own work) can run the game and check each line by playing.
+
 ---
 
 ## Writing for open-source contributors
