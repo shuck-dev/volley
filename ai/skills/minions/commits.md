@@ -22,7 +22,7 @@ EOF
 
 - `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks challenges without it.
 - **Bare Conventional Commit subject.** `<type>: <subject>`. No `[Codename]` prefix or suffix, no `SH-N` prefix, no `(sh-N)` scope. Codename lives in the `Agent-Role` trailer and in the dispatch description, not in the subject.
-- `Agent-Role: <role>` trailer, exactly once. For Gru: `Agent-Role: dispatcher`. The role names the agent type (gdscript-implementer, code-quality, general-purpose, etc.).
+- `Agent-Role: <role>` trailer, exactly once. The role names the agent type (gdscript-implementer, code-quality, general-purpose, etc.). For Gru, the role is `dispatcher`; the subject still follows the bare Conventional Commit shape (e.g. `chore: bump auto-merge threshold`), no `[Gru]` prefix.
 - No `Co-Authored-By:` lines. Volley's swarm uses Agent-Role for attribution; Co-Authored-By creates double counting.
 
 ## What goes in the subject
