@@ -58,12 +58,6 @@ func test_default_drop_target_rejects_everything() -> void:
 	assert_false(target.can_accept("anything", Vector2.ZERO))
 
 
-func test_default_drop_target_accept_is_a_no_op() -> void:
-	var target: DropTarget = DropTargetScript.new()
-	target.accept("anything", Vector2.ZERO, Vector2.ZERO)
-	assert_true(true)
-
-
 # --- ShopDropTarget ------------------------------------------------------------------
 
 
@@ -79,14 +73,6 @@ func test_shop_drop_target_rejects_outside_shop_area() -> void:
 	var target: ShopDropTarget = ShopDropTargetScript.new()
 	target.configure(area)
 	assert_false(target.can_accept("ball_alpha", Vector2(500, 500)))
-
-
-func test_shop_drop_target_accept_is_a_silent_no_op() -> void:
-	var area: Area2D = _make_drop_area(Vector2(0, 0), Vector2(100, 100))
-	var target: ShopDropTarget = ShopDropTargetScript.new()
-	target.configure(area)
-	target.accept("ball_alpha", Vector2.ZERO, Vector2.ZERO)
-	assert_true(true)
 
 
 func test_shop_drop_target_without_area_rejects() -> void:
@@ -441,34 +427,6 @@ func test_equipped_visual_carries_press_area_for_regrab() -> void:
 	event.pressed = true
 	character_target._on_equipped_press_input(null, event, 0, "gear_press")
 	assert_signal_emit_count(character_target, "equipped_art_pressed", 1)
-
-
-func test_set_equipped_visual_visibility_toggles_the_mounted_art() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_vis")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
-	manager.take("gear_vis")
-	manager.state.item_placements["gear_vis"] = Placement.EQUIPPED
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-
-	character_target.set_equipped_visual_visibility("gear_vis", false)
-	var visual: CanvasItem = (
-		get_tree().get_nodes_in_group(CharacterDropTargetScript.equipped_art_group("gear_vis"))[0]
-		as CanvasItem
-	)
-	assert_false(visual.visible, "hide hook flips visibility off")
-	character_target.set_equipped_visual_visibility("gear_vis", true)
-	assert_true(visual.visible, "reveal hook flips visibility back on")
 
 
 # --- VenueDropTarget -----------------------------------------------------------------

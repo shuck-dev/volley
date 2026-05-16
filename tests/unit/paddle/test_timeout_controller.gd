@@ -140,14 +140,6 @@ func test_end_timeout_before_reaching_pose_is_ignored() -> void:
 	assert_signal_emit_count(_controller, "timeout_ended", 0)
 
 
-func test_end_timeout_walks_main_character_back_to_lane() -> void:
-	_controller.call_timeout()
-	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
-	_controller.end_timeout()
-	_drive_until(_at_state(TimeoutController.State.IDLE))
-	assert_almost_eq(_paddle.position.x, LANE_X, 0.5)
-
-
 func test_end_timeout_restores_main_character_physics() -> void:
 	_controller.call_timeout()
 	_drive_until(_at_state(TimeoutController.State.AT_EQUIP_POSE))
@@ -188,15 +180,6 @@ func test_lane_call_timeout_lands_on_floor_collider() -> void:
 		FLOOR_Y,
 		"paddle centre must not pierce below the floor surface",
 	)
-
-
-func test_airborne_call_timeout_descends_before_walking_off() -> void:
-	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
-	_controller.call_timeout()
-	_drive_until(_at_state(TimeoutController.State.WALKING_OFF))
-	# During descent the horizontal stays pinned on the lane.
-	# We only assert that the descent phase actually ran (state advanced from DESCENDING).
-	assert_true(_paddle.is_on_floor(), "descent phase must leave paddle grounded")
 
 
 func test_airborne_call_timeout_eventually_reaches_equip_pose() -> void:

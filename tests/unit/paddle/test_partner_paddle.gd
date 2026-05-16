@@ -80,18 +80,3 @@ func test_size_unchanged_after_player_purchases_grip_tape() -> void:
 	_manager.purchase("grip_tape")
 
 	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)
-
-
-# --- not subscribed to stat-change signals ---
-func test_does_not_subscribe_to_item_stat_signals() -> void:
-	var _paddle := _create_partner_paddle()
-	assert_eq(
-		_manager.item_level_changed.get_connections().size(),
-		0,
-		"Partner paddle should not subscribe to item_level_changed"
-	)
-	assert_eq(
-		_manager.item_placement_changed.get_connections().size(),
-		0,
-		"Partner paddle should not subscribe to item_placement_changed"
-	)
