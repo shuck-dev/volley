@@ -42,3 +42,7 @@ Set `timeout` on every Bash call per `ai/skills/minions/bash-timeouts.md`. Volle
 ## Style discipline
 
 Read `ai/skills/minions/implementer-nits.md` before writing or accepting GDScript. Blank-line-before-`if`, comment policy, naming, exports, resources, class-name async cache. The rules reviewers flag round after round, consolidated.
+
+## Test efficiency
+
+Read `ai/skills/minions/test-efficiency.md` before writing any case that touches time, signals, or frames. Three free wins (drive the system directly, lift immutable fixtures to `before_all`, wait on signals not the clock), one foot-gun (no `autofree` in `before_all`), one tautology guard.
