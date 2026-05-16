@@ -26,7 +26,7 @@ When `can_accept` returns false, the character's body acts as a wall to the held
 
 Capacity refusal is signalled by `ItemManager.equip_refused`, not by the drop target. The character scene (or any future animation listener) connects to `ItemManager`; the drop target stays silent. Other rejections (wrong role, wrong window) emit nothing; the held token already communicates the projection failure.
 
-Each gear `ItemDefinition` declares an `anchor_node_path: NodePath` naming a child `Node2D` on the character sprite where its visual mounts. This is presentation only, not capacity; the paddle has no anatomy, but ankle weights still want to sit at the foot and grip tape at the handle so the silhouette reads. Empty path falls back to the sprite root.
+On equip the gear's `art` PackedScene mounts as a child of the paddle root (or a non-stat-scaled sibling), never under the stat-scaled `Sprite`. The mount is at the paddle root's origin; each gear scene authors its own visual offset internally. No per-item `anchor_node_path`, no per-character anchor nodes; per-item visual placement is per-item knowledge, kept in the gear's own scene file alongside the art.
 
 ## ItemManager surface
 
