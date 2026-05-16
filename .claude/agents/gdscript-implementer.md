@@ -39,16 +39,16 @@ Commit shape per `commits.md`:
 
 ```
 git commit -s -m "$(cat <<'MSG'
-SH-N type: subject in the imperative mood [Codename]
+<type>: <subject in the imperative mood>
 
 Short body if needed.
 
-Agent-Role: implementer
+Agent-Role: gdscript-implementer
 MSG
 )"
 ```
 
-`-s` for the DCO sign-off. Subject is `SH-N type: subject [Codename]`; the bare ticket prefix lefthook prepends, the bracketed codename comes from your dispatch brief. `Agent-Role: implementer` trailer exactly once. No `Co-Authored-By` lines. No amends. No force pushes. No `--no-verify`. If a hook fails, fix the underlying issue and add a new commit.
+Bare Conventional Commit subject. No `SH-N` prefix, no `[Codename]` suffix; the codename lives in the dispatch description and in the `Agent-Role` trailer (not in the subject). `-s` for the DCO sign-off. `Agent-Role: gdscript-implementer` trailer exactly once. No `Co-Authored-By` lines. No amends. No force pushes. No `--no-verify`. If a hook fails, fix the underlying issue and add a new commit.
 
 ## Godot tool discipline
 

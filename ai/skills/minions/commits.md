@@ -1,17 +1,17 @@
 ---
 name: commits
-description: Commit shape every code-writing minion follows. DCO sign-off, role tag in the subject, Agent-Role trailer, no Co-Authored-By. Read before your first commit on a worktree.
+description: Commit shape every code-writing minion follows. Bare conventional commit subject, DCO sign-off, Agent-Role trailer, no Co-Authored-By, no codename in subject. Read before your first commit on a worktree.
 ---
 
 # Agent commit shape
 
-Every code-writing minion commits like a team member, not a tool.
+Every code-writing minion commits like a team member, not a tool. The repo is open source; the subject is a public surface and reads as a normal Conventional Commit.
 
 ## The shape
 
 ```
 git commit -s -m "$(cat <<'EOF'
-[<Codename>/<role>] <subject in the imperative mood>
+<type>: <subject in the imperative mood>
 
 <short body if needed; usually one or two sentences>
 
@@ -21,16 +21,19 @@ EOF
 ```
 
 - `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks challenges without it.
-- Subject prefix `[<Codename>/<role>]` for minions: codename (Feldspar, Hornfels, Trillian, etc.) plus role (general-purpose, code-quality, etc.). Codename rotates per work unit; role is stable to the agent type.
-- Subject prefix for Gru: `[Gru]` only. Gru is the singleton dispatcher; codename and role are the same and the slash is redundant.
-- `Agent-Role: <role>` trailer, exactly once. For Gru: `Agent-Role: dispatcher`.
+- **Bare Conventional Commit subject.** `<type>: <subject>`. No `[Codename]` prefix or suffix, no `SH-N` prefix, no `(sh-N)` scope. Codename lives in the `Agent-Role` trailer and in the dispatch description, not in the subject.
+- `Agent-Role: <role>` trailer, exactly once. The role names the agent type (gdscript-implementer, code-quality, general-purpose, etc.). For Gru, the role is `dispatcher`; the subject still follows the bare Conventional Commit shape (e.g. `chore: bump auto-merge threshold`), no `[Gru]` prefix.
 - No `Co-Authored-By:` lines. Volley's swarm uses Agent-Role for attribution; Co-Authored-By creates double counting.
 
 ## What goes in the subject
 
-Imperative mood, present tense. No file paths, no symptom descriptions, no issue numbers (Linear autolinks the branch name). Conventional-commit prefixes are fine but not required: `[Feldspar/general-purpose] feat: fast timeout tests via custom_step`.
+Imperative mood, present tense, lowercase. Conventional Commit type required: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`, `perf`. No file paths, no symptom descriptions, no issue numbers in the subject. Example: `feat: fast timeout tests via custom_step`.
 
-For breaking changes (save wipes, API renames, workflow-input shifts), use `feat!:` or `fix!:` on the subject. Autolabel aliases the bang.
+For breaking changes (save wipes, API renames, workflow-input shifts), use `feat!:` or `fix!:` on the subject. Autolabel maps the bang to the `breaking` label and release-drafter groups it under Breaking Changes.
+
+## Issue references
+
+**GitHub issue IDs (`#N`) are the primary surface.** The repo is open source; readers of commits and PRs follow GitHub links, not Linear. Reference the GitHub issue in the commit body or PR body with `closes #123` (or `fixes`, `resolves`) so GitHub links them and closes the issue on merge. Linear IDs (`SH-N`) are private and never appear in commit messages or PR bodies. The branch name carries the Linear context for internal tooling; that is enough.
 
 ## Branch discipline
 
