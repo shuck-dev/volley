@@ -1,0 +1,81 @@
+extends GutTest
+
+# Verifies ball speed escalates correctly across a growing rally.
+# Uses real instances wired via signals, no private method calls.
+
+var _game: Node2D
+var _ball: Ball
+var _paddle: Paddle
+var _manager: Node
+
+
+func before_each() -> void:
+	_manager = load("res://scripts/items/item_manager.gd").new()
+	_manager.state = ItemState.new()
+	_manager.economy = EconomyState.new()
+	_manager._effect_manager = EffectManager.new()
+	(
+		_manager
+		. items
+		. assign(
+			[
+				preload("res://resources/items/training_ball.tres"),
+				preload("res://resources/items/court_lines.tres"),
+			]
+		)
+	)
+	add_child_autofree(_manager)
+
+	_ball = load("res://scripts/entities/ball/ball.gd").new()
+	_ball._item_manager = _manager
+
+	_paddle = load("res://scripts/entities/paddle.gd").new()
+	var sound := AudioStreamPlayer.new()
+	_paddle.add_child(sound)
+	_paddle.hit_sound = sound
+	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
+	_paddle.tracker = tracker
+	_paddle.add_child(tracker)
+
+	var autoplay_controller_stub: Node = load("res://tests/stubs/autoplay_controller_stub.gd").new()
+	add_child_autofree(autoplay_controller_stub)
+
+	_game = load("res://scripts/core/court.gd").new()
+	_game.ball = _ball
+	_game.player_paddle = _paddle
+	_game.autoplay_controller = autoplay_controller_stub
+	_game._progression_config = ProgressionConfig.new()
+	_game._item_manager = _manager
+	add_child_autofree(_ball)
+	add_child_autofree(_paddle)
+	add_child_autofree(_game)
+	_ball.gravity_scale = 0.0
+	_ball.linear_velocity = Vector2(
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+	)
+
+
+func test_ball_speed_increases_across_three_hits() -> void:
+	# Per-ball ownership: paddle collisions drive the ball's own speed via _on_body_entered.
+	_ball._on_body_entered(_paddle)
+	_paddle.tracker._process(HitTracker.COOLDOWN)
+	_ball._on_body_entered(_paddle)
+	_paddle.tracker._process(HitTracker.COOLDOWN)
+	_ball._on_body_entered(_paddle)
+	var effective_max: float = (
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
+	)
+	var expected := minf(
+		(
+			Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+			+ (
+				3.0
+				* Stats.resolve(
+					GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+				)
+			)
+		),
+		effective_max
+	)
+	assert_almost_eq(_ball.speed, expected, 0.01)
