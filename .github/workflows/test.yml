@@ -104,10 +104,10 @@ jobs:
       - name: Coverage Report
         if: always()
         run: |
-          echo '## Run Tests Summary' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          grep -A 100 'Coverage' test_output.txt | sed 's/\x1b\[[0-9;]*m//g' >> $GITHUB_STEP_SUMMARY || echo 'No coverage output found' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo '## Run Tests Summary' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -A 100 'Coverage' test_output.txt | sed 's/\x1b\[[0-9;]*m//g' >> "$GITHUB_STEP_SUMMARY" || echo 'No coverage output found' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Coverage
         if: always()

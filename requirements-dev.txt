@@ -1,3 +1,2 @@
-gdtoolkit==4.*
-codespell
+-r requirements-lint.txt
 pip-audit==2.*
