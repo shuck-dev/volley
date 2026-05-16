@@ -92,29 +92,12 @@ jobs:
             ' "$src" > "$dest"
           }
 
-          # Title Case a hyphen-separated name with a small-word filter.
-          # "title-is-this" -> "Title-is-This"; "01-prototype" -> "01-Prototype";
-          # "narrative-discipline" -> "Narrative-Discipline".
-          # First and last words always capped (when the leading char is a lowercase
-          # letter); middle small words ("a", "an", "the", "and", "or", "but", "of",
-          # "in", "on", "to", "by", "at", "for", "with", "is", "as", "if", "vs",
-          # "from", "into") stay lowercase.
+          # Title-case helper extracted to .github/scripts/title_case.py because
+          # a multi-line python heredoc inside `run: |` breaks the YAML block
+          # scalar indent (python top-level needs column 0; YAML block scalar
+          # needs indent >= run-block).
           title_case() {
-            python3 -c '
-import sys
-small = {"a","an","the","and","or","but","of","in","on","to","by","at","for","with","is","as","if","vs","from","into"}
-parts = sys.argv[1].split("-")
-out = []
-for i, p in enumerate(parts):
-    if not p:
-        out.append(p)
-        continue
-    if i in (0, len(parts)-1) or p.lower() not in small:
-        out.append(p[0].upper() + p[1:] if p[0].isalpha() and p[0].islower() else p)
-    else:
-        out.append(p.lower())
-print("-".join(out))
-' "$1"
+            python3 "${GITHUB_WORKSPACE}/.github/scripts/title_case.py" "$1"
           }
 
           for src in designs/**/*.md; do
