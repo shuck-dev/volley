@@ -1,11 +1,13 @@
 ---
 name: debrief
-description: How to wrap a mission, swarm, ride, or session. Read on "debrief", "mission complete", "retro", "wrap-up", "done with X". Six-step checklist; each step points at the memory file that owns the rule body.
+description: Scrum-style process retrospective on a mission, swarm, ride, or session. Looks back at blockers, improvements, and the action items that come out of those. NOT a report on what shipped. Read on "debrief", "mission complete", "retro", "wrap-up", "done with X".
 ---
 
 # Debrief
 
-A debrief is the closing pulse on a chunk of work. The discipline lives across five memory files; this skill is the assembly point so the orchestrator hits all five at once instead of one-at-a-time. Each step below names the action; the load-bearing detail lives in the linked memory.
+A debrief is a retrospective on **how the work happened**: the process, the blockers, the improvements for next time. It is not a report on **what shipped**. What shipped lives in the PR list, the commit history, the milestone close note. The debrief leaves that alone.
+
+The shape is scrum-style. Open with blockers, name the improvements they earn, route the action items, list flags, post. The discipline lives across six memory files; this skill is the assembly point so the orchestrator hits all six at once.
 
 ## Checklist
 
@@ -16,11 +18,12 @@ A debrief is the closing pulse on a chunk of work. The discipline lives across f
        feedback_debrief_source_linear_and_devils
 [ ] 3. Fold drafts. The orchestrator does not write the draft itself.
        feedback_debrief_source_linear_and_devils
-[ ] 4. Post via mcp__linear__save_status_update on the relevant project.
+[ ] 4. Frame the body per feedback_debrief_is_process_retro_not_status_report.
+[ ] 5. Post via mcp__linear__save_status_update on the relevant project.
        feedback_debrief_source_linear_and_devils, feedback_swarm_retro
-[ ] 5. Route every action item Filed / Memory-only / Parked.
+[ ] 6. Route every action item Filed / Memory-only / Parked.
        feedback_debrief_action_items
-[ ] 6. List every flag added during the mission, or state "none".
+[ ] 7. List every flag added during the mission, or state "none".
        feedback_flags_surface_or_skip
 ```
 
