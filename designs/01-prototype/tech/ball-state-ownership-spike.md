@@ -8,7 +8,7 @@
 
 Two state fields describe ball role:
 
-- `Ball.play_state` (`scripts/entities/ball/ball.gd:36`): `STORED`, `PLAY_NORMAL`, `PLAY_ARC`, `OUT_REST`, `OUT_HELD`. Funnelled through `set_play_state`; `enter_*` helpers flip physics flags and call the funnel.
+- `Ball.play_state` (`scripts/entities/ball/ball.gd:36`): taxonomy canonical in `02-ball-lifecycle.md`. Funnelled through `set_play_state`; `enter_*` helpers flip physics flags and call the funnel.
 - `ItemManager.state.item_placements` (`scripts/items/item_manager.gd:335`, via `_set_item_placement`): `STORED`, `EQUIPPED`, `ON_COURT`, with a `LOOSE_IN_VENUE` overlay in `state.loose_in_venue`. Persisted in `ItemState`.
 
 Both fields carry an idea of "where this ball is in the run." They are written from different call sites and rarely cross-check each other. Concrete drift surfaces:
@@ -17,7 +17,7 @@ Both fields carry an idea of "where this ball is in the run." They are written f
 - `ItemManager._set_item_placement` emits `court_changed`; `BallReconciler._on_court_changed` calls `enter_stored` on deactivate, but a `LOOSE_IN_VENUE` write does not change `play_state` at all; the ball is still whatever the drag controller most recently set.
 - Save-restore reads `ball_play_states` (from `Ball.play_state`) and `item_placements` independently; nothing reconciles them on load.
 
-`BallReconciler._balls_by_key` is the third surface and is correct as-is: membership means "the ball exists." Confirmed; not in scope.
+`BallReconciler._balls_by_key` is the third surface and stays as-is; see `02-ball-lifecycle.md` and memory `project_ball_tracker_membership_is_existence`.
 
 ## Options considered
 
@@ -97,15 +97,15 @@ Four independently shippable tickets. None of them depend on a previous one havi
 1. **Add `ItemManager.mark_held` and `clear_held`**. New overlay sibling to `mark_loose_in_venue`. Drag controller calls `mark_held` at `enter_out_held` time and `clear_held` on release. Ball's `play_state` write stays where it is; ItemManager now also knows the ball is held. Closes the first drift case before any reader migration.
 2. **Drive Ball state from ItemManager.item_placement_changed**. BallReconciler listens to `item_placement_changed` and routes to `Ball.enter_*` (extending `_on_court_changed`). Existing `enter_*` direct calls from drag controller stay for the same release; both paths converge on the same Ball. Idempotency on `set_play_state` makes the double-write safe.
 3. **Collapse `ball_play_states` save field into placement + position**. SaveManager stops pulling `ball_play_states`; `_apply_saved_play_state` reconstructs from `item_placements` and the `LOOSE_IN_VENUE` overlay. Save format bumps for the field removal (per `03-save-versioning.md`), or the field stays serialised and ignored on load until the next planned wipe.
-4. **Remove direct `enter_*` calls from BallDragController; rename `play_state` to `physics_state`**. Drag controller writes `_set_item_placement` (via `equip`/`unequip`/`mark_held`/`clear_held`); the reconciler-driven path becomes the only writer of the Ball field. `set_play_state` goes private. Ball's field renames `play_state -> physics_state` in the same ticket; no scope mixing because both moves close the same loop (the field stops being a role surface).
+4. **Remove direct `enter_*` calls from BallDragController; rename `play_state` to `physics_state`; sync `02-ball-lifecycle.md`**. Drag controller writes `_set_item_placement` (via `equip`/`unequip`/`mark_held`/`clear_held`); the reconciler-driven path becomes the only writer of the Ball field. `set_play_state` goes private. Ball's field renames `play_state -> physics_state` in the same ticket; the lifecycle doc rewrites to match (prose to `HELD`, enum references to `physics_state`). No scope mixing: all three moves close the same loop (the field stops being a role surface; the doc stops naming the retired surface).
 
 Each ticket lands as one slice, leaves the system in a consistent state, and can sit at the top of `Ready` independently. Order of merge does not matter; later tickets just see fewer redundant call sites.
 
 ## Names
 
 - **`Ball.play_state` becomes `Ball.physics_state`.** The residual job is `PLAY_NORMAL` vs `PLAY_ARC` plus the integration-frame physics flags; `physics_state` reads true to that job and stops the field from competing with `item_placements` as a role surface. Rename lands with the final migration ticket (ticket 4 below) once `set_play_state` goes private.
-- **`HELD` is the canonical overlay for held-mid-gesture.** Sibling to `LOOSE_IN_VENUE`, not a replacement. `LOOSE_IN_VENUE` keeps the floor-deposit meaning. `HELD` covers the carry-state the drag controller currently expresses via `Ball.play_state = OUT_HELD`. Ticket 1 below introduces `ItemManager.mark_held(item_key, world_position)` and the matching clear path.
-- These names are the spike's deliverable and ride into the migration tickets. Implementation challenges may not rebikeshed them.
+- **`HELD` is the canonical name for held-mid-gesture, on ItemManager.** `Ball.play_state = OUT_HELD` is the old name for the same state. The lifecycle doc Mermaid already uses `HELD`; this spike makes it the canonical noun and lands it on the canonical owner. The Ball enum value retires when `play_state` retires (ticket 4). `LOOSE_IN_VENUE` stays as its own overlay for floor-deposit.
+- These names ride into the migration tickets. Implementation challenges inherit them; they do not rename them.
 
 ## Out of scope
 
