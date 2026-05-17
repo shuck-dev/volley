@@ -18,9 +18,7 @@ The shape is scrum-style. Open with blockers, name the improvements they earn, r
        feedback_debrief_source_linear_and_devils
 [ ] 3. Fold drafts. The orchestrator does not write the draft itself.
        feedback_debrief_source_linear_and_devils
-[ ] 4. Frame the body as process retro: Blockers, Improvements, Action items, Flags.
-       Strip any "what shipped" headline; that is a status report, not a debrief.
-       feedback_debrief_is_process_retro_not_status_report
+[ ] 4. Frame the body per feedback_debrief_is_process_retro_not_status_report.
 [ ] 5. Post via mcp__linear__save_status_update on the relevant project.
        feedback_debrief_source_linear_and_devils, feedback_swarm_retro
 [ ] 6. Route every action item Filed / Memory-only / Parked.
@@ -28,16 +26,6 @@ The shape is scrum-style. Open with blockers, name the improvements they earn, r
 [ ] 7. List every flag added during the mission, or state "none".
        feedback_flags_surface_or_skip
 ```
-
-## Body sections
-
-A debrief surfaces the two or three load-bearing levers the session earned, not an enumeration of every blocker, every memory rule, every reviewer round. Pick the meta-shifts that compound. Implementation detail lives in the memory files the levers cite.
-
-- **Levers.** Two or three patterns the session revealed. Each one names the shift in how we work and points at the memory rule that captures it. Not "we added eight rules"; "we learned to read the body, not the label."
-- **Action items.** Process levers, not deliverable follow-ups: rules, skills, hooks, conventions, audits. Filed / Memory-only / Parked per `feedback_debrief_action_items`.
-- **Flags.** Every flag added or "none added", per `feedback_flags_surface_or_skip`.
-
-What does NOT belong: a "what shipped" headline, a PR list narrating deliverables, a milestone summary, an exhaustive blocker list, a complete improvements catalogue. A debrief that enumerates is a punch list wearing a retro label.
 
 ## Triggers
 
