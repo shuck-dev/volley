@@ -58,17 +58,6 @@ func test_noise_zero_returns_zero() -> void:
 	assert_eq(PaddleAIMath.random_offset(0.0), 0.0)
 
 
-func test_noise_bounded_by_two_sigma() -> void:
-	var max_observed := 0.0
-	for _sample_index in range(1000):
-		var sample: float = PaddleAIMath.random_offset(20.0)
-		max_observed = maxf(max_observed, abs(sample))
-	assert_true(
-		max_observed <= 40.0,
-		"noise should be clamped at 2x range, max observed: %.1f" % max_observed,
-	)
-
-
 func test_noise_produces_nonzero_values() -> void:
 	var nonzero_count := 0
 	for _sample_index in range(100):

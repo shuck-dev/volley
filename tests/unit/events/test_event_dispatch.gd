@@ -38,6 +38,22 @@ func _make_until_miss_effect(stat_key: StringName, operation: StringName, value:
 	return effect
 
 
+## Sweeps the manager forward one slow-period of oscillation (TAU / PRIMARY_FREQUENCY ~= 3.7s)
+## at 32 deterministic steps and returns the worst absolute deviation from `base_value`.
+## Uses the production `process_frame` / `Stats.resolve` path so a stubbed-no-op apply() leaves
+## the offset at 0 and the caller's tautology guard fails.
+func _worst_absolute_offset_over_period(base_value: float) -> float:
+	var step_count := 32
+	var period: float = TAU / StatOscillation.PRIMARY_FREQUENCY
+	var delta: float = period / float(step_count)
+	var worst := 0.0
+	for i in range(step_count):
+		_manager.process_frame(delta)
+		var current: float = Stats.resolve(base_value, &"ball_speed_offset", _manager)
+		worst = maxf(worst, absf(current - base_value))
+	return worst
+
+
 func _make_oscillation_effect(amplitude: float) -> Effect:
 	var outcome := OscillateStatOutcome.new()
 	outcome.stat_key = &"ball_speed_offset"
@@ -198,6 +214,9 @@ func test_oscillate_stat_changes_value_over_time() -> void:
 	assert_true(found_different, "Oscillation should change stat value within 60 frames")
 
 
+# Sweeps the manager one slow-period and asserts the worst |offset| sits inside the amplitude bound.
+# Replaces a 300-iteration `process_frame` Monte Carlo whose upper-bound assertion was satisfied
+# by a stubbed-no-op apply() (offset never deviates from base, trivially within bounds).
 func test_oscillate_stat_stays_within_amplitude() -> void:
 	var amplitude := 0.25
 	var effect := _make_oscillation_effect(amplitude)
@@ -207,27 +226,23 @@ func test_oscillate_stat_stays_within_amplitude() -> void:
 	var range_value: float = GameRules.base.ball_speed_max_range
 	var effective_amplitude: float = amplitude * range_value
 	var base_value: float = GameRules.base.ball_speed_offset
-	var min_observed := base_value
-	var max_observed := base_value
-
-	for frame_index in range(300):
-		_manager.process_frame(0.016)
-		var current_value: float = Stats.resolve(
-			GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager
-		)
-		min_observed = minf(min_observed, current_value)
-		max_observed = maxf(max_observed, current_value)
+	var extreme: float = _worst_absolute_offset_over_period(base_value)
 
 	assert_true(
-		min_observed >= base_value - effective_amplitude,
-		"Min observed %f should be >= %f" % [min_observed, base_value - effective_amplitude],
+		extreme <= effective_amplitude + 0.0001,
+		"Worst |offset| %f should be <= effective amplitude %f" % [extreme, effective_amplitude],
 	)
+	# Tautology guard: a no-op apply() would never register the oscillation; assert the sampled
+	# extremum actually approaches the bound so the upper assertion has teeth.
 	assert_true(
-		max_observed <= base_value + effective_amplitude,
-		"Max observed %f should be <= %f" % [max_observed, base_value + effective_amplitude],
+		extreme >= effective_amplitude * 0.5,
+		"Worst |offset| %f should approach the amplitude bound %f" % [extreme, effective_amplitude],
 	)
 
 
+# Same shape as the level-1 amplitude test; verifies level scaling doubles the effective bound.
+# Pre-rewrite per-frame range assertion was satisfied by a stubbed no-op (value stays at base,
+# inside any non-degenerate range), so the bound was never actually exercised.
 func test_oscillate_stat_scales_range_by_level() -> void:
 	var amplitude := 0.25
 	var effect := _make_oscillation_effect(amplitude)
@@ -237,26 +252,22 @@ func test_oscillate_stat_scales_range_by_level() -> void:
 	var range_value: float = GameRules.base.ball_speed_max_range
 	var effective_amplitude: float = amplitude * 2.0 * range_value
 	var base_value: float = GameRules.base.ball_speed_offset
+	var extreme: float = _worst_absolute_offset_over_period(base_value)
 
-	for frame_index in range(300):
-		_manager.process_frame(0.016)
-		var current_value: float = Stats.resolve(
-			GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager
-		)
-		assert_true(
-			(
-				current_value >= base_value - effective_amplitude
-				and current_value <= base_value + effective_amplitude
-			),
-			(
-				"Value %f should be within level-2 range [%f, %f]"
-				% [
-					current_value,
-					base_value - effective_amplitude,
-					base_value + effective_amplitude
-				]
-			),
-		)
+	assert_true(
+		extreme <= effective_amplitude + 0.0001,
+		(
+			"Worst |offset| %f at level 2 should be <= effective amplitude %f"
+			% [extreme, effective_amplitude]
+		),
+	)
+	assert_true(
+		extreme >= effective_amplitude * 0.5,
+		(
+			"Worst |offset| %f should approach the doubled level-2 bound %f"
+			% [extreme, effective_amplitude]
+		),
+	)
 
 
 # --- game action return path ---
@@ -334,12 +345,22 @@ func test_unregister_stops_oscillation() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
+	var base_value: float = GameRules.base.ball_speed_offset
+	var observed_active := false
 	for frame_index in range(60):
 		_manager.process_frame(0.016)
+		var current: float = Stats.resolve(base_value, &"ball_speed_offset", _manager)
+		if not is_equal_approx(current, base_value):
+			observed_active = true
+			break
+
+	# Tautology guard: a stubbed-no-op apply() would never produce a different value, so this
+	# assertion is what makes the post-unregister equality below meaningful.
+	assert_true(observed_active, "Oscillation should have shifted the stat before unregister")
 
 	_manager.unregister_source(item)
 
 	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_offset, &"ball_speed_offset", _manager),
-		GameRules.base.ball_speed_offset,
+		Stats.resolve(base_value, &"ball_speed_offset", _manager),
+		base_value,
 	)
