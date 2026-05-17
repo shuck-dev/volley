@@ -38,10 +38,6 @@ func _make_until_miss_effect(stat_key: StringName, operation: StringName, value:
 	return effect
 
 
-## Sweeps the manager forward one slow-period of oscillation (TAU / PRIMARY_FREQUENCY ~= 3.7s)
-## at 32 deterministic steps and returns the worst absolute deviation from `base_value`.
-## Uses the production `process_frame` / `Stats.resolve` path so a stubbed-no-op apply() leaves
-## the offset at 0 and the caller's tautology guard fails.
 func _worst_absolute_offset_over_period(base_value: float) -> float:
 	var step_count := 32
 	var period: float = TAU / StatOscillation.PRIMARY_FREQUENCY
