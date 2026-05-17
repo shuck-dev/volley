@@ -65,6 +65,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 
 ## Ground rules
 
+- **Backlog shape is Josh's.** Minions list candidate follow-ups in the PR body and stop. Gru confirms with Josh, then files in Linear. This holds when the ticket AC says "file tickets", when a spike's output is a migration plan, and when a bug shows up mid-task. The rule applies even if the minion has Linear write tools available.
 - **One ticket, one minion, one branch, one worktree.** Never two minions in the same file. Check what's in flight (see below) before claiming. Sub-agents modifying the repo dispatch with `isolation: "worktree"`.
 - **Worktree cleanup on merge.** After a challenge merges: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. The owning agent is responsible; otherwise periodic `git worktree list && git worktree prune`.
 - **Engineer challenges to merge in any order.** Each challenge stands alone against current `main`. Combine related changes that share a file rather than splitting them. Avoid "depends on #X".
