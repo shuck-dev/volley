@@ -94,15 +94,19 @@ The role-level transitions (`STORED`, `OUT_REST`, `OUT_HELD`) collapse into: "Ba
 
 Four independently shippable tickets. None of them depend on a previous one having merged; each is a slice of the consolidation that holds with current main.
 
-1. **Make ItemManager emit placement for OUT_HELD via mark_held**. New `ItemManager.mark_held(item_key, world_position)` (or rename `mark_loose_in_venue` and introduce a held variant per the chosen API). Drag controller calls it at `enter_out_held` time. Ball's `play_state` write stays where it is; ItemManager now also knows the ball is held. Closes the first drift case before any reader migration.
+1. **Add `ItemManager.mark_held` and `clear_held`**. New overlay sibling to `mark_loose_in_venue`. Drag controller calls `mark_held` at `enter_out_held` time and `clear_held` on release. Ball's `play_state` write stays where it is; ItemManager now also knows the ball is held. Closes the first drift case before any reader migration.
 2. **Drive Ball state from ItemManager.item_placement_changed**. BallReconciler listens to `item_placement_changed` and routes to `Ball.enter_*` (extending `_on_court_changed`). Existing `enter_*` direct calls from drag controller stay for the same release; both paths converge on the same Ball. Idempotency on `set_play_state` makes the double-write safe.
 3. **Collapse `ball_play_states` save field into placement + position**. SaveManager stops pulling `ball_play_states`; `_apply_saved_play_state` reconstructs from `item_placements` and the `LOOSE_IN_VENUE` overlay. Save format bumps for the field removal (per `03-save-versioning.md`), or the field stays serialised and ignored on load until the next planned wipe.
-4. **Remove direct `enter_*` calls from BallDragController**. Drag controller writes `_set_item_placement` (via `equip`/`unequip`/`mark_held`/`clear_held`); the reconciler-driven path becomes the only writer of `Ball.play_state`. Final step that lets `set_play_state` go private.
+4. **Remove direct `enter_*` calls from BallDragController; rename `play_state` to `physics_state`**. Drag controller writes `_set_item_placement` (via `equip`/`unequip`/`mark_held`/`clear_held`); the reconciler-driven path becomes the only writer of the Ball field. `set_play_state` goes private. Ball's field renames `play_state -> physics_state` in the same ticket; no scope mixing because both moves close the same loop (the field stops being a role surface).
 
 Each ticket lands as one slice, leaves the system in a consistent state, and can sit at the top of `Ready` independently. Order of merge does not matter; later tickets just see fewer redundant call sites.
 
+## Names
+
+- **`Ball.play_state` becomes `Ball.physics_state`.** The residual job is `PLAY_NORMAL` vs `PLAY_ARC` plus the integration-frame physics flags; `physics_state` reads true to that job and stops the field from competing with `item_placements` as a role surface. Rename lands with the final migration ticket (ticket 4 below) once `set_play_state` goes private.
+- **`HELD` is the canonical overlay for held-mid-gesture.** Sibling to `LOOSE_IN_VENUE`, not a replacement. `LOOSE_IN_VENUE` keeps the floor-deposit meaning. `HELD` covers the carry-state the drag controller currently expresses via `Ball.play_state = OUT_HELD`. Ticket 1 below introduces `ItemManager.mark_held(item_key, world_position)` and the matching clear path.
+- These names are the spike's deliverable and ride into the migration tickets. Implementation challenges may not rebikeshed them.
+
 ## Out of scope
 
-- Renaming `Ball.play_state` to a presentation-focused name (`physics_state`, `display_state`). Lands with the last migration ticket if it earns its place; not a separate ticket.
-- The `LOOSE_IN_VENUE` vs `OUT_HELD` overlay naming. Treated as one concept in the ticket above; bikeshed in the implementation challenge.
 - `BallReconciler._balls_by_key` membership semantics. Already correct per memory `project_ball_tracker_membership_is_existence`.
