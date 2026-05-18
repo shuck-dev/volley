@@ -1,6 +1,6 @@
 extends GutTest
 
-# Tests AutoplayController: toggle, signal, ring-buffer delay, speed cap.
+# Tests AutoplayController: toggle, signal, ring-buffer delay.
 
 const PHYSICS_DELTA := 0.016  # One frame at 60fps
 const BALL_APPROACHING := Vector2(-100.0, 0.0)  # Ball moving toward paddle (negative x)

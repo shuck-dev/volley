@@ -1,6 +1,6 @@
 extends GutTest
 
-# Tests for PartnerAIController behaviour: tracking, drifting, dodging, speed cap.
+# Tests for PartnerAIController behaviour: tracking, drifting, dodging.
 
 const PHYSICS_DELTA := 0.016
 const PADDLE_X := 300.0
