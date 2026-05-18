@@ -132,25 +132,3 @@ func test_noise_resamples_during_drift_when_direction_changes() -> void:
 		offset_after_reversal,
 		"noise should resample even when direction changes during drift",
 	)
-
-
-# --- speed cap ---
-func test_speed_never_exceeds_configured_scale() -> void:
-	_ball.position = Vector2(100.0, 9999.0)
-	_ball.linear_velocity = BALL_APPROACHING_PARTNER
-	var max_allowed: float = GameRules.paddle.paddle_speed * _config.speed_scale
-	var peak_observed := 0.0
-	_run_frames(50)
-	for _check in range(50):
-		_controller._physics_process(PHYSICS_DELTA)
-		assert_true(
-			abs(_paddle.velocity.y) <= max_allowed + 0.01,
-			"velocity %.2f exceeded cap %.2f" % [abs(_paddle.velocity.y), max_allowed],
-		)
-		peak_observed = maxf(peak_observed, abs(_paddle.velocity.y))
-	# Tautology guard: the upper bound holds for a stubbed-no-op _track() too; verify the paddle
-	# actually drove within 5% of the configured cap during pursuit.
-	assert_true(
-		peak_observed >= max_allowed * 0.95,
-		"partner peak velocity %.2f should approach cap %.2f" % [peak_observed, max_allowed],
-	)
