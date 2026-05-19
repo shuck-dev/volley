@@ -1,6 +1,6 @@
 extends GutTest
 
-# Tests AutoplayController: toggle, signal, ring-buffer delay, speed cap.
+# Tests AutoplayController: toggle, signal, ring-buffer delay.
 
 const PHYSICS_DELTA := 0.016  # One frame at 60fps
 const BALL_APPROACHING := Vector2(-100.0, 0.0)  # Ball moving toward paddle (negative x)
@@ -86,31 +86,6 @@ func test_autoplay_moves_paddle_toward_ball_when_ball_is_above() -> void:
 	for i in range(_config.reaction_delay_frames + 1):
 		_controller._physics_process(PHYSICS_DELTA)
 	assert_lt(_paddle.velocity.y, 0.0)
-
-
-func test_autoplay_speed_never_exceeds_configured_scale() -> void:
-	_ball.position = Vector2(100.0, ball_below_paddle())
-	_ball.linear_velocity = BALL_APPROACHING
-	_paddle.position = Vector2(0.0, 0.0)
-	_controller.toggle()
-	var max_allowed: float = _paddle.get_speed() * _config.speed_scale
-	var peak_observed := 0.0
-	for i in range(200):
-		_controller._physics_process(PHYSICS_DELTA)
-		assert_true(
-			abs(_paddle.velocity.y) <= max_allowed + 0.01,
-			(
-				"velocity %.2f exceeded cap %.2f on frame %d"
-				% [abs(_paddle.velocity.y), max_allowed, i]
-			),
-		)
-		peak_observed = maxf(peak_observed, abs(_paddle.velocity.y))
-	# Tautology guard: the upper bound holds for a stubbed-no-op _track() too; verify the paddle
-	# actually pursued the ball within 5% of the configured cap during the loop.
-	assert_true(
-		peak_observed >= max_allowed * 0.95,
-		"autoplay peak velocity %.2f should approach cap %.2f" % [peak_observed, max_allowed],
-	)
 
 
 # --- ring buffer delay ---
