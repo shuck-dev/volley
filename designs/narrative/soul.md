@@ -2,7 +2,7 @@
 
 Soul is the bond between one being and another. It lives only in the meeting of the two; remove either, and the soul between them dies.
 
-The strengthening of the bond is what gives rise to magical effects. Levitation is the most prolific: a paddle held aloft, a ball held aloft, a player lifted off the ground for the length of a rally. Other effects sit alongside it, named where they appear.
+The strengthening of the bond is what gives rise to magical effects. Levitation is the most prolific: a racquet held aloft, a ball held aloft, a player lifted off the ground for the length of a rally. Other effects sit alongside it, named where they appear.
 
 Everyone holds an unlimited reserve of soul. The reserve only becomes usable through action. The more you do with another, the more soul that doing carries; the doing is the imbuing.
 
