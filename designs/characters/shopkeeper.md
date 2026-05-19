@@ -33,3 +33,4 @@ This is why the world record is the shopkeeper's phone number. Every rally is th
 ## Open questions
 
 - Gender, age, presentation. Deliberately open. The anchor is the relationship to the protagonist and the family resemblance to the sister.
+- Where Zach has been across the search. The cliff at the end is the place the gate has been locked since the friend died; the protagonist has not thought to check there because the gate has been locked their whole life. How Zach reached the cliff, and how he passed the time there, is unresolved.
