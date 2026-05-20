@@ -26,7 +26,7 @@ They remember they do not live here anymore. They see Zach's family shop, and St
 
 ## Act III. Reconstruction
 
-The driver of this act is to find Zach. The protagonist gains the ability to travel between the constructed world and reality at will. The volley count falls to the side; the game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
+The driver of this act is to find Zach. The protagonist gains the ability to travel between the construct and reality at will. The volley count falls to the side; the game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
 
 ## Ending
 
@@ -34,4 +34,4 @@ The final memory gives the protagonist a key. That key unlocks the gate in the g
 
 ## Postgame
 
-Zach is found. He can now share the constructed world with the protagonist, knowing and accepting two truths: that the constructed world is not real, and that Fern is dead. The game continues, new items, venues etc.
+Zach is found. He can now share the construct with the protagonist, knowing and accepting two truths: that the construct is not real, and that Fern is dead. The game continues, new items, venues etc.
