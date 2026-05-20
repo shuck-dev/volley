@@ -1,6 +1,6 @@
 # Milestones
 
-A milestone is the protagonist's progression through a competition class. They train with the coach there until they qualify through the class volley record, then duel the reigning champion. Winning the duel clears the milestone and unlocks the next venue.
+A milestone is the protagonist's progression through a competition class. They train with the coach until they qualify through the class volley record, then duel the reigning champion. Winning the duel clears the milestone and unlocks the next venue.
 
 Milestones consist of escalating scales:
 
