@@ -1,8 +1,8 @@
 # Milestones
 
-A milestone is the protagonist's progression through a competition class. They train with the coach until they qualify through the class volley record, then duel the reigning champion. Winning the duel clears the milestone and unlocks the next venue.
+A milestone is the protagonist's progression through a competition class. A competition class is one tier on the scale below. They train with the coach until they qualify through the class volley record, then duel the reigning champion. Winning the duel clears the milestone and unlocks the next venue.
 
-Milestones consist of escalating scales:
+Milestones consists of escalating scales:
 
 - local community
 - county
@@ -12,4 +12,4 @@ Milestones consist of escalating scales:
 - international
 - world
 
-The championship is the final milestone. The qualifying count is the world volley record. The duel is against the reigning champ. Winning makes the protagonist champ.
+Each class has its own volley record. Reaching the world volley record qualifies the protagonist for the championship duel. Winning makes them champ.
