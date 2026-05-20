@@ -9,5 +9,4 @@ Pre-break content-complete. Writing, art, full roster, full item set, audio, mil
 | 03 | [Writing Scope](03-writing-scope.md) |
 | 04 | [Shop Narrative](04-shop-narrative.md) |
 | 05 | [Clue Ladder](05-clue-ladder.md) |
-| 06 | [Milestones](06-milestones.md) |
 | 07 | [Battle Mode](07-battle-mode.md) |
