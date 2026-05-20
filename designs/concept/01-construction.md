@@ -28,7 +28,6 @@ Concrete mechanics are downstream design. What this doc commits is the shape: co
 
 The champ holds the championship spot. The protagonist climbs every round, learning each coach's mechanic, until they qualify for the championship. The match is winnable. The break beat (`02-cracks-and-break.md`) lives in what the win turns out to mean.
 
-The champ's role and arc sit in [`../characters/champ.md`](../characters/champ.md).
 
 ## The rally and the count
 

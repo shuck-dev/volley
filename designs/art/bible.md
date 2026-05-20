@@ -119,7 +119,6 @@ The dead friend. Construction-only; their Reality is the cliff. Holds the champi
 
 Render them as someone the protagonist loved. Sharp at the championship because the friend was sharp; the doubled meaning of "becoming the champ" sits in their posture across the climb (the title to win, the friend to reach), the same word doing both jobs.
 
-The relationship and the arc sit in [`../characters/champ.md`](../characters/champ.md).
 
 ---
 

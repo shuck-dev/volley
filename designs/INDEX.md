@@ -93,7 +93,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Sister (the tinkerer)](characters/sister.md) | The shopkeeper's younger sister. The bridge across Reconstruction. |
 | [Martha](characters/martha.md) | First partner. Caribbean-British cashier; coach at the garden venue. |
 | [Martha and the partners](characters/partners.md) | The wider partner cast and lineage rule. |
-| [Champ](characters/champ.md) | The dead friend, rendered into Construction as the championship final. |
+| [Fern](characters/fern.md) | The dead friend, rendered into Construction as the championship duel. |
 
 ### Concept
 

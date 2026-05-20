@@ -36,11 +36,11 @@ In Reality the same person at their actual age. A small moment with a partner in
 
 ## Part 1: the climb
 
-Across Construction the protagonist is climbing toward the championship, and the obsession pulls in two directions at once. They want to become the champion of the world they built: the title, the record, the spot at the top of the climb. They also want to become the champ inside that world, the friend now drawn as the partner at the final venue. The same word does both jobs and the protagonist does not separate them. Winning the title and reaching the friend are one motion to them, even though the world cannot grant the second.
+Across Construction the protagonist is climbing toward the championship. They want to become the champion of the world they built: the title, the record, the spot at the top of the climb.
 
-Hold this as quiet weight in how they treat the climb: not triumph, not desperation, a steadiness that knows what it is reaching for and does not yet know it is reaching past it.
+Hold this as quiet weight in how they treat the climb: not triumph, not desperation, a steadiness that knows what it is reaching for.
 
-The doubled pull is what makes the championship win land the way it does. Both meanings are satisfied at the same beat and neither was the thing the protagonist actually needed. The win is the break. The construct cannot hold itself together once its central goal has been reached and proved meaningless.
+The win is the break. The construct cannot hold itself together once its central goal has been reached and proved meaningless.
 
 At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar. The number has been sitting in their phone the whole game. The connection does not form. The digits stay digits.
 
