@@ -23,3 +23,15 @@ The championship arrives. The protagonist duels and wins. It feels hollow. What 
 They wake in the garden. It's abandoned. Their family home now reduced to broken windows and missing tiles. They leave the garden and walk through the town for the first time in years.
 
 They remember they do not live here anymore. They see Zach's family shop, and Stephanie is at the counter, tears streaming down her face. Zach is gone. No one has heard from him. Looking at the photographs on the wall behind her, something else surfaces: a friend the protagonist used to know, who has not been here for years.
+
+## Act III. Reconstruction
+
+The driver of this act is to find Zach. The protagonist gains the ability to travel between the constructed world and reality at will. The volley count falls to the side; the game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
+
+## Ending
+
+The final memory gives the protagonist a key. That key unlocks the gate in the garden leading to the cliff. By this point the player knows about the cliff but not that the gate leads to it. The protagonist opens the gate and sees Zach sitting on the memorial bench dedicated to their friend.
+
+## Postgame
+
+Zach is found. He can now share the constructed world with the protagonist, knowing and accepting two truths: that the constructed world is not real, and that Fern is dead. The game continues, new items, venues etc.
