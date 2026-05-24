@@ -2,7 +2,7 @@ extends Ball
 
 
 func _init() -> void:
-	bound_y = -351.6
+	bound_y = -400.0
 
 
 func increase_speed() -> void:
