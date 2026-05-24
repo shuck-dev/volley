@@ -36,7 +36,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and call, then craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones). Source of truth for the artist. |
+| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and gate, then craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones). Source of truth for the artist. |
 | [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
 | [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
 
@@ -54,7 +54,9 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Doc | Purpose |
 |---|---|
-| [Outline](narrative/outline.md) | The structural canon. Setting, two worlds, garden and gate, cast, the phone, the act-by-act spine, the cliff and the call, credits, postgame. |
+| [Outline](narrative/outline.md) | The game in acts. The canonical narrative spine. |
+| [Soul](narrative/soul.md) | The bond mechanic that channels into levitation; the protagonist's vocabulary for a partly-real magic. |
+| [Times](narrative/times.md) | Periods and ages: Reality 2014, Construction 1991. |
 
 ### Tech-art
 
@@ -96,7 +98,17 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 ### Concept
 
-The concept folder runs from [00-two-styles](concept/00-two-styles.md) through [05-postgame](concept/05-postgame.md). Earliest framing of the two-style world, the rally, the partners, the break, the reconstruction, and what the game looks like once the credits have rolled.
+| Doc | Purpose |
+|---|---|
+| [Two Styles](concept/00-two-styles.md) | High-level architecture: how Construction and Reality fit together. |
+| [Construction](concept/01-construction.md) | Part 1: tournament shape, rally, count, prototype scope. |
+| [Reconstruction](concept/03-reconstruction.md) | Part 2: search, items invoking memories, the key. |
+| [Reality](concept/04-reality.md) | Reality as a style: place, visual register, audio, scene shape. |
+| [Postgame](concept/05-postgame.md) | The cliff, the gate, credits, postgame rally. |
+| [Milestones](concept/milestones.md) | Competition classes; qualify-then-duel pattern. |
+| [The Game of Volley](concept/the-game.md) | Cooperative rally rules and the duel variant. |
+| [The Break](concept/the-break.md) | The rupture between Construction and Reality. |
+| [Venue](concept/venue.md) | The setting where the protagonist volleys. |
 
 ### AI
 
