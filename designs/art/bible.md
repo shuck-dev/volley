@@ -39,7 +39,7 @@ Volley holds two worlds. The first is **Construction**: a vibrant one the protag
 
 Construction is structured as a tournament the protagonist climbs through competition classes, qualifying by class volley record and duelling the class's reigning champion. The championship is the final milestone; the protagonist beats the record, duels the reigning champ, and the construct breaks open. The player then moves between the two worlds, carrying things from one into the other, until a key found in Reality opens a locked gate at the back of the garden onto the cliff.
 
-Full story shape lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; story-shape sections below summarise the outline and stay aligned with it.
+Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; the sections below summarise the outline and stay aligned with it.
 
 ---
 
@@ -128,7 +128,7 @@ Saturated colour, generous light, surfaces that gleam. Shadows held warm. Charac
 
 The protagonist is actively maintaining Construction; tennis lives here and only here. The pretense is the rendering, not the protagonist's care. Construction needs to feel like somewhere the player wants to be, before the cracks ever come. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
-Story shape (the tournament, the climb, the championship goal, the world record as phone number) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/01-construction.md`](../concept/01-construction.md).
+Outline canon (the tournament, the climb, the championship duel) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/01-construction.md`](../concept/01-construction.md).
 
 ---
 
@@ -153,7 +153,7 @@ After the rupture the player walks through the protagonist's hometown for the fi
 
 The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre is hollowed out; the rallies render that absence.
 
-Story shape (championship win, win lands wrong, Zach missing, Fern exits) lives in [`../narrative/outline.md`](../narrative/outline.md).
+Outline canon (championship win, win lands wrong, Zach missing, Fern exits) lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
@@ -165,7 +165,7 @@ Construction weathers as the arc proceeds. Saturation drops a notch, line weight
 
 Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
-Story shape (the search for Zach, dread, the items-invoke-memories mechanic, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
+Outline canon (the search for Zach, dread, the items-invoke-memories mechanic, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
 
 ---
 
@@ -177,7 +177,7 @@ The cliff reads as a place people came to. A worn ledge, traces of small ceremon
 
 The protagonist opens the locked gate at the back of the garden in Construction and steps through to the cliff in Reality. Zach is sitting on the memorial bench. The shape is the protagonist arriving at a place that has been there the whole game; the gate was the last barrier.
 
-Full story shape lives in [`../narrative/outline.md`](../narrative/outline.md).
+Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
