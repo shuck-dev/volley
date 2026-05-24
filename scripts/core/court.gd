@@ -7,19 +7,22 @@ signal ball_at_max_speed_changed(is_at_max: bool)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
 
-@export_group("Systems")
+@export var court_config: CourtConfig
+
+@export_group("Controllers")
 @export var ball_system: BallReconciler
 @export var ball_tracker: BallTracker
 @export var autoplay_controller: AutoplayController
 @export var timeout_controller: TimeoutController
 @export var drag_controller: BallDragController
-@export var court_config: CourtConfig
 
-@export_group("World")
-@export var player_spawn: Marker2D
-@export var partner_spawn: Marker2D
+@export_group("Bounds")
 @export var right_wall: StaticBody2D
 @export var soul_bound: Marker2D
+
+@export_group("Spawns")
+@export var player_spawn: Marker2D
+@export var partner_spawn: Marker2D
 
 @export_group("Scenes")
 @export var player_paddle_scene: PackedScene
