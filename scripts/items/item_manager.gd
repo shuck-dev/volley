@@ -43,8 +43,12 @@ func _ready() -> void:
 
 func _register_existing_items() -> void:
 	for item in items:
+		if get_level(item.key) <= 0:
+			continue
 		if _is_placed(item.key):
 			_effect_manager.register_source(item, get_level(item.key))
+		elif not state.rack_slot_index_by_key.has(item.key):
+			_assign_rack_slot(item.key, item.role)
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -165,16 +169,15 @@ func get_court_items() -> Array[String]:
 
 
 ## Slot index assigned to `item_key` while STORED; -1 when not stored.
-## Self-heals a missing assignment for an owned STORED item so direct-state-poke tests still work.
 func get_rack_slot_index(item_key: String) -> int:
-	if not state.rack_slot_index_by_key.has(item_key):
-		if get_level(item_key) > 0 and _get_placement(item_key) == PlacementScript.STORED:
-			_assign_rack_slot(item_key, _get_item(item_key).role)
 	return state.rack_slot_index_by_key.get(item_key, -1)
 
 
 ## Picks the lowest free slot index among STORED items of the same role and records it.
+## Idempotent: an item with an existing assignment keeps it.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:
+	if state.rack_slot_index_by_key.has(item_key):
+		return
 	var used: Dictionary = {}
 	for key: String in state.rack_slot_index_by_key:
 		var definition: ItemDefinition = _get_item(key)
@@ -290,7 +293,10 @@ func purchase(item_key: String) -> bool:
 		var item := _get_item(item_key)
 		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
 		var landing: int = PlacementScript.STORED if goes_to_rack else _natural_target(item)
-		_set_item_placement(item_key, landing)
+		if landing == PlacementScript.STORED:
+			_assign_rack_slot(item_key, item.role)
+		else:
+			_set_item_placement(item_key, landing)
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
 
@@ -358,6 +364,7 @@ func take(item_key: String) -> bool:
 
 	subtract_friendship_points(calculate_cost(item_key))
 	state.item_levels[item_key] = 1
+	_assign_rack_slot(item_key, _get_item(item_key).role)
 	item_level_changed.emit(item_key)
 	SaveManager.save()
 
@@ -389,8 +396,7 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 	if placement == PlacementScript.STORED:
 		state.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
-		if not state.rack_slot_index_by_key.has(item_key):
-			_assign_rack_slot(item_key, item.role)
+		_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
 		_effect_manager.unregister_source(item)

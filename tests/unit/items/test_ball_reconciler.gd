@@ -255,8 +255,8 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	add_child_autofree(saved_manager)
 
 	# Simulate saved state: training_ball ON_COURT, base_ball level set so adopt_authored works.
-	saved_manager.state.item_levels["base_ball"] = 1
-	saved_manager.state.item_levels["training_ball"] = 1
+	ItemFactory.give(saved_manager, "base_ball")
+	ItemFactory.give(saved_manager, "training_ball")
 	saved_manager.state.item_placements["training_ball"] = Placement.ON_COURT
 
 	# Host has one authored Ball child for base_ball (the always-present authored scene child).
