@@ -26,7 +26,10 @@
 [ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
-size = Vector2(21.6, 880)
+size = Vector2(21.6, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
+size = Vector2(800, 20)
 
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller", "drag_controller")]
 script = ExtResource("1_tbgi4")
@@ -65,12 +68,19 @@ metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
 offset_right = 21.6
-offset_bottom = 880.0
+offset_bottom = 180.0
 mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
-position = Vector2(10.8, 440)
+position = Vector2(10.8, 90)
 shape = SubResource("RectangleShape2D_vert")
+
+[node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318]
+position = Vector2(0, 400)
+physics_material_override = ExtResource("1_0wfyh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/CourtFloor" unique_id=1779452319]
+shape = SubResource("RectangleShape2D_court_floor")
 
 [node name="MissZones" type="Node2D" parent="Bounds" unique_id=2106668172]
 
