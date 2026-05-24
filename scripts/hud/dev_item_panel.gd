@@ -1,6 +1,7 @@
 extends VBoxContainer
 
 var _buttons: Dictionary = {}
+var _remove_buttons: Dictionary = {}
 var _drag := DraggableBehavior.new()
 
 
@@ -29,6 +30,7 @@ func _ready() -> void:
 		remove_button.pressed.connect(_on_remove_level_pressed.bind(item.key))
 		remove_button.focus_mode = Control.FOCUS_NONE
 		row.add_child(remove_button)
+		_remove_buttons[item.key] = remove_button
 
 		var effect_lines := _build_effect_lines(item)
 		if effect_lines.size() > 0:
@@ -73,7 +75,19 @@ func _on_item_pressed(item_key: String) -> void:
 
 
 func _on_remove_level_pressed(item_key: String) -> void:
+	# Double-check the gate at press time even though the button reflects it visually; the poll
+	# runs once per frame and a same-frame state flip could race the click.
+	if RallyGate.is_rally_in_progress_in_tree(get_tree()):
+		return
 	ItemManager.remove_level(item_key)
+
+
+# Poll the rally gate so the - button reflects mid-rally lockout without subscribing to
+# ball state changes; cost is negligible in a debug-only panel.
+func _process(_delta: float) -> void:
+	var locked: bool = RallyGate.is_rally_in_progress_in_tree(get_tree())
+	for button: Button in _remove_buttons.values():
+		button.disabled = locked
 
 
 func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:

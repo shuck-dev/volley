@@ -31,6 +31,7 @@ var _saved_collision_mask: int = 0
 
 
 func _ready() -> void:
+	add_to_group(RallyGate.TIMEOUT_GROUP)
 	if config == null:
 		config = TimeoutConfig.new()
 	set_physics_process(false)
