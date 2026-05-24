@@ -11,7 +11,6 @@ const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
-const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -249,7 +248,7 @@ func grab_equipped_from_character(item_key: String, press_position: Variant = nu
 		return false
 	if _item_manager == null or _item_manager.get_level(item_key) <= 0:
 		return false
-	if _item_manager.get_placement(item_key) != PlacementScript.EQUIPPED:
+	if _item_manager.get_placement(item_key) != Placement.EQUIPPED:
 		return false
 
 	var spawn_position: Vector2 = (
@@ -370,7 +369,7 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 		return
 	# Equipment leaving the body must deactivate effects; otherwise the stat impact survives
 	# the held-into-venue transition because placement never funnels through STORED.
-	if _item_manager != null and _item_manager.get_placement(_held_key) == PlacementScript.EQUIPPED:
+	if _item_manager != null and _item_manager.get_placement(_held_key) == Placement.EQUIPPED:
 		_item_manager.unequip(_held_key)
 	var release_velocity: Vector2 = _compute_release_velocity()
 	var body: HeldBody = _held_body

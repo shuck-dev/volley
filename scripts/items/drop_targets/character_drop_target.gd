@@ -6,7 +6,6 @@ extends DropTarget
 signal equipped_art_pressed(item_key: String)
 
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
-const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
 
 var _item_manager: Node
 var _drop_area: Area2D
@@ -63,12 +62,12 @@ func _hydrate_equipped_visuals() -> void:
 	if _item_manager == null:
 		return
 	for key: String in _item_manager.state.item_placements.keys():
-		if int(_item_manager.state.item_placements[key]) == PlacementScript.EQUIPPED:
+		if int(_item_manager.state.item_placements[key]) == Placement.EQUIPPED:
 			_mount_equipped_visual(key)
 
 
 func _on_item_placement_changed(item_key: String, placement: int) -> void:
-	if placement == PlacementScript.EQUIPPED:
+	if placement == Placement.EQUIPPED:
 		_mount_equipped_visual(item_key)
 	else:
 		_free_equipped_visual(item_key)

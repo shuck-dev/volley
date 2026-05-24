@@ -21,6 +21,12 @@ Removing a live ball works the same way: drag it off the court back onto the `Ba
 
 Both gestures happen live, without pausing. The main character keeps playing whatever balls remain.
 
+### Rack slot assignment
+
+The rack is a slot-indexed pool. The player drops "on the rack" and the rack decides which slot the ball lands in; the player cannot aim at a specific slot. Each ball entering STORED claims the lowest free slot index and holds it for the duration of that STORED span. Grabbing a ball frees its slot; the next store fills the lowest free index, which may be the just-vacated one or any other. The assignment is locked once made and never reshuffles while the rack is at rest; a ball that's already stored never moves slots on its own.
+
+Same ball can land in different slots across stores. The mapping is per-STORED-span, not stable across the ball's lifetime.
+
 ### Auto-serve from the ball rack
 
 When no balls are in play on the court, the main character walks to the ball rack, picks up the next available ball, and attempts a serve. This keeps the rally cycle going without requiring the player to manually drag a ball in. If the rack is empty (all balls are already on the court or none are owned), the character idles until a ball becomes available.

@@ -329,7 +329,7 @@ class TestReloadFromProgression:
 			"no level, no effect"
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
-		_manager.state.item_levels[TEST_KEY] = 1
+		ItemFactory.give(_manager, TEST_KEY)
 		_manager.state.item_placements[TEST_KEY] = Placement.EQUIPPED
 		_manager.reload_from_progression()
 		assert_eq(

@@ -42,17 +42,19 @@ func refresh() -> void:
 	_clear_slots()
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
-	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
 	var marker_count: int = _slot_markers.size()
-	for index in kit_keys.size():
-		var item_key: String = kit_keys[index]
+	if marker_count == 0:
+		return
+	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
+	for item_key in kit_keys:
+		var slot_index: int = _item_manager.get_rack_slot_index(item_key)
+		if slot_index < 0 or slot_index >= marker_count:
+			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [item_key, slot_index])
+			continue
 		var definition: ItemDefinition = _get_item_definition(item_key)
 		if definition == null or definition.art == null:
 			continue
-		if marker_count == 0:
-			continue
-		var marker_index: int = min(index, marker_count - 1)
-		var slot: Node2D = _build_slot(definition, _slot_markers[marker_index].position)
+		var slot: Node2D = _build_slot(definition, _slot_markers[slot_index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
 	_apply_slot_visibility()
@@ -115,13 +117,10 @@ func get_slot_position_for(item_key: String) -> Vector2:
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
 
-	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
-	var index: int = kit_keys.find(item_key)
-	if index < 0 or _slot_markers.is_empty():
+	var slot_index: int = _item_manager.get_rack_slot_index(item_key)
+	if slot_index < 0 or slot_index >= _slot_markers.size():
 		return Vector2.ZERO
-
-	var marker_index: int = min(index, _slot_markers.size() - 1)
-	return _slot_markers[marker_index].global_position
+	return _slot_markers[slot_index].global_position
 
 
 func _attach_slot_input(slot: Node2D, item_key: String) -> void:

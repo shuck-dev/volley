@@ -8,8 +8,6 @@ signal court_changed(item_key: String, on_court: bool)
 ## Emitted when equip refuses; reason is currently &"capacity_exceeded" (sole case).
 signal equip_refused(item_key: String, reason: StringName)
 
-const PlacementScript: GDScript = preload("res://scripts/items/placement.gd")
-
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
 	preload("res://resources/items/grip_tape.tres"),
@@ -43,8 +41,12 @@ func _ready() -> void:
 
 func _register_existing_items() -> void:
 	for item in items:
+		if get_level(item.key) <= 0:
+			continue
 		if _is_placed(item.key):
 			_effect_manager.register_source(item, get_level(item.key))
+		elif not state.rack_slot_index_by_key.has(item.key):
+			_assign_rack_slot(item.key, item.role)
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -52,10 +54,13 @@ func _register_existing_items() -> void:
 func reload_from_progression() -> void:
 	for item in items:
 		_effect_manager.unregister_source(item)
+
 	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
+
 	_register_existing_items()
 	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+
 	for item in items:
 		item_level_changed.emit(item.key)
 
@@ -115,8 +120,8 @@ func get_level(item_key: String) -> int:
 ## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
 func _get_placement(item_key: String) -> int:
 	if state.loose_in_venue.has(item_key):
-		return PlacementScript.LOOSE_IN_VENUE
-	return state.item_placements.get(item_key, PlacementScript.STORED)
+		return Placement.LOOSE_IN_VENUE
+	return state.item_placements.get(item_key, Placement.STORED)
 
 
 ## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
@@ -135,7 +140,7 @@ func mark_loose_in_venue(item_key: String, position: Vector2 = Vector2.ZERO) -> 
 		state.loose_in_venue[item_key] = position
 		return
 	state.loose_in_venue[item_key] = position
-	item_placement_changed.emit(item_key, PlacementScript.LOOSE_IN_VENUE)
+	item_placement_changed.emit(item_key, Placement.LOOSE_IN_VENUE)
 
 
 ## Clears the loose-in-venue entry. Idempotent. Emits item_placement_changed with the underlying placement.
@@ -149,29 +154,55 @@ func clear_loose_in_venue(item_key: String) -> void:
 ## True when an item is currently placed (on player or court), false on the rack or loose in venue.
 func is_on_court(item_key: String) -> bool:
 	var placement: int = _get_placement(item_key)
-	return placement == PlacementScript.EQUIPPED or placement == PlacementScript.ON_COURT
+	return placement == Placement.EQUIPPED or placement == Placement.ON_COURT
 
 
 ## Returns the list of ball-role item keys currently on the court.
 func get_court_items() -> Array[String]:
 	var result: Array[String] = []
 	for item in items:
-		if item.role == &"ball" and _get_placement(item.key) == PlacementScript.ON_COURT:
+		if item.role == &"ball" and _get_placement(item.key) == Placement.ON_COURT:
 			result.append(item.key)
 	return result
+
+
+## Slot index assigned to `item_key` while STORED; -1 when not stored.
+func get_rack_slot_index(item_key: String) -> int:
+	return state.rack_slot_index_by_key.get(item_key, -1)
+
+
+## Picks the lowest free slot index among STORED items of the same role and records it.
+## Idempotent: an item with an existing assignment keeps it.
+func _assign_rack_slot(item_key: String, role: StringName) -> void:
+	if state.rack_slot_index_by_key.has(item_key):
+		return
+	var used: Dictionary = {}
+	for key: String in state.rack_slot_index_by_key:
+		var definition: ItemDefinition = _get_item(key)
+		if definition != null and definition.role == role:
+			used[state.rack_slot_index_by_key[key]] = true
+	var candidate: int = 0
+	while used.has(candidate):
+		candidate += 1
+	state.rack_slot_index_by_key[item_key] = candidate
 
 
 ## Returns owned items of the given role whose placement is STORED (on the rack).
 func get_kit_items(role: StringName) -> Array[String]:
 	var result: Array[String] = []
+
 	for item in items:
 		if item.role != role:
 			continue
+
 		if get_level(item.key) <= 0:
 			continue
-		if _get_placement(item.key) != PlacementScript.STORED:
+
+		if _get_placement(item.key) != Placement.STORED:
 			continue
+
 		result.append(item.key)
+
 	return result
 
 
@@ -179,7 +210,9 @@ func get_kit_items(role: StringName) -> Array[String]:
 func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
+
 	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+
 	return true
 
 
@@ -187,7 +220,9 @@ func activate(item_key: String) -> bool:
 func deactivate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
-	_set_item_placement(item_key, PlacementScript.STORED)
+
+	_set_item_placement(item_key, Placement.STORED)
+
 	return true
 
 
@@ -195,9 +230,11 @@ func deactivate(item_key: String) -> bool:
 func get_kit_remaining() -> int:
 	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
 	var equipped_count: int = 0
+
 	for key: String in state.item_placements:
-		if int(state.item_placements[key]) == PlacementScript.EQUIPPED:
+		if int(state.item_placements[key]) == Placement.EQUIPPED:
 			equipped_count += 1
+
 	return max(0, cap - equipped_count)
 
 
@@ -211,6 +248,7 @@ func equip(item_key: String) -> bool:
 	if get_kit_remaining() < 1:
 		equip_refused.emit(item_key, &"capacity_exceeded")
 		return false
+
 	return activate(item_key)
 
 
@@ -243,19 +281,26 @@ func can_purchase(item_key: String) -> bool:
 func purchase(item_key: String) -> bool:
 	if not can_purchase(item_key):
 		return false
+
 	var was_unowned := get_level(item_key) == 0
 	subtract_friendship_points(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
+
 	if was_unowned:
 		var item := _get_item(item_key)
 		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
-		var landing: int = PlacementScript.STORED if goes_to_rack else _natural_target(item)
-		_set_item_placement(item_key, landing)
+		var landing: int = Placement.STORED if goes_to_rack else _natural_target(item)
+		if landing == Placement.STORED:
+			_assign_rack_slot(item_key, item.role)
+		else:
+			_set_item_placement(item_key, landing)
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
+
 	item_level_changed.emit(item_key)
 	SaveManager.save()
+
 	return true
 
 
@@ -289,9 +334,10 @@ func remove_level(item_key: String) -> void:
 		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
 		_refund_friendship_points(refund)
 		_set_level(item_key, current_level - 1)
+
 		if current_level - 1 == 0:
 			# Fully removed: treat the item as if it was never owned; clear placement.
-			_set_item_placement(item_key, PlacementScript.STORED)
+			_set_item_placement(item_key, Placement.STORED)
 		SaveManager.save()
 
 
@@ -300,6 +346,7 @@ func adopt_authored(item_key: String) -> void:
 	if get_level(item_key) <= 0:
 		state.item_levels[item_key] = 1
 		item_level_changed.emit(item_key)
+
 	if not is_on_court(item_key):
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
@@ -309,12 +356,16 @@ func adopt_authored(item_key: String) -> void:
 func take(item_key: String) -> bool:
 	if get_level(item_key) >= 1:
 		return false
+
 	if economy.friendship_point_balance < calculate_cost(item_key):
 		return false
+
 	subtract_friendship_points(calculate_cost(item_key))
 	state.item_levels[item_key] = 1
+	_assign_rack_slot(item_key, _get_item(item_key).role)
 	item_level_changed.emit(item_key)
 	SaveManager.save()
+
 	return true
 
 
@@ -327,8 +378,10 @@ func _refund_friendship_points(points: int) -> void:
 
 func _set_level(item_key: String, level: int) -> void:
 	state.item_levels[item_key] = level
+
 	if _is_placed(item_key):
 		_refresh_registration(item_key)
+
 	item_level_changed.emit(item_key)
 
 
@@ -338,16 +391,18 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		return
 	var item := _get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
-	if placement == PlacementScript.STORED:
+	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
+		_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
+		state.rack_slot_index_by_key.erase(item_key)
 	item_placement_changed.emit(item_key, placement)
-	var was_on_court := previous == PlacementScript.ON_COURT
-	var now_on_court := placement == PlacementScript.ON_COURT
+	var was_on_court := previous == Placement.ON_COURT
+	var now_on_court := placement == Placement.ON_COURT
 	if was_on_court != now_on_court and item.role == &"ball":
 		court_changed.emit(item_key, now_on_court)
 
@@ -361,11 +416,11 @@ func _refresh_registration(item_key: String) -> void:
 
 
 func _is_placed(item_key: String) -> bool:
-	return _get_placement(item_key) != PlacementScript.STORED
+	return _get_placement(item_key) != Placement.STORED
 
 
 func _natural_target(item: ItemDefinition) -> int:
-	return PlacementScript.ON_COURT if item.role == &"ball" else PlacementScript.EQUIPPED
+	return Placement.ON_COURT if item.role == &"ball" else Placement.EQUIPPED
 
 
 func _get_item(item_key: String) -> ItemDefinition:

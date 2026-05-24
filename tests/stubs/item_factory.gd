@@ -21,6 +21,14 @@ static func create_manager(
 	return manager
 
 
+## Gives the test manager an owned item at `level`; assigns the rack slot when STORED.
+## Replaces the `state.item_levels[key] = 1` poke that bypasses placement seams.
+static func give(manager: Node, item_key: String, level: int = 1) -> void:
+	manager.state.item_levels[item_key] = level
+	var item: ItemDefinition = manager._get_item(item_key)
+	manager._assign_rack_slot(item_key, item.role)
+
+
 static func create(
 	item_key: String, stat_key: StringName, operation: StringName, value: float
 ) -> ItemDefinition:
