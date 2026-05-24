@@ -4,7 +4,7 @@ Research scratchpad for mission Banana Stopa: which writers'-room-style outline 
 
 A note on sources. Most studios do not publish their internal bibles. Where the document itself is closed, this scratchpad relies on the developer's own description of it in talks, podcasts, and devlogs, and says so.
 
-A note on the worked fragments below. They were drafted against an earlier Volley canon shape (phone-call ending, photo-album Reconstruction, shopkeeper as the dead friend) that has since been retired. The current fiction lives in `designs/narrative/outline.md` and the bibles. The fragments stay in this scratchpad to demonstrate each format's shape; do not read them as fiction.
+A note on the worked fragments below. They were drafted against an earlier Volley fiction shape (phone-call ending, photo-album Reconstruction, shopkeeper as the dead friend) that has since been retired. The current fiction lives in `designs/narrative/outline.md` and the bibles. The fragments stay in this scratchpad to demonstrate each format's shape; do not read them as fiction.
 
 ## Long list
 
