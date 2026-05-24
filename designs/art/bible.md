@@ -151,7 +151,7 @@ Reconstruction is not a third visual style; the two styles stay distinct. What c
 
 Construction weathers as the arc proceeds. Saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. The warm centre is gone; the rallies render that absence.
 
-Reality acquires content. Scenes around the town hold memorable items the protagonist brings back into the construct; each item invokes a memory. The cliff opens at the end, through the unlocked gate in the garden.
+Reality acquires content. What the protagonist does there during Reconstruction, and how the Reconstruction loop yields the key that unlocks the gate at the end, is open. The cliff opens at the end, through the unlocked gate in the garden.
 
 
 ---
@@ -414,17 +414,16 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Reconstruction.** The arc between the break and the cliff. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
 - **The cliff and the gate.** The ending, at the cliff. The protagonist opens the locked gate at the back of the garden in Construction and steps through to Reality; Zach is on the memorial bench. Section 9.
-- **The key.** Yielded by the final memory in Reconstruction. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
+- **The key.** Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. How the Reconstruction loop yields it is open. Sections 8 and 9.
 - **The cliff.** The place outside the town where the friend died, a spot the friend group used to jump from. Visited late in Reconstruction. Sections 7 and 9.
 - **The champ.** The dead friend. Construction-only. Holds the championship spot. Section 4.
 - **The round.** The encounter at the end of each tournament step where the coach takes the other side of the court. Section 4.
 - **The shopkeeper.** The friend at the stall in Construction; the absence the protagonist walks past in Reality. Section 4.
-- **The sister (the tinkerer).** The shopkeeper's younger sister. At the family shop counter in Reality; works the bench in Construction. Section 4.
+- **Stephanie.** The shopkeeper's younger sister, the tinkerer. At the family shop counter in Reality; works the bench in Construction. Section 4.
 - **The partners.** Coaches in Construction; people from the protagonist's life in Reality. Each teaches one mechanic via the rally. Section 4.
 - **Tonal cracks.** Cracks inside Construction's fiction: light, posture, sound, atmosphere. Section 6.
 - **Meta-contextual cracks.** Cracks outside the fiction: UI, music, loading screens, menu wording. Section 6.
 - **The carry.** The bidirectional bridge between Construction and Reality during Reconstruction. Curated, not open. Section 8.
-- **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section 8.
 - **Soul.** The bond between the protagonist and each partner. Anything in the rally that bends physics is soul acting on the world. Section 12.
 - **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section 11.
 - **Two renders.** Each cross-style character has a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life. Section 4.
