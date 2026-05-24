@@ -16,7 +16,7 @@ The protagonist's interior sits in [`../characters/protagonist.md`](../character
 6. [Cracks during Construction](#6-cracks-during-construction)
 7. [The break](#7-the-break)
 8. [Part 2: Reconstruction](#8-part-2-reconstruction)
-9. [The cliff and the call](#9-the-cliff-and-the-call)
+9. [The cliff and the gate](#9-the-cliff-and-the-gate)
 10. [Credits and postgame](#10-credits-and-postgame)
 11. [The Six Marks](#11-the-six-marks)
 12. [Constants across venues](#12-constants-across-venues)
@@ -37,9 +37,9 @@ A racquet. A ball. A counter on the wall that climbs. A friend leaning on the co
 
 Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
-Construction is structured as a tournament the protagonist climbs; at the top sits a friend who died, and beating them is the goal. When the player wins the championship, the win lands wrong, and the construct breaks open. The player then moves between the two worlds, carrying things from one into the other, until the path opens to a bench at the cliff and a phone call across a few steps.
+Construction is structured as a tournament the protagonist climbs through competition classes, qualifying by class volley record and duelling the class's reigning champion. The championship is the final milestone; the protagonist beats the record, duels the reigning champ, and the construct breaks open. The player then moves between the two worlds, carrying things from one into the other, until a key found in Reality opens a locked gate at the back of the garden onto the cliff.
 
-Underneath every rally sits a single load-bearing mechanic. The world record is a phone number, and the phone belongs to the friend at the stall. The number sits in the protagonist's phone the whole game, unnamed in the contacts list, period-correct for a flip or candy-bar device. The player can dial it any time. It does not connect until the cliff. The unanswered ring is the player-facing weight of the protagonist's reach without contact.
+Full story shape lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; story-shape sections below summarise the outline and stay aligned with it.
 
 ---
 
@@ -47,7 +47,7 @@ Underneath every rally sits a single load-bearing mechanic. The world record is 
 
 The protagonist's hometown is a small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls between them. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. Faded grandeur with sun on it. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in. Pulls from real reference points; sits on no map.
 
-The period is pre-smartphone. Late 90s or early 2000s as a tonal range. Phones are flip, candy-bar, or land-line. Numbers are held in heads or written on paper. The exact year is open for the sketch to settle; what is fixed is the feel, and the absence of pocket databases that auto-attach a name to every digit. Period feel reaches across art direction: clothes, signage, phone hardware, photo prints.
+Two periods, one in each world. Construction holds the 90s in feel: saturated, analog, warm. Reality sits in 2014; the protagonist is mid-40s there, in their twenties as Construction renders them. Period feel reaches across art direction in both registers: 90s clothes, signage, photo prints in Construction; 2014 textures in Reality.
 
 The garden in Construction draws from this geography. Construction's other venues are pure invention; the garden is the seam where the constructed world touches the real one.
 
@@ -117,7 +117,7 @@ Martha's profile sits in [`../characters/martha.md`](../characters/martha.md); t
 
 The dead friend. Construction-only; their Reality is the cliff. Holds the championship spot at the top of the tournament ladder.
 
-Render them as someone the protagonist loved. Sharp at the championship because the friend was sharp; the doubled meaning of "becoming the champ" sits in their posture across the climb (the title to win, the friend to reach), the same word doing both jobs.
+Render Fern as someone the protagonist loved. Sharp at the championship because the friend was sharp.
 
 
 ---
@@ -166,31 +166,29 @@ Construction weathers as the arc proceeds. Saturation drops a notch, line weight
 
 Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
-Story shape (the search for the shopkeeper, dread, the photo book mechanic, the unnamed number staying unnamed, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
+Story shape (the search for Zach, dread, the items-invoke-memories mechanic, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
 
 ---
 
-## 9. The cliff and the call
+## 9. The cliff and the gate
 
 The cliff reads as a place people came to. A worn ledge, traces of small ceremony, the marks a group leaves on a spot they returned to until they stopped. A bench sits at the cliff edge, dedicated to the friend.
 
 ### Staging
 
-One image, two presences. The composition splits the frame across the bench area: protagonist on the path, shopkeeper on the bench, the few steps between them. Both holding phones. After the touchstone of *[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)*'s key art, where two characters share one image divided by a structural element. The split is the years of distance; the shared frame is the resolution. The phone is the line that crosses the split. The cliff and the sea sit behind both of them; the bench is the dedication; the call is the answer. One moment, two people, finally in the same picture.
+The protagonist opens the locked gate at the back of the garden in Construction and steps through to the cliff in Reality. Zach is sitting on the memorial bench. The shape is the protagonist arriving at a place that has been there the whole game; the gate was the last barrier.
 
-The call ends. The protagonist walks the few steps to the bench and sits beside the shopkeeper. Coming home is the call.
-
-Story shape (the dial, recognition landing, the shopkeeper picking up) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/05-postgame.md`](../concept/05-postgame.md).
+Full story shape lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
 ## 10. Credits and postgame
 
-Credits play over a rally. The protagonist on the left, the shopkeeper on the right, the first volley between them. Construction's saturated light returns, with the texture Reality has worn into it across Reconstruction. The bench from the cliff sits somewhere in frame, glimpsed past a gate that stays open.
+Credits play over a rally. The protagonist on the left, Zach on the right, the first volley between them in the construct. Construction's saturated light returns, with the texture Reality has worn into it across Reconstruction. The bench from the cliff sits somewhere in frame, glimpsed past a gate that stays open.
 
-Postgame is rallying with the shopkeeper, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
+Postgame is rallying with Zach, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
-Full canon for the call and postgame in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/05-postgame.md`](../concept/05-postgame.md).
+Full canon for the postgame in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
@@ -214,10 +212,10 @@ Things that travel with the camera through every Construction venue. They are Co
 - **The protagonist's racquet.** Same shape, same colour, same handle, wherever the rally is. Equipment hangs off it; the racquet is the constant the player carries.
 - **The ball.** The same ball at the centre of every rally. Item skins change its art; the size and presence are the same.
 - **The opposing returner.** A wall in the very first venue, a partner from the moment the first partner arrives. One returner across the rally, always.
-- **The friend at the stall.** The shopkeeper, in their Construction-render. Behind the counter of a small wooden stall, leaning on their elbows, watching the rally. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. The friend is recognisable wherever they sit. Present in Construction up to the break, absent across Reconstruction, back at the call.
+- **The friend at the stall.** Zach in his Construction-render. Behind the counter of a small wooden stall, leaning on his elbows, watching the rally. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. He is recognisable wherever he sits. Present in Construction up to the break, absent across Reconstruction, back on the bench at the cliff.
 - **The volley counter.** A wooden plaque in the garden, a coral-rimmed slate underwater, a hovering glyph in space. Same number, dressed for each venue. Diegetic everywhere.
 - **The warm light style.** Colour temperature shifts venue by venue: afternoon yellow, submerged green, nebula pink, canopy gold. The warmth holds even when the colour does not.
-- **The spirit of the volley.** The ball moves easily, the partner's timing settles in, the rally could keep going as long as both of them do. Volley names that the spirit of the volley: the protagonist's fighting spirit and their bond with each partner, the same thing seen from two angles. It deepens with shared rallies and small attentions. A long rally is the spirit at full breath; a miss is the spirit catching its breath again. Anything in the rally that bends physics is the spirit acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally.
+- **Soul.** The bond between the protagonist and each partner that channels through the rally. It deepens with shared rallies and small attentions. A long rally is soul at full breath; a miss is soul catching its breath again. Anything in the rally that bends physics is soul acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally. Full canon in [`../narrative/soul.md`](../narrative/soul.md).
 
 Reality's constants are its own. The kitchen, the photograph, the back walking down a street, the ordinary surfaces of an ordinary town. They have their own spine, and the player learns both.
 
@@ -334,7 +332,7 @@ A note on cost. Minimal animation per character keeps the labour budget where it
 
 ### The apex-return beat
 
-Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the friendship-bound and the bond-per-venue lives in [`../narrative/outline.md`](../narrative/outline.md); the ball-side mechanics live in [`../01-prototype/design/21-ball-dynamics.md`](../01-prototype/design/21-ball-dynamics.md).
+Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the soul-bound and the bond-per-venue lives in [`../narrative/soul.md`](../narrative/soul.md); the ball-side mechanics live in [`../01-prototype/design/21-ball-dynamics.md`](../01-prototype/design/21-ball-dynamics.md).
 
 The bond doing the work changes by venue. The garden runs the beat through the shopkeeper at the stall. The treetop, underwater, and meteor venues run it through the coach who teaches there. The pattern is the same; the character carrying it is whoever the venue's wind belongs to.
 
@@ -371,7 +369,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 
 - **[Pong](https://en.wikipedia.org/wiki/Pong)** (1972). The seed object.
 - **[Oddworld: Abe's Oddysee](https://store.steampowered.com/app/15700/Oddworld_Abes_Oddysee/) / [Exodus](https://store.steampowered.com/app/15710/Oddworld_Abes_Exoddus/)** (1997 / 1998). The Oddworld Signature: six artistic commandments that governed every screen. Structural inspiration for Volley's Six Marks.
-- **[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)** (2014). Hand-drawn painterly with dual settings shared by one story. Key-art touchstone for the call's split-frame composition.
+- **[Broken Age](https://store.steampowered.com/app/232790/Broken_Age/)** (2014). Hand-drawn painterly with dual settings shared by one story.
 - **[Machinarium](https://store.steampowered.com/app/40700/Machinarium/)** (2009, Amanita Design). Painterly atmosphere at sustainable scale.
 - **[The Stanley Parable](https://store.steampowered.com/app/1703340/The_Stanley_Parable_Ultra_Deluxe/)** (2013). A game that lets its own scaffolding show without breaking the player's trust.
 - **[Neko Atsume](https://en.wikipedia.org/wiki/Neko_Atsume)** (2014). Mobile lineage Volley sits adjacent to.
@@ -430,10 +428,9 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 
 - **Construction.** The vibrant style. Saturated, warm, generous. Where tennis lives. Section 5.
 - **Reality.** The second style. The protagonist's hometown, weighted and lived-in. Section 3 (overview), threaded through Parts 1 and 2.
-- **Reconstruction.** The arc between the break and the call. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
+- **Reconstruction.** The arc between the break and the cliff. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
-- **The call.** The ending, at the cliff. The protagonist dials the unnamed number; the shopkeeper's phone rings on the bench beside them; both hold their phones, the call open between them. Section 9.
-- **The unnamed number.** The shopkeeper's phone number sitting in the protagonist's phone, in the call log or contacts list, with no name attached. Period-correct for a flip or candy-bar device. Dialable any time; does not connect until the cliff. Sections 1 and 9.
+- **The cliff and the gate.** The ending, at the cliff. The protagonist opens the locked gate at the back of the garden in Construction and steps through to Reality; Zach is on the memorial bench. Section 9.
 - **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section 8.
 - **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
 - **The cliff.** The place outside the town where the friend died, a spot the friend group used to jump from. Visited late in Reconstruction. Sections 7 and 9.
@@ -446,6 +443,6 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Meta-contextual cracks.** Cracks outside the fiction: UI, music, loading screens, menu wording. Section 6.
 - **The carry.** The bidirectional bridge between Construction and Reality during Reconstruction. Curated, not open. Section 8.
 - **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section 8.
-- **The spirit of the volley.** The protagonist's fighting spirit and their bond with each partner. Anything in the rally that bends physics is the spirit acting on the world. Section 12.
+- **Soul.** The bond between the protagonist and each partner. Anything in the rally that bends physics is soul acting on the world. Section 12. Full canon in [`../narrative/soul.md`](../narrative/soul.md).
 - **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section 11.
 - **Two renders.** Each cross-style character has a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life. Section 4.
