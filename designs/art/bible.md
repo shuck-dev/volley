@@ -151,7 +151,7 @@ Reconstruction is not a third visual style; the two styles stay distinct. What c
 
 Construction weathers as the arc proceeds. Saturation drops a notch, line weight thickens, compositions hold longer pauses. The construction does not visually rebuild; it ages. The warm centre is gone; the rallies render that absence.
 
-Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
+Reality acquires content. Scenes around the town hold memorable items the protagonist brings back into the construct; each item invokes a memory. The cliff opens at the end, through the unlocked gate in the garden.
 
 
 ---
@@ -234,7 +234,7 @@ The friend's stall sits against one inside wall. A small wooden affair with a st
 
 A ball feeder sits on one side of the play area, holding the balls not currently in play. A smaller rack opposite holds equipment items.
 
-A locked gate sits at the back beside the tree. It is the one locked gate in the entire game. The player can see it but not reach it across most of the climb. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of cliff edge, a strip of sea that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger. Late in Reconstruction, after the album fills and the sister hands over the key, the protagonist returns to the garden, unlocks the gate, and walks through to the cliff in Reality.
+A locked gate sits at the back beside the tree. It is the one locked gate in the entire game. The player can see it but not reach it across most of the climb. Past it, just barely visible, is something the player cannot quite resolve: a streak of weirdness, a glimpse of cliff edge, a strip of sea that does not belong here. The garden is closed but not sealed, and the strangeness is meant to flicker rather than linger. Late in Reconstruction, the protagonist returns to the garden, unlocks the gate, and walks through to the cliff in Reality.
 
 The garden is the prototype's only built venue. Per SH-275, it carries the championship-shape exemplar: one coach, Martha, one mechanic she teaches, one round. Everything else in the game is the same shape, scaled across the trajectory below.
 
@@ -414,13 +414,12 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Reconstruction.** The arc between the break and the cliff. Free travel between the two styles; bidirectional carry. Not a third visual style. Section 8.
 - **The break.** The single rupture at the championship win. The protagonist beats the champ; the win lands wrong; the wall comes down. Section 7.
 - **The cliff and the gate.** The ending, at the cliff. The protagonist opens the locked gate at the back of the garden in Construction and steps through to Reality; Zach is on the memorial bench. Section 9.
-- **The album.** The photo book the sister holds. Half-filled at the start of Reconstruction, with a hidden compartment in the binding that opens when the album fills enough. Section 8.
-- **The key.** Inside the album's compartment. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
+- **The key.** Yielded by the final memory in Reconstruction. Opens the one locked gate at the back of the garden in Construction; through it is the cliff in Reality. Sections 8 and 9.
 - **The cliff.** The place outside the town where the friend died, a spot the friend group used to jump from. Visited late in Reconstruction. Sections 7 and 9.
 - **The champ.** The dead friend. Construction-only. Holds the championship spot. Section 4.
 - **The round.** The encounter at the end of each tournament step where the coach takes the other side of the court. Section 4.
-- **The shopkeeper.** The friend at the stall in Construction; the absence the protagonist walks past in Reality. The world record is their phone number. Section 4.
-- **The sister (the tinkerer).** The shopkeeper's younger sister. Holds the photo book in Reality; works the bench in Construction. Section 4.
+- **The shopkeeper.** The friend at the stall in Construction; the absence the protagonist walks past in Reality. Section 4.
+- **The sister (the tinkerer).** The shopkeeper's younger sister. At the family shop counter in Reality; works the bench in Construction. Section 4.
 - **The partners.** Coaches in Construction; people from the protagonist's life in Reality. Each teaches one mechanic via the rally. Section 4.
 - **Tonal cracks.** Cracks inside Construction's fiction: light, posture, sound, atmosphere. Section 6.
 - **Meta-contextual cracks.** Cracks outside the fiction: UI, music, loading screens, menu wording. Section 6.

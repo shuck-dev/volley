@@ -30,9 +30,9 @@ Reality is acoustic, less intense, more room. The references the team is reachin
 
 The two leitmotifs do not work together at first. They are not supposed to. By Reconstruction they begin to find each other, the way a person who has been refusing to think about something starts to think about it. The reconciliation is in the score because it is in the protagonist; the music tracks the acceptance, not the other way around.
 
-## The cliff and the call
+## The cliff and the gate
 
-The most loaded musical moment in the game. The art bible at [`../art/bible.md` § 9](../art/bible.md#9-the-cliff-and-the-call) and the narrative outline both hold the canon: a worn ledge, a bench dedicated to the friend who died, the shopkeeper alive on it, the protagonist on the path with their phone.
+The most loaded musical moment in the game. A worn ledge, a memorial bench dedicated to the friend who died, the shopkeeper alive on it, the protagonist arriving through the gate.
 
 This is where the two themes meet for real. Restraint is what carries it. The full reconciliation is not yet; the reach is.
 

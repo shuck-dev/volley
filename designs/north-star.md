@@ -41,7 +41,7 @@ The game should respect the player's time whether they engage with the narrative
 
 ## Design principles
 
-- **Numbers go up.** The core fantasy of an idle game. Friendship, streaks, lifetime volleys. Always visible, always climbing.
+- **Numbers go up.** The core fantasy of an idle game. Soul, streaks, lifetime volleys. Always visible, always climbing.
 - **Come back to good news.** The player returns to rewards, not a reset. Being away should feel like the game kept going without them.
 - **Don't make it a chore.** Active play is fun, not mandatory. Idle play earns less but still earns. The player chooses how much attention to give.
 - **Pinch points, not paywalls.** Progression slows naturally. Breakthrough moments feel earned. Nothing is gated behind anything except playing.
