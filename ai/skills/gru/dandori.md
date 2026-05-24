@@ -9,13 +9,13 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 
 **Trigger.** Josh says "dandori" on new work, or Gru spots a new-mission proposal trigger (a request that's bigger than one issue and needs a verification beat).
 
-**Pairs with:** `designs/process/dandori.md` (human-readable canon) and `designs/process/missions-and-projects.md` (taxonomy).
+**Pairs with:** `designs/process/dandori.md` (human-readable canon), `designs/process/missions-and-projects.md` (taxonomy), and memory `feedback_mission_lifecycle.md` (the rule body these steps invoke).
 
 ## The eight steps
 
 1. **Mission or issue?** Big enough for a milestone with a verification beat (Ride or CI gate), or just an Urgent issue? If one issue and the AC is the verification, file as Urgent and stop.
 
-2. **Project.** Apply the linear-scope rule: a project's scope is what completes inside it. If the work spans multiple existing projects, the boundary is wrong; move issues, merge projects, or file a new one.
+2. **Project and cycle.** Apply the linear-scope rule: a project's scope is what completes inside it. If the work spans multiple existing projects, the boundary is wrong; move issues, merge projects, or file a new one. Pick the cycle the mission will run in; scope only from issues already in that cycle. Never move issues into the cycle as part of mission creation.
 
 3. **Goals.** Terse numbered list, one line per goal, no prose.
 
@@ -23,7 +23,7 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 
 5. **Ride.** Player playtest or CI run? Ride issue files in the same project with the milestone set. AC names the player-observable flows the rework must not regress, or the CI signal that proves the gate. Code-inspection findings file as Battle or code-review issues, not Ride ACs.
 
-6. **Mission codename.** Gru-canon: two-word handle from the Despicable Me / Minions lexicon. Opaque; the codename does not leak the mission's content. The milestone description does.
+6. **Mission codename.** Opaque two-word handle from a wide pool: Despicable Me / Minions canon, history, mythology, science, geography, art movements, oblique English nouns. The codename does not leak the mission's content; the milestone description does. No theme-match. Reach across corners; if three candidates sit in the same pocket the draft is stale. See `feedback_mission_lifecycle.md` § Phase 2.
 
 7. **Crew.** Per work unit:
    - Impl writer.
@@ -35,6 +35,6 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 
 8. **Confirm.** List the project, milestone, goals, ride, codename, and full crew. Wait for go before dispatching.
 
-## What this skill replaces
+## Pairings
 
-Memory rule `feedback_dandori_structure.md` mirrors this skill; both must agree. Update both when the rule changes.
+The skill is the checklist; the rule body lives in `feedback_mission_lifecycle.md`. `feedback_dandori_structure.md` mirrors this skill; all three must agree when the rule changes.
