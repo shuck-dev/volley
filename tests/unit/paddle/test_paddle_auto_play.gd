@@ -9,6 +9,7 @@ var _controller: AutoplayController
 var _paddle: Paddle
 var _ball: Ball
 var _config: PaddleAIConfig
+var _timeout: TimeoutController
 
 
 static func ball_below_paddle() -> float:
@@ -35,10 +36,14 @@ func before_each() -> void:
 	_config.speed_scale = 0.75
 	_config.noise = 0.0
 
+	_timeout = load("res://scripts/core/timeout_controller.gd").new()
+	add_child_autofree(_timeout)
+
 	_controller = load("res://scripts/core/autoplay_controller.gd").new()
 	_controller.paddle = _paddle
 	_controller.ball = _ball
 	_controller.config = _config
+	_controller.timeout_controller = _timeout
 	add_child_autofree(_controller)
 
 
@@ -120,3 +125,20 @@ func test_autoplay_tracks_new_ball_position_after_delay() -> void:
 	_paddle.position = Vector2.ZERO
 	_controller._physics_process(PHYSICS_DELTA)
 	assert_gt(_paddle.velocity.y, 0.0)
+
+
+# --- timeout interaction ---
+func test_timeout_disables_autoplay_and_emits_signal() -> void:
+	_controller.toggle()
+	assert_true(_controller.is_enabled(), "precondition: autoplay enabled")
+	watch_signals(_controller)
+	_timeout.timeout_started.emit()
+	assert_false(_controller.is_enabled())
+	assert_signal_emitted_with_parameters(_controller, "autoplay_toggled", [false])
+
+
+func test_timeout_end_does_not_re_enable_autoplay() -> void:
+	_controller.toggle()
+	_timeout.timeout_started.emit()
+	_timeout.timeout_ended.emit()
+	assert_false(_controller.is_enabled())

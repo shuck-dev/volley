@@ -225,6 +225,8 @@ Overrides:
 
 `friendship_point_rate` does not belong on the controller. It's a game economy value: `game.gd` already decides the friendship multiplier based on autoplay state. The rate should live on `game.gd` (or `ProgressionConfig` alongside other economy thresholds). The controller's only economy responsibility is emitting `autoplay_toggled` so `game.gd` knows which rate to apply. This is a cleanup from the current `AutoPlayConfig` which bundled AI tuning and economy values in the same resource.
 
+**Timeout interaction.** `AutoplayController` listens for `TimeoutController.timeout_started` and force-disables itself, emitting `autoplay_toggled(false)`. The handler bypasses `toggle()` so it does not also flip `paddle.set_physics_process`; `TimeoutController` owns paddle physics during the walk-off and `toggle()` would fight the freeze. `timeout_ended` does not auto-restore: the walk back is a deliberate beat, and the player re-toggles autoplay when they want it back.
+
 ### `PartnerAIController`
 
 Always enabled from `_ready()`. No additional state, no toggle, no input handling.

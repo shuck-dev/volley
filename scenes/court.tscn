@@ -104,9 +104,10 @@ position = Vector2(430.8, 0)
 [node name="SoulBound" type="Marker2D" parent="Bounds" unique_id=630029583]
 position = Vector2(0, -111)
 
-[node name="AutoplayController" type="Node" parent="." unique_id=280970194]
+[node name="AutoplayController" type="Node" parent="." unique_id=280970194 node_paths=PackedStringArray("timeout_controller")]
 script = ExtResource("7_tipki")
 config = ExtResource("8_85g3d")
+timeout_controller = NodePath("../TimeoutController")
 
 [node name="TimeoutController" type="Node" parent="." unique_id=1998734210]
 script = ExtResource("19_timeout")
