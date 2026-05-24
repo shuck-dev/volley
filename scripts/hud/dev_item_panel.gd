@@ -3,6 +3,8 @@ extends VBoxContainer
 var _buttons: Dictionary = {}
 var _remove_buttons: Dictionary = {}
 var _drag := DraggableBehavior.new()
+var _timeout: TimeoutController
+var _reconciler: BallReconciler
 
 
 func _ready() -> void:
@@ -10,6 +12,11 @@ func _ready() -> void:
 		queue_free()
 		return
 	mouse_filter = Control.MOUSE_FILTER_PASS
+	# One-time tree walk to wire the rally gate; siblings live under Venue.Court.
+	var court: Court = get_tree().root.find_child("Court", true, false)
+	if court != null:
+		_timeout = court.timeout_controller
+		_reconciler = court.ball_system
 	_add_header()
 	for item in ItemManager.items:
 		var container := VBoxContainer.new()
@@ -77,7 +84,7 @@ func _on_item_pressed(item_key: String) -> void:
 func _on_remove_level_pressed(item_key: String) -> void:
 	# Double-check the gate at press time even though the button reflects it visually; the poll
 	# runs once per frame and a same-frame state flip could race the click.
-	if RallyGate.is_rally_in_progress_in_tree(get_tree()):
+	if RallyGate.is_rally_in_progress(_timeout, _reconciler):
 		return
 	ItemManager.remove_level(item_key)
 
@@ -85,7 +92,7 @@ func _on_remove_level_pressed(item_key: String) -> void:
 # Poll the rally gate so the - button reflects mid-rally lockout without subscribing to
 # ball state changes; cost is negligible in a debug-only panel.
 func _process(_delta: float) -> void:
-	var locked: bool = RallyGate.is_rally_in_progress_in_tree(get_tree())
+	var locked: bool = RallyGate.is_rally_in_progress(_timeout, _reconciler)
 	for button: Button in _remove_buttons.values():
 		button.disabled = locked
 

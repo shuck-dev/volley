@@ -241,7 +241,10 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 
 
 ## Press on the mounted equipped art: spawn a HeldBody for the equipment and start a drag whose cancel restores EQUIPPED.
+## Rejected while a rally is in progress; equipment interaction is a timeout-only verb.
 func grab_equipped_from_character(item_key: String, press_position: Variant = null) -> bool:
+	if RallyGate.is_rally_in_progress(timeout_controller, reconciler):
+		return false
 	if _drag_target() != null:
 		return false
 	if _item_manager == null or _item_manager.get_level(item_key) <= 0:

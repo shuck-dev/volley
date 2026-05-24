@@ -29,7 +29,6 @@ func configure(item_manager: Node) -> void:
 
 
 func _ready() -> void:
-	add_to_group(RallyGate.RECONCILER_GROUP)
 	if _item_manager == null:
 		_item_manager = ItemManager
 
