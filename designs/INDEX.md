@@ -8,13 +8,13 @@ These folders hold the project's design canon, organised by discipline.
 
 ## Where to start
 
-If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first. The bible carries setting, cast, the arc, and the craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones) in one place.
+If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) first.
 
-If you are an **engineer** new to the codebase, read [North Star](north-star.md) for the shape of the game, [Tech-art / INDEX](tech-art/INDEX.md) for the rendering side, and the active phase folder ([01-prototype/](01-prototype/INDEX.md) at the moment) for what the team is building this cycle.
+If you are an **engineer** new to the codebase, read [North Star](north-star.md) and the active phase folder ([01-prototype/](01-prototype/INDEX.md)).
 
-If you are a **writer** working on copy, beats, or character voice, read [Narrative / Outline](narrative/outline.md) for the canon and [Research / STYLE](research/STYLE.md) for the prose voice the project holds itself to.
+If you are a **writer** working on copy, beats, or character voice, read [Narrative](narrative/INDEX.md) and [Research / STYLE](research/STYLE.md).
 
-If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer. Art questions land in `art/`, story questions in `narrative/`, pipeline questions in `tech-art/`.
+If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer.
 
 If you are an **open-source visitor**, [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
 
@@ -26,97 +26,23 @@ Two kinds of folder.
 
 **Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
 
-**Phase folders are not canon.** Anything in `01-prototype/`, `03-beta/`, or `04-content/` is working draft. If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder, not to cite it as authoritative. The discipline folders are what the next brief and the next ticket pick up.
+**Phase folders are not canon.** If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder.
 
 The two-folder layout is the navigation: discipline tells you *what kind of doc*, phase tells you *what era it speaks to*.
 
 ## Discipline
 
-### Art
-
-| Doc | Purpose |
+| Folder | What lives here |
 |---|---|
-| [Bible](art/bible.md) | The world canon. Setting, two styles, cast, the arc from Construction through cliff and gate, then craft sections (Six Marks, tone, palette, line, treatment, animation, touchstones). Source of truth for the artist. |
-| [Tech Pipeline](art/tech-pipeline.md) | How the style is implemented in Godot: parallax layers, sprite delivery, the per-style grade. |
-| [Character Lighting](art/character-lighting.md) | Dynamic light-state pipeline for characters across venues. |
-
-### Audio
-
-| Doc | Purpose |
-|---|---|
-| [INDEX](audio/INDEX.md) | What audio owns: the bible, the score structure, the engine seam, sound design, reference tracks. |
-| [Bible](audio/bible.md) | The score canon. Two halves, two voices, eventual reconciliation. Construction (Kondo / multi-genre / unusual instruments), Reality (Hisaishi, Glass / acoustic / sparse), reconciliation by Reconstruction. The piano reduction is the compromise for now; multi-genre is the destination. |
-| [Score Structure](audio/score-structure.md) | Leitmotifs, themes, where they appear in the arc, how the two halves' material reconciles. |
-| [Tech Pipeline](audio/tech-pipeline.md) | How audio is implemented in Godot: hand-off, formats, bus graph, the half-shift. |
-| [Sound Design](audio/sound-design.md) | Diegetic and UI sound: the rally, the counter, the stall, menu and shop. |
-
-### Narrative
-
-| Doc | Purpose |
-|---|---|
-| [Outline](narrative/outline.md) | The game in acts. The canonical narrative spine. |
-| [Soul](narrative/soul.md) | The bond mechanic that channels into levitation; the protagonist's vocabulary for a partly-real magic. |
-| [Times](narrative/times.md) | Periods and ages: Reality 2014, Construction 1991. |
-
-### Tech-art
-
-| Doc | Purpose |
-|---|---|
-| [INDEX](tech-art/INDEX.md) | What tech-art owns: the seam between art and engine. |
-| [Grading](tech-art/grading.md) | LUT pipeline for the per-style grade between Construction and Reality. |
-
-### Process
-
-| Doc | Purpose |
-|---|---|
-| [Ticket Writing](process/ticket-writing.md) | How issues get written so a stranger can pick them up cold. |
-| [Labels](process/labels.md) | The label taxonomy: what each label means and when it applies. |
-
-### Research
-
-| Doc | Purpose |
-|---|---|
-| [STYLE](research/STYLE.md) | The prose voice for long-form writing. Read first. |
-| [The Case for Open Development](research/the-case-for-open-development.md) | The published essay: why open development is the most reliable practice for a new indie to be seen. |
-| [Open Development Plan](research/open-development-plan.md) | The internal plan that seeded the essay. |
-| [Visual Positioning](research/visual-positioning.md) | Where Volley! sits visually among idle, desktop, and sport games. |
-| [Early Clone Games](research/early-clone-games.md) | Why Breakout's clone lineage outlasted Pong's. |
-| [Game Structure References](research/game-structure-references.md) | Structural reference points for the loop and the story. |
-| [Funding Matrix](research/funding-matrix.md) | The price of Volley reflects what the funding has actually built. Public bands map cumulative funding to product scope to download price; same product across web (free), download (paid), source (free build). |
-| [Giveaway Strategy](research/giveaway-strategy.md) | How many keys can the studio give away across all avenues before taking real loss. Per-band ceilings, channel caps, the no-open-key-sales rule, year-one recommendation. |
-
-### Characters
-
-| Doc | Purpose |
-|---|---|
-| [Protagonist](characters/protagonist.md) | Who the player is playing as, and what the partners are to them. |
-| [Shopkeeper](characters/shopkeeper.md) | The friend at the stall in Construction; the person the protagonist pushed away in Reality. |
-| [The tinkerer](characters/tinkerer.md) | Zach's younger sister. The workbench-keeper in Construction. |
-| [Martha](characters/martha.md) | First partner. Caribbean-British cashier; coach at the garden venue. |
-| [Martha and the partners](characters/partners.md) | The wider partner cast and lineage rule. |
-| [Fern](characters/fern.md) | The dead friend, rendered into Construction as the championship duel. |
-
-### Concept
-
-| Doc | Purpose |
-|---|---|
-| [Two Styles](concept/00-two-styles.md) | High-level architecture: how Construction and Reality fit together. |
-| [Construction](concept/01-construction.md) | Part 1: tournament shape, rally, count, prototype scope. |
-| [Reconstruction](concept/03-reconstruction.md) | Part 2: search, items invoking memories, the key. |
-| [Reality](concept/04-reality.md) | Reality as a style: place, visual register, audio, scene shape. |
-| [Postgame](concept/05-postgame.md) | The cliff, the gate, credits, postgame rally. |
-| [Milestones](concept/milestones.md) | Competition classes; qualify-then-duel pattern. |
-| [The Game of Volley](concept/the-game.md) | Cooperative rally rules and the duel variant. |
-| [The Break](concept/the-break.md) | The rupture between Construction and Reality. |
-| [Venue](concept/venue.md) | The setting where the protagonist volleys. |
-
-### AI
-
-| Doc | Purpose |
-|---|---|
-| [Swarm Architecture](ai/swarm-architecture.md) | The agent system that helps build the game: Gru-and-minions, two pools, session tiers, PR verdict flow. |
-
-The [open-development essay](research/the-case-for-open-development.md) sits in `research/` but speaks to the same surface: what stays human in the work as AI absorbs the boilerplate.
+| [Art](art/INDEX.md) | The visual canon and the rendering pipeline. |
+| [Audio](audio/INDEX.md) | The score, the engine seam, the sound design. |
+| [Narrative](narrative/INDEX.md) | The canonical arc, soul as a mechanic in fiction, the times. |
+| [Characters](characters/INDEX.md) | Profiles for the people in the protagonist's life. |
+| [Concept](concept/INDEX.md) | Per-mechanic and per-mechanic-set design canon. |
+| [Tech-art](tech-art/INDEX.md) | The seam between art and engine. |
+| [Process](process/INDEX.md) | How the team writes, files, dispatches, runs the work. |
+| [Research](research/INDEX.md) | Public essay, internal plans, references, structural studies. |
+| [AI](ai/INDEX.md) | The agent system that helps build the game. |
 
 ## Phase
 
@@ -125,8 +51,6 @@ The [open-development essay](research/the-case-for-open-development.md) sits in 
 | Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline canon. |
 | Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction, the cliff and the gate, and the postgame playable end-to-end. |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content past the main arc. |
-
-Drafts start in the active phase folder, settle into the discipline folder when they earn canon, and the phase folder keeps the working history.
 
 ## Top-level
 
