@@ -14,6 +14,7 @@ signal partner_changed
 @export var player_spawn: Marker2D
 @export var autoplay_controller: AutoplayController
 @export var right_wall: StaticBody2D
+@export var soul_bound: Marker2D
 @export var partner_spawn: Marker2D
 @export var timeout_controller: TimeoutController
 @export var drag_controller: BallDragController
@@ -71,6 +72,8 @@ func _ready() -> void:
 
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
+	if soul_bound != null:
+		court_config.friendship_bound_y = soul_bound.position.y
 	ball_tracker.court_config = court_config
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)

@@ -31,7 +31,7 @@ size = Vector2(22, 500)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
 size = Vector2(800, 20)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "partner_spawn", "timeout_controller", "drag_controller")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "soul_bound", "partner_spawn", "timeout_controller", "drag_controller")]
 script = ExtResource("1_tbgi4")
 ball_system = NodePath("BallReconciler")
 ball_tracker = NodePath("BallTracker")
@@ -40,6 +40,7 @@ player_paddle_scene = ExtResource("9_0tnpc")
 player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
 right_wall = NodePath("Bounds/Right Wall")
+soul_bound = NodePath("Bounds/SoulBound")
 partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 drag_controller = NodePath("BallDragController")
@@ -99,6 +100,9 @@ position = Vector2(-430.8, 0)
 
 [node name="RightMissZone" parent="Bounds/MissZones" unique_id=500636962 instance=ExtResource("10_miss_zone")]
 position = Vector2(430.8, 0)
+
+[node name="SoulBound" type="Marker2D" parent="Bounds" unique_id=630029583]
+position = Vector2(0, -111)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
