@@ -42,19 +42,15 @@ Hold this as quiet weight in how they treat the climb: not triumph, not desperat
 
 The win is the break. The construct cannot hold itself together once its central goal has been reached and proved meaningless.
 
-At the win the count completes; the digits land; the protagonist sees them, and they look weirdly familiar. The number has been sitting in their phone the whole game. The connection does not form. The digits stay digits.
-
 ---
 
-## Part 2: the dread, the search, the unnamed number
+## Part 2: the dread, the search, the items
 
-Reconstruction runs on dread. The shopkeeper went missing at the break and the protagonist has been afraid the friend's path has been followed. The driving force is the search for what happened, where they have gone, whether it is too late. The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
+Reconstruction runs on dread. Zach went missing at the break and the protagonist has been afraid the friend's path has been followed. The driving force is the search for what happened, where they have gone, whether it is too late. The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
 
-The phone is theirs to hold the whole game. A number sits in the call log or the contacts list, unnamed: deleted, never saved, or held by the device as digits without labels. They scroll past it sometimes. They carry it without naming it.
+The protagonist gains the ability to travel between the construct and reality at will. The game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
 
-The player has the phone throughout. They can dial the unnamed number from Construction onward. It never connects. The unanswered ring is the player-facing weight of the protagonist's reach without contact. The protagonist does not know whose number it is. The number stays unnamed across Reconstruction, dialable, never picked up. The reveal is held until the cliff.
-
-The album fills as the protagonist works. The shopkeeper's younger sister has held the half-filled book the whole time; finding the scattered photos is the protagonist's work. When it fills enough the hidden compartment opens. The key is inside. The sister hands it to them.
+The final memory yields a key.
 
 ---
 
@@ -76,24 +72,18 @@ The structure holds because they choose it, again and again. Hold this as a quie
 
 ---
 
-## The cliff and the call
+## The cliff and the gate
 
-The protagonist returns to the garden with the key from the album. They walk to the locked gate at the back, unlock it, step through to the cliff in Reality.
+The protagonist returns to the garden with the key. They walk to the locked gate at the back, unlock it, step through to the cliff in Reality.
 
-A bench sits at the cliff edge, dedicated to the friend who died. The shopkeeper is on the bench, alive. The dread inverts to relief. The fear was wrong; they are still here, withdrawn, refusing calls, but here.
+A bench sits at the cliff edge, dedicated to the friend who died. Zach is on the bench, alive. The dread inverts to relief. The fear was wrong; he is still here, withdrawn, but here.
 
-Recognition lands. The unnamed number in the phone, the world record they reached, the digits the championship match resolved on, the person on the bench: all the same number, held unnamed all along, only now legible. The connection forms in the seeing.
-
-The shopkeeper is right there. The protagonist could walk up silently. They do not. They take out their phone and dial the number, knowing now whose it is. The shopkeeper's phone rings on the bench beside them; they could ignore it the way they have been ignoring all the others. They do not. They look up at the sound, see the protagonist, pick up. Both of them hold their phones, the call open between them.
-
-The dial bridges intention, not space. Chosen presence rather than a quiet approach. Two acts at once: choosing to reach, and finally attaching the name to the number that has sat unnamed in the protagonist's phone the whole game. The years between them were what was hard; the choice to be reached, and to reach, is the part that took the whole game.
-
-The call ends. The protagonist crosses, sits beside the shopkeeper on the bench. Credits roll over the rally that follows: the protagonist on the left, the shopkeeper on the right, the championship spot held by the actual person at last. The daily thing the protagonist did alone is finally done together.
+The protagonist crosses to the bench and sits beside Zach. Credits roll over the rally that follows: the protagonist on the left, Zach on the right, the championship spot held by the actual person at last. The daily thing the protagonist did alone is finally done together.
 
 ---
 
 ## Postgame
 
-Rallying with the shopkeeper, on the right side of the court that used to be the championship spot. The cliff stays returnable through the now-unlocked gate; a place to sit, look at the sea, listen.
+Rallying with Zach, on the right side of the court that used to be the championship spot. The cliff stays returnable through the now-unlocked gate; a place to sit, look at the sea, listen.
 
 Construction has its centre back, as the actual relationship rather than the substitute. The protagonist still loves the game. They still love the friend at the stall. The structure still stands; the difference is that the person it was built around is in it now.
