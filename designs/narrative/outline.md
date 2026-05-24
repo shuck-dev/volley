@@ -1,6 +1,6 @@
 # Volley! narrative outline
 
-The game in acts. World and visual canon live in [`../art/bible.md`](../art/bible.md). Per-character portraits live in [`../characters/`](../characters/). Mechanics live in the system docs and are not repeated here.
+The game in acts. World and visual canon live in [`../art/bible.md`](../art/bible.md). Per-character profiles live in [`../characters/`](../characters/). Mechanics live in the system docs and are not repeated here.
 
 ## Act I. Construction
 
