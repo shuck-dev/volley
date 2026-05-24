@@ -36,7 +36,7 @@ Speed progression becomes a ladder of tiers. Each tier has its own floor and cei
 
 ### Tier structure
 
-The ladder has three or four tiers (final count is a design call made in the prototype). Tier 0 is the base rally speed; each subsequent tier steps up to a progressively higher band, with the ceiling raised by that tier's `ball_speed_max_range` entry. The top tier's ceiling is the world max speed the physics can reliably handle, tuned during prototyping. Tier 0's floor and width match today's base-stats numbers, so starting a run feels the same as today.
+The ladder has three or four tiers (the count is a design call made in the prototype). Tier 0 is the base rally speed; each subsequent tier steps up to a progressively higher band, with the ceiling raised by that tier's `ball_speed_max_range` entry. The top tier's ceiling is the world max speed the physics can reliably handle, tuned during prototyping. Tier 0's floor and width match today's base-stats numbers, so starting a run feels the same as today.
 
 No tier, no item, no effect can promote the ball past the top tier's ceiling.
 

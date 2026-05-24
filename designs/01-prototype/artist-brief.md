@@ -46,7 +46,7 @@ Two concept pieces showing both worlds:
    - A quiet moment between the main character and a partner in an ordinary place
    - Fly on the wall; we are seeing an impactful moment in the main characters life
 
-Both pieces should give a clear feel for line, shape, colour, and tone. They do not need to be final or polished; they should show a direction and the shift between the two worlds.
+Both pieces should give a clear feel for line, shape, colour, and tone. They do not need to be polished; they should show a direction and the shift between the two worlds.
 
 Include any supplementary info or design as you feel like.
 

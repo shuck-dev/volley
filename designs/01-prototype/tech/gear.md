@@ -1,6 +1,6 @@
 # Gear
 
-Tech spec for the gear capacity model in [`../design/gear.md`](../design/gear.md). Covers the capacity stat on the character, the drop target on the character, the `ItemManager` surface, and the timeout gate.
+Tech spec for the gear capacity model. Covers the capacity stat on the character, the drop target on the character, the `ItemManager` surface, and the timeout gate.
 
 ## Capacity
 

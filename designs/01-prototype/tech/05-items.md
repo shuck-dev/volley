@@ -1,6 +1,6 @@
 # Prototype Item Effect Blocks
 
-Per-item effect definitions and cost/scaling tables for the 8 prototype items plus the simple stat items. Framework identifiers (trigger types, condition types, outcome types, stat keys, signals, modifier operations, level scaling) live in [`04-effect-system.md`](04-effect-system.md). Player-facing flavour and design intent live in [`../design/items.md`](../design/items.md).
+Per-item effect definitions and cost/scaling tables for the 8 prototype items plus the simple stat items.
 
 Cost formula: `cost = base_cost * scaling ^ current_level`. Level 1 cost is `base_cost`.
 

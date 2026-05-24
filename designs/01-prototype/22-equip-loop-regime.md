@@ -105,17 +105,17 @@ The narrative says venue leaps are diegetic transitions, not save/load events. L
 
 ### 8. Does the rack become optional once loose-in-venue is the default?
 
-Only as a failure case, not a default. The rack is the canonical home for any ball not currently in play, and the rack is faster to read (the count is visible at a glance). Loose-in-venue is the **failure case** for an invalid release, not the default state. The rack is the convenient option; loose is the option that exists because the world is a world.
+Only as a failure case, not a default. The rack is the default home for any ball not currently in play, and the rack is faster to read (the count is visible at a glance). Loose-in-venue is the **failure case** for an invalid release, not the default state. The rack is the convenient option; loose is the option that exists because the world is a world.
 
 ### 9. Released-ball case: does loose-but-not-in-play feel coherent?
 
-This is the question that earns the model. A ball that has rolled off the court is the canonical loose case, and it is already coherent: the rally moved the ball, the ball left the rally, the ball is on the floor, the player picks it up and serves it again. A ball **released** loose by the player (drag from rack, release on the venue floor) reads the same way: the player chose not to put the ball into play right now, and the world honours that choice.
+This is the question that earns the model. A ball that has rolled off the court is the obvious loose case, and it is already coherent: the rally moved the ball, the ball left the rally, the ball is on the floor, the player picks it up and serves it again. A ball **released** loose by the player (drag from rack, release on the venue floor) reads the same way: the player chose not to put the ball into play right now, and the world honours that choice.
 
 The risk is that the player releases a ball loose by accident, missing the court, and reads the result as an error. The fix is the hover feedback at release: the held token communicates which position will go to court, which to rack, and which is loose, and the player's release is informed.
 
 ### 10. How does serving work when the player can grab a loose ball?
 
-The hopper is the canonical serve mechanism. A ball loaded into the hopper exits with a controlled, gentle initial velocity tuned for a clean serve, every time. The hopper is what the player uses when they want to play.
+The hopper is the default serve mechanism. A ball loaded into the hopper exits with a controlled, gentle initial velocity tuned for a clean serve, every time. The hopper is what the player uses when they want to play.
 
 A player-served ball (grab a loose ball, throw it onto the court) gets its initial momentum entirely from the throw gesture. There is no serve-shaping under the hood; the velocity vector at release is the velocity vector the ball carries. This opens a comedic fail state: an over-thrown serve smacks the player character on the rebound and knocks them over. The lesson the venue teaches is "serve gently, or use the hopper", and either resolution is a valid play style. The fail state is funny rather than punishing, which matches the cosy register; the fix is to throw softer next time, or to load the next ball into the hopper.
 
@@ -166,6 +166,6 @@ Ship the model as proposed in [21-ball-dynamics.md](design/21-ball-dynamics.md),
 1. Loose state applies to every diegetic item in the regime: balls, equipment, fixtures. Effects are out of scope, owned by the effect manager.
 2. Body projection on release uses an expansion-ring fallback after a short hold, then cancels to source if even the expanded shape fails.
 
-The hopper is the canonical serve. Player throws are honest physics, with two cases. A throw of a ball at rest takes its launch velocity from the player's release gesture, capped at a max speed so chaining hard throws on rest balls cannot accumulate rally speed. A throw of a ball that is already live (mid-rally grab) preserves the rally's accumulated speed; the gesture chooses direction only, magnitude stays from the rally. Same rule as the existing grab-and-release. An over-throw on a rest ball smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
+The hopper is the standard serve. Player throws are honest physics, with two cases. A throw of a ball at rest takes its launch velocity from the player's release gesture, capped at a max speed so chaining hard throws on rest balls cannot accumulate rally speed. A throw of a ball that is already live (mid-rally grab) preserves the rally's accumulated speed; the gesture chooses direction only, magnitude stays from the rally. Same rule as the existing grab-and-release. An over-throw on a rest ball smacks the character into a comedic fall. The player learns to serve gently, or uses the hopper. Both are valid.
 
 The model is the right shape because the venue is part of the game's character, not just a backdrop. Volley's cosy register earns the loose-in-venue rule; the floor that quietly holds the player's toys is the diegetic argument, and tidying is the player's job. A less ambient game would not earn this. The amendments narrow the model only at the seam where another subsystem (the effect manager) already owns the work.

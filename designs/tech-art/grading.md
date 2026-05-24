@@ -6,7 +6,7 @@ This document fixes the grading contract: what the artist delivers, what the eng
 
 ## Why a grade lives in code
 
-Each Construction venue and Reality scene has its own colour register, locked per the canon in [the world bible](../art/bible.md) Section 3 and Section 15. Construction holds saturated colour and generous warm light; Reality pulls cooler, plainer, more atmospheric. Reconstruction is the arc between the two, not a third style; a Reconstruction scene renders in whichever style it sits inside.
+Each Construction venue and Reality scene has its own colour register, locked per the design in [the world bible](../art/bible.md) Section 3 and Section 15. Construction holds saturated colour and generous warm light; Reality pulls cooler, plainer, more atmospheric. Reconstruction is the arc between the two, not a third style; a Reconstruction scene renders in whichever style it sits inside.
 
 Authoring every sprite twice, once for each style, is the path the bible already takes for character renders and venue paintings where the style shift is felt. Repainting is right when the line-weight, edge treatment, and pigment selection have to change with the style. Grading is right when the same painted surface needs to read warmer here, cooler there, without the artist redoing the work. Most surfaces sit in the second category: a prop on the workshop bench, a stray ball at rest, a gear-rack item, the friend's stall. The grade carries those.
 
@@ -22,7 +22,7 @@ Surfaces that need to stay colour-stable across every style live outside the gra
 
 Construction and Reality each carry one LUT. Construction's pushes saturation and warmth, holds shadows warm, lifts the midtone toward the gold-and-honey range the bible names. Reality's pulls toward the naturalistic: a notch of saturation off, a cooler shadow, a midtone that lets weather sit in the air.
 
-Reconstruction does not get a LUT. Construction venues across Reconstruction wear the Construction LUT and the bible's "weathering" effect is delivered through the LUT itself easing toward a slightly muted variant as the arc progresses; Reality scenes wear the Reality LUT throughout. The two styles stay distinct in code as they do in the canon.
+Reconstruction does not get a LUT. Construction venues across Reconstruction wear the Construction LUT and the bible's "weathering" effect is delivered through the LUT itself easing toward a slightly muted variant as the arc progresses; Reality scenes wear the Reality LUT throughout. The two styles stay distinct in code as they do in the design.
 
 ## Per-venue overrides
 
@@ -52,4 +52,4 @@ The constructed-to-real shift inside a venue, where the same place is rendered i
 
 ---
 
-For broader tech context the artist works against, see [the artist tech context](../01-prototype/artist-tech-context.md). For the asset delivery pipeline the LUT slots into, see [the tech pipeline](../art/tech-pipeline.md). For the per-style colour canon the grades implement, see [the world bible](../art/bible.md) Section 3 and Section 15.
+For broader tech context the artist works against, see [the artist tech context](../01-prototype/artist-tech-context.md). For the asset delivery pipeline the LUT slots into, see [the tech pipeline](../art/tech-pipeline.md). For the per-style colour design the grades implement, see [the world bible](../art/bible.md) Section 3 and Section 15.

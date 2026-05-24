@@ -1,7 +1,7 @@
 # Make Fun Pass
 
 ## Goal
-Run the complete prototype as a player and validate that the core loops are actually fun before moving to v0.5. This is a structured playtest and tuning pass — not a feature sprint. No new features ship here. Things that feel bad get fixed.
+Run the complete prototype as a player and validate that the core loops are actually fun before moving to v0.5. This is a structured playtest and tuning pass, not a feature sprint. No new features ship here. Things that feel bad get fixed.
 
 **Points:** 3 (tuning and iteration)
 **Dependencies:** All prototype features complete (HUD Pass, Ball Scaling, Progression System, Idle Play, First Partner Unlock, Desktop Experience)
@@ -14,13 +14,13 @@ Run the complete prototype as a player and validate that the core loops are actu
 These are the three things the prototype must deliver. Everything in this pass is tested against them.
 
 ### 1. Active play feels worth doing for 10 minutes
-The player picks up the paddle, keeps a streak going, and wants to keep going. The difficulty ramp from ball scaling should create tension without feeling unfair. When the streak ends, the player's first thought should be "I need to upgrade" — not "that was random."
+The player picks up the paddle, keeps a streak going, and wants to keep going. The difficulty ramp from ball scaling should create tension without feeling unfair. When the streak ends, the player's first thought should be "I need to upgrade", not "that was random."
 
 ### 2. The idle loop delivers on "come back to good news"
 Player leaves the game running or closes it. When they return, something is waiting: friendship earned, a milestone approaching, a streak that ended naturally. The return moment should feel like a small reward, not a chore to process.
 
 ### 3. Upgrades make a noticeable difference
-After spending friendship and upgrading, the player feels the change immediately. Paddle is faster, bigger, or the ball starts slower — something concrete shifts. The loop of "struggle → upgrade → feel good → hit a new wall → upgrade again" should complete at least once in a single session.
+After spending friendship and upgrading, the player feels the change immediately. Paddle is faster, bigger, or the ball starts slower, something concrete shifts. The loop of "struggle → upgrade → feel good → hit a new wall → upgrade again" should complete at least once in a single session.
 
 ---
 
@@ -28,7 +28,7 @@ After spending friendship and upgrading, the player feels the change immediately
 
 Run each session with fresh eyes, no dev shortcuts.
 
-### Session A — Cold start (10 minutes active)
+### Session A, Cold start (10 minutes active)
 Start a fresh save. Play actively for 10 minutes without touching the upgrade shop.
 
 What to observe:
@@ -37,7 +37,7 @@ What to observe:
 - Is there a natural moment where the player wants to open the shop?
 - Does 10 minutes feel too long, too short, or right?
 
-### Session B — Upgrade loop (until first wall hit)
+### Session B, Upgrade loop (until first wall hit)
 Start from Session A save. Buy the first item, play until the streak noticeably outpaces the improvement, buy again.
 
 What to observe:
@@ -46,7 +46,7 @@ What to observe:
 - Do the available item choices feel meaningfully different from each other?
 - Is there a moment where the player thinks "I know what I want next"?
 
-### Session C — Idle and return
+### Session C, Idle and return
 Leave the game running for 30 minutes (active window, no input). Return and review.
 
 What to observe:
@@ -54,7 +54,7 @@ What to observe:
 - Is the friendship earned in 30 minutes idle proportionate to active play?
 - Does the gap between idle friendship rate and active friendship rate create a reason to jump in?
 
-### Session D — Offline return
+### Session D, Offline return
 Close the game. Wait at least 2 hours. Reopen.
 
 What to observe:
@@ -107,4 +107,4 @@ The goal is not polish (that is v0.5 work). The goal is confirming that the feed
 
 - Not a bug fix sprint (bugs blocking play goals are in scope; everything else is not)
 - Not a polish pass (animations, art, audio quality are v0.5 work)
-- Not a balance pass (deep economy tuning is in v0.5 — Balance Pass. This is just "is it fun at all?")
+- Not a balance pass (deep economy tuning is in v0.5, Balance Pass. This is just "is it fun at all?")

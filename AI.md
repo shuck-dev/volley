@@ -12,7 +12,7 @@ Everything those agents produce is treated as a draft from a colleague. The main
 
 A short list of where AI is deliberately kept out:
 
-- **Narrative and canon.** The world, the protagonist, the language the game uses for itself: all human-authored. Drafts may pass through an agent for sentence-level polish, but the seed and the world-building are the maintainer's. Agent drafts of canon prose have a documented tendency to drift into pretty-sounding nonsense; the rule is that every sentence in canon has to assert something checkable, and that gate is held by a person.
+- **Narrative and fiction.** The world, the protagonist, the language the game uses for itself: all human-authored. Drafts may pass through an agent for sentence-level polish, but the seed and the world-building are the maintainer's. Agent drafts of narrative prose have a documented tendency to drift into pretty-sounding nonsense; the rule is that every sentence in fiction has to assert something checkable, and that gate is held by a person.
 - **Art, music, and sound.** Commissioned from human artists and composers. The asset license at [ASSETS-LICENSE.md](ASSETS-LICENSE.md) covers the rights side. No generative-AI assets ship in the game.
 - **Merge decisions.** Pull requests merge on the maintainer's `approved-human` label. Reviewer agents can apply `zaphod-approved` or `zaphod-blocked` to surface findings, but those are signals, not decisions. The maintainer reads the diff and the playtest before the gate flips.
 - **Marketing and voice.** Devlogs, social posts, replies in issue threads, replies in community spaces: all the maintainer. The reasoning lives in the open-development essay; an agent ghostwriting the voice would undo the point.

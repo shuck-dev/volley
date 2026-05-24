@@ -1,5 +1,5 @@
 # Single-entity ball model: a live grab keeps the same Ball across grab → release.
-# Canon: designs/01-prototype/tech/02-ball-lifecycle.md.
+# Spec: designs/01-prototype/tech/02-ball-lifecycle.md.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")

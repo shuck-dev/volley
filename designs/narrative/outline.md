@@ -1,78 +1,37 @@
 # Volley! narrative outline
 
-This doc is a sourcebook, not a brief. It is structured by what is in the world rather than what happens in it: places, people, objects, weather, with a short timeline at the back. Each entry is a portrait, written in the same voice across the document. A writer reading any one entry should know what is true about that part of the world; a writer reading the whole document should be able to walk into it.
+The game in acts. Mechanics live in the system docs and are not repeated here.
 
-The story told as prose lives in [`story.md`](story.md). World rendering and tone are in [`../art/bible.md`](../art/bible.md). The arc in close-up is in [`../characters/protagonist.md`](../characters/protagonist.md). Mechanics live in the system docs and are not repeated here.
+## Act I. Construction
 
-This file is the structural index. The portraits below are stubbed; prose lands in follow-up commits.
+The protagonist trains in the garden. They are in their twenties, in the middle stretch of a life searching for a purpose, and the purpose has settled on a single number: the world volley record. They have hope and vigour but nothing to show for it. No racquet, no rally partner, no equipment. All they have is a ball from the bushes and the wall of their house to bounce it at. Little by little they start building their soul for Volley.
 
-## How to read this doc
+Zach comes over hearing of the protagonist's new dream and gives them a racquet. They are one of the protagonist's best friends. After a while, they start getting the hang of it. Zach comes back with a stall determined to help the protagonist's journey. Zach filled the stall with items connected to the protagonist from Zach's home.
 
-One paragraph on the discipline: portraits over plot, voice consistent across entries, canon locks called out inline, mechanics deliberately absent. Names a small number of conventions the writer is expected to keep.
+Later on, Zach gets more professional and gets a catalogue so the protagonist can get larger items: court furnishings, decorations and dogs to help with the ball fetching. Zach's younger sister, Stephanie, the tinkerer, takes a corner of the stall as her workshop and upgrades whatever the protagonist brings her.
 
-## Places
+Martha gets wind of this and agrees to be the protagonist's rally partner. This is the true start of the rally.
 
-Each entry: a portrait of a place as it is in canon, with its sensory detail, its inhabitants in their resting state, and any canon lock that applies to it.
+At the top of the ladder sits the volley champion, Fern. The lineage of past champions Fern caps is the ladder the protagonist climbs through. At the back of the garden, behind the stall and the tree, a gate sits in the wall, locked.
 
-- The garden, in Construction
-- The garden, in Reality
-- The shop, as a stall in Construction's garden
-- The shop, as a closed shop in Reality
-- The workshop, in the corner of the garden
-- Construction's other venues, as a set
-- The town, in Reality
-- The path, the bench, and the cliff
-- The sister's house
+## Act II. Break
 
-## People
+The protagonist is fully kitted and the record is in sight. The want is no longer joy. It has become need.
 
-Each entry: a portrait of a person as the player encounters them, with their voice, their relation to the protagonist, and any name or fact held back from the player.
+The championship arrives. The protagonist duels and wins. It feels hollow. What was it all for? Everything feels heavy, a crushing, sounds from the other side. It gets unbearable. The protagonist clutches their face and blacks out.
 
-- The protagonist
-- The shopkeeper
-- Martha
-- The other partners, as a set
-- The champ
-- The tinkerer
-- The sister
-- The dead friend
+What the protagonist wakes into, and how the friend they have not been thinking about surfaces back into view, is open.
 
-## Objects
+## Act III. Reconstruction
 
-Each entry: a portrait of a single object, what it does, where it sits, and what canon lock attaches to it.
+The driver of this act is to find Zach. The protagonist gains the ability to travel between the construct and reality at will. The volley count falls to the side.
 
-- The gate and the padlock
-- The key
-- The phone and the unnamed number
-- The photo album and its hidden compartment
-- The racquet
-- The chalk
-- The bench plaque
+What the Reconstruction loop actually is, and how the player closes in on Zach within it, is open.
 
-## Weathers
+## Ending
 
-Each entry: a portrait of an atmosphere or felt force in the world, written as a place or person would be.
+The protagonist receives whatever the Reconstruction loop yields. That yield unlocks the gate in the garden leading to the cliff. By this point the player knows about the cliff but not that the gate leads to it. The protagonist opens the gate and sees Zach sitting on the memorial bench dedicated to their friend.
 
-- Friendship as wind
-- The period
-- The leak between worlds
+## Postgame
 
-## Staged scenes
-
-Three scenes are written in full as short staged passages and placed inline at the hinges where the carrier bag wants the spear. Each entry lists the scene's anchor and what the staging is doing.
-
-- The championship win
-- The locked gate
-- The cliff and the dial
-
-## Timeline
-
-A short chronological spine: the sequence of events the player encounters, named in one or two clauses each. The timeline is the back of the bag, not the canon; canon is what the portraits say.
-
-## Canon locks
-
-The list of facts held back from the player, where each lands, and what unlocks it.
-
-## Cross-references
-
-Pointers to the docs this outline sits beside: `story.md`, `../art/bible.md`, `../characters/protagonist.md`, `../01-prototype/design/21-ball-dynamics.md`, and the research scratchpad at `../research/narrative-outline-formats.md`.
+Zach is found. He can now share the construct with the protagonist, knowing and accepting two truths: that the construct is not real, and that Fern is dead. The game continues, new items, venues etc.

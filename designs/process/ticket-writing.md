@@ -155,7 +155,7 @@ Design has no `produce` label because design output is always a spec that tech, 
 
 Label: `sfx`.
 
-Ariel Gross (*The Audio Manager's Handbook*, 2017) is the canonical reference. Consensus on SFX briefs is tight: the industry agrees on the fields.
+Ariel Gross (*The Audio Manager's Handbook*, 2017) is the standard reference. Consensus on SFX briefs is tight: the industry agrees on the fields.
 
 A SFX brief carries trigger event, function (feedback, ambience, UI, diegetic), emotional tone, reference, variation count, length, priority and voice-stealing rules, and middleware event name. Akash Thakkar (GDC 2017, 2019) adds "what does the player need to know from this sound" as the function clause. Joanna Fang (Naughty Dog, GDC 2018) stresses physical material, surface, and force for diegetic sfx.
 
@@ -280,7 +280,7 @@ The project is developed in the open. Tickets are public, and strangers land on 
 
 ## GitHub issue reference
 
-For open-source contributors, the canonical view of a ticket is on GitHub. Here is what GitHub issues support and how we use each feature.
+For open-source contributors, the standard view of a ticket is on GitHub. Here is what GitHub issues support and how we use each feature.
 
 **Title and body.** The body is Markdown. Images, code blocks, links, and headings all render. Keep the title short; put detail in the body.
 

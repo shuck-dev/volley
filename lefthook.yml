@@ -10,6 +10,11 @@ output:
   - execution_out
   - skips
 
+commit-msg:
+  commands:
+    check-format:
+      run: ./scripts/ci/check_commit_msg.sh {1}
+
 pre-commit:
   piped: true
   commands:

@@ -1,6 +1,6 @@
 ---
 name: creative-writing
-description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing canon on story compression and prose craft.
+description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing authorities on story compression and prose craft.
 ---
 
 # Creative writing
@@ -13,7 +13,7 @@ Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the
 
 Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the canonical voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The canonical voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
+For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 
@@ -131,6 +131,6 @@ For long-form prose (essays, design docs longer than a page), use [`voice.md`](v
 
 ## Source notes
 
-The eight rules above are distilled from canon: McKee, Truby, Forster, Genette, Provost, Klinkenborg, Le Guin, Hemingway, Gardner, VanderMeer, Cron, Snyder. Citations name author + title; the research scratchpad that built this skill is in `ai/scratchpads/` if a deeper read is needed.
+The eight rules above are distilled from authorities: McKee, Truby, Forster, Genette, Provost, Klinkenborg, Le Guin, Hemingway, Gardner, VanderMeer, Cron, Snyder. Citations name author + title; the research scratchpad that built this skill is in `ai/scratchpads/` if a deeper read is needed.
 
-Where game-narrative-specific guidance was sought (Emily Short, Jenova Chen, Brian Moriarty), primary-source verification was thinner; the skill leans on cross-discipline canon rather than fabricating game-specific authorities. If a game-narrative authority surfaces with verifiable summary-form guidance, fold it in.
+Where game-narrative-specific guidance was sought (Emily Short, Jenova Chen, Brian Moriarty), primary-source verification was thinner; the skill leans on cross-discipline authorities rather than fabricating game-specific authorities. If a game-narrative authority surfaces with verifiable summary-form guidance, fold it in.

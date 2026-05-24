@@ -12,12 +12,4 @@ In Construction she takes the other side of the court. Between points she lines 
 
 Octavia Butler's "The Book of Martha" (2003) gives the name. In Butler's story God summons Martha, a Black woman novelist, and asks her to make a single change to humanity, on the condition that *people must still find some happiness*. Martha gives humanity dreams: every night, vivid, the thing each person most loves to do. Volley's Martha works at a smaller scale and the same one. A till in a small shop is where a person, on the worst day they are having, gets called *my love* and walks back out into it. She is not the architect of happiness; she is the small mercy that keeps the day liveable. That is the thread the name carries. The rest of the cast extends the [partner-lineage rule](partners.md#lineage); Butler is Martha's alone.
 
-## Across the arc
-
-**Construction** (Part 1). The coach at the garden venue. Trains the protagonist via the rally; takes the other side of the court for the round.
-
-**Reconstruction** (Part 2). Carries memories of the shopkeeper into the rally between points. Her lines soften, lengthen, surface what she remembers.
-
-The cliff/call and Postgame beats are the cast-wide shape; see [`partners.md`](partners.md) § Across the arc.
-
 Working age range 45 to 60.

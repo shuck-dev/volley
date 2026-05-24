@@ -25,7 +25,7 @@ Local multiplayer does not strictly need this foundation (it can share a physics
 
 All gameplay state changes go through a central event bus or command system instead of direct mutation. This means:
 
-- Paddle hit, ball miss, friendship earned, item purchased, volley count changed: all expressed as commands/events
+- Paddle hit, ball miss, soul earned, item purchased, volley count changed: all expressed as commands/events
 - Game state is reconstructed from the event stream
 - Single-player mode runs the same command path with no network layer; zero overhead when playing alone
 
@@ -129,7 +129,7 @@ The Alpha foundation supports both models. The choice is made when online multip
 ## Open questions
 
 - Should the command bus be a simple signal-based system or a proper command queue with history?
-- How does the friendship economy work in multiplayer? Shared pool, separate pools, or competitive?
+- How does the soul economy work in multiplayer? Shared pool, separate pools, or competitive?
 - Does the shop (clearance) pause for both players, or can one player shop while the other plays?
 - What are the win conditions for multiplayer? First to N points? Timed?
 - Should online multiplayer use Godot's built-in MultiplayerAPI or a custom solution?

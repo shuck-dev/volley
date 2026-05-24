@@ -10,7 +10,7 @@ Reaching the top of a tier is supposed to register as an event, not as a number 
 
 ## Reward ladder
 
-Rewards are what fires on `on_tier_completed`. They are tuned for first playtest, not for final balance.
+Rewards are what fires on `on_tier_completed`. They are tuned for first playtest, not for shipped balance.
 
 - **Tier 0 peak** (entering Tier 1). Baseline rally state. No reward fires. The band shift is its own felt beat: the ball arrives in the next register, audio brightens a step, the trail gets a little longer. The rally counter ticks in its normal rhythm.
 - **Tier 1 peak** (entering Tier 2). Small cheer and a sparkle off the ball at the moment of the transition. One friendship tick lands on the next paddle hit. The rally counter flourishes, a single beat bigger than its usual tick. No currency, no unlock.

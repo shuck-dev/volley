@@ -47,7 +47,7 @@ Cycles are the scheduling layer below projects. Shuck's cycles are two weeks lon
 
 **Cycles are named alphabetically after famous puppets.** One letter per cycle, marching A → Z. Check the most recent cycle's letter before proposing the next one (for example, if the last named cycle was Bobo, the next is a C puppet).
 
-**Cycle descriptions are flat short sentences.** Linear's compact cycle preview collapses markdown lists and renders bullet characters as literal text, so no "Goals:" header, no bullet list — one flat line of full-stop-separated sentences.
+**Cycle descriptions are flat short sentences.** Linear's compact cycle preview collapses markdown lists and renders bullet characters as literal text, so no "Goals:" header, no bullet list, one flat line of full-stop-separated sentences.
 
 **Any project with a target date inside a cycle must be either scoped into that cycle or have its dates moved.** Don't let a project silently miss its `targetDate`: either promote its remaining tickets to Ready and pull them into the cycle, or Josh moves the dates. This applies to parallel and foundation projects too.
 

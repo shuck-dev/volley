@@ -9,7 +9,7 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 
 **Trigger.** Josh says "dandori" on new work, or Gru spots a new-mission proposal trigger (a request that's bigger than one issue and needs a verification beat).
 
-**Pairs with:** `designs/process/dandori.md` (human-readable canon) and `designs/process/missions-and-projects.md` (taxonomy).
+**Pairs with:** `designs/process/dandori.md` (human-readable doc) and `designs/process/missions-and-projects.md` (taxonomy).
 
 ## The eight steps
 
@@ -23,7 +23,7 @@ The interrogation order Gru runs when planning a new mission. Walk the steps; do
 
 5. **Ride.** Player playtest or CI run? Ride issue files in the same project with the milestone set. AC names the player-observable flows the rework must not regress, or the CI signal that proves the gate. Code-inspection findings file as Battle or code-review issues, not Ride ACs.
 
-6. **Mission codename.** Gru-canon: two-word handle from the Despicable Me / Minions lexicon. Opaque; the codename does not leak the mission's content. The milestone description does.
+6. **Mission codename.** Gru naming: two-word handle from the Despicable Me / Minions lexicon. Opaque; the codename does not leak the mission's content. The milestone description does.
 
 7. **Crew.** Per work unit:
    - Impl writer.

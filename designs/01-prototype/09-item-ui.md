@@ -63,5 +63,5 @@ These are not cosmetic. Without tactile feedback, dragging a Control node feels 
 
 ## Notes
 
-- The `Item` resource is pure data — no visual nodes. The draggable scene owns visuals and reads from the resource.
+- The `Item` resource is pure data, no visual nodes. The draggable scene owns visuals and reads from the resource.
 - ItemManager handles all registration/equip logic triggered by drop events.

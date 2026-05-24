@@ -130,4 +130,4 @@ Both must pass before auto-merge fires. The checks are posted by `.github/workfl
 - **`zaphod-dep-action`**: the dependency is a GitHub Action.
 - **`zaphod-dep-pip`**: the dependency is a Python package from `requirements-dev.txt`.
 
-Pinned in `.github/dependabot.yml` per ecosystem. The `zaphod-` prefix groups every bot-applied label together at the bottom of the picker — Dependabot is treated as another head of the same Zaphod that handles AI review.
+Pinned in `.github/dependabot.yml` per ecosystem. The `zaphod-` prefix groups every bot-applied label together at the bottom of the picker, Dependabot is treated as another head of the same Zaphod that handles AI review.

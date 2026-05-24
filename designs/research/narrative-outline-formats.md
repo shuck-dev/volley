@@ -4,6 +4,8 @@ Research scratchpad for mission Banana Stopa: which writers'-room-style outline 
 
 A note on sources. Most studios do not publish their internal bibles. Where the document itself is closed, this scratchpad relies on the developer's own description of it in talks, podcasts, and devlogs, and says so.
 
+A note on the worked fragments below. They were drafted against an earlier Volley fiction shape (phone-call ending, photo-album Reconstruction, shopkeeper as the dead friend) that has since been retired. The current fiction lives in `designs/narrative/outline.md` and the bibles. The fragments stay in this scratchpad to demonstrate each format's shape; do not read them as fiction.
+
 ## Long list
 
 **The TV show bible.** A reference document for incoming writers: logline, story engine, character breakdowns, pilot, future seasons. The format has migrated into games via TV-trained writers. Studiobinder's template is the most-cited current version; ScreenCraft maintains a list of canonical examples (*Lost*, *Friday Night Lights*, *Breaking Bad*) ([Studiobinder](https://www.studiobinder.com/blog/what-is-a-show-bible-examples-template/), [ScreenCraft](https://screencraft.org/blog/21-series-bibles-that-every-tv-screenwriter-should-read/)). Its strength is onboarding. Its weakness is that it reads like a pitch document; it tells the show, it does not feel it.

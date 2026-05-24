@@ -76,7 +76,7 @@ This rule exists because two consecutive Rides on the equip-loop drag work shipp
 
 The test seam is fine for: stat clamping, edge-cap branches, save round-trips, error paths the input handler delegates to. When you use the seam in those cases, leave a one-line comment naming why the real-input path is covered elsewhere.
 
-### Canonical pattern: press-drag-release through real `InputEventMouseButton`
+### Standard pattern: press-drag-release through real `InputEventMouseButton`
 
 The press routes through whichever `Area2D.input_event` signal the production scene listens to (`pickup_area.input_event` on a shop slot, `ClickArea.input_event` on a rack slot, `Ball.input_event` on a live ball). The release routes through the controller's `_input(InputEventMouseButton)` handler with the cursor position carried on the event itself. Both ends are deterministic under headless; no viewport polling involved.
 
@@ -122,7 +122,7 @@ Integration tests are reserved for full player-loop completions (per `memory/fee
 
 | File | Loop completion(s) covered | Real-input coverage |
 |---|---|---|
-| `test_real_input_drag_paths.gd` | Shop press-drag-release purchase loop (SH-253), live-ball mid-rally grab → rack-return loop (SH-252b). | All cases drive `pickup_area.input_event` / `Area2D.input_event` and `_input(InputEventMouseButton)`. Reference file for the canonical pattern. |
+| `test_real_input_drag_paths.gd` | Shop press-drag-release purchase loop (SH-253), live-ball mid-rally grab → rack-return loop (SH-252b). | All cases drive `pickup_area.input_event` / `Area2D.input_event` and `_input(InputEventMouseButton)`. Reference file for the standard pattern. |
 | `test_ball_regime_transitions.gd` | Rack → court spawn, court → rack regrow, rack → mid-venue OUT_REST, save/reload preserves live ball, real press-drag-release on rack (SH-245), real press on live ball mid-rally (SH-247), pre-existing scene Ball grabbable mid-rally. | SH-245 / SH-247 / SH-262 scenarios drive `Area2D.input_event`; the earlier scenarios pin placement-state outcomes that the real-input scenarios then exercise end-to-end. |
 | `test_placement_drives_effects.gd` | Equipment rack → player → rack cycle, ball rack → court → rack cycle, save/reload preserves placement and running effects. | None needed; placement is data, not pointer input. |
 | `test_miss_to_rest_to_regrab_preserves_identity.gd` | PLAY → OUT_REST → OUT_HELD → PLAY on a single Ball instance. | Drives the production drag-controller path. |

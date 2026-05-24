@@ -12,15 +12,15 @@ This is also the multi-genre half of the game. The opening proposal: an under-ut
 
 ## Cracks
 
-Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [`../art/bible.md` § 6](../art/bible.md#6-cracks-during-construction) holds the visual canon; audio carries its half of the same accumulation.
+Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [`../art/bible.md` § 6](../art/bible.md#6-cracks-during-construction) holds the visual design; audio carries its half of the same accumulation.
 
 The discipline is the same as the visual one. The leak is never literal. The Reality theme does not arrive in Construction during the cracks. What arrives is the Construction music starting to sound like it knows it is the Construction music.
 
 ## The break
 
-The protagonist beats the champ. Both pulls of becoming-champ satisfy at the same beat and neither was the thing. The construct breaks open.
+The protagonist beats the record and duels the champ. The win lands wrong. The construct breaks open.
 
-The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual canon for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
+The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual design for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
 
 ## Reconstruction
 
@@ -30,9 +30,9 @@ Reality is acoustic, less intense, more room. The references the team is reachin
 
 The two leitmotifs do not work together at first. They are not supposed to. By Reconstruction they begin to find each other, the way a person who has been refusing to think about something starts to think about it. The reconciliation is in the score because it is in the protagonist; the music tracks the acceptance, not the other way around.
 
-## The cliff and the call
+## The cliff and the gate
 
-The most loaded musical moment in the game. The art bible at [`../art/bible.md` § 9](../art/bible.md#9-the-cliff-and-the-call) and the narrative outline both hold the canon: a worn ledge, a bench dedicated to the friend who died, the shopkeeper alive on it, the protagonist on the path with their phone.
+The most loaded musical moment in the game. A worn ledge, a memorial bench dedicated to the friend who died, the shopkeeper alive on it, the protagonist arriving through the gate.
 
 This is where the two themes meet for real. Restraint is what carries it. The full reconciliation is not yet; the reach is.
 

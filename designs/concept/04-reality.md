@@ -1,6 +1,6 @@
 # Reality
 
-The second style. Reality on its own terms: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-two-styles.md`. The break that introduces Reality lives in `02-cracks-and-break.md`. The Part 2 work that happens inside Reality (photo album, sister, search) lives in `03-reconstruction.md`. The cliff and the call live in `05-postgame.md`.
+The second style. Reality on its own terms: how it looks, how it sounds, the shape of a Reality scene. High-level architecture in `00-two-styles.md`. The Part 2 work that happens inside Reality (items invoking memories, sister, search) lives in `03-reconstruction.md`. The cliff and the gate live in `05-postgame.md`.
 
 ## The place
 
@@ -30,29 +30,29 @@ Reality is interaction-driven, not rally-driven. The player walks into a scene, 
 
 The structure-level commit: not pong; not inventory recombination; being present in a room and finding what wants to happen. Specific puzzle mechanics (interaction surfaces, scene state, dialogue layering) are downstream game-design work and live in SH-279.
 
-Scenes are gated by photos. Each found photo opens a Reality scene; finding the photo and the corresponding scene compounds the trail. The mechanic itself is in `03-reconstruction.md`; what matters here is the shape: scenes are hand-built, return-supporting, layered with state across visits.
+Scenes hold memorable items the protagonist carries back into the construct; each item invokes a memory. The mechanic itself is in `03-reconstruction.md`; what matters here is the shape: scenes are hand-built, return-supporting, layered with state across visits.
 
 ## The cast in Reality
 
 Reality holds the real-world version of every cross-style character. Each is at their actual age, in their actual life, plainer than their Construction-render. The player meets them across Part 2.
 
-**The sister.** The tinkerer's real-world counterpart. The shopkeeper's younger sister. Less weighted by the death than the shopkeeper. Holds the photo album. The bridge. One of the first reachable people in Reality. Detail in `03-reconstruction.md`.
+**The sister.** The tinkerer's real-world counterpart. Zach's younger sister. One of the first reachable people in Reality. Detail in `03-reconstruction.md`.
 
 **Martha and the partners.** The cashier at the actual newsagent; the others as they actually are. Not coaches here, just people the protagonist knew.
 
-**The shopkeeper.** Present in Reality from the break onward. Not approachable directly until the cliff. The unnamed number that never connects is the player-facing weight of their absence; detail in `03-reconstruction.md`. The cliff meeting and the call are in `05-postgame.md`.
+**Zach.** Present in Reality from the break onward. Not approachable directly until the cliff. Detail in `03-reconstruction.md`; the cliff meeting in `05-postgame.md`.
 
-**The protagonist.** Reality-render of the MC. Older, gentler, less athletic than their Construction-render. Same character, real version.
+**The protagonist.** Reality-render of the MC. 49 in Reality, 26 in Construction. Same character, real version.
 
-The champ is Construction-only. No Reality counterpart. Their reality is the cliff (`05-postgame.md`): the place the friend group used to jump from, the place the friend died, the place the shopkeeper went back to.
+Fern is Construction-only. No Reality counterpart. Fern's reality is the cliff (`05-postgame.md`): the place the friend group used to jump from, the place the friend died.
 
 ## Period
 
-Late 90s or early 2000s as a tonal range. Pre-smartphone. Phones flip or candy-bar or land-line. Numbers held in heads or written on paper, not auto-named in pocket databases. Period-appropriate clothes, signage, phone hardware, photo prints. The unnamed-number mechanic depends on the period.
+Construction holds 1991. Reality sits in 2014. The protagonist is 49 in Reality, 26 in Construction.
 
 ## Production notes
 
 - Reality is finite hand-crafted content. The hometown is built once with iterative additions across Part 2.
-- The sister is the most-visited Reality character (she holds the photo album). Her scene supports many returns.
-- The cliff is a separate location built once. The same cliff the friend group used as a jumping spot, the same edge the friend went off, the bench at the top dedicated to them. Used at the chosen-acceptance moment and re-enterable through the unlocked gate after the call (`05-postgame.md`).
+- The sister is one of the most-visited Reality characters. Her scene supports many returns.
+- The cliff is a separate location built once. The same cliff the friend group used as a jumping spot, the same edge the friend went off, the memorial bench at the top dedicated to them. Re-enterable through the unlocked gate (`05-postgame.md`).
 - Specific Reality tooling (interaction surfaces, scene state, dialogue, navigation) belongs to SH-279.

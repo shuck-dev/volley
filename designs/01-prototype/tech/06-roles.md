@@ -1,6 +1,6 @@
 # Item Roles
 
-Every item declares one of three roles. The role decides where it goes on the court, who owns its prop, and what gesture the player uses to move it. Drag-gesture details (live drag vs. step-off required) live in [`../08-kit.md`](../08-kit.md).
+Every item declares one of three roles. The role decides where it goes on the court, who owns its prop, and what gesture the player uses to move it.
 
 **Dependencies:** Items (`../08-items.md`), Venue (`../08-venue.md`), ItemManager (`../08-item-manager.md`), Fixtures (`../08-fixtures.md`), Kit (`../08-kit.md`).
 
