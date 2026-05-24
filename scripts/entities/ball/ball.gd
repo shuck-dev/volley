@@ -25,6 +25,8 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 @export var grab_area: GrabArea
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
+## Apex-arc threshold y; BallTracker injects at attach time from the SoulBound marker.
+var bound_y: float
 
 var speed := 0.0
 var min_speed: float
@@ -85,7 +87,6 @@ func _update_play_state(delta: float) -> void:
 	if play_state != PlayState.PLAY_NORMAL and play_state != PlayState.PLAY_ARC:
 		return
 
-	var bound_y: float = court_config.friendship_bound_y
 	var above_bound: bool = global_position.y < bound_y
 
 	if above_bound and play_state == PlayState.PLAY_NORMAL:
@@ -192,7 +193,6 @@ func enter_stored() -> void:
 func enter_play() -> void:
 	_suppress_miss_detection = false
 	PLAY_ACTIVE_CONFIG.apply(self)
-	var bound_y: float = court_config.friendship_bound_y if court_config != null else 0.0
 	var above_bound: bool = global_position.y < bound_y
 
 	if above_bound:

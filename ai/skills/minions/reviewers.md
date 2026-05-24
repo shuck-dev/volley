@@ -45,7 +45,7 @@ The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered r
 
 ## Verdict shape
 
-Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome.
+Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome. The dispatcher report is not a third outcome. If your dispatcher report contains substantive findings (player-affecting, latent bug, missing guard, design concern), those findings have to land on the PR as inline comments first; the verdict then becomes block. Putting findings in the dispatcher report alone leaves the author with nothing to act on and the merge gate with no signal.
 
 - **Approve**: apply `zaphod-approved` via `gh pr edit <N> --add-label zaphod-approved` and stop. No comment on the challenge, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve. <!-- todo: once a service account exists, approves also post `gh pr review --approve --body ""` so the Reviews tab shows attribution on mobile. -->
 - **Block**: post each finding as an inline review comment anchored to the diff line. No verdict body on the challenge conversation. Apply `zaphod-blocked`. Never post in the main challenge thread.

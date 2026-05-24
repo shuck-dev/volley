@@ -17,12 +17,12 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_config = load("res://scripts/core/court_config.gd").new()
-	_config.friendship_bound_y = BOUND_Y
 	_config.relock_ramp_seconds = 0.1
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	_ball.court_config = _config
+	_ball.bound_y = BOUND_Y
 	add_child_autofree(_ball)
 	_ball.global_position = Vector2(0.0, 0.0)
 	_ball.linear_velocity = Vector2(
