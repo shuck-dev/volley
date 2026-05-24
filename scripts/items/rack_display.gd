@@ -51,8 +51,14 @@ func refresh() -> void:
 			continue
 		if marker_count == 0:
 			continue
-		var marker_index: int = min(index, marker_count - 1)
-		var slot: Node2D = _build_slot(definition, _slot_markers[marker_index].position)
+
+		if index >= marker_count:
+			push_error(
+				"RackDisplay: kit items exceed marker count; skipping overflow key %s" % item_key
+			)
+			continue
+
+		var slot: Node2D = _build_slot(definition, _slot_markers[index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
 	_apply_slot_visibility()
@@ -120,8 +126,16 @@ func get_slot_position_for(item_key: String) -> Vector2:
 	if index < 0 or _slot_markers.is_empty():
 		return Vector2.ZERO
 
-	var marker_index: int = min(index, _slot_markers.size() - 1)
-	return _slot_markers[marker_index].global_position
+	if index >= _slot_markers.size():
+		push_error(
+			(
+				"RackDisplay: no slot marker for kit index %d (key %s); rack has %d markers"
+				% [index, item_key, _slot_markers.size()]
+			)
+		)
+		return Vector2.ZERO
+
+	return _slot_markers[index].global_position
 
 
 func _attach_slot_input(slot: Node2D, item_key: String) -> void:
