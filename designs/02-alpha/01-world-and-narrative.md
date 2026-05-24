@@ -36,9 +36,7 @@ This is deliberately open. The game is specific about the feelings (guilt, grief
 
 ### The world record number
 
-The world record is the shopkeeper's phone number. The number of someone the main character pushed away and could still call but won't. Every volley the player has hit was counting toward a number that still works, for a person who is still there.
-
-The game stops the player at record-1. They can almost get there. They can almost pick up the phone. But they can't, because making that call means admitting what they did.
+The world record is the qualifying count for the championship (the final milestone). Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ### What the player feels
 
@@ -58,7 +56,7 @@ The rival's aggression isn't really aggression. It's the main character's memory
 
 ### The shopkeeper
 
-Someone from the main character's reality who tried to help after the friend died and got shut out. They run the item shop in pre-break. The main character told themselves the shopkeeper moved away. They didn't. They're still there. The shopkeeper's phone number is the world record.
+Someone from the main character's reality who tried to help after the friend died and got shut out. They run the item shop in pre-break. The main character told themselves the shopkeeper moved away. They didn't. They're still there. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ### Partner archetypes
 
@@ -80,21 +78,17 @@ The bright idle game. The surface holds. Clues build through partner barks, item
 
 ### The break
 
-The truth comes out. The player walks through the main character's hometown and sees the people behind the partners. The shopkeeper's phone number is the world record. The fiction breaks.
+The truth comes out. The player walks through the main character's hometown and sees the people behind the partners. The fiction breaks. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ### Post-break
 
 The world shifts immediately. Partners speak differently. The shop is closed. The rival is gone. The main character is in denial. The journey from denial to acceptance is driven by the voices of partners around them, existing ones who are gentle and patient, new ones who are more direct. The main character's baggage, the narrative items they've been carrying, becomes the path forward through badge activation.
 
-**Mechanical target:** the record itself. Pre-break stopped the player one short. Post-break, the resistance is gone but the record is gated behind badge activation: the player must process milestone badges by slotting narrative items into them and completing the challenges. Once enough badges are processed, the rival returns as the final partner and the path to the record opens. Reaching the number means the main character makes the call.
+**Mechanical target:** the gate at the back of the garden. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ### Peace
 
-The call was made. The warmth is earned. The shopkeeper is back. The friend is a partner. Everything is settled.
-
-### Regret (future update)
-
-The player chooses to re-enter the game from the perspective of someone who never made the call. The number still works. They just can't dial. Its own partners, items, and effects.
+Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 

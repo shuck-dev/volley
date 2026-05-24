@@ -47,7 +47,7 @@ Full story shape lives in [`../narrative/outline.md`](../narrative/outline.md). 
 
 The protagonist's hometown is a small coastal town on the Welsh and Cornish coast in an imagined warmer climate. Painted terraces in seaside colours: pinks, yellows, sea-greens, sky-blues, the actual palette of Tenby and Aberaeron. Whitewashed walls between them. Palm trees in places. A high street that smells of rain and citrus. Mediterranean light on a British coastline. Stone or terracotta underfoot, a square with one cafe, a bus stop nobody uses. Faded grandeur with sun on it. The kind of place a child grows up in and an adult comes back to. Ordinary, lived-in. Pulls from real reference points; sits on no map.
 
-Two periods, one in each world. Construction holds the 90s in feel: saturated, analog, warm. Reality sits in 2014; the protagonist is mid-40s there, in their twenties as Construction renders them. Period feel reaches across art direction in both registers: 90s clothes, signage, photo prints in Construction; 2014 textures in Reality.
+Two periods, one in each world. Construction sits in 1991: saturated, analog, warm; the protagonist is 26 in that rendering. Reality sits in 2014; the protagonist is 49 there. Period feel reaches across art direction in both registers: 1991 clothes, signage, photo prints in Construction; 2014 textures in Reality.
 
 The garden in Construction draws from this geography. Construction's other venues are pure invention; the garden is the seam where the constructed world touches the real one.
 
@@ -81,7 +81,7 @@ Each round of the tournament happens in a shared themed space, with the coach no
 
 ### The protagonist
 
-Mid-30s, androgynous, agender, less athletic than they used to be. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
+49 in Reality, 26 in Construction. Androgynous, agender. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
 
 Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
@@ -411,7 +411,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The shopkeeper's gender, age, build. Deliberately open.
 - The sister's gender, age, presentation. Deliberately open. The anchor is the family resemblance to the shopkeeper.
 - Martha's age. Working range 45 to 60.
-- The protagonist's physicality. Mid-30s, less athletic than they were, gentle, androgynous, agender. The MC profile holds the rest.
+- The protagonist's physicality. 49 in Reality and 26 in Construction, gentle, androgynous, agender. The MC profile holds the rest.
 - Exact colour palettes for each style.
 - Typography: display and reading faces.
 - How partner introductions render.

@@ -28,7 +28,6 @@ These feel like flavour. Players won't register them as clues on first play. Not
 
 The earnestness is the first clue. Not in a winking, self-aware way. The game genuinely cares too much about what it's about. The item descriptions have a weight to them that a pong game hasn't earned. The partners talk like people who matter to each other, not like NPCs. It's not breaking the fourth wall. It's that the wall was built with too much care.
 
-- The world record number looks like a phone number. Not a round number. It feels like something someone actually wrote down once.
 - Partner names are ordinary human names, not sports or game nicknames. They feel like people you could know.
 - Small details that don't quite fit a sports game. Things that belong to a different kind of story.
 

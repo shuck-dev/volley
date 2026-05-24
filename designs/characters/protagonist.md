@@ -8,7 +8,7 @@ When this document and the bible disagree, the bible is canon for the world and 
 
 ## Who they are
 
-Androgynous, agender, mid-30s. Their body still knows the game; the chasing is over. Stands the way someone stands who has nothing to prove to the room.
+Androgynous, agender, 49 in Reality, 26 in Construction. Their body still knows the game; the chasing is over. Stands the way someone stands who has nothing to prove to the room.
 
 The racquet has been in their hand for years. It is the constant that equipment hangs off; it is also the constant they hang off. The grip is worn where their grip is. They hold it without thinking about holding it.
 
@@ -30,7 +30,7 @@ The structure was built around what they love. The love is real; so is the grief
 
 In Construction the court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and present, the way Construction renders the rest of its cast. The figure on the court is the player's anchor; the rendering choices that hold for the cast hold for the protagonist too. When a moment is harder to look at, the camera can hold elsewhere: the light in the garden, the friend's posture, the ball in the air. The protagonist stays in the frame; the attention of the frame moves around them.
 
-In Reality the same person at their actual age. A small moment with a partner in an ordinary place: a kitchen, a bus stop, the corner of a shop. Observed fly-on-the-wall, neither dramatised nor explained. Mid-30s, a little softer than they once were, gentle in posture. The first Reality deliverable will set the rest of their physical specifics; everything else here defers to that read.
+In Reality the same person at their actual age. A small moment with a partner in an ordinary place: a kitchen, a bus stop, the corner of a shop. Observed fly-on-the-wall, neither dramatised nor explained. 49 in Reality, softer than they once were, gentle in posture. The first Reality deliverable will set the rest of their physical specifics; everything else here defers to that read.
 
 ---
 

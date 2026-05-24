@@ -14,17 +14,17 @@ The Tinkerer's relationship to the shopkeeper and the main character in reality 
 
 ## Their role in the upgrade systems
 
-The Shopkeeper runs the item shop in pre-break. The player buys items from their projection using friendship.
+The Shopkeeper runs the item shop in pre-break. The player buys items from their projection using soul.
 
 Both the Shopkeeper and the Tinkerer are unlocked via progression thresholds in the Progression Manager. The shop unlocks first. The Tinkerer unlocks later.
 
-**Prototype:** Both unlocks are defined in ProgressionConfig. The shop unlocks first (default: 50 friendship); the Tinkerer unlocks later (default: 150 friendship). Both are tuning targets.
+**Prototype:** Both unlocks are defined in ProgressionConfig. The shop unlocks first (default: 50 soul); the Tinkerer unlocks later (default: 150 soul). Both are tuning targets.
 
 The Tinkerer does three things in pre-break:
 
-**Item levelling.** The player brings an owned item and pays friendship to level it up. Items have 3 levels: base, upgraded, max. Each level increases the item's effect magnitude. The Tinkerer does not comment on levelling beyond confirming the work is done.
+**Item levelling.** The player brings an owned item and pays soul to level it up. Items have 3 levels: base, upgraded, max. Each level increases the item's effect magnitude. The Tinkerer does not comment on levelling beyond confirming the work is done.
 
-**Item destruction.** The player can ask the Tinkerer to destroy an owned item. This removes it from the inventory, reverting all effects. Partial friendship refund. A second chance version quietly re-enters the pool (different name, same sprite with shader, same effect). The Tinkerer does not tell the player this. If the second chance is also destroyed, the item is gone for the run.
+**Item destruction.** The player can ask the Tinkerer to destroy an owned item. This removes it from the inventory, reverting all effects. Partial soul refund. A second chance version quietly re-enters the pool (different name, same sprite with shader, same effect). The Tinkerer does not tell the player this. If the second chance is also destroyed, the item is gone for the run.
 
 The Tinkerer has one line per item for destruction. They know what each item is.
 
@@ -81,7 +81,7 @@ Three tiers. Each tier unlocks a more candid layer of entry dialogue. This is th
 
 When a player destroys an item, the Tinkerer's response is the content. They know what the item is. Their destruction dialogue is the heaviest single-item writing in the game.
 
-The surface read: they've dismantled it and return what friendship they can. Underneath: something about what it meant to hold onto it, or what it means to let it go.
+The surface read: they've dismantled it and return what soul they can. Underneath: something about what it meant to hold onto it, or what it means to let it go.
 
 Destruction dialogue is written for every item: one line each. Guaranteed to fire exactly once per item.
 
