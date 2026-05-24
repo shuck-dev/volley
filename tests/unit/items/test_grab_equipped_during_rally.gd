@@ -1,4 +1,4 @@
-## #691 #692: pressing an equipped item mid-rally must not start a gesture; the gate refuses at the entry.
+## Pressing an equipped item mid-rally must not start a gesture; the gate refuses at the entry.
 extends GutTest
 
 const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
