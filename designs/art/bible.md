@@ -37,9 +37,7 @@ A racquet. A ball. A counter on the wall that climbs. A friend leaning on the co
 
 Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
-Construction is structured as a tournament the protagonist climbs through competition classes, qualifying by class volley record and duelling the class's reigning champion. The championship is the final milestone; the protagonist beats the record, duels the reigning champ, and the construct breaks open. The player then moves between the two worlds, carrying things from one into the other, until a key found in Reality opens a locked gate at the back of the garden onto the cliff.
-
-Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; the sections below summarise the outline and stay aligned with it.
+Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; story-shape, character arc, and character identity route out via cross-link, not repeated here.
 
 ---
 
@@ -81,7 +79,7 @@ Each round of the tournament happens in a shared themed space, with the coach no
 
 ### The protagonist
 
-49 in Reality, 26 in Construction. Androgynous, agender. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
+Androgynous, agender. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
 
 Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
@@ -105,19 +103,17 @@ Two renders, like the shopkeeper. Age, presentation, look stay open; the family 
 
 The relationship and the arc sit in [`../characters/sister.md`](../characters/sister.md).
 
-### Martha and the partners
+### The partners
 
-Each partner is a coach. The visual job is two renders: the coach beside the protagonist on the court (Construction), and the actual person at their actual age, in their actual life (Reality). Martha is the cashier at the newsagent; the Construction version is a more vibrant rendering of someone the protagonist remembers very specifically.
+Each partner is a coach. The visual job is two renders: the coach beside the protagonist on the court (Construction), and the actual person at their actual age, in their actual life (Reality). The first partner sets the visual bar for the rest. Three more partners arrive in the early game; from then on each new venue brings one.
 
-Martha sets the visual bar for the rest. Three more partners arrive in the early game; from then on each new venue brings one.
-
-Martha's profile sits in [`../characters/martha.md`](../characters/martha.md); the lineage rule and wider partner cast sit in [`../characters/partners.md`](../characters/partners.md).
+The first partner's profile sits in [`../characters/martha.md`](../characters/martha.md); the lineage rule and wider partner cast sit in [`../characters/partners.md`](../characters/partners.md).
 
 ### The champ
 
-The dead friend. Construction-only; their Reality is the cliff. Holds the championship spot at the top of the tournament ladder.
+The dead friend. Construction-only; their Reality is the cliff. Holds the championship spot at the top of the tournament ladder. Render them as someone the protagonist loved; sharp at the championship because the friend was sharp.
 
-Render Fern as someone the protagonist loved. Sharp at the championship because the friend was sharp.
+The relationship and the arc sit in [`../characters/fern.md`](../characters/fern.md).
 
 
 ---
@@ -175,7 +171,7 @@ The cliff reads as a place people came to. A worn ledge, traces of small ceremon
 
 ### Staging
 
-The protagonist opens the locked gate at the back of the garden in Construction and steps through to the cliff in Reality. Zach is sitting on the memorial bench. The shape is the protagonist arriving at a place that has been there the whole game; the gate was the last barrier.
+The protagonist opens the locked gate at the back of the garden in Construction and steps through to the cliff in Reality. The friend at the stall is on the memorial bench. The shape is the protagonist arriving at a place that has been there the whole game; the gate was the last barrier.
 
 Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md).
 
@@ -183,9 +179,9 @@ Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ## 10. Credits and postgame
 
-Credits play over a rally. The protagonist on the left, Zach on the right, the first volley between them in the construct. Construction's saturated light returns, with the texture Reality has worn into it across Reconstruction. The bench from the cliff sits somewhere in frame, glimpsed past a gate that stays open.
+Credits play over a rally. The protagonist on the left, the friend at the stall on the right, the first volley between them in the construct. Construction's saturated light returns, with the texture Reality has worn into it across Reconstruction. The bench from the cliff sits somewhere in frame, glimpsed past a gate that stays open.
 
-Postgame is rallying with Zach, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
+Postgame is rallying with the friend at the stall, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
 Full canon for the postgame in [`../narrative/outline.md`](../narrative/outline.md).
 
@@ -410,7 +406,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The shopkeeper's gender, age, build. Deliberately open.
 - The sister's gender, age, presentation. Deliberately open. The anchor is the family resemblance to the shopkeeper.
 - Martha's age. Working range 45 to 60.
-- The protagonist's physicality. 49 in Reality and 26 in Construction, gentle, androgynous, agender. The MC profile holds the rest.
+- The protagonist's physicality. Gentle, androgynous, agender. The MC profile holds the rest.
 - Exact colour palettes for each style.
 - Typography: display and reading faces.
 - How partner introductions render.
