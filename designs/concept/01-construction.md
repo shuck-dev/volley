@@ -1,18 +1,18 @@
 # Construction
 
-Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, the count, and the unnamed number sitting underneath. High-level architecture in `00-two-styles.md`; the cracks and the win that breaks Construction in `02-cracks-and-break.md`.
+Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, and the count. High-level architecture in `00-two-styles.md`; the cracks and the win that breaks Construction in `02-cracks-and-break.md`.
 
 Visual canon for Construction lives in [`../art/bible.md`](../art/bible.md) (sections 5 and 14). Cast lives in [`../art/bible.md`](../art/bible.md) § 4 plus the per-character profiles under [`../characters/`](../characters/). Story shape lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ## The tournament
 
-The vibrant world is shaped as a volley tournament. The protagonist is climbing the ladder; the championship is the world record; the world record is the shopkeeper's phone number.
+The vibrant world is shaped as a volley tournament. The protagonist is climbing the ladder; the world volley record sits at the top.
 
 Each main venue hosts one round. The player rallies in that venue with a coach until they qualify; then they enter the round, where the coach takes the other side and the player faces them in the round's match. Win the round, advance.
 
 Round matches happen in a shared themed battle space, off the main rally flow. The player attempts each round when ready. Win unlocks the next venue, the next coach, the next mechanic, the next round.
 
-The championship is the final round, against the champ.
+Each competition class has its own reigning champion. The championship is the final milestone where the protagonist duels the reigning champ to become champ. Fern is the last champ at the world tier. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
 
 ### The coaches
 
@@ -24,11 +24,6 @@ Each milestone should feel interesting and different from the others. Mechanics 
 
 Concrete mechanics are downstream design. What this doc commits is the shape: coach trains the protagonist via the rally, then becomes the opponent in the round, with the mechanic they taught at the centre of that match.
 
-### The champ as the championship
-
-The champ holds the championship spot. The protagonist climbs every round, learning each coach's mechanic, until they qualify for the championship. The match is winnable. The break beat (`02-cracks-and-break.md`) lives in what the win turns out to mean.
-
-
 ## The rally and the count
 
 The rally is the engine of Construction. Pong-shape court (described in the artist world bible's court section), protagonist on the left with a racquet, coach on the right. The count climbs as long as the rally holds. Items and effects layer on top.
@@ -36,12 +31,6 @@ The rally is the engine of Construction. Pong-shape court (described in the arti
 In Construction, the count is visible. The current round's qualifying count gates the next round; the championship's qualifying count is the world record.
 
 In Part 2 the count behaves differently; see `03-reconstruction.md`.
-
-## The unnamed number, in Construction
-
-The shopkeeper's number sits in the protagonist's phone the whole game, unnamed. Period-correct for a flip or candy-bar device. The player has full control of the phone throughout. Dialling never connects.
-
-In Construction, the number is just digits in a contacts list. The protagonist scrolls past it sometimes. The player can dial it any time and hear the unanswered ring. Nothing in Construction tells the player whose number it is. The recognition is held back for Part 2 (`03-reconstruction.md`).
 
 ## Prototype scope
 
@@ -59,7 +48,7 @@ The prototype's job is to land the championship-shape: meet a coach, learn from 
 
 ## Production notes
 
-- The cast doubles in scope. Protagonist plus shopkeeper plus sister plus four to six partners (each in two renders, plus their teaching mechanic), plus the champ in one render with their championship match. Worth bounding the partner count early.
+- The cast doubles in scope. Protagonist plus Zach plus the sister plus four to six partners (each in two renders, plus their teaching mechanic), plus Fern in one render with the championship match. Worth bounding the partner count early.
 - Construction's content scales: procedural rally, item economy, partner system, tournament rounds. This is the part of Volley with long-tail content runway.
 - Round matches reuse one battle court re-themed per venue: production-tight versus building unique battle venues.
 - The count's behaviour shifts between Construction and Part 2 (visible vs hidden). See `03-reconstruction.md`.

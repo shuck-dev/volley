@@ -22,11 +22,11 @@ Concrete leakage stays out. A real-world object literally appearing on the rack 
 
 The structural shape: the win IS the break. The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Cumulative cracks have been preparing the player to read what just happened; the win is the singular moment that makes the prior cracks legible as a chord rather than as noise.
 
-At the moment of the win, the count completes. The digits land. The protagonist sees them, vaguely familiar, and the connection does not form. Recognition is held until the cliff.
+At the moment of the win, the count completes. It feels hollow.
 
-The full beat (climbing every round, the doubled meaning of "becoming champ", the win landing wrong, the walk through the hometown, the shopkeeper missing, the champ exiting) sits in [`../narrative/outline.md`](../narrative/outline.md). The visual moment of the break is in [`../art/bible.md`](../art/bible.md) § 7.
+The full beat (the championship win, the blackout, waking in the abandoned garden, the first walk through the hometown, Zach gone) sits in [`../narrative/outline.md`](../narrative/outline.md). The visual moment of the break is in [`../art/bible.md`](../art/bible.md) § 7.
 
-The break ends with the player back in Construction, the shop closed, the friend at the stall gone. End of Part 1. Part 2 begins (`03-reconstruction.md`).
+End of Part 1. Part 2 begins (`03-reconstruction.md`).
 
 ## Open questions
 
