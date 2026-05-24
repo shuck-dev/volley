@@ -102,7 +102,7 @@ func _get_paddle_speed() -> float:
 
 
 func _track() -> void:
-	var bound_y: float = ball.court_config.friendship_bound_y
+	var bound_y: float = ball.bound_y
 	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 	var predicted_y: float = PaddleAIMath.predict_intercept(
 		ball.position, ball.linear_velocity, paddle.position.x, bound_y, gravity

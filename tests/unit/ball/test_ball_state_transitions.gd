@@ -2,6 +2,7 @@
 extends GutTest
 
 const REST_DAMPING := 1.5
+const BOUND_Y := -351.6
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
@@ -24,6 +25,7 @@ func before_each() -> void:
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
 	_ball.court_config = _config
+	_ball.bound_y = BOUND_Y
 	add_child_autofree(_ball)
 
 
@@ -66,7 +68,7 @@ func test_enter_play_normal_sets_property_values() -> void:
 
 
 func test_enter_play_arc_when_above_bound() -> void:
-	_ball.global_position = Vector2(0.0, _config.friendship_bound_y - 100.0)
+	_ball.global_position = Vector2(0.0, BOUND_Y - 100.0)
 	_ball.enter_play()
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_ARC)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)

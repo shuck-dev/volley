@@ -80,9 +80,9 @@ func _ready() -> void:
 
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
-	if soul_bound != null:
-		court_config.friendship_bound_y = soul_bound.position.y
 	ball_tracker.court_config = court_config
+	if soul_bound != null:
+		ball_tracker.bound_y = soul_bound.position.y
 	ball_tracker.configure(player_paddle)
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
