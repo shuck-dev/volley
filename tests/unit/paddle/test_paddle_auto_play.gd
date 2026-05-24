@@ -128,25 +128,24 @@ func test_autoplay_tracks_new_ball_position_after_delay() -> void:
 
 
 # --- timeout interaction ---
-func test_timeout_started_disables_active_autoplay_and_emits_toggled_false() -> void:
+func test_timeout_disables_autoplay() -> void:
 	_controller.toggle()
 	assert_true(_controller.is_enabled(), "precondition: autoplay enabled")
 	watch_signals(_controller)
 	_timeout.timeout_started.emit()
-	assert_false(_controller.is_enabled(), "timeout_started must disable autoplay")
+	assert_false(_controller.is_enabled())
 	assert_signal_emitted_with_parameters(_controller, "autoplay_toggled", [false])
 
 
-func test_timeout_started_when_already_off_is_noop() -> void:
+func test_timeout_when_off_is_noop() -> void:
 	watch_signals(_controller)
 	_timeout.timeout_started.emit()
 	assert_false(_controller.is_enabled())
 	assert_signal_not_emitted(_controller, "autoplay_toggled")
 
 
-func test_timeout_ended_does_not_restore_autoplay() -> void:
+func test_timeout_end_does_not_restore() -> void:
 	_controller.toggle()
 	_timeout.timeout_started.emit()
-	assert_false(_controller.is_enabled(), "precondition: autoplay off after timeout_started")
 	_timeout.timeout_ended.emit()
-	assert_false(_controller.is_enabled(), "timeout_ended must NOT auto-restore autoplay")
+	assert_false(_controller.is_enabled())
