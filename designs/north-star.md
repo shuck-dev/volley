@@ -26,7 +26,7 @@ The game should respect the player's time whether they engage with the narrative
 
 **Pong, made fun.** The foundation is pong, but with modern game sensibilities: progression that makes you feel stronger, items that change how the game plays, partners who make the loop feel different. The question isn't "can pong be a real game?" It's "what if pong had the depth of a game people actually wanted to keep playing?"
 
-**Progression through items and partners.** Earn friendship from volleys. Spend it on items that change how the game feels and partners who change who you're playing with. Every purchase should be felt, not just seen in a stat screen.
+**Progression through items and partners.** Earn soul from volleys. Spend it on items that change how the game feels and partners who change who you're playing with. Every purchase should be felt, not just seen in a stat screen.
 
 **Narrative woven into the game.** The story lives in the details: the names, the descriptions, the things that don't quite fit a pong game. Partners express personality through barks, effects, and art. Key moments like partner introductions can have proper presentation with portraits and dialogue. But the deeper narrative is discovered by paying attention, not delivered through exposition.
 
@@ -35,7 +35,7 @@ The game should respect the player's time whether they engage with the narrative
 ## Core loop
 
 1. **Volley**: ball bounces between paddles
-2. **Earn**: friendship from each hit
+2. **Earn**: soul from each hit
 3. **Spend**: items from the shop, partners to recruit
 4. **Progress**: streaks get longer, the record gets closer, partners make it better
 

@@ -18,7 +18,7 @@ The discipline is the same as the visual one. The leak is never literal. The Rea
 
 ## The break
 
-The protagonist beats the champ. Both pulls of becoming-champ satisfy at the same beat and neither was the thing. The construct breaks open.
+The protagonist beats the record and duels the champ. The win lands wrong. The construct breaks open.
 
 The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual canon for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
 
