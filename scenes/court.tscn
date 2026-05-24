@@ -31,19 +31,19 @@ size = Vector2(22, 500)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
 size = Vector2(800, 20)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "player_spawn", "autoplay_controller", "right_wall", "soul_bound", "partner_spawn", "timeout_controller", "drag_controller")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "ball_tracker", "autoplay_controller", "timeout_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
+court_config = ExtResource("25_courtcfg")
 ball_system = NodePath("BallReconciler")
 ball_tracker = NodePath("BallTracker")
-court_config = ExtResource("25_courtcfg")
-player_paddle_scene = ExtResource("9_0tnpc")
-player_spawn = NodePath("PlayerSpawn")
 autoplay_controller = NodePath("AutoplayController")
-right_wall = NodePath("Bounds/Right Wall")
-soul_bound = NodePath("Bounds/SoulBound")
-partner_spawn = NodePath("PartnerSpawn")
 timeout_controller = NodePath("TimeoutController")
 drag_controller = NodePath("BallDragController")
+right_wall = NodePath("Bounds/Right Wall")
+soul_bound = NodePath("Bounds/SoulBound")
+player_spawn = NodePath("PlayerSpawn")
+partner_spawn = NodePath("PartnerSpawn")
+player_paddle_scene = ExtResource("9_0tnpc")
 
 [node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
 layer = -100
