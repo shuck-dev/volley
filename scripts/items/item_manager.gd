@@ -161,6 +161,36 @@ func get_court_items() -> Array[String]:
 	return result
 
 
+## Slot index assigned to `item_key` while STORED; -1 when not stored.
+## Lazily assigns when the placement is STORED but no slot exists yet (covers take and direct state pokes).
+func get_rack_slot_index(item_key: String) -> int:
+	var assigned: int = state.rack_slot_index_by_key.get(item_key, -1)
+	if assigned >= 0:
+		return assigned
+	if get_level(item_key) <= 0:
+		return -1
+	if _get_placement(item_key) != PlacementScript.STORED:
+		return -1
+	var item: ItemDefinition = _get_item(item_key)
+	if item == null:
+		return -1
+	_assign_rack_slot(item_key, item.role)
+	return state.rack_slot_index_by_key[item_key]
+
+
+## Picks the lowest free slot index among STORED items of the same role and records it.
+func _assign_rack_slot(item_key: String, role: StringName) -> void:
+	var used: Dictionary = {}
+	for key: String in state.rack_slot_index_by_key:
+		var owner: ItemDefinition = _get_item(key)
+		if owner != null and owner.role == role:
+			used[state.rack_slot_index_by_key[key]] = true
+	var candidate: int = 0
+	while used.has(candidate):
+		candidate += 1
+	state.rack_slot_index_by_key[item_key] = candidate
+
+
 ## Returns owned items of the given role whose placement is STORED (on the rack).
 func get_kit_items(role: StringName) -> Array[String]:
 	var result: Array[String] = []
@@ -341,10 +371,13 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 	if placement == PlacementScript.STORED:
 		state.item_placements.erase(item_key)
 		_effect_manager.unregister_source(item)
+		if not state.rack_slot_index_by_key.has(item_key):
+			_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
+		state.rack_slot_index_by_key.erase(item_key)
 	item_placement_changed.emit(item_key, placement)
 	var was_on_court := previous == PlacementScript.ON_COURT
 	var now_on_court := placement == PlacementScript.ON_COURT
