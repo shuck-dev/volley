@@ -240,8 +240,11 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	return true
 
 
-## Press on the mounted equipped art: spawn a HeldBody for the equipment and start a drag whose cancel restores EQUIPPED.
+## Press on an equipped item: spawn a HeldBody for the equipment and start a drag whose cancel restores EQUIPPED.
+## Rejected while a rally is in progress; the gesture does not begin during play.
 func grab_equipped_from_character(item_key: String, press_position: Variant = null) -> bool:
+	if RallyGate.from_refs(timeout_controller, reconciler):
+		return false
 	if _drag_target() != null:
 		return false
 	if _item_manager == null or _item_manager.get_level(item_key) <= 0:
@@ -365,6 +368,10 @@ func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocit
 func _release_held_body_as_loose(release_position: Vector2) -> void:
 	if _held_body == null:
 		return
+	# Equipment leaving the body must deactivate effects; otherwise the stat impact survives
+	# the held-into-venue transition because placement never funnels through STORED.
+	if _item_manager != null and _item_manager.get_placement(_held_key) == PlacementScript.EQUIPPED:
+		_item_manager.unequip(_held_key)
 	var release_velocity: Vector2 = _compute_release_velocity()
 	var body: HeldBody = _held_body
 	var host: Node = get_loose_body_host()
@@ -788,7 +795,8 @@ func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
 	if area == null:
 		return null
 	var rack_target: RackDropTarget = RackDropTarget.new()
-	rack_target.configure(_item_manager, area, role)
+	# Pass rally-gate refs unconditionally; the gear-role branch in can_accept enforces the gate.
+	rack_target.configure(_item_manager, area, role, timeout_controller, reconciler)
 	return rack_target
 
 

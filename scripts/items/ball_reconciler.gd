@@ -134,6 +134,20 @@ func _is_tracked(ball: Ball) -> bool:
 	return false
 
 
+## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
+func has_ball_in_play() -> bool:
+	for raw: Variant in _balls_by_key.values():
+		if not is_instance_valid(raw):
+			continue
+		var ball: Ball = raw
+		if (
+			ball.play_state == Ball.PlayState.PLAY_NORMAL
+			or ball.play_state == Ball.PlayState.PLAY_ARC
+		):
+			return true
+	return false
+
+
 func get_ball_for_key(item_key: String) -> Ball:
 	if not _balls_by_key.has(item_key):
 		return null

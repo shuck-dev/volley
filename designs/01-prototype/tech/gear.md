@@ -61,3 +61,5 @@ Over-capacity state across designer changes (an equipped item retired, `kit_slot
 The equip window opens on `TimeoutController.main_character_reached_equip_pose` and closes on `timeout_ended`. `CharacterDropTarget.can_accept` reads `TimeoutController.get_state() == AT_EQUIP_POSE` directly. Off-court releases hit other targets.
 
 Unequip is symmetric: dragging an equipped item back to the rack within the same window calls `unequip` and frees its slot. Outside the window, the character's drop target stays inert and the dragged item passes through to the next target in the priority list.
+
+Mid-rally, the press on an equipped item is refused at the gesture entry. While a rally is in progress (`TimeoutController.IDLE` and at least one ball in `PLAY_NORMAL` / `PLAY_ARC`) the gesture never starts; nothing is held, nothing deactivates. The shared check lives on `RallyGate.is_rally_in_progress`, called with injected refs at every callsite. The dev panel's per-item remove-level button uses the same gate so debug paths cannot desync the effect system during play.
