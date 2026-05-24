@@ -12,7 +12,7 @@ Later on, Zach gets more professional and gets a catalogue so the protagonist ca
 
 Martha gets wind of this and agrees to be the protagonist's rally partner. This is the true start of the rally.
 
-At the top of the ladder sits the volley champion. At the back of the garden, behind the stall and the tree, a gate sits in the wall, locked.
+At the top of the ladder sits the volley champion, Fern. The lineage of past champions Fern caps is the ladder the protagonist climbs through. At the back of the garden, behind the stall and the tree, a gate sits in the wall, locked.
 
 ## Act II. Break
 
@@ -20,17 +20,17 @@ The protagonist is fully kitted and the record is in sight. The want is no longe
 
 The championship arrives. The protagonist duels and wins. It feels hollow. What was it all for? Everything feels heavy, a crushing, sounds from the other side. It gets unbearable. The protagonist clutches their face and blacks out.
 
-They wake in the garden. It's abandoned. Their family home now reduced to broken windows and missing tiles. They leave the garden and walk through the town for the first time in years.
-
-They remember they do not live here anymore. They see Zach's family shop, and Stephanie is at the counter, tears streaming down her face. Zach is gone. No one has heard from him. Looking at the photographs on the wall behind her, something else surfaces: a friend the protagonist used to know, who has not been here for years.
+What the protagonist wakes into, and how the friend they have not been thinking about surfaces back into view, is open.
 
 ## Act III. Reconstruction
 
-The driver of this act is to find Zach. The protagonist gains the ability to travel between the construct and reality at will. The volley count falls to the side; the game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
+The driver of this act is to find Zach. The protagonist gains the ability to travel between the construct and reality at will. The volley count falls to the side.
+
+What the Reconstruction loop actually is, and how the player closes in on Zach within it, is open.
 
 ## Ending
 
-The final memory gives the protagonist a key. That key unlocks the gate in the garden leading to the cliff. By this point the player knows about the cliff but not that the gate leads to it. The protagonist opens the gate and sees Zach sitting on the memorial bench dedicated to their friend.
+The protagonist receives whatever the Reconstruction loop yields. That yield unlocks the gate in the garden leading to the cliff. By this point the player knows about the cliff but not that the gate leads to it. The protagonist opens the gate and sees Zach sitting on the memorial bench dedicated to their friend.
 
 ## Postgame
 
