@@ -8,6 +8,12 @@ Everyone holds an unlimited reserve of soul. The reserve only becomes usable thr
 
 Imbued matter can be altered. A racquet or a ball can be reshaped to hold more soul than its plain form allowed, and the alteration can grant the object new powers, depending on the relationship the wielder holds with it.
 
+## Partners
+
+In Construction, the partners across the court are constructs the protagonist makes from soul. They present as people for the length of the act. The construct-nature is a post-break reveal; until then, the partners rally, talk, and hold their own corner of the family ease.
+
+Coaches and the wider world of Construction read on the same axis. What lives outside the protagonist's imbuing is open.
+
 ## In reality
 
 Soul is, in reality, a concept the protagonist made up to cover their grief. The vocabulary is theirs. The magic is also real, in a more measured way; how much, and from where, is an open question for the town and the protagonist both.
