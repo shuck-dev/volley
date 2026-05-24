@@ -23,9 +23,13 @@ func toggle() -> void:
 
 
 ## Force autoplay off without restoring on timeout_ended; the player re-toggles manually.
+## Bypasses toggle() because timeout owns paddle physics during the walk; flipping
+## set_physics_process here fights the walk-off freeze.
 func _on_timeout_started() -> void:
-	if _enabled:
-		toggle()
+	if not _enabled:
+		return
+	set_enabled(false)
+	autoplay_toggled.emit(false)
 
 
 func _ball_approaching() -> bool:
