@@ -24,9 +24,9 @@ Two kinds of folder.
 
 **Discipline folders** hold canonical work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
 
-**Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `02-alpha/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
+**Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
 
-**Phase folders are not canon.** Anything in `01-prototype/`, `02-alpha/`, `03-beta/`, or `04-content/` is working draft. If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder, not to cite it as authoritative. The discipline folders are what the next brief and the next ticket pick up.
+**Phase folders are not canon.** Anything in `01-prototype/`, `03-beta/`, or `04-content/` is working draft. If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder, not to cite it as authoritative. The discipline folders are what the next brief and the next ticket pick up.
 
 The two-folder layout is the navigation: discipline tells you *what kind of doc*, phase tells you *what era it speaks to*.
 
@@ -112,8 +112,7 @@ The [open-development essay](research/the-case-for-open-development.md) sits in 
 | Phase | Folder | What lives here now |
 |---|---|---|
 | Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline canon. |
-| Alpha | [02-alpha/](02-alpha/INDEX.md) | Construction content-complete; the break designed. |
-| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction, the cliff and the call, and the postgame playable end-to-end. |
+| Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction, the cliff and the gate, and the postgame playable end-to-end. |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content past the main arc. |
 
 Drafts start in the active phase folder, settle into the discipline folder when they earn canon, and the phase folder keeps the working history.
