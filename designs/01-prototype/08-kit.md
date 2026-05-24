@@ -37,7 +37,7 @@ No deactivation. On shipment arrival, the player drags the item from the box str
 Requires the main character to step off:
 
 1. Player calls a timeout. Main character walks off the court to an authored equip pose. The rally plays out without a defender and ends on the next miss. (Later, if the bot is owned and active, it takes over the court via the standard idle-play handoff so the rally continues. Not in prototype scope until the bot ships.)
-2. Player drags from `GearRack` onto the main character to equip, or from the character back to `GearRack` to deactivate. Equipment interaction is refused while a rally is in progress; presses on equipped art only land during timeout, between rallies, or at initial setup.
+2. Player drags from `GearRack` onto the main character to equip, or from the character back to `GearRack` to deactivate. Equipment interaction is refused while a rally is in progress; presses on equipped items only land during timeout, between rallies, or at initial setup.
 3. Player ends the timeout. Main character walks back on and resumes play at the next serve.
 
 ### Drag preview

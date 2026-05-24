@@ -411,7 +411,7 @@ func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> 
 
 	var ok: bool = _drag.grab_equipped_from_character("gear_x", Vector2.ZERO)
 
-	assert_true(ok, "press on equipped art should start a drag")
+	assert_true(ok, "press on equipped item should start a drag")
 	assert_true(_drag.is_dragging())
 	assert_eq(_drag.get_held_key(), "gear_x")
 	assert_eq(
@@ -431,7 +431,9 @@ func test_grab_equipped_refuses_mid_rally() -> void:
 
 	var ok: bool = _drag.grab_equipped_from_character("gear_z", Vector2.ZERO)
 
-	assert_false(ok, "press on equipped art is refused while a ball is in play and timeout is idle")
+	assert_false(
+		ok, "press on equipped item is refused while a ball is in play and timeout is idle"
+	)
 	assert_false(_drag.is_dragging())
 
 
