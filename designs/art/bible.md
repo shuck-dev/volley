@@ -79,7 +79,7 @@ Each round of the tournament happens in a shared themed space, with the coach no
 
 ### The protagonist
 
-Androgynous, agender. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
+Agender. They picked up a racquet long ago and never quite put it down. The garden is theirs. The rally is theirs. The quiet at the centre of it is theirs too.
 
 Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
@@ -161,7 +161,7 @@ Construction weathers as the arc proceeds. Saturation drops a notch, line weight
 
 Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
-Outline canon (the search for Zach, dread, the items-invoke-memories mechanic, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
+Outline canon (the search, worry, items invoking memories, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
 
 ---
 
@@ -406,7 +406,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The shopkeeper's gender, age, build. Deliberately open.
 - The sister's gender, age, presentation. Deliberately open. The anchor is the family resemblance to the shopkeeper.
 - Martha's age. Working range 45 to 60.
-- The protagonist's physicality. Gentle, androgynous, agender. The MC profile holds the rest.
+- The protagonist's physicality. Gentle, agender. The MC profile holds the rest.
 - Exact colour palettes for each style.
 - Typography: display and reading faces.
 - How partner introductions render.

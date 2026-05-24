@@ -1,10 +1,10 @@
 # Reconstruction
 
-Part 2. The arc after the break: dread, the search, items invoking memories, the key that opens the gate. High-level architecture in `00-two-styles.md`; Reality as a style in `04-reality.md`; the cliff and the gate in `05-postgame.md`. Full story in [`../narrative/outline.md`](../narrative/outline.md).
+Part 2. The arc after the break: worry, the search, items invoking memories, the key that opens the gate. High-level architecture in `00-two-styles.md`; Reality as a style in `04-reality.md`; the cliff and the gate in `05-postgame.md`. Full story in [`../narrative/outline.md`](../narrative/outline.md).
 
 ## What Part 2 is
 
-The arc after the break: Zach missing, dread, the search across Reality, items brought from Reality into the construct invoking memories, the final memory yielding a key. Full canon in [`../narrative/outline.md`](../narrative/outline.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
+The arc after the break: Zach missing, worry, the search across Reality, items brought from Reality into the construct invoking memories, the final memory yielding a key. Full canon in [`../narrative/outline.md`](../narrative/outline.md). Construction's visual hollowing in [`../art/bible.md`](../art/bible.md) § 8.
 
 This doc holds the structural detail: how Part 2 plays, the items-invoke-memories mechanic, the key.
 

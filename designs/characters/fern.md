@@ -1,18 +1,14 @@
 # Fern
 
-The last champ before the protagonist. The dead friend, rendered into Construction as the championship duel.
+The last champ before the protagonist. The dead friend.
+
+The art bible at [`../art/bible.md`](../art/bible.md) § 4 names the body and the visual role; outline canon for per-act events lives in [`../narrative/outline.md`](../narrative/outline.md). This profile holds the relationship.
 
 ---
 
 ## Who they are
 
-A close friend of the protagonist. Their death is the source of the protagonist's grief.
-
----
-
-## Construction
-
-Fern is the world volley champion.
+A close friend of the protagonist. The one the protagonist used to play with. The one who pushed the protagonist to be better. Their death is the source of the protagonist's grief.
 
 ---
 

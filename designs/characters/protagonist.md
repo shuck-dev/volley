@@ -1,14 +1,12 @@
 # The protagonist
 
-The art bible at `designs/art/bible.md` holds the world and the role. The structural arc lives across `designs/concept/`, beginning at `00-two-styles.md`. This document holds the person at the centre of both: who they are, what they carry, how they move through Part 1 and Part 2, and the interior weight underneath.
-
-When this document and the bible disagree, the bible is canon for the world and this document is canon for them.
+The art bible at [`../art/bible.md`](../art/bible.md) holds the world and the visual role; outline canon for per-act events lives in [`../narrative/outline.md`](../narrative/outline.md). This profile holds the person at the centre of both: who they are, what they carry, and the interior weight underneath.
 
 ---
 
 ## Who they are
 
-Androgynous, agender, 49 in Reality, 26 in Construction. Their body still knows the game; the chasing is over. Stands the way someone stands who has nothing to prove to the room.
+Agender, 49 in Reality, 26 in Construction. Their body still knows the game; the chasing is over. Stands the way someone stands who has nothing to prove to the room.
 
 The racquet has been in their hand for years. It is the constant that equipment hangs off; it is also the constant they hang off. The grip is worn where their grip is. They hold it without thinking about holding it.
 
@@ -26,37 +24,9 @@ The structure was built around what they love. The love is real; so is the grief
 
 ---
 
-## How the styles render them
-
-In Construction the court frames them on the left. The racquet moves; the head turns toward the stall when the rally allows it; the body carries the rally's tempo. Drawn young and full and present, the way Construction renders the rest of its cast. The figure on the court is the player's anchor; the rendering choices that hold for the cast hold for the protagonist too. When a moment is harder to look at, the camera can hold elsewhere: the light in the garden, the friend's posture, the ball in the air. The protagonist stays in the frame; the attention of the frame moves around them.
-
-In Reality the same person at their actual age. A small moment with a partner in an ordinary place: a kitchen, a bus stop, the corner of a shop. Observed fly-on-the-wall, neither dramatised nor explained. 49 in Reality, softer than they once were, gentle in posture. The first Reality deliverable will set the rest of their physical specifics; everything else here defers to that read.
-
----
-
-## Part 1: the climb
-
-Across Construction the protagonist is climbing toward the championship. They want to become the champion of the world they built: the title, the record, the spot at the top of the climb.
-
-Hold this as quiet weight in how they treat the climb: not triumph, not desperation, a steadiness that knows what it is reaching for.
-
-The win is the break. The construct cannot hold itself together once its central goal has been reached and proved meaningless.
-
----
-
-## Part 2: the dread, the search, the items
-
-Reconstruction runs on dread. Zach went missing at the break and the protagonist has been afraid the friend's path has been followed. The driving force is the search for what happened, where they have gone, whether it is too late. The work is the search-for-confirmation, all of it shadowed by the fear that the confirmation will be terrible.
-
-The protagonist gains the ability to travel between the construct and reality at will. The game becomes finding memorable items in reality and bringing them into the construct, where each item invokes a memory. A set of memories accumulates, and each memory narrows where Zach could be.
-
-The final memory yields a key.
-
----
-
 ## The call of the void
 
-A layer underneath the structure. It sits next to the grief and the becoming-champ pull, not under them.
+A layer underneath the structure. It sits next to the grief, not under it.
 
 The pull is the urge to do the destructive thing when nothing forces it. To jump from the bridge. To swerve into traffic. The cliff is the specific shape of this for them: the place the friend died, the place the protagonist did not go that day. The structure holds them present in the loss; it also holds them present alongside this. Grief is what they are sheltering from. The void is what they live alongside, daily.
 
@@ -69,21 +39,3 @@ It surfaces in places the artist and animator can feel for, not script:
 - The edges of the play area where their gaze drifts past it.
 
 The structure holds because they choose it, again and again. Hold this as a quiet undercurrent in posture and timing; let the choice be the visible thing.
-
----
-
-## The cliff and the gate
-
-The protagonist returns to the garden with the key. They walk to the locked gate at the back, unlock it, step through to the cliff in Reality.
-
-A bench sits at the cliff edge, dedicated to the friend who died. Zach is on the bench, alive. The dread inverts to relief. The fear was wrong; he is still here, withdrawn, but here.
-
-The protagonist crosses to the bench and sits beside Zach. Credits roll over the rally that follows: the protagonist on the left, Zach on the right, the championship spot held by the actual person at last. The daily thing the protagonist did alone is finally done together.
-
----
-
-## Postgame
-
-Rallying with Zach, on the right side of the court that used to be the championship spot. The cliff stays returnable through the now-unlocked gate; a place to sit, look at the sea, listen.
-
-Construction has its centre back, as the actual relationship rather than the substitute. The protagonist still loves the game. They still love the friend at the stall. The structure still stands; the difference is that the person it was built around is in it now.
