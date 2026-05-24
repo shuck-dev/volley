@@ -101,7 +101,7 @@ The shopkeeper's younger sister. In Construction she is the tinkerer behind the 
 
 Two renders, like the shopkeeper. Age, presentation, look stay open; the family resemblance to the shopkeeper is the anchor.
 
-The relationship and the arc sit in [`../characters/sister.md`](../characters/sister.md).
+The relationship and the arc sit in [`../characters/tinkerer.md`](../characters/tinkerer.md).
 
 ### The partners
 
