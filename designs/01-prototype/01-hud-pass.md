@@ -2,7 +2,7 @@
 
 ## Implementation notes
 
-**VolleyTracker not extracted.** The design specified extracting volley logic into `scripts/volley_tracker.gd` for unit testability. This was skipped — `game.gd` emits signals (`volley_count_changed`, `personal_best_changed`) which the scene wires to the HUD directly. Integration tests cover the same behaviour through signals, making the extra class unnecessary indirection.
+**VolleyTracker not extracted.** The design specified extracting volley logic into `scripts/volley_tracker.gd` for unit testability. This was skipped, `game.gd` emits signals (`volley_count_changed`, `personal_best_changed`) which the scene wires to the HUD directly. Integration tests cover the same behaviour through signals, making the extra class unnecessary indirection.
 
 ## Goal
 Complete the volley tracking system and display it properly in the HUD. This is the foundation that Progression System and Ball Scaling build on.
@@ -12,8 +12,8 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 **Unlocks:** Ball Scaling, Progression System (friendship display, high score persistence)
 
 ## Current state
-- Ball emits `paddle_hit` on paddle contact — working
-- `game.gd` counts volleys inline and writes directly to a `CanvasLayer/Label` — bypasses `hud.gd`
+- Ball emits `paddle_hit` on paddle contact, working
+- `game.gd` counts volleys inline and writes directly to a `CanvasLayer/Label`, bypasses `hud.gd`
 - `hud.gd` exists with `update_volley_count()` but is not wired up
 - No miss detection, no volley reset, no high score tracking
 - No `VolleyTracker` class
@@ -22,7 +22,7 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 
 ### In scope
 1. Volley reset on miss
-2. High score tracking (session only — persistence comes with Progression System)
+2. High score tracking (session only, persistence comes with Progression System)
 3. VolleyTracker refactor
 4. HUD wiring and high score display
 
@@ -35,7 +35,7 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 ## Features
 
 ### 1. Volley reset on miss
-**Design:** Define what counts as a miss — ball contacts the left or right wall.
+**Design:** Define what counts as a miss, ball contacts the left or right wall.
 **Tech:** Add `ball_missed` signal to `ball.gd`, emitted on left/right wall contact. `game.gd` connects this to reset the volley count.
 
 ### 2. High score tracking
@@ -45,15 +45,15 @@ Complete the volley tracking system and display it properly in the HUD. This is 
 ### 3. VolleyTracker refactor
 **Tech:** Extract volley logic from `game.gd` into `scripts/volley_tracker.gd`. Pure logic class (no node dependencies), unit-testable.
 
-- `hit()` — increment current streak
-- `reset()` — save high score if beaten, reset streak to 0
-- `current_streak: int` — current volley count
-- `high_score: int` — best streak
+- `hit()`, increment current streak
+- `reset()`, save high score if beaten, reset streak to 0
+- `current_streak: int`, current volley count
+- `high_score: int`, best streak
 
 `game.gd` owns a VolleyTracker instance, connects ball signals to it, and updates HUD on changes.
 
 ### 4. HUD wiring and high score display
-**Design:** Layout — volley count top center, high score below it.
+**Design:** Layout, volley count top center, high score below it.
 **Tech:**
 - Add high score label to `hud.tscn`
 - Wire `game.gd` to call `hud.gd` methods instead of writing to the label directly
@@ -83,6 +83,6 @@ game.gd
 ```
 
 ## Test plan
-- **Unit:** VolleyTracker — hit increments, reset clears streak, high score persists across resets, high score only updates when beaten
+- **Unit:** VolleyTracker, hit increments, reset clears streak, high score persists across resets, high score only updates when beaten
 - **In-game:** volley count increments on paddle hit, resets on wall miss, high score updates and survives streak resets
 - **Integration:** `game.gd` no longer writes to labels directly, all HUD updates go through `hud.gd`

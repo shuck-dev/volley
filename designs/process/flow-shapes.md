@@ -1,4 +1,4 @@
-# Flow shapes — bug, spike, feature
+# Flow shapes, bug, spike, feature
 
 Three mission shapes. Each has a distinct entry, a distinct deliverable, and a distinct "done."
 
@@ -28,7 +28,7 @@ A question that can't be answered without exploring code, prototyping, or resear
 
 **Shape.** A writeup in [`ai/scratchpads/`](../../ai/scratchpads) by default (promoted to [`designs/research/`](../research/) only when the work earns it) and often a throwaway prototype branch. The prototype is for evidence, not for merging.
 
-**Deliverable.** **Feature issues filed in Linear.** The writeup is a vehicle; the tickets are what carries the value forward. A spike that ends without feature issues is unfinished — the question got answered, but nothing acts on the answer.
+**Deliverable.** **Feature issues filed in Linear.** The writeup is a vehicle; the tickets are what carries the value forward. A spike that ends without feature issues is unfinished, the question got answered, but nothing acts on the answer.
 
 **Done when.** Linear has the tickets the spike's findings unlocked.
 
@@ -46,13 +46,13 @@ A player-facing capability or a refactor whose blast radius crosses multiple fil
 2. **Design pass.** End-state architecture in a tech doc under [`designs/01-prototype/tech/`](../01-prototype/tech/); player-facing design (if separate) under [`designs/01-prototype/design/`](../01-prototype/design/). Decisions land in the doc, not in chat.
 3. **Planner dispatch.** A planner agent produces a sequenced plan with blast-radius analysis, scoped per PR. Open design calls surface as recommendations; the dispatcher carries them to Josh. Plan saved to scratchpads. Decisions folded back into the plan after Josh picks.
 4. **Implementer fan-out.** Each plan step gets one implementer minion, codenamed, dispatched in the background. Each minion branches from the previous step's branch (PRs stack), ships a draft, runs static + GUT, returns a report. Coupled PRs stay draft until their base merges.
-5. **Fold and Ride.** When the stack is ready, the dispatcher merges into the parent feature branch (or main if no parent). GitHub auto-closes the sub-PRs when their commits land. Worktrees pruned, refactor branches deleted. The mission closes with the Ride — Josh-as-pilot validates player-feel at runtime.
+5. **Fold and Ride.** When the stack is ready, the dispatcher merges into the parent feature branch (or main if no parent). GitHub auto-closes the sub-PRs when their commits land. Worktrees pruned, refactor branches deleted. The mission closes with the Ride, Josh-as-pilot validates player-feel at runtime.
 
 **Deliverable.** The capability shipped end-to-end, the tech doc reflecting the landed system, sub-tickets closed, Ride passed.
 
 **Done when.** The player can use the capability in real gameplay. The Ride confirms feel, not just function.
 
-**Smell that this is the wrong flow.** If the work is single-file with a clear repro, drop the planner overhead — it's a bug. If the work is "we don't know how X should work," output should be tickets, not code — it's a spike.
+**Smell that this is the wrong flow.** If the work is single-file with a clear repro, drop the planner overhead, it's a bug. If the work is "we don't know how X should work," output should be tickets, not code, it's a spike.
 
 ## Reporting discipline (cross-flow)
 
