@@ -1,6 +1,6 @@
 # Reconstruction
 
-Part 2. The arc after the break: dread, the search, items invoking memories, the key that opens the gate. High-level architecture in `00-two-styles.md`; the break that opens it in `02-cracks-and-break.md`; Reality as a style in `04-reality.md`; the cliff and the gate in `05-postgame.md`.
+Part 2. The arc after the break: dread, the search, items invoking memories, the key that opens the gate. High-level architecture in `00-two-styles.md`; Reality as a style in `04-reality.md`; the cliff and the gate in `05-postgame.md`. Full story in [`../narrative/outline.md`](../narrative/outline.md).
 
 ## What Part 2 is
 

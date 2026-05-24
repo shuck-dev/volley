@@ -1,6 +1,6 @@
 # Construction
 
-Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, and the count. High-level architecture in `00-two-styles.md`; the cracks and the win that breaks Construction in `02-cracks-and-break.md`.
+Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, and the count. High-level architecture in `00-two-styles.md`; the break canon lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 Visual canon for Construction lives in [`../art/bible.md`](../art/bible.md) (sections 5 and 14). Cast lives in [`../art/bible.md`](../art/bible.md) § 4 plus the per-character profiles under [`../characters/`](../characters/). Story shape lives in [`../narrative/outline.md`](../narrative/outline.md).
 

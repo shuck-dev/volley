@@ -142,7 +142,6 @@ Reality leaks into Construction. Two flavours, both authored, both deniable. The
 
 The hardest visual discipline: tonal cracks read as oddness without ever reading as a mistake. The deniability is what does the work. Cracks stay tonal, never literal. A coffee mug from the protagonist's kitchen sitting on the equipment rack would collapse the deniability.
 
-Pacing across the climb, escalation rules, and the cumulative-shape principle live in [`../concept/02-cracks-and-break.md`](../concept/02-cracks-and-break.md).
 
 ---
 
@@ -154,7 +153,7 @@ After the rupture the player walks through the protagonist's hometown for the fi
 
 The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre is hollowed out; the rallies render that absence.
 
-Story shape (championship win, win lands wrong, shopkeeper missing, champ exits) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/02-cracks-and-break.md`](../concept/02-cracks-and-break.md).
+Story shape (championship win, win lands wrong, Zach missing, Fern exits) lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 

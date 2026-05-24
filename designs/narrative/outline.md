@@ -8,7 +8,7 @@ The protagonist trains in the garden. They are in their twenties, in the middle 
 
 Zach comes over hearing of the protagonist's new dream and gives them a racquet. They are one of the protagonist's best friends. After a while, they start getting the hang of it. Zach comes back with a stall determined to help the protagonist's journey. Zach filled the stall with items connected to the protagonist from Zach's home.
 
-Later on, Zach gets more professional and gets a catalogue so the protagonist can get larger items: court furnishings, decorations and dogs to help with the ball fetching. The shopkeep's younger sister, the tinkerer, takes a corner of the stall as her workshop and upgrades whatever the protagonist brings her.
+Later on, Zach gets more professional and gets a catalogue so the protagonist can get larger items: court furnishings, decorations and dogs to help with the ball fetching. Zach's younger sister, Stephanie, the tinkerer, takes a corner of the stall as her workshop and upgrades whatever the protagonist brings her.
 
 Martha gets wind of this and agrees to be the protagonist's rally partner. This is the true start of the rally.
 
@@ -16,7 +16,7 @@ At the top of the ladder sits the volley champion. At the back of the garden, be
 
 ## Act II. Break
 
-The protagonist is fully kitted and the record is in sight. The want is no longer joy, it has become need.
+The protagonist is fully kitted and the record is in sight. The want is no longer joy. It has become need.
 
 The championship arrives. The protagonist duels and wins. It feels hollow. What was it all for? Everything feels heavy, a crushing, sounds from the other side. It gets unbearable. The protagonist clutches their face and blacks out.
 

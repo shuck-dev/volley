@@ -8,7 +8,6 @@ This is a working set of docs. Refinement passes follow.
 
 - This doc: the game's overall shape and how the two styles fit together.
 - `01-construction.md`: Part 1. The vibrant world, the tournament, the cast, the rally, the count.
-- `02-cracks-and-break.md`: cracks across Part 1, the championship win that lands wrong, the involuntary walk through the hometown.
 - `03-reconstruction.md`: Part 2. Dread, items invoking memories, the sister, the search.
 - `04-reality.md`: Reality as a style. Visuals, audio, the structural shape of a Reality scene.
 - `05-postgame.md`: the cliff, the gate, the credits, the postgame rally.
@@ -80,8 +79,6 @@ Per SH-275, the prototype delivers Part 1's first venue: the garden. Martha as t
 The questions live in the per-arc docs; this is the index.
 
 From `01-construction.md`: the encounter shape per round. Partner unlock cadence. Mechanic-per-coach specifics. Round-match win condition.
-
-From `02-cracks-and-break.md`: crack pacing across idle play. Tonal-vs-meta crack mix. How the cracks behave during the championship attempt itself.
 
 From `03-reconstruction.md`: memory count across Part 2. Per-memory scene shape. Cliff-trigger gate. Bridge unlock signal after the break.
 
