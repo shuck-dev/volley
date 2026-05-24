@@ -1,6 +1,6 @@
 extends GutTest
 
-# #690: timeout_started forces autoplay off; timeout_ended does NOT auto-restore.
+## Timeout_started forces autoplay off and emits the HUD signal; timeout_ended does not restore.
 
 var _controller: AutoplayController
 var _paddle: Paddle
@@ -35,24 +35,12 @@ func before_each() -> void:
 	add_child_autofree(_controller)
 
 
-func test_ready_connects_timeout_started() -> void:
-	assert_true(
-		_timeout.timeout_started.is_connected(_controller._on_timeout_started),
-		"AutoplayController must connect to TimeoutController.timeout_started in _ready",
-	)
-
-
-func test_timeout_started_disables_active_autoplay() -> void:
+func test_timeout_started_disables_active_autoplay_and_emits_toggled_false() -> void:
 	_controller.toggle()
 	assert_true(_controller.is_enabled(), "precondition: autoplay enabled")
-	_timeout.timeout_started.emit()
-	assert_false(_controller.is_enabled(), "timeout_started must disable autoplay")
-
-
-func test_timeout_started_emits_autoplay_toggled_false() -> void:
-	_controller.toggle()
 	watch_signals(_controller)
 	_timeout.timeout_started.emit()
+	assert_false(_controller.is_enabled(), "timeout_started must disable autoplay")
 	assert_signal_emitted_with_parameters(_controller, "autoplay_toggled", [false])
 
 
