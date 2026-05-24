@@ -52,10 +52,13 @@ func _register_existing_items() -> void:
 func reload_from_progression() -> void:
 	for item in items:
 		_effect_manager.unregister_source(item)
+
 	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
+
 	_register_existing_items()
 	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+
 	for item in items:
 		item_level_changed.emit(item.key)
 
@@ -162,28 +165,20 @@ func get_court_items() -> Array[String]:
 
 
 ## Slot index assigned to `item_key` while STORED; -1 when not stored.
-## Lazily assigns when the placement is STORED but no slot exists yet (covers take and direct state pokes).
+## Self-heals a missing assignment for an owned STORED item so direct-state-poke tests still work.
 func get_rack_slot_index(item_key: String) -> int:
-	var assigned: int = state.rack_slot_index_by_key.get(item_key, -1)
-	if assigned >= 0:
-		return assigned
-	if get_level(item_key) <= 0:
-		return -1
-	if _get_placement(item_key) != PlacementScript.STORED:
-		return -1
-	var item: ItemDefinition = _get_item(item_key)
-	if item == null:
-		return -1
-	_assign_rack_slot(item_key, item.role)
-	return state.rack_slot_index_by_key[item_key]
+	if not state.rack_slot_index_by_key.has(item_key):
+		if get_level(item_key) > 0 and _get_placement(item_key) == PlacementScript.STORED:
+			_assign_rack_slot(item_key, _get_item(item_key).role)
+	return state.rack_slot_index_by_key.get(item_key, -1)
 
 
 ## Picks the lowest free slot index among STORED items of the same role and records it.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:
 	var used: Dictionary = {}
 	for key: String in state.rack_slot_index_by_key:
-		var owner: ItemDefinition = _get_item(key)
-		if owner != null and owner.role == role:
+		var definition: ItemDefinition = _get_item(key)
+		if definition != null and definition.role == role:
 			used[state.rack_slot_index_by_key[key]] = true
 	var candidate: int = 0
 	while used.has(candidate):
@@ -194,14 +189,19 @@ func _assign_rack_slot(item_key: String, role: StringName) -> void:
 ## Returns owned items of the given role whose placement is STORED (on the rack).
 func get_kit_items(role: StringName) -> Array[String]:
 	var result: Array[String] = []
+
 	for item in items:
 		if item.role != role:
 			continue
+
 		if get_level(item.key) <= 0:
 			continue
+
 		if _get_placement(item.key) != PlacementScript.STORED:
 			continue
+
 		result.append(item.key)
+
 	return result
 
 
@@ -209,7 +209,9 @@ func get_kit_items(role: StringName) -> Array[String]:
 func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
+
 	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+
 	return true
 
 
@@ -217,7 +219,9 @@ func activate(item_key: String) -> bool:
 func deactivate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
+
 	_set_item_placement(item_key, PlacementScript.STORED)
+
 	return true
 
 
@@ -225,9 +229,11 @@ func deactivate(item_key: String) -> bool:
 func get_kit_remaining() -> int:
 	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
 	var equipped_count: int = 0
+
 	for key: String in state.item_placements:
 		if int(state.item_placements[key]) == PlacementScript.EQUIPPED:
 			equipped_count += 1
+
 	return max(0, cap - equipped_count)
 
 
@@ -241,6 +247,7 @@ func equip(item_key: String) -> bool:
 	if get_kit_remaining() < 1:
 		equip_refused.emit(item_key, &"capacity_exceeded")
 		return false
+
 	return activate(item_key)
 
 
@@ -273,10 +280,12 @@ func can_purchase(item_key: String) -> bool:
 func purchase(item_key: String) -> bool:
 	if not can_purchase(item_key):
 		return false
+
 	var was_unowned := get_level(item_key) == 0
 	subtract_friendship_points(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
+
 	if was_unowned:
 		var item := _get_item(item_key)
 		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
@@ -284,8 +293,10 @@ func purchase(item_key: String) -> bool:
 		_set_item_placement(item_key, landing)
 	elif _is_placed(item_key):
 		_refresh_registration(item_key)
+
 	item_level_changed.emit(item_key)
 	SaveManager.save()
+
 	return true
 
 
@@ -319,6 +330,7 @@ func remove_level(item_key: String) -> void:
 		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
 		_refund_friendship_points(refund)
 		_set_level(item_key, current_level - 1)
+
 		if current_level - 1 == 0:
 			# Fully removed: treat the item as if it was never owned; clear placement.
 			_set_item_placement(item_key, PlacementScript.STORED)
@@ -330,6 +342,7 @@ func adopt_authored(item_key: String) -> void:
 	if get_level(item_key) <= 0:
 		state.item_levels[item_key] = 1
 		item_level_changed.emit(item_key)
+
 	if not is_on_court(item_key):
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
@@ -339,12 +352,15 @@ func adopt_authored(item_key: String) -> void:
 func take(item_key: String) -> bool:
 	if get_level(item_key) >= 1:
 		return false
+
 	if economy.friendship_point_balance < calculate_cost(item_key):
 		return false
+
 	subtract_friendship_points(calculate_cost(item_key))
 	state.item_levels[item_key] = 1
 	item_level_changed.emit(item_key)
 	SaveManager.save()
+
 	return true
 
 
@@ -357,8 +373,10 @@ func _refund_friendship_points(points: int) -> void:
 
 func _set_level(item_key: String, level: int) -> void:
 	state.item_levels[item_key] = level
+
 	if _is_placed(item_key):
 		_refresh_registration(item_key)
+
 	item_level_changed.emit(item_key)
 
 
