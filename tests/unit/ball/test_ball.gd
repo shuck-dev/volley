@@ -188,47 +188,5 @@ func test_register_miss_zone_is_idempotent() -> void:
 
 	assert_signal_emit_count(_ball, "missed", 1)
 
-
-# --- speed offset oscillation ---
-# Samples StatOscillation.sample_at at 20 t-values spanning one slow-period
-# (2pi / PRIMARY_FREQUENCY ~= 3.7s), feeds the worst-case minimum through the production
-# clamp expression from BallEffectProcessor._apply_speed_offset, and asserts the
-# floor holds. Replaces a 300-iteration `_physics_process` Monte Carlo loop where
-# the item under test was never actually registered (role defaulted to equipment,
-# routed to STORED, register_source skipped, oscillation never applied), so the
-# loop was asserting nothing.
-func test_oscillation_never_drops_below_min_speed() -> void:
-	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
-	var max_speed: float = _effective_max_speed()
-	var range_value: float = Stats.resolve(
-		GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager
-	)
-	var oscillation := StatOscillation.new()
-	oscillation.stat_key = &"ball_speed_offset"
-	oscillation.source_key = "big_oscillation"
-	oscillation.amplitude = 2.0
-	oscillation.set_range_value(range_value)
-
-	var worst_offset := INF
-	for i in range(20):
-		var t: float = float(i) * 3.7 / 19.0
-		worst_offset = minf(worst_offset, oscillation.sample_at(t))
-
-	# Production clamp lives in BallEffectProcessor._apply_speed_offset.
-	var clamped: float = clampf(min_speed + worst_offset, min_speed, max_speed)
-	assert_true(
-		clamped >= min_speed,
-		(
-			"Clamped speed %f at worst offset %f should never drop below min %f"
-			% [clamped, worst_offset, min_speed]
-		),
-	)
-	# Tautology guard: with amplitude 2.0 the minimum must be negative enough that
-	# (min_speed + worst_offset) is below min_speed; otherwise the clamp is untested.
-	assert_true(
-		min_speed + worst_offset < min_speed,
-		(
-			"Worst offset %f should drive base+offset below min so the clamp is exercised"
-			% worst_offset
-		),
-	)
+# Future pin of the speed clamp invariant should route through production
+# _apply_speed_offset with a known _base_speed, not a tautological re-clampf.
