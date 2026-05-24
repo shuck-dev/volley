@@ -48,7 +48,7 @@ Fern is Construction-only. No Reality counterpart. Fern's reality is the cliff (
 
 ## Period
 
-Construction holds the 90s. Reality sits in 2014. The protagonist is mid-40s in Reality, rendered in their twenties in Construction. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
+Construction holds the 90s. Reality sits in 2014. The protagonist is mid-40s in Reality, rendered in their twenties in Construction.
 
 ## Production notes
 

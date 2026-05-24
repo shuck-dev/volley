@@ -4,7 +4,7 @@ The canonical art document for Volley!. Every concept study and production asset
 
 The bible holds the world the art has to render: what it is, who is in it, what happens, and the visual craft that serves the telling. The story drives; the craft sections name how the art carries the story.
 
-The protagonist's interior sits in [`../characters/protagonist.md`](../characters/protagonist.md). The structural spine sits across [`../concept/`](../concept/). Tech pipeline sits in [`tech-pipeline.md`](tech-pipeline.md). Audio direction lives in SH-281.
+Audio direction lives in SH-281.
 
 ## Contents
 
@@ -37,7 +37,7 @@ A racquet. A ball. A counter on the wall that climbs. A friend leaning on the co
 
 Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
-Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md). This bible holds the visual canon and craft sections; story-shape, character arc, and character identity route out via cross-link, not repeated here.
+This bible holds the visual canon and craft sections; story-shape, character arc, and character identity sit in the narrative and character docs, not repeated here.
 
 ---
 
@@ -55,9 +55,9 @@ The garden in Construction draws from this geography. Construction's other venue
 
 Construction and Reality are distinct worlds. Two styles, two visual treatments, two ways the player engages.
 
-**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue. Full structural canon in [`../concept/01-construction.md`](../concept/01-construction.md).
+**Construction.** Saturated colour, generous light, surfaces that gleam, shadows held warm. Characters drawn young and full, present, bodies at ease in motion. Tennis lives here and only here. Structured as a tournament the protagonist climbs from venue to venue.
 
-**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen. Full canon in [`../concept/04-reality.md`](../concept/04-reality.md).
+**Reality.** A second style, completely. Less saturation than Construction, more texture. Light is just light; weather is in the air. Characters at their actual ages, in their actual lives, plainer than their Construction-renders. Reality's tone is weighted and story-driven. The pull of Reality is its honesty; the player ends up wanting it. Interaction-driven, not rally-driven: the player walks into a scene with several things going on and a handful of contextual interactions, and the puzzle is being present in a room and finding what wants to happen.
 
 Silhouettes and visual DNA hold across both styles. What shifts is saturation, edge quality, lighting intention, level of detail, and arrangement. Same shapes; different weight.
 
@@ -83,7 +83,7 @@ Agender. They picked up a racquet long ago and never quite put it down. The gard
 
 Drawn like any other character. Construction-render and Reality-render, same shape as the rest of the cast. The image stays consistent across both; the contrast comes from the style, not from a transformation in their figure. In Construction they are at the centre of the rally; in Reality they walk through their hometown at their own pace.
 
-The depth sits in [`../characters/protagonist.md`](../characters/protagonist.md): the interior layer, the weight they carry and the pull they live alongside. The bible names the body and the role; the profile holds the person.
+The bible names the body and the role; the character profile holds the person, the interior layer, the weight they carry and the pull they live alongside.
 
 ### The shopkeeper
 
@@ -93,27 +93,21 @@ Two renders. Construction: the friend at the stall, grounded and present in ever
 
 What holds is the posture in Construction and the weight and absence in Reality. Gender, age, presentation are open for the sketch to settle.
 
-The relationship and the arc sit in [`../characters/shopkeeper.md`](../characters/shopkeeper.md).
-
 ### The sister (the tinkerer)
 
 The shopkeeper's younger sister. In Construction she is the tinkerer behind the workshop bench in the garden: rests, procrastinates, works at her own pace, finished items land on a done tray with a soft chime. Different rhythm from the shopkeeper, same family ease.
 
 Two renders, like the shopkeeper. Age, presentation, look stay open; the family resemblance to the shopkeeper is the anchor.
 
-The relationship and the arc sit in [`../characters/tinkerer.md`](../characters/tinkerer.md).
-
 ### The partners
 
 Each partner is a coach. The visual job is two renders: the coach beside the protagonist on the court (Construction), and the actual person at their actual age, in their actual life (Reality). The first partner sets the visual bar for the rest. Three more partners arrive in the early game; from then on each new venue brings one.
 
-The first partner's profile sits in [`../characters/martha.md`](../characters/martha.md); the lineage rule and wider partner cast sit in [`../characters/partners.md`](../characters/partners.md).
+The first partner sets the visual bar; the lineage rule and wider partner cast sit in the partner character docs.
 
 ### The champ
 
 The dead friend. Construction-only; their Reality is the cliff. Holds the championship spot at the top of the tournament ladder. Render them as someone the protagonist loved; sharp at the championship because the friend was sharp.
-
-The relationship and the arc sit in [`../characters/fern.md`](../characters/fern.md).
 
 
 ---
@@ -124,7 +118,6 @@ Saturated colour, generous light, surfaces that gleam. Shadows held warm. Charac
 
 The protagonist is actively maintaining Construction; tennis lives here and only here. The pretense is the rendering, not the protagonist's care. Construction needs to feel like somewhere the player wants to be, before the cracks ever come. An idle pong game with light and texture, full stop. If it does not earn the player's investment first, the cracks have nothing to crack.
 
-Outline canon (the tournament, the climb, the championship duel) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/01-construction.md`](../concept/01-construction.md).
 
 ---
 
@@ -149,7 +142,6 @@ After the rupture the player walks through the protagonist's hometown for the fi
 
 The break ends and the player is back in Construction, but the wall does not go back up. The shop stays closed. The friend at the stall is gone. The warm centre is hollowed out; the rallies render that absence.
 
-Outline canon (championship win, win lands wrong, Zach missing, Fern exits) lives in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
@@ -161,7 +153,6 @@ Construction weathers as the arc proceeds. Saturation drops a notch, line weight
 
 Reality acquires content. The sister's place gains the book and the table where the protagonist sits with it. Scenes around the town gain the people and objects the photos send the protagonist to find. The cliff opens at the end, through the unlocked gate in the garden.
 
-Outline canon (the search, worry, items invoking memories, the score migrating to Reality, the audio shift toward acoustic) lives in [`../narrative/outline.md`](../narrative/outline.md) and [`../concept/03-reconstruction.md`](../concept/03-reconstruction.md).
 
 ---
 
@@ -173,8 +164,6 @@ The cliff reads as a place people came to. A worn ledge, traces of small ceremon
 
 The protagonist opens the locked gate at the back of the garden in Construction and steps through to the cliff in Reality. The friend at the stall is on the memorial bench. The shape is the protagonist arriving at a place that has been there the whole game; the gate was the last barrier.
 
-Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md).
-
 ---
 
 ## 10. Credits and postgame
@@ -183,7 +172,6 @@ Credits play over a rally. The protagonist on the left, the friend at the stall 
 
 Postgame is rallying with the friend at the stall, on the right side of the court that used to be the championship spot. The cliff is reachable any time through the now-unlocked gate, with no new gameplay; a place to sit, look at the sea, listen.
 
-Full canon for the postgame in [`../narrative/outline.md`](../narrative/outline.md).
 
 ---
 
@@ -210,7 +198,7 @@ Things that travel with the camera through every Construction venue. They are Co
 - **The friend at the stall.** Zach in his Construction-render. Behind the counter of a small wooden stall, leaning on his elbows, watching the rally. The stall lashes to whatever the venue gives it: a fence, a palm, a meteor edge. He is recognisable wherever he sits. Present in Construction up to the break, absent across Reconstruction, back on the bench at the cliff.
 - **The volley counter.** A wooden plaque in the garden, a coral-rimmed slate underwater, a hovering glyph in space. Same number, dressed for each venue. Diegetic everywhere.
 - **The warm light style.** Colour temperature shifts venue by venue: afternoon yellow, submerged green, nebula pink, canopy gold. The warmth holds even when the colour does not.
-- **Soul.** The bond between the protagonist and each partner that channels through the rally. It deepens with shared rallies and small attentions. A long rally is soul at full breath; a miss is soul catching its breath again. Anything in the rally that bends physics is soul acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally. Full canon in [`../narrative/soul.md`](../narrative/soul.md).
+- **Soul.** The bond between the protagonist and each partner that channels through the rally. It deepens with shared rallies and small attentions. A long rally is soul at full breath; a miss is soul catching its breath again. Anything in the rally that bends physics is soul acting on the world. The art renders the place where this kind of motion is natural: the lift of the protagonist a beat longer than gravity wanted, the ball's little extra coast at the top of a hit, the venue light leaning warmer through a long rally.
 
 Reality's constants are its own. The kitchen, the photograph, the back walking down a street, the ordinary surfaces of an ordinary town. They have their own spine, and the player learns both.
 
@@ -327,7 +315,7 @@ A note on cost. Minimal animation per character keeps the labour budget where it
 
 ### The apex-return beat
 
-Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery. Story canon for the soul-bound and the bond-per-venue lives in [`../narrative/soul.md`](../narrative/soul.md); the ball-side mechanics live in [`../01-prototype/design/21-ball-dynamics.md`](../01-prototype/design/21-ball-dynamics.md).
+Each rally point closes on a visible beat at the ball's apex: a bloom of light, a brief connecting arc, a synth chime, a reaction from the friend who holds the venue's bond. Eyes up, racquet lift, a small gesture from wherever they stand. Satisfying, not loud. The friend is a co-celebrant of the return, not scenery.
 
 The bond doing the work changes by venue. The garden runs the beat through the shopkeeper at the stall. The treetop, underwater, and meteor venues run it through the coach who teaches there. The pattern is the same; the character carrying it is whoever the venue's wind belongs to.
 
@@ -339,7 +327,7 @@ A reaction per rally point is animated state on whichever character holds the bo
 
 ## 18. Touchstones
 
-Every work below has been cited in the design corpus as a tonal or visual touchstone. Two or three resonate most with any given push of the work; the rest sit as ambient context. Wider lineage on the game's structural choices is in [`../research/game-structure-references.md`](../research/game-structure-references.md). Visual positioning sits in [`../research/visual-positioning.md`](../research/visual-positioning.md).
+Every work below has been cited in the design corpus as a tonal or visual touchstone. Two or three resonate most with any given push of the work; the rest sit as ambient context.
 
 ### Animation and film
 
@@ -438,6 +426,6 @@ The named terms the bible uses, in one place. Each is defined fully in its own s
 - **Meta-contextual cracks.** Cracks outside the fiction: UI, music, loading screens, menu wording. Section 6.
 - **The carry.** The bidirectional bridge between Construction and Reality during Reconstruction. Curated, not open. Section 8.
 - **The photo book.** The mechanic at the centre of Reconstruction. Held by the sister; filled by the protagonist's reconciliation actions. Section 8.
-- **Soul.** The bond between the protagonist and each partner. Anything in the rally that bends physics is soul acting on the world. Section 12. Full canon in [`../narrative/soul.md`](../narrative/soul.md).
+- **Soul.** The bond between the protagonist and each partner. Anything in the rally that bends physics is soul acting on the world. Section 12.
 - **The Six Marks.** The rendering rulebook: Intentional, Specific, Distinct, Diegetic, Breathing, Shifting. Section 11.
 - **Two renders.** Each cross-style character has a Construction-render, young, vibrant, present, and a Reality-render at their actual age, in their actual life. Section 4.

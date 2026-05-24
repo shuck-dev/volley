@@ -2,7 +2,7 @@
 
 Each partner is a coach. They train the protagonist in one specific mechanic via the rally; once the protagonist qualifies, the partner takes the other side of the court for **the round**. Master-and-pupil shape. By the championship the protagonist has a stack of techniques, each tied to a person who taught them.
 
-The art bible at [`../art/bible.md`](../art/bible.md) § 4 names the body and the visual role; outline canon for per-act events lives in [`../narrative/outline.md`](../narrative/outline.md). This profile holds the lineage rule and the wider partner cast. Martha's own profile sits in [`martha.md`](martha.md).
+This profile holds the lineage rule and the wider partner cast.
 
 ---
 

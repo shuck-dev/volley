@@ -1,8 +1,6 @@
 # Construction
 
-Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, and the count. High-level architecture in `00-two-styles.md`; the break canon lives in [`../narrative/outline.md`](../narrative/outline.md).
-
-Visual canon for Construction lives in [`../art/bible.md`](../art/bible.md) (sections 5 and 14). Cast lives in [`../art/bible.md`](../art/bible.md) § 4 plus the per-character profiles under [`../characters/`](../characters/). Outline canon lives in [`../narrative/outline.md`](../narrative/outline.md).
+Part 1. The structural detail of the vibrant world: the tournament shape the climb takes, the rally that drives it, and the count. High-level architecture in `00-two-styles.md`.
 
 ## The tournament
 
@@ -12,7 +10,7 @@ Each main venue hosts one round. The player rallies in that venue with a coach u
 
 Round matches happen in a shared themed battle space, off the main rally flow. The player attempts each round when ready. Win unlocks the next venue, the next coach, the next mechanic, the next round.
 
-Each competition class has its own reigning champion. The championship is the final milestone where the protagonist duels the reigning champ to become champ. Fern is the last champ at the world tier. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
+Each competition class has its own reigning champion. The championship is the final milestone where the protagonist duels the reigning champ to become champ. Fern is the last champ at the world tier.
 
 ### The coaches
 

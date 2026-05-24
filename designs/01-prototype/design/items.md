@@ -6,8 +6,6 @@ The Tinkerer carries the narrative meaning of each item. The item itself just do
 
 Friendship is the pre-break incentive currency. Post-break phases may introduce different objectives, so items designed for those phases may target different incentives entirely. Pre-break prototype items are friendship-focused, but the framework must not assume friendship is always the reward worth designing around. Items that carry across phases should stay useful under different objective conditions.
 
-Implementation spec lives in [`../tech/05-items.md`](../tech/05-items.md). Effect-system framework lives in [`../tech/04-effect-system.md`](../tech/04-effect-system.md).
-
 ---
 
 ## Item design categories
@@ -38,7 +36,7 @@ Because descriptions are short they can change dynamically. Variant text is keye
 
 Every item has exactly 3 variants: default, item power revealed (triggers once the player has witnessed the effect), and narrative revealed (post-break for pre-break items; tied to the relevant story beat for post-break items).
 
-Items have 3 levels: base (purchased), upgraded, max. Cost scaling lives with the effect blocks in [`../tech/05-items.md`](../tech/05-items.md).
+Items have 3 levels: base (purchased), upgraded, max.
 
 Item card format:
 

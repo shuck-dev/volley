@@ -1,6 +1,6 @@
 # Partner Upgrade Strategy
 
-How partners scale with the player so no partner becomes a bottleneck or obsolete as the game advances. The mechanism is the `share_stats_with_partner` outcome on the effect system; this doc covers the design call. Effect-system framework lives in [`../tech/04-effect-system.md`](../tech/04-effect-system.md).
+How partners scale with the player so no partner becomes a bottleneck or obsolete as the game advances. The mechanism is the `share_stats_with_partner` outcome on the effect system; this doc covers the design call.
 
 **Dependencies:** Partner AI (`../17-partner-ai.md`), First Partner Unlock (`../11-first-partner-unlock.md`), Effect System (`../tech/04-effect-system.md`), Tinkerer Prestige (SH-81)
 

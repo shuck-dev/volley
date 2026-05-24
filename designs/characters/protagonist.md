@@ -1,6 +1,6 @@
 # The protagonist
 
-The art bible at [`../art/bible.md`](../art/bible.md) holds the world and the visual role; outline canon for per-act events lives in [`../narrative/outline.md`](../narrative/outline.md). This profile holds the person at the centre of both: who they are, what they carry, and the interior weight underneath.
+This profile holds the person at the centre of the work: who they are, what they carry, and the interior weight underneath.
 
 ---
 

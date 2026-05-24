@@ -254,7 +254,7 @@ The workflow that takes a finished asset from an artist's machine to the game.
     - Wires the sprite into the relevant scene (`node_ops` + `save_scene`, never by hand-editing `.tscn`).
     - Adds an `AnimatedSprite2D` + `SpriteFrames` resource where animation is involved.
     - Verifies with `spatial_audit` and a smoke play.
-5. **Review.** The PR carries the [`asset`](../process/labels.md#art) label (art, produce tier). Label-dispatched specialist reviewers pick it up from there; asset-pipeline checks import settings, path, and `.import` sidecar, and godot-scene checks scene wiring. Integration work that grows a new engine capability instead carries [`feature`](../process/labels.md#tech) (tech, produce); spikes like this document carry [`spike`](../process/labels.md#tech).
+5. **Review.** The PR carries the `asset` label (art, produce tier). Label-dispatched specialist reviewers pick it up from there; asset-pipeline checks import settings, path, and `.import` sidecar, and godot-scene checks scene wiring. Integration work that grows a new engine capability instead carries `feature` (tech, produce); spikes like this document carry `spike`.
 
 The artist does not open PRs. The integration PR is the contract: everything needed to get the asset into the game lives there, reviewable in one place.
 

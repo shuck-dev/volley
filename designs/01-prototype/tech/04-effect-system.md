@@ -1,6 +1,6 @@
 # Effect System Class Design
 
-Technical design for the unified effect framework. All gameplay modifiers (items, partners, future sources) flow through one system. Per-item effect blocks and cost tables live in [`05-items.md`](05-items.md); player-facing item flavour lives in [`../design/items.md`](../design/items.md).
+Technical design for the unified effect framework. All gameplay modifiers (items, partners, future sources) flow through one system.
 
 ---
 

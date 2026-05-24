@@ -6,7 +6,7 @@ The ending and what comes after. The cliff is the chosen-acceptance bookend to t
 
 The structural shape: items invoke memories, the final memory yields the key. The protagonist unlocks the garden gate and steps through to the cliff in Reality. Zach is on the memorial bench dedicated to their friend.
 
-Full canon in [`../narrative/outline.md`](../narrative/outline.md). The split-frame staging at the bench lives in [`../art/bible.md`](../art/bible.md) § 9.
+The split-frame staging at the bench lives in [`../art/bible.md`](../art/bible.md) § 9.
 
 ## Credits
 
@@ -16,7 +16,7 @@ Audio per the SH-281 arc: full-orchestra range, the synth warmth that opened the
 
 ## Postgame
 
-Zach is found. He can now share the construct with the protagonist, knowing and accepting two truths: that the construct is not real, and that Fern is dead. The game continues, new items, venues etc. Full canon in [`../narrative/outline.md`](../narrative/outline.md).
+Zach is found. He can now share the construct with the protagonist, knowing and accepting two truths: that the construct is not real, and that Fern is dead. The game continues, new items, venues etc.
 
 The cliff stays returnable through the now-unlocked gate. The cliff is a place to sit, look at the sea, listen. No new gameplay there. Grief integrated as access, not as event.
 

@@ -2,7 +2,7 @@
 
 The last champ before the protagonist. The dead friend.
 
-The art bible at [`../art/bible.md`](../art/bible.md) § 4 names the body and the visual role; outline canon for per-act events lives in [`../narrative/outline.md`](../narrative/outline.md). This profile holds the relationship.
+This profile holds the relationship.
 
 ---
 

@@ -6,7 +6,7 @@ The playable sequence between pre-break and post-break. The player leaves the po
 
 ## Trigger
 
-Full canon in [`../narrative/outline.md`](../narrative/outline.md). The championship arrives, the protagonist duels and wins, the win feels hollow, the protagonist blacks out. Then:
+The championship arrives, the protagonist duels and wins, the win feels hollow, the protagonist blacks out. Then:
 
 ---
 
