@@ -26,7 +26,7 @@
 [ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
-size = Vector2(21.6, 180)
+size = Vector2(22, 500)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
 size = Vector2(800, 20)
@@ -62,17 +62,27 @@ item_key = "base_ball"
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(400, -520)
+position = Vector2(400, 139)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="Bounds/Right Wall" unique_id=679820908]
-offset_right = 21.6
-offset_bottom = 180.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -250.0
+offset_right = 11.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 mouse_filter = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
-position = Vector2(10.8, 90)
 shape = SubResource("RectangleShape2D_vert")
 
 [node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318]
