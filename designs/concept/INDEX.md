@@ -1,6 +1,6 @@
 # Concept
 
-Per-mechanic and per-mechanic-set design canon.
+Per-mechanic and per-mechanic-set design specs.
 
 | Doc | Purpose |
 |---|---|

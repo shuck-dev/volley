@@ -152,7 +152,7 @@ func test_venue_release_does_not_reveal_rack_slot() -> void:
 		-1,
 		"rack does not render a slot for a loose-in-venue key",
 	)
-	# Step 5: the canonical instance is a Ball in OUT_REST under the reconciler.
+	# Step 5: the standard instance is a Ball in OUT_REST under the reconciler.
 	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body lingers post-release")
 	assert_eq(
 		_rest_balls_under_host().size(),

@@ -28,7 +28,7 @@ Target one sentence describing what the PR does and, if the reasoning is not obv
 
 No test plan checklist. No bulleted changelog. No "Summary" header when one line is enough. If the PR is a simple fix, one paragraph is the whole body.
 
-Spell out canonical commands. Write `pre-commit run --all-files` and `godot --headless --script run_tests.gd`, not `ggut` or `gcf` or other shell aliases; the public surface cannot depend on Josh's dotfiles.
+Spell out standard commands. Write `pre-commit run --all-files` and `godot --headless --script run_tests.gd`, not `ggut` or `gcf` or other shell aliases; the public surface cannot depend on Josh's dotfiles.
 
 If the diff introduces a workflow that references a new secret, or widens a PR-triggered workflow's permissions, stop and flag it in the final report before proposing the body. Do not silently ship it.
 

@@ -20,7 +20,7 @@ What this looks like concretely:
 
 - Shell-touching change (ci-and-workflows, asset-pipeline): run the script against a mock payload shaped like an attack, or like the known failure class.
 - Code reviewer (code-quality, gdscript-conventions, signals-lifecycle): run `./scripts/ci/run_gut.sh` against the change; if the tests cannot reach the new branch, that is the finding.
-- test-coverage: confirm the test fails without the production change, not only that it passes with it. For player-facing ACs, also confirm at least one integration test drives the real input handler end-to-end (`Area2D.input_event` for press, the controller's `_input` / `_unhandled_input` for release), not just the test seam (`start_drag`, `attempt_release(position)`, `grab_from_rack`). A green seam-only suite is exactly the failure mode that shipped SH-218 and SH-247 / SH-245 to playtest broken; see `tests/TESTING.md` for the rule and the canonical press-drag-release pattern.
+- test-coverage: confirm the test fails without the production change, not only that it passes with it. For player-facing ACs, also confirm at least one integration test drives the real input handler end-to-end (`Area2D.input_event` for press, the controller's `_input` / `_unhandled_input` for release), not just the test seam (`start_drag`, `attempt_release(position)`, `grab_from_rack`). A green seam-only suite is exactly the failure mode that shipped SH-218 and SH-247 / SH-245 to playtest broken; see `tests/TESTING.md` for the rule and the standard press-drag-release pattern.
 - godot-scene: load the `.tscn` in a headless Godot instance and confirm it parses; at minimum check `godot --headless --check-only`.
 - docs-and-writing: read the change against the doc it contradicts if any, not only `ai/STYLE.md`.
 
@@ -58,7 +58,7 @@ All findings live as inline review comments anchored to the relevant `path:line`
 
 ## One review per agent per pass
 
-A reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, one per agent. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. Reviewer agents run in isolated contexts and cannot share a Review object. When the swarm fans out N reviewers, each posts its own Review; the conversation tab groups by review header, and the author scans one reviewer at a time. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 (origin) or SH-327 (sharpening) if you need the canon's history.
+A reviewer agent's pass posts a single GitHub Review wrapping that agent's findings, one per agent. Use the Reviews API (`pulls/<n>/reviews`) so the conversation tab groups findings under one review header and one notification, threads stay nested, and the author can scan the whole pass at once. Reviewer agents run in isolated contexts and cannot share a Review object. When the swarm fans out N reviewers, each posts its own Review; the conversation tab groups by review header, and the author scans one reviewer at a time. The review `body` stays empty; the wrapper exists only to group the line comments. All content lives in the `comments` array. Cite SH-326 (origin) or SH-327 (sharpening) if you need the rule's history.
 
 ```bash
 jq -n --arg sha "<sha>" '{

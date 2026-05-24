@@ -1,6 +1,6 @@
 # Swarm Architecture
 
-How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol canon lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them.
+How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol material lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them.
 
 ## The Gru model
 
@@ -74,7 +74,7 @@ Minions never apply either human label. The `zaphod-*` namespace strips on every
 
 ## Live state versus stable protocol
 
-The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, label flips) lives in the canon skills under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
+The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, label flips) lives in the skill docs under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
 
 This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two minions claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
 
@@ -99,7 +99,7 @@ Standing PR-triggered workflows may only do mechanical GitHub API work: strip an
 
 ## Reconciliation, not collision detection
 
-When two spikes work adjacent territory they can silently disagree on naming. The earlier fix (a Vocabulary claims column on the live board) tried to format a judgment call into a table cell, which does not work: there is no canonical lexicon to check against, so collision detection is a reasoning task, not a lookup.
+When two spikes work adjacent territory they can silently disagree on naming. The earlier fix (a Vocabulary claims column on the live board) tried to format a judgment call into a table cell, which does not work: there is no standard lexicon to check against, so collision detection is a reasoning task, not a lookup.
 
 The plan: a reconciliation minion reads all live per-task files plus the relevant tickets and reasons about whether two claims describe the same concept under different names. It runs at claim time (preventive) and pre-push (detective), reports candidate collisions to Gru, and Gru escalates to Josh. Task files carry claims as plain prose, not schema.
 

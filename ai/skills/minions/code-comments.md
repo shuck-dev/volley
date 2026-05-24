@@ -61,4 +61,4 @@ Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the vio
 
 ## What this skill replaces
 
-Memory rule `feedback_comment_style.md` and the comment section of `CLAUDE.md` both describe the same policy; this skill is the canonical version minions read before writing code.
+Memory rule `feedback_comment_style.md` and the comment section of `CLAUDE.md` both describe the same policy; this skill is the standard version minions read before writing code.

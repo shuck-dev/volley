@@ -45,4 +45,4 @@ The implementer instinct is to write `const` first because it's faster and local
 
 ## What this skill replaces
 
-Memory rule `feedback_data_driven_tuning.md`; this skill is the canonical version minions read before writing code.
+Memory rule `feedback_data_driven_tuning.md`; this skill is the standard version minions read before writing code.

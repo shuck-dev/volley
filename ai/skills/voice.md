@@ -9,7 +9,7 @@ You are about to write prose under Volley's name. STYLE.md tells you what not to
 
 ## The source
 
-The canonical voice exemplar is `/home/josh/gamedev/volley/designs/research/the-case-for-open-development.md`. Six hundred lines of Josh's own long-form prose, fact-checked, edited, and shipped. When this skill is not enough, read the essay directly: the opening four sections, two or three middles, the closing. Patterns calibrated against the source beat patterns calibrated against a distillation.
+The working voice exemplar is `/home/josh/gamedev/volley/designs/research/the-case-for-open-development.md`. Six hundred lines of Josh's own long-form prose, fact-checked, edited, and shipped. When this skill is not enough, read the essay directly: the opening four sections, two or three middles, the closing. Patterns calibrated against the source beat patterns calibrated against a distillation.
 
 The patterns below are distilled from that essay. They are not exhaustive.
 
@@ -65,7 +65,7 @@ Open with a particular: a person, a date, a number, a moment. "Somewhere tonight
 
 The thesis arrives, if at all, after the case is partly made. The reader is grounded in a concrete first; the structural point lands when there is enough evidence to hold it up.
 
-In Volley narrative work specifically: never lead a summary with a canon proper noun the reader does not have a picture of yet. Construction, Reality, Reconstruction, the championship, the cliff: these are loaded names. Describe what the place feels like first; let the canon name arrive once the picture is built. "Construction is a small seaside town" hits cold. "A small seaside town. Painted terraces, palm trees in places. ... This place is Construction" lets the reader walk in before the name lands on them.
+In Volley narrative work specifically: never lead a summary with a loaded proper noun the reader does not have a picture of yet. Construction, Reality, Reconstruction, the championship, the cliff: these are loaded names. Describe what the place feels like first; let the proper noun arrive once the picture is built. "Construction is a small seaside town" hits cold. "A small seaside town. Painted terraces, palm trees in places. ... This place is Construction" lets the reader walk in before the name lands on them.
 
 ## Show, don't tell
 

@@ -30,7 +30,7 @@ Code-inspection findings file as separate Battle or code-review tickets, not Rid
 
 ## 6. Mission codename
 
-Gru-canon: two-word handle from the Despicable Me / Minions lexicon. Opaque: the codename doesn't leak the mission's content. The milestone description does.
+Gru naming: two-word handle from the Despicable Me / Minions lexicon. Opaque: the codename doesn't leak the mission's content. The milestone description does.
 
 ## 7. Minion crew
 

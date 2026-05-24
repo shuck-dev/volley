@@ -12,7 +12,7 @@ This is also the multi-genre half of the game. The opening proposal: an under-ut
 
 ## Cracks
 
-Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [`../art/bible.md` § 6](../art/bible.md#6-cracks-during-construction) holds the visual canon; audio carries its half of the same accumulation.
+Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [`../art/bible.md` § 6](../art/bible.md#6-cracks-during-construction) holds the visual design; audio carries its half of the same accumulation.
 
 The discipline is the same as the visual one. The leak is never literal. The Reality theme does not arrive in Construction during the cracks. What arrives is the Construction music starting to sound like it knows it is the Construction music.
 
@@ -20,7 +20,7 @@ The discipline is the same as the visual one. The leak is never literal. The Rea
 
 The protagonist beats the record and duels the champ. The win lands wrong. The construct breaks open.
 
-The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual canon for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
+The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual design for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
 
 ## Reconstruction
 

@@ -634,7 +634,7 @@ func test_item_definition_carries_at_rest_shape_for_ball_items() -> void:
 	assert_true(BaseBall.at_rest_shape is CircleShape2D)
 
 
-func test_token_scale_remains_canonical_across_items() -> void:
+func test_token_scale_remains_standard_across_items() -> void:
 	# Pins held-token, rack-slot, and definition scales to the single source of truth (SH-261).
 	const BallDragControllerScript: GDScript = preload(
 		"res://scripts/items/ball_drag_controller.gd"
@@ -676,20 +676,20 @@ func test_token_scale_remains_canonical_across_items() -> void:
 			slot_art_holder = holder
 			break
 
-	var canonical: Vector2 = BaseBall.token_scale
+	var standard: Vector2 = BaseBall.token_scale
 
-	assert_eq(canonical, Vector2(1.5, 1.5), "definition pins the canonical token_scale")
-	# Settle the lift past its window so the held token lands on canonical, mirroring the post-ease state.
+	assert_eq(standard, Vector2(1.5, 1.5), "definition pins the standard token_scale")
+	# Settle the lift past its window so the held token lands on the standard, mirroring the post-ease state.
 	drag._grab_ease_elapsed = drag.grab_ease_duration_s
 	drag._apply_grab_ease(1.0, held_token.global_position)
 	assert_eq(
 		held_token.scale,
-		canonical,
-		"held-token settles on the canonical token_scale after the SH-297 lift ease",
+		standard,
+		"held-token settles on the standard token_scale after the SH-297 lift ease",
 	)
 	assert_not_null(slot_art_holder, "precondition: rack populated at least one slot art holder")
 	assert_eq(
 		slot_art_holder.scale,
-		canonical,
+		standard,
 		"rack slot art rendering reads token_scale off the definition",
 	)

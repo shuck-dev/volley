@@ -4,7 +4,7 @@ Volley! is a desktop idle game shaped like a tennis rally. The ball goes back an
 
 Underneath the loop sits a story the player meets gradually. Cracks accumulate. The second layer earns its weight by the time the player can read it. What the rally already gave stays earned. The game holds for both readers: someone who only wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for.
 
-These folders hold the project's design canon, organised by discipline.
+These folders hold the project's design specs, organised by discipline.
 
 ## Where to start
 
@@ -14,7 +14,7 @@ If you are an **engineer** new to the codebase, read [North Star](north-star.md)
 
 If you are a **writer** working on copy, beats, or character voice, read [Narrative](narrative/INDEX.md) and [Research / STYLE](research/STYLE.md).
 
-If you are one of **Josh's collaborators** looking for canon on a specific point, the discipline folder is the answer.
+If you are one of **Josh's collaborators** looking for the settled design on a specific point, the discipline folder is the answer.
 
 If you are an **open-source visitor**, [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
 
@@ -22,11 +22,11 @@ If you are an **open-source visitor**, [The Case for Open Development](research/
 
 Two kinds of folder.
 
-**Discipline folders** hold canonical work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
+**Discipline folders** hold settled work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
 
-**Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns canon.
+**Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns its place in discipline.
 
-**Phase folders are not canon.** If a phase-folder doc still reads as canon, that is a signal to promote it into the matching discipline folder.
+**Phase folders are not settled design.** If a phase-folder doc still reads as settled design, that is a signal to promote it into the matching discipline folder.
 
 The two-folder layout is the navigation: discipline tells you *what kind of doc*, phase tells you *what era it speaks to*.
 
@@ -34,11 +34,11 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Folder | What lives here |
 |---|---|
-| [Art](art/INDEX.md) | The visual canon and the rendering pipeline. |
+| [Art](art/INDEX.md) | The visual design and the rendering pipeline. |
 | [Audio](audio/INDEX.md) | The score, the engine seam, the sound design. |
-| [Narrative](narrative/INDEX.md) | The canonical arc, soul as a mechanic in fiction, the times. |
+| [Narrative](narrative/INDEX.md) | The working arc, soul as a mechanic in fiction, the times. |
 | [Characters](characters/INDEX.md) | Profiles for the people in the protagonist's life. |
-| [Concept](concept/INDEX.md) | Per-mechanic and per-mechanic-set design canon. |
+| [Concept](concept/INDEX.md) | Per-mechanic and per-mechanic-set design specs. |
 | [Tech-art](tech-art/INDEX.md) | The seam between art and engine. |
 | [Process](process/INDEX.md) | How the team writes, files, dispatches, runs the work. |
 | [Research](research/INDEX.md) | Public essay, internal plans, references, structural studies. |
@@ -48,7 +48,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 
 | Phase | Folder | What lives here now |
 |---|---|---|
-| Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline canon. |
+| Prototype | [01-prototype/](01-prototype/INDEX.md) | The public itch.io demo. Active drafts that have not yet matured into discipline design. |
 | Beta | [03-beta/](03-beta/INDEX.md) | Reconstruction, the cliff and the gate, and the postgame playable end-to-end. |
 | Content Updates | [04-content/](04-content/INDEX.md) | Supplementary content past the main arc. |
 

@@ -4,7 +4,7 @@ How the bible's sound lives inside Godot. The seam between composition and engin
 
 ## The seam
 
-The score is composed, not procedurally generated. The composer hands deliveries to the engine team; the engine plays them. The piano reduction is the canonical track until the full instrumentation lands (see the [bible's](bible.md) Form section), and the engine team holds the swap when it does.
+The score is composed, not procedurally generated. The composer hands deliveries to the engine team; the engine plays them. The piano reduction is the working track until the full instrumentation lands (see the [bible's](bible.md) Form section), and the engine team holds the swap when it does.
 
 Stems by family, when the full version arrives, so the mix can branch by venue or by half without re-rendering. The exact stem layout, the bus graph, the import format, the file conventions: all of these get settled when the engineer picks them up.
 

@@ -8,7 +8,7 @@ For the shape of work *inside* a mission, see [`flow-shapes.md`](flow-shapes.md)
 
 A scoped goal with a codename, surfaced as a **Linear milestone** in its owning project. The milestone name is the mission codename.
 
-The codename is opaque (e.g. **Kyle Patrol**, **Page One**) per the Gru-canon convention: CIA-style two-word handles from the DM/Minions lexicon, the codename doesn't leak the mission's content. The milestone description does.
+The codename is opaque (e.g. **Kyle Patrol**, **Page One**) per the Gru convention: CIA-style two-word handles from the DM/Minions lexicon, the codename doesn't leak the mission's content. The milestone description does.
 
 A project owns at most one active mission at a time, which means at most one active milestone per project. When the mission completes, the milestone closes and the project picks up the next one.
 

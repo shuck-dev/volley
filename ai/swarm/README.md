@@ -12,7 +12,7 @@ Twelve roles, grouped by what they produce. The **impl pool** writes artefacts: 
 
 | Role | Produces |
 |---|---|
-| [`ticket-writer`](../../.claude/agents/ticket-writer.md) | Linear tickets in canonical format: Backlog status, Fibonacci points, correct labels |
+| [`ticket-writer`](../../.claude/agents/ticket-writer.md) | Linear tickets in standard format: Backlog status, Fibonacci points, correct labels |
 | [`pr-describer`](../../.claude/agents/pr-describer.md) | Narrative PR bodies: one sentence of what, one of why if non-obvious |
 | [`docs-tender`](../../.claude/agents/docs-tender.md) | Repo docs upkeep: `README`, `ai/*.md`, `designs/**`, `CONTRIBUTING`, `SECURITY` |
 | [`design-doc-reader`](../../.claude/agents/design-doc-reader.md) | Ticket-to-design resolution at session start and branch switch; AC summary |
@@ -53,7 +53,7 @@ A tense save-integrity bug reads one way: **Marvin** as root-cause-analyst, gloo
 
 Everything lives under `ai/swarm/`.
 
-- `README.md`: this file, the canonical design; tracked.
+- `README.md`: this file, the standard design; tracked.
 - `agents/{name}.md`: per-agent working state; gitignored.
 - `tasks/{id}.md`: per-task work, one file per unit; gitignored.
 
@@ -98,7 +98,7 @@ Review happens in the Dandori Challenge, never on local files. "Ready for your r
 
 ## Bash allowlist
 
-Minions with `Bash` in their tool list are capped by a deny-by-default allowlist in `.claude/settings.json`. The canonical pattern set lives at [`ai/swarm/bash-allowlist.json`](bash-allowlist.json): `gh` subcommands for PR and label operations, `git` subcommands for claim, commit, and push, plus the two in-tree helpers (`./scripts/ci/run_gut.sh` and `./scripts/swarm/post-review.sh`). A command that is not in the allowlist prompts for confirmation instead of running silently, so an injected minion cannot `curl` an exfil endpoint, rewrite history, or shell out arbitrarily. Copy the `permissions` block from the JSON into your local `.claude/settings.json` (the settings file itself is gitignored so each developer can layer further restrictions).
+Minions with `Bash` in their tool list are capped by a deny-by-default allowlist in `.claude/settings.json`. The standard pattern set lives at [`ai/swarm/bash-allowlist.json`](bash-allowlist.json): `gh` subcommands for PR and label operations, `git` subcommands for claim, commit, and push, plus the two in-tree helpers (`./scripts/ci/run_gut.sh` and `./scripts/swarm/post-review.sh`). A command that is not in the allowlist prompts for confirmation instead of running silently, so an injected minion cannot `curl` an exfil endpoint, rewrite history, or shell out arbitrarily. Copy the `permissions` block from the JSON into your local `.claude/settings.json` (the settings file itself is gitignored so each developer can layer further restrictions).
 
 ## PR lifecycle
 

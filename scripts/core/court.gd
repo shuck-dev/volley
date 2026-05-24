@@ -18,7 +18,7 @@ signal partner_changed
 @export var timeout_controller: TimeoutController
 @export var drag_controller: BallDragController
 
-## Back-compat handle for tests; canonical live-ball set lives on `ball_tracker`.
+## Back-compat handle for tests; standard live-ball set lives on `ball_tracker`.
 var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
