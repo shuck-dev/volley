@@ -426,10 +426,6 @@ func test_grab_equipped_refuses_mid_rally() -> void:
 	_manager.state.item_placements["gear_z"] = Placement.EQUIPPED
 	_wire_character_drop_target()
 
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	_drag.timeout_controller = timeout
-
 	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2.ZERO)
 	ball.set_play_state(Ball.PlayState.PLAY_NORMAL)
 
@@ -471,6 +467,52 @@ func test_grab_equipped_release_on_rack_unequips() -> void:
 		"drop on the rack must unequip the gear (placement returns to STORED)",
 	)
 	assert_false(_drag.is_dragging())
+
+
+func test_grab_equipped_release_on_venue_floor_unequips() -> void:
+	_add_equipment_to_manager("gear_v")
+	_manager.state.item_placements["gear_v"] = Placement.EQUIPPED
+	_wire_character_drop_target()
+	_drag.grab_equipped_from_character("gear_v", Vector2.ZERO)
+	_drag._gesture_below_threshold = false
+
+	# Release inside the venue but outside any rack: venue catches as loose drop.
+	var venue_floor := Vector2(0, 600)
+	_drag.attempt_release(venue_floor)
+
+	assert_ne(
+		_manager.get_placement("gear_v"),
+		Placement.EQUIPPED,
+		"venue-loose drop on EQUIPPED routes through unequip; placement leaves EQUIPPED",
+	)
+
+
+func test_rack_drop_target_refuses_equipment_mid_rally() -> void:
+	var area := _make_drop_target(Vector2(0, 0), Vector2(200, 200))
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+
+	var rack_target: RackDropTarget = (
+		load("res://scripts/items/drop_targets/rack_drop_target.gd").new()
+	)
+	rack_target.configure(_manager, area, &"equipment", timeout, _reconciler)
+
+	_add_equipment_to_manager("gear_r")
+	_manager.state.item_placements["gear_r"] = Placement.EQUIPPED
+
+	# Setup case: nothing in play -> accepts.
+	assert_true(
+		rack_target.can_accept("gear_r", Vector2.ZERO),
+		"equipment rack accepts when no ball is in PLAY",
+	)
+
+	# Spawn a ball in PLAY -> rally in progress -> refuses.
+	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2.ZERO)
+	ball.set_play_state(Ball.PlayState.PLAY_NORMAL)
+	assert_false(
+		rack_target.can_accept("gear_r", Vector2.ZERO),
+		"equipment rack refuses while a rally is in progress",
+	)
 
 
 func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void:

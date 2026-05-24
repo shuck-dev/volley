@@ -85,13 +85,7 @@ func _on_item_pressed(item_key: String) -> void:
 func _on_remove_level_pressed(item_key: String) -> void:
 	# Double-check the gate at press time even though the button reflects it visually; the poll
 	# runs once per frame and a same-frame state flip could race the click.
-	if (
-		_timeout_controller != null
-		and _reconciler != null
-		and RallyGate.is_rally_in_progress(
-			_timeout_controller.is_active(), _reconciler.has_ball_in_play()
-		)
-	):
+	if RallyGate.from_refs(_timeout_controller, _reconciler):
 		return
 	ItemManager.remove_level(item_key)
 
@@ -99,13 +93,7 @@ func _on_remove_level_pressed(item_key: String) -> void:
 # Poll the rally gate so the - button reflects mid-rally lockout without subscribing to
 # ball state changes; cost is negligible in a debug-only panel.
 func _process(_delta: float) -> void:
-	var locked: bool = (
-		_timeout_controller != null
-		and _reconciler != null
-		and RallyGate.is_rally_in_progress(
-			_timeout_controller.is_active(), _reconciler.has_ball_in_play()
-		)
-	)
+	var locked: bool = RallyGate.from_refs(_timeout_controller, _reconciler)
 	for button: Button in _remove_buttons.values():
 		button.disabled = locked
 
