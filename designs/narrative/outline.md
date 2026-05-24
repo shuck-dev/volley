@@ -35,9 +35,3 @@ The final memory gives the protagonist a key. That key unlocks the gate in the g
 ## Postgame
 
 Zach is found. He can now share the construct with the protagonist, knowing and accepting two truths: that the construct is not real, and that Fern is dead. The game continues, new items, venues etc.
-
-## Periods and ages
-
-Reality sits in 2014. The protagonist is 49 there.
-
-Construction renders the protagonist at 26, in 1991.
