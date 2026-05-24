@@ -42,13 +42,13 @@ Reality holds the real-world version of every cross-style character. Each is at 
 
 **Zach.** Present in Reality from the break onward. Not approachable directly until the cliff. Detail in `03-reconstruction.md`; the cliff meeting in `05-postgame.md`.
 
-**The protagonist.** Reality-render of the MC. Mid-40s in Reality, rendered in their twenties in Construction. Same character, real version.
+**The protagonist.** Reality-render of the MC. 49 in Reality, 26 in Construction. Same character, real version.
 
 Fern is Construction-only. No Reality counterpart. Fern's reality is the cliff (`05-postgame.md`): the place the friend group used to jump from, the place the friend died.
 
 ## Period
 
-Construction holds the 90s. Reality sits in 2014. The protagonist is mid-40s in Reality, rendered in their twenties in Construction.
+Construction holds 1991. Reality sits in 2014. The protagonist is 49 in Reality, 26 in Construction.
 
 ## Production notes
 

@@ -38,7 +38,7 @@ Volley is shaped in two acts.
 
 **Part 1 is Construction.** The protagonist climbs the volley world ladder. Each main venue hosts one round; coach-partners train them in mechanics that compose into the kit; the championship sits at the top. The stated goal is the world record. The cracks accumulate. The win arrives. The win lands wrong.
 
-**Part 2 is Reconstruction.** The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Zach is missing. The protagonist travels between construct and reality, bringing memorable items from Reality into the construct; each item invokes a memory. Memories accumulate; the final memory yields a key; the key unlocks the gate at the back of the garden; the cliff is on the other side.
+**Part 2 is Reconstruction.** The construct cannot hold itself together once its central goal has been achieved and proved meaningless. Zach is missing. The protagonist travels between construct and reality. What the Reconstruction loop is, and how it yields the key that unlocks the gate at the back of the garden, is open. The cliff is on the other side of the gate.
 
 The two acts use the two styles in different proportion. Part 1 is mostly Construction, with Reality leaking in through cracks. Part 2 lives in both, with Reality carrying the search and Construction holding the rally that surfaces what the protagonist is searching for.
 
@@ -46,7 +46,7 @@ The two acts use the two styles in different proportion. Part 1 is mostly Constr
 
 These bind the styles together. The per-arc docs do not contradict them.
 
-**Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered in their twenties (the protagonist is mid-40s in Reality, rendered in their twenties in Construction). The same people exist in Reality at their actual ages. Two asset sets per cross-style character. Fern is the last champ at the world tier; Fern has no Reality counterpart.
+**Everyone is real.** The supporting cast in Construction is the real cast from the protagonist's life, rendered in their twenties (the protagonist is 49 in Reality, 26 in Construction). The same people exist in Reality at their actual ages. Two asset sets per cross-style character. Fern is the last champ at the world tier; Fern has no Reality counterpart.
 
 **The hook is in dialogue, not HUD.** The world record is named by a character in the first session. The number is on a HUD; the meaning is not.
 
@@ -54,13 +54,13 @@ These bind the styles together. The per-arc docs do not contradict them.
 
 **Reality is finite hand-crafted content.** The hometown is built once with iterative additions across Part 2. Reality cannot be procedural; the team builds each scene.
 
-**The period is split.** Construction holds the 90s. Reality sits in 2014. The protagonist is mid-40s in Reality, rendered in their twenties in Construction.
+**The period is split.** Construction holds 1991. Reality sits in 2014. The protagonist is 49 in Reality, 26 in Construction.
 
 ## What this teaches each surface
 
 The artist world bible holds the visual direction and the cast. The concept docs hold the structural spine. The character docs hold interior life. The audio direction (SH-281) holds the music arc. SH-279 holds the Reality gameplay tooling.
 
-Each cross-style character has two asset sets. Fern is the exception. Cracks are tonal and atmospheric; concrete reality-leaks are out. Reality is hand-crafted scene content. Items invoking memories is the load-bearing mechanic of Part 2.
+Each cross-style character has two asset sets. Fern is the exception. Cracks are tonal and atmospheric; concrete reality-leaks are out. Reality is hand-crafted scene content. The Reconstruction loop is open.
 
 ## What this teaches the production
 

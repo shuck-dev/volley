@@ -10,7 +10,7 @@ Each main venue hosts one round. The player rallies in that venue with a coach u
 
 Round matches happen in a shared themed battle space, off the main rally flow. The player attempts each round when ready. Win unlocks the next venue, the next coach, the next mechanic, the next round.
 
-Each competition class has its own reigning champion. The championship is the final milestone where the protagonist duels the reigning champ to become champ. Fern is the last champ at the world tier.
+Each competition class has a record-holder in the lineage of past world-volley champions. For lower tiers the round match is against the coach (see below); the championship is the final milestone, where the protagonist meets the world volley record and then duels the current world champion. Fern is the current world champion: the last in the lineage before the protagonist.
 
 ### The coaches
 

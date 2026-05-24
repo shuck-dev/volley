@@ -1,6 +1,6 @@
 # Fern
 
-The last champ before the protagonist. The dead friend.
+The current world volley champion in Construction; the last in the lineage of past champions before the protagonist. The dead friend in Reality.
 
 This profile holds the relationship.
 
@@ -12,6 +12,8 @@ A close friend of the protagonist. The one the protagonist used to play with. Th
 
 ---
 
-## The doubled meaning
+## Across the arc
 
-"Becoming the champ" is winning the title and reaching the dead friend, in one motion. The protagonist does not separate them. Both pulls satisfy at the same beat at the championship duel, and neither was the thing the protagonist actually needed.
+In Construction, Fern holds the world championship spot at the top of the ladder. The protagonist climbs through coach-led rounds at each lower tier, meets the world volley record at the final milestone, and duels Fern. Fern exits at the break: the win lands wrong, and Construction is broken open.
+
+What happens to the world championship spot during Reconstruction and Postgame is open. Fern has no Reality counterpart; in Reality the spot Fern would occupy is the absence the protagonist walks past.
