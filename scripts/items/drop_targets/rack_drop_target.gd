@@ -31,7 +31,14 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	# Equipment unequip is symmetric with equip per gear.md: rally-active drops bounce so
 	# the player cannot desync effects mid-rally.
-	if _role == &"equipment" and RallyGate.is_rally_in_progress(_timeout_controller, _reconciler):
+	if (
+		_role == &"equipment"
+		and _timeout_controller != null
+		and _reconciler != null
+		and RallyGate.is_rally_in_progress(
+			_timeout_controller.is_active(), _reconciler.has_ball_in_play()
+		)
+	):
 		return false
 	return _position_inside_area(position)
 

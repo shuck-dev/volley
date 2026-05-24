@@ -5,6 +5,7 @@ const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_dra
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const TimeoutControllerScript: GDScript = preload("res://scripts/core/timeout_controller.gd")
 
 var _manager: Node
 var _host: Node2D
@@ -393,7 +394,7 @@ func _add_equipment_to_manager(key: String) -> ItemDefinition:
 
 
 func _wire_character_drop_target() -> Area2D:
-	var timeout: TimeoutController = load("res://scripts/core/timeout_controller.gd").new()
+	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
 	_drag.timeout_controller = timeout
 	_drag.gear_rack = _rack
@@ -418,6 +419,24 @@ func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> 
 		Placement.EQUIPPED,
 		"the item stays equipped throughout the gesture; only rack accept calls unequip",
 	)
+
+
+func test_grab_equipped_refuses_mid_rally() -> void:
+	_add_equipment_to_manager("gear_z")
+	_manager.state.item_placements["gear_z"] = Placement.EQUIPPED
+	_wire_character_drop_target()
+
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	_drag.timeout_controller = timeout
+
+	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2.ZERO)
+	ball.set_play_state(Ball.PlayState.PLAY_NORMAL)
+
+	var ok: bool = _drag.grab_equipped_from_character("gear_z", Vector2.ZERO)
+
+	assert_false(ok, "press on equipped art is refused while a ball is in play and timeout is idle")
+	assert_false(_drag.is_dragging())
 
 
 func test_grab_equipped_refuses_when_item_not_equipped() -> void:
