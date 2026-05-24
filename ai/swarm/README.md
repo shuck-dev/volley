@@ -114,6 +114,16 @@ The swarm inherits the session-tier system from `ai/skills/gru/dispatch.md`. Eve
 
 Gru picks the dispatch tier from the task, not from the minion's ceiling. An `integration-scenario-author` invoked for a signal-chain test stays at Tier 0; the same minion writing a scene-fixture test dispatches at Tier 1 with a worktree.
 
+## Before dispatch
+
+For multi-issue work, three steps land before the swarm fans out:
+
+1. **Pre-mission interrogation.** Read each candidate's full AC, every design doc it references, and memory. Surface ambiguities to Josh; no codename, no filing until they settle. Detail in memory `feedback_mission_lifecycle.md` § Phase 1.
+2. **File the mission.** Project, codename, milestone with one-sentence description, Ride (if 2+ issues are integrated; depth matches whether the work composes end-to-end or is independent fixes), constituent issues attached to the milestone. Detail in [`../../designs/process/missions-and-projects.md`](../../designs/process/missions-and-projects.md) and memory `feedback_mission_lifecycle.md` § Phase 3.
+3. **Dandori.** Implementation plan: crew per work unit, scope-expansion guard, confirm before dispatch. Detail in [`../../designs/process/dandori.md`](../../designs/process/dandori.md) and `ai/skills/gru/dandori.md`.
+
+Single-issue work skips filing and dandori; the PR carries its own playtest at merge.
+
 ## Entry points
 
 Gru is entity-driven. Point Gru at a thing and Gru does the right thing.

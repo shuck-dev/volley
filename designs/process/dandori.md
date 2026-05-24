@@ -1,61 +1,34 @@
 # Mission dandori
 
-The interrogation order for planning a new mission. Walk the steps in order; don't skip to filing or dispatch.
+The implementation plan. Runs **after** the mission is filed (milestone, Ride, attached issues) and **before** minions dispatch. Crew per work unit, scope guard, confirm.
 
-Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (bug / spike / feature, the shape of work inside a mission), and the swarm conventions in `ai/`.
+Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns, including how missions get filed) and [`flow-shapes.md`](flow-shapes.md) (the bug / spike / feature shape of work inside a mission).
 
-## 1. Mission or ticket?
+Pre-mission interrogation (reading ACs, listing ambiguities) and filing (project, codename, milestone, Ride, attached issues) come before dandori. See `missions-and-projects.md` for filing and `ai/swarm/README.md` for the swarm flow that follows.
 
-Is this big enough to be a mission, or is it a single Urgent ticket?
+## 1. Crew per work unit
 
-A mission needs a verification beat: a Ride (player playtest) or a clear non-player gate (e.g. CI run). If the work is one ticket and the AC is the verification, file it as Urgent and stop.
-
-## 2. Project
-
-Which project does the mission live in? Apply the linear-scope rule from `missions-and-projects.md`: a project's scope is what completes inside it. If the mission needs work in multiple existing projects, the boundaries are wrong; resolve by moving tickets, merging projects, or filing a new one.
-
-## 3. Goals
-
-Terse numbered list. One line per goal. No prose.
-
-## 4. Scope-expansion guard
-
-For any goal that could naturally sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up tickets after the mission, not inside it.
-
-## 5. Ride
-
-Player playtest or CI run? Ride ticket files in the same project with the milestone set. AC names the player-observable flows the rework must not regress, or the CI signal that proves the gate.
-
-Code-inspection findings file as separate Battle or code-review tickets, not Ride ACs.
-
-## 6. Mission codename
-
-Gru-canon: two-word handle from the Despicable Me / Minions lexicon. Opaque: the codename doesn't leak the mission's content. The milestone description does.
-
-## 7. Minion crew
-
-Full team per work unit:
+For each issue attached to the milestone, name the team:
 
 - **Impl** (writer of the change). Often folds in test authoring when the work is test code itself.
 - **Test author**, paired with impl when a hook or gate forces failing tests + impl into one commit.
-- **Reviewers**: code-quality, gdscript-conventions, test-coverage by default, plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
-- **Battlers**: devils-advocate to challenge the approach, integration-scenario-author to write adversarial scenarios that try to expose gaps.
+- **Reviewers**: code-quality, gdscript-conventions, test-coverage by default; plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
+- **Battlers**: devils-advocate to challenge the approach; integration-scenario-author to write adversarial cross-system scenarios.
 
-Each minion gets a codename from the pool (Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
+Each minion gets a codename from the pool (Gravity Falls, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
 
-## 8. Confirm before dispatch
+## 2. Scope-expansion guard
 
-List the crew and wait for go. Don't dispatch until the codename and crew are confirmed.
+For any goal that could naturally sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up tickets after the mission, not inside it.
+
+## 3. Confirm before dispatch
+
+List the crew and the scope. Wait for go. Don't dispatch until the codenames and the scope are confirmed.
 
 ## Worked example
 
-Vector Squared (Test Rework, 2026-04-27):
+Vector Squared (Test Rework, 2026-04-27), crew + scope:
 
-1. Mission, not ticket: scope spans timeout tests, integration contract, behavioural audit, CI gate.
-2. New project Test Rework. Tickets moved out of Minion Hardening (wrong scope: that project is for swarm/agent hardening).
-3. Goals: suite under 2s; real input on every player AC; behavioural review; patterns documented; CI gate.
-4. CI gate capped to one workflow step, one number. New gate types file as follow-ups.
-5. Ride: regression playtest. No new player surface to verify, but the rework could regress existing flows.
-6. Codename: Vector Squared.
-7. Crew: Feldspar (impl SH-254), Hornfels (impl SH-253), reviewers Marvin / Slartibartfast / Sunny / Mabel / Solanum / Aubrey / Riebeck, battlers Ford / Stranger / Abe / Kel.
-8. Confirm, then dispatch.
+- Crew: Feldspar (impl SH-254), Hornfels (impl SH-253), reviewers Marvin / Slartibartfast / Sunny / Mabel / Solanum / Aubrey / Riebeck, battlers Ford / Stranger / Abe / Kel.
+- Scope: CI gate capped to one workflow step, one number; new gate types file as follow-ups.
+- Confirm, then dispatch.
