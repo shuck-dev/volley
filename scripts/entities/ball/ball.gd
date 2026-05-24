@@ -26,8 +26,7 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
 ## Apex-arc threshold y; BallTracker injects at attach time from the SoulBound marker.
-## Default mirrors the original CourtConfig baseline.
-var bound_y: float = -351.6
+var bound_y: float
 
 var speed := 0.0
 var min_speed: float
