@@ -10,4 +10,4 @@ Imbued matter can be altered. A racquet or a ball can be reshaped to hold more s
 
 ## In reality
 
-Soul is, in reality, a concept the protagonist made up to cover their grief. The vocabulary is theirs. The magic is also real, in a more measured way; how much, and from where, is open canon for the town and the protagonist both.
+Soul is, in reality, a concept the protagonist made up to cover their grief. The vocabulary is theirs. The magic is also real, in a more measured way; how much, and from where, is an open question for the town and the protagonist both.

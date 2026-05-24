@@ -1,6 +1,6 @@
 # Art Bible
 
-The canonical art document for Volley!. Every concept study and production asset briefs against this doc.
+The art document for Volley!. Every concept study and production asset briefs against this doc.
 
 The bible holds the world the art has to render: what it is, who is in it, what happens, and the visual craft that serves the telling. The story drives; the craft sections name how the art carries the story.
 
@@ -37,7 +37,7 @@ A racquet. A ball. A counter on the wall that climbs. A friend leaning on the co
 
 Volley holds two worlds. The first is **Construction**: a vibrant one the protagonist has built and keeps tending, a garden in late afternoon with a long rally at a small wooden stall. The player meets it as the world. The second is **Reality**: the protagonist's actual hometown, a coastal town in slant afternoon light, where the same people live at their actual ages and one of them, the friend from the stall, has been pushed away. The two worlds are visually and mechanically distinct, and the player learns the vibrant one is a construct only as the climb cracks open.
 
-This bible holds the visual canon and craft sections; story-shape, character arc, and character identity sit in the narrative and character docs, not repeated here.
+This bible holds the visual direction and craft sections; story-shape, character arc, and character identity sit in the narrative and character docs, not repeated here.
 
 ---
 
@@ -336,7 +336,7 @@ Every work below has been cited in the design corpus as a tonal or visual touchs
 - **[La La Land](https://en.wikipedia.org/wiki/La_La_Land)** (2016). How saturation and lighting shift to change a scene's feeling without changing its style.
 - **[Baby Driver](https://en.wikipedia.org/wiki/Baby_Driver)** (2017). Rhythm as a visual principle.
 - **[Ping Pong: The Animation](https://en.wikipedia.org/wiki/Ping_Pong_(manga)#Anime)** (2014, dir. Masaaki Yuasa). Sport as conversation. The style itself bends at peak emotion.
-- **[Haikyuu!!](https://en.wikipedia.org/wiki/Haikyu!!)** (2014-2020). The canonical text on volleyball as emotional language. Reaction shots that give a single point meaning.
+- **[Haikyuu!!](https://en.wikipedia.org/wiki/Haikyu!!)** (2014-2020). The defining text on volleyball as emotional language. Reaction shots that give a single point meaning.
 - **[Keep Your Hands Off Eizouken!](https://en.wikipedia.org/wiki/Keep_Your_Hands_Off_Eizouken!)** (2020, dir. Masaaki Yuasa). Fewer frames, better chosen.
 - **[Ranking of Kings](https://en.wikipedia.org/wiki/Ranking_of_Kings)** (2021). Storybook simplicity carrying enormous emotional range.
 - **[Odd Taxi](https://en.wikipedia.org/wiki/Odd_Taxi)** (2021). Visual restraint as narrative strategy.
@@ -401,7 +401,7 @@ Where a character or an object is not pinned down, the sketch settles it. The bi
 - The first leap biome. Underwater leads, not formally locked.
 - Why the protagonist was not at the cliff the day the friend died. Declined the trip, was not invited, had drifted from the group by then. The asymmetry between protagonist and shopkeeper holds either way; the specific cause is open.
 
-Where the bible feels actively wrong, the canon moves to fit.
+Where the bible feels actively wrong, the bible moves to fit.
 
 ---
 

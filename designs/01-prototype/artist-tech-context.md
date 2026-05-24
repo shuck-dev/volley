@@ -2,7 +2,7 @@
 
 A companion to `artist-brief.md` and `artist-world-bible.md`. The brief is the deal; the bible is the world; this is the engine the world is painted into.
 
-The rig is Godot 4. The camera is 2D. Depth comes from layered painted planes scrolling at different rates, not from 3D geometry or runtime lighting. The bible covers tone and visual canon; this doc covers the format the work has to read at and the rules the rig holds it to.
+The rig is Godot 4. The camera is 2D. Depth comes from layered painted planes scrolling at different rates, not from 3D geometry or runtime lighting. The bible covers tone and visual direction; this doc covers the format the work has to read at and the rules the rig holds it to.
 
 ---
 

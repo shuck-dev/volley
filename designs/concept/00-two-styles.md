@@ -58,7 +58,7 @@ These bind the styles together. The per-arc docs do not contradict them.
 
 ## What this teaches each surface
 
-The artist world bible holds the visual canon and the cast. The concept docs hold the structural spine. The character docs hold interior life. The audio direction (SH-281) holds the music arc. SH-279 holds the Reality gameplay tooling.
+The artist world bible holds the visual direction and the cast. The concept docs hold the structural spine. The character docs hold interior life. The audio direction (SH-281) holds the music arc. SH-279 holds the Reality gameplay tooling.
 
 Each cross-style character has two asset sets. Fern is the exception. Cracks are tonal and atmospheric; concrete reality-leaks are out. Reality is hand-crafted scene content. Items invoking memories is the load-bearing mechanic of Part 2.
 

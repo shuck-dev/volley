@@ -2,13 +2,13 @@
 
 ## Decision
 
-`ItemManager._set_item_placement` is the canonical owner of role state for every owned item. `Ball.play_state` becomes the physics presentation of the ball-role placement, kept in sync by `BallReconciler` listening to `item_placement_changed`. Equipment-role items already have no `Ball`; ItemManager already owns their placement; pinning the same owner for balls removes the drift without inventing a third state machine.
+`ItemManager._set_item_placement` is the single owner of role state for every owned item. `Ball.play_state` becomes the physics presentation of the ball-role placement, kept in sync by `BallReconciler` listening to `item_placement_changed`. Equipment-role items already have no `Ball`; ItemManager already owns their placement; pinning the same owner for balls removes the drift without inventing a third state machine.
 
 ## Surfaces today
 
 Two state fields describe ball role:
 
-- `Ball.play_state` (`scripts/entities/ball/ball.gd:36`): taxonomy canonical in `02-ball-lifecycle.md`. Funnelled through `set_play_state`; `enter_*` helpers flip physics flags and call the funnel.
+- `Ball.play_state` (`scripts/entities/ball/ball.gd:36`): taxonomy described in `02-ball-lifecycle.md`. Funnelled through `set_play_state`; `enter_*` helpers flip physics flags and call the funnel.
 - `ItemManager.state.item_placements` (`scripts/items/item_manager.gd:335`, via `_set_item_placement`): `STORED`, `EQUIPPED`, `ON_COURT`, with a `LOOSE_IN_VENUE` overlay in `state.loose_in_venue`. Persisted in `ItemState`.
 
 Both fields carry an idea of "where this ball is in the run." They are written from different call sites and rarely cross-check each other. Concrete drift surfaces:
@@ -21,7 +21,7 @@ Both fields carry an idea of "where this ball is in the run." They are written f
 
 ## Options considered
 
-### A. ItemManager canon, Ball mirrors (chosen)
+### A. ItemManager owns, Ball mirrors (chosen)
 
 `item_placements` is the source of truth for role. `Ball.play_state` becomes a derived view: ball reads its placement on transition and applies the matching physics config. `BallReconciler` listens to `item_placement_changed` and routes through `Ball.enter_*` helpers for the cases that need a Ball.
 
@@ -37,9 +37,9 @@ Cons:
 - `PLAY_NORMAL` vs `PLAY_ARC` is a physics detail not in `Placement`. The split stays in `Ball`, derived from `global_position.y` and `friendship_bound_y`; not a role placement, not promoted to ItemManager.
 - `OUT_HELD` is currently driven by the drag controller before any placement write happens; the controller must call `ItemManager.mark_loose_in_venue` (or a new `mark_held`) at gesture start, not only at gesture end.
 
-### B. Ball canon, ItemManager projects
+### B. Ball owns, ItemManager projects
 
-`Ball.play_state` is canon; ItemManager derives `item_placements` from a registry walk.
+`Ball.play_state` is the source of truth; ItemManager derives `item_placements` from a registry walk.
 
 Pros:
 
@@ -105,7 +105,7 @@ The legacy write path and the legacy name retire together. The drag controller s
 ## Names
 
 - **`Ball.play_state` becomes `Ball.physics_state`.** The residual job is `PLAY_NORMAL` vs `PLAY_ARC` plus the integration-frame physics flags; `physics_state` reads true to that job and stops the field from competing with `item_placements` as a role surface. The rename lands with the legacy-write-path retirement slice, once `set_play_state` goes private.
-- **`HELD` is the canonical name for held-mid-gesture, on ItemManager.** `Ball.play_state = OUT_HELD` is the old name for the same state. The lifecycle doc Mermaid already uses `HELD`; this spike makes it the canonical noun and lands it on the canonical owner. The Ball enum value retires when `play_state` retires. `LOOSE_IN_VENUE` stays as its own overlay for floor-deposit.
+- **`HELD` is the name for held-mid-gesture, on ItemManager.** `Ball.play_state = OUT_HELD` is the old name for the same state. The lifecycle doc Mermaid already uses `HELD`; this spike pins the noun and lands it on the single owner. The Ball enum value retires when `play_state` retires. `LOOSE_IN_VENUE` stays as its own overlay for floor-deposit.
 - These names ride into the migration. Implementation work inherits them; it does not rename them.
 
 ## Out of scope

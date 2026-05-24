@@ -100,4 +100,4 @@ The real pacing lever is the rotation, not the ratio.
 
 ## Narrative design
 
-Shop closing, post-break item acquisition, and post-game item acquisition are narrative rework territory; canon lives in `../narrative/outline.md`.
+Shop closing, post-break item acquisition, and post-game item acquisition are narrative rework territory; the shape lives in `../narrative/outline.md`.

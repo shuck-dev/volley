@@ -2,7 +2,7 @@
 
 How Volley!'s visual direction becomes Godot. Partner document to the [Art Bible](bible.md): the bible says what the work feels like, this doc says how it gets built.
 
-This is a living spike. Colours, typography, and per-character notes still route through the bible. Pipeline structure is locked here so contributors can deliver art against it before the final style guide lands.
+This is a living spike. Colours, typography, and per-character notes still route through the bible. Pipeline structure is locked here so contributors can deliver art against it before the style guide lands in full.
 
 ---
 
@@ -67,7 +67,7 @@ assets/
   vfx/                        hit sparks, miss reactions, streak glow
 ```
 
-One asset, one canonical path. If the shop and the kit both show the same item, they reference the same PNG in `surfaces/`. If the pinboard shows it in the world and a HUD slot shows it as an icon, same file. Duplicated sprites rot separately.
+One asset, one path. If the shop and the kit both show the same item, they reference the same PNG in `surfaces/`. If the pinboard shows it in the world and a HUD slot shows it as an icon, same file. Duplicated sprites rot separately.
 
 File names are `lower_snake_case.png`. Animation frames suffix the state: `martha_idle_01.png`, `martha_idle_02.png`, `martha_hit.png`. Styles suffix the file: `kitchen_real.png` alongside `kitchen_constructed.png`. Each style ships its own painted asset (see [Style shift](#style-shift)).
 

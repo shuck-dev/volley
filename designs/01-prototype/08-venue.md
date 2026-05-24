@@ -48,7 +48,7 @@ One camera holds the whole venue as a readable diorama. Every interactive surfac
 
 ## Diegetic signage on the court
 
-Volley counter, personal best, and friendship balance live on the court as world-space elements: a scoreboard, a plaque, a counter. They are children of `Court`, so they ride with it through milestone redressing. Every one of these is a candidate for replacement by a later system (a partner announcing the streak, a character handing over friendship, etc.); the court-children arrangement is the starting point, not the final form.
+Volley counter, personal best, and friendship balance live on the court as world-space elements: a scoreboard, a plaque, a counter. They are children of `Court`, so they ride with it through milestone redressing. Every one of these is a candidate for replacement by a later system (a partner announcing the streak, a character handing over friendship, etc.); the court-children arrangement is the starting point, expected to evolve.
 
 New-arrival cues (a shipment landing, a commission finishing, a character unlocking) also play in world space: a small pulse on the relevant object, no screen-space banner.
 
