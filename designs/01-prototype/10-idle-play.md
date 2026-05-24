@@ -152,6 +152,10 @@ On quit (`_notification(NOTIFICATION_WM_CLOSE_REQUEST)` in `game.gd`): write `la
 - **Unit:** `ProgressionData` round-trip includes `last_quit_at` and `idle_fp_per_minute`
 - **In-game:** close game, wait a few minutes, reopen: welcome back label appears with correct friendship amount
 
+## Timeout interaction
+
+Calling a timeout forces autoplay off. `AutoplayController` listens for `TimeoutController.timeout_started` and toggles itself off if enabled, mirroring a manual key press. `timeout_ended` does not auto-restore: the walk back to the lane is a deliberate beat, and the player re-toggles autoplay when they want it back. This keeps the `drive_blocked` flag honest during the walk-off and avoids a hidden state flip when control returns.
+
 ## Open questions
 
 - `AI_SPEED_FRACTION` of 0.75 and `AI_REACTION_FRAMES` of 12 are starting values. Tune during Make Fun pass so the AI misses believably without feeling broken.
