@@ -1,17 +1,15 @@
 # Starter Items
 
-Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Steph).
+Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Steph). Built across the three item roles; each effect serves the early goal (soul on consolidation, reach consolidation faster).
 
-| Slot | Group | Effect |
+| Role | Item | Effect |
 |---|---|---|
-| 1 | Reward | Soul paid on consolidation |
-| 2 | Control (TODO) | Shape where the ball goes |
-| 3 | (TODO) | |
-| 4 | (TODO) | |
-| Pick | Tempo | Cadence: oscillation plus tier-skip (complex) |
+| ball | TODO | |
+| equipment | TODO | |
+| court | TODO | |
+| doubled (TODO) | TODO | |
+| equipment (pick) | Cadence | Oscillation plus tier-skip (complex) |
 
-- Cut to progression (furthered later, not a starter): Ceiling; Levitation (the protagonist gains soul-control over the game).
+- Cut to progression: Ceiling; Levitation.
 - Out: miss-cluster, Synergy, Risk/Reward, Field-changing, Slot-expanding, Partner-enhancing.
-- Pay out on consolidation.
-- Distinct goal-serving verbs are thin (Reward, Tempo, maybe Control); the set likely shrinks rather than pads.
-- TODO: remaining slots; per-item cards; confirm Cadence.
+- TODO: per-item effects and objects; the doubled role; confirm Cadence.
