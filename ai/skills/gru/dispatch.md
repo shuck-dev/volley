@@ -7,6 +7,10 @@ description: Dispatcher-side rules for dispatching minions, rotating codenames, 
 
 Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confirmed the crew. The full lifecycle (interrogate through cleanup) lives in [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md).
 
+## Focus and WIP
+
+Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
+
 ## Gru works on a worktree too
 
 The default tree at `/home/josh/gamedev/volley` is Josh's; Gru does not edit it. Repo-touching Gru work (writing skills, restructuring docs, sweeping references) goes on a sibling worktree under `/home/josh/gamedev/volley/.claude/worktrees/<slug>` on a feature branch, same as a minion. Memory files at `~/.claude/projects/.../memory/` live outside the repo and don't need a worktree. If a session lands on the default tree by accident, stash and migrate before continuing.
