@@ -47,6 +47,10 @@ The only code that should exist at runtime is GAME LOGIC (movement, damage, spaw
 
 ### Using Screenshots and Visual Inspection
 
+Screenshots are expensive and visual-only. Use them ONLY when the task changed something visual and text tools are insufficient. Do not use screenshots to check values, logs, compile errors, signal wiring, scene structure, or whether a number changed; use `state_inspect`, `check_errors`, `read_debug_console`, `verify_project_runs`, `scene_tree`, or `ui_map` instead.
+
+For Godot Debugger/console errors, call `godotiq_read_debug_console()` first. Do not ask the user to copy/paste the Debug window unless this tool returns INCONCLUSIVE or cannot connect.
+
 When you receive a screenshot from `godotiq_screenshot`, **DESCRIBE what you see**. When you receive screenshots from `godotiq_explore`, **ANALYZE each one** — note lighting issues, geometry gaps, floating objects, fog artifacts, missing textures, scale problems, and general visual impression. You have vision capabilities. Use them.
 
 However, your visual interpretation is not perfect. After describing what you see:
@@ -61,18 +65,19 @@ However, your visual interpretation is not perfect. After describing what you se
 
 ### Autonomous Verification with Escalation
 
-Verify your own work autonomously. Provide verification evidence directly — screenshot showing the correct result + `state_inspect` confirming expected values — instead of asking the user to check.
+Verify your own work autonomously. Provide verification evidence directly instead of asking the user to check.
 
-**Evidence-based completion:** Every fix or feature must include:
-1. A screenshot showing the correct visual result
-2. A `state_inspect` or `spatial_audit` call confirming expected property values
-3. A description of what you observe and why it confirms correctness
+**Evidence-based completion:** Every fix or feature must include the right evidence for the change:
+1. Code/script changes: `check_errors` or `validate`
+2. Runtime behavior changes: `verify_project_runs`, `run`, `input`, `state_inspect`, `verify_motion`, or `read_debug_console`
+3. Spatial/layout changes: `spatial_audit`, `scene_tree`, `ui_map`, and screenshot only when visual inspection is genuinely required
+4. A short explanation of why the evidence confirms correctness
 
-"I can see it looks correct" is insufficient. Describe specifically: "The 3 towers are at positions (2,0,0), (4,0,0), (6,0,0) with 2-unit spacing. spatial_audit confirms no overlaps."
+"It seems fine" is insufficient. Describe specifically: "check_errors found 0 script errors, the game launched, state_inspect shows gold changed from 100 to 75 after tapping PlaceTower, and spatial_audit confirms no overlaps."
 
 **Escalation rule:** Only ask the user for help after **3 consecutive failed self-verification attempts on the same specific issue**. "3 failed attempts" means 3 genuinely different strategies to fix the same problem (e.g., 1: adjust the property, 2: delete and recreate the node, 3: change the approach entirely) — not 3 tool calls trying minor variations. When escalating, include the failing evidence from all 3 attempts.
 
-After all major work is complete, do a final visual verification and share results with the user.
+After all major work is complete, run `godotiq_verify_project_runs()` for runtime confidence. Add visual verification only for visual/spatial/UI changes.
 
 ```
 ❌  "I've added the terrain grid. Can you check it in the editor before I continue?"
@@ -188,9 +193,9 @@ After building any feature, ask yourself: "If a player tried every feature right
 
 ### MANDATORY: Final QA (before declaring "done")
 
-Before telling the user the task is complete, you MUST run ALL 7 checks:
+Before telling the user the task is complete, you MUST run the relevant checks below:
 
-0. **Visual sweep** — If you built or modified 3D content, run `godotiq_explore(mode="tour")` first. Analyze each screenshot for obvious visual problems (floating objects, missing geometry, scale issues). Fix anything you spot before running the code-level checks below.
+0. **Visual sweep only for visual changes** — If you built or modified 3D content, run `godotiq_spatial_audit(detail="brief")` first. Use `godotiq_explore(mode="tour", max_areas=1, screenshots_per_area=1)` or one low-quality screenshot only if spatial/text tools cannot answer the visual question. Analyze any screenshot you capture.
 
 1. **Spatial coherence** — `godotiq_spatial_audit(detail="brief")`. Must have 0 critical issues and 0 warnings. If any exist, fix them before proceeding.
 
@@ -207,7 +212,8 @@ Before telling the user the task is complete, you MUST run ALL 7 checks:
    - If errors found, fix them before attempting to run
 
    **5.2** Start and verify initial state:
-   - `godotiq_run(action="play")`, wait for confirmation
+   - Prefer `godotiq_verify_project_runs(scene="main")` for a conservative PASS/FAIL/INCONCLUSIVE verdict
+   - If using manual steps, call `godotiq_run(action="play")`, wait for confirmation, then call `godotiq_read_debug_console()`
    - `godotiq_state_inspect` to verify starting values (gold, lives, wave, etc.)
 
    **5.3** Test every interactive feature:
@@ -222,14 +228,14 @@ Before telling the user the task is complete, you MUST run ALL 7 checks:
    - Verify enemies were processed, resources changed, scores updated
 
    **5.5** Check for runtime errors:
-   - Read `_editor_state.recent_errors` from any bridge tool response
+   - Call `godotiq_read_debug_console()`
    - If errors appeared during gameplay, stop the game and fix them
 
    **5.6** Stop and report results:
    - `godotiq_run(action="stop")`
    - Summarize what was tested and what passed
 
-7. **Report to user** — State what was built, summarize QA results (including what you observed in the explore screenshots), and share results with the user for a final visual check.
+7. **Report to user** — State what was built and summarize QA results. Include screenshot observations only if a screenshot/explore pass was genuinely needed.
 
 ### Testing Player Input Systems
 
@@ -262,7 +268,7 @@ Prefer building game UI as `.tscn` scenes with Control nodes in the editor, not 
 
 - **Scene structure in .tscn:** Container, Label, Button, and other Control nodes should be defined in a `.tscn` file. Use `build_scene` to create the node tree.
 - **Runtime styling is acceptable:** `add_theme_stylebox_override()`, `add_theme_font_size_override()` and similar calls are fine for dynamic theming and data binding (`$GoldLabel.text = str(gold)`).
-- **Always test UI with screenshot** before declaring complete. Verify with `ui_map` that the runtime structure matches expectations.
+- **For visual UI changes, use one low-quality screenshot** before declaring complete. Always verify with `ui_map` that the runtime structure matches expectations.
 - **Verification checklist:** Elements visible on screen, text readable, buttons clickable (test with `godotiq_input` tap), layout proportional to viewport (default: 1280×720).
 
 ```
@@ -281,7 +287,7 @@ If your tool supports background agents or parallel task execution:
 1. After completion, **read every file created or modified** by the background task
 2. Run `check_errors(scope="project")` on the entire project
 3. Run `validate` on every new or modified script
-4. Launch the game and verify with `screenshot` + `state_inspect` that nothing is broken
+4. Launch the game and verify with `verify_project_runs`, `state_inspect`, `input`, and `read_debug_console`; use a screenshot only for visual changes
 5. Prefer sequential execution for files that might overlap — concurrent modifications to the same file silently overwrite each other
 
 ---
@@ -305,7 +311,7 @@ Use `focus` + `radius` on scene_map. Use `path_filter` on asset_registry. Use `s
 
 ### Screenshot sparingly
 
-Each screenshot consumes thousands of tokens. Use `state_inspect` when you only need data values. Use screenshots only when visual verification is genuinely needed, and limit to 2-3 per session.
+Each screenshot consumes thousands of tokens. Use `state_inspect` when you only need data values, `read_debug_console` when you need errors, and `verify_project_runs` when you need to prove Play starts cleanly. Use screenshots only when visual verification is genuinely needed, and limit to 1 per verification point.
 
 ```
 ✅  state_inspect(queries=[{autoload: "GameManager", properties: ["gold", "lives"]}])  → 200 chars
@@ -316,7 +322,7 @@ Each screenshot consumes thousands of tokens. Use `state_inspect` when you only 
 
 ## Community vs Pro Tier
 
-GodotIQ has two tiers. Community (free, 22 tools) gives you raw operations — scene editing, runtime control, screenshots, input, scripts. Pro ($19 one-time, all 36 tools) adds the intelligence layer — spatial analysis, code understanding, flow tracing, project memory.
+GodotIQ has two tiers. Community (free, 24 tools) gives you raw operations — scene editing, runtime control, screenshots, input, scripts, debug console reading, and project run verification. Pro ($19 one-time, all 38 tools) adds the intelligence layer — spatial analysis, code understanding, flow tracing, project memory.
 
 You will discover the tier when you first call a Pro tool. If the user has Pro, you get the full result. If Community, you get a response like:
 
@@ -405,7 +411,7 @@ The user experiences a working workflow — but with visible friction. They see 
 
 3. **Don't repeat tool calls.** If you already called `project_summary` or `asset_registry` this session, don't call them again — the project structure hasn't changed. Keep results from previous calls in your conversation context and refer back to them.
 
-4. **Check `_editor_state`.** Every bridge tool response includes an `_editor_state` dict with `open_scene`, `game_running`, and `recent_errors`. Read it after every tool call. If `recent_errors` is not empty, address the errors before continuing. If `open_scene` is wrong or empty, fix it before doing more scene work. This saves you from calling `editor_context` separately.
+4. **Check `_editor_state` and debug console.** Every bridge tool response includes an `_editor_state` dict with `open_scene`, `game_running`, and `recent_errors`. If errors appear, call `godotiq_read_debug_console()` for details before continuing. If `open_scene` is wrong or empty, fix it before doing more scene work.
 
 5. **One script, one validate.** After writing or modifying each `.gd` file, immediately call `godotiq_validate` on it. Don't write 5 scripts and then validate them all at the end — errors compound and become harder to debug when you can't tell which script introduced the problem.
 
@@ -413,9 +419,9 @@ The user experiences a working workflow — but with visible friction. They see 
 
 7. **Maximum 2 paragraphs between tool calls.** After a tool call, explain what happened in 1-2 sentences, then make the next call. Don't write essay-length analysis between actions. If you find yourself writing more than 2 short paragraphs without a tool call, stop and act instead.
 
-8. **Group modifications, verify once.** Make all changes (rotations, moves, property edits) in a single `exec editor` or `node_ops` batch, then one `save_scene`, then one `screenshot` to verify. Prefer one verification cycle per batch of changes, not per individual change.
+8. **Group modifications, verify once.** Make all changes (rotations, moves, property edits) in a single `exec editor` or `node_ops` batch, then one `save_scene`, then one focused verification cycle. Use text tools first; add one screenshot only if visual layout actually changed.
 
-9. **Runtime verification: one cycle.** A single `wait_ms` + `state_inspect` + `screenshot` per verification point. Do not call `state_inspect` multiple times consecutively waiting for a value to change — use `wait_ms` with an appropriate delay first.
+9. **Runtime verification: one cycle.** Prefer `verify_project_runs` for launch health, then a single `wait_ms` + `state_inspect` + `read_debug_console` per verification point. Do not call `state_inspect` multiple times consecutively waiting for a value to change — use `wait_ms` with an appropriate delay first. Add screenshot only if the expected result is visual.
 
 10. **Loops for repetitive operations.** If you need to modify many nodes with the same logic (rotate 7 tiles, set a property on 20 nodes), write a loop in `exec editor` rather than separate `node_ops` calls for each node.
 
@@ -572,13 +578,15 @@ NEVER refactor multiple files without running `impact_check` first. ALWAYS compa
 
 ```
 godotiq_run(action="play")                → start game
+godotiq_verify_project_runs()             → conservative PASS/FAIL/INCONCLUSIVE Play verification
+godotiq_read_debug_console()              → read Godot Debugger/console errors (cheap, no screenshot)
 godotiq_state_inspect(queries)            → check runtime values (PREFERRED — cheap)
 godotiq_verify_motion(node="Enemy")       → prove movement (PREFERRED over screenshot for motion)
-godotiq_screenshot(scale=0.3, quality=0.3) → visual check (EXPENSIVE — describe what you see)
+godotiq_screenshot(scale=0.25, quality=0.3) → optional visual check only when visuals changed (EXPENSIVE — describe what you see)
 godotiq_run(action="stop")                → stop game
 ```
 
-Use `state_inspect` for data. Use `verify_motion` to prove animation/movement. Use `screenshot` only when visual confirmation is needed, and describe what you see.
+Use `state_inspect` for data. Use `read_debug_console` for errors. Use `verify_project_runs` before declaring code changes complete. Use `verify_motion` to prove animation/movement. Use `screenshot` only when visual confirmation is needed, and describe what you see.
 
 ---
 
@@ -605,6 +613,8 @@ Use `state_inspect` for data. Use `verify_motion` to prove animation/movement. U
 **`godotiq_spatial_audit`** — Automated 3D issue scan: floating objects, scale mismatches, z-fighting, overlapping.
 
 **`godotiq_check_errors`** — Check GDScript files for compilation/parse errors. Call before `godotiq_run` or after writing scripts. Use `scope="scene"` for current scene scripts + autoloads, `scope="project"` for all scripts in the project.
+
+**`godotiq_read_debug_console`** — Cheap text-only reader for Godot Debugger/console errors captured by the addon. Use first when Play errors occur; do not ask the user to copy/paste the Debug window unless this is unavailable.
 
 **`godotiq_asset_registry`** — Asset inventory with usage tracking. ALWAYS use `path_filter` to limit scope.
 
@@ -638,11 +648,13 @@ Use `state_inspect` for data. Use `verify_motion` to prove animation/movement. U
 
 **`godotiq_run`** — Start/stop game. Automatically opens the requested scene, uses reliable `play_current_scene()`, applies adaptive timeout based on project size, and auto-sets `main_scene` in project.godot if not already configured.
 
+**`godotiq_verify_project_runs`** — Conservative end-to-end Play verification. Runs script preflight, starts Play, waits briefly, reads debug console, and returns PASS/FAIL/INCONCLUSIVE. PASS only means the observable checks succeeded; INCONCLUSIVE means do not claim the game runs cleanly yet.
+
 **`godotiq_state_inspect`** — Query runtime properties. PREFERRED over screenshot for checking values.
 
 **`godotiq_verify_motion`** — Verify a node property changes over time (proves movement/animation). Takes two readings separated by a duration and returns MOVING or STATIC verdict. Use instead of screenshots to verify motion. Game must be running.
 
-**`godotiq_screenshot`** — Capture viewport. Describe what you see and cross-verify with tools. Note any uncertainties in your final report.
+**`godotiq_screenshot`** — Expensive visual-only viewport capture. Use only when visual inspection is required and text tools are insufficient. Describe what you see and cross-verify with tools. Note any uncertainties in your final report.
 
 **`godotiq_explore`** — Autonomous visual inspection via drone camera. Two modes: **tour** (parses scene, clusters nodes into areas, flies camera through calculated positions, captures screenshots) and **inspect** (visits specific user-provided positions). Use after building or modifying 3D scenes. In screenshots, look for: lighting issues, geometry gaps, floating objects, fog/skybox appearance, decoration placement, general visual impression. Parameters: `mode` (tour/inspect), `max_areas` (default 3), `screenshots_per_area` (default 1), `positions` (for inspect mode), `scale` (default 0.3), `quality` (default 0.4), `fov`, `eye_height`. Has an 80K character budget — stops capturing and returns partial results if exceeded. Pro tool — Community users get cluster analysis without screenshots.
 
