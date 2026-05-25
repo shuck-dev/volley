@@ -10,9 +10,9 @@ Role: ball. Splits at consolidation, and each higher tier splits into one more b
 
 Role: equipment, worn on the head. Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul. Pulls play upward. Object: a childhood helmet of the four.
 
-## Soul motes (name TODO)
+## Soul motes (friendship bracelet)
 
-Role: equipment. Every hit explodes soul motes off the ball. They drift to you and auto-collect; steering the ball back through them gathers more, faster. A passive trickle with a skill ceiling. Object: TODO.
+Role: equipment, worn on the wrist. Each hit sheds a soul bead off the ball; beads drift to you and auto-collect, and routing the ball back through them gathers more. Soul is the bond, and the bracelet is that bond shedding into collectible beads. Object: the four's childhood friendship bracelet, never runs down, the beads warm.
 
 ## Cadence (pick)
 
