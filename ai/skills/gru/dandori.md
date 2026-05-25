@@ -19,7 +19,7 @@ Dandori is the implementation plan, not the mission-shape walk. By the time it r
    - Reviewers: code-quality, gdscript-conventions, test-coverage by default, plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
    - Battlers: devils-advocate to stress-test the approach; integration-scenario-author for adversarial cross-system scenarios.
 
-   Each minion gets a codename from the rotating pool (Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
+   Each minion gets a codename from the rotating pool (Gravity Falls, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
 
 2. **Recon the surfaces.** Before confirm, dispatch a read-only Explore minion to locate each work unit's fix surface (file plus function) and produce a file-overlap map across the units. Use it to lock non-overlapping write slices for concurrent worktrees, or to collapse units that share a file into one serialized stream. This grounds the crew's slices in current state instead of inferring them from the issue bodies, which is what catches two units silently clobbering each other on a shared file before they dispatch rather than after. Recon is read-only and reads excerpts, not the impl; the claiming minion still does its own step-1 file work.
 

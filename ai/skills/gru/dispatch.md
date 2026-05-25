@@ -5,7 +5,7 @@ description: Dispatcher-side rules for dispatching minions, rotating codenames, 
 
 # Minion dispatch
 
-Gru's executor flow. Use after dandori has confirmed the crew.
+Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confirmed the crew. The full lifecycle (interrogate through cleanup) lives in [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md).
 
 ## Gru works on a worktree too
 
@@ -13,7 +13,7 @@ The default tree at `/home/josh/gamedev/volley` is Josh's; Gru does not edit it.
 
 ## Codename pool
 
-Codenames rotate per work unit, picked to fit each case. Pool: Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds (Hearthians + Nomai), Martha. Mission codenames are Gru convention and stay separate from minion codenames.
+Codenames rotate per work unit, picked to fit each case. Pool: Gravity Falls, Hitchhiker's, Oddworld, Omori, Outer Wilds (Hearthians + Nomai), Martha. Mission codenames are Gru convention and stay separate from minion codenames.
 
 The dispatch description leads with the codename: `Feldspar implements SH-254`, not `Implement SH-254`. Role lives in the `subagent_type`.
 
