@@ -12,6 +12,7 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 05 | [Upgrade Shop Mechanics](05-upgrade-shop-mechanics.md) |
 | 06 | **Items** |
 |    | - [Items (design)](design/items.md) |
+|    | - [Starter Items (design)](design/starter-items.md) |
 |    | - [Prototype Item Effect Blocks (tech)](tech/05-items.md) |
 | 07 | [Effect System](tech/04-effect-system.md) |
 | 08 | **The Venue and Its Systems** |
