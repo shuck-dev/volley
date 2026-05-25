@@ -156,6 +156,8 @@ Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers
 
 Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
 
+Reviewers reliably report a verdict but skip the GitHub side-effects the contract in `reviewers.md` already mandates: keeping the review body empty with findings posted inline, and applying their own `zaphod-approved` / `zaphod-blocked` label. Both slipped on #740, a block summary landed on the main conversation thread and an approve never applied its label. So every reviewer dispatch brief restates one line, inline comments only, empty review body, never the main thread, apply your own zaphod label; and Gru verifies the actual label and body on the PR before reporting the verdict, re-applying a missing or stripped label by hand.
+
 ## Consensus on disagreement
 
 When two minions reach opposite conclusions on the same evidence (reviewer approves while battler blocks, two reviewers split, etc.), don't pick a side. Dispatch two more independent agents on the same question, briefed not to read each other's reports. Whichever side reaches three votes wins. Surface the consensus to Josh with the evidence each agent cited.
