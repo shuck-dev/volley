@@ -4,7 +4,7 @@ Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Ste
 
 | Role | Item | Effect |
 |---|---|---|
-| ball | TODO | |
+| ball | TODO | At consolidation, splits in two; collide them to merge for a soul burst. Not merging is a missed bonus, no penalty. |
 | equipment | TODO | |
 | court | TODO | |
 | doubled (TODO) | TODO | |
