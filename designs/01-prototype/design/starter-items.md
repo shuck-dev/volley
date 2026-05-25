@@ -25,7 +25,6 @@ Role: equipment. Oscillation plus tier-skip; the complex shopkeeper's pick. Obje
 ## To design
 
 - Objects and names (a few still open).
-- Confirm Cadence as the pick.
 
 ---
 
