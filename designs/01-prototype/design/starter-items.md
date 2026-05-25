@@ -1,6 +1,6 @@
 # Starter Items
 
-Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Steph). Mostly sports, weird. Five items, distinct verbs, felt in one rally, paying out on consolidation (SH-437).
+Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Steph). Item framework, card format, and categories: [items.md](items.md).
 
 | Slot | Group | Effect |
 |---|---|---|
@@ -12,4 +12,5 @@ Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Ste
 
 - Cut: Ceiling (felt only at the top).
 - Out: miss-cluster, Synergy, Risk/Reward, Field-changing, Slot-expanding, Partner-enhancing.
-- TODO: per-item cards (appearance, effect); slot 4 group; confirm Cadence.
+- Pay out on consolidation (SH-437).
+- TODO: per-item cards (items.md format); slot 4 group; confirm Cadence.
