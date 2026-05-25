@@ -4,13 +4,15 @@ How Volley's parallel agent system is shaped, why it is shaped that way, and whe
 
 ## The lifecycle
 
+Not all work earns the lifecycle. A mission needs a verification beat, a Ride or a CI gate; a single ticket whose acceptance criteria are their own verification files as Urgent and skips straight to dispatch. What runs the full arc is a mission.
+
 A mission runs ten stages, from a ticket landing on the desk to the worktrees coming down. This section is the map: each stage states what happens and names the doc that owns the detail. Stages 1 to 4 are Gru's planning arc; 5 to 10 are execution.
 
 1. **Interrogate.** Read the issue's full AC, open every linked design doc, grep any term in the AC that is not already concrete, check memory. Surface each ambiguity as one precise question and wait for the answer; only zero ambiguities proceeds to a proposal. A mission proposal is never the first response to an issue being named.
 
 2. **Codename.** An opaque two-word handle, or a single noun, from a wide pool: Despicable Me fiction, history, mythology, geography, art movements, oblique English nouns. The handle does not leak the mission's content; the milestone description carries that. A soft echo that resonates through an interpretive step is welcome (the reader does the work); a theme-match that names the work in zero steps is not, and an invented compound is not. The codename stays internal: it appears on the Linear milestone and in dispatch briefs, never in shipped docs, commits, or branch names.
 
-3. **File the mission.** Before any work begins, the milestone exists on the correct project with a one-sentence description, the Ride exists if the mission needs one, and every constituent issue is attached to the milestone. Issues are scoped from what is already in the cycle, never moved in to suit the mission. A bug-pass Ride asks the cluster question (does the rally feel right with every fix landed together); a feature Ride enumerates each player-observable flow. Project taxonomy is in [`missions-and-projects.md`](../process/missions-and-projects.md); the shapes work takes (bug, spike, feature) are in [`flow-shapes.md`](../process/flow-shapes.md).
+3. **File the mission.** Before any work begins, the milestone exists on the correct project with a one-sentence description and its goals as a terse numbered list (one line each), the Ride exists if the mission needs one, and every constituent issue is attached to the milestone. Issues are scoped from what is already in the cycle, never moved in to suit the mission. A bug-pass Ride asks the cluster question (does the rally feel right with every fix landed together); a feature Ride enumerates each player-observable flow. Project taxonomy is in [`missions-and-projects.md`](../process/missions-and-projects.md); the shapes work takes (bug, spike, feature) are in [`flow-shapes.md`](../process/flow-shapes.md).
 
 4. **Dandori, the impl plan.** After filing, plan implementation per work unit: name the crew, recon the surfaces, name the scope cap, confirm. Recon dispatches a read-only minion to map each unit's fix surface and the file overlap across units, so concurrent worktrees get non-overlapping write slices, or file-sharing units collapse into one serialized stream, before anything is dispatched. Detail in [`dandori.md`](../../ai/skills/gru/dandori.md).
 
