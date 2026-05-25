@@ -5,7 +5,7 @@ description: Dispatcher-side rules for dispatching minions, rotating codenames, 
 
 # Minion dispatch
 
-Gru's executor flow. Use after dandori has confirmed the crew.
+Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confirmed the crew. The full lifecycle (interrogate through cleanup) lives in [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md).
 
 ## Gru works on a worktree too
 
@@ -13,7 +13,7 @@ The default tree at `/home/josh/gamedev/volley` is Josh's; Gru does not edit it.
 
 ## Codename pool
 
-Codenames rotate per work unit, picked to fit each case. Pool: Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds (Hearthians + Nomai), Martha. Mission codenames are Gru convention and stay separate from minion codenames.
+Codenames rotate per work unit, picked to fit each case. Pool: Gravity Falls, Hitchhiker's, Oddworld, Omori, Outer Wilds (Hearthians + Nomai), Martha. Mission codenames are Gru convention and stay separate from minion codenames.
 
 The dispatch description leads with the codename: `Feldspar implements SH-254`, not `Implement SH-254`. Role lives in the `subagent_type`.
 
@@ -155,6 +155,8 @@ Reviewers fire after the impl challenge opens, scope-filtered by the diff. Defau
 Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers. Devils-advocate has no shell access; pass the rule text and audit table inline in the prompt or expect a context-blocked report.
 
 Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
+
+Reviewers reliably report a verdict but skip the GitHub side-effects the contract in `reviewers.md` already mandates: keeping the review body empty with findings posted inline, and applying their own `zaphod-approved` / `zaphod-blocked` label. Both slipped on #740, a block summary landed on the main conversation thread and an approve never applied its label. So every reviewer dispatch brief restates one line, inline comments only, empty review body, never the main thread, apply your own zaphod label; and Gru verifies the actual label and body on the PR before reporting the verdict, re-applying a missing or stripped label by hand.
 
 ## Consensus on disagreement
 

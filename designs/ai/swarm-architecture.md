@@ -1,6 +1,32 @@
 # Swarm Architecture
 
-How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol material lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them.
+How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol material lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them: it opens with the lifecycle, the ten stages a mission runs in order, then the rationale for why the system is shaped this way.
+
+## The lifecycle
+
+Not all work earns the lifecycle. A mission needs a verification beat, a Ride or a CI gate; a single ticket whose acceptance criteria are their own verification files as Urgent and skips straight to dispatch. What runs the full arc is a mission.
+
+A mission runs ten stages, from a ticket landing on the desk to the worktrees coming down. This section is the map: each stage states what happens and names the doc that owns the detail. Stages 1 to 4 are Gru's planning arc; 5 to 10 are execution.
+
+1. **Interrogate.** Read the issue's full AC, open every linked design doc, grep any term in the AC that is not already concrete, check memory. Surface each ambiguity as one precise question and wait for the answer; only zero ambiguities proceeds to a proposal. A mission proposal is never the first response to an issue being named.
+
+2. **Codename.** An opaque two-word handle, or a single noun, from a wide pool: Despicable Me fiction, history, mythology, geography, art movements, oblique English nouns. The handle does not leak the mission's content; the milestone description carries that. A soft echo that resonates through an interpretive step is welcome (the reader does the work); a theme-match that names the work in zero steps is not, and an invented compound is not. The codename stays internal: it appears on the Linear milestone and in dispatch briefs, never in shipped docs, commits, or branch names.
+
+3. **File the mission.** Before any work begins, the milestone exists on the correct project with a one-sentence description and its goals as a terse numbered list (one line each), the Ride exists if the mission needs one, and every constituent issue is attached to the milestone. Issues are scoped from what is already in the cycle, never moved in to suit the mission. A bug-pass Ride asks the cluster question (does the rally feel right with every fix landed together); a feature Ride enumerates each player-observable flow. Project taxonomy is in [`missions-and-projects.md`](../process/missions-and-projects.md); the shapes work takes (bug, spike, feature) are in [`flow-shapes.md`](../process/flow-shapes.md).
+
+4. **Dandori, the impl plan.** After filing, plan implementation per work unit: name the crew, recon the surfaces, name the scope cap, confirm. Recon dispatches a read-only minion to map each unit's fix surface and the file overlap across units, so concurrent worktrees get non-overlapping write slices, or file-sharing units collapse into one serialized stream, before anything is dispatched. Detail in [`dandori.md`](../../ai/skills/gru/dandori.md).
+
+5. **Dispatch.** The seven-step minion flow runs per work unit: claim the ticket, place it in the cycle, log progress in Linear, sync before opening, open the challenge and fan reviewers, hand off, block or spin. Worktree isolation, tier discipline, and the paired-dispatch shapes (user story, system story, bug) live in [`dispatch.md`](../../ai/skills/gru/dispatch.md).
+
+6. **Review and battle.** Once a diff exists, Gru partitions it by path and fans the matching reviewers plus battlers. Each reviewer posts its own comment and applies its own label; Gru does not aggregate. The verdict contract is in [`reviewers.md`](../../ai/skills/minions/reviewers.md).
+
+7. **Merge.** The merge queue serialises `main`: it pulls the challenge into a merge group, re-runs lint and tests against `main` plus the change, then fast-forwards. Each challenge stands alone against current `main`.
+
+8. **Ride.** The verification beat: the player plays, or the CI gate runs, against the landed bundle. Findings file as new issues (a regression reopens its source issue), not as fixes folded into the Ride.
+
+9. **Debrief.** A process retro, not a status report: blockers, improvements, action items. The project status update lands on the milestone's parent project. Detail in [`debrief.md`](../../ai/skills/gru/debrief.md).
+
+10. **Cleanup.** Worktrees come down, merged branches delete, per-task scratchpads scrub once keepers promote to memory or docs.
 
 ## The Gru model
 

@@ -4,7 +4,7 @@ Three mission shapes. Each has a distinct entry, a distinct deliverable, and a d
 
 Pick the shape before the codename. Dispatching the wrong shape adds overhead (planner for a one-line typo) or misses verification (no repro for a player-visible bug).
 
-Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns) and [`dandori.md`](dandori.md) (the planning interrogation).
+Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns) and [`dandori.md`](dandori.md) (stage 4, the impl plan).
 
 ## Bug
 

@@ -1,38 +1,12 @@
-# Mission dandori
+# Dandori, the impl plan
 
-The interrogation order for planning a new mission. Walk the steps in order; don't skip to filing or dispatch.
+Dandori is stage 4 of the swarm lifecycle: the implementation plan, run after the mission is filed and before any minion dispatches. Interrogating the work, picking a codename, and filing the milestone happen earlier, as stages 1 to 3, owned by [`swarm-architecture.md`](../ai/swarm-architecture.md). By the time dandori runs, the milestone exists on the right project, the Ride exists if the mission needs one, and the issues are attached.
 
-Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (bug / spike / feature, the shape of work inside a mission), and the swarm conventions in `ai/`.
+Dandori narrows to four questions, per work unit: who works it, what it touches, how it is capped, and a confirm before go.
 
-## 1. Mission or ticket?
+Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (the shapes work takes inside a mission), and the operational checklist in [`ai/skills/gru/dandori.md`](../../ai/skills/gru/dandori.md).
 
-Is this big enough to be a mission, or is it a single Urgent ticket?
-
-A mission needs a verification beat: a Ride (player playtest) or a clear non-player gate (e.g. CI run). If the work is one ticket and the AC is the verification, file it as Urgent and stop.
-
-## 2. Project
-
-Which project does the mission live in? Apply the linear-scope rule from `missions-and-projects.md`: a project's scope is what completes inside it. If the mission needs work in multiple existing projects, the boundaries are wrong; resolve by moving tickets, merging projects, or filing a new one.
-
-## 3. Goals
-
-Terse numbered list. One line per goal. No prose.
-
-## 4. Scope-expansion guard
-
-For any goal that could naturally sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up tickets after the mission, not inside it.
-
-## 5. Ride
-
-Player playtest or CI run? Ride ticket files in the same project with the milestone set. AC names the player-observable flows the rework must not regress, or the CI signal that proves the gate.
-
-Code-inspection findings file as separate Battle or code-review tickets, not Ride ACs.
-
-## 6. Mission codename
-
-Gru naming: two-word handle from the Despicable Me / Minions lexicon. Opaque: the codename doesn't leak the mission's content. The milestone description does.
-
-## 7. Minion crew
+## 1. Crew
 
 Full team per work unit:
 
@@ -41,21 +15,25 @@ Full team per work unit:
 - **Reviewers**: code-quality, gdscript-conventions, test-coverage by default, plus the domain reviewers the diff fires (signals-lifecycle, godot-scene, save-format-warden, asset-pipeline, ci-and-workflows, docs-and-writing).
 - **Battlers**: devils-advocate to challenge the approach, integration-scenario-author to write adversarial scenarios that try to expose gaps.
 
-Each minion gets a codename from the pool (Galaxy Friends, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
+Each minion gets a codename from the pool (Gravity Falls, Hitchhiker's, Oddworld, Omori, Outer Wilds Hearthians and Nomai, Martha) chosen to fit the case. Codename rotates per work unit; role is stable.
 
-## 8. Confirm before dispatch
+## 2. Recon the surfaces
 
-List the crew and wait for go. Don't dispatch until the codename and crew are confirmed.
+Before confirm, a read-only minion maps each work unit's fix surface and the file overlap across units. The crew's write slices come from that map, not from inference off the issue bodies: units with disjoint files fan as concurrent worktrees, units that share a file collapse into one serialized stream. The recon runs before dispatch so a shared file is caught while it is still a planning note, not after two minions have clobbered each other on the same branch.
+
+## 3. Scope-expansion guard
+
+For any goal that could naturally sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up tickets after the mission, not inside it.
+
+## 4. Confirm before dispatch
+
+List the crew, the recon-grounded slices, and the scope caps. Wait for go. Don't dispatch until they are confirmed.
 
 ## Worked example
 
-Vector Squared (Test Rework, 2026-04-27):
+A bug-pass mission, milestone already filed with four bugs attached and a high-level Ride:
 
-1. Mission, not ticket: scope spans timeout tests, integration contract, behavioural audit, CI gate.
-2. New project Test Rework. Tickets moved out of Minion Hardening (wrong scope: that project is for swarm/agent hardening).
-3. Goals: suite under 2s; real input on every player AC; behavioural review; patterns documented; CI gate.
-4. CI gate capped to one workflow step, one number. New gate types file as follow-ups.
-5. Ride: regression playtest. No new player surface to verify, but the rework could regress existing flows.
-6. Codename: Vector Squared.
-7. Crew: Feldspar (impl SH-254), Hornfels (impl SH-253), reviewers Marvin / Slartibartfast / Sunny / Mabel / Solanum / Aubrey / Riebeck, battlers Ford / Stranger / Abe / Kel.
-8. Confirm, then dispatch.
+1. Crew: one impl per work unit, default reviewers on each, devils-advocate on the unit with the subtle gating logic.
+2. Recon: a read-only minion reports that three of the four bugs all modify the same manager script and only the fourth is isolated. The plan collapses the three into one serialized stream and fans the fourth as a parallel worktree.
+3. Scope guard: each fix stays to its repro; anything broader the recon surfaces files as a follow-up, not folded in.
+4. Confirm the streams and slices, then dispatch.
