@@ -14,14 +14,17 @@ Role: equipment, worn on the head. Lets you header the ball, a new contact disti
 
 Role: equipment, worn on the wrist. Each hit sheds a soul bead off the ball; beads drift to you and auto-collect, and routing the ball back through them gathers more. Soul is the bond, and the bracelet is that bond shedding into collectible beads. Object: the four's childhood friendship bracelet, never runs down, the beads warm.
 
+## Magnetism (name TODO)
+
+Role: equipment, worn. Balls are drawn toward the characters (player and partner), curving toward whoever is reaching, so the rally flows and the split balls drift back into reach instead of scattering. Object: a childhood magnet of the four (a horseshoe, a found lump of lodestone).
+
 ## Cadence (pick)
 
 Role: equipment. Oscillation plus tier-skip; the complex shopkeeper's pick. Object: a childhood whistle of the four.
 
 ## To design
 
-- One more item, ball or equipment role, a unique gameplay-change.
-- Objects and names for every item.
+- Objects and names (a few still open).
 - Confirm Cadence as the pick.
 
 ---
