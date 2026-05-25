@@ -4,13 +4,14 @@ Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Ste
 
 | Slot | Group | Effect |
 |---|---|---|
-| 1 | Capability | Levitate higher; soul-bound and arc rise with you |
-| 2 | Yield | More soul per volley |
-| 3 | Momentum | Compounds across the streak |
-| 4 | doubled (TODO) | Second item on one build group |
+| 1 | Reward | Soul paid on consolidation |
+| 2 | Control (TODO) | Shape where the ball goes |
+| 3 | (TODO) | |
+| 4 | (TODO) | |
 | Pick | Tempo | Cadence: oscillation plus tier-skip (complex) |
 
-- Cut: Ceiling (felt only at the top).
+- Cut to progression (furthered later, not a starter): Ceiling; Levitation (the protagonist gains soul-control over the game).
 - Out: miss-cluster, Synergy, Risk/Reward, Field-changing, Slot-expanding, Partner-enhancing.
 - Pay out on consolidation.
-- TODO: per-item cards; slot 4 group; confirm Cadence.
+- Distinct goal-serving verbs are thin (Reward, Tempo, maybe Control); the set likely shrinks rather than pads.
+- TODO: remaining slots; per-item cards; confirm Cadence.
