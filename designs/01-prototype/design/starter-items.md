@@ -16,11 +16,11 @@ Role: equipment, worn on the wrist. Each hit sheds a soul bead off the ball; bea
 
 ## Magnetism (name TODO)
 
-Role: equipment, worn. Balls are drawn toward the characters (player and partner), curving toward whoever is reaching, so the rally flows and the split balls drift back into reach instead of scattering. Object: a childhood magnet of the four (a horseshoe, a found lump of lodestone).
+Role: equipment, worn. Balls are drawn toward the player, curving toward where you reach, so the rally flows and split balls drift back into reach instead of scattering. Object: a childhood magnet of the four (a horseshoe, a found lump of lodestone).
 
 ## Cadence (pick)
 
-Role: equipment. Oscillation plus tier-skip; the complex shopkeeper's pick. Object: a childhood whistle of the four.
+Role: equipment. The complex shopkeeper's pick, specced among the prototype effect blocks. Object: a childhood whistle of the four.
 
 ## To design
 
