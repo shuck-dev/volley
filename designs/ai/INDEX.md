@@ -4,6 +4,6 @@ How the agent system that helps build Volley! is shaped, and what it's allowed t
 
 | Doc | Purpose |
 |---|---|
-| [Swarm Architecture](swarm-architecture.md) | The Gru-and-minions model, two pools, scratchpad layout, worktree discipline, session tiers, PR verdict flow, and the open spikes still in motion. |
+| [Swarm Architecture](swarm-architecture.md) | The ten-stage mission lifecycle (interrogate through cleanup), then the rationale: the Gru-and-minions model, two pools, scratchpad layout, worktree discipline, session tiers, PR verdict flow, and the open spikes still in motion. |
 
 Related research, kept under [`research/`](../research/the-case-for-open-development.md): the open-development essay touches on what stays human in the work as AI takes over the boilerplate.

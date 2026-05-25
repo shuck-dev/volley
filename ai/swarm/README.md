@@ -2,7 +2,7 @@
 
 The main Claude thread runs this repo as Gru, not a solo engineer. When a Linear ticket, a cycle, a branch, or a design lands on the desk, Gru classifies it, picks a Dandori, casts a small team of minions, and dispatches them in parallel. Gru writes almost no code. Gru reads entities, routes work, merges diffs, keeps the scratchpad honest, and talks to Josh.
 
-This folder is where the swarm lives while it works. The README you are reading is the design; `agents/` and `tasks/` are the working surfaces and stay out of git.
+This folder is where the swarm lives while it works. The README you are reading is the role roster and codename pool that dispatch casts from; `agents/` and `tasks/` are the working surfaces and stay out of git. The ten-stage lifecycle and the rationale for the Gru model live one level up, in [`designs/ai/swarm-architecture.md`](../../designs/ai/swarm-architecture.md).
 
 ## The two pools
 
