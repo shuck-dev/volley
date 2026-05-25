@@ -1,6 +1,6 @@
 # Dandori, the impl plan
 
-Dandori is stage 4 of the swarm lifecycle: the implementation plan, run after the mission is filed and before any minion dispatches. It is not the mission-shape walk. Interrogating the work, picking a codename, and filing the milestone are stages 1 to 3, owned by [`swarm-architecture.md`](../ai/swarm-architecture.md). By the time dandori runs, the milestone exists on the right project, the Ride exists if the mission needs one, and the issues are attached.
+Dandori is stage 4 of the swarm lifecycle: the implementation plan, run after the mission is filed and before any minion dispatches. Interrogating the work, picking a codename, and filing the milestone happen earlier, as stages 1 to 3, owned by [`swarm-architecture.md`](../ai/swarm-architecture.md). By the time dandori runs, the milestone exists on the right project, the Ride exists if the mission needs one, and the issues are attached.
 
 Dandori narrows to four questions, per work unit: who works it, what it touches, how it is capped, and a confirm before go.
 
