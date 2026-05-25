@@ -10,10 +10,6 @@ Role: ball (a new ball). At consolidation it splits, and each higher tier splits
 
 Role: equipment, worn on the head. Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul. Pulls play upward. Object: a childhood helmet of the four.
 
-## Spike (name TODO)
-
-Role: equipment, worn. From up high you can spike the ball, slam it down hard and fast, the offensive twin to the helmet's header: rise to the high ball, head it up to keep the rally building, or spike it down to attack. Its home is the duel (drive the opponent into a miss); in a cooperative rally it is a high-risk, high-soul flourish. Payoff and object: TODO.
-
 ## Soul motes (friendship bracelet)
 
 Role: equipment, worn on the wrist. Each hit sheds a soul bead off the ball; beads drift to you and auto-collect, and routing the ball back through them gathers more. Soul is the bond, and the bracelet is that bond shedding into collectible beads. Object: the four's childhood friendship bracelet, never runs down, the beads warm.
