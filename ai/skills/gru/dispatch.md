@@ -9,7 +9,7 @@ Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confi
 
 ## Focus and WIP
 
-Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
+Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. Done means merged, or the mission closed, not the challenge opened: an open PR with auto-merge pending is still a thread on the count, so do not report it closed until it merges. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
 
 ## Gru works on a worktree too
 
