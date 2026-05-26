@@ -14,7 +14,7 @@ The one-page cheat sheet for filing tickets lives in `CLAUDE.md` under "Linear T
 
 If you have landed here as a contributor, welcome. This section covers how to read a ticket so you can dive in with confidence. The practical side, picking up a ticket, running the project, submitting a PR, lives in [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
 
-**Ticket shape.** Every ticket carries a label from the [intent taxonomy](labels.md): `feature`, `spike`, `bug`, `study`, `asset`, `revision`, `concept`, `cue`, `rework`, `voice`, `draft`, `rewrite`, `discovery`, `tune`, or `sfx`. The label tells you what kind of output is expected and which discipline the work belongs to. The body tells you what done looks like. If the label and the body disagree, ask in the thread; the body usually wins.
+**Ticket shape.** Every ticket carries a label from the [intent taxonomy](labels.md): `feature`, `spike`, `bug`, `study`, `asset`, `revision`, `concept`, `cue`, `rework`, `draft`, `rewrite`, `discovery`, `tune`, or `sfx`. The label tells you what kind of output is expected and which discipline the work belongs to. The body tells you what done looks like. If the label and the body disagree, ask in the thread; the body usually wins.
 
 **Acceptance criteria are the contract.** If the AC is met, the ticket is done. If any of it is unclear, ask in the ticket thread before opening a PR; we would rather answer a question than ask for a rework.
 
@@ -53,7 +53,7 @@ Our label taxonomy follows a pattern across most disciplines:
 | tech      | spike                 | feature                 | (bug restores)        |
 | art       | study                 | asset                   | revision              |
 | music     | concept               | cue                     | rework                |
-| writing   | voice                 | draft                   | rewrite               |
+| writing   | -                     | draft                   | rewrite               |
 | design    | discovery             | -                       | tune                  |
 | sfx       | -                     | sfx                     | -                     |
 
@@ -61,11 +61,11 @@ Three intents, plus `bug` as its own shape.
 
 ### Explore
 
-The question comes first, the output second. An explore ticket answers a question: can we, how would we, what would this feel like. The artifact (a spike writeup, a concept sketch, a voice sample, a discovery prototype) is evidence of the answer, not the point.
+The question comes first, the output second. An explore ticket answers a question: can we, how would we, what would this feel like. The artifact (a spike writeup, a concept sketch, a discovery prototype) is evidence of the answer, not the point.
 
 "Done" means the question is answered and a decision is documented. Coverage matters more than polish. A discovery prototype that kills three options and points at a fourth is a win.
 
-Timebox the work. Kent Beck's original spike, in *Extreme Programming Explained* (1999), is time-bounded investigation producing knowledge, not shippable code. Same applies to studies, concepts, voice explorations.
+Timebox the work. Kent Beck's original spike, in *Extreme Programming Explained* (1999), is time-bounded investigation producing knowledge, not shippable code. Same applies to studies and concepts.
 
 ### Produce
 
@@ -129,11 +129,9 @@ Winifred Phillips (*A Composer's Guide to Game Music*, MIT Press, 2014) gives th
 
 ### Writing
 
-Labels: `voice`, `draft`, `rewrite`.
+Labels: `draft`, `rewrite`.
 
-Hannah Nicklin (*Writing for Games*, 2022) frames voice work as bible entries distinct from content, which matches our three-tier split. Emily Short's blog and Steve Ince (*Writing for Video Games*, 2006) are the other primary references.
-
-**Voice** (explore). A bible entry for a character or register: vocabulary, rhythm, taboos, sample lines. "Done" is an approved entry the draft work can cite. No scene content lives here.
+Hannah Nicklin (*Writing for Games*, 2022), Emily Short's blog, and Steve Ince (*Writing for Video Games*, 2006) are the primary references for writing tickets.
 
 **Draft** (produce). A scene, barks, UI copy, a codex entry. Carries scene goal, required information beats (what must the player know after this), word or line budget, branch count, barks needed. Ince's 2006 clause, "what must the player know after this scene", is the most useful AC anchor.
 
@@ -165,7 +163,7 @@ There is no `explore` or `evolve` label for sfx at Shuck. Exploration folds into
 
 ## Templates
 
-### User Story (player-facing feature, voice or draft when content is player-facing)
+### User Story (player-facing feature, draft when content is player-facing)
 
 ```
 As a [role]
