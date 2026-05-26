@@ -5,6 +5,7 @@ The player starts with the initial ball and racquet; these items add to that, ne
 ## Ball: split-and-merge (name TODO)
 
 Role: ball
+A ball of goop Zach found under the floorboards.
 At consolidation it splits, and each consolidation after adds one more ball (2 at the first, +1 per consolidation after).
 Collide them to merge for a soul burst. 
 Not merging is a missed bonus, no penalty.
