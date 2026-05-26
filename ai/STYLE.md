@@ -100,6 +100,19 @@ The fact lands harder than the claim about the fact. Ground the reader in the co
 - Avoid prepositional closes (*for, with, of*), weak pronouns at the close (*it, this, that*), adverbial drift ("in the end"), and hedge stacks.
 - Read every paragraph aloud.
 
+### Read it aloud
+
+Read every sentence aloud, not silently. The ear catches what the eye forgives: a word repeated three lines apart, a clause that runs out of breath before the full stop, a row of sentences that all land with the same thud. If you stumble reading it, the reader stumbles too. Where the breath runs out before the stop, split. Where short sentences click past in a row like a metronome, the prose has gone choppy, so join them. The test is not whether each sentence is correct; it is whether the paragraph sounds like a person thinking, not a list being read out.
+
+### Joining sentences
+
+A paragraph is a line of thought, not a list of facts. Consecutive sentences carry a relation, and that relation belongs on the page: this *therefore* that, this *but* that, this *because* that. A run of bare declaratives with no connective tissue reads as a stutter even when every sentence is true.
+
+- When two short sentences share a subject or a cause, join them. "The miss is not carelessness. Its engine is the inside view." is two thoughts pretending to be unrelated; "The miss is not carelessness; its engine is the inside view" is the one thought it actually is.
+- Subordinate the lesser clause. "Industry copied the diagram. It ignored the warning." gives two facts equal weight; "Industry copied the diagram and ignored the warning" keeps the second as the point.
+- Reserve the isolated full stop for the line you mean to land alone. A short sentence earns its force by contrast with longer ones around it. A paragraph of nothing but short sentences spends that force on every line and lands none.
+- Joining is not splicing. Three commas stringing clauses together is still two sentences pretending to be one. Join for logic and breath, with a conjunction, a subordinate clause, a semicolon, or a colon, never by cramming.
+
 ### Paragraphs end on the loaded sentence
 
 The last sentence is what the reader will carry. Engineer it. Transitions go in the first sentence of the next paragraph, never the last of this one.

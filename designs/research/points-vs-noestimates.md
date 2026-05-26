@@ -6,7 +6,7 @@ Research compiled 2026-05-27.
 
 James Grenning defined and named Planning Poker in 2002, after a planning meeting where two senior engineers dominated while six other people sat out, and the rite descends from Wideband Delphi, the method Barry Boehm adapted in the 1970s. Turning the cards at once strips out anchoring and seniority. The number that lands is the team's, not the loudest voice's, and it arrives as a by-product of a conversation about the work rather than as the point of the meeting.
 
-Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope is trusted because it comes from the team's own measured output rather than from a manager's wish.
+Points completed each sprint, averaged, become velocity, and velocity slopes the burndown toward a date. The team reads that slope and plans against it, trusting it because it comes from the team's own measured output rather than from a manager's wish.
 
 The cards skip 4, 6, and 7 because the widening Fibonacci gaps encode growing uncertainty at larger sizes and force a decisive bucket instead of a haggle over six versus seven. And almost no one at the table, asked what a point measures, can answer. The foundation under it has never been read.
 
@@ -24,11 +24,11 @@ The word "days" was the bug. Deleting it was the fix. What remained was a number
 
 ## Why points exist: a disguise against pressure
 
-Asked years later why story points were created, Ron Jeffries gave an answer about politics, not measurement: points "were invented to obfuscate duration so that certain managers would not pressure the team." The dimensionless number was a screen, and the thing it screened against is named in the sentence. Managerial pressure on duration.
+Asked years later why story points were created, Ron Jeffries gave an answer about politics, not measurement: points "were invented to obfuscate duration so that certain managers would not pressure the team." The dimensionless number was a screen, and the thing it screened against is named in the sentence: managerial pressure on duration.
 
 That pressure has a lineage. Winston W. Royce, in "Managing the Development of Large Software Systems" (Proceedings of IEEE WESCON, August 1970), drew the sequential cascade of analysis to design to code to test only to condemn it. Of the single-pass version he wrote: "I believe in this concept, but the implementation described above is risky and invites failure." His objection was late discovery, testing arriving only at the end, so that a project committed to requirements and a schedule before anyone knew whether the design worked. His remedy was iteration: do it twice, involve the customer. Industry copied the diagram and ignored the warning, because fixed-bid government and aerospace contracts needed a number to sign against.
 
-That contractual need is real and predates agile. A buyer cannot countersign "we will forecast by throughput." The commitment ritual answers a genuine problem.
+That contractual need is real, and it predates agile. A buyer cannot countersign "we will forecast by throughput," so the commitment ritual answers a genuine problem.
 
 What it does to a team is a different matter, and the damage runs through a three-way confusion. Steve McConnell, author of *Software Estimation: Demystifying the Black Art* (2006), separates three things teams routinely fuse: an estimate is a probabilistic prediction, a target is a business-desired date, a commitment is a promise to deliver. The pathology is collapsing all three into one number. Tom DeMarco's definition of what an estimate becomes under that pressure, quoted in McConnell, is bleaker still: an estimate is "the most optimistic prediction that has a non-zero probability of coming true," which yields "the earliest date by which you can't prove you won't be finished."
 
@@ -54,7 +54,7 @@ Velocity is offered as the answer to the missing estimate. Measure points per sp
 
 Donald Campbell, the psychologist, sharpened the point in 1976: "The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures and the more apt it will be to distort and corrupt the social processes it is intended to monitor." Campbell's law predicts more than a degraded number. It predicts that the work the number was meant to watch gets corrupted too, which is the worse failure for velocity.
 
-The mechanism is mundane. Asked to raise velocity, the cheapest path is not faster delivery; it is point inflation. Yesterday's 3 becomes today's 5. The burndown slopes down handsomely while the actual cadence of shipped work does not change at all.
+The mechanism is mundane. Asked to raise velocity, a team takes the cheapest path, which is not faster delivery but point inflation: yesterday's 3 becomes today's 5, the burndown slopes down handsomely, and the cadence of shipped work does not change at all.
 
 So there are two failures, and they are independent. Estimates miss because the inside view runs low. The velocity fix misses because a measure under control pressure corrupts the work it was counting. The burndown can trend perfectly to zero while nothing ships any sooner, and the conclusion both failures reach is the same: the point was never the thing worth measuring.
 
@@ -64,7 +64,7 @@ So there are two failures, and they are independent. Estimates miss because the 
 
 The difference is in kind, not degree. Deterministic forecasting produces one number and hides the variability that makes completion a distribution rather than a point, so it is wrong by construction. Probabilistic forecasting produces a date with a confidence attached and reports the uncertainty it carries. The data needed for the second kind already sit in the team's tracker, unread in this form: throughput, the count of items finished per unit time, and cycle time, how long an item takes once it has started. Both are measured, not guessed.
 
-The relation between them is Little's Law, in the operational form Daniel Vacanti sets out in *Actionable Agile Metrics for Predictability* (2015): average cycle time equals average work-in-progress divided by average throughput. The lever sits in plain sight. Hold work-in-progress low and stable and cycle time becomes predictable. Vacanti's own counsel is to "forget the equation and focus on the assumptions," because the law holds only while the process obeys its stability conditions. A process must be steadied before its own history can forecast its future.
+The relation between them is Little's Law, in the operational form Daniel Vacanti sets out in *Actionable Agile Metrics for Predictability* (2015): average cycle time equals average work-in-progress divided by average throughput. The lever sits in plain sight: when work-in-progress is held low and stable, cycle time becomes predictable. Vacanti's own counsel is to "forget the equation and focus on the assumptions," because the law holds only while the process obeys its stability conditions. A process must be steadied before its own history can forecast its future.
 
 Monte Carlo simulation does the forecasting. Take the historical throughput, resample it thousands of times to simulate how long the remaining items will take, and read a distribution of completion dates with confidence percentiles off the result. Troy Magennis, of Focused Objective, popularised the technique from flow data in *Forecasting and Simulating Software Development Projects* (2011); Vacanti, in *When Will It Be Done?* (2019), warns against forecasting from average throughput, which discards the very variability the method exists to capture; and Prateek Singh's back-testing in 2021 found that simply resampling historical throughput outperformed the more elaborate variants.
 
