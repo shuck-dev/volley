@@ -12,11 +12,11 @@ Effect 2
   outcome: soul_burst(scale_by current_tier)
 ```
 
-Split fires on soul consolidation; the only read of the tier ladder is `current_tier` for the count, so there is no dependency on the unbuilt SH-88 system.
+Split fires on soul consolidation; there is no dependency on the milestone system.
 
 Split balls are ephemeral. They carry `is_temporary = true` (the flag `BallReconciler` already skips on adoption) and a `source_key` back-reference to the parent item. They attach to `BallTracker` so effects and magnetism reach them, but never enter `BallReconciler._balls_by_key`, so the save providers and reconcile never see them. Dragged off-court a split ball is destroyed, not racked: the drag controller's off-court path (`ball_drag_controller.gd`) branches on `is_temporary`.
 
-Merge keeps the survivor's `source_key` (both copies share it, so no key arbitration) and takes the max speed and tier of the pair. `on_balls_close` is a per-frame pairwise distance check over `BallTracker.get_balls()`, not a RigidBody contact: closing speed up to twice world-max is the tunnelling regime, and a distance test sidesteps CCD.
+Merge keeps the survivor's `source_key` (both copies share it, so no key arbitration) and takes the max speed and tier of the pair. `on_balls_close` is a per-frame pairwise distance check over `BallTracker.get_balls()`, not a RigidBody contact: closing speed up to twice world-max is the tunnelling regime, and a distance test sidesteps continuous collision detection.
 
 Levels and cost/scaling: TBD.
 
