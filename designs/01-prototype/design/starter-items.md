@@ -29,3 +29,13 @@ Balls are drawn toward the player, curving toward where you reach.
 ## Cadence (pick)
 
 Role: equipment : neck
+
+Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat. You can feel it in your teeth.
+
+| State | Description |
+|---|---|
+| Default | "Sounds wrong" |
+| After first ceiling raise | "Don't stop. Won't stop" |
+| Post-Break | "Was anyone listening?" |
+
+The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down unpredictably. When the ball reaches max speed, the ceiling raises and speed keeps climbing.
