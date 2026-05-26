@@ -4,35 +4,33 @@ Research compiled 2026-05-26. Background for how Shuck thinks about estimation i
 
 ## The man who invented them is sorry
 
-In 1999, on the C3 payroll project at Chrysler, a team started writing the time each story would take onto index cards. The numbers made managers nervous, so the team renamed them. Days became "ideal days", then ideal days became "points". The person who oversaw that renaming, Ron Jeffries, later wrote a sentence that ought to settle the whole debate before it begins: "I may have invented story points, and if I did, I'm sorry now."
+In 1999, on the C3 payroll project at Chrysler, a team started writing the time each story would take onto index cards. The numbers made managers nervous, so the team renamed them. Days became "ideal days", then ideal days became "points". The person who oversaw that renaming, Ron Jeffries, later put it plainly: "I may have invented story points, and if I did, I'm sorry now."
 
 He went further. "Using them to predict 'when we'll be done' is at best a weak idea." The most-cited tool in agile estimation arrived with its inventor's regret attached, and the regret is specific. Points were not built to measure a new thing. They were built to hide an old one.
 
-That is the claim this essay makes, and it is a strong one, so it deserves a strong opponent. The case for story points is not stupid, and the people who make it are not fools. They will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them, in the end, escape the clock.
+Proponents will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them, in the end, escape the clock.
 
 ## What the proponents actually say
 
-Start with the strongest version of the case, because a thesis that only beats the weak version is not worth writing down.
-
-Mike Cohn is the most careful proponent, and he does not say points measure complexity. He says the opposite. "Story points are an estimate of the effort involved in doing something." Complexity is one input among several: "The amount of work to be done is a factor. So, too, are risk and uncertainty." His canonical illustration is licking a thousand stamps against performing simple brain surgery: equal effort, wildly unequal complexity, so the thing the points track cannot be complexity alone. The point of the example is to pry estimation loose from difficulty and pin it to effort. Cohn means it, and it is the right correction to a common error.
+Mike Cohn is the most careful proponent, and he does not say points measure complexity. He says the opposite. "Story points are an estimate of the effort involved in doing something." Complexity is one input among several: "The amount of work to be done is a factor. So, too, are risk and uncertainty." His canonical illustration is licking a thousand stamps against performing simple brain surgery: equal effort, wildly unequal complexity, so the thing the points track cannot be complexity alone. The point of the example is to pry estimation loose from difficulty and pin it to effort.
 
 The Scaled Agile Framework, the heavyweight enterprise version, makes the same move in its glossary. A story point estimates "volume, complexity, knowledge, and uncertainty". Complexity is one of four. On the surface this is a system designed to be more than a stopwatch.
 
-So far the proponents have a real position. Points are effort, effort is a blend of work and risk and the unknown, and reducing all of that to a number of hours throws away information the blend was meant to keep. An honest critic has to grant this. The blend is real. The question is what the blend is denominated in.
+Points are effort, effort is a blend of work and risk and the unknown, and reducing all of that to a number of hours throws away information the blend was meant to keep. The blend is real. The question is what the blend is denominated in.
 
 ## The defence that almost works
 
-Push on a proponent and you reach the genuinely interesting argument, the one worth steel-manning all the way.
+Push on a proponent and you reach the argument underneath.
 
-Cohn rejects the equation "one story point equals eight hours", and his reason is good. Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
+Cohn rejects the equation "one story point equals eight hours". Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
 
 Cohn's refinement is sharper still. A point does not map to a number of hours; it maps to a distribution of them. "One point equals a distribution with a mode of x, two points a distribution with a mode of 2x." The collapse to time only happens if you flatten that distribution to a single number and fix the rate. Refuse the fixed rate and the point stays a spread, a hedge against the variance that any single hour figure pretends away.
 
-This is the defence at full strength. Points are relative, relativity is speed-independent, and the relationship to time is a distribution rather than an equation. Nothing said so far is false. A critic who waves it away has not understood it.
+Points are relative, relativity is speed-independent, and the relationship to time is a distribution rather than an equation.
 
 ## Where the costume slips
 
-Here is the turn. The defence concedes the case in the act of mounting it.
+The defence concedes the case in the act of mounting it.
 
 Cohn does not deny that points reduce to time. He affirms it and asks only that the conversion stay loose. "Effort is measured in time," he writes, in the same breath as warning against the eight-hours equation. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. Widen the error bars as much as you like; the axis they are measured on has not changed.
 
@@ -48,17 +46,17 @@ Woody Zuill coined the hashtag in 2012 with a conditional claim, not a slogan: w
 
 Vasco Duarte supplied the empirical blade. His proposal is story counting rather than point summing: count the items delivered, forecast the delivery rate over the last three to five iterations, and often take stories into a sprint "without even sizing those". His claim is that with small, roughly uniform stories, a forecast built from counting items is as accurate as one built from summing points. If the magnitudes carry no predictive information that throughput over time does not already carry, then the magnitudes are ceremony. The points add a step and subtract nothing.
 
-Holub's line on velocity closes the loop, read charitably: it is "something you measure, not something you can control". A measured rate is a useful forecasting instrument. It is not a thing a team can be held to, and the moment a manager treats it as a commitment, the obfuscation Jeffries described has failed in the other direction. The number meant to shield the team becomes the leash.
+Holub's line on velocity closes the loop: it is "something you measure, not something you can control". A measured rate is a useful forecasting instrument. It is not a thing a team can be held to, and the moment a manager treats it as a commitment, the obfuscation Jeffries described has failed in the other direction. The number meant to shield the team becomes the leash.
 
 ## What survives, and what eats it
 
-Honesty demands naming what does not reduce, because something real is left after the collapse.
+Something real is left after the collapse.
 
 Relative sizing is speed-independent, and that is genuine information. Two people who cannot agree on hours can still agree that B is twice A, and that shared judgement is worth having. A distribution carries more than a point estimate, and pretending a task takes exactly six hours is a worse lie than admitting it takes somewhere between four and twelve. These are not nothing. The proponents are defending something that exists.
 
 But it does not survive contact with use. The instant you apply velocity to turn a backlog of points into a delivery date, the speed-independence is converted into a team-specific duration, and the distribution is collapsed into the single number the date requires. The residue that resisted reduction is exactly the residue that forecasting consumes. What you are left holding is a time estimate with extra steps, and the extra steps were added, on Jeffries' own testimony, to keep a manager from reading the time estimate too directly.
 
-The precise claim, then, is narrow and defensible. Story points add no predictive information over time-based forecasting that you could not get from sized-but-uncounted throughput, with one exception: the speed-independence of relative comparison. And the moment velocity forecasts a date, even that exception is spent. The #NoEstimates answer is the practical one. If small uniform stories let you forecast by counting, the residual is not worth the ceremony it costs to maintain.
+The claim narrows to this. Story points add no predictive information over time-based forecasting that you could not get from sized-but-uncounted throughput, with one exception: the speed-independence of relative comparison. And the moment velocity forecasts a date, even that exception is spent. The #NoEstimates answer is the practical one. If small uniform stories let you forecast by counting, the residual is not worth the ceremony it costs to maintain.
 
 ## How Shuck reads this
 
