@@ -42,3 +42,4 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 20 | [Ball Speed Tiers and Physics Ceiling](20-ball-speed-tiers.md) |
 | 20a | [Ball Speed Tier Progression](20a-ball-speed-tier-progression.md) |
 | 21 | [Ball Lifecycle](tech/02-ball-lifecycle.md) |
+| 22 | [Levitation Progression](design/levitation-progression.md) |
