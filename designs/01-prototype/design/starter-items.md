@@ -18,7 +18,7 @@ Lets you header the ball, a new contact distinct from the racquet hit; a header 
 
 Role: equipment : arm
 
-Worn on the wrist. 
+One of a twinned pair; Zach wears the other.
 Each hit sheds a soul bead off the ball; beads drift and can be collected via the ball. The beads never run out.
 
 ## Magnetism (name TODO)
