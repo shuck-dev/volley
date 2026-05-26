@@ -6,7 +6,7 @@ Research compiled 2026-05-27.
 
 James Grenning defined and named Planning Poker in 2002, after a planning meeting where two senior engineers dominated while six other people sat out, and the rite descends from Wideband Delphi, the method Barry Boehm adapted in the 1970s. Turning the cards at once strips out anchoring and seniority. The number that lands is the team's, not the loudest voice's, and it arrives as a by-product of a conversation about the work rather than as the point of the meeting.
 
-The numbers go somewhere. Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope is trusted because it comes from the team's own measured output rather than from a manager's wish.
+Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope is trusted because it comes from the team's own measured output rather than from a manager's wish.
 
 The cards skip 4, 6, and 7 because the widening Fibonacci gaps encode growing uncertainty at larger sizes and force a decisive bucket instead of a haggle over six versus seven. And almost no one at the table, asked what a point measures, can answer. The foundation under it has never been read.
 
