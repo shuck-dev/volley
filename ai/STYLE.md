@@ -42,6 +42,8 @@ A comma joining two independent clauses is a splice; upgrade to semicolon, perio
 - **No second-person command voice.** Show; don't instruct.
 - **No first-person plural unless earned.** "We" is reader and writer together, not the author and an imaginary team.
 - **No hedging stack.** "It might possibly perhaps be the case that" is one word: "is", or cut.
+- **No self-commentary.** The prose does not narrate its own method or grade its own argument. Cut "here is the turn", "this is the strongest version of the case", "the claim is narrow and defensible", "honesty demands naming". Make the move; do not announce it.
+- **No grading the opponent.** State an opposing position and let it stand or fall on the evidence. Cut "the case is not stupid", "the people who make it are not fools", "his reason is good", "a critic who waves this away has not understood it". Reassuring the reader that the other side is serious is the essay propping itself up.
 
 ## AI prose tells to cut
 
