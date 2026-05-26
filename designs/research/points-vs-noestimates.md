@@ -4,9 +4,7 @@ Research compiled 2026-05-27.
 
 ## The ritual every sprint repeats
 
-A fanned hand of cards: 1, 2, 3, 5, 8, 13. Someone reads the backlog item aloud, the deck stays face-down, and on a count the cards turn over together. The numbers spread. A 3 sits next to an 8, the 8 explains itself, the 3 reconsiders, and the table settles on a 5. Then the next item.
-
-The simultaneous reveal is not decoration. James Grenning defined and named Planning Poker in 2002, after a planning meeting where two senior engineers dominated while six other people sat out, and the rite descends from Wideband Delphi, the method Barry Boehm adapted in the 1970s. Turning the cards at once strips out anchoring and seniority. The number that lands is the team's, not the loudest voice's, and it arrives as a by-product of a conversation about the work rather than as the point of the meeting.
+James Grenning defined and named Planning Poker in 2002, after a planning meeting where two senior engineers dominated while six other people sat out, and the rite descends from Wideband Delphi, the method Barry Boehm adapted in the 1970s. Turning the cards at once strips out anchoring and seniority. The number that lands is the team's, not the loudest voice's, and it arrives as a by-product of a conversation about the work rather than as the point of the meeting.
 
 The numbers go somewhere. Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope has earned a certain trust because it comes from the team's own measured output rather than from a manager's wish.
 
