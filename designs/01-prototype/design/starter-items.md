@@ -1,33 +1,31 @@
 # Starter Items
 
-Zach's stall, Act I. Childhood objects of the four (protagonist, Zach, Fern, Steph). The player starts with the initial ball and racquet; these items add to that, new balls and worn gear. Court ships later. Each effect is a unique gameplay-change, not a stat.
+The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
 
 ## Ball: split-and-merge (name TODO)
 
-Role: ball (a new ball). At consolidation it splits, and each higher tier splits into one more ball (2 at the first, +1 per tier after). Collide them to merge for a soul burst. Not merging is a missed bonus, no penalty.
+Role: ball
+At consolidation it splits, and each higher tier splits into one more ball (2 at the first, +1 per tier after). 
+Collide them to merge for a soul burst. 
+Not merging is a missed bonus, no penalty.
 
 ## Helmet (name TODO)
 
-Role: equipment, worn on the head. Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul. Pulls play upward. Object: a childhood helmet of the four.
+Role: equipment : head
+Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul.
 
-## Soul motes (friendship bracelet)
+## Friendship bracelet
 
-Role: equipment, worn on the wrist. Each hit sheds a soul bead off the ball; beads drift to you and auto-collect, and routing the ball back through them gathers more. Soul is the bond, and the bracelet is that bond shedding into collectible beads. Object: the four's childhood friendship bracelet, never runs down, the beads warm.
+Role: equipment : arm
+
+Worn on the wrist. 
+Each hit sheds a soul bead off the ball; beads drift and can be collected via the ball. The beads never run out.
 
 ## Magnetism (name TODO)
 
-Role: equipment, worn. Balls are drawn toward the player, curving toward where you reach, so the rally flows and split balls drift back into reach instead of scattering. Object: a childhood magnet of the four (a horseshoe, a found lump of lodestone).
+Role: equipment
+Balls are drawn toward the player, curving toward where you reach.
 
 ## Cadence (pick)
 
-Role: equipment. The complex shopkeeper's pick, specced among the prototype effect blocks. Object: a childhood whistle of the four.
-
-## To design
-
-- Objects and names (a few still open).
-
----
-
-- Court items ship later.
-- Cut to progression: Ceiling; Levitation.
-- Out: miss-cluster, Synergy, Risk/Reward, Field-changing, Slot-expanding, Partner-enhancing.
+Role: equipment : neck
