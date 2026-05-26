@@ -56,7 +56,7 @@ Donald Campbell, the psychologist, sharpened the point in 1976: "The more any qu
 
 The mechanism is mundane. Asked to raise velocity, the cheapest path is not faster delivery; it is point inflation. Yesterday's 3 becomes today's 5. The burndown slopes down handsomely while the actual cadence of shipped work does not change at all.
 
-So there are two failures, and they are independent. Estimates miss because the inside view runs low. The velocity fix misses because a measure under control pressure corrupts the work it was counting. The burndown can trend perfectly to zero while nothing ships any sooner, and the conclusion both failures reach is the same: the unit on the cards was never the thing worth measuring.
+So there are two failures, and they are independent. Estimates miss because the inside view runs low. The velocity fix misses because a measure under control pressure corrupts the work it was counting. The burndown can trend perfectly to zero while nothing ships any sooner, and the conclusion both failures reach is the same: the point was never the thing worth measuring.
 
 ## What you were never shown: forecasting without estimates
 
@@ -72,7 +72,7 @@ Item size barely predicts cycle time once work-in-progress is controlled. So cou
 
 The limit belongs in the same breath. Counting matches summing only when items are roughly right-sized, drawn from the same distribution as the history they are forecast against. Black Swan Farming documents the counterexample: a backlog whose items ran about three times larger than history forecast six weeks by count against sixteen by points. The condition is real, and the honest claim is "as well as or better than, given right-sized items," not "always better."
 
-The forecast the team needs was never in the deck of cards. It was in the data the burndown was already throwing away.
+The forecast the team needs was never in the points. It was in the data the burndown was already throwing away.
 
 ## The objections that survive
 
@@ -88,15 +88,13 @@ Conceding it strengthens the case rather than surrendering it. Woody Zuill, who 
 
 ## The practice that remains
 
-The deck goes back on the table one last time: 1, 2, 3, 5, 8, 13, the fanned hand the team knew by heart and could not defend.
-
-The argument behind setting it down is short. The inside view runs low, which is the planning fallacy, the students missing even the deadline they were 99 percent sure of. The cure is the outside view, forecasting from the distribution of past work rather than from the plan, with uniqueness bias as the trap that keeps a team from using it. And the popular software fix fails for a second, unrelated reason: a measure under control pressure collapses and corrupts what it measures, which on a sprint board is point inflation behind a healthy-looking burndown.
+The case for dropping points rests on two failures that do not depend on each other. The inside view runs low: that is the planning fallacy, the students missing even the deadline they were 99 percent sure of. The cure is the outside view, forecasting from the distribution of past work rather than from the plan, with uniqueness bias as the trap that keeps a team from using it. And the popular software fix fails for a second, unrelated reason: a measure under control pressure collapses and corrupts what it measures, which on a sprint board is point inflation behind a healthy-looking burndown.
 
 What remains is lighter than planning poker, and it is four things, not zero. Forecast by counting throughput: count the items finished per unit time, divide the remaining work by that rate, read the date probabilistically. Keep stories small and similar, so the count holds, within an order of magnitude of one another, which is what made counting match summing in the first place. Drop the points-to-date conversion: stop summing points into velocity and sloping a burndown toward a date, because the conversion is the step that breaks and the count does its job without it. And size only when the conversation clarifies the work rather than the number: Martin Fowler, who lent story counting its mainstream credibility in 2013, warns that counting loses the side benefit of surfacing a hidden blob of complexity, so estimate when you need to force that blob into the open or to split a story, then throw the number away.
 
-None of this is free. Right-sizing is work. Stabilising flow before trusting its history is work. Counting is cheap only after the items have been made comparable, which is why Fowler suspected story counting was "a technique for more advanced teams." The practice that remains asks for discipline; it does not ask for the deck.
+None of this is free. Right-sizing is work. Stabilising flow before trusting its history is work. Counting is cheap only after the items have been made comparable, which is why Fowler suspected story counting was "a technique for more advanced teams." The practice that remains asks for discipline; it does not ask for the points.
 
-You can stop estimating, in the sense the movement actually means: no bad up-front number committed before the work is understood. Set the deck down. The work will tell you when it is done, and it will tell you sooner than the number ever did.
+You can stop estimating, in the sense the movement actually means: no bad up-front number committed before the work is understood. The work will tell you when it is done, and it will tell you sooner than the number ever did.
 
 ## Sources
 
