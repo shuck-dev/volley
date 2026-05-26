@@ -1,72 +1,128 @@
-# Story Points Are Time Wearing a Costume
+# Estimating Without Estimates
 
-Research compiled 2026-05-26. Background for how Shuck thinks about estimation in its own process.
+Research compiled 2026-05-27.
 
-## The man who invented them is sorry
+## The ritual every sprint repeats
 
-In 1999, on the C3 payroll project at Chrysler, a team started writing the time each story would take onto index cards. The numbers made managers nervous, so the team renamed them. Days became "ideal days", then ideal days became "points". The person who oversaw that renaming was Ron Jeffries, a creator of Extreme Programming and, two years later, a signatory of the Agile Manifesto. He put it plainly: "I may have invented story points, and if I did, I'm sorry now."
+A fanned hand of cards: 1, 2, 3, 5, 8, 13. Someone reads the backlog item aloud, the deck stays face-down, and on a count the cards turn over together. The numbers spread. A 3 sits next to an 8, the 8 explains itself, the 3 reconsiders, and the table settles on a 5. Then the next item.
 
-He went further. "Using them to predict 'when we'll be done' is at best a weak idea." The most-cited tool in agile estimation arrived with its inventor's regret attached, and the regret is specific. Points were not built to measure a new thing. They were built to hide an old one.
+The simultaneous reveal is not decoration. James Grenning defined and named Planning Poker in 2002, after a planning meeting where two senior engineers dominated while six other people sat out, and the rite descends from Wideband Delphi, the method Barry Boehm adapted in the 1970s. Turning the cards at once strips out anchoring and seniority. The number that lands is the team's, not the loudest voice's, and it arrives as a by-product of a conversation about the work rather than as the point of the meeting.
 
-Proponents will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them escape the clock.
+The numbers go somewhere. Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope has earned a certain trust because it comes from the team's own measured output rather than from a manager's wish.
 
-## What the proponents actually say
+The apparatus is calm and well-drilled. The cards skip 4, 6, and 7 because the widening Fibonacci gaps encode growing uncertainty at larger sizes and force a decisive bucket instead of a haggle over six versus seven. All of this is sound practice, performed by people who are good at it. And almost no one at the table, asked what a point measures, can answer. The competence is real. The foundation under it has never been read.
 
-Mike Cohn wrote *Agile Estimating and Planning*, the standard text on the subject, and co-founded the Agile Alliance and the Scrum Alliance. He does not say points measure complexity. He says the opposite. "Story points are an estimate of the effort involved in doing something." Complexity is one input among several: "The amount of work to be done is a factor. So, too, are risk and uncertainty." His canonical illustration is licking a thousand stamps against performing simple brain surgery: equal effort, wildly unequal complexity, so the thing the points track cannot be complexity alone. The point of the example is to pry estimation loose from difficulty and pin it to effort.
+## How a unit of time became a unit of nothing
 
-The Scaled Agile Framework, the heavyweight enterprise version, makes the same move in its glossary. A story point estimates "volume, complexity, knowledge, and uncertainty". Complexity is one of four. On the surface this is a system designed to be more than a stopwatch.
+March 1996. The Chrysler Comprehensive Compensation System, a Smalltalk payroll replacement, had not yet printed a single paycheck. Kent Beck became project leader that month and brought Ron Jeffries onto the team. Extreme Programming was refined on this project; Beck's *Extreme Programming Explained* followed in October 1999. The unit of estimation now used by teams who have never heard of Chrysler was born here.
 
-Points are effort, effort is a blend of work and risk and the unknown, and reducing all of that to a number of hours throws away information the blend was meant to keep. The blend is real. The question is what the blend is denominated in.
+It began with a name that meant something. Ron Jeffries, who co-founded Extreme Programming with Beck and Ward Cunningham, recalls in *Story Points Revisited* (23 May 2019) that stories were sized in "Ideal Days," which he glosses as "how long it would take a pair to do it if the bastards would just leave you alone." A clean unit, honest about what it measured.
 
-## The defence that almost works
+Reality declined to cooperate. "We multiplied Ideal Days by a 'load factor' to convert to actual implementation time," Jeffries writes. "Load factor tended to be about three: three real days to get an Ideal Day's work done." The unit did not break in the code. It broke in the conversation with stakeholders, who, in his account, "were often confused by how it could keep taking three days to get a day's work done."
 
-"One story point equals eight hours." Cohn rejects the equation. Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
+The fix was a deletion. "We started calling our 'ideal days' just 'points'," Jeffries writes. "So a story would be estimated at three points, which meant it would take about nine days to complete." Removing the word "days" removed the promise embedded in it, that one estimated day would be one calendar day. The number was made dimensionless on purpose, so that the conversion to calendar time would be supplied later by velocity rather than assumed at the moment of estimation.
 
-Cohn's refinement is sharper still. A point does not map to a number of hours; it maps to a distribution of them. "One point equals a distribution with a mode of x, two points a distribution with a mode of 2x." The collapse to time only happens if you flatten that distribution to a single number and fix the rate. Refuse the fixed rate and the point stays a spread, a hedge against the variance that any single hour figure pretends away.
+The word "days" was the bug. Deleting it was the fix. What remained was a number pointing at nothing in particular, which was the entire point.
 
-Points are relative, relativity is speed-independent, and the relationship to time is a distribution rather than an equation.
+## Why points exist: a disguise against pressure
 
-## Where the costume slips
+Asked years later why story points were created, Ron Jeffries gave an answer about politics, not measurement: points "were invented to obfuscate duration so that certain managers would not pressure the team." The dimensionless number was a screen, and the thing it screened against is named in the sentence. Managerial pressure on duration.
 
-"Effort is measured in time." Cohn writes that in the same breath as his warning against the eight-hours equation. He does not deny that points reduce to time; he affirms it, and asks only that the conversion stay loose. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. However wide the error bars run, the axis they are measured on has not changed.
+That pressure has a lineage. Winston W. Royce, in "Managing the Development of Large Software Systems" (Proceedings of IEEE WESCON, August 1970), drew the sequential cascade of analysis to design to code to test only to condemn it. Of the single-pass version he wrote: "I believe in this concept, but the implementation described above is risky and invites failure." His objection was late discovery, testing arriving only at the end, so that a project committed to requirements and a schedule before anyone knew whether the design worked. His remedy was iteration: do it twice, involve the customer. Industry copied the diagram and ignored the warning, because fixed-bid government and aerospace contracts needed a number to sign against.
 
-SAFe drops the costume entirely. Its normalisation procedure tells a team to find a reference "1": a story "that would take about a half-day to code and a half-day to test". Then it tells you to "give every developer-tester eight points for a two-week iteration", one point for each ideal workday. A point is a day. The framework says so, in workdays, on the first iteration. The only qualifier is that after the first iteration the rate floats: "one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration." The qualifier does not break the link to time. It names the machine that maintains it. Velocity is the converter that turns points back into a date.
+That contractual need is real and predates agile. A buyer cannot countersign "we will forecast by throughput." The commitment ritual answers a genuine problem.
 
-And velocity is the whole game, because velocity is what every team does with the points. Nobody estimates in points and then stops. They sum the points, divide by the velocity, and read off a date. The relative sizing that was speed-independent gets multiplied by a team-specific rate measured in points per unit of time, and out the far end comes a duration. The one property that did not reduce to time, the speed-independence, is consumed by the one operation everyone performs. You cannot forecast with velocity and keep the speed-independence. The forecast spends it.
+What it does to a team is a different matter, and the damage runs through a three-way confusion. Steve McConnell, author of *Software Estimation: Demystifying the Black Art* (2006), separates three things teams routinely fuse: an estimate is a probabilistic prediction, a target is a business-desired date, a commitment is a promise to deliver. The pathology is collapsing all three into one number. Tom DeMarco's definition of what an estimate becomes under that pressure, quoted in McConnell, is bleaker still: an estimate is "the most optimistic prediction that has a non-zero probability of coming true," which yields "the earliest date by which you can't prove you won't be finished."
 
-## The other side already knew
+Management pressure converts the estimate into a commitment and then holds the team to it as though it were a measurement. The point was never a better unit. It was the costume agile wore so that a calendar number could not be turned back on the team as a promise it never made.
 
-Woody Zuill, an agile coach who had already given the field mob programming, coined the hashtag in 2012 with a conditional claim, not a slogan: where a decision can be made without an estimate, the estimate is waste, because estimates "seemed to misinform the decisions they are intended to inform". The camp's case is built on agreement, not accusation. Allen Holub, a software architect and longtime author on software design, put the history bluntly, quoting Jeffries on the origin: points "were invented to obfuscate duration so that certain managers would not pressure the team". If the purpose of the unit was to obscure duration, then duration is the thing underneath the unit. You do not build a disguise for something that is not there.
+## Estimates were always going to miss
 
-Vasco Duarte, who turned the hashtag into a book, *NoEstimates*, supplied the empirical blade. His proposal is story counting rather than point summing: count the items delivered, forecast the delivery rate over the last three to five iterations, and often take stories into a sprint "without even sizing those". His claim is that with small, roughly uniform stories, a forecast built from counting items is as accurate as one built from summing points. If the magnitudes carry no predictive information that throughput over time does not already carry, then the magnitudes are ceremony. The points add a step and subtract nothing.
+Daniel Kahneman, who shared the 2002 Nobel Prize in economics for work on judgement under uncertainty, opens chapter 23 of *Thinking, Fast and Slow* (2011) with his own failure. His team estimated about two years to finish a curriculum project. Pressed for the outside number, a senior member admitted that comparable teams had taken seven to ten years and that a sizable fraction never finished at all. The book took eight years. The people who study prediction error committed it in real time.
 
-Holub's line on velocity closes the loop: it is "something you measure, not something you can control". A measured rate is a useful forecasting instrument. It is not a thing a team can be held to, and the moment a manager treats it as a commitment, the obfuscation Jeffries described has failed in the other direction. The number meant to shield the team becomes the leash.
+The miss is not carelessness. Kahneman and Tversky named it in 1979, in "Intuitive Prediction: Biases and Corrective Procedures": the planning fallacy, an optimistic bias in which people underestimate how long a task will take even when they know that similar tasks took longer. It is structural, not personal.
 
-## What survives, and what eats it
+Its engine is the inside view. A forecast built from the specifics of this plan, this team, this feature, runs low by construction, because the specifics never include the unknown problems that have no place in a plan. The outside view ignores the particulars and reads the distribution of outcomes for similar past efforts. Roger Buehler and colleagues measured the gap in 1994 ("Exploring the 'Planning Fallacy'," *Journal of Personality and Social Psychology* 67(3)): students predicted their theses would be done in about 34 days and took about 56, and only a minority finished inside their own estimate. The result that lands hardest is the confidence study: students blew past the deadline they had called 99 percent certain, virtually guaranteed, more than half the time.
 
-Two people who cannot agree on the hours a task will take can still agree that B is twice A. That relative sizing is speed-independent, and it is genuine information worth having. A distribution carries more than a point estimate, and pretending a task takes exactly six hours is a worse lie than admitting it takes somewhere between four and twelve. These are not nothing. The proponents are defending something that exists.
+The correction has a name and a record. Bent Flyvbjerg, of Oxford's Saïd Business School, turned the outside view into a method called reference-class forecasting: predict from the outcome distribution of comparable completed projects rather than from the plan. Kahneman called it "the single most important piece of advice regarding how to increase accuracy in forecasting." Flyvbjerg's own data give the reason it is needed. The iron law of megaprojects, in his phrase, is "over budget, over time, under benefits, over and over again," with "nine out of ten such projects" running cost overruns. His 2002 study of 258 transport projects worth roughly US$90 billion (Flyvbjerg, Holm and Buhl, *Journal of the American Planning Association* 68(3)) found average cost overruns, in constant prices, of 44.7 percent for rail, 33.8 percent for bridges and tunnels, and 20.4 percent for roads, and concluded that the underestimation "cannot be explained by error and is best explained by strategic misrepresentation, that is, lying."
 
-But it does not survive contact with use. The instant you apply velocity to turn a backlog of points into a delivery date, the speed-independence is converted into a team-specific duration, and the distribution is collapsed into the single number the date requires. The residue that resisted reduction is exactly the residue that forecasting consumes. What you are left holding is a time estimate with extra steps, and the extra steps were added, on Jeffries' own testimony, to keep a manager from reading the time estimate too directly.
+The trap that keeps a team on the inside view is uniqueness bias. Planners who see their project as singular conclude they have nothing to learn from anyone else's history, and Flyvbjerg's numbers show they do worse for it. The conviction that your codebase is different, your team is different, this feature is different, is not an exemption from the planning fallacy. It is the planning fallacy speaking in its own defence.
 
-The claim narrows to this. Story points add no predictive information over time-based forecasting that you could not get from sized-but-uncounted throughput, with one exception: the speed-independence of relative comparison. And the moment velocity forecasts a date, even that exception is spent. The #NoEstimates answer is the practical one. If small uniform stories let you forecast by counting, the residual is not worth the ceremony it costs to maintain.
+## And the fix breaks too
 
-## How Shuck reads this
+"When a measure becomes a target, it ceases to be a good measure." The line is everywhere, usually hung on the economist Charles Goodhart. He did not write it. The anthropologist Marilyn Strathern coined that phrasing in 1997, paraphrasing him. Goodhart's own 1975 sentence is drier and more exact: "Any observed statistical regularity will tend to collapse once pressure is placed upon it for control purposes."
 
-A solo studio with an AI assistant in the loop has no manager to obfuscate duration from. The political reason points exist does not apply here, and the work is small-batch and roughly uniform by the nature of how it is shipped: one fix, one mechanic, one design doc at a time. The conditions Duarte names for counting to match summing are the conditions Shuck already works under.
+Velocity is offered as the answer to the missing estimate. Measure points per sprint, average them, project forward, read off a date. As an observed regularity it is fine. The trouble begins the instant velocity stops being observed and starts being targeted, which is the precise condition Goodhart's original names: pressure placed on the regularity for control purposes.
 
-So the practice is to size for shared understanding when sizing genuinely clarifies a piece of work, and to forecast by counting throughput rather than summing magnitudes. Where a point would only be a day wearing a costume, the costume comes off. The clock was always underneath.
+Donald Campbell, the psychologist, sharpened the point in 1976: "The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures and the more apt it will be to distort and corrupt the social processes it is intended to monitor." Campbell's law predicts more than a degraded number. It predicts that the work the number was meant to watch gets corrupted too, which is the worse failure for velocity.
+
+The mechanism is mundane. Asked to raise velocity, the cheapest path is not faster delivery; it is point inflation. Yesterday's 3 becomes today's 5. The burndown slopes down handsomely while the actual cadence of shipped work does not change at all.
+
+So there are two failures, and they are independent. Estimates miss because the inside view runs low. The velocity fix misses because a measure under control pressure corrupts the work it was counting. The burndown can trend perfectly to zero while nothing ships any sooner, and the conclusion both failures reach is the same: the unit on the cards was never the thing worth measuring.
+
+## What you were never shown: forecasting without estimates
+
+"85% chance of done by 12 June." No planning poker session produces that sentence. The burndown hands over a single number, six sprints, a hundred and twenty points, and offers no account of how likely it is. The line with a percentage on it is a different kind of object.
+
+The difference is in kind, not degree. Deterministic forecasting produces one number and hides the variability that makes completion a distribution rather than a point, so it is wrong by construction. Probabilistic forecasting produces a date with a confidence attached and is honest about the uncertainty it carries. The data needed for the second kind already sit in the team's tracker, unread in this form: throughput, the count of items finished per unit time, and cycle time, how long an item takes once it has started. Both are measured, not guessed.
+
+The relation between them is Little's Law, in the operational form Daniel Vacanti sets out in *Actionable Agile Metrics for Predictability* (2015): average cycle time equals average work-in-progress divided by average throughput. The lever sits in plain sight. Hold work-in-progress low and stable and cycle time becomes predictable. Vacanti's own counsel is to "forget the equation and focus on the assumptions," because the law holds only while the process obeys its stability conditions. A process must be steadied before its own history can forecast its future.
+
+Monte Carlo simulation does the forecasting. Take the historical throughput, resample it thousands of times to simulate how long the remaining items will take, and read a distribution of completion dates with confidence percentiles off the result. Troy Magennis, of Focused Objective, popularised the technique from flow data in *Forecasting and Simulating Software Development Projects* (2011); Vacanti, in *When Will It Be Done?* (2019), warns against forecasting from average throughput, which discards the very variability the method exists to capture; and Prateek Singh's back-testing in 2021 found that simply resampling historical throughput was the most robust variant.
+
+Item size barely predicts cycle time once work-in-progress is controlled. So counting the remaining items and dividing by historical throughput forecasts about as well as summing point estimates, at a fraction of the cost, and that is what makes estimation optional. Vasco Duarte's 2012 data across ten teams put the correlation between summed story points and plain story count at 0.755, 0.83, 0.92, 0.51, 0.88, 0.86, 0.70, 0.75, and 0.88, one weak figure among nine strong ones, and concluded that "the data above does not seem to suggest any significant advantage of using Story Points as a metric." This is one practitioner's observational data, not a controlled trial, and the 0.51 is part of the record.
+
+The limit belongs in the same breath. Counting matches summing only when items are roughly right-sized, drawn from the same distribution as the history they are forecast against. Black Swan Farming documents the counterexample: a backlog whose items ran about three times larger than history forecast six weeks by count against sixteen by points. The condition is real, and the honest claim is "as well as or better than, given right-sized items," not "always better."
+
+The forecast the team needs was never in the deck of cards. It was in the data the burndown was already throwing away.
+
+## The objections that survive
+
+On 2 August 2015 Steve McConnell published "17 Theses on Software Estimation," the canonical rebuttal to the movement, written by the author of *Software Estimation: Demystifying the Black Art*. Several of his theses hold their ground.
+
+Thesis 5 lists what estimates buy: "numerous legitimate, important business purposes," among them budget allocation, cost-benefit analysis, prioritisation, financial forecasting, and progress tracking. Thesis 7 separates two things the movement sometimes runs together: "Estimation and planning are not the same thing, and you can estimate things that you can't plan." Thesis 17 states the corporate preference plainly: "Agility plus predictability is better than agility alone." And Thesis 10 cuts toward both sides at once: people conflate estimate, planning target, and commitment, so much of the heat in the argument is really about misused commitments, not about estimates as such, the same collapse DeMarco and McConnell named decades earlier.
+
+Two pressures the forecasting argument cannot dissolve. External commitments come first: contracts, marketing launches, and regulatory deadlines all force a feasibility call that needs a time model of some kind, and "we don't estimate" is not an answer to "can we make the launch." Then coordination: when Team B depends on Team A, A's refusal to give any forecast leaves B unable to plan, and single-team flow does not, by itself, satisfy that claim.
+
+The sharpest objection is the one to concede in full. Any decision under uncertainty rests on some model of how long things take, which means forecasting from throughput is itself an estimate, an empirical and probabilistic one. Critics who call NoEstimates "no bad up-front estimates" rebranded are describing it accurately.
+
+Conceding it strengthens the case rather than surrendering it. Woody Zuill, who popularised the hashtag, defined it in 2013 as "exploring alternatives to estimates for making decisions in software development," exploratory by his own words, not a vow of literal silence. The target was always the bad up-front estimate, the single hopeful number committed before the work was understood, not the act of prediction. NoEstimates was never the promise to predict nothing. It is the refusal to commit to a number before the work has taught you what the number should be.
+
+## The practice that remains
+
+The deck goes back on the table one last time: 1, 2, 3, 5, 8, 13, the fanned hand the team performed flawlessly without being able to defend.
+
+The argument behind setting it down is short. The inside view runs low, which is the planning fallacy, the students missing even the deadline they were 99 percent sure of. The cure is the outside view, forecasting from the distribution of past work rather than from the plan, with uniqueness bias as the trap that keeps a team from using it. And the popular software fix fails for a second, unrelated reason: a measure under control pressure collapses and corrupts what it measures, which on a sprint board is point inflation behind a healthy-looking burndown.
+
+What remains is lighter than planning poker, and it is four things, not zero. Forecast by counting throughput: count the items finished per unit time, divide the remaining work by that rate, read the date probabilistically. Keep stories small and similar, so the count holds, within an order of magnitude of one another, which is what made counting match summing in the first place. Drop the points-to-date conversion: stop summing points into velocity and sloping a burndown toward a date, because the conversion is the step that breaks and the count does its job without it. And size only when the conversation clarifies the work rather than the number: Martin Fowler, who lent story counting its mainstream credibility in 2013, warns that counting loses the side benefit of surfacing a hidden blob of complexity, so estimate when you need to force that blob into the open or to split a story, then throw the number away.
+
+None of this is free. Right-sizing is work. Stabilising flow before trusting its history is work. Counting is cheap only after the items have been made comparable, which is why Fowler suspected story counting was "a technique for more advanced teams." The practice that remains asks for discipline; it does not ask for the deck.
+
+You can stop estimating, in the sense the movement actually means: no bad up-front number committed before the work is understood. Set the deck down. The work will tell you when it is done, and it will tell you sooner than the number ever did.
 
 ## Sources
 
-- [Story Points Are Still About Effort, Mike Cohn](https://www.mountaingoatsoftware.com/blog/story-points-are-still-about-effort)
-- [Don't Equate Story Points to Hours, Mike Cohn](https://www.mountaingoatsoftware.com/blog/dont-equate-story-points-to-hours)
-- [Do Story Points Relate to Complexity or Time?, InfoQ](https://www.infoq.com/news/2010/07/story-points-complexity-effort/)
-- [Story Point glossary, Scaled Agile Framework](https://framework.scaledagile.com/blog/glossary_term/story-point)
-- [Estimation with Normalized Story Points? Really?, wibas](https://www.wibas.com/en/blog/articles-1/estimation-with-normalized-story-points-really-343)
-- [A tricky slide about Story Points and Capacity in SAFe, wibas](https://www.wibas.com/en/blog/articles-1/a-tricky-slide-about-story-points-and-capacity-in-safe-r-and-how-to-get-it-right-344)
-- [Beyond Estimates index, Woody Zuill](https://zuill.us/WoodyZuill/beyond-estimates/)
-- [Q&A with Vasco Duarte on the NoEstimates Book, InfoQ](https://www.infoq.com/articles/book-review-noestimates/)
-- [#NoEstimates, An Introduction, Allen Holub](https://holub.com/noestimates-an-introduction/)
-- [KPIs, Velocity, and Other Destructive Metrics, Allen Holub](https://holub.com/kpis-velocity-and-other-destructive-metrics/)
-- [Story Points Revisited, Ron Jeffries](https://ronjeffries.com/articles/019-01ff/story-points/Index.html)
-- [#noestimates is just story points done right, Magnus Dahlgren](https://magnusdahlgren.com/2017/03/23/noestimates-just-story-points-done-right/)
+- Ron Jeffries, [*Story Points Revisited*](https://ronjeffries.com/articles/019-01ff/story-points/Index.html) (23 May 2019)
+- Mike Cohn, [*What Are Story Points?*](https://www.mountaingoatsoftware.com/blog/what-are-story-points)
+- Mike Cohn, [*It's Effort, Not Just Complexity*](https://www.mountaingoatsoftware.com/blog/its-effort-not-complexity)
+- Wikipedia, [*Planning poker*](https://en.wikipedia.org/wiki/Planning_poker)
+- Wikipedia, [*Chrysler Comprehensive Compensation System*](https://en.wikipedia.org/wiki/Chrysler_Comprehensive_Compensation_System)
+- Martin Fowler, [*C3*](https://martinfowler.com/bliki/C3.html)
+- Winston W. Royce, [*Managing the Development of Large Software Systems*](https://www.praxisframework.org/files/royce1970.pdf) (IEEE WESCON, August 1970)
+- Steve McConnell, [*Software Estimation: Demystifying the Black Art*, ch. 3](https://www.oreilly.com/library/view/software-estimation-demystifying/0735605351/ch03.html)
+- Steve McConnell, [*17 Theses on Software Estimation*](https://stevemcconnell.com/17-theses-software-estimation/) (2 August 2015)
+- Wikipedia, [*Planning fallacy*](https://en.wikipedia.org/wiki/Planning_fallacy)
+- Roger Buehler, Dale Griffin and Michael Ross, [*Exploring the "Planning Fallacy"*](https://spsp.org/news-center/character-context-blog/planning-fallacy-inside-view) (JPSP 67(3), 1994)
+- Bent Flyvbjerg, Mette Holm and Søren Buhl, [*Underestimating Costs in Public Works Projects: Error or Lie?*](https://ti.org/pdfs/Flyvbjerg02.pdf) (JAPA 68(3), 2002)
+- Bent Flyvbjerg, [*The Iron Law of Megaprojects*](https://medium.com/data-science/the-iron-law-of-megaprojects-18b886590f0b)
+- Wikipedia, [*Goodhart's law*](https://en.wikipedia.org/wiki/Goodhart%27s_law)
+- NCBI PMC, [*Goodhart and Strathern provenance*](https://pmc.ncbi.nlm.nih.gov/articles/PMC7901608/)
+- Wikipedia, [*Campbell's law*](https://en.wikipedia.org/wiki/Campbell%27s_law)
+- T. Cagley, [*Actionable Agile Metrics for Predictability: Little's Law*](https://tcagley.wordpress.com/2017/11/04/actionable-agile-metrics-for-predictability-by-daniel-s-vacanti-re-read-saturday-week-4-introduction-to-littles-law/)
+- T. Cagley, [*Actionable Agile Metrics for Predictability: Monte Carlo*](https://tcagley.wordpress.com/2018/02/17/actionable-agile-metrics-for-predictability-by-daniel-s-vacanti-re-read-saturday-week-17-monte-carlo-method-introduction/)
+- Troy Magennis, [*Introduction to Monte Carlo Forecasting*](https://observablehq.com/@troymagennis/introduction-to-monte-carlo-forecasting)
+- Vasco Duarte, [*Story Points Considered Harmful*](https://softwaredevelopmenttoday.com/2012/01/story-points-considered-harmful-or-why-the-future-of-estimation-is-really-in-our-past/) (25 January 2012)
+- Martin Fowler, [*StoryCounting*](https://martinfowler.com/bliki/StoryCounting.html) (16 July 2013)
+- Allen Holub, [*#NoEstimates, An Introduction*](https://holub.com/noestimates-an-introduction/)
+- Woody Zuill, [*The #NoEstimates Hashtag*](https://zuill.us/WoodyZuill/2013/05/17/the-noestimates-hashtag/) (17 May 2013)
+- Black Swan Farming, [*How to do a really basic forecast*](https://blackswanfarming.com/how-to-do-a-really-basic-forecast/)
