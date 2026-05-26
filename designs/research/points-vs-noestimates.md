@@ -1,78 +1,73 @@
-# The Agile Estimation Debate: story points, velocity, #NoEstimates
+# Story Points Are Time Wearing a Costume
 
 Research compiled 2026-05-26. Background for how Shuck thinks about estimation in its own process.
 
-**One-line answer:** The reduction-to-time claim is well-supported and is conceded, in part, by the leading proponents themselves. Mike Cohn states plainly that "effort is measured in time," and SAFe ties a story point to a literal half-day-develop-plus-half-day-test reference and gives every developer "eight points" per iteration. The strongest defence is not that points aren't time, but that they are a *distribution* over time rather than a fixed conversion, and that relative sizing survives differences in individual speed. The #NoEstimates camp (Zuill, Duarte, Holub, late-period Jeffries) accepts the reduction and treats it as the indictment, not the defence.
+## The man who invented them is sorry
 
----
+In 1999, on the C3 payroll project at Chrysler, a team started writing the time each story would take onto index cards. The numbers made managers nervous, so the team renamed them. Days became "ideal days", then ideal days became "points". The person who oversaw that renaming, Ron Jeffries, later wrote a sentence that ought to settle the whole debate before it begins: "I may have invented story points, and if I did, I'm sorry now."
 
-## Thread 1: The case FOR story points
+He went further. "Using them to predict 'when we'll be done' is at best a weak idea." The most-cited tool in agile estimation arrived with its inventor's regret attached, and the regret is specific. Points were not built to measure a new thing. They were built to hide an old one.
 
-### Mike Cohn: effort = volume + complexity + risk + uncertainty
-- "Story points are an estimate of the effort involved in doing something."
-- "Complexity is a factor ... But it is not the only factor." "The amount of work to be done is a factor. So, too, are risk and uncertainty."
-- Canonical illustration: licking 1000 stamps vs simple brain surgery (equal effort, wildly different complexity), so points track effort, not complexity.
-- Source: [Story Points Are Still About Effort](https://www.mountaingoatsoftware.com/blog/story-points-are-still-about-effort); [InfoQ summary](https://www.infoq.com/news/2010/07/story-points-complexity-effort/).
+That is the claim this essay makes, and it is a strong one, so it deserves a strong opponent. The case for story points is not stupid, and the people who make it are not fools. They will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them, in the end, escape the clock.
 
-### How proponents argue points are NOT time (relativity / speed-independence)
-- "One story point equals eight hours" is rejected because it makes points "entirely dependent on who is doing the work."
-- Cohn frames the link as a *distribution*: "one point equals a distribution with a mode of x, two points ... a mode of 2x."
-- Hinge of the debate: Cohn does not deny the time link, he affirms it while resisting a fixed rate. "Effort is measured in time ... it doesn't mean teams should say 'one story point equals eight hours.'"
-- Source: [Don't Equate Story Points to Hours](https://www.mountaingoatsoftware.com/blog/dont-equate-story-points-to-hours).
+## What the proponents actually say
 
-### SAFe: an explicit, near-literal time anchor
-- Glossary: a story point estimates "volume, complexity, knowledge, and uncertainty" (complexity only one of four).
-- Normalization: find a "1" as a story "that would take about a half-day to code and a half-day to test"; "give every developer-tester eight points for a two-week iteration (one point for each ideal workday ...)."
-- Qualifier: "Except for the first Iteration, one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration/effort." So velocity is the points-to-time converter.
-- Source: [SAFe glossary](https://framework.scaledagile.com/blog/glossary_term/story-point); [wibas: Normalized Story Points](https://www.wibas.com/en/blog/articles-1/estimation-with-normalized-story-points-really-343); [wibas: tricky capacity slide](https://www.wibas.com/en/blog/articles-1/a-tricky-slide-about-story-points-and-capacity-in-safe-r-and-how-to-get-it-right-344).
+Start with the strongest version of the case, because a thesis that only beats the weak version is not worth writing down.
 
----
+Mike Cohn is the most careful proponent, and he does not say points measure complexity. He says the opposite. "Story points are an estimate of the effort involved in doing something." Complexity is one input among several: "The amount of work to be done is a factor. So, too, are risk and uncertainty." His canonical illustration is licking a thousand stamps against performing simple brain surgery: equal effort, wildly unequal complexity, so the thing the points track cannot be complexity alone. The point of the example is to pry estimation loose from difficulty and pin it to effort. Cohn means it, and it is the right correction to a common error.
 
-## Thread 2: The case AGAINST / #NoEstimates
+The Scaled Agile Framework, the heavyweight enterprise version, makes the same move in its glossary. A story point estimates "volume, complexity, knowledge, and uncertainty". Complexity is one of four. On the surface this is a system designed to be more than a stopwatch.
 
-### Woody Zuill (coined the hashtag, 2012)
-Estimates "seemed to misinform the decisions they are intended to inform." Claim is conditional: where a decision can be made without an estimate, skip it. Index: [zuill.us/beyond-estimates](https://zuill.us/WoodyZuill/beyond-estimates/) (verbatim core argument is in his Oredev 2013 talk, not the index page).
+So far the proponents have a real position. Points are effort, effort is a blend of work and risk and the unknown, and reducing all of that to a number of hours throws away information the blend was meant to keep. An honest critic has to grant this. The blend is real. The question is what the blend is denominated in.
 
-### Vasco Duarte ("Story Points considered harmful", *NoEstimates* book)
-Positive proposal is **story counting**, not point summing: count items delivered, forecast the delivery rate (items / time) from 3 to 5 iterations, often take stories into a sprint "without even sizing those." Empirical plank: with small, roughly-uniform stories (about a day), story-count forecasts are as accurate as point forecasts, so points add ceremony without predictive power. Source: [InfoQ Q&A](https://www.infoq.com/articles/book-review-noestimates/).
+## The defence that almost works
 
-### Allen Holub (points invented to *hide* time)
-Quotes Jeffries: "Story Points were invented to obfuscate duration so that certain managers would not pressure the team," then calls using them as an effort estimate "bizarre." "Estimates are always inaccurate, usually wildly so." "Velocity is something you measure, not something you can control." Source: [#NoEstimates, An Introduction](https://holub.com/noestimates-an-introduction/); [KPIs, Velocity, and Other Destructive Metrics](https://holub.com/kpis-velocity-and-other-destructive-metrics/).
+Push on a proponent and you reach the genuinely interesting argument, the one worth steel-manning all the way.
 
-### Ron Jeffries: "Story Points Revisited" (the keystone)
-- "I may have invented story points, and if I did, I'm sorry now." "I certainly deplore their misuse."
-- "Using them to predict 'when we'll be done' is at best a weak idea." "Tracking how actuals compare with estimates is at best wasteful."
-- Origin: stories were first estimated in time, then "Ideal Days," then "we started calling our 'ideal days' just 'points'."
-- Narrow retraction: anti-*prediction*, not anti-relative-sizing. (The "kicked to the curb" line is Chet Hendrickson, not Jeffries; attribute carefully.)
-- Source: [Story Points Revisited](https://ronjeffries.com/articles/019-01ff/story-points/Index.html).
+Cohn rejects the equation "one story point equals eight hours", and his reason is good. Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
 
----
+Cohn's refinement is sharper still. A point does not map to a number of hours; it maps to a distribution of them. "One point equals a distribution with a mode of x, two points a distribution with a mode of 2x." The collapse to time only happens if you flatten that distribution to a single number and fix the rate. Refuse the fixed rate and the point stays a spread, a hedge against the variance that any single hour figure pretends away.
 
-## Thread 3: Do story points collapse to time?
+This is the defence at full strength. Points are relative, relativity is speed-independent, and the relationship to time is a distribution rather than an equation. Nothing said so far is false. A critic who waves it away has not understood it.
 
-**Verdict: substantiated for predictive use, with one genuine residual defence.**
+## Where the costume slips
 
-Reduction evidence:
-1. Jeffries' origin admission: points are renamed ideal days (a time unit times a ~3x load factor).
-2. Holub via Jeffries: if the *purpose* was to obfuscate duration, duration is what's underneath.
-3. Cohn's concession: "effort is measured in time," because that's how people answer "when will it be delivered."
-4. SAFe's mechanism: the "1" is half-day plus half-day; capacity is eight points/dev/iteration; velocity converts thereafter.
-5. Duarte's empirical reduction: if counting forecasts as well as summing, point magnitudes carry no info beyond throughput-over-time.
+Here is the turn. The defence concedes the case in the act of mounting it.
 
-Residual defence (what does NOT reduce to a single number):
-1. **Distribution, not equation** (Cohn): a point maps to a distribution of hours, not a scalar; collapse only happens if you pin a fixed rate.
-2. **Speed-independence / relativity** (Cohn): two people can agree B is twice A while disagreeing on hours; hours are person-specific, that shared relative judgment is real information.
-3. Velocity as a measured, self-correcting rate (Holub's "measure not control", read charitably) is a forecast tool, not a commitment.
+Cohn does not deny that points reduce to time. He affirms it and asks only that the conversion stay loose. "Effort is measured in time," he writes, in the same breath as warning against the eight-hours equation. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. Widen the error bars as much as you like; the axis they are measured on has not changed.
 
-**The precise claim that survives:** story points add no information over time-based forecasting that you couldn't get from sized-but-uncounted throughput, *except* the speed-independence of relative comparison, and once velocity is applied to forecast a date, even that is consumed into a time estimate. The #NoEstimates response: that residual is not worth the ceremony when small uniform stories let you forecast by counting.
+SAFe drops the costume entirely. Its normalisation procedure tells a team to find a reference "1": a story "that would take about a half-day to code and a half-day to test". Then it tells you to "give every developer-tester eight points for a two-week iteration", one point for each ideal workday. A point is a day. The framework says so, in workdays, on the first iteration. The only qualifier is that after the first iteration the rate floats: "one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration." Read that qualifier closely. It does not break the link to time. It names the machine that maintains it. Velocity is the converter that turns points back into a date.
 
----
+And velocity is the whole game, because velocity is what every team actually does with the points. Nobody estimates in points and then stops. They sum the points, divide by the velocity, and read off a date. The relative sizing that was speed-independent gets multiplied by a team-specific rate measured in points per unit of time, and out the far end comes a duration. The one property that did not reduce to time, the speed-independence, is consumed by the one operation everyone performs. You cannot forecast with velocity and keep the speed-independence. The forecast spends it.
 
-## Loose ends
-- Zuill verbatim: chase the Oredev 2013 talk transcript.
-- SAFe primary normalization page is login-gated; the half-day and eight-points rules here are quoted via wibas (a SAFe consultancy) and *SAFe Distilled*.
+## The other side already knew
+
+The #NoEstimates camp did not arrive at this by accusation. They arrived at it by agreement, and they treat the agreement as the indictment.
+
+Woody Zuill coined the hashtag in 2012 with a conditional claim, not a slogan: where a decision can be made without an estimate, the estimate is waste, because estimates "seemed to misinform the decisions they are intended to inform". Allen Holub put the history bluntly, quoting Jeffries on the origin: points "were invented to obfuscate duration so that certain managers would not pressure the team". If the purpose of the unit was to obscure duration, then duration is the thing underneath the unit. You do not build a disguise for something that is not there.
+
+Vasco Duarte supplied the empirical blade. His proposal is story counting rather than point summing: count the items delivered, forecast the delivery rate over the last three to five iterations, and often take stories into a sprint "without even sizing those". His claim is that with small, roughly uniform stories, a forecast built from counting items is as accurate as one built from summing points. If the magnitudes carry no predictive information that throughput over time does not already carry, then the magnitudes are ceremony. The points add a step and subtract nothing.
+
+Holub's line on velocity closes the loop, read charitably: it is "something you measure, not something you can control". A measured rate is a useful forecasting instrument. It is not a thing a team can be held to, and the moment a manager treats it as a commitment, the obfuscation Jeffries described has failed in the other direction. The number meant to shield the team becomes the leash.
+
+## What survives, and what eats it
+
+Honesty demands naming what does not reduce, because something real is left after the collapse.
+
+Relative sizing is speed-independent, and that is genuine information. Two people who cannot agree on hours can still agree that B is twice A, and that shared judgement is worth having. A distribution carries more than a point estimate, and pretending a task takes exactly six hours is a worse lie than admitting it takes somewhere between four and twelve. These are not nothing. The proponents are defending something that exists.
+
+But it does not survive contact with use. The instant you apply velocity to turn a backlog of points into a delivery date, the speed-independence is converted into a team-specific duration, and the distribution is collapsed into the single number the date requires. The residue that resisted reduction is exactly the residue that forecasting consumes. What you are left holding is a time estimate with extra steps, and the extra steps were added, on Jeffries' own testimony, to keep a manager from reading the time estimate too directly.
+
+The precise claim, then, is narrow and defensible. Story points add no predictive information over time-based forecasting that you could not get from sized-but-uncounted throughput, with one exception: the speed-independence of relative comparison. And the moment velocity forecasts a date, even that exception is spent. The #NoEstimates answer is the practical one. If small uniform stories let you forecast by counting, the residual is not worth the ceremony it costs to maintain.
+
+## How Shuck reads this
+
+A solo studio with an AI assistant in the loop has no manager to obfuscate duration from. The political reason points exist does not apply here, and the work is small-batch and roughly uniform by the nature of how it is shipped: one fix, one mechanic, one design doc at a time. The conditions Duarte names for counting to match summing are the conditions Shuck already works under.
+
+So the practice is to size for shared understanding when sizing genuinely clarifies a piece of work, and to forecast by counting throughput rather than summing magnitudes. Where a point would only be a day wearing a costume, the costume comes off. The clock was always underneath.
 
 ## Sources
+
 - [Story Points Are Still About Effort, Mike Cohn](https://www.mountaingoatsoftware.com/blog/story-points-are-still-about-effort)
 - [Don't Equate Story Points to Hours, Mike Cohn](https://www.mountaingoatsoftware.com/blog/dont-equate-story-points-to-hours)
 - [Do Story Points Relate to Complexity or Time?, InfoQ](https://www.infoq.com/news/2010/07/story-points-complexity-effort/)
