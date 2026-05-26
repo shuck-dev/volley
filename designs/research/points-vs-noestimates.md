@@ -10,13 +10,13 @@ The simultaneous reveal is not decoration. James Grenning defined and named Plan
 
 The numbers go somewhere. Points completed each sprint, averaged, become velocity. Velocity slopes the burndown toward a date. The team reads that slope and plans against it, and the slope has earned a certain trust because it comes from the team's own measured output rather than from a manager's wish.
 
-The apparatus is calm and well-drilled. The cards skip 4, 6, and 7 because the widening Fibonacci gaps encode growing uncertainty at larger sizes and force a decisive bucket instead of a haggle over six versus seven. All of this is sound practice, performed by people who are good at it. And almost no one at the table, asked what a point measures, can answer. The competence is real. The foundation under it has never been read.
+The apparatus is calm and well-drilled. The cards skip 4, 6, and 7 because the widening Fibonacci gaps encode growing uncertainty at larger sizes and force a decisive bucket instead of a haggle over six versus seven. And almost no one at the table, asked what a point measures, can answer. The foundation under it has never been read.
 
 ## How a unit of time became a unit of nothing
 
 March 1996. The Chrysler Comprehensive Compensation System, a Smalltalk payroll replacement, had not yet printed a single paycheck. Kent Beck became project leader that month and brought Ron Jeffries onto the team. Extreme Programming was refined on this project; Beck's *Extreme Programming Explained* followed in October 1999. The unit of estimation now used by teams who have never heard of Chrysler was born here.
 
-It began with a name that meant something. Ron Jeffries, who co-founded Extreme Programming with Beck and Ward Cunningham, recalls in *Story Points Revisited* (23 May 2019) that stories were sized in "Ideal Days," which he glosses as "how long it would take a pair to do it if the bastards would just leave you alone." A clean unit, honest about what it measured.
+It began with a name that meant something. Ron Jeffries, who co-founded Extreme Programming with Beck and Ward Cunningham, recalls in *Story Points Revisited* (23 May 2019) that stories were sized in "Ideal Days," which he glosses as "how long it would take a pair to do it if the bastards would just leave you alone." The name said what it counted: days.
 
 Reality declined to cooperate. "We multiplied Ideal Days by a 'load factor' to convert to actual implementation time," Jeffries writes. "Load factor tended to be about three: three real days to get an Ideal Day's work done." The unit did not break in the code. It broke in the conversation with stakeholders, who, in his account, "were often confused by how it could keep taking three days to get a day's work done."
 
@@ -90,7 +90,7 @@ Conceding it strengthens the case rather than surrendering it. Woody Zuill, who 
 
 ## The practice that remains
 
-The deck goes back on the table one last time: 1, 2, 3, 5, 8, 13, the fanned hand the team performed flawlessly without being able to defend.
+The deck goes back on the table one last time: 1, 2, 3, 5, 8, 13, the fanned hand the team knew by heart and could not defend.
 
 The argument behind setting it down is short. The inside view runs low, which is the planning fallacy, the students missing even the deadline they were 99 percent sure of. The cure is the outside view, forecasting from the distribution of past work rather than from the plan, with uniqueness bias as the trap that keeps a team from using it. And the popular software fix fails for a second, unrelated reason: a measure under control pressure collapses and corrupts what it measures, which on a sprint board is point inflation behind a healthy-looking burndown.
 
