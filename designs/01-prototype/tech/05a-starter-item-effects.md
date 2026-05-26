@@ -5,11 +5,11 @@
 ```
 Effect 1
   trigger: on_consolidation
-  outcome: split_ball(count = current_tier + 1)
+  outcome: split_ball(count = consolidations + 1)
 Effect 2
   trigger: on_balls_close
   outcome: merge_balls
-  outcome: soul_burst(scale_by current_tier)
+  outcome: soul_burst(scale_by consolidations)
 ```
 
 Split fires on soul consolidation; there is no dependency on the milestone system.
