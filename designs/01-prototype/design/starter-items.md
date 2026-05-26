@@ -6,8 +6,11 @@ The player starts with the initial ball and racquet; these items add to that, ne
 
 Role: ball
 A ball of goop Zach found under the floorboards.
-At consolidation it splits, and each consolidation after adds one more ball (2 at the first, +1 per consolidation after).
-Collide them to merge for a soul burst. 
+
+- L1: at consolidation it splits in two; collide them to merge for a soul burst.
+- L2: each further consolidation splits one more, so the court fills as you climb; the merge burst scales with how many you fold together.
+- L3: folding all the way back to a single ball triggers a big burst.
+
 Not merging is a missed bonus, no penalty.
 
 ## Helmet (name TODO)
