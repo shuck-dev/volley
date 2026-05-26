@@ -99,7 +99,6 @@ The fact lands harder than the claim about the fact. Ground the reader in the co
 - The last word of a sentence is the most prominent. Land on the noun or verb you want the reader to keep.
 - Anglo-Saxon words for force; Latinate for nuance. Plosive endings (/t/, /d/, /k/) stop the ear cleanly.
 - Avoid prepositional closes (*for, with, of*), weak pronouns at the close (*it, this, that*), adverbial drift ("in the end"), and hedge stacks.
-- Read every paragraph aloud.
 
 ### Paragraphs end on the loaded sentence
 
