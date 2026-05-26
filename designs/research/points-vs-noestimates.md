@@ -8,7 +8,7 @@ In 1999, on the C3 payroll project at Chrysler, a team started writing the time 
 
 He went further. "Using them to predict 'when we'll be done' is at best a weak idea." The most-cited tool in agile estimation arrived with its inventor's regret attached, and the regret is specific. Points were not built to measure a new thing. They were built to hide an old one.
 
-Proponents will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them, in the end, escape the clock.
+Proponents will tell you that points measure complexity, or effort, or business value, and that the link to time is a misunderstanding peddled by managers who never read the books. Some of them are right about the managers. None of them escape the clock.
 
 ## What the proponents actually say
 
@@ -32,11 +32,11 @@ Points are relative, relativity is speed-independent, and the relationship to ti
 
 The defence concedes the case in the act of mounting it.
 
-Cohn does not deny that points reduce to time. He affirms it and asks only that the conversion stay loose. "Effort is measured in time," he writes, in the same breath as warning against the eight-hours equation. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. Widen the error bars as much as you like; the axis they are measured on has not changed.
+Cohn does not deny that points reduce to time. He affirms it and asks only that the conversion stay loose. "Effort is measured in time," he writes, in the same breath as warning against the eight-hours equation. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. However wide the error bars run, the axis they are measured on has not changed.
 
-SAFe drops the costume entirely. Its normalisation procedure tells a team to find a reference "1": a story "that would take about a half-day to code and a half-day to test". Then it tells you to "give every developer-tester eight points for a two-week iteration", one point for each ideal workday. A point is a day. The framework says so, in workdays, on the first iteration. The only qualifier is that after the first iteration the rate floats: "one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration." Read that qualifier closely. It does not break the link to time. It names the machine that maintains it. Velocity is the converter that turns points back into a date.
+SAFe drops the costume entirely. Its normalisation procedure tells a team to find a reference "1": a story "that would take about a half-day to code and a half-day to test". Then it tells you to "give every developer-tester eight points for a two-week iteration", one point for each ideal workday. A point is a day. The framework says so, in workdays, on the first iteration. The only qualifier is that after the first iteration the rate floats: "one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration." The qualifier does not break the link to time. It names the machine that maintains it. Velocity is the converter that turns points back into a date.
 
-And velocity is the whole game, because velocity is what every team actually does with the points. Nobody estimates in points and then stops. They sum the points, divide by the velocity, and read off a date. The relative sizing that was speed-independent gets multiplied by a team-specific rate measured in points per unit of time, and out the far end comes a duration. The one property that did not reduce to time, the speed-independence, is consumed by the one operation everyone performs. You cannot forecast with velocity and keep the speed-independence. The forecast spends it.
+And velocity is the whole game, because velocity is what every team does with the points. Nobody estimates in points and then stops. They sum the points, divide by the velocity, and read off a date. The relative sizing that was speed-independent gets multiplied by a team-specific rate measured in points per unit of time, and out the far end comes a duration. The one property that did not reduce to time, the speed-independence, is consumed by the one operation everyone performs. You cannot forecast with velocity and keep the speed-independence. The forecast spends it.
 
 ## The other side already knew
 
