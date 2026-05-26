@@ -36,13 +36,13 @@ The header reworks the existing racquet collision rather than adding a head coll
 ```
 Effect 1
   trigger: on_hit
-  outcome: spawn_soul_motes(n)
+  outcome: spawn_soul_beads(n)
 Effect 2
-  trigger: on_mote_gathered
+  trigger: on_bead_gathered
   outcome: soul_burst
 ```
 
-Motes auto-gather to the player only; uncollected motes expire at rally end. Ball-through-mote re-collection reuses the merge distance test, not physics contact. Levels (motes per hit) and cost/scaling: TBD.
+Beads auto-gather to the player only; uncollected beads expire at rally end. Ball-through-bead re-collection reuses the merge distance test, not physics contact. Levels (beads per hit) and cost/scaling: TBD.
 
 ## Magnetism (equipment)
 
@@ -60,7 +60,7 @@ The effect system as built carries five outcome types (`stat`, `stat_until_miss`
 
 - `split_ball`, `merge_balls`, an `on_consolidation` trigger, and an `on_balls_close` distance check (split).
 - `soul_burst`, a calculated grant through `ItemManager.add_friendship_points` (split, helmet, bracelet).
-- `spawn_soul_motes` plus mote entities and an `on_mote_gathered` trigger (bracelet).
+- `spawn_soul_beads` plus bead entities and an `on_bead_gathered` trigger (bracelet).
 - a reworked racquet contact and an `on_header_at_apex` trigger keyed to the arc-phase enum (helmet).
 
 Magnetism needs no new primitive; it is a stat effect on the existing `ball_magnetism` pull, retargeted to the player.
