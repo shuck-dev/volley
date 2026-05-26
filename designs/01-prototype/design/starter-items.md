@@ -13,6 +13,7 @@ Not merging is a missed bonus, no penalty.
 ## Helmet (name TODO)
 
 Role: equipment : head
+A pink cycling helmet, Steph's; it doesn't fit.
 Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul.
 
 ## Friendship bracelet
