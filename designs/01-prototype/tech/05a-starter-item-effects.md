@@ -1,8 +1,4 @@
-# Starter Item Effect Blocks
-
-Tech spike for the starter items (SH-436): each effect as trigger, condition, outcome, plus the engine work each needs against the system as built. Numbers are tuning, left open. Cadence is already specced among the prototype effect blocks.
-
-Soul is the canonical name for the currency the code still calls `friendship` (`ItemManager.add_friendship_points`, `friendship_points_per_hit`). The rename is pending and tracked separately; every soul outcome below routes through that existing economy path.
+# Starter Item Effects
 
 ## Split (ball)
 
@@ -16,7 +12,7 @@ Effect 2
   outcome: soul_burst(scale_by current_tier)
 ```
 
-Split fires at the consolidation beat, not on a tier-ladder event; the only read of the tier ladder is `current_tier` for the count, so there is no dependency on the unbuilt SH-88 system.
+Split fires on soul consolidation; the only read of the tier ladder is `current_tier` for the count, so there is no dependency on the unbuilt SH-88 system.
 
 Split balls are ephemeral. They carry `is_temporary = true` (the flag `BallReconciler` already skips on adoption) and a `source_key` back-reference to the parent item. They attach to `BallTracker` so effects and magnetism reach them, but never enter `BallReconciler._balls_by_key`, so the save providers and reconcile never see them. Dragged off-court a split ball is destroyed, not racked: the drag controller's off-court path (`ball_drag_controller.gd`) branches on `is_temporary`.
 
