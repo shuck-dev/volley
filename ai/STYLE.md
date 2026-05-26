@@ -74,6 +74,7 @@ Sources: Berens lab, *Delving into LLM-assisted writing*, *Science Advances*, 20
 ## Naming
 
 - Real names, full first time, surname only after. Pronouns when known.
+- Introduce a cited authority with the credential that earns the citation. When the argument leans on what a named person says, the reader should know why that word carries weight before the quote lands. State the standing as fact (what they built, wrote, or founded), not as praise.
 - Titles of works: italics for games, books, films, albums.
 - Currency with symbol and unit. Dates spelled long-form on first use ("27 September 2013").
 - Credit communities by name where the contribution came from a community, not a company.
