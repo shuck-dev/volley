@@ -2,14 +2,17 @@ name: Reviewer Re-run
 
 # Label lifecycle for the zaphod-* verdicts. Three reconcilers live here:
 #
-#   - strip-zaphod-on-push: new commit strips all three zaphod-* labels
-#     (requested, approved, blocked); the request and any verdict must be
-#     re-earned against the new HEAD. Re-dispatch is manual, by the
-#     organiser (main Claude thread), never CI; PR-triggered workflows
+#   - strip-zaphod-on-push: new commit strips the two verdict labels
+#     (approved, blocked); each verdict must be re-earned against the new
+#     HEAD. zaphod-requested is NOT stripped here: a request to review is
+#     a standing ask that survives intervening pushes, so the author can
+#     keep pushing without losing the request. Re-dispatch is manual, by
+#     the organiser (main Claude thread), never CI; PR-triggered workflows
 #     do not run Claude because outside PRs are a prompt-injection surface.
 #   - verdict-strips-request: when zaphod-approved or zaphod-blocked lands,
-#     zaphod-requested has been answered and gets stripped. The request was
-#     "please review"; the verdict closes that request either way.
+#     zaphod-requested has been answered and gets stripped. This is the only
+#     thing that clears the request; a push alone does not. The request was
+#     "please review"; the verdict closes it either way.
 #   - blocked-supersedes-approved (SH-166): when two specialists race and
 #     one lands blocked after the other landed approved, the blocker wins.
 #     approved is removed so the merged state reflects the combined verdict.
@@ -40,11 +43,14 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-      - name: Remove zaphod-requested, zaphod-approved, zaphod-blocked
+      - name: Remove zaphod-approved, zaphod-blocked
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            const labels = ['zaphod-requested', 'zaphod-approved', 'zaphod-blocked'];
+            // zaphod-requested is intentionally absent: a review request is a
+            // standing ask that survives pushes and clears only on a verdict
+            // (see verdict-strips-request below).
+            const labels = ['zaphod-approved', 'zaphod-blocked'];
             for (const name of labels) {
               try {
                 await github.rest.issues.removeLabel({
