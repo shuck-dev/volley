@@ -26,6 +26,7 @@ Each hit sheds a soul bead off the ball; beads drift and can be collected via th
 ## Magnetism (name TODO)
 
 Role: equipment
+A comeback ball from an old toybox.
 Balls are drawn toward the player, curving toward where you reach.
 
 ## Cadence (pick)
