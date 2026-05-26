@@ -20,9 +20,7 @@ Points are effort, effort is a blend of work and risk and the unknown, and reduc
 
 ## The defence that almost works
 
-Push on a proponent and you reach the argument underneath.
-
-Cohn rejects the equation "one story point equals eight hours". Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
+"One story point equals eight hours." Cohn rejects the equation. Pin a point to a fixed number of hours and the point becomes "entirely dependent on who is doing the work". A senior developer and a junior will disagree on the hours for the same task and both be correct, because the hours are theirs, not the task's. The shared judgement that survives the disagreement is the relative one: both can agree this story is twice that story, even while they price the hours differently. Relative size is speed-independent in a way an hour estimate can never be. That is real information, and it is information that a raw time estimate destroys.
 
 Cohn's refinement is sharper still. A point does not map to a number of hours; it maps to a distribution of them. "One point equals a distribution with a mode of x, two points a distribution with a mode of 2x." The collapse to time only happens if you flatten that distribution to a single number and fix the rate. Refuse the fixed rate and the point stays a spread, a hedge against the variance that any single hour figure pretends away.
 
@@ -30,9 +28,7 @@ Points are relative, relativity is speed-independent, and the relationship to ti
 
 ## Where the costume slips
 
-The defence concedes the case in the act of mounting it.
-
-Cohn does not deny that points reduce to time. He affirms it and asks only that the conversion stay loose. "Effort is measured in time," he writes, in the same breath as warning against the eight-hours equation. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. However wide the error bars run, the axis they are measured on has not changed.
+"Effort is measured in time." Cohn writes that in the same breath as his warning against the eight-hours equation. He does not deny that points reduce to time; he affirms it, and asks only that the conversion stay loose. The argument was never that points are not time. It was that points are time expressed as a distribution rather than a scalar. A distribution over hours is still hours. However wide the error bars run, the axis they are measured on has not changed.
 
 SAFe drops the costume entirely. Its normalisation procedure tells a team to find a reference "1": a story "that would take about a half-day to code and a half-day to test". Then it tells you to "give every developer-tester eight points for a two-week iteration", one point for each ideal workday. A point is a day. The framework says so, in workdays, on the first iteration. The only qualifier is that after the first iteration the rate floats: "one Story Point does not equal one day of effort, and the current Velocity is needed to predict the current duration." The qualifier does not break the link to time. It names the machine that maintains it. Velocity is the converter that turns points back into a date.
 
@@ -40,9 +36,7 @@ And velocity is the whole game, because velocity is what every team does with th
 
 ## The other side already knew
 
-The #NoEstimates camp did not arrive at this by accusation. They arrived at it by agreement, and they treat the agreement as the indictment.
-
-Woody Zuill coined the hashtag in 2012 with a conditional claim, not a slogan: where a decision can be made without an estimate, the estimate is waste, because estimates "seemed to misinform the decisions they are intended to inform". Allen Holub put the history bluntly, quoting Jeffries on the origin: points "were invented to obfuscate duration so that certain managers would not pressure the team". If the purpose of the unit was to obscure duration, then duration is the thing underneath the unit. You do not build a disguise for something that is not there.
+Woody Zuill coined the hashtag in 2012 with a conditional claim, not a slogan: where a decision can be made without an estimate, the estimate is waste, because estimates "seemed to misinform the decisions they are intended to inform". The camp's case is built on agreement, not accusation. Allen Holub put the history bluntly, quoting Jeffries on the origin: points "were invented to obfuscate duration so that certain managers would not pressure the team". If the purpose of the unit was to obscure duration, then duration is the thing underneath the unit. You do not build a disguise for something that is not there.
 
 Vasco Duarte supplied the empirical blade. His proposal is story counting rather than point summing: count the items delivered, forecast the delivery rate over the last three to five iterations, and often take stories into a sprint "without even sizing those". His claim is that with small, roughly uniform stories, a forecast built from counting items is as accurate as one built from summing points. If the magnitudes carry no predictive information that throughput over time does not already carry, then the magnitudes are ceremony. The points add a step and subtract nothing.
 
@@ -50,9 +44,7 @@ Holub's line on velocity closes the loop: it is "something you measure, not some
 
 ## What survives, and what eats it
 
-Something real is left after the collapse.
-
-Relative sizing is speed-independent, and that is genuine information. Two people who cannot agree on hours can still agree that B is twice A, and that shared judgement is worth having. A distribution carries more than a point estimate, and pretending a task takes exactly six hours is a worse lie than admitting it takes somewhere between four and twelve. These are not nothing. The proponents are defending something that exists.
+Two people who cannot agree on the hours a task will take can still agree that B is twice A. That relative sizing is speed-independent, and it is genuine information worth having. A distribution carries more than a point estimate, and pretending a task takes exactly six hours is a worse lie than admitting it takes somewhere between four and twelve. These are not nothing. The proponents are defending something that exists.
 
 But it does not survive contact with use. The instant you apply velocity to turn a backlog of points into a delivery date, the speed-independence is converted into a team-specific duration, and the distribution is collapsed into the single number the date requires. The residue that resisted reduction is exactly the residue that forecasting consumes. What you are left holding is a time estimate with extra steps, and the extra steps were added, on Jeffries' own testimony, to keep a manager from reading the time estimate too directly.
 
