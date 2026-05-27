@@ -57,7 +57,7 @@ Effect 3 (level 3)
   outcome: add_ball_speed(off-consolidation: speed that does not count toward the reconciliation cap)
 ```
 
-Beads auto-gather to the player only; uncollected beads expire at rally end. Ball-through-bead re-collection reuses the merge distance test, not physics contact. Level 3 adds off-consolidation speed per bead, so a heavily swept ball is faster and harder to keep alive without climbing any quicker.
+Beads auto-gather to the player only; uncollected beads expire at rally end. Ball-through-bead re-collection reuses the merge distance test, not physics contact. Level 3 adds off-consolidation speed per bead.
 
 ## Magnetism (equipment): the comeback ball
 

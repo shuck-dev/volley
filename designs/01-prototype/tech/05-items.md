@@ -151,13 +151,13 @@ Base cost: 90 friendship | Scaling: 1.5
 |---|---|
 | 1 | Ball speed rises and falls in a steady rhythm |
 | 2 | The speed cap lifts so the ball climbs past max instead of reconciling there; the player consolidates on demand by blowing the whistle, and the longer they wait the bigger the step up |
-| 3 | The rhythm turns uneven, its period and swing varying so the fast moment is no longer predictable |
+| 3 | The rhythm turns uneven, its fast and slow stretches changing length so the fast moment is no longer predictable |
 
 ```
 Effect 1 (all levels)
   trigger: always
   outcome: oscillate_stat(ball_speed_offset, scales with level)
-  level 3: randomise the oscillation period and amplitude so the rhythm reads irregular
+  level 3: randomise the oscillation period (the fast and slow stretch lengths), not the peak speed, so the rhythm reads irregular
 
 Effect 2 (levels 2-3)
   trigger: always

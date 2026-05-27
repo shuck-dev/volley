@@ -1,27 +1,25 @@
 # Soul
 
-The pre-break incentive currency. Soul imbues the ball and lifts the player. Post-break phases may set different objectives (see items.md).
+People channel soul. It is the pre-break currency the players gather and spend, the medium they act through, not an actor of its own. Post-break phases may set different objectives.
 
 ## Gathering
 
-- Consecutive hits gather soul into the ball, and gathering accelerates the rally: the ball moves faster as the count climbs.
-- A miss resets the count to zero, the only reset.
+- The players channel soul into the ball by volleying: each consecutive hit gathers more, and the fuller the ball the faster the rally runs.
 
 ## The cycle
 
-- Acceleration has a limit. At the limit the gathered soul reconciles into something stronger, the ball slows, and the climb restarts from a higher floor.
+- The ball's speed has a limit. At the limit the soul they have gathered reconciles into something stronger, the ball slows, and the climb restarts from a higher floor.
 - Each reconciliation raises the floor; the peak is a fully imbued ball.
 - Items call a reconciliation a consolidation.
 
-## Soul and levitation
+## Levitation
 
-- Soul lifts the player, and the arc with its soul-bound rises with that levitation, so climbing higher lifts the bound and the arc with it.
+- The players levitate by channelling soul; the arc with its soul-bound rises with their levitation, so climbing higher lifts the bound and the arc with it.
 - Levitation height banks by time aloft and is cumulative (see levitation-progression.md).
 
 ## Release
 
-- Items turn gathered soul into a payoff rather than only accruing it: bursts, shed beads, chained rewards, multipliers.
-- See starter-items.md and items.md for per-item release.
+- Items let the player turn channelled soul into a payoff rather than only banking it: bursts, shed beads, chained rewards, multipliers.
 
 ## Open
 
