@@ -5,7 +5,7 @@
 Define the paddle size range: a starting size that feels generous, a minimum size that feels punishing, and a visual change when the paddle hits its smallest form.
 
 **Points:** Spike
-**Dependencies:** Paddle (`scripts/entities/paddle.gd`), Grip Tape item (`design/items.md` and `tech/05-items.md`)
+**Dependencies:** Paddle (`scripts/entities/paddle.gd`), Grip Tape item (`design/items.md` and `tech/05-item-effects.md`)
 
 ## Current state
 
