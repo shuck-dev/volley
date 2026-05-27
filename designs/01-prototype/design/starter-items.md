@@ -48,11 +48,11 @@ Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note t
 - L2: the ball breaks past the speed limit and keeps speeding up; you choose when to consolidate by blowing the whistle, so the longer you wait the bigger the step up, but the faster ball is harder to keep alive.
 - L3: the rhythm stops being steady, its fast and slow stretches changing length, so you cannot tell when the ball will be fast.
 
-## Glove: pick
-Role: equipment : hand. Zach's pick, the friend's-pick slot in the starter shop.
-A glove of Zach's; realisation TODO.
-Grants picking a ball in play: reach into the rally, grab a ball, let go and it rejoins at the speed it had. Held, it can't be missed.
+## Pluck
 
-- L1: pick one ball at a time.
-- L2: TODO.
-- L3: TODO.
+Role: equipment : hand. Zach's pick, the friend's-pick slot in the starter shop.
+A glove of Zach's.
+
+- L1: pick one ball out of play, hold it safe (in hand it can't be missed), and release it back into the rally at its speed.
+- L2: hold more than one at once, pulling several balls out of the air and keeping them safe in hand.
+- L3: throw a held ball back onto the court, its speed set by how fast you flick the release; a hard throw launches it fast toward consolidation, a gentle one drops it in, and a fast ball is harder to keep alive.
