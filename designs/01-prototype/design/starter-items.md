@@ -2,8 +2,7 @@
 
 The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
 
-## Ball: split-and-merge (name TODO)
-
+## Ball: split-and-merge
 Role: ball
 A ball of goop Zach found under the floorboards.
 
@@ -13,8 +12,7 @@ A ball of goop Zach found under the floorboards.
 
 Not merging is a missed bonus, no penalty.
 
-## Helmet (name TODO)
-
+## Helmet
 Role: equipment : head
 A pink cycling helmet, Steph's; it doesn't fit.
 
@@ -29,8 +27,7 @@ Role: equipment : arm
 One of a twinned pair; Zach wears the other.
 Each hit sheds a soul bead off the ball; beads drift and can be collected via the ball. The beads never run out.
 
-## Magnetism (name TODO)
-
+## Magnetism
 Role: equipment
 A comeback ball from an old toybox.
 Balls are drawn toward the player, curving toward where you reach.
@@ -41,10 +38,11 @@ Role: equipment : neck
 
 Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat.
 
-The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down unpredictably. When the ball reaches max speed, the ceiling raises and speed keeps climbing.
+- L1: the ball's speed rises and falls in a steady, repeating rhythm.
+- L2: the ball breaks past the speed limit and keeps speeding up; you choose when to consolidate by blowing the whistle, so the longer you wait the bigger the step up, but the faster ball is harder to keep alive.
+- L3: the rhythm stops being steady, its fast and slow stretches changing length, so you cannot tell when the ball will be fast.
 
-## Glove: pick (name TODO)
-
+## Glove: pick
 Role: equipment : hand. Zach's pick, the friend's-pick slot in the starter shop.
 A glove of Zach's; realisation TODO.
 Grants picking a ball in play: reach into the rally, grab a ball, let go and it rejoins at the speed it had. Held, it can't be missed.
