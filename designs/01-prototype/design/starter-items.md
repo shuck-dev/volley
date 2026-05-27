@@ -17,7 +17,10 @@ Not merging is a missed bonus, no penalty.
 
 Role: equipment : head
 A pink cycling helmet, Steph's; it doesn't fit.
-Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul.
+
+- L1: head the ball, a new contact distinct from the racquet.
+- L2: ram a header to add speed where the racquet only holds pace, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
+- L3: consecutive headers build a growing soul reward, but a racquet hit or a miss breaks the streak; the fast ball L2 rewards is the hardest to chain, so power fights rhythm.
 
 ## Friendship bracelet
 
@@ -39,3 +42,13 @@ Role: equipment : neck
 Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat.
 
 The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down unpredictably. When the ball reaches max speed, the ceiling raises and speed keeps climbing.
+
+## Glove: pick (name TODO)
+
+Role: equipment : hand. Zach's pick, the friend's-pick slot in the starter shop.
+A glove of Zach's; realisation TODO.
+Grants picking a ball in play: reach into the rally, grab a ball, let go and it rejoins at the speed it had. Held, it can't be missed.
+
+- L1: pick one ball at a time.
+- L2: TODO.
+- L3: TODO.
