@@ -150,7 +150,7 @@ Base cost: 90 friendship | Scaling: 1.5
 | Level | Behaviour |
 |---|---|
 | 1 | Ball speed rises and falls in a steady rhythm |
-| 2 | The speed cap lifts so the ball climbs past max instead of reconciling there; the player consolidates on demand by blowing the whistle, and the longer they wait the bigger the step up |
+| 2 | The speed cap lifts so the ball climbs past max instead of consolidating there; the player consolidates on demand by blowing the whistle, and the longer they wait the bigger the step up |
 | 3 | The rhythm turns uneven, its fast and slow stretches changing length so the fast moment is no longer predictable |
 
 ```
@@ -161,14 +161,14 @@ Effect 1 (all levels)
 
 Effect 2 (levels 2-3)
   trigger: always
-  outcome: lift_speed_cap (ball climbs past ball_speed_max without auto-reconciling at the limit)
+  outcome: lift_speed_cap (ball climbs past ball_speed_max without auto-consolidating at the limit)
 
 Effect 3 (levels 2-3)
   trigger: on_whistle (player input)
-  outcome: reconcile_now (consolidate at current speed; the floor raise scales with how far past the old cap)
+  outcome: consolidate_now (consolidate at current speed; the floor raise scales with how far past the old cap)
 ```
 
-New primitives this needs: `lift_speed_cap`, the `on_whistle` player-input trigger, and `reconcile_now`.
+New primitives this needs: `lift_speed_cap`, the `on_whistle` player-input trigger, and `consolidate_now`.
 
 Base cost: 85 friendship | Scaling: 1.5
 

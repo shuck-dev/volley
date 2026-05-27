@@ -13,7 +13,7 @@ Soul is the pre-break currency the players gather and spend.
 
 ## Levitation
 
-- The players levitate by channelling soul; ball levitation has a range, at the end the ball arcs back downwards.
+- The players levitate by channelling soul; ball levitation has a range, at the end the ball arcs back downwards (the bound, see ../01-prototype/design/08-court-bounds.md).
 - Levitation height banks by time aloft and is cumulative (see levitation-progression.md).
 
 ## Release

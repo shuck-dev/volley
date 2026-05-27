@@ -54,7 +54,7 @@ Effect 2 (all levels)
   outcome: bank_soul
 Effect 3 (level 3)
   trigger: on_bead_gathered
-  outcome: add_ball_speed(off-consolidation: speed that does not count toward the reconciliation cap)
+  outcome: add_ball_speed(off-consolidation: speed that does not count toward the consolidation cap)
 ```
 
 Beads auto-gather to the player only; uncollected beads expire at rally end. Ball-through-bead re-collection reuses the merge distance test, not physics contact. Level 3 adds off-consolidation speed per bead.
@@ -100,6 +100,6 @@ The effect system as built carries five outcome types (`stat`, `stat_until_miss`
 - `spawn_soul_beads`, bead entities, `on_bead_gathered`, and off-consolidation `add_ball_speed` (bracelet).
 - `rescue_ball`, an `on_would_miss` trigger, and a per-consolidation save counter, with the level-3 save shared with the partner (magnetism).
 - a held-ball limit above one, a release-flick launch speed, and gating picking behind glove ownership (Pluck).
-- `lift_speed_cap`, the `on_whistle` player-input trigger, and `reconcile_now` (Cadence, see `05-items.md`).
+- `lift_speed_cap`, the `on_whistle` player-input trigger, and `consolidate_now` (Cadence, see `05-items.md`).
 
 Magnetism's pull needs no new primitive; it is a stat effect on the existing `ball_magnetism`, retargeted to the player.
