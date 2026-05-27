@@ -14,3 +14,4 @@ Per-mechanic and per-mechanic-set design specs.
 | [The Break](the-break.md) | The rupture between Construction and Reality. |
 | [Venue](venue.md) | The setting where the protagonist volleys. |
 | [Achievements](achievements.md) | Feats surface diegetically, the world reporting them in its own voice. |
+| [Item Design](item-design.md) | What we look for in a good item, for designing and reviewing the set. |
