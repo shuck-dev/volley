@@ -25,7 +25,10 @@ A pink cycling helmet, Steph's; it doesn't fit.
 Role: equipment : arm
 
 One of a twinned pair; Zach wears the other.
-Each hit sheds a soul bead off the ball; beads drift and can be collected via the ball. The beads never run out.
+
+- L1: each hit sheds a soul bead off the ball; the ball collects beads it passes through, and they never run out.
+- L2: each hit sheds twice as many beads, so the court fills with more soul to sweep.
+- L3: collected beads still bank their soul, but they also speed the ball up without counting toward consolidation, so sweeping up everything makes a faster, harder-to-keep-alive ball that climbs you no quicker.
 
 ## Magnetism
 Role: equipment
