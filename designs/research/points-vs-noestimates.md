@@ -24,7 +24,7 @@ The word "days" was the bug. Deleting it was the fix. What remained was a number
 
 ## Why points exist: a disguise against pressure
 
-Asked years later why story points were created, Jeffries gave an answer about politics, not measurement: points "were invented to obfuscate duration so that certain managers would not pressure the team." The dimensionless number was a screen, and the sentence names what it screened against: managerial pressure on duration.
+Asked years later why story points were created, Jeffries gave an answer about politics, not measurement: they were "originally invented to obscure the time aspect, so that management wouldn't be tempted to misuse the estimates." The dimensionless number was a screen, and what it screened against was a manager turning a time estimate into a deadline.
 
 That pressure has a lineage. Winston W. Royce, in "Managing the Development of Large Software Systems" (IEEE WESCON, August 1970), drew the sequential cascade of analysis to design to code to test only to condemn it: "I believe in this concept, but the implementation described above is risky and invites failure." His objection was late discovery, testing arriving only at the end, so that a project committed to a schedule before anyone knew whether the design worked. Industry copied the diagram and ignored the warning, because fixed-bid government and aerospace contracts needed a number to sign against.
 
@@ -80,7 +80,7 @@ Monte Carlo simulation does the forecasting: take the historical throughput, res
 
 Item size barely predicts cycle time once work-in-progress is controlled, so counting the remaining items and dividing by historical throughput forecasts about as well as summing point estimates, at a fraction of the cost. That is what makes estimation optional. Duarte's data across ten teams put the correlation between summed points and plain story count between 0.70 and 0.92 on nine of them, with a single 0.51 outlier, and concluded that "the data above does not seem to suggest any significant advantage of using Story Points as a metric." This is one practitioner's observational data, not a controlled trial.
 
-The clearest case on record is Siemens Health Services. Around 2012 its fifteen Scrum teams, roughly five hundred people, dropped story points and velocity for flow metrics, and reported in an Agile Alliance experience report that their 85th-percentile cycle time fell from 71 days to 40, first-pass yield rose from 75 to 95 percent, and a release shipped on schedule and more than 10 percent under budget. The caveats are real. The report came from people who went on to build careers on flow metrics, Vacanti among them, and dropping points was bundled inside a wider move to Kanban, so the gains cannot be pinned on the estimation change alone. It is the best-documented single case, not a general law, and the honest truth is that there are few others like it. The argument for forecasting rests more on the statistics than on a stack of corporate testimonials.
+The clearest case on record is Siemens Health Services. Around 2012 its fifteen Scrum teams, roughly five hundred people, dropped story points and velocity for flow metrics, and reported in an Agile Alliance experience report that their 85th-percentile cycle time fell from 71 days to 43 and then to 40, first-pass yield rose from 75 to 95 percent, and a release shipped on schedule and more than 10 percent under budget. The caveats are real. The report came from people who went on to build careers on flow metrics, Vacanti among them, and dropping points was bundled inside a wider move to Kanban, so the gains cannot be pinned on the estimation change alone. It is the best-documented single case, not a general law, and the honest truth is that there are few others like it. The argument for forecasting rests more on the statistics than on a stack of corporate testimonials.
 
 The limit belongs in the same breath. Counting matches summing only when items are roughly right-sized, drawn from the same distribution as the history they are forecast against. Black Swan Farming documents the counterexample: a backlog whose items ran about three times larger than history forecast six weeks by count against sixteen by points. The honest claim is "as well as or better than, given right-sized items," not "always better."
 
@@ -102,7 +102,7 @@ The hashtag faded; the practice did not. In November 2020 the Scrum Guide droppe
 
 The people regrouped. The energy that lived on Twitter under #NoEstimates moved into a curriculum, as Daniel Vacanti and Prateek Singh built ProKanban.org and a certification track around flow metrics rather than points. The Monte Carlo forecast that once meant writing your own spreadsheet became a one-click app for Jira and Azure DevOps, a commodity layer on the mainstream trackers sold by a handful of specialist vendors.
 
-What never arrived was the evidence. In a 2024 survey of what is actually known about software effort estimation, Derek Jones found the field "essentially unchanged" and most of its research built on "miniscule datasets," and reported that estimation accuracy does not improve with practice, story points included. The method won adoption while the question that started the fight, whether an up-front estimate is ever worth making, was never funded well enough to answer. The practice spread on argument and experience, not proof.
+What never arrived was the evidence. In a 2024 survey of what is actually known about software effort estimation, Derek Jones found most of the field's research built on "miniscule datasets," and reported that estimation accuracy does not improve with practice, story points included. The method won adoption while the question that started the fight, whether an up-front estimate is ever worth making, was never funded well enough to answer. The practice spread on argument and experience, not proof.
 
 ## The practice that remains
 
@@ -117,6 +117,7 @@ You can stop estimating, in the sense the movement actually means: no bad up-fro
 ## Sources
 
 - Ron Jeffries, [*Story Points Revisited*](https://ronjeffries.com/articles/019-01ff/story-points/Index.html) (23 May 2019)
+- Ron Jeffries, [*Estimation is Evil*](https://ronjeffries.com/articles/021-01ff/estimation-is-evil/) (1 February 2013)
 - Mike Cohn, [*What Are Story Points?*](https://www.mountaingoatsoftware.com/blog/what-are-story-points)
 - Mike Cohn, [*It's Effort, Not Just Complexity*](https://www.mountaingoatsoftware.com/blog/its-effort-not-complexity)
 - Wikipedia, [*Planning poker*](https://en.wikipedia.org/wiki/Planning_poker)
