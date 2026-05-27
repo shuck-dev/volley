@@ -9,7 +9,7 @@ A ball of goop Zach found under the floorboards.
 
 - L1: at consolidation it splits in two; collide them to merge for a soul burst.
 - L2: each further consolidation splits one more, so the court fills as you climb; the merge burst scales with how many you fold together.
-- L3: folding all the way back to a single ball triggers a big burst.
+- L3: only the original ball merges, the rest fold into it and not each other; gather them all back before the next consolidation and the next split adds one more, snowballing the burst as the juggle grows.
 
 Not merging is a missed bonus, no penalty.
 
