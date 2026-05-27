@@ -68,6 +68,14 @@ The clearest case on record is Siemens Health Services. Around 2012 its fifteen 
 
 That single case carries one more limit. Counting matches summing only when items are roughly right-sized, drawn from the same distribution as the history they are forecast against. Black Swan Farming documents the counterexample: a backlog whose items ran about three times larger than history forecast six weeks by count against sixteen by points. The claim is "as well as or better than, given right-sized items," not "always better." The forecast the team needs was never in the points. It was in the data the burndown was already throwing away.
 
+## Where it stands now
+
+The hashtag faded; the practice did not. In November 2020 the Scrum Guide dropped the words "estimate" and "estimation" altogether and replaced them with "sizing," which Scrum.org says a team can satisfy by "counting cards or using flow-based metrics." The largest agile framework had removed prescribed estimation from its own definition without once crediting the movement that spent a decade arguing for it.
+
+The people regrouped. The energy that lived on Twitter under #NoEstimates moved into a curriculum, as Vacanti and Singh built ProKanban.org and a certification track around flow metrics rather than points. The Monte Carlo forecast that once meant writing your own spreadsheet became a one-click app for Jira and Azure DevOps, a commodity layer sold by a handful of specialist vendors.
+
+What never arrived was the evidence. In a 2024 survey of what is actually known about software effort estimation, the software-engineering writer Derek Jones found most of the field's research built on "miniscule datasets," and reported that estimation accuracy does not improve with practice, story points included. The method won adoption while the question that started the fight, whether an up-front estimate is ever worth making, was never funded well enough to answer. The practice spread on argument and experience, not proof.
+
 ## The objections that survive
 
 On 2 August 2015 Steve McConnell published "17 Theses on Software Estimation," a point-by-point defence of estimation, and several theses hold their ground. Estimates serve "numerous legitimate, important business purposes": budget allocation, prioritisation, financial forecasting. Estimation and planning "are not the same thing, and you can estimate things that you can't plan." And much of the heat is really about misused commitments, not estimates as such, the same collapse DeMarco and McConnell named decades earlier.
@@ -77,14 +85,6 @@ Then the practical pressures. External commitments come first: contracts, market
 The Goodhart logic that broke velocity does not spare flow metrics either. Tell a team to raise throughput and it will split tickets; tell it to hit the 85th-percentile date and quality erodes. No measure survives being made a target. The lesson was never that one metric beats another; it is to measure without targeting.
 
 So the sharpest objection has to be conceded in full. Any decision under uncertainty rests on some model of how long things take, so forecasting from throughput is itself an estimate, an empirical and probabilistic one, and critics who call NoEstimates "no bad up-front estimates" rebranded are describing it accurately. That is the point, not a retreat from it. Zuill's "exploring alternatives" was never a vow of silence; the target was always the bad up-front estimate, the single hopeful number committed before the work was understood. NoEstimates is the refusal to commit to a number before the work has taught you what the number should be.
-
-## Where it stands now
-
-The hashtag faded; the practice did not. In November 2020 the Scrum Guide dropped the words "estimate" and "estimation" altogether and replaced them with "sizing," which Scrum.org says a team can satisfy by "counting cards or using flow-based metrics." The largest agile framework had removed prescribed estimation from its own definition without once crediting the movement that spent a decade arguing for it.
-
-The people regrouped. The energy that lived on Twitter under #NoEstimates moved into a curriculum, as Vacanti and Singh built ProKanban.org and a certification track around flow metrics rather than points. The Monte Carlo forecast that once meant writing your own spreadsheet became a one-click app for Jira and Azure DevOps, a commodity layer sold by a handful of specialist vendors.
-
-What never arrived was the evidence. In a 2024 survey of what is actually known about software effort estimation, the software-engineering writer Derek Jones found most of the field's research built on "miniscule datasets," and reported that estimation accuracy does not improve with practice, story points included. The method won adoption while the question that started the fight, whether an up-front estimate is ever worth making, was never funded well enough to answer. The practice spread on argument and experience, not proof.
 
 ## The practice that remains
 
