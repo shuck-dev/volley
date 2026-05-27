@@ -14,6 +14,8 @@ Every item declares one of three roles. The role decides where it goes on the co
 | `court` | Props on or around the court surface (always on court once acquired; removed only by Tinkerer) | Dead Weight, Spare, Court Lines, bot dock, jukebox, The Call |
 | `equipment` | Items the main character wears or attaches to the paddle | Grip Tape, Wrist Brace, Ankle Weights, Cadence, Seven Years |
 
+A fourth role, `cursor`, for gear the mouse cursor wears rather than the court or character (the Pluck glove), is proposed in SH-441 and not yet built.
+
 Stat-only items (no visible prop) still declare a role: a paddle-speed upgrade is `equipment`, a ball-bounce tweak is `ball`.
 
 Ball and court roles are additive: any number of items can share the role. Equipment has a per-type cap authored on `ItemDefinition`:

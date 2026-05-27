@@ -2,32 +2,44 @@
 
 The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
 
-## Ball: split-and-merge (name TODO)
+## Ball: split-and-merge
 
 Role: ball
 A ball of goop Zach found under the floorboards.
-At consolidation it splits, and each consolidation after adds one more ball (2 at the first, +1 per consolidation after).
-Collide them to merge for a soul burst. 
+
+- L1: at consolidation it splits in two; collide them to merge for a soul burst.
+- L2: each further consolidation splits one more, so the court fills as you climb; the merge burst scales with how many you fold together.
+- L3: only the original ball merges, the rest fold into it and not each other; gather them all back before the next consolidation and the next split adds one more, snowballing the burst as the juggle grows.
+
 Not merging is a missed bonus, no penalty.
 
-## Helmet (name TODO)
+## Helmet
 
 Role: equipment : head
 A pink cycling helmet, Steph's; it doesn't fit.
-Lets you header the ball, a new contact distinct from the racquet hit; a header struck at the apex of the arc bursts soul.
+
+- L1: head the ball, a new contact distinct from the racquet.
+- L2: a normal hit adds one step of speed, but ram a header and it jumps several at once, the harder the ram the bigger the jump, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
+- L3: consecutive headers build a growing soul reward, but a racquet hit or a miss breaks the streak; the fast ball L2 rewards is the hardest to chain, so power fights rhythm.
 
 ## Friendship bracelet
 
 Role: equipment : arm
 
 One of a twinned pair; Zach wears the other.
-Each hit sheds a soul bead off the ball; beads drift and can be collected via the ball. The beads never run out.
 
-## Magnetism (name TODO)
+- L1: each hit sheds a soul bead off the ball; the ball collects beads it passes through, and they never run out.
+- L2: each hit sheds twice as many beads, so the court fills with more soul to sweep.
+- L3: collected beads still bank their soul, but they also speed the ball up without counting toward consolidation, so sweeping up everything makes a faster, harder-to-keep-alive ball that climbs you no quicker.
+
+## Magnetism
 
 Role: equipment
 A comeback ball from an old toybox.
-Balls are drawn toward the player, curving toward where you reach.
+
+- L1: balls curve toward where you reach, so you pull a return to your paddle instead of chasing it.
+- L2: once per consolidation, a ball that would be a miss semicircles around you and comes back into play. One save per cycle.
+- L3: still one save per consolidation, but now shared with your partner; it can be spent on their miss before yours, and you do not choose which.
 
 ## Cadence (pick)
 
@@ -35,4 +47,15 @@ Role: equipment : neck
 
 Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat.
 
-The whistle sets the tempo. Ball speed oscillates in waves: ramping up and down unpredictably. When the ball reaches max speed, the ceiling raises and speed keeps climbing.
+- L1: the ball's speed rises and falls in a steady, repeating rhythm.
+- L2: the ball breaks past the speed limit and keeps speeding up; you choose when to consolidate by blowing the whistle, so the longer you wait the bigger the step up, but the faster ball is harder to keep alive.
+- L3: the rhythm stops being steady, its fast and slow stretches changing length, so you cannot tell when the ball will be fast.
+
+## Pluck
+
+Role: cursor gear, a new role (see SH-441). Zach's pick, the friend's-pick slot in the starter shop.
+A glove of Zach's, worn by the cursor, not the character.
+
+- L1: pick one ball out of play, hold it safe (in hand it can't be missed), and release it back into the rally at its speed.
+- L2: hold more than one at once, pulling several balls out of the air and keeping them safe in hand.
+- L3: throw a held ball back onto the court, its speed set by how fast you flick the release; a hard throw launches it fast toward consolidation, a gentle one drops it in, and a fast ball is harder to keep alive.
