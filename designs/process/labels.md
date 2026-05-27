@@ -9,7 +9,7 @@ Every ticket carries one intent label that names its discipline and its tier. La
 | **tech**     | `spike`       | `feature` | (`bug` restores) |
 | **art**      | `study`       | `asset`   | `revision` |
 | **music**    | `concept`     | `cue`     | `rework`   |
-| **writing**  | `voice`       | `draft`   | `rewrite`  |
+| **writing**  | -             | `draft`   | `rewrite`  |
 | **design**   | `discovery`   | -         | `tune`     |
 | **audio**    | -             | `sfx`     | -          |
 
@@ -39,7 +39,6 @@ Three intents plus `bug` as its own shape. Pick the label whose discipline and t
 
 ### Writing
 
-- **`voice`**: explore the voice and tone before committing to written content. Output: a bible entry a draft can cite.
 - **`draft`**: produce new written content ready for integration.
 - **`rewrite`**: evolve existing written content as the creative direction develops.
 
@@ -58,7 +57,7 @@ Three intents plus `bug` as its own shape. Pick the label whose discipline and t
 
 1. **Which discipline owns the work?** Tech, art, music, writing, design, audio.
 2. **Which tier?**
-   - **Explore** if the answer is not yet known. Spike, study, concept, voice, discovery.
+   - **Explore** if the answer is not yet known. Spike, study, concept, discovery.
    - **Produce** if the output is a concrete deliverable. Feature, asset, cue, draft, sfx.
    - **Evolve** if iterating on something that already exists. Revision, rework, rewrite, tune.
    - **Bug** if the system has drifted from intended behaviour.

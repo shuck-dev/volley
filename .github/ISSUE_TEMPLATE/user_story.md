@@ -1,6 +1,6 @@
 ---
 name: User Story
-about: Player-facing capability (use for feature, draft when player-facing, voice, etc.)
+about: Player-facing capability (use for feature, draft when player-facing, etc.)
 ---
 
 <!-- Guide: designs/process/ticket-writing.md -->

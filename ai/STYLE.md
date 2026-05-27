@@ -17,7 +17,8 @@ Target a voice that reads as a person, not a polished document. Where prose feel
 - Short over long. Concrete over abstract. Active over passive.
 - A sentence that needs a comma to breathe is fine; one that needs three is two sentences pretending.
 - Vary length. A long sentence that establishes context, then a short one that lands the point.
-- Read every paragraph aloud. If it stumbles, cut.
+- Join bare declaratives. Consecutive short sentences that share a subject or a cause read as a stutter; connect them so the relation (therefore, but, because) is on the page, and keep the isolated full stop for the line meant to land alone.
+- Read every paragraph aloud, not silently. The ear catches the repeated word, the clause out of breath, the row of sentences that thud the same. If you stumble reading it, cut or join.
 
 ### Punctuation as voice
 
@@ -42,6 +43,8 @@ A comma joining two independent clauses is a splice; upgrade to semicolon, perio
 - **No second-person command voice.** Show; don't instruct.
 - **No first-person plural unless earned.** "We" is reader and writer together, not the author and an imaginary team.
 - **No hedging stack.** "It might possibly perhaps be the case that" is one word: "is", or cut.
+- **No self-commentary.** The prose does not narrate its own method or grade its own argument. Cut "here is the turn", "this is the strongest version of the case", "the claim is narrow and defensible", "honesty demands naming". Make the move; do not announce it.
+- **No grading the opponent.** State an opposing position and let it stand or fall on the evidence. Cut "the case is not stupid", "the people who make it are not fools", "his reason is good", "a critic who waves this away has not understood it". This includes grading the other side's competence or the soundness of their practice, not just their argument: "people who are good at it", "the competence is real", "performed flawlessly", "sound practice". If the competence matters, show it in the scene; do not assert it. Reassuring the reader that the other side is serious is the essay propping itself up.
 
 ## AI prose tells to cut
 
@@ -72,6 +75,7 @@ Sources: Berens lab, *Delving into LLM-assisted writing*, *Science Advances*, 20
 ## Naming
 
 - Real names, full first time, surname only after. Pronouns when known.
+- Introduce a cited authority with the credential that earns the citation. When the argument leans on what a named person says, the reader should know why that word carries weight before the quote lands. State the standing as fact (what they built, wrote, or founded), not as praise.
 - Titles of works: italics for games, books, films, albums.
 - Currency with symbol and unit. Dates spelled long-form on first use ("27 September 2013").
 - Credit communities by name where the contribution came from a community, not a company.
@@ -95,7 +99,6 @@ The fact lands harder than the claim about the fact. Ground the reader in the co
 - The last word of a sentence is the most prominent. Land on the noun or verb you want the reader to keep.
 - Anglo-Saxon words for force; Latinate for nuance. Plosive endings (/t/, /d/, /k/) stop the ear cleanly.
 - Avoid prepositional closes (*for, with, of*), weak pronouns at the close (*it, this, that*), adverbial drift ("in the end"), and hedge stacks.
-- Read every paragraph aloud.
 
 ### Paragraphs end on the loaded sentence
 

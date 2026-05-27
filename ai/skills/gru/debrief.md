@@ -1,6 +1,6 @@
 ---
 name: debrief
-description: Scrum-style process retrospective on a mission, swarm, ride, or session. Looks back at blockers, improvements, and the action items that come out of those. NOT a report on what shipped. Read on "debrief", "mission complete", "retro", "wrap-up", "done with X".
+description: Scrum-style process retrospective on a mission, swarm, ride, or session. Looks back at blockers, improvements, and the action items that come out of those. NOT a report on what shipped. Read on "debrief", "mission complete", "mission close", "close the mission", "pulse", "retro", "wrap-up", "done with X".
 ---
 
 # Debrief
@@ -29,4 +29,4 @@ The shape is scrum-style. Open with blockers, name the improvements they earn, r
 
 ## Triggers
 
-Read this skill when the user prompt or task notification names any of: `debrief`, `mission complete`, `mission close`, `wrap up`, `retro`, `done with X`. The UserPromptSubmit hook at `~/.claude/hooks/debrief-flow-signal.sh` injects a reminder when the trigger phrase appears.
+Read this skill when the user prompt or task notification names any of: `debrief`, `mission complete`, `mission close`, `close the mission`, `pulse`, `wrap up`, `retro`, `done with X`. The UserPromptSubmit hook at `~/.claude/hooks/debrief-flow-signal.sh` injects a reminder when the trigger phrase appears.
