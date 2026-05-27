@@ -94,6 +94,14 @@ The sharpest objection is the one to concede in full. Any decision under uncerta
 
 Conceding it strengthens the case rather than surrendering it. Zuill's "exploring alternatives" was never a vow of silence; the target was always the bad up-front estimate, the single hopeful number committed before the work was understood. NoEstimates is the refusal to commit to a number before the work has taught you what the number should be.
 
+## Where it stands now
+
+The hashtag faded; the practice did not. In November 2020 the Scrum Guide dropped the words "estimate" and "estimation" altogether and replaced them with "sizing," which Scrum.org says a team can satisfy by "counting cards or using flow-based metrics." The largest agile framework had removed prescribed estimation from its own definition without once crediting the movement that spent a decade arguing for it.
+
+The people regrouped. The energy that lived on Twitter under #NoEstimates moved into a curriculum, as Daniel Vacanti and Prateek Singh built ProKanban.org and a certification track around flow metrics rather than points. The Monte Carlo forecast that once meant writing your own spreadsheet became a one-click app for Jira and Azure DevOps, a commodity layer on the mainstream trackers sold by a handful of specialist vendors.
+
+What never arrived was the evidence. In a 2024 survey of what is actually known about software effort estimation, Derek Jones found the field "essentially unchanged" and most of its research built on "miniscule datasets," and reported that estimation accuracy does not improve with practice, story points included. The method won adoption while the question that started the fight, whether an up-front estimate is ever worth making, was never funded well enough to answer. The practice spread on argument and experience, not proof.
+
 ## The practice that remains
 
 The case for dropping points rests on two failures that do not depend on each other. The inside view runs low: that is the planning fallacy, the students missing even the deadline they were 99 percent sure of. The cure is the outside view, forecasting from the distribution of past work rather than from the plan. And the popular software fix fails for its own reason: a measure under control pressure corrupts what it measures, which on a sprint board is point inflation behind a healthy-looking burndown.
@@ -130,3 +138,6 @@ You can stop estimating, in the sense the movement actually means: no bad up-fro
 - Allen Holub, [*#NoEstimates, An Introduction*](https://holub.com/noestimates-an-introduction/)
 - Woody Zuill, [*The #NoEstimates Hashtag*](https://zuill.us/WoodyZuill/2013/05/17/the-noestimates-hashtag/) (17 May 2013)
 - Black Swan Farming, [*How to do a really basic forecast*](https://blackswanfarming.com/how-to-do-a-really-basic-forecast/)
+- Scrum.org, [*Why Was Estimation Replaced by Sizing in Scrum Guide 2020*](https://www.scrum.org/resources/blog/yds-why-was-estimation-replaced-sizing-scrum-guide-2020) (November 2020)
+- [*ProKanban.org*](https://www.prokanban.org/)
+- Derek Jones, [*What is known about software effort estimation in 2024*](https://shape-of-code.com/2024/03/10/what-is-known-about-software-effort-estimation-in-2024/) (10 March 2024)
