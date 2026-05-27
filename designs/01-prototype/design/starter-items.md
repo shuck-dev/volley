@@ -50,8 +50,8 @@ Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note t
 
 ## Pluck
 
-Role: equipment : hand. Zach's pick, the friend's-pick slot in the starter shop.
-A glove of Zach's.
+Role: cursor gear, a new role (see SH-441). Zach's pick, the friend's-pick slot in the starter shop.
+A glove of Zach's, worn by the cursor, not the character.
 
 - L1: pick one ball out of play, hold it safe (in hand it can't be missed), and release it back into the rally at its speed.
 - L2: hold more than one at once, pulling several balls out of the air and keeping them safe in hand.
