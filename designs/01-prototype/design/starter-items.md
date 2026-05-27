@@ -3,6 +3,7 @@
 The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
 
 ## Ball: split-and-merge
+
 Role: ball
 A ball of goop Zach found under the floorboards.
 
@@ -13,11 +14,12 @@ A ball of goop Zach found under the floorboards.
 Not merging is a missed bonus, no penalty.
 
 ## Helmet
+
 Role: equipment : head
 A pink cycling helmet, Steph's; it doesn't fit.
 
 - L1: head the ball, a new contact distinct from the racquet.
-- L2: ram a header to add speed where the racquet only holds pace, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
+- L2: a normal hit adds one step of speed, but ram a header and it jumps several at once, the harder the ram the bigger the jump, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
 - L3: consecutive headers build a growing soul reward, but a racquet hit or a miss breaks the streak; the fast ball L2 rewards is the hardest to chain, so power fights rhythm.
 
 ## Friendship bracelet
@@ -31,12 +33,13 @@ One of a twinned pair; Zach wears the other.
 - L3: collected beads still bank their soul, but they also speed the ball up without counting toward consolidation, so sweeping up everything makes a faster, harder-to-keep-alive ball that climbs you no quicker.
 
 ## Magnetism
+
 Role: equipment
 A comeback ball from an old toybox.
 
 - L1: balls curve toward where you reach, so you pull a return to your paddle instead of chasing it.
 - L2: once per consolidation, a ball that would be a miss semicircles around you and comes back into play. One save per cycle.
-- L3: the save now covers your partner too, but it stays one save per consolidation shared between you, so it can be spent on their miss before you need it, and you cannot choose which.
+- L3: still one save per consolidation, but now shared with your partner; it can be spent on their miss before yours, and you do not choose which.
 
 ## Cadence (pick)
 

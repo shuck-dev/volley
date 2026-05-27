@@ -15,7 +15,6 @@ The pre-break incentive currency. Soul imbues the ball and lifts the player. Pos
 
 ## Soul and levitation
 
-- Both players levitate themselves and the ball; the rally is vertical from the start.
 - Soul lifts the player, and the arc with its soul-bound rises with that levitation, so climbing higher lifts the bound and the arc with it.
 - Levitation height banks by time aloft and is cumulative (see levitation-progression.md).
 

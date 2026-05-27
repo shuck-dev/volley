@@ -4,11 +4,7 @@ Volley is a game played between two people. Both players levitate themselves and
 
 A miss resets the volley count to zero. The miss is the only count-reset event.
 
-The game is cooperative by nature. A ball imbued with soul gathers more soul each time it is hit consecutively, and the gathering accelerates the rally; the ball moves faster as the count climbs.
-
-Acceleration has a physical limit. When the ball reaches the limit, the gathered soul reconciles into something stronger, the ball slows, and the speed-climb begins again from a higher base velocity than the previous cycle held. Each reconciliation raises the floor.
-
-When the cycle has run to its peak, the ball is fully imbued.
+The game is cooperative by nature: the rally runs on soul, which gathers as the ball is volleyed and reconciles into something stronger as it builds. The soul cycle and the climb it drives live in soul.md.
 
 ## Dueling
 
