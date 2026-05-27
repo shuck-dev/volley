@@ -15,6 +15,7 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 |    | - [Starter Items (design)](design/starter-items.md) |
 |    | - [Prototype Item Effect Blocks (tech)](tech/05-items.md) |
 |    | - [Starter Item Effect Blocks (tech)](tech/05a-starter-item-effects.md) |
+|    | - [Item Design (design)](design/item-design.md) |
 | 07 | [Effect System](tech/04-effect-system.md) |
 | 08 | **The Venue and Its Systems** |
 |    | - [The Venue](08-venue.md) |
@@ -43,3 +44,5 @@ The public demo on itch.io. Core loop, first-pass assets, playable by strangers.
 | 20a | [Ball Speed Tier Progression](20a-ball-speed-tier-progression.md) |
 | 21 | [Ball Lifecycle](tech/02-ball-lifecycle.md) |
 | 22 | [Levitation Progression](design/levitation-progression.md) |
+| 23 | [The Game of Volley](design/the-game.md) |
+| 24 | [Soul](design/soul.md) |
