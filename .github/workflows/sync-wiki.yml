@@ -112,7 +112,7 @@ jobs:
               flat="$(title_case "${dir//\//-}").md"
             else
               flat_stem="$(title_case "${rel//\//-}")"
-              flat="${flat_stem%.Md}.md"
+              flat="${flat_stem%.md}.md"
             fi
             [ "$dir" = "." ] && dir=""
             copy_with_rewrite "$src" "wiki/$flat" "$dir"

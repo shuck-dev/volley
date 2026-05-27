@@ -12,7 +12,7 @@ If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) fi
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) and the active phase folder ([01-prototype/](01-prototype/INDEX.md)).
 
-If you are a **writer** working on copy, beats, or character voice, read [Narrative](narrative/INDEX.md) and [Research / STYLE](research/STYLE.md).
+If you are a **writer** working on copy, beats, or character voice, read [Narrative](narrative/INDEX.md) and the essay [STYLE guide](ai/STYLE.md).
 
 If you are one of **Josh's collaborators** looking for the settled design on a specific point, the discipline folder is the answer.
 

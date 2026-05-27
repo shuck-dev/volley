@@ -7,7 +7,8 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 | Doc | Purpose |
 |---|---|
 | [The Case for Open Development](the-case-for-open-development.md) | The published essay. ~15,900 words across fourteen sections plus bibliography. The case for open development as the most reliable practice for a new indie to be seen, with implications past games. |
-| [STYLE.md](STYLE.md) | The style guide every editor (human or agent) reads before touching the essay. Voice, forbidden tics, citation rules, narrative momentum, AI prose tells. |
+
+The essay's style guide and the planning, audit, and critique docs are agent-facing and now live under [`ai/`](../ai/INDEX.md).
 
 ## Sister research
 
@@ -24,7 +25,4 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 | Folder | Tracked | Contents |
 |---|---|---|
 | `drafts/` | no | Section files for the essay (00 title through 15 sources). Concatenated via the cat command in regen scripts to produce the published file. |
-| `critiques/` | yes | Critical reviews of the essay across multiple rounds. |
 | `notes/` | yes | Per-angle research notes the essay was built from. |
-| `meta/` | yes | Active planning and audit docs. `BOOK-EXTENSION.md` (forward-looking) and `PERSUASION-AUDIT.md` (open fixes) live here. |
-| `meta/archive/` | yes | Completed audit and research docs whose findings are baked into the essay (citation audits, misattribution audit, AI-lab follow-through, etc.). Kept as the visible audit trail for the work. |
