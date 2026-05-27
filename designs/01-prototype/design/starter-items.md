@@ -33,7 +33,10 @@ One of a twinned pair; Zach wears the other.
 ## Magnetism
 Role: equipment
 A comeback ball from an old toybox.
-Balls are drawn toward the player, curving toward where you reach.
+
+- L1: balls curve toward where you reach, so you pull a return to your paddle instead of chasing it.
+- L2: once per consolidation, a ball that would be a miss semicircles around you and comes back into play. One save per cycle.
+- L3: the save now covers your partner too, but it stays one save per consolidation shared between you, so it can be spent on their miss before you need it, and you cannot choose which.
 
 ## Cadence (pick)
 
