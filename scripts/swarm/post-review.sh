@@ -1,44 +1,6 @@
 #!/usr/bin/env bash
-# Posts a swarm reviewer-agent's inline findings on a pull request.
-#
-# The reviewer verdict (approve / block) is reported to the organiser, not
-# posted as a label. The organiser synthesises every reviewer's verdict into
-# one bot synthesis review (APPROVE / REQUEST_CHANGES under shuck-volley-bot[bot]
-# via the bot-review workflow). This script only puts a reviewer's line-anchored
-# findings on the PR; it never applies a label.
-#
-# Usage:
-#   scripts/swarm/post-review.sh <pr-number> <verdict-json-file>
-#
-# Verdict JSON shape:
-#   {
-#     "verdict": "approve" | "block",
-#     "summary": "one-sentence overall finding",  # required when blocked
-#     "commenter": "<role-or-codename>",  # default commenter for items that
-#                                          # omit their own (reviewer role name,
-#                                          # implementer codename, or "josh")
-#     "items": [                           # required when blocked
-#       {
-#         "path": "<file>",
-#         "line": <N>,
-#         "body": "<type>: <concern and fix>",
-#         "commenter": "<override>"        # optional, overrides top-level
-#       }
-#     ]
-#   }
-#
-# Behaviour:
-# - approve: posts nothing. Clean reviews do not clutter the PR; report the
-#   verdict to the organiser.
-# - block: posts a GitHub pull-request review with event=COMMENT, summary as
-#   the review body, and each item as a line-anchored review comment on its
-#   path and line. Each item body is emitted as "**<commenter>**\n\n<body>"
-#   so the author is legible at a glance. Then report the block to the
-#   organiser, who posts the REQUEST_CHANGES synthesis review.
-#
-# The script always pipes JSON via stdin to `gh api`, never builds the
-# payload by interpolating strings into a shell command, so reviewer
-# comment text cannot escape into the shell.
+# Posts a swarm reviewer's line-anchored findings on a PR; applies no label.
+# Usage: post-review.sh <pr> <verdict-json with verdict approve|block, summary, items[]>.
 
 set -euo pipefail
 

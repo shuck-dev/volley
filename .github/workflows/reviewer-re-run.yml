@@ -1,10 +1,7 @@
 name: Reviewer Re-run
 
-# When the bot synthesis review (APPROVE / REQUEST_CHANGES under
-# shuck-volley-bot[bot]) lands, the standing zaphod-requested "please review"
-# signal has been answered, so strip it. A stale bot approval is dismissed on a
-# new push by the ruleset's dismiss-stale-reviews-on-push; a request-changes
-# persists until re-review.
+# When the bot synthesis review lands, the zaphod-requested signal is answered,
+# so strip it. Push-staleness is handled by the ruleset's dismiss-stale.
 
 on:
   pull_request_review:

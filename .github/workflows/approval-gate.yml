@@ -1,9 +1,7 @@
 name: Approval Gate
 
-# `pull_request_review_thread` is NOT a valid workflow trigger in GitHub
-# Actions (it's a webhook event only). Previous attempts to use it silently
-# broke the workflow; GitHub's schema rejected the file, producing
-# startup-failure runs that never posted check runs. Do not add it back.
+# Do not add `pull_request_review_thread`: it is a webhook event, not a valid
+# Actions trigger, and GitHub silently rejects the whole workflow file.
 on:
   workflow_dispatch:
     inputs:
@@ -13,20 +11,15 @@ on:
         type: string
   pull_request_target:
     types: [opened, reopened, labeled, unlabeled, synchronize]
-  # merge_group fires when GitHub creates the gh-readonly-queue/... branch
-  # for a queued PR. Without this, the Approval Gate check runs never
-  # appear on the integration commit and the merge queue stalls on them.
+  # merge_group: without it the Approval Gate checks never appear on the
+  # queue's integration commit and the merge stalls.
   merge_group:
 
 permissions:
   contents: read
 
-# `Human Approved` must be a workflow job, not a check-run posted from a
-# script step: the merge queue's enqueue-time pre-evaluator matches required
-# checks against workflow job names and cannot see `github.rest.checks.create()`
-# calls inside a github-script step, so a script-posted check passes on the PR
-# head but leaves the queue stuck at "N of M required status checks are
-# expected". See SH-159.
+# `Human Approved` must be a workflow job: the merge queue matches required
+# checks by job name and ignores github-script-posted check-runs (SH-159).
 
 concurrency:
   group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
@@ -41,12 +34,8 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
-    # Skip the job when a labeled/unlabeled event touches a label that carries
-    # no human-verdict signal (category labels, zaphod-requested, etc.) rather
-    # than a human approval label. Re-running the gate on those wastes a billed
-    # minute per event. The human verdict labels (approved-human,
-    # action-required-human) must always run; synchronize, opened, reopened,
-    # merge_group, and workflow_dispatch always run.
+    # Run on the human verdict labels (approved-human, action-required-human) and
+    # on synchronize/open/reopen/merge_group/dispatch; skip other label churn.
     if: >-
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
@@ -58,10 +47,8 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            // Both human verdict labels are content-specific: a new push
-            // invalidates them, so Josh must re-verdict after addressing
-            // feedback (action-required-human) or re-reviewing a tweak
-            // (approved-human).
+            // A new push invalidates both human verdict labels, so Josh
+            // re-verdicts on the next run.
             const pr = context.payload.pull_request;
             const current = new Set(pr.labels.map(label => label.name));
             for (const name of ['approved-human', 'action-required-human']) {
@@ -84,12 +71,8 @@ jobs:
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
-            // approved-human and action-required-human are a binary
-            // verdict: Josh cannot simultaneously approve and request
-            // changes. Whichever label was just applied wins; the other
-            // strips. The human-approved-guard workflow still polices
-            // who may apply each label; this job only resolves conflicts
-            // between the two verdict states.
+            // approved-human and action-required-human are mutually exclusive;
+            // the just-applied label wins and the other strips.
             const applied = context.payload.label.name;
             const other = applied === 'approved-human'
               ? 'action-required-human'
@@ -131,9 +114,8 @@ jobs:
           GH_INPUT_PR: ${{ github.event.inputs.pr }}
         with:
           script: |
-            // Derive the PR number from whichever event fired. merge_group
-            // carries the PR number inside head_ref like
-            // refs/heads/gh-readonly-queue/main/pr-123-<sha>.
+            // Derive the PR number from the event; merge_group carries it in
+            // head_ref as .../gh-readonly-queue/main/pr-123-<sha>.
             let number = null;
             if (context.payload.pull_request) {
               number = context.payload.pull_request.number;
@@ -160,11 +142,8 @@ jobs:
             });
             const labels = new Set(pr.labels.map(label => label.name));
 
-            // action-required-human wins over every other state: even if
-            // approved-human somehow coexists (race between label events),
-            // an explicit "wants changes" verdict must block the merge
-            // queue. The gate job's mutual-exclusion step normally
-            // prevents the coexistence, but this check is the safety net.
+            // action-required-human blocks even if approved-human coexists;
+            // race safety net behind the gate job's mutual-exclusion step.
             if (labels.has('action-required-human')) {
               core.setFailed(
                 'Changes requested: address Josh\'s comments and push a fix. ' +
@@ -178,11 +157,8 @@ jobs:
               return;
             }
 
-            // Three-state UX. The `gate` job above strips `approved-human`
-            // on synchronize, so a push after approval naturally lands here
-            // on the next run. We can't distinguish "never approved" from
-            // "approval withdrawn" purely from the current label set, but
-            // on synchronize we know we just stripped it if it was there.
+            // On synchronize the gate job already stripped approved-human, so
+            // report "approval withdrawn" distinctly from "never approved".
             if (context.payload.pull_request &&
                 context.payload.action === 'synchronize') {
               core.warning(
