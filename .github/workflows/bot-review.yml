@@ -1,0 +1,83 @@
+name: Bot Synthesis Review
+
+# Posts a single synthesis review on a PR under the shuck-volley-bot[bot]
+# identity. The organiser (main Claude session) resolves reviewer consensus
+# from the dispatched reviewers' reports, then triggers this workflow with the
+# resolved verdict. CI never runs Claude on PR events (prompt-injection
+# surface), so this is a mechanical poster fired by deliberate workflow_dispatch
+# only, never by a pull_request trigger.
+#
+# The App private key stays in repo secrets; it is never minted locally. The
+# installation token is short-lived (five minutes) and scoped to this repo.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to review
+        required: true
+        type: string
+      event:
+        description: Review verdict
+        required: true
+        type: choice
+        options:
+          - APPROVE
+          - REQUEST_CHANGES
+          - COMMENT
+      body:
+        description: Synthesis summary (review body)
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bot-review-${{ inputs.pr }}
+  cancel-in-progress: false
+
+jobs:
+  post-review:
+    name: Post synthesis review as the bot
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Mint installation token and post review
+        env:
+          APP_ID: ${{ secrets.BOT_APP_ID }}
+          APP_KEY: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+          PR: ${{ inputs.pr }}
+          EVENT: ${{ inputs.event }}
+          BODY: ${{ inputs.body }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          b64url() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+
+          keyfile="$(mktemp)"
+          trap 'rm -f "$keyfile"' EXIT
+          printf '%s' "$APP_KEY" > "$keyfile"
+
+          header="$(printf '{"alg":"RS256","typ":"JWT"}' | b64url)"
+          now="$(date +%s)"
+          payload="$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' "$((now - 10))" "$((now + 300))" "$APP_ID" | b64url)"
+          sig="$(printf '%s.%s' "$header" "$payload" | openssl dgst -sha256 -sign "$keyfile" -binary | b64url)"
+          jwt="$header.$payload.$sig"
+
+          iid="$(curl -sf -H "Authorization: Bearer $jwt" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/installation" | jq -r '.id')"
+          tok="$(curl -sf -X POST -H "Authorization: Bearer $jwt" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/app/installations/$iid/access_tokens" | jq -r '.token')"
+
+          headsha="$(curl -sf -H "Authorization: token $tok" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pulls/$PR" | jq -r '.head.sha')"
+
+          jq -n --arg sha "$headsha" --arg ev "$EVENT" --arg body "$BODY" \
+            '{commit_id: $sha, event: $ev, body: $body}' \
+            | curl -sf -X POST -H "Authorization: token $tok" -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/$REPO/pulls/$PR/reviews" --data @- > /dev/null
+
+          echo "Posted $EVENT review on PR #$PR as shuck-volley-bot[bot] (head $headsha)."
