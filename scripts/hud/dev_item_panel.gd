@@ -4,7 +4,6 @@ var _buttons: Dictionary = {}
 var _remove_buttons: Dictionary = {}
 var _drag := DraggableBehavior.new()
 var _timeout_controller: TimeoutController
-var _reconciler: BallReconciler
 
 
 func _ready() -> void:
@@ -65,7 +64,6 @@ func _ready() -> void:
 ## Venue wires the rally-gate refs directly so the dev panel never walks the tree.
 func bind_court(court: Court) -> void:
 	_timeout_controller = court.timeout_controller
-	_reconciler = court.ball_system
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -85,17 +83,17 @@ func _on_item_pressed(item_key: String) -> void:
 func _on_remove_level_pressed(item_key: String) -> void:
 	# Double-check the gate at press time even though the button reflects it visually; the poll
 	# runs once per frame and a same-frame state flip could race the click.
-	if RallyGate.from_refs(_timeout_controller, _reconciler):
+	if not RallyGate.removal_allowed(_timeout_controller):
 		return
 	ItemManager.remove_level(item_key)
 
 
-# Poll the rally gate so the - button reflects mid-rally lockout without subscribing to
+# Poll the gate so the - button only enables at the equip pose, without subscribing to
 # ball state changes; cost is negligible in a debug-only panel.
 func _process(_delta: float) -> void:
-	var locked: bool = RallyGate.from_refs(_timeout_controller, _reconciler)
+	var allowed: bool = RallyGate.removal_allowed(_timeout_controller)
 	for button: Button in _remove_buttons.values():
-		button.disabled = locked
+		button.disabled = not allowed
 
 
 func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:

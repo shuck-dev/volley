@@ -11,3 +11,10 @@ static func from_refs(timeout_controller: TimeoutController, reconciler: BallRec
 	if timeout_controller == null or reconciler == null:
 		return false
 	return is_rally_in_progress(timeout_controller.is_active(), reconciler.has_ball_in_play())
+
+
+## True only at the equip pose; the affirmative gate equip drops use, mirrored for removal.
+static func removal_allowed(timeout_controller: TimeoutController) -> bool:
+	if timeout_controller == null:
+		return false
+	return timeout_controller.get_state() == TimeoutController.State.AT_EQUIP_POSE
