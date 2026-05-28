@@ -1,5 +1,5 @@
 {
-  "_source": "Mirrors the reviewer scope table in ai/skills/minions/reviewers.md. Both must stay in sync; that doc is the human-readable canon, this file is the machine-readable copy the reviewer fan-out guard reads (SH-229).",
+  "_source": "Mirrors the reviewer scope table in ai/skills/minions/reviewers.md. Both must stay in sync; that doc is the human-readable canon, this file is the machine-readable copy the reviewer fan-out guard reads (#371).",
   "_check_run_naming": "Each reviewer posts a check_run named '<reviewer> reviewer', e.g. 'code-quality reviewer'. The fan-out guard resolves the expected reviewer set from path_rules below, then asserts each expected check_run is present and green on the head SHA.",
   "path_rules": [
     { "glob": "scripts/**/*.gd", "reviewers": ["code-quality", "gdscript-conventions"] },
