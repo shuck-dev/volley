@@ -119,6 +119,27 @@ func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void
 	)
 
 
+func test_removing_held_item_unregisters_effect_when_loose_overlay_set() -> void:
+	var item := _make_item("equip_held", &"equipment")
+	var manager: Node = _make_manager_with([item])
+	ItemFactory.give(manager, item.key)
+	manager.activate(item.key)
+	manager.mark_loose_in_venue(item.key)
+	var base_speed: float = GameRules.paddle.paddle_speed
+
+	manager.deactivate(item.key)
+
+	assert_eq(
+		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
+		base_speed,
+		"removing a held item with the loose overlay set should unregister its effect",
+	)
+	assert_false(
+		manager.is_loose_in_venue(item.key),
+		"the STORED transition should clear the lingering loose-in-venue overlay",
+	)
+
+
 func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 	var equipment := _make_item("equip_rack", &"equipment")
 	var ball := _make_item("ball_rack", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)

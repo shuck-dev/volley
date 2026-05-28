@@ -386,13 +386,14 @@ func _set_level(item_key: String, level: int) -> void:
 
 
 func _set_item_placement(item_key: String, placement: int) -> void:
-	var previous := _get_placement(item_key)
-	if previous == placement:
+	var previous: int = state.item_placements.get(item_key, Placement.STORED)
+	if previous == placement and not state.loose_in_venue.has(item_key):
 		return
 	var item := _get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
 	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
+		state.loose_in_venue.erase(item_key)
 		_effect_manager.unregister_source(item)
 		_assign_rack_slot(item_key, item.role)
 	else:
