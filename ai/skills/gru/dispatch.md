@@ -77,7 +77,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 - **Merge queue serialises `main`.** "Merge when ready" pulls the challenge into a `merge_group` ref, re-runs lint and tests against `main + challenge`, then fast-forwards `main`. The pre-challenge `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
 - **Godot tool discipline.** Prefer GodotIQ MCP tools over raw file ops. Never delete-and-rebuild scenes; `node_ops` plus `save_scene` for `.tscn`. Godot 4 quirks live in `ai/godot-quirks.md`.
 
-Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `ai/skills/minions/commits.md`. Reviewer-side rules (verdict shape, label flips, race resolver, fan-out by path) live in `ai/skills/minions/reviewers.md`.
+Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `ai/skills/minions/commits.md`. Reviewer-side rules (verdict shape, inline-finding shape, fan-out by path) live in `ai/skills/minions/reviewers.md`.
 
 ## Godot session tiers
 
@@ -154,13 +154,13 @@ If the fan would require any file to appear in two slices, the work is not fan-s
 
 ## Reviewer dispatch
 
-Reviewers fire after the impl challenge opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The full path → specialist map and the reviewer contract (verdict shape, inline-finding shape, label flips, race resolver) live in `ai/skills/minions/reviewers.md`.
+Reviewers fire after the impl challenge opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The full path → specialist map and the reviewer contract (verdict shape, inline-finding shape, fan-out by path) live in `ai/skills/minions/reviewers.md`.
 
 Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers. Devils-advocate has no shell access; pass the rule text and audit table inline in the prompt or expect a context-blocked report.
 
-Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
+Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. A clean incremental is reported as a silent approve to Gru.
 
-Reviewers reliably report a verdict but skip the GitHub side-effects the contract in `reviewers.md` already mandates: keeping the review body empty with findings posted inline, and applying their own `zaphod-approved` / `zaphod-blocked` label. Both slipped on #740, a block summary landed on the main conversation thread and an approve never applied its label. So every reviewer dispatch brief restates one line, inline comments only, empty review body, never the main thread, apply your own zaphod label; and Gru verifies the actual label and body on the PR before reporting the verdict, re-applying a missing or stripped label by hand.
+Reviewers apply no verdict label; they report their verdict to Gru and post findings inline. On every review round Gru posts one synthesis review via the `bot-review` workflow (`gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES`): APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post clears the standing `zaphod-requested` label. Every reviewer dispatch brief restates one line, inline comments only, never the main thread, report your verdict to me. Gru verifies the inline findings landed before posting the synthesis verdict. The verdict does not gate merge: only Tests, Lint, and Josh's `approved-human` gate the queue; the bot review is the attributed agent verdict, not a required check.
 
 ## Consensus on disagreement
 

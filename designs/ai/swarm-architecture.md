@@ -61,7 +61,7 @@ Code-writing minions dispatch with `isolation: "worktree"` so each gets a clean 
 
 Minions commit like a proper team. Each code-writing minion stages and commits its own work from its worktree with a DCO sign-off and a role tag in the commit body. The commit author is Josh per DCO, so the role identity lives in the body, not the author field. Gru merges worktrees back without squashing, preserving per-minion attribution in the history. The reader can scan the commit list and see which minion produced which change.
 
-Review happens in the Dandori Challenge, never on local files. The `zaphod-approved` and `zaphod-blocked` labels only reflect reality when they are earned through the actual review surface.
+Review happens in the Dandori Challenge, never on local files. A reviewer's verdict only reflects reality when its findings are posted to the actual review surface.
 
 ## Session tiers
 
@@ -85,22 +85,22 @@ Everything between those two points is parallel. Minions do not wait for each ot
 
 ## PR verdict flow
 
-Four labels live on PRs. Two are minion-applied, two are Josh-only.
+Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post also clears the standing `zaphod-requested` label. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
 
-- `zaphod-approved`: a reviewer read the diff and found it clean. Each reviewer applies its own.
-- `zaphod-blocked`: a reviewer found something that needs a fix. Blocked supersedes approved.
+Two properties move off mechanism onto organiser discipline: the strictest-verdict rule (a block outweighs an approve) is the organiser's synthesis, not a reconciler workflow, and the verdict surface resolves only while an organiser session is live, since no event-driven path posts or clears it otherwise. Accepted for a solo-maintainer cadence; inline findings land regardless. If the bot App is down, no synthesis verdict posts and `zaphod-requested` does not clear, but inline findings and the `approved-human` gate are unaffected.
+
+Two labels are Josh-only:
+
 - `approved-human`: Josh's sign-off. Required for merge.
 - `action-required-human`: Josh's "I looked at this and want changes". Mutually exclusive with `approved-human`.
 
-Reviewers post their own comments and apply their own labels; Gru does not aggregate or post on their behalf. Every comment opens with `**<codename>**` so the attribution lives in the text, not in the label alone. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
-
 Dispatch happens at declared review moments (Dandori Challenge first opens, author signals ready for re-review), not every push. Gru partitions the `<last-approved>..<head>` diff by reviewer scope and only dispatches reviewers whose scope was touched. Scope-filter empty means immediate approve.
 
-Minions never apply either human label. The `zaphod-*` namespace strips on every new commit so a push re-earns the verdict. The `Human Approved` merge-queue check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set.
+Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot synthesis review is attribution, not a required check. The `Human Approved` check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set. The standing `zaphod-requested` review request strips when the bot review lands; a stale bot approval is dismissed on push by the ruleset's dismiss-stale-reviews-on-push, while a bot request-changes persists until the next review.
 
 ## Live state versus stable protocol
 
-The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, label flips) lives in the skill docs under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
+The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, reviewer contract) lives in the skill docs under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
 
 This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two minions claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
 
