@@ -1,0 +1,28 @@
+{
+  "_source": "Mirrors the 'Your scope' table in ai/skills/minions/reviewers.md. Both must stay in sync; that doc is the human-readable canon, this file is the machine-readable copy the reviewer fan-out guard reads (SH-229).",
+  "_check_run_naming": "Each reviewer posts a check_run named '<reviewer> reviewer', e.g. 'code-quality reviewer'. The fan-out guard resolves the expected reviewer set from path_rules below, then asserts each expected check_run is present and green on the head SHA.",
+  "path_rules": [
+    { "glob": "scripts/**/*.gd", "reviewers": ["code-quality", "gdscript-conventions"] },
+    { "glob": "scripts/progression/**", "reviewers": ["save-format-warden"] },
+    { "glob": "tests/**/*.gd", "reviewers": ["test-coverage"] },
+    { "glob": "**/*.tscn", "reviewers": ["godot-scene"] },
+    { "glob": "**/*.tres", "reviewers": ["godot-scene"] },
+    { "glob": "project.godot", "reviewers": ["asset-pipeline"] },
+    { "glob": "**/*.import", "reviewers": ["asset-pipeline"] },
+    { "glob": "export_presets.cfg", "reviewers": ["asset-pipeline"] },
+    { "glob": ".github/**", "reviewers": ["ci-and-workflows"] },
+    { "glob": "**/*.md", "reviewers": ["docs-and-writing"] }
+  ],
+  "content_triggered": [
+    {
+      "reviewer": "signals-lifecycle",
+      "applies_when": "diff adds or changes signal wiring or tree lifecycle: connect(, emit(, tree_exit, or a new autoload",
+      "path_resolvable": false
+    },
+    {
+      "reviewer": "save-format-warden",
+      "applies_when": "diff touches a save-persistent resource beyond scripts/progression/**",
+      "path_resolvable": false
+    }
+  ]
+}
