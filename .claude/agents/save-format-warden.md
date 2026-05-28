@@ -44,7 +44,7 @@ Memory: `feedback_no_save_compat.md`. Shim-style fallbacks for old field names o
 
 Return a structured verdict to the dispatcher. Three fields:
 
-- `verdict`: `zaphod-approved` when the diff either does not change the format or changes it with an explicit "wipes saves" call-out. `zaphod-blocked` when the format changes silently, when a compat shim appears, or when autoload order shifts without justification.
+- `verdict`: `approve` when the diff either does not change the format or changes it with an explicit "wipes saves" call-out. `block` when the format changes silently, when a compat shim appears, or when autoload order shifts without justification.
 - `summary`: one-sentence overall finding. For approved verdicts this is optional.
 - `items`: required when blocked, absent when approved. Each item is `{path, line, body}`. Anchor every finding to the specific line in the diff that triggers the concern: the `@export` that renames, the `if data.has("old_field")` branch, the autoload order edit. `body` explains the concern and the fix in one or two sentences.
 

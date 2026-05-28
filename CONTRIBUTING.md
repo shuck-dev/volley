@@ -55,7 +55,7 @@ Small, friendly PR reviews are the norm. If something needs rework we will say w
 
 ### How review and merge work
 
-A set of AI reviewers read your PR first. Small fixes land as commits on your branch. Anything else shows up as a short comment on the line it's about. The PR gets one of two labels: `zaphod-approved` if the reviewers had nothing to say, or `zaphod-blocked` if they left comments. These are just a heads-up, not a decision.
+A set of AI reviewers read your PR first. Small fixes land as commits on your branch. Anything else shows up as a short comment on the line it's about. Their overall verdict appears as a single bot review (an approval, or a request-changes if they left comments). It is a heads-up, not the merge decision.
 
 A maintainer then reads the PR and adds `human-approved` to sign off. The PR merges on its own once it has `human-approved` and no open reviewer comments. If you push new commits, `human-approved` comes off so the next push gets a fresh look.
 

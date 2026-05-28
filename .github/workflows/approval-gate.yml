@@ -21,12 +21,11 @@ on:
 permissions:
   contents: read
 
-# `Human Approved` and `Zaphod Review Passed` are real jobs rather than
-# check-runs posted from inside a script step. The merge queue's
-# enqueue-time pre-evaluator matches required checks against workflow
-# job names; it cannot see `github.rest.checks.create()` calls inside a
-# github-script step, so script-posted checks pass on the PR head but
-# leave the queue stuck at "N of M required status checks are expected".
+# `Human Approved` is a real job rather than a check-run posted from inside a
+# script step. The merge queue's enqueue-time pre-evaluator matches required
+# checks against workflow job names; it cannot see `github.rest.checks.create()`
+# calls inside a github-script step, so script-posted checks pass on the PR head
+# but leave the queue stuck at "N of M required status checks are expected".
 # See SH-159.
 
 concurrency:
@@ -42,18 +41,17 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
-    # Skip the job when a labeled/unlabeled event touches a category label
-    # (feature, bug, autolabel additions) rather than an approval label.
-    # Category labels carry no approval signal, so re-running the gate
-    # wastes a billed minute per event. Approval labels (approved-human,
-    # action-required-human, zaphod-*) must always run; synchronize,
-    # opened, reopened, merge_group, and workflow_dispatch always run.
+    # Skip the job when a labeled/unlabeled event touches a label that carries
+    # no human-verdict signal (category labels, zaphod-requested, etc.) rather
+    # than a human approval label. Re-running the gate on those wastes a billed
+    # minute per event. The human verdict labels (approved-human,
+    # action-required-human) must always run; synchronize, opened, reopened,
+    # merge_group, and workflow_dispatch always run.
     if: >-
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
       github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'action-required-human' ||
-      startsWith(github.event.label.name, 'zaphod-')
+      github.event.label.name == 'action-required-human'
     steps:
       - name: Strip human verdict labels on new commits
         if: github.event_name == 'pull_request_target' && github.event.action == 'synchronize'
@@ -63,7 +61,8 @@ jobs:
             // Both human verdict labels are content-specific: a new push
             // invalidates them, so Josh must re-verdict after addressing
             // feedback (action-required-human) or re-reviewing a tweak
-            // (approved-human). Matches the zaphod strip in reviewer-re-run.yml.
+            // (approved-human). The bot synthesis review is cleared on push
+            // by the ruleset's dismiss-stale-reviews-on-push.
             const pr = context.payload.pull_request;
             const current = new Set(pr.labels.map(label => label.name));
             for (const name of ['approved-human', 'action-required-human']) {
@@ -124,8 +123,7 @@ jobs:
       github.event_name != 'pull_request_target' ||
       (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
       github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'action-required-human' ||
-      startsWith(github.event.label.name, 'zaphod-')
+      github.event.label.name == 'action-required-human'
     steps:
       - name: Evaluate human verdict labels
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -199,74 +197,13 @@ jobs:
             }
             core.setFailed('approved-human label not present on PR.');
 
-  zaphod-review-passed:
-    name: Zaphod Review Passed
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    needs: gate
-    permissions:
-      contents: read
-      pull-requests: read
-    if: >-
-      github.event_name != 'pull_request_target' ||
-      (github.event.action != 'labeled' && github.event.action != 'unlabeled') ||
-      github.event.label.name == 'approved-human' ||
-      github.event.label.name == 'action-required-human' ||
-      startsWith(github.event.label.name, 'zaphod-')
-    steps:
-      - name: Evaluate zaphod-blocked label
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        env:
-          GH_MERGE_REF: ${{ github.event.merge_group.head_ref }}
-          GH_INPUT_PR: ${{ github.event.inputs.pr }}
-        with:
-          script: |
-            let number = null;
-            if (context.payload.pull_request) {
-              number = context.payload.pull_request.number;
-            } else if (context.payload.merge_group) {
-              const ref = process.env.GH_MERGE_REF || '';
-              const match = ref.match(/pr-(\d+)-/);
-              if (match) {
-                number = Number(match[1]);
-              }
-            } else if (process.env.GH_INPUT_PR) {
-              number = Number(process.env.GH_INPUT_PR);
-            }
-
-            if (!number) {
-              core.warning('No PR number in payload; cannot evaluate Zaphod review.');
-              core.setFailed('No PR number in payload.');
-              return;
-            }
-
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: number,
-            });
-            const labels = new Set(pr.labels.map(label => label.name));
-
-            if (labels.has('zaphod-blocked')) {
-              core.warning(
-                'Zaphod reviewer left items to resolve. ' +
-                'Address the `zaphod-blocked` findings and remove the label before merging.',
-              );
-              core.setFailed('zaphod-blocked label present on PR.');
-              return;
-            }
-
-            core.notice('Zaphod review passed: no unresolved reviewer comments.');
-
   verify-sender:
     name: Strip restricted label if applied by unauthorised actor
     if: >-
       github.event_name == 'pull_request_target' &&
       github.event.action == 'labeled' &&
       (github.event.label.name == 'approved-human' ||
-       github.event.label.name == 'action-required-human' ||
-       github.event.label.name == 'zaphod-blocked' ||
-       github.event.label.name == 'zaphod-approved')
+       github.event.label.name == 'action-required-human')
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions:
@@ -280,19 +217,15 @@ jobs:
           MAINTAINER: J-Melon
         with:
           script: |
-            // Each restricted label has its own allow-list.
-            //   approved-human / action-required-human: Josh-only (both
-            //     sides of the human verdict; SH-179).
-            //   zaphod-approved / zaphod-blocked: Josh OR workflow runs
-            //     (sender.login is 'github-actions[bot]' when a workflow
-            //     applies them); bots post verdicts, Josh overrides.
+            // approved-human / action-required-human are Josh-only (both
+            // sides of the human verdict; SH-179). The agent reviewer
+            // verdict now rides the bot synthesis review, not a label, so
+            // there are no zaphod verdict labels left to police here.
             const labelName = context.payload.label.name;
             const maintainer = process.env.MAINTAINER;
             const policy = {
               'approved-human': new Set([maintainer]),
               'action-required-human': new Set([maintainer]),
-              'zaphod-blocked': new Set([maintainer, 'github-actions[bot]']),
-              'zaphod-approved': new Set([maintainer, 'github-actions[bot]']),
             };
             const allowed = policy[labelName];
             if (!allowed) {

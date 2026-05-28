@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
-# Posts a swarm reviewer-agent verdict on a pull request.
+# Posts a swarm reviewer-agent's inline findings on a pull request.
+#
+# The reviewer verdict (approve / block) is reported to the organiser, not
+# posted as a label. The organiser synthesises every reviewer's verdict into
+# one bot synthesis review (APPROVE / REQUEST_CHANGES under shuck-volley-bot[bot]
+# via the bot-review workflow). This script only puts a reviewer's line-anchored
+# findings on the PR; it never applies a label.
 #
 # Usage:
 #   scripts/swarm/post-review.sh <pr-number> <verdict-json-file>
 #
 # Verdict JSON shape:
 #   {
-#     "verdict": "zaphod-approved" | "zaphod-blocked",
-#     "summary": "one-sentence overall finding",
+#     "verdict": "approve" | "block",
+#     "summary": "one-sentence overall finding",  # required when blocked
 #     "commenter": "<role-or-codename>",  # default commenter for items that
 #                                          # omit their own (reviewer role name,
 #                                          # implementer codename, or "josh")
@@ -22,14 +28,13 @@
 #   }
 #
 # Behaviour:
-# - zaphod-approved: applies the label; posts nothing. Clean reviews do not
-#   clutter the PR.
-# - zaphod-blocked: posts a GitHub pull-request review with event=COMMENT
-#   (GitHub rejects REQUEST_CHANGES on self-authored PRs), summary as the
-#   review body, and each item as a line-anchored review comment on its
+# - approve: posts nothing. Clean reviews do not clutter the PR; report the
+#   verdict to the organiser.
+# - block: posts a GitHub pull-request review with event=COMMENT, summary as
+#   the review body, and each item as a line-anchored review comment on its
 #   path and line. Each item body is emitted as "**<commenter>**\n\n<body>"
-#   so the author is legible at a glance in the review thread. Then applies
-#   zaphod-blocked.
+#   so the author is legible at a glance. Then report the block to the
+#   organiser, who posts the REQUEST_CHANGES synthesis review.
 #
 # The script always pipes JSON via stdin to `gh api`, never builds the
 # payload by interpolating strings into a shell command, so reviewer
@@ -59,53 +64,56 @@ verdict=$(jq -r '.verdict // empty' "$verdict_file")
 summary=$(jq -r '.summary // ""' "$verdict_file")
 
 case "$verdict" in
-	zaphod-approved | zaphod-blocked) ;;
-	"") die "verdict field is required (zaphod-approved or zaphod-blocked)" ;;
-	*) die "invalid verdict: $verdict (expected zaphod-approved or zaphod-blocked)" ;;
+	approve | block) ;;
+	"") die "verdict field is required (approve or block)" ;;
+	*) die "invalid verdict: $verdict (expected approve or block)" ;;
 esac
 
-if [[ "$verdict" == "zaphod-blocked" ]]; then
-	[[ -n "$summary" ]] || die "summary is required when verdict is zaphod-blocked"
-
-	items_count=$(jq '(.items // []) | length' "$verdict_file")
-	[[ "$items_count" -gt 0 ]] || die "items is required and non-empty when verdict is zaphod-blocked"
-
-	missing=$(jq -r '[(.items // [])[] | select((.path // "") == "" or (.line // null) == null)] | length' "$verdict_file")
-	[[ "$missing" == "0" ]] || die "every item must carry path and line (got $missing malformed)"
-
-	default_commenter=$(jq -r '.commenter // ""' "$verdict_file")
-	missing_commenter=$(
-		jq -r --arg default "$default_commenter" \
-			'[(.items // [])[] | select(((.commenter // $default) | length) == 0)] | length' \
-			"$verdict_file"
-	)
-	[[ "$missing_commenter" == "0" ]] \
-		|| die "every item needs a commenter (set top-level .commenter or .items[].commenter; got $missing_commenter missing)"
-
-	repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
-	payload=$(
-		jq -n \
-			--arg summary "$summary" \
-			--arg default_commenter "$default_commenter" \
-			--slurpfile verdict "$verdict_file" \
-			'{
-				event: "COMMENT",
-				body: $summary,
-				comments: (
-					$verdict[0].items | map({
-						path,
-						line,
-						side: "RIGHT",
-						body: ("**" + (.commenter // $default_commenter) + "**\n\n" + .body)
-					})
-				)
-			}'
-	)
-
-	printf '%s' "$payload" \
-		| gh api "repos/${repo}/pulls/${pr}/reviews" --method POST --input - \
-			--jq '"posted review: \(.html_url)"'
+if [[ "$verdict" == "approve" ]]; then
+	printf 'approve: nothing posted; report the verdict to the organiser.\n'
+	exit 0
 fi
 
-gh pr edit "$pr" --add-label "$verdict" >/dev/null
-printf 'applied label: %s\n' "$verdict"
+# Block: post the line-anchored findings.
+[[ -n "$summary" ]] || die "summary is required when verdict is block"
+
+items_count=$(jq '(.items // []) | length' "$verdict_file")
+[[ "$items_count" -gt 0 ]] || die "items is required and non-empty when verdict is block"
+
+missing=$(jq -r '[(.items // [])[] | select((.path // "") == "" or (.line // null) == null)] | length' "$verdict_file")
+[[ "$missing" == "0" ]] || die "every item must carry path and line (got $missing malformed)"
+
+default_commenter=$(jq -r '.commenter // ""' "$verdict_file")
+missing_commenter=$(
+	jq -r --arg default "$default_commenter" \
+		'[(.items // [])[] | select(((.commenter // $default) | length) == 0)] | length' \
+		"$verdict_file"
+)
+[[ "$missing_commenter" == "0" ]] \
+	|| die "every item needs a commenter (set top-level .commenter or .items[].commenter; got $missing_commenter missing)"
+
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+payload=$(
+	jq -n \
+		--arg summary "$summary" \
+		--arg default_commenter "$default_commenter" \
+		--slurpfile verdict "$verdict_file" \
+		'{
+			event: "COMMENT",
+			body: $summary,
+			comments: (
+				$verdict[0].items | map({
+					path,
+					line,
+					side: "RIGHT",
+					body: ("**" + (.commenter // $default_commenter) + "**\n\n" + .body)
+				})
+			)
+		}'
+)
+
+printf '%s' "$payload" \
+	| gh api "repos/${repo}/pulls/${pr}/reviews" --method POST --input - \
+		--jq '"posted findings: \(.html_url)"'
+
+printf 'block: findings posted; report the block to the organiser for the synthesis review.\n'

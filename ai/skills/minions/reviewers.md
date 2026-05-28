@@ -45,10 +45,12 @@ The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered r
 
 ## Verdict shape
 
-Two outcomes: approve or block. The label is the verdict; what you post beyond the label depends on which outcome. The dispatcher report is not a third outcome. If your dispatcher report contains substantive findings (player-affecting, latent bug, missing guard, design concern), those findings have to land on the PR as inline comments first; the verdict then becomes block. Putting findings in the dispatcher report alone leaves the author with nothing to act on and the merge gate with no signal.
+Two outcomes: approve or block. You do not apply a verdict label and you do not post the verdict on the PR yourself. You report your verdict to the organiser (the dispatcher report), and the organiser synthesises every reviewer's verdict into one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`, posted via the `bot-review` workflow). What you post on the PR is only your inline findings.
 
-- **Approve**: apply `zaphod-approved` via `gh pr edit <N> --add-label zaphod-approved` and stop. No comment on the challenge, no review body. The label is the verdict. If a note feels worth posting, the verdict was block, not approve. <!-- todo: once a service account exists, approves also post `gh pr review --approve --body ""` so the Reviews tab shows attribution on mobile. -->
-- **Block**: post each finding as an inline review comment anchored to the diff line. No verdict body on the challenge conversation. Apply `zaphod-blocked`. Never post in the main challenge thread.
+- **Approve**: post nothing on the challenge. Report "approve" to the organiser with your reasoning. If a note feels worth posting on the PR, the verdict was block, not approve.
+- **Block**: post each finding as an inline review comment anchored to the diff line (grouped into one Review, see below), never the main thread. Report "block" to the organiser so the synthesis review reflects it.
+
+Putting findings in the dispatcher report alone leaves the author with nothing to act on; substantive findings (player-affecting, latent bug, missing guard, design concern) land as inline comments on the PR first.
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
 
@@ -93,9 +95,7 @@ All replies stay inline.
 
 ## Labels
 
-Apply `zaphod-approved` when your verdict is clean, `zaphod-blocked` when you block. Never apply `approved-human` or `action-required-human`; those are Josh's alone. If another reviewer has already landed `zaphod-blocked`, your `zaphod-approved` gets superseded by the race-resolver workflow anyway; still apply it so your verdict is recorded.
-
-`zaphod-blocked` supersedes `zaphod-approved`. If a later specialist finds blocking issues after an earlier pass approved, the race-resolver strips the `zaphod-approved`. A later clean pass never downgrades a prior block; the block stands until a new commit triggers a fresh review.
+Reviewers apply no verdict label. The `zaphod-approved` / `zaphod-blocked` labels are retired; the agent verdict rides the bot synthesis review the organiser posts. Report your verdict to the organiser and let the organiser resolve consensus across reviewers: a block from any reviewer makes the synthesis review a REQUEST_CHANGES. Never apply `approved-human` or `action-required-human`; those are Josh's alone.
 
 Human verdict labels are mutually exclusive: `approved-human` (sign-off, required for merge) and `action-required-human` (address comments before merge). Both strip on every new commit, so a fix push naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with "Changes requested" while `action-required-human` is present, and "Needs human review" when neither human label is set. The approver-check workflow strips unauthorised applications.
 
@@ -107,18 +107,18 @@ When Josh asks for another pass on an existing challenge (not a re-review on a f
 
 The dispatcher dispatches reviewers at explicit review moments (first open, author "ready for re-review"), not on every push. On re-run, the dispatcher passes you `last-approved-sha..current-head` as the incremental range.
 
-Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, apply `zaphod-approved` silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
+Focus on the incremental diff. If `git diff <last-approved>..<head> -- <your-scope>` is empty, report "approve" to the organiser silently, same as any other clean approve. If the diff is non-empty, review the incremental only; the prior approval stands for everything up to `<last-approved>`.
 
-If you previously blocked and the new diff resolves your block: reply inline to each of your prior block findings, naming the fix SHA in 15 words or less. Then apply `zaphod-approved`. Don't leave block threads hanging open when the underlying issue is fixed.
+If you previously blocked and the new diff resolves your block: reply inline to each of your prior block findings, naming the fix SHA in 15 words or less. Then report "approve" to the organiser. Don't leave block threads hanging open when the underlying issue is fixed.
 
-## Replies and labels
+## Replies and verdict
 
 Two surfaces, easy to confuse:
 
 1. **Reply** is a threaded comment under the original finding. Required on every addressed finding. Use `gh api repos/.../pulls/<n>/comments/<id>/replies`. Resolving the thread (the GitHub UI checkbox) is Josh's job, not the dispatcher's; the reply itself closes the loop.
-2. **Label** is the reviewer's verdict surface. `zaphod-approved` on clean, `zaphod-blocked` on findings. Verify the label actually landed; CI strips Zaphod labels on every new commit so a label applied during the Battle round may be gone after the next push. If you re-Battle, re-apply.
+2. **Verdict** is reported to the organiser, not posted as a label. The organiser posts the single bot synthesis review that carries the consensus verdict. Your inline findings are your only PR-facing output.
 
-Pre-commit hooks and the merge gate read labels, not threads. Threads are for humans.
+Threads and the inline findings are the durable record; the synthesis review is the verdict surface.
 
 ## Mechanical fixes as commits
 
@@ -135,7 +135,7 @@ If your dispatch asks for "verdict, summary, and SHA", that's the dispatcher rep
 
 ## Examples
 
-**Approved:** label only, no comment posted. Dispatcher gets the full reasoning.
+**Approved:** nothing posted on the challenge; the organiser gets the full reasoning and folds it into the synthesis review.
 
 **Blocked:** two inlines, no main-thread comment.
 

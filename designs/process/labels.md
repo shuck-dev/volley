@@ -99,10 +99,9 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 
 ### AI review state
 
-- **`zaphod-approved`**: specialist reviewers from `.claude/agents/` passed the PR with no outstanding comments.
-- **`zaphod-blocked`**: at least one specialist reviewer left a line-anchored review comment. Blocks merge until resolved. Removed automatically once every review thread on the PR is marked Resolved.
+- **`zaphod-requested`**: Josh's "please review" signal asking the organiser to fan out the reviewer pool. Cleared automatically when the bot synthesis review lands.
 
-Applied by reviewer minions after `gh pr create` per `ai/skills/minions/reviewers.md`. These reflect AI reviewer output only; `zaphod-approved` is an advisory signal, not a merge decision.
+The reviewer verdict is not a label. Specialist reviewers from `.claude/agents/` post inline findings and report their verdict to the organiser, which posts one bot synthesis review (an approval, or request-changes if any reviewer blocked) under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`. That review is an advisory signal, not a merge decision.
 
 > **About the name.** "Zaphod" is the pan-galactic president from *The Hitchhiker's Guide to the Galaxy*: a two-headed alien whose extra head was added "to do all the lying, swearing and lounging about." The repo's AI reviewer is a chorus of specialists from `.claude/agents/`, so labelling their collective output under one figure with multiple heads fits. The leading `z` is also a sort hack: GitHub's label picker uses the Unicode Collation Algorithm, which treats most punctuation and emoji as primary-ignorable, so the only reliable way to push a label to the bottom of the picker is a text prefix that sorts late alphabetically. `z*` does that; `zaphod-*` happens to do that AND name the labels.
 
@@ -112,12 +111,11 @@ Applied by reviewer minions after `gh pr create` per `ai/skills/minions/reviewer
 
 ### Merge gate
 
-Two required status checks drive the merge gate:
+The required status checks are `Tests`, `Lint`, and `Human Approved`:
 
-- **`Human Approved`**: succeeds only when the `approved-human` label is present.
-- **`Zaphod Review Passed`**: succeeds only when the `zaphod-blocked` label is absent.
+- **`Human Approved`**: succeeds only when the `approved-human` label is present. Posted by `.github/workflows/approval-gate.yml` on label events.
 
-Both must pass before auto-merge fires. The checks are posted by `.github/workflows/approval-gate.yml` on label events.
+All required checks must pass before auto-merge fires. The agent reviewer verdict (the bot synthesis review) is attribution, not a required check.
 
 ### Merge state
 

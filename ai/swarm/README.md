@@ -94,7 +94,7 @@ Query across history: `git log --pretty='%(trailers:key=Agent-Role)' | sort | un
 
 Gru merges worktrees back without squashing, preserving per-minion attribution in the commit history. When the Dandori Challenge opens, `pr-describer` writes the body; the reader can scan the commit list to see which minion produced which change.
 
-Review happens in the Dandori Challenge, never on local files. "Ready for your review" means the branch is pushed, the Dandori Challenge is open, and the reviewer fan-out has posted at the current HEAD. Local file-review bypasses the `zaphod-approved` / `zaphod-blocked` surface and the reviewer pool entirely.
+Review happens in the Dandori Challenge, never on local files. "Ready for your review" means the branch is pushed, the Dandori Challenge is open, and the reviewer fan-out has posted at the current HEAD. Local file-review bypasses the inline-findings surface and the reviewer pool entirely.
 
 ## Bash allowlist
 
@@ -176,18 +176,18 @@ The full reviewer contract (verdict shape, brevity caps, bold-name prefix, inlin
 
 What the skill doesn't cover, and belongs in the swarm README:
 
-**Four labels on every PR.**
+**Verdict and labels.**
 
-- `zaphod-approved`: a reviewer read the diff and found it clean. Each reviewer applies their own.
-- `zaphod-blocked`: a reviewer found something that needs a fix. Blocked supersedes approved.
+- The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`) reflecting consensus: a block from any reviewer makes it REQUEST_CHANGES.
+- `zaphod-requested`: Josh's "please review" signal. The organiser fans out the reviewer pool; it strips when the bot review lands.
 - `approved-human`: Josh only. Sign-off; required for merge.
-- `action-required-human`: Josh only. Parallel to `zaphod-blocked`. Mutually exclusive with `approved-human`; applying one strips the other.
+- `action-required-human`: Josh only. Mutually exclusive with `approved-human`; applying one strips the other.
 
-Minions never apply either human label. Any push strips the `zaphod-*` namespace; re-review re-earns them. The `Human Approved` merge-queue check fails "Changes requested" while `action-required-human` is present, and "Needs human review" while neither human label is set.
+Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot review is attribution, not a required check. The `Human Approved` check fails "Changes requested" while `action-required-human` is present, and "Needs human review" while neither human label is set.
 
-**Reviewers post directly.** Each reviewer applies its own label. On approve, apply `zaphod-approved` and stop: no PR comment, no review body. The label is the verdict. On block, the reviewer submits a formal PR review with `gh pr review --request-changes` carrying `**<codename>** blocked at <short-sha>.` as the body, and attaches per-line findings as inline comments on that same review. Gru does not aggregate or post on their behalf. Reviewers hold `gh` through the bash allowlist for exactly this. Josh tracks who reviewed via the label list, not comment noise.
+**Reviewers post findings, not verdicts.** On approve, post nothing and report "approve" to the organiser. On block, post per-line findings as inline comments grouped in one COMMENT review with an empty body (via `scripts/swarm/post-review.sh`), and report "block". Reviewers do not submit `--request-changes` or `--approve` themselves and apply no label; the organiser posts the single synthesis review. Every comment opens with `**<codename>**` so attribution lives in the text.
 
-**Auto-merge discipline.** Gru may queue auto-merge with `gh pr merge --auto --squash` once a reviewer posts `zaphod-approved`. Auto-merge will not fire until `approved-human` lands; Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes.
+**Auto-merge discipline.** Gru may queue auto-merge with `gh pr merge --auto --squash` once the reviewer pass is clean. Auto-merge will not fire until `approved-human` lands; Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes.
 
 ### Review lifecycle diagram
 
@@ -195,10 +195,10 @@ Minions never apply either human label. Any push strips the `zaphod-*` namespace
 flowchart TD
     Open[PR opened] --> Scope[Gru scopes diff]
     Scope --> Fanout[Dispatch touched reviewers in parallel]
-    Fanout --> Verdicts[Approves silent; blocks post formal pr review]
-    Verdicts --> Labels[Reviewers apply zaphod-approved or zaphod-blocked]
-    Labels --> Wait{Push?}
-    Wait -- yes --> Strip[reviewer-re-run strips zaphod-*]
+    Fanout --> Verdicts[Approves silent; blocks post inline findings]
+    Verdicts --> Synth[Organiser posts one bot synthesis review]
+    Synth --> Wait{Push?}
+    Wait -- yes --> Strip[Native dismiss-stale clears the bot approval]
     Strip --> ReadyAgain[Author signals ready for re-review]
     ReadyAgain --> Scope
     Wait -- no --> Josh[Josh applies approved-human]
@@ -285,7 +285,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 **Secret exfiltration via test output.** A minion running tests sees test output, which could contain values read from environment variables or local `.env`. Audited 2026-04-21: no `.env*` files are present in the repo, and the only environment variable test code reads is `COVERAGE_FILE`, which is a path, not a secret. The standing rule remains that local `.env` does not carry production secrets and tests do not read them.
 
-**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. The `reviewer-re-run.yml` workflow strips `zaphod-approved` and `zaphod-blocked` on every new commit to a PR, forcing Gru to re-dispatch reviewers and re-apply the verdict before the Dandori Challenge can merge. `approved-human` is not touched by the workflow; that gate is Josh's alone.
+**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. The ruleset's native dismiss-stale-reviews-on-push clears the bot synthesis review's approval on every new commit, forcing Gru to re-dispatch reviewers and re-post the verdict before the Dandori Challenge can merge. `approved-human` is stripped on push by `approval-gate.yml`; that gate is Josh's alone.
 
 **Author attribution collapses to Josh.** DCO sign-off signs every commit as Josh; role attribution lives in the commit subject, not the author field. Git-blame cannot identify which minion produced which line directly. Acceptable for now: the subject tag is stable, the role is searchable, and audit trails live in the Dandori Challenge rather than blame.
 
@@ -293,7 +293,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 - Tracked: `ai/swarm/README.md` and `.claude/agents/*.md`.
 - Ignored: `ai/swarm/agents/` and `ai/swarm/tasks/`.
-- Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; minions queue auto-merge behind `zaphod-approved` and wait for `approved-human`.
+- Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; minions queue auto-merge behind a clean reviewer pass and wait for `approved-human`.
 
 The rest of the git rules live in [`ai/skills/minions/commits.md`](../skills/minions/commits.md) and [`ai/skills/gru/dispatch.md`](../skills/gru/dispatch.md). This file governs how the swarm is shaped; those govern how a single stream behaves on the branch.
 

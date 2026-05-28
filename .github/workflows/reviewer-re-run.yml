@@ -1,29 +1,16 @@
 name: Reviewer Re-run
 
-# Label lifecycle for the zaphod-* verdicts. Three reconcilers live here:
-#
-#   - strip-zaphod-on-push: new commit strips the two verdict labels
-#     (approved, blocked); each verdict must be re-earned against the new
-#     HEAD. zaphod-requested is NOT stripped here: a request to review is
-#     a standing ask that survives intervening pushes, so the author can
-#     keep pushing without losing the request. Re-dispatch is manual, by
-#     the organiser (main Claude thread), never CI; PR-triggered workflows
-#     do not run Claude because outside PRs are a prompt-injection surface.
-#   - verdict-strips-request: when zaphod-approved or zaphod-blocked lands,
-#     zaphod-requested has been answered and gets stripped. This is the only
-#     thing that clears the request; a push alone does not. The request was
-#     "please review"; the verdict closes it either way.
-#   - blocked-supersedes-approved (SH-166): when two specialists race and
-#     one lands blocked after the other landed approved, the blocker wins.
-#     approved is removed so the merged state reflects the combined verdict.
-#
-# Josh's approved-human label is never touched here; that gate is his alone.
+# When the bot synthesis review lands, the standing zaphod-requested "please
+# review" signal has been answered, so strip it. The agent reviewer verdict now
+# rides the bot review (APPROVE / REQUEST_CHANGES under shuck-volley-bot[bot]),
+# not the retired zaphod-approved / zaphod-blocked labels. Review staleness on a
+# new push is handled natively by the ruleset's dismiss-stale-reviews-on-push,
+# so no strip-on-push reconciler is needed, and with a single bot verdict there
+# is no approver/blocker race to resolve.
 
 on:
-  pull_request:
-    types: [synchronize]
-  pull_request_target:
-    types: [labeled]
+  pull_request_review:
+    types: [submitted]
 
 permissions:
   contents: read
@@ -33,52 +20,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  strip-zaphod:
-    name: Strip zaphod verdict labels on new commits
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-    steps:
-      - name: Remove zaphod-approved, zaphod-blocked
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            // zaphod-requested is intentionally absent: a review request is a
-            // standing ask that survives pushes and clears only on a verdict
-            // (see verdict-strips-request below).
-            const labels = ['zaphod-approved', 'zaphod-blocked'];
-            for (const name of labels) {
-              try {
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.payload.pull_request.number,
-                  name,
-                });
-                core.info(`Removed ${name}`);
-              } catch (error) {
-                if (error.status === 404) {
-                  core.info(`${name} not present; skipping`);
-                } else {
-                  throw error;
-                }
-              }
-            }
-
   verdict-strips-request:
-    # zaphod-requested is a "please review" signal from Josh; once a verdict
-    # lands (approved or blocked), the request is answered. Stripping it
-    # avoids the next PR-state summary mis-reading a stale request as "still
-    # waiting" when reviewers have already verdict'd.
-    name: Verdict strips request label
-    if: >-
-      github.event_name == 'pull_request_target' &&
-      (github.event.label.name == 'zaphod-approved' ||
-       github.event.label.name == 'zaphod-blocked')
+    name: Bot review strips request label
+    # Only the bot's synthesis review answers the zaphod-requested signal; a
+    # human or other review does not.
+    if: github.event.review.user.login == 'shuck-volley-bot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions:
@@ -97,49 +43,13 @@ jobs:
                 issue_number: context.payload.pull_request.number,
                 name: 'zaphod-requested',
               });
-              core.info('Removed zaphod-requested; verdict closes the request.');
+              core.info('Removed zaphod-requested; the bot synthesis review answers the request.');
             } catch (error) {
               if (error.status === 404) {
                 core.info('zaphod-requested not present; nothing to strip.');
               } else {
-                throw error;
-              }
-            }
-
-  blocked-supersedes-approved:
-    # SH-166: race resolver. When two reviewer specialists finish seconds
-    # apart and the blocker lands after the approver, the last-writer-wins
-    # outcome hides the blocking finding. Whenever zaphod-blocked is applied,
-    # strip zaphod-approved so the final state reflects the stricter verdict.
-    # zaphod-blocked is never downgraded by a later zaphod-approved; this
-    # gate only runs on the blocked side of the race.
-    name: Blocked supersedes approved
-    if: >-
-      github.event_name == 'pull_request_target' &&
-      github.event.label.name == 'zaphod-blocked'
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
-    steps:
-      - name: Remove zaphod-approved if present
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
-        with:
-          script: |
-            try {
-              await github.rest.issues.removeLabel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                name: 'zaphod-approved',
-              });
-              core.info('Removed zaphod-approved; zaphod-blocked supersedes.');
-            } catch (error) {
-              if (error.status === 404) {
-                core.info('zaphod-approved not present; nothing to supersede.');
-              } else {
-                throw error;
+                // Housekeeping only (e.g. read-only token on a fork review);
+                // do not fail the run.
+                core.warning(`Could not strip zaphod-requested: ${error.message}`);
               }
             }

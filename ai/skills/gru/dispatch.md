@@ -158,9 +158,9 @@ Reviewers fire after the impl challenge opens, scope-filtered by the diff. Defau
 
 Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers. Devils-advocate has no shell access; pass the rule text and audit table inline in the prompt or expect a context-blocked report.
 
-Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. Approves silently re-apply on a clean incremental.
+Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. A clean incremental is reported as a silent approve to Gru.
 
-Reviewers reliably report a verdict but skip the GitHub side-effects the contract in `reviewers.md` already mandates: keeping the review body empty with findings posted inline, and applying their own `zaphod-approved` / `zaphod-blocked` label. Both slipped on #740, a block summary landed on the main conversation thread and an approve never applied its label. So every reviewer dispatch brief restates one line, inline comments only, empty review body, never the main thread, apply your own zaphod label; and Gru verifies the actual label and body on the PR before reporting the verdict, re-applying a missing or stripped label by hand.
+Reviewers apply no verdict label; they report their verdict to Gru and post findings inline. The verdict surface is one bot synthesis review that Gru posts via the `bot-review` workflow (`gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES`), reflecting the resolved consensus: a block from any reviewer makes it REQUEST_CHANGES. The side-effect that slipped on #740 was a block summary landing on the main thread instead of inline, so every reviewer dispatch brief restates one line, inline comments only, never the main thread, report your verdict to me. Gru verifies the inline findings actually landed before posting the synthesis verdict. The merge gate is unchanged by the verdict: only Tests, Lint, and Josh's `approved-human` gate the queue; the bot review is the attributed agent verdict, not a required check.
 
 ## Consensus on disagreement
 
