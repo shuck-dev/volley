@@ -94,7 +94,7 @@ Two labels are Josh-only:
 
 Dispatch happens at declared review moments (Dandori Challenge first opens, author signals ready for re-review), not every push. Gru partitions the `<last-approved>..<head>` diff by reviewer scope and only dispatches reviewers whose scope was touched. Scope-filter empty means immediate approve.
 
-Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot synthesis review is attribution, not a required check. The `Human Approved` check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set. The standing `zaphod-requested` review request strips when the bot review lands; review staleness on a push is handled natively by the ruleset's dismiss-stale-reviews-on-push.
+Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot synthesis review is attribution, not a required check. The `Human Approved` check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set. The standing `zaphod-requested` review request strips when the bot review lands; a stale bot approval is dismissed on push by the ruleset's dismiss-stale-reviews-on-push, while a bot request-changes persists until the next review.
 
 ## Live state versus stable protocol
 

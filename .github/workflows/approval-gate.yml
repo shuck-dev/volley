@@ -61,8 +61,7 @@ jobs:
             // Both human verdict labels are content-specific: a new push
             // invalidates them, so Josh must re-verdict after addressing
             // feedback (action-required-human) or re-reviewing a tweak
-            // (approved-human). The bot synthesis review is cleared on push
-            // by the ruleset's dismiss-stale-reviews-on-push.
+            // (approved-human).
             const pr = context.payload.pull_request;
             const current = new Set(pr.labels.map(label => label.name));
             for (const name of ['approved-human', 'action-required-human']) {

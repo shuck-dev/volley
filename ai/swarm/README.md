@@ -234,7 +234,7 @@ On a review moment, Gru:
 
 Reviewers always read the Dandori Challenge's diff via `gh pr diff <N>`, not the working tree. The working tree in any worktree may be on a different branch. On the first open the range is the full diff; on re-review the range is `<last-approved>..<head>`.
 
-The ruleset's native dismiss-stale-reviews-on-push clears the bot synthesis review on every push, so a verdict never carries across commits; `approved-human` is stripped on push by `approval-gate.yml`.
+The ruleset's native dismiss-stale-reviews-on-push dismisses the bot synthesis review's approval on every push (a request-changes persists until re-review), so an approving verdict never carries across commits; `approved-human` is stripped on push by `approval-gate.yml`.
 
 ## Gru rules
 
