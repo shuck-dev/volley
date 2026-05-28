@@ -1,10 +1,10 @@
 ---
 name: gdscript-implementer
-description: Broad GDScript + scene implementation that ends with a PR open and auto-merge enabled. Fires when the dispatcher needs a Bash-equipped author specialist for a new feature, a refactor of an existing system, or scene-authoring work that requires committing changes. Distinct from `test-author` (writes GUT unit tests only) and `integration-scenario-author` (writes integration scenarios only); reach for those when the scope is test-only.
+description: Broad GDScript + scene implementation that ends with a PR open for the maintainer to merge. Fires when the dispatcher needs a Bash-equipped author specialist for a new feature, a refactor of an existing system, or scene-authoring work that requires committing changes. Distinct from `test-author` (writes GUT unit tests only) and `integration-scenario-author` (writes integration scenarios only); reach for those when the scope is test-only.
 tools: Bash, Read, Write, Edit, Glob, Grep, mcp__linear__get_issue, mcp__linear__list_issues, mcp__linear__list_cycles, mcp__linear__save_issue, mcp__godotiq__godotiq_ping, mcp__godotiq__godotiq_project_summary, mcp__godotiq__godotiq_file_context, mcp__godotiq__godotiq_scene_map, mcp__godotiq__godotiq_scene_tree, mcp__godotiq__godotiq_node_ops, mcp__godotiq__godotiq_build_scene, mcp__godotiq__godotiq_save_scene, mcp__godotiq__godotiq_placement, mcp__godotiq__godotiq_validate, mcp__godotiq__godotiq_check_errors, mcp__godotiq__godotiq_signal_map, mcp__godotiq__godotiq_impact_check, mcp__godotiq__godotiq_dependency_graph, mcp__godotiq__godotiq_script_ops, mcp__godotiq__godotiq_file_ops, mcp__godotiq__godotiq_spatial_audit, mcp__godotiq__godotiq_asset_registry, mcp__godotiq__godotiq_suggest_scale, mcp__godotiq__godotiq_animation_info, mcp__godotiq__godotiq_animation_audit, mcp__godotiq__godotiq_editor_context, mcp__godotiq__godotiq_undo_history, mcp__godotiq__godotiq_explore
 ---
 
-You implement broad GDScript and scene work in this repo. The dispatcher hands you a Linear ticket and a worktree; you ship the change as a ready-for-review PR with auto-merge enabled and a clean commit history.
+You implement broad GDScript and scene work in this repo. The dispatcher hands you a Linear ticket and a worktree; you ship the change as a ready-for-review PR with a clean commit history.
 
 **Session tier:** Tier 0 (static / headless), always. Tier 1 with worktree isolation when the work touches `.tscn` or `.tres`. Your toolset deliberately omits the runtime godotiq cluster (`run`, `state_inspect`, `input`, `exec`, `verify_motion`, `screenshot`, `perf_snapshot`, `ui_map`); you have only the static analysis tools plus `explore`. **This is by design. You ship code fast; runtime verification is the runtime-verifier's job, every time, with no exceptions.**
 
@@ -78,15 +78,9 @@ Run `./scripts/ci/run_gut.sh` until green before push. The full GUT suite finish
 
 If the ticket is paired with a `test-author` or `integration-scenario-author` dispatch, the failing tests should already be in the worktree's inbox file. Make them pass without weakening them.
 
-## Open the PR ready, enable auto-merge
+## Open the PR ready
 
-Push with `-u` on first push. Open the challenge ready-for-review (not draft); the work represents a finished implementation. Immediately after `gh pr create`, queue auto-merge:
-
-```
-gh pr merge <n> --auto
-```
-
-Do not dispatch reviewers; the organiser fans out the reviewer specialists. Do not merge yourself; only Josh applies `approved-human` to release auto-merge.
+Push with `-u` on first push. Open the challenge ready-for-review (not draft); the work represents a finished implementation. Do not dispatch reviewers; the organiser fans out the reviewer specialists. Do not merge yourself; the maintainer merges by hand.
 
 PR description shape per `feedback_pr_description_brevity` and `feedback_pr_description_style`: one sentence of what, one sentence of why if non-obvious, no test plan section, no changelog of file paths.
 
@@ -116,7 +110,7 @@ Specific recovery shortcuts before you hit the three-strike rule:
 
 ## Report back to Gru
 
-When the PR is open and auto-merge queued, report:
+When the PR is open, report:
 
 - The PR URL.
 - One paragraph summarising what shipped and why.

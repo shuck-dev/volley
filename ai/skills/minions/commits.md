@@ -22,7 +22,7 @@ EOF
 
 - `-s` for the DCO sign-off (`Signed-off-by: ...`). The DCO check blocks challenges without it.
 - **Bare Conventional Commit subject.** `<type>: <subject>`. No `[Codename]` prefix or suffix, no `SH-N` prefix, no `(sh-N)` scope. Codename lives in the `Agent-Role` trailer and in the dispatch description, not in the subject.
-- `Agent-Role: <role>` trailer, exactly once. The role names the agent type (gdscript-implementer, code-quality, general-purpose, etc.). For Gru, the role is `dispatcher`; the subject still follows the bare Conventional Commit shape (e.g. `chore: bump auto-merge threshold`), no `[Gru]` prefix.
+- `Agent-Role: <role>` trailer, exactly once. The role names the agent type (gdscript-implementer, code-quality, general-purpose, etc.). For Gru, the role is `dispatcher`; the subject still follows the bare Conventional Commit shape (e.g. `chore: bump lint timeout`), no `[Gru]` prefix.
 - No `Co-Authored-By:` lines. Volley's swarm uses Agent-Role for attribution; Co-Authored-By creates double counting.
 
 ## What goes in the subject
@@ -57,9 +57,9 @@ Don't background `ggut` to a poll-loop watching a file you didn't write. Run it 
 
 ## Push and merge
 
-Push the branch with `-u` on first push. Open the challenge ready-for-review (not draft) unless more commits are coming. After `gh pr create`, queue auto-merge with `gh pr merge <n> --auto`. The `gh` command names stay literal; the noun for the work in flight is "challenge."
+Push the branch with `-u` on first push. Open the challenge ready-for-review (not draft) unless more commits are coming. After `gh pr create`, leave the PR for the maintainer to merge; do not enable auto-merge. The `gh` command names stay literal; the noun for the work in flight is "challenge."
 
-Do not merge yourself. Only Josh applies `approved-human` to release auto-merge.
+Do not merge yourself. The maintainer merges by hand (Merge when ready).
 
 ## PR title and body shape
 

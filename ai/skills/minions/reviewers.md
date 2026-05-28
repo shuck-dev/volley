@@ -95,9 +95,9 @@ All replies stay inline.
 
 ## Labels
 
-Reviewers apply no verdict label. The agent verdict rides the bot synthesis review the organiser posts. Report your verdict to the organiser and let the organiser resolve consensus across reviewers: a block from any reviewer makes the synthesis review a REQUEST_CHANGES. Never apply `approved-human` or `action-required-human`; those are Josh's alone.
+Reviewers apply no verdict label. The agent verdict rides the bot synthesis review the organiser posts. Report your verdict to the organiser and let the organiser resolve consensus across reviewers: a block from any reviewer makes the synthesis review a REQUEST_CHANGES. Never merge the PR; the maintainer merges by hand.
 
-Human verdict labels are mutually exclusive: `approved-human` (sign-off, required for merge) and `action-required-human` (address comments before merge). Both strip on every new commit, so a fix push naturally clears the blocker and Josh re-verdicts on the next pass. The `Human Approved` merge-queue check fails with "Changes requested" while `action-required-human` is present, and "Needs human review" when neither human label is set. The approver-check workflow strips unauthorised applications.
+Approval is the maintainer's manual merge (Merge when ready), not a label. The required checks are `Tests` and `Lint`; there is no human-approval label or check.
 
 ## Follow-up review
 

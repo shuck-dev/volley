@@ -168,7 +168,7 @@ Only two. Gru does not call standups.
 1. **A review moment.** The Dandori Challenge opens, or the author reports "ready for re-review" after a revision round. Gru dispatches `pr-describer` (first open only) and the scope-filtered reviewer fan-out.
 2. **A work unit closes.** Gru scrubs the scratchpad and promotes keepers.
 
-Intermediate pushes clear the bot synthesis review (native dismiss-stale) and strip `approved-human`, but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Minions do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
+Intermediate pushes clear the bot synthesis review (native dismiss-stale) but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Minions do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
 
 ## PR verdicts and merge
 
@@ -178,16 +178,13 @@ What the skill doesn't cover, and belongs in the swarm README:
 
 **Verdict and labels.**
 
-- The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review under `shuck-volley-bot[bot]` every review round: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post clears `zaphod-requested`.
-- `zaphod-requested`: Josh's "please review" signal. The organiser fans out the reviewer pool; it strips when the bot review lands.
-- `approved-human`: Josh only. Sign-off; required for merge.
-- `action-required-human`: Josh only. Mutually exclusive with `approved-human`; applying one strips the other.
+- The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review under `shuck-volley-bot[bot]` every review round: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked.
 
-Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot review is attribution, not a required check. The `Human Approved` check fails "Changes requested" while `action-required-human` is present, and "Needs human review" while neither human label is set.
+Minions never merge. The required checks are `Tests` and `Lint`; the maintainer's manual merge is the approval, and the bot review is attribution, not a required check.
 
 **Reviewers post findings, not verdicts.** On approve, post nothing and report "approve" to the organiser. On block, post per-line findings as inline comments grouped in one COMMENT review with an empty body (via `scripts/swarm/post-review.sh`), and report "block". Reviewers do not submit `--request-changes` or `--approve` themselves and apply no label; the organiser posts the single synthesis review. Every comment opens with `**<codename>**` so attribution lives in the text.
 
-**Auto-merge discipline.** Gru may queue auto-merge with `gh pr merge --auto --squash` once the reviewer pass is clean. Auto-merge will not fire until `approved-human` lands; Josh stays the gate. Direct merge is forbidden. No rebases, no amends, no force pushes.
+**Merge discipline.** The maintainer merges PRs by hand (Merge when ready). Agents never run `gh pr merge` and never enable auto-merge. No rebases, no amends, no force pushes.
 
 ### Review lifecycle diagram
 
@@ -201,8 +198,7 @@ flowchart TD
     Wait -- yes --> Strip[Native dismiss-stale clears the bot approval]
     Strip --> ReadyAgain[Author signals ready for re-review]
     ReadyAgain --> Scope
-    Wait -- no --> Josh[Josh applies approved-human]
-    Josh --> AutoMerge[Auto-merge fires]
+    Wait -- no --> Josh[Josh reviews and merges by hand]
 ```
 
 ### Reviewer scope map
@@ -222,7 +218,7 @@ flowchart LR
 
 ### Reviewer dispatch discipline
 
-Review happens at declared review moments, not on every push. A review moment is the Dandori Challenge first opening, or the author (minion or Josh) reporting "ready for re-review" after a revision round. Mid-flight WIP pushes clear the bot synthesis review and strip `approved-human`; Gru lets that happen and waits.
+Review happens at declared review moments, not on every push. A review moment is the Dandori Challenge first opening, or the author (minion or Josh) reporting "ready for re-review" after a revision round. Mid-flight WIP pushes clear the bot synthesis review; Gru lets that happen and waits.
 
 On a review moment, Gru:
 
@@ -234,13 +230,13 @@ On a review moment, Gru:
 
 Reviewers always read the Dandori Challenge's diff via `gh pr diff <N>`, not the working tree. The working tree in any worktree may be on a different branch. On the first open the range is the full diff; on re-review the range is `<last-approved>..<head>`.
 
-The ruleset's native dismiss-stale-reviews-on-push dismisses the bot synthesis review's approval on every push (a request-changes persists until re-review), so an approving verdict never carries across commits; `approved-human` is stripped on push by `approval-gate.yml`.
+The ruleset's native dismiss-stale-reviews-on-push dismisses the bot synthesis review's approval on every push (a request-changes persists until re-review), so an approving verdict never carries across commits.
 
 ## Gru rules
 
 Four habits keep Gru honest across turns.
 
-**Hydrate PR state at turn-start.** When the turn touches PRs (dispatching reviewers, replying to comments, narrating status, deciding about merge conflicts), run `gh pr list --state open --json number,headRefOid,labels,state,mergeStateStatus,isDraft,updatedAt` first. Memory from earlier turns goes stale: SHAs move on push, the bot review and `approved-human` clear on push, Josh applies labels between turns, merges happen quietly. For a single PR, `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft` is the tighter form.
+**Hydrate PR state at turn-start.** When the turn touches PRs (dispatching reviewers, replying to comments, narrating status, deciding about merge conflicts), run `gh pr list --state open --json number,headRefOid,labels,state,mergeStateStatus,isDraft,updatedAt` first. Memory from earlier turns goes stale: SHAs move on push, the bot review clears on push, merges happen quietly. For a single PR, `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft` is the tighter form.
 
 **Codename leads every Agent dispatch.** The `description` field on the Agent tool reads `<Codename> <short action>` (`Trillian reviews #321 code`, `Marvin revises #321 tests`). The codename is what Josh tracks on the CLI; the role is already in `subagent_type`.
 
@@ -285,7 +281,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 **Secret exfiltration via test output.** A minion running tests sees test output, which could contain values read from environment variables or local `.env`. Audited 2026-04-21: no `.env*` files are present in the repo, and the only environment variable test code reads is `COVERAGE_FILE`, which is a path, not a secret. The standing rule remains that local `.env` does not carry production secrets and tests do not read them.
 
-**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. The ruleset's native dismiss-stale-reviews-on-push clears the bot synthesis review's approval on every new commit, forcing Gru to re-dispatch reviewers and re-post the verdict before the Dandori Challenge can merge. `approved-human` is stripped on push by `approval-gate.yml`; that gate is Josh's alone.
+**Re-review drift.** Reviewer verdicts re-run on every follow-up push, per the PR-verdicts section. The ruleset's native dismiss-stale-reviews-on-push clears the bot synthesis review's approval on every new commit, forcing Gru to re-dispatch reviewers and re-post the verdict. The maintainer merges by hand; that gate is theirs alone.
 
 **Author attribution collapses to Josh.** DCO sign-off signs every commit as Josh; role attribution lives in the commit subject, not the author field. Git-blame cannot identify which minion produced which line directly. Acceptable for now: the subject tag is stable, the role is searchable, and audit trails live in the Dandori Challenge rather than blame.
 
@@ -293,7 +289,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 - Tracked: `ai/swarm/README.md` and `.claude/agents/*.md`.
 - Ignored: `ai/swarm/agents/` and `ai/swarm/tasks/`.
-- Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs; minions queue auto-merge behind a clean reviewer pass and wait for `approved-human`.
+- Merge `main` into branches; never rebase. New commits on top, never amends. No force pushes. Josh merges PRs by hand; agents do not merge or enable auto-merge.
 
 The rest of the git rules live in [`ai/skills/minions/commits.md`](../skills/minions/commits.md) and [`ai/skills/gru/dispatch.md`](../skills/gru/dispatch.md). This file governs how the swarm is shaped; those govern how a single stream behaves on the branch.
 

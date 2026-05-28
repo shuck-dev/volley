@@ -85,18 +85,13 @@ Everything between those two points is parallel. Minions do not wait for each ot
 
 ## PR verdict flow
 
-Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post also clears the standing `zaphod-requested` label. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
+Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
 
-Two properties move off mechanism onto organiser discipline: the strictest-verdict rule (a block outweighs an approve) is the organiser's synthesis, not a reconciler workflow, and the verdict surface resolves only while an organiser session is live, since no event-driven path posts or clears it otherwise. Accepted for a solo-maintainer cadence; inline findings land regardless. If the bot App is down, no synthesis verdict posts and `zaphod-requested` does not clear, but inline findings and the `approved-human` gate are unaffected.
-
-Two labels are Josh-only:
-
-- `approved-human`: Josh's sign-off. Required for merge.
-- `action-required-human`: Josh's "I looked at this and want changes". Mutually exclusive with `approved-human`.
+Two properties move off mechanism onto organiser discipline: the strictest-verdict rule (a block outweighs an approve) is the organiser's synthesis, not a reconciler workflow, and the verdict surface resolves only while an organiser session is live, since no event-driven path posts or clears it otherwise. Accepted for a solo-maintainer cadence; inline findings land regardless. If the bot App is down, no synthesis verdict posts, but inline findings and the maintainer's manual merge are unaffected.
 
 Dispatch happens at declared review moments (Dandori Challenge first opens, author signals ready for re-review), not every push. Gru partitions the `<last-approved>..<head>` diff by reviewer scope and only dispatches reviewers whose scope was touched. Scope-filter empty means immediate approve.
 
-Minions never apply a human label. The required checks are `Tests`, `Lint`, and `Human Approved`; the bot synthesis review is attribution, not a required check. The `Human Approved` check fails "Action required" while `action-required-human` is present and "Needs human review" when neither human label is set. The standing `zaphod-requested` review request strips when the bot review lands; a stale bot approval is dismissed on push by the ruleset's dismiss-stale-reviews-on-push, while a bot request-changes persists until the next review.
+Minions never merge. The required checks are `Tests` and `Lint`; the maintainer's manual merge is the approval, and the bot synthesis review is attribution, not a required check. A stale bot approval is dismissed on push by the ruleset's dismiss-stale-reviews-on-push, while a bot request-changes persists until the next review.
 
 ## Live state versus stable protocol
 

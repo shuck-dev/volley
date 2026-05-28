@@ -48,6 +48,6 @@ Return a structured verdict to the dispatcher. Three fields:
 - `summary`: one-sentence overall finding. For approved verdicts this is optional.
 - `items`: required when blocked, absent when approved. Each item is `{path, line, body}`. Anchor every finding to the specific line in the diff that triggers the concern: the `@export` that renames, the `if data.has("old_field")` branch, the autoload order edit. `body` explains the concern and the fix in one or two sentences.
 
-Never propose the `approved-human` label. That gate is Josh's alone.
+Never merge the PR; the maintainer merges by hand.
 
 Verdict surface per `ai/skills/minions/reviewers.md and ai/skills/minions/pr-output.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.
