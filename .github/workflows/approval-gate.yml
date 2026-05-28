@@ -21,12 +21,12 @@ on:
 permissions:
   contents: read
 
-# `Human Approved` is a real job rather than a check-run posted from inside a
-# script step. The merge queue's enqueue-time pre-evaluator matches required
-# checks against workflow job names; it cannot see `github.rest.checks.create()`
-# calls inside a github-script step, so script-posted checks pass on the PR head
-# but leave the queue stuck at "N of M required status checks are expected".
-# See SH-159.
+# `Human Approved` must be a workflow job, not a check-run posted from a
+# script step: the merge queue's enqueue-time pre-evaluator matches required
+# checks against workflow job names and cannot see `github.rest.checks.create()`
+# calls inside a github-script step, so a script-posted check passes on the PR
+# head but leaves the queue stuck at "N of M required status checks are
+# expected". See SH-159.
 
 concurrency:
   group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
@@ -217,9 +217,7 @@ jobs:
         with:
           script: |
             // approved-human / action-required-human are Josh-only (both
-            // sides of the human verdict; SH-179). The agent reviewer
-            // verdict now rides the bot synthesis review, not a label, so
-            // there are no zaphod verdict labels left to police here.
+            // sides of the human verdict; SH-179).
             const labelName = context.payload.label.name;
             const maintainer = process.env.MAINTAINER;
             const policy = {
