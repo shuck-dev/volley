@@ -72,12 +72,14 @@ shape = SubResource("RectangleShape2D_s1xkn")
 
 [node name="VenueLeftBound" type="StaticBody2D" parent="." unique_id=1925147373]
 position = Vector2(-1700, 0)
+collision_layer = 4
 
 [node name="VenueLeftBoundShape" type="CollisionShape2D" parent="VenueLeftBound" unique_id=324592534]
 shape = SubResource("RectangleShape2D_j16ra")
 
 [node name="VenueRightBound" type="StaticBody2D" parent="." unique_id=1541086575]
 position = Vector2(1920, 0)
+collision_layer = 4
 
 [node name="VenueRightBoundShape" type="CollisionShape2D" parent="VenueRightBound" unique_id=1823696433]
 shape = SubResource("RectangleShape2D_j16ra")
