@@ -176,7 +176,7 @@ The full reviewer contract (verdict shape, brevity caps, bold-name prefix, inlin
 
 What the skill doesn't cover, and belongs in the swarm README:
 
-**Verdict and labels.**
+**Verdict.**
 
 - The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review under `shuck-volley-bot[bot]` every review round: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked.
 
