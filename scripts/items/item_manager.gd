@@ -171,6 +171,17 @@ func get_rack_slot_index(item_key: String) -> int:
 	return state.rack_slot_index_by_key.get(item_key, -1)
 
 
+## Frees the rack slot a held item occupied so concurrent inserts fill from slot 0.
+## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
+func release_rack_slot(item_key: String) -> void:
+	state.rack_slot_index_by_key.erase(item_key)
+
+
+## Re-assigns the lowest free rack slot when a held item returns to the rack.
+func reassign_rack_slot(item_key: String) -> void:
+	_assign_rack_slot(item_key, _get_item(item_key).role)
+
+
 ## Picks the lowest free slot index among STORED items of the same role and records it.
 ## Idempotent: an item with an existing assignment keeps it.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:

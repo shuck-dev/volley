@@ -98,6 +98,19 @@ func test_grab_from_rack_spawns_held_body_without_activating_item() -> void:
 	)
 
 
+func test_grab_from_rack_frees_the_slot_for_a_concurrent_insert() -> void:
+	_manager.take("ball_alpha")
+	assert_eq(_manager.get_rack_slot_index("ball_alpha"), 0, "precondition: stored in slot 0")
+
+	_drag.grab_from_rack("ball_alpha")
+
+	assert_eq(
+		_manager.get_rack_slot_index("ball_alpha"),
+		-1,
+		"grabbing a rack ball frees its slot so a concurrent insert fills slot 0",
+	)
+
+
 func test_click_on_rack_without_movement_does_not_introduce_ball() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")

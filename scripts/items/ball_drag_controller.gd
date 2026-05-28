@@ -231,6 +231,10 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 		# Equipment-role rack pickup still rides HeldBody; the shop spawn path retires it in a future step.
 		return false
 
+	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
+	if _item_manager != null:
+		_item_manager.release_rack_slot(item_key)
+
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
@@ -678,6 +682,8 @@ func _restore_held_ball_to_stored(item_key: String) -> void:
 	# Live OUT_REST → rack-drop carries a loose-in-venue overlay that would otherwise hide the restored slot.
 	if _item_manager != null:
 		_item_manager.clear_loose_in_venue(item_key)
+		# Rack pickups freed the slot on grab; re-claim one before reading the slot position.
+		_item_manager.reassign_rack_slot(item_key)
 	_held_ball.enter_stored()
 	if rack != null:
 		_held_ball.global_position = rack.get_slot_position_for(item_key)
@@ -687,9 +693,22 @@ func _finalise_gesture(item_key: String, release_position: Vector2, over_court: 
 	# Live-grab path: the Ball survives or was queue_freed by the reconciler via court_changed; do not free here.
 	if _held_body != null:
 		_held_body.queue_free()
+
+	# A rack-origin gesture that ends back on the rack freed its slot on grab; reclaim one so the
+	# next insert sees the slot occupied. Court/venue endings stay slotless.
+	if _item_manager != null and _ended_on_rack(item_key):
+		_item_manager.reassign_rack_slot(item_key)
+
 	_reset_gesture_state()
 	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
 	drop_completed.emit(item_key, release_position, over_court)
+
+
+## True when a finalised item sits STORED on the rack (not on court, not loose in the venue).
+func _ended_on_rack(item_key: String) -> bool:
+	if _item_manager.get_placement(item_key) != Placement.STORED:
+		return false
+	return not _item_manager.is_loose_in_venue(item_key)
 
 
 func _reset_gesture_state() -> void:

@@ -48,7 +48,10 @@ func refresh() -> void:
 	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
 	for item_key in kit_keys:
 		var slot_index: int = _item_manager.get_rack_slot_index(item_key)
-		if slot_index < 0 or slot_index >= marker_count:
+		if slot_index < 0:
+			# Slot freed while the ball is held; it leaves the rack until restore re-claims a slot.
+			continue
+		if slot_index >= marker_count:
 			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [item_key, slot_index])
 			continue
 		var definition: ItemDefinition = _get_item_definition(item_key)

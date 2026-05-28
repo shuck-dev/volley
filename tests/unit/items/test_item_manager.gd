@@ -404,6 +404,63 @@ class TestKitItemsBall:
 		assert_eq(kit[0], "kit_ball")
 
 
+class TestRackSlotAssignment:
+	extends GutTest
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var typed: Array[ItemDefinition] = []
+		for key: String in ["ball_one", "ball_two"]:
+			var ball_item := ItemDefinition.new()
+			ball_item.key = key
+			ball_item.role = &"ball"
+			ball_item.base_cost = 100
+			ball_item.cost_scaling = 2.0
+			ball_item.max_level = 3
+			ball_item.effects = []
+			typed.append(ball_item)
+		_manager.items.assign(typed)
+
+	func test_first_stored_ball_takes_slot_zero() -> void:
+		ItemFactory.give(_manager, "ball_one")
+		assert_eq(_manager.get_rack_slot_index("ball_one"), 0)
+
+	func test_release_frees_the_slot() -> void:
+		ItemFactory.give(_manager, "ball_one")
+		_manager.release_rack_slot("ball_one")
+		assert_eq(
+			_manager.get_rack_slot_index("ball_one"),
+			-1,
+			"a held ball must vacate its slot so a concurrent insert can take slot 0",
+		)
+
+	func test_concurrent_insert_fills_slot_zero_while_a_ball_is_held() -> void:
+		ItemFactory.give(_manager, "ball_one")
+		_manager.release_rack_slot("ball_one")
+
+		ItemFactory.give(_manager, "ball_two")
+
+		assert_eq(
+			_manager.get_rack_slot_index("ball_two"),
+			0,
+			"with the held ball's slot freed, the new entry must fill slot 0, not slot 1",
+		)
+
+	func test_restore_reclaims_the_next_free_slot() -> void:
+		ItemFactory.give(_manager, "ball_one")
+		_manager.release_rack_slot("ball_one")
+		ItemFactory.give(_manager, "ball_two")
+
+		_manager.reassign_rack_slot("ball_one")
+
+		assert_eq(
+			_manager.get_rack_slot_index("ball_one"),
+			1,
+			"the restored ball reclaims the lowest free slot, slot 1",
+		)
+
+
 class TestKitItemsEquipment:
 	extends GutTest
 	var _manager: Node
