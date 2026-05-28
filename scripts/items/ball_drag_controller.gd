@@ -813,8 +813,8 @@ func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
 	if area == null:
 		return null
 	var rack_target: RackDropTarget = RackDropTarget.new()
-	# Pass rally-gate refs unconditionally; the gear-role branch in can_accept enforces the gate.
-	rack_target.configure(_item_manager, area, role, timeout_controller, reconciler)
+	# The gear-role branch in can_accept gates removal on the equip pose; only the timeout ref is needed.
+	rack_target.configure(_item_manager, area, role, timeout_controller)
 	return rack_target
 
 

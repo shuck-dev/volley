@@ -7,7 +7,6 @@ var _item_manager: Node
 var _drop_area: Area2D
 var _role: StringName
 var _timeout_controller: TimeoutController
-var _reconciler: BallReconciler
 
 
 func configure(
@@ -15,13 +14,11 @@ func configure(
 	drop_area: Area2D,
 	role: StringName,
 	timeout_controller: TimeoutController = null,
-	reconciler: BallReconciler = null,
 ) -> void:
 	_item_manager = item_manager
 	_drop_area = drop_area
 	_role = role
 	_timeout_controller = timeout_controller
-	_reconciler = reconciler
 
 
 func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
@@ -29,9 +26,9 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	if not _is_role_match(item_key):
 		return false
-	# Equipment unequip is symmetric with equip per gear.md: rally-active drops bounce so
-	# the player cannot desync effects mid-rally.
-	if _role == &"equipment" and RallyGate.from_refs(_timeout_controller, _reconciler):
+	# Equipment unequip is symmetric with equip per gear.md: only the equip pose permits removal so
+	# the player cannot desync effects mid-rally or in any other lull.
+	if _role == &"equipment" and not RallyGate.removal_allowed(_timeout_controller):
 		return false
 	return _position_inside_area(position)
 
