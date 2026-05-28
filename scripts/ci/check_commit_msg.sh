@@ -65,6 +65,14 @@ if [[ "$subject" =~ $codename_anywhere_re ]]; then
   errors+=("subject contains a [Codename] tag; move it to an 'Agent-Role:' trailer")
 fi
 
+# No Linear ticket ID (SH-N) anywhere in the message, subject or body. The open
+# repo audience follows the GitHub issue number (#N); a Linear ID is private.
+# The boundary excludes a preceding alphanumeric so UTF-8, SHA-256, SSH-1, and
+# words like "wish-3" do not trip it.
+if printf '%s' "$msg_body" | grep -qiE '(^|[^a-z0-9])sh-[0-9]+'; then
+  errors+=("message references a Linear ID (SH-N); use the GitHub issue number (#N) instead")
+fi
+
 if (( ${#errors[@]} > 0 )); then
   echo >&2
   echo "commit-msg: rejected by Volley commit-format rule" >&2

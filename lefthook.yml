@@ -15,6 +15,11 @@ commit-msg:
     check-format:
       run: ./scripts/ci/check_commit_msg.sh {1}
 
+pre-push:
+  commands:
+    branch-name:
+      run: ./scripts/ci/check_branch_name.sh
+
 pre-commit:
   piped: true
   commands:
