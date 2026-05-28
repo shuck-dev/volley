@@ -178,7 +178,7 @@ What the skill doesn't cover, and belongs in the swarm README:
 
 **Verdict and labels.**
 
-- The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`) reflecting consensus: a block from any reviewer makes it REQUEST_CHANGES.
+- The reviewer verdict is not a label. Reviewers post inline findings and report approve / block to the organiser, which posts one bot synthesis review under `shuck-volley-bot[bot]` every review round: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post clears `zaphod-requested`.
 - `zaphod-requested`: Josh's "please review" signal. The organiser fans out the reviewer pool; it strips when the bot review lands.
 - `approved-human`: Josh only. Sign-off; required for merge.
 - `action-required-human`: Josh only. Mutually exclusive with `approved-human`; applying one strips the other.

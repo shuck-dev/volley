@@ -85,7 +85,9 @@ Everything between those two points is parallel. Minions do not wait for each ot
 
 ## PR verdict flow
 
-Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`, via `.github/workflows/bot-review.yml`); a block from any reviewer makes it REQUEST_CHANGES. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
+Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post also clears the standing `zaphod-requested` label. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
+
+Two properties move off mechanism onto organiser discipline: the strictest-verdict rule (a block outweighs an approve) is the organiser's synthesis, not a reconciler workflow, and the verdict surface resolves only while an organiser session is live, since no event-driven path posts or clears it otherwise. Accepted for a solo-maintainer cadence; inline findings land regardless. If the bot App is down, no synthesis verdict posts and `zaphod-requested` does not clear, but inline findings and the `approved-human` gate are unaffected.
 
 Two labels are Josh-only:
 

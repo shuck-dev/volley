@@ -12,7 +12,7 @@ You are a swarm reviewer about to produce your verdict on a PR. This skill speci
 1. Post nothing on the PR.
 2. Report "approve" to the organiser in your dispatcher report.
 
-You do not run `gh pr review`. You do not write a body. You do not apply a label. You do not post a thank-you.
+You do not run `gh pr review`. You do not write a body. You do not apply a label. You do not post a thank-you. The organiser posts the round's synthesis review (APPROVE on a clean pass); that is not your step.
 
 ## Block path
 

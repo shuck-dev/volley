@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Posts a swarm reviewer's line-anchored findings on a PR; applies no label.
-# Usage: post-review.sh <pr> <verdict-json with verdict approve|block, summary, items[]>.
+# Usage: post-review.sh <pr> <verdict-json with verdict approve|block and items[]>.
 
 set -euo pipefail
 
@@ -23,7 +23,6 @@ command -v gh >/dev/null || die "gh CLI is required"
 command -v jq >/dev/null || die "jq is required"
 
 verdict=$(jq -r '.verdict // empty' "$verdict_file")
-summary=$(jq -r '.summary // ""' "$verdict_file")
 
 case "$verdict" in
 	approve | block) ;;
@@ -36,9 +35,7 @@ if [[ "$verdict" == "approve" ]]; then
 	exit 0
 fi
 
-# Block: post the line-anchored findings.
-[[ -n "$summary" ]] || die "summary is required when verdict is block"
-
+# Block: post the line-anchored findings on a COMMENT review with an empty body.
 items_count=$(jq '(.items // []) | length' "$verdict_file")
 [[ "$items_count" -gt 0 ]] || die "items is required and non-empty when verdict is block"
 
@@ -57,12 +54,11 @@ missing_commenter=$(
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 payload=$(
 	jq -n \
-		--arg summary "$summary" \
 		--arg default_commenter "$default_commenter" \
 		--slurpfile verdict "$verdict_file" \
 		'{
 			event: "COMMENT",
-			body: $summary,
+			body: "",
 			comments: (
 				$verdict[0].items | map({
 					path,

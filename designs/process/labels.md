@@ -101,7 +101,7 @@ Separate from intent labels, a small set of GitHub labels are applied automatica
 
 - **`zaphod-requested`**: Josh's "please review" signal asking the organiser to fan out the reviewer pool. Cleared automatically when the bot synthesis review lands.
 
-The reviewer verdict is not a label. Specialist reviewers from `.claude/agents/` post inline findings and report their verdict to the organiser, which posts one bot synthesis review (an approval, or request-changes if any reviewer blocked) under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`. That review is an advisory signal, not a merge decision.
+The reviewer verdict is not a label. Specialist reviewers from `.claude/agents/` post inline findings and report their verdict to the organiser, which posts one bot synthesis review every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: an approval on a clean pass, request-changes if any reviewer blocked. That review is an advisory signal, not a merge decision, and its landing clears `zaphod-requested`.
 
 > **About the name.** "Zaphod" is the pan-galactic president from *The Hitchhiker's Guide to the Galaxy*: a two-headed alien whose extra head was added "to do all the lying, swearing and lounging about." The `zaphod-*` family collects the bot-applied PR labels (the review request, the merge-conflict flag, the dependency bumps) under one multi-headed figure. The leading `z` is also a sort hack: GitHub's label picker uses the Unicode Collation Algorithm, which treats most punctuation and emoji as primary-ignorable, so the only reliable way to push a label to the bottom of the picker is a text prefix that sorts late alphabetically. `z*` does that; `zaphod-*` happens to do that AND name the labels.
 
@@ -119,7 +119,7 @@ All required checks must pass before auto-merge fires. The agent reviewer verdic
 
 ### Merge state
 
-- **`has-conflicts`**: applied manually when a branch needs to merge `main` in but conflicts block the merge. Remove once the conflict is resolved. Previously applied by the auto-update sweep workflow; that workflow is gone now that GitHub's native merge queue handles pre-merge rebasing on `main`.
+- **`has-conflicts`**: applied manually when a branch needs to merge `main` in but conflicts block the merge. Remove once the conflict is resolved. GitHub's native merge queue handles pre-merge rebasing on `main`.
 
 ### Dependency updates
 
