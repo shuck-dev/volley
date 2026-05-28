@@ -52,7 +52,7 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Dandori Challenge.** A pull request. A Challenge is where minions close out a mission together. The Challenge opens when the PR opens; it ends when the PR merges.
 
-**Dandori Battle.** The adversarial review round inside the Challenge. Reviewer minions post their verdicts, blocks supersede approves, authors revise, and the Battle resolves when the diff is clean and Josh signs off.
+**Dandori Battle.** The adversarial review round inside the Challenge. Reviewer minions post inline findings and report verdicts; the organiser posts one bot synthesis review (a block from any reviewer makes it request-changes), authors revise, and the Battle resolves when the diff is clean and Josh signs off.
 
 **The Ride.** A single-feature smoke test on the built game, triggered after a Dandori Challenge merges. The Ride confirms the feature behaves in the hand, not only in the diff. The Gru Sisters are dispatched as special agents to review the freshly merged work from their angles.
 

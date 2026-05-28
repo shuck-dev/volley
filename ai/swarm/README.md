@@ -168,7 +168,7 @@ Only two. Gru does not call standups.
 1. **A review moment.** The Dandori Challenge opens, or the author reports "ready for re-review" after a revision round. Gru dispatches `pr-describer` (first open only) and the scope-filtered reviewer fan-out.
 2. **A work unit closes.** Gru scrubs the scratchpad and promotes keepers.
 
-Intermediate pushes strip `zaphod-*` labels but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Minions do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
+Intermediate pushes clear the bot synthesis review (native dismiss-stale) and strip `approved-human`, but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Minions do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
 
 ## PR verdicts and merge
 
@@ -222,7 +222,7 @@ flowchart LR
 
 ### Reviewer dispatch discipline
 
-Review happens at declared review moments, not on every push. A review moment is the Dandori Challenge first opening, or the author (minion or Josh) reporting "ready for re-review" after a revision round. Mid-flight WIP pushes strip the `zaphod-*` labels; Gru lets that happen and waits.
+Review happens at declared review moments, not on every push. A review moment is the Dandori Challenge first opening, or the author (minion or Josh) reporting "ready for re-review" after a revision round. Mid-flight WIP pushes clear the bot synthesis review and strip `approved-human`; Gru lets that happen and waits.
 
 On a review moment, Gru:
 
@@ -234,13 +234,13 @@ On a review moment, Gru:
 
 Reviewers always read the Dandori Challenge's diff via `gh pr diff <N>`, not the working tree. The working tree in any worktree may be on a different branch. On the first open the range is the full diff; on re-review the range is `<last-approved>..<head>`.
 
-The `reviewer-re-run.yml` workflow strips `zaphod-*` on every push so a verdict never carries across commits.
+The ruleset's native dismiss-stale-reviews-on-push clears the bot synthesis review on every push, so a verdict never carries across commits; `approved-human` is stripped on push by `approval-gate.yml`.
 
 ## Gru rules
 
 Four habits keep Gru honest across turns.
 
-**Hydrate PR state at turn-start.** When the turn touches PRs (dispatching reviewers, replying to comments, narrating status, deciding about merge conflicts), run `gh pr list --state open --json number,headRefOid,labels,state,mergeStateStatus,isDraft,updatedAt` first. Memory from earlier turns goes stale: SHAs move on push, `zaphod-*` labels strip on push, Josh applies labels between turns, merges happen quietly. For a single PR, `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft` is the tighter form.
+**Hydrate PR state at turn-start.** When the turn touches PRs (dispatching reviewers, replying to comments, narrating status, deciding about merge conflicts), run `gh pr list --state open --json number,headRefOid,labels,state,mergeStateStatus,isDraft,updatedAt` first. Memory from earlier turns goes stale: SHAs move on push, the bot review and `approved-human` clear on push, Josh applies labels between turns, merges happen quietly. For a single PR, `gh pr view <N> --json headRefOid,labels,state,mergeStateStatus,isDraft` is the tighter form.
 
 **Codename leads every Agent dispatch.** The `description` field on the Agent tool reads `<Codename> <short action>` (`Trillian reviews #321 code`, `Marvin revises #321 tests`). The codename is what Josh tracks on the CLI; the role is already in `subagent_type`.
 
