@@ -36,55 +36,70 @@ func bind_tracker(tracker: BallTracker) -> void:
 			_tracker.ball_added.disconnect(_on_tracker_ball_added)
 		if _tracker.ball_removed.is_connected(_on_tracker_ball_removed):
 			_tracker.ball_removed.disconnect(_on_tracker_ball_removed)
-		if _tracker.current_ball_changed.is_connected(_on_tracker_current_ball_changed):
-			_tracker.current_ball_changed.disconnect(_on_tracker_current_ball_changed)
 	_tracker = tracker
 	if _tracker == null:
 		return
 	_tracker.ball_added.connect(_on_tracker_ball_added)
 	_tracker.ball_removed.connect(_on_tracker_ball_removed)
-	_tracker.current_ball_changed.connect(_on_tracker_current_ball_changed)
-
+	# Route already-tracked balls through the same handler so subclass overrides fire.
 	var existing: Ball = _tracker.get_current_ball()
-	ball = existing
-
-	# Route already-tracked balls through the handler so subclass enable-lifecycle fires.
 	if existing != null:
 		_on_tracker_ball_added(existing)
 
 
-## The live ball is whichever the tracker treats as current; a STORED ball never becomes current.
-func _on_tracker_current_ball_changed(new_current: Ball) -> void:
-	ball = new_current
+func _on_tracker_ball_added(new_ball: Ball) -> void:
+	ball = new_ball
 
 
-## Override hook for subclass enable-lifecycle; the live ball ref follows current_ball_changed.
-func _on_tracker_ball_added(_new_ball: Ball) -> void:
-	pass
-
-
+## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	pass
+	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
+	ball = fallback
 
 
 func _physics_process(_delta: float) -> void:
-	if not _enabled or ball == null:
+	if not _enabled:
+		return
+
+	# Multi-ball is live: cover the approaching ball that arrives soonest, falling
+	# back to the tracker-driven `ball` when none qualifies (single-ball parity).
+	ball = _select_tracked_ball()
+	if ball == null:
 		return
 
 	_maybe_resample_noise()
 
-	if not _ball_in_play():
+	if not _ball_in_play(ball):
 		_drift_to_center()
 		return
 
-	if _ball_approaching():
+	if _ball_approaches(ball):
 		_track()
 	else:
 		_drift_to_center()
 
 
-func _ball_in_play() -> bool:
-	var state: Ball.PlayState = ball.play_state
+## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
+func _select_tracked_ball() -> RigidBody2D:
+	if _tracker == null:
+		return ball
+	var best: Ball = null
+	var best_time: float = INF
+	for candidate in _tracker.get_balls():
+		if candidate == null or not _ball_in_play(candidate) or not _ball_approaches(candidate):
+			continue
+		var speed_x: float = absf(candidate.linear_velocity.x)
+		if speed_x < 1.0:
+			continue
+		var arrival: float = absf(paddle.position.x - candidate.position.x) / speed_x
+		if arrival < best_time:
+			best_time = arrival
+			best = candidate
+	return best if best != null else ball
+
+
+func _ball_in_play(target: RigidBody2D) -> bool:
+	var state: Ball.PlayState = target.play_state
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
@@ -99,9 +114,9 @@ func is_enabled() -> bool:
 	return _enabled
 
 
-## Override: which ball x-direction counts as "coming toward me."
-func _ball_approaching() -> bool:
-	assert(false, "PaddleAIController._ball_approaching() is abstract")
+## Override: whether the given ball's x-direction counts as "coming toward me."
+func _ball_approaches(_target: RigidBody2D) -> bool:
+	assert(false, "PaddleAIController._ball_approaches() is abstract")
 	return false
 
 

@@ -131,3 +131,31 @@ func test_rebind_to_null_disconnects_prior_signals() -> void:
 	_tracker.attach(ball)
 
 	assert_null(_controller.ball, "after unbind, tracker emissions no longer reach controller")
+
+
+# Player autoplay shares the base class and the same tracker (court.gd binds it).
+# Under multi-ball it must lock onto the soonest-arriving ball it should cover,
+# not whichever the tracker happens to call current. Autoplay covers balls
+# moving left (vx < 0) that are still to its right (ball.x > paddle.x at x=0).
+func test_autoplay_selects_soonest_arriving_ball_under_multiball() -> void:
+	_paddle.position = Vector2(0.0, 0.0)
+	_controller.bind_tracker(_tracker)
+
+	var far_ball: Ball = _spawn_ball()
+	far_ball.position = Vector2(300.0, 0.0)
+	far_ball.linear_velocity = Vector2(-100.0, 0.0)
+	var near_ball: Ball = _spawn_ball()
+	near_ball.position = Vector2(50.0, 0.0)
+	near_ball.linear_velocity = Vector2(-200.0, 0.0)
+	# Attach near first, far last: the signal-bound `ball` ends up on far_ball,
+	# so selection must actively override it to prove it isn't a no-op.
+	_tracker.attach(near_ball)
+	_tracker.attach(far_ball)
+	_controller.set_enabled(true)
+	assert_eq(
+		_controller.ball, far_ball, "precondition: signal-bound ball is the last-attached far ball"
+	)
+
+	_controller._physics_process(0.016)
+
+	assert_eq(_controller.ball, near_ball, "autoplay covers the soonest-arriving approaching ball")

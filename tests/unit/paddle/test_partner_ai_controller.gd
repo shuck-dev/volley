@@ -2,6 +2,7 @@ extends GutTest
 
 # Tests for PartnerAIController behaviour: tracking, drifting, dodging.
 
+const BallStub: GDScript = preload("res://tests/stubs/ball_stub.gd")
 const PHYSICS_DELTA := 0.016
 const PADDLE_X := 300.0
 const BALL_APPROACHING_PARTNER := Vector2(100.0, 0.0)
@@ -14,7 +15,7 @@ var _config: PaddleAIConfig
 
 
 func before_each() -> void:
-	_ball = load("res://tests/stubs/ball_stub.gd").new()
+	_ball = BallStub.new()
 	add_child_autofree(_ball)
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
@@ -45,6 +46,14 @@ func before_each() -> void:
 func _run_frames(count: int) -> void:
 	for _frame in range(count):
 		_controller._physics_process(PHYSICS_DELTA)
+
+
+func _spawn_ball(position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = BallStub.new()
+	ball.position = position
+	ball.linear_velocity = velocity
+	add_child_autofree(ball)
+	return ball
 
 
 # --- tracking ---
@@ -132,3 +141,58 @@ func test_noise_resamples_during_drift_when_direction_changes() -> void:
 		offset_after_reversal,
 		"noise should resample even when direction changes during drift",
 	)
+
+
+# --- multi-ball coverage (SH-435) ---
+# With two live, approaching balls the partner must cover the one arriving
+# soonest, and re-commit when a sooner ball appears mid-rally. A single-ball
+# tautology can't pass these: both balls genuinely qualify, on opposite sides
+# of center, so the partner's velocity sign reveals which one it chose.
+func _bind_tracker_for_multiball() -> BallTracker:
+	var tracker: BallTracker = load("res://scripts/court/ball_tracker.gd").new()
+	add_child_autofree(tracker)
+	_controller.bind_tracker(tracker)
+	return tracker
+
+
+func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
+	var tracker: BallTracker = _bind_tracker_for_multiball()
+
+	# Near ball: close x, fast → tiny time-to-arrival, intercept below center.
+	var near_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
+	# Far ball: distant x, slow → large time-to-arrival, intercept above center.
+	var far_ball: Ball = _spawn_ball(Vector2(0.0, -200.0), Vector2(100.0, 0.0))
+	# Attach near first, far last so the signal-bound `ball` is far_ball;
+	# selection must override it for the assertion to pass.
+	tracker.attach(near_ball)
+	tracker.attach(far_ball)
+	assert_eq(_controller.ball, far_ball, "precondition: signal-bound ball is the far ball")
+
+	_run_frames(5)
+
+	assert_eq(_controller.ball, near_ball, "partner selects the soonest-arriving ball")
+	assert_gt(
+		_paddle.velocity.y, 0.0, "partner tracks the near ball below center, not the far one above"
+	)
+
+
+func test_switches_when_a_sooner_ball_appears() -> void:
+	var tracker: BallTracker = _bind_tracker_for_multiball()
+
+	var first_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
+	tracker.attach(first_ball)
+	_run_frames(5)
+	assert_gt(_paddle.velocity.y, 0.0, "precondition: partner tracks the first ball below center")
+
+	# A sooner ball appears: nearly at the paddle, very fast, intercept above center.
+	var sooner_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 10.0, -200.0), Vector2(400.0, 0.0))
+	tracker.attach(sooner_ball)
+	# A slow straggler attaches last so the signal-bound `ball` is NOT the sooner
+	# ball; selection must actively pick the sooner one for the assertion to hold.
+	var straggler: Ball = _spawn_ball(Vector2(-100.0, 100.0), Vector2(80.0, 0.0))
+	tracker.attach(straggler)
+	assert_eq(_controller.ball, straggler, "precondition: signal-bound ball is the straggler")
+	_run_frames(5)
+
+	assert_eq(_controller.ball, sooner_ball, "partner switches to the newly sooner ball")
+	assert_lt(_paddle.velocity.y, 0.0, "partner now tracks the sooner ball above center")
