@@ -9,7 +9,7 @@ Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confi
 
 ## Focus and WIP
 
-Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. Done means merged, or the mission closed, not the challenge opened: an open PR with auto-merge pending is still a thread on the count, so do not report it closed until it merges. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
+Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. Done means merged, or the mission closed, not the challenge opened: an open PR awaiting the maintainer's merge is still a thread on the count, so do not report it closed until it merges. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
 
 ## Gru works on a worktree too
 
@@ -63,7 +63,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 2. **Cycle placement.** If the claimed ticket has no cycle, move it into the active one: `mcp__linear__list_cycles(teamId, type: "current")` then `mcp__linear__save_issue(id, cycleId)`. Skip if no active cycle.
 3. **Log progress in Linear.** Significant moments (claim, blocker, ready-for-review) post as a Linear comment on the ticket, not into a shared file. The git log carries the rest.
 4. **Sync before opening and before every later push.** `git fetch origin main && git merge origin/main`, resolve, re-run `./scripts/ci/run_gut.sh`, push. Repeat any time work resumes or before asking Josh to merge. `git rev-list --count HEAD..origin/main` reads "behind by N".
-5. **Open the challenge, enable auto-merge, dispatch reviewers.** After `gh pr create`, immediately run `gh pr merge <n> --auto` (no merge-method flag; the queue picks the method) so the challenge merges itself the moment every gate clears, with no manual merge after Josh's `approved-human`. Then the dispatcher fans out the matching specialists by changed path. The full mapping (file pattern → reviewer) lives in `ai/skills/minions/reviewers.md`; the implementer's job is to flag reviewers when the dispatcher doesn't already see the diff.
+5. **Open the challenge and dispatch reviewers.** After `gh pr create`, do not enable auto-merge and do not apply approval labels; the maintainer merges by hand. The dispatcher fans out the matching specialists by changed path. The full mapping (file pattern → reviewer) lives in `ai/skills/minions/reviewers.md`; the implementer's job is to flag reviewers when the dispatcher doesn't already see the diff.
 6. **Hand off.** Re-sync against `main`, then report the challenge to Josh. Don't flag comments in chat; the challenge is the source of truth.
 7. **Block or spin.** Loop on the same issue twice, then escalate per the rule below. No third silent variant.
 
@@ -160,7 +160,7 @@ Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers
 
 Review re-dispatch happens at "ready for re-review" signals from the impl, not on every push. Scope-filter the diff so only affected reviewers re-run. A clean incremental is reported as a silent approve to Gru.
 
-Reviewers apply no verdict label; they report their verdict to Gru and post findings inline. On every review round Gru posts one synthesis review via the `bot-review` workflow (`gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES`): APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. That post clears the standing `zaphod-requested` label. Every reviewer dispatch brief restates one line, inline comments only, never the main thread, report your verdict to me. Gru verifies the inline findings landed before posting the synthesis verdict. The verdict does not gate merge: only Tests, Lint, and Josh's `approved-human` gate the queue; the bot review is the attributed agent verdict, not a required check.
+Reviewers apply no verdict label; they report their verdict to Gru and post findings inline. On every review round Gru posts one synthesis review via the `bot-review` workflow (`gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES`): APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. Every reviewer dispatch brief restates one line, inline comments only, never the main thread, report your verdict to me. Gru verifies the inline findings landed before posting the synthesis verdict. The verdict does not gate merge: required checks are Tests and Lint, and the maintainer's manual merge is the approval; the bot review is the attributed agent verdict, not a required check.
 
 ## Consensus on disagreement
 
