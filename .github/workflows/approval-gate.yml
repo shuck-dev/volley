@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 # `Human Approved` must be a workflow job: the merge queue matches required
-# checks by job name and ignores github-script-posted check-runs (SH-159).
+# checks by job name and ignores github-script-posted check-runs.
 
 concurrency:
   group: approval-gate-${{ github.event.pull_request.number || github.event.merge_group.head_ref || github.event.inputs.pr }}
@@ -193,7 +193,7 @@ jobs:
         with:
           script: |
             // approved-human / action-required-human are Josh-only (both
-            // sides of the human verdict; SH-179).
+            // sides of the human verdict).
             const labelName = context.payload.label.name;
             const maintainer = process.env.MAINTAINER;
             const policy = {
