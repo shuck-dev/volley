@@ -124,11 +124,23 @@ jobs:
         if: steps.cache-actionlint.outputs.cache-hit != 'true'
         run: |
           mkdir -p ~/.local/bin
-          curl -sSfL https://github.com/rhysd/actionlint/releases/download/v${{ env.ACTIONLINT_VERSION }}/actionlint_${{ env.ACTIONLINT_VERSION }}_linux_amd64.tar.gz \
-            | tar -xz -C ~/.local/bin actionlint
+          url="https://github.com/rhysd/actionlint/releases/download/v${{ env.ACTIONLINT_VERSION }}/actionlint_${{ env.ACTIONLINT_VERSION }}_linux_amd64.tar.gz"
+          for attempt in 1 2 3; do
+            if curl -sSfL "$url" | tar -xz -C ~/.local/bin actionlint; then
+              exit 0
+            fi
+            echo "actionlint download attempt $attempt failed; retrying" >&2
+            sleep "$((attempt * 3))"
+          done
+          echo "::warning::actionlint download failed after 3 attempts; skipping actionlint this run"
 
       - name: actionlint
-        run: ~/.local/bin/actionlint -color
+        run: |
+          if [ -x ~/.local/bin/actionlint ]; then
+            ~/.local/bin/actionlint -color
+          else
+            echo "::warning::actionlint binary unavailable (download flake); skipping"
+          fi
 
   lint:
     name: Lint
