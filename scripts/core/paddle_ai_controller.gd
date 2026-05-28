@@ -36,25 +36,35 @@ func bind_tracker(tracker: BallTracker) -> void:
 			_tracker.ball_added.disconnect(_on_tracker_ball_added)
 		if _tracker.ball_removed.is_connected(_on_tracker_ball_removed):
 			_tracker.ball_removed.disconnect(_on_tracker_ball_removed)
+		if _tracker.current_ball_changed.is_connected(_on_tracker_current_ball_changed):
+			_tracker.current_ball_changed.disconnect(_on_tracker_current_ball_changed)
 	_tracker = tracker
 	if _tracker == null:
 		return
 	_tracker.ball_added.connect(_on_tracker_ball_added)
 	_tracker.ball_removed.connect(_on_tracker_ball_removed)
-	# Route already-tracked balls through the same handler so subclass overrides fire.
+	_tracker.current_ball_changed.connect(_on_tracker_current_ball_changed)
+
 	var existing: Ball = _tracker.get_current_ball()
+	ball = existing
+
+	# Route already-tracked balls through the handler so subclass enable-lifecycle fires.
 	if existing != null:
 		_on_tracker_ball_added(existing)
 
 
-func _on_tracker_ball_added(new_ball: Ball) -> void:
-	ball = new_ball
+## The live ball is whichever the tracker treats as current; a STORED ball never becomes current.
+func _on_tracker_current_ball_changed(new_current: Ball) -> void:
+	ball = new_current
 
 
-## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
+## Override hook for subclass enable-lifecycle; the live ball ref follows current_ball_changed.
+func _on_tracker_ball_added(_new_ball: Ball) -> void:
+	pass
+
+
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
-	ball = fallback
+	pass
 
 
 func _physics_process(_delta: float) -> void:
