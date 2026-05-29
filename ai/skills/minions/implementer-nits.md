@@ -62,6 +62,8 @@ See `ai/scratchpads/gut-orphans-research.md` for the diagnostic recipe and Volle
 - **One blank line before every `if` statement.** Exceptions: the first statement of a function body, and `elif`/`else` continuations. Applies whether the preceding statement is one line or many.
 - One blank line after an early-return guard (`if cond: return`) before the main work begins.
 - One blank line between logical clusters within a function body. Variable declarations, signal wiring, mutation, and cleanup are different clusters; visually separate them.
+- **Break up any large unbroken run of statements**, even with no `if` in it. A long straight-line block (roughly 6+ consecutive statements with no blank) reads as a wall; split it into spaced steps by what each group is doing. This rule fires on the size of the run, not on the presence of a conditional, so it catches blocks the blank-line-before-`if` rule never sees.
+- **Heaviness is a different problem from spacing.** If a function is dense, deeply nested, or doing several jobs, the fix is extraction or simplification, not blank lines. Spacing a heavy function just makes a well-formatted smell. Spacing is cosmetic; heaviness is semantic.
 - One blank line after a multi-statement `if`/`for` block before the next statement, when the next statement is a new logical step rather than a continuation.
 - gdformat preserves single blanks; it only collapses 2+ in a row. So advisory blanks survive lefthook.
 
