@@ -329,9 +329,23 @@ func _reconcile_stored_kit_items() -> void:
 	if ball_rack == null:
 		return
 	for key in _item_manager.get_kit_items(&"ball"):
-		if get_ball_for_key(key) != null:
-			continue
-		adopt_stored(key, ball_rack.get_slot_position_for(key))
+		ensure_stored_ball_for_key(key)
+
+
+## Guarantees a tracked STORED Ball for a kit ball-role key so its slot is indexed and grabbable.
+## The one-shot _reconcile_stored_kit_items guard can leave a second stored ball untracked;
+## this lets the rack/grab paths lazily back-fill it without re-running the whole sweep.
+func ensure_stored_ball_for_key(item_key: String) -> Ball:
+	var existing: Ball = get_ball_for_key(item_key)
+	if existing != null:
+		return existing
+	if ball_rack == null:
+		return null
+	if _item_manager.get_level(item_key) <= 0:
+		return null
+	if _item_manager.get_rack_slot_index(item_key) < 0:
+		return null
+	return adopt_stored(item_key, ball_rack.get_slot_position_for(item_key))
 
 
 func _default_spawn_position() -> Vector2:

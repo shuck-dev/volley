@@ -223,6 +223,10 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	var stored: Ball = null
 	if reconciler != null:
 		stored = reconciler.get_ball_for_key(item_key)
+		# The one-shot kit reconcile can leave a second stored ball untracked; back-fill it so a
+		# ball-role rack pickup rides the live-ball path and restore re-claims its slot.
+		if stored == null and _is_ball_role(item_key):
+			stored = reconciler.ensure_stored_ball_for_key(item_key)
 
 	if stored != null:
 		# Ball-role rack pickup: the STORED Ball IS the drag target. No HeldBody spawn; the ball

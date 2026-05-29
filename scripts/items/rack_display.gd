@@ -39,6 +39,11 @@ func configure_reconciler(p_reconciler: BallReconciler) -> void:
 
 
 func refresh() -> void:
+	# A stale _hidden_key (set on a grab whose reveal never fired) would rebuild this slot
+	# invisible, and a hidden CanvasItem gets no Area2D input picking, so the slot is
+	# unclickable. Drop the hide for any key that is not the live drag target before rebuilding.
+	if _hidden_key != "" and not _is_key_being_dragged(_hidden_key):
+		_hidden_key = ""
 	_clear_slots()
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
@@ -110,6 +115,10 @@ func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> voi
 func _registered_ball_for(item_key: String) -> Ball:
 	if reconciler == null:
 		return null
+	# A second stored ball can be left untracked by the reconciler's one-shot kit reconcile;
+	# back-fill it here so every rendered stored ball-role slot is backed by a live, grabbable ball.
+	if role == &"ball" and reconciler.has_method("ensure_stored_ball_for_key"):
+		return reconciler.ensure_stored_ball_for_key(item_key)
 	return reconciler.get_ball_for_key(item_key)
 
 
@@ -187,6 +196,18 @@ func _apply_slot_visibility() -> void:
 			continue
 		var key: String = slot.get_meta(&"item_key", "")
 		slot.visible = key != _hidden_key
+
+
+## True when a drag controller currently holds `item_key` as its live drag target.
+func _is_key_being_dragged(item_key: String) -> bool:
+	if get_tree() == null:
+		return false
+	for controller: Node in get_tree().get_nodes_in_group(&"drag_controller"):
+		if not (controller.has_method("is_dragging") and controller.has_method("get_held_key")):
+			continue
+		if controller.is_dragging() and controller.get_held_key() == item_key:
+			return true
+	return false
 
 
 func _clear_slots() -> void:

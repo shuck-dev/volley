@@ -1,7 +1,10 @@
+# gdlint:ignore = max-public-methods
 ## SH-412 full removal retires the ball and frees its slot; surviving and restored balls keep their slot.
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 var _manager: Node
@@ -19,6 +22,42 @@ func before_each() -> void:
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
+
+
+func _make_rack() -> RackDisplay:
+	var rack: RackDisplay = RackDisplayScript.new()
+	rack.role = &"ball"
+	var slot_container := Node2D.new()
+	slot_container.name = "SlotContainer"
+	rack.add_child(slot_container)
+	for index in 4:
+		var marker := Node2D.new()
+		marker.name = "SlotMarker%d" % index
+		marker.position = Vector2(index * 32, 0)
+		slot_container.add_child(marker)
+	rack.slot_container = slot_container
+	rack.configure(_manager)
+	rack.configure_reconciler(_reconciler)
+	add_child_autofree(rack)
+	return rack
+
+
+func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
+	var area := Area2D.new()
+	area.global_position = position
+	var collision := CollisionShape2D.new()
+	var rectangle := RectangleShape2D.new()
+	rectangle.size = size
+	collision.shape = rectangle
+	area.add_child(collision)
+	add_child_autofree(area)
+	return area
+
+
+## True when the rebuilt slot for `item_key` is present and visible (pickable CanvasItem).
+func _slot_visible_for(rack: RackDisplay, item_key: String) -> bool:
+	var slot: Node = rack.slot_container.get_node_or_null("Slot_%s" % item_key)
+	return slot != null and (slot as CanvasItem).visible
 
 
 func test_removing_one_ball_leaves_the_other_slot_untouched() -> void:
@@ -81,3 +120,65 @@ func test_returning_ball_fills_the_lowest_free_slot() -> void:
 		0,
 		"a returning ball fills the lowest free slot (FIFO), not its prior one",
 	)
+
+
+## SH-412 regression: with two stored balls, the second slot must be indexed, visible, backed by a
+## live ball, and grabbable; clicking it used to do nothing because its slot rebuilt invisible.
+func test_second_stored_ball_is_indexed_visible_and_grabbable() -> void:
+	_reconciler.ball_rack = _make_rack()
+	var rack: RackDisplay = _reconciler.ball_rack
+	var drop_target: Area2D = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_manager, rack, drop_target, _reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	add_child_autofree(drag)
+
+	_manager.take("ball_alpha")
+	_manager.take("ball_beta")
+	rack.refresh()
+
+	assert_true(
+		_manager.get_rack_slot_index("ball_beta") >= 0, "second stored ball owns a rack slot"
+	)
+	assert_true(_slot_visible_for(rack, "ball_beta"), "second stored ball's slot is visible")
+	assert_not_null(
+		_reconciler.get_ball_for_key("ball_beta"), "second stored ball is backed by a live ball"
+	)
+
+	var grabbed: bool = drag.grab_from_rack("ball_beta")
+	assert_true(grabbed, "the second stored ball is grabbable")
+	assert_eq(drag.get_held_key(), "ball_beta", "the grab holds the second ball")
+
+
+## SH-412 regression: a grab+restore cycle on the second ball returns its slot visible and pickable.
+func test_second_ball_slot_returns_visible_after_grab_and_restore() -> void:
+	_reconciler.ball_rack = _make_rack()
+	var rack: RackDisplay = _reconciler.ball_rack
+	var drop_target: Area2D = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_manager, rack, drop_target, _reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	add_child_autofree(drag)
+
+	_manager.take("ball_alpha")
+	_manager.take("ball_beta")
+	rack.refresh()
+	var beta_slot: int = _manager.get_rack_slot_index("ball_beta")
+	var grab_origin: Vector2 = _reconciler.get_ball_for_key("ball_beta").global_position
+
+	assert_true(drag.grab_from_rack("ball_beta"), "precondition: second ball grabbed")
+	# Press-release without movement at the grab origin: a rack-origin gesture restores to its slot.
+	drag.attempt_release(grab_origin)
+
+	assert_false(drag.is_dragging(), "gesture finalised after restore")
+	assert_eq(
+		_manager.get_rack_slot_index("ball_beta"),
+		beta_slot,
+		"restored second ball reclaims a rack slot",
+	)
+	assert_not_null(_reconciler.get_ball_for_key("ball_beta"), "restored ball stays tracked")
+	assert_true(_slot_visible_for(rack, "ball_beta"), "restored slot is visible and pickable again")
