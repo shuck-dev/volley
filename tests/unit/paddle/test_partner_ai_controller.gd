@@ -196,8 +196,7 @@ func test_switches_when_a_sooner_ball_appears() -> void:
 	# A sooner ball appears: nearly at the paddle, very fast, intercept above center.
 	var sooner_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 10.0, -200.0), Vector2(400.0, 0.0))
 	tracker.attach(sooner_ball)
-	# A slow straggler attaches last so the signal-bound `ball` is NOT the sooner
-	# ball; selection must actively pick the sooner one for the assertion to hold.
+	# A slow straggler attaches last; selection must still pick the sooner ball.
 	var straggler: Ball = _spawn_ball(Vector2(-100.0, 100.0), Vector2(80.0, 0.0))
 	tracker.attach(straggler)
 	assert_eq(_controller.ball, straggler, "precondition: signal-bound ball is the straggler")

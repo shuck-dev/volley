@@ -61,7 +61,6 @@ func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
 
-	# Cover the soonest-arriving approaching ball; fall back to the tracker ball when none qualifies.
 	ball = _select_tracked_ball()
 	if ball == null:
 		return
@@ -82,8 +81,10 @@ func _physics_process(_delta: float) -> void:
 func _select_tracked_ball() -> RigidBody2D:
 	if _tracker == null:
 		return ball
+
 	var best: Ball = null
 	var best_time: float = INF
+
 	for candidate in _tracker.get_balls():
 		if candidate == null or not _ball_in_play(candidate) or not _ball_approaches(candidate):
 			continue
