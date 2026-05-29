@@ -19,21 +19,12 @@ categories:
   - title: "Art"
     labels:
       - "asset"
-      - "revision"
-  - title: "Music"
-    labels:
-      - "cue"
-      - "rework"
   - title: "Writing"
     labels:
-      - "draft"
-      - "rewrite"
+      - "narrative"
   - title: "Audio"
     labels:
       - "sfx"
-  - title: "Design"
-    labels:
-      - "tune"
 
 # Map Conventional Commit `feat:` / `fix:` prefixes onto the intent labels so
 # external contributors who write Conventional Commit titles still land in the

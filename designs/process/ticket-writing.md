@@ -14,7 +14,7 @@ The one-page cheat sheet for filing tickets lives in `CLAUDE.md` under "Linear T
 
 If you have landed here as a contributor, welcome. This section covers how to read a ticket so you can dive in with confidence. The practical side, picking up a ticket, running the project, submitting a PR, lives in [`CONTRIBUTING.md`](../../CONTRIBUTING.md).
 
-**Ticket shape.** Every ticket carries a label from the [intent taxonomy](labels.md): `feature`, `spike`, `bug`, `study`, `asset`, `revision`, `concept`, `cue`, `rework`, `draft`, `rewrite`, `discovery`, `tune`, or `sfx`. The label tells you what kind of output is expected and which discipline the work belongs to. The body tells you what done looks like. If the label and the body disagree, ask in the thread; the body usually wins.
+**Ticket shape.** Every ticket carries a label from the [intent taxonomy](labels.md): `feature`, `spike`, `bug`, `concept`, `asset`, `sfx`, `narrative`, or `spec`. The label tells you what kind of output is expected and which discipline the work belongs to. The body tells you what done looks like. If the label and the body disagree, ask in the thread; the body usually wins.
 
 **Acceptance criteria are the contract.** If the AC is met, the ticket is done. If any of it is unclear, ask in the ticket thread before opening a PR; we would rather answer a question than ask for a rework.
 
@@ -44,40 +44,31 @@ Applies to every ticket, every discipline.
 
 ---
 
-## Three tiers of intent
+## The intent labels
 
-Our label taxonomy follows a pattern across most disciplines:
+The label set is trimmed to the intents in real use. Each label names a discipline and the kind of output expected:
 
-|           | Explore               | Produce                 | Evolve                |
-| --------- | --------------------- | ----------------------- | --------------------- |
-| tech      | spike                 | feature                 | (bug restores)        |
-| art       | study                 | asset                   | revision              |
-| music     | concept               | cue                     | rework                |
-| writing   | -                     | draft                   | rewrite               |
-| design    | discovery             | -                       | tune                  |
-| sfx       | -                     | sfx                     | -                     |
+| Discipline   | Labels                       |
+| ------------ | ---------------------------- |
+| tech         | `spike`, `feature`, `bug`    |
+| art          | `concept`, `asset`           |
+| audio        | `sfx`                        |
+| writing      | `narrative`                  |
+| design       | `spec`                       |
 
-Three intents, plus `bug` as its own shape.
+### Explore first
 
-### Explore
+Some tickets answer a question before any output is committed: can we, how would we, what would this feel like. A `spike` (tech) or `concept` (art) carries this shape, and a `spec` works an open design question toward a realised idea. The artifact (a writeup, a concept sketch, a prototype) is evidence of the answer, not the point.
 
-The question comes first, the output second. An explore ticket answers a question: can we, how would we, what would this feel like. The artifact (a spike writeup, a concept sketch, a discovery prototype) is evidence of the answer, not the point.
+"Done" means the question is answered and a decision is documented. Coverage matters more than polish. A prototype that kills three options and points at a fourth is a win.
 
-"Done" means the question is answered and a decision is documented. Coverage matters more than polish. A discovery prototype that kills three options and points at a fourth is a win.
+Timebox exploratory work. Kent Beck's original spike, in *Extreme Programming Explained* (1999), is time-bounded investigation producing knowledge, not shippable code.
 
-Timebox the work. Kent Beck's original spike, in *Extreme Programming Explained* (1999), is time-bounded investigation producing knowledge, not shippable code. Same applies to studies and concepts.
+### Then produce
 
-### Produce
+A concrete, finished thing enters the game: a feature, an asset, an sfx, a piece of narrative. Acceptance criteria describe the shipped artifact's observable behaviour or qualities.
 
-A concrete, finished thing enters the game: a feature, an asset, a cue, a draft, an sfx. Acceptance criteria describe the shipped artifact's observable behaviour or qualities.
-
-Clinton Keith (*Agile Game Development with Scrum*, 2nd ed. 2020) points out that game production tickets must carry experiential criteria alongside functional ones. A feature that runs and compiles can still fail review because the feel is off. Leave room for that: "the rally feels continuous", "the walk-off reads as stepping out of play", "the cue supports the tension without drawing attention".
-
-### Evolve
-
-The existing thing changes. Revision, rework, rewrite, tune. These tickets anchor to a parent artifact and describe the delta: what will change, and just as importantly, what stays.
-
-Ryan Singer's *Shape Up* (Basecamp, 2019) argues polish and iteration work needs different framing than new-appetite work. Evolve tickets are short, scoped, and reference the specific note or observation driving the change.
+Clinton Keith (*Agile Game Development with Scrum*, 2nd ed. 2020) points out that game production tickets must carry experiential criteria alongside functional ones. A feature that runs and compiles can still fail review because the feel is off. Leave room for that: "the rally feels continuous", "the walk-off reads as stepping out of play".
 
 ### Bug
 
@@ -105,49 +96,29 @@ A spike for a feature that does not yet exist in the game is filed as at least t
 
 ### Art
 
-Labels: `study`, `asset`, `revision`.
+Labels: `concept`, `asset`.
 
 The discipline-level reference is the [art bible](https://github.com/shuck-dev/volley/blob/main/designs/art/bible.md): a living document of silhouette rules, palette, line, mood, era, faction. Tickets lean on the bible rather than repeating it. Chris Solarski (*Drawing Basics and Video Game Art*, 2012) and Riot's public art team posts set the pattern.
 
-**Study** (explore). Concept work. Carries: function in world, silhouette and read at distance, mood words, reference board, constraints (palette band, era, faction). "Done" is when the study answers the direction question the art director asked, per Samwise Didier (Blizzard, GDC) and Jaime Jones (Bungie, GDC 2018). Polish is not the point; coverage of options is.
+**Concept** (explore). Concept work. Carries: function in world, silhouette and read at distance, mood words, reference board, constraints (palette band, era, faction). "Done" is when the concept answers the direction question the art director asked, per Samwise Didier (Blizzard, GDC) and Jaime Jones (Bungie, GDC 2018). Polish is not the point; coverage of options is.
 
-**Asset** (produce). Finished visual element for integration. Adds the specs a study deliberately omits: rig compatibility, LOD count, naming, engine slot. "Done" is in-engine integration pass, not file delivery. An asset sitting in a folder that isn't loaded does not count.
-
-**Revision** (evolve). References the parent asset explicitly and names the director note driving the change. The Double Fine *Massive Chalice* postmortem is instructive: revision tickets that don't link the note drift.
-
-### Music
-
-Labels: `concept`, `cue`, `rework`.
-
-Winifred Phillips (*A Composer's Guide to Game Music*, MIT Press, 2014) gives the cue-brief taxonomy used across the industry. Austin Wintory (GDC 2013, *Journey*) and Jesper Kyd emphasise that cues are briefed by player state, not visual scene.
-
-**Concept** (explore). Mood-board plus a one-minute sketch. Carries function, mood, reference tracks, instrumentation hints. Does not carry loop points, stems, or middleware integration. "Done" is a direction the composer and designer both recognise.
-
-**Cue** (produce). Fully specced: function (combat, explore, menu, stinger), mood, instrumentation, reference, duration or loop length, interactive structure (vertical layers, horizontal transitions, stingers), tempo and key constraints where stingers must match. Middleware event names and RTPC parameters where relevant. Stems delivered as agreed.
-
-**Rework** (evolve). The original cue plus a specific note, plus the constraints that stay fixed. A rework ticket with no parent cue id is a draft ticket in disguise.
+**Asset** (produce). Finished visual element for integration. Adds the specs a concept deliberately omits: rig compatibility, LOD count, naming, engine slot. "Done" is in-engine integration pass, not file delivery. An asset sitting in a folder that isn't loaded does not count.
 
 ### Writing
 
-Labels: `draft`, `rewrite`.
+Label: `narrative`.
 
 Hannah Nicklin (*Writing for Games*, 2022), Emily Short's blog, and Steve Ince (*Writing for Video Games*, 2006) are the primary references for writing tickets.
 
-**Draft** (produce). A scene, barks, UI copy, a codex entry. Carries scene goal, required information beats (what must the player know after this), word or line budget, branch count, barks needed. Ince's 2006 clause, "what must the player know after this scene", is the most useful AC anchor.
-
-**Rewrite** (evolve). Tied to a systemic change (new companion, cut quest, tone shift) per Obsidian and Larian practice, not line polish. Line polish is draft work on an existing scene.
+**Narrative**. Author narrative docs: character profiles, outlines, lore, scenes, barks, UI copy, codex entries. Carries scene goal, required information beats (what must the player know after this), word or line budget, branch count, barks needed. Ince's 2006 clause, "what must the player know after this scene", is the most useful AC anchor.
 
 ### Design
 
-Labels: `discovery`, `tune`.
+Label: `spec`.
 
-Jesse Schell (*The Art of Game Design*, 3rd ed. 2019) and Raph Koster (*A Theory of Fun*, 2004) frame the split: discovery answers an open question, tuning refines an established system against a target.
+Jesse Schell (*The Art of Game Design*, 3rd ed. 2019) and Raph Koster (*A Theory of Fun*, 2004) frame design work as answering an open question toward a realised idea.
 
-**Discovery** (explore). Open direction question. Output is a decision plus a killed option. Jonathan Blow and Jenova Chen push "playable question" as the artifact: a prototype that lets the team feel the answer, not read it. "Done" is the question answered.
-
-**Tune** (evolve). Measurable target (time to kill, session length, win-rate band, rally length) and the knobs in scope. "Done" is the metric sitting in band across playtests, not that values changed. Per Keith (2020), without a target tuning tickets never close.
-
-Design has no `produce` label because design output is always a spec that tech, art, or writing then produces. A design decision ships through another discipline's ticket.
+**Spec**. Spec out how a feature should work. Open direction question; output is a decision plus a killed option. Jonathan Blow and Jenova Chen push "playable question" as the artifact: a prototype that lets the team feel the answer, not read it. "Done" is the question answered. Design has no produce label of its own because design output is always a spec that tech, art, or writing then produces; a design decision ships through another discipline's ticket.
 
 ### SFX
 
@@ -157,13 +128,13 @@ Ariel Gross (*The Audio Manager's Handbook*, 2017) is the standard reference. Co
 
 A SFX brief carries trigger event, function (feedback, ambience, UI, diegetic), emotional tone, reference, variation count, length, priority and voice-stealing rules, and middleware event name. Akash Thakkar (GDC 2017, 2019) adds "what does the player need to know from this sound" as the function clause. Joanna Fang (Naughty Dog, GDC 2018) stresses physical material, surface, and force for diegetic sfx.
 
-There is no `explore` or `evolve` label for sfx at Shuck. Exploration folds into variation count or a separate prototype pass.
+`sfx` is the only audio label at Shuck. Exploration folds into variation count or a separate prototype pass.
 
 ---
 
 ## Templates
 
-### User Story (player-facing feature, draft when content is player-facing)
+### User Story (player-facing feature, narrative when content is player-facing)
 
 ```
 As a [role]
@@ -174,27 +145,11 @@ So that [benefit]
 - [ ] ...
 ```
 
-### System Story (internal feature, study, asset, concept, cue, discovery, tune, sfx)
+### System Story (internal feature, concept, asset, sfx, spec)
 
 ```
 [ACTION-VERB] [statement of what the system/asset does]
 So that [benefit or reason]
-
-**Acceptance Criteria:**
-- [ ] ...
-```
-
-### Revision / Rework / Rewrite / Tune (evolve)
-
-```
-EVOLVE [parent artifact] so that [new outcome]
-Per [note or observation driving the change]
-
-**What changes:**
-- ...
-
-**What stays:**
-- ...
 
 **Acceptance Criteria:**
 - [ ] ...
@@ -282,7 +237,7 @@ For open-source contributors, the standard view of a ticket is on GitHub. Here i
 
 **Title and body.** The body is Markdown. Images, code blocks, links, and headings all render. Keep the title short; put detail in the body.
 
-**Labels.** Applied per ticket. Our set is listed in "By discipline" below. Each label's description leads with its discipline group (`tech:`, `art:`, `music:`, `writing:`, `design:`, `audio:`) so the family reads at a glance. `good first issue` is applied by contributors themselves to tickets that turned out to be approachable.
+**Labels.** Applied per ticket. Our set is listed in "By discipline" above. Each label's description leads with its discipline group (`tech:`, `art:`, `audio:`, `writing:`, `design:`) so the family reads at a glance. `good first issue` is applied by contributors themselves to tickets that turned out to be approachable.
 
 **Assignees.** A ticket with an assignee is being worked on. An unassigned ticket is open for anyone to claim by commenting. Self-assignment works if you have push access; otherwise comment and a maintainer will assign you.
 
@@ -306,7 +261,7 @@ Internal to Shuck. Covers cycles, estimates, priority, and typed relationships t
 
 **New tickets go to Backlog, no cycle.** Josh promotes tickets to Ready and adds them to cycles. Triage is for external/incoming tickets only, not for our own work.
 
-**Labels by discipline.** Pick the most specific label that fits the intent and discipline. If in doubt between `feature` and `spike`, ask whether there is a committed output (feature) or an open question (spike). Between `asset` and `revision`, ask whether the thing exists yet.
+**Labels by discipline.** Pick the most specific label that fits the intent and discipline. If in doubt between `feature` and `spike`, ask whether there is a committed output (feature) or an open question (spike). Between `spec` and `feature`, ask whether the work answers how something should behave (spec) or builds it (feature).
 
 **Fibonacci estimates.** 1, 2, 3, 5, 8, 13, 21. Bugs are 0. Spikes are 1. Stories stay unpointed until Josh sizes them.
 
@@ -329,10 +284,7 @@ Internal to Shuck. Covers cycles, estimates, priority, and typed relationships t
 - Simon Tatham, *How to Report Bugs Effectively*, 1999.
 - Joel Spolsky, *Painless Bug Tracking*, 2000.
 - Clinton Keith, *Agile Game Development with Scrum*, 2nd ed. 2020.
-- Ryan Singer, *Shape Up*, Basecamp, 2019.
 - Chris Solarski, *Drawing Basics and Video Game Art*, 2012.
-- Winifred Phillips, *A Composer's Guide to Game Music*, MIT Press, 2014.
-- Austin Wintory, GDC 2013.
 - Hannah Nicklin, *Writing for Games*, 2022.
 - Steve Ince, *Writing for Video Games*, 2006.
 - Jesse Schell, *The Art of Game Design*, 3rd ed. 2019.

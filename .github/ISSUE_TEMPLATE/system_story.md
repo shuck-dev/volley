@@ -1,6 +1,6 @@
 ---
 name: System Story
-about: Internal capability or asset (use for feature, study, asset, concept, cue, discovery, tune, sfx)
+about: Internal capability or asset (use for feature, concept, asset, sfx, spec)
 ---
 
 <!-- Guide: designs/process/ticket-writing.md -->
@@ -20,4 +20,4 @@ So that [benefit or reason]
 - <!-- link to related issues with absolute GitHub URLs -->
 
 **Context:**
-<!-- link design docs, parent artifacts, art bible, cue brief, etc. with absolute GitHub URLs -->
+<!-- link design docs, parent artifacts, art bible, etc. with absolute GitHub URLs -->
