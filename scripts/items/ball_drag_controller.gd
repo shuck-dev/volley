@@ -243,7 +243,7 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	return true
 
 
-## Press on an equipped item: spawn a HeldBody for the equipment and start a drag whose cancel restores EQUIPPED.
+## Press on an equipped item: spawn a HeldBody and start a drag whose cancel re-equips through the capacity gate.
 ## Allowed only at the equip pose; the gesture does not begin during a rally or between-rally lulls.
 func grab_equipped_from_character(item_key: String, press_position: Variant = null) -> bool:
 	if not RallyGate.removal_allowed(timeout_controller):
@@ -973,8 +973,7 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 	if gear_rack != null:
 		gear_rack.reveal_slot_for(item_key)
 	if _character_target != null:
-		# Visual was freed by the EQUIPPED -> STORED signal handler on a successful unequip;
-		# this reveal targets the survive-and-snap-back case where placement is still EQUIPPED.
+		# Grab-time unequip already freed the visual; this reveal targets the snap-back case still EQUIPPED.
 		_character_target.set_equipped_visual_visibility(item_key, true)
 
 
