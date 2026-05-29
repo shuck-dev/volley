@@ -34,6 +34,9 @@ func _ready() -> void:
 
 	_item_manager.court_changed.connect(_on_court_changed)
 
+	if _item_manager.has_signal("item_level_changed"):
+		_item_manager.item_level_changed.connect(_on_item_level_changed)
+
 	# Position persistence: SaveManager pulls live positions from us before each
 	# disk write so balls reload where the player left them, not the spawn marker.
 	if _has_save_manager_autoload():
@@ -259,6 +262,20 @@ func release_ball(item_key: String) -> Ball:
 	_balls_by_key.erase(item_key)
 	ball_removed.emit(ball)
 	return ball
+
+
+## Retires the tracked Ball when an item drops to level 0 so no pickable ghost survives a full removal.
+func _on_item_level_changed(item_key: String) -> void:
+	if _item_manager.get_level(item_key) > 0:
+		return
+
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball == null:
+		return
+
+	_balls_by_key.erase(item_key)
+	ball_removed.emit(ball)
+	ball.queue_free()
 
 
 func _on_court_changed(item_key: String, on_court: bool) -> void:

@@ -23,6 +23,9 @@ var state: ItemState
 var economy: EconomyState
 var _effect_manager: EffectManager
 
+## Slot index an item last held, kept across a held/removed gap so a returning ball reclaims it.
+var _prior_rack_slot_by_key: Dictionary[String, int] = {}
+
 
 func _ready() -> void:
 	if state == null:
@@ -172,30 +175,43 @@ func get_rack_slot_index(item_key: String) -> int:
 
 
 ## Frees the rack slot a held item occupied so concurrent inserts fill from slot 0.
-## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
+## Stashes the prior index so a returning item reclaims its own slot rather than the lowest free.
 func release_rack_slot(item_key: String) -> void:
+	if state.rack_slot_index_by_key.has(item_key):
+		_prior_rack_slot_by_key[item_key] = state.rack_slot_index_by_key[item_key]
+
 	state.rack_slot_index_by_key.erase(item_key)
 
 
-## Re-assigns the lowest free rack slot when a held item returns to the rack.
+## Re-assigns a rack slot when a held item returns, preferring its prior index when still free.
 func reassign_rack_slot(item_key: String) -> void:
 	_assign_rack_slot(item_key, _get_item(item_key).role)
 
 
-## Picks the lowest free slot index among STORED items of the same role and records it.
+## Records the item's slot, preferring its stashed prior index when free, else the lowest free index.
 ## Idempotent: an item with an existing assignment keeps it.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:
 	if state.rack_slot_index_by_key.has(item_key):
 		return
+
 	var used: Dictionary = {}
 	for key: String in state.rack_slot_index_by_key:
 		var definition: ItemDefinition = _get_item(key)
 		if definition != null and definition.role == role:
 			used[state.rack_slot_index_by_key[key]] = true
+
+	var preferred: int = _prior_rack_slot_by_key.get(item_key, -1)
+	if preferred >= 0 and not used.has(preferred):
+		state.rack_slot_index_by_key[item_key] = preferred
+		_prior_rack_slot_by_key.erase(item_key)
+		return
+
 	var candidate: int = 0
 	while used.has(candidate):
 		candidate += 1
+
 	state.rack_slot_index_by_key[item_key] = candidate
+	_prior_rack_slot_by_key.erase(item_key)
 
 
 ## Returns owned items of the given role whose placement is STORED (on the rack).
@@ -347,8 +363,12 @@ func remove_level(item_key: String) -> void:
 		_set_level(item_key, current_level - 1)
 
 		if current_level - 1 == 0:
-			# Fully removed: treat the item as if it was never owned; clear placement.
+			# Fully removed: treat the item as if it was never owned; clear placement and free its slot
+			# so no rack token or live ball lingers for a key the player no longer owns.
 			_set_item_placement(item_key, Placement.STORED)
+			state.rack_slot_index_by_key.erase(item_key)
+			_prior_rack_slot_by_key.erase(item_key)
+
 		SaveManager.save()
 
 
@@ -398,10 +418,11 @@ func _set_level(item_key: String, level: int) -> void:
 
 func _set_item_placement(item_key: String, placement: int) -> void:
 	var previous: int = state.item_placements.get(item_key, Placement.STORED)
-	if previous == placement and not state.loose_in_venue.has(item_key):
-		return
 	var item := _get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
+
+	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
+	# and a placed item never leaks one, regardless of whether the placement value moved.
 	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
 		state.loose_in_venue.erase(item_key)
@@ -412,9 +433,14 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
 		state.rack_slot_index_by_key.erase(item_key)
+
+	if previous == placement and not state.loose_in_venue.has(item_key):
+		return
+
 	item_placement_changed.emit(item_key, placement)
 	var was_on_court := previous == Placement.ON_COURT
 	var now_on_court := placement == Placement.ON_COURT
+
 	if was_on_court != now_on_court and item.role == &"ball":
 		court_changed.emit(item_key, now_on_court)
 
