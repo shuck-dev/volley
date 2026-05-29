@@ -1,0 +1,9 @@
+# Refactor as you go
+
+When you come up against debt, a legacy shape, or a corner that wants reshaping while making a change, the instinct to follow is to leave the area a little better than you found it, right there in the work that brought you to it. You are best placed to clean the rough spot from inside the PR you are already in, since the context is in your head and in the diff.
+
+That holds while the reshaping stays adjacent and small: a rename smell, a duplicated bit of logic, dead code you notice in passing, a config value pulled to its proper home, a deprecated path deleted now that the new one is live, going straight to the right shape instead of leaving a shim behind. Finishing that kind of work in place leaves the area cleaner than you would by filing a follow-up ticket and coming back to it later.
+
+The judgement is knowing when the reshaping has grown past adjacent. Pre-existing debt you are not actually touching is its own work, and belongs in a ticket rather than folded into something unrelated; a PR that does one thing lands easier and reads clearer later. And sometimes a cleanup that started small turns out large enough to deserve its own PR, even though you ran into it here. That is fine, and worth surfacing rather than swallowing whole or quietly splitting off alone, so the maintainer can help decide where it lands.
+
+Debt cleared this way does not pile into a backlog that quietly rots. Most of it goes incrementally, cycle by cycle, as people work through the areas that need it, with no one scheduling it. The rest goes by prefactor: when a feature is about to build on an area that would be far nicer once cleared, do the refactor first, as the feature's enabling step. A filed debt or architecture ticket is exactly the candidate to clear before the next feature that reaches into that ground.
