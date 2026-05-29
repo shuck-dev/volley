@@ -143,11 +143,7 @@ func test_noise_resamples_during_drift_when_direction_changes() -> void:
 	)
 
 
-# --- multi-ball coverage (SH-435) ---
-# With two live, approaching balls the partner must cover the one arriving
-# soonest, and re-commit when a sooner ball appears mid-rally. A single-ball
-# tautology can't pass these: both balls genuinely qualify, on opposite sides
-# of center, so the partner's velocity sign reveals which one it chose.
+# With two live approaching balls the partner covers the soonest-arriving one.
 func _bind_tracker_for_multiball() -> BallTracker:
 	var tracker: BallTracker = load("res://scripts/court/ball_tracker.gd").new()
 	add_child_autofree(tracker)
@@ -158,9 +154,9 @@ func _bind_tracker_for_multiball() -> BallTracker:
 func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
 	var tracker: BallTracker = _bind_tracker_for_multiball()
 
-	# Near ball: close x, fast → tiny time-to-arrival, intercept below center.
+	# Near ball: close x, fast → tiny time-to-arrival.
 	var near_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
-	# Far ball: distant x, slow → large time-to-arrival, intercept above center.
+	# Far ball: distant x, slow → large time-to-arrival.
 	var far_ball: Ball = _spawn_ball(Vector2(0.0, -200.0), Vector2(100.0, 0.0))
 	# Attach near first, far last so the signal-bound `ball` is far_ball;
 	# selection must override it for the assertion to pass.
@@ -171,8 +167,35 @@ func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
 	_run_frames(5)
 
 	assert_eq(_controller.ball, near_ball, "partner selects the soonest-arriving ball")
+
+
+func test_ignores_away_ball_and_tracks_the_approaching_one() -> void:
+	# Two live balls: one approaches (vx > 0, still left of paddle), one moves
+	# away (vx < 0). The away ball attaches last, so a naive last-added binding
+	# would pick it. Selection must skip the away ball and commit to the
+	# approaching one.
+	var tracker: BallTracker = _bind_tracker_for_multiball()
+
+	# The away ball is nearer and faster, so a broken selector that dropped the
+	# approach filter would pick it and drift. The approaching ball is farther
+	# and slower but is the only valid target. Velocities are set AFTER attach:
+	# Ball._ready resets linear_velocity to its serve vector, so an away-bound
+	# ball only stays away once re-set.
+	var approaching_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 200.0, 200.0), Vector2.ZERO)
+	var away_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 10.0, -200.0), Vector2.ZERO)
+	tracker.attach(approaching_ball)
+	tracker.attach(away_ball)
+	approaching_ball.linear_velocity = Vector2(100.0, 0.0)
+	away_ball.linear_velocity = Vector2(-400.0, 0.0)
+	assert_eq(_controller.ball, away_ball, "precondition: signal-bound ball is the away ball")
+
+	_run_frames(5)
+
+	assert_eq(_controller.ball, approaching_ball, "partner skips the away ball for the approacher")
 	assert_gt(
-		_paddle.velocity.y, 0.0, "partner tracks the near ball below center, not the far one above"
+		_paddle.velocity.y,
+		0.0,
+		"partner tracks the approaching ball below center, not drifting toward the away ball",
 	)
 
 

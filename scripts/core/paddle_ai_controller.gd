@@ -88,10 +88,13 @@ func _select_tracked_ball() -> RigidBody2D:
 	for candidate in _tracker.get_balls():
 		if candidate == null or not _ball_in_play(candidate) or not _ball_approaches(candidate):
 			continue
+
 		var speed_x: float = absf(candidate.linear_velocity.x)
 		if speed_x < 1.0:
 			continue
+
 		var arrival: float = absf(paddle.position.x - candidate.position.x) / speed_x
+
 		if arrival < best_time:
 			best_time = arrival
 			best = candidate
