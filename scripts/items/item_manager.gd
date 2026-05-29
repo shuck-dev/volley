@@ -7,6 +7,8 @@ signal item_placement_changed(item_key: String, placement: int)
 signal court_changed(item_key: String, on_court: bool)
 ## Emitted when equip refuses; reason is currently &"capacity_exceeded" (sole case).
 signal equip_refused(item_key: String, reason: StringName)
+## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
+signal rack_slots_changed
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
@@ -171,20 +173,38 @@ func get_rack_slot_index(item_key: String) -> int:
 	return state.rack_slot_index_by_key.get(item_key, -1)
 
 
+## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
+## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
+func release_rack_slot(item_key: String) -> void:
+	if not state.rack_slot_index_by_key.has(item_key):
+		return
+	state.rack_slot_index_by_key.erase(item_key)
+	rack_slots_changed.emit()
+
+
+## Re-assigns the lowest free rack slot when a held item returns to the rack.
+func reassign_rack_slot(item_key: String) -> void:
+	_assign_rack_slot(item_key, _get_item(item_key).role)
+
+
 ## Picks the lowest free slot index among STORED items of the same role and records it.
-## Idempotent: an item with an existing assignment keeps it.
+## Idempotent: an item with an existing assignment keeps it. Survivors of a pop never reshuffle.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:
 	if state.rack_slot_index_by_key.has(item_key):
 		return
+
 	var used: Dictionary = {}
 	for key: String in state.rack_slot_index_by_key:
 		var definition: ItemDefinition = _get_item(key)
 		if definition != null and definition.role == role:
 			used[state.rack_slot_index_by_key[key]] = true
+
 	var candidate: int = 0
 	while used.has(candidate):
 		candidate += 1
+
 	state.rack_slot_index_by_key[item_key] = candidate
+	rack_slots_changed.emit()
 
 
 ## Returns owned items of the given role whose placement is STORED (on the rack).
@@ -336,8 +356,10 @@ func remove_level(item_key: String) -> void:
 		_set_level(item_key, current_level - 1)
 
 		if current_level - 1 == 0:
-			# Fully removed: treat the item as if it was never owned; clear placement.
+			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(item_key, Placement.STORED)
+			state.rack_slot_index_by_key.erase(item_key)
+
 		SaveManager.save()
 
 
@@ -386,13 +408,15 @@ func _set_level(item_key: String, level: int) -> void:
 
 
 func _set_item_placement(item_key: String, placement: int) -> void:
-	var previous := _get_placement(item_key)
-	if previous == placement:
-		return
+	var previous: int = state.item_placements.get(item_key, Placement.STORED)
 	var item := _get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
+
+	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
+	# and a placed item never leaks one, regardless of whether the placement value moved.
 	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
+		state.loose_in_venue.erase(item_key)
 		_effect_manager.unregister_source(item)
 		_assign_rack_slot(item_key, item.role)
 	else:
@@ -400,9 +424,14 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
 		state.rack_slot_index_by_key.erase(item_key)
+
+	if previous == placement and not state.loose_in_venue.has(item_key):
+		return
+
 	item_placement_changed.emit(item_key, placement)
 	var was_on_court := previous == Placement.ON_COURT
 	var now_on_court := placement == Placement.ON_COURT
+
 	if was_on_court != now_on_court and item.role == &"ball":
 		court_changed.emit(item_key, now_on_court)
 

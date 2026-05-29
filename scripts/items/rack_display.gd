@@ -22,6 +22,10 @@ func _ready() -> void:
 	_cache_slot_markers()
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_item_manager.item_placement_changed.connect(_on_item_placement_changed)
+	if not _item_manager.rack_slots_changed.is_connected(_on_rack_slots_changed):
+		# Deferred: a slot mutation can fire from inside a slot's own input_event handler, and a
+		# synchronous refresh would free that Area2D mid-emission. Defer to the idle frame.
+		_item_manager.rack_slots_changed.connect(_on_rack_slots_changed, CONNECT_DEFERRED)
 	if reconciler != null:
 		reconciler.ball_spawned.connect(_on_ball_spawned)
 		reconciler.ball_removed.connect(_on_ball_removed)
@@ -39,6 +43,11 @@ func configure_reconciler(p_reconciler: BallReconciler) -> void:
 
 
 func refresh() -> void:
+	# A stale _hidden_key (set on a grab whose reveal never fired) would rebuild this slot
+	# invisible, and a hidden CanvasItem gets no Area2D input picking, so the slot is
+	# unclickable. Drop the hide for any key that is not the live drag target before rebuilding.
+	if _hidden_key != "" and not _is_key_being_dragged(_hidden_key):
+		_hidden_key = ""
 	_clear_slots()
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
@@ -48,7 +57,10 @@ func refresh() -> void:
 	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
 	for item_key in kit_keys:
 		var slot_index: int = _item_manager.get_rack_slot_index(item_key)
-		if slot_index < 0 or slot_index >= marker_count:
+		if slot_index < 0:
+			# Slot freed while the ball is held; it leaves the rack until restore re-claims a slot.
+			continue
+		if slot_index >= marker_count:
 			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [item_key, slot_index])
 			continue
 		var definition: ItemDefinition = _get_item_definition(item_key)
@@ -107,6 +119,10 @@ func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> voi
 func _registered_ball_for(item_key: String) -> Ball:
 	if reconciler == null:
 		return null
+	# A second stored ball can be left untracked by the reconciler's one-shot kit reconcile;
+	# back-fill it here so every rendered stored ball-role slot is backed by a live, grabbable ball.
+	if role == &"ball" and reconciler.has_method("ensure_stored_ball_for_key"):
+		return reconciler.ensure_stored_ball_for_key(item_key)
 	return reconciler.get_ball_for_key(item_key)
 
 
@@ -186,6 +202,18 @@ func _apply_slot_visibility() -> void:
 		slot.visible = key != _hidden_key
 
 
+## True when a drag controller currently holds `item_key` as its live drag target.
+func _is_key_being_dragged(item_key: String) -> bool:
+	if get_tree() == null:
+		return false
+	for controller: Node in get_tree().get_nodes_in_group(&"drag_controller"):
+		if not (controller.has_method("is_dragging") and controller.has_method("get_held_key")):
+			continue
+		if controller.is_dragging() and controller.get_held_key() == item_key:
+			return true
+	return false
+
+
 func _clear_slots() -> void:
 	# free, not queue_free: remove_child already detached, so the idle-frame gap orphans the slot.
 	for slot in _slots:
@@ -207,6 +235,10 @@ func _on_item_level_changed(_item_key: String) -> void:
 
 
 func _on_item_placement_changed(_item_key: String, _placement: int) -> void:
+	refresh()
+
+
+func _on_rack_slots_changed() -> void:
 	refresh()
 
 

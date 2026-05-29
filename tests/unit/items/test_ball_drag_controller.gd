@@ -98,6 +98,19 @@ func test_grab_from_rack_spawns_held_body_without_activating_item() -> void:
 	)
 
 
+func test_grab_from_rack_frees_the_slot_for_a_concurrent_insert() -> void:
+	_manager.take("ball_alpha")
+	assert_eq(_manager.get_rack_slot_index("ball_alpha"), 0, "precondition: stored in slot 0")
+
+	_drag.grab_from_rack("ball_alpha")
+
+	assert_eq(
+		_manager.get_rack_slot_index("ball_alpha"),
+		-1,
+		"grabbing a rack ball frees its slot so a concurrent insert fills slot 0",
+	)
+
+
 func test_click_on_rack_without_movement_does_not_introduce_ball() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
@@ -396,6 +409,8 @@ func _add_equipment_to_manager(key: String) -> ItemDefinition:
 func _wire_character_drop_target() -> Area2D:
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
+	# Removal is gated to the equip pose; seat the controller there so the legitimate gesture starts.
+	timeout._state = TimeoutController.State.AT_EQUIP_POSE
 	_drag.timeout_controller = timeout
 	_drag.gear_rack = _rack
 	_drag.gear_rack_drop_target = _drop_target
@@ -404,7 +419,7 @@ func _wire_character_drop_target() -> Area2D:
 	return character_area
 
 
-func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> void:
+func test_grab_equipped_from_character_spawns_held_body_and_deactivates() -> void:
 	_add_equipment_to_manager("gear_x")
 	_manager.state.item_placements["gear_x"] = Placement.EQUIPPED
 	_wire_character_drop_target()
@@ -416,24 +431,21 @@ func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> 
 	assert_eq(_drag.get_held_key(), "gear_x")
 	assert_eq(
 		_manager.get_placement("gear_x"),
-		Placement.EQUIPPED,
-		"the item stays equipped throughout the gesture; only rack accept calls unequip",
+		Placement.STORED,
+		"grabbing off the character deactivates immediately so the effect ends at removal",
 	)
 
 
-func test_grab_equipped_refuses_mid_rally() -> void:
+func test_grab_equipped_refuses_outside_equip_pose() -> void:
 	_add_equipment_to_manager("gear_z")
 	_manager.state.item_placements["gear_z"] = Placement.EQUIPPED
-	_wire_character_drop_target()
-
-	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2.ZERO)
-	ball.set_play_state(Ball.PlayState.PLAY_NORMAL)
+	var character_area: Area2D = _wire_character_drop_target()
+	assert_not_null(character_area)
+	_drag.timeout_controller._state = TimeoutController.State.IDLE
 
 	var ok: bool = _drag.grab_equipped_from_character("gear_z", Vector2.ZERO)
 
-	assert_false(
-		ok, "press on equipped item is refused while a ball is in play and timeout is idle"
-	)
+	assert_false(ok, "press on equipped item is refused unless the character is at the equip pose")
 	assert_false(_drag.is_dragging())
 
 
@@ -471,9 +483,9 @@ func test_grab_equipped_release_on_rack_unequips() -> void:
 	assert_false(_drag.is_dragging())
 
 
-func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void:
+func test_grab_equipped_release_on_non_accepting_target_stays_deactivated() -> void:
 	# Zero venue bounds disables the venue catch-all; every remaining built-in target refuses,
-	# so placement stays EQUIPPED (only rack accept calls unequip).
+	# so the held token keeps following the cursor while the item stays deactivated.
 	_add_equipment_to_manager("gear_w")
 	_manager.state.item_placements["gear_w"] = Placement.EQUIPPED
 	_drag.venue_bounds = Rect2()
@@ -481,12 +493,13 @@ func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void
 	_drag.grab_equipped_from_character("gear_w", Vector2.ZERO)
 	_drag._gesture_below_threshold = false
 
-	# Release inside the court (which rejects equipment-role) far from the gear rack.
-	var released: bool = _drag.attempt_release(Vector2.ZERO)
+	# Release far from every target: court rejects equipment-role, and the point clears the
+	# character equip area (origin) and the gear rack, so nothing accepts.
+	var released: bool = _drag.attempt_release(Vector2(500, 500))
 
 	assert_false(released, "no target accepted -> gesture stays alive (release pending)")
 	assert_eq(
 		_manager.get_placement("gear_w"),
-		Placement.EQUIPPED,
-		"unaccepted release must NOT unequip the gear",
+		Placement.STORED,
+		"the grab already deactivated the gear; an unaccepted release keeps it off the character",
 	)

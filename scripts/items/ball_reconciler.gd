@@ -33,6 +33,7 @@ func _ready() -> void:
 		_item_manager = ItemManager
 
 	_item_manager.court_changed.connect(_on_court_changed)
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 
 	# Position persistence: SaveManager pulls live positions from us before each
 	# disk write so balls reload where the player left them, not the spawn marker.
@@ -261,6 +262,20 @@ func release_ball(item_key: String) -> Ball:
 	return ball
 
 
+## Retires the tracked Ball when an item drops to level 0 so no pickable ghost survives a full removal.
+func _on_item_level_changed(item_key: String) -> void:
+	if _item_manager.get_level(item_key) > 0:
+		return
+
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball == null:
+		return
+
+	_balls_by_key.erase(item_key)
+	ball_removed.emit(ball)
+	ball.queue_free()
+
+
 func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if not _adopting_pre_existing:
 		_initial_reconcile_pending = false
@@ -314,9 +329,23 @@ func _reconcile_stored_kit_items() -> void:
 	if ball_rack == null:
 		return
 	for key in _item_manager.get_kit_items(&"ball"):
-		if get_ball_for_key(key) != null:
-			continue
-		adopt_stored(key, ball_rack.get_slot_position_for(key))
+		ensure_stored_ball_for_key(key)
+
+
+## Guarantees a tracked STORED Ball for a kit ball-role key so its slot is indexed and grabbable.
+## The one-shot _reconcile_stored_kit_items guard can leave a second stored ball untracked;
+## this lets the rack/grab paths lazily back-fill it without re-running the whole sweep.
+func ensure_stored_ball_for_key(item_key: String) -> Ball:
+	var existing: Ball = get_ball_for_key(item_key)
+	if existing != null:
+		return existing
+	if ball_rack == null or _item_manager == null:
+		return null
+	if _item_manager.get_level(item_key) <= 0:
+		return null
+	if _item_manager.get_rack_slot_index(item_key) < 0:
+		return null
+	return adopt_stored(item_key, ball_rack.get_slot_position_for(item_key))
 
 
 func _default_spawn_position() -> Vector2:
