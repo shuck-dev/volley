@@ -58,6 +58,8 @@ LLMs leave a residue. The pass is not about hiding AI assistance; it is about hu
 
 **Structural and punctuation tells.** Tricolons stacked across consecutive paragraphs; adjective stacks where one modifier would carry the load; colon-as-header used four or more times in one section; single-word fragment ("Quietly.", "None.") used more than twice; em dashes anywhere; Oxford comma drifting mid-document; "however" used as a soft pivot more than once per section.
 
+**Inanimate things doing human work.** A change, a PR, a test, a fix, a commit does not find, notice, decide, reveal, clean, catch, or run into anything. The person does. Write the developer as the actor: "you notice the dead code", not "the change reveals the dead code"; "you ran into it", not "the change ran into it"; "the reviewer caught it", not "the review caught it". This is the most frequent tell in this register. It does not ban an abstraction as the subject of what it genuinely does in technical prose ("the function returns X", "the signal fires", "the gate blocks the commit"); it bans handing an inanimate thing a human's verb.
+
 Sources: Berens lab, *Delving into LLM-assisted writing*, *Science Advances*, 2025; *Wikipedia:Signs of AI writing*; Reuters Institute, 2024.
 
 ## Structure of a section
