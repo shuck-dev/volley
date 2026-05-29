@@ -152,6 +152,47 @@ func test_second_stored_ball_is_indexed_visible_and_grabbable() -> void:
 	assert_eq(drag.get_held_key(), "ball_beta", "the grab holds the second ball")
 
 
+## SH-412 regression: assigning the second ball's slot AFTER the rack is built must re-render the
+## rack through the rack_slots_changed signal alone (no manual refresh), so both slots end up
+## visible, pickable, and grabbable. Proves the signal wiring, not refresh() called by the test.
+func test_second_slot_assignment_signal_refreshes_the_rack() -> void:
+	# Awaited: the rack connects rack_slots_changed deferred (see RackDisplay._ready), so the
+	# signal-driven refresh lands on the next idle frame, not synchronously.
+	_reconciler.ball_rack = _make_rack()
+	var rack: RackDisplay = _reconciler.ball_rack
+	var drop_target: Area2D = _make_drop_target(Vector2(-1000, 0), Vector2(300, 200))
+
+	var drag: BallDragController = BallDragControllerScript.new()
+	drag.configure(_manager, rack, drop_target, _reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	add_child_autofree(drag)
+
+	# Own both balls, then free the second's slot so the rack renders only the first. This isolates
+	# the slot-map signal: reassign_rack_slot emits rack_slots_changed alone, with no level or
+	# placement change to mask it. Mirrors base_ball going slot -1 -> 1 as it becomes stored.
+	_manager.take("ball_alpha")
+	_manager.take("ball_beta")
+	_manager.release_rack_slot("ball_beta")
+	await get_tree().process_frame
+	assert_eq(rack.get_displayed_keys().size(), 1, "precondition: rack shows only the first ball")
+
+	# Reassign the second ball's slot purely through the API. The rack must re-render off the
+	# rack_slots_changed signal, never a manual refresh() here.
+	_manager.reassign_rack_slot("ball_beta")
+	await get_tree().process_frame
+
+	var displayed: Array[String] = rack.get_displayed_keys()
+	assert_true(displayed.has("ball_alpha"), "signal refresh kept the first ball displayed")
+	assert_true(displayed.has("ball_beta"), "signal refresh added the second ball's slot")
+	assert_true(_slot_visible_for(rack, "ball_alpha"), "first slot stays visible and pickable")
+	assert_true(_slot_visible_for(rack, "ball_beta"), "second slot is visible and pickable")
+
+	var grabbed: bool = drag.grab_from_rack("ball_beta")
+	assert_true(grabbed, "the signal-rendered second slot is grabbable")
+	assert_eq(drag.get_held_key(), "ball_beta", "the grab holds the second ball")
+
+
 ## SH-412 regression: a grab+restore cycle on the second ball returns its slot visible and pickable.
 func test_second_ball_slot_returns_visible_after_grab_and_restore() -> void:
 	_reconciler.ball_rack = _make_rack()

@@ -7,6 +7,8 @@ signal item_placement_changed(item_key: String, placement: int)
 signal court_changed(item_key: String, on_court: bool)
 ## Emitted when equip refuses; reason is currently &"capacity_exceeded" (sole case).
 signal equip_refused(item_key: String, reason: StringName)
+## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
+signal rack_slots_changed
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
@@ -174,7 +176,10 @@ func get_rack_slot_index(item_key: String) -> int:
 ## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
 ## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
 func release_rack_slot(item_key: String) -> void:
+	if not state.rack_slot_index_by_key.has(item_key):
+		return
 	state.rack_slot_index_by_key.erase(item_key)
+	rack_slots_changed.emit()
 
 
 ## Re-assigns the lowest free rack slot when a held item returns to the rack.
@@ -199,6 +204,7 @@ func _assign_rack_slot(item_key: String, role: StringName) -> void:
 		candidate += 1
 
 	state.rack_slot_index_by_key[item_key] = candidate
+	rack_slots_changed.emit()
 
 
 ## Returns owned items of the given role whose placement is STORED (on the rack).
