@@ -17,13 +17,13 @@ var phase: Phase = Phase.LIFTING
 var item_key: String = ""
 
 
-static func make_for(definition: ItemDefinition, item_key: String) -> HeldBody:
+static func make_for(definition: ItemDefinition, key: String) -> HeldBody:
 	# Equipment without an authored at_rest_shape has no physics body to spawn; refuse rather than crash.
 	if definition == null or definition.at_rest_shape == null:
 		return null
 	var body: HeldBody = HELD_BODY_SCENE.instantiate()
-	body.name = "HeldBody_%s" % item_key
-	body.item_key = item_key
+	body.name = "HeldBody_%s" % key
+	body.item_key = key
 	var collision: CollisionShape2D = body.get_node("Collision")
 	# Per-instance shape so expansion-ring inflation cannot leak across held bodies.
 	collision.shape = definition.at_rest_shape.duplicate()

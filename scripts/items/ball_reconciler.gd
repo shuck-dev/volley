@@ -339,7 +339,7 @@ func ensure_stored_ball_for_key(item_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
 		return existing
-	if ball_rack == null:
+	if ball_rack == null or _item_manager == null:
 		return null
 	if _item_manager.get_level(item_key) <= 0:
 		return null
