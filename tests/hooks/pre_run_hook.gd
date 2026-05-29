@@ -24,6 +24,8 @@ const EXCLUDE_PATHS = [
 	"res://scripts/items/effect/outcome.gd",
 	# Drawing-heavy @tool Control; _draw paths are untouched in headless tests
 	"res://scripts/court/speed_bar.gd",
+	# Editor/debug-only @tool draw of the venue bounds; _draw paths skip in headless
+	"res://scripts/core/venue_bound_debug_draw.gd",
 	# SH-297: pure enum + label container; only consumed via const access from callers.
 	"res://scripts/items/cursor_state.gd",
 ]
