@@ -168,6 +168,9 @@ func is_dragging() -> bool:
 
 ## Returns the active drag-target node for cursor follow / ease / hover; HeldBody for rack+temp grabs, Ball for live grabs.
 func _drag_target() -> Node2D:
+	# A dev-only remove_level can free the held ball mid-gesture; drop the dangling ref.
+	if _held_ball != null and not is_instance_valid(_held_ball):
+		_held_ball = null
 	if _held_ball != null:
 		return _held_ball
 	return _held_body

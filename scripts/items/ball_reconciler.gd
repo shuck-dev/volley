@@ -33,9 +33,7 @@ func _ready() -> void:
 		_item_manager = ItemManager
 
 	_item_manager.court_changed.connect(_on_court_changed)
-
-	if _item_manager.has_signal("item_level_changed"):
-		_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_item_manager.item_level_changed.connect(_on_item_level_changed)
 
 	# Position persistence: SaveManager pulls live positions from us before each
 	# disk write so balls reload where the player left them, not the spawn marker.

@@ -61,12 +61,13 @@ func test_surviving_balls_keep_their_slot_indices_after_a_removal() -> void:
 	assert_ne(beta_slot, alpha_slot, "precondition: the two balls held distinct slots")
 
 
-func test_held_ball_returns_to_its_original_slot() -> void:
+func test_returning_ball_fills_the_lowest_free_slot() -> void:
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
 	var beta_slot: int = _manager.get_rack_slot_index("ball_beta")
+	assert_ne(beta_slot, 0, "precondition: beta's original slot was not the lowest")
 
-	# Free the lower slot too, so lowest-free would hand beta a different index than it had.
+	# Free both slots, then return beta first: it fills the lowest free slot, not its prior one.
 	_manager.release_rack_slot("ball_alpha")
 	_manager.release_rack_slot("ball_beta")
 	assert_eq(
@@ -77,7 +78,6 @@ func test_held_ball_returns_to_its_original_slot() -> void:
 
 	assert_eq(
 		_manager.get_rack_slot_index("ball_beta"),
-		beta_slot,
-		"a restored ball returns to its original slot, not the lowest free one",
+		0,
+		"a returning ball fills the lowest free slot (FIFO), not its prior one",
 	)
-	assert_ne(beta_slot, 0, "precondition: beta's original slot was not the lowest")

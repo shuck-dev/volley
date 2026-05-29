@@ -23,9 +23,6 @@ var state: ItemState
 var economy: EconomyState
 var _effect_manager: EffectManager
 
-## Slot index an item last held, kept across a held/removed gap so a returning ball reclaims it.
-var _prior_rack_slot_by_key: Dictionary[String, int] = {}
-
 
 func _ready() -> void:
 	if state == null:
@@ -174,22 +171,19 @@ func get_rack_slot_index(item_key: String) -> int:
 	return state.rack_slot_index_by_key.get(item_key, -1)
 
 
-## Frees the rack slot a held item occupied so concurrent inserts fill from slot 0.
-## Stashes the prior index so a returning item reclaims its own slot rather than the lowest free.
+## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
+## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
 func release_rack_slot(item_key: String) -> void:
-	if state.rack_slot_index_by_key.has(item_key):
-		_prior_rack_slot_by_key[item_key] = state.rack_slot_index_by_key[item_key]
-
 	state.rack_slot_index_by_key.erase(item_key)
 
 
-## Re-assigns a rack slot when a held item returns, preferring its prior index when still free.
+## Re-assigns the lowest free rack slot when a held item returns to the rack.
 func reassign_rack_slot(item_key: String) -> void:
 	_assign_rack_slot(item_key, _get_item(item_key).role)
 
 
-## Records the item's slot, preferring its stashed prior index when free, else the lowest free index.
-## Idempotent: an item with an existing assignment keeps it.
+## Picks the lowest free slot index among STORED items of the same role and records it.
+## Idempotent: an item with an existing assignment keeps it. Survivors of a pop never reshuffle.
 func _assign_rack_slot(item_key: String, role: StringName) -> void:
 	if state.rack_slot_index_by_key.has(item_key):
 		return
@@ -200,18 +194,11 @@ func _assign_rack_slot(item_key: String, role: StringName) -> void:
 		if definition != null and definition.role == role:
 			used[state.rack_slot_index_by_key[key]] = true
 
-	var preferred: int = _prior_rack_slot_by_key.get(item_key, -1)
-	if preferred >= 0 and not used.has(preferred):
-		state.rack_slot_index_by_key[item_key] = preferred
-		_prior_rack_slot_by_key.erase(item_key)
-		return
-
 	var candidate: int = 0
 	while used.has(candidate):
 		candidate += 1
 
 	state.rack_slot_index_by_key[item_key] = candidate
-	_prior_rack_slot_by_key.erase(item_key)
 
 
 ## Returns owned items of the given role whose placement is STORED (on the rack).
@@ -363,11 +350,9 @@ func remove_level(item_key: String) -> void:
 		_set_level(item_key, current_level - 1)
 
 		if current_level - 1 == 0:
-			# Fully removed: treat the item as if it was never owned; clear placement and free its slot
-			# so no rack token or live ball lingers for a key the player no longer owns.
+			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(item_key, Placement.STORED)
 			state.rack_slot_index_by_key.erase(item_key)
-			_prior_rack_slot_by_key.erase(item_key)
 
 		SaveManager.save()
 
