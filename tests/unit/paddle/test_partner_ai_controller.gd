@@ -158,8 +158,7 @@ func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
 	var near_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
 	# Far ball: distant x, slow → large time-to-arrival.
 	var far_ball: Ball = _spawn_ball(Vector2(0.0, -200.0), Vector2(100.0, 0.0))
-	# Attach near first, far last so the signal-bound `ball` is far_ball;
-	# selection must override it for the assertion to pass.
+	# Attach far last so the signal-bound ball is far_ball; selection must override it.
 	tracker.attach(near_ball)
 	tracker.attach(far_ball)
 	assert_eq(_controller.ball, far_ball, "precondition: signal-bound ball is the far ball")
@@ -170,17 +169,9 @@ func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
 
 
 func test_ignores_away_ball_and_tracks_the_approaching_one() -> void:
-	# Two live balls: one approaches (vx > 0, still left of paddle), one moves
-	# away (vx < 0). The away ball attaches last, so a naive last-added binding
-	# would pick it. Selection must skip the away ball and commit to the
-	# approaching one.
 	var tracker: BallTracker = _bind_tracker_for_multiball()
 
-	# The away ball is nearer and faster, so a broken selector that dropped the
-	# approach filter would pick it and drift. The approaching ball is farther
-	# and slower but is the only valid target. Velocities are set AFTER attach:
-	# Ball._ready resets linear_velocity to its serve vector, so an away-bound
-	# ball only stays away once re-set.
+	# Velocities set after attach: Ball._ready resets linear_velocity to its serve vector.
 	var approaching_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 200.0, 200.0), Vector2.ZERO)
 	var away_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 10.0, -200.0), Vector2.ZERO)
 	tracker.attach(approaching_ball)

@@ -61,8 +61,7 @@ func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
 
-	# Multi-ball is live: cover the approaching ball that arrives soonest, falling
-	# back to the tracker-driven `ball` when none qualifies (single-ball parity).
+	# Cover the soonest-arriving approaching ball; fall back to the tracker ball when none qualifies.
 	ball = _select_tracked_ball()
 	if ball == null:
 		return
