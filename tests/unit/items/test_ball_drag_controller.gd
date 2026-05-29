@@ -419,7 +419,7 @@ func _wire_character_drop_target() -> Area2D:
 	return character_area
 
 
-func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> void:
+func test_grab_equipped_from_character_spawns_held_body_and_deactivates() -> void:
 	_add_equipment_to_manager("gear_x")
 	_manager.state.item_placements["gear_x"] = Placement.EQUIPPED
 	_wire_character_drop_target()
@@ -431,8 +431,8 @@ func test_grab_equipped_from_character_spawns_held_body_and_keeps_equipped() -> 
 	assert_eq(_drag.get_held_key(), "gear_x")
 	assert_eq(
 		_manager.get_placement("gear_x"),
-		Placement.EQUIPPED,
-		"the item stays equipped throughout the gesture; only rack accept calls unequip",
+		Placement.STORED,
+		"grabbing off the character deactivates immediately so the effect ends at removal",
 	)
 
 
@@ -483,9 +483,9 @@ func test_grab_equipped_release_on_rack_unequips() -> void:
 	assert_false(_drag.is_dragging())
 
 
-func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void:
+func test_grab_equipped_release_on_non_accepting_target_stays_deactivated() -> void:
 	# Zero venue bounds disables the venue catch-all; every remaining built-in target refuses,
-	# so placement stays EQUIPPED (only rack accept calls unequip).
+	# so the held token keeps following the cursor while the item stays deactivated.
 	_add_equipment_to_manager("gear_w")
 	_manager.state.item_placements["gear_w"] = Placement.EQUIPPED
 	_drag.venue_bounds = Rect2()
@@ -500,6 +500,6 @@ func test_grab_equipped_release_on_non_accepting_target_keeps_equipped() -> void
 	assert_false(released, "no target accepted -> gesture stays alive (release pending)")
 	assert_eq(
 		_manager.get_placement("gear_w"),
-		Placement.EQUIPPED,
-		"unaccepted release must NOT unequip the gear",
+		Placement.STORED,
+		"the grab already deactivated the gear; an unaccepted release keeps it off the character",
 	)

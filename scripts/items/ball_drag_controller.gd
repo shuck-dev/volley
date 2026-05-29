@@ -261,9 +261,11 @@ func grab_equipped_from_character(item_key: String, press_position: Variant = nu
 	if not _spawn_held_body(item_key, spawn_position, false):
 		return false
 
-	# `live` + on_court so rack and timeout drops both reach unequip; cancel keeps EQUIPPED.
+	# Deactivate the moment the item leaves the character so its effect ends at removal, not at drop.
+	_item_manager.unequip(item_key)
+	# `equipped` origin re-equips on cancel (capacity re-checked); on_court keeps rack/timeout drops honest.
 	_held_was_on_court = true
-	_held_origin = &"live"
+	_held_origin = &"equipped"
 	_mouse_button_down = true
 	pickup_started.emit(item_key)
 	return true
@@ -663,7 +665,11 @@ func _cancel_to_source() -> void:
 		drag_target.global_position if drag_target != null else _press_position
 	)
 
-	if origin == &"live" and was_on_court:
+	if origin == &"equipped":
+		# Re-equip through the gate so a slot filled during the hold refuses the snap-back.
+		if _item_manager != null:
+			_item_manager.equip(item_key)
+	elif origin == &"live" and was_on_court:
 		if _item_manager != null and _item_manager.is_on_court(item_key):
 			_item_manager.deactivate(item_key)
 	elif origin == &"live" and _held_ball != null:
