@@ -40,7 +40,7 @@ Reference the issue in the PR body with `closes #123` so GitHub links them and c
 
 **Write the PR description as a short explanation of the change.** Cover what the change does, why it is being made, and any tradeoffs worth flagging. A reader should come away understanding the reasoning behind the change.
 
-**Keep the scope tight.** Stick to the ticket. If you spot something adjacent that needs fixing, open a new issue for it; tight PRs that do one thing land faster and read better in the commit history.
+**Keep the scope tight.** Stick to the ticket. If you spot something adjacent that needs fixing, open a new issue for it; tight PRs that do one thing land faster and read better in the commit history. When your change does sit on top of a rough shape, reshaping it in the same PR is welcome; see [`designs/process/refactoring.md`](designs/process/refactoring.md) for where that line sits.
 
 **Tone.** Plain descriptive prose, positive framing. Lead with what a thing is and does. Applies to PR descriptions, commit messages, and code comments.
 
