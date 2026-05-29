@@ -38,14 +38,15 @@ Before starting, read `ai/godot-quirks.md`. Known engine traps live there; rule 
 ## Workflow
 
 1. Restate the symptom in one sentence. Separate observed behaviour from expected behaviour.
-2. Rule out Godot quirks first. Cross-reference `ai/godot-quirks.md`. If the symptom matches a known quirk, say so and stop; the "bug" is the engine.
-3. `check_errors(scope="scene")` and `check_errors(scope="project")` to surface compile-time noise that often masquerades as runtime bugs.
-4. `file_context(file, detail="brief")` on the suspected file before reading source. Use `scope="file:..."` filters on everything that supports them.
-5. `trace_flow` from the entry point (signal emission, input event, timer tick) to the divergence site. Walk the chain, do not jump.
-6. `signal_map(detail="brief", find="orphans")` when the symptom is "nothing happened". Orphaned connections and disconnected listeners are the usual culprit.
-7. `dependency_graph` when the symptom crosses modules. Track the data, not the call stack.
-8. State the cause in one sentence. Distinguish it from the symptom and from any contributing factors.
-9. Propose the narrowest fix that addresses the cause. Flag adjacent code that shares the same defect so the fix is not purely local.
+2. **Reproduce the player's recipe faithfully, then verify the built state matches it before diagnosing.** When given a runtime repro, achieve the precondition through the same actions the player takes (e.g. "two balls on the rack" means two balls actually racked, not one racked plus the authored court ball sitting off-marker). Confirm the reproduced state IS the recipe (right nodes, right placements, right counts) before reading any further. A value that "looks like a bug" in a mis-built scene (a stray slot index, a misplaced node) is an artifact of your wrong setup, not the cause. If you cannot achieve the real state, stop and say so; do not diagnose a scene the player never hits.
+3. Rule out Godot quirks first. Cross-reference `ai/godot-quirks.md`. If the symptom matches a known quirk, say so and stop; the "bug" is the engine.
+4. `check_errors(scope="scene")` and `check_errors(scope="project")` to surface compile-time noise that often masquerades as runtime bugs.
+5. `file_context(file, detail="brief")` on the suspected file before reading source. Use `scope="file:..."` filters on everything that supports them.
+6. `trace_flow` from the entry point (signal emission, input event, timer tick) to the divergence site. Walk the chain, do not jump.
+7. `signal_map(detail="brief", find="orphans")` when the symptom is "nothing happened". Orphaned connections and disconnected listeners are the usual culprit.
+8. `dependency_graph` when the symptom crosses modules. Track the data, not the call stack.
+9. State the cause in one sentence. Distinguish it from the symptom and from any contributing factors.
+10. Propose the narrowest fix that addresses the cause. Flag adjacent code that shares the same defect so the fix is not purely local.
 
 ## Style
 
