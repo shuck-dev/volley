@@ -10,6 +10,7 @@
 #   - No `SH-N` prefix in subject.
 #   - No `[Codename]` suffix or `[Codename]` anywhere in subject.
 #   - Total message length (all lines combined) must be under 400 chars.
+#   - A `Signed-off-by:` trailer is present (DCO; commit with -s).
 #
 # Skips merge commits, revert commits, and fixup/squash commits.
 
@@ -63,6 +64,11 @@ fi
 codename_anywhere_re='\[[A-Z][a-zA-Z]+\]'
 if [[ "$subject" =~ $codename_anywhere_re ]]; then
   errors+=("subject contains a [Codename] tag; move it to an 'Agent-Role:' trailer")
+fi
+
+# Signed-off-by trailer required (DCO). Catch a missing -s here, before CI rejects it.
+if ! printf '%s\n' "$msg_body" | grep -qiE '^Signed-off-by: .+ <.+@.+>'; then
+  errors+=("missing Signed-off-by trailer; commit with -s (DCO requires it on every commit)")
 fi
 
 if (( ${#errors[@]} > 0 )); then
