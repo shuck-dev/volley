@@ -4,7 +4,7 @@ extends Node
 @export var paddle: CharacterBody2D
 @export var config: PaddleAIConfig
 
-var ball: RigidBody2D
+var ball: Ball
 
 var _enabled := false
 var _tracker: BallTracker
@@ -78,7 +78,7 @@ func _physics_process(_delta: float) -> void:
 
 
 ## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
-func _select_tracked_ball() -> RigidBody2D:
+func _select_tracked_ball() -> Ball:
 	if _tracker == null:
 		return ball
 
@@ -101,7 +101,7 @@ func _select_tracked_ball() -> RigidBody2D:
 	return best if best != null else ball
 
 
-func _ball_in_play(target: RigidBody2D) -> bool:
+func _ball_in_play(target: Ball) -> bool:
 	var state: Ball.PlayState = target.play_state
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
@@ -118,7 +118,7 @@ func is_enabled() -> bool:
 
 
 ## Override: whether the given ball's x-direction counts as "coming toward me."
-func _ball_approaches(_target: RigidBody2D) -> bool:
+func _ball_approaches(_target: Ball) -> bool:
 	assert(false, "PaddleAIController._ball_approaches() is abstract")
 	return false
 

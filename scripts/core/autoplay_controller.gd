@@ -32,7 +32,7 @@ func _on_timeout_started() -> void:
 	autoplay_toggled.emit(false)
 
 
-func _ball_approaches(target: RigidBody2D) -> bool:
+func _ball_approaches(target: Ball) -> bool:
 	return target.linear_velocity.x < 0.0 and target.position.x > paddle.position.x
 
 
