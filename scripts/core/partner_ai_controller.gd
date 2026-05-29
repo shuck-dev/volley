@@ -9,8 +9,8 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 		set_enabled(true)
 
 
-func _ball_approaching() -> bool:
-	return ball.linear_velocity.x > 0.0 and ball.position.x < paddle.position.x
+func _ball_approaches(target: Ball) -> bool:
+	return target.linear_velocity.x > 0.0 and target.position.x < paddle.position.x
 
 
 func _get_paddle_speed() -> float:

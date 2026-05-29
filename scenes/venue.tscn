@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/dev_hud.tscn" id="4_hud"]
 [ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
+[ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(4000, 40)
@@ -35,8 +36,8 @@ dev_item_panel = NodePath("DevHUD/DevItemUI")
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1084046387 node_paths=PackedStringArray("left_anchor", "right_anchor")]
 script = ExtResource("5_wttuf")
-left_anchor = NodePath("../LeftEdge")
-right_anchor = NodePath("../RightEdge")
+left_anchor = NodePath("../VenueLeftBound")
+right_anchor = NodePath("../VenueRightBound")
 
 [node name="VenueFloor" type="StaticBody2D" parent="." unique_id=984529763]
 position = Vector2(0, 410)
@@ -58,26 +59,26 @@ position = Vector2(720, 3.13)
 [node name="Workshop" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
 position = Vector2(-1500, 0)
 
-[node name="LeftEdge" type="Marker2D" parent="." unique_id=679568217]
-position = Vector2(-1700, 0)
-
-[node name="RightEdge" type="Marker2D" parent="." unique_id=858790739]
-position = Vector2(1920, 0)
-
 [node name="VenueCeiling" type="StaticBody2D" parent="." unique_id=1902326706]
 position = Vector2(0, -1500)
 
 [node name="VenueCeilingShape" type="CollisionShape2D" parent="VenueCeiling" unique_id=1648054464]
 shape = SubResource("RectangleShape2D_s1xkn")
 
-[node name="VenueLeftBound" type="StaticBody2D" parent="." unique_id=1925147373]
+[node name="VenueLeftBound" type="StaticBody2D" parent="." unique_id=1925147373 node_paths=PackedStringArray("collision_shape")]
 position = Vector2(-1700, 0)
+collision_layer = 4
+script = ExtResource("7_bound")
+collision_shape = NodePath("VenueLeftBoundShape")
 
 [node name="VenueLeftBoundShape" type="CollisionShape2D" parent="VenueLeftBound" unique_id=324592534]
 shape = SubResource("RectangleShape2D_j16ra")
 
-[node name="VenueRightBound" type="StaticBody2D" parent="." unique_id=1541086575]
+[node name="VenueRightBound" type="StaticBody2D" parent="." unique_id=1541086575 node_paths=PackedStringArray("collision_shape")]
 position = Vector2(1920, 0)
+collision_layer = 4
+script = ExtResource("7_bound")
+collision_shape = NodePath("VenueRightBoundShape")
 
 [node name="VenueRightBoundShape" type="CollisionShape2D" parent="VenueRightBound" unique_id=1823696433]
 shape = SubResource("RectangleShape2D_j16ra")

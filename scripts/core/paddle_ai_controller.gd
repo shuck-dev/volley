@@ -4,7 +4,7 @@ extends Node
 @export var paddle: CharacterBody2D
 @export var config: PaddleAIConfig
 
-var ball: RigidBody2D
+var ball: Ball
 
 var _enabled := false
 var _tracker: BallTracker
@@ -58,23 +58,51 @@ func _on_tracker_ball_removed(_old_ball: Ball) -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if not _enabled or ball == null:
+	if not _enabled:
+		return
+
+	ball = _select_tracked_ball()
+	if ball == null:
 		return
 
 	_maybe_resample_noise()
 
-	if not _ball_in_play():
+	if not _ball_in_play(ball):
 		_drift_to_center()
 		return
 
-	if _ball_approaching():
+	if _ball_approaches(ball):
 		_track()
 	else:
 		_drift_to_center()
 
 
-func _ball_in_play() -> bool:
-	var state: Ball.PlayState = ball.play_state
+## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
+func _select_tracked_ball() -> Ball:
+	if _tracker == null:
+		return ball
+
+	var best: Ball = null
+	var best_time: float = INF
+
+	for candidate in _tracker.get_balls():
+		if candidate == null or not _ball_in_play(candidate) or not _ball_approaches(candidate):
+			continue
+
+		var speed_x: float = absf(candidate.linear_velocity.x)
+		if speed_x < 1.0:
+			continue
+
+		var arrival: float = absf(paddle.position.x - candidate.position.x) / speed_x
+
+		if arrival < best_time:
+			best_time = arrival
+			best = candidate
+	return best if best != null else ball
+
+
+func _ball_in_play(target: Ball) -> bool:
+	var state: Ball.PlayState = target.play_state
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
@@ -89,9 +117,9 @@ func is_enabled() -> bool:
 	return _enabled
 
 
-## Override: which ball x-direction counts as "coming toward me."
-func _ball_approaching() -> bool:
-	assert(false, "PaddleAIController._ball_approaching() is abstract")
+## Override: whether the given ball's x-direction counts as "coming toward me."
+func _ball_approaches(_target: Ball) -> bool:
+	assert(false, "PaddleAIController._ball_approaches() is abstract")
 	return false
 
 
