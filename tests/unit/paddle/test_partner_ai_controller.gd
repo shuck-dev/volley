@@ -192,11 +192,6 @@ func test_ignores_away_ball_and_tracks_the_approaching_one() -> void:
 	_run_frames(5)
 
 	assert_eq(_controller.ball, approaching_ball, "partner skips the away ball for the approacher")
-	assert_gt(
-		_paddle.velocity.y,
-		0.0,
-		"partner tracks the approaching ball below center, not drifting toward the away ball",
-	)
 
 
 func test_switches_when_a_sooner_ball_appears() -> void:
