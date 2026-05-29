@@ -6,6 +6,7 @@ How the agent system that helps build Volley! is shaped, and what it's allowed t
 |---|---|
 | [Swarm Architecture](swarm-architecture.md) | The ten-stage mission lifecycle (interrogate through cleanup), then the rationale: the Gru-and-minions model, two pools, scratchpad layout, worktree discipline, session tiers, PR verdict flow, and the open spikes still in motion. |
 | [Dispatcher Focus and WIP](dispatcher-focus-and-wip.md) | Why the dispatcher caps its own open coordination threads and parallelises through fan-out: the throughput math, the switching tax, and the orchestrator-worker evidence. |
+| [Lane Semantics](lane-semantics.md) | The Linear lane from Vault to Closed, what each state's trigger is (Completed = merged, Closed = released via the carnival), and the two hard rules: forward only, and never a close trailer. |
 
 ## Agent-assisted writing
 
