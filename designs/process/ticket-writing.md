@@ -120,7 +120,7 @@ Jesse Schell (*The Art of Game Design*, 3rd ed. 2019) and Raph Koster (*A Theory
 
 **Spec**. Spec out how a feature should work. Open direction question; output is a decision plus a killed option. Jonathan Blow and Jenova Chen push "playable question" as the artifact: a prototype that lets the team feel the answer, not read it. "Done" is the question answered. Design has no produce label of its own because design output is always a spec that tech, art, or writing then produces; a design decision ships through another discipline's ticket.
 
-### SFX
+### Audio
 
 Label: `sfx`.
 

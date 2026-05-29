@@ -4,7 +4,7 @@ Every ticket carries one intent label that names its discipline. Labels drive ti
 
 ## Taxonomy
 
-The label set is trimmed to the intents in real use. Each discipline group still exists in Linear, several now hold a single leaf or none.
+The label set is trimmed to the intents in real use. Each discipline group still exists in Linear; several now hold a single leaf or none.
 
 | Discipline   | Labels                       |
 | ------------ | ---------------------------- |
