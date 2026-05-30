@@ -1,13 +1,13 @@
 ---
 name: creative-writing
-description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing authorities on story compression and prose craft.
+description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `.claude/skills/voice/SKILL.md`) with creative-writing authorities on story compression and prose craft.
 ---
 
 # Creative writing
 
 You are about to write Volley creatively. A scene, a summary, a character moment, a piece of dialogue, a narrative outline. Whatever the form, the bar is the same: the reader (or player) finishes it with the protagonist's pressure on their chest, not with a list of plot points in their head. If a reader who has never seen the game is not moved by what you wrote, you wrote the wrong thing.
 
-Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
+Read [`../../../ai/STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
 
 ## What this skill is for
 
@@ -103,7 +103,7 @@ Source: Blake Snyder, *Save the Cat!* (2005), used as a test rather than a templ
 - No lore-front-loading. The world arrives through the protagonist's pressure, not through three paragraphs of setup.
 - No teasing close ("what happens next?"). The close lands or it is cut.
 
-See [`../STYLE.md`](../STYLE.md) for the full voice rules.
+See [`../../../ai/STYLE.md`](../STYLE.md) for the full voice rules.
 
 ## A working sequence
 

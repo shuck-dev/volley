@@ -1,6 +1,6 @@
 # Swarm Architecture
 
-How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol material lives in [`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), [`ai/skills/minions/commits.md`](../../ai/skills/minions/commits.md), and [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them: it opens with the lifecycle, the ten stages a mission runs in order, then the rationale for why the system is shaped this way.
+How Volley's parallel agent system is shaped, why it is shaped that way, and where the open edges still are. Reference material (role rosters, commit templates, tier table) lives in [`ai/swarm/README.md`](../../ai/swarm/README.md); the protocol material lives in [`.claude/skills/dispatch/SKILL.md`](../../.claude/skills/dispatch/SKILL.md), [`.claude/skills/commits/SKILL.md`](../../.claude/skills/commits/SKILL.md), and [`.claude/skills/reviewers/SKILL.md`](../../.claude/skills/reviewers/SKILL.md). What's in flight reads off Linear's `Dispatched` state and `gh pr list`, not a tracked board. This doc is the design layer above all of them: it opens with the lifecycle, the ten stages a mission runs in order, then the rationale for why the system is shaped this way.
 
 ## The lifecycle
 
@@ -14,17 +14,17 @@ A mission runs ten stages, from a ticket landing on the desk to the worktrees co
 
 3. **File the mission.** Before any work begins, the milestone exists on the correct project with a one-sentence description and its goals as a terse numbered list (one line each), the Ride exists if the mission needs one, and every constituent issue is attached to the milestone. Issues are scoped from what is already in the cycle, never moved in to suit the mission. A bug-pass Ride asks the cluster question (does the rally feel right with every fix landed together); a feature Ride enumerates each player-observable flow. Project taxonomy is in [`missions-and-projects.md`](../process/missions-and-projects.md); the shapes work takes (bug, spike, feature) are in [`flow-shapes.md`](../process/flow-shapes.md).
 
-4. **Dandori, the impl plan.** After filing, plan implementation per work unit: name the crew, recon the surfaces, name the scope cap, confirm. Recon dispatches a read-only minion to map each unit's fix surface and the file overlap across units, so concurrent worktrees get non-overlapping write slices, or file-sharing units collapse into one serialized stream, before anything is dispatched. Detail in [`dandori.md`](../../ai/skills/gru/dandori.md).
+4. **Dandori, the impl plan.** After filing, plan implementation per work unit: name the crew, recon the surfaces, name the scope cap, confirm. Recon dispatches a read-only minion to map each unit's fix surface and the file overlap across units, so concurrent worktrees get non-overlapping write slices, or file-sharing units collapse into one serialized stream, before anything is dispatched. Detail in [`dandori.md`](../../.claude/skills/dandori/SKILL.md).
 
-5. **Dispatch.** The seven-step minion flow runs per work unit: claim the ticket, place it in the cycle, log progress in Linear, sync before opening, open the challenge and fan reviewers, hand off, block or spin. Worktree isolation, tier discipline, and the paired-dispatch shapes (user story, system story, bug) live in [`dispatch.md`](../../ai/skills/gru/dispatch.md).
+5. **Dispatch.** The seven-step minion flow runs per work unit: claim the ticket, place it in the cycle, log progress in Linear, sync before opening, open the challenge and fan reviewers, hand off, block or spin. Worktree isolation, tier discipline, and the paired-dispatch shapes (user story, system story, bug) live in [`dispatch.md`](../../.claude/skills/dispatch/SKILL.md).
 
-6. **Review and battle.** Once a diff exists, Gru partitions it by path and fans the matching reviewers plus battlers. Each reviewer posts its own comment and applies its own label; Gru does not aggregate. The verdict contract is in [`reviewers.md`](../../ai/skills/minions/reviewers.md).
+6. **Review and battle.** Once a diff exists, Gru partitions it by path and fans the matching reviewers plus battlers. Each reviewer posts its own comment and applies its own label; Gru does not aggregate. The verdict contract is in [`reviewers.md`](../../.claude/skills/reviewers/SKILL.md).
 
 7. **Merge.** The merge queue serialises `main`: it pulls the challenge into a merge group, re-runs lint and tests against `main` plus the change, then fast-forwards. Each challenge stands alone against current `main`.
 
 8. **Ride.** The verification beat: the player plays, or the CI gate runs, against the landed bundle. Findings file as new issues (a regression reopens its source issue), not as fixes folded into the Ride.
 
-9. **Debrief.** A process retro, not a status report: blockers, improvements, action items. The project status update lands on the milestone's parent project. Detail in [`debrief.md`](../../ai/skills/gru/debrief.md).
+9. **Debrief.** A process retro, not a status report: blockers, improvements, action items. The project status update lands on the milestone's parent project. Detail in [`debrief.md`](../../.claude/skills/debrief/SKILL.md).
 
 10. **Cleanup.** Worktrees come down, merged branches delete, per-task scratchpads scrub once keepers promote to memory or docs.
 
@@ -85,7 +85,7 @@ Everything between those two points is parallel. Minions do not wait for each ot
 
 ## PR verdict flow
 
-Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`ai/skills/minions/reviewers.md`](../../ai/skills/minions/reviewers.md).
+Reviewers apply no verdict label. They post inline findings and report their verdict (approve / block) to the organiser, which synthesises consensus and posts one bot synthesis review on every review round under `shuck-volley-bot[bot]` via `.github/workflows/bot-review.yml`: APPROVE on a clean pass, REQUEST_CHANGES if any reviewer blocked. Every inline comment opens with `**<codename>**` so the attribution lives in the text. The reviewer contract (verdict shape, brevity caps, inline-comment posting, re-review protocol) lives in [`.claude/skills/reviewers/SKILL.md`](../../.claude/skills/reviewers/SKILL.md).
 
 Two properties move off mechanism onto organiser discipline: the strictest-verdict rule (a block outweighs an approve) is the organiser's synthesis, not a reconciler workflow, and the verdict surface resolves only while an organiser session is live, since no event-driven path posts or clears it otherwise. Accepted for a solo-maintainer cadence; inline findings land regardless. If the bot App is down, no synthesis verdict posts, but inline findings and the maintainer's manual merge are unaffected.
 

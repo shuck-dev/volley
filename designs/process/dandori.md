@@ -4,7 +4,7 @@ Dandori is stage 4 of the swarm lifecycle: the implementation plan, run after th
 
 Dandori narrows to four questions, per work unit: who works it, what it touches, how it is capped, and a confirm before go.
 
-Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (the shapes work takes inside a mission), and the operational checklist in [`ai/skills/gru/dandori.md`](../../ai/skills/gru/dandori.md).
+Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (the shapes work takes inside a mission), and the operational checklist in [`.claude/skills/dandori/SKILL.md`](../../.claude/skills/dandori/SKILL.md).
 
 ## 1. Crew
 
