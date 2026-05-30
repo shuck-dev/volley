@@ -41,10 +41,14 @@ var _progression_config: ProgressionConfig
 var _item_manager: Node
 var _is_autoplay_active := false
 var _friendship_point_accumulator := 0.0
+var _tier_reward_handler: TierRewardHandler
 
 
 func _ready() -> void:
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
+
+	_tier_reward_handler = load("res://scripts/court/tier_reward_handler.gd").new()
+	add_child(_tier_reward_handler)
 
 	if _records == null:
 		_records = SaveManager.records
@@ -105,9 +109,12 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
+	_tier_reward_handler.bind(ball_tracker.get_current_ball(), _item_manager)
+
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
 	ball = new_ball
+	_tier_reward_handler.bind(new_ball, _item_manager)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -125,6 +132,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_paddle_hit() -> void:
+	_tier_reward_handler.on_paddle_hit()
 	_volley_count += 1
 	_accumulate_friendship_points()
 
@@ -147,6 +155,8 @@ func _on_ball_peak_changed(in_peak: bool) -> void:
 
 
 func _on_ball_missed() -> void:
+	_tier_reward_handler.reset_rally()
+
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
 	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
