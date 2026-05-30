@@ -4,7 +4,7 @@
 
 ## I. The Checkbox
 
-You are trying to do something. A form to submit, a page to reach, a task half-finished. The grid appears without invitation: nine tiles, or maybe twelve, blurred traffic lights that will not resolve. The boundary is ambiguous, the machine knows it is ambiguous, and the half-second of squinting while your errand waits is the point. A checkbox sits below it, labelled "I am not a robot", and you, mid-task, must stop, read the label, and prove to a machine that you are not one. It gives no date, no name, no introduction: only the flat machine-voice of a test only minds can pass, administered by something with no concept of mind.
+You are buying a train ticket. The card details are in, the booking one click from done, and then a grid of blurred traffic lights drops in front of the button: find the ones with a traffic light, prove you are human, carry on. One light sits on the edge of a square, and you look closer to settle whether it counts, and looking closer settles nothing. The ambiguity is deliberate, the half-second of squinting is the thing being measured, and the 8:40 you are trying to catch waits on the far side of it. Tick the box labelled "I am not a robot", and the absurdity arrives a beat late: a machine has stopped you to demand you prove you are not one, and it has no idea what you are, no way to know, no concept of the mind it is asking you to show.
 
 You click it. The page moves on. Nobody asks what just happened: a machine, unable to know whether you have a mind, commissioned you to perform the one judgement the machine cannot make and accepted the performance as proof.
 
