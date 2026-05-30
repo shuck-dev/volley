@@ -32,7 +32,7 @@ Anthropic's account of its multi-agent research system describes an orchestrator
 
 ## What the evidence implies
 
-The four veins converge: a dispatcher's throughput is set by how many threads it holds open, not by how hard it pushes each one. The numbers are stark. Little's Law makes every extra open item lengthen the rest; Weinberg's table puts the coordinator under half-useful work per thread past three concurrent threads; Leroy isolates the unfinished thread, specifically, as the one that degrades the next decision. And the breadth a mission needs sits at the worker layer rather than in the orchestrator's head, which is what fan-out delivers. The operational rule this implies lives in the dispatch skill ([`ai/skills/gru/dispatch.md`](../../ai/skills/gru/dispatch.md), "Focus and WIP"); this note is the evidence behind it.
+The four veins converge: a dispatcher's throughput is set by how many threads it holds open, not by how hard it pushes each one. The numbers are stark. Little's Law makes every extra open item lengthen the rest; Weinberg's table puts the coordinator under half-useful work per thread past three concurrent threads; Leroy isolates the unfinished thread, specifically, as the one that degrades the next decision. And the breadth a mission needs sits at the worker layer rather than in the orchestrator's head, which is what fan-out delivers. The operational rule this implies lives in the dispatch skill ([`.claude/skills/dispatch/SKILL.md`](../../.claude/skills/dispatch/SKILL.md), "Focus and WIP"); this note is the evidence behind it.
 
 ## Sources
 

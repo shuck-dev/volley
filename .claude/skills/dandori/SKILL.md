@@ -9,7 +9,7 @@ Dandori is the implementation plan, not the mission-shape walk. By the time it r
 
 **Trigger.** Josh says "dandori" on a filed mission, or Gru reaches the planning of a mission whose milestone already exists. If the milestone is not filed yet, that is earlier in the lifecycle: do stages 1 to 3 first.
 
-**Pairs with:** [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md) (the full ten-stage lifecycle; dandori is stage 4), [`designs/process/dandori.md`](../../../designs/process/dandori.md) (human-readable), and [`dispatch.md`](dispatch.md) (the seven-step flow that runs after confirm).
+**Pairs with:** [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md) (the full ten-stage lifecycle; dandori is stage 4), [`designs/process/dandori.md`](../../../designs/process/dandori.md) (human-readable), and [`dispatch.md`](../dispatch/SKILL.md) (the seven-step flow that runs after confirm).
 
 ## The four steps
 

@@ -16,7 +16,7 @@ You do not run `gh pr review`. You do not write a body. You do not apply a label
 
 ## Block path
 
-1. For each finding, post an inline review comment anchored to a specific `path:line`. Use the Reviews API as documented in `ai/skills/minions/reviewers.md` (the multi-comment Review submission with empty `body`), or `scripts/swarm/post-review.sh`. The Review wrapper exists ONLY to group line comments; its `body` field stays empty.
+1. For each finding, post an inline review comment anchored to a specific `path:line`. Use the Reviews API as documented in `.claude/skills/reviewers/SKILL.md` (the multi-comment Review submission with empty `body`), or `scripts/swarm/post-review.sh`. The Review wrapper exists ONLY to group line comments; its `body` field stays empty.
 2. Report "block" to the organiser so the synthesis review becomes REQUEST_CHANGES.
 
 No prose explainer in the PR's main conversation tab. No "summary" body block. Findings are line-anchored or they don't exist.

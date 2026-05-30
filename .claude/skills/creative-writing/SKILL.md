@@ -1,19 +1,19 @@
 ---
 name: creative-writing
-description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `ai/skills/voice.md`) with creative-writing authorities on story compression and prose craft.
+description: How to write Volley's creative prose so it lands the felt arc, not the events. Read before drafting or revising scenes, story summaries, character moments, dialogue, narrative outlines, or any prose that has to make the reader feel something. Combines Volley voice rules (`ai/STYLE.md`, `.claude/skills/voice/SKILL.md`) with creative-writing authorities on story compression and prose craft.
 ---
 
 # Creative writing
 
 You are about to write Volley creatively. A scene, a summary, a character moment, a piece of dialogue, a narrative outline. Whatever the form, the bar is the same: the reader (or player) finishes it with the protagonist's pressure on their chest, not with a list of plot points in their head. If a reader who has never seen the game is not moved by what you wrote, you wrote the wrong thing.
 
-Read [`../STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
+Read [`../../../ai/STYLE.md`](../../../ai/STYLE.md) and [`voice.md`](../voice/SKILL.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
 
 ## What this skill is for
 
-Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
+Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
+For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 
@@ -103,7 +103,7 @@ Source: Blake Snyder, *Save the Cat!* (2005), used as a test rather than a templ
 - No lore-front-loading. The world arrives through the protagonist's pressure, not through three paragraphs of setup.
 - No teasing close ("what happens next?"). The close lands or it is cut.
 
-See [`../STYLE.md`](../STYLE.md) for the full voice rules.
+See [`../../../ai/STYLE.md`](../../../ai/STYLE.md) for the full voice rules.
 
 ## A working sequence
 
@@ -127,7 +127,7 @@ If a summary keeps reading flat after the rules pass, the diagnosis is usually o
 
 In all three cases, the fix is structural, not lexical. Reaching for synonyms will not save a draft whose spine is unclear.
 
-For long-form prose (essays, design docs longer than a page), use [`voice.md`](voice.md) directly; the case-for-open-development essay is the source. This skill is the entry point for the short-form summary case specifically.
+For long-form prose (essays, design docs longer than a page), use [`voice.md`](../voice/SKILL.md) directly; the case-for-open-development essay is the source. This skill is the entry point for the short-form summary case specifically.
 
 ## Source notes
 

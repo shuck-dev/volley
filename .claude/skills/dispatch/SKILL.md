@@ -53,7 +53,7 @@ The scratchpad is gitignored and per-session; do not put this in memory (it does
 
 ## Implementer brief preamble
 
-Every implementer brief opens with: read `ai/skills/minions/code-comments.md`, `ai/skills/minions/data-driven.md`, and `ai/skills/minions/test-churn-limits.md` in full before writing the first line of code. Comment and data-driven rules keep slipping into fresh challenges and need refine rounds; the churn limits stop implementers grinding past the parent thread's tolerance when a test stays red. Making the read mandatory at brief-open is cheaper than catching the same violation in review again. Test-authors and refiners get the same line.
+Every implementer brief opens with: read `.claude/skills/code-comments/SKILL.md`, `.claude/skills/data-driven/SKILL.md`, and `.claude/skills/test-churn-limits/SKILL.md` in full before writing the first line of code. Comment and data-driven rules keep slipping into fresh challenges and need refine rounds; the churn limits stop implementers grinding past the parent thread's tolerance when a test stays red. Making the read mandatory at brief-open is cheaper than catching the same violation in review again. Test-authors and refiners get the same line.
 
 ## The seven-step minion flow
 
@@ -63,7 +63,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 2. **Cycle placement.** If the claimed ticket has no cycle, move it into the active one: `mcp__linear__list_cycles(teamId, type: "current")` then `mcp__linear__save_issue(id, cycleId)`. Skip if no active cycle.
 3. **Log progress in Linear.** Significant moments (claim, blocker, ready-for-review) post as a Linear comment on the ticket, not into a shared file. The git log carries the rest.
 4. **Sync before opening and before every later push.** `git fetch origin main && git merge origin/main`, resolve, re-run `./scripts/ci/run_gut.sh`, push. Repeat any time work resumes or before asking Josh to merge. `git rev-list --count HEAD..origin/main` reads "behind by N".
-5. **Open the challenge and dispatch reviewers.** After `gh pr create`, do not enable auto-merge and do not apply approval labels; the maintainer merges by hand. The dispatcher fans out the matching specialists by changed path. The full mapping (file pattern → reviewer) lives in `ai/skills/minions/reviewers.md`; the implementer's job is to flag reviewers when the dispatcher doesn't already see the diff.
+5. **Open the challenge and dispatch reviewers.** After `gh pr create`, do not enable auto-merge and do not apply approval labels; the maintainer merges by hand. The dispatcher fans out the matching specialists by changed path. The full mapping (file pattern → reviewer) lives in `.claude/skills/reviewers/SKILL.md`; the implementer's job is to flag reviewers when the dispatcher doesn't already see the diff.
 6. **Hand off.** Re-sync against `main`, then report the challenge to Josh. Don't flag comments in chat; the challenge is the source of truth.
 7. **Block or spin.** Loop on the same issue twice, then escalate per the rule below. No third silent variant.
 
@@ -77,7 +77,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 - **Merge queue serialises `main`.** "Merge when ready" pulls the challenge into a `merge_group` ref, re-runs lint and tests against `main + challenge`, then fast-forwards `main`. The pre-challenge `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
 - **Godot tool discipline.** Prefer GodotIQ MCP tools over raw file ops. Never delete-and-rebuild scenes; `node_ops` plus `save_scene` for `.tscn`. Godot 4 quirks live in `ai/godot-quirks.md`.
 
-Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `ai/skills/minions/commits.md`. Reviewer-side rules (verdict shape, inline-finding shape, fan-out by path) live in `ai/skills/minions/reviewers.md`.
+Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `.claude/skills/commits/SKILL.md`. Reviewer-side rules (verdict shape, inline-finding shape, fan-out by path) live in `.claude/skills/reviewers/SKILL.md`.
 
 ## Godot session tiers
 
@@ -154,7 +154,7 @@ If the fan would require any file to appear in two slices, the work is not fan-s
 
 ## Reviewer dispatch
 
-Reviewers fire after the impl challenge opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The full path → specialist map and the reviewer contract (verdict shape, inline-finding shape, fan-out by path) live in `ai/skills/minions/reviewers.md`.
+Reviewers fire after the impl challenge opens, scope-filtered by the diff. Default reviewers (code-quality, gdscript-conventions, test-coverage) run on any GDScript diff; domain reviewers fire when the diff touches their files. The full path → specialist map and the reviewer contract (verdict shape, inline-finding shape, fan-out by path) live in `.claude/skills/reviewers/SKILL.md`.
 
 Battlers (devils-advocate, integration-scenario-author) fire alongside reviewers. Devils-advocate has no shell access; pass the rule text and audit table inline in the prompt or expect a context-blocked report.
 
@@ -232,7 +232,7 @@ There is no bot applying `zaphod-conflicts`; Gru owns it.
 
 ## Mission close
 
-When the mission's work is done, read `ai/skills/gru/debrief.md`.
+When the mission's work is done, read `.claude/skills/debrief/SKILL.md`.
 
 ## Cleanup
 

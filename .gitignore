@@ -21,6 +21,7 @@ logs/
 # Editor/tool config
 .claude/*
 !.claude/agents/
+!.claude/skills/
 !.claude/settings.json
 !.claude/hooks/
 .vscode/
