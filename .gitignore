@@ -46,7 +46,6 @@ designs/private/
 
 # Essay process residue: section drafts only.
 # Final essays, persistent research notes, critical reviews, and meta planning docs stay tracked.
-designs/research/drafts/
 
 # Swarm scratchpad: ephemeral per work unit, scrubbed on completion.
 # The README and per-agent definitions stay tracked; working state does not.

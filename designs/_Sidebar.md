@@ -25,7 +25,7 @@
 - [Labels](process-labels)
 
 **Research**
-- [The Case for Open Development](research-the-case-for-open-development)
+- [The Case for Open Development](research-open-development-the-case-for-open-development)
 - [STYLE](research-STYLE)
 - [Visual Positioning](research-visual-positioning)
 - [Early Clone Games](research-early-clone-games)

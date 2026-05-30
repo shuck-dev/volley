@@ -11,6 +11,6 @@ Outside contributors make the game better in ways an internal review cannot. A p
 Volley! is under an MIT licence. Not because the code sells the game, but because the trust and the on-ramp the practice builds are worth more than the code. Contribution here is whatever you bring: code and art, music and sound, writing and translation, accessibility notes and playtest reports, a suggested name, a bug you stumbled over, documentation and tutorials, community care, or quiet attention from the sidelines. All of it counts, and all of it is welcome.
 
 The extended cut, with the cases it rests on, sits here:
-<https://github.com/shuck-dev/volley/blob/main/designs/research/the-case-for-open-development.md>
+<https://github.com/shuck-dev/volley/blob/main/designs/research/open-development/the-case-for-open-development.md>
 
 Come in, have a look around.

@@ -9,7 +9,7 @@ You are about to write prose under Volley's name. STYLE.md tells you what not to
 
 ## The source
 
-The working voice exemplar is `/home/josh/gamedev/volley/designs/research/the-case-for-open-development.md`. Six hundred lines of Josh's own long-form prose, fact-checked, edited, and shipped. When this skill is not enough, read the essay directly: the opening four sections, two or three middles, the closing. Patterns calibrated against the source beat patterns calibrated against a distillation.
+The working voice exemplar is `/home/josh/gamedev/volley/designs/research/open-development/the-case-for-open-development.md`. Six hundred lines of Josh's own long-form prose, fact-checked, edited, and shipped. When this skill is not enough, read the essay directly: the opening four sections, two or three middles, the closing. Patterns calibrated against the source beat patterns calibrated against a distillation.
 
 The patterns below are distilled from that essay. They are not exhaustive.
 

@@ -13,7 +13,7 @@ Read [`../../../ai/STYLE.md`](../../../ai/STYLE.md) and [`voice.md`](../voice/SK
 
 Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
+For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/open-development/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 

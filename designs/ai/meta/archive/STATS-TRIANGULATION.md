@@ -1,6 +1,6 @@
 # Stats triangulation across UK / US / Global
 
-A statistics pass on `the-case-for-open-development.md`. The brief: every empirical claim should be triangulated across UK (the author's home), US (where most games are made), and global (with weight on the non-Western contributors who get less recognition than the data warrants), wherever doing so strengthens the argument.
+A statistics pass on `open-development/the-case-for-open-development.md`. The brief: every empirical claim should be triangulated across UK (the author's home), US (where most games are made), and global (with weight on the non-Western contributors who get less recognition than the data warrants), wherever doing so strengthens the argument.
 
 ## Inventory
 

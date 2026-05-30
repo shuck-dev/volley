@@ -16,7 +16,7 @@ If you are a **writer** working on copy, beats, or character voice, read [Narrat
 
 If you are one of **Josh's collaborators** looking for the settled design on a specific point, the discipline folder is the answer.
 
-If you are an **open-source visitor**, [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
+If you are an **open-source visitor**, [The Case for Open Development](research/open-development/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/Shuck-Games/volley/blob/main/CONTRIBUTING.md) at the repo root is the practical entry point.
 
 ## How the docs are organised
 

@@ -10,7 +10,7 @@ How the agent system that helps build Volley! is shaped, and what it's allowed t
 
 ## Agent-assisted writing
 
-The open-development essay stays human-facing under [`research/`](../research/the-case-for-open-development.md); its style guide, audits, and critiques are agent-facing and live here.
+The open-development essay stays human-facing under [`research/`](../research/open-development/the-case-for-open-development.md); its style guide, audits, and critiques are agent-facing and live here.
 
 | Doc | Purpose |
 |---|---|
