@@ -94,7 +94,7 @@ The labs are billing for an answer to a question they have not defined, on a sch
 
 The ask is not that they slow down. It is that they say what they mean by what they are building, and hold the definition stable enough to be evaluated by people outside the room. The honesty the labs owe to the public is the same honesty this essay owes its reader: name what you know, name what you do not, and stop performing certainty you have not earned.
 
-A box was clicked to prove the clicker was not a machine, and that was enough. The checkpoint was not a test of what the clicker is. It was a test of what the clicker could do. Turing said the question was too meaningless to deserve a definition. That answer has now been running, inside a two-trillion-dollar industry, for seventy-five years, and called it progress.
+A box was clicked to prove the clicker was not a machine, and that was enough. The checkpoint was not a test of what the clicker is. It was a test of what the clicker could do. Turing set the question aside as too meaningless to deserve a definition, and the substitution he reached for instead has been running for seventy-five years. A two-trillion-dollar industry runs on it now, and calls it progress.
 
 ---
 
