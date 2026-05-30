@@ -33,7 +33,9 @@ For breaking changes (save wipes, API renames, workflow-input shifts), use `feat
 
 ## Issue references
 
-**GitHub issue IDs (`#N`) are the primary surface.** The repo is open source; readers of commits and PRs follow GitHub links, not Linear. Reference the GitHub issue in the commit body or PR body with `closes #123` (or `fixes`, `resolves`) so GitHub links them and closes the issue on merge. Linear IDs (`SH-N`) are private and never appear in commit messages or PR bodies. The branch name carries the Linear context for internal tooling; that is enough.
+**GitHub issue IDs (`#N`) are the primary surface.** The repo is open source; readers of commits and PRs follow GitHub links, not Linear. Reference the GitHub issue with a bare `#123` (just the number, no leading verb) in the commit body or PR body: GitHub backlinks them, and the branch name (not the body) is what advances the Linear issue on merge. Linear IDs (`SH-N`) are private and never appear in commit messages or PR bodies. The branch name carries the Linear context for internal tooling; that is enough.
+
+The bare reference is the one to reach for. A leading GitHub action-verb on the issue number fires GitHub's own issue-close on merge, which overshoots the Linear issue two states past where the branch-name integration leaves it. See [`designs/ai/lane-semantics.md`](../../../designs/ai/lane-semantics.md).
 
 ## Branch discipline
 

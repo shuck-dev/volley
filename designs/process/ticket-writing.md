@@ -243,7 +243,7 @@ For open-source contributors, the standard view of a ticket is on GitHub. Here i
 
 **Milestones.** We use milestones to group tickets by release milestone: Prototype, Alpha, Beta, Polish, v1, Future Updates.
 
-**Linked pull requests.** Reference the issue in your PR with `closes #123` or `fixes #123` in the PR body. GitHub will link them and close the issue on merge. Cross-reference other issues with `#123` anywhere in the body or comments to create a backlink.
+**Linked pull requests.** Reference the issue in your PR body with a bare `#123` (the number on its own). GitHub backlinks the PR and the issue both ways. The branch name, not the body, is what advances the issue on merge, so the bare reference is all the body needs. A GitHub action-verb in front of the number triggers an auto-close that overshoots the tracked issue's state.
 
 **Task lists.** Acceptance criteria use Markdown task list syntax (`- [ ]`). GitHub renders these as checkboxes and tracks progress in the issue list.
 
