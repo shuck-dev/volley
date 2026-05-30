@@ -2,8 +2,12 @@ class_name Ball
 extends RigidBody2D
 
 signal missed
+## Fires only on Peak entry (true) and exit (false), not on every tier ceiling touch.
 signal at_max_speed_changed(is_at_max: bool)
-signal speed_changed(speed: float, min_speed: float, max_speed: float)
+## Carries the current tier's floor and ceiling so a listener can render the active band.
+signal speed_changed(speed: float, tier_floor: float, tier_ceiling: float)
+## Fires when the rally crosses a tier ceiling and steps up to the next tier.
+signal tier_advanced(new_tier: int)
 signal grabbed(ball: Ball)
 signal play_state_changed(state: PlayState)
 
@@ -35,6 +39,25 @@ var speed_increment: float
 var effect_processor: BallEffectProcessor
 var is_temporary := false
 
+## Hard speed ceiling no item, effect, or Peak climb may exceed; derived from the court at ready.
+var ball_world_max_speed: float
+## Current rung of the speed ladder; 0 at rally start, stepped up on each tier completion.
+var current_tier := 0
+## True while the top tier's Peak window is open; the ball climbs above max_speed up to the world max.
+var in_peak := false
+
+## Entry speed of the current tier, derived from the table fraction of the world max.
+var tier_floor: float:
+	get:
+		return _tier_fraction("floor_fraction") * ball_world_max_speed
+
+## Speed that completes the current tier; the world max while the Peak window is open.
+var tier_ceiling: float:
+	get:
+		if in_peak:
+			return ball_world_max_speed
+		return _tier_fraction("ceiling_fraction") * ball_world_max_speed
+
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
 # Persistent register: first NORMAL->ARC cross sets it; in-ARC speed events update it; relock targets it.
@@ -55,6 +78,7 @@ func _ready() -> void:
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
+	ball_world_max_speed = court_config.world_max_speed()
 	min_speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager)
 	max_speed = (
 		min_speed
@@ -76,7 +100,7 @@ func _physics_process(delta: float) -> void:
 	_update_play_state(delta)
 	_emit_max_speed_if_changed()
 
-	if _emit_tracker.should_emit_speed(speed, min_speed, max_speed):
+	if _emit_tracker.should_emit_speed(speed, tier_floor, tier_ceiling):
 		_emit_speed_changed()
 	if play_state == PlayState.PLAY_NORMAL:
 		linear_velocity = linear_velocity.normalized() * speed
@@ -126,8 +150,8 @@ func _advance_relock_ramp(delta: float) -> void:
 
 
 func _emit_speed_changed() -> void:
-	_emit_tracker.record_speed(speed, min_speed, max_speed)
-	speed_changed.emit(speed, min_speed, max_speed)
+	_emit_tracker.record_speed(speed, tier_floor, tier_ceiling)
+	speed_changed.emit(speed, tier_floor, tier_ceiling)
 
 
 func _on_body_entered(body: Node) -> void:
@@ -209,7 +233,9 @@ func enter_out_rest() -> void:
 	OUT_REST_CONFIG.apply(self)
 	# Damping is a court-tunable, not a ball-state-tunable; override the .tres default with the court value.
 	linear_damp = court_config.rest_roll_damping
-	speed = min_speed
+	current_tier = 0
+	in_peak = false
+	speed = tier_floor
 	effect_processor.sync_base_speed()
 	_emit_max_speed_if_changed()
 	_emit_speed_changed()
@@ -226,23 +252,62 @@ func enter_out_held() -> void:
 
 
 func increase_speed() -> void:
-	if speed >= max_speed:
+	if in_peak:
+		if speed >= ball_world_max_speed:
+			return
+
+		speed = minf(speed + speed_increment, ball_world_max_speed)
+		_apply_speed()
+		_track_arc_speed_change()
 		return
-	speed = min(speed + speed_increment, max_speed)
+
+	if speed + speed_increment >= tier_ceiling:
+		advance_tier()
+		return
+
+	speed = speed + speed_increment
 	_apply_speed()
 	_track_arc_speed_change()
 
 
+# Crossing a tier ceiling steps up a rung, or opens the Peak window when the top tier completes.
+func advance_tier() -> void:
+	var is_top_tier: bool = current_tier >= GameRules.speed_tiers.tier_count() - 1
+
+	if is_top_tier:
+		in_peak = true
+		speed = max_speed
+	else:
+		current_tier += 1
+		speed = tier_floor
+
+	_apply_speed()
+	_track_arc_speed_change()
+
+	tier_advanced.emit(current_tier)
+	_item_manager.process_event(&"on_tier_completed")
+
+
 func reset_speed() -> void:
-	speed = min_speed
+	current_tier = 0
+	in_peak = false
+	speed = tier_floor
 	_apply_speed()
 	_track_arc_speed_change()
 
 
 func set_speed_for_streak(count: int) -> void:
-	speed = min(min_speed + count * speed_increment, max_speed)
+	speed = minf(tier_floor + count * speed_increment, tier_ceiling)
 	_apply_speed()
 	_track_arc_speed_change()
+
+
+func _tier_fraction(field: String) -> float:
+	var tier: SpeedTier = GameRules.speed_tiers.get_tier(current_tier)
+	if tier == null:
+		return 0.0
+
+	return tier.get(field)
 
 
 # In ARC, the entry-value register tracks any speed-change event so the post-apex relock
@@ -260,9 +325,8 @@ func _apply_speed() -> void:
 
 
 func _emit_max_speed_if_changed() -> void:
-	var is_at_max: bool = speed >= max_speed
-	if _emit_tracker.consume_max_change(is_at_max):
-		at_max_speed_changed.emit(is_at_max)
+	if _emit_tracker.consume_max_change(in_peak):
+		at_max_speed_changed.emit(in_peak)
 
 
 func _setup_effect_processor() -> void:
@@ -293,7 +357,9 @@ func _baseline_collision_radius() -> float:
 
 
 func _ball_setup() -> void:
-	speed = min_speed
+	current_tier = 0
+	in_peak = false
+	speed = tier_floor
 	effect_processor.sync_base_speed()
 	lock_rotation = true
 

@@ -32,124 +32,92 @@ func before_each() -> void:
 	)
 
 
-func _effective_max_speed() -> float:
-	return (
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
-		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager)
-	)
-
-
 # --- increase_speed ---
 func test_increase_speed_adds_increment() -> void:
+	_ball.current_tier = 0
+	_ball.speed = _ball.tier_floor
 	_ball.increase_speed()
 	var expected: float = (
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
+		_ball.tier_floor
 		+ Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager)
 	)
 	assert_almost_eq(_ball.speed, expected, 0.01)
 
 
-func test_increase_speed_clamps_at_max() -> void:
-	_ball.speed = _effective_max_speed()
+func test_increase_speed_advances_tier_at_ceiling() -> void:
+	_ball.current_tier = 0
+	_ball.speed = _ball.tier_ceiling - 1.0
 	_ball.increase_speed()
-	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
+	assert_eq(_ball.current_tier, 1, "crossing the ceiling steps up a tier")
+	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "speed drops to the new tier's floor")
 
 
-func test_increase_speed_does_not_exceed_max_near_ceiling() -> void:
-	_ball.speed = _effective_max_speed() - 1.0
+func test_increase_speed_never_exceeds_tier_ceiling() -> void:
+	_ball.current_tier = 0
+	var ceiling: float = _ball.tier_ceiling
+	_ball.speed = ceiling - 1.0
 	_ball.increase_speed()
-	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
+	assert_true(_ball.speed <= ceiling + 0.01, "speed stays within the band's ceiling")
 
 
 # --- reset_speed ---
-func test_reset_speed_returns_to_min() -> void:
-	_ball.speed = _effective_max_speed()
+func test_reset_speed_returns_to_tier_zero_floor() -> void:
+	_ball.current_tier = 2
+	_ball.speed = _ball.tier_ceiling
 	_ball.reset_speed()
-	assert_almost_eq(
-		_ball.speed, Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.01
-	)
+	assert_eq(_ball.current_tier, 0, "miss resets to Tier 0")
+	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
 
 
 func test_reset_speed_preserves_direction() -> void:
-	_ball.linear_velocity = Vector2(0.0, _effective_max_speed())
+	_ball.linear_velocity = Vector2(0.0, 500.0)
 	_ball.reset_speed()
 	assert_almost_eq(_ball.linear_velocity.x, 0.0, 0.01)
 	assert_gt(_ball.linear_velocity.y, 0.0)
 
 
-# --- item level changes (applied on next physics frame via effect processor) ---
-func test_min_speed_purchase_increases_speed() -> void:
-	var speed_before_purchase: float = _ball.speed
-	var min_before_purchase: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
-	)
-	_manager.economy.friendship_point_balance = 10000
-	_manager.purchase("training_ball")
-	_ball._physics_process(0.016)
-	var min_after_purchase: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
-	)
-	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
-	assert_almost_eq(_ball.speed, expected_speed, 0.01)
-
-
-func test_min_speed_purchase_increases_speed_above_new_min() -> void:
-	_ball.speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager) + 200.0
+# --- per-frame clamp against the active tier band ---
+func test_effect_processor_clamps_speed_to_tier_band() -> void:
+	_ball.current_tier = 0
+	_ball.speed = _ball.tier_ceiling + 500.0
 	_ball.effect_processor.sync_base_speed()
-	var speed_before_purchase: float = _ball.speed
-	var min_before_purchase: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
-	)
-	_manager.economy.friendship_point_balance = 10000
-	_manager.purchase("training_ball")
 	_ball._physics_process(0.016)
-	var min_after_purchase: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
-	)
-	var expected_speed: float = speed_before_purchase + (min_after_purchase - min_before_purchase)
-	assert_almost_eq(_ball.speed, expected_speed, 0.01)
+	assert_true(_ball.speed <= _ball.tier_ceiling + 0.01, "frame clamp holds the tier ceiling")
 
 
-func test_min_speed_purchase_also_raises_max_speed() -> void:
-	_manager.economy.friendship_point_balance = 10000
-	_manager.purchase("training_ball")
+func test_effect_processor_clamp_floor_is_tier_floor() -> void:
+	_ball.current_tier = 1
+	_ball.speed = 0.0
+	_ball.effect_processor.sync_base_speed()
 	_ball._physics_process(0.016)
-	var expected_max: float = _effective_max_speed()
-	_ball.speed = expected_max - 1.0
-	_ball.increase_speed()
-	assert_almost_eq(_ball.speed, expected_max, 0.01)
-
-
-func test_max_speed_purchase_clamps_speed_when_above_new_max() -> void:
-	_ball.speed = _effective_max_speed()
-	_manager.economy.friendship_point_balance = 10000
-	_manager.purchase("court_lines")
-	_ball._physics_process(0.016)
-	assert_true(_ball.speed <= _effective_max_speed())
+	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "frame clamp lifts to the tier floor")
 
 
 # --- set_speed_for_streak ---
-func test_set_speed_for_streak_zero_equals_min_speed() -> void:
+func test_set_speed_for_streak_zero_equals_tier_floor() -> void:
+	_ball.current_tier = 0
 	_ball.set_speed_for_streak(0)
-	assert_almost_eq(
-		_ball.speed, Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.01
-	)
+	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
 
 
 func test_set_speed_for_streak_matches_incremental_hits() -> void:
-	for hit_index in range(5):
-		_ball.increase_speed()
-	var expected_speed: float = _ball.speed
+	_ball.current_tier = 0
+	_ball.speed = _ball.tier_floor
+	var increment: float = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+	)
+	var hits := 3
+	var expected_speed: float = _ball.tier_floor + hits * increment
 
-	_ball.reset_speed()
-	_ball.set_speed_for_streak(5)
+	_ball.set_speed_for_streak(hits)
 
 	assert_almost_eq(_ball.speed, expected_speed, 0.01)
 
 
-func test_set_speed_for_streak_caps_at_max() -> void:
+func test_set_speed_for_streak_caps_at_tier_ceiling() -> void:
+	_ball.current_tier = 0
 	_ball.set_speed_for_streak(9999)
-	assert_almost_eq(_ball.speed, _effective_max_speed(), 0.01)
+	assert_almost_eq(_ball.speed, _ball.tier_ceiling, 0.01)
 
 
 # --- miss zone registration ---
