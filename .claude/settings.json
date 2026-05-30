@@ -1,3 +1,56 @@
 {
-  "hooks": {}
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/em-dash-pre-tool.sh\"" }
+        ]
+      },
+      {
+        "matcher": "mcp__linear__save_issue",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/linear-save-issue-warn.sh\"" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/linear-issue-body-cap.sh\"" }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/require-background-agent.sh\"" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/require-editing-agent-isolation.sh\"" }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/git-rebase-ask.sh\"" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/block-approved-human.sh\"" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/block-pr-merge.sh\"" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/pr-mention-state-check.sh\"" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/memory-correction-signal.sh\"" },
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/debrief-flow-signal.sh\"" }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/inject-priority-memory.sh\"" }
+        ]
+      }
+    ]
+  }
 }
