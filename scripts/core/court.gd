@@ -3,7 +3,8 @@ extends Node2D
 
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
-signal ball_at_max_speed_changed(is_at_max: bool)
+signal ball_peak_changed(in_peak: bool)
+signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
 
@@ -87,7 +88,8 @@ func _ready() -> void:
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_tracker)
-	ball_tracker.ball_at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
+	ball_tracker.ball_peak_changed.connect(_on_ball_peak_changed)
+	ball_tracker.ball_tier_advanced.connect(_on_ball_tier_advanced)
 	ball_tracker.register_miss_zone_globally()
 	if ball != null:
 		var pre_set: Ball = ball
@@ -133,9 +135,14 @@ func _on_paddle_hit() -> void:
 	volley_count_changed.emit(_volley_count)
 
 
-func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
-	ball_at_max_speed_changed.emit(is_at_max)
-	if is_at_max:
+func _on_ball_tier_advanced(new_tier: int) -> void:
+	ball_tier_advanced.emit(new_tier)
+
+
+# Peak entry still fires the legacy max-speed event Cadence latches on.
+func _on_ball_peak_changed(in_peak: bool) -> void:
+	ball_peak_changed.emit(in_peak)
+	if in_peak:
 		_item_manager.process_event(&"on_max_speed_reached")
 
 
