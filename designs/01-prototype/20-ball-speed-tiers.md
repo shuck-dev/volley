@@ -20,9 +20,18 @@ The companion doc (20a) owns the narrative framing of the tiers, what each peak 
 
 Godot's 2D physics in this project runs at the engine default 60 ticks per second. At discrete-step integration the ball can tunnel through thin colliders if per-frame travel exceeds the contact depth of what it is trying to hit. The three failure modes, in order of how quickly they bite, are: paddle face (closing speed of ball + paddle has to stay under the paddle's hit-axis thickness plus ball radius), paddle edge on a shrunk paddle, and walls.
 
-The spike exposes a single constant, `BALL_WORLD_MAX_SPEED`, which is the world max speed the physics pipeline can reliably handle at 60 Hz against the narrowest paddle and thinnest wall in the scene. Its value is tuned during prototyping against the actual collider dimensions and paddle-speed curve, not baked into the architecture.
+The world exposes a single value, `BALL_WORLD_MAX_SPEED`, the top speed any ball reaches. Two constraints bound it, and the lower one wins:
+
+- **Fun.** A crossing must outlast the receiver's move plus reaction, or the point is luck rather than skill. On the current court (600px paddle to paddle, miss-zone reach about 330px, paddle travel 560px/s) the fair-crossing floor is roughly 0.8s, which puts the fun ceiling near 750px/s. Past that the ball outruns a human across the court. This ceiling scales with crossing distance, so it derives from court width (see [Court width](#court-width)), not a fixed number.
+- **Physics.** At 60Hz a discrete-step body tunnels through a collider once per-tick travel exceeds the collider's contact depth plus the ball diameter. This sets a hard floor under the fun ceiling. It is not fixed by the art: a paddle's collision face can be authored thicker than its sprite, which raises the tunnelling ceiling with no visible change (at a small phantom-bounce cost on shrunk paddles). So the collider face is a dial, sized to keep whatever the fun ceiling asks for tunnel-safe.
+
+First-pass value: `BALL_WORLD_MAX_SPEED = 720` at the default court width. At 720 the ball travels 12px/tick, already inside the thinnest current paddle face (14.4) plus ball diameter (14.4), so no collider thickening is needed yet; it is the lever for a wider court or higher ceiling later.
 
 **No stacked item, no effect outcome, no debug cheat may push `ball.speed` above `BALL_WORLD_MAX_SPEED`.** This is a physics guarantee, not a balance number.
+
+### The physics tick is the other dial
+
+The tunnelling budget is `depth * tick_rate`, so the tick is a linear multiplier on the physics floor: doubling it doubles the speed the pipeline can carry, with none of the phantom-bounce cost the collider-face dial has. The project runs at the engine default 60 ticks per second; this game's per-tick cost is small (a 2D ball, two paddles, an effect processor, and a handful of cheap controllers), so raising the tick is cheap here in a way it would not be for a many-body sim. The catch is feel: speeds and timings tuned against 60Hz (the relock ramp, AI cadence, the english coefficient sampled from per-tick paddle velocity) want re-tuning once after the change. Because that re-tune is one-time and the prototype is already tuning the ladder, the tick is best raised before the tier numbers settle rather than after. Raising it to 120 doubles the headroom and aligns with common high-refresh displays; past that the fun ceiling caps speed well before the physics floor does, so there is little reason to go higher. Tracked separately as its own ticket.
 
 ### Continuous collision detection as a pressure valve
 
@@ -36,27 +45,31 @@ Speed progression becomes a ladder of tiers. Each tier has its own floor and cei
 
 ### Tier structure
 
-The ladder has three or four tiers (the count is a design call made in the prototype). Tier 0 is the base rally speed; each subsequent tier steps up to a progressively higher band, with the ceiling raised by that tier's `ball_speed_max_range` entry. The top tier's ceiling is the world max speed the physics can reliably handle, tuned during prototyping. Tier 0's floor and width match today's base-stats numbers, so starting a run feels the same as today.
+The ladder has three tiers (tunable; the table is data, so the count can change). Tier 0 is the base rally speed; each subsequent tier steps up to a progressively higher band, with the ceiling raised by that tier's `ball_speed_max_range` entry. The top tier's ceiling is the ball's own max speed, which depends on the ball and its upgrades and is generally below `BALL_WORLD_MAX_SPEED`. Tier 0's floor and width match today's base-stats numbers, so starting a run feels the same as today.
 
-No tier, no item, no effect can promote the ball past the top tier's ceiling.
+First-pass bands for the base ball at the default court (px/s): Tier 0 floor 225, ceiling ~390; Tier 1 floor ~340, ceiling ~520; Tier 2 (top) floor ~470, ceiling ~620 (the base ball's max). A stronger ball's top-tier ceiling sits higher, closer to `BALL_WORLD_MAX_SPEED`. Store tier bounds as fractions of the derived world max rather than frozen px/s, so widening the court rescales the whole ladder without hand-editing entries.
+
+No tier, no item, no effect can promote the ball past `BALL_WORLD_MAX_SPEED`.
 
 ### Tier-completion event
 
-Reaching a tier ceiling fires `on_tier_completed(tier_index)` on the item effect bus, drops `ball.speed` back to the new tier's floor, and continues the rally. The event payload carries the completed tier index so effect outcomes and reward handlers can scale their response. Completing the top tier additionally opens a Peak window; see 20a for its framing and reward payload.
+Reaching a tier ceiling fires `on_tier_completed(tier_index)` on the item effect bus, drops `ball.speed` back to the new tier's floor, and continues the rally. The event payload carries the completed tier index so effect outcomes and reward handlers can scale their response. The first time a ball reaches a given tier, the completion also upgrades the ball. Completing the top tier additionally opens a Peak window; see 20a for its framing and reward payload.
+
+### The Peak window
+
+Completing a non-top tier hands off to the next band. The top tier has nothing above it, so completing it instead opens the Peak: an extra speed range stacked above the ball's max, up to `BALL_WORLD_MAX_SPEED`. The Peak range is a property of the ball, so a stronger ball (higher max) gets a shorter Peak, since the world max is one hard line for every ball. Inside the window the ball keeps climbing hit by hit through the extra range; it does not snap to a single speed and it never exceeds `BALL_WORLD_MAX_SPEED`. The window holds while the rally is alive and ends on a miss. There is no no-miss cooldown timer; the rally ends the Peak the only way a rally ever ends, by a miss.
 
 ### Reset behaviour
 
-- **Miss** resets tier to 0 and speed to Tier 0 floor, matching today's `ball.reset_speed` semantics.
+- **Miss** resets tier to 0 and speed to Tier 0 floor, matching today's `ball.reset_speed` semantics. A miss during the Peak is a normal miss; the banked Peak reward is already the player's (see 20a).
 - **Tier completion** sets tier to `tier + 1` and speed to the new tier's floor. Current speed does not carry across tiers; the drop is the reset beat.
-- **Peak window end without miss** drops speed and tier to 0 but does not count as a miss. The rally continues. Call this the "cooldown" reset: no penalty events fire, `_volley_count` is preserved, the Court just feels the speed drop.
-- **Peak window end by miss** behaves as a normal miss: tier 0, volley count 0 (or halved if a halve-streak item is active, same as today).
 - **Half-streak items** (Cadence's existing `on_miss` / halve outcome) still halve `_volley_count` on miss. They now also set tier to `floor(current_tier / 2)` and speed to the floor of that tier, so halving is proportional across the new ladder.
 
 ### Tier-aware ball state
 
 `Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from design/21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from design/21-ball-dynamics.md's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` and `set_speed_for_streak` clamp against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
 
-`speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `at_max_speed_changed` is repurposed to fire only on Peak entry/exit; the Cadence "ceiling outcome" (which currently latches on `on_max_speed_reached`) moves to `on_tier_completed` with a tier filter.
+`speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `at_max_speed_changed` is repurposed to fire only on Peak entry/exit. The Cadence "ceiling outcome" (which currently latches on `on_max_speed_reached`) is out of scope here: Cadence's interaction with the tier model lives in its own tickets (SH-449 names the lifted cap and on-whistle consolidate as L2/L3; SH-59 the L3 burst). This work only retires the dead `on_max_speed_reached` trigger.
 
 ## Items under the tier model
 
@@ -66,7 +79,7 @@ The four items that currently shape ball speed keep their fantasy. Each stops tr
 
 Current: oscillates `ball_speed_offset` within `ball_speed_max_range`; on `on_max_speed_reached` raises `ball_speed_max_range`.
 
-New: oscillation stays (it is a feel effect, not a ceiling effect). The ceiling-raising outcome becomes a **tier-skip chance** on `on_tier_completed`: a per-level chance to skip the next tier's climb and drop straight into the tier after. "Don't stop. Won't stop" reads as "keep the tempo, skip the queue," and the item keeps rewarding long rallies without raising the absolute cap.
+Out of scope here. The oscillation feel effect is untouched. Cadence's tier interaction (its lifted cap and on-whistle consolidate) lands in SH-449 and SH-59, which own the item end to end. This work only retires the dead `on_max_speed_reached` trigger; whether Cadence retargets to `on_tier_completed` is that ticket's call.
 
 ### Court Lines
 
@@ -88,14 +101,19 @@ New: unchanged. Wrist Brace compresses every tier's hits-to-climb and trades pad
 
 ### Interactions at the extremes
 
-- Full speed stack (Court Lines + Training Ball + Wrist Brace at cap): Tier 0 starts higher, climbs compress, top-tier ceiling holds. Peak becomes reachable inside a short rally. This is the new power fantasy. Without tiers, the same stack today sends speed arbitrarily high and breaks the paddle.
-- Cadence with any speed stack: tier-skip chance shrinks the average Peak-to-Peak interval, which is the Cadence identity under this model.
+- Full speed stack (Court Lines + Training Ball + Wrist Brace at cap): Tier 0 starts higher, climbs compress, ceilings hold. Peak becomes reachable inside a short rally. This is the new power fantasy. Without tiers, the same stack today sends speed arbitrarily high and breaks the paddle.
 - Training Ball alone: Tier 0 compression only. Stops interacting with the tier ladder above Tier 0, which is what "early-game smoothing" items should do.
+
+## Court width
+
+The court's crossing distance sets the fun ceiling, so court width is a tunable rather than a baked scene layout. `CourtConfig` gains `court_half_width` (default 300, matching today's spawns); `Court` positions the player and partner spawns, miss zones, and right wall from it at startup instead of trusting authored marker positions. The markers stay in the scene for editor preview; runtime truth comes from config.
+
+`BALL_WORLD_MAX_SPEED` and the tier bounds derive from it: `crossing = 2 * court_half_width`, `world_max = crossing / fair_crossing_seconds` (about 0.8s). At the default 300 this reproduces the 720 ceiling. Widen the court and the fair ceiling rises with the crossing; past about 860px/s the collider-face dial (above) is what keeps it tunnel-safe.
 
 ## Migration notes
 
 - `ball_speed_max_range` stays as a tuning surface; it is promoted into a per-tier `max_range` field on `SpeedTierTable` rather than deleted. The flat value from design/21-ball-dynamics.md rides on the Tier 0 entry so existing tuning and tests keep their meaning; the tiers above each declare their own `max_range` alongside `floor`, `ceiling`, and `reward`. The table is owned by `GameRules`. Existing callers that read `ball_speed_max_range` read `SpeedTierTable.get_tier(current_tier).max_range` (or `.get_tier(0).max_range` for the base-stats tuning surface).
-- Cadence's `on_max_speed_reached` outcome is rewritten to `on_tier_completed` with a tier filter. Court Lines' `ball_speed_max_range` stat outcome is rewritten to a new `widen_tier_floors` outcome. Training Ball and Wrist Brace unchanged.
+- Court Lines' `ball_speed_max_range` stat outcome is rewritten to a new `widen_tier_floors` outcome. Training Ball and Wrist Brace unchanged. Cadence is out of scope (SH-449 / SH-59).
 - Court's `_on_ball_at_max_speed_changed` splits into `_on_ball_tier_advanced` (fires per tier) and `_on_ball_peak_changed` (fires on Peak entry/exit). `on_max_speed_reached` as an event name is retired; `on_tier_completed` replaces it.
 - `ball.reset_speed` stays as miss behaviour. `ball.advance_tier` is new. `ball.set_speed_for_streak` clamps against `tier_ceiling` of the tier implied by streak count, which the tier table answers.
 - No save compat shim. Items in flight at migration time reload against the new data and pick up the new behaviour.
@@ -107,9 +125,9 @@ New: unchanged. Wrist Brace compresses every tier's hits-to-climb and trades pad
 
 ## Acceptance criteria mapping
 
-- Hard physics ceiling identified and named. `BALL_WORLD_MAX_SPEED` exists as the single constant the pipeline guarantees, tuned in the prototype against the 60 Hz tick, paddle collider width, and min paddle size.
+- World max identified and named. `BALL_WORLD_MAX_SPEED` exists, set by the lower of the fun ceiling (court crossing) and the physics floor (60Hz tunnelling against the collider face), and derives from court width.
 - CCD evaluated as a pressure valve available if the ceiling proves too tight in play.
-- Tier progression designed. Three or four tiers; hits-per-climb falls out of base increment and per-tier `max_range`.
-- Reset behaviour defined. Miss to Tier 0 floor. Tier completion to next tier floor. Peak end without miss drops to Tier 0 floor without counting as a miss.
-- Existing-item interactions documented. Cadence, Court Lines, Training Ball, Wrist Brace all re-expressed against the tier stack.
+- Tier progression designed. Three tiers (tunable); hits-per-climb falls out of base increment and per-tier `max_range`.
+- Reset behaviour defined. Miss to Tier 0 floor. Tier completion to next tier floor. Peak ends on a miss only.
+- Existing-item interactions documented. Court Lines and Training Ball re-expressed against the tier stack; Wrist Brace unchanged; Cadence deferred to SH-449 / SH-59.
 - Narrative framing and reward ladder live in [20a Ball Speed Tier Progression](20a-ball-speed-tier-progression.md).
