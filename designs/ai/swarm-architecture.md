@@ -95,7 +95,7 @@ Minions never merge. The required checks are `Tests` and `Lint`; the maintainer'
 
 ## Live state versus stable protocol
 
-The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, reviewer contract) lives in the skill docs under `ai/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
+The board bloats if protocol lives with state. The earlier `ai/PARALLEL.md` mixed both, which was the immediate cause of its merge-conflict tax. Today the live state lives in Linear's `Dispatched` status and `gh pr list`; the stable how-to (seven-step flow, ground rules, tier system, paired dispatch, reviewer contract) lives in the skill docs under `.claude/skills/`; the role rosters and commit templates live in `ai/swarm/README.md`; the design rationale (this doc) lives under `designs/`.
 
 This is one of the patterns the multi-agent literature converges on. LangGraph and AutoGen centralise state in one object, which reports as a write-contention bottleneck under parallel load. Claude Code's own Agent Teams design landed on a shared task list plus per-agent mailboxes rather than one fat board, and that is structurally what Volley is moving toward. The pain shows up as merge conflicts on the shared surface when two minions claim at the same time; the fix is to keep the shared surface small and push rich state into per-owner files that do not conflict.
 

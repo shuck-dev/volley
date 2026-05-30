@@ -7,13 +7,13 @@ description: How to write Volley's creative prose so it lands the felt arc, not 
 
 You are about to write Volley creatively. A scene, a summary, a character moment, a piece of dialogue, a narrative outline. Whatever the form, the bar is the same: the reader (or player) finishes it with the protagonist's pressure on their chest, not with a list of plot points in their head. If a reader who has never seen the game is not moved by what you wrote, you wrote the wrong thing.
 
-Read [`../../../ai/STYLE.md`](../STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
+Read [`../../../ai/STYLE.md`](../../../ai/STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
 
 ## What this skill is for
 
-Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
+Volley's creative surfaces include the story summary at the head of [`designs/narrative/outline.md`](../../../designs/narrative/outline.md), scene drafts in `designs/narrative/**`, character moments in `designs/characters/**`, dialogue lines that ship in the game, and any pitch-shaped or treatment-shaped prose. The patterns below apply across all of them. Where a rule is most acute for a specific form (summary, scene, dialogue), that is called out.
 
-For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
+For Volley specifically: the working voice sample for creative prose is the story summary in [`designs/narrative/outline.md`](../../../designs/narrative/outline.md). When in doubt, read it. The working voice sample for analytical prose is `designs/research/the-case-for-open-development.md`; calibrate against the right one for the form you are writing.
 
 ## The eight rules
 
@@ -103,7 +103,7 @@ Source: Blake Snyder, *Save the Cat!* (2005), used as a test rather than a templ
 - No lore-front-loading. The world arrives through the protagonist's pressure, not through three paragraphs of setup.
 - No teasing close ("what happens next?"). The close lands or it is cut.
 
-See [`../../../ai/STYLE.md`](../STYLE.md) for the full voice rules.
+See [`../../../ai/STYLE.md`](../../../ai/STYLE.md) for the full voice rules.
 
 ## A working sequence
 
