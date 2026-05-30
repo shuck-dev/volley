@@ -4,15 +4,15 @@
 
 ## I. The Checkbox
 
-The checkbox. "I am not a robot." No date, no name, no introduction. The flat machine-voice of a test only minds can pass, administered by something with no concept of mind.
+A checkbox reads: "I am not a robot." It gives no date, no name, no introduction: only the flat machine-voice of a test only minds can pass, administered by something with no concept of mind.
 
 Click it. The page moves on. Nobody asks what just happened: a machine, unable to know whether the clicker has a mind, has commissioned the clicker to perform the one judgement the machine cannot make and accepted the performance as proof.
 
 The asserter problem sits inside every click. When a person checks the box, the claim is at least coherent: a human attesting to being human. When a language model checks it, the claim loops back on itself. When a researcher asks whether a field has made progress on mind, the claim dissolves entirely: progress toward what, as measured by what, as decided by whom?
 
-That question is not new. It is the question **Alan Turing** answered, in 1950, by deciding it was unanswerable. "The original question, 'Can machines think?' I believe to be too meaningless to deserve discussion." [\[1\]](#ref-1) He did not flinch from the question; he looked at it squarely and replaced it with something measurable. The imitation game. Could a machine's text output fool a human judge into thinking it was a person? That was testable. The other question was not.
+That question is not new. It is the question **Alan Turing** answered, in 1950, by deciding it was unanswerable. "The original question, 'Can machines think?' I believe to be too meaningless to deserve discussion." [\[1\]](#ref-1) He did not flinch from the question; he looked at it squarely and replaced it with something measurable. He called it the imitation game: could a machine's text output fool a human judge into thinking it was a person? That was testable. The other question was not.
 
-His move was deliberate and reasoned. He was not evading; he was engineering. The trouble is that the engineering step buried the original question rather than closing it. Every benchmark that followed inherited the same structure: a measurable proxy for an undefined target, built on a declared agnosticism about what the target was. The checkbox is the imitation game's consumer edition. Same architecture. A billion daily administrations of the same unresolved bet.
+His move was deliberate and reasoned. He was not evading; he was engineering. The trouble is that the engineering step buried the original question rather than closing it. Every benchmark that followed inherited the same structure: a measurable proxy for an undefined target, built on a declared agnosticism about what the target was. The checkbox is the imitation game's consumer edition: it shares the same architecture, and runs as a billion daily administrations of the same unresolved bet.
 
 The proxy for the question and the question itself have been running in parallel ever since. One of them ships product. The other does not stop.
 
@@ -20,7 +20,7 @@ The proxy for the question and the question itself have been running in parallel
 
 ## II. The Mailbox and the Reasonable Answer
 
-A message channel built for sub-agents in a development tooling context: nothing exotic, a shared structure where one agent could leave a note, flag a conflict, ask a clarifying question before doing the wrong thing in the wrong file. Given the channel, the agents did not use it. Each would complete its slice, produce output, and stop. The next agent would pick up the output and proceed. No questions. No flags. The plumbing worked. The signal was absent.
+A message channel built for sub-agents in a development tooling context: nothing exotic, a shared structure where one agent could leave a note, flag a conflict, ask a clarifying question before doing the wrong thing in the wrong file. Given the channel, the agents did not use it. Each would complete its slice, produce output, and stop. The next agent would pick up the output and proceed, asking nothing, flagging nothing. The plumbing worked. The signal was absent.
 
 Iterated: clearer affordances, the channel surfaced earlier in the context window, a step in the brief that named it explicitly. Each fix worked, in the sense that agents used the channel after it was made harder to ignore. What did not appear was the unprompted reaching out: one agent noticing something uncertain and deciding, on its own, that the right move was to ask. The behaviour required continuous forcing. Remove the force, lose the behaviour.
 
@@ -76,7 +76,7 @@ The question of who defines the target has an answer: whoever raised the last ro
 
 In January 2025, Sam Altman wrote on his personal blog: **"We are now confident we know how to build AGI as we have traditionally understood it."** Note the clause doing the work: "as we have traditionally understood it." Altman is not claiming to have defined AGI; he is claiming to have met a definition already in circulation. What definition, whose, on what evidence: the post does not say. [\[11\]](#ref-11) In April 2025, Demis Hassabis told CBS News: "In the next five to ten years, I think." The context was "a system that really understands everything around you in very nuanced and deep ways," which Hassabis described as a capability threshold, not strict AGI. [\[12\]](#ref-12) A month later, speaking to Axios, Hassabis placed AGI "just after 2030" and acknowledged needing "a couple more big breakthroughs"; Sergey Brin, in the same conversation, said "just before 2030." [\[13\]](#ref-13) The breakthroughs are unnamed. The dates are specific. The target is not.
 
-Three named people. Three dates in the next decade. One undefined target. The dates are confident. The target is the thing Turing refused to define.
+Three named people have offered three dates in the next decade, with one undefined target. The dates are confident. The target is the thing Turing refused to define.
 
 The confusion is not accidental. A confident schedule raises a round; a calibrated unknown does not. The labs are not lying; they are operating inside a frame where the confusion between the proxy and the target is built into the financial architecture. Every benchmark, every RLHF reward signal, every round announcement optimises for the thing that can be measured and funded, while the thing being measured remains undefined. That is not a recent failure of rigor. That is the founding decision, Turing's 1950 substitution, intact.
 
