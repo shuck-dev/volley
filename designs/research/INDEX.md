@@ -9,7 +9,7 @@ Each essay lives in its own folder with its working material (outline, research 
 | Essay | Folder | Purpose |
 |---|---|---|
 | [The Case for Open Development](open-development/the-case-for-open-development.md) | `open-development/` | The published essay. ~15,900 words across fourteen sections plus bibliography. The case for open development as the most reliable practice for a new indie to be seen, with implications past games. |
-| [I Am Not A Robot](not-a-robot/) | `not-a-robot/` | In progress. AI and philosophy of mind as one question: the labs renamed the oldest question and started billing for it. Folder holds the outline and the verified research findings; the essay lands here on completion. |
+| [I Am Not A Robot](not-a-robot/i-am-not-a-robot.md) | `not-a-robot/` | ~3,500 words. AI and philosophy of mind as one question: the labs renamed the oldest question and started billing for it. The folder holds the essay at its top, with `outline/` and `research/` subfolders for the working material. |
 
 The open-development essay's style guide and the planning, audit, and critique docs are agent-facing and live under [`ai/`](../ai/INDEX.md).
 
@@ -31,4 +31,5 @@ Each essay folder holds its own working files, tracked alongside the essay.
 |---|---|
 | `open-development/drafts/` | Section files (00 title through 15 sources). Concatenated to produce the published essay. |
 | `open-development/notes/` | Per-angle research notes the essay was built from. |
-| `not-a-robot/` | Parent spine plus five per-section child briefs, five facet research findings, and two fact-check notes (xin sinology, the 37% stat). |
+| `not-a-robot/outline/` | Parent spine plus five per-section child briefs the section writers worked from. |
+| `not-a-robot/research/` | Five facet research findings and two fact-check notes (xin sinology, the 37% stat). |

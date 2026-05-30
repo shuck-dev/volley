@@ -23,4 +23,4 @@ Read `00-parent-spine.md` first. This is your complete section brief.
 - *Opening (essay start):* The checkbox. "I am not a robot." No date, no name, no introduction. The flat machine-voice of a test only minds can pass, administered by something that does not know what mind is.
 - *Closing (hand to Part II):* "The proxy for the question and the question itself have been running in parallel ever since. One of them ships product. The other does not go away."
 
-**Word budget:** 350. Source detail: `ai/scratchpads/essay-research-facet-2.md`.
+**Word budget:** 350. Source detail: `designs/research/not-a-robot/research/findings-facet-2-behaviour-vs-mind.md`.
