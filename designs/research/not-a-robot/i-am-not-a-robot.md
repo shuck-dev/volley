@@ -34,7 +34,7 @@ The word "intelligence" was borrowed from ordinary language and put to work with
 
 ## III. The Missing Channels
 
-The gap is not in the training run. The gap is in what was never broadcast.
+The gap is not in the training run. The gap is in the signal.
 
 There is a radio telescope problem in signal processing that engineers know well. You can increase the gain on a receiver indefinitely, but if the source never transmitted on a given frequency, no amount of amplification recovers the signal. Resolution cannot be raised on a channel that was never sampled.
 
@@ -80,7 +80,7 @@ Three named people. Three dates in the next decade. One undefined target. The da
 
 The confusion is not accidental. A confident schedule raises a round; a calibrated unknown does not. The labs are not lying; they are operating inside a frame where the confusion between the proxy and the target is built into the financial architecture. Every benchmark, every RLHF reward signal, every round announcement optimises for the thing that can be measured and funded, while the thing being measured remains undefined. That is not a recent failure of rigor. That is the founding decision, Turing's 1950 substitution, intact.
 
-I am not arguing the risk is zero. I am arguing the schedule is made up.
+I am not arguing the risk is zero. I am arguing the schedule is fiction.
 
 ---
 
@@ -96,7 +96,7 @@ The labs borrowed the oldest question in philosophy, renamed it, and started bil
 
 The ask is not that they slow down. It is that they say what they mean by what they are building, and hold the definition stable enough to be evaluated by people outside the room. The honesty the labs owe to the public is the same honesty this essay owes its reader: name what you know, name what you do not, and stop performing certainty you have not earned.
 
-I clicked a box to prove I was not a machine, and that was enough. The checkpoint was not a test of what I am. It was a test of what I could do. Turing said the question was too meaningless to deserve a definition. The labs have built a two-trillion-dollar industry on the same evasion, and called it a fact.
+I clicked a box to prove I was not a machine, and that was enough. The checkpoint was not a test of what I am. It was a test of what I could do. Turing said the question was too meaningless to deserve a definition. The labs have built a two-trillion-dollar industry on the same evasion, and called it progress.
 
 ---
 
