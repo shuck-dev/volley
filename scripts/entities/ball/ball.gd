@@ -46,10 +46,16 @@ var current_tier := 0
 ## True while the top tier's Peak window is open; the ball climbs above max_speed up to the world max.
 var in_peak := false
 
-## Entry speed of the current tier, derived from the table fraction of the world max.
+## Entry speed of the current tier, derived from the table fraction of the world max plus any tier-floor lift on tiers above Tier 0.
 var tier_floor: float:
 	get:
-		return _tier_fraction("floor_fraction") * ball_world_max_speed
+		var base_floor: float = _tier_fraction("floor_fraction") * ball_world_max_speed
+		if current_tier == 0:
+			return base_floor
+
+		var lift: float = _item_manager.get_modifier(&"tier_floor_lift") * ball_world_max_speed
+
+		return minf(base_floor + lift, tier_ceiling)
 
 ## Speed that completes the current tier; the world max while the Peak window is open.
 var tier_ceiling: float:
