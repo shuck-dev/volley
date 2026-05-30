@@ -373,6 +373,21 @@ func adopt_authored(item_key: String) -> void:
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
 
+## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
+## Returns true when the level increased. Intended for tier-completion ball upgrades.
+func upgrade_ball(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return false
+
+	var current_level := get_level(item_key)
+	if current_level <= 0 or current_level >= item.max_level:
+		return false
+
+	_set_level(item_key, current_level + 1)
+	return true
+
+
 ## Acquires an item without registering its effects. The item is owned but
 ## inert until equipped into the kit. Returns true on success.
 func take(item_key: String) -> bool:
