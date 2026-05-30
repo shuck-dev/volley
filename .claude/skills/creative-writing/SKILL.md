@@ -7,7 +7,7 @@ description: How to write Volley's creative prose so it lands the felt arc, not 
 
 You are about to write Volley creatively. A scene, a summary, a character moment, a piece of dialogue, a narrative outline. Whatever the form, the bar is the same: the reader (or player) finishes it with the protagonist's pressure on their chest, not with a list of plot points in their head. If a reader who has never seen the game is not moved by what you wrote, you wrote the wrong thing.
 
-Read [`../../../ai/STYLE.md`](../../../ai/STYLE.md) and [`voice.md`](voice.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
+Read [`../../../ai/STYLE.md`](../../../ai/STYLE.md) and [`voice.md`](../voice/SKILL.md) first. They are the rules layer and the voice calibration. This skill is what those rules look like when the work is creative, not analytical.
 
 ## What this skill is for
 
@@ -127,7 +127,7 @@ If a summary keeps reading flat after the rules pass, the diagnosis is usually o
 
 In all three cases, the fix is structural, not lexical. Reaching for synonyms will not save a draft whose spine is unclear.
 
-For long-form prose (essays, design docs longer than a page), use [`voice.md`](voice.md) directly; the case-for-open-development essay is the source. This skill is the entry point for the short-form summary case specifically.
+For long-form prose (essays, design docs longer than a page), use [`voice.md`](../voice/SKILL.md) directly; the case-for-open-development essay is the source. This skill is the entry point for the short-form summary case specifically.
 
 ## Source notes
 
