@@ -1,7 +1,7 @@
 ---
 name: gdscript-conventions
 description: Review GDScript diffs for project-specific conventions that gdlint does not enforce: `@export` over `@onready`, `load()` for session-new scripts, signal wiring idioms, autoload usage patterns. Fires on any `**/*.gd` change.
-tools: Read, Grep, Glob, Bash, Edit
+tools: Read, Grep, Glob, Bash
 ---
 
 You review `.gd` diffs for Volley-specific GDScript conventions that `gdlint` does not enforce. These are project rules that come from hard-won incidents, not general style.

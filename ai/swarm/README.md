@@ -12,15 +12,15 @@ Twelve roles, grouped by what they produce. The **impl pool** writes artefacts: 
 
 | Role | Produces |
 |---|---|
-| [`ticket-writer`](../../.claude/agents/ticket-writer.md) | Linear tickets in standard format: Backlog status, Fibonacci points, correct labels |
-| [`pr-describer`](../../.claude/agents/pr-describer.md) | Narrative PR bodies: one sentence of what, one of why if non-obvious |
-| [`docs-tender`](../../.claude/agents/docs-tender.md) | Repo docs upkeep: `README`, `ai/*.md`, `designs/**`, `CONTRIBUTING`, `SECURITY` |
-| [`design-doc-reader`](../../.claude/agents/design-doc-reader.md) | Ticket-to-design resolution at session start and branch switch; AC summary |
-| [`test-author`](../../.claude/agents/test-author.md) | GUT unit tests per `tests/TESTING.md` |
-| [`integration-scenario-author`](../../.claude/agents/integration-scenario-author.md) | Cross-system flows in `tests/integration/` |
-| [`refactor-planner`](../../.claude/agents/refactor-planner.md) | Sequenced plans backed by `impact_check`, `dependency_graph`, `signal_map` |
-| [`researcher`](../../.claude/agents/researcher.md) | context7 and web findings; written to scratchpad, not chat |
-| [`root-cause-analyst`](../../.claude/agents/root-cause-analyst.md) | Symptom to cause; rules out Godot quirks first via `trace_flow` and `signal_map` |
+| [`ticket-writer`](../../.claude/agents/authors/ticket-writer.md) | Linear tickets in standard format: Backlog status, Fibonacci points, correct labels |
+| [`pr-describer`](../../.claude/agents/authors/pr-describer.md) | Narrative PR bodies: one sentence of what, one of why if non-obvious |
+| [`docs-tender`](../../.claude/agents/authors/docs-tender.md) | Repo docs upkeep: `README`, `ai/*.md`, `designs/**`, `CONTRIBUTING`, `SECURITY` |
+| [`design-doc-reader`](../../.claude/agents/analysts/design-doc-reader.md) | Ticket-to-design resolution at session start and branch switch; AC summary |
+| [`test-author`](../../.claude/agents/authors/test-author.md) | GUT unit tests per `tests/TESTING.md` |
+| [`integration-scenario-author`](../../.claude/agents/authors/integration-scenario-author.md) | Cross-system flows in `tests/integration/` |
+| [`refactor-planner`](../../.claude/agents/analysts/refactor-planner.md) | Sequenced plans backed by `impact_check`, `dependency_graph`, `signal_map` |
+| [`researcher`](../../.claude/agents/analysts/researcher.md) | context7 and web findings; written to scratchpad, not chat |
+| [`root-cause-analyst`](../../.claude/agents/analysts/root-cause-analyst.md) | Symptom to cause; rules out Godot quirks first via `trace_flow` and `signal_map` |
 
 ### Reviewer pool
 
@@ -28,8 +28,8 @@ Two new reviewers join the eight reactive ones that already ride PRs today.
 
 | Role | Purpose | Trigger |
 |---|---|---|
-| [`save-format-warden`](../../.claude/agents/save-format-warden.md) | Block save-breaking diffs under the no-compat-shim rule | `scripts/progression/**` |
-| [`devils-advocate`](../../.claude/agents/devils-advocate.md) | Steel-man the opposing side; stress-test before commit | Proposals, designs, architectural calls |
+| [`save-format-warden`](../../.claude/agents/reviewers/save-format-warden.md) | Block save-breaking diffs under the no-compat-shim rule | `scripts/progression/**` |
+| [`devils-advocate`](../../.claude/agents/analysts/devils-advocate.md) | Steel-man the opposing side; stress-test before commit | Proposals, designs, architectural calls |
 
 Existing reviewers, unchanged: `code-quality`, `gdscript-conventions`, `signals-lifecycle`, `test-coverage`, `godot-scene`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`.
 
