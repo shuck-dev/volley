@@ -95,6 +95,17 @@ Good: "In 2024 Steam shipped roughly fifty-one new games a day, and four-fifths 
 
 The fact lands harder than the claim about the fact. Ground the reader in the concrete first; reach for higher meaning only after the case is set.
 
+A vivid image with no person in it is not "show"; it is still abstract. A scene of blurred tiles and a waiting checkbox describes a thing; a reader stopped mid-task, irritated, made to prove they are not a machine, is a person living it. The second has an actor the reader can stand inside; the first has nobody. Sensory detail alone does not show. Sensory detail anchored in a person's moment, with that person's stakes visible, does. When a "show" pass produces description with no human in the frame, it has missed.
+
+### Persuade by identification
+
+To move the reader, not just inform them, stand them inside the situation that produces the position and let them reach it. The mechanism is identification (Burke) and narrative transportation (Green and Brock): a reader placed inside a scene adopts its embedded conclusion with far less resistance than one argued at from outside. The full craft note is `designs/ai/persuasive-reach-out.md`.
+
+- Situational second person, sparingly. "You are at the machine, the screen is bright" places the reader; "you tend to avoid" accuses them. Use one crisp situational address to establish presence, then carry the argument in first or third. Sustained "you" turns into instruction-manual prose and provokes resistance.
+- Begin in the middle of a moment the reader recognises, precise enough to be real but common enough to be borrowed. Trigger the reader's own memory, not the writer's autobiography.
+- Guard psychic distance. Do not cut from an inhabited moment to abstract summary before the identification holds; the jump returns the reader as a sceptic.
+- The honest line: place the reader inside the true situation. Never inside a situation that misrepresents the facts. The facts are delivered from within the felt moment, never hidden by it.
+
 ### Rhythm and end-stress
 
 - Long sets up; short lands. A long-long-short pattern reads twice.
