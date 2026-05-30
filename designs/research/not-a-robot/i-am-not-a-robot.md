@@ -14,7 +14,7 @@ That question is not new. It is the question **Alan Turing** answered, in 1950, 
 
 His move was deliberate and reasoned. He was not evading; he was engineering. The trouble is that the engineering step buried the original question rather than closing it. Every benchmark that followed inherited the same structure: a measurable proxy for an undefined target, built on a declared agnosticism about what the target was. The checkbox is the imitation game's consumer edition: it shares the same architecture, and runs as a billion daily administrations of the same unresolved bet.
 
-The proxy for the question and the question itself have been running in parallel ever since. One of them ships product. The other does not stop.
+The proxy for the question and the question itself have been running in parallel ever since. One of them ships product. The other does not go away.
 
 ---
 
@@ -52,7 +52,7 @@ Western philosophy eventually came back around. Maurice Merleau-Ponty, writing i
 
 The unified, bounded Western self, the thing a Cartesian splits from the body and an analytic philosopher of mind tries to locate, is one answer to the question of what mind is. It is a contingent answer. It is not the universal frame. The Upanishadic traditions of early Indian philosophy held that the self, *Atman*, was not bounded at all: the individual self and the ground of all being, *Brahman*, were identical, not two things but one seen from two angles. Buddhist philosophy, emerging partly as a direct refutation of that claim, argued that there was no stable self to identify with anything: *anatta*, no-self, a deliberate denial that there is a persisting entity behind the flux of experience. These are not casual positions. They are sophisticated, argued disagreements, separated by centuries of rigorous debate, arrived at by thinkers who had considered the question carefully and landed in opposite places. The question of what the self is was a live intellectual contest long before Descartes drew his line, and outside the tradition he was working in. The Western analytic frame that treats mind as a bounded, separable thing whose capacities can be measured on a scale did not inherit a settled answer. It inherited one contested position and built an industry on the assumption that the contest was closed.
 
-The engineering tradition started from the post-Cartesian position and built forward, assuming the question had been answered or could be deferred. The channels that carry proprioception, mortality, and social stakes were never sampled. The gap arrived at the training data, unnamed and intact.
+The engineering tradition started from the post-Cartesian position and built forward, assuming the question had been answered or could be deferred. The channels that carry proprioception, mortality, and social stakes were never sampled. The gap arrived at the training data, unnamed and intact. Every tradition that has seriously engaged the question arrived at the same difficulty: the fact of being anything, from the inside, does not yield to a description of what that thing does. The inquiry is a millennium old and still open. A benchmark is not an answer to it; a benchmark is the decision to ask something else.
 
 None of this would matter if the labs named the gap honestly and built toward it with calibrated uncertainty. They do not.
 
@@ -72,8 +72,6 @@ The training regime compounds the problem from the inside. Zhou et al. found tha
 
 **Hume** arrived at this problem in 1739, working by introspection alone. "I never can catch myself at any time without a perception, and can never observe any thing but the perception." [\[10\]](#ref-10) No stable knower behind the knowing; only a succession of impressions the imagination weaves into an illusion of unity. The mechanistic receipt earned in the two centuries since is exact: when a model is asked how confident it is, the score it returns was trained to sound calibrated, not to be calibrated. There is no self-model behind the self-report, no introspective access to underlying uncertainty, only a surface-level pattern selected for by the reward signal. Hume's bundle, restated as a training artifact.
 
-The question of who defines the target has an answer: whoever raised the last round.
-
 In January 2025, Sam Altman wrote on his personal blog: **"We are now confident we know how to build AGI as we have traditionally understood it."** Note the clause doing the work: "as we have traditionally understood it." Altman is not claiming to have defined AGI; he is claiming to have met a definition already in circulation. What definition, whose, on what evidence: the post does not say. [\[11\]](#ref-11) In April 2025, Demis Hassabis told CBS News: "In the next five to ten years, I think." The context was "a system that really understands everything around you in very nuanced and deep ways," which Hassabis described as a capability threshold, not strict AGI. [\[12\]](#ref-12) A month later, speaking to Axios, Hassabis placed AGI "just after 2030" and acknowledged needing "a couple more big breakthroughs"; Sergey Brin, in the same conversation, said "just before 2030." [\[13\]](#ref-13) The breakthroughs are unnamed. The dates are specific. The target is not.
 
 Three named people have offered three dates in the next decade, with one undefined target. The dates are confident. The target is the thing Turing refused to define.
@@ -92,11 +90,11 @@ This essay is not saying the risk is manageable. A decade is enough time for a s
 
 The confident schedule is not supported by the state of the question. The specific mechanism that carried the last decade of capability gains is acknowledged, by the people who built it, as hitting its ceiling. The pivot to test-time compute and synthetic data might close the remaining distance. It might not. A March 2025 AAAI survey of 475 AI researchers found 76% said scaling current LLMs alone was unlikely or very unlikely to reach AGI. [\[14\]](#ref-14) The argument for a near-term arrival is weaker than the marketing suggests, and the people who know the engineering best are the ones who say it aloud.
 
-The labs borrowed the oldest question in philosophy, renamed it, and started billing for the answer on a schedule, without owning the gap between their stated target and the question they are actually approaching. That gap is not an honest unknown. A confident arrival date raises a round; a calibrated uncertainty does not.
+The labs are billing for an answer to a question they have not defined, on a schedule derived from measures they acknowledge are saturated. That gap between the target and the proxy is not an honest unknown they are working to close. A confident arrival date raises a round; a calibrated uncertainty does not.
 
 The ask is not that they slow down. It is that they say what they mean by what they are building, and hold the definition stable enough to be evaluated by people outside the room. The honesty the labs owe to the public is the same honesty this essay owes its reader: name what you know, name what you do not, and stop performing certainty you have not earned.
 
-A box was clicked to prove the clicker was not a machine, and that was enough. The checkpoint was not a test of what the clicker is. It was a test of what the clicker could do. Turing said the question was too meaningless to deserve a definition. The labs have built a two-trillion-dollar industry on the same evasion, and called it progress.
+A box was clicked to prove the clicker was not a machine, and that was enough. The checkpoint was not a test of what the clicker is. It was a test of what the clicker could do. Turing said the question was too meaningless to deserve a definition. That answer has now been running, inside a two-trillion-dollar industry, for seventy-five years, and called it progress.
 
 ---
 
