@@ -29,6 +29,10 @@ First-pass value: `BALL_WORLD_MAX_SPEED = 720` at the default court width. At 72
 
 **No stacked item, no effect outcome, no debug cheat may push `ball.speed` above `BALL_WORLD_MAX_SPEED`.** This is a physics guarantee, not a balance number.
 
+### The physics tick is the other dial
+
+The tunnelling budget is `depth * tick_rate`, so the tick is a linear multiplier on the physics floor: doubling it doubles the speed the pipeline can carry, with none of the phantom-bounce cost the collider-face dial has. The project runs at the engine default 60 ticks per second; this game's per-tick cost is small (a 2D ball, two paddles, an effect processor, and a handful of cheap controllers), so raising the tick is cheap here in a way it would not be for a many-body sim. The catch is feel: speeds and timings tuned against 60Hz (the relock ramp, AI cadence, the english coefficient sampled from per-tick paddle velocity) want re-tuning once after the change. Because that re-tune is one-time and the prototype is already tuning the ladder, the tick is best raised before the tier numbers settle rather than after. Raising it to 120 doubles the headroom and aligns with common high-refresh displays; past that the fun ceiling caps speed well before the physics floor does, so there is little reason to go higher. Tracked separately as its own ticket.
+
 ### Continuous collision detection as a pressure valve
 
 If the speed ceiling turns out too tight under real play, Godot's [`RigidBody2D.continuous_cd`](https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html#class-rigidbody2d-property-continuous-cd) is the pressure valve: enabling it resolves contacts along the swept path rather than at tick boundaries, trading physics-thread cost for headroom above the discrete-step ceiling. The specific mode and the tiers it turns on at are prototype-time decisions, not an architectural commitment.
