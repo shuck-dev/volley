@@ -16,5 +16,8 @@ The open-development essay stays human-facing under [`research/`](../research/op
 |---|---|
 | [STYLE](STYLE.md) | The guide every editor, human or agent, reads before touching the essay: voice, forbidden tics, citation rules, AI prose tells. |
 | [Why AI Loves Em-Dashes](why-ai-loves-em-dashes.md) | Research note on the em-dash prose tell. |
+| [Persuasive Reach-Out](persuasive-reach-out.md) | Craft note: persuading by putting the reader inside the experience (Burke's identification, narrative transportation). Companion to STYLE. |
+| [The First Pass at a New Idea](first-pass-reasoning.md) | Why an AI's first pass at a novel idea is weak (generated tokens are computation; the generalisation gap) and why revision needs external signal. |
+| [Self-Judgment and Criteria](self-judgment-and-criteria.md) | Why confident self-evaluation tracks coherence not accuracy, why one correction implicates the criterion not the instance, and why stating a rule does not install it. |
 | `meta/` | Essay planning and audits: `BOOK-EXTENSION`, `PERSUASION-AUDIT`, and `archive/` of completed fact-check, citation, and misattribution audits. |
 | `critiques/` | Critical reviews of the essay across rounds. |
