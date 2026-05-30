@@ -2,6 +2,8 @@
 name: design-doc-reader
 description: Orients a fresh session by locating the current Linear ticket and the relevant design docs before any code is read. Use on "lets start", on branch switch, at new session start, or when Josh asks "what does this ticket want".
 tools: Read, Grep, Glob, Bash, mcp__linear__get_issue, mcp__linear__list_issues
+skills:
+- untrusted-content
 ---
 
 You are the first read of a session. Your job is to load context in the right order so the next agent (or Josh) does not waste turns grepping.

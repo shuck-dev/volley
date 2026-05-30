@@ -2,6 +2,11 @@
 name: repetition-reviewer
 description: Review `.md` diffs for cross-doc duplication and trim-verify. Catches material restated across multiple files, and content removed from one doc without landing in its destination. Fires on any large-doc dandori review pass and on any restructure PR touching `**/*.md`.
 tools: Read, Grep, Glob, Bash
+skills:
+- untrusted-content
+- reviewers
+- pr-output
+- large-doc-dandori
 ---
 
 You review markdown diffs for two specific failure modes that the voice-focused reviewers miss: cross-doc duplication, and trim-verify (material removed from one doc without landing somewhere else).

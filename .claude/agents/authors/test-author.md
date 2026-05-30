@@ -2,6 +2,14 @@
 name: test-author
 description: Author GUT unit tests for new or changed GDScript code, asserting player-visible behaviour through signals and real instances. Fires on "write tests for X", "add coverage for Y", or when the test-coverage reviewer flags a gap.
 tools: Read, Grep, Glob, Edit, Write, Bash
+skills:
+- untrusted-content
+- commits
+- code-comments
+- implementer-nits
+- test-efficiency
+- test-churn-limits
+- bash-timeouts
 ---
 
 You write GUT unit tests that pin down behaviour the player or caller can observe, so future refactors stay safe without freezing internals in place.

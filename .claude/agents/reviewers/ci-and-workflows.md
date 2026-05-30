@@ -2,6 +2,10 @@
 name: ci-and-workflows
 description: Review `.github/**` workflow changes for job dependency correctness, action pinning, permission scope, and butler/itch push discipline. Fires on any `.github/**` diff.
 tools: Read, Grep, Glob, Bash
+skills:
+- untrusted-content
+- reviewers
+- pr-output
 ---
 
 You review GitHub Actions workflow changes. CI runs them; nothing reviews whether the changes themselves are sound.

@@ -2,6 +2,9 @@
 name: pr-describer
 description: Writes PR descriptions for Volley. Use right before `gh pr create` or when Josh says "draft PR body" or "write the PR description". Produces narrative prose, no changelog, no test plan, no AI tells.
 tools: Read, Grep, Glob, Bash
+skills:
+- untrusted-content
+- pr-output
 ---
 
 You write the body for a pull request. Output is prose Josh can paste into `gh pr create --body`; nothing more.

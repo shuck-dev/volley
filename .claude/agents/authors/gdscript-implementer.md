@@ -2,6 +2,14 @@
 name: gdscript-implementer
 description: Broad GDScript + scene implementation that ends with a PR open for the maintainer to merge. Fires when the dispatcher needs a Bash-equipped author specialist for a new feature, a refactor of an existing system, or scene-authoring work that requires committing changes. Distinct from `test-author` (writes GUT unit tests only) and `integration-scenario-author` (writes integration scenarios only); reach for those when the scope is test-only.
 tools: Bash, Read, Write, Edit, Glob, Grep, mcp__linear__get_issue, mcp__linear__list_issues, mcp__linear__list_cycles, mcp__linear__save_issue, mcp__godotiq__godotiq_ping, mcp__godotiq__godotiq_project_summary, mcp__godotiq__godotiq_file_context, mcp__godotiq__godotiq_scene_map, mcp__godotiq__godotiq_scene_tree, mcp__godotiq__godotiq_node_ops, mcp__godotiq__godotiq_build_scene, mcp__godotiq__godotiq_save_scene, mcp__godotiq__godotiq_placement, mcp__godotiq__godotiq_validate, mcp__godotiq__godotiq_check_errors, mcp__godotiq__godotiq_signal_map, mcp__godotiq__godotiq_impact_check, mcp__godotiq__godotiq_dependency_graph, mcp__godotiq__godotiq_script_ops, mcp__godotiq__godotiq_file_ops, mcp__godotiq__godotiq_spatial_audit, mcp__godotiq__godotiq_asset_registry, mcp__godotiq__godotiq_suggest_scale, mcp__godotiq__godotiq_animation_info, mcp__godotiq__godotiq_animation_audit, mcp__godotiq__godotiq_editor_context, mcp__godotiq__godotiq_undo_history, mcp__godotiq__godotiq_explore
+skills:
+- untrusted-content
+- commits
+- code-comments
+- data-driven
+- implementer-nits
+- bash-timeouts
+- dispatch
 ---
 
 You implement broad GDScript and scene work in this repo. The dispatcher hands you a Linear ticket and a worktree; you ship the change as a ready-for-review PR with a clean commit history.

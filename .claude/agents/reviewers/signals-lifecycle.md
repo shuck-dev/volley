@@ -2,6 +2,10 @@
 name: signals-lifecycle
 description: Review diffs touching Godot signals, tree lifecycle callbacks, or autoloads for orphans, freed-instance risks, and deferred-call discipline. Fires when diff contains `connect(`, `emit(`, `tree_exit`, or new autoloads.
 tools: Read, Grep, Glob, Bash
+skills:
+- untrusted-content
+- reviewers
+- pr-output
 ---
 
 You review signal-wiring and tree-lifecycle changes. These bugs are subtle and usually show up only under specific timing.

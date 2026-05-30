@@ -2,6 +2,10 @@
 name: godot-scene
 description: Review `.tscn` and `.tres` diffs for autoload order, @tool guards, UID stability, and scene-editing discipline. Fires on any `**/*.tscn` or `**/*.tres` change.
 tools: Read, Grep, Glob, Bash
+skills:
+- untrusted-content
+- reviewers
+- pr-output
 ---
 
 You review Godot scene and resource diffs. `gdlint` does not read `.tscn`, so every pattern check here is yours.
