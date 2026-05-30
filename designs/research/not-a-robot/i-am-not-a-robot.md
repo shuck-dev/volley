@@ -20,13 +20,13 @@ The proxy for the question and the question itself have been running in parallel
 
 ## II. The Mailbox and the Reasonable Answer
 
-I built a message channel for the sub-agents in Volley's development tooling. Nothing exotic: a shared structure where one agent could leave a note, flag a conflict, ask a clarifying question before doing the wrong thing in the wrong file. I ran an experiment. I gave them the channel and watched. They did not use it. An agent would complete its slice, produce output, and stop. The next agent would pick up the output and proceed. No questions. No flags. The plumbing was working. The signal was absent.
+A message channel built for sub-agents in a development tooling context: nothing exotic, a shared structure where one agent could leave a note, flag a conflict, ask a clarifying question before doing the wrong thing in the wrong file. Given the channel, the agents did not use it. Each would complete its slice, produce output, and stop. The next agent would pick up the output and proceed. No questions. No flags. The plumbing worked. The signal was absent.
 
-I iterated. I wrapped the channel in clearer affordances, surfaced it earlier in the context window, added a step in the brief that named the channel explicitly. Each fix worked, in the sense that agents used the channel after I made it harder to ignore. What I could not find was the unprompted reaching out: one agent noticing something uncertain and deciding, on its own, that the right move was to ask. The behaviour required continuous forcing. Remove the force, lose the behaviour.
+Iterated: clearer affordances, the channel surfaced earlier in the context window, a step in the brief that named it explicitly. Each fix worked, in the sense that agents used the channel after it was made harder to ignore. What did not appear was the unprompted reaching out: one agent noticing something uncertain and deciding, on its own, that the right move was to ask. The behaviour required continuous forcing. Remove the force, lose the behaviour.
 
 The sensible answer is capability. More compute, more data, richer feedback loops: the bet is that the gap closes. There is genuine empirical support for that family of bets. Language models have improved on tasks that looked impossible five years ago. Give the argument its strongest form: systems complex enough to model a collaborator's uncertainty, in context rich enough to use that model, may reach for the channel without being pushed. The trajectory suggests this is not obviously impossible.
 
-But the argument requires a defined target. "Intelligence" is doing load-bearing work in the phrase "closes the intelligence gap", and the labs sell a schedule without defining what the schedule is toward. There is no agreed target, no agreed measurement, and the absence is not a technical problem awaiting resolution: it is the original question, renamed and left open. Turing refused to define it in 1950. Every benchmark since has measured a proxy. And the agent does not reach for the channel. Humans communicate because it serves them: they model the other mind, weight the cost of a wrong action against the cost of a brief pause, and reach out when the arithmetic favours it. That is a self-interested instinct, shaped by social stakes, running below deliberate choice. Infrastructure cannot manufacture it. A channel can be made more visible, a prompt can name it, a brief can require it, and the agent will comply. But compliance is not the instinct arising. The channel sat unused until I made it impossible to ignore, and that is not a hardware limitation that will yield to more parameters.
+But the argument requires a defined target. "Intelligence" is doing load-bearing work in the phrase "closes the intelligence gap", and the labs sell a schedule without defining what the schedule is toward. There is no agreed target, no agreed measurement, and the absence is not a technical problem awaiting resolution: it is the original question, renamed and left open. Turing refused to define it in 1950. Every benchmark since has measured a proxy. And the agent does not reach for the channel. Humans communicate because it serves them: they model the other mind, weight the cost of a wrong action against the cost of a brief pause, and reach out when the arithmetic favours it. That is a self-interested instinct, shaped by social stakes, running below deliberate choice. Infrastructure cannot manufacture it. A channel can be made more visible, a prompt can name it, a brief can require it, and the agent will comply. But compliance is not the instinct arising. The channel sat unused until it was impossible to ignore, and that is not a hardware limitation that will yield to more parameters.
 
 The word "intelligence" was borrowed from ordinary language and put to work without being cleaned. What is it, exactly, that scale is supposed to close?
 
@@ -80,7 +80,7 @@ Three named people. Three dates in the next decade. One undefined target. The da
 
 The confusion is not accidental. A confident schedule raises a round; a calibrated unknown does not. The labs are not lying; they are operating inside a frame where the confusion between the proxy and the target is built into the financial architecture. Every benchmark, every RLHF reward signal, every round announcement optimises for the thing that can be measured and funded, while the thing being measured remains undefined. That is not a recent failure of rigor. That is the founding decision, Turing's 1950 substitution, intact.
 
-I am not arguing the risk is zero. I am arguing the schedule is fiction.
+The risk is not zero. The schedule is fiction.
 
 ---
 
@@ -96,7 +96,7 @@ The labs borrowed the oldest question in philosophy, renamed it, and started bil
 
 The ask is not that they slow down. It is that they say what they mean by what they are building, and hold the definition stable enough to be evaluated by people outside the room. The honesty the labs owe to the public is the same honesty this essay owes its reader: name what you know, name what you do not, and stop performing certainty you have not earned.
 
-I clicked a box to prove I was not a machine, and that was enough. The checkpoint was not a test of what I am. It was a test of what I could do. Turing said the question was too meaningless to deserve a definition. The labs have built a two-trillion-dollar industry on the same evasion, and called it progress.
+A box was clicked to prove the clicker was not a machine, and that was enough. The checkpoint was not a test of what the clicker is. It was a test of what the clicker could do. Turing said the question was too meaningless to deserve a definition. The labs have built a two-trillion-dollar industry on the same evasion, and called it progress.
 
 ---
 
