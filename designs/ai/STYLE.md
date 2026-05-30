@@ -1,12 +1,12 @@
-# Style Guide for the Open-Development Essay
+# Style Guide for Volley's Long-Form Prose
 
-This is the working style guide for every contributor (human or agent) editing the essay in `designs/research/drafts/`. Read it once before touching a section; follow it on every line.
+This is the working style guide for every contributor (human or agent) writing Volley's long-form prose: essays, devlogs, and any public writing under the project's name. It grew out of the open-development essay (`designs/research/open-development/`), and that essay is still the worked example throughout. The rules are not specific to it. The `## Craft` section below is general prose craft and applies to any Volley writing; the voice skill (`.claude/skills/voice/SKILL.md`) is the calibration layer that complements it. Read this once before touching a section; follow it on every line.
 
 ## Purpose of the document
 
-The essay argues that open development is the path most likely to give a new indie a fair shot at being seen, and that the same principle — visible work, credited contribution, broad participation — is the durable answer to the wider questions of how creative work survives in an age of consolidation, AI displacement, and platform gatekeeping. The framing is game development. The implications are larger.
+The open-development essay argues that open development is the path most likely to give a new indie a fair shot at being seen, and that the same principle, visible work, credited contribution, broad participation, is the durable answer to the wider questions of how creative work survives in an age of consolidation, AI displacement, and platform gatekeeping. The framing is game development. The implications are larger. That essay is the running example in this guide; where a rule names it, read the rule as general and the example as one case.
 
-The essay is for everyone: developers, players, journalists, open-source maintainers, accessibility advocates, the curious passer-by. Write so that any of them can pick it up cold.
+The writing is for everyone: developers, players, journalists, open-source maintainers, accessibility advocates, the curious passer-by. Write so that any of them can pick it up cold.
 
 ## Voice
 
@@ -143,7 +143,7 @@ It is a quiet, careful, generous piece of writing that happens to make a strong 
 
 ## Craft (the techniques the prose actually uses)
 
-The essay should not feel like a chore. It should feel like a person walking the reader through a real thought, with rhythm and weight. The techniques below are the ones the prose leans on. Use them deliberately. The companion piece [`visual-positioning.md`](visual-positioning.md) is the in-house model: read it as an example of every technique on this list working together.
+This section is general prose craft. It applies to any Volley long-form writing, not only the open-development essay. The prose should not feel like a chore. It should feel like a person walking the reader through a real thought, with rhythm and weight. The techniques below are the ones the prose leans on. Use them deliberately. The companion piece [`visual-positioning.md`](visual-positioning.md) is the in-house model: read it as an example of every technique on this list working together.
 
 ### Throughline and circle-back
 
@@ -180,7 +180,7 @@ Read every paragraph aloud. Where the breath stumbles, cut.
 
 ### Prose rhythm: where the ear lands
 
-Aristotle, in the *Rhetoric*, was the first to insist prose has rhythm — well-rhythmed, but not metrical like verse. Cicero translated the Greek *rhuthmos* as *numerus* and built Roman oratory on the principle that the close of a clause carries the weight. Modern craft writers say the same in plainer terms. Ursula K. Le Guin (*Steering the Craft*, 2015): "The sound of the language is where it all begins. The test of a sentence is, Does it sound right?" Verlyn Klinkenborg (*Several Short Sentences About Writing*, 2012): "Pay attention to rhythm, first and last." Constance Hale (*Sin and Syntax*, 1999) frames the music chapter around the choice between Anglo-Saxon shun and Latinate avoid. William Zinsser (*On Writing Well*) and Roy Peter Clark (*Writing Tools*) both put the loaded word at the end of the sentence.
+Aristotle, in the *Rhetoric*, was the first to insist prose has rhythm, well-rhythmed, but not metrical like verse. Cicero translated the Greek *rhuthmos* as *numerus* and built Roman oratory on the principle that the close of a clause carries the weight. Modern craft writers say the same in plainer terms. Ursula K. Le Guin (*Steering the Craft*, 2015): "The sound of the language is where it all begins. The test of a sentence is, Does it sound right?" Verlyn Klinkenborg (*Several Short Sentences About Writing*, 2012): "Pay attention to rhythm, first and last." Constance Hale (*Sin and Syntax*, 1999) frames the music chapter around the choice between Anglo-Saxon shun and Latinate avoid. William Zinsser (*On Writing Well*) and Roy Peter Clark (*Writing Tools*) both put the loaded word at the end of the sentence.
 
 The principles, as a checklist editors can run on every paragraph:
 
@@ -289,7 +289,7 @@ Ira Glass, in his 2009 storytelling videos for the *Current TV* / *PRI* series (
 
 ### Name the dog
 
-Roy Peter Clark, *Writing Tools* (Little, Brown, 2006), tool 14: get the name of the dog. Specificity that no general writer would notice is what breaks through. A date, a sum, a phrase from a primary source, the colour of the build account password ("blank") — the detail nobody else included is the detail the reader remembers.
+Roy Peter Clark, *Writing Tools* (Little, Brown, 2006), tool 14: get the name of the dog. Specificity that no general writer would notice is what breaks through. A date, a sum, a phrase from a primary source, the colour of the build account password ("blank"): the detail nobody else included is the detail the reader remembers.
 
 ### Engineer the kicker
 
@@ -311,17 +311,17 @@ The essay runs to roughly ten thousand words. That is a mini-book, not a blog po
 
 Borrow the three-act spine that nonfiction workshops adapt from drama (see Rachael Hanel's "3-Act Structure for Nonfiction", 2017). Name them in running text rather than numbering them.
 
-- **Part one — The mark.** Sets the problem and the promise. Establishes that discoverability is a relationship, not a campaign. Houses sections 01 and 02.
-- **Part two — The practice.** Walks the cases that prove open development is the durable mechanism. Houses sections 03 through 10. This is the long middle; pace it with the lightest case first and the largest (Valve) last.
-- **Part three — The stakes.** Widens from craft to consequence: AI, humanity, fears, close. Houses sections 11 through 14.
+- **Part one, The mark.** Sets the problem and the promise. Establishes that discoverability is a relationship, not a campaign. Houses sections 01 and 02.
+- **Part two, The practice.** Walks the cases that prove open development is the durable mechanism. Houses sections 03 through 10. This is the long middle; pace it with the lightest case first and the largest (Valve) last.
+- **Part three, The stakes.** Widens from craft to consequence: AI, humanity, fears, close. Houses sections 11 through 14.
 
 ### The nut graf
 
-Long-form features in *The New Yorker*, *The Atlantic*, and the *Wall Street Journal* place a "nutshell paragraph" after the lead and before the body. It tells the reader, in plain language, what the piece is about and why now (see Chip Scanlan, "The Nut Graf, Part I", Poynter, 2003). For a ten-thousand-word essay the nut graf can be a short paragraph or two. It belongs at the hinge between the opening case (section 01) and the structural reframe (section 02) — the closing paragraph of section 02 is the natural seat. State the claim once, plainly, then return to the cases.
+Long-form features in *The New Yorker*, *The Atlantic*, and the *Wall Street Journal* place a "nutshell paragraph" after the lead and before the body. It tells the reader, in plain language, what the piece is about and why now (see Chip Scanlan, "The Nut Graf, Part I", Poynter, 2003). For a ten-thousand-word essay the nut graf can be a short paragraph or two. It belongs at the hinge between the opening case (section 01) and the structural reframe (section 02): the closing paragraph of section 02 is the natural seat. State the claim once, plainly, then return to the cases.
 
 ### Toulmin's six elements
 
-Stephen Toulmin's *The Uses of Argument* (Cambridge University Press, 1958) breaks an argument into claim, grounds, warrant, backing, qualifier, and rebuttal. The essay already carries each, distributed: the claim sits in section 02; the grounds are the case studies in sections 03 through 10; the warrant — that visible work compounds into recognition — runs through the devlog and transparency sections; backing arrives via Valve in section 10; the qualifier is the Asparouhova caveat in section 09 and the structural-not-guaranteed line in section 12; the rebuttal is section 13 (fears). When editing, name which element the section is carrying. If two sections carry the same element and add nothing new, one of them is redundant.
+Stephen Toulmin's *The Uses of Argument* (Cambridge University Press, 1958) breaks an argument into claim, grounds, warrant, backing, qualifier, and rebuttal. The essay already carries each, distributed: the claim sits in section 02; the grounds are the case studies in sections 03 through 10; the warrant, that visible work compounds into recognition, runs through the devlog and transparency sections; backing arrives via Valve in section 10; the qualifier is the Asparouhova caveat in section 09 and the structural-not-guaranteed line in section 12; the rebuttal is section 13 (fears). When editing, name which element the section is carrying. If two sections carry the same element and add nothing new, one of them is redundant.
 
 ### The hourglass
 

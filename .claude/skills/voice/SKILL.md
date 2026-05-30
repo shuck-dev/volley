@@ -23,6 +23,8 @@ Short sentences land. They sit on a plosive (/t/, /d/, /k/) or a strong noun. Th
 
 Paragraphs run six to twelve sentences when the case needs the room, two to four when the beat is the punch. Paragraph length is a tool, not a target.
 
+"Read aloud" is not a vague instruction. The checkable version lives in `designs/ai/STYLE.md`, section "Prose rhythm: where the ear lands": end-stress, Anglo-Saxon for force and Latinate for nuance, plosive endings (/t/ /d/ /k/ /p/ /b/ /g/) that stop the ear against fricatives (/s/ /f/ /sh/) that drift and nasals (/m/ /n/ /ng/) that hum on, and the closes to avoid (prepositional, weak-pronoun, adverbial-drift, hedge-stack). When you cannot hear the cadence, apply that checklist to the final word of every paragraph. `designs/ai/meta/PERSUASION-AUDIT.md` is the worked example of the check run on real prose.
+
 ## Sentence shapes Josh uses
 
 **The noun-led declarative.** "Team Cherry were three people in Adelaide." "Steam itself is proprietary." Subject, verb, fact. No throat-clearing.
