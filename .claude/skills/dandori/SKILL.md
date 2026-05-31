@@ -1,6 +1,6 @@
 ---
 name: dandori
-description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, confirm. Not the mission-shape walk; that is stages 1 to 3 of the lifecycle.
+description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, decide the split shape, confirm. Not the mission-shape walk; that is stages 1 to 3 of the lifecycle.
 ---
 
 # Dandori, the impl plan
