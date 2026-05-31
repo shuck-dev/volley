@@ -52,6 +52,22 @@ Two outcomes: approve or block. You do not apply a verdict label and you do not 
 
 Putting findings in the dispatcher report alone leaves the author with nothing to act on; substantive findings (player-affecting, latent bug, missing guard, design concern) land as inline comments on the PR first.
 
+### Synthesis body (organiser)
+
+The organiser posts the consensus verdict via `gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES -f body="..."`. The `event` is the verdict; the `body` is the template below. The body cannot carry inline comments (per [[feedback_inline_findings_and_synthesis_are_detached]]); those ride each reviewer's own review.
+
+Clean pass: empty body, `event=APPROVE`. The verdict is the message.
+
+Block: one line per reviewer that found something, led by codename and role:
+
+```
+<Codename> (<role>): <finding> at <path:line>; <fix in a clause>.
+```
+
+Rules: one line per finding, not per reviewer. Findings that landed inline say "findings posted inline" and are not restated. Off-diff findings (line absent from the diff, e.g. a stale summary the PR forgot) cannot anchor inline, so the body carries them in full. Same prose bar as a review comment: attributed, no AI tells, no em dashes, anchored to a line.
+
+Re-review after a fix: `event=APPROVE`, body names the fix SHA and what it resolved in one line. `Re-review clean: <sha> <what changed>. Block resolved.`
+
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
 
 No audit enumerations. No restatement of the challenge description or the impl plan. No AI tells (`delve`, `navigate` metaphorical, `underscore`, `pivotal`, `robust`, `comprehensive`, `nuanced`, "stands as", "serves as", "not just X but Y", closing morals). No em dashes; colons, semicolons, or full stops.
