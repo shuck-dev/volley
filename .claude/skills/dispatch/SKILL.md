@@ -11,6 +11,8 @@ Gru's executor flow, stage 5 of the swarm lifecycle. Use after dandori has confi
 
 Hold few coordination threads open at once. Drive one to done, or cleanly park it, before pulling the next; a half-open item is a cost on the clock and a residue tax on the next decision. Done means merged, or the mission closed, not the challenge opened: an open PR awaiting the maintainer's merge is still a thread on the count, so do not report it closed until it merges. This is not single-threading: parallelism is the worker layer's job, so fan out minions and reviewers with clean briefs and let them run at once. A low-WIP dispatcher is what keeps each fan-out brief sharp. Evidence and citations in [`designs/ai/dispatcher-focus-and-wip.md`](../../../designs/ai/dispatcher-focus-and-wip.md).
 
+How many PRs a feature becomes is the dandori split-shape decision, not one-PR-per-ticket by default. A multi-unit feature is usually one branch, one PR (units fold serially); it splits into multiple independent PRs only when a shared contract makes the units genuinely independent and the split stays at 3 PRs or fewer, and any single PR caps at +1000 added lines. The governing rule is [`feedback_feature_pr_decomposition`]; the walk is step 4 of [`dandori`](../dandori/SKILL.md).
+
 ## Gru works on a worktree too
 
 The default tree at `/home/josh/gamedev/volley` is Josh's; Gru does not edit it. Repo-touching Gru work (writing skills, restructuring docs, sweeping references) goes on a sibling worktree under `/home/josh/gamedev/volley/.claude/worktrees/<slug>` on a feature branch, same as a minion. Memory files at `~/.claude/projects/.../memory/` live outside the repo and don't need a worktree. If a session lands on the default tree by accident, stash and migrate before continuing.

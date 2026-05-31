@@ -1,6 +1,6 @@
 ---
 name: dandori
-description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, confirm. Not the mission-shape walk; that is stages 1 to 3 of the lifecycle.
+description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, decide the split shape, confirm. Not the mission-shape walk; that is stages 1 to 3 of the lifecycle.
 ---
 
 # Dandori, the impl plan
@@ -11,7 +11,7 @@ Dandori is the implementation plan, not the mission-shape walk. By the time it r
 
 **Pairs with:** [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md) (the full ten-stage lifecycle; dandori is stage 4), [`designs/process/dandori.md`](../../../designs/process/dandori.md) (human-readable), and [`dispatch.md`](../dispatch/SKILL.md) (the seven-step flow that runs after confirm).
 
-## The four steps
+## The five steps
 
 1. **Crew.** Per work unit:
    - Impl writer. Often folds in test authoring when the work itself is test code.
@@ -25,7 +25,9 @@ Dandori is the implementation plan, not the mission-shape walk. By the time it r
 
 3. **Scope-expansion guard.** For any goal that could sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up issues after the mission, never inside it.
 
-4. **Confirm.** List the crew, the recon-grounded slices, and the scope caps. Wait for go before dispatching.
+4. **Split shape.** Decide how many PRs the feature becomes, governed by [`feedback_feature_pr_decomposition`]: the fewest PRs such that each one is independently shippable on trunk (compiles, suite green, no half-wired feature). Default is one feature, one branch, one PR (units fold serially onto it). When units can be made genuinely independent by landing a shared contract first, a parallel split into independent PRs is preferred, but only up to **3 PRs**; past 3 the contract churn dominates, so go serial. The **+1000 added-line** cap is a hard ceiling per PR: when the accumulated diff crosses it, PR the largest independently-shippable prefix and move the remainder to a follow-up off main (a forced 1->2 split is fine). Never cut a unit in half for the line count. A feature that genuinely cannot be sliced into independently-shippable sub-1000-line PRs is a planning smell to flag here, not at fold time.
+
+5. **Confirm.** List the crew, the recon-grounded slices, the scope caps, and the split shape. Wait for go before dispatching.
 
 ## What this skill replaces
 
