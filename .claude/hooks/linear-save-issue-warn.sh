@@ -13,7 +13,7 @@ fi
 
 # If we're on a feature branch (not main), filing a new issue is the danger zone:
 # the work may be a follow-up that folds into the active PR per feedback_continuous_refactoring.
-BRANCH=$(git -C /home/josh/gamedev/volley branch --show-current 2>/dev/null || echo "")
+BRANCH=$(git -C "$CLAUDE_PROJECT_DIR" branch --show-current 2>/dev/null || echo "")
 case "$BRANCH" in
   ""|main|master)
     exit 0

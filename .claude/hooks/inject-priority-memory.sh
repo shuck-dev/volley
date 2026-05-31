@@ -4,7 +4,7 @@
 # Fails open: any error prints nothing and exits 0 (no injection, no block).
 set -uo pipefail
 
-MEM_DIR="/home/josh/.claude/projects/-home-josh-gamedev-volley/memory"
+MEM_DIR="${HOME}/.claude/projects/-home-josh-gamedev-volley/memory"
 [ -d "$MEM_DIR" ] || exit 0
 
 out="$(
