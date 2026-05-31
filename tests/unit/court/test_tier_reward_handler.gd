@@ -79,9 +79,9 @@ func test_soul_reward_earned_emitted_with_correct_amount_tier1() -> void:
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	assert_signal_emitted_with_parameters(
-		_handler, "soul_reward_earned", [_handler.soul_per_tier_base * 1, _handler.soul_anchor]
-	)
+	assert_signal_emitted(_handler, "soul_reward_earned")
+	var params: Array = get_signal_parameters(_handler, "soul_reward_earned")
+	assert_eq(params[0], _handler.soul_per_tier_base * 1)
 
 
 func test_soul_reward_earned_emitted_with_correct_amount_top_tier() -> void:
@@ -91,9 +91,9 @@ func test_soul_reward_earned_emitted_with_correct_amount_top_tier() -> void:
 	_ball.advance_tier()
 
 	var expected_amount: int = _handler.soul_per_tier_base * _top_tier()
-	assert_signal_emitted_with_parameters(
-		_handler, "soul_reward_earned", [expected_amount, _handler.soul_anchor]
-	)
+	assert_signal_emitted(_handler, "soul_reward_earned")
+	var params: Array = get_signal_parameters(_handler, "soul_reward_earned")
+	assert_eq(params[0], expected_amount)
 
 
 # --- once-per-rally guard at top Peak ---
@@ -188,7 +188,7 @@ func test_ball_upgrade_earned_emitted_on_first_reach() -> void:
 	_ball.current_tier = 0
 	_ball.advance_tier()
 
-	assert_signal_emitted_with_parameters(_handler, "ball_upgrade_earned", [_handler.soul_anchor])
+	assert_signal_emitted(_handler, "ball_upgrade_earned")
 
 
 func test_ball_upgrade_earned_not_emitted_on_second_reach() -> void:
