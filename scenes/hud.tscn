@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://cwuynn50ikjek" path="res://scripts/hud/dev_menu.gd" id="3_devmenu"]
 [ext_resource type="Script" uid="uid://cobj86hrkbj2r" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
+[ext_resource type="Script" uid="uid://tmw66u3nj2vmr" path="res://scripts/hud/soul_float_layer.gd" id="8_sfloat"]
+[ext_resource type="PackedScene" uid="uid://z1fx6ej6es2x0" path="res://scenes/hud/soul_float.tscn" id="9_sfscene"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378]
 
@@ -66,3 +68,7 @@ offset_bottom = -5.0
 grow_vertical = 0
 focus_mode = 0
 text = "Clearance"
+
+[node name="SoulFloatLayer" type="CanvasLayer" parent="."]
+script = ExtResource("8_sfloat")
+float_scene = ExtResource("9_sfscene")

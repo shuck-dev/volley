@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ctyqm11n0ltff"]
+
+[ext_resource type="Script" uid="uid://i4k5viigwbmli" path="res://scripts/hud/soul_float.gd" id="1_script"]
+
+[node name="SoulFloat" type="Label"]
+script = ExtResource("1_script")

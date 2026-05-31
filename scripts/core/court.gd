@@ -132,7 +132,6 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_paddle_hit() -> void:
-	_tier_reward_handler.on_paddle_hit()
 	_volley_count += 1
 	_accumulate_friendship_points()
 

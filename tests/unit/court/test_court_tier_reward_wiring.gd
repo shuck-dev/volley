@@ -1,6 +1,6 @@
 extends GutTest
 
-# Court-level wiring: TierRewardHandler is instantiated and receives paddle hits and rally resets.
+# Court-level wiring: TierRewardHandler is instantiated and receives ball events and rally resets.
 
 const CourtScript: GDScript = preload("res://scripts/core/court.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
@@ -63,60 +63,51 @@ func _top_tier() -> int:
 	return GameRules.speed_tiers.tier_count() - 1
 
 
-# --- tier 1 completion -> friendship tick on next paddle hit ---
+# --- tier completion banks soul at court level ---
 
 
-func test_tier1_completion_then_paddle_hit_awards_friendship_tick() -> void:
+func test_tier1_completion_banks_soul() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = 1
+	var before: int = _manager.get_friendship_point_balance()
+
 	ball.advance_tier()
 
 	var handler: Node = _court._tier_reward_handler
-	var before: int = _manager.get_friendship_point_balance()
-
-	# Call the handler directly: Court wires _on_paddle_hit -> handler.on_paddle_hit.
-	handler.on_paddle_hit()
-
 	assert_eq(
 		_manager.get_friendship_point_balance(),
-		before + handler.tier1_friendship_tick,
-		"paddle hit after Tier 1 completion must award the friendship tick"
+		before + handler.soul_per_tier_base * 1,
+		"tier 1 completion must bank soul_per_tier_base * 1"
 	)
 
 
-func test_tier1_friendship_tick_not_awarded_without_tier_completion() -> void:
+func test_no_soul_banked_without_tier_advance() -> void:
 	_spawn_ball()
-	var handler: Node = _court._tier_reward_handler
 	var before: int = _manager.get_friendship_point_balance()
 
-	handler.on_paddle_hit()
-
-	assert_eq(
-		_manager.get_friendship_point_balance(),
-		before,
-		"paddle hit without tier completion must not award the friendship tick"
-	)
+	assert_eq(_manager.get_friendship_point_balance(), before)
 
 
-# --- top-tier Peak entry banks currency once ---
+# --- top-tier Peak entry banks soul once ---
 
 
-func test_peak_entry_banks_currency() -> void:
+func test_peak_entry_banks_soul() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
-
 	var before: int = _manager.get_friendship_point_balance()
+
 	ball.advance_tier()
 
 	var handler: Node = _court._tier_reward_handler
+	var expected: int = handler.soul_per_tier_base * _top_tier()
 	assert_eq(
 		_manager.get_friendship_point_balance(),
-		before + handler.peak_currency_amount,
-		"top-tier Peak entry must bank currency via the handler"
+		before + expected,
+		"top-tier Peak entry must bank soul_per_tier_base * top_tier"
 	)
 
 
-func test_peak_entry_banks_currency_only_once_per_rally() -> void:
+func test_peak_entry_banks_soul_only_once_per_rally() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
@@ -129,7 +120,7 @@ func test_peak_entry_banks_currency_only_once_per_rally() -> void:
 	assert_eq(
 		_manager.get_friendship_point_balance(),
 		after_first,
-		"second Peak signal in the same rally must not bank currency again"
+		"second Peak signal in the same rally must not bank soul again"
 	)
 
 
@@ -152,8 +143,8 @@ func test_ball_missed_resets_rally_so_next_peak_can_bank_again() -> void:
 	var handler: Node = _court._tier_reward_handler
 	assert_eq(
 		_manager.get_friendship_point_balance(),
-		after_reset + handler.peak_currency_amount,
-		"after a miss-reset a new Peak must bank currency again"
+		after_reset + handler.soul_per_tier_base * _top_tier(),
+		"after a miss-reset a new Peak must bank soul again"
 	)
 
 
