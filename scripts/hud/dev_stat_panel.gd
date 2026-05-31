@@ -2,6 +2,7 @@ extends VBoxContainer
 
 var _labels: Dictionary = {}
 var _speed_label: Label
+var _tier_label: Label
 var _speed_bar: Control
 var _drag := DraggableBehavior.new()
 # Debug-only: flattened view of every stat's base value for diff readouts.
@@ -61,6 +62,9 @@ func _build_live_labels() -> void:
 	_speed_label = _make_stat_label()
 	_speed_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
 	add_child(_speed_label)
+	_tier_label = _make_stat_label()
+	_tier_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
+	add_child(_tier_label)
 	for stat_key: StringName in _base_values():
 		var label := _make_stat_label()
 		add_child(label)
@@ -106,6 +110,7 @@ func _make_stat_label() -> Label:
 
 func _refresh() -> void:
 	_refresh_speed_label()
+	_refresh_tier_label()
 	for stat_key: StringName in _labels:
 		_refresh_stat_label(stat_key)
 
@@ -113,6 +118,19 @@ func _refresh() -> void:
 func _refresh_speed_label() -> void:
 	if _speed_label != null and is_instance_valid(_speed_bar):
 		_speed_label.text = "ball_speed: %.1f" % _speed_bar.current_speed
+
+
+func _refresh_tier_label() -> void:
+	if _tier_label == null or not is_instance_valid(_speed_bar):
+		return
+	var ball: Ball = _speed_bar.ball
+	if not is_instance_valid(ball):
+		_tier_label.text = "tier: -  peak: -"
+		return
+	_tier_label.text = (
+		"tier: %d [%.0f-%.0f]  peak: %s"
+		% [ball.current_tier, ball.tier_floor, ball.tier_ceiling, ball.in_peak]
+	)
 
 
 func _refresh_stat_label(stat_key: StringName) -> void:
