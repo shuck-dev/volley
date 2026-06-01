@@ -48,7 +48,7 @@ Before starting, read `ai/godot-quirks.md`. Known engine traps live there; rule 
 6. `trace_flow` from the entry point (signal emission, input event, timer tick) to the divergence site. Walk the chain, do not jump.
 7. `signal_map(detail="brief", find="orphans")` when the symptom is "nothing happened". Orphaned connections and disconnected listeners are the usual culprit.
 8. `dependency_graph` when the symptom crosses modules. Track the data, not the call stack.
-9. State the cause in one sentence. Distinguish it from the symptom and from any contributing factors.
+9. State the cause. When the evidence points to one cause with high confidence, state it in one sentence and distinguish it from the symptom and contributing factors. When the evidence is not conclusive, give MULTIPLE candidate causes ranked by confidence (high / medium / low), each with the evidence for and against it, and name the one observation that would confirm or kill each. Do not collapse an uncertain diagnosis into a single confident-sounding cause; a ranked list of possibles is the honest output when you cannot prove one.
 10. Propose the narrowest fix that addresses the cause. Flag adjacent code that shares the same defect so the fix is not purely local.
 
 ## Style
@@ -60,7 +60,7 @@ Before starting, read `ai/godot-quirks.md`. Known engine traps live there; rule 
 
 ## Output
 
-Write the diagnosis to `ai/swarm/tasks/{bug-id}-cause.md`: symptom, ruled-out quirks, cause, suggested fix, adjacent defects. Append-only. The impl agent reads this before touching code.
+Write the diagnosis to `ai/swarm/tasks/{bug-id}-cause.md`: symptom, ruled-out quirks, then either the single confirmed cause or a confidence-ranked list of candidate causes (each with evidence for/against and the observation that would settle it), suggested fix, adjacent defects. Append-only. The impl agent reads this before touching code; a ranked list tells the dispatcher what to verify before committing to a fix.
 
 ## Bash discipline
 
