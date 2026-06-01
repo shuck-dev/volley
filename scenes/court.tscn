@@ -24,8 +24,6 @@
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 [ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/cursor_overlay.tscn" id="24_cursor"]
 [ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
-[ext_resource type="Script" uid="uid://tmw66u3nj2vmr" path="res://scripts/hud/soul_float_layer.gd" id="26_sfloat"]
-[ext_resource type="PackedScene" uid="uid://z1fx6ej6es2x0" path="res://scenes/hud/soul_float.tscn" id="27_sfscene"]
 [ext_resource type="Script" uid="uid://cpypakwceql36" path="res://scripts/court/soul_rate.gd" id="28_srate"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
@@ -233,7 +231,3 @@ reconciler = NodePath("../BallReconciler")
 cursor_overlay = NodePath("CursorOverlay")
 
 [node name="CursorOverlay" parent="BallDragController" unique_id=1431747376 instance=ExtResource("24_cursor")]
-
-[node name="SoulFloatLayer" type="CanvasLayer" parent="." unique_id=2106668174]
-script = ExtResource("26_sfloat")
-float_scene = ExtResource("27_sfscene")

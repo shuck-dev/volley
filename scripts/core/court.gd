@@ -7,8 +7,6 @@ signal ball_peak_changed(in_peak: bool)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
-## Per-hit soul earned this hit; for the floating-text HUD layer.
-signal soul_earned(amount: int, anchor: Vector2)
 ## Emitted after soul_multiplier changes (consolidation or miss reset); for live readout.
 signal soul_multiplier_changed(value: int)
 
@@ -245,12 +243,6 @@ func _deactivate_partner() -> void:
 	partner_changed.emit()
 
 
-func _soul_float_anchor() -> Vector2:
-	if not is_instance_valid(ball) or not ball.is_inside_tree():
-		return Vector2(512.0, 300.0)
-	return ball.get_viewport().get_canvas_transform() * ball.global_position
-
-
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
@@ -266,6 +258,3 @@ func _accumulate_friendship_points() -> void:
 	if whole_points > 0:
 		_item_manager.add_friendship_points(whole_points)
 		_friendship_point_accumulator -= float(whole_points)
-
-		var anchor: Vector2 = _soul_float_anchor()
-		soul_earned.emit(whole_points, anchor)

@@ -3,13 +3,8 @@ extends Node
 
 ## Fires on_consolidation through the effect system on every tier-up; handles first-reach upgrades.
 
-## Carries the screen anchor where the upgrade float should appear.
-signal ball_upgrade_earned(anchor: Vector2)
 ## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
 signal consolidation_fired
-
-## Fallback screen position when no ball is bound; normally the float anchors on the ball.
-@export var soul_anchor: Vector2 = Vector2(512.0, 300.0)
 
 var _item_manager: Node
 var _ball: Ball
@@ -81,12 +76,3 @@ func _handle_first_reach(completed_tier: int) -> void:
 
 	# Deferred: this runs inside the ball's physics callback, where the rack rebuild upgrade triggers is illegal.
 	_item_manager.upgrade_ball.call_deferred(_ball.item_key)
-	ball_upgrade_earned.emit(_reward_anchor())
-
-
-## Ball's current screen position, so floats appear where the consolidation happened.
-func _reward_anchor() -> Vector2:
-	if not is_instance_valid(_ball) or not _ball.is_inside_tree():
-		return soul_anchor
-
-	return _ball.get_viewport().get_canvas_transform() * _ball.global_position

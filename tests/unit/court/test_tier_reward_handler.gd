@@ -175,25 +175,3 @@ func test_upgrade_stops_at_max_level() -> void:
 	await get_tree().process_frame
 
 	assert_eq(_manager.get_level("base_ball"), 10)
-
-
-func test_ball_upgrade_earned_emitted_on_first_reach() -> void:
-	watch_signals(_handler)
-
-	_ball.current_tier = 0
-	_ball.advance_tier()
-
-	assert_signal_emitted(_handler, "ball_upgrade_earned")
-
-
-func test_ball_upgrade_earned_not_emitted_on_second_reach() -> void:
-	_ball.current_tier = 0
-	_ball.advance_tier()
-
-	watch_signals(_handler)
-	_handler.reset_rally()
-	_ball.reset_speed()
-	_ball.current_tier = 0
-	_ball.advance_tier()
-
-	assert_signal_not_emitted(_handler, "ball_upgrade_earned")
