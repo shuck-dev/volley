@@ -79,7 +79,8 @@ func _handle_first_reach(completed_tier: int) -> void:
 	if _ball == null or _ball.item_key.is_empty():
 		return
 
-	_item_manager.upgrade_ball(_ball.item_key)
+	# Deferred: this runs inside the ball's physics callback, where the rack rebuild upgrade triggers is illegal.
+	_item_manager.upgrade_ball.call_deferred(_ball.item_key)
 	ball_upgrade_earned.emit(_reward_anchor())
 
 

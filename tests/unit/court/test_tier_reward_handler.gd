@@ -134,6 +134,7 @@ func test_first_tier0_reach_upgrades_ball() -> void:
 
 	_ball.current_tier = 0
 	_ball.advance_tier()
+	await get_tree().process_frame
 
 	assert_eq(_manager.get_level("base_ball"), 2)
 
@@ -141,12 +142,14 @@ func test_first_tier0_reach_upgrades_ball() -> void:
 func test_second_tier0_reach_does_not_upgrade_again() -> void:
 	_ball.current_tier = 0
 	_ball.advance_tier()
+	await get_tree().process_frame
 	var after_first: int = _manager.get_level("base_ball")
 
 	_handler.reset_rally()
 	_ball.reset_speed()
 	_ball.current_tier = 0
 	_ball.advance_tier()
+	await get_tree().process_frame
 
 	assert_eq(_manager.get_level("base_ball"), after_first)
 
@@ -154,10 +157,12 @@ func test_second_tier0_reach_does_not_upgrade_again() -> void:
 func test_first_top_tier_reach_upgrades_ball() -> void:
 	_ball.current_tier = 0
 	_ball.advance_tier()
+	await get_tree().process_frame
 	assert_eq(_manager.get_level("base_ball"), 2)
 
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
+	await get_tree().process_frame
 
 	assert_eq(_manager.get_level("base_ball"), 3)
 
@@ -167,6 +172,7 @@ func test_upgrade_stops_at_max_level() -> void:
 
 	_ball.current_tier = 0
 	_ball.advance_tier()
+	await get_tree().process_frame
 
 	assert_eq(_manager.get_level("base_ball"), 10)
 
