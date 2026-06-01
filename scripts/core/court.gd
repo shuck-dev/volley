@@ -7,8 +7,6 @@ signal ball_peak_changed(in_peak: bool)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
-## Emitted after soul_multiplier changes (consolidation or miss reset); for live readout.
-signal soul_multiplier_changed(value: int)
 
 @export var court_config: CourtConfig
 
@@ -114,12 +112,7 @@ func _ready() -> void:
 
 	_item_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
 	_tier_reward_handler.bind(_item_manager)
-	_tier_reward_handler.consolidation_fired.connect(_on_consolidation_fired)
 	ball_tracker.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
-
-
-func _on_consolidation_fired() -> void:
-	soul_multiplier_changed.emit(roundi(_item_manager.get_stat(&"soul_multiplier")))
 
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
@@ -168,7 +161,6 @@ func _on_ball_missed() -> void:
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
 	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
-	soul_multiplier_changed.emit(roundi(_item_manager.get_stat(&"soul_multiplier")))
 	var should_halve: bool = actions.has(&"halve_streak")
 
 	if should_halve:

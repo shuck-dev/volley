@@ -24,7 +24,6 @@
 [ext_resource type="Script" uid="uid://dwy6ux1ak8r6m" path="res://scripts/court/ball_tracker.gd" id="23_tracker"]
 [ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/cursor_overlay.tscn" id="24_cursor"]
 [ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
-[ext_resource type="Script" uid="uid://cpypakwceql36" path="res://scripts/court/soul_rate.gd" id="28_srate"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(22, 500)
@@ -181,17 +180,6 @@ theme_override_colors/font_color = Color(0.91, 0.36, 0.46, 1)
 theme_override_font_sizes/font_size = 29
 text = "+0% FP"
 script = ExtResource("18_fpb")
-court = NodePath("..")
-
-[node name="SoulRateLabel" type="Label" parent="." unique_id=2106668173 node_paths=PackedStringArray("court")]
-offset_left = -420.0
-offset_top = -470.0
-offset_right = -300.0
-offset_bottom = -452.0
-theme_override_colors/font_color = Color(0.91, 0.36, 0.46, 1)
-theme_override_font_sizes/font_size = 29
-text = "x2 soul/tier"
-script = ExtResource("28_srate")
 court = NodePath("..")
 
 [node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball_system")]

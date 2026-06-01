@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SpeedTierTable" load_steps=5 format=3 uid="uid://csh437tiertbl0"]
+[gd_resource type="Resource" script_class="SpeedTierTable" format=3 uid="uid://bg5x8laudd1w6"]
 
 [ext_resource type="Script" uid="uid://bj6k0psydteb8" path="res://scripts/core/speed_tier_table.gd" id="1_table"]
 [ext_resource type="Script" uid="uid://biro0uh4dcwbj" path="res://scripts/core/speed_tier.gd" id="2_tier"]
@@ -8,7 +8,6 @@ script = ExtResource("2_tier")
 floor_fraction = 0.3125
 ceiling_fraction = 0.541667
 max_range_fraction = 0.472222
-reward = ""
 
 [sub_resource type="Resource" id="Tier1"]
 script = ExtResource("2_tier")
