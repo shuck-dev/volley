@@ -44,6 +44,8 @@ Reference the issue in the PR body with a bare `#123` (the number on its own). G
 
 **Tone.** Plain descriptive prose, positive framing. Lead with what a thing is and does. Applies to PR descriptions, commit messages, and code comments.
 
+**Code style.** Inline comments explain why; `##` doc-comments describe the public API. The conventions live in [`designs/process/code-style.md`](designs/process/code-style.md).
+
 **What a reviewer looks at:**
 
 - Acceptance criteria from the ticket are met.
