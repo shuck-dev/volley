@@ -27,7 +27,11 @@ func before_each() -> void:
 
 	_handler = load("res://scripts/court/tier_reward_handler.gd").new()
 	add_child_autofree(_handler)
-	_handler.bind(_ball, _manager)
+	_handler.bind(_manager)
+	# BallTracker binds the advancing ball; mirror that here so advance_tier reaches the handler.
+	_ball.tier_advanced.connect(
+		func(new_tier: int) -> void: _handler.on_tier_advanced(_ball, new_tier)
+	)
 
 
 func _top_tier() -> int:

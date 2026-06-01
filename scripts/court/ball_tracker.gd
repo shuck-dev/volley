@@ -6,8 +6,8 @@ extends Node
 signal ball_missed
 ## Fires on Peak entry (true) and exit (false), re-emitted from the live ball.
 signal ball_peak_changed(in_peak: bool)
-## Fires when the live ball crosses a tier ceiling, carrying the new tier index.
-signal ball_tier_advanced(new_tier: int)
+## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
+signal ball_tier_advanced(ball: Ball, new_tier: int)
 signal current_ball_changed(ball: Ball)
 ## Re-emitted from ball_system so subscribers bind to the tracker, not the system directly.
 signal ball_added(ball: Ball)
@@ -59,8 +59,8 @@ func attach(new_ball: Ball) -> void:
 
 	if not new_ball.at_max_speed_changed.is_connected(_on_ball_peak_changed):
 		new_ball.at_max_speed_changed.connect(_on_ball_peak_changed)
-	if not new_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
-		new_ball.tier_advanced.connect(_on_ball_tier_advanced)
+	if not new_ball.tier_advanced.is_connected(_on_ball_tier_advanced.bind(new_ball)):
+		new_ball.tier_advanced.connect(_on_ball_tier_advanced.bind(new_ball))
 	if new_ball.effect_processor != null:
 		var paddles: Array[Node2D] = []
 		if _player_paddle != null:
@@ -87,8 +87,8 @@ func detach(old_ball: Ball) -> void:
 
 		if old_ball.at_max_speed_changed.is_connected(_on_ball_peak_changed):
 			old_ball.at_max_speed_changed.disconnect(_on_ball_peak_changed)
-		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
-			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
+		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced.bind(old_ball)):
+			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced.bind(old_ball))
 	if _current_ball == old_ball:
 		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
 		_set_current(fallback)
@@ -157,5 +157,5 @@ func _on_ball_peak_changed(in_peak: bool) -> void:
 	ball_peak_changed.emit(in_peak)
 
 
-func _on_ball_tier_advanced(new_tier: int) -> void:
-	ball_tier_advanced.emit(new_tier)
+func _on_ball_tier_advanced(new_tier: int, ball: Ball) -> void:
+	ball_tier_advanced.emit(ball, new_tier)

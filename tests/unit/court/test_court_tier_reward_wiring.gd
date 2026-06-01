@@ -173,14 +173,19 @@ func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
 	)
 
 
-# --- ball replacement re-binds the handler ---
+# --- any tracked ball routes tier rewards through the handler ---
 
 
-func test_handler_rebinds_to_new_ball_after_current_ball_changed() -> void:
+func test_handler_receives_tier_advance_from_tracked_ball() -> void:
+	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
-	var handler: Node = _court._tier_reward_handler
 
-	assert_true(
-		ball.tier_advanced.is_connected(handler._on_ball_tier_advanced),
-		"handler must be connected to the initial ball"
+	ball.current_tier = 1
+	ball.advance_tier()
+
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"),
+		2.0,
+		0.001,
+		"a tier advance on any tracked ball must reach the handler and bank soul"
 	)

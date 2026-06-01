@@ -306,3 +306,27 @@ func test_tier_advance_does_not_fire_peak_signal() -> void:
 	assert_signal_not_emitted(
 		_court, "ball_peak_changed", "a non-top tier advance must not look like Peak entry"
 	)
+
+
+# Regression: the reward handler banks soul for ANY tracked ball, not only the current one.
+# A single-ball binding let a second ball's consolidation go unrewarded.
+func test_non_current_ball_consolidation_banks_soul() -> void:
+	_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
+	var first: Ball = _spawn_ball("ball_alpha")
+	var second: Ball = _spawn_ball("ball_beta")
+
+	assert_eq(
+		_court.ball_tracker.get_current_ball(),
+		first,
+		"precondition: the second ball is tracked but not current",
+	)
+
+	second.current_tier = 1
+	second.advance_tier()
+
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"),
+		2.0,
+		0.001,
+		"a tier advance on a tracked but non-current ball must still bank soul",
+	)

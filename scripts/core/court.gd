@@ -113,8 +113,9 @@ func _ready() -> void:
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
 	_item_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
-	_tier_reward_handler.bind(ball_tracker.get_current_ball(), _item_manager)
+	_tier_reward_handler.bind(_item_manager)
 	_tier_reward_handler.consolidation_fired.connect(_on_consolidation_fired)
+	ball_tracker.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
 
 func _on_consolidation_fired() -> void:
@@ -123,7 +124,6 @@ func _on_consolidation_fired() -> void:
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
 	ball = new_ball
-	_tier_reward_handler.bind(new_ball, _item_manager)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -151,7 +151,7 @@ func _on_paddle_hit() -> void:
 	volley_count_changed.emit(_volley_count)
 
 
-func _on_ball_tier_advanced(new_tier: int) -> void:
+func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(new_tier)
 
 
