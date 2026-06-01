@@ -165,6 +165,7 @@ Effects, items, and partners are `.tres` resource files. Authored in data, loade
 
 - All stat keys exposed via `GameRules.BASE_STATS` and queried through `ItemManager.get_stat()`.
 - Event dispatch: `ItemManager.process_event()` fires registered effects with matching triggers. `Game.gd` wires ball signals (`at_max_speed_changed`, `missed`) to dispatch `on_max_speed_reached` and `on_miss`.
+- Signal-to-trigger wiring: game signals (`ball_missed`, `paddle_hit`, `streak_changed`, and the like) are translated into `process_event` calls with the matching TriggerType, so the effect system never subscribes to raw gameplay signals itself.
 - Named game states tracked in `EffectState` via `set_state()`/`clear_state()`/`is_state_active()`.
 - Ball reads speed limits every physics frame via `BallEffectProcessor._sync_speed_limits()`, enabling dynamic stat changes to take effect immediately.
 - `GameRules.BALL_SPEED_MIN` and `BALL_SPEED_MAX` constants removed; replaced by stat-driven values.
