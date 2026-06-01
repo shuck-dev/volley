@@ -20,9 +20,11 @@ Consolidating is the whole mechanic. It is not a lump reward banked at a tier to
 
 ## Consolidation is an event
 
-A consolidation fires an event into the item-effect system (a trigger type, e.g. `on_consolidation`), the same machinery items already hook for `on_miss`, `on_max_speed_reached`, and the rest. The built-in effect of the event is `+1 multiplier`; items and partners subscribe to the same trigger to add their own consolidation effects without special-casing.
+A consolidation fires a trigger (`on_consolidation`) through the same `EffectManager.process_event` path items already use for `on_miss`, `on_max_speed_reached`, and the rest. The `+1 multiplier` is an effect resolved in that pass, not a hardcoded side path: it runs alongside any item or partner effects registered on the same trigger.
 
-Peak is a consolidation event too, not a separate reward shape. Entering Peak carries the default `+1 multiplier` like any consolidation, and additionally opens the increased speed range above the ball's own max where the rally keeps climbing hit by hit. So Peak is the top consolidation: the same +1 the climb has been paying, plus the wider band. Items can hook the Peak event for anything richer.
+Resolution order follows the existing system: `process_event` applies every effect subscribed to the trigger in registration order. The built-in `+1` is registered like any other effect, so item effects on `on_consolidation` resolve in the same deterministic pass rather than racing a special-cased increment. Two items that each add to the multiplier therefore stack predictably (built-in `+1` plus each item's contribution, in registration order). This is why consolidation is modelled as a trigger and not a bespoke signal: it inherits the ordering and stacking the effect system already defines, so an item that wants to alter the consolidation reward needs no special casing.
+
+Peak is a consolidation event too, not a separate reward shape. Entering Peak fires the same `on_consolidation` trigger, so the built-in `+1 multiplier` and any subscribed item effects resolve exactly as they do at a tier top, and Peak additionally opens the increased speed range above the ball's own max where the rally keeps climbing hit by hit. Peak is the top consolidation: the same +1 the climb has been paying, plus the wider band. There is no tier above Peak, so no further consolidations fire inside it; the multiplier holds at its Peak-entry value for the rest of the rally, and per-hit soul continues paying at that held value until a miss.
 
 ## UI (temporary)
 
