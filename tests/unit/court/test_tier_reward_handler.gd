@@ -61,11 +61,11 @@ func test_tier2_consolidation_increments_soul_multiplier_again() -> void:
 	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 3.0, 0.001)
 
 
-func test_tier0_completion_does_not_increment_multiplier() -> void:
+func test_tier0_consolidation_increments_soul_multiplier() -> void:
 	_ball.current_tier = 0
 	_ball.advance_tier()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
 
 
 func test_consolidation_fired_signal_emitted_on_tier_advance() -> void:
@@ -77,13 +77,13 @@ func test_consolidation_fired_signal_emitted_on_tier_advance() -> void:
 	assert_signal_emitted(_handler, "consolidation_fired")
 
 
-func test_consolidation_fired_not_emitted_on_tier0() -> void:
+func test_consolidation_fired_emitted_on_tier0() -> void:
 	watch_signals(_handler)
 
 	_ball.current_tier = 0
 	_ball.advance_tier()
 
-	assert_signal_not_emitted(_handler, "consolidation_fired")
+	assert_signal_emitted(_handler, "consolidation_fired")
 
 
 # --- reset on miss ---
@@ -96,20 +96,6 @@ func test_soul_multiplier_resets_to_one_after_miss() -> void:
 	_manager.process_event(&"on_miss")
 
 	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
-
-
-# --- per-hit soul uses multiplier (via item_manager.get_stat) ---
-
-
-func test_multiplier_at_one_read_correctly() -> void:
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
-
-
-func test_multiplier_at_two_after_one_consolidation() -> void:
-	_ball.current_tier = 1
-	_ball.advance_tier()
-
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
 
 
 # --- once-per-rally guard at top Peak ---

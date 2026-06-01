@@ -2,6 +2,8 @@ extends Label
 
 @export var court: Court
 
+var _source: Node
+
 
 func _ready() -> void:
 	var found: Node = court as Node
@@ -18,6 +20,11 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting):
 		get_tree().node_added.disconnect(_on_node_added_waiting)
+	if (
+		is_instance_valid(_source)
+		and _source.is_connected(&"soul_multiplier_changed", _on_soul_multiplier_changed)
+	):
+		_source.disconnect(&"soul_multiplier_changed", _on_soul_multiplier_changed)
 
 
 func _on_node_added_waiting(node: Node) -> void:
@@ -29,6 +36,7 @@ func _on_node_added_waiting(node: Node) -> void:
 
 
 func _connect_soul_source(source: Node) -> void:
+	_source = source
 	source.connect(&"soul_multiplier_changed", _on_soul_multiplier_changed)
 	_refresh(roundi(ItemManager.get_stat(&"soul_multiplier")))
 

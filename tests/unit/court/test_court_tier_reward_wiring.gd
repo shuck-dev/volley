@@ -89,6 +89,28 @@ func test_no_soul_banked_without_tier_advance() -> void:
 	assert_eq(_manager.get_friendship_point_balance(), before)
 
 
+func test_per_hit_soul_scales_with_multiplier() -> void:
+	_manager.register_source(VenueEffectSourceScript.new(), 1)
+	var ball: Ball = _spawn_ball()
+
+	_manager.economy.friendship_point_balance = 0
+	_court._accumulate_friendship_points()
+	var banked_at_x1: int = _manager.get_friendship_point_balance()
+
+	ball.current_tier = 1
+	ball.advance_tier()
+
+	_manager.economy.friendship_point_balance = 0
+	_court._accumulate_friendship_points()
+	var banked_at_x2: int = _manager.get_friendship_point_balance()
+
+	assert_eq(
+		banked_at_x2,
+		banked_at_x1 * 2,
+		"per-hit soul must double after one consolidation lifts the multiplier to x2"
+	)
+
+
 # --- top-tier Peak entry banks soul once ---
 
 

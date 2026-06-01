@@ -246,7 +246,7 @@ func _deactivate_partner() -> void:
 
 
 func _soul_float_anchor() -> Vector2:
-	if ball == null or not is_instance_valid(ball) or not ball.is_inside_tree():
+	if not is_instance_valid(ball) or not ball.is_inside_tree():
 		return Vector2(512.0, 300.0)
 	return ball.get_viewport().get_canvas_transform() * ball.global_position
 

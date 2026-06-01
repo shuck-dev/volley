@@ -3,7 +3,7 @@ extends Node
 
 ## Fires on_consolidation through the effect system on every tier-up; handles first-reach upgrades.
 
-## Screen anchor of any floating text spawned by the HUD layer on consolidation.
+## Carries the screen anchor where the upgrade float should appear.
 signal ball_upgrade_earned(anchor: Vector2)
 ## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
 signal consolidation_fired
@@ -55,9 +55,6 @@ func _on_ball_tier_advanced(new_tier: int) -> void:
 	var completed_tier: int = new_tier - 1 if not is_entering_peak else new_tier
 
 	_handle_first_reach(completed_tier)
-
-	if completed_tier == 0:
-		return
 
 	var is_top_tier: bool = (
 		new_tier >= GameRules.speed_tiers.tier_count() - 1 and _ball != null and _ball.in_peak

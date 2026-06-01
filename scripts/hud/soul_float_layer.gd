@@ -17,31 +17,41 @@ func _ready() -> void:
 
 	if _court != null:
 		_court.soul_earned.connect(_on_soul_earned)
-	else:
-		get_tree().node_added.connect(_on_node_added_waiting)
 
 	if _handler != null:
 		_handler.ball_upgrade_earned.connect(_on_ball_upgrade_earned)
+
+	if _court == null or _handler == null:
+		get_tree().node_added.connect(_on_node_added_waiting)
 
 
 func _exit_tree() -> void:
 	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting):
 		get_tree().node_added.disconnect(_on_node_added_waiting)
+	if is_instance_valid(_court) and _court.soul_earned.is_connected(_on_soul_earned):
+		_court.soul_earned.disconnect(_on_soul_earned)
+	if (
+		is_instance_valid(_handler)
+		and _handler.ball_upgrade_earned.is_connected(_on_ball_upgrade_earned)
+	):
+		_handler.ball_upgrade_earned.disconnect(_on_ball_upgrade_earned)
 
 
 func _on_node_added_waiting(node: Node) -> void:
-	var court := node as Court
+	if _court == null:
+		var court := node as Court
+		if court != null:
+			_court = court
+			_court.soul_earned.connect(_on_soul_earned)
 
-	if court == null:
+	if _handler == null:
 		var handler := node as TierRewardHandler
-		if handler != null and _handler == null:
+		if handler != null:
 			_handler = handler
 			_handler.ball_upgrade_earned.connect(_on_ball_upgrade_earned)
-		return
 
-	get_tree().node_added.disconnect(_on_node_added_waiting)
-	_court = court
-	_court.soul_earned.connect(_on_soul_earned)
+	if _court != null and _handler != null:
+		get_tree().node_added.disconnect(_on_node_added_waiting)
 
 
 func _on_soul_earned(amount: int, anchor: Vector2) -> void:
