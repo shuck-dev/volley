@@ -17,6 +17,8 @@ extends Resource
 @export var ball_speed_offset := 0.0
 ## Arena vertical extent in pixels; upper bound for paddle_size and the AI math half-height.
 @export var arena_height := 660.0
+## Base soul multiplier; consolidation events add temporary +1 per tier-up until miss.
+@export var soul_multiplier := 1.0
 
 
 func to_dict() -> Dictionary:
@@ -29,4 +31,5 @@ func to_dict() -> Dictionary:
 		&"kit_slots": kit_slots,
 		&"ball_speed_offset": ball_speed_offset,
 		&"arena_height": arena_height,
+		&"soul_multiplier": soul_multiplier,
 	}

@@ -1,6 +1,6 @@
 extends GutTest
 
-# TierRewardHandler: unified soul curve, first-reach upgrades, and reward signal.
+# TierRewardHandler: on_consolidation event, first-reach upgrades, and reward signal.
 
 var _handler: Node
 var _ball: Node
@@ -15,6 +15,9 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_manager.state.item_levels["base_ball"] = 1
+
+	var venue_source: Resource = load("res://scripts/core/venue_effect_source.gd").new()
+	_manager.register_source(venue_source, 1)
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -31,89 +34,102 @@ func _top_tier() -> int:
 	return GameRules.speed_tiers.tier_count() - 1
 
 
-# --- tier 0 completion: no soul reward ---
+# --- soul_multiplier starts at base 1 ---
 
 
-func test_tier0_completion_gives_no_friendship_points() -> void:
-	var before: int = _manager.get_friendship_point_balance()
-
-	_ball.current_tier = 0
-	_ball.advance_tier()
-
-	assert_eq(_manager.get_friendship_point_balance(), before)
+func test_soul_multiplier_starts_at_one() -> void:
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
 
 
-func test_tier0_completion_no_signal_emitted() -> void:
-	watch_signals(_handler)
-
-	_ball.current_tier = 0
-	_ball.advance_tier()
-
-	assert_signal_not_emitted(_handler, "soul_reward_earned")
+# --- on_consolidation fires through effect manager ---
 
 
-# --- unified curve: tier N banks base * N ---
-
-
-func test_tier1_completion_banks_base_times_1() -> void:
-	var before: int = _manager.get_friendship_point_balance()
-
+func test_tier1_consolidation_increments_soul_multiplier() -> void:
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	assert_eq(_manager.get_friendship_point_balance(), before + _handler.soul_per_tier_base * 1)
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
 
 
-func test_tier2_completion_banks_base_times_2() -> void:
-	var before: int = _manager.get_friendship_point_balance()
+func test_tier2_consolidation_increments_soul_multiplier_again() -> void:
+	_ball.current_tier = 1
+	_ball.advance_tier()
 
 	_ball.current_tier = 2
 	_ball.advance_tier()
 
-	assert_eq(_manager.get_friendship_point_balance(), before + _handler.soul_per_tier_base * 2)
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 3.0, 0.001)
 
 
-func test_soul_reward_earned_emitted_with_correct_amount_tier1() -> void:
+func test_tier0_completion_does_not_increment_multiplier() -> void:
+	_ball.current_tier = 0
+	_ball.advance_tier()
+
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+
+
+func test_consolidation_fired_signal_emitted_on_tier_advance() -> void:
 	watch_signals(_handler)
 
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	assert_signal_emitted(_handler, "soul_reward_earned")
-	var params: Array = get_signal_parameters(_handler, "soul_reward_earned")
-	assert_eq(params[0], _handler.soul_per_tier_base * 1)
+	assert_signal_emitted(_handler, "consolidation_fired")
 
 
-func test_soul_reward_earned_emitted_with_correct_amount_top_tier() -> void:
+func test_consolidation_fired_not_emitted_on_tier0() -> void:
 	watch_signals(_handler)
 
-	_ball.current_tier = _top_tier()
+	_ball.current_tier = 0
 	_ball.advance_tier()
 
-	var expected_amount: int = _handler.soul_per_tier_base * _top_tier()
-	assert_signal_emitted(_handler, "soul_reward_earned")
-	var params: Array = get_signal_parameters(_handler, "soul_reward_earned")
-	assert_eq(params[0], expected_amount)
+	assert_signal_not_emitted(_handler, "consolidation_fired")
+
+
+# --- reset on miss ---
+
+
+func test_soul_multiplier_resets_to_one_after_miss() -> void:
+	_ball.current_tier = 1
+	_ball.advance_tier()
+
+	_manager.process_event(&"on_miss")
+
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+
+
+# --- per-hit soul uses multiplier (via item_manager.get_stat) ---
+
+
+func test_multiplier_at_one_read_correctly() -> void:
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+
+
+func test_multiplier_at_two_after_one_consolidation() -> void:
+	_ball.current_tier = 1
+	_ball.advance_tier()
+
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
 
 
 # --- once-per-rally guard at top Peak ---
 
 
-func test_top_tier_soul_banks_only_once_per_rally() -> void:
+func test_top_tier_consolidation_fires_only_once_per_rally() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
-	var after_first: int = _manager.get_friendship_point_balance()
+	var after_first: float = _manager.get_stat(&"soul_multiplier")
 
 	_ball.in_peak = true
 	_ball.tier_advanced.emit(_top_tier())
 
-	assert_eq(_manager.get_friendship_point_balance(), after_first)
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), after_first, 0.001)
 
 
-func test_new_rally_allows_top_tier_to_bank_again() -> void:
+func test_new_rally_allows_top_tier_to_consolidate_again() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
-	var after_first_peak: int = _manager.get_friendship_point_balance()
+	var after_first: float = _manager.get_stat(&"soul_multiplier")
 
 	_handler.reset_rally()
 
@@ -121,20 +137,7 @@ func test_new_rally_allows_top_tier_to_bank_again() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
 
-	assert_eq(
-		_manager.get_friendship_point_balance(),
-		after_first_peak + _handler.soul_per_tier_base * _top_tier()
-	)
-
-
-func test_banked_reward_survives_peak_miss_reset() -> void:
-	_ball.current_tier = _top_tier()
-	_ball.advance_tier()
-	var balance_after_peak: int = _manager.get_friendship_point_balance()
-
-	_ball.reset_speed()
-
-	assert_eq(_manager.get_friendship_point_balance(), balance_after_peak)
+	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), after_first + 1.0, 0.001)
 
 
 # --- first-reach ball upgrade ---

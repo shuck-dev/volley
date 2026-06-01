@@ -4,10 +4,13 @@ extends Label
 
 
 func _ready() -> void:
-	var handler: TierRewardHandler = _find_handler()
+	var found: Node = court as Node
 
-	if handler != null:
-		_refresh(handler)
+	if found == null:
+		found = get_tree().get_first_node_in_group(&"courts")
+
+	if found != null:
+		_connect_soul_source(found)
 	else:
 		get_tree().node_added.connect(_on_node_added_waiting)
 
@@ -18,18 +21,21 @@ func _exit_tree() -> void:
 
 
 func _on_node_added_waiting(node: Node) -> void:
-	var handler := node as TierRewardHandler
-
-	if handler == null:
+	if not node.is_in_group(&"courts"):
 		return
 
 	get_tree().node_added.disconnect(_on_node_added_waiting)
-	_refresh(handler)
+	_connect_soul_source(node)
 
 
-func _find_handler() -> TierRewardHandler:
-	return get_tree().get_first_node_in_group(&"tier_reward_handlers") as TierRewardHandler
+func _connect_soul_source(source: Node) -> void:
+	source.connect(&"soul_multiplier_changed", _on_soul_multiplier_changed)
+	_refresh(roundi(ItemManager.get_stat(&"soul_multiplier")))
 
 
-func _refresh(handler: TierRewardHandler) -> void:
-	text = "x%d soul/tier" % handler.soul_per_tier_base
+func _on_soul_multiplier_changed(value: int) -> void:
+	_refresh(value)
+
+
+func _refresh(multiplier: int) -> void:
+	text = "x%d" % multiplier

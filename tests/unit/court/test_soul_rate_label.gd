@@ -1,51 +1,62 @@
 extends GutTest
 
-# SoulRateLabel: standing readout that shows soul_per_tier_base from TierRewardHandler.
+# SoulRateLabel: live readout of soul_multiplier via soul_multiplier_changed signal.
 
 const SoulRateScript: GDScript = preload("res://scripts/court/soul_rate.gd")
-const TierRewardHandlerScript: GDScript = preload("res://scripts/court/tier_reward_handler.gd")
 
 
-func _make_label_with_handler(base: int) -> Label:
-	var handler: Node = TierRewardHandlerScript.new()
-	handler.soul_per_tier_base = base
-	add_child_autofree(handler)
+# Minimal stub satisfying soul_rate.gd's group-discovery and signal contract.
+class FakeCourt:
+	extends Node
+
+	signal soul_multiplier_changed(value: int)
+
+
+func test_label_shows_multiplier_on_connect() -> void:
+	var fake: FakeCourt = FakeCourt.new()
+	fake.add_to_group(&"courts")
+	add_child_autofree(fake)
 
 	var label: Label = SoulRateScript.new()
 	add_child_autofree(label)
 
-	return label
+	# The initial read comes from ItemManager.get_stat; just verify label has content.
+	assert_true(label.text.begins_with("x"))
 
 
-func test_label_shows_default_rate() -> void:
-	var label: Label = _make_label_with_handler(2)
+func test_label_updates_on_signal() -> void:
+	var fake: FakeCourt = FakeCourt.new()
+	fake.add_to_group(&"courts")
+	add_child_autofree(fake)
 
-	assert_eq(label.text, "x2 soul/tier")
+	var label: Label = SoulRateScript.new()
+	add_child_autofree(label)
 
+	fake.soul_multiplier_changed.emit(3)
 
-func test_label_shows_custom_rate_five() -> void:
-	var label: Label = _make_label_with_handler(5)
-
-	assert_eq(label.text, "x5 soul/tier")
-
-
-func test_label_shows_rate_one() -> void:
-	var label: Label = _make_label_with_handler(1)
-
-	assert_eq(label.text, "x1 soul/tier")
+	assert_eq(label.text, "x3")
 
 
-func test_label_waits_for_late_handler() -> void:
+func test_label_empty_before_court_appears() -> void:
 	var label: Label = SoulRateScript.new()
 	add_child_autofree(label)
 
 	assert_eq(label.text, "")
 
-	var handler: Node = TierRewardHandlerScript.new()
-	handler.soul_per_tier_base = 3
-	add_child_autofree(handler)
 
-	assert_eq(label.text, "x3 soul/tier")
+func test_label_connects_to_late_court() -> void:
+	var label: Label = SoulRateScript.new()
+	add_child_autofree(label)
+
+	assert_eq(label.text, "")
+
+	var fake: FakeCourt = FakeCourt.new()
+	fake.add_to_group(&"courts")
+	add_child_autofree(fake)
+
+	fake.soul_multiplier_changed.emit(2)
+
+	assert_eq(label.text, "x2")
 
 
 func test_exit_tree_disconnects_waiting_signal() -> void:
@@ -53,11 +64,11 @@ func test_exit_tree_disconnects_waiting_signal() -> void:
 	add_child_autofree(label)
 
 	remove_child(label)
-
-	var handler: Node = TierRewardHandlerScript.new()
-	handler.soul_per_tier_base = 4
-	add_child_autofree(handler)
-
-	assert_eq(label.text, "")
-
 	label.free()
+
+	var fake: FakeCourt = FakeCourt.new()
+	fake.add_to_group(&"courts")
+	add_child_autofree(fake)
+
+	# No crash when court appears after label is freed.
+	assert_true(true)

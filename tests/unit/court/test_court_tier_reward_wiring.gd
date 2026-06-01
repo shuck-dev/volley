@@ -6,6 +6,7 @@ const CourtScript: GDScript = preload("res://scripts/core/court.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const VenueEffectSourceScript: GDScript = preload("res://scripts/core/venue_effect_source.gd")
 
 var _court: Court
 var _manager: Node
@@ -66,18 +67,18 @@ func _top_tier() -> int:
 # --- tier completion banks soul at court level ---
 
 
-func test_tier1_completion_banks_soul() -> void:
+func test_tier1_completion_fires_consolidation_and_increments_multiplier() -> void:
+	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = 1
-	var before: int = _manager.get_friendship_point_balance()
 
 	ball.advance_tier()
 
-	var handler: Node = _court._tier_reward_handler
-	assert_eq(
-		_manager.get_friendship_point_balance(),
-		before + handler.soul_per_tier_base * 1,
-		"tier 1 completion must bank soul_per_tier_base * 1"
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"),
+		2.0,
+		0.001,
+		"tier 1 completion must increment soul_multiplier to 2"
 	)
 
 
@@ -91,19 +92,18 @@ func test_no_soul_banked_without_tier_advance() -> void:
 # --- top-tier Peak entry banks soul once ---
 
 
-func test_peak_entry_banks_soul() -> void:
+func test_peak_entry_fires_consolidation() -> void:
+	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
-	var before: int = _manager.get_friendship_point_balance()
 
 	ball.advance_tier()
 
-	var handler: Node = _court._tier_reward_handler
-	var expected: int = handler.soul_per_tier_base * _top_tier()
-	assert_eq(
-		_manager.get_friendship_point_balance(),
-		before + expected,
-		"top-tier Peak entry must bank soul_per_tier_base * top_tier"
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"),
+		2.0,
+		0.001,
+		"top-tier Peak entry must increment soul_multiplier"
 	)
 
 
@@ -127,24 +127,27 @@ func test_peak_entry_banks_soul_only_once_per_rally() -> void:
 # --- miss resets the rally state ---
 
 
-func test_ball_missed_resets_rally_so_next_peak_can_bank_again() -> void:
+func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
+	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
 	_court._on_ball_missed()
 
-	var after_reset: int = _manager.get_friendship_point_balance()
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"), 1.0, 0.001, "miss must reset soul_multiplier to 1"
+	)
 
 	ball.in_peak = false
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
-	var handler: Node = _court._tier_reward_handler
-	assert_eq(
-		_manager.get_friendship_point_balance(),
-		after_reset + handler.soul_per_tier_base * _top_tier(),
-		"after a miss-reset a new Peak must bank soul again"
+	assert_almost_eq(
+		_manager.get_stat(&"soul_multiplier"),
+		2.0,
+		0.001,
+		"after miss-reset a new Peak must increment the multiplier again"
 	)
 
 

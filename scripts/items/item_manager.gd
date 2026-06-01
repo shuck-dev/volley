@@ -93,6 +93,16 @@ func get_default_ball_launch_velocity() -> Vector2:
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
+## Returns the resolved stat value (base + additive modifiers + percentage offset) for a stat key.
+func get_stat(key: StringName) -> float:
+	return _effect_manager.get_stat(key)
+
+
+## Registers an effect source with the effect system at the given level.
+func register_source(source: Resource, level: int) -> void:
+	_effect_manager.register_source(source, level)
+
+
 ## Returns the summed additive modifiers (including oscillations) for a stat key.
 func get_modifier(key: StringName) -> float:
 	return _effect_manager.get_modifier(key)

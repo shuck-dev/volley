@@ -7,6 +7,10 @@ signal ball_peak_changed(in_peak: bool)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
+## Per-hit soul earned this hit; for the floating-text HUD layer.
+signal soul_earned(amount: int, anchor: Vector2)
+## Emitted after soul_multiplier changes (consolidation or miss reset); for live readout.
+signal soul_multiplier_changed(value: int)
 
 @export var court_config: CourtConfig
 
@@ -45,6 +49,7 @@ var _tier_reward_handler: TierRewardHandler
 
 
 func _ready() -> void:
+	add_to_group(&"courts")
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
 
 	_tier_reward_handler = load("res://scripts/court/tier_reward_handler.gd").new()
@@ -109,7 +114,13 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
+	_item_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
 	_tier_reward_handler.bind(ball_tracker.get_current_ball(), _item_manager)
+	_tier_reward_handler.consolidation_fired.connect(_on_consolidation_fired)
+
+
+func _on_consolidation_fired() -> void:
+	soul_multiplier_changed.emit(roundi(_item_manager.get_stat(&"soul_multiplier")))
 
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
@@ -159,6 +170,7 @@ func _on_ball_missed() -> void:
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
 	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
+	soul_multiplier_changed.emit(roundi(_item_manager.get_stat(&"soul_multiplier")))
 	var should_halve: bool = actions.has(&"halve_streak")
 
 	if should_halve:
@@ -233,15 +245,27 @@ func _deactivate_partner() -> void:
 	partner_changed.emit()
 
 
+func _soul_float_anchor() -> Vector2:
+	if ball == null or not is_instance_valid(ball) or not ball.is_inside_tree():
+		return Vector2(512.0, 300.0)
+	return ball.get_viewport().get_canvas_transform() * ball.global_position
+
+
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_friendship_points() -> void:
 	var rate: float = _progression_config.autoplay_friendship_point_rate
 	var base_points: float = Stats.resolve(
 		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
 	)
-	var points_to_add: float = (base_points * rate) if _is_autoplay_active else base_points
+	var multiplier: float = _item_manager.get_stat(&"soul_multiplier")
+	var points_to_add: float = (
+		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
+	)
 	_friendship_point_accumulator += points_to_add
 	var whole_points: int = int(_friendship_point_accumulator)
 	if whole_points > 0:
 		_item_manager.add_friendship_points(whole_points)
 		_friendship_point_accumulator -= float(whole_points)
+
+		var anchor: Vector2 = _soul_float_anchor()
+		soul_earned.emit(whole_points, anchor)

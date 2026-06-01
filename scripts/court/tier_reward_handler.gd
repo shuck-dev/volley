@@ -1,15 +1,13 @@
 class_name TierRewardHandler
 extends Node
 
-## Rewards soul (FP) on every tier consolidation; scales with the completed tier.
+## Fires on_consolidation through the effect system on every tier-up; handles first-reach upgrades.
 
-## Amount and screen anchor of the soul awarded; for the floating-text HUD layer.
-signal soul_reward_earned(amount: int, anchor: Vector2)
-## Fired when a first-reach ball upgrade lands; for the floating-text HUD layer.
+## Screen anchor of any floating text spawned by the HUD layer on consolidation.
 signal ball_upgrade_earned(anchor: Vector2)
+## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
+signal consolidation_fired
 
-## FP banked = soul_per_tier_base * completed_tier.
-@export_range(0, 20) var soul_per_tier_base: int = 2
 ## Fallback screen position when no ball is bound; normally the float anchors on the ball.
 @export var soul_anchor: Vector2 = Vector2(512.0, 300.0)
 
@@ -71,9 +69,8 @@ func _on_ball_tier_advanced(new_tier: int) -> void:
 	if is_top_tier:
 		_peak_banked_this_rally = true
 
-	var amount: int = soul_per_tier_base * completed_tier
-	_item_manager.add_friendship_points(amount)
-	soul_reward_earned.emit(amount, _reward_anchor())
+	_item_manager.process_event(&"on_consolidation")
+	consolidation_fired.emit()
 
 
 func _handle_first_reach(completed_tier: int) -> void:
