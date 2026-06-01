@@ -36,13 +36,15 @@ CI runs the same checks on every PR, so whatever passes locally will pass there.
 
 Open the PR against `main`. Branch name format is `<intent>/<gh-issue>-<short-description>`, where `<intent>` matches the ticket's label and `<gh-issue>` is the GitHub issue number. See [`designs/process/labels.md`](designs/process/labels.md) for the full label set and examples.
 
-Reference the issue in the PR body with `closes #123` so GitHub links them and closes the issue on merge.
+Reference the issue in the PR body with a bare `#123` (the number on its own). GitHub backlinks the PR and the issue, and the branch name drives the issue's state on merge. Leave any GitHub action-verb off the number: a verb fires GitHub's auto-close, which moves the tracked issue further than the merge should.
 
 **Write the PR description as a short explanation of the change.** Cover what the change does, why it is being made, and any tradeoffs worth flagging. A reader should come away understanding the reasoning behind the change.
 
 **Keep the scope tight.** Stick to the ticket. If you spot something adjacent that needs fixing, open a new issue for it; tight PRs that do one thing land faster and read better in the commit history. When your change does sit on top of a rough shape, reshaping it in the same PR is welcome; see [`designs/process/refactoring.md`](designs/process/refactoring.md) for where that line sits.
 
 **Tone.** Plain descriptive prose, positive framing. Lead with what a thing is and does. Applies to PR descriptions, commit messages, and code comments.
+
+**Code style.** Inline comments explain why; `##` doc-comments describe the public API. The conventions live in [`designs/process/code-style.md`](designs/process/code-style.md).
 
 **What a reviewer looks at:**
 

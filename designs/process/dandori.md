@@ -2,7 +2,7 @@
 
 Dandori is stage 4 of the swarm lifecycle: the implementation plan, run after the mission is filed and before any minion dispatches. Interrogating the work, picking a codename, and filing the milestone happen earlier, as stages 1 to 3, owned by [`swarm-architecture.md`](../ai/swarm-architecture.md). By the time dandori runs, the milestone exists on the right project, the Ride exists if the mission needs one, and the issues are attached.
 
-Dandori narrows to four questions, per work unit: who works it, what it touches, how it is capped, and a confirm before go.
+Dandori narrows to five questions, per work unit: who works it, what it touches, how it is capped, how it splits into PRs, and a confirm before go.
 
 Pairs with [`missions-and-projects.md`](missions-and-projects.md) (the nouns), [`flow-shapes.md`](flow-shapes.md) (the shapes work takes inside a mission), and the operational checklist in [`.claude/skills/dandori/SKILL.md`](../../.claude/skills/dandori/SKILL.md).
 
@@ -25,9 +25,13 @@ Before confirm, a read-only minion maps each work unit's fix surface and the fil
 
 For any goal that could naturally sprawl (CI gate, audit, doc rewrite, contract change), name the cap. Broader work files as follow-up tickets after the mission, not inside it.
 
-## 4. Confirm before dispatch
+## 4. Split shape
 
-List the crew, the recon-grounded slices, and the scope caps. Wait for go. Don't dispatch until they are confirmed.
+Decide how many PRs the feature becomes: the fewest such that each PR is independently shippable on trunk (compiles, suite green, no half-wired feature). The default is one feature, one branch, one PR, with units folding serially. A parallel split into multiple independent PRs is preferred only when a shared contract makes the units genuinely independent and the split stays at three PRs or fewer; past three, contract churn dominates and the work goes serial. A single PR caps at +1000 added lines; crossing it splits off the remainder as a follow-up, cut at a clean boundary so each side still stands alone. A feature that cannot be sliced this way is a planning smell to flag here.
+
+## 5. Confirm before dispatch
+
+List the crew, the recon-grounded slices, the scope caps, and the split shape. Wait for go. Don't dispatch until they are confirmed.
 
 ## Worked example
 
