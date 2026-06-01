@@ -2,7 +2,7 @@
 
 The `ball` role adds permanent balls to the court. Effects add temporary ones.
 
-**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Effect System (`tech/04-effect-system.md`).
+**Dependencies:** Items (`08-items.md`), ItemManager (`08-item-manager.md`), Roles (`tech/06-roles.md`), Effect System (`../effect-system.md`).
 
 ---
 

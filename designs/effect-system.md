@@ -226,7 +226,7 @@ set_ball_speed
 halve_streak
 ```
 
-`expand_kit_slots` is removed under the new model (`../08-items.md`). Kit slots as counted capacity no longer exist; authored item roles (see [`06-roles.md`](06-roles.md)) with per-role capacity rules replace them. Items that once expanded slots (e.g. Spare) become stat or fixture items.
+`expand_kit_slots` is removed under the new model (`01-prototype/08-items.md`). Kit slots as counted capacity no longer exist; authored item roles (see [`01-prototype/tech/06-roles.md`](01-prototype/tech/06-roles.md)) with per-role capacity rules replace them. Items that once expanded slots (e.g. Spare) become stat or fixture items.
 
 ### ModifierOp
 
