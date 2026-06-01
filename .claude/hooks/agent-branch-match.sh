@@ -24,7 +24,9 @@ except Exception:
 # A branch the brief names to work on: the project's branch-name shapes.
 named = re.findall(r'\b(?:feature|chore|fix|docs|refactor|test|ci|perf)/[a-z0-9][a-z0-9._/-]*', prompt)
 # Drop trivial trailing punctuation a sentence might attach.
-named = [b.rstrip('.,);\`\"') for b in named]
+named = [b.rstrip('.,);/\`\"') for b in named]
+# Drop file paths: a docs/ or ci/ prefix also names a referenced file, whose last segment carries an extension.
+named = [b for b in named if '.' not in b.rsplit('/', 1)[-1]]
 # Unique, preserve order.
 seen = []
 for b in named:
