@@ -58,22 +58,22 @@ func _detach_ball(old_ball: Ball) -> void:
 	_recompute_from_tracked()
 
 
-func _on_ball_speed_changed(new_speed: float, min_speed: float, max_speed: float) -> void:
-	# Multi-ball: the bar shows the highest live-ball speed; min/max bands track the
-	# emitting ball, which is fine because every ball reads the same ItemManager stats.
+func _on_ball_speed_changed(new_speed: float, tier_floor: float, tier_ceiling: float) -> void:
+	# Multi-ball: the bar shows the highest live-ball speed; the band tracks the emitting
+	# ball's current tier, which is fine because every ball reads the same tier table.
 	var highest: float = new_speed
 	for tracked in _balls:
 		if is_instance_valid(tracked) and tracked.speed > highest:
 			highest = tracked.speed
 	if (
 		is_equal_approx(highest, current_speed)
-		and is_equal_approx(min_speed, _min_speed)
-		and is_equal_approx(max_speed, _max_speed)
+		and is_equal_approx(tier_floor, _min_speed)
+		and is_equal_approx(tier_ceiling, _max_speed)
 	):
 		return
 	current_speed = highest
-	_min_speed = min_speed
-	_max_speed = max_speed
+	_min_speed = tier_floor
+	_max_speed = tier_ceiling
 	queue_redraw()
 
 

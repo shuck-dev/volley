@@ -62,7 +62,7 @@ func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
 		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager
 	)
-	ball.speed = clampf(_base_speed + _applied_offset, ball.min_speed, ball.max_speed)
+	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
 
 
 func process_hit(struck_paddle: Paddle) -> void:

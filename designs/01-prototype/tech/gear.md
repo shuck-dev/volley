@@ -46,7 +46,7 @@ func unequip(item_key: String) -> bool:
     return deactivate(item_key)
 ```
 
-`activate` and `deactivate` stay as the universal placement / effect-registration primitive (per [`04-effect-system.md`](04-effect-system.md)). Ball-role items continue calling `activate` directly. Equipment goes through `equip` / `unequip` so capacity is checked on the way in.
+`activate` and `deactivate` stay as the universal placement / effect-registration primitive (per [`effect-system`](../../effect-system/README.md)). Ball-role items continue calling `activate` directly. Equipment goes through `equip` / `unequip` so capacity is checked on the way in.
 
 `equip_refused(item_key, reason: StringName)` signal: `reason` is currently `&"capacity_exceeded"` (the sole case). Listeners switch on it. New `reason` values land here as the model grows.
 

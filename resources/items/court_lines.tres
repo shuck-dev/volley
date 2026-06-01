@@ -5,16 +5,15 @@
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_oeb0q"]
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
-[ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/stat_outcome.gd" id="5_stat"]
+[ext_resource type="Script" uid="uid://cylsxmmdpflw1" path="res://scripts/items/effect/outcomes/widen_tier_floors_outcome.gd" id="5_widen"]
 [ext_resource type="PackedScene" uid="uid://c7nst71ac032l" path="res://scenes/items/court_lines.tscn" id="6_art"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
 radius = 8.0
 
 [sub_resource type="Resource" id="outcome_1"]
-script = ExtResource("5_stat")
-stat_key = &"ball_speed_max_range"
-value = 50.0
+script = ExtResource("5_widen")
+lift_fraction = 0.02
 
 [sub_resource type="Resource" id="trigger_1"]
 script = ExtResource("3_trigger")
@@ -33,7 +32,7 @@ type = &"kit"
 role = &"equipment"
 display_name = "Court Lines"
 art = ExtResource("6_art")
-descriptions = Array[String](["Wider than it looks", "The ceiling keeps moving", "Drew them everywhere"])
+descriptions = Array[String](["Wider than it looks", "The start line keeps moving", "Drew them everywhere"])
 base_cost = 40
 max_level = 10
 effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])

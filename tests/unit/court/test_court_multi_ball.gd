@@ -273,3 +273,36 @@ func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 		_court.ball_tracker.get_balls().has(second),
 		"second ball is still tracked even though it did not become current",
 	)
+
+
+func test_tier_advance_reemits_through_court() -> void:
+	var ball: Ball = _spawn_ball("ball_alpha")
+	watch_signals(_court)
+
+	ball.advance_tier()
+
+	assert_signal_emitted_with_parameters(_court, "ball_tier_advanced", [ball.current_tier])
+
+
+func test_peak_entry_reemits_and_fires_legacy_event() -> void:
+	var ball: Ball = _spawn_ball("ball_alpha")
+	ball.current_tier = GameRules.speed_tiers.tier_count() - 1
+	watch_signals(_court)
+	watch_signals(ball)
+
+	ball.advance_tier()
+
+	assert_true(ball.in_peak, "precondition: top-tier advance opens the Peak")
+	assert_signal_emitted_with_parameters(_court, "ball_peak_changed", [true])
+
+
+func test_tier_advance_does_not_fire_peak_signal() -> void:
+	var ball: Ball = _spawn_ball("ball_alpha")
+	ball.current_tier = 0
+	watch_signals(_court)
+
+	ball.advance_tier()
+
+	assert_signal_not_emitted(
+		_court, "ball_peak_changed", "a non-top tier advance must not look like Peak entry"
+	)

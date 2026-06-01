@@ -193,6 +193,8 @@ func test_relock_ramp_intermediate_magnitude_between_endpoints() -> void:
 
 
 func test_set_speed_for_streak_in_arc_updates_entry_value() -> void:
+	# Tier 2 band spans 500; keeps the per-frame clamp from pulling the entry speed down.
+	_ball.current_tier = 2
 	_ball.speed = 500.0
 	_ball.effect_processor.sync_base_speed()
 	_ball.linear_velocity = Vector2(0.0, -500.0)
