@@ -39,6 +39,7 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Narrative](narrative/INDEX.md) | The working arc, soul as a mechanic in fiction, the times. |
 | [Characters](characters/INDEX.md) | Profiles for the people in the protagonist's life. |
 | [Concept](concept/INDEX.md) | Per-mechanic and per-mechanic-set design specs. |
+| [Effect System](effect-system/README.md) | The unified modifier framework: data-not-code, all sources, stat resolution, signal contract. |
 | [Tech-art](tech-art/INDEX.md) | The seam between art and engine. |
 | [Process](process/INDEX.md) | How the team writes, files, dispatches, runs the work. |
 | [Research](research/INDEX.md) | Public essay, internal plans, references, structural studies. |
