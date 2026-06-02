@@ -35,7 +35,7 @@ func _on_personal_volley_best_changed(best: int) -> void:
 
 
 func _hit() -> void:
-	_paddle_stub.paddle_hit.emit()
+	_paddle_stub.paddle_hit.emit(null)
 
 
 func test_personal_volley_best_updates_on_new_high() -> void:

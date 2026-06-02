@@ -284,7 +284,7 @@ func test_tier_advance_reemits_through_court() -> void:
 	assert_signal_emitted_with_parameters(_court, "ball_tier_advanced", [ball.current_tier])
 
 
-func test_peak_entry_reemits_and_fires_legacy_event() -> void:
+func test_final_consolidation_entry_reemits_and_fires_legacy_event() -> void:
 	var ball: Ball = _spawn_ball("ball_alpha")
 	ball.current_tier = GameRules.speed_tiers.tier_count() - 1
 	watch_signals(_court)
@@ -292,11 +292,11 @@ func test_peak_entry_reemits_and_fires_legacy_event() -> void:
 
 	ball.advance_tier()
 
-	assert_true(ball.in_peak, "precondition: top-tier advance opens the Peak")
-	assert_signal_emitted_with_parameters(_court, "ball_peak_changed", [true])
+	assert_true(ball.in_final, "precondition: top-tier advance opens final consolidation")
+	assert_signal_emitted_with_parameters(_court, "ball_final_consolidation_changed", [true])
 
 
-func test_tier_advance_does_not_fire_peak_signal() -> void:
+func test_tier_advance_does_not_fire_final_consolidation_signal() -> void:
 	var ball: Ball = _spawn_ball("ball_alpha")
 	ball.current_tier = 0
 	watch_signals(_court)
@@ -304,14 +304,15 @@ func test_tier_advance_does_not_fire_peak_signal() -> void:
 	ball.advance_tier()
 
 	assert_signal_not_emitted(
-		_court, "ball_peak_changed", "a non-top tier advance must not look like Peak entry"
+		_court,
+		"ball_final_consolidation_changed",
+		"a non-top tier advance must not look like final consolidation entry"
 	)
 
 
 # Regression: the reward handler banks soul for ANY tracked ball, not only the current one.
 # A single-ball binding let a second ball's consolidation go unrewarded.
 func test_non_current_ball_consolidation_banks_soul() -> void:
-	_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 
@@ -325,7 +326,7 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 	second.advance_tier()
 
 	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"),
+		second.soul_multiplier,
 		2.0,
 		0.001,
 		"a tier advance on a tracked but non-current ball must still bank soul",

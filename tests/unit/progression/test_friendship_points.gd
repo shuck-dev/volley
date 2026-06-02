@@ -45,7 +45,7 @@ func before_each() -> void:
 
 
 func _hit() -> void:
-	_paddle_stub.paddle_hit.emit()
+	_paddle_stub.paddle_hit.emit(null)
 
 
 func test_fp_increments_on_each_hit() -> void:

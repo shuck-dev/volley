@@ -3,7 +3,7 @@ extends Node2D
 
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
-signal ball_peak_changed(in_peak: bool)
+signal ball_final_consolidation_changed(in_final: bool)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, friendship_point_rate: float)
 signal partner_changed
@@ -42,6 +42,9 @@ var _item_manager: Node
 var _is_autoplay_active := false
 var _friendship_point_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
+
+# The ball whose hit triggered the current _accumulate_friendship_points call.
+var _hitting_ball: Ball
 
 
 func _ready() -> void:
@@ -93,8 +96,9 @@ func _ready() -> void:
 	ball_tracker.current_ball_changed.connect(_on_current_ball_changed)
 	ball_tracker.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_tracker)
-	ball_tracker.ball_peak_changed.connect(_on_ball_peak_changed)
+	ball_tracker.ball_final_consolidation_changed.connect(_on_ball_final_consolidation_changed)
 	ball_tracker.ball_tier_advanced.connect(_on_ball_tier_advanced)
+	ball_tracker.ball_removed.connect(_tier_reward_handler.on_ball_removed)
 	ball_tracker.register_miss_zone_globally()
 	if ball != null:
 		var pre_set: Ball = ball
@@ -110,7 +114,6 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
-	_item_manager.register_source(load("res://scripts/core/venue_effect_source.gd").new(), 1)
 	_tier_reward_handler.bind(_item_manager)
 	ball_tracker.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
@@ -133,7 +136,8 @@ func _physics_process(delta: float) -> void:
 	_item_manager.process_frame(delta)
 
 
-func _on_paddle_hit() -> void:
+func _on_paddle_hit(hitting_ball: Ball) -> void:
+	_hitting_ball = hitting_ball
 	_volley_count += 1
 	_accumulate_friendship_points()
 
@@ -143,20 +147,22 @@ func _on_paddle_hit() -> void:
 
 	volley_count_changed.emit(_volley_count)
 
+	_hitting_ball = null
+
 
 func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(new_tier)
 
 
-# Peak entry still fires the legacy max-speed event Cadence latches on.
-func _on_ball_peak_changed(in_peak: bool) -> void:
-	ball_peak_changed.emit(in_peak)
-	if in_peak:
+# Final-consolidation entry still fires the legacy max-speed event Cadence latches on.
+func _on_ball_final_consolidation_changed(in_final: bool) -> void:
+	ball_final_consolidation_changed.emit(in_final)
+	if in_final:
 		_item_manager.process_event(&"on_max_speed_reached")
 
 
-func _on_ball_missed() -> void:
-	_tier_reward_handler.reset_rally()
+func _on_ball_missed(missed_ball: Ball) -> void:
+	_tier_reward_handler.reset_rally(missed_ball)
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
@@ -241,7 +247,8 @@ func _accumulate_friendship_points() -> void:
 	var base_points: float = Stats.resolve(
 		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
 	)
-	var multiplier: float = _item_manager.get_stat(&"soul_multiplier")
+	# MOD A: read soul_multiplier from the ball that hit, not the global stat.
+	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
 	)

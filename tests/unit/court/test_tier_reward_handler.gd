@@ -1,6 +1,6 @@
 extends GutTest
 
-# TierRewardHandler: on_consolidation event, first-reach upgrades, and reward signal.
+# TierRewardHandler: consolidation event, first-reach upgrades, and reward signal.
 
 var _handler: Node
 var _ball: Node
@@ -15,9 +15,6 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_manager.state.item_levels["base_ball"] = 1
-
-	var venue_source: Resource = load("res://scripts/core/venue_effect_source.gd").new()
-	_manager.register_source(venue_source, 1)
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -42,17 +39,17 @@ func _top_tier() -> int:
 
 
 func test_soul_multiplier_starts_at_one() -> void:
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, 1.0, 0.001)
 
 
-# --- on_consolidation fires through effect manager ---
+# --- consolidation increments the ball's soul_multiplier ---
 
 
 func test_tier1_consolidation_increments_soul_multiplier() -> void:
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, 2.0, 0.001)
 
 
 func test_tier2_consolidation_increments_soul_multiplier_again() -> void:
@@ -62,14 +59,14 @@ func test_tier2_consolidation_increments_soul_multiplier_again() -> void:
 	_ball.current_tier = 2
 	_ball.advance_tier()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 3.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, 3.0, 0.001)
 
 
 func test_tier0_consolidation_increments_soul_multiplier() -> void:
 	_ball.current_tier = 0
 	_ball.advance_tier()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 2.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, 2.0, 0.001)
 
 
 func test_consolidation_fired_signal_emitted_on_tier_advance() -> void:
@@ -97,37 +94,37 @@ func test_soul_multiplier_resets_to_one_after_miss() -> void:
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	_manager.process_event(&"on_miss")
+	_ball.missed.emit()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), 1.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, 1.0, 0.001)
 
 
-# --- once-per-rally guard at top Peak ---
+# --- once-per-rally guard at top final consolidation ---
 
 
 func test_top_tier_consolidation_fires_only_once_per_rally() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
-	var after_first: float = _manager.get_stat(&"soul_multiplier")
+	var after_first: float = _ball.soul_multiplier
 
-	_ball.in_peak = true
+	_ball.in_final = true
 	_ball.tier_advanced.emit(_top_tier())
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), after_first, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, after_first, 0.001)
 
 
 func test_new_rally_allows_top_tier_to_consolidate_again() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
-	var after_first: float = _manager.get_stat(&"soul_multiplier")
+	var after_first: float = _ball.soul_multiplier
 
 	_handler.reset_rally()
 
-	_ball.in_peak = false
+	_ball.in_final = false
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
 
-	assert_almost_eq(_manager.get_stat(&"soul_multiplier"), after_first + 1.0, 0.001)
+	assert_almost_eq(_ball.soul_multiplier, after_first + 1.0, 0.001)
 
 
 # --- first-reach ball upgrade ---

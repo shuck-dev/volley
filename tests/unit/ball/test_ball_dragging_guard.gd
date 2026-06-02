@@ -9,7 +9,7 @@ class StubPaddle:
 	extends Node2D
 	var hit_count: int = 0
 
-	func on_ball_hit() -> bool:
+	func on_ball_hit(_ball: Ball = null) -> bool:
 		hit_count += 1
 		return true
 

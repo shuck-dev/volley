@@ -6,7 +6,6 @@ const CourtScript: GDScript = preload("res://scripts/core/court.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
-const VenueEffectSourceScript: GDScript = preload("res://scripts/core/venue_effect_source.gd")
 
 var _court: Court
 var _manager: Node
@@ -68,40 +67,42 @@ func _top_tier() -> int:
 
 
 func test_tier1_completion_fires_consolidation_and_increments_multiplier() -> void:
-	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = 1
 
 	ball.advance_tier()
 
 	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"),
+		ball.soul_multiplier,
 		2.0,
 		0.001,
-		"tier 1 completion must increment soul_multiplier to 2"
+		"tier 1 completion must increment ball.soul_multiplier to 2"
 	)
 
 
 func test_no_soul_banked_without_tier_advance() -> void:
-	_spawn_ball()
-	var before: int = _manager.get_friendship_point_balance()
+	var ball: Ball = _spawn_ball()
+	var before: float = ball.soul_multiplier
 
-	assert_eq(_manager.get_friendship_point_balance(), before)
+	assert_almost_eq(ball.soul_multiplier, before, 0.001)
 
 
 func test_per_hit_soul_scales_with_multiplier() -> void:
-	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 
 	_manager.economy.friendship_point_balance = 0
+	_court._hitting_ball = ball
 	_court._accumulate_friendship_points()
+	_court._hitting_ball = null
 	var banked_at_x1: int = _manager.get_friendship_point_balance()
 
 	ball.current_tier = 1
 	ball.advance_tier()
 
 	_manager.economy.friendship_point_balance = 0
+	_court._hitting_ball = ball
 	_court._accumulate_friendship_points()
+	_court._hitting_ball = null
 	var banked_at_x2: int = _manager.get_friendship_point_balance()
 
 	assert_eq(
@@ -111,38 +112,38 @@ func test_per_hit_soul_scales_with_multiplier() -> void:
 	)
 
 
-# --- top-tier Peak entry banks soul once ---
+# --- top-tier final consolidation entry banks soul once ---
 
 
-func test_peak_entry_fires_consolidation() -> void:
-	_manager.register_source(VenueEffectSourceScript.new(), 1)
+func test_final_consolidation_entry_fires_consolidation() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 
 	ball.advance_tier()
 
 	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"),
+		ball.soul_multiplier,
 		2.0,
 		0.001,
-		"top-tier Peak entry must increment soul_multiplier"
+		"top-tier final consolidation entry must increment ball.soul_multiplier"
 	)
 
 
-func test_peak_entry_banks_soul_only_once_per_rally() -> void:
+func test_final_consolidation_entry_banks_soul_only_once_per_rally() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
-	var after_first: int = _manager.get_friendship_point_balance()
+	var after_first: float = ball.soul_multiplier
 
-	ball.in_peak = true
+	ball.in_final = true
 	ball.tier_advanced.emit(_top_tier())
 
-	assert_eq(
-		_manager.get_friendship_point_balance(),
+	assert_almost_eq(
+		ball.soul_multiplier,
 		after_first,
-		"second Peak signal in the same rally must not bank soul again"
+		0.001,
+		"second final-consolidation signal in the same rally must not bank soul again"
 	)
 
 
@@ -150,26 +151,23 @@ func test_peak_entry_banks_soul_only_once_per_rally() -> void:
 
 
 func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
-	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
-	_court._on_ball_missed()
+	ball.missed.emit()
 
-	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"), 1.0, 0.001, "miss must reset soul_multiplier to 1"
-	)
+	assert_almost_eq(ball.soul_multiplier, 1.0, 0.001, "miss must reset ball.soul_multiplier to 1")
 
-	ball.in_peak = false
+	ball.in_final = false
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
 	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"),
+		ball.soul_multiplier,
 		2.0,
 		0.001,
-		"after miss-reset a new Peak must increment the multiplier again"
+		"after miss-reset a new final consolidation must increment the multiplier again"
 	)
 
 
@@ -177,14 +175,13 @@ func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
 
 
 func test_handler_receives_tier_advance_from_tracked_ball() -> void:
-	_manager.register_source(VenueEffectSourceScript.new(), 1)
 	var ball: Ball = _spawn_ball()
 
 	ball.current_tier = 1
 	ball.advance_tier()
 
 	assert_almost_eq(
-		_manager.get_stat(&"soul_multiplier"),
+		ball.soul_multiplier,
 		2.0,
 		0.001,
 		"a tier advance on any tracked ball must reach the handler and bank soul"

@@ -3,6 +3,8 @@ extends Resource
 
 ## One rung of the speed ladder. Bounds are fractions of the derived world max so widening the court rescales the whole ladder.
 
+## Stable identifier for this tier; used by get_tier_by_key. Reserved for future event routing; not yet read in production.
+@export var key: StringName = &""
 ## Tier entry speed as a fraction of BALL_WORLD_MAX_SPEED.
 @export_range(0.0, 1.0) var floor_fraction := 0.0
 ## Tier ceiling speed as a fraction of BALL_WORLD_MAX_SPEED; crossing it completes the tier.

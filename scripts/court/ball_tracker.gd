@@ -3,9 +3,9 @@ extends Node
 
 ## Multi-ball ownership.
 
-signal ball_missed
-## Fires on Peak entry (true) and exit (false), re-emitted from the live ball.
-signal ball_peak_changed(in_peak: bool)
+signal ball_missed(ball: Ball)
+## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
+signal ball_final_consolidation_changed(in_final: bool)
 ## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 signal current_ball_changed(ball: Ball)
@@ -54,11 +54,11 @@ func attach(new_ball: Ball) -> void:
 	if _current_ball == null:
 		_set_current(new_ball)
 
-	if not new_ball.missed.is_connected(_on_ball_missed):
-		new_ball.missed.connect(_on_ball_missed)
+	if not new_ball.missed.is_connected(_on_ball_missed.bind(new_ball)):
+		new_ball.missed.connect(_on_ball_missed.bind(new_ball))
 
-	if not new_ball.at_max_speed_changed.is_connected(_on_ball_peak_changed):
-		new_ball.at_max_speed_changed.connect(_on_ball_peak_changed)
+	if not new_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+		new_ball.at_max_speed_changed.connect(_on_ball_final_consolidation_changed)
 	if not new_ball.tier_advanced.is_connected(_on_ball_tier_advanced.bind(new_ball)):
 		new_ball.tier_advanced.connect(_on_ball_tier_advanced.bind(new_ball))
 	if new_ball.effect_processor != null:
@@ -82,11 +82,11 @@ func detach(old_ball: Ball) -> void:
 	var was_tracked: bool = _balls.has(old_ball)
 	_balls.erase(old_ball)
 	if is_instance_valid(old_ball):
-		if old_ball.missed.is_connected(_on_ball_missed):
-			old_ball.missed.disconnect(_on_ball_missed)
+		if old_ball.missed.is_connected(_on_ball_missed.bind(old_ball)):
+			old_ball.missed.disconnect(_on_ball_missed.bind(old_ball))
 
-		if old_ball.at_max_speed_changed.is_connected(_on_ball_peak_changed):
-			old_ball.at_max_speed_changed.disconnect(_on_ball_peak_changed)
+		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
 		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced.bind(old_ball)):
 			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced.bind(old_ball))
 	if _current_ball == old_ball:
@@ -149,12 +149,12 @@ func _set_current(new_current: Ball) -> void:
 	current_ball_changed.emit(new_current)
 
 
-func _on_ball_missed() -> void:
-	ball_missed.emit()
+func _on_ball_missed(ball: Ball) -> void:
+	ball_missed.emit(ball)
 
 
-func _on_ball_peak_changed(in_peak: bool) -> void:
-	ball_peak_changed.emit(in_peak)
+func _on_ball_final_consolidation_changed(in_final: bool) -> void:
+	ball_final_consolidation_changed.emit(in_final)
 
 
 func _on_ball_tier_advanced(new_tier: int, ball: Ball) -> void:

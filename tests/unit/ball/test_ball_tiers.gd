@@ -1,6 +1,6 @@
 extends GutTest
 
-# Tier state machine and Peak window on Ball: advance, completion event, Peak climb, reset.
+# Tier state machine and final-consolidation window on Ball: advance, completion event, climb, reset.
 
 var _ball: Ball
 var _manager: Node
@@ -20,7 +20,7 @@ func before_each() -> void:
 
 
 func _top_tier() -> int:
-	return GameRules.speed_tiers.tier_count() - 1
+	return GameRules.speed_tiers.tiers.size() - 1
 
 
 # --- tier bounds derive from the table ---
@@ -63,22 +63,22 @@ func test_advance_tier_fires_completion_event() -> void:
 	assert_almost_eq(after, before + 30.0, 0.01, "on_tier_completed fired through the item bus")
 
 
-# --- top tier opens the Peak instead of stepping up ---
-func test_top_tier_completion_opens_peak() -> void:
+# --- top tier opens the final-consolidation window instead of stepping up ---
+func test_top_tier_completion_opens_final_consolidation() -> void:
 	_ball.current_tier = _top_tier()
 	watch_signals(_ball)
 	_ball.advance_tier()
-	assert_true(_ball.in_peak, "completing the top tier opens the Peak window")
+	assert_true(_ball.in_final, "completing the top tier opens the final-consolidation window")
 	assert_eq(_ball.current_tier, _top_tier(), "tier does not step past the top")
 	assert_signal_emitted_with_parameters(_ball, "at_max_speed_changed", [true])
 
 
-func test_peak_climbs_hit_by_hit_without_exceeding_world_max() -> void:
+func test_final_consolidation_climbs_hit_by_hit_without_exceeding_world_max() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
 	var before: float = _ball.speed
 	_ball.increase_speed()
-	assert_gt(_ball.speed, before, "Peak keeps climbing on each hit")
+	assert_gt(_ball.speed, before, "final consolidation keeps climbing on each hit")
 
 	for _i in range(200):
 		_ball.increase_speed()
@@ -86,15 +86,15 @@ func test_peak_climbs_hit_by_hit_without_exceeding_world_max() -> void:
 	assert_true(_ball.speed <= _ball.ball_world_max_speed + 0.01, "never exceeds the world max")
 
 
-# --- miss resets tier and closes the Peak ---
-func test_reset_speed_closes_peak_and_returns_to_tier_zero() -> void:
+# --- miss resets tier and closes the final-consolidation window ---
+func test_reset_speed_closes_final_consolidation_and_returns_to_tier_zero() -> void:
 	_ball.current_tier = _top_tier()
 	_ball.advance_tier()
 	watch_signals(_ball)
 
 	_ball.reset_speed()
 
-	assert_false(_ball.in_peak)
+	assert_false(_ball.in_final)
 	assert_eq(_ball.current_tier, 0)
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
 	assert_signal_emitted_with_parameters(_ball, "at_max_speed_changed", [false])

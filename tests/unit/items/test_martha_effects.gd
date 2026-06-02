@@ -48,7 +48,7 @@ func _on_volley_count_changed(count: int) -> void:
 
 
 func _hit() -> void:
-	_paddle_stub.paddle_hit.emit()
+	_paddle_stub.paddle_hit.emit(null)
 
 
 func _register_halve_streak() -> void:

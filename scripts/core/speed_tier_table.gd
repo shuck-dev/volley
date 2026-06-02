@@ -16,6 +16,20 @@ func get_tier(index: int) -> SpeedTier:
 	return tiers[clamped]
 
 
+## Returns the tier whose key matches, or null if not found.
+func get_tier_by_key(key: StringName) -> SpeedTier:
+	for tier: SpeedTier in tiers:
+		if tier.key == key:
+			return tier
+
+	return null
+
+
+## True when tier is the last rung; used to avoid index-arithmetic at call sites.
+func is_top_tier(tier: SpeedTier) -> bool:
+	return tier == tiers.back()
+
+
 ## Number of tiers in the ladder.
 func tier_count() -> int:
 	return tiers.size()

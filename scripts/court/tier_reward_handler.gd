@@ -8,7 +8,8 @@ signal consolidation_fired
 
 var _item_manager: Node
 
-var _peak_banked_this_rally: bool = false
+# Tracks which balls have already banked final-consolidation this rally; pruned when a ball is removed.
+var _final_banked_by_ball: Dictionary = {}
 var _tiers_reached_first_time: Array[int] = []
 
 
@@ -20,26 +21,39 @@ func bind(item_manager: Node) -> void:
 	_item_manager = item_manager
 
 
-func reset_rally() -> void:
-	_peak_banked_this_rally = false
+func reset_rally(ball: Ball = null) -> void:
+	if ball == null:
+		_final_banked_by_ball.clear()
+	else:
+		_final_banked_by_ball.erase(ball)
+
+
+## Prunes a removed ball's entry so the dict doesn't grow unbounded.
+func on_ball_removed(ball: Ball) -> void:
+	_final_banked_by_ball.erase(ball)
 
 
 ## Pays the consolidation reward for whichever ball crossed a tier; driven by BallTracker.ball_tier_advanced.
 func on_tier_advanced(ball: Ball, new_tier: int) -> void:
-	var is_entering_peak: bool = ball != null and ball.in_peak
-	var completed_tier: int = new_tier - 1 if not is_entering_peak else new_tier
+	var is_entering_final: bool = ball != null and ball.in_final
+	var completed_tier: int = new_tier - 1 if not is_entering_final else new_tier
 
 	_handle_first_reach(ball, completed_tier)
 
 	var is_top_tier: bool = (
-		new_tier >= GameRules.speed_tiers.tier_count() - 1 and ball != null and ball.in_peak
+		GameRules.speed_tiers.is_top_tier(GameRules.speed_tiers.get_tier(new_tier))
+		and ball != null
+		and ball.in_final
 	)
 
-	if is_top_tier and _peak_banked_this_rally:
+	if is_top_tier and _final_banked_by_ball.get(ball, false):
 		return
 
 	if is_top_tier:
-		_peak_banked_this_rally = true
+		_final_banked_by_ball[ball] = true
+
+	if ball != null:
+		ball.increment_soul_multiplier(1.0)
 
 	_item_manager.process_event(&"on_consolidation")
 	consolidation_fired.emit()
