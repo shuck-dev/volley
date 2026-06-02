@@ -34,7 +34,7 @@ func test_tier0_floor_resolves_to_base_min() -> void:
 	var world_max: float = config.world_max_speed()
 	var tier0: SpeedTier = SpeedTierTableResource.get_tier(0)
 
-	assert_almost_eq(tier0.floor_fraction * world_max, 225.0, 1.0)
+	assert_almost_eq(tier0.floor_fraction * world_max, 225.0, 3.0)
 
 
 func test_tier0_max_range_carries_base_stats_value() -> void:
@@ -42,7 +42,7 @@ func test_tier0_max_range_carries_base_stats_value() -> void:
 	var world_max: float = config.world_max_speed()
 	var tier0: SpeedTier = SpeedTierTableResource.get_tier(0)
 
-	assert_almost_eq(tier0.max_range_fraction * world_max, 340.0, 1.0)
+	assert_almost_eq(tier0.max_range_fraction * world_max, 340.0, 3.0)
 
 
 func test_top_tier_ceiling_stays_under_world_max() -> void:

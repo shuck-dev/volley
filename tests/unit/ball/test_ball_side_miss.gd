@@ -50,7 +50,7 @@ func test_miss_engages_gravity_and_damping() -> void:
 func test_miss_resets_speed_scalar_for_next_rally() -> void:
 	_ball.speed = 800.0
 	_ball.missed.emit(_ball)
-	assert_almost_eq(_ball.speed, _ball.min_speed, 0.01)
+	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
 
 
 func test_rest_state_skips_normal_speed_lock() -> void:
