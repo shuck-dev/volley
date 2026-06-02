@@ -110,7 +110,7 @@ func test_soul_accumulator_resets_on_miss() -> void:
 
 # --- soul_per_hit stat ---
 func test_soul_per_hit_uses_effect_system_stat() -> void:
-	var item := ItemFactory.create("fp_doubler", &"soul_per_hit", &"percentage", 1.0)
+	var item := ItemFactory.create("soul_doubler", &"soul_per_hit", &"percentage", 1.0)
 	_item_manager.items.assign([item])
 	_item_manager.add_soul(item.base_cost)
 	_item_manager.purchase(item.key)
@@ -123,7 +123,7 @@ func test_soul_per_hit_uses_effect_system_stat() -> void:
 
 
 func test_soul_per_hit_with_quarter_bonus() -> void:
-	var item := ItemFactory.create("fp_quarter", &"soul_per_hit", &"percentage", 0.25)
+	var item := ItemFactory.create("soul_quarter", &"soul_per_hit", &"percentage", 0.25)
 	_item_manager.items.assign([item])
 	_item_manager.add_soul(item.base_cost)
 	_item_manager.purchase(item.key)
