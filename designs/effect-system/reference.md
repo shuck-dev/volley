@@ -1,80 +1,76 @@
-# Reference
+# Effect System Reference
 
-Stable vocabulary tables. All type fields use `StringName` (e.g. `&"always"`) for O(1) comparison and data-driven extensibility. New types require a dispatch branch in `EffectManager`; no enum changes.
+Stable vocabulary for the effect system. All type keys are `StringName` for O(1) comparison and data-driven extensibility.
 
-## TriggerType
+Cross-check against `EffectManager.process_event` for the full current dispatch table. Types listed here as "live" are dispatched by production code; "prototype ideas" are design-time entries that live in [`../01-prototype/tech/04-effect-system.md`](../01-prototype/tech/04-effect-system.md) until implementation lands.
 
-| Key | Fires when |
+---
+
+## Trigger types
+
+A trigger names when an effect fires. `EffectManager.register_source` handles `always`; `process_event` dispatches the rest.
+
+### Live
+
+| Key | When it fires |
 |---|---|
-| `always` | On registration and on source level change |
-| `on_miss` | Ball missed |
-| `on_hit` | Ball hit |
-| `on_personal_best` | Rally counter reaches a new personal best |
-| `on_streak_start` | A streak begins |
-| `on_streak_multiple` | Streak reaches a multiple of N |
-| `on_streak_milestone` | Streak reaches a named milestone |
-| `on_edge_hit` | Ball hits the edge of the paddle |
-| `on_max_speed_reached` | Ball hits the current speed ceiling |
-| `on_ball_behind_paddle` | Ball passes behind the paddle |
-| `on_timer` | Repeating timer fires |
-| `on_return_after_idle` | Player returns after a pause |
-| `on_consolidation` | Ball tiers up (consolidation event) |
+| `always` | On registration and on level change; passive stat effects |
+| `on_miss` | Player or partner misses the ball |
+| `on_max_speed_reached` | Ball reaches its per-run speed ceiling |
 
-## ConditionType
+### Prototype ideas
 
-| Key | Passes when |
-|---|---|
-| `game_state_is` | A named game state is active |
-| `game_state_is_not` | A named game state is not active |
-| `delay_random` | A random delay has elapsed since the trigger |
-| `degradation_at` | Item degradation equals the specified value |
-| `degradation_below` | Item degradation is below the specified value |
+The types below are authored in the design but not yet dispatched by game code. They belong in `designs/01-prototype/tech/04-effect-system.md` until they land.
 
-## OutcomeType
+`on_hit`, `on_personal_best`, `on_streak_start`, `on_streak_multiple`, `on_streak_milestone`, `on_edge_hit`, `on_ball_behind_paddle`, `on_timer`, `on_return_after_idle`
 
-| Key | What it does |
-|---|---|
-| `modify_stat` | Permanent (while source is registered) stat add |
-| `modify_stat_until_miss` | Additive stat delta, cleared on next miss |
-| `multiply_stat_temporary` | Multiplicative stat delta, cleared on next miss |
-| `spawn_ball` | Adds a temporary ball to the court |
-| `clear_extra_balls` | Removes all temporary balls |
-| `set_game_state` | Activates or deactivates a named game state |
-| `deflect_ball` | Changes ball direction |
-| `spawn_gravity_well` | Places a gravity attractor on the court |
-| `intensify_gravity_well` | Spikes an existing gravity well's pull |
-| `award_friendship_points` | Adds to the friendship point balance |
-| `increment_degradation` | Advances item degradation by one step |
-| `share_stats_with_partner` | Lifts the active partner's stats by the player's upgrade delta |
-| `momentum_boost` | Adds a short burst to ball speed |
-| `oscillate_stat` | Continuously varies a stat on a sine wave |
-| `roll_table` | Picks one outcome from a weighted set and executes it |
-| `set_ball_speed` | Overrides the current ball speed |
-| `halve_streak` | Halves the current streak count |
+---
 
-`expand_kit_slots` is removed. Kit capacity is governed by the `kit_slots` stat and per-role rules; see [`../01-prototype/tech/06-roles.md`](../01-prototype/tech/06-roles.md).
+## Outcome types
 
-## ModifierOp
+An outcome is a concrete `Outcome` subclass. Each subclass implements `apply(effect_state, source_key, level)`.
+
+### Live
+
+| Class | What it does | Example item |
+|---|---|---|
+| `StatOutcome` | Adds a permanent stat modifier (add, percentage, or multiply) | Ankle Weights (+paddle_speed) |
+| `StatUntilMissOutcome` | Adds a temporary modifier, cleared on the next miss | Cadence (ceiling raise on max speed) |
+| `OscillateStatOutcome` | Adds a continuous sinusoidal modifier, ticked every frame | Cadence (ball_speed_offset oscillation) |
+| `HalveStreakOutcome` | Returns `halve_streak` game action; Court halves `_volley_count` | Seven Years (planned use) |
+| `GameActionOutcome` | Returns an arbitrary `action_key` string to the caller | Base for game actions |
+
+### Prototype ideas
+
+The types below are designed but have no implementing subclass. They belong in `designs/01-prototype/tech/04-effect-system.md` until they land.
+
+`spawn_ball`, `clear_extra_balls`, `set_game_state`, `deflect_ball`, `spawn_gravity_well`, `intensify_gravity_well`, `award_friendship_points`, `increment_degradation`, `share_stats_with_partner`, `momentum_boost`, `roll_table`, `set_ball_speed`, `multiply_stat_temporary`
+
+---
+
+## Condition types
+
+The `Condition` class exists; condition evaluation is not yet wired into `EffectManager.process_event`. All condition types are prototype ideas for now.
+
+`game_state_is`, `game_state_is_not`, `delay_random`, `degradation_at`, `degradation_below`
+
+---
+
+## Modifier operations
 
 | Key | Behaviour |
 |---|---|
 | `add` | Flat delta; applied first |
-| `percentage` | Summed additively; applied as `(1 + total)` multiplier after add |
+| `percentage` | Summed additively, applied as `(1 + total)` multiplier after add |
 | `multiply` | Applied sequentially after percentage |
 
-## ExpiryCondition
+Resolution order: add, then percentage, then multiply. Two `+50%` modifiers give `+100%` (×2.0), not ×2.25.
 
-| Key | Removed when |
-|---|---|
-| `while_on_court` | The source leaves the court or is destroyed |
-| `duration` | A timer expires after N seconds |
-| `until_miss` | The next miss fires (stackable) |
-| `until_state_exits` | A named game state ends |
-| `until_next_trigger` | The same effect fires again |
+---
 
 ## Stat keys
 
-`EffectState` is key-agnostic. Game systems register base values at startup. New keys require no changes to `EffectState`.
+`EffectState` is key-agnostic. Base values register at startup via `GameRules`. The prototype stat register:
 
 | Key | Base value | Unit |
 |---|---|---|
@@ -84,27 +80,10 @@ Stable vocabulary tables. All type fields use `StringName` (e.g. `&"always"`) fo
 | `ball_speed_min` | 400.0 | px/s |
 | `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
-| `friendship_points_per_hit` | 1.0 | friendship |
+| `friendship_points_per_hit` | 1.0 | unit |
 | `ball_magnetism` | 0.0 | force |
 | `paddle_return_angle_max_degrees` | 0.0 | degrees |
 | `ball_speed_offset` | 0.0 | px/s |
 | `arena_height` | 986.0 | px |
-| `soul_multiplier` | 1.0 | multiplier |
 
-`paddle_size` is clamped to `[paddle_size_min, arena_height]` by the paddle entity. All base values are registered from `GameRules.BASE_STATS` at startup.
-
-## Named game states
-
-| State | Set by | Meaning |
-|---|---|---|
-| `frenzy` | The Stray | Multi-ball chaos mode; speed doubled; ends on miss |
-
-## DescriptionState
-
-Indexes into `Item.descriptions`. Tracked per item in `ProgressionData`.
-
-| Value | Meaning |
-|---|---|
-| `default` | Base description |
-| `power_revealed` | Power description unlocked |
-| `narrative_revealed` | Narrative layer unlocked |
+All base values are defined in `GameRules` and registered by `EffectManager` on `_ready()`. Game systems query `EffectManager.get_stat(key)` as the single source of truth; they never read raw base values directly.

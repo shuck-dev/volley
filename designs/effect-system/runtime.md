@@ -1,53 +1,110 @@
-# Runtime Behaviour
+# Effect System: Runtime Behaviour
+
+How the effect system moves from a game event to an outcome. Stat resolution, oscillation, and the item lifecycle diagrams.
+
+---
+
+## Event to outcome
+
+```mermaid
+sequenceDiagram
+    participant Game
+    participant EffectManager
+    participant EffectState
+
+    Game->>EffectManager: process_event("on_miss")
+    EffectManager->>EffectManager: collect effects whose trigger.type matches
+    EffectManager->>EffectManager: execute outcomes for each match
+    EffectManager->>EffectState: add/remove modifiers
+    EffectManager->>Game: return game actions (Array[StringName])
+    EffectState->>EffectState: clear_temporary_modifiers() [on_miss only]
+```
+
+`process_event` returns an `Array[StringName]` of game actions to the caller. The caller (usually `Court`) acts on them; the effect system does not reach into the scene graph.
+
+---
+
+## Outcome routing
+
+```mermaid
+flowchart LR
+    Outcome --> EffectState["<b>EffectState</b><br/>StatOutcome<br/>StatUntilMissOutcome<br/>OscillateStatOutcome"]
+    Outcome --> GameActions["<b>Caller (Court/Game)</b><br/>HalveStreakOutcome<br/>GameActionOutcome"]
+```
+
+Stat outcomes write to `EffectState` directly. Game actions return a key string; the caller decides what to do with it.
+
+---
+
+## Stat resolution
+
+```mermaid
+flowchart LR
+    Base[Base value] --> Add[Sum add modifiers] --> Pct["Apply percentage (1 + sum)"] --> Multiply[Apply multiply modifiers] --> Clamp[Clamp to valid range] --> Final[Final value]
+```
+
+`EffectManager.get_stat(key)` is the single query point. All gameplay code calls it; nothing reads raw base values.
+
+`get_base_stat(key)` excludes temporary modifiers (those with `temporary = true`). Use it when a proportional modifier should scale against a stable baseline rather than the live modified value.
+
+Example: base 50, +10 add, +140% percentage, ×2 multiply gives `(50 + 10) * (1 + 1.4) * 2 = 288`.
+
+---
 
 ## Oscillation
 
-`oscillate_stat` is continuous, not event-driven. `EffectManager` ticks it every frame.
+`OscillateStatOutcome` runs continuously, not on events. `EffectManager.process_frame(delta)` ticks it every physics frame.
 
 ```
 value = base + amplitude * sin(time * frequency + phase_offset)
 ```
 
-Frequency and phase offset are randomised per effect instance so oscillation feels unpredictable rather than rhythmic. Amplitude scales with item level. The value updates every frame through `EffectState` like any other modifier.
+Frequency and phase offset are randomised per effect instance. Amplitude scales with item level. The modifier updates through `EffectState` like any other, but its value changes every frame.
 
-## Delayed effects
+---
 
-Some conditions introduce a delay between trigger and outcome. `delay_random` is the current case.
+## Item lifecycle
 
-`EffectManager` holds a list of pending delayed effects. Each tick it decrements their timers. If the invalidation event fires before the timer expires, the delayed effect discards. The lifecycle is:
+Standard items follow a simple path.
 
-1. Trigger fires; `delay_random` condition starts a timer.
-2. Timer runs; the effect waits.
-3. Timer expires; outcomes execute.
-4. If a miss fires while waiting, the effect is discarded without executing.
+```mermaid
+stateDiagram-v2
+    [*] --> Owned
+    Owned --> Court: activate
+    Owned --> Inactive: deactivate / default
+    Court --> Inactive: deactivate
+    Inactive --> Court: activate
+    Court --> Destroyed: Tinkerer
+    Inactive --> Destroyed: Tinkerer
+    Destroyed --> [*]
 
-## Roll tables
+    state Court {
+        [*] --> Level1
+        Level1 --> Level2: upgrade
+        Level2 --> Level3: upgrade
+    }
+```
 
-`roll_table` picks one outcome from an equally weighted set and executes it. The selection is a single random draw, not sequential evaluation.
+Every level change calls `unregister_source` then `register_source` with the new level, passing it to `get_effects_for_level()`. The effect set for the new level replaces the old one atomically.
 
-"Long Shot Pays" is a special roll-table outcome that re-executes every other positive outcome in the table on the same roll.
+---
 
-## Item lifecycle as a model
+## `always` trigger
 
-**Standard items** move through owned, court-active, and inactive. Activating an item registers its effects; deactivating unregisters and cleans up. The Tinkerer can destroy an item from either court-active or inactive states.
+`always` effects apply on registration and re-apply on every level change. They are permanent stat modifiers for the life of the source's registration; no game event is needed to trigger them.
 
-**Degrading items** (Seven Years) extend the standard lifecycle with a degradation dimension. Each miss increments degradation. Levelling up resets it. When degradation reaches 100 the item breaks; broken items cannot be repaired, only destroyed. The broken state is derived: `degradation >= 100`.
+Passive items (Ankle Weights, Grip Tape, Court Lines, Training Ball, Wrist Brace) use `always` exclusively.
 
-Degradation is a stat in `EffectState`, keyed per item (`degradation:seven_years`). The `increment_degradation` outcome is a `modify_stat` call on this key. The `degradation_at` and `degradation_below` conditions query it via `get_stat`.
+---
 
-## Signal payload contract
+## Temporary modifiers
 
-`EffectManager` emits signals after executing outcomes. The presentation layer subscribes to these; it never subscribes to the raw game events directly. All signals carry `item_key` so subscribers can differentiate sources without knowing effect internals.
+Modifiers with `temporary = true` are excluded from `get_base_stat` and cleared by `clear_temporary_modifiers()`, which fires at the end of every `on_miss` dispatch. The outcome sets the flag; `EffectState` does not know the reason.
 
-| Signal | Payload | When |
-|---|---|---|
-| `game_state_entered(state, item_key)` | `state: String`, `item_key: String` | Named game state activated |
-| `game_state_exited(state, item_key)` | `state: String`, `item_key: String` | Named game state deactivated |
-| `ball_spawned(item_key)` | `item_key: String` | Extra ball added to the court |
-| `extra_balls_cleared(item_key)` | `item_key: String` | All extra balls removed |
-| `item_buff_started(stat_key, duration, item_key)` | `stat_key: String`, `duration: float`, `item_key: String` | Temporary stat modification begins |
-| `item_buff_expired(stat_key, item_key)` | `stat_key: String`, `item_key: String` | Temporary stat modification ends |
-| `ball_deflected(item_key)` | `item_key: String` | Ball direction changed by an item |
-| `gravity_well_spawned(position, item_key)` | `position: Vector2`, `item_key: String` | Gravity point placed on court |
-| `gravity_well_intensified(item_key)` | `item_key: String` | Gravity well pull spiked |
-| `roll_result(outcome_name, item_key)` | `outcome_name: String`, `item_key: String` | Roll table resolved |
+`StatUntilMissOutcome` is the current user. Cadence uses it to hold a ceiling raise until the next miss.
+
+---
+
+## `ItemDefinition` is pure data
+
+`ItemDefinition` is a Resource with no level or runtime state on the instance. Level lives in `ProgressionData`, keyed by item key. `ItemManager` owns the economy; `EffectManager` owns the evaluation.
