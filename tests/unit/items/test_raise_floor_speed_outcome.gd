@@ -1,10 +1,13 @@
 extends GutTest
 
-# Court Lines' widen_tier_floors lifts the floor of tiers above Tier 0 via a tier_floor_lift
+# Court Lines' raise_floor_speed lifts the floor of tiers above Tier 0 via a tier_floor_lift
 # modifier the ball reads; Tier 0 is untouched and the lift never overshoots the ceiling.
 
 const LIFT_FRACTION := 0.02
 const COURT_LINES := preload("res://resources/items/court_lines.tres")
+const RaiseFloorSpeedScript: GDScript = preload(
+	"res://scripts/items/effect/outcomes/raise_floor_speed_outcome.gd"
+)
 
 var _manager: Node
 var _ball: Ball
@@ -31,7 +34,9 @@ func _buy_court_lines() -> void:
 
 func test_outcome_registers_tier_floor_lift_modifier() -> void:
 	var outcome: Outcome = COURT_LINES.effects[0].outcomes[0]
-	assert_true(outcome is WidenTierFloorsOutcome, "court_lines drives widen_tier_floors")
+	assert_true(
+		outcome.get_script() == RaiseFloorSpeedScript, "court_lines drives raise_floor_speed"
+	)
 
 
 func test_tier_zero_floor_unchanged_after_purchase() -> void:

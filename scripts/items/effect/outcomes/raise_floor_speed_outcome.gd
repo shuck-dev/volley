@@ -1,4 +1,4 @@
-class_name WidenTierFloorsOutcome
+class_name RaiseFloorSpeedOutcome
 extends Outcome
 
 ## Lift applied to the floor of every tier above Tier 0, as a fraction of the world max; bands start higher, climbs shorten, ceilings hold.

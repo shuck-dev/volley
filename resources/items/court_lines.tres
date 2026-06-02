@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_oeb0q"]
 [ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
-[ext_resource type="Script" uid="uid://cylsxmmdpflw1" path="res://scripts/items/effect/outcomes/widen_tier_floors_outcome.gd" id="5_widen"]
+[ext_resource type="Script" uid="uid://cylsxmmdpflw1" path="res://scripts/items/effect/outcomes/raise_floor_speed_outcome.gd" id="5_widen"]
 [ext_resource type="PackedScene" uid="uid://c7nst71ac032l" path="res://scenes/items/court_lines.tscn" id="6_art"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
