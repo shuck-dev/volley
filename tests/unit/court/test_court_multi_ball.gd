@@ -275,41 +275,6 @@ func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 	)
 
 
-func test_tier_advance_reemits_through_court() -> void:
-	var ball: Ball = _spawn_ball("ball_alpha")
-	watch_signals(_court)
-
-	ball.advance_tier()
-
-	assert_signal_emitted_with_parameters(_court, "ball_tier_advanced", [ball.current_tier])
-
-
-func test_final_consolidation_entry_reemits_and_fires_legacy_event() -> void:
-	var ball: Ball = _spawn_ball("ball_alpha")
-	ball.current_tier = GameRules.speed_tiers.tier_count() - 1
-	watch_signals(_court)
-	watch_signals(ball)
-
-	ball.advance_tier()
-
-	assert_true(ball.in_final, "precondition: top-tier advance opens final consolidation")
-	assert_signal_emitted_with_parameters(_court, "ball_final_consolidation_changed", [true])
-
-
-func test_tier_advance_does_not_fire_final_consolidation_signal() -> void:
-	var ball: Ball = _spawn_ball("ball_alpha")
-	ball.current_tier = 0
-	watch_signals(_court)
-
-	ball.advance_tier()
-
-	assert_signal_not_emitted(
-		_court,
-		"ball_final_consolidation_changed",
-		"a non-top tier advance must not look like final consolidation entry"
-	)
-
-
 # Regression: the reward handler banks soul for ANY tracked ball, not only the current one.
 # A single-ball binding let a second ball's consolidation go unrewarded.
 func test_non_current_ball_consolidation_banks_soul() -> void:

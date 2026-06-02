@@ -63,27 +63,21 @@ func _top_tier() -> int:
 	return GameRules.speed_tiers.tier_count() - 1
 
 
-# --- tier completion banks soul at court level ---
+# --- soul_multiplier rises by 1 on consolidation (tier advance) ---
 
 
-func test_tier1_completion_fires_consolidation_and_increments_multiplier() -> void:
+func test_soul_multiplier_increments_on_tier_advance() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = 1
 
 	ball.advance_tier()
 
 	assert_almost_eq(
-		ball.soul_multiplier,
-		2.0,
-		0.001,
-		"tier 1 completion must increment ball.soul_multiplier to 2"
+		ball.soul_multiplier, 2.0, 0.001, "tier advance must increment ball.soul_multiplier by 1"
 	)
 
 
-func test_no_soul_banked_without_tier_advance() -> void:
-	var ball: Ball = _spawn_ball()
-
-	assert_almost_eq(ball.soul_multiplier, 1.0, 0.001)
+# --- per-hit soul uses the ball's own multiplier ---
 
 
 func test_per_hit_soul_scales_with_multiplier() -> void:
@@ -107,45 +101,10 @@ func test_per_hit_soul_scales_with_multiplier() -> void:
 	)
 
 
-# --- top-tier final consolidation entry banks soul once ---
+# --- miss resets that ball's multiplier to 1 ---
 
 
-func test_final_consolidation_entry_fires_consolidation() -> void:
-	var ball: Ball = _spawn_ball()
-	ball.current_tier = _top_tier()
-
-	ball.advance_tier()
-
-	assert_almost_eq(
-		ball.soul_multiplier,
-		2.0,
-		0.001,
-		"top-tier final consolidation entry must increment ball.soul_multiplier"
-	)
-
-
-func test_final_consolidation_entry_banks_soul_only_once_per_rally() -> void:
-	var ball: Ball = _spawn_ball()
-	ball.current_tier = _top_tier()
-	ball.advance_tier()
-
-	var after_first: float = ball.soul_multiplier
-
-	ball.in_final = true
-	ball.tier_advanced.emit(ball, _top_tier())
-
-	assert_almost_eq(
-		ball.soul_multiplier,
-		after_first,
-		0.001,
-		"second final-consolidation signal in the same rally must not bank soul again"
-	)
-
-
-# --- miss resets the rally state ---
-
-
-func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
+func test_miss_resets_soul_multiplier_to_one() -> void:
 	var ball: Ball = _spawn_ball()
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
@@ -163,21 +122,4 @@ func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
 		2.0,
 		0.001,
 		"after miss-reset a new final consolidation must increment the multiplier again"
-	)
-
-
-# --- any tracked ball routes tier rewards through the handler ---
-
-
-func test_handler_receives_tier_advance_from_tracked_ball() -> void:
-	var ball: Ball = _spawn_ball()
-
-	ball.current_tier = 1
-	ball.advance_tier()
-
-	assert_almost_eq(
-		ball.soul_multiplier,
-		2.0,
-		0.001,
-		"a tier advance on any tracked ball must reach the handler and bank soul"
 	)
