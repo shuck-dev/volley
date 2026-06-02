@@ -275,6 +275,41 @@ func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 	)
 
 
+# Regression: first-reach tier upgrades must fire independently per ball, not once globally.
+# Ball A reaching tier 0 first should not consume the first-reach slot for ball B.
+func test_first_reach_upgrade_fires_independently_per_ball() -> void:
+	var first: Ball = _spawn_ball("ball_alpha")
+	var second: Ball = _spawn_ball("ball_beta")
+
+	var alpha_level_before: int = _manager.get_level("ball_alpha")
+	var beta_level_before: int = _manager.get_level("ball_beta")
+
+	assert_eq(alpha_level_before, 1, "precondition: ball_alpha starts at level 1")
+	assert_eq(beta_level_before, 1, "precondition: ball_beta starts at level 1")
+
+	first.current_tier = 0
+	first.advance_tier()
+
+	await get_tree().process_frame
+
+	assert_eq(
+		_manager.get_level("ball_alpha"),
+		alpha_level_before + 1,
+		"first ball reaching tier 0 for the first time must trigger its upgrade",
+	)
+
+	second.current_tier = 0
+	second.advance_tier()
+
+	await get_tree().process_frame
+
+	assert_eq(
+		_manager.get_level("ball_beta"),
+		beta_level_before + 1,
+		"second ball reaching tier 0 for the first time must also trigger its own upgrade, independent of ball_alpha",
+	)
+
+
 # Regression: the reward handler banks soul for ANY tracked ball, not only the current one.
 # A single-ball binding let a second ball's consolidation go unrewarded.
 func test_non_current_ball_consolidation_banks_soul() -> void:

@@ -10,7 +10,7 @@ var _item_manager: Node
 
 # Per-ball flag guarding the once-per-rally final-consolidation reward.
 var _final_banked_by_ball: Dictionary = {}
-var _tiers_reached_first_time: Array[int] = []
+var _tiers_reached_first_time_by_ball: Dictionary = {}
 
 
 func _ready() -> void:
@@ -24,13 +24,16 @@ func bind(item_manager: Node) -> void:
 func reset_rally(ball: Ball = null) -> void:
 	if ball == null:
 		_final_banked_by_ball.clear()
+		_tiers_reached_first_time_by_ball.clear()
 	else:
 		_final_banked_by_ball.erase(ball)
+		_tiers_reached_first_time_by_ball.erase(ball)
 
 
-## Prunes a removed ball's entry so the dict doesn't grow unbounded.
+## Prunes a removed ball's entries so the dicts don't grow unbounded.
 func on_ball_removed(ball: Ball) -> void:
 	_final_banked_by_ball.erase(ball)
+	_tiers_reached_first_time_by_ball.erase(ball)
 
 
 ## Pays the consolidation reward for whichever ball crossed a tier; driven by BallTracker.ball_tier_advanced.
@@ -60,10 +63,15 @@ func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 
 
 func _handle_first_reach(ball: Ball, completed_tier: int) -> void:
-	if _tiers_reached_first_time.has(completed_tier):
+	if not _tiers_reached_first_time_by_ball.has(ball):
+		_tiers_reached_first_time_by_ball[ball] = []
+
+	var reached: Array = _tiers_reached_first_time_by_ball[ball]
+
+	if reached.has(completed_tier):
 		return
 
-	_tiers_reached_first_time.append(completed_tier)
+	reached.append(completed_tier)
 
 	if ball == null or ball.item_key.is_empty():
 		return
