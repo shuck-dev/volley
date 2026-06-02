@@ -75,7 +75,7 @@ func test_halve_streak_halves_volley_count_on_miss() -> void:
 		_hit()
 	_register_halve_streak()
 
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 
 	assert_eq(_last_volley_count, 5)
 
@@ -85,7 +85,7 @@ func test_halve_streak_floors_odd_count() -> void:
 		_hit()
 	_register_halve_streak()
 
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 
 	assert_eq(_last_volley_count, 3)
 
@@ -94,7 +94,7 @@ func test_without_halve_streak_volley_resets_to_zero() -> void:
 	for hit_index in range(10):
 		_hit()
 
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 
 	assert_eq(_last_volley_count, 0)
 
@@ -103,7 +103,7 @@ func test_halve_streak_on_single_volley_halves_to_zero() -> void:
 	_hit()
 	_register_halve_streak()
 
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 
 	assert_eq(_last_volley_count, 0)
 

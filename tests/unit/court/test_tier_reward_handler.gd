@@ -27,7 +27,7 @@ func before_each() -> void:
 	_handler.bind(_manager)
 	# BallTracker binds the advancing ball; mirror that here so advance_tier reaches the handler.
 	_ball.tier_advanced.connect(
-		func(new_tier: int) -> void: _handler.on_tier_advanced(_ball, new_tier)
+		func(ball: Ball, new_tier: int) -> void: _handler.on_tier_advanced(ball, new_tier)
 	)
 
 
@@ -94,7 +94,7 @@ func test_soul_multiplier_resets_to_one_after_miss() -> void:
 	_ball.current_tier = 1
 	_ball.advance_tier()
 
-	_ball.missed.emit()
+	_ball.missed.emit(_ball)
 
 	assert_almost_eq(_ball.soul_multiplier, 1.0, 0.001)
 
@@ -108,7 +108,7 @@ func test_top_tier_consolidation_fires_only_once_per_rally() -> void:
 	var after_first: float = _ball.soul_multiplier
 
 	_ball.in_final = true
-	_ball.tier_advanced.emit(_top_tier())
+	_ball.tier_advanced.emit(_ball, _top_tier())
 
 	assert_almost_eq(_ball.soul_multiplier, after_first, 0.001)
 

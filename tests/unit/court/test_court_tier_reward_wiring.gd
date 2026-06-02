@@ -82,27 +82,22 @@ func test_tier1_completion_fires_consolidation_and_increments_multiplier() -> vo
 
 func test_no_soul_banked_without_tier_advance() -> void:
 	var ball: Ball = _spawn_ball()
-	var before: float = ball.soul_multiplier
 
-	assert_almost_eq(ball.soul_multiplier, before, 0.001)
+	assert_almost_eq(ball.soul_multiplier, 1.0, 0.001)
 
 
 func test_per_hit_soul_scales_with_multiplier() -> void:
 	var ball: Ball = _spawn_ball()
 
 	_manager.economy.friendship_point_balance = 0
-	_court._hitting_ball = ball
-	_court._accumulate_friendship_points()
-	_court._hitting_ball = null
+	_paddle.paddle_hit.emit(ball)
 	var banked_at_x1: int = _manager.get_friendship_point_balance()
 
 	ball.current_tier = 1
 	ball.advance_tier()
 
 	_manager.economy.friendship_point_balance = 0
-	_court._hitting_ball = ball
-	_court._accumulate_friendship_points()
-	_court._hitting_ball = null
+	_paddle.paddle_hit.emit(ball)
 	var banked_at_x2: int = _manager.get_friendship_point_balance()
 
 	assert_eq(
@@ -137,7 +132,7 @@ func test_final_consolidation_entry_banks_soul_only_once_per_rally() -> void:
 	var after_first: float = ball.soul_multiplier
 
 	ball.in_final = true
-	ball.tier_advanced.emit(_top_tier())
+	ball.tier_advanced.emit(ball, _top_tier())
 
 	assert_almost_eq(
 		ball.soul_multiplier,
@@ -155,7 +150,7 @@ func test_ball_missed_resets_rally_and_clears_multiplier() -> void:
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
-	ball.missed.emit()
+	ball.missed.emit(ball)
 
 	assert_almost_eq(ball.soul_multiplier, 1.0, 0.001, "miss must reset ball.soul_multiplier to 1")
 

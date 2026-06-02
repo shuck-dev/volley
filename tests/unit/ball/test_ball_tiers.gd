@@ -44,7 +44,7 @@ func test_advance_tier_emits_tier_advanced() -> void:
 	_ball.current_tier = 0
 	watch_signals(_ball)
 	_ball.advance_tier()
-	assert_signal_emitted_with_parameters(_ball, "tier_advanced", [1])
+	assert_signal_emitted_with_parameters(_ball, "tier_advanced", [_ball, 1])
 
 
 func test_advance_tier_fires_completion_event() -> void:
