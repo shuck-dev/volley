@@ -1,13 +1,13 @@
 class_name Ball
 extends RigidBody2D
 
-signal missed
+signal missed(ball: Ball)
 ## Fires only on final-consolidation entry (true) and exit (false), not on every tier ceiling touch.
 signal at_max_speed_changed(is_at_max: bool)
 ## Carries the current tier's floor and ceiling so a listener can render the active band.
 signal speed_changed(speed: float, tier_floor: float, tier_ceiling: float)
 ## Fires when the rally crosses a tier ceiling and steps up to the next tier.
-signal tier_advanced(new_tier: int)
+signal tier_advanced(ball: Ball, new_tier: int)
 signal grabbed(ball: Ball)
 signal play_state_changed(state: PlayState)
 
@@ -182,10 +182,10 @@ func _on_miss_zone_body_entered(body: Node) -> void:
 	if _suppress_miss_detection:
 		return
 	if body == self:
-		missed.emit()
+		missed.emit(self)
 
 
-func _on_missed() -> void:
+func _on_missed(_ball: Ball) -> void:
 	reset_soul_multiplier()
 	enter_out_rest()
 
@@ -303,7 +303,7 @@ func advance_tier() -> void:
 	_apply_speed()
 	_track_arc_speed_change()
 
-	tier_advanced.emit(current_tier)
+	tier_advanced.emit(self, current_tier)
 	_item_manager.process_event(&"on_tier_completed")
 
 
