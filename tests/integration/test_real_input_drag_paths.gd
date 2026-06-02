@@ -1,7 +1,7 @@
 ## SH-251 + SH-252: drives real `_input(InputEventMouseButton)` through shop and rack drag paths.
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
@@ -24,7 +24,7 @@ var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
-var _drag: BallDragController
+var _drag: ItemDragController
 
 # --- shop fixtures -----------------------------------------------------------------------
 
@@ -112,7 +112,7 @@ func _setup_ball_drag() -> void:
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = COURT_BOUNDS
 	_drag.venue_bounds = VENUE_BOUNDS
@@ -171,7 +171,7 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
 	var viewport: Viewport = live.get_viewport()
 
 	# Press on the live ball routes through Ball._on_input_event → emits `grabbed` →
-	# BallDragController.grab_live_ball. SH-297: routing lives on the child GrabArea.
+	# ItemDragController.grab_live_ball. SH-297: routing lives on the child GrabArea.
 	var grab_area: Area2D = live.get_node("GrabArea") as Area2D
 	grab_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")

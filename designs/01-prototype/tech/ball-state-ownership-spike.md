@@ -13,7 +13,7 @@ Two state fields describe ball role:
 
 Both fields carry an idea of "where this ball is in the run." They are written from different call sites and rarely cross-check each other. Concrete drift surfaces:
 
-- `BallDragController.enter_out_held` (`ball_drag_controller.gd:228`, `:293`) sets `play_state = OUT_HELD` without touching `item_placements`; the placement still reads `ON_COURT` (or whatever it was). The `LOOSE_IN_VENUE` overlay only fires when the gesture actually deposits the ball on the floor (`:361`, `:511`).
+- `ItemDragController.enter_out_held` (`item_drag_controller.gd:228`, `:293`) sets `play_state = OUT_HELD` without touching `item_placements`; the placement still reads `ON_COURT` (or whatever it was). The `LOOSE_IN_VENUE` overlay only fires when the gesture actually deposits the ball on the floor (`:361`, `:511`).
 - `ItemManager._set_item_placement` emits `court_changed`; `BallReconciler._on_court_changed` calls `enter_stored` on deactivate, but a `LOOSE_IN_VENUE` write does not change `play_state` at all; the ball is still whatever the drag controller most recently set.
 - Save-restore reads `ball_play_states` (from `Ball.play_state`) and `item_placements` independently; nothing reconciles them on load.
 

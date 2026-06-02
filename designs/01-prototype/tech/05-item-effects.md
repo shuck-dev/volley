@@ -250,7 +250,7 @@ Effect 4 (level 3)
   outcome: split_bonus(+1 to this split) [snowballs while the player keeps fully merging in time]
 ```
 
-Split fires on soul consolidation; no dependency on the milestone system. Split balls are ephemeral: `is_temporary = true` (skipped by `BallReconciler` on adoption) with a `source_key` back-reference to the parent. They attach to `BallTracker` so effects and magnetism reach them but never enter `BallReconciler._balls_by_key`. Dragged off-court a split ball is destroyed, not racked (`ball_drag_controller.gd` branches on `is_temporary`). Merge keeps the survivor's `source_key` and takes the max speed and tier of the pair; `on_balls_close` is a per-frame pairwise distance test over `BallTracker.get_balls()`, not a RigidBody contact. Level 3 gates merging to pairs containing the original (the only ball carrying live soul) and tracks a per-cycle fully-merged flag to award the next split's bonus.
+Split fires on soul consolidation; no dependency on the milestone system. Split balls are ephemeral: `is_temporary = true` (skipped by `BallReconciler` on adoption) with a `source_key` back-reference to the parent. They attach to `BallTracker` so effects and magnetism reach them but never enter `BallReconciler._balls_by_key`. Dragged off-court a split ball is destroyed, not racked (`item_drag_controller.gd` branches on `is_temporary`). Merge keeps the survivor's `source_key` and takes the max speed and tier of the pair; `on_balls_close` is a per-frame pairwise distance test over `BallTracker.get_balls()`, not a RigidBody contact. Level 3 gates merging to pairs containing the original (the only ball carrying live soul) and tracks a per-cycle fully-merged flag to award the next split's bonus.
 
 ### Helmet (equipment): header
 

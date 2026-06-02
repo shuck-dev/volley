@@ -1,7 +1,7 @@
 class_name DropTarget
 extends RefCounted
 
-## Abstract drop target consulted by BallDragController; first `can_accept` wins.
+## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
 
 
 func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:

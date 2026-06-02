@@ -1,18 +1,18 @@
-## SH-332: covers the register_loose_body refactor on BallDragController.
+## SH-332: covers the register_loose_body refactor on ItemDragController.
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 
-var _controller: BallDragController
+var _controller: ItemDragController
 var _item_manager: Node
 
 
 func before_each() -> void:
 	_item_manager = ItemFactory.create_manager(self)
 	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
-	_controller = BallDragControllerScript.new()
+	_controller = ItemDragControllerScript.new()
 	_controller.configure(_item_manager, null, null, null)
 	add_child_autofree(_controller)
 

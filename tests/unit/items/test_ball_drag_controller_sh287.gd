@@ -1,7 +1,7 @@
-## SH-287: BallDragController behaviours unique to the body-projection refactor.
+## SH-287: ItemDragController behaviours unique to the body-projection refactor.
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
@@ -11,7 +11,7 @@ var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
-var _drag: BallDragController
+var _drag: ItemDragController
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -60,7 +60,7 @@ func before_each() -> void:
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
@@ -79,7 +79,7 @@ func _permanent_balls() -> Array:
 
 
 func test_invalid_release_leaves_gesture_open_when_no_target_accepts() -> void:
-	var drag: BallDragController = BallDragControllerScript.new()
+	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(_manager, null, null, null)
 	add_child_autofree(drag)
 
@@ -117,7 +117,7 @@ func test_expansion_ring_scale_genuinely_widens_the_probe() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 
-	var drag: BallDragController = BallDragControllerScript.new()
+	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(_manager, _rack, _drop_target, _reconciler)
 	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))

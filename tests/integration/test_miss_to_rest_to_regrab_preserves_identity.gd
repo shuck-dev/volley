@@ -2,7 +2,7 @@
 ## one instance, one identity, registry-tracked across every transition.
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
@@ -16,7 +16,7 @@ var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
-var _drag: BallDragController
+var _drag: ItemDragController
 
 
 func before_each() -> void:
@@ -41,7 +41,7 @@ func before_each() -> void:
 	_reconciler.configure(_manager)
 	_host.add_child(_reconciler)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = COURT_BOUNDS
 	_drag.venue_bounds = VENUE_BOUNDS
