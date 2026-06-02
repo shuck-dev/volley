@@ -1,15 +1,15 @@
 ---
 name: dandori
-description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, decide the split shape, confirm. Not the mission-shape walk; that is stages 1 to 3 of the lifecycle.
+description: Gru's implementation-plan walk, run after the mission milestone is filed and before any minion dispatches. Per work unit, name the crew, recon the surfaces, name the scope cap, decide the split shape, confirm. Not the mission-shape walk; that is stages 1 to 2 (Scope, File) of the lifecycle.
 ---
 
 # Dandori, the impl plan
 
-Dandori is the implementation plan, not the mission-shape walk. By the time it runs, the mission is already interrogated, codenamed, and filed (milestone on the correct project, Ride if needed, issues attached). Dandori narrows to: for each work unit, who works it, what it touches, how it is capped, and a confirm before go.
+Dandori is the implementation plan (stage 3, Plan), not the mission-shape walk. By the time it runs, the mission is already scoped and filed (milestone on the correct project, Ride if needed, issues attached). Dandori narrows to: for each work unit, who works it, what it touches, how it is capped, and a confirm before go.
 
-**Trigger.** Josh says "dandori" on a filed mission, or Gru reaches the planning of a mission whose milestone already exists. If the milestone is not filed yet, that is earlier in the lifecycle: do stages 1 to 3 first.
+**Trigger.** Josh says "dandori" on a filed mission, or Gru reaches the planning of a mission whose milestone already exists. If the milestone is not filed yet, that is earlier in the lifecycle: do stages 1 to 2 (Scope, File) first.
 
-**Pairs with:** [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md) (the full ten-stage lifecycle; dandori is stage 4), [`designs/process/dandori.md`](../../../designs/process/dandori.md) (human-readable), and [`dispatch.md`](../dispatch/SKILL.md) (the seven-step flow that runs after confirm).
+**Pairs with:** [`designs/ai/swarm-architecture.md`](../../../designs/ai/swarm-architecture.md) (the full five-stage lifecycle; dandori is stage 3, Plan), [`designs/process/dandori.md`](../../../designs/process/dandori.md) (human-readable), and [`dispatch.md`](../dispatch/SKILL.md) (the seven-step flow that runs after confirm).
 
 ## The five steps
 
