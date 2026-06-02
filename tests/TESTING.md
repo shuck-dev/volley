@@ -91,7 +91,7 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
     var viewport: Viewport = live.get_viewport()
 
     # Press on the live ball: routes through Ball._on_input_event → emits
-    # `pressed` → BallDragController.grab_live_ball.
+    # `pressed` → ItemDragController.grab_live_ball.
     var press := InputEventMouseButton.new()
     press.button_index = MOUSE_BUTTON_LEFT
     press.pressed = true

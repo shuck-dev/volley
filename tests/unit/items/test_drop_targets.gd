@@ -675,8 +675,8 @@ func test_item_definition_carries_at_rest_shape_for_ball_items() -> void:
 
 func test_token_scale_remains_standard_across_items() -> void:
 	# Pins held-token, rack-slot, and definition scales to the single source of truth (SH-261).
-	const BallDragControllerScript: GDScript = preload(
-		"res://scripts/items/ball_drag_controller.gd"
+	const ItemDragControllerScript: GDScript = preload(
+		"res://scripts/items/item_drag_controller.gd"
 	)
 	const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 
@@ -700,7 +700,7 @@ func test_token_scale_remains_standard_across_items() -> void:
 	rack.configure(manager)
 	add_child_autofree(rack)
 
-	var drag: BallDragController = BallDragControllerScript.new()
+	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(manager, rack, null, null)
 	add_child_autofree(drag)
 	drag._spawn_held_body("base_ball", Vector2.ZERO, false)

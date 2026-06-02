@@ -1,7 +1,7 @@
 # gdlint:ignore = max-public-methods
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
@@ -12,7 +12,7 @@ var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
-var _drag: BallDragController
+var _drag: ItemDragController
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -61,7 +61,7 @@ func before_each() -> void:
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
@@ -352,7 +352,7 @@ func test_process_follow_clamps_held_body_to_venue_bounds() -> void:
 
 
 func test_clamp_to_venue_is_identity_when_bounds_unset() -> void:
-	var unbounded: BallDragController = BallDragControllerScript.new()
+	var unbounded: ItemDragController = ItemDragControllerScript.new()
 	add_child_autofree(unbounded)
 	var point := Vector2(12345, -67890)
 	assert_eq(unbounded._clamp_to_venue(point), point, "zero-size venue leaves positions untouched")

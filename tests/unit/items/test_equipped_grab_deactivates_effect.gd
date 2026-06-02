@@ -2,7 +2,7 @@
 ## a cancel snap-back re-equips through the capacity gate so a now-full kit refuses the return.
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
@@ -12,7 +12,7 @@ const STAT_KEY := &"paddle_speed"
 const EFFECT_VALUE := 50.0
 
 var _manager: Node
-var _drag: BallDragController
+var _drag: ItemDragController
 var _base_speed: float
 
 
@@ -69,7 +69,7 @@ func before_each() -> void:
 	var drop_area := Area2D.new()
 	add_child_autofree(drop_area)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, rack, drop_area, reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))

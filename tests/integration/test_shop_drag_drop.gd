@@ -8,7 +8,7 @@ const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weight
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 
@@ -96,7 +96,7 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
-	var drag: BallDragController = BallDragControllerScript.new()
+	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(_item_manager, null, null, reconciler)
 	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
@@ -136,7 +136,7 @@ func test_shop_release_outside_court_spawns_ball_in_registry_via_falling_body() 
 	reconciler.configure(_item_manager)
 	add_child_autofree(reconciler)
 
-	var drag: BallDragController = BallDragControllerScript.new()
+	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(_item_manager, null, null, reconciler)
 	# Tight venue/court so the far-out position lands clearly outside.
 	drag.court_bounds = Rect2(Vector2(-100, -100), Vector2(200, 200))

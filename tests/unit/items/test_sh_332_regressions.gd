@@ -1,7 +1,7 @@
 ## SH-332 regression coverage: post-Ride blockers (gear crash, venue duplicates, shop snap, wall pin).
 extends GutTest
 
-const BallDragControllerScript: GDScript = preload("res://scripts/items/ball_drag_controller.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const HeldBodyScript: GDScript = preload("res://scripts/items/held_body.gd")
@@ -14,7 +14,7 @@ var _gear_rack: RackDisplay
 var _drop_target: Area2D
 var _gear_drop_target: Area2D
 var _reconciler: BallReconciler
-var _drag: BallDragController
+var _drag: ItemDragController
 
 
 func _make_rack(role: StringName) -> RackDisplay:
@@ -84,7 +84,7 @@ func before_each() -> void:
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
-	_drag = BallDragControllerScript.new()
+	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.gear_rack = _gear_rack
 	_drag.gear_rack_drop_target = _gear_drop_target

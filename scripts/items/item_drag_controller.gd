@@ -1,4 +1,4 @@
-class_name BallDragController
+class_name ItemDragController
 extends Node2D
 
 ## Owns the held-body during a drag gesture and polls every registered DropTarget for a valid commit.

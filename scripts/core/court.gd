@@ -15,7 +15,7 @@ signal partner_changed
 @export var ball_tracker: BallTracker
 @export var autoplay_controller: AutoplayController
 @export var timeout_controller: TimeoutController
-@export var drag_controller: BallDragController
+@export var drag_controller: ItemDragController
 
 @export_group("Bounds")
 @export var right_wall: StaticBody2D
