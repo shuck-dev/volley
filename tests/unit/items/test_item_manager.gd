@@ -16,7 +16,7 @@ class TestPurchase:
 		assert_eq(_manager.calculate_cost(TEST_KEY), 100)
 
 	func test_calculate_cost_scales_after_first_purchase() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		assert_eq(_manager.calculate_cost(TEST_KEY), 200)
 
@@ -24,11 +24,11 @@ class TestPurchase:
 		assert_false(_manager.can_purchase(TEST_KEY))
 
 	func test_can_purchase_true_when_balance_sufficient() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		assert_true(_manager.can_purchase(TEST_KEY))
 
 	func test_can_purchase_false_when_at_max_level() -> void:
-		_manager.economy.friendship_point_balance = 10000
+		_manager.economy.soul_balance = 10000
 		_manager.purchase(TEST_KEY)
 		_manager.purchase(TEST_KEY)
 		_manager.purchase(TEST_KEY)
@@ -38,28 +38,28 @@ class TestPurchase:
 		assert_false(_manager.purchase(TEST_KEY))
 
 	func test_purchase_returns_true_when_affordable() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		assert_true(_manager.purchase(TEST_KEY))
 
 	func test_purchase_increments_level() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		assert_eq(_manager.get_level(TEST_KEY), 1)
 
 	func test_purchase_deducts_cost_from_balance() -> void:
-		_manager.economy.friendship_point_balance = 300
+		_manager.economy.soul_balance = 300
 		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.get_friendship_point_balance(), 200)
+		assert_eq(_manager.get_soul_balance(), 200)
 
 	func test_purchase_returns_false_at_max_level() -> void:
-		_manager.economy.friendship_point_balance = 10000
+		_manager.economy.soul_balance = 10000
 		_manager.purchase(TEST_KEY)
 		_manager.purchase(TEST_KEY)
 		_manager.purchase(TEST_KEY)
 		assert_false(_manager.purchase(TEST_KEY))
 
 	func test_purchase_emits_item_level_changed() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		watch_signals(_manager)
 		_manager.purchase(TEST_KEY)
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
@@ -90,7 +90,7 @@ class TestPurchasePlacement:
 		ball.max_level = 3
 		ball.effects = []
 		_manager.items.assign([gear, ball])
-		_manager.economy.friendship_point_balance = 100000
+		_manager.economy.soul_balance = 100000
 
 	func test_purchase_lands_equipment_on_rack() -> void:
 		_manager.purchase("gear_a")
@@ -128,7 +128,7 @@ class TestStats:
 		)
 
 	func test_purchase_applies_stat_modifier() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
 		assert_eq(
@@ -137,7 +137,7 @@ class TestStats:
 		)
 
 	func test_multiple_purchases_stack_modifiers() -> void:
-		_manager.economy.friendship_point_balance = 10000
+		_manager.economy.soul_balance = 10000
 		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
 		_manager.purchase(TEST_KEY)
@@ -147,7 +147,7 @@ class TestStats:
 		)
 
 	func test_remove_level_reverts_stat_modifier() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
@@ -157,31 +157,31 @@ class TestStats:
 		)
 
 
-class TestFriendshipPoints:
+class TestSoul:
 	extends GutTest
 	var _manager: Node
 
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
 
-	func test_add_friendship_points_increases_balance() -> void:
-		_manager.add_friendship_points(50)
-		assert_eq(_manager.get_friendship_point_balance(), 50)
+	func test_add_soul_increases_balance() -> void:
+		_manager.add_soul(50)
+		assert_eq(_manager.get_soul_balance(), 50)
 
-	func test_add_friendship_points_emits_signal() -> void:
+	func test_add_soul_emits_signal() -> void:
 		watch_signals(_manager)
-		_manager.add_friendship_points(50)
-		assert_signal_emitted_with_parameters(_manager, "friendship_point_balance_changed", [50])
+		_manager.add_soul(50)
+		assert_signal_emitted_with_parameters(_manager, "soul_balance_changed", [50])
 
-	func test_subtract_friendship_points_decreases_balance() -> void:
-		_manager.economy.friendship_point_balance = 100
-		_manager.subtract_friendship_points(30)
-		assert_eq(_manager.get_friendship_point_balance(), 70)
+	func test_subtract_soul_decreases_balance() -> void:
+		_manager.economy.soul_balance = 100
+		_manager.subtract_soul(30)
+		assert_eq(_manager.get_soul_balance(), 70)
 
-	func test_subtract_friendship_points_clamps_to_zero() -> void:
-		_manager.economy.friendship_point_balance = 10
-		_manager.subtract_friendship_points(50)
-		assert_eq(_manager.get_friendship_point_balance(), 0)
+	func test_subtract_soul_clamps_to_zero() -> void:
+		_manager.economy.soul_balance = 10
+		_manager.subtract_soul(50)
+		assert_eq(_manager.get_soul_balance(), 0)
 
 
 class TestRemoveLevel:
@@ -193,7 +193,7 @@ class TestRemoveLevel:
 		_manager = ItemFactory.create_manager(self)
 
 	func test_remove_level_decrements_level() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
 		assert_eq(_manager.get_level(TEST_KEY), 0)
@@ -203,20 +203,20 @@ class TestRemoveLevel:
 		assert_eq(_manager.get_level(TEST_KEY), 0)
 
 	func test_remove_level_emits_item_level_changed() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		watch_signals(_manager)
 		_manager.remove_level(TEST_KEY)
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
 
-	func test_remove_level_refunds_friendship_points() -> void:
-		_manager.economy.friendship_point_balance = 1000
-		var balance_before_purchase: int = _manager.economy.friendship_point_balance
+	func test_remove_level_refunds_soul() -> void:
+		_manager.economy.soul_balance = 1000
+		var balance_before_purchase: int = _manager.economy.soul_balance
 		_manager.purchase(TEST_KEY)
-		var cost_paid: int = balance_before_purchase - _manager.economy.friendship_point_balance
+		var cost_paid: int = balance_before_purchase - _manager.economy.soul_balance
 		_manager.remove_level(TEST_KEY)
 		assert_eq(
-			_manager.economy.friendship_point_balance,
+			_manager.economy.soul_balance,
 			balance_before_purchase,
 			"removing a level should refund the cost paid",
 		)
@@ -234,11 +234,11 @@ class TestCanAcquire:
 		assert_false(_manager.can_acquire(TEST_KEY))
 
 	func test_returns_true_when_affordable_and_unowned() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		assert_true(_manager.can_acquire(TEST_KEY))
 
 	func test_returns_false_when_already_owned() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.take(TEST_KEY)
 		assert_false(_manager.can_acquire(TEST_KEY))
 
@@ -255,46 +255,46 @@ class TestTake:
 		assert_false(_manager.take(TEST_KEY))
 
 	func test_take_returns_true_when_affordable() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		assert_true(_manager.take(TEST_KEY))
 
 	func test_take_marks_item_as_owned() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		_manager.take(TEST_KEY)
 		assert_eq(_manager.get_level(TEST_KEY), 1)
 
 	func test_take_deducts_cost_from_balance() -> void:
-		_manager.economy.friendship_point_balance = 300
+		_manager.economy.soul_balance = 300
 		_manager.take(TEST_KEY)
-		assert_eq(_manager.get_friendship_point_balance(), 200)
+		assert_eq(_manager.get_soul_balance(), 200)
 
 	func test_take_returns_false_when_already_owned() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.take(TEST_KEY)
 		assert_false(_manager.take(TEST_KEY))
 
 	func test_take_does_not_deduct_cost_when_already_owned() -> void:
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.take(TEST_KEY)
-		var balance_after_first_take: int = _manager.get_friendship_point_balance()
+		var balance_after_first_take: int = _manager.get_soul_balance()
 		_manager.take(TEST_KEY)
-		assert_eq(_manager.get_friendship_point_balance(), balance_after_first_take)
+		assert_eq(_manager.get_soul_balance(), balance_after_first_take)
 
 	func test_take_emits_item_level_changed() -> void:
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		watch_signals(_manager)
 		_manager.take(TEST_KEY)
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
 
-	func test_take_emits_friendship_point_balance_changed() -> void:
-		_manager.economy.friendship_point_balance = 100
+	func test_take_emits_soul_balance_changed() -> void:
+		_manager.economy.soul_balance = 100
 		watch_signals(_manager)
 		_manager.take(TEST_KEY)
-		assert_signal_emitted(_manager, "friendship_point_balance_changed")
+		assert_signal_emitted(_manager, "soul_balance_changed")
 
 	func test_take_does_not_apply_stat_effects() -> void:
 		var base_speed: float = GameRules.paddle.paddle_speed
-		_manager.economy.friendship_point_balance = 100
+		_manager.economy.soul_balance = 100
 		_manager.take(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -311,10 +311,10 @@ class TestReloadFromProgression:
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
 
-	func test_reload_emits_friendship_balance_changed() -> void:
+	func test_reload_emits_soul_balance_changed() -> void:
 		watch_signals(_manager)
 		_manager.reload_from_progression()
-		assert_signal_emitted(_manager, "friendship_point_balance_changed")
+		assert_signal_emitted(_manager, "soul_balance_changed")
 
 	func test_reload_emits_item_level_changed_for_each_item() -> void:
 		watch_signals(_manager)
@@ -340,7 +340,7 @@ class TestReloadFromProgression:
 
 	func test_reload_unregisters_previously_registered_effects_when_level_is_zero() -> void:
 		var base_speed: float = GameRules.paddle.paddle_speed
-		_manager.economy.friendship_point_balance = 1000
+		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
 		assert_eq(
@@ -371,7 +371,7 @@ class TestKitItemsBall:
 		ball_item.max_level = 3
 		ball_item.effects = []
 		_manager.items.assign([ball_item])
-		_manager.economy.friendship_point_balance = 10000
+		_manager.economy.soul_balance = 10000
 
 	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
 		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
@@ -475,7 +475,7 @@ class TestKitItemsEquipment:
 		gear_item.max_level = 3
 		gear_item.effects = []
 		_manager.items.assign([gear_item])
-		_manager.economy.friendship_point_balance = 10000
+		_manager.economy.soul_balance = 10000
 
 	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
 		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
@@ -539,7 +539,7 @@ class TestEquipFlow:
 		ball.max_level = 3
 		ball.effects = []
 		_manager.items.assign([gear_a, gear_b, ball])
-		_manager.economy.friendship_point_balance = 100000
+		_manager.economy.soul_balance = 100000
 
 	func test_get_kit_remaining_starts_at_floored_kit_slots() -> void:
 		var expected: int = int(floor(GameRules.base.kit_slots))

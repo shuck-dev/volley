@@ -10,7 +10,7 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var config: ShopConfig = DEFAULT_CONFIG
 @export var drag_tuning: ShopDragTuning = DEFAULT_DRAG_TUNING
 @export var shop_area: Area2D
-@export var friendship_label: Label
+@export var soul_label: Label
 @export var items_anchor: Node2D
 
 var _item_manager: Node
@@ -24,9 +24,9 @@ func _ready() -> void:
 		config = DEFAULT_CONFIG
 	if _item_manager == null:
 		_item_manager = ItemManager
-	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
+	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
-	_update_friendship_label(_item_manager.get_friendship_point_balance())
+	_update_soul_label(_item_manager.get_soul_balance())
 	_spawn_items()
 	_register_shop_target()
 	if not tree_exiting.is_connected(_on_tree_exiting):
@@ -92,12 +92,12 @@ func _get_visible_items() -> Array[ItemDefinition]:
 	return available
 
 
-func _update_friendship_label(balance: int) -> void:
-	friendship_label.text = "Friendship: %d" % balance
+func _update_soul_label(balance: int) -> void:
+	soul_label.text = "Soul: %d" % balance
 
 
-func _on_friendship_point_balance_changed(balance: int) -> void:
-	_update_friendship_label(balance)
+func _on_soul_balance_changed(balance: int) -> void:
+	_update_soul_label(balance)
 
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.

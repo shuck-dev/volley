@@ -27,7 +27,7 @@ func before_each() -> void:
 
 
 func _buy_court_lines() -> void:
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("court_lines")
 	_manager.activate("court_lines")
 

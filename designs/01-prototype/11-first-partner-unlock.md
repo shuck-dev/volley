@@ -10,7 +10,7 @@ Let the player spend friendship to recruit Martha, their first partner, adding a
 
 The right side of the arena is a `StaticBody2D` wall (`back_wall.gd`) that bounces the ball back. The player paddle is a `CharacterBody2D` on the left with input handling, item-driven speed/size, and hit tracking. Autoplay AI exists in `AutoplayController` and drives the player paddle during idle mode using a reaction-delay buffer and speed-capped tracking.
 
-The Progression Manager (SH-32) already handles the shop unlock: it listens to `ItemManager.friendship_point_balance_changed`, checks a threshold from config, flips a flag in `ProgressionData`, persists, and emits a signal. The partner unlock is another tier in this same system.
+The Progression Manager (SH-32) already handles the shop unlock: it listens to `ItemManager.soul_balance_changed`, checks a threshold from config, flips a flag in `ProgressionData`, persists, and emits a signal. The partner unlock is another tier in this same system.
 
 There is no concept of a partner, no second paddle, and no partner unlock tier.
 
@@ -65,7 +65,7 @@ The `Partner` resource (as defined in the effect system design) provides `effect
 
 ### 2. Partner unlock tier
 
-The partner unlock is a tier in the Progression Manager, the same system used for the shop unlock (see `03-progression-manager.md`). The Progression Manager listens to `ItemManager.friendship_point_balance_changed`, checks whether the partner unlock threshold has been reached, flips `martha_unlocked` in `ProgressionData`, persists, and emits `partner_unlocked_changed`.
+The partner unlock is a tier in the Progression Manager, the same system used for the shop unlock (see `03-progression-manager.md`). The Progression Manager listens to `ItemManager.soul_balance_changed`, checks whether the partner unlock threshold has been reached, flips `martha_unlocked` in `ProgressionData`, persists, and emits `partner_unlocked_changed`.
 
 **Threshold:** Defined in `ProgressionConfig`, not hardcoded. Higher than the shop unlock threshold (shop is 50 friendship). Starting point is a tuning target for the Make Fun pass.
 
@@ -101,12 +101,12 @@ Martha has two effects: one friendship bonus and one causality effect.
 
 **Effect 1: friendship bonus (always)**
 
-A percentage increase to `friendship_points_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other friendship modifiers: as the player acquires items that boost friendship per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
+A percentage increase to `soul_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other friendship modifiers: as the player acquires items that boost friendship per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
 
 ```
 Effect 1
   trigger: always
-  outcome: percentage(friendship_points_per_hit, +25%)
+  outcome: percentage(soul_per_hit, +25%)
 ```
 
 **Effect 2: Half streak (on miss)**
@@ -466,7 +466,7 @@ Include in `to_dict()` / `from_dict()`. The `active_partner` field drives scene 
 
 ### Progression Manager tier
 
-Add `partner_unlock_threshold` to `ProgressionConfig`. Add `martha_unlocked` to `ProgressionData`. The Progression Manager checks this threshold the same way it checks `shop_unlock_threshold`: on `friendship_point_balance_changed`, check if threshold is met and flag is false, flip, persist, emit `partner_unlocked_changed(is_unlocked: bool)`.
+Add `partner_unlock_threshold` to `ProgressionConfig`. Add `martha_unlocked` to `ProgressionData`. The Progression Manager checks this threshold the same way it checks `shop_unlock_threshold`: on `soul_balance_changed`, check if threshold is met and flag is false, flip, persist, emit `partner_unlocked_changed(is_unlocked: bool)`.
 
 ### Paddle interface
 

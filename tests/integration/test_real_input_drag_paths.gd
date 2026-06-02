@@ -35,7 +35,7 @@ func _setup_shop() -> void:
 	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
 	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
-	_shop_manager.economy.friendship_point_balance = 10000
+	_shop_manager.economy.soul_balance = 10000
 	add_child_autofree(_shop_manager)
 
 	_shop = ShopScene.instantiate()
@@ -79,7 +79,7 @@ func _setup_ball_drag() -> void:
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()
@@ -136,7 +136,7 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 	_setup_shop()
 	var item: ShopItem = _shop_item("grip_tape")
 	var viewport: Viewport = item.get_viewport()
-	var balance_before: int = _shop_manager.get_friendship_point_balance()
+	var balance_before: int = _shop_manager.get_soul_balance()
 	var cost: int = GripTape.base_cost
 
 	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
@@ -152,9 +152,9 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 		"release outside shop via real _input must complete the purchase",
 	)
 	assert_eq(
-		_shop_manager.get_friendship_point_balance(),
+		_shop_manager.get_soul_balance(),
 		balance_before - cost,
-		"FP debit happens once at release-outside time",
+		"Soul debit happens once at release-outside time",
 	)
 
 

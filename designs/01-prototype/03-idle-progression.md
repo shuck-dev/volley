@@ -38,7 +38,7 @@ The attribute-based upgrade system is implemented: `UpgradeManager` owns `Upgrad
 
 ### 3. Friendship display in HUD
 **Design:** Friendship count visible at all times in the HUD. Should feel like a number that's always climbing. Position near the volley counter so the player connects "hits = friendship".
-**Tech:** `hud.gd` exposes `update_friendship_point_balance(amount: int)`. `game.gd` calls it when friendship changes.
+**Tech:** `hud.gd` exposes `update_soul_balance(amount: int)`. `game.gd` calls it when friendship changes.
 
 ### 4. High score persistence
 **Design:** High score (best volley streak) persists across sessions. Previously session-only from HUD Pass.
@@ -48,7 +48,7 @@ The attribute-based upgrade system is implemented: `UpgradeManager` owns `Upgrad
 
 ```
 ProgressionData (scripts/progression/progression_data.gd)
-  - friendship_point_balance: int
+  - soul_balance: int
   - owned_item_ids: Array[String]
   - high_score: int
   - save() -> void
@@ -60,7 +60,7 @@ ItemManager (scripts/items/item_manager.gd)  [Autoload]
   - can_purchase(item_id: String) -> bool
   - is_owned(item_id: String) -> bool
   - get_modified_value(key: String, base: float) -> float
-  - signal friendship_point_balance_changed(balance: int)
+  - signal soul_balance_changed(balance: int)
 
 GameRules
   - get_paddle_speed() -> float   # queries ItemManager for stat modifiers

@@ -8,7 +8,7 @@ extends Resource
 ## Speed bump applied to the ball on each successful paddle hit.
 @export var ball_speed_increment := 17.0
 ## Friendship points awarded per paddle hit; items can percentage-modify.
-@export var friendship_points_per_hit := 1.0
+@export var soul_per_hit := 1.0
 ## Per-frame pull strength of the ball toward the nearest paddle; 0.0 disables magnetism.
 @export var ball_magnetism := 0.0
 ## Number of equipment slots in the player's kit; item-tunable, not yet read in production.
@@ -24,7 +24,7 @@ func to_dict() -> Dictionary:
 		&"ball_speed_min": ball_speed_min,
 		&"ball_speed_max_range": ball_speed_max_range,
 		&"ball_speed_increment": ball_speed_increment,
-		&"friendship_points_per_hit": friendship_points_per_hit,
+		&"soul_per_hit": soul_per_hit,
 		&"ball_magnetism": ball_magnetism,
 		&"kit_slots": kit_slots,
 		&"ball_speed_offset": ball_speed_offset,

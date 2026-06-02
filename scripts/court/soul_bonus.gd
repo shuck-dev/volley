@@ -11,9 +11,9 @@ func _ready() -> void:
 
 
 func _refresh() -> void:
-	var percentage_offset: float = ItemManager.get_percentage_offset(&"friendship_points_per_hit")
+	var percentage_offset: float = ItemManager.get_percentage_offset(&"soul_per_hit")
 	if percentage_offset > 0.0:
-		text = "+%.0f%% FP" % (percentage_offset * 100)
+		text = "+%.0f%% Soul" % (percentage_offset * 100)
 		visible = true
 	else:
 		visible = false

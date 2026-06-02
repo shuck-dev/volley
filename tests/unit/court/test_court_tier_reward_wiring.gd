@@ -22,7 +22,7 @@ func before_each() -> void:
 	var ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
 	var typed_items: Array[ItemDefinition] = [ball_item]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 0
+	_manager.economy.soul_balance = 0
 	_manager.state.item_levels["base_ball"] = 1
 	add_child_autofree(_manager)
 
@@ -83,16 +83,16 @@ func test_soul_multiplier_increments_on_tier_advance() -> void:
 func test_per_hit_soul_scales_with_multiplier() -> void:
 	var ball: Ball = _spawn_ball()
 
-	_manager.economy.friendship_point_balance = 0
+	_manager.economy.soul_balance = 0
 	_paddle.paddle_hit.emit(ball)
-	var banked_at_x1: int = _manager.get_friendship_point_balance()
+	var banked_at_x1: int = _manager.get_soul_balance()
 
 	ball.current_tier = 1
 	ball.advance_tier()
 
-	_manager.economy.friendship_point_balance = 0
+	_manager.economy.soul_balance = 0
 	_paddle.paddle_hit.emit(ball)
-	var banked_at_x2: int = _manager.get_friendship_point_balance()
+	var banked_at_x2: int = _manager.get_soul_balance()
 
 	assert_eq(
 		banked_at_x2,

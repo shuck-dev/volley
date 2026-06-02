@@ -47,7 +47,7 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 
-	_item_manager.friendship_point_balance_changed.connect(_on_friendship_point_balance_changed)
+	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
 
 	if unlocks.shop_unlocked:
 		shop_unlocked_changed.emit.call_deferred(true)
@@ -93,8 +93,8 @@ func can_recruit_partner(partner_key: StringName) -> bool:
 		return false
 	return (
 		not is_partner_unlocked(partner_key)
-		and economy.total_friendship_points_earned >= partner.unlock_threshold
-		and economy.friendship_point_balance >= partner.unlock_cost
+		and economy.total_soul_earned >= partner.unlock_threshold
+		and economy.soul_balance >= partner.unlock_cost
 	)
 
 
@@ -102,7 +102,7 @@ func recruit_partner(partner_key: StringName) -> bool:
 	if not can_recruit_partner(partner_key):
 		return false
 	var partner: PartnerDefinition = get_partner(partner_key)
-	_item_manager.subtract_friendship_points(partner.unlock_cost)
+	_item_manager.subtract_soul(partner.unlock_cost)
 	partners.unlocked_partners.append(partner_key)
 	partners.active_partner = partner_key
 	_save_manager.save()
@@ -110,7 +110,7 @@ func recruit_partner(partner_key: StringName) -> bool:
 	return true
 
 
-func _on_friendship_point_balance_changed(_balance: int) -> void:
+func _on_soul_balance_changed(_balance: int) -> void:
 	_check_shop_unlock()
 	_check_partner_unlocks()
 
@@ -118,7 +118,7 @@ func _on_friendship_point_balance_changed(_balance: int) -> void:
 func _check_shop_unlock() -> void:
 	if unlocks.shop_unlocked:
 		return
-	if economy.total_friendship_points_earned >= _config.shop_unlock_threshold:
+	if economy.total_soul_earned >= _config.shop_unlock_threshold:
 		unlocks.shop_unlocked = true
 		_save_manager.save()
 		shop_unlocked_changed.emit(true)
@@ -131,7 +131,7 @@ func _check_partner_unlocks() -> void:
 			continue
 		if partner.key in partners.recruit_offered_partners:
 			continue
-		if economy.total_friendship_points_earned >= partner.unlock_threshold:
+		if economy.total_soul_earned >= partner.unlock_threshold:
 			partners.recruit_offered_partners.append(partner.key)
 			newly_offered = true
 			partner_recruit_available.emit(partner)

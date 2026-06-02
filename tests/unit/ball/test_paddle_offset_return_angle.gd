@@ -60,7 +60,7 @@ func _build_with_stats_and_min_angle(
 			"min_angle_kit", &"paddle_bounce_min_angle_degrees", &"add", min_angle_bonus
 		)
 		_manager.items.append(min_item)
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("max_angle_kit")
 	_manager.activate("max_angle_kit")
 

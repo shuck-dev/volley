@@ -11,7 +11,7 @@
 
 [sub_resource type="Resource" id="fp_outcome"]
 script = ExtResource("5_stat")
-stat_key = &"friendship_points_per_hit"
+stat_key = &"soul_per_hit"
 operation = &"percentage"
 value = 0.25
 

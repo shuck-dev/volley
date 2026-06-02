@@ -6,34 +6,34 @@ extends GutTest
 # --- EconomyState ---
 func test_economy_default_values() -> void:
 	var economy := EconomyState.new()
-	assert_eq(economy.friendship_point_balance, 0)
-	assert_eq(economy.total_friendship_points_earned, 0)
+	assert_eq(economy.soul_balance, 0)
+	assert_eq(economy.total_soul_earned, 0)
 
 
 func test_economy_round_trip() -> void:
 	var economy := EconomyState.new()
-	economy.friendship_point_balance = 500
-	economy.total_friendship_points_earned = 1234
+	economy.soul_balance = 500
+	economy.total_soul_earned = 1234
 	var restored := EconomyState.new()
 	restored.apply_save_dict(economy.to_save_dict())
-	assert_eq(restored.friendship_point_balance, 500)
-	assert_eq(restored.total_friendship_points_earned, 1234)
+	assert_eq(restored.soul_balance, 500)
+	assert_eq(restored.total_soul_earned, 1234)
 
 
 func test_economy_missing_keys_use_defaults() -> void:
 	var restored := EconomyState.new()
 	restored.apply_save_dict({})
-	assert_eq(restored.friendship_point_balance, 0)
-	assert_eq(restored.total_friendship_points_earned, 0)
+	assert_eq(restored.soul_balance, 0)
+	assert_eq(restored.total_soul_earned, 0)
 
 
 func test_economy_clear() -> void:
 	var economy := EconomyState.new()
-	economy.friendship_point_balance = 500
-	economy.total_friendship_points_earned = 999
+	economy.soul_balance = 500
+	economy.total_soul_earned = 999
 	economy.clear()
-	assert_eq(economy.friendship_point_balance, 0)
-	assert_eq(economy.total_friendship_points_earned, 0)
+	assert_eq(economy.soul_balance, 0)
+	assert_eq(economy.total_soul_earned, 0)
 
 
 # --- ItemState ---

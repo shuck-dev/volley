@@ -73,7 +73,7 @@ When the game launches, check how long the player was away and award friendship 
 
 **On quit:** save `last_quit_at: int` (Unix timestamp via `Time.get_unix_time_from_system()`) to `ProgressionData`.
 
-**On load:** if `last_quit_at > 0`, calculate `seconds_away = now - last_quit_at`. Cap at `MAX_OFFLINE_SECONDS` (8 hours = 28800). Award `floor(seconds_away / 60.0 * idle_fp_per_minute)` friendship. Reset `last_quit_at` to 0. Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal from `SaveManager` so the HUD can show a summary.
+**On load:** if `last_quit_at > 0`, calculate `seconds_away = now - last_quit_at`. Cap at `MAX_OFFLINE_SECONDS` (8 hours = 28800). Award `floor(seconds_away / 60.0 * idle_fp_per_minute)` friendship. Reset `last_quit_at` to 0. Emit a `welcome_back(soul_earned: int, seconds_away: int)` signal from `SaveManager` so the HUD can show a summary.
 
 **Welcome back display:** print a one-line message to the HUD: "Welcome back! +N friendship". No animation, no popup. The polished version (fade, layout, milestone callouts) is deferred to a later HUD pass.
 
@@ -105,7 +105,7 @@ Emit a `idle_mode_changed(is_idle: bool)` signal so `game.gd` can adjust the fri
 
 - Connect to `paddle.idle_mode_changed` in `_ready`.
 - On signal: set `_fp_multiplier` to `0.5` (idle) or `1.0` (manual).
-- Replace `_upgrade_manager.add_friendship_points(1)` with fractional accumulation logic.
+- Replace `_upgrade_manager.add_soul(1)` with fractional accumulation logic.
 
 ### Ball reference
 
@@ -132,7 +132,7 @@ var idle_fp_per_minute: float = 0.0
 
 Include both fields in `to_dict()` / `from_dict()`.
 
-`SaveManager` gains a `calculate_offline_rewards() -> int` method called during `_ready` before emitting any ready signals. It reads `last_quit_at`, computes friendship owed, adds it to `friendship_point_balance`, clears `last_quit_at`, and returns the friendship awarded (0 if none). Emit a `welcome_back(fp_earned: int, seconds_away: int)` signal if `fp_earned > 0`.
+`SaveManager` gains a `calculate_offline_rewards() -> int` method called during `_ready` before emitting any ready signals. It reads `last_quit_at`, computes soul owed, adds it to `soul_balance`, clears `last_quit_at`, and returns the soul awarded (0 if none). Emit a `welcome_back(soul_earned: int, seconds_away: int)` signal if `soul_earned > 0`.
 
 `idle_fp_per_minute` is updated in `game.gd`: sample friendship earned in idle mode over 60s intervals and write the result back to `ProgressionData` via `SaveManager`.
 

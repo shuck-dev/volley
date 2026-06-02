@@ -201,7 +201,7 @@ Maps to current `AutoPlayConfig` behaviour. `noise = 0.0` means the autoplay pre
 | `speed_scale` | 0.75 |
 | `noise` | 0.0 |
 
-`friendship_point_rate` moves out of the AI system entirely during migration. It's a game economy value that belongs on `game.gd` or `ProgressionConfig`, not on any AI controller or config resource. See the `AutoplayController` subclass section for details.
+`soul_rate` moves out of the AI system entirely during migration. It's a game economy value that belongs on `game.gd` or `ProgressionConfig`, not on any AI controller or config resource. See the `AutoplayController` subclass section for details.
 
 ### Tuning guide
 
@@ -223,7 +223,7 @@ Overrides:
 - `_ball_approaching()`: `ball.linear_velocity.x < 0`
 - `_get_paddle_speed()`: `paddle.get_speed()` (upgraded via ItemManager)
 
-`friendship_point_rate` does not belong on the controller. It's a game economy value: `game.gd` already decides the friendship multiplier based on autoplay state. The rate should live on `game.gd` (or `ProgressionConfig` alongside other economy thresholds). The controller's only economy responsibility is emitting `autoplay_toggled` so `game.gd` knows which rate to apply. This is a cleanup from the current `AutoPlayConfig` which bundled AI tuning and economy values in the same resource.
+`soul_rate` does not belong on the controller. It's a game economy value: `game.gd` already decides the friendship multiplier based on autoplay state. The rate should live on `game.gd` (or `ProgressionConfig` alongside other economy thresholds). The controller's only economy responsibility is emitting `autoplay_toggled` so `game.gd` knows which rate to apply. This is a cleanup from the current `AutoPlayConfig` which bundled AI tuning and economy values in the same resource.
 
 **Timeout interaction.** `AutoplayController` listens for `TimeoutController.timeout_started` and force-disables itself, emitting `autoplay_toggled(false)`. The handler bypasses `toggle()` so it does not also flip `paddle.set_physics_process`; `TimeoutController` owns paddle physics during the walk-off and `toggle()` would fight the freeze. `timeout_ended` does not auto-restore: the walk back is a deliberate beat, and the player re-toggles autoplay when they want it back.
 
@@ -242,7 +242,7 @@ The partner's speed ceiling comes from the same stat system as the player's, jus
 1. Create `PaddleAIConfig` resource and `PaddleAIController` abstract base class.
 2. Rewrite `AutoplayController` as a thin subclass (toggle, input, direction overrides).
 3. Remove `AutoPlayConfig` class. Create `autoplay_config.tres` as a `PaddleAIConfig` instance with current values + `noise = 0`.
-4. Move `friendship_point_rate` from `AutoPlayConfig` to `game.gd` (or `ProgressionConfig`). `game.gd` already owns the friendship accumulation logic; it just needs to own the rate constant too.
+4. Move `soul_rate` from `AutoPlayConfig` to `game.gd` (or `ProgressionConfig`). `game.gd` already owns the friendship accumulation logic; it just needs to own the rate constant too.
 5. Update `game.gd`: replace `autoplay_config: AutoPlayConfig` export with reading config from the controller directly.
 
 With noise = 0 and interval = 1, the prediction reduces to equivalent behaviour to today for straight-line ball paths, and is strictly better (handles wall bounces) for angled paths. The autoplay will be slightly more competent at returning wall bounces than it is today. If this needs to be preserved exactly, a `prediction_interval_frames = 0` sentinel could fall back to raw position tracking.

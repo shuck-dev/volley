@@ -1,7 +1,7 @@
 class_name CourtConfig
 extends Resource
 
-## Per-court tunables: court width, friendship-bound height, ramp duration, rest-roll damping.
+## Per-court tunables: court width, soul-bound height, ramp duration, rest-roll damping.
 
 ## Half the court's paddle-to-paddle span in pixels; spawns, miss zones, and the world speed max derive from it.
 @export var court_half_width: float = 300.0

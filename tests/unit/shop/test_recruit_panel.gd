@@ -21,7 +21,7 @@ func test_panel_shows_on_recruit_available() -> void:
 	ProgressionManager.partner_recruit_available.emit(partner)
 	assert_true(panel.visible)
 	assert_eq(panel.recruit_label.text, "Recruit Test Partner")
-	assert_eq(panel.recruit_button.text, "100 FP")
+	assert_eq(panel.recruit_button.text, "100 Soul")
 
 
 func test_panel_hides_on_partner_recruited() -> void:

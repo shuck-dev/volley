@@ -14,9 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="12_rnrgf"]
 [ext_resource type="Script" uid="uid://b8611ynp8yggm" path="res://scripts/court/volley_counter.gd" id="14_vc"]
 [ext_resource type="Script" uid="uid://cve6m1fmtpyg" path="res://scripts/court/personal_best.gd" id="15_pb"]
-[ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/friendship_points.gd" id="16_fp"]
+[ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/soul.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
-[ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/fp_bonus.gd" id="18_fpb"]
+[ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/soul_bonus.gd" id="18_fpb"]
 [ext_resource type="Script" uid="uid://o6ajsnor2wqt" path="res://scripts/core/timeout_controller.gd" id="19_timeout"]
 [ext_resource type="Resource" uid="uid://07ennsehe5u8" path="res://resources/timeout_config.tres" id="20_timeout_cfg"]
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
@@ -151,13 +151,13 @@ text = "PB: 0"
 script = ExtResource("15_pb")
 court = NodePath("..")
 
-[node name="FriendshipTotalLabel" type="Label" parent="." unique_id=95972184]
+[node name="SoulLabel" type="Label" parent="." unique_id=95972184]
 offset_left = 210.0
 offset_top = -420.0
 offset_right = 330.0
 offset_bottom = -402.0
 theme_override_font_sizes/font_size = 29
-text = "FP: 0"
+text = "Soul: 0"
 script = ExtResource("16_fp")
 
 [node name="AutoLabel" type="Label" parent="." unique_id=171294256 node_paths=PackedStringArray("court")]
@@ -171,14 +171,14 @@ horizontal_alignment = 1
 script = ExtResource("17_auto")
 court = NodePath("..")
 
-[node name="FPBonusLabel" type="Label" parent="." unique_id=1233964651 node_paths=PackedStringArray("court")]
+[node name="SoulBonusLabel" type="Label" parent="." unique_id=1233964651 node_paths=PackedStringArray("court")]
 offset_left = -420.0
 offset_top = -444.0
 offset_right = -300.0
 offset_bottom = -426.0
 theme_override_colors/font_color = Color(0.91, 0.36, 0.46, 1)
 theme_override_font_sizes/font_size = 29
-text = "+0% FP"
+text = "+0% Soul"
 script = ExtResource("18_fpb")
 court = NodePath("..")
 

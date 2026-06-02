@@ -90,7 +90,7 @@ func test_read_fallbacks_returns_backups_newest_first() -> void:
 # --- fallback path via SaveManager ---
 func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
 	# Two writes so the valid JSON lands in backup slot 1; then trash primary
-	var blob := '{"economy":{"friendship_point_balance":100}}'
+	var blob := '{"economy":{"soul_balance":100}}'
 	_storage.write(blob)
 	_storage.write(blob)
 	_write_raw(TEST_PATH, "")
@@ -99,7 +99,7 @@ func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
 	save_manager.set_storage(_storage)
 	add_child_autofree(save_manager)
 	assert_true(save_manager.load_from_disk())
-	assert_eq(save_manager.economy.friendship_point_balance, 100)
+	assert_eq(save_manager.economy.soul_balance, 100)
 
 
 # --- helpers ---

@@ -17,7 +17,7 @@ func before_each() -> void:
 	var ball_beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
 	var typed_items: Array[ItemDefinition] = [ball_alpha, ball_beta]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)

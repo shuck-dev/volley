@@ -28,7 +28,7 @@ For prototype, the only milestone is the clearance unlock. The manager is intent
 The clearance unlocks when the player's friendship balance reaches the threshold for the first time. The unlock is permanent: it does not re-lock if the balance drops below the threshold (e.g. after taking items).
 
 - **Threshold:** 50 friendship (tuning target for Make Fun pass)
-- **Trigger:** `ItemManager.friendship_point_balance_changed` signal
+- **Trigger:** `ItemManager.soul_balance_changed` signal
 - **Persistence:** `ProgressionData.clearance_unlocked` boolean, backward-compatible with old saves (defaults to false)
 - **Signal:** `clearance_unlocked_changed(is_unlocked: bool)` emitted once on unlock. Emitted via `call_deferred` on startup if already unlocked, so listeners that connect during `_ready` receive it.
 
@@ -57,7 +57,7 @@ For prototype, the config contains one field: `clearance_unlock_threshold`. As m
 ```
 ProgressionManager (scripts/progression/progression_manager.gd)  [Autoload]
   Listens to:
-    - ItemManager.friendship_point_balance_changed
+    - ItemManager.soul_balance_changed
 
   Owns:
     - clearance_unlocked_changed(is_unlocked: bool) signal

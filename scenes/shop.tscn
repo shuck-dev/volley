@@ -8,18 +8,18 @@ size = Vector2(500, 400)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "friendship_label", "items_anchor") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor") groups=["hot_reloadable_config"]]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
-friendship_label = NodePath("FriendshipLabel")
+soul_label = NodePath("SoulLabel")
 items_anchor = NodePath("ItemsAnchor")
 
-[node name="FriendshipLabel" type="Label" parent="." unique_id=1271857459]
+[node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
 offset_top = -220.0
 offset_right = 100.0
 offset_bottom = -180.0
-text = "Friendship: 0"
+text = "Soul: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 

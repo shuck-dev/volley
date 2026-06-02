@@ -19,4 +19,4 @@ func test_label_visible_with_rate_when_autoplay_on() -> void:
 	add_child_autofree(label)
 	court.auto_play_changed.emit(true, 0.5)
 	assert_true(label.visible)
-	assert_eq(label.text, "AUTO (50% Friendship Points)")
+	assert_eq(label.text, "AUTO (50% Soul)")

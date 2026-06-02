@@ -82,7 +82,7 @@ func test_size_updates_live_on_unequip_and_reequip() -> void:
 	paddle._item_manager = manager
 	add_child_autofree(paddle)
 
-	manager.economy.friendship_point_balance = 1000
+	manager.economy.soul_balance = 1000
 	manager.purchase("grip_tape")
 	manager.equip("grip_tape")
 	var equipped_size: float = paddle.collision.shape.size.y

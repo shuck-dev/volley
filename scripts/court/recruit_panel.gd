@@ -21,7 +21,7 @@ func _ready() -> void:
 func _on_partner_recruit_available(partner: PartnerDefinition) -> void:
 	_pending_partner_key = partner.key
 	recruit_label.text = "Recruit %s" % partner.display_name
-	recruit_button.text = "%d FP" % partner.unlock_cost
+	recruit_button.text = "%d Soul" % partner.unlock_cost
 	visible = true
 
 

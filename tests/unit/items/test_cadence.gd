@@ -13,7 +13,7 @@ func before_each() -> void:
 
 
 func _purchase() -> void:
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("cadence")
 	_manager.activate("cadence")
 
@@ -150,7 +150,7 @@ func test_ceiling_raise_resets_after_miss_allowing_new_cap() -> void:
 
 
 func test_higher_level_raises_ceiling_more() -> void:
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("cadence")
 	_manager.activate("cadence")
 	_manager._effect_manager.process_event(&"on_max_speed_reached")

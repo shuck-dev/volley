@@ -44,7 +44,7 @@ An outcome is a concrete `Outcome` subclass. Each subclass implements `apply(eff
 
 The types below are designed but have no implementing subclass. They belong in `designs/01-prototype/tech/04-effect-system.md` until they land.
 
-`spawn_ball`, `clear_extra_balls`, `set_game_state`, `deflect_ball`, `spawn_gravity_well`, `intensify_gravity_well`, `award_friendship_points`, `increment_degradation`, `share_stats_with_partner`, `momentum_boost`, `roll_table`, `set_ball_speed`, `multiply_stat_temporary`
+`spawn_ball`, `clear_extra_balls`, `set_game_state`, `deflect_ball`, `spawn_gravity_well`, `intensify_gravity_well`, `award_soul`, `increment_degradation`, `share_stats_with_partner`, `momentum_boost`, `roll_table`, `set_ball_speed`, `multiply_stat_temporary`
 
 ---
 
@@ -80,7 +80,7 @@ Resolution order: add, then percentage, then multiply. Two `+50%` modifiers give
 | `ball_speed_min` | 400.0 | px/s |
 | `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
-| `friendship_points_per_hit` | 1.0 | unit |
+| `soul_per_hit` | 1.0 | unit |
 | `ball_magnetism` | 0.0 | force |
 | `paddle_return_angle_max_degrees` | 0.0 | degrees |
 | `ball_speed_offset` | 0.0 | px/s |

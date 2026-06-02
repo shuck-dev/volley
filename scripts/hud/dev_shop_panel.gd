@@ -167,7 +167,7 @@ func _row_values(shop_item: ShopItem) -> PackedStringArray:
 		return PackedStringArray([str(shop_item.name), "-", "-", "-", "INIT"])
 	var level: int = ItemManager.get_level(definition.key)
 	var cost: int = ItemManager.calculate_cost(definition.key)
-	var balance: int = ItemManager.get_friendship_point_balance()
+	var balance: int = ItemManager.get_soul_balance()
 	return PackedStringArray(
 		[
 			definition.key,
@@ -201,6 +201,6 @@ func _status_for(shop_item: ShopItem) -> String:
 	var definition: ItemDefinition = shop_item.item_definition
 	if definition != null and ItemManager.get_level(definition.key) >= definition.max_level:
 		return "maxed"
-	if ItemManager.get_friendship_point_balance() < ItemManager.calculate_cost(definition.key):
+	if ItemManager.get_soul_balance() < ItemManager.calculate_cost(definition.key):
 		return "unaffordable"
 	return "locked"

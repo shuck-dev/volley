@@ -77,7 +77,7 @@ Closes when `activate` lands. `TakeBox.accept` stays inert by design; the player
 signal court_changed
 ```
 
-Existing `friendship_point_balance_changed` and `item_level_changed` are unchanged.
+Existing `soul_balance_changed` and `item_level_changed` are unchanged.
 
 ---
 
