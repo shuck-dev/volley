@@ -8,7 +8,7 @@ signal consolidation_fired
 
 var _item_manager: Node
 
-# Tracks which balls have already banked final-consolidation this rally; pruned when a ball is removed.
+# Per-ball flag guarding the once-per-rally final-consolidation reward.
 var _final_banked_by_ball: Dictionary = {}
 var _tiers_reached_first_time: Array[int] = []
 

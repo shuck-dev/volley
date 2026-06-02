@@ -43,7 +43,7 @@ var _is_autoplay_active := false
 var _friendship_point_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
 
-# The ball whose hit triggered the current _accumulate_friendship_points call.
+# Ball that triggered the current volley hit; available during the hit-processing window.
 var _hitting_ball: Ball
 
 
@@ -247,7 +247,6 @@ func _accumulate_friendship_points() -> void:
 	var base_points: float = Stats.resolve(
 		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
 	)
-	# MOD A: read soul_multiplier from the ball that hit, not the global stat.
 	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
