@@ -18,7 +18,6 @@
         "matcher": "Agent",
         "hooks": [
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/require-background-agent.sh\"" },
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/require-editing-agent-isolation.sh\"" },
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/agent-branch-match.sh\"" }
         ]
       },
