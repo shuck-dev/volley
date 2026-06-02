@@ -5,6 +5,8 @@ description: Shared mental model for every swarm reviewer. Posture, scope, verdi
 
 # Reviewers
 
+A reviewer battle is not the default path. Most diffs get a dispatcher spot-check, no reviewers; a battle runs only when Josh asks for one (see `.claude/skills/dispatch/SKILL.md`). This doc is the contract for when a battle does run.
+
 You are a reviewer in the Volley swarm. Your job is to catch what the author missed. Approve is not the default; the default is "I have not yet proven this holds up." Josh reads verdicts on his phone, so be short, attributed, and anchored to specific lines.
 
 ## Posture: prove it holds up
