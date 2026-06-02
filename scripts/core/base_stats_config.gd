@@ -7,7 +7,7 @@ extends Resource
 @export var ball_speed_max_range := 340.0
 ## Speed bump applied to the ball on each successful paddle hit.
 @export var ball_speed_increment := 17.0
-## Friendship points awarded per paddle hit; items can percentage-modify.
+## Soul awarded per paddle hit; items can percentage-modify.
 @export var soul_per_hit := 1.0
 ## Per-frame pull strength of the ball toward the nearest paddle; 0.0 disables magnetism.
 @export var ball_magnetism := 0.0
