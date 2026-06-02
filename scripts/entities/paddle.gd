@@ -1,8 +1,8 @@
 class_name Paddle
 extends CharacterBody2D
 
-@warning_ignore("unused_signal")
-signal paddle_hit
+## Emits the ball that triggered the hit; null when emitted without a ball context (e.g. tests).
+signal paddle_hit(ball: Ball)
 
 # Upper limit only; the venue floor handles the bottom physically.
 # Tuned high enough to chase arcing balls into PLAY-ARC, low enough to stay on-screen.
@@ -44,13 +44,13 @@ func _ready() -> void:
 	_apply_size()
 
 
-func on_ball_hit() -> bool:
+func on_ball_hit(ball: Ball = null) -> bool:
 	if not tracker.try_hit():
 		return false
 
 	hit_sound.pitch_scale = 1.0 + (tracker.streak * 0.05)
 	hit_sound.play()
-	paddle_hit.emit()
+	paddle_hit.emit(ball)
 	return true
 
 

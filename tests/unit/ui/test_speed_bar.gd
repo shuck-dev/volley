@@ -4,6 +4,7 @@ extends GutTest
 # Bar shows progress from min_speed (empty) to max_speed (full).
 
 const SpeedBarScript: GDScript = preload("res://scripts/court/speed_bar.gd")
+const BallScript: GDScript = preload("res://scripts/entities/ball/ball.gd")
 
 var _bar: Control
 
@@ -74,9 +75,8 @@ func test_no_overflow_fill_when_speed_below_permanent_max() -> void:
 # Drives the production `ball_added` connection: bar subscribes via its `ball_system`
 # in `_ready`, so a fresh bar must be wired here rather than reusing the before_each one.
 func test_bar_reads_highest_speed_when_slower_ball_emits() -> void:
-	var ball_script: GDScript = load("res://scripts/entities/ball/ball.gd")
-	var slow: Ball = ball_script.new()
-	var fast: Ball = ball_script.new()
+	var slow: Ball = BallScript.new()
+	var fast: Ball = BallScript.new()
 	add_child_autofree(slow)
 	add_child_autofree(fast)
 	slow.gravity_scale = 0.0
@@ -98,6 +98,28 @@ func test_bar_reads_highest_speed_when_slower_ball_emits() -> void:
 
 	assert_gt(bar.current_speed, slow.speed, "bar tracks the fastest ball, not the emitter")
 	assert_eq(bar.current_speed, fast.speed)
+
+
+# The bar renders the current tier band: `speed_changed` carries tier floor/ceiling,
+# and the bar maps them onto its min/max band rather than global speed bounds.
+func test_bar_renders_band_from_tier_floor_and_ceiling() -> void:
+	var live: Ball = BallScript.new()
+	add_child_autofree(live)
+	live.gravity_scale = 0.0
+
+	var ball_source: BallReconciler = BallSignalSource.new()
+	add_child_autofree(ball_source)
+	var bar: Control = SpeedBarScript.new()
+	bar.ball_system = ball_source
+	bar.size = Vector2(200, 10)
+	add_child_autofree(bar)
+
+	ball_source.ball_added.emit(live)
+	live.speed = 480.0
+	live.speed_changed.emit(live.speed, 470.0, 620.0)
+
+	assert_almost_eq(bar._min_speed, 470.0, 0.01, "band floor follows the tier floor arg")
+	assert_almost_eq(bar._max_speed, 620.0, 0.01, "band ceiling follows the tier ceiling arg")
 
 
 # Stand-in reconciler at unit scope: extends BallReconciler so the bar's typed

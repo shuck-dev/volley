@@ -13,6 +13,7 @@ Compatibility traps that have bitten this project or are documented in Godot 4. 
 
 ## Signals / lifecycle
 
+- **Callable equality ignores bound args**: connecting `_h.bind(instance)` to distinguish instances is broken; the 2nd+ connect never fires (returns ERR_ALREADY_EXISTS), and disconnect drops the slot for all instances; make the signal carry the instance instead.
 - **Signal orphans after refactor**: run `signal_map(find="orphans")` as part of QA gate; don't skip.
 - **`tree_exiting` vs `tree_exited`**: `tree_exiting` fires before removal (node still valid); `tree_exited` fires after (don't touch the node). Getting this wrong causes freed-instance access.
 - **Autoload order matters**: `project.godot` autoloads init top-to-bottom. Current order is `SaveManager`, `ItemManager`, `ProgressionManager`, `ConfigHotReload`. Don't reorder without checking cross-deps.

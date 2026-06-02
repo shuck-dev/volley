@@ -3,8 +3,11 @@ extends Node
 
 ## Multi-ball ownership.
 
-signal ball_missed
-signal ball_at_max_speed_changed(is_at_max: bool)
+signal ball_missed(ball: Ball)
+## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
+signal ball_final_consolidation_changed(in_final: bool)
+## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
+signal ball_tier_advanced(ball: Ball, new_tier: int)
 signal current_ball_changed(ball: Ball)
 ## Re-emitted from ball_system so subscribers bind to the tracker, not the system directly.
 signal ball_added(ball: Ball)
@@ -54,8 +57,10 @@ func attach(new_ball: Ball) -> void:
 	if not new_ball.missed.is_connected(_on_ball_missed):
 		new_ball.missed.connect(_on_ball_missed)
 
-	if not new_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
-		new_ball.at_max_speed_changed.connect(_on_ball_at_max_speed_changed)
+	if not new_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+		new_ball.at_max_speed_changed.connect(_on_ball_final_consolidation_changed)
+	if not new_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+		new_ball.tier_advanced.connect(_on_ball_tier_advanced)
 	if new_ball.effect_processor != null:
 		var paddles: Array[Node2D] = []
 		if _player_paddle != null:
@@ -80,8 +85,10 @@ func detach(old_ball: Ball) -> void:
 		if old_ball.missed.is_connected(_on_ball_missed):
 			old_ball.missed.disconnect(_on_ball_missed)
 
-		if old_ball.at_max_speed_changed.is_connected(_on_ball_at_max_speed_changed):
-			old_ball.at_max_speed_changed.disconnect(_on_ball_at_max_speed_changed)
+		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
+		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
 	if _current_ball == old_ball:
 		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
 		_set_current(fallback)
@@ -142,9 +149,13 @@ func _set_current(new_current: Ball) -> void:
 	current_ball_changed.emit(new_current)
 
 
-func _on_ball_missed() -> void:
-	ball_missed.emit()
+func _on_ball_missed(ball: Ball) -> void:
+	ball_missed.emit(ball)
 
 
-func _on_ball_at_max_speed_changed(is_at_max: bool) -> void:
-	ball_at_max_speed_changed.emit(is_at_max)
+func _on_ball_final_consolidation_changed(in_final: bool) -> void:
+	ball_final_consolidation_changed.emit(in_final)
+
+
+func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
+	ball_tier_advanced.emit(ball, new_tier)

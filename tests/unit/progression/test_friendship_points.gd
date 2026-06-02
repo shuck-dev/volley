@@ -45,7 +45,7 @@ func before_each() -> void:
 
 
 func _hit() -> void:
-	_paddle_stub.paddle_hit.emit()
+	_paddle_stub.paddle_hit.emit(null)
 
 
 func test_fp_increments_on_each_hit() -> void:
@@ -61,18 +61,18 @@ func test_fp_persists_after_miss() -> void:
 	_hit()
 	_hit()
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	assert_eq(_last_friendship_point_balance, 3)
 
 
 func test_fp_accumulates_across_multiple_rallies() -> void:
 	_hit()
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	_hit()
 	_hit()
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	assert_eq(_last_friendship_point_balance, 5)
 
 
@@ -104,7 +104,7 @@ func test_fp_accumulator_carries_over_when_autoplay_ends() -> void:
 func test_fp_accumulator_resets_on_miss() -> void:
 	_autoplay_controller_stub.autoplay_toggled.emit(true)
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	_autoplay_controller_stub.autoplay_toggled.emit(false)
 	_hit()
 	assert_eq(_last_friendship_point_balance, 1)

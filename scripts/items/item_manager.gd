@@ -93,6 +93,16 @@ func get_default_ball_launch_velocity() -> Vector2:
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
+## Returns the resolved stat value (base + additive modifiers + percentage offset) for a stat key.
+func get_stat(key: StringName) -> float:
+	return _effect_manager.get_stat(key)
+
+
+## Registers an effect source with the effect system at the given level.
+func register_source(source: Resource, level: int) -> void:
+	_effect_manager.register_source(source, level)
+
+
 ## Returns the summed additive modifiers (including oscillations) for a stat key.
 func get_modifier(key: StringName) -> float:
 	return _effect_manager.get_modifier(key)
@@ -371,6 +381,21 @@ func adopt_authored(item_key: String) -> void:
 
 	if not is_on_court(item_key):
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+
+
+## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
+## Returns true when the level increased. Intended for tier-completion ball upgrades.
+func upgrade_ball(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return false
+
+	var current_level := get_level(item_key)
+	if current_level <= 0 or current_level >= item.max_level:
+		return false
+
+	_set_level(item_key, current_level + 1)
+	return true
 
 
 ## Acquires an item without registering its effects. The item is owned but

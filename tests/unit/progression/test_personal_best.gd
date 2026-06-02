@@ -35,7 +35,7 @@ func _on_personal_volley_best_changed(best: int) -> void:
 
 
 func _hit() -> void:
-	_paddle_stub.paddle_hit.emit()
+	_paddle_stub.paddle_hit.emit(null)
 
 
 func test_personal_volley_best_updates_on_new_high() -> void:
@@ -49,7 +49,7 @@ func test_personal_volley_best_persists_after_miss() -> void:
 	_hit()
 	_hit()
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	assert_eq(_last_personal_volley_best, 3)
 
 
@@ -57,7 +57,7 @@ func test_personal_volley_best_not_updated_when_streak_below_record() -> void:
 	_hit()
 	_hit()
 	_hit()
-	_ball_stub.missed.emit()
+	_ball_stub.missed.emit(_ball_stub)
 	_hit()
 	# One hit after miss: streak is 1, best is 3, so no new update
 	assert_eq(_last_personal_volley_best, 3)

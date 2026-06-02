@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SpeedTierTable" format=3 uid="uid://bg5x8laudd1w6"]
+
+[ext_resource type="Script" uid="uid://bj6k0psydteb8" path="res://scripts/core/speed_tier_table.gd" id="1_table"]
+[ext_resource type="Script" uid="uid://biro0uh4dcwbj" path="res://scripts/core/speed_tier.gd" id="2_tier"]
+
+[sub_resource type="Resource" id="Tier0"]
+script = ExtResource("2_tier")
+key = &"tier_zero"
+floor_fraction = 0.31
+ceiling_fraction = 0.54
+max_range_fraction = 0.47
+
+[sub_resource type="Resource" id="Tier1"]
+script = ExtResource("2_tier")
+key = &"tier_one"
+floor_fraction = 0.47
+ceiling_fraction = 0.72
+max_range_fraction = 0.25
+reward = "tier_one_final"
+
+[sub_resource type="Resource" id="Tier2"]
+script = ExtResource("2_tier")
+key = &"top_tier"
+floor_fraction = 0.65
+ceiling_fraction = 0.86
+max_range_fraction = 0.21
+reward = "top_tier_final"
+
+[resource]
+script = ExtResource("1_table")
+tiers = Array[ExtResource("2_tier")]([SubResource("Tier0"), SubResource("Tier1"), SubResource("Tier2")])
