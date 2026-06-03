@@ -1,64 +1,40 @@
 ---
 name: code-comments
-description: Code-comment policy every minion follows when writing code. One line max, WHY-only, no narration of what the code does. Read before writing or editing any source file.
+description: Code-comment policy every minion follows when writing code. The code, its names, and its tests carry the meaning; a comment is the rare exception for a WHY the code cannot hold. Read before writing or editing any source file.
 ---
 
 # Code comments
 
 Before you write any line of code, read this and `data-driven.md`.
 
-Default to no comments. Most code shouldn't carry any.
+Good code documents itself. The identifiers name what things are, the structure shows what happens, and the tests show what it should do. Reach for those first: a clearer name, a smaller function, an extracted helper, a test that demonstrates the case. When the code carries the meaning there is nothing left for a comment to add, and that is the normal state. Most files carry no comments; that is them working as intended.
 
-## When to write one
+A comment earns its place only for a **WHY the code genuinely cannot hold**: a hidden constraint, a workaround for a specific engine quirk, a choice that would look wrong to a careful reader who doesn't know the reason. If a reader of the well-named code could deduce it, or if it belongs in a design or tech doc, let one of those carry it instead.
 
-Only when the WHY is non-obvious from the code:
+## The two comment kinds
 
-- A hidden constraint or subtle invariant a reader would miss.
-- A workaround for a specific bug or engine quirk.
-- Behaviour that would surprise a reader of well-named identifiers.
+`##` is Godot's documentation comment; it attaches to the declaration directly below and surfaces in the editor. Same bar: one line naming a non-obvious WHY for that declaration, kept adjacent (a blank line breaks the attachment). One line per declaration; a WHY that needs a paragraph is a doc, not a docstring.
 
-If removing the comment wouldn't confuse a future reader, don't write it.
+`#` is an inline comment, same bar again: a single line, only for the WHY the code can't hold.
 
-**Two kinds of comment, two rules.**
+## Test files document themselves
 
-`##` is Godot's documentation-comment syntax. It attaches to the declaration immediately below (class, signal, member, function, enum, const) and surfaces in the editor as inline tooltips, class reference, and autocomplete hints. Godot's rules:
+A test needs no comments. The file name, the `test_*` function name, and the assertion messages already say what is under test and what should hold, so a test file and its support stubs carry no header docstring, no per-test explanation, and no `# --- group ---` dividers. If a test seems to need a comment to be understood, the test name or the test itself is what to fix.
 
-- One or more `##` lines directly above a declaration; the first line is the summary, subsequent lines extend it.
-- A blank line between the docstring and the declaration breaks the attachment, so keep them adjacent.
-- BBCode formatting renders in the editor (`[b]`, `[code]`, `[url]`, etc.). Use sparingly.
-- Special tags like `[param name]`, `@tutorial`, `@deprecated` are recognised; see Godot's GDScript documentation comments page for the full list.
+## Let the code carry it instead of commenting
 
-Volley tightens these: `##` is one line per declaration, full stop. Multi-line `##` blocks become a one-liner or move into a separate doc. Tutorial / param tags are out of scope until they earn their place.
+- **What the code does** is the identifiers' job; a `#` restating the line below is the line restated.
+- **Why it exists, who calls it, what task it is for** lives in the PR and the issue, not the code; it rots the moment a caller changes.
+- **Grouping a file into sections** (`# === Public API ===`, `# --- group ---`) means the file wants splitting, or the names want to do the grouping.
 
-`#` is a narrative inline comment. `#` gets the strict bar below.
+## Length and TODOs
 
-**The bar for `#`.** Default is no comment. Before writing one, try renaming the identifier, restructuring the block, or extracting a function. A `#` comment earns its place only when both of these hold:
+One line, always. A WHY that needs more is a doc, linked from the PR, not from the code. TODOs are `todo: SH-XX <what>`, lowercase, with the issue id; never bare, never shouty.
 
-- The information is truly inscrutable from the code itself; a future reader could not deduce it by reading.
-- The information is too implementation-focused for design, tech, or narrative docs to host.
+## The pull to resist
 
-If both don't hold, drop it.
-
-A blank line precedes every comment, like any other block. File-path references inside comments are forbidden; the reader finds the spec by name, not by link.
-
-## What not to comment
-
-- **What the code does.** Well-named identifiers already do that. `// loops over enemies and applies damage` next to a `for enemy in enemies: enemy.take_damage(d)` loop is noise.
-- **Current task / fix / callers.** No `// added for SH-247`, no `// used by the rack reconciler`, no `// handles the case from #321`. Those belong in the challenge description and rot the moment a caller changes.
-- **Section headers in code.** `// === Public API ===` divides a file that should be split if it's that big.
-
-## Length
-
-One line max. If the WHY needs a paragraph, write a doc and link from the challenge description, not from the code.
-
-## TODOs
-
-`todo: SH-XX` lowercase with the issue id. No `TODO: ` shouty form. No bare TODOs without an issue.
-
-## Why this rule keeps slipping
-
-Reviewers cite CLAUDE.md when blocking on multi-line block comments, and the violation still appears in fresh challenges. The cause is "I'll explain my approach" instinct overriding the policy. Treat any urge to write more than one line of comment as a signal to either rename the identifier, extract a helper, or move the explanation to the challenge description. Pickle Jar (PR #533 SH-287, PR #535 SH-297) is the most recent corpus where multi-line docstrings landed despite this rule and required refine rounds.
+The urge to add a comment is usually the urge to show the thinking, to explain the approach or prove the work was careful, the same over-production reflex behind long commit messages and sectioned PR bodies. The next reader wants the clear code, not the narration. So spend the urge on a better name, a smaller function, or a test, and write nothing.
 
 ## What this skill replaces
 
-Memory rule `feedback_comment_style.md` and the comment section of `CLAUDE.md` both describe the same policy; this skill is the standard version minions read before writing code.
+Memory rule `feedback_comment_style.md` and the comment section of `CLAUDE.md` describe the same policy; this skill is the standard version minions read before writing code.
