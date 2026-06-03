@@ -45,7 +45,8 @@ A blank line precedes every comment, like any other block. File-path references 
 
 - **What the code does.** Well-named identifiers already do that. `// loops over enemies and applies damage` next to a `for enemy in enemies: enemy.take_damage(d)` loop is noise.
 - **Current task / fix / callers.** No `// added for SH-247`, no `// used by the rack reconciler`, no `// handles the case from #321`. Those belong in the challenge description and rot the moment a caller changes.
-- **Section headers in code.** `// === Public API ===` divides a file that should be split if it's that big.
+- **Section headers in code.** `// === Public API ===` divides a file that should be split if it's that big. This includes `# --- group ---` dividers between test functions.
+- **Test files carry no comments.** A test documents itself through the file name, the `test_*` function name, and the assertion messages, so a test file (and its support stubs) needs no header docstring, no per-test explanation, no section dividers. If a test needs a comment to be understood, rename the test or simplify it instead. (Recurring slip: header/section comments added to test files; the rule is none.)
 
 ## Length
 
