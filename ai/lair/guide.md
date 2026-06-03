@@ -62,9 +62,13 @@ Each cycle is two weeks. The beats are the same every time.
 
 **Cycle retro.** At the end of the cycle, a retro. The word is already cross-industry and nobody needs a new one.
 
-## Mission terminal state
+## Mission terminal states
 
-**Complete.** Every issue in the mission has merged. The timer on the work stops here. Complete is the terminal state.
+A mission ends in two steps, not one.
+
+**Complete.** Every issue in the mission has merged to staging. The timer on the work stops here.
+
+**Closed.** The mission has shipped to production. Closed is the terminal state.
 
 ## The Gru Sisters
 
@@ -120,7 +124,8 @@ The players who get to play what the release brings them. The reason any of this
 | The Ride | Single-feature smoke on the built game, after a Challenge merges. |
 | The Carnival | Full playtest gate before a release. Each RC is its own Carnival. |
 | The Heist | The release operation. Inverted polarity: gives to the world. Ends with the build going to production. |
-| Complete | Mission state: every issue merged. Work timer stops. Terminal. |
+| Complete | Mission state: every issue merged to staging. Work timer stops. |
+| Closed | Mission state: shipped to production. Terminal. |
 | Cycle retro | End-of-cycle reflection. |
 
 Usage examples, so the words feel natural:
