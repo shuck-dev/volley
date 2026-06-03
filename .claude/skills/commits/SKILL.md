@@ -33,9 +33,22 @@ For breaking changes (save wipes, API renames, workflow-input shifts), use `feat
 
 ## Issue references
 
-**GitHub issue IDs (`#N`) are the primary surface.** The repo is open source; readers of commits and PRs follow GitHub links, not Linear. Reference the GitHub issue with a bare `#123` (just the number, no leading verb) in the commit body or PR body: GitHub backlinks them, and the branch name (not the body) is what advances the Linear issue on merge. Linear IDs (`SH-N`) are private and never appear in commit messages or PR bodies. The branch name carries the Linear context for internal tooling; that is enough.
+**GitHub IDs (`#N`) are the only ID on every open surface, branch names included.** The repo is open source; readers follow GitHub links, not Linear. The branch is `feature/<gh-number>-<slug>` (the GitHub issue number, no `sh-` prefix, no `gh-` prefix). Reference the GitHub issue with a bare `#123` (just the number, no leading verb) in the commit body or PR body. Linear IDs (`SH-N`) are private and appear on no open surface: not the branch, not the title, not the body, not commits, not comments. When a branch covers two issues, chain the numbers: `feature/691-692-slug`.
 
-The bare reference is the one to reach for. A leading GitHub action-verb on the issue number fires GitHub's own issue-close on merge, which overshoots the Linear issue two states past where the branch-name integration leaves it. See [`designs/ai/lane-semantics.md`](../../../designs/ai/lane-semantics.md).
+The bare `#N` is the reference to reach for. A leading GitHub action-verb (`closes #N`) fires GitHub's own issue-close on merge; we do not want that. See [`designs/ai/lane-semantics.md`](../../../designs/ai/lane-semantics.md).
+
+**Linear transitions: the Shuck team PR automations move the issue on PR state** (draft open to Dispatched, marked-ready to Challenged, no action on merge so Completed is manual). BUT those automations only fire on a PR that Linear has *linked* to the issue, and Linear forms that link by finding a Linear ID (`SH-N`) in the branch name, PR title, or PR body. A fully GitHub-facing PR with no `SH-N` anywhere is unlinked, so it drives no transition.
+
+The reconciliation, while branches stay GitHub-facing: link the PR yourself. The MCP Linear tools do not expose attachment linking, but the raw GraphQL API does. Script it with `$LINEAR_API_KEY` against `https://api.linear.app/graphql` using `attachmentLinkGitHubPR` with `issueId`, `url`, and a `linkKind` (the `GitLinkKind` enum). `attachmentDelete` drops a link. Do not put `SH-N` on an open surface to get the link. Confirm the link landed with a Linear read; do not assume the PR moved the issue.
+
+**`linkKind` is the relationship, and it is what handles multi-PR.** The enum (matching the UI picker):
+- `closes` ("Resolves"), the PR resolves the issue on merge. Use for a single-PR issue.
+- `contributes` ("Contributes to"), one of several PRs; moves the issue but does not solo-resolve. **Use this for every PR on a multi-PR issue.**
+- `links` ("Related to"), reference only, no status automation.
+
+The merge automation is an AND across linked PRs: the issue only reaches the terminal state when the *final* contributing PR merges. So linking each PR as `contributes` (not `closes`) is what stops one early merge from completing the issue; you do not need to delete attachments to manage it. A closed or replaced PR does not auto-unlink, so set it to `links` or `attachmentDelete` it if its stale `closes` / `contributes` would skew the AND.
+
+Note for the Shuck team specifically: merge is set to no-action, so no `linkKind` completes an issue on merge today (Completed is always manual). The `closes` / `contributes` distinction still matters if that mapping is ever turned on, and `links` vs the others still controls whether the open / ready automations fire at all.
 
 ## Branch discipline
 
