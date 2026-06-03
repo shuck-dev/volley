@@ -70,8 +70,7 @@ var play_state: PlayState = PlayState.PLAY_NORMAL
 
 var _item_manager: Node
 var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
-# Downward arc acceleration for the current above-bound visit, derived at the up-cross from the
-# entry speed and the court's arc rule. Zero while below the bound.
+# Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
 var _arc_accel: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
 var _suppress_miss_detection: bool = false
@@ -108,10 +107,9 @@ func _physics_process(delta: float) -> void:
 	if _emit_tracker.should_emit_speed(speed, tier_floor, tier_ceiling):
 		_emit_speed_changed()
 
-	# ARC bends the direction down toward the apex; NORMAL flies straight. Both hold the magnitude
-	# at speed, so the arc costs no speed and there is nothing to relock on the way out.
 	if play_state == PlayState.PLAY_ARC:
 		linear_velocity.y += _arc_accel * delta
+	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
 		linear_velocity = linear_velocity.normalized() * speed
 
@@ -130,8 +128,7 @@ func _update_play_state() -> void:
 
 
 func _enter_arc() -> void:
-	# No engine gravity above the bound: the arc is computed, not integrated. The court's arc rule
-	# turns the entry's upward speed into the downward bend that peaks at the tuned apex.
+	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
 	gravity_scale = 0.0
 	_arc_accel = court_config.physics.arc_acceleration(-linear_velocity.y)
 	set_play_state(PlayState.PLAY_ARC)
@@ -216,8 +213,7 @@ func enter_stored() -> void:
 	set_play_state(PlayState.STORED)
 
 
-# PLAY: selects NORMAL or ARC by current Y vs the soul bound. Both run gravity-free; ARC adds the
-# computed arc bend (see _enter_arc), NORMAL flies straight.
+# Both PLAY states run gravity-free; ARC adds the bend (see _enter_arc), NORMAL flies straight.
 func enter_play() -> void:
 	_suppress_miss_detection = false
 	PLAY_ACTIVE_CONFIG.apply(self)

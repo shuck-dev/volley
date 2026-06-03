@@ -1,21 +1,15 @@
 class_name CourtPhysics
 extends Resource
 
-## Above-bound arc rule. The ball crosses the soul bound moving up, arcs over, and crosses back
-## down at the mirrored angle, holding a constant speed the whole way. Swap this resource to give
-## a venue a different arc without touching Ball.
+## Above-bound arc rule; swap per venue to change the arc without touching Ball. Model in 01-court-control.md.
 
-## Downward acceleration above the bound, in px/s^2 (+y is down). The court's arc "gravity": the
-## apex emerges from how fast the ball entered, so a steeper, faster entry arcs higher.
+## Downward arc acceleration in px/s^2 (+y down); the apex emerges from it, so a faster entry arcs higher.
 @export var arc_gravity: float = 600.0
-## Ceiling on the apex rise above the bound, in pixels, so a steep, fast entry cannot loft the
-## ball off-screen. Past this the bend stiffens to cap the peak.
+## Apex ceiling in pixels above the bound so a steep, fast entry cannot loft the ball off-screen.
 @export var arc_height_max: float = 220.0
 
 
-## Downward acceleration to apply this arc visit, given the entry's upward speed (px/s). Returns the
-## tuned arc_gravity, stiffened only when the emergent apex would exceed arc_height_max. Zero when
-## there is no upward motion to arc.
+## Downward acceleration for this arc visit; zero when there is no upward motion to arc.
 func arc_acceleration(entry_speed_up: float) -> float:
 	if entry_speed_up <= 0.0:
 		return 0.0
