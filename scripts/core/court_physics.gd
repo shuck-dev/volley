@@ -1,7 +1,6 @@
+## Above-bound arc rule; swap per venue to change the arc without touching Ball. Model in 01-court-control.md.
 class_name CourtPhysics
 extends Resource
-
-## Above-bound arc rule; swap per venue to change the arc without touching Ball. Model in 01-court-control.md.
 
 ## Downward arc acceleration in px/s^2 (+y down); the apex emerges from it, so a faster entry arcs higher.
 @export var arc_gravity: float = 600.0
