@@ -39,9 +39,16 @@ The bare `#N` is the reference to reach for. A leading GitHub action-verb (`clos
 
 **Linear transitions: the Shuck team PR automations move the issue on PR state** (draft open to Dispatched, marked-ready to Challenged, no action on merge so Completed is manual). BUT those automations only fire on a PR that Linear has *linked* to the issue, and Linear forms that link by finding a Linear ID (`SH-N`) in the branch name, PR title, or PR body. A fully GitHub-facing PR with no `SH-N` anywhere is unlinked, so it drives no transition.
 
-The reconciliation, while branches stay GitHub-facing: create the link once, by hand, via the Linear issue's "Link GitHub PR" (or paste the PR URL into the issue). Once the attachment exists the state automations follow the PR. Do not put `SH-N` on an open surface to get the link. Confirm the link landed with a Linear read; do not assume the PR moved the issue.
+The reconciliation, while branches stay GitHub-facing: link the PR yourself. The MCP Linear tools do not expose attachment linking, but the raw GraphQL API does. Script it with `$LINEAR_API_KEY` against `https://api.linear.app/graphql` using `attachmentLinkGitHubPR` with `issueId`, `url`, and a `linkKind` (the `GitLinkKind` enum). `attachmentDelete` drops a link. Do not put `SH-N` on an open surface to get the link. Confirm the link landed with a Linear read; do not assume the PR moved the issue.
 
-**Multi-PR caveat.** A Linear issue can link several PRs, but the automation is an AND: the status only moves when the *final* linked PR reaches the state. So a stale link to a closed-without-merge PR can stall the transition (it never reaches merge). If you replace a PR (close one, open another for the same issue), unlink the dead PR from the issue so the live PR is the only linked target. A closed PR does not auto-unlink and a replacement does not auto-link; both are manual.
+**`linkKind` is the relationship, and it is what handles multi-PR.** The enum (matching the UI picker):
+- `closes` ("Resolves"), the PR resolves the issue on merge. Use for a single-PR issue.
+- `contributes` ("Contributes to"), one of several PRs; moves the issue but does not solo-resolve. **Use this for every PR on a multi-PR issue.**
+- `links` ("Related to"), reference only, no status automation.
+
+The merge automation is an AND across linked PRs: the issue only reaches the terminal state when the *final* contributing PR merges. So linking each PR as `contributes` (not `closes`) is what stops one early merge from completing the issue; you do not need to delete attachments to manage it. A closed or replaced PR does not auto-unlink, so set it to `links` or `attachmentDelete` it if its stale `closes` / `contributes` would skew the AND.
+
+Note for the Shuck team specifically: merge is set to no-action, so no `linkKind` completes an issue on merge today (Completed is always manual). The `closes` / `contributes` distinction still matters if that mapping is ever turned on, and `links` vs the others still controls whether the open / ready automations fire at all.
 
 ## Branch discipline
 
