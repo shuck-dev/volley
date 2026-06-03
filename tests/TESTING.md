@@ -27,7 +27,7 @@ func before_each() -> void:
 
 ### Only stub what you can't instantiate
 
-The only stub is `hud_stub.gd` because the real HUD requires a wired-up Label node. If a dependency can be instantiated with minimal setup, use the real thing.
+Reach for a stub in `tests/stubs/` only when the real dependency cannot be instantiated with minimal setup: a node that needs a wired-up scene, an autoload, or a partner that records calls. Current stubs are `paddle_stub`, `ball_stub`, `autoplay_controller_stub`, `recording_partner_paddle_stub`, plus the `item_factory` and `progression_manager_factory` builders. If a dependency instantiates cleanly, use the real thing.
 
 ### Test observable outcomes, not internal state
 
@@ -39,11 +39,11 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 | `_game._volley_count == 0` | `hud.last_count == 0` |
 | `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
 
-### Don't call private methods
+### Drive time deterministically; route through public seams
 
-Don't call `_physics_process()` directly to advance time. Use `await get_tree().create_timer(0.25).timeout` so the engine runs real physics frames.
+Advance a system under test by calling its `_physics_process(virtual_delta)` directly with a chosen delta rather than awaiting real frames. This is the project's standing practice for a fast suite (see Test budget below) and it is what unit tests here do. `_physics_process` is the engine's per-frame entry point, so driving it is simulating a frame, not poking private state.
 
-Don't call `_on_paddle_hit()` for routing checks; emit the signal instead: `_paddle.paddle_hit.emit()`.
+For routing and wiring, go through the public seam: emit the signal (`_paddle.paddle_hit.emit()`) rather than calling a private handler like `_on_paddle_hit()`. Assert on public state or emitted signals, never on private fields (see the table above).
 
 ### Step tweens deterministically instead of awaiting real time
 
@@ -67,6 +67,58 @@ This pattern lives in `tests/unit/paddle/test_timeout_controller.gd`.
 
 - **Unit tests** test one component's public methods or verify signal routing by emitting signals directly (`_paddle.paddle_hit.emit()`).
 - **Integration tests** drive the system through its entry points (`_paddle.on_ball_hit()`) and verify the full chain.
+
+## GUT feature reference
+
+GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no built-in test framework. A test file `extends GutTest`; a test is any `func test_*` method. There are no custom display names, the function name is the title, so name it as the behaviour sentence.
+
+### Lifecycle
+
+`before_all` / `before_each` / `after_each` / `after_all`. An inner `class X extends GutTest` is collected as its own group with its own lifecycle hooks; this is the only grouping GUT offers and it is one level deep (no nested-class nesting). Test order within a class is not guaranteed.
+
+### Assertions (the families we use)
+
+| Family | Methods |
+|---|---|
+| Equality | `assert_eq`, `assert_ne`, `assert_almost_eq`, `assert_almost_ne`, `assert_same`, `assert_eq_deep` |
+| Ordering | `assert_gt`, `assert_gte`, `assert_lt`, `assert_lte`, `assert_between` |
+| Truth / null | `assert_true`, `assert_false`, `assert_null`, `assert_not_null` |
+| Type | `assert_is`, `assert_typeof`, `assert_has_method` |
+| Signals | `assert_signal_emitted`, `assert_signal_emitted_with_parameters`, `assert_signal_emit_count`, `assert_has_signal` (call `watch_signals(obj)` first) |
+| Collections | `assert_has`, `assert_does_not_have` |
+| Lifecycle / leaks | `assert_freed`, `assert_not_freed`, `assert_no_new_orphans` |
+| Engine output | `assert_engine_error`, `assert_push_warning` (and their `_count` forms) |
+
+Prefer the signal asserts for behaviour that other systems hear; prefer public-state equality for the rest. The accessor/property assert helpers (`assert_accessors`, `assert_property`, `assert_exports`) pin a getter/setter pair by name, which is implementation, so avoid them unless the accessor contract itself is the player-facing surface.
+
+### Parameterized tests
+
+For a behaviour that is one rule over a table of inputs, use `use_parameters` instead of N near-identical functions. One function runs once per row:
+
+```gdscript
+func test_fill_ratio(p = use_parameters([
+    # [current, min, max, expected_ratio]
+    [400.0, 400.0, 700.0, 0.0],
+    [550.0, 400.0, 700.0, 0.5],
+    [700.0, 400.0, 700.0, 1.0],
+])):
+    _bar.update_speed(p[0], p[0], p[1], p[2])
+    assert_almost_eq(_fill_ratio(), p[3], 0.01)
+```
+
+This is the GUT-native answer to fragmented input-table suites; collapse those rather than copy a function per input.
+
+### Driving and waiting
+
+`simulate(obj, times, delta)` calls `_process`/`_physics_process` a number of times with a fixed delta. For real-frame waits there are `wait_frames`, `wait_physics_frames`, `wait_seconds`, `wait_for_signal`, `wait_until`/`wait_while`, but prefer deterministic stepping (see Test budget) over real-time waits.
+
+### Doubling and stubbing
+
+`double()` / `partial_double()` / `stub()` exist, but this project avoids them: `double()` has a headless-CI cache bug ([#491](https://github.com/bitwes/Gut/issues/491)) and does not simulate physics nodes. Use real instances with `add_child_autofree()`; reach for a hand-written stub in `tests/stubs/` only when a dependency cannot be instantiated cheaply.
+
+### How the suite runs
+
+`.gutconfig.json` drives it: all of `res://tests/`, subdirs included, exit on failure, with `tests/hooks/pre_run_hook.gd` and `post_run_hook.gd` around the run. Filter a run with `-gdir` plus `-gprefix`, e.g. `-gdir=res://tests/unit/ball -gprefix=test_ball_apex`.
 
 ## Real-input rule for player-facing acceptance criteria
 
