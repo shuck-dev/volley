@@ -41,11 +41,16 @@ func test_increase_speed_advances_tier_at_ceiling() -> void:
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "speed drops to the new tier's floor")
 
 
-# --- miss zone registration ---
-func test_miss_zone_entry_emits_missed() -> void:
+# --- miss zone ---
+func _registered_zone() -> MissZone:
 	var zone := MissZone.new()
 	add_child_autofree(zone)
 	_ball.register_miss_zone(zone)
+	return zone
+
+
+func test_miss_zone_entry_emits_missed() -> void:
+	var zone := _registered_zone()
 	watch_signals(_ball)
 
 	zone.body_entered.emit(_ball)
@@ -54,9 +59,7 @@ func test_miss_zone_entry_emits_missed() -> void:
 
 
 func test_miss_zone_ignores_other_bodies() -> void:
-	var zone := MissZone.new()
-	add_child_autofree(zone)
-	_ball.register_miss_zone(zone)
+	var zone := _registered_zone()
 	watch_signals(_ball)
 
 	var other_body: Node2D = Node2D.new()
@@ -67,12 +70,12 @@ func test_miss_zone_ignores_other_bodies() -> void:
 
 
 func test_register_miss_zone_is_idempotent() -> void:
-	var zone := MissZone.new()
-	add_child_autofree(zone)
-	_ball.register_miss_zone(zone)
-	_ball.register_miss_zone(zone)
+	var zone := _registered_zone()
+	_ball.register_miss_zone(zone)  # second registration must not double-wire
 	watch_signals(_ball)
 
 	zone.body_entered.emit(_ball)
+
+	assert_signal_emit_count(_ball, "missed", 1)
 
 	assert_signal_emit_count(_ball, "missed", 1)
