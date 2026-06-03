@@ -68,6 +68,8 @@ Block: one line per reviewer that found something, led by codename and role:
 
 Rules: one line per finding, not per reviewer. Findings that landed inline say "findings posted inline" and are not restated. Off-diff findings (line absent from the diff, e.g. a stale summary the PR forgot) cannot anchor inline, so the body carries them in full. Same prose bar as a review comment: attributed, no AI tells, no em dashes, anchored to a line.
 
+The body has a hard cap of 300 characters. A roll-call of clean re-verdicts is the over-production tell; collapse to the resolved-findings clause and the verdict. Over the cap means the body is restating what the inline threads already carry.
+
 Re-review after a fix: `event=APPROVE`, body names the fix SHA and what it resolved in one line. `Re-review clean: <sha> <what changed>. Block resolved.`
 
 Your codename is in the dispatch prompt (Trillian, Zaphod, Ford, Marvin, Slartibartfast, etc.). The role name (code-quality, gdscript-conventions) is not the codename.
