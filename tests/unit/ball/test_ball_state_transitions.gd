@@ -77,14 +77,12 @@ func test_mid_arc_speed_change_recomputes_the_bend() -> void:
 	_ball.linear_velocity = Vector2(0.0, 100.0)
 	_ball._enter_arc()
 	var bend_descending: float = _ball._arc_acceleration
+
 	_ball.speed = _ball.ball_world_max_speed
 	_ball.linear_velocity = Vector2(0.0, -1.0)
 	_ball._apply_speed()
-	assert_gt(
-		_ball._arc_acceleration,
-		bend_descending,
-		"a fast upward velocity mid-arc clamps the bend harder than the descending value"
-	)
+
+	assert_gt(_ball._arc_acceleration, bend_descending)
 
 
 func test_enter_play_emits_once() -> void:
