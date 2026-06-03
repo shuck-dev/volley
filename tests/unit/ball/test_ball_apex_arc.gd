@@ -1,4 +1,3 @@
-## Ball NORMAL <-> ARC transitions across the soul bound.
 extends GutTest
 
 const BOUND_Y := -100.0
