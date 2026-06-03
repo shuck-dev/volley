@@ -69,7 +69,20 @@ func test_enter_play_arc_when_above_bound() -> void:
 	_ball.global_position = Vector2(0.0, BOUND_Y - 100.0)
 	_ball.enter_play()
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_ARC)
-	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
+
+
+func test_mid_arc_speed_change_recomputes_the_bend() -> void:
+	_ball.global_position = Vector2(0.0, BOUND_Y - 100.0)
+	_ball.enter_play()
+	_ball.linear_velocity = Vector2(0.0, 100.0)
+	_ball._enter_arc()
+	var bend_descending: float = _ball._arc_acceleration
+
+	_ball.speed = _ball.ball_world_max_speed
+	_ball.linear_velocity = Vector2(0.0, -1.0)
+	_ball._apply_speed()
+
+	assert_gt(_ball._arc_acceleration, bend_descending)
 
 
 func test_enter_play_emits_once() -> void:

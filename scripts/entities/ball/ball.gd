@@ -68,14 +68,10 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-# Persistent register: first NORMAL->ARC cross sets it; in-ARC speed events update it; relock targets it.
-var entry_speed: float:
-	get:
-		return _relock.entry_speed
-
 var _item_manager: Node
 var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
-var _relock: BallRelockState = BallRelockState.new()
+# Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
+var _arc_acceleration: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
 var _suppress_miss_detection: bool = false
 
@@ -105,17 +101,22 @@ func _physics_process(delta: float) -> void:
 		return
 
 	effect_processor.process_frame(delta)
-	_update_play_state(delta)
+	_update_play_state()
 	_emit_max_speed_if_changed()
 
 	if _emit_tracker.should_emit_speed(speed, tier_floor, tier_ceiling):
 		_emit_speed_changed()
-	if play_state == PlayState.PLAY_NORMAL:
+
+	if play_state == PlayState.PLAY_ARC:
+		linear_velocity.y += _arc_acceleration * delta
+
+	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
+	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
 		linear_velocity = linear_velocity.normalized() * speed
 
 
-# State transitions and per-state physics. Crossing is read off the body's current Y vs the bound.
-func _update_play_state(delta: float) -> void:
+# NORMAL <-> ARC crossing, read off the body's current Y vs the soul bound.
+func _update_play_state() -> void:
 	if play_state != PlayState.PLAY_NORMAL and play_state != PlayState.PLAY_ARC:
 		return
 
@@ -126,35 +127,17 @@ func _update_play_state(delta: float) -> void:
 	elif not above_bound and play_state == PlayState.PLAY_ARC:
 		_enter_normal()
 
-	if play_state != PlayState.PLAY_ARC and _relock.is_ramping():
-		_advance_relock_ramp(delta)
-
 
 func _enter_arc() -> void:
-	_relock.enter_arc(speed)
-	# Hot path: only NORMAL/ARC delta. Direct write here goes stale if a second property starts differing between NORMAL and ARC.
-	gravity_scale = 1.0
+	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
+	gravity_scale = 0.0
+	_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
 	set_play_state(PlayState.PLAY_ARC)
 
 
 func _enter_normal() -> void:
-	# See _enter_arc above for the staleness warning.
-	gravity_scale = 0.0
-	var should_snap: bool = _relock.enter_normal(
-		linear_velocity.length(), court_config.relock_ramp_seconds
-	)
-
-	if should_snap:
-		speed = _relock.entry_speed
-		linear_velocity = linear_velocity.normalized() * speed
-
+	_arc_acceleration = 0.0
 	set_play_state(PlayState.PLAY_NORMAL)
-
-
-func _advance_relock_ramp(delta: float) -> void:
-	var ramped_speed: float = _relock.advance_ramp(delta, court_config.relock_ramp_seconds)
-	speed = ramped_speed
-	linear_velocity = linear_velocity.normalized() * ramped_speed
 
 
 func _emit_speed_changed() -> void:
@@ -231,18 +214,17 @@ func enter_stored() -> void:
 	set_play_state(PlayState.STORED)
 
 
-# PLAY: selects NORMAL or ARC by current Y vs the soul bound. NORMAL/ARC share the active
-# config and differ only by gravity_scale, which is set after apply().
+# Both PLAY states run gravity-free; ARC adds the bend (see _enter_arc), NORMAL flies straight.
 func enter_play() -> void:
 	_suppress_miss_detection = false
 	PLAY_ACTIVE_CONFIG.apply(self)
 	var above_bound: bool = global_position.y < bound_y
 
 	if above_bound:
-		gravity_scale = 1.0
-		set_play_state(PlayState.PLAY_ARC)
+		_enter_arc()
 	else:
 		gravity_scale = 0.0
+		_arc_acceleration = 0.0
 		set_play_state(PlayState.PLAY_NORMAL)
 
 
@@ -276,7 +258,6 @@ func increase_speed() -> void:
 
 		speed = minf(speed + speed_increment, ball_world_max_speed)
 		_apply_speed()
-		_track_arc_speed_change()
 		return
 
 	if speed + speed_increment >= tier_ceiling:
@@ -285,7 +266,6 @@ func increase_speed() -> void:
 
 	speed = speed + speed_increment
 	_apply_speed()
-	_track_arc_speed_change()
 
 
 # Crossing a tier ceiling steps up a rung, or opens the final-consolidation window when the top tier completes.
@@ -300,7 +280,6 @@ func advance_tier() -> void:
 		speed = tier_floor
 
 	_apply_speed()
-	_track_arc_speed_change()
 
 	tier_advanced.emit(self, current_tier)
 	_item_manager.process_event(&"on_tier_completed")
@@ -314,16 +293,12 @@ func _tier_fraction(field: String) -> float:
 	return tier.get(field)
 
 
-# In ARC, the entry-value register tracks any speed-change event so the post-apex relock
-# lands at the post-event speed rather than the pre-apex value.
-func _track_arc_speed_change() -> void:
-	if play_state == PlayState.PLAY_ARC:
-		_relock.track_speed_change(speed)
-
-
 func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
 	linear_velocity = linear_velocity.normalized() * speed
+	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
+	if play_state == PlayState.PLAY_ARC:
+		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
 	_emit_max_speed_if_changed()
 	_emit_speed_changed()
 
@@ -367,8 +342,6 @@ func _ball_setup() -> void:
 	effect_processor.sync_base_speed()
 	lock_rotation = true
 
-	# Reset relock register so a pooled ball doesn't read its previous run's tracked value.
-	_relock.reset()
 	enter_play()
 	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 
