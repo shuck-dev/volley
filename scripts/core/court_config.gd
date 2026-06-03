@@ -1,7 +1,7 @@
 class_name CourtConfig
 extends Resource
 
-## Per-court tunables: court width, soul-bound height, ramp duration.
+## Per-court tunables: court width, fair-crossing time, and the speed-relock ramp.
 
 ## Full paddle-to-paddle court span in pixels; the world speed max derives from it.
 @export var court_width: float = 600.0

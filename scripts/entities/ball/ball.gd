@@ -250,6 +250,7 @@ func enter_play() -> void:
 func enter_out_rest() -> void:
 	_suppress_miss_detection = false
 	OUT_REST_CONFIG.apply(self)
+
 	current_tier = 0
 	in_final = false
 	speed = tier_floor
