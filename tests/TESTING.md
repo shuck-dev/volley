@@ -39,6 +39,15 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 | `_game._volley_count == 0` | `hud.last_count == 0` |
 | `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
 
+### Name a test by what it tests
+
+The function name is the whole title GUT shows, so it carries the meaning. Name it the same way you decide system-story vs user-story for a ticket: who is the actor, what do they observe.
+
+- **Tests an internal value or mechanism, no player in sight.** Name the input and the literal result: `condition_<verb>_value`. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
+- **Tests a player-observable behaviour.** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. One fact can take either form depending on the layer: the arc's bend at the `CourtPhysics` return is the first kind, a dragged ball heading down in the game is the second.
+
+Keep the name to the input and the outcome. `test_steep_entry_bends_harder` describes a feel; `test_apex_above_ceiling_exceeds_arc_bend` says the input and the result. And follow the names already in the file: a new test matches its siblings.
+
 ### Test behaviour the game can actually reach
 
 Before keeping a test, confirm the production code it drives is reachable: something in the game calls the method (directly, or via a signal, `Callable`, or resource-named dispatch). A test of a method with no production caller is testing dead code, and the honest finding is the dead code, not a passing test. When you hit one, cut the test and remove the unused method (and any stub override of it) in the same change; verify the behaviour you thought it covered is owned by the live path and tested there.
@@ -76,7 +85,7 @@ This pattern lives in `tests/unit/paddle/test_timeout_controller.gd`.
 
 ## GUT feature reference
 
-GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no built-in test framework. A test file `extends GutTest`; a test is any `func test_*` method. There are no custom display names, the function name is the title, so name it as the behaviour sentence.
+GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no built-in test framework. A test file `extends GutTest`; a test is any `func test_*` method. There are no custom display names, the function name is the title, so it carries the meaning (see "Naming" under Principles).
 
 ### Lifecycle
 
