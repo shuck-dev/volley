@@ -60,17 +60,11 @@ Each cycle is two weeks. The beats are the same every time.
 
 **The Heist.** The release operation. Named after Gru's moon heist, with the polarity flipped: this one gives the prize to the world instead of taking it. The Heist ends with the build going to production.
 
-**Mission debrief.** After a mission closes, the crew debriefs. What shipped, what surprised, what to do differently.
-
 **Cycle retro.** At the end of the cycle, a retro. The word is already cross-industry and nobody needs a new one.
 
-## Mission terminal states
+## Mission terminal state
 
-A mission ends in two steps, not one.
-
-**Complete.** Every issue in the mission has merged. The timer on the work stops here.
-
-**Closed.** The mission is complete and the debrief has been posted on the Linear project. Closed is the terminal state; the debrief is the beat that sits between complete and closed.
+**Complete.** Every issue in the mission has merged. The timer on the work stops here. Complete is the terminal state.
 
 ## The Gru Sisters
 
@@ -126,9 +120,7 @@ The players who get to play what the release brings them. The reason any of this
 | The Ride | Single-feature smoke on the built game, after a Challenge merges. |
 | The Carnival | Full playtest gate before a release. Each RC is its own Carnival. |
 | The Heist | The release operation. Inverted polarity: gives to the world. Ends with the build going to production. |
-| Complete | Mission state: every issue merged. Work timer stops. |
-| Closed | Mission state: complete plus debrief posted. Terminal. |
-| Mission debrief | The beat between complete and closed. |
+| Complete | Mission state: every issue merged. Work timer stops. Terminal. |
 | Cycle retro | End-of-cycle reflection. |
 
 Usage examples, so the words feel natural:

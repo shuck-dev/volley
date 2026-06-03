@@ -19,7 +19,7 @@ A mission runs five stages, from a ticket landing on the desk to the work mergin
    - **Merge** rides the queue: it pulls the challenge into a merge group, re-runs lint and tests against `main` plus the change, then fast-forwards. Each challenge stands alone against current `main`. Josh merges; the dispatcher does not.
    - **Teardown** on done: worktrees come down, merged branches delete, per-task scratchpads scrub once keepers promote to memory or docs.
 
-5. **Verify.** Only when the mission has something to play or gate. The player plays, or the CI gate runs, against the landed bundle. Findings file as new issues (a regression reopens its source issue), not as fixes folded into the Ride. A process retro (blockers, improvements, action items, per [`debrief.md`](../../.claude/skills/debrief/SKILL.md)) runs on request, not by default.
+5. **Verify.** Only when the mission has something to play or gate. The player plays, or the CI gate runs, against the landed bundle. Findings file as new issues (a regression reopens its source issue), not as fixes folded into the Ride.
 
 ## The Gru model
 

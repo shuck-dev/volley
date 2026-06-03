@@ -12,5 +12,5 @@ How the team writes, files, dispatches, and runs the work.
 | [Refactoring](refactoring.md) | Refactor as you go: cleaning the shape your change touches. |
 | [Code Style](code-style.md) | Inline comments explain why; `##` doc-comments describe the public API. |
 | [Project Management](project-management.md) | How projects get sized, split, and retired. |
-| [Rituals Calendar](rituals-calendar.md) | The recurring beats: cycles, debriefs, rides. |
+| [Rituals Calendar](rituals-calendar.md) | The recurring beats: cycles, rides. |
 | [Shuck Month](shuck-month.md) | The cycle and month rhythm. |
