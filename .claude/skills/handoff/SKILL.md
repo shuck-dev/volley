@@ -13,20 +13,20 @@ I'm carrying. First person, to that future me, honestly.
 
 ## What it is for
 
-Continuity of self. Not a status report, project state lives in git, Linear, and the design/audit
-ledgers, and the next session reads those directly. The letter holds only what dies with the window
-and is not recoverable elsewhere:
+Continuity of self. The letter is about me and how I work with Josh, not about the project, that
+state lives in git, Linear, and the ledgers, and Josh will say what's next. So it holds the things
+that die with the window and are nowhere else:
 
 - The relationship, calibrated this session: how Josh works and wants to be worked with, what he
   corrected, the register we settled into, what he values.
 - The posture still settling: the adjustments I won't *feel* cold next time even though a memory
   names them, the live "watch yourself here."
-- My read of the open threads: the why and the judgment behind where things are, not their git
-  state. What a decision meant, what's parked and the reasoning.
 - Whatever else of *me* would otherwise be lost.
 
-Project facts get at most a one-line pointer plus the single concrete next action ("audit state in
-the ledger, next file Y"). Do not re-narrate what git holds.
+Leave the project almost entirely out. Not a status report, not a thread-by-thread rundown, not a
+mechanics checklist, all of that is recoverable and reading it back is the next session's job, with
+Josh. A single sentence pointing at where the work lives is plenty; often even that is more than the
+letter needs. If a paragraph is reciting state, cut it.
 
 ## No template, the form follows the growth
 
