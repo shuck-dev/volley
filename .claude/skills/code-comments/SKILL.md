@@ -13,9 +13,9 @@ A comment earns its place only for a **WHY the code genuinely cannot hold**: a h
 
 ## A comment must be connected to something
 
-Before the WHY test even runs, a comment has to be *attached* to the line or declaration it explains: a `##` directly above a declaration with no blank line between, or a `#` on or directly above the specific line it is about. A comment that floats on its own, narrating a block underneath a blank line, is out, however good the WHY. If the only honest home for it is floating above a span of code, the span wants a named function and the comment becomes its name. Floating block comments are not weighed and trimmed; they do not earn consideration in the first place.
+Before the WHY test even runs, a comment has to be *attached* to the line or declaration it explains: a `##` directly above a declaration with no blank line between, or a `#` on or directly above the specific line it is about. A comment that floats on its own, narrating a block beneath a blank line, earns no place here whatever its WHY. If the only honest home for it is floating above a span of code, the span wants a named function and the comment becomes its name. A floating block comment does not earn consideration in the first place.
 
-A comment also takes the code's spacing, not its own. It is part of the declaration it sits on, so no blank line separates it from that line, and no blank line pads it off from the code above as if it were its own paragraph. The comment lives inside the code's rhythm, spaced like the lines around it.
+A comment takes the code's spacing, not its own. It is part of the declaration it sits on, so no blank line separates it from that line, and no blank line pads it off from the code above as if it were its own paragraph. The comment lives inside the code's rhythm, spaced like the lines around it.
 
 ## The two comment kinds
 
