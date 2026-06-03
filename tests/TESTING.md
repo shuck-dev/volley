@@ -39,6 +39,12 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 | `_game._volley_count == 0` | `hud.last_count == 0` |
 | `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
 
+### Test behaviour the game can actually reach
+
+Before keeping a test, confirm the production code it drives is reachable: something in the game calls the method (directly, or via a signal, `Callable`, or resource-named dispatch). A test of a method with no production caller is testing dead code, and the honest finding is the dead code, not a passing test. When you hit one, cut the test and remove the unused method (and any stub override of it) in the same change; verify the behaviour you thought it covered is owned by the live path and tested there.
+
+Coverage tells the story: cutting a dead-method test drops coverage, and deleting the method brings it back, the net is the same reachable surface with less to maintain. (SH-430 found `Ball.reset_speed` and `set_speed_for_streak` this way; the real miss-reset runs through `enter_out_rest`, covered elsewhere.)
+
 ### Drive time deterministically; route through public seams
 
 Advance a system under test by calling its `_physics_process(virtual_delta)` directly with a chosen delta rather than awaiting real frames. This is the project's standing practice for a fast suite (see Test budget below) and it is what unit tests here do. `_physics_process` is the engine's per-frame entry point, so driving it is simulating a frame, not poking private state.
