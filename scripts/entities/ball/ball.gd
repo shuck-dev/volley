@@ -109,6 +109,7 @@ func _physics_process(delta: float) -> void:
 
 	if play_state == PlayState.PLAY_ARC:
 		linear_velocity.y += _arc_acceleration * delta
+
 	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
 		linear_velocity = linear_velocity.normalized() * speed
