@@ -40,8 +40,7 @@
     "UserPromptSubmit": [
       {
         "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/memory-correction-signal.sh\"" },
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/debrief-flow-signal.sh\"" }
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/memory-correction-signal.sh\"" }
         ]
       }
     ],
