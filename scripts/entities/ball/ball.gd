@@ -306,20 +306,6 @@ func advance_tier() -> void:
 	_item_manager.process_event(&"on_tier_completed")
 
 
-func reset_speed() -> void:
-	current_tier = 0
-	in_final = false
-	speed = tier_floor
-	_apply_speed()
-	_track_arc_speed_change()
-
-
-func set_speed_for_streak(count: int) -> void:
-	speed = minf(tier_floor + count * speed_increment, tier_ceiling)
-	_apply_speed()
-	_track_arc_speed_change()
-
-
 func _tier_fraction(field: String) -> float:
 	var tier: SpeedTier = GameRules.speed_tiers.get_tier(current_tier)
 	if tier == null:
