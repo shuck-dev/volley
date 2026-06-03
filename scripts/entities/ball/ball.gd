@@ -71,7 +71,7 @@ var play_state: PlayState = PlayState.PLAY_NORMAL
 var _item_manager: Node
 var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
 # Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
-var _arc_accel: float = 0.0
+var _arc_acceleration: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
 var _suppress_miss_detection: bool = false
 
@@ -108,7 +108,7 @@ func _physics_process(delta: float) -> void:
 		_emit_speed_changed()
 
 	if play_state == PlayState.PLAY_ARC:
-		linear_velocity.y += _arc_accel * delta
+		linear_velocity.y += _arc_acceleration * delta
 	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
 		linear_velocity = linear_velocity.normalized() * speed
@@ -130,12 +130,12 @@ func _update_play_state() -> void:
 func _enter_arc() -> void:
 	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
 	gravity_scale = 0.0
-	_arc_accel = court_config.physics.arc_acceleration(-linear_velocity.y)
+	_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
 	set_play_state(PlayState.PLAY_ARC)
 
 
 func _enter_normal() -> void:
-	_arc_accel = 0.0
+	_arc_acceleration = 0.0
 	set_play_state(PlayState.PLAY_NORMAL)
 
 
@@ -223,7 +223,7 @@ func enter_play() -> void:
 		_enter_arc()
 	else:
 		gravity_scale = 0.0
-		_arc_accel = 0.0
+		_arc_acceleration = 0.0
 		set_play_state(PlayState.PLAY_NORMAL)
 
 
