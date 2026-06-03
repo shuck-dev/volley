@@ -39,14 +39,14 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 | `_game._volley_count == 0` | `hud.last_count == 0` |
 | `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
 
-### Name a test in the register of what it pins
+### Name a test by what it tests
 
-The function name is the whole title GUT shows, so it carries the meaning. Pick its register the same way a ticket is system-story vs user-story: who is the actor, what do they observe.
+The function name is the whole title GUT shows, so it carries the meaning. Name it the same way you decide system-story vs user-story for a ticket: who is the actor, what do they observe.
 
-- **Pins an internal value or mechanism, no player in sight (system-story register).** Flat `condition_<verb>_value`: name the input region and the literal return. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
-- **Pins a player-observable behaviour (user-story register).** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. The same physics fact named at the gameplay layer takes this register; named at the return-value layer it takes the system register. The layer the test sits at decides it, not the underlying fact.
+- **Tests an internal value or mechanism, no player in sight.** Name the input and the literal result: `condition_<verb>_value`. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
+- **Tests a player-observable behaviour.** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. The same physics fact named at the gameplay layer takes the behaviour form; named at the return-value layer it takes the input-and-result form. The layer the test sits at decides which, not the underlying fact.
 
-Avoid adjectives and adverbs doing felt work (`gentle`, `steep`, `harder`, `still`) and verbs that name a feeling rather than a result (`lands`, `lofts`); those are prose creep on a name that should state the input and the outcome. Match the file's existing idiom: a new test joins the register its siblings already use.
+Avoid adjectives and adverbs doing felt work (`gentle`, `steep`, `harder`, `still`) and verbs that name a feeling rather than a result (`lands`, `lofts`); those are prose creep on a name that should state the input and the outcome. Match the file's existing names: a new test follows the style its siblings already use.
 
 ### Test behaviour the game can actually reach
 
