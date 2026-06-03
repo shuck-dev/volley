@@ -2,7 +2,7 @@
 
 ## Decision
 
-Rest-roll damping is a property of the ball's rest state, not the court. It moves from `CourtConfig.rest_roll_damping` onto `BallStateConfig` (authored in `out_rest.tres`), and the imperative override in `Ball.enter_out_rest` retires. The surface bounce materials (`play.tres`, `rest.tres`) stay where they are: they are contact properties shared between the ball and the world body it strikes, not ball-only state. Collision-layer constants stay as they are; a named module is deferred.
+Rest-roll damping is a property of the ball's rest state, not the court. It moves from `CourtConfig.rest_roll_damping` onto `BallStateConfig` (authored in `out_rest.tres`), and the imperative override in `Ball.enter_out_rest` retires. The surface bounce materials (`play.tres`, `rest.tres`) stay where they are: they are contact properties shared between the ball and the world body it strikes, not ball-only state. Collision-layer constants stay as they are; a named module is deferred. `CourtConfig.court_half_width` becomes `court_width`: width is width, stored full, with no derived role beyond the one consumer that reads it.
 
 This finishes the cleanup #724 began. That fix pulled the apex bound out of `CourtConfig` (onto the `SoulBound` marker) while separating the court's collision floor from the apex wall. The remainder is the damping field and the question of who owns the surface materials.
 
@@ -20,6 +20,10 @@ This combine reasoning follows Godot's documented material defaults and is not v
 
 The kernel worth keeping from the original SurfaceConfig idea is real but lives on the world side, not the ball: a surface has a character (friction, bounce, and a roll damping the ball adopts while resting on it) that today has no single named source. That is a venue-surface concern, surfacing only once venues need to differ. It is out of scope here and files as its own work when a venue demands a distinct surface.
 
+## Why width is stored full, not half
+
+`CourtConfig` stores `court_half_width`, but its only consumer is `world_max_speed`, which immediately doubles it to recover the full crossing span. The docstring claims the half-value seeds spawns and miss zones, but nothing reads it for that: the spawns are literal positions in `court.tscn`, not derived from the field. So the half is a number nobody halves around, read once and doubled. The field becomes `court_width`, holding the full paddle-to-paddle span; `world_max_speed` reads it directly and the doubling drops. Width is width, with no derived role.
+
 ## Surfaces today
 
 | Value | Lives in | Applied where |
@@ -27,9 +31,9 @@ The kernel worth keeping from the original SurfaceConfig idea is real but lives 
 | Bounce material (friction 0, bounce 1) | `resources/ball/play.tres` | `ball.tscn` default; ball `play_active` state; court walls and floor in `court.tscn` |
 | Rest material (friction 1, bounce 0) | `resources/ball/rest.tres` | ball `out_rest` state (`out_rest.tres`) |
 | Rest-roll damping | `CourtConfig.rest_roll_damping` | overridden onto the ball's `linear_damp` in `Ball.enter_out_rest` |
-| Court geometry (half width, crossing seconds, relock ramp) | `CourtConfig` | ball speed and relock logic |
+| Court geometry (`court_half_width`, crossing seconds, relock ramp) | `CourtConfig` | ball speed and relock logic |
 
-After the change, `CourtConfig` holds only the geometry row, and rest damping joins the rest material in `out_rest.tres`.
+After the change, `CourtConfig` holds only the geometry row (with `court_half_width` reshaped to a full `court_width`), and rest damping joins the rest material in `out_rest.tres`.
 
 ## Collision-layer constants: deferred
 
