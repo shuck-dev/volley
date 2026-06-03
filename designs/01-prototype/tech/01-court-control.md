@@ -16,7 +16,7 @@ The apex mechanism is a shaped bend, not a vertical-velocity flip. A flip reads 
 
 ## Side-band miss
 
-A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. The miss is the only place engine gravity acts on the ball. Past either side band there is no centripetal force. Player-side and partner-side are the same event.
+A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal force, and player-side and partner-side are the same event. The miss is the only place engine gravity acts on the ball.
 
 The miss transitions the ball PLAY → OUT-REST; the state-transition handling itself lives in [`02-ball-lifecycle.md`](02-ball-lifecycle.md).
 

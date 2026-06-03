@@ -296,6 +296,9 @@ func _tier_fraction(field: String) -> float:
 func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
 	linear_velocity = linear_velocity.normalized() * speed
+	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
+	if play_state == PlayState.PLAY_ARC:
+		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
 	_emit_max_speed_if_changed()
 	_emit_speed_changed()
 

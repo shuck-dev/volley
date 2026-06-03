@@ -12,7 +12,7 @@ extends Resource
 func arc_acceleration(entry_speed_up: float) -> float:
 	if entry_speed_up <= 0.0:
 		return 0.0
-	if arc_height_max <= 0.0:
+	if arc_gravity <= 0.0 or arc_height_max <= 0.0:
 		return 0.0
 
 	var apex_at_tuned_gravity: float = (entry_speed_up * entry_speed_up) / (2.0 * arc_gravity)
