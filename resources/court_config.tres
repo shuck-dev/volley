@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_courtcfg")
-court_half_width = 300.0
+court_width = 600.0

@@ -1,7 +1,7 @@
 ## Side-miss transition: PLAY -> OUT_REST keeps velocity, engages gravity and damping.
 extends GutTest
 
-const REST_DAMPING := 1.5
+const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
 var _ball: Ball
 var _config: CourtConfig
@@ -17,7 +17,6 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_config = load("res://scripts/core/court_config.gd").new()
-	_config.rest_roll_damping = REST_DAMPING
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -44,7 +43,7 @@ func test_miss_engages_gravity_and_damping() -> void:
 	_ball.linear_damp = 0.0
 	_ball.missed.emit(_ball)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
-	assert_almost_eq(_ball.linear_damp, REST_DAMPING, 0.001)
+	assert_almost_eq(_ball.linear_damp, OUT_REST_CONFIG.linear_damp, 0.001)
 
 
 func test_miss_resets_speed_scalar_for_next_rally() -> void:

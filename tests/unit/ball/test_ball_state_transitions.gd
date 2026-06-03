@@ -1,7 +1,6 @@
 ## State-transition surface: enter_stored / enter_play / enter_out_rest / enter_out_held property values.
 extends GutTest
 
-const REST_DAMPING := 1.5
 const BOUND_Y := -351.6
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
@@ -20,7 +19,6 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_config = load("res://scripts/core/court_config.gd").new()
-	_config.rest_roll_damping = REST_DAMPING
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
@@ -95,7 +93,7 @@ func test_enter_out_rest_sets_property_values() -> void:
 	assert_eq(_ball.play_state, Ball.PlayState.OUT_REST)
 	assert_false(_ball.freeze)
 	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
-	assert_almost_eq(_ball.linear_damp, REST_DAMPING, 0.001)
+	assert_almost_eq(_ball.linear_damp, OUT_REST_CONFIG.linear_damp, 0.001)
 	assert_eq(_ball.collision_layer, OUT_REST_CONFIG.collision_layer)
 	assert_eq(_ball.collision_mask, OUT_REST_CONFIG.collision_mask)
 
