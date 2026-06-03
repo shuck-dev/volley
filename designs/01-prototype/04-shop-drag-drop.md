@@ -181,7 +181,7 @@ Unchanged in behaviour: spawns items, updates friendship label, exposes `preferr
 
 On a successful drop, `TakeBox.accept()` calls `ItemManager.take(key)`. That method deducts friendship, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
 
-UI listeners react to the existing `soul_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
+UI listeners react to the existing `soul_balance_changed` and `item_level_changed` signals: `shop` refreshes the soul label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
 
 ---
 

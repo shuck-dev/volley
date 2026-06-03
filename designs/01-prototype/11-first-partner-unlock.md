@@ -101,7 +101,7 @@ Martha has two effects: one friendship bonus and one causality effect.
 
 **Effect 1: friendship bonus (always)**
 
-A percentage increase to `soul_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other friendship modifiers: as the player acquires items that boost friendship per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
+A percentage increase to `soul_per_hit` (e.g. +25% percentage). Having Martha around makes every rally a bit more rewarding. This scales with other soul modifiers: as the player acquires items that boost soul per hit, Martha's bonus grows with them. Tuning target for Make Fun pass.
 
 ```
 Effect 1
