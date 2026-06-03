@@ -10,15 +10,15 @@ This finishes the cleanup #724 began. That fix pulled the apex bound out of `Cou
 
 The current code asserts the opposite. `Ball.enter_out_rest` overrides the state config's damping from `court_config.rest_roll_damping`, with a comment calling damping "a court-tunable, not a ball-state-tunable." That assumption is wrong: the venue rolls and rests balls too, so resting is not exclusive to the court. A value scoped to the court leaves the venue case homeless.
 
-Decide a ball-behaviour value's owner by where the behaviour happens. Resting happens in both court and venue, so damping belongs to the thing that travels with the ball across both: its rest state. `out_rest.tres` already drives the rest state's other physics flags (gravity, collision, material); damping joins them, and the `CourtConfig` field plus its override disappear.
+Decide a ball-behaviour value's owner by where the behaviour happens. Resting happens in both court and venue, so damping belongs to the thing that travels with the ball across both: its rest state. `out_rest.tres` already holds the rest state's other physics flags (gravity, collision, material); damping joins them, and the `CourtConfig` field plus its override disappear.
 
-## Why the surface material is not ball-only
+## Why the surface material is a contact property
 
-A bounce is an interaction between two bodies. Godot 2D combines the materials of both contacts; with the engine defaults, an absent material on one side reads as bounce 0, and the combined restitution collapses toward zero. So `play.tres` (bounce 1) on the court walls is load-bearing: the ball's own material supplies one half of the bounce, the wall supplies the other. Removing the wall's material to make the ball "own" the surface would kill the bounce.
+A bounce is an interaction between two bodies. Godot 2D combines the materials of both contacts; with the engine defaults, an absent material on one side reads as bounce 0, and the combined restitution collapses toward zero ([PhysicsMaterial](https://docs.godotengine.org/en/stable/classes/class_physicsmaterial.html)). So `play.tres` (bounce 1) on the court walls is load-bearing: the ball's own material supplies one half of the bounce, the wall supplies the other. Removing the wall's material to make the ball "own" the surface would kill the bounce.
 
 This combine reasoning follows Godot's documented material defaults and is not verified in a running scene here; confirming the exact restitution under combine is implementation-ride work, not part of this spike. The decision does not depend on the precise figure: removing a material can only reduce a bounce, never raise it, so the conclusion (keep the wall material) holds either way.
 
-The kernel worth keeping from the original SurfaceConfig idea is real but lives on the world side, not the ball: a surface has a character (friction, bounce, and a roll damping the ball adopts while resting on it) that today has no single named source. That is a venue-surface concern, surfacing only once venues need to differ. It is out of scope here and files as its own work when a venue demands a distinct surface.
+The kernel worth keeping from the original SurfaceConfig idea is real but lives on the world side, not the ball: a surface has a character (friction, bounce, and a roll damping the ball adopts while resting on it) that today has no single named source. That is a venue-surface concern, emerging only once venues need to differ. It is out of scope here and files as its own work when a venue demands a distinct surface.
 
 ## Why width is stored full, not half
 
@@ -37,7 +37,7 @@ After the change, `CourtConfig` holds only the geometry row (with `court_half_wi
 
 ## Collision-layer constants: deferred
 
-Two layers carry the game: world and items. The integer references spread across 14 sites in three artifact kinds (four imperative script callsites, three ball-state resources, seven baked scene nodes). A GDScript constants module can only reach the four script callsites; resources and scenes store raw integers and cannot reference a const. The hardest-to-audit sites, the scenes, stay raw either way. The layer names already live in `project.godot` (layer 1 world, layer 2 items), which is the engine's own legibility mechanism. A constants module is a partial win whose cost exceeds its benefit at two layers and stable semantics. Revisit if a third layer lands with real script consumers.
+Two layers carry the game: world and items. The integer references spread across 14 sites in three artifact kinds (four imperative script callsites, three ball-state resources, seven baked scene nodes). A GDScript constants module can only reach the four script callsites; resources and scenes store raw integers and cannot reference a const. The hardest-to-audit sites, the scenes, stay raw either way. The layer names already live in `project.godot` (layer 1 world, layer 2 items), which is the engine's own legibility mechanism. With only two layers and semantics that have held stable, a constants module is a partial win whose cost exceeds its benefit. Revisit if a third layer lands with real script consumers.
 
 ## Out of scope
 

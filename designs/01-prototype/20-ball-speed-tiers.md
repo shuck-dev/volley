@@ -106,9 +106,9 @@ New: unchanged. Wrist Brace compresses every tier's hits-to-climb and trades pad
 
 ## Court width
 
-The court's crossing distance sets the fun ceiling, so court width is a tunable rather than a baked scene layout. `CourtConfig` gains `court_half_width` (default 300, matching today's spawns); `Court` positions the player and partner spawns, miss zones, and right wall from it at startup instead of trusting authored marker positions. The markers stay in the scene for editor preview; runtime truth comes from config.
+The court's crossing distance sets the fun ceiling, so court width is a tunable on `CourtConfig` rather than a baked scene layout. The field is `court_width`, the full paddle-to-paddle span; tech/2026-06-03-surface-physics-ownership-spike covers why it is stored full rather than halved. It has one consumer, the world-max derivation. Spawns, miss zones, and walls are authored marker positions in the scene, not derived from it.
 
-`BALL_WORLD_MAX_SPEED` and the tier bounds derive from it: `crossing = 2 * court_half_width`, `world_max = crossing / fair_crossing_seconds` (about 0.8s). At the default 300 this reproduces the 720 ceiling. Widen the court and the fair ceiling rises with the crossing; past about 860px/s the collider-face dial (above) is what keeps it tunnel-safe.
+`BALL_WORLD_MAX_SPEED` and the tier bounds derive from it: `world_max = court_width / fair_crossing_seconds` (about 0.8s). At the default 600 this reproduces the 720 ceiling. Widen the court and the fair ceiling rises with the crossing; past about 860px/s the collider-face dial (above) is what keeps it tunnel-safe.
 
 ## Migration notes
 
