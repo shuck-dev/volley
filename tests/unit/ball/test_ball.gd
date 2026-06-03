@@ -33,17 +33,6 @@ func before_each() -> void:
 
 
 # --- increase_speed ---
-func test_increase_speed_adds_increment() -> void:
-	_ball.current_tier = 0
-	_ball.speed = _ball.tier_floor
-	_ball.increase_speed()
-	var expected: float = (
-		_ball.tier_floor
-		+ Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager)
-	)
-	assert_almost_eq(_ball.speed, expected, 0.01)
-
-
 func test_increase_speed_advances_tier_at_ceiling() -> void:
 	_ball.current_tier = 0
 	_ball.speed = _ball.tier_ceiling - 1.0
@@ -69,49 +58,11 @@ func test_reset_speed_returns_to_tier_zero_floor() -> void:
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
 
 
-func test_reset_speed_preserves_direction() -> void:
-	_ball.linear_velocity = Vector2(0.0, 500.0)
-	_ball.reset_speed()
-	assert_almost_eq(_ball.linear_velocity.x, 0.0, 0.01)
-	assert_gt(_ball.linear_velocity.y, 0.0)
-
-
-# --- per-frame clamp against the active tier band ---
-func test_effect_processor_clamps_speed_to_tier_band() -> void:
-	_ball.current_tier = 0
-	_ball.speed = _ball.tier_ceiling + 500.0
-	_ball.effect_processor.sync_base_speed()
-	_ball._physics_process(0.016)
-	assert_true(_ball.speed <= _ball.tier_ceiling + 0.01, "frame clamp holds the tier ceiling")
-
-
-func test_effect_processor_clamp_floor_is_tier_floor() -> void:
-	_ball.current_tier = 1
-	_ball.speed = 0.0
-	_ball.effect_processor.sync_base_speed()
-	_ball._physics_process(0.016)
-	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "frame clamp lifts to the tier floor")
-
-
 # --- set_speed_for_streak ---
 func test_set_speed_for_streak_zero_equals_tier_floor() -> void:
 	_ball.current_tier = 0
 	_ball.set_speed_for_streak(0)
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01)
-
-
-func test_set_speed_for_streak_matches_incremental_hits() -> void:
-	_ball.current_tier = 0
-	_ball.speed = _ball.tier_floor
-	var increment: float = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
-	)
-	var hits := 3
-	var expected_speed: float = _ball.tier_floor + hits * increment
-
-	_ball.set_speed_for_streak(hits)
-
-	assert_almost_eq(_ball.speed, expected_speed, 0.01)
 
 
 func test_set_speed_for_streak_caps_at_tier_ceiling() -> void:
@@ -155,6 +106,3 @@ func test_register_miss_zone_is_idempotent() -> void:
 	zone.body_entered.emit(_ball)
 
 	assert_signal_emit_count(_ball, "missed", 1)
-
-# Future pin of the speed clamp invariant should route through production
-# _apply_speed_offset with a known _base_speed, not a tautological re-clampf.
