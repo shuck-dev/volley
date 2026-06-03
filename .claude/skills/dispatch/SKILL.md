@@ -35,7 +35,7 @@ Worktree isolation is a per-dispatch choice, not a forced rule (the gate hook wa
 
 Tier 2 work (runtime / `run(play)`) is exclusive: only one minion at a time runs at Tier 2. Constraint is one-at-a-time, not Josh sign-off.
 
-When dispatching a minion onto a Linear issue, brief the agent to create the worktree on a properly named feature branch: `feature/sh-XXX-short-description`. The Agent tool's `isolation: "worktree"` defaults the branch name to the worktree slug (`worktree-agent-aXXXXXX`); that's an internal name, not a feature branch. SH-288 / PR #506 shipped on the slug name because the dispatch brief never named the branch. Future dispatches: include the branch name in the brief.
+When dispatching a minion onto a Linear issue, brief the agent to create the worktree on a properly named feature branch: `feature/<gh-number>-<short-description>`, using the GitHub issue number (from the Linear issue's GitHub mirror attachment), not the Linear `SH-N`. All branches are GitHub-facing, internal worktree branches included. The Agent tool's `isolation: "worktree"` defaults the branch name to the worktree slug (`worktree-agent-aXXXXXX`); that's an internal name, not a feature branch. SH-288 / PR #506 shipped on the slug name because the dispatch brief never named the branch. Future dispatches: include the branch name in the brief, with the resolved GitHub number.
 
 ## Background by default
 
@@ -61,7 +61,7 @@ Every implementer brief opens with: read `.claude/skills/code-comments/SKILL.md`
 
 Every code-writing minion runs this sequence once dispatched. Brief them on it in the dispatch prompt, or point them at this section.
 
-1. **Claim the ticket.** Every branch carries its Linear ticket ID. For chore or infra work with no SH-N, file first via `./scripts/dev/new-ticket.sh "<title>"` (Backlog, Feature, Josh-assigned, estimate 0, auto-slotted into the active cycle). Branch name is `feature/sh-<N>-<slug>`. Commit the claim on the branch, never on `main`.
+1. **Claim the ticket.** Resolve the issue's GitHub mirror number (`#N`); the branch carries that, not the Linear `SH-N`. For chore or infra work with no ticket, file first via `./scripts/dev/new-ticket.sh "<title>"` (Backlog, Feature, Josh-assigned, estimate 0, auto-slotted into the active cycle). Branch name is `feature/<gh-number>-<slug>` (no `sh-`/`gh-` prefix). Commit the claim on the branch, never on `main`. The branch carries no Linear ID; link the PR to the issue after it opens (see `.claude/skills/commits/SKILL.md`, "Issue references").
 2. **Cycle placement.** If the claimed ticket has no cycle, move it into the active one: `mcp__linear__list_cycles(teamId, type: "current")` then `mcp__linear__save_issue(id, cycleId)`. Skip if no active cycle.
 3. **Log progress in Linear.** Significant moments (claim, blocker, ready-for-review) post as a Linear comment on the ticket, not into a shared file. The git log carries the rest.
 4. **Sync before opening and before every later push.** `git fetch origin main && git merge origin/main`, resolve, re-run `./scripts/ci/run_gut.sh`, push. Repeat any time work resumes or before asking Josh to merge. `git rev-list --count HEAD..origin/main` reads "behind by N".
@@ -73,7 +73,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 
 - **Backlog shape is Josh's, end to end.** Minions do not create, draft, or pre-format Linear issues. They surface observations in prose ("the equip path also writes to X without a placement update"); they do not write candidate titles, acceptance criteria, or "follow-up tickets we should file" lists. Whether something is a ticket, what its title is, what its AC reads, is Josh's call. The rule applies when the ticket AC says "file tickets", when a spike's output is a migration plan, when a bug shows up mid-task, and when the minion has Linear write tools available.
 - **One ticket, one minion, one branch, one worktree.** Never two minions in the same file. Check what's in flight (see below) before claiming. Sub-agents modifying the repo dispatch with `isolation: "worktree"`.
-- **Worktree cleanup on merge.** After a challenge merges: `git worktree remove ../volley-sh-N && git branch -D sh-N-...`. The owning agent is responsible; otherwise periodic `git worktree list && git worktree prune`.
+- **Worktree cleanup on merge.** After a challenge merges: `git worktree remove ../volley-<gh-number> && git branch -D feature/<gh-number>-...`. The owning agent is responsible; otherwise periodic `git worktree list && git worktree prune`.
 - **Engineer challenges to merge in any order.** Each challenge stands alone against current `main`. Combine related changes that share a file rather than splitting them. Avoid "depends on #X".
 - **Verify, don't assume.** Every change needs evidence: tool output or tests, not "looks correct".
 - **Merge queue serialises `main`.** "Merge when ready" pulls the challenge into a `merge_group` ref, re-runs lint and tests against `main + challenge`, then fast-forwards `main`. The pre-challenge `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
