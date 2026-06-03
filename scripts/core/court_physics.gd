@@ -1,4 +1,4 @@
-## Above-bound arc rule; swap per venue to change the arc without touching Ball. Model in 01-court-control.md.
+## Above-bound arc rule; swap per venue to change the arc without touching Ball.
 class_name CourtPhysics
 extends Resource
 
@@ -8,8 +8,7 @@ extends Resource
 @export var arc_height_max: float = 220.0
 
 
-## Downward acceleration for this arc visit. A ball entering without upward motion (dragged above
-## the bound and released) still gets the full bend, so it always heads back down.
+## Downward acceleration this arc visit; a no-upward entry still gets the full bend so it heads down.
 func arc_acceleration(entry_speed_up: float) -> float:
 	if arc_bend <= 0.0 or arc_height_max <= 0.0:
 		return 0.0
@@ -17,5 +16,5 @@ func arc_acceleration(entry_speed_up: float) -> float:
 		return arc_bend
 
 	var natural_apex: float = (entry_speed_up * entry_speed_up) / (2.0 * arc_bend)
-	var apex: float = clampf(natural_apex, 0.0, arc_height_max)
-	return (entry_speed_up * entry_speed_up) / (2.0 * apex)
+	var capped_apex: float = minf(natural_apex, arc_height_max)
+	return (entry_speed_up * entry_speed_up) / (2.0 * capped_apex)

@@ -34,7 +34,7 @@ The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-
 
 ## Per-court physics seam
 
-The above-bound arc rule lives on a `CourtPhysics` Resource referenced by `CourtConfig.physics`. At the upward cross `Ball` asks it for the downward acceleration to apply this visit, given the entry's upward speed (`arc_acceleration`); the rule's `arc_bend` and `arc_height_max` tunables set the arc shape and its ceiling. Future venues can ship alternative rules without touching `Ball.gd`.
+The above-bound arc rule lives on a `CourtPhysics` Resource referenced by `CourtConfig.physics`. At the upward cross `Ball` calls `arc_acceleration(entry_upward_speed)` for the downward acceleration to apply this visit; the rule's `arc_bend` and `arc_height_max` tunables set the arc shape and its ceiling. Future venues can ship alternative rules without touching `Ball.gd`.
 
 ## Drag-handoff frame window
 
