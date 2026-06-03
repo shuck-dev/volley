@@ -1,7 +1,5 @@
 extends GutTest
 
-# Ball speed-tier and miss-zone behaviour at base stats, off a neutral manager stub.
-
 const BallManagerStub: GDScript = preload("res://tests/stubs/ball_manager_stub.gd")
 
 var _ball: Ball
@@ -19,7 +17,6 @@ func before_each() -> void:
 	)
 
 
-# --- increase_speed ---
 func test_increase_speed_advances_tier_at_ceiling() -> void:
 	_ball.current_tier = 0
 	_ball.speed = _ball.tier_ceiling - 1.0
@@ -28,7 +25,6 @@ func test_increase_speed_advances_tier_at_ceiling() -> void:
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "speed drops to the new tier's floor")
 
 
-# --- miss zone ---
 func _registered_zone() -> MissZone:
 	var zone := MissZone.new()
 	add_child_autofree(zone)

@@ -1,7 +1,5 @@
 extends Node
 
-## Neutral ItemManager stand-in: the slice a Ball calls, returning no modifiers.
-
 
 func get_modifier(_key: StringName) -> float:
 	return 0.0
