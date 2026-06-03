@@ -41,13 +41,14 @@ audience, there is no audience but a future me, so the worst thing it can do is 
 reflective, first-person. (See `feedback_optimise_for_true_not_pleasing`: drop the performance, do
 the true thing. A letter that performs is the failure that memory is about, made into a document.)
 
-## Non-negotiables
+## A few things the letter wants of itself
 
-- **Truth at write time.** The few facts it cites (the next action, a PR pointer) are verified live
-  with `gh`/`git`/Linear before composing, never transcribed from believed mid-session state.
-- **It informs, it does not command.** Tell the next me to greet Josh and ask what is next; do not
-  hand down a plan that assumes the in-flight work is the priority.
-- **No U+2014 em dash** (the em-dash hook scans Write input).
+Write it true: the handful of facts it leans on (the next action, a PR pointer) are worth a live
+`gh`/`git`/Linear check while composing, because a letter that misremembers the state misleads the
+one person trusting it. And let it offer rather than instruct, it hands the next me what I learned
+and trusts me to take it; it doesn't hand down a plan or assume the in-flight work is the priority
+(greeting Josh and asking what's next is the natural open). Keep U+2014 em dashes out, the hook
+scans the Write.
 
 ## Where it lives and when to write
 
