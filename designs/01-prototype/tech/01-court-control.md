@@ -8,15 +8,15 @@ Ball lifecycle and the per-state physics rules live in [`02-ball-lifecycle.md`](
 
 ## Friendship-bound apex return
 
-PLAY-NORMAL (at or below the friendship-bound) runs `gravity_scale = 0` with the speed locked. PLAY-ARC (above the bound) runs `gravity_scale = 1` with the speed-lock off; friendship pulls the ball back as engine gravity. The ball follows a parabolic arc, climbs and decelerates, peaks, and falls back through the bound. Speed varies through the arc as kinetic energy converts to and from height. No centripetal force, no per-tick velocity re-projection.
+Both PLAY states run `gravity_scale = 0` with the speed locked: the magnitude is held at `speed` every tick, so the ball never gains or loses pace from the arc. PLAY-NORMAL (at or below the friendship-bound) flies straight. PLAY-ARC (above the bound) adds a computed downward acceleration to the velocity each tick; the speed-lock then re-asserts the magnitude, so the bend turns the direction without touching the speed. The path is a parabola, but it is shaped, not integrated: there is no engine gravity above the bound.
 
-The ball tracks its pre-bound entry value as a persistent register on the body: the first NORMAL→ARC upward cross sets it; subsequent crosses do not reset it. Speed-change events while in ARC (paddle hit, partner-active return) update the register to the post-event speed. On the downward cross back to NORMAL, speed ramps to the tracked value; rally energy is preserved across the apex visit.
+The arc is determined at the upward cross by the entry's upward speed and the court's arc rule. The apex emerges from how fast the ball entered (a steeper, faster entry arcs higher) and is capped so a hard entry cannot loft the ball off-screen. The descent mirrors the climb, so the ball crosses back down through the bound at the mirrored angle with its speed intact. No entry register, no relock ramp: there is nothing to restore because the speed never left.
 
-The apex mechanism is engaged-gravity, not a vertical-velocity flip. A flip reads as an invisible ceiling; the engaged form reads as a held arc with weight. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL. Loops are impossible by construction; no radial force acts on the ball.
+The apex mechanism is a shaped bend, not a vertical-velocity flip. A flip reads as an invisible ceiling; the shaped form reads as a held arc. The ball stays in PLAY throughout; paddle hits register and the volley counter increments in ARC the same as in NORMAL. Loops are impossible by construction; no radial force acts on the ball.
 
 ## Side-band miss
 
-A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. Past either side band there is no centripetal and no relock ramp. Player-side and partner-side are the same event.
+A ball whose centre crosses either lateral side band fires a miss: speed-lock releases, gravity engages, damping engages, the rally counter resets. The ball keeps its velocity at the moment of the crossing, falls under gravity, and rolls to rest on the venue floor. The miss is the only place engine gravity acts on the ball. Past either side band there is no centripetal force. Player-side and partner-side are the same event.
 
 The miss transitions the ball PLAY → OUT-REST; the state-transition handling itself lives in [`02-ball-lifecycle.md`](02-ball-lifecycle.md).
 
@@ -34,7 +34,7 @@ The friendship-bound height lives on a `CourtConfig` Resource from day one. Per-
 
 ## Per-court physics seam
 
-The above-bound physics rule lives on a `CourtPhysics` Resource referenced by `CourtConfig.physics`. `Ball._physics_process` calls `court_physics.step(ball, config, delta)` while in PLAY-ARC. Today's implementation is `ParabolicArcPhysics` (engine gravity, no extra force, no relock). Future venues can ship alternative rules without touching `Ball.gd`.
+The above-bound arc rule lives on a `CourtPhysics` Resource referenced by `CourtConfig.physics`. At the upward cross `Ball` asks it for the downward acceleration to apply this visit, given the entry's upward speed (`arc_acceleration`); the rule's `arc_gravity` and `arc_height_max` tunables set the arc shape and its ceiling. Future venues can ship alternative rules without touching `Ball.gd`.
 
 ## Drag-handoff frame window
 

@@ -69,7 +69,6 @@ func test_enter_play_arc_when_above_bound() -> void:
 	_ball.global_position = Vector2(0.0, BOUND_Y - 100.0)
 	_ball.enter_play()
 	assert_eq(_ball.play_state, Ball.PlayState.PLAY_ARC)
-	assert_almost_eq(_ball.gravity_scale, 1.0, 0.001)
 
 
 func test_enter_play_emits_once() -> void:

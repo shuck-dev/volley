@@ -31,7 +31,7 @@ The kernel worth keeping from the original SurfaceConfig idea is real but lives 
 | Bounce material (friction 0, bounce 1) | `resources/ball/play.tres` | `ball.tscn` default; ball `play_active` state; court walls and floor in `court.tscn` |
 | Rest material (friction 1, bounce 0) | `resources/ball/rest.tres` | ball `out_rest` state (`out_rest.tres`) |
 | Rest-roll damping | `CourtConfig.rest_roll_damping` | overridden onto the ball's `linear_damp` in `Ball.enter_out_rest` |
-| Court geometry (`court_half_width`, crossing seconds, relock ramp) | `CourtConfig` | ball speed and relock logic |
+| Court geometry (`court_half_width`, crossing seconds) | `CourtConfig` | ball speed; arc rule lives on `CourtConfig.physics` |
 
 After the change, `CourtConfig` holds only the geometry row (with `court_half_width` reshaped to a full `court_width`), and rest damping joins the rest material in `out_rest.tres`.
 
