@@ -9,15 +9,15 @@ func before_each() -> void:
 	_physics.arc_height_max = 220.0
 
 
-func test_below_ceiling_returns_arc_bend() -> void:
+func test_apex_below_ceiling_is_unclamped() -> void:
 	assert_almost_eq(_physics.arc_acceleration(300.0), 600.0, 0.001)
 
 
-func test_above_ceiling_exceeds_arc_bend() -> void:
+func test_apex_above_ceiling_is_clamped() -> void:
 	assert_gt(_physics.arc_acceleration(600.0), 600.0)
 
 
-func test_above_ceiling_caps_apex_at_height_max() -> void:
+func test_clamped_apex_lands_at_ceiling() -> void:
 	var accel: float = _physics.arc_acceleration(600.0)
 	var apex: float = (600.0 * 600.0) / (2.0 * accel)
 	assert_almost_eq(apex, 220.0, 0.5)

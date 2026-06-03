@@ -15,9 +15,6 @@ func arc_acceleration(entry_speed_up: float) -> float:
 	if arc_bend <= 0.0 or arc_height_max <= 0.0:
 		return 0.0
 
-	var apex_at_tuned_bend: float = (entry_speed_up * entry_speed_up) / (2.0 * arc_bend)
-	if apex_at_tuned_bend <= arc_height_max:
-		return arc_bend
-
-	# Stiffen the bend so the peak lands exactly at the ceiling instead of overshooting.
-	return (entry_speed_up * entry_speed_up) / (2.0 * arc_height_max)
+	var natural_apex: float = (entry_speed_up * entry_speed_up) / (2.0 * arc_bend)
+	var apex: float = clampf(natural_apex, 0.0, arc_height_max)
+	return (entry_speed_up * entry_speed_up) / (2.0 * apex)
