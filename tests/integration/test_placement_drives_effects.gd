@@ -15,7 +15,7 @@ func before_each() -> void:
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	add_child_autofree(_manager)
 
 
@@ -110,7 +110,7 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager._register_existing_items()
 
 	# Place one equipment item and one ball; leave a third owned on the rack.

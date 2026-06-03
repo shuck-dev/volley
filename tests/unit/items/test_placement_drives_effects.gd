@@ -172,7 +172,7 @@ func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 func test_levelling_equipment_on_player_updates_running_effects() -> void:
 	var equipment := _make_item("equip_lvl", &"equipment")
 	var manager: Node = _make_manager_with([equipment])
-	manager.economy.friendship_point_balance = 100000
+	manager.economy.soul_balance = 100000
 	manager.purchase(equipment.key)
 	manager.activate(equipment.key)
 	var base_speed: float = GameRules.paddle.paddle_speed
@@ -197,7 +197,7 @@ func test_levelling_equipment_on_player_updates_running_effects() -> void:
 func test_levelling_ball_on_court_updates_running_effects() -> void:
 	var ball := _make_item("ball_lvl", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
 	var manager: Node = _make_manager_with([ball])
-	manager.economy.friendship_point_balance = 100000
+	manager.economy.soul_balance = 100000
 	manager.purchase(ball.key)
 	manager.activate(ball.key)
 	var base_value: float = GameRules.base.ball_speed_min

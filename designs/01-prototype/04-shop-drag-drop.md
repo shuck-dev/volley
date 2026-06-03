@@ -62,7 +62,7 @@ Per 04-upgrade-shop, affordability is communicated diegetically through a displa
 The display case has only two states in prototype: present or absent. It snaps in and out when affordability changes. A proper open/close animation is an art pass task.
 
 **When the player's friendship crosses the threshold for an item:**
-- `ItemManager.friendship_point_balance_changed` fires.
+- `ItemManager.soul_balance_changed` fires.
 - Each `ShopItem` listens and toggles its `DisplayCase` visibility accordingly.
 - The item becomes draggable on the next mouse-down.
 
@@ -181,7 +181,7 @@ Unchanged in behaviour: spawns items, updates friendship label, exposes `preferr
 
 On a successful drop, `TakeBox.accept()` calls `ItemManager.take(key)`. That method deducts friendship, marks the item as owned, emits `item_level_changed`, and saves. It does not register effects with `EffectManager`, so paddle and ball see no change until the player equips the item later.
 
-UI listeners react to the existing `friendship_point_balance_changed` and `item_level_changed` signals: `shop` refreshes the friendship label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
+UI listeners react to the existing `soul_balance_changed` and `item_level_changed` signals: `shop` refreshes the soul label, every `ShopItem` re-evaluates its display case visibility, and the taken item's `ShopItem` hides itself in place so its slot becomes an empty gap (no "Taken" label, no reflow of siblings). `TakeBox` also emits `item_taken(definition)` for future polish hooks (sound, friend reaction).
 
 ---
 
@@ -274,7 +274,7 @@ func accept(definition: ItemDefinition) -> void:
 ```gdscript
 # ItemManager
 func can_acquire(item_key: String) -> bool:
-    return get_level(item_key) == 0 and _progression.friendship_point_balance >= calculate_cost(item_key)
+    return get_level(item_key) == 0 and _progression.soul_balance >= calculate_cost(item_key)
 ```
 
 `TakeBox.can_accept`, `KitSlot.can_accept`, and `LockerSlot.can_accept` all call this when the item is unowned. The `TakeBox` keeps its existing behaviour because `can_acquire` is exactly its current check, just named.

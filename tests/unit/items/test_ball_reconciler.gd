@@ -16,7 +16,7 @@ func before_each() -> void:
 	var ball_beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
 	var typed_items: Array[ItemDefinition] = [ball_alpha, ball_beta]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 
 	_host = Node2D.new()
 	add_child_autofree(_host)
@@ -243,7 +243,7 @@ func test_ball_added_and_removed_signals_fire_per_lifecycle_event() -> void:
 ## SH-289: initial reconcile spawns a saved ON_COURT ball even when an authored sibling fires court_changed first.
 func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_court_changed(
 ) -> void:
-	# Fresh manager with both ball items; no friendship points needed — we set placements directly.
+	# Fresh manager with both ball items; no soul needed — we set placements directly.
 	var saved_manager: Node = ItemManagerScript.new()
 	saved_manager.state = ItemState.new()
 	saved_manager.economy = EconomyState.new()

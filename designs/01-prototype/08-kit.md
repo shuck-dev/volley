@@ -65,10 +65,10 @@ After The Break: the warmth was always real. The main character's memory still g
 
 ```
 rate_per_second = sum over inactive items of _kit_rate_for(item)
-kit_accumulated_points += rate_per_second * delta
+soul_accumulator += rate_per_second * delta
 ```
 
-Each whole-unit crossing adds 1 to the balance via `add_friendship_points`. The fractional remainder stays in `kit_accumulated_points`.
+Each whole-unit crossing adds 1 to the balance via `add_soul`. The fractional remainder stays in `soul_accumulator`.
 
 ### Formula
 
@@ -92,7 +92,7 @@ On `_ready`, if `kit_last_tick_unix > 0`, award `elapsed * rate` in a single lum
 
 ### Save throttling
 
-Kit-driven `add_friendship_points` skips autosave; a 30-second timer flushes. User-driven balance changes save immediately.
+Kit-driven `add_soul` skips autosave; a 30-second timer flushes. User-driven balance changes save immediately.
 
 ---
 

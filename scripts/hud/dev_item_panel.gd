@@ -53,12 +53,12 @@ func _ready() -> void:
 				details.add_child(label)
 
 	_refresh_buttons()
-	_setup_friendship_point_controls()
+	_setup_soul_controls()
 	_setup_clear_save_control()
 
 	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
-	ItemManager.friendship_point_balance_changed.connect(_refresh_buttons.unbind(1))
+	ItemManager.soul_balance_changed.connect(_refresh_buttons.unbind(1))
 
 
 ## Venue wires the rally-gate refs directly so the dev panel never walks the tree.
@@ -108,38 +108,34 @@ func _refresh_buttons() -> void:
 		var button: Button = _buttons[item.key]
 		var level := ItemManager.get_level(item.key)
 		var cost := ItemManager.calculate_cost(item.key)
-		button.text = "%s Lv%d [%d FP]" % [item.display_name, level, cost]
+		button.text = "%s Lv%d [%d Soul]" % [item.display_name, level, cost]
 		button.disabled = not ItemManager.can_purchase(item.key)
 
 
-func _setup_friendship_point_controls() -> void:
+func _setup_soul_controls() -> void:
 	var row := HBoxContainer.new()
 	add_child(row)
 
-	var friendship_point_input := SpinBox.new()
-	friendship_point_input.value = 100
-	friendship_point_input.min_value = 1
-	friendship_point_input.max_value = 10000
-	friendship_point_input.step = 10
-	friendship_point_input.focus_mode = Control.FOCUS_NONE
-	friendship_point_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(friendship_point_input)
+	var soul_input := SpinBox.new()
+	soul_input.value = 100
+	soul_input.min_value = 1
+	soul_input.max_value = 10000
+	soul_input.step = 10
+	soul_input.focus_mode = Control.FOCUS_NONE
+	soul_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(soul_input)
 
-	var friendship_point_button := Button.new()
-	friendship_point_button.text = "Add FP"
-	friendship_point_button.focus_mode = Control.FOCUS_NONE
-	friendship_point_button.pressed.connect(
-		_on_friendship_point_balance_booster_pressed.bind(friendship_point_input)
-	)
-	row.add_child(friendship_point_button)
+	var add_soul_button := Button.new()
+	add_soul_button.text = "Add Soul"
+	add_soul_button.focus_mode = Control.FOCUS_NONE
+	add_soul_button.pressed.connect(_on_add_soul_pressed.bind(soul_input))
+	row.add_child(add_soul_button)
 
-	var remove_friendship_point_button := Button.new()
-	remove_friendship_point_button.text = "Remove FP"
-	remove_friendship_point_button.focus_mode = Control.FOCUS_NONE
-	remove_friendship_point_button.pressed.connect(
-		_on_remove_friendship_point_pressed.bind(friendship_point_input)
-	)
-	row.add_child(remove_friendship_point_button)
+	var remove_soul_button := Button.new()
+	remove_soul_button.text = "Remove Soul"
+	remove_soul_button.focus_mode = Control.FOCUS_NONE
+	remove_soul_button.pressed.connect(_on_remove_soul_pressed.bind(soul_input))
+	row.add_child(remove_soul_button)
 
 
 func _build_effect_lines(item: ItemDefinition) -> Array[String]:
@@ -158,12 +154,12 @@ func _build_effect_lines(item: ItemDefinition) -> Array[String]:
 	return lines
 
 
-func _on_friendship_point_balance_booster_pressed(input: SpinBox) -> void:
-	ItemManager.add_friendship_points(int(input.value))
+func _on_add_soul_pressed(input: SpinBox) -> void:
+	ItemManager.add_soul(int(input.value))
 
 
-func _on_remove_friendship_point_pressed(input: SpinBox) -> void:
-	ItemManager.subtract_friendship_points(int(input.value))
+func _on_remove_soul_pressed(input: SpinBox) -> void:
+	ItemManager.subtract_soul(int(input.value))
 
 
 func _setup_clear_save_control() -> void:

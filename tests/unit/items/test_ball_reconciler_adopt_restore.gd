@@ -14,7 +14,7 @@ func before_each() -> void:
 	_manager = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
 	_manager.items.assign([ball_alpha] as Array[ItemDefinition])
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 
@@ -60,7 +60,7 @@ func test_adopt_restores_play_state_for_play_normal() -> void:
 
 	_reconciler.adopt_pre_existing_balls()
 
-	# enter_play picks NORMAL or ARC by Y vs friendship_bound_y; both count as restored.
+	# enter_play picks NORMAL or ARC by Y vs soul_bound_y; both count as restored.
 	assert_true(
 		(
 			_ball.play_state == Ball.PlayState.PLAY_NORMAL

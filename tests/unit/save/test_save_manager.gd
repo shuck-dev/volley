@@ -30,7 +30,7 @@ func test_save_calls_write_on_storage() -> void:
 
 
 func test_save_writes_assembled_per_slice_json() -> void:
-	_save_manager.economy.friendship_point_balance = 300
+	_save_manager.economy.soul_balance = 300
 	_save_manager.save()
 	var expected: Dictionary = {
 		"economy": _save_manager.economy.to_save_dict(),
@@ -56,11 +56,11 @@ func test_quit_notification_triggers_save() -> void:
 
 # --- clear_save / write-guard ---
 func test_clear_save_resets_every_slice() -> void:
-	_save_manager.economy.friendship_point_balance = 500
+	_save_manager.economy.soul_balance = 500
 	_save_manager.unlocks.shop_unlocked = true
 	_save_manager.partners.active_partner = &"martha"
 	_save_manager.clear_save()
-	assert_eq(_save_manager.economy.friendship_point_balance, 0)
+	assert_eq(_save_manager.economy.soul_balance, 0)
 	assert_false(_save_manager.unlocks.shop_unlocked)
 	assert_eq(_save_manager.partners.active_partner, &"")
 
@@ -126,21 +126,21 @@ func test_save_without_play_state_provider_leaves_states_untouched() -> void:
 # --- load_from_disk ---
 func test_load_from_disk_applies_stored_blob() -> void:
 	var blob_dict: Dictionary = {
-		"economy": {"friendship_point_balance": 42, "total_friendship_points_earned": 100},
+		"economy": {"soul_balance": 42, "total_soul_earned": 100},
 		"partners": {"active_partner": "martha"},
 	}
 	stub(_mock_storage.read).to_return(JSON.stringify(blob_dict))
 
 	_save_manager.load_from_disk()
 
-	assert_eq(_save_manager.economy.friendship_point_balance, 42)
+	assert_eq(_save_manager.economy.soul_balance, 42)
 	assert_eq(_save_manager.partners.active_partner, &"martha")
 
 
 # Guards against a future refactor replacing slice instances instead of mutating in place.
 func test_load_preserves_slice_instance_identity() -> void:
 	var blob_dict: Dictionary = {
-		"economy": {"friendship_point_balance": 99},
+		"economy": {"soul_balance": 99},
 		"partners": {"active_partner": "reese"},
 	}
 	stub(_mock_storage.read).to_return(JSON.stringify(blob_dict))
@@ -151,5 +151,5 @@ func test_load_preserves_slice_instance_identity() -> void:
 
 	assert_eq(held_economy, _save_manager.economy)
 	assert_eq(held_partners, _save_manager.partners)
-	assert_eq(held_economy.friendship_point_balance, 99)
+	assert_eq(held_economy.soul_balance, 99)
 	assert_eq(held_partners.active_partner, &"reese")

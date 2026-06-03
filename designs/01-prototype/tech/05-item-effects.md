@@ -47,7 +47,7 @@ Base cost: 60 friendship | Scaling: 1.7
 ```
 Effect 1
   trigger: on_streak_multiple(n) [n scales with level: 20/15/10]
-  outcome: multiply_stat_temporary(friendship_points_per_hit, random_colour_tier, until_next_trigger)
+  outcome: multiply_stat_temporary(soul_per_hit, random_colour_tier, until_next_trigger)
   outcome: deflect_ball
 ```
 
@@ -70,7 +70,7 @@ Effect 1
 
 Effect 2
   trigger: on_hit
-  outcome: award_friendship_points(scale_by: ball_speed)
+  outcome: award_soul(scale_by: ball_speed)
   tuning: on_hit fires every hit, so friendship generation rate climbs sharply at high ball speeds. Cap or diminishing returns may be needed to keep friendship economy balanced.
 
 Effect 3 (level 3 only)
@@ -129,7 +129,7 @@ Base cost: 70 friendship | Scaling: 1.6
 Effect 1
   trigger: always
   condition: degradation_below(100)
-  outcome: multiply_stat(friendship_points_per_hit, scale_by: crack_count)
+  outcome: multiply_stat(soul_per_hit, scale_by: crack_count)
 
 Effect 2
   trigger: on_miss
@@ -138,7 +138,7 @@ Effect 2
 Effect 3 (broken state)
   trigger: always
   condition: degradation_at(100)
-  outcome: stat(friendship_points_per_hit, -debuff)
+  outcome: stat(soul_per_hit, -debuff)
 ```
 
 Base cost: 90 friendship | Scaling: 1.5

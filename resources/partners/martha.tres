@@ -9,20 +9,20 @@
 [ext_resource type="Script" uid="uid://uneiq3v3t8sx" path="res://scripts/items/effect/outcomes/halve_streak_outcome.gd" id="6_halve"]
 [ext_resource type="PackedScene" uid="uid://8akg3yefpm2r" path="res://scenes/partners/martha_paddle.tscn" id="7_paddle"]
 
-[sub_resource type="Resource" id="fp_outcome"]
+[sub_resource type="Resource" id="soul_outcome"]
 script = ExtResource("5_stat")
-stat_key = &"friendship_points_per_hit"
+stat_key = &"soul_per_hit"
 operation = &"percentage"
 value = 0.25
 
-[sub_resource type="Resource" id="fp_trigger"]
+[sub_resource type="Resource" id="soul_trigger"]
 script = ExtResource("3_trigger")
 type = &"always"
 
-[sub_resource type="Resource" id="fp_effect"]
+[sub_resource type="Resource" id="soul_effect"]
 script = ExtResource("2_effect")
-trigger = SubResource("fp_trigger")
-outcomes = Array[ExtResource("4_outcome")]([SubResource("fp_outcome")])
+trigger = SubResource("soul_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("soul_outcome")])
 max_active_level = null
 
 [sub_resource type="Resource" id="halve_outcome"]
@@ -45,4 +45,4 @@ display_name = "Martha"
 unlock_threshold = 100
 unlock_cost = 100
 paddle_scene = ExtResource("7_paddle")
-effects = Array[ExtResource("2_effect")]([SubResource("fp_effect"), SubResource("halve_effect")])
+effects = Array[ExtResource("2_effect")]([SubResource("soul_effect"), SubResource("halve_effect")])

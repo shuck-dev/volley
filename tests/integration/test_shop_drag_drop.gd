@@ -22,7 +22,7 @@ func before_each() -> void:
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
-	_item_manager.economy.friendship_point_balance = 10000
+	_item_manager.economy.soul_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()
@@ -38,7 +38,7 @@ func _shop_item(key: String) -> ShopItem:
 func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() -> void:
 	# SH-253: full press-drag-release through the real input handlers (SH-246 purchase path).
 	var item: ShopItem = _shop_item("grip_tape")
-	var balance_before: int = _item_manager.get_friendship_point_balance()
+	var balance_before: int = _item_manager.get_soul_balance()
 	var cost: int = GripTape.base_cost
 	var viewport: Viewport = item.get_viewport()
 
@@ -66,9 +66,9 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 		"release outside shop completes the purchase (one purchase event)",
 	)
 	assert_eq(
-		_item_manager.get_friendship_point_balance(),
+		_item_manager.get_soul_balance(),
 		balance_before - cost,
-		"FP balance debits exactly once at release time",
+		"Soul balance debits exactly once at release time",
 	)
 	assert_false(
 		_item_manager.is_on_court("grip_tape"),

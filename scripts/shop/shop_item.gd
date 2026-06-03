@@ -71,7 +71,7 @@ func _ready() -> void:
 		_item_manager = ItemManager
 	if pickup_area != null and not pickup_area.input_event.is_connected(_on_input_event):
 		pickup_area.input_event.connect(_on_input_event)
-	_item_manager.friendship_point_balance_changed.connect(_on_balance_changed)
+	_item_manager.soul_balance_changed.connect(_on_balance_changed)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_apply_token_scale()
 	_refresh_case_overlay()
@@ -291,7 +291,7 @@ func notify_body_settled(body: RigidBody2D, settled_position: Vector2) -> void:
 		visible = true
 		return
 
-	# Outside shop: re-check affordability at settle time. The player may have spent FP
+	# Outside shop: re-check affordability at settle time. The player may have spent soul
 	# elsewhere mid-flight; in that case free the body and restore the slot rather than leak it.
 	if not is_owned():
 		if not _complete_purchase():

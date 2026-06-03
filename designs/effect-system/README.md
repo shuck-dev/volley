@@ -51,8 +51,8 @@ classDiagram
         +can_purchase(item_key: String) bool
         +purchase(item_key: String) bool
         +process_event(event_type: StringName) Array[StringName]
-        +get_friendship_point_balance() int
-        +add_friendship_points(points: int)
+        +get_soul_balance() int
+        +add_soul(points: int)
     }
 
     class EffectManager {

@@ -65,9 +65,9 @@ classDiagram
         +can_purchase(item_key: String) bool
         +purchase(item_key: String) bool
         +remove_level(item_key: String)
-        +get_friendship_point_balance() int
-        +add_friendship_points(points: int)
-        +subtract_friendship_points(points: int)
+        +get_soul_balance() int
+        +add_soul(points: int)
+        +subtract_soul(points: int)
     }
 
     class EffectManager {

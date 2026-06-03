@@ -15,7 +15,7 @@ venue.tscn
 ├── Court                      (play area; paddles, ball, walls)
 │   ├── VolleyCounter          (diegetic scoreboard on the court)
 │   ├── PersonalBest           (diegetic plaque on the court)
-│   ├── FriendshipPoints       (diegetic counter on the court)
+│   ├── SoulLabel              (diegetic counter on the court)
 │   ├── BallRack               (inactive balls; see 08-kit.md)
 │   ├── GearRack               (inactive equipment; see 08-kit.md)
 │   └── ShipmentMat            (where boxes land; see 08-shipments.md)

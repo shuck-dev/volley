@@ -18,14 +18,14 @@ func test_type_is_court() -> void:
 
 
 func test_cannot_purchase_after_first_buy() -> void:
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("spare")
 	assert_false(_manager.can_purchase("spare"))
 
 
 # --- kit slot expansion ---
 func test_adds_kit_slot_on_purchase() -> void:
-	_manager.economy.friendship_point_balance = 100000
+	_manager.economy.soul_balance = 100000
 	_manager.purchase("spare")
 	assert_eq(
 		Stats.resolve(GameRules.base.kit_slots, &"kit_slots", _manager),

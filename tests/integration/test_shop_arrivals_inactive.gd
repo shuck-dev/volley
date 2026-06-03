@@ -24,7 +24,7 @@ func before_each() -> void:
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
 	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence])
-	_item_manager.economy.friendship_point_balance = 10000
+	_item_manager.economy.soul_balance = 10000
 	add_child_autofree(_item_manager)
 
 	_shop = ShopScene.instantiate()

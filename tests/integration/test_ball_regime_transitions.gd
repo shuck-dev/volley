@@ -28,7 +28,7 @@ func before_each() -> void:
 	_manager._effect_manager = EffectManager.new()
 	var typed_items: Array[ItemDefinition] = [TrainingBall]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
 
 	_host = Node2D.new()

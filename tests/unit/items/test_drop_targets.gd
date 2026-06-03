@@ -115,7 +115,7 @@ func test_rack_drop_target_accept_deactivates_an_on_court_item() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha")
 	manager.items.assign([ball_alpha] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("ball_alpha")
 	manager.activate("ball_alpha")
 	assert_true(manager.is_on_court("ball_alpha"), "precondition: on court")
@@ -202,7 +202,7 @@ func test_character_drop_target_accepts_equipment_at_equip_pose_with_capacity() 
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_a")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_a")
 
 	var harness: Dictionary = _make_character_target_harness(manager)
@@ -215,7 +215,7 @@ func test_character_drop_target_rejects_outside_equip_pose() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_b")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_b")
 
 	var harness: Dictionary = _make_character_target_harness(manager)
@@ -227,7 +227,7 @@ func test_character_drop_target_rejects_ball_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball: ItemDefinition = _make_ball_definition("ball_alpha")
 	manager.items.assign([ball] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("ball_alpha")
 
 	var harness: Dictionary = _make_character_target_harness(manager)
@@ -240,7 +240,7 @@ func test_character_drop_target_rejects_when_capacity_zero() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_c")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_c")
 
 	# Force capacity to zero by stuffing the persisted-EQUIPPED set.
@@ -258,7 +258,7 @@ func test_character_drop_target_rejects_position_outside_area() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_d")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_d")
 
 	var harness: Dictionary = _make_character_target_harness(manager)
@@ -271,7 +271,7 @@ func test_character_drop_target_accept_equips_and_emits_no_refusal() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_e")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_e")
 	var before: int = manager.get_kit_remaining()
 
@@ -292,7 +292,7 @@ func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> v
 	var equipment: ItemDefinition = _make_equipment_definition("gear_mount")
 	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_mount")
 
 	# Minimal paddle fixture: parent owns the drop area as a sibling of Sprite/AnkleAnchor.
@@ -339,7 +339,7 @@ func test_character_drop_target_hydrates_equipped_visuals_on_configure() -> void
 	var equipment: ItemDefinition = _make_equipment_definition("gear_hydrate")
 	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_hydrate")
 	manager.state.item_placements["gear_hydrate"] = Placement.EQUIPPED
 
@@ -372,7 +372,7 @@ func test_character_drop_target_unmounts_on_placement_change_to_stored() -> void
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_unmount")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_unmount")
 	manager.state.item_placements["gear_unmount"] = Placement.EQUIPPED
 
@@ -402,7 +402,7 @@ func test_character_drop_target_mount_is_idempotent_on_repeat_equipped_signal() 
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_idem")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_idem")
 	manager.state.item_placements["gear_idem"] = Placement.EQUIPPED
 
@@ -429,7 +429,7 @@ func test_character_drop_target_falls_back_to_paddle_when_anchor_path_empty() ->
 	var equipment: ItemDefinition = _make_equipment_definition("gear_root")
 	# anchor_node_path left as the default empty NodePath.
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_root")
 
 	var paddle := Node2D.new()
@@ -472,7 +472,7 @@ func test_equipped_visual_carries_press_area_for_regrab() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_press")
 	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("gear_press")
 	manager.state.item_placements["gear_press"] = Placement.EQUIPPED
 
@@ -682,7 +682,7 @@ func test_token_scale_remains_standard_across_items() -> void:
 
 	var manager: Node = ItemFactory.create_manager(self)
 	manager.items.assign([BaseBall] as Array[ItemDefinition])
-	manager.economy.friendship_point_balance = 10000
+	manager.economy.soul_balance = 10000
 	manager.take("base_ball")
 
 	# 1. Held token through the drag controller.

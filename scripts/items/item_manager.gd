@@ -1,7 +1,7 @@
 # gdlint:ignore = max-public-methods
 extends Node
 
-signal friendship_point_balance_changed(balance: int)
+signal soul_balance_changed(balance: int)
 signal item_level_changed(item_key: String)
 signal item_placement_changed(item_key: String, placement: int)
 signal court_changed(item_key: String, on_court: bool)
@@ -61,7 +61,7 @@ func reload_from_progression() -> void:
 		_effect_manager.unregister_source(partner)
 
 	_register_existing_items()
-	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+	soul_balance_changed.emit(economy.soul_balance)
 
 	for item in items:
 		item_level_changed.emit(item.key)
@@ -295,16 +295,13 @@ func calculate_cost(item_key: String) -> int:
 
 ## Returns true if the item is unowned and affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
-	return get_level(item_key) == 0 and economy.friendship_point_balance >= calculate_cost(item_key)
+	return get_level(item_key) == 0 and economy.soul_balance >= calculate_cost(item_key)
 
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
 	var item := _get_item(item_key)
-	return (
-		economy.friendship_point_balance >= calculate_cost(item_key)
-		and get_level(item_key) < item.max_level
-	)
+	return economy.soul_balance >= calculate_cost(item_key) and get_level(item_key) < item.max_level
 
 
 ## Purchases an item if affordable, returns true on success
@@ -313,7 +310,7 @@ func purchase(item_key: String) -> bool:
 		return false
 
 	var was_unowned := get_level(item_key) == 0
-	subtract_friendship_points(calculate_cost(item_key))
+	subtract_soul(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
 
@@ -334,23 +331,23 @@ func purchase(item_key: String) -> bool:
 	return true
 
 
-## Returns current friendship point balance
-func get_friendship_point_balance() -> int:
-	return economy.friendship_point_balance
+## Returns current soul balance.
+func get_soul_balance() -> int:
+	return economy.soul_balance
 
 
-## Only earning path. Increments `total_friendship_points_earned` so the shop
-## unlock check stays correct across spending. Refunds use `_refund_friendship_points`.
-func add_friendship_points(points: int) -> void:
-	economy.friendship_point_balance += points
-	economy.total_friendship_points_earned += points
-	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+## Only earning path. Increments `total_soul_earned` so the shop
+## unlock check stays correct across spending. Refunds use `_refund_soul`.
+func add_soul(points: int) -> void:
+	economy.soul_balance += points
+	economy.total_soul_earned += points
+	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Subtracts friendship points (clamped to zero) and emits balance changed signal
-func subtract_friendship_points(points: int) -> void:
-	economy.friendship_point_balance = max(0, economy.friendship_point_balance - points)
-	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+## Subtracts soul (clamped to zero) and emits balance changed signal.
+func subtract_soul(points: int) -> void:
+	economy.soul_balance = max(0, economy.soul_balance - points)
+	soul_balance_changed.emit(economy.soul_balance)
 
 
 ## Removes one level from an item (dev/debug only)
@@ -362,7 +359,7 @@ func remove_level(item_key: String) -> void:
 	if current_level > 0:
 		var item := _get_item(item_key)
 		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
-		_refund_friendship_points(refund)
+		_refund_soul(refund)
 		_set_level(item_key, current_level - 1)
 
 		if current_level - 1 == 0:
@@ -404,10 +401,10 @@ func take(item_key: String) -> bool:
 	if get_level(item_key) >= 1:
 		return false
 
-	if economy.friendship_point_balance < calculate_cost(item_key):
+	if economy.soul_balance < calculate_cost(item_key):
 		return false
 
-	subtract_friendship_points(calculate_cost(item_key))
+	subtract_soul(calculate_cost(item_key))
 	state.item_levels[item_key] = 1
 	_assign_rack_slot(item_key, _get_item(item_key).role)
 	item_level_changed.emit(item_key)
@@ -418,9 +415,9 @@ func take(item_key: String) -> bool:
 
 ## Returns points to the balance without counting them as newly earned.
 ## Used for undo flows (dev level removal, future kit swaps); not a public API.
-func _refund_friendship_points(points: int) -> void:
-	economy.friendship_point_balance += points
-	friendship_point_balance_changed.emit(economy.friendship_point_balance)
+func _refund_soul(points: int) -> void:
+	economy.soul_balance += points
+	soul_balance_changed.emit(economy.soul_balance)
 
 
 func _set_level(item_key: String, level: int) -> void:

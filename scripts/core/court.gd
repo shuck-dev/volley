@@ -5,7 +5,7 @@ signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
 signal ball_final_consolidation_changed(in_final: bool)
 signal ball_tier_advanced(new_tier: int)
-signal auto_play_changed(is_active: bool, friendship_point_rate: float)
+signal auto_play_changed(is_active: bool, soul_rate: float)
 signal partner_changed
 
 @export var court_config: CourtConfig
@@ -40,7 +40,7 @@ var _partners: PartnersState
 var _progression_config: ProgressionConfig
 var _item_manager: Node
 var _is_autoplay_active := false
-var _friendship_point_accumulator := 0.0
+var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
 
 # Ball that triggered the current volley hit; available during the hit-processing window.
@@ -139,7 +139,7 @@ func _physics_process(delta: float) -> void:
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
 	_volley_count += 1
-	_accumulate_friendship_points()
+	_accumulate_soul()
 
 	if _volley_count > _records.personal_volley_best:
 		_records.personal_volley_best = _volley_count
@@ -174,7 +174,7 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 	else:
 		_volley_count = 0
 
-	_friendship_point_accumulator = 0.0
+	_soul_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
 
 	player_paddle.reset_streak()
@@ -184,7 +184,7 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 func _on_auto_play_changed(is_active: bool) -> void:
 	_is_autoplay_active = is_active
-	auto_play_changed.emit(is_active, _progression_config.autoplay_friendship_point_rate)
+	auto_play_changed.emit(is_active, _progression_config.autoplay_soul_rate)
 
 
 func _on_partner_recruited(_partner_key: StringName) -> void:
@@ -242,17 +242,17 @@ func _deactivate_partner() -> void:
 
 
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
-func _accumulate_friendship_points() -> void:
-	var rate: float = _progression_config.autoplay_friendship_point_rate
+func _accumulate_soul() -> void:
+	var rate: float = _progression_config.autoplay_soul_rate
 	var base_points: float = Stats.resolve(
-		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
 	)
 	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
 	)
-	_friendship_point_accumulator += points_to_add
-	var whole_points: int = int(_friendship_point_accumulator)
+	_soul_accumulator += points_to_add
+	var whole_points: int = int(_soul_accumulator)
 	if whole_points > 0:
-		_item_manager.add_friendship_points(whole_points)
-		_friendship_point_accumulator -= float(whole_points)
+		_item_manager.add_soul(whole_points)
+		_soul_accumulator -= float(whole_points)

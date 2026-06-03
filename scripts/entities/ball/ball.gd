@@ -231,7 +231,7 @@ func enter_stored() -> void:
 	set_play_state(PlayState.STORED)
 
 
-# PLAY: selects NORMAL or ARC by current Y vs the friendship bound. NORMAL/ARC share the active
+# PLAY: selects NORMAL or ARC by current Y vs the soul bound. NORMAL/ARC share the active
 # config and differ only by gravity_scale, which is set after apply().
 func enter_play() -> void:
 	_suppress_miss_detection = false

@@ -114,13 +114,13 @@ func test_martha_resource_has_two_effects() -> void:
 	assert_eq(martha.effects.size(), 2)
 
 
-func test_martha_fp_effect_is_always_percentage() -> void:
+func test_martha_soul_effect_is_always_percentage() -> void:
 	var martha: Resource = MARTHA_RESOURCE
-	var fp_effect: Effect = martha.effects[0]
-	assert_eq(fp_effect.trigger.type, &"always")
-	var outcome: StatOutcome = fp_effect.outcomes[0] as StatOutcome
+	var soul_effect: Effect = martha.effects[0]
+	assert_eq(soul_effect.trigger.type, &"always")
+	var outcome: StatOutcome = soul_effect.outcomes[0] as StatOutcome
 	assert_not_null(outcome)
-	assert_eq(outcome.stat_key, &"friendship_points_per_hit")
+	assert_eq(outcome.stat_key, &"soul_per_hit")
 	assert_eq(outcome.operation, &"percentage")
 	assert_almost_eq(outcome.value, 0.25, 0.001)
 
@@ -137,12 +137,12 @@ func test_activate_partner_registers_effects() -> void:
 	var martha: Resource = MARTHA_RESOURCE
 	_item_manager._effect_manager.register_source(martha, 1)
 
-	var fp_stat: float = Stats.resolve(
-		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+	var soul_stat: float = Stats.resolve(
+		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
 	)
-	var base_fp: float = GameRules.base.friendship_points_per_hit
+	var base_soul: float = GameRules.base.soul_per_hit
 
-	assert_almost_eq(fp_stat, base_fp * 1.25, 0.001)
+	assert_almost_eq(soul_stat, base_soul * 1.25, 0.001)
 
 
 func test_deactivate_partner_unregisters_effects() -> void:
@@ -150,9 +150,9 @@ func test_deactivate_partner_unregisters_effects() -> void:
 	_item_manager._effect_manager.register_source(martha, 1)
 	_item_manager._effect_manager.unregister_source(martha)
 
-	var fp_stat: float = Stats.resolve(
-		GameRules.base.friendship_points_per_hit, &"friendship_points_per_hit", _item_manager
+	var soul_stat: float = Stats.resolve(
+		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
 	)
-	var base_fp: float = GameRules.base.friendship_points_per_hit
+	var base_soul: float = GameRules.base.soul_per_hit
 
-	assert_almost_eq(fp_stat, base_fp, 0.001)
+	assert_almost_eq(soul_stat, base_soul, 0.001)

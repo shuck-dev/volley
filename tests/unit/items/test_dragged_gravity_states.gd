@@ -55,7 +55,7 @@ func before_each() -> void:
 	ball_alpha.at_rest_shape = _authored_shape
 	var typed_items: Array[ItemDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
-	_manager.economy.friendship_point_balance = 10000
+	_manager.economy.soul_balance = 10000
 
 	_host = Node2D.new()
 	add_child_autofree(_host)

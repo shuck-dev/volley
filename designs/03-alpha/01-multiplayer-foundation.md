@@ -11,7 +11,7 @@ Lay the architectural foundation for local and online multiplayer during Alpha, 
 
 ## Why Alpha, not later
 
-Every state mutation in game.gd today is a direct assignment: `_volley_count += 1`, `_item_manager.add_friendship_points(points)`. Online multiplayer needs these mutations to flow through a command/event system so they can be serialised, replicated, and rolled back.
+Every state mutation in game.gd today is a direct assignment: `_volley_count += 1`, `_item_manager.add_soul(points)`. Online multiplayer needs these mutations to flow through a command/event system so they can be serialised, replicated, and rolled back.
 
 The longer this refactor waits, the more code needs retrofitting. In Alpha the codebase is still small and the core loop is stable. All new game logic written after this (Content Updates items, milestones, act system, Post-Break mechanics) will be built on the multiplayer-ready foundation from day one.
 
@@ -87,7 +87,7 @@ Before (current):
 ```gdscript
 func _on_paddle_hit() -> void:
     _volley_count += 1
-    _accumulate_friendship_points()
+    _accumulate_soul()
 ```
 
 After (Alpha):
