@@ -1,34 +1,22 @@
 extends GutTest
 
-# Tests for ball speed behaviour driven by item manager stat values.
-# Injects a real ItemManager with mock storage to avoid autoload dependency.
+# Ball speed-tier and miss-zone behaviour at base stats (no item modifiers under test),
+# so the ball runs off a neutral manager stub rather than the full ItemManager rig.
+
+const BallManagerStub: GDScript = preload("res://tests/stubs/ball_manager_stub.gd")
 
 var _ball: Ball
-var _manager: Node
 
 
 func before_each() -> void:
-	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager.state = ItemState.new()
-	_manager.economy = EconomyState.new()
-	_manager._effect_manager = EffectManager.new()
-	(
-		_manager
-		. items
-		. assign(
-			[
-				preload("res://resources/items/training_ball.tres"),
-				preload("res://resources/items/court_lines.tres"),
-			]
-		)
-	)
-	add_child_autofree(_manager)
+	var manager: Node = BallManagerStub.new()
+	add_child_autofree(manager)
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball._item_manager = _manager
+	_ball._item_manager = manager
 	add_child_autofree(_ball)
 	_ball.linear_velocity = Vector2(
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager), 0.0
+		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", manager), 0.0
 	)
 
 
