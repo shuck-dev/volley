@@ -39,6 +39,15 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 | `_game._volley_count == 0` | `hud.last_count == 0` |
 | `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
 
+### Name a test in the register of what it pins
+
+The function name is the whole title GUT shows, so it carries the meaning. Pick its register the same way a ticket is system-story vs user-story: who is the actor, what do they observe.
+
+- **Pins an internal value or mechanism, no player in sight (system-story register).** Flat `condition_<verb>_value`: name the input region and the literal return. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
+- **Pins a player-observable behaviour (user-story register).** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. The same physics fact named at the gameplay layer takes this register; named at the return-value layer it takes the system register. The layer the test sits at decides it, not the underlying fact.
+
+Avoid adjectives and adverbs doing felt work (`gentle`, `steep`, `harder`, `still`) and verbs that name a feeling rather than a result (`lands`, `lofts`); those are prose creep on a name that should state the input and the outcome. Match the file's existing idiom: a new test joins the register its siblings already use.
+
 ### Test behaviour the game can actually reach
 
 Before keeping a test, confirm the production code it drives is reachable: something in the game calls the method (directly, or via a signal, `Callable`, or resource-named dispatch). A test of a method with no production caller is testing dead code, and the honest finding is the dead code, not a passing test. When you hit one, cut the test and remove the unused method (and any stub override of it) in the same change; verify the behaviour you thought it covered is owned by the live path and tested there.
@@ -76,7 +85,7 @@ This pattern lives in `tests/unit/paddle/test_timeout_controller.gd`.
 
 ## GUT feature reference
 
-GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no built-in test framework. A test file `extends GutTest`; a test is any `func test_*` method. There are no custom display names, the function name is the title, so name it as the behaviour sentence.
+GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no built-in test framework. A test file `extends GutTest`; a test is any `func test_*` method. There are no custom display names, the function name is the title, so it carries the meaning (see "Naming" under Principles).
 
 ### Lifecycle
 
