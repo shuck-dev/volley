@@ -61,13 +61,13 @@ Completing a non-top tier hands off to the next band. The top tier has nothing a
 
 ### Reset behaviour
 
-- **Miss** resets tier to 0 and speed to Tier 0 floor, matching today's `ball.reset_speed` semantics. A miss during the final consolidation window is a normal miss; the banked reward is already the player's (see 20a).
+- **Miss** resets tier to 0 and speed to Tier 0 floor; the miss path runs through `enter_out_rest`. A miss during the final consolidation window is a normal miss; the banked reward is already the player's (see 20a).
 - **Tier completion** sets tier to `tier + 1` and speed to the new tier's floor. Current speed does not carry across tiers; the drop is the reset beat.
 - **Half-streak items** (Cadence's existing `on_miss` / halve outcome) still halve `_volley_count` on miss. They now also set tier to `floor(current_tier / 2)` and speed to the floor of that tier, so halving is proportional across the new ladder.
 
 ### Tier-aware ball state
 
-`Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from design/21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from design/21-ball-dynamics.md's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` and `set_speed_for_streak` clamp against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
+`Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from design/21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from design/21-ball-dynamics.md's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` clamps against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
 
 `speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `at_max_speed_changed` is repurposed to fire only on final consolidation entry/exit. The Cadence "ceiling outcome" (which currently latches on `on_max_speed_reached`) is out of scope here: Cadence's interaction with the tier model lives in its own tickets (SH-449 names the lifted cap and on-whistle consolidate as L2/L3; SH-59 the L3 burst). This work only retires the dead `on_max_speed_reached` trigger.
 
@@ -115,7 +115,7 @@ The court's crossing distance sets the fun ceiling, so court width is a tunable 
 - `ball_speed_max_range` stays as a tuning surface; it is promoted into a per-tier `max_range` field on `SpeedTierTable` rather than deleted. The flat value from design/21-ball-dynamics.md rides on the Tier 0 entry so existing tuning and tests keep their meaning; the tiers above each declare their own `max_range` alongside `floor`, `ceiling`, and `reward`. The table is owned by `GameRules`. Existing callers that read `ball_speed_max_range` read `SpeedTierTable.get_tier(current_tier).max_range` (or `.get_tier(0).max_range` for the base-stats tuning surface).
 - Court Lines' `ball_speed_max_range` stat outcome is rewritten to a new `RaiseFloorSpeedOutcome`. Training Ball and Wrist Brace unchanged. Cadence is out of scope (SH-449 / SH-59).
 - Court's `_on_ball_at_max_speed_changed` splits into `_on_ball_tier_advanced` (fires per tier) and `_on_ball_final_consolidation_changed` (fires on final consolidation entry/exit). `on_max_speed_reached` as an event name is retired; `on_tier_completed` replaces it.
-- `ball.reset_speed` stays as miss behaviour. `ball.advance_tier` is new. `ball.set_speed_for_streak` clamps against `tier_ceiling` of the tier implied by streak count, which the tier table answers.
+- Miss behaviour runs through `enter_out_rest` (tier 0, floor speed). `ball.advance_tier` is new.
 - No save compat shim. Items in flight at migration time reload against the new data and pick up the new behaviour.
 
 ## Open questions
