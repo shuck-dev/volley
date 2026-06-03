@@ -27,6 +27,7 @@ logs/
 .vscode/
 .mcp.json
 .cursorrules
+coverage.json
 .windsurfrules
 .github/copilot-instructions.md
 
