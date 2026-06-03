@@ -44,9 +44,9 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 The function name is the whole title GUT shows, so it carries the meaning. Name it the same way you decide system-story vs user-story for a ticket: who is the actor, what do they observe.
 
 - **Tests an internal value or mechanism, no player in sight.** Name the input and the literal result: `condition_<verb>_value`. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
-- **Tests a player-observable behaviour.** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. The same physics fact named at the gameplay layer takes the behaviour form; named at the return-value layer it takes the input-and-result form. The layer the test sits at decides which, not the underlying fact.
+- **Tests a player-observable behaviour.** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. One fact can take either form depending on the layer: the arc's bend at the `CourtPhysics` return is the first kind, a dragged ball heading down in the game is the second.
 
-Avoid adjectives and adverbs doing felt work (`gentle`, `steep`, `harder`, `still`) and verbs that name a feeling rather than a result (`lands`, `lofts`); those are prose creep on a name that should state the input and the outcome. Match the file's existing names: a new test follows the style its siblings already use.
+Keep the name to the input and the outcome. `test_steep_entry_bends_harder` describes a feel; `test_apex_above_ceiling_exceeds_arc_bend` says the input and the result. And follow the names already in the file: a new test matches its siblings.
 
 ### Test behaviour the game can actually reach
 
