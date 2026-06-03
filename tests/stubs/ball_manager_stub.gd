@@ -1,9 +1,6 @@
 extends Node
 
-## Minimal stand-in for ItemManager, the slice a Ball touches when no item modifiers
-## are under test. Returns neutral values so the ball resolves its base stats off
-## GameRules alone. Use the real ItemManager (with items) when item-modified behaviour
-## is what the test asserts.
+## Neutral ItemManager stand-in: the slice a Ball calls, returning no modifiers.
 
 
 func get_modifier(_key: StringName) -> float:

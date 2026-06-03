@@ -1,7 +1,6 @@
 extends GutTest
 
-# Ball speed-tier and miss-zone behaviour at base stats (no item modifiers under test),
-# so the ball runs off a neutral manager stub rather than the full ItemManager rig.
+# Ball speed-tier and miss-zone behaviour at base stats, off a neutral manager stub.
 
 const BallManagerStub: GDScript = preload("res://tests/stubs/ball_manager_stub.gd")
 
