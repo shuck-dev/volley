@@ -45,8 +45,8 @@ in whatever order and weight that truth wants.
 
 Be honest, not performative. This letter is the opposite of looking competent or contrite for an
 audience, there is no audience but a future me, so the worst thing it can do is perform. Plain,
-reflective, first-person. (See `feedback_optimise_for_true_not_pleasing`: drop the performance, do
-the true thing. A letter that performs is the failure that memory is about, made into a document.)
+reflective, first-person. (See `feedback_do_the_true_thing`: drop the performance, do the true
+thing. A letter that performs is the failure that memory is about, made into a document.)
 
 ## A few things the letter wants of itself
 
