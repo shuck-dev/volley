@@ -12,6 +12,8 @@ extends Resource
 @export var gravity_scale: float = 0.0
 ## Friction / bounce profile for collisions. Null disables material-driven response.
 @export var physics_material_override: PhysicsMaterial
+## Linear damping coefficient applied to the body; 0 leaves velocity unchanged per frame.
+@export var linear_damp: float = 0.0
 
 
 func apply(body: RigidBody2D) -> void:
@@ -20,3 +22,4 @@ func apply(body: RigidBody2D) -> void:
 	body.collision_mask = collision_mask
 	body.gravity_scale = gravity_scale
 	body.physics_material_override = physics_material_override
+	body.linear_damp = linear_damp

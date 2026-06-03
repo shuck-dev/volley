@@ -17,7 +17,6 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 	_config = load("res://scripts/core/court_config.gd").new()
-	_config.rest_roll_damping = REST_DAMPING
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._item_manager = _manager
