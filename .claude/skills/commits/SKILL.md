@@ -46,7 +46,7 @@ The reconciliation, while branches stay GitHub-facing: link the PR yourself. The
 - `contributes` ("Contributes to"), one of several PRs; moves the issue but does not solo-resolve. **Use this for every PR on a multi-PR issue.**
 - `links` ("Related to"), reference only, no status automation.
 
-The merge automation is an AND across linked PRs: the issue only reaches the terminal state when the *final* contributing PR merges. So linking each PR as `contributes` (not `closes`) is what stops one early merge from completing the issue; you do not need to delete attachments to manage it. A closed or replaced PR does not auto-unlink, so set it to `links` or `attachmentDelete` it if its stale `closes` / `contributes` would skew the AND.
+**Links accumulate; they are the record of related work. Do not prune them.** Every PR that touched an issue stays attached, including closed and superseded ones; that trail is the point. The transition is governed by the `linkKind` (relationship), not by which attachments are present, so a closed PR linked as `contributes` does not need removing. `attachmentDelete` is for a genuinely mistaken link, not for tidying history. The merge automation is an AND across `contributes` PRs (the issue reaches the terminal state when the final one merges), so `contributes` (not `closes`) is what keeps one early merge from completing a multi-PR issue.
 
 Note for the Shuck team specifically: merge is set to no-action, so no `linkKind` completes an issue on merge today (Completed is always manual). The `closes` / `contributes` distinction still matters if that mapping is ever turned on, and `links` vs the others still controls whether the open / ready automations fire at all.
 
