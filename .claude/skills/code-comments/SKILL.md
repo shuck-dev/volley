@@ -15,6 +15,8 @@ A comment earns its place only for a **WHY the code genuinely cannot hold**: a h
 
 Before the WHY test even runs, a comment has to be *attached* to the line or declaration it explains: a `##` directly above a declaration with no blank line between, or a `#` on or directly above the specific line it is about. A comment that floats on its own, narrating a block underneath a blank line, is out, however good the WHY. If the only honest home for it is floating above a span of code, the span wants a named function and the comment becomes its name. Floating block comments are not weighed and trimmed; they do not earn consideration in the first place.
 
+A comment also takes the code's spacing, not its own. It is part of the declaration it sits on, so no blank line separates it from that line, and no blank line pads it off from the code above as if it were its own paragraph. The comment lives inside the code's rhythm, spaced like the lines around it.
+
 ## The two comment kinds
 
 `##` is Godot's documentation comment; it attaches to the declaration directly below and surfaces in the editor. Same bar: one line naming a non-obvious WHY for that declaration, kept adjacent (a blank line breaks the attachment). One line per declaration; a WHY that needs a paragraph is a doc, not a docstring.
