@@ -11,11 +11,11 @@ Good code documents itself. The identifiers name what things are, the structure 
 
 A comment earns its place only for a **WHY the code genuinely cannot hold**: a hidden constraint, a workaround for a specific engine quirk, a choice that would look wrong to a careful reader who doesn't know the reason. If a reader of the well-named code could deduce it, or if it belongs in a design or tech doc, let one of those carry it instead.
 
-## A comment must be connected to something
+## A comment lives on the line it explains
 
-Before the WHY test even runs, a comment has to be *attached* to the line or declaration it explains: a `##` directly above a declaration with no blank line between, or a `#` on or directly above the specific line it is about. A comment that floats on its own, narrating a block underneath a blank line, is out, however good the WHY. If the only honest home for it is floating above a span of code, the span wants a named function and the comment becomes its name. Floating block comments are not weighed and trimmed; they do not earn consideration in the first place.
+A comment sits on the thing it explains and shares its spacing: a `##` directly above a declaration, or a `#` on or directly above the line it is about, with no blank line between them and none padding it off from the code above. It is part of that line, so it keeps the code's rhythm.
 
-A comment also takes the code's spacing, not its own. It is part of the declaration it sits on, so no blank line separates it from that line, and no blank line pads it off from the code above as if it were its own paragraph. The comment lives inside the code's rhythm, spaced like the lines around it.
+When a comment has nowhere to sit, that is the signal to read: it wants to explain a whole block from above a blank line, which means the block wants a name. Make it a named function and the name carries what the comment was reaching for.
 
 ## The two comment kinds
 
