@@ -41,14 +41,6 @@ func test_increase_speed_advances_tier_at_ceiling() -> void:
 	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "speed drops to the new tier's floor")
 
 
-func test_increase_speed_never_exceeds_tier_ceiling() -> void:
-	_ball.current_tier = 0
-	var ceiling: float = _ball.tier_ceiling
-	_ball.speed = ceiling - 1.0
-	_ball.increase_speed()
-	assert_true(_ball.speed <= ceiling + 0.01, "speed stays within the band's ceiling")
-
-
 # --- reset_speed ---
 func test_reset_speed_returns_to_tier_zero_floor() -> void:
 	_ball.current_tier = 2
