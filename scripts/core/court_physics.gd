@@ -8,12 +8,13 @@ extends Resource
 @export var arc_height_max: float = 220.0
 
 
-## Downward acceleration for this arc visit; zero when there is no upward motion to arc.
+## Downward acceleration for this arc visit. A ball entering without upward motion (dragged above
+## the bound and released) still gets the full bend, so it always heads back down.
 func arc_acceleration(entry_speed_up: float) -> float:
-	if entry_speed_up <= 0.0:
-		return 0.0
 	if arc_bend <= 0.0 or arc_height_max <= 0.0:
 		return 0.0
+	if entry_speed_up <= 0.0:
+		return arc_bend
 
 	var natural_apex: float = (entry_speed_up * entry_speed_up) / (2.0 * arc_bend)
 	var apex: float = clampf(natural_apex, 0.0, arc_height_max)

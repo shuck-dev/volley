@@ -23,9 +23,9 @@ func test_clamped_apex_lands_at_ceiling() -> void:
 	assert_almost_eq(apex, 220.0, 0.5)
 
 
-func test_non_positive_entry_returns_zero() -> void:
-	assert_eq(_physics.arc_acceleration(0.0), 0.0)
-	assert_eq(_physics.arc_acceleration(-50.0), 0.0)
+func test_downward_entry_still_bends_down() -> void:
+	assert_almost_eq(_physics.arc_acceleration(0.0), 600.0, 0.001)
+	assert_almost_eq(_physics.arc_acceleration(-50.0), 600.0, 0.001)
 
 
 func test_zero_bend_returns_zero() -> void:
