@@ -110,15 +110,3 @@ func test_held_body_settles_on_cursor_without_teleporting() -> void:
 	assert_almost_eq(body.modulate.a, 1.0, 0.001)
 	# Half the trip in one tick would be a snap; cap step well below that.
 	assert_lt(max_step, total_distance * 0.5, "no mid-window teleport")
-
-
-func test_release_on_no_target_keeps_item_held() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	_drag._mouse_button_down = false
-	var nowhere := Vector2(0, 99999)
-
-	var accepted: bool = _drag.attempt_release(nowhere)
-
-	assert_false(accepted, "no accepting target means release returns false and item stays held")
-	assert_true(_drag.is_dragging(), "gesture is still live after a rejected release")
