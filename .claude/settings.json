@@ -10,8 +10,13 @@
       {
         "matcher": "mcp__linear__save_issue",
         "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/linear-save-issue-warn.sh\"" },
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/linear-issue-body-cap.sh\"" }
+        ]
+      },
+      {
+        "matcher": "mcp__linear__save_comment",
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/linear-comment-body-cap.sh\"" }
         ]
       },
       {
