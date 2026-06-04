@@ -17,7 +17,7 @@ size = Vector2(4000, 40)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j16ra"]
 size = Vector2(40, 4000)
 
-[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court", "dev_item_panel", "venue_left_bound", "venue_right_bound", "venue_ceiling", "venue_floor")]
+[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court", "dev_item_panel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,10 +29,6 @@ script = ExtResource("1_qaugd")
 shop = NodePath("Shop")
 court = NodePath("Court")
 dev_item_panel = NodePath("DevHUD/DevItemUI")
-venue_left_bound = NodePath("VenueLeftBound")
-venue_right_bound = NodePath("VenueRightBound")
-venue_ceiling = NodePath("VenueCeiling")
-venue_floor = NodePath("VenueFloor")
 
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
 

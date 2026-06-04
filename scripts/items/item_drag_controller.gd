@@ -1,4 +1,3 @@
-# gdlint:disable = max-file-lines
 class_name ItemDragController
 extends Node2D
 
@@ -32,10 +31,6 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var timeout_controller: TimeoutController
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
-@export var venue_left_bound: Node2D
-@export var venue_right_bound: Node2D
-@export var venue_ceiling: Node2D
-@export var venue_floor: Node2D
 @export var reconciler: BallReconciler
 @export var cursor_overlay: CursorOverlay
 @export var expansion_ring_hold_s: float = 0.25
@@ -86,25 +81,9 @@ func configure(
 	reconciler = ball_reconciler
 
 
-func _derive_venue_bounds_from_nodes() -> void:
-	if (
-		venue_left_bound == null
-		or venue_right_bound == null
-		or venue_ceiling == null
-		or venue_floor == null
-	):
-		return
-	var left_x: float = venue_left_bound.global_position.x
-	var right_x: float = venue_right_bound.global_position.x
-	var top_y: float = venue_ceiling.global_position.y
-	var bottom_y: float = venue_floor.global_position.y
-	venue_bounds = Rect2(left_x, top_y, right_x - left_x, bottom_y - top_y)
-
-
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
-	_derive_venue_bounds_from_nodes()
 
 	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")
@@ -138,7 +117,7 @@ func _process(delta: float) -> void:
 		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
 
-	var cursor_target: Vector2 = _clamp_to_venue(_cursor_position())
+	var cursor_target: Vector2 = _cursor_position()
 	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, grab_ease_duration_s)
 	var ease_progress: float = _grab_ease_progress()
 	_apply_grab_ease(ease_progress, cursor_target)
@@ -178,7 +157,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	# Use event position so a Camera2D in the venue doesn't break rack hit-testing.
-	if not attempt_release(_clamp_to_venue(_event_world_position(mouse_button))):
+	if not attempt_release(_event_world_position(mouse_button)):
 		# Gesture stays alive: keep following the cursor and retry release each frame.
 		_release_pending = true
 
@@ -448,7 +427,6 @@ func attempt_release(release_position: Vector2) -> bool:
 	if _drag_target() == null:
 		return false
 
-	var clamped_position: Vector2 = _clamp_to_venue(release_position)
 	var item_key: String = _held_key
 	var was_temporary: bool = _held_is_temporary
 	var has_live_ball: bool = _held_ball != null
@@ -457,21 +435,21 @@ func attempt_release(release_position: Vector2) -> bool:
 	var below_threshold: bool = _gesture_below_threshold
 	if below_threshold:
 		below_threshold = (
-			clamped_position.distance_to(_press_position) < COMMIT_MOVEMENT_THRESHOLD_PX
+			release_position.distance_to(_press_position) < COMMIT_MOVEMENT_THRESHOLD_PX
 		)
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court and not was_temporary:
 		if has_live_ball:
 			_restore_held_ball_to_stored(item_key)
-		_finalise_gesture(item_key, clamped_position, false)
+		_finalise_gesture(item_key, release_position, false)
 		return true
 
-	var target: DropTarget = _find_accepting_target(item_key, clamped_position, 1.0)
+	var target: DropTarget = _find_accepting_target(item_key, release_position, 1.0)
 	if target == null and _expansion_started_at >= 0.0:
 		var held_duration: float = _now_seconds() - _expansion_started_at
 		if held_duration >= expansion_ring_hold_s:
-			target = _find_accepting_target(item_key, clamped_position, expansion_ring_scale)
+			target = _find_accepting_target(item_key, release_position, expansion_ring_scale)
 
 	if target == null:
 		return false
@@ -483,31 +461,31 @@ func attempt_release(release_position: Vector2) -> bool:
 			pass
 		elif has_live_ball:
 			# Same Ball survives the gesture; transition OUT_HELD → PLAY in place at the release point.
-			_release_live_ball_to_court(clamped_position, velocity)
+			_release_live_ball_to_court(release_position, velocity)
 		else:
-			target.accept(item_key, clamped_position, velocity)
+			target.accept(item_key, release_position, velocity)
 			_apply_preserved_speed_after_accept(item_key)
 	elif target is VenueDropTarget:
 		if was_temporary:
 			# Temporary balls never join the registry; fall through to finalise (which frees the HeldBody).
 			pass
 		elif _is_ball_role(item_key):
-			_release_to_rest(item_key, clamped_position, _compute_release_velocity())
+			_release_to_rest(item_key, release_position, _compute_release_velocity())
 		else:
 			# Equipment keeps the HeldBody loose path; rehome the existing held body rather than spawning a new one.
-			_release_held_body_as_loose(clamped_position)
-		_finalise_gesture(item_key, clamped_position, false)
+			_release_held_body_as_loose(release_position)
+		_finalise_gesture(item_key, release_position, false)
 		return true
 	else:
 		# Restore is the safety net when ItemManager was already STORED so accept's deactivate was a no-op.
-		target.accept(item_key, clamped_position, Vector2.ZERO)
+		target.accept(item_key, release_position, Vector2.ZERO)
 		if has_live_ball:
 			_restore_held_ball_to_stored(item_key)
 
 	var over_court: bool = target is CourtDropTarget
 	if was_temporary:
 		over_court = false
-	_finalise_gesture(item_key, clamped_position, over_court)
+	_finalise_gesture(item_key, release_position, over_court)
 	return true
 
 
@@ -903,10 +881,6 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 	return canvas_transform.affine_inverse() * event.position
 
 
-func _clamp_to_venue(world_position: Vector2) -> Vector2:
-	return DropTarget.clamp_to_rect(world_position, venue_bounds)
-
-
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
 		if item.key == item_key:
@@ -946,9 +920,6 @@ func _update_cursor_state(world_position: Vector2) -> void:
 func _derive_cursor_state(world_position: Vector2) -> int:
 	if _drag_target() == null:
 		return CursorStateScript.State.DEFAULT
-	# The held body is clamped to venue but the raw cursor can drift outside.
-	if not _is_within_venue(_cursor_position()):
-		return CursorStateScript.State.FORBIDDEN
 	if _position_accepted_by_any_target(_held_key, world_position):
 		return CursorStateScript.State.CAN_DROP
 	return CursorStateScript.State.DRAGGING
@@ -958,12 +929,6 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 	if item_key.is_empty():
 		return false
 	return _find_accepting_target(item_key, world_position, 1.0) != null
-
-
-func _is_within_venue(world_position: Vector2) -> bool:
-	if venue_bounds.size == Vector2.ZERO:
-		return true
-	return venue_bounds.has_point(world_position)
 
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:

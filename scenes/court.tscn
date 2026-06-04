@@ -214,6 +214,7 @@ gear_rack = NodePath("../GearRack")
 gear_rack_drop_target = NodePath("../GearRack/DropTarget")
 timeout_controller = NodePath("../TimeoutController")
 court_bounds = Rect2(-420, -360, 840, 720)
+venue_bounds = Rect2(-1200, -720, 2400, 1440)
 reconciler = NodePath("../BallReconciler")
 cursor_overlay = NodePath("CursorOverlay")
 

@@ -143,17 +143,6 @@ func test_cursor_state_dragging_outside_any_target() -> void:
 	assert_eq(state, CursorStateScript.State.DRAGGING)
 
 
-func test_cursor_state_forbidden_when_cursor_outside_venue() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	# Shrink venue bounds away from the default mouse position so derivation returns FORBIDDEN.
-	_drag.venue_bounds = Rect2(Vector2(99000, 99000), Vector2(1, 1))
-
-	var state: int = _drag._derive_cursor_state(Vector2.ZERO)
-
-	assert_eq(state, CursorStateScript.State.FORBIDDEN)
-
-
 func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> void:
 	_manager.take("ball_alpha")
 	watch_signals(_drag)
@@ -182,3 +171,30 @@ func test_cursor_overlay_visibility_follows_state() -> void:
 	assert_true(_overlay.visible)
 	_overlay.set_state(CursorStateScript.State.CAN_DROP, Vector2(50, 50))
 	assert_eq(_overlay.global_position, Vector2(50, 50))
+
+
+func test_held_body_reaches_off_edge_cursor_position_unclamped() -> void:
+	_manager.take("ball_alpha")
+	var far_outside := Vector2(99999, 0)
+	_drag.grab_from_rack("ball_alpha", Vector2.ZERO)
+	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
+	_drag._apply_grab_ease(1.0, far_outside)
+
+	assert_almost_eq(
+		_drag.get_held_body().global_position.x,
+		far_outside.x,
+		1.0,
+		"held body follows cursor past the venue edge without clamping",
+	)
+
+
+func test_release_on_no_target_keeps_item_held() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	_drag._mouse_button_down = false
+	var nowhere := Vector2(0, 99999)
+
+	var accepted: bool = _drag.attempt_release(nowhere)
+
+	assert_false(accepted, "no accepting target means release returns false and item stays held")
+	assert_true(_drag.is_dragging(), "gesture is still live after a rejected release")
