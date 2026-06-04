@@ -922,7 +922,6 @@ func _derive_cursor_state(world_position: Vector2) -> int:
 		return CursorStateScript.State.DEFAULT
 	if _position_accepted_by_any_target(_held_key, world_position):
 		return CursorStateScript.State.CAN_DROP
-	# No target accepts: venue projection hit a wall or body.
 	return CursorStateScript.State.FORBIDDEN
 
 
