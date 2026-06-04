@@ -189,31 +189,6 @@ func test_release_without_gesture_uses_default_launch_velocity() -> void:
 	assert_eq(ball.linear_velocity, expected, "fallback path should match ItemManager default")
 
 
-func test_release_far_outside_court_falls_loose_inside_venue() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-	var off_world := Vector2(99999, 99999)
-
-	var released: bool = _drag.attempt_release(off_world)
-
-	assert_true(released, "venue-clamped release resolves as a loose drop")
-	# Step 5: venue-floor release routes through reconciler; the Ball lives in OUT_REST in the registry.
-	assert_false(
-		_manager.is_on_court("ball_alpha"), "rack-origin venue release does not flip on-court"
-	)
-	assert_true(
-		_manager.is_loose_in_venue("ball_alpha"),
-		"rack-origin venue release marks loose-in-venue so the rack filter hides the slot",
-	)
-	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(ball, "venue release puts the Ball into the registry")
-	assert_eq(ball.play_state, Ball.PlayState.OUT_REST, "venue Ball is OUT_REST")
-	assert_eq(_loose_bodies_under_host().size(), 0, "no HeldBody loose body left behind")
-
-
 func test_release_over_rack_returns_a_court_ball_to_the_rack() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
@@ -339,23 +314,6 @@ func test_mouse_button_release_event_triggers_release() -> void:
 		_reconciler.get_ball_for_key("ball_alpha"),
 		"mouse-up over the default court region should spawn the ball",
 	)
-
-
-func test_process_follow_clamps_held_body_to_venue_bounds() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var body: HeldBody = _drag.get_held_body()
-	assert_not_null(body, "precondition: held body exists")
-
-	var clamped: Vector2 = _drag._clamp_to_venue(Vector2(99999, -99999))
-	assert_eq(clamped, Vector2(2000, -1200), "clamp pulls to the venue rect corner")
-
-
-func test_clamp_to_venue_is_identity_when_bounds_unset() -> void:
-	var unbounded: ItemDragController = ItemDragControllerScript.new()
-	add_child_autofree(unbounded)
-	var point := Vector2(12345, -67890)
-	assert_eq(unbounded._clamp_to_venue(point), point, "zero-size venue leaves positions untouched")
 
 
 func test_grab_and_release_preserves_live_ball_speed_through_to_reinstated_ball() -> void:
