@@ -132,15 +132,24 @@ func test_cursor_state_can_drop_over_rack_for_role() -> void:
 	assert_eq(state, CursorStateScript.State.CAN_DROP)
 
 
-func test_cursor_state_dragging_outside_any_target() -> void:
-	# Pick a point outside venue rect so VenueDropTarget rejects it but the cursor's (0,0) probe stays in.
+func test_cursor_state_forbidden_when_projection_blocked() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
 	var outside_targets := Vector2(5000, 0)
 
 	var state: int = _drag._derive_cursor_state(outside_targets)
 
-	assert_eq(state, CursorStateScript.State.DRAGGING)
+	assert_eq(state, CursorStateScript.State.FORBIDDEN)
+
+
+func test_cursor_state_can_drop_over_clear_venue_floor() -> void:
+	_manager.take("ball_alpha")
+	_drag.grab_from_rack("ball_alpha")
+	var venue_floor := Vector2(-1500, 0)
+
+	var state: int = _drag._derive_cursor_state(venue_floor)
+
+	assert_eq(state, CursorStateScript.State.CAN_DROP)
 
 
 func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> void:
@@ -151,17 +160,17 @@ func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> voi
 	var rack_position: Vector2 = _drop_target.global_position
 	_drag._held_body.global_position = rack_position
 	_drag._update_cursor_state(rack_position)
-	var venue_only := Vector2(5000, 0)
-	_drag._held_body.global_position = venue_only
-	_drag._update_cursor_state(venue_only)
+	var no_target := Vector2(5000, 0)
+	_drag._held_body.global_position = no_target
+	_drag._update_cursor_state(no_target)
 
 	var emits: int = get_signal_emit_count(_drag, "cursor_state_changed")
 	assert_gte(emits, 2, "signal fires at least once per _update_cursor_state call")
 	var second_last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 2)
 	var last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 1)
 	assert_eq(second_last[0], CursorStateScript.State.CAN_DROP)
-	assert_eq(last[0], CursorStateScript.State.DRAGGING)
-	assert_eq(last[1], venue_only, "signal payload carries the held world position")
+	assert_eq(last[0], CursorStateScript.State.FORBIDDEN)
+	assert_eq(last[1], no_target, "signal payload carries the held world position")
 
 
 func test_cursor_overlay_visibility_follows_state() -> void:

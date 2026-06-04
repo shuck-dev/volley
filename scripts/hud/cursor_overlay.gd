@@ -57,5 +57,7 @@ func _color_for_state(state: int) -> Color:
 			return style.color_dragging
 		CursorStateScript.State.CAN_DROP:
 			return style.color_can_drop
+		CursorStateScript.State.FORBIDDEN:
+			return style.color_forbidden
 		_:
 			return style.color_default
