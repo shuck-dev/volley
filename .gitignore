@@ -33,7 +33,6 @@ coverage.json
 
 # Personal lefthook overrides
 lefthook-local.yml
-scripts/dev/
 
 # Editor-only dev addons (per-dev preference, no runtime/CI impact)
 addons/signal_lens/
