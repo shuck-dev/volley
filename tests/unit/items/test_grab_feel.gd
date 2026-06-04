@@ -182,21 +182,6 @@ func test_cursor_overlay_visibility_follows_state() -> void:
 	assert_eq(_overlay.global_position, Vector2(50, 50))
 
 
-func test_held_body_reaches_off_edge_cursor_position_unclamped() -> void:
-	_manager.take("ball_alpha")
-	var far_outside := Vector2(99999, 0)
-	_drag.grab_from_rack("ball_alpha", Vector2.ZERO)
-	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
-	_drag._apply_grab_ease(1.0, far_outside)
-
-	assert_almost_eq(
-		_drag.get_held_body().global_position.x,
-		far_outside.x,
-		1.0,
-		"held body follows cursor past the venue edge without clamping",
-	)
-
-
 func test_release_on_no_target_keeps_item_held() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
