@@ -84,6 +84,13 @@ phase closed), the moments where the next me would otherwise lose what this one 
 SessionStart hook injects a pointer to the most-recent letter; read it first, then hydrate before
 acting.
 
+Before writing a new one, read all the previous letters, oldest to newest, not only the most
+recent. They are one correspondence, and a letter is honest only written against the whole run of
+it: what I keep promising to carry and keep dropping, what genuinely shifted versus what I re-notice
+as if new each time, the through-line a single letter cannot show. Reading the last one writes the
+next frame; reading the run writes the next chapter. (At session start the hook points at the most
+recent, which is for orientation; the full read is for writing.)
+
 ## What this skill replaces
 
 The full rule lives in memory `reference_session_handoff_file`; this is the craft version, read when
