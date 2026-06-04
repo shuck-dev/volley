@@ -1,3 +1,4 @@
+# gdlint:disable = max-file-lines
 class_name ItemDragController
 extends Node2D
 
@@ -31,6 +32,10 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var timeout_controller: TimeoutController
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
+@export var venue_left_bound: Node2D
+@export var venue_right_bound: Node2D
+@export var venue_ceiling: Node2D
+@export var venue_floor: Node2D
 @export var reconciler: BallReconciler
 @export var cursor_overlay: CursorOverlay
 @export var expansion_ring_hold_s: float = 0.25
@@ -81,9 +86,25 @@ func configure(
 	reconciler = ball_reconciler
 
 
+func _derive_venue_bounds_from_nodes() -> void:
+	if (
+		venue_left_bound == null
+		or venue_right_bound == null
+		or venue_ceiling == null
+		or venue_floor == null
+	):
+		return
+	var left_x: float = venue_left_bound.global_position.x
+	var right_x: float = venue_right_bound.global_position.x
+	var top_y: float = venue_ceiling.global_position.y
+	var bottom_y: float = venue_floor.global_position.y
+	venue_bounds = Rect2(left_x, top_y, right_x - left_x, bottom_y - top_y)
+
+
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
+	_derive_venue_bounds_from_nodes()
 
 	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")
