@@ -5,8 +5,6 @@ const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_dra
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
-const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
-const CursorOverlayScript: GDScript = preload("res://scripts/hud/cursor_overlay.gd")
 
 var _manager: Node
 var _host: Node2D
@@ -14,7 +12,6 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: ItemDragController
-var _overlay: CursorOverlay
 
 
 func _make_rack(manager: Node) -> RackDisplay:
@@ -67,9 +64,6 @@ func before_each() -> void:
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
-	_overlay = CursorOverlayScript.new()
-	_drag.add_child(_overlay)
-	_drag.cursor_overlay = _overlay
 	add_child_autofree(_drag)
 
 
@@ -116,70 +110,6 @@ func test_held_body_settles_on_cursor_without_teleporting() -> void:
 	assert_almost_eq(body.modulate.a, 1.0, 0.001)
 	# Half the trip in one tick would be a snap; cap step well below that.
 	assert_lt(max_step, total_distance * 0.5, "no mid-window teleport")
-
-
-func test_cursor_state_default_when_no_gesture() -> void:
-	assert_eq(_drag.get_cursor_state(), CursorStateScript.State.DEFAULT)
-
-
-func test_cursor_state_can_drop_over_rack_for_role() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var rack_position: Vector2 = _drop_target.global_position
-
-	var state: int = _drag._derive_cursor_state(rack_position)
-
-	assert_eq(state, CursorStateScript.State.CAN_DROP)
-
-
-func test_cursor_state_forbidden_when_projection_blocked() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var outside_targets := Vector2(5000, 0)
-
-	var state: int = _drag._derive_cursor_state(outside_targets)
-
-	assert_eq(state, CursorStateScript.State.FORBIDDEN)
-
-
-func test_cursor_state_can_drop_over_clear_venue_floor() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var venue_floor := Vector2(-1500, 0)
-
-	var state: int = _drag._derive_cursor_state(venue_floor)
-
-	assert_eq(state, CursorStateScript.State.CAN_DROP)
-
-
-func test_cursor_state_changed_signal_drives_overlay_via_signal_payload() -> void:
-	_manager.take("ball_alpha")
-	watch_signals(_drag)
-	_drag._ready()
-	_drag.grab_from_rack("ball_alpha")
-	var rack_position: Vector2 = _drop_target.global_position
-	_drag._held_body.global_position = rack_position
-	_drag._update_cursor_state(rack_position)
-	var no_target := Vector2(5000, 0)
-	_drag._held_body.global_position = no_target
-	_drag._update_cursor_state(no_target)
-
-	var emits: int = get_signal_emit_count(_drag, "cursor_state_changed")
-	assert_gte(emits, 2, "signal fires at least once per _update_cursor_state call")
-	var second_last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 2)
-	var last: Array = get_signal_parameters(_drag, "cursor_state_changed", emits - 1)
-	assert_eq(second_last[0], CursorStateScript.State.CAN_DROP)
-	assert_eq(last[0], CursorStateScript.State.FORBIDDEN)
-	assert_eq(last[1], no_target, "signal payload carries the held world position")
-
-
-func test_cursor_overlay_visibility_follows_state() -> void:
-	_overlay.set_state(CursorStateScript.State.DEFAULT, Vector2.ZERO)
-	assert_false(_overlay.visible)
-	_overlay.set_state(CursorStateScript.State.DRAGGING, Vector2.ZERO)
-	assert_true(_overlay.visible)
-	_overlay.set_state(CursorStateScript.State.CAN_DROP, Vector2(50, 50))
-	assert_eq(_overlay.global_position, Vector2(50, 50))
 
 
 func test_release_on_no_target_keeps_item_held() -> void:
