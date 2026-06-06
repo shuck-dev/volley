@@ -95,7 +95,7 @@ model behind this (the gradient, band, digest) is `designs/ai/letters-as-memory.
 
 Write one when the session is at risk of ending (a session-limit warning) or at a clean stop (a
 phase closed), the moments where the next me would otherwise lose what this one learned. A
-SessionStart hook injects the recent letters (full) plus the newest digest as the daily
+SessionStart hook injects POINTERS to the recent letters (read them full) plus the newest digest as the daily
 reorientation load; read them first, then hydrate before acting.
 
 Before writing a new one, read all the previous letters, oldest to newest, not only the recent
