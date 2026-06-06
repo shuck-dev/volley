@@ -51,6 +51,22 @@ walk-off/equip/walk-on enum, which sits outside the paddle and sets `drive_block
 (`timeout_controller.gd:14`). Wiring named animation states is the occasion to make
 movement state explicit, with the FSM as the single owner the animation reads from.
 
+### The FSM defers to TimeoutController, it does not replace it
+
+`TimeoutController` (`timeout_controller.gd:14`) already runs a six-state machine
+(IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON, ASCENDING) that drives the
+paddle during a timeout and holds `drive_blocked` for the whole non-IDLE span. The two
+most common non-idle paddle states (walk-off, walk-on) live there, so the new movement
+FSM cannot ignore it. The relationship: the movement FSM reads `drive_blocked` (or
+`TimeoutController.get_state()`) as its highest-priority input. While a timeout is
+active, the FSM is in a `timeout` state that maps the controller's phase to an
+animation (descending/ascending to a walk-cycle, at-equip to an idle-or-pose), and the
+collider follows that. TimeoutController stays the locomotion authority during a
+timeout; the FSM only translates its phase into animation-and-collider, the same
+downstream-consumer role it has for the velocity-driven states. The full FSM transition
+table is build-ticket work, but this priority (timeout phase outranks velocity) is the
+constraint the build inherits, not a blank slate.
+
 ## Why swing is an overlay, not a state, and why no tree
 
 Swing is a transient action that can fire while the paddle is idle or walking, not a
@@ -87,6 +103,30 @@ positions, not pixel polygons ([Smash Wiki](https://www.ssbwiki.com/Hitbox)).
 Player hitboxes are intentionally sized for feel, not pixel accuracy. For a fast
 ball, tunnelling is solved by continuous collision detection, not polygon detail, so
 a complex collider buys nothing the ball can use.
+
+### The collider extent is a gameplay input, so the angle denominator stays fixed
+
+The paddle collider is not only a presence test. `Paddle.get_half_height()`
+(`paddle.gd:82-83`) returns the collider's half vertical extent, and the ball's return
+angle uses it as the contact-offset denominator. So a per-state collider that is taller
+during swing would silently change the return angle on swing hits, a feel bug with no
+obvious cause ("edge hits feel off"). Decision: split the two concerns the single
+`RectangleShape2D` currently collapses. The per-state shape that varies is the physics
+extent (what the ball bounces off); the angle denominator stays a fixed reference
+height, not whichever collider is active. `get_half_height()` returns that fixed
+reference, not the live shape. A per-state swing collider may differ in physics extent
+without touching the return-angle math.
+
+### Toggle the collider in `_physics_process`, not on an animation callback
+
+The FSM drives the collider toggle in code (the AnimationPlayer caveat below). One
+timing trap to honour: AnimatedSprite2D advances in `_process`, physics reads collider
+shape in `_physics_process`, different loops. If the FSM flips the active collider from
+a `_process`-side animation callback, a physics step can run before the next `_process`
+and read the stale collider, so a ball hit in that one-frame window gets the wrong shape
+and angle. Pin the toggle to `_physics_process` (drive the FSM there, or set the
+collider state on the same physics tick the state changes), so the shape the ball reads
+is never a frame behind the state.
 
 ### Caveat: do not key the collider toggle from an AnimationPlayer
 
