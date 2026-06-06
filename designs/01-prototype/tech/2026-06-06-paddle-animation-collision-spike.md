@@ -39,10 +39,9 @@ sprite animation; it carries less per-instance overhead than AnimationPlayer
 
 Gameplay state (idle / ready / walk, and the transient swing action) lives in a
 movement state machine on the paddle. The animation layer is a downstream consumer:
-the FSM decides the state, then tells the sprite which animation to play and which
-collider to activate. State must never live in the animation, or the ball physics
-(is the swing hitbox active) would depend on which sprite frame is showing, coupling
-collision to art.
+the FSM decides the state, then tells the sprite which animation to play. State must
+never live in the animation, or the ball physics would depend on which sprite frame is
+showing, coupling collision to art.
 
 The paddle has no movement FSM today. State is implicit: `velocity.y != 0` reads as
 moving, `== 0` as idle, and the only explicit machine is `TimeoutController`'s
@@ -85,7 +84,8 @@ it is reactive animation, the paddle plays a swing because a hit happened, not a
 timed action that extends reach or alters the hitbox. The ball always strikes the
 same body. So there is no per-state silhouette to track, no per-frame collision
 shape, and nothing to toggle: the paddle has one authored collider, and the sprite
-animates freely over it.
+animates freely over it. (This argues `swing` specifically; if a future `ready` pose
+ever extends the paddle's reach, the collider question reopens for that state alone.)
 
 This also keeps the bounce stable. `Paddle.get_half_height()` (`paddle.gd`) feeds the
 ball's return-angle contact-offset denominator; because the collider is one fixed
