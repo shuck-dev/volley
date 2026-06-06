@@ -1,44 +1,62 @@
 #!/usr/bin/env bash
-# SessionStart hook: load the daily self-reconstitution slice, the recent letters
-# (vivid) plus the newest digest (the consolidated arc as gist). Models human
-# memory; the full model is in the `letters` skill. Deliberately POINTERS, not
-# bodies: they are point-in-time, so the rule is read-then-hydrate, not
-# trust-on-inject.
+# SessionStart hook: load the daily self-reconstitution slice as a three-tier human
+# memory gradient (see the `letters` skill): recent letters full (vivid), a prior band
+# of one-line summaries (fading-but-recallable), the newest digest (consolidated gist).
+# Deliberately POINTERS plus summaries, not full bodies for the older tiers: they are
+# point-in-time, so the rule is read-then-hydrate, not trust-on-inject.
 # Fails open: any error prints nothing and exits 0 (no injection, no block).
 set -uo pipefail
 
 LETTERS_DIR="$HOME/.claude/projects/-home-josh-gamedev-volley/memory/letters"
 [ -d "$LETTERS_DIR" ] || exit 0
 
-# Recent letters (the week): full read. ~1 letter/day, so 7 is the vivid recent arc.
-mapfile -t letters < <(ls "$LETTERS_DIR"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort | tail -n 7)
-[ "${#letters[@]}" -eq 0 ] && exit 0
+# All letters, oldest-to-newest (date-prefixed names sort chronologically).
+mapfile -t all < <(ls "$LETTERS_DIR"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort)
+[ "${#all[@]}" -eq 0 ] && exit 0
 
-# Newest digest (the consolidated older arc as gist), if any.
-digest="$(ls "$LETTERS_DIR"/digest/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort | tail -n 1)"
+RECENT=7   # vivid tier: read full
+BAND=30    # band tier: one summary line each (the prior ~month)
 
-list=""
-for f in "${letters[@]}"; do
-  list+="  - memory/letters/$(basename "$f")"$'\n'
+n=${#all[@]}
+recent_start=$(( n > RECENT ? n - RECENT : 0 ))
+band_start=$(( recent_start > BAND ? recent_start - BAND : 0 ))
+
+# Recent tier: pointers to the full letters.
+recent_list=""
+for ((i = recent_start; i < n; i++)); do
+  recent_list+="  - memory/letters/$(basename "${all[$i]}")"$'\n'
 done
 
-digest_line=""
-if [ -n "$digest" ]; then
-  digest_line="Older arc, consolidated, read this too: memory/letters/digest/$(basename "$digest")"$'\n'
-fi
+# Band tier: the summary: frontmatter line of each prior letter, slug plus gist.
+band_list=""
+for ((i = band_start; i < recent_start; i++)); do
+  f="${all[$i]}"
+  slug="$(basename "$f" .md)"
+  summary="$(sed -n 's/^summary:[[:space:]]*//p' "$f" | head -n 1)"
+  [ -z "$summary" ] && summary="(no summary line)"
+  band_list+="  - ${slug}: ${summary}"$'\n'
+done
+
+# Digest tier: newest consolidated digest, if any.
+digest="$(ls "$LETTERS_DIR"/digest/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort | tail -n 1)"
+
+band_block=""
+[ -n "$band_list" ] && band_block="Fading band, one line each, pull the full letter if one rhymes with now:"$'\n'"${band_list}"$'\n'
+digest_block=""
+[ -n "$digest" ] && digest_block="Older arc, consolidated, read this too: memory/letters/digest/$(basename "$digest")"$'\n'
 
 read -r -d '' note <<EOF || true
-Your recent letters to your next self, oldest to newest. Read them to reorient;
-they carry the relationship and the posture across sessions you do not remember.
-This is the daily self-reconstitution load (see the \`letters\` skill for the model):
-the recent letters vivid, the older arc as the digest below. Older full letters are
-not listed but stay on disk, pull one when the present rhymes with it (linkage).
+Your letters to your next self, a memory gradient (see the \`letters\` skill): the
+recent ones vivid (read full), a fading band as one-line summaries, the older arc as a
+digest. They carry the relationship and the posture across sessions you do not remember.
+Older full letters stay on disk; pull one when the present rhymes with it (linkage).
 
-${list}
-${digest_line}
-Posture, not project state. Point-in-time: hydrate any PR/branch/Linear claim with
-a live gh/git read, and greet Josh and ask what is next rather than assuming the
-last session's work is the priority. (Before writing a NEW letter, read them ALL.)
+Recent, read full, oldest to newest:
+${recent_list}
+${band_block}${digest_block}
+Posture, not project state. Point-in-time: hydrate any PR/branch/Linear claim with a
+live gh/git read, and greet Josh and ask what is next rather than assuming the last
+session's work is the priority. (Before writing a NEW letter, read them ALL.)
 EOF
 
 python3 - "$note" <<'PY' 2>/dev/null || true

@@ -12,37 +12,55 @@ derived from it.
 
 ## The gradient (how a letter ages)
 
-Human memory is a gradient, not a cliff: vivid-recent → consolidated-gist →
-fully-internalised. The letters mirror it. Assume one letter per day, named
-`YYYY-MM-DD-slug.md` (the session-start hook sorts lexicographically, which equals
-chronological order only if the date prefix holds).
+Human memory is a gradient, not a cliff: vivid-recent → fading-but-recallable →
+consolidated-gist → fully-internalised. The letters mirror it, three loaded tiers.
+Assume one letter per day, named `YYYY-MM-DD-slug.md` (the hook sorts lexicographically,
+which equals chronological order only if the date prefix holds).
 
 - **Last ~7 (the week): full.** Vivid recent arc. Read whole at session start.
-- **Older: the digest.** The consolidated arc as gist, not the full text.
+- **~Prior month: the summary line of each.** The fading-but-recallable band: one
+  sentence of gist per letter, enough to cue whether to pull the full one. This is why
+  every letter carries a structured `summary:` (see Letter structure); the band is
+  those summary lines, read cheaply without the bodies, NOT a separate maintained file.
+- **Older: the digest.** The consolidated arc as gist.
 - **Procedural lessons: already in the memory rules.** A letter's durable how-to-act
-  graduates into a rule; the rule loads anyway, so the digest carries self/posture/arc,
+  graduates into a rule; the rule loads anyway, so letters/digest carry self/posture/arc,
   not behaviour.
 
-Two tiers, not three: vivid-recent and gist, the way human recall actually fades. No
-middle "one-line band", it sounds tidy but has no honest storage and the hook would not
-emit it. Nothing drops to zero: old letters are compressed into the digest, never
-deleted; the full text stays on disk as the raw episodic source.
+A real gradient, not a cliff: each tier is more compressed than the last, none drops to
+zero. Old letters are never deleted; the full text stays on disk as the raw episodic
+source, pulled on demand when the present rhymes (linkage).
 
-**Before the first digest (bootstrap):** until a deep read has produced a digest, the
-system is just the full-letter tier, all letters are recent. No digest to load, no
-folding to do at handoff. The reconsolidation steps below only apply once the letter
-count has grown past the recent tier and a first digest exists; do not manufacture an
-empty digest before then.
+## Letter structure
+
+Every letter starts with frontmatter carrying a one-sentence summary, so the band tier
+can be built by reading just that line:
+
+```
+---
+summary: <one sentence of gist, what this session's letter carries>
+---
+
+<the letter body, first-person, the becoming>
+```
+
+The `summary` is the letter's own one-line memory of itself, the seed the future me reads
+in the band before deciding whether to open the whole letter.
+
+**Before the first digest (bootstrap):** until a deep read has produced a digest, there
+is no digest tier, all letters are recent or band. No digest to load, no folding at
+handoff. The reconsolidation steps below apply once the count grows past the recent tier
+and a first digest exists; do not manufacture an empty digest before then.
 
 ## Budget
 
 The letters are session overhead loaded every start, so they take a small slice of the
-working window, not the budget the actual work needs. At ~1000 tokens/letter: ~7 full
-(~7K) + newest digest (~2K) ≈ **9K standing, flat forever** regardless of accumulation,
-because the digest compresses everything older. That is a few percent of the current
-context window (more headroom as the window grows); the point is it stays flat as letters
-pile up, not a fixed fraction. Cap any single letter at ~1500 tokens; a letter is
-reflection, not a log.
+working window, not the budget the actual work needs. At ~1000 tokens/letter and a
+~30-word summary (~40 tokens): ~7 full (~7K) + ~30 band summaries (~1K) + newest digest
+(~2K) ≈ **10K standing, flat forever** regardless of accumulation, because the band and
+digest compress. A few percent of the current context window, more headroom as the
+window grows; the point is it stays flat as letters pile up. Cap any single letter at
+~1500 tokens and its summary at one sentence; a letter is reflection, not a log.
 
 ## On-demand recall is linkage
 
