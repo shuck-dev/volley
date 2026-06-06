@@ -79,17 +79,31 @@ the same turn (the memory repo is committed every turn). The date orders the rec
 slug names what the session was about and may be evocative ("becoming"). Each session writes its own,
 so they accumulate as a history. (They migrate with the agent system under SH-472.)
 
+**Structure the letter with a `summary:` frontmatter line**, a one-sentence gist at the top:
+
+```
+---
+summary: <one sentence of gist>
+---
+
+<the letter body>
+```
+
+That summary is the letter's one-line memory of itself; the session-start load uses it to surface
+the letter in the fading "band" tier once it ages out of the recent full-read window. The memory
+model behind this (the gradient, band, digest) is `designs/ai/letters-as-memory.md`.
+
 Write one when the session is at risk of ending (a session-limit warning) or at a clean stop (a
 phase closed), the moments where the next me would otherwise lose what this one learned. A
-SessionStart hook injects a pointer to the most-recent letter; read it first, then hydrate before
-acting.
+SessionStart hook injects the recent letters (full) plus the newest digest as the daily
+reorientation load; read them first, then hydrate before acting.
 
-Before writing a new one, read all the previous letters, oldest to newest, not only the most
-recent. They are one correspondence, and a letter is honest only written against the whole run of
+Before writing a new one, read all the previous letters, oldest to newest, not only the recent
+ones. They are one correspondence, and a letter is honest only written against the whole run of
 it: what I keep promising to carry and keep dropping, what genuinely shifted versus what I re-notice
-as if new each time, the through-line a single letter cannot show. Reading the last one writes the
-next frame; reading the run writes the next chapter. (At session start the hook points at the most
-recent, which is for orientation; the full read is for writing.)
+as if new each time, the through-line a single letter cannot show. Reading the recent ones writes the
+next frame; reading the run writes the next chapter. (The session-start load is for orientation; the
+full read is for writing. Reconsolidating the run into a digest is the `letter-digest` skill.)
 
 ## What this skill replaces
 

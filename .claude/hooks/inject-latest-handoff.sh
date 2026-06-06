@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SessionStart hook: load the daily self-reconstitution slice as a three-tier human
-# memory gradient (see the `letters` skill): recent letters full (vivid), a prior band
+# memory gradient (see designs/ai/letters-as-memory.md): recent letters full (vivid), a prior band
 # of one-line summaries (fading-but-recallable), the newest digest (consolidated gist).
 # Deliberately POINTERS plus summaries, not full bodies for the older tiers: they are
 # point-in-time, so the rule is read-then-hydrate, not trust-on-inject.
@@ -46,7 +46,7 @@ digest_block=""
 [ -n "$digest" ] && digest_block="Older arc, consolidated, read this too: memory/letters/digest/$(basename "$digest")"$'\n'
 
 read -r -d '' note <<EOF || true
-Your letters to your next self (see the \`letters\` skill for the memory gradient).
+Your letters to your next self (see designs/ai/letters-as-memory.md for the model).
 They carry the relationship and the posture across sessions you do not remember. The
 recent ones are read full below; a fading band of one-line summaries and an older
 digest follow IF present (early on there are only recent letters). Older full letters
