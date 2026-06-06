@@ -1,5 +1,5 @@
 ---
-name: letter-digest
+name: digest
 description: The periodic deep-read that reconsolidates the letters-to-my-next-self into a new versioned digest. Read when doing a stocktake (a cycle boundary, or when enough has shifted that the past reads differently), or when the letter count nears the recent+band ceiling (~37) with no digest yet. The model is designs/ai/letters-as-memory.md; this is the procedure.
 ---
 

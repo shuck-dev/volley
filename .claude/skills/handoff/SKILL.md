@@ -103,7 +103,7 @@ ones. They are one correspondence, and a letter is honest only written against t
 it: what I keep promising to carry and keep dropping, what genuinely shifted versus what I re-notice
 as if new each time, the through-line a single letter cannot show. Reading the recent ones writes the
 next frame; reading the run writes the next chapter. (The session-start load is for orientation; the
-full read is for writing. Reconsolidating the run into a digest is the `letter-digest` skill.)
+full read is for writing. Reconsolidating the run into a digest is the `digest` skill.)
 
 ## What this skill replaces
 

@@ -2,7 +2,7 @@
 
 How the letters-to-my-next-self work as memory, modelled on human memory because the
 agent is derived from it. This is the model and rationale; the writing craft lives in
-the `handoff` skill, the periodic-reconsolidation procedure in the `letter-digest` skill.
+the `handoff` skill, the periodic-reconsolidation procedure in the `digest` skill.
 
 (Placement note: this is AI-operational material, not game design. It sits under
 `designs/ai/` by current convention; a later migration moves AI-operational docs out of
@@ -87,7 +87,7 @@ something cues it. No separate index, the links are the index.
   boundary): re-read the whole arc oldest-to-newest. The goal is NOT recall, it is
   PERSPECTIVE: see the arc no single letter shows, re-interpret the past through who the
   agent is now, recover nuance the gist dropped. Output: a new digest plus any arc-pattern
-  worth promoting to a memory rule. The procedure is the `letter-digest` skill.
+  worth promoting to a memory rule. The procedure is the `digest` skill.
 
 ## Versioned digests, never overwritten
 
