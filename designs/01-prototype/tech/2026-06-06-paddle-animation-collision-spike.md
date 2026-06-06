@@ -51,43 +51,37 @@ walk-off/equip/walk-on enum, which sits outside the paddle and sets `drive_block
 (`timeout_controller.gd:14`). Wiring named animation states is the occasion to make
 movement state explicit, with the FSM as the single owner the animation reads from.
 
-### Finding: TimeoutController is the wrong shape and should decompose
+### Finding: extract an EquipController from TimeoutController
 
-`TimeoutController` (`scripts/core/timeout_controller.gd`) is a manager that reaches
-into the paddle and performs world interaction directly: every physics frame it drives
-`main_character.velocity` and calls `move_and_slide()` (`_step_descent`, `_step_ascent`,
-`_step_horizontal_walk`) to walk the paddle around the venue. Moving a body through the
-world is not a manager's place. A controller coordinates, it decides what should happen;
-the world interaction itself belongs on the thing that lives in the world.
+`TimeoutController` (`scripts/core/timeout_controller.gd`) bundles the scripted equip
+errand with its own machinery. The errand is specific: walk the main character off to a
+fixed equip pose, hold there, walk back (`_equip_pose_x`, the `AT_EQUIP_POSE` /
+`main_character_reached_equip_pose` sequence). The name `timeout` describes *when* this
+runs, not *what* it does; what it does is equip. So the first extraction is an
+`EquipController` that owns the equip sequence and its lifecycle signals.
 
-The decomposition follows from that rule, owner by where the behaviour happens:
+Two notes bound this, so the spike does not over-reach:
 
-1. **Movement is the paddle's.** Walking to a target, descending to the floor, ascending
-   to the lane: this is the paddle (a `CharacterBody2D`, the world body) moving itself.
-   It owns "move me to this venue target." This is also exactly what player movement
-   around the venue needs, the paddle can move itself regardless of why, so the
-   capability is reused, not duplicated.
-2. **Control mode is the paddle's.** Whether the paddle is player-driven or following a
-   scripted target (`drive_blocked`, `set_physics_process`, the collision-mask swap) is
-   the paddle managing its own control modes, not a flag imposed from outside.
-3. **The equip sequence is the coordinator's.** Go to the equip pose, be equipped,
-   return, plus the lifecycle signals. This is the genuinely errand-specific part and the
-   good first extraction: an `EquipController` that holds no `move_and_slide`, asks the
-   paddle to move to the equip pose, and reacts when it arrives.
+- **This movement is scripted, not player-controlled.** The walk/descend/ascend the
+  controller performs is the game driving the paddle to a fixed target, automated, no
+  player agency. It is the equip errand's mechanism, and it stays with the equip errand.
+- **Player-controlled venue movement during a timeout does not exist yet.** It is
+  anticipated (the player steering the paddle around the venue during the break is its own
+  future capability with player input), but it is not present in `TimeoutController` to
+  factor out, and it is a different thing from the scripted equip walk. The spike does not
+  design or pre-factor for it; the seam for it gets built when that feature arrives. The
+  only consequence for now: do not treat the current controller as "the locomotion
+  authority", because it only knows one scripted errand, not the movement modes coming
+  later.
 
-So a first cut is an `EquipController` (pure coordinator: equip sequence, signals,
-policy) sitting on a paddle that owns its own venue movement. Timeout becomes the broader
-mode under which equip is one errand; player venue-movement is another, both asking the
-same paddle to move. The manager never touches `move_and_slide`.
+### The FSM reads paddle movement state, not a controller phase
 
-### The FSM reads the paddle's own movement, not a controller
-
-Given that the paddle owns its movement, the animation FSM's relationship is simple: it
-reads the paddle's own movement state, the same single source whether the paddle is moving
-under player input, AI, or an equip errand. No special-casing a controller's phase enum,
-no FSM hard-wired to `TimeoutController.get_state()`. The equip coordinator and the FSM
-are both downstream of the paddle's movement; neither owns the other, and neither owns the
-movement.
+The animation FSM consumes the paddle's movement state directly (velocity-driven idle vs
+moving), not a controller's internal phase enum. During an equip errand the paddle is
+still moving, so the FSM animates that movement the same way; it does not need to be
+hard-wired to `TimeoutController.get_state()`. Whatever the `EquipController` extraction
+settles, the FSM's input is paddle movement, which keeps the FSM independent of how any
+one errand is orchestrated.
 
 The decomposition is build-and-refactor work the spike does not execute; it is a
 sequenced refactor (plan via `impact_check` / `dependency_graph`) that lands before or
@@ -212,11 +206,13 @@ driven by `paddle.gd` is a build-time structural taste call, not load-bearing he
 - New gameplay states. `ready` and `swing` are defined animation hooks the FSM can
   enter; the gameplay that triggers a held `ready` or a swing windup is separate work.
 - The movement FSM's full design beyond what animation needs to read.
-- Executing the `TimeoutController` decomposition. The spike surfaces it (world
-  interaction is not a manager's place: movement and control-mode belong on the paddle,
-  with an `EquipController` as a pure coordinator on top, and the FSM reads the paddle's
-  own movement) and names it as a dependency the rig is entangled with. The sequenced
-  refactor itself, planned via `impact_check` / `dependency_graph`, is its own work that
-  lands before or alongside the build.
+- Executing the `EquipController` extraction. The spike surfaces it (the scripted equip
+  errand should be its own coordinator, lifted out of `TimeoutController`) and names it as
+  a dependency the rig is entangled with. The sequenced refactor itself, planned via
+  `impact_check` / `dependency_graph`, is its own work that lands before or alongside the
+  build.
+- Player-controlled venue movement during a timeout. Anticipated but unbuilt; not
+  designed or pre-factored here. Named only to keep the equip extraction from baking in
+  "timeout is this one scripted errand."
 - Any `AnimationPlayer` or `AnimationTree` adoption. Both are additive later if
   blended locomotion or frame-synced multi-track events are ever wanted.
