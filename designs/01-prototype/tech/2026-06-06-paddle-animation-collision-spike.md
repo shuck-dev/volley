@@ -104,18 +104,25 @@ Player hitboxes are intentionally sized for feel, not pixel accuracy. For a fast
 ball, tunnelling is solved by continuous collision detection, not polygon detail, so
 a complex collider buys nothing the ball can use.
 
-### The collider extent is a gameplay input, so the angle denominator stays fixed
+### The collider is authored independently of the sprite, not derived from it
 
-The paddle collider is not only a presence test. `Paddle.get_half_height()`
-(`paddle.gd:82-83`) returns the collider's half vertical extent, and the ball's return
-angle uses it as the contact-offset denominator. So a per-state collider that is taller
-during swing would silently change the return angle on swing hits, a feel bug with no
-obvious cause ("edge hits feel off"). Decision: split the two concerns the single
-`RectangleShape2D` currently collapses. The per-state shape that varies is the physics
-extent (what the ball bounces off); the angle denominator stays a fixed reference
-height, not whichever collider is active. `get_half_height()` returns that fixed
-reference, not the live shape. A per-state swing collider may differ in physics extent
-without touching the return-angle math.
+Today the sprite and collider are coupled by derivation: `_apply_size()`
+(`paddle.gd:127`) scales `sprite.scale.y` to match the collider. That coupling is
+exactly what breaks once the sprite animates, the visual silhouette changes frame to
+frame, and anything derived from it drifts with it. The paddle collider is also a
+gameplay input, not only a presence test: `Paddle.get_half_height()`
+(`paddle.gd:82-83`) feeds the ball's return-angle contact-offset denominator, so a
+collider that tracked the sprite would make the bounce angle wobble with the art.
+
+Decision: decouple the collider from the sprite. The collider is its own authored
+shape, sized for gameplay feel, and the sprite is its own thing, sized for the art;
+neither is calculated from the other, and the `_apply_size` sprite-from-collider
+derivation retires. The sprite then varies freely across animation states and frames
+without ever touching collision or the return angle, because the collision shape was
+never derived from it. The contact reference for the bounce reads from the authored
+collider, which is stable. A per-state collider that differs (a wider swing shape) is
+then a deliberate authored choice, not a side effect of the sprite, and its effect on
+the return angle, if any, is intended rather than incidental.
 
 ### Toggle the collider in `_physics_process`, not on an animation callback
 
