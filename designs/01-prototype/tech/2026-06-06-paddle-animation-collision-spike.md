@@ -51,21 +51,45 @@ walk-off/equip/walk-on enum, which sits outside the paddle and sets `drive_block
 (`timeout_controller.gd:14`). Wiring named animation states is the occasion to make
 movement state explicit, with the FSM as the single owner the animation reads from.
 
-### The FSM defers to TimeoutController, it does not replace it
+### Finding: TimeoutController is the wrong shape and should decompose first
 
-`TimeoutController` (`timeout_controller.gd:14`) already runs a six-state machine
-(IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE, WALKING_ON, ASCENDING) that drives the
-paddle during a timeout and holds `drive_blocked` for the whole non-IDLE span. The two
-most common non-idle paddle states (walk-off, walk-on) live there, so the new movement
-FSM cannot ignore it. The relationship: the movement FSM reads `drive_blocked` (or
-`TimeoutController.get_state()`) as its highest-priority input. While a timeout is
-active, the FSM is in a `timeout` state that maps the controller's phase to an
-animation (descending/ascending to a walk-cycle, at-equip to an idle-or-pose), and the
-collider follows that. TimeoutController stays the locomotion authority during a
-timeout; the FSM only translates its phase into animation-and-collider, the same
-downstream-consumer role it has for the velocity-driven states. The full FSM transition
-table is build-ticket work, but this priority (timeout phase outranks velocity) is the
-constraint the build inherits, not a blank slate.
+`TimeoutController` (`scripts/core/timeout_controller.gd`) welds three concerns into
+one class, and only one of them is what the animation FSM actually needs:
+
+1. **Scripted movement.** Driving the paddle to a target point through the venue
+   (`_start_horizontal_walk`, `_step_horizontal_walk`, `_step_descent`, `_step_ascent`).
+   Nothing here is timeout-specific; it is generic "move this paddle to there." This is
+   the concern reused when the player moves around the venue during a timeout, not just
+   the off-and-back errand.
+2. **Control handoff.** Suspending the paddle's own drive (`set_physics_process(false)`,
+   `drive_blocked = true`) and swapping the collision mask, then restoring both. Generic
+   to any context that scripts the paddle.
+3. **The timeout sequence.** The `IDLE, DESCENDING, WALKING_OFF, AT_EQUIP_POSE,
+   WALKING_ON, ASCENDING` orchestration to the equip pose and back, plus the lifecycle
+   signals. This is the only genuinely timeout-specific part, and it is a *consumer* of
+   movement, not the owner of it.
+
+Timeout is going to be more than this errand (player movement around the venue), so the
+movement concern must come out from under the timeout choreography. The decomposition:
+a **mover** (drive a paddle to venue targets), a **control-handoff** (suspend/restore
+drive and mask), and a thin **timeout orchestrator** that composes the two into the
+off-and-back sequence. Venue movement then reuses the mover and handoff directly.
+
+### The FSM defers to the movement concern, not the timeout orchestrator
+
+Given that decomposition, the animation FSM's relationship corrects: it is a downstream
+consumer of the **movement** concern (the mover), the same way it consumes the
+velocity-driven states. The timeout orchestrator is a *peer* consumer of movement, not
+the locomotion authority the FSM reports to. During a timeout the FSM still animates
+walk-off/walk-on, but it reads them from the active movement, not from a timeout phase
+enum it has to special-case. This is cleaner than the FSM hard-wiring to
+`TimeoutController.get_state()`: once movement is its own concern, both the FSM and the
+timeout sequence read from it, and neither owns the other.
+
+The decomposition is build-and-refactor work the spike does not execute; it is a
+sequenced refactor (plan via `impact_check` / `dependency_graph`) that lands before or
+alongside the animation rig. The constraint the build inherits: do not couple the FSM
+to the current `TimeoutController` class shape, because that class is splitting.
 
 ## Why swing is an overlay, not a state, and why no tree
 
@@ -166,14 +190,18 @@ Three paddle scenes, all 2D `CharacterBody2D`, share `paddle.gd`:
 | `scenes/partner_paddle.tscn` | CharacterBody2D | child `Sprite2D` "Sprite", `PlaceholderTexture2D` |
 | `scenes/partners/martha_paddle.tscn` | CharacterBody2D | child `Sprite2D` "Sprite" + cosmetic "Bow" overlay |
 
-`sprite` is already `@export` (`paddle.gd:13`); its only logic is `_apply_size()`
+`sprite` is already `@export` (`paddle.gd:13`); today its only logic is `_apply_size()`
 scaling `sprite.scale.y` to the collider (`paddle.gd:127`). The build swaps the
-`Sprite2D` export to `AnimatedSprite2D` across `paddle.gd` and the three scenes, moves
-the `_apply_size` scale to the new node, adds the per-state colliders, and wires the
-movement FSM to drive both. Whether to wrap the AnimatedSprite2D and colliders in a
-small reusable child node (instanced across the three scenes) or keep them as direct
-children driven by `paddle.gd` is a build-time structural taste call, not load-bearing
-here.
+`Sprite2D` export to `AnimatedSprite2D` across `paddle.gd` and the three scenes, retires
+the `_apply_size` sprite-from-collider derivation (the sprite and collider are authored
+independently, per the decouple decision above), adds the per-state colliders, and wires
+the movement FSM to drive both. Note `TimeoutController` also reads the collider via
+`_half_height()` to anchor the paddle's foot during in-pose resizes, and comments there
+reference `_apply_size`'s foot-anchoring; retiring `_apply_size` is a cross-effect the
+build must reconcile with that controller (another reason the decomposition above is
+entangled with this rig). Whether to wrap the AnimatedSprite2D and colliders in a small
+reusable child node (instanced across the three scenes) or keep them as direct children
+driven by `paddle.gd` is a build-time structural taste call, not load-bearing here.
 
 ## Out of scope
 
@@ -181,5 +209,10 @@ here.
 - New gameplay states. `ready` and `swing` are defined animation hooks the FSM can
   enter; the gameplay that triggers a held `ready` or a swing windup is separate work.
 - The movement FSM's full design beyond what animation needs to read.
+- Executing the `TimeoutController` decomposition. The spike surfaces it (the movement
+  concern must come out from under the timeout choreography, and the FSM defers to that
+  movement concern, not the orchestrator) and names it as a dependency the rig is
+  entangled with. The sequenced refactor itself, planned via `impact_check` /
+  `dependency_graph`, is its own work that lands before or alongside the build.
 - Any `AnimationPlayer` or `AnimationTree` adoption. Both are additive later if
   blended locomotion or frame-synced multi-track events are ever wanted.
