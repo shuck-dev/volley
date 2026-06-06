@@ -11,8 +11,18 @@ set -euo pipefail
 cmd="$(jq -r '.tool_input.command // ""')"
 [ -z "$cmd" ] && exit 0
 
-# rm with both recursive and force flags (-rf / -fr / -r -f / -f -r): deny.
-if printf '%s' "$cmd" | grep -Eq '(^|[[:space:]&|;`(])rm[[:space:]]+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|-r[[:space:]]+-f|-f[[:space:]]+-r)'; then
+# rm with both recursive AND force, in any spelling, denied. Catches:
+#   - short clusters: -rf, -fr, -rvf, -r -f, -f -r
+#   - long flags: --recursive --force (either order, mixed with short)
+#   - path-qualified / escaped / wrapped: /bin/rm, \rm, $(rm ...), `rm ...`, xargs rm
+# rm is matched as a command token (start, whitespace, separator, slash, backslash,
+# or subshell char before it), then recursive and force each appear somewhere after.
+_rm_invoked='(^|[[:space:]&|;`($\\/])rm[[:space:]]'
+_has_recursive='(-[a-zA-Z]*r|--recursive)'
+_has_force='(-[a-zA-Z]*f|--force)'
+if printf '%s' "$cmd" | grep -Eq "${_rm_invoked}" \
+  && printf '%s' "$cmd" | grep -Eq "${_rm_invoked}.*${_has_recursive}" \
+  && printf '%s' "$cmd" | grep -Eq "${_rm_invoked}.*${_has_force}"; then
   printf '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Recursive force-delete (rm -rf) is not run unattended. Remove a directory'"'"'s contents in a reviewed step, or ask Josh."}}'
   exit 0
 fi
