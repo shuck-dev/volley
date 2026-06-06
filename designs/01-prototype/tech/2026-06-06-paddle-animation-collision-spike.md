@@ -51,42 +51,16 @@ walk-off/equip/walk-on enum, which sits outside the paddle and sets `drive_block
 (`timeout_controller.gd:14`). Wiring named animation states is the occasion to make
 movement state explicit, with the FSM as the single owner the animation reads from.
 
-### Finding: extract an EquipController from TimeoutController
-
-`TimeoutController` (`scripts/core/timeout_controller.gd`) bundles the scripted equip
-errand with its own machinery. The errand is specific: walk the main character off to a
-fixed equip pose, hold there, walk back (`_equip_pose_x`, the `AT_EQUIP_POSE` /
-`main_character_reached_equip_pose` sequence). The name `timeout` describes *when* this
-runs, not *what* it does; what it does is equip. So the first extraction is an
-`EquipController` that owns the equip sequence and its lifecycle signals.
-
-Two notes bound this, so the spike does not over-reach:
-
-- **This movement is scripted, not player-controlled.** The walk/descend/ascend the
-  controller performs is the game driving the paddle to a fixed target, automated, no
-  player agency. It is the equip errand's mechanism, and it stays with the equip errand.
-- **Player-controlled venue movement during a timeout does not exist yet.** It is
-  anticipated (the player steering the paddle around the venue during the break is its own
-  future capability with player input), but it is not present in `TimeoutController` to
-  factor out, and it is a different thing from the scripted equip walk. The spike does not
-  design or pre-factor for it; the seam for it gets built when that feature arrives. The
-  only consequence for now: do not treat the current controller as "the locomotion
-  authority", because it only knows one scripted errand, not the movement modes coming
-  later.
-
 ### The FSM reads paddle movement state, not a controller phase
 
 The animation FSM consumes the paddle's movement state directly (velocity-driven idle vs
-moving), not a controller's internal phase enum. During an equip errand the paddle is
-still moving, so the FSM animates that movement the same way; it does not need to be
-hard-wired to `TimeoutController.get_state()`. Whatever the `EquipController` extraction
-settles, the FSM's input is paddle movement, which keeps the FSM independent of how any
-one errand is orchestrated.
-
-The decomposition is build-and-refactor work the spike does not execute; it is a
-sequenced refactor (plan via `impact_check` / `dependency_graph`) that lands before or
-alongside the animation rig. The constraint the build inherits: do not couple the FSM
-to the current `TimeoutController` class shape, because that class is splitting.
+moving), not any controller's internal phase enum. During a timeout the paddle is still
+moving, so the FSM animates that movement the same way; it does not need to be hard-wired
+to `TimeoutController.get_state()`. The constraint the build inherits: do not couple the
+FSM to `TimeoutController`'s current class shape, because that shape is under separate
+review (the timeout/equip responsibilities are being re-homed by ownership in their own
+refactor). Keying the FSM to paddle movement keeps it independent of how any errand is
+orchestrated.
 
 ## Why swing is an overlay, not a state, and why no tree
 
@@ -195,10 +169,10 @@ independently, per the decouple decision above), adds the per-state colliders, a
 the movement FSM to drive both. Note `TimeoutController` also reads the collider via
 `_half_height()` to anchor the paddle's foot during in-pose resizes, and comments there
 reference `_apply_size`'s foot-anchoring; retiring `_apply_size` is a cross-effect the
-build must reconcile with that controller (another reason the decomposition above is
-entangled with this rig). Whether to wrap the AnimatedSprite2D and colliders in a small
-reusable child node (instanced across the three scenes) or keep them as direct children
-driven by `paddle.gd` is a build-time structural taste call, not load-bearing here.
+build must reconcile with that controller. Whether to wrap the AnimatedSprite2D and
+colliders in a small reusable child node (instanced across the three scenes) or keep them
+as direct children driven by `paddle.gd` is a build-time structural taste call, not
+load-bearing here.
 
 ## Out of scope
 
@@ -206,13 +180,8 @@ driven by `paddle.gd` is a build-time structural taste call, not load-bearing he
 - New gameplay states. `ready` and `swing` are defined animation hooks the FSM can
   enter; the gameplay that triggers a held `ready` or a swing windup is separate work.
 - The movement FSM's full design beyond what animation needs to read.
-- Executing the `EquipController` extraction. The spike surfaces it (the scripted equip
-  errand should be its own coordinator, lifted out of `TimeoutController`) and names it as
-  a dependency the rig is entangled with. The sequenced refactor itself, planned via
-  `impact_check` / `dependency_graph`, is its own work that lands before or alongside the
-  build.
-- Player-controlled venue movement during a timeout. Anticipated but unbuilt; not
-  designed or pre-factored here. Named only to keep the equip extraction from baking in
-  "timeout is this one scripted errand."
+- The `TimeoutController` reshape. Its timeout/equip responsibilities are being re-homed
+  by ownership under a separate refactor; the spike only constrains the FSM not to couple
+  to that controller's current shape, and does not decide or execute the reshape.
 - Any `AnimationPlayer` or `AnimationTree` adoption. Both are additive later if
   blended locomotion or frame-synced multi-track events are ever wanted.
