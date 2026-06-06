@@ -11,11 +11,10 @@ states exist.
 Paddles render through an `AnimatedSprite2D` whose `SpriteFrames` resource holds
 named placeholder animations (idle, ready, swing, walk). A movement state machine
 owns the paddle's gameplay state and drives the animation downstream; the
-animation layer never holds gameplay state. Swing is a transient overlay action
-composed in code on top of the current movement state, not a movement state of its
-own. Collision uses a small set of per-state primitive shapes (a `CollisionShape2D`
-sized for idle/walk, a wider/taller one for swing), toggled in code on state
-change, never keyed off an `AnimationPlayer` track. No `AnimationTree`.
+animation layer never holds gameplay state. Swing is reactive animation (the paddle
+plays it because a hit happened, it is not a player input), so collision does not
+change with it: the paddle has one fixed authored collider and the sprite animates
+over it. No `AnimationTree`.
 
 Real character art lands later as a `SpriteFrames` swap with matching animation
 names; no GDScript changes. This satisfies [#587](https://github.com/shuck-dev/volley/issues/587)'s
@@ -47,8 +46,8 @@ collision to art.
 
 The paddle has no movement FSM today. State is implicit: `velocity.y != 0` reads as
 moving, `== 0` as idle, and the only explicit machine is `TimeoutController`'s
-walk-off/equip/walk-on enum, which sits outside the paddle and sets `drive_blocked`
-(`timeout_controller.gd:14`). Wiring named animation states is the occasion to make
+walk-off/equip/walk-on enum, which sits outside the paddle and sets the paddle's
+`drive_blocked` flag (declared on `paddle.gd`). Wiring named animation states is the occasion to make
 movement state explicit, with the FSM as the single owner the animation reads from.
 
 ### The FSM reads paddle movement state, not a controller phase
@@ -71,76 +70,41 @@ on top of a persistent movement state.
 
 Overlay composition does not require an `AnimationTree`. A tree earns its cost when
 the composition is blended and continuous (speed-graded locomotion, per-bone upper
-body over lower body). Ours is discrete and orthogonal: one channel picks the body
-animation, another toggles the swing collider and pose. Sprite frames cannot
+body over lower body). Ours is discrete: the movement state picks the body animation,
+and a swing plays its animation on top when a hit fires. Sprite frames cannot
 meaningfully blend (a frame is a discrete picture), so a tree here would be a state
 selector with extra ceremony, while also forcing the loss of AnimatedSprite2D.
-Discrete orthogonal composition is a few lines in the FSM. Revisit a tree only if
-blended locomotion or live multi-layer sprite compositing is ever wanted; both are
-additive over this.
+Discrete composition is a few lines in the FSM. Revisit a tree only if blended
+locomotion or live multi-layer sprite compositing is ever wanted; both are additive
+over this.
 
-## Why per-state colliders, toggled in code
+## One fixed collider, the sprite animates over it
 
-A ball must not pass through the character as the silhouette changes across states.
-The options, with the shipped-game precedent that settles them:
+The collider does not change across animation states. Swing is not a player input;
+it is reactive animation, the paddle plays a swing because a hit happened, not a
+timed action that extends reach or alters the hitbox. The ball always strikes the
+same body. So there is no per-state silhouette to track, no per-frame collision
+shape, and nothing to toggle: the paddle has one authored collider, and the sprite
+animates freely over it.
 
-| Option | Cost | Verdict |
-|---|---|---|
-| Per-frame `CollisionPolygon2D` from sprite alpha | 16-32 unique shapes to validate; every write invalidates the physics-server shape; concave is the slowest shape type | Rejected: impractical outside fighting games; no engine support ([proposal #829](https://github.com/shuck-dev/volley/issues/829) open, unmilestoned) |
-| Per-state primitive shapes, toggled on state change | One shape per state, swap on transition | Chosen |
-| Single static capsule | Cheapest, least accurate | Rejected: a capsule covering the swing extent feels too large at idle |
+This also keeps the bounce stable. `Paddle.get_half_height()` (`paddle.gd`) feeds the
+ball's return-angle contact-offset denominator; because the collider is one fixed
+shape, that reference never moves with the animation. The sprite varies; the angle
+does not.
 
-Shipped 2D action games near-universally avoid silhouette-tracking colliders.
-Celeste and TowerFall use integer axis-aligned bounding boxes for every actor and
-projectile ([Thorson](https://maddythorson.medium.com/celeste-and-towerfall-physics-d24bd2ae0fc5));
-even Smash, the one genre with per-frame hitboxes, uses authored capsules on bone
-positions, not pixel polygons ([Smash Wiki](https://www.ssbwiki.com/Hitbox)).
-Player hitboxes are intentionally sized for feel, not pixel accuracy. For a fast
-ball, tunnelling is solved by continuous collision detection, not polygon detail, so
-a complex collider buys nothing the ball can use.
+The collider's only legitimate size change is the stat-driven loadout resize in
+`_apply_size()` (item effects growing/shrinking the paddle), which is per-loadout, not
+per-frame, and is the existing foot-anchor path, untouched by this work.
 
-### The collider is authored independently of the sprite, not derived from it
+### Decouple the collider from the sprite
 
-Today the sprite and collider are coupled by derivation: `_apply_size()`
-(`paddle.gd:127`) scales `sprite.scale.y` to match the collider. That coupling is
-exactly what breaks once the sprite animates, the visual silhouette changes frame to
-frame, and anything derived from it drifts with it. The paddle collider is also a
-gameplay input, not only a presence test: `Paddle.get_half_height()`
-(`paddle.gd:82-83`) feeds the ball's return-angle contact-offset denominator, so a
-collider that tracked the sprite would make the bounce angle wobble with the art.
-
-Decision: decouple the collider from the sprite. The collider is its own authored
-shape, sized for gameplay feel, and the sprite is its own thing, sized for the art;
-neither is calculated from the other, and the `_apply_size` sprite-from-collider
-derivation retires. The sprite then varies freely across animation states and frames
-without ever touching collision or the return angle, because the collision shape was
-never derived from it. The contact reference for the bounce reads from the authored
-collider, which is stable. A per-state collider that differs (a wider swing shape) is
-then a deliberate authored choice, not a side effect of the sprite, and its effect on
-the return angle, if any, is intended rather than incidental.
-
-### Toggle the collider in `_physics_process`, not on an animation callback
-
-The FSM drives the collider toggle in code (the AnimationPlayer caveat below). One
-timing trap to honour: AnimatedSprite2D advances in `_process`, physics reads collider
-shape in `_physics_process`, different loops. If the FSM flips the active collider from
-a `_process`-side animation callback, a physics step can run before the next `_process`
-and read the stale collider, so a ball hit in that one-frame window gets the wrong shape
-and angle. Pin the toggle to `_physics_process` (drive the FSM there, or set the
-collider state on the same physics tick the state changes), so the shape the ball reads
-is never a frame behind the state.
-
-### Caveat: do not key the collider toggle from an AnimationPlayer
-
-The tempting pattern (an AnimationPlayer track keying `CollisionShape2D.disabled` per
-frame) has a cluster of known Godot bugs: a call-function track cannot reliably
-enable a CollisionShape2D ([#18824](https://github.com/godotengine/godot/issues/18824)),
-and the `disabled` property toggled via animation has reported inverted-state and
-re-enable-on-unpause behaviour ([#30383](https://github.com/godotengine/godot/issues/30383),
-[forum](https://forum.godotengine.org/t/unpause-animationplayer-re-enables-disabled-collisionshape2d/38723)).
-Drive the toggle from the FSM in code instead. The FSM already makes the state
-decision; it flips the active collider in the same transition, so sprite and collider
-cannot disagree.
+Today `_apply_size()` ends by scaling `sprite.scale.y` to match the collider, the one
+line that couples the visual to the physics shape. Once the sprite animates, that
+derivation drifts. The build removes that final sprite-scale line; the collider-resize
+and the `position.y` foot-anchor in `_apply_size` stay untouched, so
+`TimeoutController._half_height()` (which reads the collider, not the sprite) is
+unaffected. After that, the collider is authored on its own and the sprite is authored
+on its own; neither derives from the other.
 
 ## Frame delivery: individual images
 
@@ -161,18 +125,15 @@ Three paddle scenes, all 2D `CharacterBody2D`, share `paddle.gd`:
 | `scenes/partner_paddle.tscn` | CharacterBody2D | child `Sprite2D` "Sprite", `PlaceholderTexture2D` |
 | `scenes/partners/martha_paddle.tscn` | CharacterBody2D | child `Sprite2D` "Sprite" + cosmetic "Bow" overlay |
 
-`sprite` is already `@export` (`paddle.gd:13`); today its only logic is `_apply_size()`
-scaling `sprite.scale.y` to the collider (`paddle.gd:127`). The build swaps the
-`Sprite2D` export to `AnimatedSprite2D` across `paddle.gd` and the three scenes, retires
-the `_apply_size` sprite-from-collider derivation (the sprite and collider are authored
-independently, per the decouple decision above), adds the per-state colliders, and wires
-the movement FSM to drive both. Note `TimeoutController` also reads the collider via
-`_half_height()` to anchor the paddle's foot during in-pose resizes, and comments there
-reference `_apply_size`'s foot-anchoring; retiring `_apply_size` is a cross-effect the
-build must reconcile with that controller. Whether to wrap the AnimatedSprite2D and
-colliders in a small reusable child node (instanced across the three scenes) or keep them
-as direct children driven by `paddle.gd` is a build-time structural taste call, not
-load-bearing here.
+`sprite` is already `@export` (`paddle.gd`); today its only animation-relevant logic is
+`_apply_size()` ending by scaling `sprite.scale.y` to the collider. The build swaps the
+`Sprite2D` export to `AnimatedSprite2D` across `paddle.gd` and the three scenes, removes
+that final sprite-scale line from `_apply_size` (the collider-resize and `position.y`
+foot-anchor in `_apply_size` stay, so `TimeoutController._half_height()` is unaffected),
+and wires the movement FSM to drive the animation. The single collider is untouched.
+Whether to wrap the AnimatedSprite2D in a small reusable child node (instanced across the
+three scenes) or keep it a direct child driven by `paddle.gd` is a build-time structural
+taste call, not load-bearing here.
 
 ## Out of scope
 
