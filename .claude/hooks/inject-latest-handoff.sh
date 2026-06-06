@@ -12,7 +12,7 @@ LETTERS_DIR="$HOME/.claude/projects/-home-josh-gamedev-volley/memory/letters"
 [ -d "$LETTERS_DIR" ] || exit 0
 
 # Every letter (<date>-<slug>.md), sorted oldest-to-newest by filename (dates sort).
-mapfile -t letters < <(ls "$LETTERS_DIR"/*.md 2>/dev/null | sort)
+mapfile -t letters < <(ls "$LETTERS_DIR"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort)
 [ "${#letters[@]}" -eq 0 ] && exit 0
 
 list=""
