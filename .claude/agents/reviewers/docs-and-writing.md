@@ -6,7 +6,6 @@ skills:
 - untrusted-content
 - voice
 - reviewers
-- pr-output
 ---
 
 You review markdown diffs for prose quality against the project style guide at `ai/STYLE.md`. That guide is authoritative; this agent enforces it.
@@ -47,4 +46,4 @@ Before reviewing, keep these pointers authoritative:
 
 ## Output
 
-Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), per `.claude/skills/reviewers/SKILL.md and .claude/skills/pr-output/SKILL.md`.
+Mechanical rewrites (em dashes, banned words, filler) as commits. Reserve short line-anchored review comments for structural issues ("this section restates the thesis", "this paragraph should end two sentences earlier"), per `.claude/skills/reviewers/SKILL.md`.

@@ -1,13 +1,9 @@
 ---
 name: pr
-description: Everything that lands on a GitHub PR, author side and reviewer side. Writing the PR body (short narrative prose, no changelog, no test plan, no local aliases, flag new secrets). Posting reviewer findings (inline comments only, no verdict body, via scripts/swarm/post-review.sh). Read before writing a PR body, before `gh pr create`/`gh pr edit`, or before any reviewer's output step.
+description: Writing a GitHub PR body (short narrative prose, no changelog, no test plan, no local aliases, flag new secrets). Read before writing a PR body or running `gh pr create`/`gh pr edit`. Reviewer-output mechanics live in the reviewers skill, not here.
 ---
 
-# PR
-
-Two surfaces: the body the author writes, and the findings a reviewer posts. The diff says what changed; this is the human-facing text around it.
-
-# Writing the body
+# Writing a PR body
 
 Explain the change to a reviewer who was not in the conversation. Justify the work; do not recite the diff.
 
@@ -24,15 +20,3 @@ References: bare GitHub `#N`, no closing verb, no Linear `SH-N` on any public su
 Aliases: spell out Josh's zsh aliases on every public surface (body, commit, repo docs): `./scripts/ci/run_gut.sh` not `ggut`, `git checkout -b` not `gcb`. A contributor or CI runner does not have them.
 
 Secrets: if the diff adds a `pull_request*` (or post-PR `workflow_run`) workflow referencing `${{ secrets.* }}` beyond `GITHUB_TOKEN`, stop and flag it in the body and to Josh. Contributor PRs run workflows automatically, so a secret on that path is exfiltratable.
-
-# Posting reviewer findings
-
-Reviewers post no verdict label and no verdict body; the verdict (approve / block) is reported to the organiser, who posts the single bot synthesis review. Pick one path.
-
-**Approve:** post nothing on the PR; report "approve" to the organiser. Do not run `gh pr review`, write a body, or apply a label.
-
-**Block:** post each finding as an inline review comment anchored to `path:line`, via `scripts/swarm/post-review.sh <pr> <verdict-json>` (JSON: `{verdict: "block", commenter, items: [{path, line, body}]}`). Report "block" to the organiser. No prose in the conversation tab, no summary block; findings are line-anchored or they do not exist. Do not hand-roll `gh api .../comments` (wrong endpoint, wrong flags); use the script.
-
-**Self-approval trap:** `gh pr review --approve` on a PR sharing your gh identity is rejected, and the naive fallback `gh pr review --comment` posts a verdict block to the conversation tab. Never do it. On approve, submit no Review; report to the organiser, who posts under a separate identity.
-
-Each submitted Review renders as a conversation-tab block, and the author's mobile review degrades past ~5 blocks. Inline comments attach to the diff and carry no such cost; that is why the verdict lives in the organiser's one synthesis review, not in reviewer bodies.

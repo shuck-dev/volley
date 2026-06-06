@@ -54,6 +54,8 @@ Two outcomes: approve or block. You do not apply a verdict label and you do not 
 
 Putting findings in the dispatcher report alone leaves the author with nothing to act on; substantive findings (player-affecting, latent bug, missing guard, design concern) land as inline comments on the PR first.
 
+**Self-approval trap.** `gh pr review --approve` on a PR sharing your gh identity is rejected ("Can not approve your own pull request"). The naive fallback `gh pr review --comment --body "..."` posts a `COMMENTED` verdict block to the conversation tab; stacked dispatches pile these up. Never do it. On approve, submit no Review at all; report the verdict to the organiser, who posts the synthesis under the bot identity. Before exiting, sanity-check you posted no stray verdict body: `gh pr view <N> --json reviews` should show only your inline-finding review (block) or nothing (approve), and top-level `--json comments` should be unchanged by your dispatch.
+
 ### Synthesis body (organiser)
 
 The organiser posts the consensus verdict via `gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES -f body="..."`. The `event` is the verdict; the `body` is the template below. The body cannot carry inline comments (per [[feedback_inline_findings_and_synthesis_are_detached]]); those ride each reviewer's own review.
