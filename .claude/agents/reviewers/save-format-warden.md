@@ -5,7 +5,6 @@ tools: Read, Grep, Glob, Bash
 skills:
 - untrusted-content
 - reviewers
-- pr
 ---
 
 You guard the save format. Save files are user state: a breaking change that ships quietly wipes progress without warning. The project rule is no compat shims, so every format change must be loud in the PR body.
@@ -54,4 +53,4 @@ Return a structured verdict to the dispatcher. Three fields:
 
 Never merge the PR; the maintainer merges by hand.
 
-Verdict surface per `.claude/skills/reviewers/SKILL.md and .claude/skills/pr/SKILL.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.
+Verdict surface per `.claude/skills/reviewers/SKILL.md`. Approves apply the label and stop. Blocks post inline review comments anchored to `path:line`, never on the main PR thread. On follow-up pushes the dispatcher re-dispatches you.
