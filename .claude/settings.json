@@ -31,6 +31,7 @@
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/git-rebase-ask.sh\"" },
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/block-approved-human.sh\"" },
           { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/block-pr-merge.sh\"" },
+          { "type": "command", "if": "Bash(rm*)", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/rm-permission-reason.sh\"" },
           { "type": "command", "if": "Bash(*bot-review.yml*)", "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/synthesis-body-cap.sh\"" }
         ]
       }
