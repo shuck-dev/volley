@@ -17,6 +17,10 @@ cmd="$(jq -r '.tool_input.command // ""')"
 #   - path-qualified / escaped / wrapped: /bin/rm, \rm, $(rm ...), `rm ...`, xargs rm
 # rm is matched as a command token (start, whitespace, separator, slash, backslash,
 # or subshell char before it), then recursive and force each appear somewhere after.
+# Known limitation: the two flag checks are independent, so two SEPARATE rm calls on
+# one line (rm -r a; rm -f b) trip the deny even though neither is rm -rf. This is a
+# conservative false-deny, not a bypass; split the commands into separate calls. Not
+# worth per-invocation parsing in a shell regex for a rare, recoverable case.
 _rm_invoked='(^|[[:space:]&|;`($\\/])rm[[:space:]]'
 _has_recursive='(-[a-zA-Z]*r|--recursive)'
 _has_force='(-[a-zA-Z]*f|--force)'
