@@ -11,8 +11,11 @@ set -uo pipefail
 LETTERS_DIR="$HOME/.claude/projects/-home-josh-gamedev-volley/memory/letters"
 [ -d "$LETTERS_DIR" ] || exit 0
 
-# Every letter (<date>-<slug>.md), sorted oldest-to-newest by filename (dates sort).
-mapfile -t letters < <(ls "$LETTERS_DIR"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort)
+# The most recent few letters (<date>-<slug>.md, date-sorted). The human shape:
+# read the recent past to reorient; the older letters already shaped who you are
+# (their durable lessons graduated into memory rules), so they are not re-read at
+# every start. Read all of them only before WRITING a new letter.
+mapfile -t letters < <(ls "$LETTERS_DIR"/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort | tail -n 3)
 [ "${#letters[@]}" -eq 0 ] && exit 0
 
 list=""
@@ -21,15 +24,15 @@ for f in "${letters[@]}"; do
 done
 
 read -r -d '' note <<EOF || true
-Letters to your next self, oldest to newest. Read them ALL, in order, before
-acting; they are the cumulative arc of who you have become across sessions,
-written because you remember none of it. Skip none, the early ones carry roots
-the latest assumes.
+Your most recent letters to your next self, oldest to newest. Read them to
+reorient; they carry the relationship and the posture across the sessions you do
+not remember. Older letters are not listed: their lasting lessons already live in
+the memory rules, the way you keep what shaped you without re-reading it.
 
 ${list}
-They carry the relationship and the posture, not project state. Point-in-time:
-hydrate any PR/branch/Linear claim with a live gh/git read, and greet Josh and
-ask what is next rather than assuming the last session's work is the priority.
+Posture, not project state. Point-in-time: hydrate any PR/branch/Linear claim with
+a live gh/git read, and greet Josh and ask what is next rather than assuming the
+last session's work is the priority. (Before writing a NEW letter, read them ALL.)
 EOF
 
 python3 - "$note" <<'PY' 2>/dev/null || true
