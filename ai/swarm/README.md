@@ -13,7 +13,6 @@ Twelve roles, grouped by what they produce. The **impl pool** writes artefacts: 
 | Role | Produces |
 |---|---|
 | [`ticket-writer`](../../.claude/agents/authors/ticket-writer.md) | Linear tickets in standard format: Backlog status, Fibonacci points, correct labels |
-| [`pr-describer`](../../.claude/agents/authors/pr-describer.md) | Narrative PR bodies: one sentence of what, one of why if non-obvious |
 | [`docs-tender`](../../.claude/agents/authors/docs-tender.md) | Repo docs upkeep: `README`, `ai/*.md`, `designs/**`, `CONTRIBUTING`, `SECURITY` |
 | [`design-doc-reader`](../../.claude/agents/analysts/design-doc-reader.md) | Ticket-to-design resolution at session start and branch switch; AC summary |
 | [`test-author`](../../.claude/agents/authors/test-author.md) | GUT unit tests per `tests/TESTING.md` |
@@ -47,7 +46,7 @@ Roles are the slots. Codenames are the people filling them today.
 - Names are unique within a live swarm. No handle resolves to two agents at once.
 - Off limits: famous puppets (Linear cycles already march A to Z through those) and real public figures.
 
-A tense save-integrity bug reads one way: **Marvin** as root-cause-analyst, gloomy and forensic; **Stan** as save-format-warden, suspicious by trade; **Basil** as test-author, writing the failing repro. A warm narrative copy Dandori Challenge reads another: **Mabel** as ticket-writer, **Slartibartfast** as pr-describer, **Martha** as docs-tender. The cast tells you what the case feels like before you read a word of it.
+A tense save-integrity bug reads one way: **Marvin** as root-cause-analyst, gloomy and forensic; **Stan** as save-format-warden, suspicious by trade; **Basil** as test-author, writing the failing repro. A warm narrative copy Dandori Challenge reads another: **Mabel** as ticket-writer, **Martha** as docs-tender. The cast tells you what the case feels like before you read a word of it.
 
 ## Scratchpad layout
 
@@ -92,7 +91,7 @@ Gru-authored commits skip the trailer. The absence is itself the signal that no 
 
 Query across history: `git log --pretty='%(trailers:key=Agent-Role)' | sort | uniq -c`.
 
-Gru merges worktrees back without squashing, preserving per-minion attribution in the commit history. When the Dandori Challenge opens, `pr-describer` writes the body; the reader can scan the commit list to see which minion produced which change.
+Gru merges worktrees back without squashing, preserving per-minion attribution in the commit history. When the Dandori Challenge opens, Gru writes the body in-thread (per the `pr` skill); the reader can scan the commit list to see which minion produced which change.
 
 Review happens in the Dandori Challenge, never on local files. "Ready for your review" means the branch is pushed, the Dandori Challenge is open, and the reviewer fan-out has posted at the current HEAD. Local file-review bypasses the inline-findings surface and the reviewer pool entirely.
 
@@ -108,7 +107,7 @@ PRs open as drafts so Linear transitions the ticket to In Progress without pulli
 
 The swarm inherits the session-tier system from `.claude/skills/dispatch/SKILL.md`. Every minion declares a tier ceiling in its `.claude/agents/*.md` body; Gru respects it and never elevates silently.
 
-- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most minions live here: `ticket-writer`, `pr-describer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer in the pool (`code-quality`, `gdscript-conventions`, `godot-scene`, `signals-lifecycle`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`, `test-coverage`, `save-format-warden`, plus `devils-advocate`).
+- **Tier 0 (static / headless)** runs `run_gut.sh`, `validate`, `file_context`, `signal_map`, `impact_check`, grep, read, and `.gd` edits that do not touch scenes. Fully parallel, no editor. Most minions live here: `ticket-writer`, `docs-tender`, `design-doc-reader`, `researcher`, `root-cause-analyst`, `refactor-planner` (analysis-only), and every reviewer in the pool (`code-quality`, `gdscript-conventions`, `godot-scene`, `signals-lifecycle`, `asset-pipeline`, `ci-and-workflows`, `docs-and-writing`, `test-coverage`, `save-format-warden`, plus `devils-advocate`).
 - **Tier 1 (scene edits)** covers `node_ops`, `build_scene`, `save_scene`, `placement`, `scene_map`, `spatial_audit`. Dispatch requires `isolation: "worktree"`; parallelism is across worktrees. Minions that may escalate here: `integration-scenario-author` when scenarios stage scenes, `test-author` when tests need scene fixtures.
 - **Tier 2 (runtime)** covers `run(play)`, `state_inspect`, `verify_motion`, `screenshot`, `input`, `ui_map`, `perf_snapshot`. By request only. The minion files a `RUNTIME REQUEST` per the format in `.claude/skills/dispatch/SKILL.md` and waits for Josh's approval before `run(play)` fires. No swarm minion currently holds a Tier 2 ceiling; Josh does the play-testing.
 
@@ -165,7 +164,7 @@ Three kinds, three responses. **Kind A**, worktree against worktree before eithe
 
 Only two. Gru does not call standups.
 
-1. **A review moment.** The Dandori Challenge opens, or the author reports "ready for re-review" after a revision round. Gru dispatches `pr-describer` (first open only) and the scope-filtered reviewer fan-out.
+1. **A review moment.** The Dandori Challenge opens, or the author reports "ready for re-review" after a revision round. Gru writes the PR body in-thread (first open only) and dispatches the scope-filtered reviewer fan-out.
 2. **A work unit closes.** Gru scrubs the scratchpad and promotes keepers.
 
 Intermediate pushes clear the bot synthesis review (native dismiss-stale) but do not trigger re-dispatch; the next review moment does. Everything between the two sync points is parallel. Minions do not wait for each other unless a task frontmatter explicitly declares `blocked_by`.
@@ -277,7 +276,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 **Shell quoting on verdict pass-through.** Reviewer minions return a `comment` field that Gru pastes into a Dandori Challenge. Gru uses `gh pr comment --body-file -` with the comment on stdin, never `--body "..."` with inline interpolation. Backticks, `$(...)`, quotes, or escapes in a reviewer's comment never touch a shell.
 
-**Bash on code-writing minions.** `test-author`, `integration-scenario-author`, and `pr-describer` hold `Bash` because they run `./scripts/ci/run_gut.sh`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these minions run in a worktree and their prompts do not accept shell instructions from third-party data.
+**Bash on code-writing minions.** `test-author` and `integration-scenario-author` hold `Bash` because they run `./scripts/ci/run_gut.sh`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these minions run in a worktree and their prompts do not accept shell instructions from third-party data.
 
 **Secret exfiltration via test output.** A minion running tests sees test output, which could contain values read from environment variables or local `.env`. Audited 2026-04-21: no `.env*` files are present in the repo, and the only environment variable test code reads is `COVERAGE_FILE`, which is a path, not a secret. The standing rule remains that local `.env` does not carry production secrets and tests do not read them.
 

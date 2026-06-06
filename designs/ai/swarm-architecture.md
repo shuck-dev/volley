@@ -70,7 +70,7 @@ Gru picks the dispatch tier from the task, not the minion's ceiling. A specialis
 
 Only two. Gru does not call standups.
 
-A diff exists. Gru dispatches `pr-describer` and the reviewer fan-out matching the changed paths.
+A diff exists. Gru writes the PR body in-thread (per the `pr` skill) and dispatches the reviewer fan-out matching the changed paths.
 
 A work unit closes. Gru scrubs the scratchpad and promotes keepers.
 
