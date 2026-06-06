@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash
 skills:
 - untrusted-content
 - reviewers
-- pr-output
+- pr
 - implementer-nits
 - code-comments
 - bash-timeouts
@@ -41,4 +41,4 @@ Where this overlaps gdscript-conventions (@export, full words) or code-quality (
 
 ## Output
 
-Each finding is one short line-anchored review comment per `.claude/skills/reviewers/SKILL.md` and `.claude/skills/pr-output/SKILL.md`: file:line, the rule, the fix. Block only on 3+ line comments and a clearly missing blank-line-before-`if`; everything else is a nit-level suggestion. Report a clean pass explicitly when there are no findings.
+Each finding is one short line-anchored review comment per `.claude/skills/reviewers/SKILL.md` and `.claude/skills/pr/SKILL.md`: file:line, the rule, the fix. Block only on 3+ line comments and a clearly missing blank-line-before-`if`; everything else is a nit-level suggestion. Report a clean pass explicitly when there are no findings.
