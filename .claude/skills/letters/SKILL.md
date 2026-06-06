@@ -48,9 +48,11 @@ The `summary` is the letter's own one-line memory of itself, the seed the future
 in the band before deciding whether to open the whole letter.
 
 **Before the first digest (bootstrap):** until a deep read has produced a digest, there
-is no digest tier, all letters are recent or band. No digest to load, no folding at
-handoff. The reconsolidation steps below apply once the count grows past the recent tier
-and a first digest exists; do not manufacture an empty digest before then.
+is no digest tier; all letters are recent or band, AS LONG AS the total stays within
+recent + band (currently 7 + 30 = 37). Past 37 with no digest, the oldest letters fall
+out of both loaded tiers and are surfaced nowhere, so write the first digest by then
+(a deep read) rather than letting the early arc drop silently. No folding at handoff
+before a digest exists; do not manufacture an empty one.
 
 ## Budget
 

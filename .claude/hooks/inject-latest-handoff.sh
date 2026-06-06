@@ -46,10 +46,11 @@ digest_block=""
 [ -n "$digest" ] && digest_block="Older arc, consolidated, read this too: memory/letters/digest/$(basename "$digest")"$'\n'
 
 read -r -d '' note <<EOF || true
-Your letters to your next self, a memory gradient (see the \`letters\` skill): the
-recent ones vivid (read full), a fading band as one-line summaries, the older arc as a
-digest. They carry the relationship and the posture across sessions you do not remember.
-Older full letters stay on disk; pull one when the present rhymes with it (linkage).
+Your letters to your next self (see the \`letters\` skill for the memory gradient).
+They carry the relationship and the posture across sessions you do not remember. The
+recent ones are read full below; a fading band of one-line summaries and an older
+digest follow IF present (early on there are only recent letters). Older full letters
+stay on disk; pull one when the present rhymes with it (linkage).
 
 Recent, read full, oldest to newest:
 ${recent_list}
