@@ -29,6 +29,12 @@ A node with no `parent` is a root; the few top roots are the **crown**. That is 
 typed parent edges plus the crown they form. No separate pointer layer, no identifiers beyond
 the filename, no association edges. The file is the node; `parent` names another file.
 
+Because the edge target is a filename, a rename can silently dangle every child that pointed at
+the old name, and orphan-detection (a node with no `parent`) does not catch a `parent` pointing
+at a file that no longer exists. So edge validation is part of the CORE, not deferred: a lint
+step confirms every `parent` resolves to an existing node, run at reconciliation and as a
+pre-commit check. Cheap, and it is what makes filename-as-target safe without UUIDs.
+
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line a
 root, so reading the index IS reading everything. A parent-tree has a crown, so the entry point
 is only the few top roots. Retrieval is descent, not scan: enter at a crown root, follow
@@ -41,8 +47,8 @@ traverse the whole corpus).
 The crown is a small generated map: the top roots, each with a one-line gist, offered at
 session start as the entry points. It is the only place pointing happens. Below the crown,
 descent follows `parent` edges through the files directly; there is no pointer indirection to
-maintain. MEMORY.md is generated as the crown, a projection of the tree, so it cannot drift
-from it.
+maintain. MEMORY.md is generated as the crown, a projection of the tree, so the index cannot drift
+from the structure.
 
 ## Tiers (where a node loads)
 
@@ -103,14 +109,38 @@ elaborations were considered and deferred, each to be added only when a real pro
 it, not designed-for in advance:
 
 - **Stable identifiers (UUIDs) instead of filenames as edge targets.** Solves rename-cascade.
-  Deferred: renames are rare and the reconciliation pass already grep-repoints `parent`
-  references. Add when renames actually bite.
+  Deferred: the core edge-validation lint catches a dangling `parent` after a rename (it does
+  not silently corrupt), so filename targets are safe enough. Add UUIDs when rename churn makes
+  the grep-repoint genuinely painful, not before.
 - **An association layer (`relates-to` cross-edges, not routed).** Richer than a strict tree.
   Deferred: it is never walked for retrieval, so it earns nothing until association is shown to
-  help. Add when a node is demonstrably impoverished by its single parent.
+  help. The single-parent locatability cost is meanwhile handled by the tracked-duplicate escape
+  above, not by this layer.
 - **Cascading resolution (leaf plus its ancestry, shared ancestors once).** A leaf carries more
   meaning with its principle chain. Deferred: it is an optimization on descent; validate descent
   first.
+
+## Matching: the seed
+
+Descent needs a seed, the node a prompt enters at, and that seed is the engine, not a future
+elaboration: a crown and a tree with no match step is shelves and an unindexed catalogue. The
+baseline is deliberately crude and specified, not deferred: keyword match of the prompt against
+each node's slug and first line, take the best-scoring node as the seed, and on a tie or a
+below-threshold score fall back to offering the CROWN rather than a confident wrong branch. A
+cross-domain prompt (touching two branches) seeds both and offers both branches if they fit the
+cap, else the crown. This is the same keyword instrument the correction-signal hook uses, so its
+precision is the residual risk (below), but the engine exists from day one.
+
+## Single parent is a tracked trade-off
+
+A node routes through exactly one `parent`, which mislocates a rule that genuinely instances two
+principles (`feedback_rule_reconciliation` is meta-rule and workflow; `feature_pr_decomposition`
+is architecture and PR-workflow). Forcing one parent means a prompt matching the other branch
+will not descend to it. This is a known locatability cost, named not deferred. The escape is not
+the association layer (still deferred) but a DELIBERATE, tracked duplicate: a genuinely
+cross-branch rule may sit under two crown branches as an intentional pointer, recorded as such,
+so it is reachable from both and is not mistaken for emergent mis-filing the reconciliation pass
+should merge.
 
 ## What Claude Code natively supports
 
@@ -159,17 +189,22 @@ gist without descending.
 
 Limits the design has not closed:
 
-- **Matching is the unvalidated critical path.** The descent rests on the UserPromptSubmit hook
-  seeding the RIGHT node before the agent sees the prompt, the same keyword/intent instrument the
-  noisy correction-signal hook already strains. A mis-seed injects the wrong branch, worse than
-  nothing because the agent reads it as relevant. The spike must specify the match algorithm, its
-  behaviour on an ambiguous or cross-domain prompt, and a fallback when confidence is low (offer
-  the crown, not a wrong branch).
-- **Branch size versus the 10K cap.** A deep or wide branch can blow the cap; the spike must set
-  a depth limit and a truncation rule, and ensure a truncated branch is not read as complete.
+- **Matching quality is the residual risk.** The baseline above gives descent an engine, but
+  match precision is still the make-or-break: a mis-seed injects the wrong branch, worse than
+  nothing because the agent reads it as relevant. The spike validates precision on real prompts
+  and tunes the ambiguity threshold; the floor is the crown-fallback, never a confident wrong
+  branch.
+- **Truncation can manufacture false completeness, worse than the heap.** A deep or wide branch
+  blows the cap, and a truncated branch is more dangerous than a dump: the agent sees what looks
+  like a complete principle chain and draws confident conclusions from an incomplete premise,
+  where the heap at least let it see everything. The spike must set a depth limit and a
+  truncation rule that marks a branch as truncated (unresolved tail shown by name), so the agent
+  never reads a partial chain as the whole.
 - **Build cost is weeks, not an afternoon.** Almost no file carries a `parent` today. Typing
   400-plus means reading each, deciding its parent, and resolving the duplicates that surfaces
   (decisions, not mechanical adds).
 
-It does not install a reflex or cure skim-as-boilerplate either; that is the instrument,
-[[feedback_self_judgment_is_coherence_not_accuracy]].
+Reading is still the instrument's job, not the structure's ([[feedback_self_judgment_is_coherence_not_accuracy]]).
+What the structure delivers is the thing the heap never could: the right branch, small and
+bounded, offered at the moment it helps, so the next instance can find what it needs instead of
+drowning in everything.
