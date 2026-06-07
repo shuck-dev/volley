@@ -46,8 +46,6 @@ Every reviewer owns a slice of the tree. Flag findings inside your slice; defer 
 
 The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered reviewers to catch what no specialist sees: a removed export still referenced in a scene, a new function contradicting the architecture doc, a change shipping without an issue link. Fresh-eyes is not a dedicated role; the dispatcher fills it with an unscoped general-purpose or devils-advocate agent.
 
-On a **design or spec doc**, devils-advocate is a required lane, not the optional fresh-eyes pass: it stress-tests the design's claims, and that battle is GENERATIVE, the right outcome is often that the design changes between rounds. Re-battle a design PR after a substantive rewrite, not after a typo fix. (Memory: [[feedback_battle_review_process]], the design-PR clause.)
-
 ## Verdict shape
 
 Two outcomes: approve or block. The verdict keys on SEVERITY, not on whether you posted a finding. Only an `issue:` blocks; `nitpick:`, `suggestion:`, and `question:` are non-blocking and ride along on an approve. You do not apply a verdict label and you do not post the verdict on the PR yourself. You report your verdict to the organiser (the dispatcher report), and the organiser synthesises every reviewer's verdict into one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`, posted via the `bot-review` workflow). What you post on the PR is only your inline findings.
