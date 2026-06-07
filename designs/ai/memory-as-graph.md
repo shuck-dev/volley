@@ -117,6 +117,18 @@ are harness-agnostic (plain files, plain script). Retrieval maps to native mecha
   MCP server, the heavyweight path the research already rejected. Keyword/intent matching and
   edge-walking are native.
 
+## Offer, not force
+
+The reader is not a continuous self; each session is a fresh instance that wakes blank, a
+teammate the author will never meet. So the system cannot rely on the agent remembering to
+descend (pull fails: no continuity to remember), and it must not force-feed a dump at boot
+(force fails the way it fails any teammate: skimmed, ignored, the wall). The model is OFFER:
+the crown and the matched subgraph made available, small and relevant, at the moment they
+help, and taken up freely. The SessionStart and UserPromptSubmit mechanisms are how the
+offer is delivered, not a licence to inject everything. Keep what is offered small; an offer
+that is a wall is force again. This is the team protocol across the session boundary (the
+memory root `feedback_we_are_a_team`).
+
 ## The honest limit
 
 Structure aids retention and makes maintenance queryable. It does not by itself install a
