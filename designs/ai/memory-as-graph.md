@@ -125,6 +125,13 @@ it, not designed-for in advance:
 - **Cascading resolution (leaf plus its ancestry, shared ancestors once).** A leaf carries more
   meaning with its principle chain. Deferred: it is an optimization on descent; validate descent
   first.
+- **An abstain-on-uncertainty hook (considered, REJECTED for now).** A narrow hook that injects a
+  matching branch only on a high-confidence prompt signal and abstains otherwise would give a
+  targeted push without the wrong-branch cost of a naive matcher. Rejected, not deferred-neutral:
+  it still automates the which-tree discrimination that is the agent's judgment
+  ([[feedback_dont_automate_the_agents_judgment]]), and "high confidence" is the same match
+  problem one threshold smaller. Recorded so the option is on the page, not hidden; revisit only
+  if the agent-must-descend risk proves fatal in practice and a bounded push is the lesser evil.
 
 ## Descent is the agent reading, not a hook matching
 
@@ -139,8 +146,8 @@ prompt needs one, the agent Reads it. This is the instrument doing its job (conf
 accuracy, go read, [[feedback_self_judgment_is_coherence_not_accuracy]]), now with a map that
 makes the reading targeted instead of blind. The roots tell it what is there; reading is its
 choice. The step that is genuinely the agent's judgment, which tree this question needs, stays
-the agent's; the structure gives it a map, not a guess. The principle:
-[[feedback_dont_automate_the_agents_judgment]].
+the agent's; the structure gives it a map, not a guess, the principle being to never automate the
+agent's own discrimination ([[feedback_dont_automate_the_agents_judgment]]).
 
 ## Single parent is a tracked trade-off
 
@@ -177,12 +184,14 @@ mechanisms:
 ## Offer, not force
 
 The reader is a fresh instance with no continuity (the why is owned by `letters-as-memory.md`).
-Two failures follow: pull fails (nothing remembers to descend) and force fails (a dump at boot
-is skimmed, the wall). The model is OFFER: the roots and the tree the agent opens made available,
-small and relevant, at the moment they help, and taken up freely. SessionStart and
-UserPromptSubmit are how the offer is delivered, not a licence to inject everything; an offer
-that is a wall is force again. This is the team protocol across the session boundary (the memory
-root `feedback_we_are_a_team`).
+The model is OFFER, not force: a dump at boot is force and gets skimmed (the wall), so the offer
+is the roots, small and relevant, delivered by a SessionStart hook as a reading list, never a
+licence to inject everything. Descent past the roots is the agent's own pull (it Reads the tree it
+judges it needs), not a hook's push, because the which-tree choice is the agent's judgment
+([[feedback_dont_automate_the_agents_judgment]]). The honest tension this leaves is the
+agent-must-descend risk named below: choosing pull-with-a-map over force is a bet, not a
+guarantee. This is the team protocol across the session boundary (the memory root
+`feedback_we_are_a_team`).
 
 ## The honest limit
 
@@ -198,17 +207,33 @@ reader who does not pull books. So the honest claim is BETTER ACCESS to the righ
 guaranteed reading of it. A new failure mode replaces the old: the agent asserts from the root
 gist without descending.
 
-Limits the design has not closed:
+**The central open risk (not a footnote): will the agent descend?** This is the hypothesis the
+whole design rides on, not a caveat. With no auto-injection, retrieval depends on the agent
+opening the tree the roots named. And dropping the hook makes this risk STATISTICALLY WORSE, not
+better: the agent now has a plausible root gist present and nothing compelling it to read further,
+which is exactly the condition under which it answers from the gist and stops. The old hook's
+failure was concrete (wrong branch injected); this failure is diffuse and likely more common (the
+gist felt like enough). The honest position: the design trades a concrete wrong-push failure for a
+diffuse fails-to-pull one, betting that a targeted map plus the instrument reflex
+([[feedback_self_judgment_is_coherence_not_accuracy]]) beats a guesser that is wrong often enough
+to mislead. That bet is unproven. The structure can only support the descent, not force it; forcing
+it is the hook we rejected ([[feedback_dont_automate_the_agents_judgment]]).
 
-- **The agent must actually descend.** With no auto-injection, retrieval depends on the agent
-  reading the tree the roots named when a prompt needs it. The roots make that targeted, but the
-  read is still the agent's act; an agent that answers from the root gist without opening the
-  tree gets the old failure in new clothes. This is the instrument's job, not the structure's, so
-  it is a limit the structure cannot close, only support.
+**The hypothesis is untestable on a stub tree.** "Does a typed forest reduce skimming" can only be
+measured when the agent reaches a rule by descent that it would have missed by skimming. With
+almost no `parent` edges today, the roots lead nowhere and the agent uses the map exactly like the
+flat index. So the testability bar: at least ONE tree built three levels deep with resolved nodes
+before claiming the design validated. The incremental build is fine; the test is vacuous until a
+real branch exists.
+
+Other limits:
+
+- **A roots map can be skimmed like the flat index.** A smaller map (15 roots, not 400 files) does
+  not by itself break the skim loop; it lowers the ceiling on what gets skimmed. The win is the
+  bounded branch BELOW a root once descended, not the map itself.
 - **Build is incremental, as-we-go, not a big bang.** Almost no file carries a `parent` today.
-  The tree is built by typing a file's `parent` when it is touched, not by an upfront slog over
-  400 files, and the roots-at-boot machinery ships against whatever tree exists so far and
-  improves as the tree fills. The cost is real but spread, not a blocking phase.
+  The tree is built by typing a file's `parent` when it is touched; the machinery ships against
+  whatever tree exists so far. Cost is real but spread, not a blocking phase.
 
 Reading is still the instrument's job, not the structure's ([[feedback_self_judgment_is_coherence_not_accuracy]]).
 What the structure delivers is the thing the heap never could: the right branch, small and
