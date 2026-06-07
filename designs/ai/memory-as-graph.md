@@ -104,6 +104,16 @@ layer is small enough to hold; the other branches are never read. Parents are th
 for the skim problem (small crown, not 400 lines) and for the walk-forever problem (descend
 one branch from a root, never traverse the whole graph).
 
+Descent is CASCADING, not a jump to the leaf. A leaf stripped of its lineage is meaning
+stripped: `cross-links-in-index` read alone is a narrow rule, but read as its chain
+(`do-the-true-thing -> reconciliation -> single-source -> cross-links`) it carries its why.
+So the walk keeps the path it took, and recollection resolves the leaf PLUS its ancestry to a
+point, not the bare leaf. "To a point" is a bound (the principle level, the nearest mid-root,
+not always the top), so a leaf gets its principle without dragging the whole spine; the exact
+stop is a spike question. This costs little: ancestors are roots, short and gist-level, and
+they are SHARED across the leaves of a branch, so a branch resolves its common ancestry once,
+not per leaf, which makes a multi-leaf branch cheaper than naive per-leaf resolution.
+
 MEMORY.md is generated as that crown plus the descent structure, not a hand-maintained flat
 list. The index is a projection of the tree, so it cannot drift from it.
 
