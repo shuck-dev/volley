@@ -39,7 +39,8 @@ Every reviewer owns a slice of the tree. Flag findings inside your slice; defer 
 | `**/*.tscn`, `**/*.tres` | godot-scene |
 | `project.godot`, `**/*.import`, `export_presets.cfg` | asset-pipeline |
 | `.github/**` | ci-and-workflows |
-| `**/*.md` | docs-and-writing |
+| `**/*.md` (prose) | docs-and-writing |
+| `designs/**` design or spec doc (argues a design) | docs-and-writing, repetition-reviewer, AND devils-advocate on the design's claims |
 | `scripts/progression/**`, save-persistent resources | save-format-warden |
 | `connect(`, `emit(`, `tree_exit`, new autoloads | signals-lifecycle |
 
