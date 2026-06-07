@@ -47,11 +47,12 @@ make_node() {
     local slug="$2"
     local parent="${3:-}"
     local file="$dir/${slug}.md"
+    mkdir -p "$(dirname "$file")"
 
     if [[ -n "$parent" ]]; then
-        printf -- '---\nname: %s\nparent: %s\n---\nBody.\n' "$slug" "$parent" > "$file"
+        printf -- '---\nparent: %s\n---\nBody.\n' "$parent" > "$file"
     else
-        printf -- '---\nname: %s\n---\nBody.\n' "$slug" > "$file"
+        printf -- '---\n---\nBody.\n' > "$file"
     fi
 }
 
@@ -86,6 +87,16 @@ make_node "$DIR3" "standalone-root"
 make_node "$DIR3" "another-standalone"
 
 assert_exit "no parent is root: exits 0" 0 "$LINT" "$DIR3"
+
+# --- test 4: dangling parent in a subdir exits non-zero ---
+
+DIR4=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4"' EXIT
+
+make_node "$DIR4" "letters/2026-06-07-slug" "nonexistent-root"
+
+assert_exit "subdir dangling parent: exits non-zero" 1 "$LINT" "$DIR4"
+assert_output_contains "subdir dangling parent: reports the slug" "nonexistent-root" "$LINT" "$DIR4"
 
 # --- summary ---
 

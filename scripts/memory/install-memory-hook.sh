@@ -26,6 +26,11 @@ if [[ ! -f "$LINT_SCRIPT" ]]; then
     exit 1
 fi
 
+if [[ -f "$HOOK_PATH" ]]; then
+    echo "install-memory-hook: hook exists; remove it first: $HOOK_PATH" >&2
+    exit 1
+fi
+
 cat > "$HOOK_PATH" <<EOF
 #!/usr/bin/env bash
 # Graph-edge lint: validates parent: frontmatter edges in the memory corpus.

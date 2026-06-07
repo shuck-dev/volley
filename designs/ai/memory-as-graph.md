@@ -40,10 +40,9 @@ pre-commit check. Cheap, and it is what makes filename-as-target safe without UU
 | Field | Required | Value |
 |---|---|---|
 | `parent` | no | slug of the parent node (basename of its `.md` file, no extension) |
-| `name` | yes (existing files) | the node's own slug; must match the file basename |
 
 A node with no `parent` is a root. A node with `parent: foo` is valid only when `foo.md` exists
-in the same directory. The lint script (`scripts/memory/lint-graph-edges.sh`) enforces this; run
+in the memory directory. The lint script (`scripts/memory/lint-graph-edges.sh`) enforces this; run
 it standalone or let the pre-commit hook do it.
 
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line a

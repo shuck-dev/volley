@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Validates parent: frontmatter edges in the memory corpus.
-# Every parent: value must resolve to an existing node (a .md file whose
-# basename matches the slug, or a file with a matching name: field).
-# Exits non-zero when any dangling parent is found.
+# Every parent: value must resolve to an existing .md file whose basename
+# matches the slug. Exits non-zero when any dangling parent is found.
 #
 # Usage:
 #   lint-graph-edges.sh [MEMORY_DIR]
@@ -37,14 +36,14 @@ while IFS= read -r -d '' filepath; do
         continue
     fi
 
-    # Resolve: a slug matches if <slug>.md exists in the memory dir.
+    # Resolve: a slug matches if <slug>.md exists anywhere under MEMORY_DIR.
     target="$MEMORY_DIR/${parent_value}.md"
 
     if [[ ! -f "$target" ]]; then
         echo "dangling parent: $filename -> $parent_value (no file: ${parent_value}.md)"
         dangling=$((dangling + 1))
     fi
-done < <(find "$MEMORY_DIR" -maxdepth 1 -name "*.md" -print0 | sort -z)
+done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
 
 echo "lint-graph-edges: $dangling dangling, $orphans root/untyped nodes"
 
