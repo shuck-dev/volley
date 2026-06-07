@@ -32,7 +32,24 @@ decides how it loads, not a separate tree. And reconciliation becomes re-pointin
 moving content: merge-and-delete operates on pointers; underlying files are untouched unless
 genuinely duplicated.
 
+## Node identity: UUID plus slug
+
+Each node carries a **UUID** (its stable identity) and a **slug** (a readable label). Edges
+reference UUIDs, so a rename never cascades and the dangling-link problem is gone at the root,
+the UUID does not change when a file moves or its name changes. The slug rides alongside so a
+list of IDs is legible: a node reads `instance-of: <uuid>  # the-instrument-reflex`, and you
+know what it points at without dereferencing. UUID is for identity; slug is for comprehension.
+
+A **recollection script** is the retrieval primitive: given a list of UUIDs (what the
+UserPromptSubmit walk produces, the matched subgraph), it resolves them to their content (or
+pointers to it). The graph deals only in UUIDs; the script turns a UUID-list into recollected
+content. Because the slugs travel with the list, a mis-seeded walk is INSPECTABLE: the slugs
+show "it pulled the dispatch cluster for a narrative prompt," which is the legibility the
+matching-reliability limit (below) needs.
+
 ## Typed edges
+
+Edges are declared in frontmatter and reference target UUIDs (slug in a trailing comment).
 
 | Edge | Meaning | Maintenance action |
 |---|---|---|
@@ -52,9 +69,11 @@ the leaves (the specific rules). Edges are typed `instance-of`, declared in fron
 
 ```yaml
 ---
-name: feedback_cross_links_in_index_not_body
-instance-of: feedback_rule_reconciliation
-relates-to: [feedback_use_linear_native_relations]
+uuid: 7f3a1c2e-...
+slug: cross-links-in-index-not-body
+instance-of: 9b2d4f6a-...   # rule-reconciliation
+relates-to:
+  - { id: 1c8e5a3b-..., slug: use-linear-native-relations }
 ---
 ```
 
