@@ -8,6 +8,15 @@ How the agent system that helps build Volley! is shaped, and what it's allowed t
 | [Dispatcher Focus and WIP](dispatcher-focus-and-wip.md) | Why the dispatcher caps its own open coordination threads and parallelises through fan-out: the throughput math, the switching tax, and the orchestrator-worker evidence. |
 | [Lane Semantics](lane-semantics.md) | The Linear lane from Vault to Closed, what each state's trigger is (Completed = merged, Closed = released via the carnival), and the two hard rules: forward only, and never a close trailer. |
 
+## Memory
+
+How the agent reconstitutes itself across sessions: the rule corpus (structure and retention) and the letters (self-continuity).
+
+| Doc | Purpose |
+|---|---|
+| [Memory as a Graph](memory-as-graph.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a typed parent-tree with a small crown the agent descends to find the right content, maintained by reconciliation, offered not forced to each fresh session. |
+| [Letters as Memory](letters-as-memory.md) | The letters-to-my-next-self as a human-modelled memory gradient (recent full, fading band, consolidated digest), carrying self and posture across sessions the agent does not remember. |
+
 ## Agent-assisted writing
 
 The open-development essay stays human-facing under [`research/`](../research/the-case-for-open-development.md); its style guide, audits, and critiques are agent-facing and live here.
