@@ -42,7 +42,7 @@ intuition: `duplicate-of` clusters merge, `instance-of` clusters link.
   other reflex serves (a function test, not a budget); the set is small as a consequence.
   About two: the motive (do the true thing) and the instrument (confidence is not
   accuracy, go read). Distinct from operating conventions (review, dispatch, git), which
-  are settled rules, not posture. See SH-477, SH-427.
+  are settled rules, not posture. See #873, #722.
 - **Lookup tier**: everything else. Not resident; found on its trigger. Action-triggered
   rules fire as Skills (description-trigger); the rest are read on demand against the
   index. Injecting them is what builds the unreadable wall.
@@ -65,7 +65,7 @@ discovery (you do not know up front; the doing teaches you, correct the structur
 Reconciliation is discovery applied to the memory surface: the doing reveals two fragments
 are one principle, so you correct the structure (merge, link, resolve). It runs continuously
 as-you-go (informal), and as a periodic deep read (the `digest` for letters; the
-dream or auto-consolidation pass for the corpus, SH-427). Better maintenance is better
+dream or auto-consolidation pass for the corpus, #722). Better maintenance is better
 retention, not tidiness.
 
 ## The honest limit
