@@ -14,7 +14,7 @@ How the agent reconstitutes itself across sessions: the rule corpus (structure a
 
 | Doc | Purpose |
 |---|---|
-| [Memory as a Graph](memory-as-graph.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a typed parent-tree with a small crown the agent descends to find the right content, maintained by reconciliation, offered not forced to each fresh session. |
+| [Memory Forest](memory-forest.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a forest of typed parent-trees with a small crown the agent descends, each root indexing its own tree, maintained by reconciliation, offered not forced. An instance of the general forest model (extract to forest-model.md pending). |
 | [Letters as Memory](letters-as-memory.md) | The letters-to-my-next-self as a human-modelled memory gradient (recent full, fading band, consolidated digest), carrying self and posture across sessions the agent does not remember. |
 
 ## Agent-assisted writing

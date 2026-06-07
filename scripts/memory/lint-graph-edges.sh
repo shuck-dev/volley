@@ -59,12 +59,19 @@ while IFS= read -r -d '' filepath; do
     fi
 
     PARENT_OF["$filename"]="$parent_value"
+done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
 
-    if [[ ! -f "$MEMORY_DIR/${parent_value}.md" ]]; then
-        echo "dangling parent: $filename -> $parent_value (no file: ${parent_value}.md)"
+# Resolve parents against the set of known nodes (any subdir), not a fixed path,
+# so a parent file in letters/ or any subdir resolves. Done as a second pass so
+# a parent seen later in the walk still counts.
+for child in "${!PARENT_OF[@]}"; do
+    p="${PARENT_OF[$child]}"
+    [[ -z "$p" ]] && continue
+    if [[ -z "${IS_NODE[$p]:-}" ]]; then
+        echo "dangling parent: $child -> $p (no node: $p)"
         dangling=$((dangling + 1))
     fi
-done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
+done
 
 if [[ "$mode" == "tree" ]]; then
     # Render each root and descend its children. A node whose parent is empty,
@@ -78,19 +85,46 @@ if [[ "$mode" == "tree" ]]; then
             fi
         done
     }
+    # Show the WHOLE navigable surface: ordered trees first (roots with
+    # children), then every unordered node (a root with no children, not yet
+    # placed). A fresh instance must be able to reach all of them, so render all.
+    has_children() { printf '%s\n' "${PARENT_OF[@]}" | grep -qx "$1"; }
+    is_root() { local p="${PARENT_OF[$1]:-}"; [[ -z "$p" || -z "${IS_NODE[$p]:-}" ]]; }
     typed_roots=0
+    unordered=0
     for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
-        p="${PARENT_OF[$node]:-}"
-        # A root with at least one child is a typed-tree top; show those.
-        if [[ -z "$p" || -z "${IS_NODE[$p]:-}" ]]; then
-            if printf '%s\n' "${PARENT_OF[@]}" | grep -qx "$node"; then
-                printf '%s\n' "$node"
-                print_children "$node" "  "
-                typed_roots=$((typed_roots + 1))
-            fi
+        if is_root "$node" && has_children "$node"; then
+            printf '%s\n' "$node"
+            print_children "$node" "  "
+            typed_roots=$((typed_roots + 1))
         fi
     done
-    echo "--- $typed_roots roots with children; flat roots omitted ---"
+    # Bridge: group the unordered nodes under their proposed trunk, so the render
+    # shows a navigable forest (trunks), not a flat dump. The bucketing map is a
+    # markdown file with "## <trunk> (N)" headers and "- <node>" lines.
+    BRIDGE="${BRIDGE_MAP:-/home/josh/gamedev/volley/ai/scratchpads/memory-bucketing-proposed.md}"
+    declare -A TRUNK_OF
+    if [[ -f "$BRIDGE" ]]; then
+        cur=""
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^##\ ([a-z-]+) ]]; then cur="${BASH_REMATCH[1]}"
+            elif [[ "$line" =~ ^-\ ([A-Za-z0-9_]+) ]]; then TRUNK_OF["${BASH_REMATCH[1]}"]="$cur"; fi
+        done < "$BRIDGE"
+    fi
+    echo
+    echo "# bridge: unordered nodes grouped under their proposed trunk"
+    for trunk in dev-cycle who-i-am docs volley shuck UNBUCKETED; do
+        first=1
+        for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
+            is_root "$node" && ! has_children "$node" || continue
+            t="${TRUNK_OF[$node]:-UNBUCKETED}"
+            [[ "$t" == "$trunk" ]] || continue
+            if [[ $first == 1 ]]; then echo; echo "## $trunk"; first=0; fi
+            printf -- '- %s\n' "$node"
+            unordered=$((unordered + 1))
+        done
+    done
+    echo "--- $typed_roots ordered trees, $unordered unordered nodes across the trunks ---"
 fi
 
 echo "lint-graph-edges: $dangling dangling, $orphans root/untyped nodes"

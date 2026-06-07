@@ -1,10 +1,32 @@
-# Memory as a Graph
+# Memory Forest
 
 The memory corpus is 400-plus flat prose files, and the agent skims them. This is the
 structure that replaces the heap with a typed parent-tree whose roots are a small reading list, so the right
 content is findable without dumping everything. Options survey:
 `designs/research/memory-system-improvements.md`. Letters layer:
 `designs/ai/letters-as-memory.md`. Consolidation procedure: the `digest` skill.
+
+## The forest model generalises beyond memory
+
+> REWRITE PENDING: extract this general model into its own doc (`designs/ai/forest-model.md`),
+> leaving this doc as the MEMORY instance pointing up to it; the design docs and the Linear
+> backlog are sibling instances. The model is woven through the sections below, so the extract is
+> a real restructure, not a cut, do it as a focused pass. The insight is captured here so it is
+> not lost; the rewrite makes it correctly-shaped.
+
+What this doc describes is a FOREST MODEL for any corpus a fresh, blank instance must navigate
+without already understanding it: a few single-meaning trunks (coarse buckets), each growing into a
+tree (root, branches, leaves by a `parent` edge), with each root node serving as its tree's index,
+the crown as the only thing offered up front, descent to reach a leaf, and a bridge for nodes
+bucketed but not yet ordered. Memory is the first instance worked through, not the only one.
+
+The **design docs** (`designs/`) are another forest of the same shape: the discipline folders are
+the trunks, the doc-structure README is the crown index, a doc bubbling from `01-prototype/` to its
+flat entity home is a node finding its tree (`feedback_docs_structure_prototype_to_entity`,
+`bubble` skill). The **issues** in Linear are a third (an issue is a node with its so-that; the
+backlog is the forest). The trunk/tree/crown/index/bridge vocabulary applies wherever structured
+knowledge has to be reached by someone who wakes not knowing it. Captured here so the model is named
+once; the per-instance detail (memory below, docs in the structure README) lives in each forest.
 
 ## The problem it solves
 
@@ -59,6 +81,32 @@ at session start as the entry points. That is the only place pointing happens. B
 descent follows `parent` edges through the files directly; there is no pointer indirection to
 maintain. MEMORY.md is generated as the roots, a projection of the forest, so the index cannot drift
 from the structure.
+
+## The index is per-tree: each root node IS its tree's index
+
+There is no one flat index. Each tree's ROOT NODE holds the index of its own tree, its direct
+children with one-line gists, and is both the doorway intro and the local index for what is below
+it. So the index is distributed across the roots, not centralised. MEMORY.md shrinks to the CROWN:
+the handful of trunk roots, nothing more. Descent reads MEMORY.md (the trunk roots), opens the one
+trunk the work needs (that root node is the index of its trunk), descends to the sub-root that
+indexes the relevant branch, reaches the leaf. The index a fresh instance reads at each level is
+just that node's own listing of its children. This is the dump-and-skim cure made structural: the
+boot offer is the crown alone, and the per-tree detail is read on descent because each root carries
+its own index, so the standing injection stays tiny (the 10K cap is satisfied by structure, not
+restraint).
+
+## The bridge: the root's index carries provisional nodes
+
+Building the forest is incremental, so at any time many nodes are bucketed to a trunk but not yet
+ordered into its tree. The BRIDGE keeps them reachable without faking placement and without editing
+every node: a trunk root's index lists, beside its ordered children, a PROVISIONAL section, the
+nodes bucketed to this trunk but not yet ordered. A fresh instance opening that trunk root reads
+both and can reach any of them; the provisional listing says plainly "parked here, not yet ordered."
+The bridge lives in the root's index, never in the parked nodes' frontmatter, so no per-node edit is
+needed and a node leaves the bridge by gaining a real `parent` (it moves from the root's provisional
+list into an ordered sub-tree). The bridge is read-and-descended through the same surface a fresh
+instance already reads (the index), so nothing new has to be understood to walk it. It empties as
+the forest is ordered, then is gone.
 
 ## Tiers (when a node is read)
 
