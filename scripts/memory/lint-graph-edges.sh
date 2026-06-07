@@ -92,15 +92,32 @@ if [[ "$mode" == "tree" ]]; then
             typed_roots=$((typed_roots + 1))
         fi
     done
+    # Bridge: group the unordered nodes under their proposed trunk, so the render
+    # shows a navigable forest (trunks), not a flat dump. The bucketing map is a
+    # markdown file with "## <trunk> (N)" headers and "- <node>" lines.
+    BRIDGE="${BRIDGE_MAP:-/home/josh/gamedev/volley/ai/scratchpads/memory-bucketing-proposed.md}"
+    declare -A TRUNK_OF
+    if [[ -f "$BRIDGE" ]]; then
+        cur=""
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^##\ ([a-z-]+) ]]; then cur="${BASH_REMATCH[1]}"
+            elif [[ "$line" =~ ^-\ ([A-Za-z0-9_]+) ]]; then TRUNK_OF["${BASH_REMATCH[1]}"]="$cur"; fi
+        done < "$BRIDGE"
+    fi
     echo
-    echo "# unordered (no parent yet, reachable once bucketed/typed):"
-    for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
-        if is_root "$node" && ! has_children "$node"; then
+    echo "# bridge: unordered nodes grouped under their proposed trunk"
+    for trunk in dev-cycle who-i-am docs volley shuck UNBUCKETED; do
+        first=1
+        for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
+            is_root "$node" && ! has_children "$node" || continue
+            t="${TRUNK_OF[$node]:-UNBUCKETED}"
+            [[ "$t" == "$trunk" ]] || continue
+            if [[ $first == 1 ]]; then echo; echo "## $trunk"; first=0; fi
             printf -- '- %s\n' "$node"
             unordered=$((unordered + 1))
-        fi
+        done
     done
-    echo "--- $typed_roots ordered trees, $unordered unordered nodes ---"
+    echo "--- $typed_roots ordered trees, $unordered unordered nodes across the trunks ---"
 fi
 
 echo "lint-graph-edges: $dangling dangling, $orphans root/untyped nodes"
