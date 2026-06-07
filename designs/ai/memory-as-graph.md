@@ -1,7 +1,7 @@
 # Memory as a Graph
 
 The memory corpus is 400-plus flat prose files, and the agent skims them. This is the
-structure that replaces the heap with a typed parent-tree and a small crown, so the right
+structure that replaces the heap with a typed parent-tree whose roots are a small reading list, so the right
 content is findable without dumping everything. Options survey:
 `designs/research/memory-system-improvements.md`. Letters layer:
 `designs/ai/letters-as-memory.md`. Consolidation procedure: the `digest` skill.
@@ -13,7 +13,7 @@ every fact is equidistant and equally forgettable, which is why the agent skims 
 session-start dump as boilerplate, asserts from a fuzzy sense, and fails to find rules
 that already exist. Reducing file count is the symptom of the fix; structure is the fix.
 
-## The core: a parent-tree with a crown
+## The core: a parent-tree and its roots
 
 Each memory file is a node. One typed edge, `parent`, in its frontmatter names the principle
 it is an instance of:
@@ -25,8 +25,8 @@ parent: rule-reconciliation
 ```
 
 Following `parent` upward gives a tree: one path to a root, no cycles, a walk that terminates.
-A node with no `parent` is a root; the few top roots are the **crown**. That is the whole core,
-typed parent edges plus the crown they form. No separate pointer layer, no identifiers beyond
+A node with no `parent` is a root; the few top roots are the **reading list** offered at boot. That is the whole core,
+typed parent edges plus the roots they form. No separate pointer layer, no identifiers beyond
 the filename, no association edges. The file is the node; `parent` names another file.
 
 Because the edge target is a filename, a rename can silently dangle every child that pointed at
@@ -36,18 +36,18 @@ step confirms every `parent` resolves to an existing node, run at reconciliation
 pre-commit check. Cheap, and it is what makes filename-as-target safe without UUIDs.
 
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line a
-root, so reading the index IS reading everything. A parent-tree has a crown, so the entry point
-is only the few top roots. Retrieval is descent, not scan: enter at a crown root, follow
-`parent` down to the leaf, touch only that branch. The crown is the cut, both for the skim
-problem (a small crown, not 400 lines) and the walk-forever problem (descend one branch, never
+root, so reading the index IS reading everything. A parent-tree has roots, so the entry point
+is only those few top roots. Retrieval is descent, not scan: enter at a root, follow
+`parent` down to the leaf, touch only that branch. The roots are the cut, both for the skim
+problem (a few roots, not 400 lines) and the walk-forever problem (descend one branch, never
 traverse the whole corpus).
 
-## The crown is the only pointer
+## The roots are the only pointer
 
-The crown is a small generated map: the top roots, each with a one-line gist, offered at
-session start as the entry points. It is the only place pointing happens. Below the crown,
+The roots are a small generated map: the top of each tree, each with a one-line gist, offered
+at session start as the entry points. That is the only place pointing happens. Below the roots,
 descent follows `parent` edges through the files directly; there is no pointer indirection to
-maintain. MEMORY.md is generated as the crown, a projection of the tree, so the index cannot drift
+maintain. MEMORY.md is generated as the roots, a projection of the forest, so the index cannot drift
 from the structure.
 
 ## Tiers (when a node is read)
@@ -58,7 +58,7 @@ from the structure.
   the true thing) and the instrument (confidence is not accuracy, go read). Distinct from
   operating conventions (review, dispatch, git), which are settled rules, not posture. See #873,
   #722. They are read first, not injected whole; reading is the act (below).
-- **Lookup tier**: everything else. Read by descending from the crown when a prompt narrows the
+- **Lookup tier**: everything else. Read by descending from the roots when a prompt narrows the
   work.
 
 ## What session start offers: a reading list
@@ -73,10 +73,10 @@ The list, in order:
 
 1. **The reflex pointers**: the two posture reflexes, read first because they shape every move
    before any prompt narrows the work.
-2. **The crown pointers**: the top roots, one-line gist each, the entry map to descend from when
+2. **The root pointers**: the top of each tree, one-line gist each, the entry map to descend from when
    a prompt arrives.
 
-Letters are part of this corpus, not a separate system; their roots sit in the crown like any
+Letters are part of this corpus, not a separate system; their roots sit among the forest roots like any
 other, the recent/band/digest gradient being their loading property (owned by
 `letters-as-memory.md`, an instance of this design). What is never in the dump: any body. Bodies
 are read on the reach, reflex bodies first as the opening of the list, lookup bodies when a prompt
@@ -109,8 +109,8 @@ maintenance is better retention, not tidiness.
 
 ## Deferred until the problem appears
 
-The core is parent-tree plus crown, nothing more, because the smallest thing that tests the
-hypothesis (does a typed crown and descent reduce skimming) is the right first build. Three
+The core is parent-tree plus roots, nothing more, because the smallest thing that tests the
+hypothesis (does a typed forest and descent reduce skimming) is the right first build. Three
 elaborations were considered and deferred, each to be added only when a real problem calls for
 it, not designed-for in advance:
 
@@ -126,45 +126,50 @@ it, not designed-for in advance:
   meaning with its principle chain. Deferred: it is an optimization on descent; validate descent
   first.
 
-## Matching: the seed
+## Descent is the agent reading, not a hook matching
 
-Descent needs a seed, the node a prompt enters at, and that seed is the engine, not a future
-elaboration: a crown and a tree with no match step is shelves and an unindexed catalogue. The
-baseline is deliberately crude and specified, not deferred: keyword match of the prompt against
-each node's slug and first line, take the best-scoring node as the seed, and on a tie or a
-below-threshold score fall back to offering the CROWN rather than a confident wrong branch. A
-cross-domain prompt (touching two branches) seeds both and offers both branches if they fit the
-cap, else the crown. This is the same keyword instrument the correction-signal hook uses, so its
-precision is the residual risk (below), but the engine exists from day one.
+There is no automatic descent hook, and no prompt-to-tree matching engine. That step was the
+design's weakest point (a hook guessing which tree a prompt wants, injecting it before the agent
+sees the prompt) and a wrong guess is worse than nothing, because the agent reads the injected
+branch as relevant. Automating it badly is worse than not automating it.
+
+Instead, descent is the agent's own act, made targeted by the roots. The roots offered at boot
+are a MAP: the agent sees that a dispatch tree, a narrative tree, a memory tree exist. When a
+prompt needs one, the agent Reads it. This is the instrument doing its job (confidence is not
+accuracy, go read, [[feedback_self_judgment_is_coherence_not_accuracy]]), now with a map that
+makes the reading targeted instead of blind. The roots tell it what is there; reading is its
+choice. The step that is genuinely the agent's judgment, which tree this question needs, stays
+the agent's; the structure gives it a map, not a guess. The principle:
+[[feedback_dont_automate_the_agents_judgment]].
 
 ## Single parent is a tracked trade-off
 
 A node routes through exactly one `parent`, which mislocates a rule that genuinely instances two
 principles (`feedback_rule_reconciliation` is meta-rule and workflow; `feature_pr_decomposition`
-is architecture and PR-workflow). Forcing one parent means a prompt matching the other branch
-will not descend to it. This is a known locatability cost, named not deferred. The escape is not
+is architecture and PR-workflow). Forcing one parent means an agent reading the other tree will
+not find it there. This is a known locatability cost, named not deferred. The escape is not
 the association layer (still deferred) but a DELIBERATE, tracked duplicate: a genuinely
-cross-branch rule may sit under two crown branches as an intentional pointer, recorded as such,
+cross-tree rule may sit as a root in two trees as an intentional pointer, recorded as such,
 so it is reachable from both and is not mistaken for emergent mis-filing the reconciliation pass
 should merge.
 
 ## What Claude Code natively supports
 
 Verified against the Claude Code docs (researcher pass, 2026-06-07). The store and the
-crown-generator are harness-agnostic (plain files, plain script). Retrieval maps to native
+roots-generator are harness-agnostic (plain files, plain script). Retrieval maps to native
 mechanisms:
 
-- **Crown at session start**: a SessionStart hook generates the crown and injects it as
+- **Roots at session start**: a SessionStart hook generates the roots and injects them as
   `additionalContext`. Hard cap: a single value over 10,000 chars is written to a file and only
-  its path plus a preview is injected. Keep the crown to the top roots only.
-- **Descent is done by a hook, not by me live.** There is no native graph traversal; at-need
-  retrieval natively is only (MEMORY.md head at start) + (skill description match) + (the agent
-  choosing to Read, the unreliable instrument). The automated form is a UserPromptSubmit hook
-  that walks `parent` edges from the matched node and injects that branch before the prompt
-  reaches me. The walk terminates (visited-set, one branch) and stays bounded (the branch, not
-  the corpus), under the same 10K cap.
+  its path plus a preview is injected. A reading list of roots (slug plus one-line gist) is far
+  under the cap; that is why the dump is pointers, not bodies.
+- **Descent is the agent reading, not a hook.** There is no native graph traversal and the
+  design wants none: at-need retrieval is the agent choosing to Read the tree the roots told it
+  exists. The roots make that choice targeted; the read is the agent's. No matching engine to
+  validate, no branch-injection to bound.
 - **Skills as entry points**: a SKILL.md description-trigger (flat intent-match, no hierarchy)
-  can fire a node; its body can `!`cat node-file`` to pull the content on match.
+  can fire a node; its body can `!`cat node-file`` to pull the content on match. This is the one
+  native auto-surface, used for action-triggered rules, not for tree descent.
 - **MCP only for semantic recall**: embedding/vector matching across the full corpus needs an
   MCP server, the heavyweight path the research already rejected. Keyword/intent matching and
   edge-walking are native.
@@ -173,7 +178,7 @@ mechanisms:
 
 The reader is a fresh instance with no continuity (the why is owned by `letters-as-memory.md`).
 Two failures follow: pull fails (nothing remembers to descend) and force fails (a dump at boot
-is skimmed, the wall). The model is OFFER: the crown and the matched branch made available,
+is skimmed, the wall). The model is OFFER: the roots and the tree the agent opens made available,
 small and relevant, at the moment they help, and taken up freely. SessionStart and
 UserPromptSubmit are how the offer is delivered, not a licence to inject everything; an offer
 that is a wall is force again. This is the team protocol across the session boundary (the memory
@@ -190,25 +195,20 @@ The RETENTION claim is narrower than "fixes retention." The tree makes the right
 findable; it does not make the agent read it. The last step is still the agent choosing to Read
 the pointed-to content (the unreliable instrument); a well-structured library does not help a
 reader who does not pull books. So the honest claim is BETTER ACCESS to the right content, not
-guaranteed reading of it. A new failure mode replaces the old: the agent asserts from the crown
+guaranteed reading of it. A new failure mode replaces the old: the agent asserts from the root
 gist without descending.
 
 Limits the design has not closed:
 
-- **Matching quality is the residual risk.** The baseline above gives descent an engine, but
-  match precision is still the make-or-break: a mis-seed injects the wrong branch, worse than
-  nothing because the agent reads it as relevant. The spike validates precision on real prompts
-  and tunes the ambiguity threshold; the floor is the crown-fallback, never a confident wrong
-  branch.
-- **Truncation can manufacture false completeness, worse than the heap.** A deep or wide branch
-  blows the cap, and a truncated branch is more dangerous than a dump: the agent sees what looks
-  like a complete principle chain and draws confident conclusions from an incomplete premise,
-  where the heap at least let it see everything. The spike must set a depth limit and a
-  truncation rule that marks a branch as truncated (unresolved tail shown by name), so the agent
-  never reads a partial chain as the whole.
-- **Build cost is weeks, not an afternoon.** Almost no file carries a `parent` today. Typing
-  400-plus means reading each, deciding its parent, and resolving the duplicates that surfaces
-  (decisions, not mechanical adds).
+- **The agent must actually descend.** With no auto-injection, retrieval depends on the agent
+  reading the tree the roots named when a prompt needs it. The roots make that targeted, but the
+  read is still the agent's act; an agent that answers from the root gist without opening the
+  tree gets the old failure in new clothes. This is the instrument's job, not the structure's, so
+  it is a limit the structure cannot close, only support.
+- **Build is incremental, as-we-go, not a big bang.** Almost no file carries a `parent` today.
+  The tree is built by typing a file's `parent` when it is touched, not by an upfront slog over
+  400 files, and the roots-at-boot machinery ships against whatever tree exists so far and
+  improves as the tree fills. The cost is real but spread, not a blocking phase.
 
 Reading is still the instrument's job, not the structure's ([[feedback_self_judgment_is_coherence_not_accuracy]]).
 What the structure delivers is the thing the heap never could: the right branch, small and
