@@ -47,6 +47,16 @@ content. Because the slugs travel with the list, a mis-seeded walk is INSPECTABL
 show "it pulled the dispatch cluster for a narrative prompt," which is the legibility the
 matching-reliability limit (below) needs.
 
+The split also makes the walk cheap. The walk traverses IDENTITY only: read a node's
+frontmatter, follow the edge UUIDs to the next node's frontmatter, collect UUIDs and slugs. It
+never opens a content body, so it runs over a thin frontmatter layer, not the corpus. Its
+output is a small list (a UUID and a short slug per node, dozens of bytes each), so a wide
+branch is still tiny and the walk does not hit the 10K cap. The cap pressure lives in the
+RESOLUTION step, not the walk: the recollection script is cap-aware, resolving the
+highest-priority nodes' content first and stopping at budget, with the unresolved nodes still
+visible as slugs rather than silently dropped. So truncation is a deliberate resolution
+decision, not a mid-walk accident (this answers the partial-injection limit below).
+
 ## Typed edges
 
 Edges are declared in frontmatter and reference target UUIDs (slug in a trailing comment).
@@ -217,11 +227,12 @@ Four limits the design has not closed, named so they are not mistaken for solved
   as relevant. The spike must specify the match algorithm, its behaviour on an ambiguous or
   cross-domain prompt (one touching dispatch AND narrative), and a fallback when confidence is
   low (offer the crown, not a wrong branch).
-- **Branch size versus the 10K cap is unresolved.** The cap is named for the crown but never
-  sized for a branch. A mid-root with many leaves can blow it, and a walk that hits the cap
-  mid-branch injects a PARTIAL branch the agent reads as complete, missing the leaf that would
-  have changed its answer. The spike must set a depth limit, leaf-truncation rule, and
-  partial-injection behaviour.
+- **Branch size versus the 10K cap, partly answered.** The identity walk is cheap and its
+  UUID-list output does not hit the cap; the pressure is in resolution, where the recollection
+  script is cap-aware and truncation is a deliberate, legible choice (unresolved nodes stay
+  visible as slugs) rather than a silent mid-walk cut. What the spike still owes: the
+  priority order resolution uses, and confirmation that a slug-only tail is genuinely safer
+  than a truncated body (the agent must not read the resolved head as the whole branch).
 - **Build cost is weeks, not an afternoon.** Today exactly one file carries `instance-of`.
   Typing 400+ files means reading each, deciding its parent, writing the edge, and resolving
   the `duplicate-of` nodes it surfaces (decisions, not mechanical adds). The research survey's
