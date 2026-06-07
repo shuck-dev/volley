@@ -59,12 +59,19 @@ while IFS= read -r -d '' filepath; do
     fi
 
     PARENT_OF["$filename"]="$parent_value"
+done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
 
-    if [[ ! -f "$MEMORY_DIR/${parent_value}.md" ]]; then
-        echo "dangling parent: $filename -> $parent_value (no file: ${parent_value}.md)"
+# Resolve parents against the set of known nodes (any subdir), not a fixed path,
+# so a parent file in letters/ or any subdir resolves. Done as a second pass so
+# a parent seen later in the walk still counts.
+for child in "${!PARENT_OF[@]}"; do
+    p="${PARENT_OF[$child]}"
+    [[ -z "$p" ]] && continue
+    if [[ -z "${IS_NODE[$p]:-}" ]]; then
+        echo "dangling parent: $child -> $p (no node: $p)"
         dangling=$((dangling + 1))
     fi
-done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
+done
 
 if [[ "$mode" == "tree" ]]; then
     # Render each root and descend its children. A node whose parent is empty,
