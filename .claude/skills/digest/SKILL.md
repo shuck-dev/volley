@@ -28,11 +28,13 @@ letters and write a fresh digest from present perspective. Not recall, PERSPECTI
    The digest is the consolidated gist of everything older than the recent+band window,
    the self/posture/arc, not behaviour (behaviour graduates to memory rules).
 4. Wire it into the forest as the new gradient root (the letters tree, see
-   `designs/ai/memory-forest.md` and the `letters` root node). The digest is the most
-   consolidated tier, so it becomes the top of the letters tree: set its `parent` to `letters`
-   (or to the prior digest, keeping the versioned chain), and re-parent the now-older letters
-   under this digest so descent reads consolidated -> vivid -> raw. The lint confirms the edges
-   resolve.
+   `designs/ai/memory-forest.md` and the `letters` root node). Set the digest's `parent` to
+   `letters` (or to the prior digest, keeping the versioned chain). Then re-parent under it ONLY
+   the letters this digest consolidated, the ones aged out past the recent+band window; the
+   recent letters stay parented at the vivid tier (directly off `letters`), unmoved. So a letter
+   migrates under the digest WHEN it ages out, not when the digest is written. Descent then reads
+   digest (consolidated, the aged arc) then the recent letters (vivid) then a letter's archive
+   (raw). The lint confirms the edges resolve.
 5. Promote any arc-pattern worth keeping as guidance into a memory rule (the procedural
    layer), so the digest stays about self, not how-to-act.
 6. Commit the digest in the memory repo promptly (per the commit-memory-promptly rule).
