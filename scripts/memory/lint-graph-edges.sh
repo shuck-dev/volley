@@ -78,19 +78,29 @@ if [[ "$mode" == "tree" ]]; then
             fi
         done
     }
+    # Show the WHOLE navigable surface: ordered trees first (roots with
+    # children), then every unordered node (a root with no children, not yet
+    # placed). A fresh instance must be able to reach all of them, so render all.
+    has_children() { printf '%s\n' "${PARENT_OF[@]}" | grep -qx "$1"; }
+    is_root() { local p="${PARENT_OF[$1]:-}"; [[ -z "$p" || -z "${IS_NODE[$p]:-}" ]]; }
     typed_roots=0
+    unordered=0
     for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
-        p="${PARENT_OF[$node]:-}"
-        # A root with at least one child is a typed-tree top; show those.
-        if [[ -z "$p" || -z "${IS_NODE[$p]:-}" ]]; then
-            if printf '%s\n' "${PARENT_OF[@]}" | grep -qx "$node"; then
-                printf '%s\n' "$node"
-                print_children "$node" "  "
-                typed_roots=$((typed_roots + 1))
-            fi
+        if is_root "$node" && has_children "$node"; then
+            printf '%s\n' "$node"
+            print_children "$node" "  "
+            typed_roots=$((typed_roots + 1))
         fi
     done
-    echo "--- $typed_roots roots with children; flat roots omitted ---"
+    echo
+    echo "# unordered (no parent yet, reachable once bucketed/typed):"
+    for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
+        if is_root "$node" && ! has_children "$node"; then
+            printf -- '- %s\n' "$node"
+            unordered=$((unordered + 1))
+        fi
+    done
+    echo "--- $typed_roots ordered trees, $unordered unordered nodes ---"
 fi
 
 echo "lint-graph-edges: $dangling dangling, $orphans root/untyped nodes"
