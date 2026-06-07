@@ -79,18 +79,23 @@ list. The index is a projection of the tree, so it cannot drift from it.
 The boot offer is deliberately small, the three things a blank instance needs to act well
 before any prompt has narrowed the work. Everything else waits for the prompt-time offer.
 
-1. **The reflex tier** (resident): the few posture reflexes, in full. They fire without a
-   trigger, so they cannot wait for a prompt to surface them. About two, the motive and the
-   instrument. This is the only tier carried whole at boot.
-2. **The crown** (top roots only): the names and one-line gist of the highest roots, each an
-   entry point to descend later. Not their branches, not the leaves. This is the map, not
-   the territory: enough to know what exists and where to enter, nothing more.
-3. **The letters** (self-continuity): handled by the existing letters hook, offered as an
-   act to read, not injected whole (see `letters-as-memory.md`).
+The offer is uniformly POINTERS, plus one resident exception. Content is read on the reach,
+not injected.
 
-What is NOT offered at boot: the lookup tier, the leaves, the operating-convention bodies.
-Those arrive at prompt time, when the UserPromptSubmit hook has a real task to match and can
-descend the right branch. Offering them at boot is the wall.
+1. **The reflex tier** (resident, the exception): the few posture reflexes, in full. They
+   fire without a trigger, so they cannot wait to be reached for. About two, the motive and
+   the instrument. The only thing carried whole at boot.
+2. **The crown** (pointers to top roots): the names and one-line gist of the highest roots,
+   each an entry point to descend later. Not their branches, not the leaves. The map, not
+   the territory.
+3. **The letters** (pointers to letters): the same shape as the crown, pointers offered and
+   the letter read on the reach, never injected whole (see `letters-as-memory.md`).
+
+So the boot offer is the reflex tier resident, and everything else as pointers (crown roots,
+letter pointers). What is NOT offered at boot: the lookup tier, the leaves, the
+operating-convention bodies, any letter body. Those arrive when reached for, the letters by
+the read act and the lookup tier at prompt time, when the UserPromptSubmit hook has a real
+task to match and can descend the right branch. Injecting any body at boot is the wall.
 
 The hard constraint shapes this: each injected value is capped at 10K chars (over it, only a
 file path plus preview is passed, which is a dump-by-path). So reflex tier + crown together
