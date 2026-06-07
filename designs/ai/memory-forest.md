@@ -1,4 +1,4 @@
-# Memory as a Graph
+# Memory Forest
 
 The memory corpus is 400-plus flat prose files, and the agent skims them. This is the
 structure that replaces the heap with a typed parent-tree whose roots are a small reading list, so the right
