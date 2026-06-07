@@ -43,7 +43,7 @@ pre-commit check. Cheap, and it is what makes filename-as-target safe without UU
 
 A node with no `parent` is a root. A node with `parent: foo` is valid only when `foo.md` exists
 in the memory directory. The lint script (`scripts/memory/lint-graph-edges.sh`) enforces this; run
-it standalone or let the pre-commit hook do it.
+it standalone or let the lefthook pre-commit command do it.
 
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line a
 root, so reading the index IS reading everything. A parent-tree has roots, so the entry point

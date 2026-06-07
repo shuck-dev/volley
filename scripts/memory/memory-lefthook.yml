@@ -1,0 +1,20 @@
+# lefthook.yml template for the memory repo.
+# Copy this file to the memory repo root and run `lefthook install` once.
+# Remove any existing .git/hooks/pre-commit first.
+#
+# The lint script lives in the volley repo at scripts/memory/lint-graph-edges.sh.
+# It takes the memory dir as $1 and defaults to the memory repo when omitted,
+# so no hardcoded path is needed here.
+no_auto_install: true
+
+output:
+  - summary
+  - success
+  - failure
+  - execution_out
+  - skips
+
+pre-commit:
+  commands:
+    lint-graph-edges:
+      run: /home/josh/gamedev/volley/scripts/memory/lint-graph-edges.sh
