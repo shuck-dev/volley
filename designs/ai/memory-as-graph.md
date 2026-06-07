@@ -179,8 +179,39 @@ memory root `feedback_we_are_a_team`).
 
 ## The honest limit
 
-Structure aids retention and makes maintenance queryable. It does not by itself install a
-reflex or cure skim-as-boilerplate; that is the instrument, exercised by reading the source
-at decision time. A richer graph the agent still skims fixes nothing. The graph earns its
-keep on the maintenance payoff (reconciliation becomes a query), not on a promise of better
-recall.
+The graph earns its keep on the MAINTENANCE payoff: reconciliation becomes a query
+(`duplicate-of` clusters merge, `instance-of` clusters link), and orphans become mechanically
+detectable (a node with no `instance-of` is found by running the graph, where flat-file bloat
+was found only by a human noticing). That half is solid.
+
+The RETENTION claim is narrower than "fixes retention," and the rest of this doc should not
+overstate it. The graph makes the right content findable; it does not make the agent read it.
+The last step is still the agent choosing to Read the pointed-to content (the unreliable
+instrument); a well-structured library does not help a reader who does not pull books. So the
+honest claim is BETTER ACCESS to the right content, not guaranteed reading of it. A new failure
+mode replaces the old: the agent asserts from the injected gist without following the pointer,
+instead of skimming a dump.
+
+Four limits the design has not closed, named so they are not mistaken for solved:
+
+- **Matching is the unvalidated critical path.** The whole descent rests on the
+  UserPromptSubmit hook seeding the RIGHT node before the agent sees the prompt. That is the
+  same keyword/intent instrument the noisy correction-signal hook already strains. A mis-seed
+  injects the wrong cluster, which is worse than injecting nothing because the agent reads it
+  as relevant. The spike must specify the match algorithm, its behaviour on an ambiguous or
+  cross-domain prompt (one touching dispatch AND narrative), and a fallback when confidence is
+  low (offer the crown, not a wrong branch).
+- **Branch size versus the 10K cap is unresolved.** The cap is named for the crown but never
+  sized for a branch. A mid-root with many leaves can blow it, and a walk that hits the cap
+  mid-branch injects a PARTIAL branch the agent reads as complete, missing the leaf that would
+  have changed its answer. The spike must set a depth limit, leaf-truncation rule, and
+  partial-injection behaviour.
+- **Build cost is weeks, not an afternoon.** Today exactly one file carries `instance-of`.
+  Typing 400+ files means reading each, deciding its parent, writing the edge, and resolving
+  the `duplicate-of` nodes it surfaces (decisions, not mechanical adds). The research survey's
+  afternoon estimate was for its lighter options, not this.
+- **A new drift mode.** Orphaned graph nodes replace orphaned prose files. Better (detectable
+  by running the graph) but real: every new node needs its edge set or it falls out of descent.
+
+It does not install a reflex or cure skim-as-boilerplate either; that is the instrument,
+[[feedback_self_judgment_is_coherence_not_accuracy]].
