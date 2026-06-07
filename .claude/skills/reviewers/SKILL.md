@@ -47,10 +47,10 @@ The dispatcher may dispatch a **fresh-eyes** pass alongside the scope-filtered r
 
 ## Verdict shape
 
-Two outcomes: approve or block. You do not apply a verdict label and you do not post the verdict on the PR yourself. You report your verdict to the organiser (the dispatcher report), and the organiser synthesises every reviewer's verdict into one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`, posted via the `bot-review` workflow). What you post on the PR is only your inline findings.
+Two outcomes: approve or block. The verdict keys on SEVERITY, not on whether you posted a finding. Only an `issue:` blocks; `nitpick:`, `suggestion:`, and `question:` are non-blocking and ride along on an approve. You do not apply a verdict label and you do not post the verdict on the PR yourself. You report your verdict to the organiser (the dispatcher report), and the organiser synthesises every reviewer's verdict into one bot synthesis review (APPROVE / REQUEST_CHANGES under `shuck-volley-bot[bot]`, posted via the `bot-review` workflow). What you post on the PR is only your inline findings.
 
-- **Approve**: post nothing on the challenge. Report "approve" to the organiser with your reasoning. If a note feels worth posting on the PR, the verdict was block, not approve.
-- **Block**: post each finding as an inline review comment anchored to the diff line (grouped into one Review, see below), never the main thread. Report "block" to the organiser so the synthesis review reflects it.
+- **Block**: you found at least one `issue:`. Post every finding inline (the `issue:` and any non-blocking ones), grouped into one Review, never the main thread. Report "block" to the organiser.
+- **Approve**: no `issue:`. You may still post up to your nitpick budget of `nitpick:`/`suggestion:`/`question:` inlines, then report "approve" to the organiser. Non-blocking findings do not turn an approve into a block, and the author folds or ignores them without a re-battle.
 
 Putting findings in the dispatcher report alone leaves the author with nothing to act on; substantive findings (player-affecting, latent bug, missing guard, design concern) land as inline comments on the PR first.
 
@@ -109,7 +109,7 @@ All replies stay inline.
 
 ## Inline finding shape
 
-- **Label**: `issue`, `suggestion`, `question`. Conventional Comments vocab, minus `nitpick` — Volley reviews don't post nitpicks. The bar for any finding: name the concrete consequence in one clause (player-visible bug, future-maintainer trap, silent save corruption, contract violation). If you can't, drop it. Style preferences, alternative phrasings, taste calls, "could also" suggestions, and questions you could have answered yourself by reading one more file all stay out of the review. Review churn is the cost of low-value findings; err toward silence.
+- **Label**: `issue`, `suggestion`, `question`, `nitpick`. Conventional Comments vocab. Only `issue` blocks: name the concrete consequence in one clause (player-visible bug, future-maintainer trap, silent save corruption, contract violation); if you cannot, it is not an `issue`. `suggestion`, `question`, and `nitpick` are non-blocking and never gate the verdict. **Nitpick budget: at most 2 `nitpick` per reviewer per review**, so allowing them does not reopen the low-value-finding floodgate; over budget, drop the weakest. Style preferences, taste calls, and questions you could answer by reading one more file still stay out. Err toward silence; the cap is a ceiling, not a quota.
 - One sentence naming the concern; one short clause naming the fix.
 - Hard cap: 30 words per inline. Two lines max. Three lines is a hard block on yourself; tighten.
 - One issue per inline. If you have two findings on different lines, post two inlines.
