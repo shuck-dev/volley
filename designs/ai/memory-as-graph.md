@@ -17,11 +17,23 @@ that already exist. Reducing file count is the symptom of the fix; structure is 
 
 ## The corpus is already a graph
 
-Files are nodes, `[[name]]` links are edges. Today it is undirected, untyped, and
-hand-maintained, so it rots into orphans and duplicates. The design is to make that graph
-explicit and typed, not to adopt a graph database (cloud or infra heavy, a private-info
-leak surface, rejected in the research survey). The cheap, correct surface is typed links
-in frontmatter plus a script that reads them, staying in git.
+Today files are nodes and `[[name]]` links are edges, undirected, untyped, hand-maintained,
+so it rots into orphans and duplicates. The design is to make that graph explicit and typed,
+not to adopt a graph database (cloud or infra heavy, a private-info leak surface, rejected in
+the research survey). The cheap, correct surface is typed links plus a script that reads them,
+staying in git.
+
+**The graph holds no content; it is pure pointers.** A node is a reference to content that
+lives elsewhere (a rule file, a letter, a design doc, a Linear issue), and an edge is a typed
+relation between references. The content never moves into the graph and is never duplicated by
+it; the graph is an index OVER content, not a container OF it. This dissolves the
+content-versus-type question: a dispatch-lesson letter and a dispatch rule are two pointers
+that cluster together because their edges put them there, while the letter stays in `letters/`
+and the rule stays in its file. Unify by content (topic clusters in the pointer layer); leave
+the content where it natively lives. Type is a tag on the pointer (rule, letter, doc) that
+decides how it loads, not a separate tree. And reconciliation becomes re-pointing edges, not
+moving content: merge-and-delete operates on pointers; underlying files are untouched unless
+genuinely duplicated.
 
 ## Typed edges
 
@@ -51,10 +63,12 @@ relates-to: [feedback_use_linear_native_relations]
 
 A node with no `instance-of` is a root; the top roots are the ones no other root climbs to.
 
-There is ONE graph, with several trees hanging off the crown: a rules tree, a letters tree,
-others as they emerge. The letters are not a separate memory system with their own model;
-they are one tree, their recent/band/digest gradient being that tree's particular descent
-shape. The crown spans all trees; the boot offer is the root pointers across all of them.
+There is ONE pointer graph, clustered by content (topic), not by type. A topic cluster holds
+pointers of every kind together: the dispatch rule, the dispatch-lesson letter, the dispatch
+design doc, all under the same root because they are about the same thing. Letters are not a
+separate memory system; their pointers sit in whatever topic they concern, and the
+recent/band/digest gradient is just the letter pointers' loading property, not a separate
+tree. The crown spans all clusters; the boot offer is the root pointers across all of them.
 
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line
 a root, so reading the index IS reading everything. A graph index has PARENTS, so the index
@@ -93,12 +107,12 @@ not injected.
 2. **The crown** (pointers to top roots): the names and one-line gist of the highest roots,
    each an entry point to descend later. Not their branches, not the leaves. The map, not
    the territory.
-3. **The letters** (one tree in this graph): not a separate system, another tree under the
-   same crown. Its gradient IS its descent: the digest is the tree's root (consolidated gist),
-   the band is mid, the recent letters are leaves; reaching from digest down to one letter is
-   crown-and-descent in the letters tree. So the boot offer carries the letters root the same
-   way it carries any root, a pointer, content read on the reach (see `letters-as-memory.md`,
-   which is an INSTANCE of this design, not a sibling to it).
+3. **The letters** (pointers like any other): not a separate system. Letter pointers cluster
+   by the topic they concern, alongside rule and doc pointers; the recent/band/digest gradient
+   is just their loading property (the digest pointer is the cheapest, the recent letters the
+   richest). The boot offer carries letter pointers the same way it carries any pointer,
+   content read on the reach (see `letters-as-memory.md`, an INSTANCE of this design, not a
+   sibling to it).
 
 So the boot offer is the reflex tier resident, and everything else as pointers (crown roots,
 letter pointers). What is NOT offered at boot: the lookup tier, the leaves, the
