@@ -93,6 +93,30 @@ as-you-go (informal), and as a periodic deep read (the `digest` for letters; the
 dream or auto-consolidation pass for the corpus, #722). Better maintenance is better
 retention, not tidiness.
 
+## What Claude Code natively supports
+
+Verified against the Claude Code docs (researcher pass, 2026-06-07; scratchpad
+`ai/scratchpads/memory-graph-harness-check.md` if kept). The store and the crown script
+are harness-agnostic (plain files, plain script). Retrieval maps to native mechanisms:
+
+- **Crown at session start**: a SessionStart hook generates the crown and injects it as
+  `additionalContext`. Hard cap: a single value over **10,000 chars** is written to a file
+  and only its path plus a preview is injected. So the crown must stay well under 10K or it
+  becomes a dump-by-path, the wall returning. Keep the crown to the top roots only.
+- **Descent is done by a hook, not by me live.** There is no native graph traversal; at-need
+  retrieval natively is only (MEMORY.md head at start) + (skill description match) + (the
+  agent choosing to Read, the unreliable instrument). The automated form is a
+  **UserPromptSubmit hook** that parses frontmatter, walks `instance-of` edges from the
+  matched node, and injects that subgraph before the prompt reaches me. The walk terminates
+  (visited-set, one branch from a seed) and stays bounded (the branch, not the corpus), under
+  the same 10K cap. This is the real shape of "descent": the hook descends server-side; I
+  receive the branch, I never traverse.
+- **Skills as entry points**: a SKILL.md description-trigger (flat intent-match, no hierarchy)
+  can fire a node; its body can `!`cat node-file`` to pull the content on match.
+- **MCP only for semantic recall**: embedding/vector matching across the full corpus needs an
+  MCP server, the heavyweight path the research already rejected. Keyword/intent matching and
+  edge-walking are native.
+
 ## The honest limit
 
 Structure aids retention and makes maintenance queryable. It does not by itself install a
