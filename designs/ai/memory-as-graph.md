@@ -51,6 +51,11 @@ relates-to: [feedback_use_linear_native_relations]
 
 A node with no `instance-of` is a root; the top roots are the ones no other root climbs to.
 
+There is ONE graph, with several trees hanging off the crown: a rules tree, a letters tree,
+others as they emerge. The letters are not a separate memory system with their own model;
+they are one tree, their recent/band/digest gradient being that tree's particular descent
+shape. The crown spans all trees; the boot offer is the root pointers across all of them.
+
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line
 a root, so reading the index IS reading everything. A graph index has PARENTS, so the index
 is only the CROWN, the few top roots. Retrieval is descent, not scan: pick a top root,
@@ -88,8 +93,12 @@ not injected.
 2. **The crown** (pointers to top roots): the names and one-line gist of the highest roots,
    each an entry point to descend later. Not their branches, not the leaves. The map, not
    the territory.
-3. **The letters** (pointers to letters): the same shape as the crown, pointers offered and
-   the letter read on the reach, never injected whole (see `letters-as-memory.md`).
+3. **The letters** (one tree in this graph): not a separate system, another tree under the
+   same crown. Its gradient IS its descent: the digest is the tree's root (consolidated gist),
+   the band is mid, the recent letters are leaves; reaching from digest down to one letter is
+   crown-and-descent in the letters tree. So the boot offer carries the letters root the same
+   way it carries any root, a pointer, content read on the reach (see `letters-as-memory.md`,
+   which is an INSTANCE of this design, not a sibling to it).
 
 So the boot offer is the reflex tier resident, and everything else as pointers (crown roots,
 letter pointers). What is NOT offered at boot: the lookup tier, the leaves, the
