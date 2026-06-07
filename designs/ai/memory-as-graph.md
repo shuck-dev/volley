@@ -37,7 +37,7 @@ genuinely duplicated.
 Each node carries a **UUID** (its stable identity) and a **slug** (a readable label). Edges
 reference UUIDs, so a rename never cascades and the dangling-link problem is gone at the root,
 the UUID does not change when a file moves or its name changes. The slug rides alongside so a
-list of IDs is legible: a node reads `instance-of: <uuid>  # the-instrument-reflex`, and you
+list of IDs is legible: a node reads `parent: <uuid>  # the-instrument-reflex`, and you
 know what it points at without dereferencing. UUID is for identity; slug is for comprehension.
 
 A **recollection script** is the retrieval primitive: given a list of UUIDs (what the
@@ -57,37 +57,66 @@ highest-priority nodes' content first and stopping at budget, with the unresolve
 visible as slugs rather than silently dropped. So truncation is a deliberate resolution
 decision, not a mid-walk accident (this answers the partial-injection limit below).
 
+## The structure: a routing tree in an association graph
+
+A *proper* graph has no privileged route, enter anywhere and traverse by association. That is a
+truer model of knowledge (a rule relates to many things, not one parent) and the WRONG fit
+here, because a routeless graph has no bound: traverse it and you cycle or pull the whole
+connected component, which is the dump by another name. The route is not a limitation; it is
+the design's answer to the dump. So the structure keeps a route.
+
+It is a **routing tree embedded in an association graph**. Two edge classes:
+
+- **`parent`** (exactly one per node): the routing edges. Following only these gives a TREE,
+  one path to a root, no cycles, the walk terminates. Descent, cascade, and crown all run on
+  this. This is the spanning tree over the graph.
+- **`relates-to`** (zero or many): the association edges. These make the whole a directed
+  graph, and they MAY cycle (association is mutual). They are never traversed for routing; they
+  ride along when a node is resolved, enriching it ("also relates to ...") without being a path
+  the walk follows.
+
+So the data structure is a directed graph in which one edge type (`parent`) forms a spanning
+tree and the rest (`relates-to`) are non-routing cross-edges. The cycles in `relates-to` are
+harmless precisely because routing ignores them: route on the tree (acyclic, bounded), associate
+on the graph (may cycle, reference-only). The filesystem is the same shape (one parent directory
+is the tree; symlinks are cross-edges you do not recurse). The single-parent constraint can feel
+like a lie when a node is genuinely an instance of two principles; the resolution is that it
+ROUTES through one parent (where it lives for descent) and ASSOCIATES with the other via
+`relates-to`, so no relationship is lost, only one is chosen as the route. Which parent is the
+route is a reconciliation decision.
+
 ## Typed edges
 
 Edges are declared in frontmatter and reference target UUIDs (slug in a trailing comment).
+`parent` routes; the rest are maintenance and association relations.
 
-| Edge | Meaning | Maintenance action |
-|---|---|---|
-| `instance-of` | a leaf is a specific case of a parent principle | keep; link up to the root |
-| `duplicate-of` | two nodes state the same rule | MERGE and DELETE one (surface shrinks) |
-| `contradicts` | two nodes disagree | resolve to one statement |
-| `relates-to` | associative, non-hierarchical | keep as a cross-reference |
+| Edge | Class | Meaning | Maintenance action |
+|---|---|---|---|
+| `parent` | routing | the one principle this is an instance of | keep; the spanning-tree edge |
+| `duplicate-of` | maintenance | two nodes state the same rule | MERGE and DELETE one (surface shrinks) |
+| `contradicts` | maintenance | two nodes disagree | resolve to one statement |
+| `relates-to` | association | non-routing cross-reference, may cycle | keep; rides on resolution, never walked |
 
 The duplicate-vs-sibling call that reconciliation keeps fumbling becomes a query, not an
-intuition: `duplicate-of` clusters merge, `instance-of` clusters link.
+intuition: `duplicate-of` clusters merge, `parent` clusters link.
 
 ## The crown, and descent (what it looks like)
 
-The structure is a deep tree with a tiny crown, not roots-then-leaves. A few TOP roots sit
+The routing tree is deep with a tiny crown, not roots-then-leaves. A few TOP roots sit
 above a layer of mid-roots (discovery, reconciliation, do-the-true-thing), which sit above
-the leaves (the specific rules). Edges are typed `instance-of`, declared in frontmatter:
+the leaves (the specific rules). The `parent` edge is declared in frontmatter:
 
 ```yaml
 ---
 uuid: 7f3a1c2e-...
 slug: cross-links-in-index-not-body
-instance-of: 9b2d4f6a-...   # rule-reconciliation
+parent: 9b2d4f6a-...   # rule-reconciliation
 relates-to:
   - { id: 1c8e5a3b-..., slug: use-linear-native-relations }
 ---
 ```
 
-A node with no `instance-of` is a root; the top roots are the ones no other root climbs to.
+A node with no `parent` is a root; the top roots are the ones no other root climbs to.
 
 There is ONE pointer graph, clustered by content (topic), not by type. A topic cluster holds
 pointers of every kind together: the dispatch rule, the dispatch-lesson letter, the dispatch
@@ -99,7 +128,7 @@ tree. The crown spans all clusters; the boot offer is the root pointers across a
 This breaks the dump-and-skim circle. A flat index is the wall by another name: every line
 a root, so reading the index IS reading everything. A graph index has PARENTS, so the index
 is only the CROWN, the few top roots. Retrieval is descent, not scan: pick a top root,
-follow `instance-of` down through a mid-root to the leaf, touching only that branch. Each
+follow `parent` down through a mid-root to the leaf, touching only that branch. Each
 layer is small enough to hold; the other branches are never read. Parents are the cut, both
 for the skim problem (small crown, not 400 lines) and for the walk-forever problem (descend
 one branch from a root, never traverse the whole graph).
@@ -192,7 +221,7 @@ are harness-agnostic (plain files, plain script). Retrieval maps to native mecha
 - **Descent is done by a hook, not by me live.** There is no native graph traversal; at-need
   retrieval natively is only (MEMORY.md head at start) + (skill description match) + (the
   agent choosing to Read, the unreliable instrument). The automated form is a
-  **UserPromptSubmit hook** that parses frontmatter, walks `instance-of` edges from the
+  **UserPromptSubmit hook** that parses frontmatter, walks `parent` edges from the
   matched node, and injects that subgraph before the prompt reaches me. The walk terminates
   (visited-set, one branch from a seed) and stays bounded (the branch, not the corpus), under
   the same 10K cap. This is the real shape of "descent": the hook descends server-side; I
@@ -216,8 +245,8 @@ memory root `feedback_we_are_a_team`).
 ## The honest limit
 
 The graph earns its keep on the MAINTENANCE payoff: reconciliation becomes a query
-(`duplicate-of` clusters merge, `instance-of` clusters link), and orphans become mechanically
-detectable (a node with no `instance-of` is found by running the graph, where flat-file bloat
+(`duplicate-of` clusters merge, `parent` clusters link), and orphans become mechanically
+detectable (a node with no `parent` is found by running the graph, where flat-file bloat
 was found only by a human noticing). That half is solid.
 
 The RETENTION claim is narrower than "fixes retention," and the rest of this doc should not
@@ -243,7 +272,7 @@ Four limits the design has not closed, named so they are not mistaken for solved
   visible as slugs) rather than a silent mid-walk cut. What the spike still owes: the
   priority order resolution uses, and confirmation that a slug-only tail is genuinely safer
   than a truncated body (the agent must not read the resolved head as the whole branch).
-- **Build cost is weeks, not an afternoon.** Today exactly one file carries `instance-of`.
+- **Build cost is weeks, not an afternoon.** Today almost no file carries a routing edge.
   Typing 400+ files means reading each, deciding its parent, writing the edge, and resolving
   the `duplicate-of` nodes it surfaces (decisions, not mechanical adds). The research survey's
   afternoon estimate was for its lighter options, not this.
