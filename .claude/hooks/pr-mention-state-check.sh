@@ -89,10 +89,14 @@ state_claim = re.search(
     r")\b",
     text, re.I) is not None
 
-# A live read OR a gh pr write this turn grounds the claim (the command result
-# is ground truth), so neither should block.
+# Only a live READ this turn grounds a state claim; the command result is the
+# ground truth. Reading verbs (view/list/status/checks) and a gh api GET on
+# pulls/issues read current state. `diff` reads the file diff, not the PR's
+# state, so it does NOT ground a state claim. Write verbs (create, merge, close,
+# edit, ready, comment, review, reopen) change a PR without reading its state,
+# and agents never merge here anyway (the maintainer merges by hand).
 touched = re.search(
-    r"gh pr (view|list|status|checks|diff|merge|close|edit|create|reopen|ready|comment|review)"
+    r"gh pr (view|list|status|checks)"
     r"|gh api[^\n]*(/pulls|/issues)",
     cmds, re.I) is not None
 
