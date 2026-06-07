@@ -8,6 +8,12 @@ content is findable without dumping everything. Options survey:
 
 ## The forest model generalises beyond memory
 
+> REWRITE PENDING: extract this general model into its own doc (`designs/ai/forest-model.md`),
+> leaving this doc as the MEMORY instance pointing up to it; the design docs and the Linear
+> backlog are sibling instances. The model is woven through the sections below, so the extract is
+> a real restructure, not a cut, do it as a focused pass. The insight is captured here so it is
+> not lost; the rewrite makes it correctly-shaped.
+
 What this doc describes is a FOREST MODEL for any corpus a fresh, blank instance must navigate
 without already understanding it: a few single-meaning trunks (coarse buckets), each growing into a
 tree (root, branches, leaves by a `parent` edge), with each root node serving as its tree's index,
