@@ -25,6 +25,18 @@ if [ "$TOOL" = "Bash" ]; then
   else
     exit 0
   fi
+elif [ "$TOOL" = "Edit" ] || [ "$TOOL" = "Write" ] || [ "$TOOL" = "NotebookEdit" ]; then
+  # Scan only the fields that WRITE content, not the match target. An em dash
+  # in Edit's old_string is being matched to remove it (the cure, not the
+  # violation); only new_string / content / new_source write a dash to a file.
+  SCAN=$(printf '%s' "$INPUT" | jq -r '
+    .tool_input | (.new_string // "") + "\n" + (.content // "") + "\n" + (.new_source // "")
+  ' 2>/dev/null || printf '%s' "$INPUT")
+elif [ "$TOOL" = "MultiEdit" ]; then
+  # Same: scan only the new_string of each edit, never old_string.
+  SCAN=$(printf '%s' "$INPUT" | jq -r '
+    [.tool_input.edits[]?.new_string] | join("\n")
+  ' 2>/dev/null || printf '%s' "$INPUT")
 else
   SCAN=$(printf '%s' "$INPUT" | jq -r '.tool_input | tostring' 2>/dev/null || printf '%s' "$INPUT")
 fi
