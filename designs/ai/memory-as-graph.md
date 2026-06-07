@@ -60,6 +60,32 @@ descent follows `parent` edges through the files directly; there is no pointer i
 maintain. MEMORY.md is generated as the roots, a projection of the forest, so the index cannot drift
 from the structure.
 
+## The index is per-tree: each root node IS its tree's index
+
+There is no one flat index. Each tree's ROOT NODE holds the index of its own tree, its direct
+children with one-line gists, and is both the doorway intro and the local index for what is below
+it. So the index is distributed across the roots, not centralised. MEMORY.md shrinks to the CROWN:
+the handful of trunk roots, nothing more. Descent reads MEMORY.md (the trunk roots), opens the one
+trunk the work needs (that root node is the index of its trunk), descends to the sub-root that
+indexes the relevant branch, reaches the leaf. The index a fresh instance reads at each level is
+just that node's own listing of its children. This is the dump-and-skim cure made structural: the
+boot offer is the crown alone, and the per-tree detail is read on descent because each root carries
+its own index, so the standing injection stays tiny (the 10K cap is satisfied by structure, not
+restraint).
+
+## The bridge: the root's index carries provisional nodes
+
+Building the forest is incremental, so at any time many nodes are bucketed to a trunk but not yet
+ordered into its tree. The BRIDGE keeps them reachable without faking placement and without editing
+every node: a trunk root's index lists, beside its ordered children, a PROVISIONAL section, the
+nodes bucketed to this trunk but not yet ordered. A fresh instance opening that trunk root reads
+both and can reach any of them; the provisional listing says plainly "parked here, not yet ordered."
+The bridge lives in the root's index, never in the parked nodes' frontmatter, so no per-node edit is
+needed and a node leaves the bridge by gaining a real `parent` (it moves from the root's provisional
+list into an ordered sub-tree). The bridge is read-and-descended through the same surface a fresh
+instance already reads (the index), so nothing new has to be understood to walk it. It empties as
+the forest is ordered, then is gone.
+
 ## Tiers (when a node is read)
 
 - **Reflex tier**: a tiny set of posture rules read FIRST every session, the first items on the
