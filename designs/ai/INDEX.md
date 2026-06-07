@@ -14,7 +14,7 @@ How the agent reconstitutes itself across sessions: the rule corpus (structure a
 
 | Doc | Purpose |
 |---|---|
-| [Memory as a Graph](memory-as-graph.md) | The corpus as a typed graph: why unstructured data is not retained, the typed edges (instance-of, duplicate-of, contradicts), the reflex and lookup tiers, roots and trees, and reconciliation as graph upkeep. |
+| [Memory as a Graph](memory-as-graph.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a typed pointer-graph the agent descends to find the right content, maintained by reconciliation, offered not forced to each fresh session. |
 | [Letters as Memory](letters-as-memory.md) | The letters-to-my-next-self as a human-modelled memory gradient (recent full, fading band, consolidated digest), carrying self and posture across sessions the agent does not remember. |
 
 ## Agent-assisted writing

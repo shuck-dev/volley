@@ -1,12 +1,9 @@
 # Memory as a Graph
 
-How the agent's memory corpus is structured, and why. The model and rationale; the
-options survey that fed it is `designs/research/memory-system-improvements.md`, the
-letters layer is `designs/ai/letters-as-memory.md`, the consolidation procedure is the
-`digest` skill.
-
-(Placement note: AI-operational material, not game design. Sits under `designs/ai/` by
-current convention.)
+The memory corpus is 400-plus flat prose files, and the agent skims them. This is the
+structure that replaces the heap with a typed pointer-graph so the right content is
+findable. Options survey: `designs/research/memory-system-improvements.md`. Letters layer:
+`designs/ai/letters-as-memory.md`. Consolidation procedure: the `digest` skill.
 
 ## The problem it solves
 
@@ -137,8 +134,8 @@ discovery (you do not know up front; the doing teaches you, correct the structur
 
 ## Maintenance is graph upkeep
 
-Reconciliation is discovery applied to the memory surface: the doing reveals two fragments
-are one principle, so you correct the structure (merge, link, resolve). It runs continuously
+Reconciliation is discovery applied to the memory surface: doing the work, you find two
+fragments are one principle, so you correct the structure (merge, link, resolve). It runs continuously
 as-you-go (informal), and as a periodic deep read (the `digest` for letters; the
 dream or auto-consolidation pass for the corpus, #722). Better maintenance is better
 retention, not tidiness.
