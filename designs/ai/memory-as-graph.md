@@ -108,11 +108,9 @@ not injected.
    each an entry point to descend later. Not their branches, not the leaves. The map, not
    the territory.
 3. **The letters** (pointers like any other): not a separate system. Letter pointers cluster
-   by the topic they concern, alongside rule and doc pointers; the recent/band/digest gradient
-   is just their loading property (the digest pointer is the cheapest, the recent letters the
-   richest). The boot offer carries letter pointers the same way it carries any pointer,
-   content read on the reach (see `letters-as-memory.md`, an INSTANCE of this design, not a
-   sibling to it).
+   by topic alongside rule and doc pointers; their gradient is just a loading property, owned
+   by `letters-as-memory.md` (an INSTANCE of this design). The boot offer carries them the
+   same way as any pointer, content read on the reach.
 
 So the boot offer is the reflex tier resident, and everything else as pointers (crown roots,
 letter pointers). What is NOT offered at boot: the lookup tier, the leaves, the
@@ -171,13 +169,11 @@ are harness-agnostic (plain files, plain script). Retrieval maps to native mecha
 
 ## Offer, not force
 
-The reader is not a continuous self; each session is a fresh instance that wakes blank, a
-teammate the author will never meet. So the system cannot rely on the agent remembering to
-descend (pull fails: no continuity to remember), and it must not force-feed a dump at boot
-(force fails the way it fails any teammate: skimmed, ignored, the wall). The model is OFFER:
-the crown and the matched subgraph made available, small and relevant, at the moment they
-help, and taken up freely. The SessionStart and UserPromptSubmit mechanisms are how the
-offer is delivered, not a licence to inject everything. Keep what is offered small; an offer
+The reader is a fresh instance with no continuity (the why is owned by `letters-as-memory.md`).
+Two failures follow: pull fails (nothing remembers to descend) and force fails (a dump at boot
+is skimmed, the wall). The model is OFFER: the crown and the matched subgraph made available,
+small and relevant, at the moment they help, and taken up freely. SessionStart and
+UserPromptSubmit are how the offer is delivered, not a licence to inject everything; an offer
 that is a wall is force again. This is the team protocol across the session boundary (the
 memory root `feedback_we_are_a_team`).
 
