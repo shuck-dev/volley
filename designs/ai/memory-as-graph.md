@@ -35,6 +35,33 @@ in frontmatter plus a script that reads them, staying in git.
 The duplicate-vs-sibling call that reconciliation keeps fumbling becomes a query, not an
 intuition: `duplicate-of` clusters merge, `instance-of` clusters link.
 
+## The crown, and descent (what it looks like)
+
+The structure is a deep tree with a tiny crown, not roots-then-leaves. A few TOP roots sit
+above a layer of mid-roots (discovery, reconciliation, do-the-true-thing), which sit above
+the leaves (the specific rules). Edges are typed `instance-of`, declared in frontmatter:
+
+```yaml
+---
+name: feedback_cross_links_in_index_not_body
+instance-of: feedback_rule_reconciliation
+relates-to: [feedback_use_linear_native_relations]
+---
+```
+
+A node with no `instance-of` is a root; the top roots are the ones no other root climbs to.
+
+This breaks the dump-and-skim circle. A flat index is the wall by another name: every line
+a root, so reading the index IS reading everything. A graph index has PARENTS, so the index
+is only the CROWN, the few top roots. Retrieval is descent, not scan: pick a top root,
+follow `instance-of` down through a mid-root to the leaf, touching only that branch. Each
+layer is small enough to hold; the other branches are never read. Parents are the cut, both
+for the skim problem (small crown, not 400 lines) and for the walk-forever problem (descend
+one branch from a root, never traverse the whole graph).
+
+MEMORY.md is generated as that crown plus the descent structure, not a hand-maintained flat
+list. The index is a projection of the tree, so it cannot drift from it.
+
 ## Tiers (where a node loads)
 
 - **Reflex tier**: a tiny resident set of posture rules, carried every session because
@@ -47,11 +74,9 @@ intuition: `duplicate-of` clusters merge, `instance-of` clusters link.
   rules fire as Skills (description-trigger); the rest are read on demand against the
   index. Injecting them is what builds the unreadable wall.
 
-## Roots and trees
+## A worked branch
 
-Structure is a few load-bearing roots with the rest hanging off by typed edge. A root
-holds a principle; branches are its routes; leaves are the specific rules. Worked example,
-discovery as a development process:
+Discovery as a development process, one mid-root and its branch:
 
 ```
 discovery (you do not know up front; the doing teaches you, correct the structure to match)
