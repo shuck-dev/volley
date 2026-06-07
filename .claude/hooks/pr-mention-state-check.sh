@@ -89,10 +89,12 @@ state_claim = re.search(
     r")\b",
     text, re.I) is not None
 
-# A live read OR a gh pr write this turn grounds the claim (the command result
-# is ground truth), so neither should block.
+# Only a live READ this turn grounds a state claim; the command result is the
+# ground truth. Write verbs (create, merge, close, edit, ready, comment, review,
+# reopen) change a PR but do not read its current state, so they do NOT ground a
+# claim like "is mergeable" or "approved". Reading verbs only.
 touched = re.search(
-    r"gh pr (view|list|status|checks|diff|merge|close|edit|create|reopen|ready|comment|review)"
+    r"gh pr (view|list|status|checks|diff)"
     r"|gh api[^\n]*(/pulls|/issues)",
     cmds, re.I) is not None
 
