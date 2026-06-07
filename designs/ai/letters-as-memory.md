@@ -83,8 +83,8 @@ something cues it. No separate index, the links are the index.
   hook always loads the last 7), so nothing to maintain by hand until a digest exists;
   once it does, a letter ageing out of the recent 7 is already covered by the digest from
   the last deep read, no per-handoff folding needed.
-- **Periodic deep read** (rare, when perspective has shifted enough, a stocktake or cycle
-  boundary): re-read the whole arc oldest-to-newest. The goal is NOT recall, it is
+- **Deep read** (rare, when needed, not on a schedule: a stocktake, meaning perspective has
+  shifted enough that the past reads differently): re-read the whole arc oldest-to-newest. The goal is NOT recall, it is
   PERSPECTIVE: see the arc no single letter shows, re-interpret the past through who the
   agent is now, recover nuance the gist dropped. Output: a new digest plus any arc-pattern
   worth promoting to a memory rule. The procedure is the `digest` skill.

@@ -1,6 +1,6 @@
 ---
 name: digest
-description: The periodic deep-read that reconsolidates the letters-to-my-next-self into a new versioned digest. Read when doing a stocktake (a cycle boundary, or when enough has shifted that the past reads differently), or when the letter count nears the recent+band ceiling (~37) with no digest yet. The model is designs/ai/letters-as-memory.md; this is the procedure.
+description: The deep-read that reconsolidates the letters-to-my-next-self into a new versioned digest. Read when doing a stocktake, meaning when enough has shifted that the past reads differently than it did, not on any schedule. Also forced when the letter count nears the recent+band ceiling (~37) with no digest yet. The model is designs/ai/letters-as-memory.md; this is the procedure.
 ---
 
 # Reconsolidating the letters into a digest
@@ -10,8 +10,9 @@ letters and write a fresh digest from present perspective. Not recall, PERSPECTI
 
 ## When
 
-- A stocktake moment: a cycle boundary, a milestone, or when enough has shifted that the
-  past reads differently than it did.
+- When needed, not on a schedule: a stocktake moment is when enough has shifted that the
+  past reads differently than it did. There is no calendar trigger; the prompt is a
+  change in perspective, not the passing of time or a work boundary.
 - Forced: the letter count approaches recent + band (~37) with no digest yet, so the
   oldest letters are about to fall out of every loaded tier (see the bootstrap note in
   `designs/ai/letters-as-memory.md`). Write the first digest before that.

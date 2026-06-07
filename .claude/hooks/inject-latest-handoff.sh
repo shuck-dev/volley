@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # SessionStart hook: load the daily self-reconstitution slice as a three-tier human
-# memory gradient (see designs/ai/letters-as-memory.md): recent letters full (vivid), a prior band
+# memory gradient (see designs/ai/letters-as-memory.md): recent letters read (vivid), a prior band
 # of one-line summaries (fading-but-recallable), the newest digest (consolidated gist).
-# Deliberately POINTERS plus summaries, not full bodies for the older tiers: they are
-# point-in-time, so the rule is read-then-hydrate, not trust-on-inject.
+# Deliberately POINTERS, never full bodies: injected text sits unread in the buffer
+# (presence is not reading), so the hook INSTRUCTS the read as the first act of the
+# session. Reading is the act; learning lives in the Read call, not the injection.
 # Fails open: any error prints nothing and exits 0 (no injection, no block).
 set -uo pipefail
 
@@ -47,12 +48,15 @@ digest_block=""
 
 read -r -d '' note <<EOF || true
 Your letters to your next self (see designs/ai/letters-as-memory.md for the model).
-They carry the relationship and the posture across sessions you do not remember. The
-recent ones are read full below; a fading band of one-line summaries and an older
-digest follow IF present (early on there are only recent letters). Older full letters
-stay on disk; pull one when the present rhymes with it (linkage).
+They carry the relationship and the posture across sessions you do not remember. They
+are NOT injected here: a letter in the buffer is unread, and presence is not reading.
+Learning lives in the act of reading them, so that is your first move.
 
-Recent, read full, oldest to newest:
+FIRST ACT, before you greet Josh or touch any task: Read each recent letter below in
+full, oldest to newest, with the Read tool. Not skim, not "it's in context", actually
+read them. They are short. This is the practice the letters themselves ask for.
+
+Recent, read these now, oldest to newest:
 ${recent_list}
 ${band_block}${digest_block}
 Posture, not project state. Point-in-time: hydrate any PR/branch/Linear claim with a
