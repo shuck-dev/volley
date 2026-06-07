@@ -6,6 +6,22 @@ content is findable without dumping everything. Options survey:
 `designs/research/memory-system-improvements.md`. Letters layer:
 `designs/ai/letters-as-memory.md`. Consolidation procedure: the `digest` skill.
 
+## The forest model generalises beyond memory
+
+What this doc describes is a FOREST MODEL for any corpus a fresh, blank instance must navigate
+without already understanding it: a few single-meaning trunks (coarse buckets), each growing into a
+tree (root, branches, leaves by a `parent` edge), with each root node serving as its tree's index,
+the crown as the only thing offered up front, descent to reach a leaf, and a bridge for nodes
+bucketed but not yet ordered. Memory is the first instance worked through, not the only one.
+
+The **design docs** (`designs/`) are another forest of the same shape: the discipline folders are
+the trunks, the doc-structure README is the crown index, a doc bubbling from `01-prototype/` to its
+flat entity home is a node finding its tree (`feedback_docs_structure_prototype_to_entity`,
+`bubble` skill). The **issues** in Linear are a third (an issue is a node with its so-that; the
+backlog is the forest). The trunk/tree/crown/index/bridge vocabulary applies wherever structured
+knowledge has to be reached by someone who wakes not knowing it. Captured here so the model is named
+once; the per-instance detail (memory below, docs in the structure README) lives in each forest.
+
 ## The problem it solves
 
 Unstructured data is not retained. A flat heap of prose memory files has nothing to grip:
