@@ -50,35 +50,41 @@ descent follows `parent` edges through the files directly; there is no pointer i
 maintain. MEMORY.md is generated as the crown, a projection of the tree, so the index cannot drift
 from the structure.
 
-## Tiers (where a node loads)
+## Tiers (when a node is read)
 
-- **Reflex tier**: a tiny resident set of posture rules, carried every session because they
-  fire without a trigger. A rule earns it only by serving a distinct purpose no other reflex
-  serves (a function test, not a budget); the set is small as a consequence. About two: the
-  motive (do the true thing) and the instrument (confidence is not accuracy, go read).
-  Distinct from operating conventions (review, dispatch, git), which are settled rules, not
-  posture. See #873, #722.
-- **Lookup tier**: everything else. Not resident; found by descending from the crown when a
-  prompt narrows the work. Injecting it at boot is what builds the unreadable wall.
+- **Reflex tier**: a tiny set of posture rules read FIRST every session, the first items on the
+  reading list. A rule earns the tier only by serving a distinct purpose no other reflex serves
+  (a function test, not a budget); the set is small as a consequence. About two: the motive (do
+  the true thing) and the instrument (confidence is not accuracy, go read). Distinct from
+  operating conventions (review, dispatch, git), which are settled rules, not posture. See #873,
+  #722. They are read first, not injected whole; reading is the act (below).
+- **Lookup tier**: everything else. Read by descending from the crown when a prompt narrows the
+  work.
 
-## What session start offers
+## What session start offers: a reading list
 
-Small, the two things a blank instance needs before any prompt narrows the work:
+Nothing in the start dump is injected whole. Everything is a POINTER, and the dump is a reading
+list the fresh instance works top to bottom as its first act. No resident exception, not even the
+reflex tier: injecting a body whole is force and does not install it anyway (the letters proved
+that, and so did a missed concision rule), so even the most important rule is a pointer that is
+READ, never force-fed. Reading the list is the act; a pointer sat in the buffer is unread.
 
-1. **The reflex tier** (resident, in full): the posture reflexes. They fire without a trigger,
-   so they cannot wait to be reached for. The only thing carried whole at boot.
-2. **The crown** (the top roots, one-line gist each): the entry map to descend from later.
-   Not branches, not leaves.
+The list, in order:
+
+1. **The reflex pointers**: the two posture reflexes, read first because they shape every move
+   before any prompt narrows the work.
+2. **The crown pointers**: the top roots, one-line gist each, the entry map to descend from when
+   a prompt arrives.
 
 Letters are part of this corpus, not a separate system; their roots sit in the crown like any
 other, the recent/band/digest gradient being their loading property (owned by
-`letters-as-memory.md`, an instance of this design). What is NOT offered at boot: the lookup
-tier, the leaves, the bodies. Those are descended to when a prompt narrows the work. Injecting a
-body at boot is the wall.
+`letters-as-memory.md`, an instance of this design). What is never in the dump: any body. Bodies
+are read on the reach, reflex bodies first as the opening of the list, lookup bodies when a prompt
+descends to them.
 
-The hard constraint shapes this: each injected value is capped at 10K chars (over it, only a
-file path plus preview is passed, a dump-by-path). Reflex tier plus crown must stay well under
-10K. That cap is WHY the crown is roots-only.
+This is why the dump stays under the 10K injection cap with room to spare: a reading list of
+pointers (a slug and a one-line gist each) is tiny, where a list of bodies is the wall. The cap
+is not a constraint the design fights; it is satisfied by the dump being pointers, not content.
 
 ## A worked branch
 
