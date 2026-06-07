@@ -32,7 +32,10 @@ band_list=""
 for ((i = band_start; i < recent_start; i++)); do
   f="${all[$i]}"
   slug="$(basename "$f" .md)"
-  summary="$(sed -n 's/^summary:[[:space:]]*//p' "$f" | head -n 1)"
+  # Match summary: bare top-level OR nested (indented) under a metadata: block,
+  # since the auto-memory process reshapes letter frontmatter into the nested
+  # form. Strip leading whitespace and any surrounding quotes.
+  summary="$(sed -n 's/^[[:space:]]*summary:[[:space:]]*//p' "$f" | head -n 1 | sed 's/^"//; s/"$//')"
   [ -z "$summary" ] && summary="(no summary line)"
   band_list+="  - ${slug}: ${summary}"$'\n'
 done
