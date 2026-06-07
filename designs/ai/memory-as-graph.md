@@ -74,6 +74,30 @@ list. The index is a projection of the tree, so it cannot drift from it.
   rules fire as Skills (description-trigger); the rest are read on demand against the
   index. Injecting them is what builds the unreadable wall.
 
+## What session start offers
+
+The boot offer is deliberately small, the three things a blank instance needs to act well
+before any prompt has narrowed the work. Everything else waits for the prompt-time offer.
+
+1. **The reflex tier** (resident): the few posture reflexes, in full. They fire without a
+   trigger, so they cannot wait for a prompt to surface them. About two, the motive and the
+   instrument. This is the only tier carried whole at boot.
+2. **The crown** (top roots only): the names and one-line gist of the highest roots, each an
+   entry point to descend later. Not their branches, not the leaves. This is the map, not
+   the territory: enough to know what exists and where to enter, nothing more.
+3. **The letters** (self-continuity): handled by the existing letters hook, offered as an
+   act to read, not injected whole (see `letters-as-memory.md`).
+
+What is NOT offered at boot: the lookup tier, the leaves, the operating-convention bodies.
+Those arrive at prompt time, when the UserPromptSubmit hook has a real task to match and can
+descend the right branch. Offering them at boot is the wall.
+
+The hard constraint shapes this: each injected value is capped at 10K chars (over it, only a
+file path plus preview is passed, which is a dump-by-path). So reflex tier + crown together
+must stay well under 10K. That cap is WHY the crown is roots-only and the lookup tier waits:
+the boot offer has a budget, and spending it on the whole corpus is the failure this design
+exists to end.
+
 ## A worked branch
 
 Discovery as a development process, one mid-root and its branch:
