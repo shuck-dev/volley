@@ -117,26 +117,31 @@ not the chosen node.
 
 ## Target resolution: two source tiers, downscale only
 
-The game targets 1080p and 4K. Sam's art is authored at both: a 1080p source set and a
-4K source set. Upscaling this hand-drawn art reads blocky, so the game never enlarges a
-source past its authored size. Every display between and below the two tiers downscales
-from the nearest higher source, which stays clean; only upscaling degrades it. Two
-authored tiers therefore cover the whole range.
+The game targets 1080p and 4K, so art is authored at both: a 1080p source set and a 4K
+source set. Upscaling hand-drawn art reads blocky, so the rule is that a source is never
+enlarged past its authored size. Every other resolution downscales from the nearest
+higher tier: a 1440p or 1080p display takes the 4K source down, a sub-1080p window takes
+the 1080p source down. Downscaling holds detail; only upscaling invents it and degrades.
+Two authored tiers therefore cover the whole range by downscale, with 4K as the ceiling
+nothing climbs above.
 
 The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene
 at the physical window resolution, so the source that matches or exceeds the display
-draws at or above 1:1 and the engine downscales the rest. Texture filter is
-`linear_mipmap` with mipmaps enabled on the sprite imports (today all import with
-`mipmaps/generate=false`, so this is real import work), which is what makes the
-downscaled sizes clean. Set `window/stretch/aspect` to `expand` so non-16:9 displays
-extend the canvas rather than distort, since it is currently unset.
+draws at or above 1:1 and the engine downscales the rest. The texture filter is
+`linear_mipmap`, and the import pipeline enables mipmaps on every sprite (sources today
+import with `mipmaps/generate=false`): the mipmap chain is what keeps a fractional
+downscale, like 4K to 1440p, clean rather than aliased, so it is a precondition for any
+real art tier, not an afterthought. The `window/stretch/aspect` setting is `expand` so
+non-16:9 displays extend the canvas rather than distort; it is unset today and this
+establishes it.
 ([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html).)
 
 This is the art-and-import shape, not a scaffold concern: the scaffold stays
 size-agnostic (a swappable `SpriteFrames`, no hardcoded frame dimensions), so a source
-tier drops in as a resource. Selecting which tier loads for the current display is its
-own work, tied to the resolution-settings spike and the level-of-detail decision, not
-this scaffold. The font-text blur under `canvas_items` on resize (Godot #86563) is a
+tier drops in as a resource. Loading the right tier for the current display is real work
+the scaffold does not do, so a real build needs that selection wired before it ships, or
+it loads one tier for every display and the foundation goes unused. That selection is its
+own follow-up, tied to the resolution-settings spike and the level-of-detail decision. The font-text blur under `canvas_items` on resize (Godot #86563) is a
 separate UI concern for whenever 4K text crispness is required.
 
 ## The seam, today
