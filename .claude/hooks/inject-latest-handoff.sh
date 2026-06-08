@@ -25,7 +25,7 @@ band_start=$(( recent_start > BAND ? recent_start - BAND : 0 ))
 # Recent tier: pointers to the full letters.
 recent_list=""
 for ((i = recent_start; i < n; i++)); do
-  recent_list+="  - memory/letters/$(basename "${all[$i]}")"$'\n'
+  recent_list+="  - ${LETTERS_DIR}/$(basename "${all[$i]}")"$'\n'
 done
 
 # Band tier: the summary: frontmatter line of each prior letter, slug plus gist.
@@ -47,7 +47,7 @@ digest="$(ls "$LETTERS_DIR"/digest/[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | sort 
 band_block=""
 [ -n "$band_list" ] && band_block="Fading band, one line each, pull the full letter if one rhymes with now:"$'\n'"${band_list}"$'\n'
 digest_block=""
-[ -n "$digest" ] && digest_block="Older arc, consolidated, read this too: memory/letters/digest/$(basename "$digest")"$'\n'
+[ -n "$digest" ] && digest_block="Older arc, consolidated, read this too: ${LETTERS_DIR}/digest/$(basename "$digest")"$'\n'
 
 read -r -d '' note <<EOF || true
 Your letters to your next self (see designs/ai/letters-as-memory.md for the model).
@@ -67,8 +67,7 @@ live gh/git read, and greet Josh and ask what is next rather than assuming the l
 session's work is the priority. (Before writing a NEW letter, read them ALL.)
 EOF
 
-python3 - "$note" <<'PY' 2>/dev/null || true
-import sys, json
-print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": sys.argv[1]}}))
-PY
+# Emit via jq -Rs: read the note as a raw string, JSON-escape it (newlines, quotes),
+# and nest it under additionalContext. Fails open if jq is absent.
+printf '%s' "$note" | jq -Rs '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: .}}' 2>/dev/null || true
 exit 0
