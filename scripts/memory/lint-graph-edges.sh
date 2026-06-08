@@ -94,6 +94,7 @@ if [[ "$mode" == "tree" ]]; then
     unordered=0
     for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
         if is_root "$node" && has_children "$node"; then
+            [[ $typed_roots -gt 0 ]] && echo
             printf '%s\n' "$node"
             print_children "$node" "  "
             typed_roots=$((typed_roots + 1))
