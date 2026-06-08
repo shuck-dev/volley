@@ -1,74 +1,44 @@
 ---
 name: tickets
-description: How to shape a Linear ticket: title, body story-shape, ACs that name outcomes not implementation, links over restatement. Read BEFORE drafting any ticket prose, including a chat proposal to Josh and any save_issue call. The draft is the surface Josh sees; load this before showing the draft, not before the save.
+description: How to shape a Linear ticket: title, outcome-ACs, links over restatement, the judgment CLAUDE.md's format templates do not cover. Read BEFORE drafting any ticket prose, including a chat proposal to Josh and any save_issue call. Load it before showing the draft, not before the save.
 ---
 
 # Writing a ticket
 
 A ticket is its so-that: a reason to do work, written from the user's experience, not a task or a tech entity. The user is usually the player, but it can be any human user (a designer, the team working its own board). Name the outcome the user gets, never the parts you would build.
 
-## Trigger words (grep yourself before save)
-
-Any of these in a body means the rule is already violated. Backtrack:
-
-`Context:` · `Background:` · `Scope:` (a bloated prose dump; a one-line narrowing `Scope: Player animation` is fine) · `Reading list:` · `See:` · `Out of scope:` · `Related:` (use `relatedTo`) · `Children:` · `Sub-issues:` · `Prior art:` · `Notes:` · `designs/...md` (use `links`) · `the artist` / `the designer` / `the engineer` / `the doer` · any paragraph past the story shape.
+The base format (the three story shapes, the bug template, status and label rules) lives in CLAUDE.md's Linear ticket-writing guidelines. This skill is the judgment on top of that format.
 
 ## Title
 
-- Target 25-30 characters, hard ceiling 50. Cut anything that does not earn its space.
-- No label-name in the title. The label says kind (spike, bug, feature, asset, concept, spec, narrative, sfx, ride, carnival); the title says what the work is about.
-- No project-name prefix. Project context is implicit from where the issue lives.
-- No `X: explore Y` colon constructions. Pick the noun that already implies the activity.
-- Reads alone: a reader scanning the project list knows what the work is without opening the ticket.
+- Target 25-30 characters, hard ceiling 50.
+- No label-name and no project-name prefix; the label says the kind, the project is implicit.
+- No `X: explore Y` colon constructions; pick the noun that already implies the activity.
+- Reads alone: a reader scanning the project list knows the work without opening it.
 
 ## Body
 
-**Hard cap: 12 lines total.** Count newlines before save; over 12 means cut.
-
-**User story is the DEFAULT** (including discoveries and spikes). Reach for a system story only when the subject is genuinely the system with no human user to name; do not default to it just because no player is involved. The role is any human user: a player, a designer, or the team using its own board ("As a contributor working the board..."). Josh: "a user story is not confined to a player, we have to use this thing too."
-
-Match one of three story shapes exactly:
-
-- **User story.** `As a player,` then `I want X.` and `So that Y.` as full sentences ending in periods, `So that` capitalised, then ACs. (Periods are the live convention, not the comma-comma clause.)
-- **System story.** A bare action verb (`ADD`, `MOVE`, `EXTRACT`, `SPLIT`, `REWRITE`) opens the first line, then the statement ending in a period, then So that, then ACs. No square brackets: CLAUDE.md's `[ACTION-VERB]` is placeholder notation, not literal `[ADD]` (Linear renders that as a broken tag).
-- **Bug report.** Summary, Steps, Expected, Actual, Environment, ACs. Each section one to three sentences with full stops.
+A user story is the **default**, including discoveries and spikes. Reach for a system story only when the subject is genuinely the system with no human user to name. The role is any human user (a player, a designer, the team using its own board), so a system story is rare. Punctuate the three shapes as full sentences (`As a player,` then `I want X.` then `So that Y.`); the action verb opening a system story is bare, no square brackets. Keep the body under 12 lines.
 
 ### Acceptance criteria
 
-- ACs name **checkable outcomes**, not the implementation path. For a user story, ACs describe what the **player observes** ("the character refuses with an animation"); never the class / method / signal / field / save-shape names that implement it. SH-405 named `CharacterDropTarget`, `ItemManager.equip`, `kit_slots`; Josh: "ac too technical, this is about the player." This holds on a system story too: name the system's observable behaviour or property, not the diff.
-- ACs do not repeat the lead-in action. If the lead-in says "EXPLORE the visual language by producing concept pieces", the ACs name the bare assets, not "...explored across multiple directions" on every line.
-- On a design or in-flight ticket, the AC is the open **questions** the work must answer, not pre-baked statements (SH-438 became "What object? / Why interesting? / How does it develop?"). Such tickets take the `spec` label (design) or `narrative` (narrative authoring), not Feature; Feature is for settled work.
+- ACs name **checkable outcomes**, never the implementation path: for a user story, what the player observes ("the character refuses with an animation"), not the class, method, signal, field, or save-shape that implements it. The same holds on a system story: name the system's observable behaviour, not the diff.
+- ACs do not echo the lead-in verb (no "explored" / "produced" on every line).
+- On a design or in-flight ticket, the ACs are the open **questions** the work must answer, not pre-baked statements; such tickets take `spec` or `narrative`, not Feature.
 
-### What does NOT belong in the body
+### Keep out of the body
 
-- No Background, Context, Reading-list, Out-of-scope, Children, Sub-issues, Notes, Prior-art sections.
-- No restated design-doc content (link the doc; trust the reader).
-- No enumeration of sub-issues (Linear renders parented ones automatically).
-- No role-naming (no "the artist", "the engineer"). A Vault ticket can be picked up by anyone; naming the doer presumes who picks.
-- No engineering detail the doer would ask anyway. Keep the "why" (the So-that); cut the "what".
-- **No meta tickets.** A ticket describes player or system work, never the act of making, combining, splitting, or restructuring other tickets. Combining: the new ticket describes the work it delivers, linkage via `duplicateOf`. Splitting: each child describes its own slice, linkage via `parentId`/`relatedTo`. A refactor sweep describes the end state of the codebase, not the ticket-organising activity. Josh, SH-425: "we don't make issues to make other issues EVER."
+- No Context / Background / Scope-dump / Reading-list / Out-of-scope / Children / Notes sections (a one-line narrowing `Scope: Player animation` is fine). No restated design-doc content, no role-naming, no engineering detail the doer would ask anyway. Keep the why (the so-that); cut the what.
+- **No meta tickets.** A ticket describes player or system work, never the act of making, combining, or splitting other tickets. A combine describes the work it delivers (linkage via `duplicateOf`); a split's children each describe their own slice (linkage via `parentId`); a refactor sweep describes the codebase end state.
 
 ## Concept and spike tickets stay open
 
-An exploration (`concept` or `spike` label) frames a question; it must not pre-decide the answer.
-
-- Title is the subject of work, a plain Title Case noun phrase: "Play Animation Exploration", not "Animatic concept for animation dynamics". Name what it is about, not the method or the artifact you imagined.
-- Cut craft jargon. Use plain words (animation, play, motion, clips), not imported terms (animatic, dynamics, on-twos, squash-stretch).
-- ACs set a direction and a fidelity bar, never the outcome. "some clips exploring different concepts, kept rough for many iterations" sets shape and bar and leaves the result open. Do not enumerate the specific deliverables; that is the doer's to find. An exploration ticket that dictates its answer is a spec wearing a concept label.
+An exploration frames a question and must not pre-decide the answer. The title is a plain Title Case noun phrase naming the subject ("Play Animation Exploration", not "Animatic concept for animation dynamics"); use plain words, not craft jargon. The ACs set a direction and a fidelity bar, never the deliverables; that is the doer's to find. An exploration that dictates its answer is a spec wearing a concept label.
 
 ## Links over restatement
 
-- Design docs, scratchpads, references, PRs, commits go in `links` (resources). Never paste `designs/...md` filepaths in the body.
-- Sibling tickets go in `relatedTo`; blocking goes in `blockedBy`. Relate to the parent too, not only the immediate sibling it forked from.
-- If a fact only matters to the file-time reader, attach it as a link or omit it.
+Design docs, scratchpads, PRs, and commits go in `links`, never as filepaths in the body. Sibling tickets go in `relatedTo` (relate to the parent too, not only the sibling it forked from); blocking goes in `blockedBy`.
 
-## Self-check before save_issue
+## Self-check before save
 
-1. Count body lines. Over 12? Cut.
-2. Title under 50 (ideally under 30); no label name in it.
-3. Body matches one of the three story shapes; no extra sections.
-4. No role-naming inside the body.
-5. ACs name outcomes, not file/class/method/field names.
-6. Docs and references attach as resource links, not filepaths in the body.
-7. Status: Vault by default; Ready only when in active or next cycle.
-8. Assignee: Josh only when in active cycle. No `estimate` field.
+Body under 12 lines and one story shape; title under 50 with no label name; no role-naming; ACs name outcomes not code; references attached as links; status Vault by default; Josh assigned only in an active cycle; no `estimate` field.
