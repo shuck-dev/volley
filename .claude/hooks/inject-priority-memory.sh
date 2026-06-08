@@ -46,8 +46,6 @@ PY
 [ -z "$out" ] && exit 0
 
 # SessionStart hooks inject context via additionalContext in JSON output.
-python3 - "$out" <<'PY' 2>/dev/null || true
-import sys, json
-print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": sys.argv[1]}}))
-PY
+# Emit via jq -Rs: read the slice as a raw string, JSON-escape it. Fails open if jq is absent.
+printf '%s' "$out" | jq -Rs '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: .}}' 2>/dev/null || true
 exit 0

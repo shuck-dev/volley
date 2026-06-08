@@ -18,8 +18,7 @@ ${crown}
 
 Read the trunk file for whichever tree is relevant to today's session before touching its leaves."
 
-python3 - "$note" <<'PY' 2>/dev/null || true
-import sys, json
-print(json.dumps({"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": sys.argv[1]}}))
-PY
+# Emit via jq -Rs: read the note as a raw string, JSON-escape it, nest under
+# additionalContext. Fails open if jq is absent.
+printf '%s' "$note" | jq -Rs '{hookSpecificOutput: {hookEventName: "SessionStart", additionalContext: .}}' 2>/dev/null || true
 exit 0
