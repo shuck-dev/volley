@@ -115,6 +115,31 @@ convention. Individual images are the most swap-friendly and artist-friendly pat
 AnimatedSprite2D; a spritesheet would suit AnimationPlayer's region keying, which is
 not the chosen node.
 
+## Target resolution: 1080p base, native 4K
+
+The game targets 1080p as the base and must also render correctly at 4K. The project
+is already configured for this: `canvas_items` stretch at a 1920x1080 base viewport.
+Keep it. Sam's frames are authored at 1080p native and the scaffold hardcodes no frame
+size, so the engine handles 4K with no code or asset-swap work.
+
+Under `canvas_items` the scene renders natively at the physical window resolution: 1:1
+on a 1080p display, a full 3840x2160 render on 4K with the 1080p sprite upscaled 2x by
+the GPU sampler. There is no viewport-upscale pass that blurs the whole framebuffer.
+For painterly hand-drawn art a 2x linear upscale reads as smooth, not blocky, so this
+is the right mode (it is `viewport` mode that suits pixel art and would soften this
+art). `canvas_items` is also the Godot 4.7+ default. Set the texture filter to
+`linear_mipmap` and enable mipmaps on the sprite imports, so any zoom-out and the 4K
+case stay clean. ([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html), [proposal #3939](https://github.com/godotengine/godot-proposals/issues/3939).)
+
+No runtime resolution-tier asset swapping. Godot has no native mechanism for it and the
+linear upscale is visually acceptable, so a single 1080p frame set is the convention. The
+optional art-budget upgrade is to author at 2x and downscale on import (`scale` on the
+texture preset), giving 4K a 1:1 render at 4x the source pixels per frame; defer that to
+the art tickets, it is not a scaffold concern. Two follow-ups this surfaced, out of scope
+here: the resolution-and-refresh-rate settings screen (its own spike), and font-text blur
+under `canvas_items` on resize (Godot #86563), a separate UI concern if 4K text crispness
+becomes a requirement.
+
 ## The seam, today
 
 Three paddle scenes, all 2D `CharacterBody2D`, share `paddle.gd`:
