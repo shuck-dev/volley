@@ -17,10 +17,15 @@
 set -euo pipefail
 
 mode="lint"
-if [[ "${1:-}" == "--tree" ]]; then
-    mode="tree"
+show_bridge=0
+while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+        --tree) mode="tree" ;;
+        --bridge) show_bridge=1 ;;
+        *) echo "lint-graph-edges: unknown flag $1" >&2; exit 1 ;;
+    esac
     shift
-fi
+done
 
 MEMORY_DIR="${1:-$HOME/.claude/projects/-home-josh-gamedev-volley/memory}"
 
@@ -100,6 +105,13 @@ if [[ "$mode" == "tree" ]]; then
             typed_roots=$((typed_roots + 1))
         fi
     done
+    # Count the unordered nodes regardless, for the summary line.
+    for node in $(printf '%s\n' "${!IS_NODE[@]}" | sort); do
+        is_root "$node" && ! has_children "$node" && unordered=$((unordered + 1)) || true
+    done
+
+  if [[ "$show_bridge" -eq 1 ]]; then
+    unordered=0
     # Bridge: group the unordered nodes under their proposed trunk, so the render
     # shows a navigable forest (trunks), not a flat dump. The bucketing map is a
     # markdown file with "## <trunk> (N)" headers and "- <node>" lines.
@@ -125,7 +137,9 @@ if [[ "$mode" == "tree" ]]; then
             unordered=$((unordered + 1))
         done
     done
-    echo "--- $typed_roots ordered trees, $unordered unordered nodes across the trunks ---"
+  fi
+    echo
+    echo "--- $typed_roots ordered trees, $unordered unordered nodes (run with --bridge to list them) ---"
 fi
 
 echo "lint-graph-edges: $dangling dangling, $orphans root/untyped nodes"
