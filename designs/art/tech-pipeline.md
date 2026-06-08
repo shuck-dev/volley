@@ -49,7 +49,7 @@ Each PNG has a sibling `.import` file committed to the repo. Import settings per
 
 | Class | Filter | Mipmaps | Fix alpha border | Notes |
 |---|---|---|---|---|
-| Characters | Linear | Off | On | The line must stay crisp; nearest-neighbour reads pixel-art, linear with mipmaps off reads drawn. |
+| Characters | Linear | Off | On | The line must stay crisp; nearest-neighbour reads pixel-art, linear with mipmaps off reads drawn. The mipmaps-off bet is unverified at 1440p, where a character downscales a fractional 0.67x from the @2x master and may shimmer; check it against real art and flip mipmaps on for characters if it does. |
 | Surfaces (props, items, UI marks, signage) | Linear | Off | On | Same hand across world and HUD; render at roughly native scale, so mipmaps waste memory. |
 | Backgrounds | Linear | On | On | Parallax2D layers may render at fractional scales; mipmaps prevent shimmer on slow drift. |
 
