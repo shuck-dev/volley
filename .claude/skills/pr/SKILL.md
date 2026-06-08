@@ -20,3 +20,5 @@ References: bare GitHub `#N`, no closing verb, no Linear `SH-N` on any public su
 Aliases: spell out Josh's zsh aliases on every public surface (body, commit, repo docs): `./scripts/ci/run_gut.sh` not `ggut`, `git checkout -b` not `gcb`. A contributor or CI runner does not have them.
 
 Secrets: if the diff adds a `pull_request*` (or post-PR `workflow_run`) workflow referencing `${{ secrets.* }}` beyond `GITHUB_TOKEN`, stop and flag it in the body and to Josh. Contributor PRs run workflows automatically, so a secret on that path is exfiltratable.
+
+The challenge (PR) written here is what a reviewer battle runs against: running that pass lives in [`battle`](../battle/SKILL.md). The memory branch for challenge-description discipline is [[feedback_pr_description_brevity]] under [[trunk_dev_cycle]].

@@ -65,7 +65,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 2. **Cycle placement.** If the claimed ticket has no cycle, move it into the active one: `mcp__linear__list_cycles(teamId, type: "current")` then `mcp__linear__save_issue(id, cycleId)`. Skip if no active cycle.
 3. **Log progress in Linear.** Significant moments (claim, blocker, ready-for-review) post as a Linear comment on the ticket, not into a shared file. The git log carries the rest.
 4. **Sync before opening and before every later push.** `git fetch origin main && git merge origin/main`, resolve, re-run `./scripts/ci/run_gut.sh`, push. Repeat any time work resumes or before asking Josh to merge. `git rev-list --count HEAD..origin/main` reads "behind by N".
-5. **Open the challenge.** After `gh pr create`, do not enable auto-merge and do not apply approval labels; the maintainer merges by hand. Review is a dispatcher spot-check by default (read the diff, run the suite, verify the behaviour); do NOT fan reviewers automatically. A reviewer battle fires only when Josh asks for one. When he does, fan the scope-matched specialists by changed path (mapping in `.claude/skills/reviewers/SKILL.md`).
+5. **Open the challenge.** After `gh pr create`, do not enable auto-merge and do not apply approval labels; the maintainer merges by hand. Review is a dispatcher spot-check by default (read the diff, run the suite, verify the behaviour); do NOT fan reviewers automatically. A reviewer battle fires only when Josh asks for one; when he does, run it per [`battle`](../battle/SKILL.md).
 6. **Hand off.** Re-sync against `main`, then report the challenge to Josh. Don't flag comments in chat; the challenge is the source of truth.
 7. **Block or spin.** Loop on the same issue twice, then escalate per the rule below. No third silent variant.
 
@@ -79,7 +79,7 @@ Every code-writing minion runs this sequence once dispatched. Brief them on it i
 - **Merge queue serialises `main`.** "Merge when ready" pulls the challenge into a `merge_group` ref, re-runs lint and tests against `main + challenge`, then fast-forwards `main`. The pre-challenge `git merge origin/main` still matters: the queue catches mechanical staleness, not semantic conflicts.
 - **Godot tool discipline.** Prefer GodotIQ MCP tools over raw file ops. Never delete-and-rebuild scenes; `node_ops` plus `save_scene` for `.tscn`. Godot 4 quirks live in `ai/godot-quirks.md`.
 
-Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `.claude/skills/commits/SKILL.md`. Reviewer-side rules (verdict shape, inline-finding shape, fan-out by path) live in `.claude/skills/reviewers/SKILL.md`.
+Commit-side rules (sign-off, no-amend, no-force, fresh branch after merge, ggut after every change, hooks fire on commit) live in `.claude/skills/commits/SKILL.md`. Running a requested reviewer battle lives in [`battle`](../battle/SKILL.md); the per-reviewer contract (verdict shape, inline-finding shape, fan-out by path) lives in `.claude/skills/reviewers/SKILL.md`.
 
 ## Godot session tiers
 
@@ -158,19 +158,7 @@ If the fan would require any file to appear in two slices, the work is not fan-s
 
 The default is no reviewer fan-out. The dispatcher spot-checks every diff (read it, run the suite, verify the behaviour holds) and that is the review for most increments: docs, renames, mechanical changes, small fixes. A big PR is one review surface, spot-checked once at the right depth, never re-battled per commit.
 
-A reviewer battle runs only when Josh asks for one. When he does: scope-filter the diff by changed path and fan only the matching specialists (code-quality, gdscript-conventions, test-coverage on a GDScript diff; domain reviewers on the files they own). The full path → specialist map and the verdict contract live in `.claude/skills/reviewers/SKILL.md`. Battlers (devils-advocate, integration-scenario-author) fire alongside only when the battle is requested. Devils-advocate has Bash, so it posts its findings as inline review comments like any reviewer; brief it to do so, and do not tell it to reason from the diff text alone.
-
-On a **design or spec doc** (a `designs/**` change that argues a design, not just prose), devils-advocate is a REQUIRED lane, not the optional fresh-eyes pass: fan it on the design's claims alongside docs-and-writing and repetition-reviewer. That battle is GENERATIVE, the right outcome is often that the design changes between rounds, so re-battle a design PR after a substantive rewrite (not after a typo fix). See [[feedback_battle_review_process]], the design-PR clause.
-
-Within a requested battle, run one round. Re-check a blocked finding with the one reviewer who raised it on the incremental, not a fresh fan-out; a clean incremental is a silent approve. Do not stack re-battles.
-
-Reviewers apply no verdict label; they report their verdict to Gru and post findings inline. On every review round Gru posts one synthesis review via the `bot-review` workflow (`gh workflow run bot-review.yml -f pr=N -f event=APPROVE|REQUEST_CHANGES`). The synthesis keys on SEVERITY, not finding-count: REQUEST_CHANGES only if some reviewer raised an unresolved `issue:`; APPROVE otherwise, even when reviewers posted `nitpick:`/`suggestion:`/`question:` inlines (those are folded or ignored by the author, never block, never force a re-battle). A pass whose only findings are non-blocking is an approve, not a block-fix-reapprove cycle. Every reviewer dispatch brief restates one line, inline comments only, never the main thread, report your verdict to me. Gru verifies the inline findings landed before posting the synthesis verdict. The verdict does not gate merge: required checks are Tests and Lint, and the maintainer's manual merge is the approval; the bot review is the attributed agent verdict, not a required check.
-
-## Consensus on disagreement
-
-When two minions reach opposite conclusions on the same evidence (reviewer approves while battler blocks, two reviewers split, etc.), don't pick a side. Dispatch two more independent agents on the same question, briefed not to read each other's reports. Whichever side reaches three votes wins. Surface the consensus to Josh with the evidence each agent cited.
-
-If consensus is still split 2-2, that's a sign the question itself isn't decidable from the evidence at hand; flag for Josh and don't merge.
+A reviewer battle runs only when Josh asks for one. Running that pass (scope-filtering reviewers by path, the design-PR required lane, one-round discipline, consensus on disagreement, firing the synthesis verdict) lives in [`battle`](../battle/SKILL.md). The per-reviewer contract is [`reviewers`](../reviewers/SKILL.md); the challenge being battled is [`pr`](../pr/SKILL.md).
 
 ## Spike rule
 
