@@ -61,6 +61,10 @@
             "type": "command",
             "if": "Bash(*bot-review.yml*)",
             "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/synthesis-body-cap.sh\""
+          },
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR/.claude/hooks/reviewer-inline-comment-cap.sh\""
           }
         ]
       },
