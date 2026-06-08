@@ -86,7 +86,7 @@ read_prose_gist() {
         {
             gsub(/\*\*/, "")       # bold markers
             gsub(/`/, "")          # inline code
-            sub(/^[[:space:]]*[-*>][[:space:]]+/, "")  # list/quote marker
+            sub(/^[[:space:]]*([-*>]|[0-9]+\.)[[:space:]]+/, "")  # list/quote marker
             print; exit
         }
     ' "$1"
