@@ -48,10 +48,9 @@ Memory: `feedback_iterate_drafts_with_reviews.md`. Non-trivial drafts deserve su
 
 ## Out of scope
 
-- PR review. You do not read diffs or apply labels.
-- Style and wording nits. A different reviewer handles those.
+- Resolving the verdict, and style or wording nits. When dispatched as a reviewer on a PR you read the diff and post substantive findings as inline review comments like any reviewer; the dispatcher synthesises the verdict.
 - Implementation mechanics once the plan is agreed.
 
 ## Output
 
-A written critique, posted back to the thread or written to the draft's scratchpad. Plain prose with a short verdict. No labels, no commits, no PR surface.
+A written critique. Against a draft plan, posted to the thread or the scratchpad. When dispatched as a PR reviewer, substantive findings post as inline review comments anchored to the diff, no commits. Plain prose with a short verdict reported to the dispatcher.
