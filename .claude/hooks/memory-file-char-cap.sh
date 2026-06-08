@@ -30,15 +30,22 @@ if grep -lqE "^[[:space:]]*parent:[[:space:]]*${slug}[[:space:]]*$" "$MEMDIR"/*.
   exit 0
 fi
 
-# resulting size of the file after this Write/Edit, computed by jq against the current file
-cur="$([ -f "$rp" ] && wc -c < "$rp" || echo 0)"
+# resulting size of the file after this Write/Edit, in CHARACTERS (wc -m), matching jq length
+cur="$([ -f "$rp" ] && wc -m < "$rp" | tr -d ' ' || echo 0)"
 if [ "$tool" = "Write" ]; then
   size="$(printf '%s' "$input" | jq -r '(.tool_input.content // "") | length' 2>/dev/null)"
 elif [ "$tool" = "Edit" ]; then
   curtext="$([ -f "$rp" ] && cat "$rp" || echo "")"
+  # do the replacement in jq on the indexed split (literal match), not sub/gsub (which are regex)
   size="$(jq -rn --arg cur "$curtext" --argjson ti "$(printf '%s' "$input" | jq '.tool_input')" '
     ($ti.old_string // "") as $old | ($ti.new_string // "") as $new |
-    (if ($ti.replace_all // false) then ($cur | gsub($old; $new)) else ($cur | sub($old; $new)) end) | length
+    if $old == "" then ($cur | length)
+    elif ($ti.replace_all // false) then (($cur | split($old) | join($new)) | length)
+    else
+      ($cur | index($old)) as $i |
+      (if $i == null then $cur
+       else ($cur[0:$i] + $new + $cur[($i + ($old|length)):]) end) | length
+    end
   ' 2>/dev/null)"
 else
   exit 0
