@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Emits MEMORY.md's CROWN: one line per trunk root, slug + gist.
 #
-# A trunk is any .md file whose frontmatter contains node_type: trunk.
+# A trunk is any .md file whose basename starts with `trunk_`.
 # Plain parentless nodes are NOT trunks and do NOT appear in the crown.
 #
 # Output (one line per trunk, sorted by filename slug):
@@ -105,8 +105,7 @@ while IFS= read -r -d '' filepath; do
     slug="$(basename "$filepath" .md)"
     NODE_FILE["$slug"]="$filepath"
 
-    node_type="$(read_field "$filepath" "node_type")"
-    if [[ "$node_type" == "trunk" ]]; then
+    if [[ "$slug" == trunk_* ]]; then
         IS_TRUNK["$slug"]=1
     fi
 done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
