@@ -128,11 +128,12 @@ how big Sam is on screen.
 
 The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene at
 the physical window resolution, so the master draws at or above 1:1 on a matching display
-and the engine downscales the rest. Mipmaps are the mechanism: a mipmap chain is a set of
-pre-downsampled copies, so a fractional reduction like 4K to 1440p samples a clean smaller
-copy rather than aliasing the full texture. The texture filter is `linear_mipmap` and the
-import pipeline enables mipmaps on every sprite (sources today import with
-`mipmaps/generate=false`, so this is a precondition for any real art, not an afterthought).
+and the engine downscales the rest. The master is always shown at or below its authored
+size, which is minification, the case mipmaps exist for: a mipmap chain is a set of
+pre-downsampled copies, so a reduction like 4K to 1440p samples a clean smaller copy
+instead of aliasing the full texture. Mipmaps cost about a third more memory per frame, so
+they are the expected setting here but earn it only if the downscaled art actually aliases
+without them, which is a check against real frames once art exists, not a settled given.
 The `window/stretch/aspect` setting is `expand` so non-16:9 displays extend the canvas
 rather than distort; it is unset today and this establishes it.
 ([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html).)
@@ -141,8 +142,12 @@ The scaffold stays size-agnostic regardless: a swappable `SpriteFrames` with no 
 frame dimensions, so the master frames drop in as a resource. A single master per frame is
 a large texture, which for a one-character paddle is a negligible cost. Two future
 conditions change the rule, and neither is built now. If texture memory ever bites at scale
-(many characters, many frames), the levers in order are mipmaps already present, then GPU
-texture compression, then atlasing, then per-display tiers, reached for when measured. If
+(many characters, many frames), the levers in order are atlas packing first (designed for
+2D sprite animation, no quality loss), then downscaling the source masters to the largest
+size any display needs, then per-display tiers. VRAM block compression is a last resort, not
+an early lever: Godot's docs steer it to 3D and it adds visible block artifacts on smooth
+painterly gradients, so it is reached for only if nothing safer suffices and only after
+testing it on the worst frames. If
 the camera ever zooms in past the master's on-screen size, runtime level-of-detail is added
 then, since zoom is the only thing that would demand a larger source than the master holds.
 The font-text blur under `canvas_items` on resize (Godot #86563) is a separate UI concern
