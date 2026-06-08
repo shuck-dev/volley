@@ -2,11 +2,17 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": ["@playwright/mcp@latest", "--browser", "firefox"]
+      "args": [
+        "@playwright/mcp@latest",
+        "--browser",
+        "firefox"
+      ]
     },
     "godotiq": {
       "command": "uvx",
-      "args": ["godotiq"],
+      "args": [
+        "godotiq"
+      ],
       "env": {
         "GODOTIQ_PROJECT_ROOT": "/home/josh/gamedev/volley-vendetta",
         "GODOTIQ_ADDON_HOST": "172.30.160.1"
