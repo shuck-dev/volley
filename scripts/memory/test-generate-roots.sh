@@ -182,10 +182,102 @@ else
     fail=$((fail + 1))
 fi
 
+# --- test 4b: gist from description: frontmatter field, ignoring prose ---
+
+DIR4B=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B"' EXIT
+
+cat > "$DIR4B/trunk_desc.md" <<'EOF'
+---
+node_type: trunk
+slug: trunk_desc
+description: Description field gist.
+---
+Prose that must not appear in the crown.
+EOF
+
+output=$("$GEN" "$DIR4B" 2>/dev/null)
+if echo "$output" | grep -qF "Description field gist."; then
+    echo "PASS: gist: description: field used when present"
+    pass=$((pass + 1))
+else
+    echo "FAIL: gist: description: field not used"
+    echo "  output: $output"
+    fail=$((fail + 1))
+fi
+
+if echo "$output" | grep -qF "Prose that must not appear in the crown."; then
+    echo "FAIL: gist: prose leaked into crown despite description: field"
+    echo "  output: $output"
+    fail=$((fail + 1))
+else
+    echo "PASS: gist: prose suppressed when description: field present"
+    pass=$((pass + 1))
+fi
+
+# --- test 4c: gist from summary: frontmatter field when no description: ---
+
+DIR4C=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B" "$DIR4C"' EXIT
+
+cat > "$DIR4C/trunk_summ.md" <<'EOF'
+---
+node_type: trunk
+slug: trunk_summ
+summary: Summary field gist.
+---
+EOF
+
+output=$("$GEN" "$DIR4C" 2>/dev/null)
+if echo "$output" | grep -qF "Summary field gist."; then
+    echo "PASS: gist: summary: field used when no description:"
+    pass=$((pass + 1))
+else
+    echo "FAIL: gist: summary: field not used"
+    echo "  output: $output"
+    fail=$((fail + 1))
+fi
+
+# --- test 4d: subdirectory trunk_ files are NOT crowned (maxdepth 1) ---
+
+DIR4D=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B" "$DIR4C" "$DIR4D"' EXIT
+
+make_trunk "$DIR4D" "trunk_top" "top-level trunk gist"
+mkdir -p "$DIR4D/letters"
+cat > "$DIR4D/letters/trunk_nested.md" <<'EOF'
+---
+node_type: trunk
+slug: trunk_nested
+---
+This trunk is nested and must not appear in the crown.
+EOF
+
+assert_output_contains "maxdepth: top-level trunk is crowned" "trunk_top" "$GEN" "$DIR4D"
+assert_output_not_contains "maxdepth: nested trunk_ excluded" "trunk_nested" "$GEN" "$DIR4D"
+
+# --- test 4e: non-integer --budget exits 1 with a clear message ---
+
+DIR4E=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B" "$DIR4C" "$DIR4D" "$DIR4E"' EXIT
+
+make_trunk "$DIR4E" "trunk_aa" "short"
+
+assert_exit "budget-validate: non-integer --budget exits 1" 1 "$GEN" "$DIR4E" --budget abc
+
+budget_err=$("$GEN" "$DIR4E" --budget xyz 2>&1 || true)
+if echo "$budget_err" | grep -qF "must be a positive integer"; then
+    echo "PASS: budget-validate: clear error message on non-integer --budget"
+    pass=$((pass + 1))
+else
+    echo "FAIL: budget-validate: expected clear error message, got: $budget_err"
+    fail=$((fail + 1))
+fi
+
 # --- test 5: exits 0 when all trunks fit in budget ---
 
 DIR5=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5"' EXIT
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B" "$DIR4C" "$DIR4D" "$DIR4E" "$DIR5"' EXIT
 
 make_trunk "$DIR5" "trunk_aa" "short"
 make_trunk "$DIR5" "trunk_bb" "short"
@@ -197,7 +289,7 @@ assert_exit "no truncation: exits 0 when under budget" 0 "$GEN" "$DIR5" --budget
 # so detection must not rely on frontmatter node_type.
 
 DIR6=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5" "$DIR6"' EXIT
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR4B" "$DIR4C" "$DIR4D" "$DIR4E" "$DIR5" "$DIR6"' EXIT
 
 make_trunk_with_node_type "$DIR6" "trunk_normalizer" "memory" "normalizer-safe trunk gist"
 make_node "$DIR6" "plain-node" "" "should not appear"

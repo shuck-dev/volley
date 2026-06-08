@@ -23,6 +23,10 @@ BUDGET=10000
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --budget)
+            if [[ ! "$2" =~ ^[0-9]+$ ]]; then
+                echo "generate-roots: --budget must be a positive integer, got: $2" >&2
+                exit 1
+            fi
             BUDGET="$2"
             shift 2
             ;;
@@ -108,7 +112,7 @@ while IFS= read -r -d '' filepath; do
     if [[ "$slug" == trunk_* ]]; then
         IS_TRUNK["$slug"]=1
     fi
-done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
+done < <(find "$MEMORY_DIR" -maxdepth 1 -name "*.md" -print0 | sort -z)
 
 # Build the trunk list sorted by filename slug.
 trunks=()
