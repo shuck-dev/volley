@@ -24,6 +24,12 @@ pre-commit:
       exclude:
         - "addons/**"
       run: codespell {staged_files}
+    jq-format:
+      glob: "*.json"
+      exclude:
+        - "addons/**"
+      run: for f in {staged_files}; do jq --indent 2 . "$f" > "$f.tmp" && mv "$f.tmp" "$f"; done
+      stage_fixed: true
     gdformat:
       glob: "*.gd"
       exclude:
