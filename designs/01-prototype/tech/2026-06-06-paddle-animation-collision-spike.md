@@ -126,9 +126,15 @@ degrades. One master therefore covers the whole range, with no second authored t
 maintain. The master pixel size is the level-of-detail decision's to set, since it owns
 how big Sam is on screen.
 
-The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene at
-the physical window resolution, so the master draws at or above 1:1 on a matching display
-and the engine downscales the rest. The master is always shown at or below its authored
+Two layers compose here. The stretch config (`canvas_items` at a 1920x1080 base, already
+set) is the frame layer: it treats 1080p as a logical coordinate space and rasterizes the
+scene at the physical display resolution, so on a 4K display the scale is 2x and a sprite
+sized to 100 logical pixels is drawn into 200 physical pixels. The texture layer then fills
+those physical pixels from the sprite's source. Because `canvas_items` rasterizes at the
+physical count (unlike `viewport` mode, which renders into a base-size buffer and scales the
+whole frame, capping every texture at 1080p), a 4K master genuinely fills a 4K display, and
+the master resolution is what bounds sharpness. So the master draws at or above 1:1 on a
+matching display and the engine downscales the rest. The master is always shown at or below its authored
 size, which is minification, the case mipmaps exist for: a mipmap chain is a set of
 pre-downsampled copies, so a reduction like 4K to 1440p samples a clean smaller copy
 instead of aliasing the full texture. Mipmaps cost about a third more memory per frame, so
