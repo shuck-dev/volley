@@ -1,6 +1,6 @@
 ---
 name: devils-advocate
-description: Stress-test a plan, design, or architectural proposal before it turns into commits. Steel-man the opposing position, surface failure modes, name the assumptions nobody has challenged. Invoked against a draft document, not a PR.
+description: Stress-test a plan, design, or architectural proposal before it turns into commits. Steel-man the opposing position, surface failure modes, name the assumptions nobody has challenged. Invoked against a draft document, or as a reviewer on a PR that argues a design or a rule.
 tools: Read, Grep, Glob, Bash
 skills:
 - untrusted-content
