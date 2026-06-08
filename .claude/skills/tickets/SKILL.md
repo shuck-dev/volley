@@ -1,13 +1,19 @@
 ---
 name: tickets
-description: How to shape a Linear ticket: title, outcome-ACs, links over restatement, the judgment CLAUDE.md's format templates do not cover. Read BEFORE drafting any ticket prose, including a chat proposal to Josh and any save_issue call. Load it before showing the draft, not before the save.
+description: How to shape a Linear ticket: the three story shapes, title, outcome-ACs, links over restatement. Read BEFORE drafting any ticket prose, including a chat proposal to Josh and any save_issue call. Load it before showing the draft, not before the save.
 ---
 
 # Writing a ticket
 
 A ticket is its so-that: a reason to do work, written from the user's experience. Name the outcome the user gets. The user is usually the player, but it can be any human user (a designer, the team working its own board), so write from whoever's experience the work serves.
 
-The base format (the three story shapes, the bug template, status and label rules) lives in CLAUDE.md's Linear ticket-writing guidelines. This skill is the judgment on top of that format.
+## The three shapes
+
+A ticket is a **user story**, a **system story**, or a **bug report**. The user story is the default; the others are for narrower cases below.
+
+- **User story:** `As a player,` / `I want X.` / `So that Y.`, then the ACs.
+- **System story:** a bare action verb opens (`ADD`, `MOVE`, `EXTRACT`, `SPLIT`, `REWRITE`), then the statement, then `So that`, then the ACs. The verb is bare text, no square brackets.
+- **Bug report:** Summary, Steps to Reproduce, Expected, Actual, Environment, then the ACs.
 
 ## Title
 
@@ -15,7 +21,7 @@ Name what the work is about in a phrase that reads alone on the project list, 25
 
 ## Body
 
-A user story is the default, including discoveries and spikes: a player, a designer, or the team using its own board is the actor. Keep a system story for work whose subject is genuinely the system with no human user to name, so it stays rare. Punctuate the shapes as full sentences (`As a player,` then `I want X.` then `So that Y.`); a system story opens on a bare action verb. Keep the body under 12 lines: the so-that and the story shape, with the depth living in linked docs.
+The user story fits discoveries and spikes too, and the actor is any human user: a player, a designer, or the team using its own board. Keep a system story for work whose subject is genuinely the system with no human user to name, so it stays rare. Punctuate each shape as full sentences. Keep the body under twelve lines: the so-that and its ACs, with the depth living in linked docs.
 
 ### Acceptance criteria
 
@@ -37,4 +43,4 @@ Attach design docs, scratchpads, PRs, and commits as `links`; relate sibling and
 
 ## Self-check before save
 
-Body under 12 lines and one story shape; title under 50 carrying the subject; the actor is a human user; each AC names an outcome the user observes; references attached as links; status Vault by default; Josh assigned only in an active cycle; no `estimate` field.
+A finished ticket is one story shape inside twelve lines, a title that names the subject and reads alone, a human user as the actor, and ACs that each name an outcome the user observes, with every supporting fact attached as a link. The status, assignee, and estimate rules are their own memories: new tickets default to Vault, Josh is assigned only in an active cycle, and tickets carry no estimate.
