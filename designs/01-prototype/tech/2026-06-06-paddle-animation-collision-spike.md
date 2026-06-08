@@ -115,30 +115,29 @@ convention. Individual images are the most swap-friendly and artist-friendly pat
 AnimatedSprite2D; a spritesheet would suit AnimationPlayer's region keying, which is
 not the chosen node.
 
-## Target resolution: 1080p base, native 4K
+## Target resolution: two source tiers, downscale only
 
-The game targets 1080p as the base and must also render correctly at 4K. The project
-is already configured for this: `canvas_items` stretch at a 1920x1080 base viewport.
-Keep it. Sam's frames are authored at 1080p native and the scaffold hardcodes no frame
-size, so the engine handles 4K with no code or asset-swap work.
+The game targets 1080p and 4K. Sam's art is authored at both: a 1080p source set and a
+4K source set. Upscaling this hand-drawn art reads blocky, so the game never enlarges a
+source past its authored size. Every display between and below the two tiers downscales
+from the nearest higher source, which stays clean; only upscaling degrades it. Two
+authored tiers therefore cover the whole range.
 
-Under `canvas_items` the scene renders natively at the physical window resolution: 1:1
-on a 1080p display, a full 3840x2160 render on 4K with the 1080p sprite upscaled 2x by
-the GPU sampler. There is no viewport-upscale pass that blurs the whole framebuffer.
-For painterly hand-drawn art a 2x linear upscale reads as smooth, not blocky, so this
-is the right mode (it is `viewport` mode that suits pixel art and would soften this
-art). `canvas_items` is also the Godot 4.7+ default. Set the texture filter to
-`linear_mipmap` and enable mipmaps on the sprite imports, so any zoom-out and the 4K
-case stay clean. ([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html), [proposal #3939](https://github.com/godotengine/godot-proposals/issues/3939).)
+The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene
+at the physical window resolution, so the source that matches or exceeds the display
+draws at or above 1:1 and the engine downscales the rest. Texture filter is
+`linear_mipmap` with mipmaps enabled on the sprite imports (today all import with
+`mipmaps/generate=false`, so this is real import work), which is what makes the
+downscaled sizes clean. Set `window/stretch/aspect` to `expand` so non-16:9 displays
+extend the canvas rather than distort, since it is currently unset.
+([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html).)
 
-No runtime resolution-tier asset swapping. Godot has no native mechanism for it and the
-linear upscale is visually acceptable, so a single 1080p frame set is the convention. The
-optional art-budget upgrade is to author at 2x and downscale on import (`scale` on the
-texture preset), giving 4K a 1:1 render at 4x the source pixels per frame; defer that to
-the art tickets, it is not a scaffold concern. Two follow-ups this surfaced, out of scope
-here: the resolution-and-refresh-rate settings screen (its own spike), and font-text blur
-under `canvas_items` on resize (Godot #86563), a separate UI concern if 4K text crispness
-becomes a requirement.
+This is the art-and-import shape, not a scaffold concern: the scaffold stays
+size-agnostic (a swappable `SpriteFrames`, no hardcoded frame dimensions), so a source
+tier drops in as a resource. Selecting which tier loads for the current display is its
+own work, tied to the resolution-settings spike and the level-of-detail decision, not
+this scaffold. The font-text blur under `canvas_items` on resize (Godot #86563) is a
+separate UI concern for whenever 4K text crispness is required.
 
 ## The seam, today
 
