@@ -115,49 +115,18 @@ convention. Individual images are the most swap-friendly and artist-friendly pat
 AnimatedSprite2D; a spritesheet would suit AnimationPlayer's region keying, which is
 not the chosen node.
 
-## Target resolution: one master, downscale only
+## Target resolution
 
-The game targets 1080p and 4K. Each frame is authored once at a single master sized to
-the largest Sam ever appears on screen, his fixed maximum at 4K, and every display
-downscales from that master. Upscaling hand-drawn art reads blocky, so the master is the
-ceiling nothing climbs above; a 4K display draws it at or near 1:1, and 1440p, 1080p, and
-any smaller window take it down. Downscaling holds detail; only upscaling invents it and
-degrades. One master therefore covers the whole range, with no second authored tier to
-maintain. The master pixel size is the level-of-detail decision's to set, since it owns
-how big Sam is on screen.
+Resolution and authoring density follow the art pipeline (`designs/art/tech-pipeline.md`):
+1080p logical base under `canvas_items`, art authored above target (the @2x default) so the
+downscale path carries the weight, with per-class import settings for filter and mipmaps.
+That doc is the authority; this spike does not re-decide it.
 
-Two layers compose here. The stretch config (`canvas_items` at a 1920x1080 base, already
-set) is the frame layer: it treats 1080p as a logical coordinate space and rasterizes the
-scene at the physical display resolution, so on a 4K display the scale is 2x and a sprite
-sized to 100 logical pixels is drawn into 200 physical pixels. The texture layer then fills
-those physical pixels from the sprite's source. Because `canvas_items` rasterizes at the
-physical count (unlike `viewport` mode, which renders into a base-size buffer and scales the
-whole frame, capping every texture at 1080p), a 4K master genuinely fills a 4K display, and
-the master resolution is what bounds sharpness. So the master draws at or above 1:1 on a
-matching display and the engine downscales the rest. The master is always shown at or below its authored
-size, which is minification, the case mipmaps exist for: a mipmap chain is a set of
-pre-downsampled copies, so a reduction like 4K to 1440p samples a clean smaller copy
-instead of aliasing the full texture. Mipmaps cost about a third more memory per frame, so
-they are the expected setting here but earn it only if the downscaled art actually aliases
-without them, which is a check against real frames once art exists, not a settled given.
-The `window/stretch/aspect` setting is `expand` so non-16:9 displays extend the canvas
-rather than distort; it is unset today and this establishes it.
-([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html).)
-
-The scaffold stays size-agnostic regardless: a swappable `SpriteFrames` with no hardcoded
-frame dimensions, so the master frames drop in as a resource. A single master per frame is
-a large texture, which for a one-character paddle is a negligible cost. Two future
-conditions change the rule, and neither is built now. If texture memory ever bites at scale
-(many characters, many frames), the levers in order are atlas packing first (designed for
-2D sprite animation, no quality loss), then downscaling the source masters to the largest
-size any display needs, then per-display tiers. VRAM block compression is a last resort, not
-an early lever: Godot's docs steer it to 3D and it adds visible block artifacts on smooth
-painterly gradients, so it is reached for only if nothing safer suffices and only after
-testing it on the worst frames. If
-the camera ever zooms in past the master's on-screen size, runtime level-of-detail is added
-then, since zoom is the only thing that would demand a larger source than the master holds.
-The font-text blur under `canvas_items` on resize (Godot #86563) is a separate UI concern
-for whenever 4K text crispness is required.
+What the scaffold owes that rule is to stay size-agnostic: a swappable `SpriteFrames` with
+no hardcoded frame dimensions, so a frame authored at any density drops in as a resource.
+The one paddle-specific note for later: if the camera ever zooms in past a frame's authored
+size, runtime level-of-detail is added then, since zoom is the only thing that would demand
+a source larger than the authored frame holds.
 
 ## The seam, today
 
