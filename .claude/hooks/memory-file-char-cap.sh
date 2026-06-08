@@ -5,13 +5,35 @@
 set -uo pipefail
 
 CAP=2000
-MEMDIR="${HOME}/.claude/projects/-home-josh-gamedev-volley/memory"
+MEMDIR="${MEMDIR_OVERRIDE:-${HOME}/.claude/projects/-home-josh-gamedev-volley/memory}"
 input="$(cat)"
 
 result="$(printf '%s' "$input" | python3 -c "
-import json, sys, os
+import json, sys, os, re
 CAP = $CAP
 MEMDIR = os.path.realpath('$MEMDIR')
+
+def is_topic(slug, memdir):
+    # a topic is any node with at least one child pointing at it via parent:
+    try:
+        for fname in os.listdir(memdir):
+            if not fname.endswith('.md'):
+                continue
+            try:
+                text = open(os.path.join(memdir, fname), encoding='utf-8').read(4096)
+                parts = text.split('---', 2)
+                if len(parts) < 3:
+                    continue
+                for line in parts[1].splitlines():
+                    m = re.match(r'^\s*parent:\s*(.+)', line)
+                    if m and m.group(1).strip() == slug:
+                        return True
+            except OSError:
+                continue
+    except OSError:
+        pass
+    return False
+
 try:
     d = json.load(sys.stdin)
     tool = d.get('tool_name', '')
@@ -23,6 +45,9 @@ try:
         print('PASS'); sys.exit()
     # exempt the generated index and the handoff letters (both legitimately large)
     if os.path.basename(rp) == 'MEMORY.md' or (os.sep + 'letters' + os.sep) in rp:
+        print('PASS'); sys.exit()
+    # exempt topic nodes: a topic's body is generated, only leaves are capped
+    if is_topic(os.path.basename(rp)[:-3], MEMDIR):
         print('PASS'); sys.exit()
     try:
         cur = open(rp, encoding='utf-8').read()

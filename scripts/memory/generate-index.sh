@@ -77,12 +77,18 @@ read_field() {
 }
 
 read_prose_gist() {
+    # the first prose line, with markdown stripped so the gist reads clean
     awk '
         /^---[[:space:]]*$/ { fence++; next }
         fence < 2 { next }
         /^[[:space:]]*$/ { next }
         /^#/ { next }
-        { print; exit }
+        {
+            gsub(/\*\*/, "")       # bold markers
+            gsub(/`/, "")          # inline code
+            sub(/^[[:space:]]*[-*>][[:space:]]+/, "")  # list/quote marker
+            print; exit
+        }
     ' "$1"
 }
 
