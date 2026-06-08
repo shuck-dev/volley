@@ -115,34 +115,38 @@ convention. Individual images are the most swap-friendly and artist-friendly pat
 AnimatedSprite2D; a spritesheet would suit AnimationPlayer's region keying, which is
 not the chosen node.
 
-## Target resolution: two source tiers, downscale only
+## Target resolution: one master, downscale only
 
-The game targets 1080p and 4K, so art is authored at both: a 1080p source set and a 4K
-source set. Upscaling hand-drawn art reads blocky, so the rule is that a source is never
-enlarged past its authored size. Every other resolution downscales from the nearest
-higher tier: a 1440p or 1080p display takes the 4K source down, a sub-1080p window takes
-the 1080p source down. Downscaling holds detail; only upscaling invents it and degrades.
-Two authored tiers therefore cover the whole range by downscale, with 4K as the ceiling
-nothing climbs above.
+The game targets 1080p and 4K. Each frame is authored once at a single master sized to
+the largest Sam ever appears on screen, his fixed maximum at 4K, and every display
+downscales from that master. Upscaling hand-drawn art reads blocky, so the master is the
+ceiling nothing climbs above; a 4K display draws it at or near 1:1, and 1440p, 1080p, and
+any smaller window take it down. Downscaling holds detail; only upscaling invents it and
+degrades. One master therefore covers the whole range, with no second authored tier to
+maintain. The master pixel size is the level-of-detail decision's to set, since it owns
+how big Sam is on screen.
 
-The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene
-at the physical window resolution, so the source that matches or exceeds the display
-draws at or above 1:1 and the engine downscales the rest. The texture filter is
-`linear_mipmap`, and the import pipeline enables mipmaps on every sprite (sources today
-import with `mipmaps/generate=false`): the mipmap chain is what keeps a fractional
-downscale, like 4K to 1440p, clean rather than aliased, so it is a precondition for any
-real art tier, not an afterthought. The `window/stretch/aspect` setting is `expand` so
-non-16:9 displays extend the canvas rather than distort; it is unset today and this
-establishes it.
+The stretch config (`canvas_items` at a 1920x1080 base, already set) renders the scene at
+the physical window resolution, so the master draws at or above 1:1 on a matching display
+and the engine downscales the rest. Mipmaps are the mechanism: a mipmap chain is a set of
+pre-downsampled copies, so a fractional reduction like 4K to 1440p samples a clean smaller
+copy rather than aliasing the full texture. The texture filter is `linear_mipmap` and the
+import pipeline enables mipmaps on every sprite (sources today import with
+`mipmaps/generate=false`, so this is a precondition for any real art, not an afterthought).
+The `window/stretch/aspect` setting is `expand` so non-16:9 displays extend the canvas
+rather than distort; it is unset today and this establishes it.
 ([Godot multiple-resolutions docs](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html).)
 
-This is the art-and-import shape, not a scaffold concern: the scaffold stays
-size-agnostic (a swappable `SpriteFrames`, no hardcoded frame dimensions), so a source
-tier drops in as a resource. Loading the right tier for the current display is real work
-the scaffold does not do, so a real build needs that selection wired before it ships, or
-it loads one tier for every display and the foundation goes unused. That selection is its
-own follow-up, tied to the resolution-settings spike and the level-of-detail decision. The font-text blur under `canvas_items` on resize (Godot #86563) is a
-separate UI concern for whenever 4K text crispness is required.
+The scaffold stays size-agnostic regardless: a swappable `SpriteFrames` with no hardcoded
+frame dimensions, so the master frames drop in as a resource. A single master per frame is
+a large texture, which for a one-character paddle is a negligible cost. Two future
+conditions change the rule, and neither is built now. If texture memory ever bites at scale
+(many characters, many frames), the levers in order are mipmaps already present, then GPU
+texture compression, then atlasing, then per-display tiers, reached for when measured. If
+the camera ever zooms in past the master's on-screen size, runtime level-of-detail is added
+then, since zoom is the only thing that would demand a larger source than the master holds.
+The font-text blur under `canvas_items` on resize (Godot #86563) is a separate UI concern
+for whenever 4K text crispness is required.
 
 ## The seam, today
 
