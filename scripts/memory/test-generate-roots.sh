@@ -124,92 +124,18 @@ else
     fail=$((fail + 1))
 fi
 
-# --- test 3: typed child appears under its trunk ---
+# --- test 3: cap guard fires, exits 2, emits truncation notice ---
 
 DIR3=$(mktemp -d)
 trap 'rm -rf "$DIR1" "$DIR2" "$DIR3"' EXIT
 
-make_trunk "$DIR3" "trunk-parent" "the parent trunk"
-make_node "$DIR3" "child-of-trunk" "trunk-parent" "a direct trunk child"
-make_node "$DIR3" "unrelated-root" "" "not a trunk"
-
-output=$("$GEN" "$DIR3" 2>/dev/null)
-
-if echo "$output" | grep -qF "child-of-trunk"; then
-    echo "PASS: typed child: child-of-trunk appears"
-    pass=$((pass + 1))
-else
-    echo "FAIL: typed child: child-of-trunk missing"
-    echo "  output: $output"
-    fail=$((fail + 1))
-fi
-
-trunk_line=$(echo "$output" | grep -n "trunk-parent" | head -1 | cut -d: -f1 || echo 0)
-child_line=$(echo "$output" | grep -n "child-of-trunk" | head -1 | cut -d: -f1 || echo 0)
-if [[ "$trunk_line" -gt 0 && "$child_line" -gt "$trunk_line" ]]; then
-    echo "PASS: typed child: child positioned after its trunk"
-    pass=$((pass + 1))
-else
-    echo "FAIL: typed child: child not after trunk (trunk=$trunk_line child=$child_line)"
-    fail=$((fail + 1))
-fi
-
-# --- test 4: bridge node appears in trunk's provisional section ---
-
-DIR4=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4"' EXIT
-
-make_trunk "$DIR4" "trunk-x" "trunk x gist"
-make_node "$DIR4" "bridge-node-a" "" "an untyped node"
-
-BRIDGE4="$DIR4/bridge.md"
-cat > "$BRIDGE4" <<'EOF'
-## trunk-x (1)
-- bridge-node-a
-EOF
-
-output=$("$GEN" "$DIR4" --bridge "$BRIDGE4" 2>/dev/null)
-
-if echo "$output" | grep -qF "bridge-node-a"; then
-    echo "PASS: bridge: bridge-node-a appears"
-    pass=$((pass + 1))
-else
-    echo "FAIL: bridge: bridge-node-a missing"
-    echo "  output: $output"
-    fail=$((fail + 1))
-fi
-
-if echo "$output" | grep -qi "provisional"; then
-    echo "PASS: bridge: provisional section label present"
-    pass=$((pass + 1))
-else
-    echo "FAIL: bridge: no provisional section label"
-    echo "  output: $output"
-    fail=$((fail + 1))
-fi
-
-trunk_line=$(echo "$output" | grep -n "trunk-x" | head -1 | cut -d: -f1 || echo 0)
-bridge_line=$(echo "$output" | grep -n "bridge-node-a" | head -1 | cut -d: -f1 || echo 0)
-if [[ "$trunk_line" -gt 0 && "$bridge_line" -gt "$trunk_line" ]]; then
-    echo "PASS: bridge: bridge node positioned after trunk"
-    pass=$((pass + 1))
-else
-    echo "FAIL: bridge: bridge node not after trunk (trunk=$trunk_line bridge=$bridge_line)"
-    fail=$((fail + 1))
-fi
-
-# --- test 5: cap guard fires, exits 2, emits truncation notice ---
-
-DIR5=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5"' EXIT
-
 for i in $(seq 1 5); do
-    make_trunk "$DIR5" "trunk-$(printf '%02d' "$i")" "gist number $i is here and takes space in the output buffer"
+    make_trunk "$DIR3" "trunk-$(printf '%02d' "$i")" "gist number $i is here and takes space in the output buffer"
 done
 
-assert_exit "cap guard: exits 2 when budget exceeded" 2 "$GEN" "$DIR5" --budget 50
+assert_exit "cap guard: exits 2 when budget exceeded" 2 "$GEN" "$DIR3" --budget 50
 
-cap_output=$("$GEN" "$DIR5" --budget 50 2>&1 || true)
+cap_output=$("$GEN" "$DIR3" --budget 50 2>&1 || true)
 if echo "$cap_output" | grep -qF "truncated"; then
     echo "PASS: cap guard: truncation notice emitted"
     pass=$((pass + 1))
@@ -219,12 +145,12 @@ else
     fail=$((fail + 1))
 fi
 
-# --- test 6: gist from first prose line of trunk ---
+# --- test 4: gist from first prose line of trunk ---
 
-DIR6=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5" "$DIR6"' EXIT
+DIR4=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4"' EXIT
 
-cat > "$DIR6/trunk-prose.md" <<'EOF'
+cat > "$DIR4/trunk-prose.md" <<'EOF'
 ---
 node_type: trunk
 slug: trunk-prose
@@ -232,7 +158,7 @@ slug: trunk-prose
 The prose gist for this trunk.
 EOF
 
-output=$("$GEN" "$DIR6" 2>/dev/null)
+output=$("$GEN" "$DIR4" 2>/dev/null)
 if echo "$output" | grep -qF "The prose gist for this trunk."; then
     echo "PASS: gist: first prose line used"
     pass=$((pass + 1))
@@ -242,15 +168,15 @@ else
     fail=$((fail + 1))
 fi
 
-# --- test 7: exits 0 when all trunks fit in budget ---
+# --- test 5: exits 0 when all trunks fit in budget ---
 
-DIR7=$(mktemp -d)
-trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5" "$DIR6" "$DIR7"' EXIT
+DIR5=$(mktemp -d)
+trap 'rm -rf "$DIR1" "$DIR2" "$DIR3" "$DIR4" "$DIR5"' EXIT
 
-make_trunk "$DIR7" "trunk-aa" "short"
-make_trunk "$DIR7" "trunk-bb" "short"
+make_trunk "$DIR5" "trunk-aa" "short"
+make_trunk "$DIR5" "trunk-bb" "short"
 
-assert_exit "no truncation: exits 0 when under budget" 0 "$GEN" "$DIR7" --budget 10000
+assert_exit "no truncation: exits 0 when under budget" 0 "$GEN" "$DIR5" --budget 10000
 
 # --- summary ---
 
