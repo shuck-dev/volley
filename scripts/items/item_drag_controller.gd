@@ -825,7 +825,7 @@ func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
 	if area == null:
 		return null
 	var rack_target: RackDropTarget = RackDropTarget.new()
-	rack_target.configure(_item_manager, area, role, timeout_controller)
+	rack_target.configure(_item_manager, area, role)
 	return rack_target
 
 

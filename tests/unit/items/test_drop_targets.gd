@@ -143,12 +143,9 @@ func test_rack_drop_target_accepts_equipment_unequip_outside_equip_pose() -> voi
 	manager.items.assign([equipment] as Array[ItemDefinition])
 
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.IDLE
 
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.configure(manager, area, &"equipment", timeout)
+	target.configure(manager, area, &"equipment")
 
 	assert_true(
 		target.can_accept("gear_rack_gate", Vector2(-500, 0)),
@@ -162,12 +159,9 @@ func test_rack_drop_target_accepts_equipment_unequip_at_equip_pose() -> void:
 	manager.items.assign([equipment] as Array[ItemDefinition])
 
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.AT_EQUIP_POSE
 
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.configure(manager, area, &"equipment", timeout)
+	target.configure(manager, area, &"equipment")
 
 	assert_true(
 		target.can_accept("gear_rack_gate", Vector2(-500, 0)),
