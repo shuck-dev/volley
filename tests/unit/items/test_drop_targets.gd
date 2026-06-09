@@ -2,7 +2,6 @@
 ## Drop targets accept or reject a released item by role, capacity, equip pose, bounds, and body projection.
 extends GutTest
 
-const DropTargetScript: GDScript = preload("res://scripts/items/drop_target.gd")
 const CourtDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/court_drop_target.gd"
 )
