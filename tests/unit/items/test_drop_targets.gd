@@ -1,5 +1,5 @@
-# gdlint:ignore = max-public-methods
-## Drop targets accept or reject a released item by role, capacity, equip pose, bounds, and body projection.
+## Drop targets accept or reject a released item by role, capacity, and the equip pose.
+## (Body projection lives in test_body_projection.gd.)
 extends GutTest
 
 const CourtDropTargetScript: GDScript = preload(
