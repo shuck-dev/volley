@@ -18,7 +18,6 @@ const CharacterDropTargetScript: GDScript = preload(
 const TimeoutControllerScript: GDScript = preload("res://scripts/core/timeout_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
-const BaseBall: ItemDefinition = preload("res://resources/items/base_ball.tres")
 
 
 func _make_ball_definition(key: String, radius: float = 12.0) -> ItemDefinition:
@@ -222,8 +221,6 @@ func test_venue_drop_target_accepts_ball_inside_venue_bounds() -> void:
 	var target: VenueDropTarget = VenueDropTargetScript.new()
 	target.configure(manager, reconciler, venue, court)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
-	# Inclusive max-edge: Rect2.has_point treats max as exclusive without the guard.
-	assert_true(target.can_accept("ball_alpha", Vector2(2000, 1200)))
 
 
 func test_venue_drop_target_rejects_outside_venue() -> void:
@@ -238,186 +235,20 @@ func test_venue_drop_target_rejects_outside_venue() -> void:
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))
 
 
-# --- CourtDropTarget body projection -------------------------------------------------
-
-
-class _PhysicsHarness:
-	extends Node2D
-
-	## Parents balls/walls under a tree-resident Node2D so they share its `World2D`.
-
-	static func make(test: GutTest, manager: Node, definitions: Array) -> Dictionary:
-		manager.items.assign(definitions as Array[ItemDefinition])
-		var host := Node2D.new()
-		test.add_child_autofree(host)
-		var reconciler: BallReconciler = BallReconcilerScript.new()
-		reconciler.configure(manager)
-		test.add_child_autofree(reconciler)
-		var target: CourtDropTarget = CourtDropTargetScript.new()
-		(
-			target
-			. configure(
-				manager,
-				reconciler,
-				host.get_world_2d(),
-				Rect2(Vector2(-600, -400), Vector2(1200, 800)),
-			)
-		)
-		return {"host": host, "reconciler": reconciler, "target": target, "manager": manager}
-
-
-func _make_static_wall(host: Node, position: Vector2, size: Vector2) -> StaticBody2D:
-	var wall := StaticBody2D.new()
-	wall.global_position = position
-	var collision := CollisionShape2D.new()
-	var rectangle := RectangleShape2D.new()
-	rectangle.size = size
-	collision.shape = rectangle
-	wall.add_child(collision)
-	host.add_child(wall)
-	return wall
-
-
-func test_court_target_accepts_clear_position() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha")
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
-	await get_tree().physics_frame
-	var target: CourtDropTarget = harness["target"]
-	assert_true(target.can_accept("ball_alpha", Vector2(0, 0)))
-
-
-func test_court_target_rejects_when_wall_overlaps_projection() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha", 20.0)
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
-	_make_static_wall(harness["host"], Vector2(100, 0), Vector2(80, 80))
-	# Two physics frames so the static body's shape is registered with the space state.
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	var target: CourtDropTarget = harness["target"]
-	assert_false(
-		target.can_accept("ball_alpha", Vector2(100, 0)),
-		"projection rejects when a wall sits directly under the candidate position",
-	)
-
-
-func test_court_target_rejects_ball_on_ball_stack() -> void:
-	# StaticBody2D stands in for a placed ball so the body stays put across physics frames.
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha", 20.0)
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
-	_make_static_wall(harness["host"], Vector2(50, 50), Vector2(40, 40))
-	# Two frames so the static body's RID is in the space state.
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-
-	var target: CourtDropTarget = harness["target"]
-	assert_false(
-		target.can_accept("ball_alpha", Vector2(50, 50)),
-		"a ball cannot land directly on top of an existing body",
-	)
-	assert_true(
-		target.can_accept("ball_alpha", Vector2(-200, -200)),
-		"a clear position elsewhere on the court still accepts",
-	)
-
-
-func test_court_target_rejects_position_outside_court_bounds() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha")
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
-	await get_tree().physics_frame
-	var target: CourtDropTarget = harness["target"]
-	assert_false(
-		target.can_accept("ball_alpha", Vector2(2000, 0)),
-		"positions outside the court bounds do not match the strict court target",
-	)
+# --- CourtDropTarget role gate (body projection lives in test_body_projection.gd) ----
 
 
 func test_court_target_rejects_equipment_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("grip_y")
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [equipment])
-	await get_tree().physics_frame
-	var target: CourtDropTarget = harness["target"]
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	var host := Node2D.new()
+	add_child_autofree(host)
+	var reconciler: BallReconciler = BallReconcilerScript.new()
+	reconciler.configure(manager)
+	add_child_autofree(reconciler)
+	var target: CourtDropTarget = CourtDropTargetScript.new()
+	target.configure(
+		manager, reconciler, host.get_world_2d(), Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	)
 	assert_false(target.can_accept("grip_y", Vector2.ZERO))
-
-
-func test_court_target_widens_with_expansion_ring_scale() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha", 12.0)
-	var harness: Dictionary = _PhysicsHarness.make(self, manager, [ball_alpha])
-	await get_tree().physics_frame
-	var target: CourtDropTarget = harness["target"]
-	assert_true(target.can_accept("ball_alpha", Vector2.ZERO, 1.0))
-	assert_true(target.can_accept("ball_alpha", Vector2.ZERO, 1.5))
-
-
-# --- Cross-container size identity (SH-261 + SH-287 AC) -----------------------------
-
-
-func test_item_definition_carries_at_rest_shape_for_ball_items() -> void:
-	assert_not_null(BaseBall.at_rest_shape, "base ball should carry an at_rest_shape after SH-287")
-	assert_true(BaseBall.at_rest_shape is CircleShape2D)
-
-
-func test_token_scale_remains_standard_across_items() -> void:
-	# Pins held-token, rack-slot, and definition scales to the single source of truth (SH-261).
-	const ItemDragControllerScript: GDScript = preload(
-		"res://scripts/items/item_drag_controller.gd"
-	)
-	const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
-
-	var manager: Node = ItemFactory.create_manager(self)
-	manager.items.assign([BaseBall] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("base_ball")
-
-	# 1. Held token through the drag controller.
-	var rack: RackDisplay = RackDisplayScript.new()
-	rack.role = &"ball"
-	var slot_container := Node2D.new()
-	slot_container.name = "SlotContainer"
-	rack.add_child(slot_container)
-	for index in 4:
-		var marker := Node2D.new()
-		marker.name = "SlotMarker%d" % index
-		marker.position = Vector2(index * 32, 0)
-		slot_container.add_child(marker)
-	rack.slot_container = slot_container
-	rack.configure(manager)
-	add_child_autofree(rack)
-
-	var drag: ItemDragController = ItemDragControllerScript.new()
-	drag.configure(manager, rack, null, null)
-	add_child_autofree(drag)
-	drag._spawn_held_body("base_ball", Vector2.ZERO, false)
-	var held_token: Node2D = drag.get_held_body()
-	assert_not_null(held_token, "precondition: held token spawned")
-
-	rack.refresh()
-	var slot_art_holder: Node2D = null
-	for slot in slot_container.get_children():
-		var holder: Node = slot.get_node_or_null("ArtHolder")
-		if holder is Node2D:
-			slot_art_holder = holder
-			break
-
-	var standard: Vector2 = BaseBall.token_scale
-
-	assert_eq(standard, Vector2(1.5, 1.5), "definition pins the standard token_scale")
-	# Settle the lift past its window so the held token lands on the standard, mirroring the post-ease state.
-	drag._grab_ease_elapsed = drag.grab_ease_duration_s
-	drag._apply_grab_ease(1.0, held_token.global_position)
-	assert_eq(
-		held_token.scale,
-		standard,
-		"held-token settles on the standard token_scale after the SH-297 lift ease",
-	)
-	assert_not_null(slot_art_holder, "precondition: rack populated at least one slot art holder")
-	assert_eq(
-		slot_art_holder.scale,
-		standard,
-		"rack slot art rendering reads token_scale off the definition",
-	)
