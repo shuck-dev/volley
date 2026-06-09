@@ -60,14 +60,15 @@ review (the timeout/equip responsibilities are being re-homed by ownership in th
 refactor). Keying the FSM to paddle movement keeps it independent of how any errand is
 orchestrated.
 
-## Why swing is an overlay, not a state, and why no tree
+## Why swing is a transient animation, not a state, and why no tree
 
 Swing is a transient action that can fire while the paddle is idle or walking, not a
 mode the paddle is wholly in. The hit is currently an instantaneous `paddle_hit`
-signal with no held pose (`paddle.gd:53`), which is the overlay shape: a brief action
-on top of a persistent movement state.
+signal with no held pose (`paddle.gd:53`): a brief animation that plays on top of a
+persistent movement state and then hands back.
 
-Overlay composition does not require an `AnimationTree`. A tree earns its cost when
+Composing a transient animation over a movement state does not require an
+`AnimationTree`. A tree earns its cost when
 the composition is blended and continuous (speed-graded locomotion, per-bone upper
 body over lower body). Ours is discrete: the movement state picks the body animation,
 and a swing plays its animation on top when a hit fires. Sprite frames cannot

@@ -68,7 +68,7 @@ func test_returning_to_idle_resumes_idle_animation() -> void:
 	assert_eq(_sprite.animation, &"idle")
 
 
-# --- swing overlay ---
+# --- swing animation ---
 
 
 func test_swing_fires_swing_animation() -> void:
