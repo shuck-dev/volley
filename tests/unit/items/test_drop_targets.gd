@@ -11,6 +11,9 @@ const RackDropTargetScript: GDScript = preload(
 const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
 )
+const ShopDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/shop_drop_target.gd"
+)
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
@@ -45,6 +48,18 @@ func _make_drop_area(position: Vector2, size: Vector2) -> Area2D:
 
 	add_child_autofree(area)
 	return area
+
+
+# --- ShopDropTarget ------------------------------------------------------------------
+
+
+func test_shop_drop_target_accepts_release_inside_shop_zone() -> void:
+	# A release inside the shop zone is taken so the gesture cancels back to its source slot.
+	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(200, 100))
+	var target: ShopDropTarget = ShopDropTargetScript.new()
+	target.configure(area)
+
+	assert_true(target.can_accept("ball_alpha", Vector2(100, 0)))
 
 
 # --- RackDropTarget ------------------------------------------------------------------
@@ -199,6 +214,45 @@ func test_character_drop_target_equips_gear() -> void:
 	harness["target"].accept("gear_e", Vector2.ZERO, Vector2.ZERO)
 
 	assert_true(manager.is_on_court("gear_e"))
+
+
+func test_pressing_equipped_gear_signals_a_regrab() -> void:
+	# A left-click on mounted gear emits equipped_art_pressed, which drives the regrab-to-rack flow.
+	var manager: Node = ItemFactory.create_manager(self)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var target: CharacterDropTarget = CharacterDropTargetScript.new()
+	target.configure(manager, _make_drop_area(Vector2.ZERO, Vector2(40, 80)), timeout)
+	watch_signals(target)
+
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	target._on_equipped_press_input(null, click, 0, "gear_a")
+
+	assert_signal_emitted(target, "equipped_art_pressed")
+
+
+func test_configure_re_renders_gear_equipped_before_load() -> void:
+	# Save/reload: gear already EQUIPPED in state must re-mount its visual when the target wires up.
+	var manager: Node = ItemFactory.create_manager(self)
+	var equipment: ItemDefinition = _make_equipment_definition("gear_hydrate")
+	manager.items.assign([equipment] as Array[ItemDefinition])
+	manager.economy.soul_balance = 10000
+	manager.take("gear_hydrate")
+	manager.state.item_placements["gear_hydrate"] = Placement.EQUIPPED
+
+	var paddle := Node2D.new()
+	add_child_autofree(paddle)
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
+	area.reparent(paddle)
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	var target: CharacterDropTarget = CharacterDropTargetScript.new()
+	target.configure(manager, area, timeout)
+
+	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_hydrate")
+	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "gear re-renders on load")
 
 
 # --- VenueDropTarget -----------------------------------------------------------------
