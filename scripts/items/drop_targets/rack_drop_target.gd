@@ -6,29 +6,22 @@ extends DropTarget
 var _item_manager: Node
 var _drop_area: Area2D
 var _role: StringName
-var _timeout_controller: TimeoutController
 
 
 func configure(
 	item_manager: Node,
 	drop_area: Area2D,
 	role: StringName,
-	timeout_controller: TimeoutController = null,
 ) -> void:
 	_item_manager = item_manager
 	_drop_area = drop_area
 	_role = role
-	_timeout_controller = timeout_controller
 
 
 func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
 	if _drop_area == null:
 		return false
 	if not _is_role_match(item_key):
-		return false
-	# Equipment unequip is symmetric with equip per gear.md: only the equip pose permits removal so
-	# the player cannot desync effects mid-rally or in any other lull.
-	if _role == &"equipment" and not RallyGate.removal_allowed(_timeout_controller):
 		return false
 	return _position_inside_area(position)
 

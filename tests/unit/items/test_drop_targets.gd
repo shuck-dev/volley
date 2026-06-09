@@ -137,42 +137,19 @@ func test_rack_drop_target_without_drop_area_rejects() -> void:
 	assert_false(target.can_accept("ball_alpha", Vector2.ZERO))
 
 
-# SH-412: unequip-to-rack is the sibling of SH-413's equip-pose gate; only the pose permits removal.
-func test_rack_drop_target_rejects_equipment_unequip_outside_equip_pose() -> void:
+func test_rack_drop_target_accepts_equipment_unequip_outside_equip_pose() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_rack_gate")
 	manager.items.assign([equipment] as Array[ItemDefinition])
 
 	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.IDLE
 
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.configure(manager, area, &"equipment", timeout)
-
-	assert_false(
-		target.can_accept("gear_rack_gate", Vector2(-500, 0)),
-		"equipment unequip-to-rack bounces unless the character is at the equip pose",
-	)
-
-
-func test_rack_drop_target_accepts_equipment_unequip_at_equip_pose() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_rack_gate")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-
-	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.AT_EQUIP_POSE
-
-	var target: RackDropTarget = RackDropTargetScript.new()
-	target.configure(manager, area, &"equipment", timeout)
+	target.configure(manager, area, &"equipment")
 
 	assert_true(
 		target.can_accept("gear_rack_gate", Vector2(-500, 0)),
-		"equipment unequip-to-rack is permitted once the character reaches the equip pose",
+		"rack-return is unconditional: accepted regardless of timeout state",
 	)
 
 
