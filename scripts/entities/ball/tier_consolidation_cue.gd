@@ -1,31 +1,42 @@
 class_name TierConsolidationCue
-extends Node2D
+extends CPUParticles2D
 
-const _RING_TEXTURE: Texture2D = preload("res://assets/ui/tier_cue_ring.svg")
+const _STAR_TEXTURE: Texture2D = preload("res://assets/ui/tier_cue_star.svg")
 const GROUP: StringName = &"tier_consolidation_cue"
 
-## Duration the ring takes to fully expand and fade.
-@export_range(0.05, 2.0) var duration_s: float = 0.4
-## Scale the ring starts at; the ring expands from this to ring_scale_end.
-@export_range(0.1, 2.0) var ring_scale_start: float = 1.0
-## Scale the ring reaches by the end of the animation.
-@export_range(1.0, 5.0) var ring_scale_end: float = 1.8
-## Tint applied to the ring sprite; alpha is fully opaque at start and tweened to zero.
-@export var ring_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+## Number of star particles in the burst.
+@export_range(4, 64) var particle_count: int = 16
+## How long each particle lives (seconds).
+@export_range(0.05, 2.0) var particle_lifetime: float = 0.35
+## Initial outward speed of the particles (px/s).
+@export_range(10.0, 500.0) var burst_speed: float = 80.0
+## Angular spread of the burst around the full circle (degrees).
+@export_range(10.0, 360.0) var burst_spread: float = 360.0
+## Tint applied to all particles; alpha fades to zero over lifetime.
+@export var burst_color: Color = Color(1.0, 1.0, 1.0, 1.0)
 
 
 func _ready() -> void:
 	add_to_group(GROUP)
 	z_index = 1
 
-	var sprite := Sprite2D.new()
-	sprite.texture = _RING_TEXTURE
-	sprite.modulate = ring_color
-	sprite.scale = Vector2.ONE * ring_scale_start
-	add_child(sprite)
+	texture = _STAR_TEXTURE
+	amount = particle_count
+	lifetime = particle_lifetime
+	one_shot = true
+	emitting = true
 
-	var tween: Tween = create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(sprite, "scale", Vector2.ONE * ring_scale_end, duration_s)
-	tween.tween_property(sprite, "modulate:a", 0.0, duration_s)
-	tween.chain().tween_callback(queue_free)
+	direction = Vector2.UP
+	spread = burst_spread * 0.5
+	initial_velocity_min = burst_speed
+	initial_velocity_max = burst_speed
+	gravity = Vector2.ZERO
+
+	color = burst_color
+
+	var fade := Gradient.new()
+	fade.set_color(0, burst_color)
+	fade.set_color(1, Color(burst_color.r, burst_color.g, burst_color.b, 0.0))
+	color_ramp = fade
+
+	finished.connect(queue_free)
