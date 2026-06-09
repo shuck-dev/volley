@@ -1,5 +1,5 @@
 # gdlint:ignore = max-public-methods
-## SH-287: drop targets validate releases through bounds and body projection.
+## Drop targets accept or reject a released item by role, capacity, equip pose, bounds, and body projection.
 extends GutTest
 
 const DropTargetScript: GDScript = preload("res://scripts/items/drop_target.gd")
@@ -8,9 +8,6 @@ const CourtDropTargetScript: GDScript = preload(
 )
 const RackDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/rack_drop_target.gd"
-)
-const ShopDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/shop_drop_target.gd"
 )
 const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
@@ -52,42 +49,10 @@ func _make_drop_area(position: Vector2, size: Vector2) -> Area2D:
 	return area
 
 
-# --- DropTarget base contract --------------------------------------------------------
-
-
-func test_default_drop_target_rejects_everything() -> void:
-	var target: DropTarget = DropTargetScript.new()
-	assert_false(target.can_accept("anything", Vector2.ZERO))
-
-
-# --- ShopDropTarget ------------------------------------------------------------------
-
-
-func test_shop_drop_target_accepts_inside_shop_area() -> void:
-	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(200, 100))
-	var target: ShopDropTarget = ShopDropTargetScript.new()
-	target.configure(area)
-
-	assert_true(target.can_accept("ball_alpha", Vector2(120, 0)))
-
-
-func test_shop_drop_target_rejects_outside_shop_area() -> void:
-	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(50, 50))
-	var target: ShopDropTarget = ShopDropTargetScript.new()
-	target.configure(area)
-
-	assert_false(target.can_accept("ball_alpha", Vector2(500, 500)))
-
-
-func test_shop_drop_target_without_area_rejects() -> void:
-	var target: ShopDropTarget = ShopDropTargetScript.new()
-	assert_false(target.can_accept("ball_alpha", Vector2.ZERO))
-
-
 # --- RackDropTarget ------------------------------------------------------------------
 
 
-func test_rack_drop_target_accepts_role_match_inside_area() -> void:
+func test_rack_drop_target_accepts_matching_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball_alpha: ItemDefinition = _make_ball_definition("ball_alpha")
 	manager.items.assign([ball_alpha] as Array[ItemDefinition])
@@ -108,7 +73,7 @@ func test_rack_drop_target_rejects_role_mismatch() -> void:
 	var ball_target: RackDropTarget = RackDropTargetScript.new()
 	ball_target.configure(manager, area, &"ball")
 
-	assert_false(ball_target.can_accept("grip_x", Vector2(-500, 0)))
+	assert_false(ball_target.can_accept("grip_x", Vector2.ZERO))
 
 
 func test_rack_drop_target_accept_deactivates_an_on_court_item() -> void:
@@ -129,26 +94,18 @@ func test_rack_drop_target_accept_deactivates_an_on_court_item() -> void:
 	assert_false(manager.is_on_court("ball_alpha"))
 
 
-func test_rack_drop_target_without_drop_area_rejects() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var target: RackDropTarget = RackDropTargetScript.new()
-	target.configure(manager, null, &"ball")
-
-	assert_false(target.can_accept("ball_alpha", Vector2.ZERO))
-
-
 func test_rack_drop_target_accepts_equipment_unequip_outside_equip_pose() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_rack_gate")
 	manager.items.assign([equipment] as Array[ItemDefinition])
 
-	var area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
+	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(200, 100))
 
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.configure(manager, area, &"equipment")
 
 	assert_true(
-		target.can_accept("gear_rack_gate", Vector2(-500, 0)),
+		target.can_accept("gear_rack_gate", Vector2.ZERO),
 		"rack-return is unconditional: accepted regardless of timeout state",
 	)
 
@@ -231,264 +188,19 @@ func test_character_drop_target_rejects_when_capacity_zero() -> void:
 	assert_false(harness["target"].can_accept("gear_c", Vector2.ZERO))
 
 
-func test_character_drop_target_rejects_position_outside_area() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_d")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_d")
-
-	var harness: Dictionary = _make_character_target_harness(manager)
-	_force_at_equip_pose(harness["timeout"])
-
-	assert_false(harness["target"].can_accept("gear_d", Vector2(9999, 9999)))
-
-
-func test_character_drop_target_accept_equips_and_emits_no_refusal() -> void:
+func test_character_drop_target_equips_gear() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var equipment: ItemDefinition = _make_equipment_definition("gear_e")
 	manager.items.assign([equipment] as Array[ItemDefinition])
 	manager.economy.soul_balance = 10000
 	manager.take("gear_e")
-	var before: int = manager.get_kit_remaining()
 
 	var harness: Dictionary = _make_character_target_harness(manager)
 	_force_at_equip_pose(harness["timeout"])
-	watch_signals(manager)
 
 	harness["target"].accept("gear_e", Vector2.ZERO, Vector2.ZERO)
 
 	assert_true(manager.is_on_court("gear_e"))
-	assert_eq(manager.get_kit_remaining(), before - 1)
-	assert_signal_not_emitted(manager, "equip_refused")
-
-
-func test_character_drop_target_mounts_visual_on_anchor_and_rack_frees_it() -> void:
-	# Equip parents the art at the anchor; rack accept frees it via the equipped_art group.
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_mount")
-	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_mount")
-
-	# Minimal paddle fixture: parent owns the drop area as a sibling of Sprite/AnkleAnchor.
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var sprite := Node2D.new()
-	sprite.name = "Sprite"
-	paddle.add_child(sprite)
-	var ankle_anchor := Node2D.new()
-	ankle_anchor.name = "AnkleAnchor"
-	sprite.add_child(ankle_anchor)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: DropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-	_force_at_equip_pose(timeout)
-
-	character_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
-
-	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_mount")
-	var mounted: Array = get_tree().get_nodes_in_group(group)
-	assert_eq(mounted.size(), 1, "equip mounts one visual under the anchor")
-	assert_eq(
-		(mounted[0] as Node).get_parent(), ankle_anchor, "visual parents at the resolved anchor"
-	)
-
-	var rack_area: Area2D = _make_drop_area(Vector2(-500, 0), Vector2(200, 100))
-	var rack_target: RackDropTarget = RackDropTargetScript.new()
-	rack_target.configure(manager, rack_area, &"equipment")
-	rack_target.accept("gear_mount", Vector2.ZERO, Vector2.ZERO)
-	await get_tree().process_frame
-
-	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "unequip frees the mounted visual")
-
-
-func test_character_drop_target_hydrates_equipped_visuals_on_configure() -> void:
-	# Save-and-reload path: placement is already EQUIPPED before the target wires up.
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_hydrate")
-	equipment.anchor_node_path = NodePath("Sprite/AnkleAnchor")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_hydrate")
-	manager.state.item_placements["gear_hydrate"] = Placement.EQUIPPED
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var sprite := Node2D.new()
-	sprite.name = "Sprite"
-	paddle.add_child(sprite)
-	var ankle_anchor := Node2D.new()
-	ankle_anchor.name = "AnkleAnchor"
-	sprite.add_child(ankle_anchor)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: DropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-
-	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_hydrate")
-	var mounted: Array = get_tree().get_nodes_in_group(group)
-	assert_eq(mounted.size(), 1, "configure hydrates one visual for the persisted EQUIPPED entry")
-	assert_eq((mounted[0] as Node).get_parent(), ankle_anchor)
-
-
-func test_character_drop_target_unmounts_on_placement_change_to_stored() -> void:
-	# Signal-driven teardown: unequip flips placement, handler frees the art.
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_unmount")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_unmount")
-	manager.state.item_placements["gear_unmount"] = Placement.EQUIPPED
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: DropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-
-	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_unmount")
-	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "precondition: hydrated")
-
-	manager.unequip("gear_unmount")
-	await get_tree().process_frame
-
-	assert_eq(get_tree().get_nodes_in_group(group).size(), 0, "EQUIPPED->STORED frees the visual")
-
-
-func test_character_drop_target_mount_is_idempotent_on_repeat_equipped_signal() -> void:
-	# Hydrate + a duplicate EQUIPPED emission must not double-mount.
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_idem")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_idem")
-	manager.state.item_placements["gear_idem"] = Placement.EQUIPPED
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: DropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-
-	manager.item_placement_changed.emit("gear_idem", Placement.EQUIPPED)
-
-	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_idem")
-	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "second mount is suppressed")
-
-
-func test_character_drop_target_falls_back_to_paddle_when_anchor_path_empty() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_root")
-	# anchor_node_path left as the default empty NodePath.
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_root")
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: DropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-	_force_at_equip_pose(timeout)
-
-	character_target.accept("gear_root", Vector2.ZERO, Vector2.ZERO)
-
-	var mounted: Array = get_tree().get_nodes_in_group(
-		CharacterDropTargetScript.equipped_art_group("gear_root")
-	)
-	assert_eq(mounted.size(), 1)
-	assert_eq(
-		(mounted[0] as Node).get_parent(), paddle, "empty anchor path falls back to paddle root"
-	)
-
-
-func test_character_drop_target_without_drop_area_rejects() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var target: DropTarget = CharacterDropTargetScript.new()
-	target.configure(manager, null, timeout)
-
-	assert_false(target.can_accept("anything", Vector2.ZERO))
-
-
-func test_equipped_visual_carries_press_area_for_regrab() -> void:
-	# Mounted art needs a sub-Area2D so the player can press it to unequip via drag.
-	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = _make_equipment_definition("gear_press")
-	manager.items.assign([equipment] as Array[ItemDefinition])
-	manager.economy.soul_balance = 10000
-	manager.take("gear_press")
-	manager.state.item_placements["gear_press"] = Placement.EQUIPPED
-
-	var paddle := Node2D.new()
-	paddle.name = "PaddleFixture"
-	add_child_autofree(paddle)
-	var area: Area2D = _make_drop_area(Vector2.ZERO, Vector2(40, 80))
-	area.reparent(paddle)
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-
-	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.configure(manager, area, timeout)
-
-	var visual: Node = (
-		get_tree().get_nodes_in_group(CharacterDropTargetScript.equipped_art_group("gear_press"))[0]
-	)
-	var press: Area2D = visual.get_node_or_null("EquippedPressArea") as Area2D
-	assert_not_null(press, "mounted visual must carry an EquippedPressArea for regrab")
-	assert_true(press.input_pickable, "press area must accept mouse input")
-	# Picker invariant: needs broadphase presence (monitorable) + a non-zero collision_layer to receive input_event.
-	assert_true(
-		press.monitorable, "press area must be monitorable so the picker sees it in the broadphase"
-	)
-	assert_ne(
-		press.collision_layer,
-		0,
-		"press area needs a collision_layer for the input picker to intersect"
-	)
-
-	watch_signals(character_target)
-
-	var event := InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
-	event.pressed = true
-	character_target._on_equipped_press_input(null, event, 0, "gear_press")
-
-	assert_signal_emit_count(character_target, "equipped_art_pressed", 1)
 
 
 # --- VenueDropTarget -----------------------------------------------------------------

@@ -31,6 +31,7 @@ script = ExtResource("1_item")
 key = "spare"
 type = &"court"
 role = &"equipment"
+anchor_node_path = NodePath("GripAnchor")
 display_name = "Spare"
 art = ExtResource("1_por0g")
 descriptions = Array[String](["There's always one left over", "Wasn't supposed to need it", "Nobody noticed it was missing"])
