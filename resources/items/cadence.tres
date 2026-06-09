@@ -49,6 +49,7 @@ script = ExtResource("1_item")
 key = "cadence"
 type = &"kit"
 role = &"equipment"
+anchor_node_path = NodePath("GripAnchor")
 display_name = "Cadence"
 art = ExtResource("7_art")
 descriptions = Array[String](["Sounds wrong", "Don't stop. Won't stop", "Was anyone listening?"])
