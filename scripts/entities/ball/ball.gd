@@ -361,7 +361,7 @@ func _ball_setup() -> void:
 
 
 func _on_tier_advanced(_ball: Ball, _new_tier: int) -> void:
-	var cue: Node2D = load("res://scripts/entities/ball/tier_consolidation_cue.gd").new()
+	var cue: CPUParticles2D = load("res://scripts/entities/ball/tier_consolidation_cue.gd").new()
 	add_child(cue)
 
 

@@ -32,11 +32,11 @@ func _ready() -> void:
 	initial_velocity_max = burst_speed
 	gravity = Vector2.ZERO
 
-	color = burst_color
-
+	# color_ramp owns the per-particle tint and the alpha fade; a flat `color` would be ignored.
 	var fade := Gradient.new()
 	fade.set_color(0, burst_color)
 	fade.set_color(1, Color(burst_color.r, burst_color.g, burst_color.b, 0.0))
 	color_ramp = fade
 
-	finished.connect(queue_free)
+	if not finished.is_connected(queue_free):
+		finished.connect(queue_free)
