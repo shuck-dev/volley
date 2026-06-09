@@ -26,10 +26,6 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	if not _is_role_match(item_key):
 		return false
-	# Equipment unequip is symmetric with equip per gear.md: only the equip pose permits removal so
-	# the player cannot desync effects mid-rally or in any other lull.
-	if _role == &"equipment" and not RallyGate.removal_allowed(_timeout_controller):
-		return false
 	return _position_inside_area(position)
 
 
