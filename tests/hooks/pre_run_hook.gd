@@ -28,6 +28,9 @@ const EXCLUDE_PATHS = [
 	"res://scripts/core/venue_bound_debug_draw.gd",
 	# SH-297: pure enum + label container; only consumed via const access from callers.
 	"res://scripts/items/cursor_state.gd",
+	# Thin cancel-back target: accept() is a no-op (the controller finalises), leaving only the
+	# can_accept position gate and two teardown guards; nothing else honestly unit-testable.
+	"res://scripts/items/drop_targets/shop_drop_target.gd",
 ]
 
 

@@ -62,6 +62,15 @@ func test_shop_drop_target_accepts_release_inside_shop_zone() -> void:
 	assert_true(target.can_accept("ball_alpha", Vector2(100, 0)))
 
 
+func test_shop_drop_target_rejects_release_outside_shop_zone() -> void:
+	# Outside the zone the shop does not take the release, so the gesture falls through to the next target.
+	var area: Area2D = _make_drop_area(Vector2(100, 0), Vector2(50, 50))
+	var target: ShopDropTarget = ShopDropTargetScript.new()
+	target.configure(area)
+
+	assert_false(target.can_accept("ball_alpha", Vector2(900, 900)))
+
+
 # --- RackDropTarget ------------------------------------------------------------------
 
 
