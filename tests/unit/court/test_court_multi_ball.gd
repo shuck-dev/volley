@@ -339,7 +339,7 @@ func test_tier_cue_spawns_only_on_consolidating_ball() -> void:
 
 	crossing.advance_tier()
 
-	var cue_group: StringName = &"tier_consolidation_cue"
+	var cue_group: StringName = TierConsolidationCue.GROUP
 
 	var crossing_has_cue: bool = false
 	for child: Node in crossing.get_children():
