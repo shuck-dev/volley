@@ -5,9 +5,7 @@
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_tracker"]
 [ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_partner"]
-size = Vector2(36, 180)
+[ext_resource type="SpriteFrames" uid="uid://bpartner1anim" path="res://resources/animations/partner.tres" id="6_partnerframes"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_partner"]
 size = Vector2(36, 180)
@@ -22,8 +20,9 @@ sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 metadata/_edit_group_ = true
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=1878723155]
-texture = SubResource("PlaceholderTexture2D_partner")
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1878723155]
+sprite_frames = ExtResource("6_partnerframes")
+animation = &"idle"
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=712647188]
 shape = SubResource("RectangleShape2D_partner")

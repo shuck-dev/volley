@@ -4,13 +4,13 @@ extends CharacterBody2D
 ## Emits the ball that triggered the hit; null when emitted without a ball context (e.g. tests).
 signal paddle_hit(ball: Ball)
 
-# Upper limit only; the venue floor handles the bottom physically.
-# Tuned high enough to chase arcing balls into PLAY-ARC, low enough to stay on-screen.
+enum MovementState { IDLE, WALK }
+
 const PADDLE_TOP_Y := -540.0
 
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
-@export var sprite: Sprite2D
+@export var sprite: AnimatedSprite2D
 @export var tracker: HitTracker
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
@@ -18,13 +18,15 @@ var drive_blocked: bool = false
 
 var _item_manager: Node
 
-var _lane_x := 0.0
+var _lane_x: float = 0.0
 var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
-var _sprite_natural_height := 0.0
 
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
+
+var _movement_state: MovementState = MovementState.IDLE
+var _swing_pending: bool = false
 
 
 func _ready() -> void:
@@ -38,10 +40,9 @@ func _ready() -> void:
 		_collision_shape.size = collision.shape.size
 		collision.shape = _collision_shape
 
-	if sprite != null:
-		_sprite_natural_height = sprite.get_rect().size.y
-
 	_apply_size()
+
+	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
 func on_ball_hit(ball: Ball = null) -> bool:
@@ -67,6 +68,8 @@ func drive(velocity_y: float) -> void:
 	position.x = _lane_x
 	clamp_to_arena()
 
+	_update_movement_state(velocity_y)
+
 
 func clamp_to_arena() -> void:
 	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
@@ -81,6 +84,52 @@ func get_half_height() -> float:
 	if _collision_shape == null:
 		return 0.0
 	return _collision_shape.size.y * 0.5
+
+
+func get_movement_state() -> MovementState:
+	return _movement_state
+
+
+func _update_movement_state(velocity_y: float) -> void:
+	var new_state: MovementState = (
+		MovementState.WALK if not is_zero_approx(velocity_y) else MovementState.IDLE
+	)
+
+	if new_state == _movement_state:
+		return
+
+	_movement_state = new_state
+	_play_movement_animation()
+
+
+func _play_movement_animation() -> void:
+	if sprite == null:
+		return
+
+	if _swing_pending:
+		return
+
+	match _movement_state:
+		MovementState.IDLE:
+			sprite.play(&"idle")
+		MovementState.WALK:
+			sprite.play(&"walk")
+
+
+func _on_paddle_hit_for_swing(_ball: Ball) -> void:
+	if sprite == null:
+		return
+
+	_swing_pending = true
+	sprite.play(&"swing")
+
+	if not sprite.animation_finished.is_connected(_on_swing_finished):
+		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
+
+
+func _on_swing_finished() -> void:
+	_swing_pending = false
+	_play_movement_animation()
 
 
 func _resolved_paddle_speed() -> float:
@@ -123,6 +172,3 @@ func _apply_size() -> void:
 	if _size_initialised:
 		position.y -= (new_size - old_size) * 0.5
 	_size_initialised = true
-
-	if sprite != null and _sprite_natural_height > 0.0:
-		sprite.scale.y = new_size / _sprite_natural_height

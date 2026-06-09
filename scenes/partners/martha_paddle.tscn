@@ -6,9 +6,7 @@
 [ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
 [ext_resource type="Texture2D" uid="uid://c833m4yxk2atr" path="res://assets/art/martha_bow.svg" id="6_bow"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_martha"]
-size = Vector2(24, 60)
+[ext_resource type="SpriteFrames" uid="uid://bmartha01anim" path="res://resources/animations/martha.tres" id="7_marthaframes"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
 size = Vector2(24, 60)
@@ -22,8 +20,9 @@ sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 metadata/_edit_group_ = true
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=2081878131]
-texture = SubResource("PlaceholderTexture2D_martha")
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2081878131]
+sprite_frames = ExtResource("7_marthaframes")
+animation = &"idle"
 
 [node name="Bow" type="Sprite2D" parent="." unique_id=708370465]
 position = Vector2(8.4, -24)

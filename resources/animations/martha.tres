@@ -1,0 +1,48 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://bmartha01anim"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_idle"]
+size = Vector2(24, 60)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ready"]
+size = Vector2(24, 60)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_swing"]
+size = Vector2(24, 60)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_walk"]
+size = Vector2(24, 60)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("PlaceholderTexture2D_idle")
+}],
+"loop": false,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("PlaceholderTexture2D_ready")
+}],
+"loop": false,
+"name": &"ready",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("PlaceholderTexture2D_swing")
+}],
+"loop": false,
+"name": &"swing",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("PlaceholderTexture2D_walk")
+}],
+"loop": false,
+"name": &"walk",
+"speed": 5.0
+}]
