@@ -172,3 +172,15 @@ func _apply_size() -> void:
 	if _size_initialised:
 		position.y -= (new_size - old_size) * 0.5
 	_size_initialised = true
+
+	_scale_sprite(new_size)
+
+
+func _scale_sprite(paddle_height: float) -> void:
+	if sprite == null:
+		return
+
+	var scale_factor: float = paddle_height / GameRules.paddle.paddle_size
+	sprite.scale.y = scale_factor
+	if _size_initialised:
+		sprite.position.y = -(paddle_height - GameRules.paddle.paddle_size) * 0.5
