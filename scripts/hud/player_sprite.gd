@@ -89,6 +89,8 @@ func _add_control(label_text: String, step: float, start: float, apply: Callable
 	spinbox.max_value = MAX_TUNE
 	spinbox.step = step
 	spinbox.value = start
+	spinbox.focus_mode = Control.FOCUS_NONE
+	spinbox.get_line_edit().focus_mode = Control.FOCUS_NONE
 	spinbox.value_changed.connect(apply)
 	add_child(spinbox)
 
@@ -97,6 +99,7 @@ func _add_checkbox(text: String, apply: Callable) -> void:
 	var checkbox := CheckBox.new()
 	checkbox.text = text
 	checkbox.button_pressed = false
+	checkbox.focus_mode = Control.FOCUS_NONE
 	checkbox.toggled.connect(apply)
 	add_child(checkbox)
 
