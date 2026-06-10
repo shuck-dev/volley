@@ -28,8 +28,7 @@ var _size_initialised: bool = false
 var _movement_state: MovementState = MovementState.IDLE
 var _swing_pending: bool = false
 
-var _sprite_base_height: float = 0.0
-var _sprite_previous_display_height: float = 0.0
+var _sprite_width_scale: float = 1.0
 
 
 func _ready() -> void:
@@ -45,7 +44,6 @@ func _ready() -> void:
 
 	_apply_size()
 
-	_capture_sprite_base_height()
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
@@ -162,10 +160,7 @@ func _apply_size() -> void:
 	if _collision_shape == null:
 		return
 
-	var arena_height: float = _resolve(GameRules.base.arena_height, &"arena_height")
-	var paddle_size_min: float = _resolve(GameRules.paddle.paddle_size_min, &"paddle_size_min")
-	var paddle_size: float = _resolve(GameRules.paddle.paddle_size, &"paddle_size")
-	var new_size: float = clampf(paddle_size, paddle_size_min, arena_height)
+	var new_size: float = GameRules.paddle.paddle_size
 
 	# Anchor the collider's foot: RectangleShape2D is centred on the body, so growing size.y without
 	# shifting position.y plants half the delta below the floor and traps depenetration during AT_EQUIP_POSE.
@@ -177,36 +172,21 @@ func _apply_size() -> void:
 		position.y -= (new_size - old_size) * 0.5
 	_size_initialised = true
 
-	_scale_sprite(new_size)
 
-
-func _capture_sprite_base_height() -> void:
+func set_sprite_height_scale(factor: float) -> void:
 	if sprite == null:
 		return
-
-	if sprite.sprite_frames == null or sprite.sprite_frames.get_frame_count(sprite.animation) == 0:
-		return
-
-	var frame_texture: Texture2D = sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
-	if frame_texture == null:
-		return
-
-	_sprite_base_height = frame_texture.get_height() * sprite.scale.y
+	sprite.scale.y = factor
 
 
-func _scale_sprite(paddle_height: float) -> void:
+func set_sprite_width_scale(factor: float) -> void:
+	_sprite_width_scale = factor
 	if sprite == null:
 		return
+	sprite.scale.x = factor
 
-	if _sprite_base_height <= 0.0:
+
+func set_collider_visible(visible: bool) -> void:
+	if collision == null:
 		return
-
-	var scale_factor: float = paddle_height / _sprite_base_height
-	sprite.scale.y = scale_factor
-
-	var new_display_height: float = paddle_height
-	if _size_initialised:
-		var height_delta: float = new_display_height - _sprite_previous_display_height
-		sprite.position.y -= height_delta * 0.5
-
-	_sprite_previous_display_height = new_display_height
+	collision.visible = visible

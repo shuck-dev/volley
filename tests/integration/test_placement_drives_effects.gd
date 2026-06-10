@@ -2,7 +2,7 @@ extends GutTest
 
 # Integration: placement drives effects.
 
-const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
+const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 
@@ -14,57 +14,61 @@ func before_each() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	_manager.items.assign([GripTape, TrainingBall, AnkleWeights])
+	_manager.items.assign([WristBrace, TrainingBall, AnkleWeights])
 	_manager.economy.soul_balance = 100000
 	add_child_autofree(_manager)
 
 
-# --- Equipment lifecycle ---------------------------------------------------
+# --- Equipment lifecycle ---
 
 
 # Taking an equipment item owns it but leaves it on the rack; no effect runs
 func test_equipment_lifecycle_rack_player_rack_player() -> void:
-	var base_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
+	var base_speed: float = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+	)
 
 	# Take-only: owned, sitting on the gear rack. No effect.
-	_manager.take("grip_tape")
+	_manager.take("wrist_brace")
 	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
-		base_size,
+		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager),
+		base_speed,
 		0.01,
 		"rack-resident equipment must not affect stats",
 	)
-	assert_false(_manager.is_on_court("grip_tape"), "take() should not place on player")
+	assert_false(_manager.is_on_court("wrist_brace"), "take() should not place on player")
 
-	# Placed on player → effect runs.
-	assert_true(_manager.activate("grip_tape"), "activate should accept an owned equipment item")
-	var placed_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
-	assert_gt(placed_size, base_size, "equipment on player should register its effect")
+	# Placed on player: effect runs.
+	assert_true(_manager.activate("wrist_brace"), "activate should accept an owned equipment item")
+	var placed_speed: float = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+	)
+	assert_gt(placed_speed, base_speed, "equipment on player should register its effect")
 
-	# Moved back to rack → effect stops.
-	assert_true(_manager.deactivate("grip_tape"), "deactivate should accept a placed item")
+	# Moved back to rack: effect stops.
+	assert_true(_manager.deactivate("wrist_brace"), "deactivate should accept a placed item")
 	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
-		base_size,
+		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager),
+		base_speed,
 		0.01,
 		"equipment on the rack should not affect stats",
 	)
-	assert_false(_manager.is_on_court("grip_tape"))
+	assert_false(_manager.is_on_court("wrist_brace"))
 
-	# Re-placed on player → effect resumes at the same strength.
-	assert_true(_manager.activate("grip_tape"))
+	# Re-placed on player: effect resumes at the same strength.
+	assert_true(_manager.activate("wrist_brace"))
 	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager),
-		placed_size,
+		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager),
+		placed_speed,
 		0.01,
 		"re-placing should resume the same effect",
 	)
 
 
-# --- Ball lifecycle --------------------------------------------------------
+# --- Ball lifecycle --------
 
 
-# A ball on the rack has no influence on ball-speed stats. Dragging it onto
+# A ball on the rack has no influence on ball-speed stats. Dragging it onto court registers it.
 func test_ball_lifecycle_rack_court_rack() -> void:
 	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
@@ -77,7 +81,7 @@ func test_ball_lifecycle_rack_court_rack() -> void:
 	)
 	assert_false(_manager.is_on_court("training_ball"))
 
-	# Onto the court → in play and registered.
+	# Onto the court: in play and registered.
 	assert_true(_manager.activate("training_ball"))
 	assert_true(_manager.is_on_court("training_ball"), "activated ball should be on the court")
 	assert_true(
@@ -90,7 +94,7 @@ func test_ball_lifecycle_rack_court_rack() -> void:
 		"ball on the court should register its effect",
 	)
 
-	# Back to rack → out of play and unregistered.
+	# Back to rack: out of play and unregistered.
 	assert_true(_manager.deactivate("training_ball"))
 	assert_false(_manager.is_on_court("training_ball"))
 	assert_false("training_ball" in _manager.get_court_items())
@@ -102,10 +106,10 @@ func test_ball_lifecycle_rack_court_rack() -> void:
 	)
 
 
-# --- Save / reload round-trip ---------------------------------------------
+# --- Save / reload round-trip ---
 
 
-# Placement is part of the saved progression: after a round-trip through
+# Placement is part of the saved progression: after a round-trip through save-reload, placement and effects persist.
 func test_save_and_reload_preserves_placement_and_effects() -> void:
 	# Pure JSON round-trip on the items slice; exercises ItemManager re-hydration, not the storage seam.
 	_manager.state = ItemState.new()
@@ -114,13 +118,15 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	_manager._register_existing_items()
 
 	# Place one equipment item and one ball; leave a third owned on the rack.
-	_manager.take("grip_tape")
-	_manager.activate("grip_tape")
+	_manager.take("wrist_brace")
+	_manager.activate("wrist_brace")
 	_manager.take("training_ball")
 	_manager.activate("training_ball")
 	_manager.take("ankle_weights")  # owned but never placed.
 
-	var equipped_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", _manager)
+	var equipped_speed: float = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _manager
+	)
 	var court_ball_min: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
@@ -134,11 +140,11 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	reloaded.state.apply_save_dict(JSON.parse_string(saved_blob))
 	reloaded.economy = EconomyState.new()
 	reloaded._effect_manager = EffectManager.new()
-	reloaded.items.assign([GripTape, TrainingBall, AnkleWeights])
+	reloaded.items.assign([WristBrace, TrainingBall, AnkleWeights])
 	add_child_autofree(reloaded)
 
 	# Placement survives the round-trip.
-	assert_true(reloaded.is_on_court("grip_tape"), "equipment placement must survive reload")
+	assert_true(reloaded.is_on_court("wrist_brace"), "equipment placement must survive reload")
 	assert_true(reloaded.is_on_court("training_ball"), "ball placement must survive reload")
 	assert_false(
 		reloaded.is_on_court("ankle_weights"),
@@ -147,8 +153,8 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 
 	# Effects match what they were before the round-trip.
 	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", reloaded),
-		equipped_size,
+		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", reloaded),
+		equipped_speed,
 		0.01,
 		"reloaded equipment must run the same effect",
 	)
@@ -159,15 +165,15 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 		"reloaded ball must run the same effect",
 	)
 
-	# Rack items are still inert after reload — purchasing more levels must
+	# Rack items are still inert after reload. Purchasing more levels must
 	# not start the effect until the player places the item.
-	var size_before_racked_purchase: float = Stats.resolve(
-		GameRules.paddle.paddle_size, &"paddle_size", reloaded
+	var speed_before_racked_purchase: float = Stats.resolve(
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", reloaded
 	)
 	reloaded.purchase("ankle_weights")
 	assert_almost_eq(
-		Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", reloaded),
-		size_before_racked_purchase,
+		Stats.resolve(GameRules.base.ball_speed_increment, &"ball_speed_increment", reloaded),
+		speed_before_racked_purchase,
 		0.01,
 		"levels on a racked item stay inert after reload",
 	)

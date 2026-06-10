@@ -7,7 +7,7 @@ const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
-const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
+const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
@@ -34,7 +34,7 @@ func _setup_shop() -> void:
 	_shop_manager.state = ItemState.new()
 	_shop_manager.economy = EconomyState.new()
 	_shop_manager._effect_manager = EffectManager.new()
-	_shop_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
+	_shop_manager.items.assign([WristBrace, AnkleWeights, Cadence, Spare])
 	_shop_manager.economy.soul_balance = 10000
 	add_child_autofree(_shop_manager)
 
@@ -134,10 +134,10 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 	# Drives the real release path through ShopItem._input(InputEventMouseButton). Cursor is
 	# warped outside the shop area so the held token's release lands as a purchase.
 	_setup_shop()
-	var item: ShopItem = _shop_item("grip_tape")
+	var item: ShopItem = _shop_item("wrist_brace")
 	var viewport: Viewport = item.get_viewport()
 	var balance_before: int = _shop_manager.get_soul_balance()
-	var cost: int = GripTape.base_cost
+	var cost: int = WristBrace.base_cost
 
 	item.pickup_area.input_event.emit(viewport, _press_event(), 0)
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
@@ -147,7 +147,7 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 
 	assert_false(item.is_dragging(), "real mouse-up resolves the gesture")
 	assert_eq(
-		_shop_manager.get_level("grip_tape"),
+		_shop_manager.get_level("wrist_brace"),
 		1,
 		"release outside shop via real _input must complete the purchase",
 	)

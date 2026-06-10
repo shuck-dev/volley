@@ -59,45 +59,6 @@ func test_apply_size_does_nothing_when_collision_not_assigned() -> void:
 	assert_null(_paddle.collision)
 
 
-func test_size_updates_live_on_unequip_and_reequip() -> void:
-	# Drives the production signal chain: ItemManager.item_level_changed -> Paddle._refresh_from_stats
-	# -> _apply_size, on the player paddle's own CollisionShape2D. The deleted integration version
-	# of this case lived on main; the assertion does not need a full loop.
-	var manager: Node = load("res://scripts/items/item_manager.gd").new()
-	manager.state = ItemState.new()
-	manager.economy = EconomyState.new()
-	manager._effect_manager = EffectManager.new()
-	manager.items.assign([preload("res://resources/items/grip_tape.tres")])
-	add_child_autofree(manager)
-
-	var collision := CollisionShape2D.new()
-	collision.shape = RectangleShape2D.new()
-	collision.shape.size = Vector2(20.0, 80.0)
-	var paddle: Paddle = PaddleScript.new()
-	var sound := AudioStreamPlayer.new()
-	paddle.add_child(sound)
-	paddle.add_child(collision)
-	paddle.hit_sound = sound
-	paddle.collision = collision
-	paddle._item_manager = manager
-	add_child_autofree(paddle)
-
-	manager.economy.soul_balance = 1000
-	manager.purchase("grip_tape")
-	manager.equip("grip_tape")
-	var equipped_size: float = paddle.collision.shape.size.y
-
-	manager.unequip("grip_tape")
-	var bare_size: float = Stats.resolve(GameRules.paddle.paddle_size, &"paddle_size", manager)
-	assert_almost_eq(paddle.collision.shape.size.y, bare_size, 0.01)
-	assert_ne(
-		paddle.collision.shape.size.y, equipped_size, "unequipping grip_tape must shrink the paddle"
-	)
-
-	manager.equip("grip_tape")
-	assert_almost_eq(paddle.collision.shape.size.y, equipped_size, 0.01)
-
-
 func test_apply_size_keeps_foot_anchored_when_collider_grows() -> void:
 	# Foot = position.y + half-height; growing the collider mid-frame must not push the foot through the floor.
 	var rect := RectangleShape2D.new()

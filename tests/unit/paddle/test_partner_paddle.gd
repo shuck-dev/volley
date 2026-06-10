@@ -16,7 +16,7 @@ func before_each() -> void:
 		. assign(
 			[
 				preload("res://resources/items/ankle_weights.tres"),
-				preload("res://resources/items/grip_tape.tres"),
+				preload("res://resources/items/wrist_brace.tres"),
 			]
 		)
 	)
@@ -72,11 +72,11 @@ func test_size_equals_base_stat() -> void:
 	assert_almost_eq(paddle.collision.shape.size.y, expected, 0.01)
 
 
-func test_size_unchanged_after_player_purchases_grip_tape() -> void:
+func test_size_unchanged_after_player_purchases_wrist_brace() -> void:
 	var paddle := _create_partner_paddle()
 	var size_before: float = paddle.collision.shape.size.y
 
 	_manager.economy.soul_balance = 1000
-	_manager.purchase("grip_tape")
+	_manager.purchase("wrist_brace")
 
 	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)

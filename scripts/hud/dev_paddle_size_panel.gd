@@ -44,7 +44,7 @@ func _build_ui() -> void:
 	_add_header()
 
 	_slider = HSlider.new()
-	_slider.min_value = GameRules.paddle.paddle_size_min
+	_slider.min_value = 10.0
 	_slider.max_value = GameRules.paddle.paddle_size * 3.0
 	_slider.value = GameRules.paddle.paddle_size
 	_slider.step = 1.0
@@ -58,7 +58,7 @@ func _build_ui() -> void:
 	_refresh_label()
 
 	_spinbox = SpinBox.new()
-	_spinbox.min_value = GameRules.paddle.paddle_size_min
+	_spinbox.min_value = 10.0
 	_spinbox.max_value = GameRules.paddle.paddle_size * 3.0
 	_spinbox.value = GameRules.paddle.paddle_size
 	_spinbox.step = 1.0
