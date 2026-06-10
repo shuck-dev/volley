@@ -46,6 +46,8 @@ var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
 var _state_label: Label
 
+var _animation_state_resolver: GDScript = load("res://scripts/core/paddle_animation_state.gd")
+
 
 func _ready() -> void:
 	add_to_group(&"paddles")
@@ -218,21 +220,13 @@ func _is_grounded() -> bool:
 	return global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
 
 
-# Resolves the animation state from grounded/flying, vertical motion, and the swing overlay. Swing
-# wins: swinging plays swing_grounded/swing_flying. Otherwise a flying paddle plays flying_up/
-# flying_down while it moves vertically and ready_flying when still; grounded plays ready_grounded.
+# Resolves the animation state from grounded/flying, vertical motion, and the swing overlay via
+# the pure resolver, then applies the state to the sprite if it changed.
 func _update_animation_state() -> void:
 	var grounded: bool = _is_grounded()
-	var new_state: StringName
-
-	if _swing_pending:
-		new_state = &"swing_grounded" if grounded else &"swing_flying"
-	elif grounded:
-		new_state = &"ready_grounded"
-	elif not is_zero_approx(_vertical_motion):
-		new_state = &"flying_up" if _vertical_motion < 0.0 else &"flying_down"
-	else:
-		new_state = &"ready_flying"
+	var new_state: StringName = _animation_state_resolver.resolve_state(
+		grounded, _vertical_motion, _swing_pending
+	)
 
 	if new_state == _current_state:
 		return

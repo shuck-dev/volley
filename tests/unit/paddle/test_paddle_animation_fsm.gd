@@ -1,8 +1,8 @@
 extends GutTest
 
-# The animation state resolves from grounded/flying, vertical motion, and the swing overlay, with
-# swing winning. The double overrides _is_grounded (the paddle's own method) so grounded is
-# controllable without a floor in the scene; velocity.y is set directly to drive the motion states.
+# Integration tests for swing signal handling and sprite animation wiring. Pure state-resolution
+# logic is tested in test_paddle_animation_state.gd; this file tests that the Paddle wires the
+# sprite correctly when the state changes.
 
 
 class PaddleDouble:
@@ -44,62 +44,16 @@ func _state(grounded: bool, vertical_motion: float) -> void:
 	_paddle._update_animation_state()
 
 
-# --- grounded ready ---
-
-
-func test_starts_ready_grounded() -> void:
-	assert_eq(_paddle.get_movement_state(), &"ready_grounded")
-
-
-func test_grounded_still_is_ready_grounded() -> void:
-	_state(true, 0.0)
-	assert_eq(_sprite.animation, &"ready_grounded")
-
-
-# --- flying motion ---
-
-
-func test_flying_upward_is_flying_up() -> void:
-	_state(false, -100.0)
-	assert_eq(_sprite.animation, &"flying_up")
-
-
-func test_flying_downward_is_flying_down() -> void:
-	_state(false, 100.0)
-	assert_eq(_sprite.animation, &"flying_down")
-
-
-func test_flying_still_is_ready_flying() -> void:
-	_state(false, 0.0)
-	assert_eq(_sprite.animation, &"ready_flying")
-
-
-func test_returning_to_floor_is_ready_grounded() -> void:
-	_state(false, -100.0)
-	_state(true, 0.0)
-	assert_eq(_sprite.animation, &"ready_grounded")
-
-
-# --- swing wins ---
-
-
-func test_swing_while_grounded_is_swing_grounded() -> void:
+func test_swing_plays_animation_while_grounded() -> void:
 	_paddle.grounded = true
 	_paddle.on_ball_hit()
 	assert_eq(_sprite.animation, &"swing_grounded")
 
 
-func test_swing_while_flying_is_swing_flying() -> void:
+func test_swing_plays_animation_while_flying() -> void:
 	_paddle.grounded = false
 	_paddle.on_ball_hit()
 	assert_eq(_sprite.animation, &"swing_flying")
-
-
-func test_swing_overrides_flying_motion() -> void:
-	_state(false, 100.0)
-	assert_eq(_sprite.animation, &"flying_down")
-	_paddle.on_ball_hit()
-	assert_eq(_sprite.animation, &"swing_flying", "swing wins over flying_down")
 
 
 func test_swing_resumes_grounded_state_after_finish() -> void:
