@@ -29,6 +29,7 @@ var _movement_state: MovementState = MovementState.IDLE
 var _swing_pending: bool = false
 
 var _sprite_base_height: float = 0.0
+var _sprite_previous_display_height: float = 0.0
 
 
 func _ready() -> void:
@@ -202,5 +203,10 @@ func _scale_sprite(paddle_height: float) -> void:
 
 	var scale_factor: float = paddle_height / _sprite_base_height
 	sprite.scale.y = scale_factor
+
+	var new_display_height: float = paddle_height
 	if _size_initialised:
-		sprite.position.y = -(paddle_height - _sprite_base_height * sprite.scale.y) * 0.5
+		var height_delta: float = new_display_height - _sprite_previous_display_height
+		sprite.position.y -= height_delta * 0.5
+
+	_sprite_previous_display_height = new_display_height
