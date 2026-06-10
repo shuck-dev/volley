@@ -66,6 +66,7 @@ var _builtin_targets: Array[DropTarget] = []
 
 ## Set after the player paddle spawns so the character target can find a live Area2D.
 var _character_drop_area: Area2D
+var _character_paddle: Node
 var _character_target: CharacterDropTargetScript = null
 
 
@@ -388,8 +389,7 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 	var body: HeldBody = _held_body
 	var host: Node = get_loose_body_host()
 	if host != null and body.get_parent() != host:
-		body.get_parent().remove_child(body)
-		host.add_child(body)
+		body.reparent(host)
 	body.global_position = release_position
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
@@ -588,14 +588,14 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 	body.reclaim_scale_from_art_holder()
 	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
 	if body.get_parent() != self:
-		body.get_parent().remove_child(body)
-		add_child(body)
+		body.reparent(self)
 
 
 func _loose_body_host() -> Node:
 	if reconciler != null:
 		return reconciler
-	return get_parent()
+	# No reconciler: the controller hosts the loose body itself rather than climbing to its parent.
+	return self
 
 
 func _apply_preserved_speed_after_accept(item_key: String) -> void:
@@ -777,8 +777,9 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
-func set_character_drop_target(area: Area2D) -> void:
+func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	_character_drop_area = area
+	_character_paddle = paddle
 	_register_builtin_targets()
 
 
@@ -813,7 +814,9 @@ func _make_character_target() -> DropTarget:
 	if _character_drop_area == null or timeout_controller == null:
 		return null
 	var character_target: CharacterDropTargetScript = CharacterDropTargetScript.new()
-	character_target.configure(_item_manager, _character_drop_area, timeout_controller)
+	character_target.configure(
+		_item_manager, _character_drop_area, timeout_controller, _character_paddle
+	)
 	# Track the live target so equipped-art presses route into grab_equipped_from_character.
 	_character_target = character_target
 	if not character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):

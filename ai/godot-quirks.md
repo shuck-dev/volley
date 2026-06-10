@@ -10,6 +10,8 @@ Compatibility traps that have bitten this project or are documented in Godot 4. 
 - **Delete-and-rebuild is banned**: surgical `node_ops` edits only, even for "just a few tiles".
 - **`ClassName.new()` on freshly-written scripts**: class cache is async; use `load("res://path.gd").new()` for scripts touched this session.
 - **Tool scripts**: `@tool` scripts run in the editor; `Engine.is_editor_hint()` guards are mandatory for any side-effectful `_ready()`.
+- **Reparent with `Node.reparent(new_parent)`**: not the manual `node.get_parent().remove_child(node)` then `add_child(node)` dance; `reparent` keeps global transform and is one call.
+- **Call down, signal up**: a node drives its children directly but never reaches up to its parent (`get_parent()`, `owner`, `..` paths); receive the dependency injected from the host, or emit a signal the host connects.
 
 ## Signals / lifecycle
 

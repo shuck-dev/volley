@@ -41,7 +41,8 @@ func before_each() -> void:
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
-	# Mirror court.tscn topology so adopt_pre_existing_balls finds authored siblings under _host.
+	# The host injects the container whose authored Balls are adopted, as Court does in court.tscn.
+	_reconciler.pre_existing_balls_parent = _host
 	_host.add_child(_reconciler)
 
 	_drag = ItemDragControllerScript.new()

@@ -20,14 +20,14 @@ func before_each() -> void:
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
+	# The host injects the container whose authored Balls are adopted; here the test is the host.
+	_reconciler.pre_existing_balls_parent = self
 	add_child_autofree(_reconciler)
 
 	_ball = load("res://scenes/ball.tscn").instantiate()
 	_ball.item_key = "ball_alpha"
 	_ball.global_position = Vector2(100, 100)
 	add_child_autofree(_ball)
-	# Reconciler walks its parent's children for adoption.
-	_reconciler.add_sibling.call_deferred(_ball)
 
 
 func _seed_save(position: Vector2, play_state: int) -> void:

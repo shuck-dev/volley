@@ -10,14 +10,19 @@ const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
 var _item_manager: Node
 var _drop_area: Area2D
 var _timeout_controller: TimeoutController
+var _paddle: Node
 
 
 func configure(
-	item_manager: Node, drop_area: Area2D, timeout_controller: TimeoutController
+	item_manager: Node,
+	drop_area: Area2D,
+	timeout_controller: TimeoutController,
+	paddle: Node = null
 ) -> void:
 	_item_manager = item_manager
 	_drop_area = drop_area
 	_timeout_controller = timeout_controller
+	_paddle = paddle
 
 	# Live placement transitions drive mount/unmount so rack-side teardown stays symmetric with equip.
 	if (
@@ -86,13 +91,12 @@ func _mount_equipped_visual(item_key: String) -> void:
 	if not _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)).is_empty():
 		return
 
-	var paddle: Node = _drop_area.get_parent()
-	if paddle == null:
+	if _paddle == null:
 		return
 
-	var anchor: Node = paddle
+	var anchor: Node = _paddle
 	if not definition.anchor_node_path.is_empty():
-		var resolved: Node = paddle.get_node_or_null(definition.anchor_node_path)
+		var resolved: Node = _paddle.get_node_or_null(definition.anchor_node_path)
 		if resolved != null:
 			anchor = resolved
 
