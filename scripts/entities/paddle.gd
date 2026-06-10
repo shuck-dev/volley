@@ -30,6 +30,7 @@ var _swing_pending: bool = false
 
 var _sprite_base_height: float = 0.0
 var _sprite_previous_display_height: float = 0.0
+var _sprite_width_scale: float = 1.0
 
 
 func _ready() -> void:
@@ -210,3 +211,16 @@ func _scale_sprite(paddle_height: float) -> void:
 		sprite.position.y -= height_delta * 0.5
 
 	_sprite_previous_display_height = new_display_height
+
+
+func set_sprite_width_scale(factor: float) -> void:
+	_sprite_width_scale = factor
+	if sprite == null:
+		return
+	sprite.scale.x = factor
+
+
+func set_collider_visible(visible: bool) -> void:
+	if collision == null:
+		return
+	collision.visible = visible
