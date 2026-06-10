@@ -13,7 +13,9 @@ const GROUP: StringName = &"tier_consolidation_cue"
 ## Angular spread of the burst around the full circle (degrees).
 @export_range(10.0, 360.0) var burst_spread: float = 360.0
 ## Tint applied to all particles; alpha fades to zero over lifetime.
-@export var burst_color: Color = Color(1.0, 1.0, 1.0, 1.0)
+@export var burst_color: Color = Color(1.0, 0.84, 0.0, 1.0)
+## Per-particle scale on the 64px star texture; 1.0 is full size.
+@export_range(0.05, 1.0) var star_scale: float = 0.25
 
 
 func _ready() -> void:
@@ -21,6 +23,8 @@ func _ready() -> void:
 	z_index = 1
 
 	texture = _STAR_TEXTURE
+	scale_amount_min = star_scale
+	scale_amount_max = star_scale
 	amount = particle_count
 	lifetime = particle_lifetime
 	one_shot = true
