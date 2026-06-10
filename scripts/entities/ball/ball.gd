@@ -22,7 +22,6 @@ enum PlayState {
 const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stored.tres")
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
-const TIER_CONSOLIDATION_CUE: PackedScene = preload("res://scenes/ball/tier_consolidation_cue.tscn")
 
 ## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
 @export var item_key: String = ""
@@ -371,7 +370,9 @@ func _ball_setup() -> void:
 
 
 func _on_tier_advanced(_ball: Ball, _new_tier: int) -> void:
-	add_child(TIER_CONSOLIDATION_CUE.instantiate())
+	var cue: ConsolidationCue = get_node_or_null("ConsolidationCue") as ConsolidationCue
+	if cue != null:
+		cue.fire()
 
 
 func _on_grab_area_grabbed(_area: GrabArea) -> void:

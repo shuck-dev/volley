@@ -1,14 +1,19 @@
-[gd_scene format=3 uid="uid://c4d57kq6juqi0"]
+[gd_scene load_steps=10 format=3 uid="uid://c4d57kq6juqi0"]
 
 [ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/entities/ball/ball.gd" id="1_7s4qf"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_cxlvu"]
 [ext_resource type="Texture2D" uid="uid://cwmjeugx3pay5" path="res://assets/sprites/ball.png" id="3_f7cbr"]
 [ext_resource type="Script" uid="uid://bsakcpqh60xqt" path="res://scripts/entities/ball/grab_area.gd" id="4_press"]
+[ext_resource type="Script" uid="uid://b5bk7tx57bqwp" path="res://scripts/entities/ball/consolidation_cue.gd" id="5_cue"]
+[ext_resource type="Texture2D" uid="uid://cv278vwyo0awu" path="res://assets/ui/tier_cue_star.svg" id="6_star"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n1dj2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_press"]
 radius = 11.52
+
+[sub_resource type="Gradient" id="Gradient_cuefade"]
+colors = PackedColorArray(1, 0.84, 0, 1, 1, 0.84, 0, 0)
 
 [node name="Ball" type="RigidBody2D" unique_id=1842167380 node_paths=PackedStringArray("grab_area")]
 z_index = 200
@@ -38,3 +43,19 @@ hitbox_inflation = 4.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea" unique_id=429755375]
 shape = SubResource("CircleShape2D_press")
+
+[node name="ConsolidationCue" type="CPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 16
+texture = ExtResource("6_star")
+lifetime = 0.35
+one_shot = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 80.0
+scale_amount_min = 0.25
+scale_amount_max = 0.25
+color_ramp = SubResource("Gradient_cuefade")
+script = ExtResource("5_cue")
