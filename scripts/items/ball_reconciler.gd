@@ -88,12 +88,10 @@ func collect_ball_play_states() -> Dictionary[String, int]:
 	return states
 
 
-## Idempotent; safe to call repeatedly across scene reloads. Authored Balls live as
-## siblings of the reconciler in the scene tree, so scan the configured parent here.
+## Idempotent; safe to call repeatedly across scene reloads. The host injects the container
+## whose authored Ball children should be adopted; nothing is adopted until it is set.
 func adopt_pre_existing_balls() -> void:
 	var parent: Node = pre_existing_balls_parent
-	if parent == null:
-		parent = get_parent()
 	if parent == null:
 		return
 
@@ -353,12 +351,7 @@ func ensure_stored_ball_for_key(item_key: String) -> Ball:
 
 
 func _default_spawn_position() -> Vector2:
-	if spawn_origin != Vector2.ZERO:
-		return spawn_origin
-	var parent: Node = get_parent()
-	if parent is Node2D:
-		return (parent as Node2D).global_position
-	return Vector2.ZERO
+	return spawn_origin
 
 
 ## Post-adoption placement: STORED snaps to its rack slot; other placements use the saved

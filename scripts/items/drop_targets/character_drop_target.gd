@@ -22,8 +22,6 @@ func configure(
 	_item_manager = item_manager
 	_drop_area = drop_area
 	_timeout_controller = timeout_controller
-	if paddle == null and drop_area != null:
-		paddle = drop_area.get_parent()
 	_paddle = paddle
 
 	# Live placement transitions drive mount/unmount so rack-side teardown stays symmetric with equip.

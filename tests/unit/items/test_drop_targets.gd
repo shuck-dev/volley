@@ -231,7 +231,7 @@ func test_pressing_equipped_gear_signals_a_regrab() -> void:
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
 	var target: CharacterDropTarget = CharacterDropTargetScript.new()
-	target.configure(manager, _make_drop_area(Vector2.ZERO, Vector2(40, 80)), timeout)
+	target.configure(manager, _make_drop_area(Vector2.ZERO, Vector2(40, 80)), timeout, null)
 	watch_signals(target)
 
 	var click := InputEventMouseButton.new()
@@ -258,7 +258,7 @@ func test_configure_re_renders_gear_equipped_before_load() -> void:
 	var timeout: TimeoutController = TimeoutControllerScript.new()
 	add_child_autofree(timeout)
 	var target: CharacterDropTarget = CharacterDropTargetScript.new()
-	target.configure(manager, area, timeout)
+	target.configure(manager, area, timeout, paddle)
 
 	var group: StringName = CharacterDropTargetScript.equipped_art_group("gear_hydrate")
 	assert_eq(get_tree().get_nodes_in_group(group).size(), 1, "gear re-renders on load")
