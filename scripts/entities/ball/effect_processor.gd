@@ -103,6 +103,18 @@ func _apply_magnetism(delta: float) -> void:
 
 # Where on the paddle the ball struck drives the return angle; centre returns flat, edges steepen.
 func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
+	if struck_paddle == null:
+		return
+
+	var incoming_x_sign: float = signf(ball.linear_velocity.x)
+
+	if incoming_x_sign == 0.0:
+		return
+
+	# The ball passes through the paddle (no physics restitution), so the return reverses the
+	# horizontal direction in code: a ball arriving rightward leaves leftward.
+	var horizontal_sign: float = -incoming_x_sign
+
 	var max_degrees: float = (
 		Stats
 		. resolve(
@@ -112,25 +124,15 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 		)
 	)
 
-	if max_degrees <= 0.0:
-		return
-
-	if struck_paddle == null:
-		return
-
 	var half_height: float = struck_paddle.get_half_height()
 
-	if half_height <= 0.0:
-		return
-
-	var horizontal_sign: float = signf(ball.linear_velocity.x)
-
-	if horizontal_sign == 0.0:
-		return
-
-	var offset_norm: float = clampf(
-		(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
-	)
+	# Offset angle only shapes the return when a max-angle and a valid half-height exist; the
+	# reversal above always happens so the ball returns even at a zero return-angle.
+	var offset_norm: float = 0.0
+	if max_degrees > 0.0 and half_height > 0.0:
+		offset_norm = clampf(
+			(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
+		)
 	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
 	var english_coefficient: float = Stats.resolve(
 		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", item_manager

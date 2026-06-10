@@ -26,22 +26,6 @@ trigger = SubResource("always_trigger_1")
 outcomes = Array[ExtResource("4_outcome")]([SubResource("increment_boost_outcome")])
 max_active_level = null
 
-[sub_resource type="Resource" id="size_penalty_outcome"]
-script = ExtResource("5_stat")
-stat_key = &"paddle_size"
-operation = &"percentage"
-value = -1.4
-
-[sub_resource type="Resource" id="always_trigger_2"]
-script = ExtResource("3_trigger")
-type = &"always"
-
-[sub_resource type="Resource" id="size_penalty_effect"]
-script = ExtResource("2_effect")
-trigger = SubResource("always_trigger_2")
-outcomes = Array[ExtResource("4_outcome")]([SubResource("size_penalty_outcome")])
-max_active_level = null
-
 [resource]
 script = ExtResource("1_item")
 key = "wrist_brace"
@@ -53,6 +37,6 @@ descriptions = Array[String](["Can't bend it", "Doesn't give", "Locked for good"
 base_cost = 35
 cost_scaling = 1.5
 max_level = 10
-effects = Array[ExtResource("2_effect")]([SubResource("increment_boost_effect"), SubResource("size_penalty_effect")])
+effects = Array[ExtResource("2_effect")]([SubResource("increment_boost_effect")])
 at_rest_shape = SubResource("at_rest_shape_1")
 anchor_node_path = NodePath("WristAnchor")

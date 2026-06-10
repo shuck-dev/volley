@@ -73,13 +73,18 @@ func test_register_source_ignores_effects_outside_level_range() -> void:
 
 func test_register_source_applies_multiple_effects() -> void:
 	var effect_a := _make_always_modify_stat_effect(&"paddle_speed", &"add", 20.0)
-	var effect_b := _make_always_modify_stat_effect(&"paddle_size", &"add", 10.0)
+	var effect_b := _make_always_modify_stat_effect(
+		&"paddle_return_angle_max_degrees", &"add", 10.0
+	)
 	var item := _make_item("test_item", [effect_a, effect_b])
 
 	_manager.register_source(item, 1)
 
 	assert_eq(_manager.get_stat(&"paddle_speed"), GameRules.paddle.paddle_speed + 20.0)
-	assert_eq(_manager.get_stat(&"paddle_size"), GameRules.paddle.paddle_size + 10.0)
+	assert_eq(
+		_manager.get_stat(&"paddle_return_angle_max_degrees"),
+		GameRules.paddle.paddle_return_angle_max_degrees + 10.0
+	)
 
 
 func test_multiple_items_stack_modifiers() -> void:

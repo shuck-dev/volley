@@ -63,20 +63,3 @@ func test_speed_unchanged_after_player_purchases_ankle_weights() -> void:
 	_manager.purchase("ankle_weights")
 
 	assert_almost_eq(paddle.get_speed(), speed_before, 0.01)
-
-
-# --- size uses base stats ---
-func test_size_equals_base_stat() -> void:
-	var paddle := _create_partner_paddle()
-	var expected: float = GameRules.paddle.paddle_size
-	assert_almost_eq(paddle.collision.shape.size.y, expected, 0.01)
-
-
-func test_size_unchanged_after_player_purchases_wrist_brace() -> void:
-	var paddle := _create_partner_paddle()
-	var size_before: float = paddle.collision.shape.size.y
-
-	_manager.economy.soul_balance = 1000
-	_manager.purchase("wrist_brace")
-
-	assert_almost_eq(paddle.collision.shape.size.y, size_before, 0.01)
