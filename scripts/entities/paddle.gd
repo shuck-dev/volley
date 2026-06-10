@@ -34,6 +34,7 @@ var _swing_pending: bool = false
 
 var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
+var _state_label: Label
 
 
 func _ready() -> void:
@@ -56,6 +57,8 @@ func _ready() -> void:
 	_collider_overlay.z_index = 100
 	add_child(_collider_overlay)
 
+	_setup_state_label()
+
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
@@ -74,6 +77,26 @@ func on_ball_hit(ball: Ball = null) -> bool:
 func _on_racket_body_entered(body: Node) -> void:
 	if body is Ball:
 		(body as Ball).hit_by_paddle(self)
+
+
+# Dev placeholder: labels the live animation state over the coloured sprite, so each blocked-out
+# state reads clearly while real art is pending. Updates whenever the sprite's animation changes.
+func _setup_state_label() -> void:
+	if not OS.is_debug_build() or sprite == null:
+		return
+	_state_label = Label.new()
+	_state_label.z_index = 101
+	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_state_label.add_theme_color_override(&"font_color", Color.BLACK)
+	add_child(_state_label)
+	sprite.animation_changed.connect(_refresh_state_label)
+	_refresh_state_label()
+
+
+func _refresh_state_label() -> void:
+	if _state_label == null or sprite == null:
+		return
+	_state_label.text = String(sprite.animation)
 
 
 func reset_streak() -> void:

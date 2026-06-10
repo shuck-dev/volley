@@ -1,22 +1,46 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://bsam001anim01"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_idle"]
-size = Vector2(21, 54)
+[sub_resource type="Gradient" id="Gradient_idle"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.3, 0.5, 0.9, 1, 0.3, 0.5, 0.9, 1)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ready"]
-size = Vector2(21, 54)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_idle"]
+gradient = SubResource("Gradient_idle")
+width = 21
+height = 54
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_swing"]
-size = Vector2(21, 54)
+[sub_resource type="Gradient" id="Gradient_ready"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.3, 0.8, 0.4, 1, 0.3, 0.8, 0.4, 1)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_walk"]
-size = Vector2(21, 54)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ready"]
+gradient = SubResource("Gradient_ready")
+width = 21
+height = 54
+
+[sub_resource type="Gradient" id="Gradient_swing"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.9, 0.3, 0.3, 1, 0.9, 0.3, 0.3, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing"]
+gradient = SubResource("Gradient_swing")
+width = 21
+height = 54
+
+[sub_resource type="Gradient" id="Gradient_walk"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.9, 0.8, 0.3, 1, 0.9, 0.8, 0.3, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_walk"]
+gradient = SubResource("Gradient_walk")
+width = 21
+height = 54
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_idle")
+"texture": SubResource("GradientTexture2D_idle")
 }],
 "loop": false,
 "name": &"idle",
@@ -24,7 +48,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_ready")
+"texture": SubResource("GradientTexture2D_ready")
 }],
 "loop": false,
 "name": &"ready",
@@ -32,7 +56,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_swing")
+"texture": SubResource("GradientTexture2D_swing")
 }],
 "loop": false,
 "name": &"swing",
@@ -40,7 +64,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("PlaceholderTexture2D_walk")
+"texture": SubResource("GradientTexture2D_walk")
 }],
 "loop": false,
 "name": &"walk",
