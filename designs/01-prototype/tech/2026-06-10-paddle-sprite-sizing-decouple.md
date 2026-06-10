@@ -25,16 +25,18 @@ Two independent systems. The sprite never reads `paddle_size`; gameplay never re
 
 The collider and the sprite are not kept in sync automatically. Art is drawn to read correctly around the hitbox; the panel's collider-visibility toggle exists to check they line up. Full independence, no default-derive leash.
 
-## Two colliders: ball contact and wall contact are split
+## Two collision objects: ball bounce and wall contact are split
 
-The paddle currently has one `CollisionShape2D` doing both jobs: the ball physically bounces off it (`Ball` `RigidBody2D` → `_on_body_entered` → `on_ball_hit`) and `move_and_slide` uses it against court walls. One shape, sized to the paddle face, planted so the sprite sinks into the floor and the whole body returns the ball.
+The paddle currently has one `CollisionShape2D` on the `CharacterBody2D`, doing both jobs at one size: the ball physically bounces off it (the ball's `physics_material` has `bounce = 1.0`, so the return is engine restitution, not code; `_on_body_entered` → `on_ball_hit` only registers the hit) and `move_and_slide` uses it against walls. One shape, so the whole footprint returns the ball.
 
-Split into two shapes with separate layers, so the ball contacts only the racket zone and walls contact only the body:
+The ball bounce and the wall contact need DIFFERENT SIZES (racket-zone vs character footprint) and the ball must bounce off ONLY the racket. A body's `collision_layer` is per-object, not per-shape, so two shapes on one body cannot sit on different layers. Therefore two collision OBJECTS:
 
-- **Ball hitbox.** A shape at the character's MIDDLE, where a racket would be, not the whole body. This is the return surface; `on_ball_hit` fires from it. Its position and size are PANEL-TUNABLE (found by eye like the sprite dimensions). On its own physics layer; the ball's mask hits only this.
-- **Wall body.** The movement collider `move_and_slide` uses against court boundaries. Fixed to the sprite size for now, foot-planted so the character stands on the floor instead of sinking. On its own layer; walls hit only this; the ball does not.
+- **Wall body.** The existing `CharacterBody2D`, footprint-sized, on its own layer that the ball does NOT mask. `move_and_slide` against walls via its mask; the ball passes through it.
+- **Racket bounce body.** A child `AnimatableBody2D` (NOT an `Area2D`: restitution needs a solid body to reflect off, and `AnimatableBody2D` both bounces the ball and follows its parent). Racket-sized, mid-body, on the ball's layer so the ball physically bounces off it. Position and size are PANEL-TUNABLE.
 
-The two are independent shapes with independent layer/mask wiring. The ball never bounces off the wall body; walls never stop the racket hitbox.
+Because the ball bounces off the racket body, the ball's `body_entered` reports that body, not the paddle. The racket body routes `on_ball_hit` up to the `Paddle` (script or signal) so hit registration still fires.
+
+The two objects have independent layer/mask wiring: the ball bounces off the racket body only; walls stop the wall body only.
 
 ## Collider visibility draws at runtime
 
