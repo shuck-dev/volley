@@ -31,7 +31,8 @@ var _collision_shape: RectangleShape2D
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
 
-var _current_state: StringName = &"ready_grounded"
+## Empty until the first state resolve, so _ready applies the real grounded/flying state, not a default.
+var _current_state: StringName = &""
 var _swing_pending: bool = false
 
 ## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
@@ -71,10 +72,9 @@ func _ready() -> void:
 
 	_setup_state_label()
 
-	# Play the initial state's animation so the sprite matches the FSM from the first frame,
-	# rather than sitting on whatever the scene authored as the default animation.
-	if sprite != null:
-		sprite.play(_current_state)
+	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
+	# from load rather than sitting on a default or the scene's authored animation.
+	_update_animation_state()
 
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
