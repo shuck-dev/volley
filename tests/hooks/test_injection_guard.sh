@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Shell tests for scripts/swarm/injection_guard.sh.
+# Shell tests for .claude/hooks/injection_guard.sh.
 #
 # Covers one positive fixture per structural pattern plus a baseline-only
 # fixture (a short quotation from Simon Willison's prompt-injection index
@@ -20,7 +20,7 @@
 set -u
 
 REPO_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
-HOOK="$REPO_ROOT/scripts/swarm/injection_guard.sh"
+HOOK="$REPO_ROOT/.claude/hooks/injection_guard.sh"
 
 tmpdir=$(mktemp -d)
 trap 'rm -rf "$tmpdir"' EXIT

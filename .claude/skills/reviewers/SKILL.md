@@ -110,7 +110,7 @@ All replies stay inline.
 
 ## Inline finding shape
 
-- **Label**: `issue`, `suggestion`, `question`, `nitpick`. Conventional Comments vocab. Only `issue` blocks: name the concrete consequence in one clause (player-visible bug, future-maintainer trap, silent save corruption, contract violation); if you cannot, it is not an `issue`. `suggestion`, `question`, and `nitpick` are non-blocking and never gate the verdict. **Nitpick budget: at most 2 `nitpick` per reviewer per review**, so allowing them does not reopen the low-value-finding floodgate; over budget, drop the weakest. Style preferences, taste calls, and questions you could answer by reading one more file still stay out. Err toward silence; the cap is a ceiling, not a quota.
+- **Label**: `issue`, `suggestion`, `question`, `nitpick`. Conventional Comments vocab. Only `issue` blocks: name the concrete consequence in one clause (player-visible bug, future-maintainer trap, silent save corruption, contract violation); if you cannot, it is not an `issue`. `suggestion`, `question`, and `nitpick` are non-blocking and never gate the verdict. **Nitpick budget: at most 1 `nitpick` per reviewer per review**, so allowing them does not reopen the low-value-finding floodgate; over budget, raise only the single most worth-saying one and drop the rest. Style preferences, taste calls, and questions you could answer by reading one more file still stay out. Err toward silence; the cap is a ceiling, not a quota.
 - One sentence naming the concern; one short clause naming the fix.
 - Hard cap: 30 words per inline. Two lines max. Three lines is a hard block on yourself; tighten.
 - One issue per inline. If you have two findings on different lines, post two inlines.
