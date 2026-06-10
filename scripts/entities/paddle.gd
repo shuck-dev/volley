@@ -31,10 +31,6 @@ var _collision_shape: RectangleShape2D
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
 
-## Empty until the first state resolve, so _ready applies the real grounded/flying state, not a default.
-var _current_state: StringName = &""
-var _swing_pending: bool = false
-
 ## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
 var _floor_surface_y: float = NAN
 ## Previous frame's Y, used to derive actual vertical motion so the state reflects real movement
@@ -46,7 +42,7 @@ var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
 var _state_label: Label
 
-var _animation_state_resolver: GDScript = load("res://scripts/core/paddle_animation_state.gd")
+var _animation_state_machine: RefCounted
 
 
 func _ready() -> void:
@@ -73,6 +69,8 @@ func _ready() -> void:
 	add_child(_collider_overlay)
 
 	_setup_state_label()
+
+	_ensure_animation_state_machine()
 
 	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
 	# from load rather than sitting on a default or the scene's authored animation.
@@ -187,7 +185,7 @@ func get_half_height() -> float:
 
 
 func get_movement_state() -> StringName:
-	return _current_state
+	return _animation_state_machine.get_state()
 
 
 # Finds the floor (a StaticBody in the "floor" group) and records its top-surface world Y. The paddle
@@ -220,32 +218,45 @@ func _is_grounded() -> bool:
 	return global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
 
 
-# Resolves the animation state from grounded/flying, vertical motion, and the swing overlay via
-# the pure resolver, then applies the state to the sprite if it changed.
+func _ensure_animation_state_machine() -> void:
+	if _animation_state_machine == null:
+		_animation_state_machine = (
+			load("res://scripts/core/paddle_animation_state_machine.gd").new()
+		)
+		_animation_state_machine.state_changed.connect(_on_animation_state_changed)
+
+
+## Updates the animation state machine and plays any new state.
 func _update_animation_state() -> void:
+	_ensure_animation_state_machine()
 	var grounded: bool = _is_grounded()
-	var new_state: StringName = _animation_state_resolver.resolve_state(
-		grounded, _vertical_motion, _swing_pending
-	)
+	_animation_state_machine.update(grounded, _vertical_motion)
 
-	if new_state == _current_state:
-		return
-	_current_state = new_state
+
+## Wired to the machine's state_changed signal; plays the animation when the state changes.
+func _on_animation_state_changed(state: StringName) -> void:
 	if sprite != null:
-		sprite.play(new_state)
+		sprite.play(state)
 
 
+## Handles the paddle_hit signal to initiate the swing animation.
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
-	_swing_pending = true
-	_update_animation_state()
+	_ensure_animation_state_machine()
+
+	var grounded: bool = _is_grounded()
+	_animation_state_machine.on_hit(grounded, _vertical_motion)
 
 	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
 		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
 
 
+## Clears the swing pending state when the animation finishes.
 func _on_swing_finished() -> void:
-	_swing_pending = false
-	_update_animation_state()
+	if _animation_state_machine == null:
+		return
+
+	var grounded: bool = _is_grounded()
+	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
 
 
 func _resolved_paddle_speed() -> float:
