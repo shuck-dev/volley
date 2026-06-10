@@ -7,6 +7,8 @@ signal paddle_hit(ball: Ball)
 enum MovementState { IDLE, WALK }
 
 const PADDLE_TOP_Y := -540.0
+## Gap in pixels between the paddle's top edge and the dev state label sitting above it.
+const STATE_LABEL_GAP := 8.0
 
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
@@ -59,6 +61,10 @@ func _ready() -> void:
 
 	_setup_state_label()
 
+	# Play the initial state's animation so the sprite matches the FSM (IDLE) from the first frame,
+	# rather than sitting on whatever the scene authored as the default animation.
+	_play_movement_animation()
+
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
@@ -87,16 +93,30 @@ func _setup_state_label() -> void:
 	_state_label = Label.new()
 	_state_label.z_index = 101
 	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_state_label.add_theme_color_override(&"font_color", Color.BLACK)
+	_state_label.add_theme_color_override(&"font_color", Color.WHITE)
 	add_child(_state_label)
 	sprite.animation_changed.connect(_refresh_state_label)
 	_refresh_state_label()
+
+
+# Centres the label horizontally on the paddle and sits it just above the sprite's top edge. Uses
+# the body collider half-height, which tracks the sprite, so the label rides above the visible paddle.
+func _position_state_label() -> void:
+	if _state_label == null:
+		return
+	var half_height: float = STATE_LABEL_GAP
+	if _collision_shape != null:
+		half_height = _collision_shape.size.y * 0.5 + STATE_LABEL_GAP
+	_state_label.size = Vector2.ZERO
+	var min_size: Vector2 = _state_label.get_minimum_size()
+	_state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
 
 
 func _refresh_state_label() -> void:
 	if _state_label == null or sprite == null:
 		return
 	_state_label.text = String(sprite.animation)
+	_position_state_label()
 
 
 func reset_streak() -> void:
