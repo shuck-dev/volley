@@ -36,6 +36,10 @@ var _swing_pending: bool = false
 
 ## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
 var _floor_surface_y: float = NAN
+## Previous frame's Y, used to derive actual vertical motion so the state reflects real movement
+## (driven, timeout-controlled, or at rest) rather than the stale velocity member.
+var _last_y: float = 0.0
+var _vertical_motion: float = 0.0
 
 var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
@@ -59,6 +63,7 @@ func _ready() -> void:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
 	_resolve_floor_surface()
+	_last_y = global_position.y
 
 	_collider_overlay = ColliderOverlay.new()
 	_collider_overlay.z_index = 100
@@ -153,6 +158,8 @@ func clamp_to_arena() -> void:
 # The animation state tracks grounded/flying and motion every physics frame, not just when a
 # controller calls drive(), so a grounded/flying transition updates the moment it happens.
 func _physics_process(_delta: float) -> void:
+	_vertical_motion = global_position.y - _last_y
+	_last_y = global_position.y
 	_update_animation_state()
 
 
@@ -211,8 +218,8 @@ func _update_animation_state() -> void:
 		new_state = &"swing_grounded" if grounded else &"swing_flying"
 	elif grounded:
 		new_state = &"ready_grounded"
-	elif not is_zero_approx(velocity.y):
-		new_state = &"flying_up" if velocity.y < 0.0 else &"flying_down"
+	elif not is_zero_approx(_vertical_motion):
+		new_state = &"flying_up" if _vertical_motion < 0.0 else &"flying_down"
 	else:
 		new_state = &"ready_flying"
 

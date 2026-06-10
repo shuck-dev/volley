@@ -37,10 +37,10 @@ func before_each() -> void:
 	add_child_autofree(_paddle)
 
 
-# Sets grounded and vertical velocity, then resolves the state as a physics frame would.
-func _state(grounded: bool, velocity_y: float) -> void:
+# Sets grounded and per-frame vertical motion, then resolves the state as a physics frame would.
+func _state(grounded: bool, vertical_motion: float) -> void:
 	_paddle.grounded = grounded
-	_paddle.velocity = Vector2(0.0, velocity_y)
+	_paddle._vertical_motion = vertical_motion
 	_paddle._update_animation_state()
 
 
