@@ -3,10 +3,7 @@ extends VBoxContainer
 
 ## Dev panel to tune the player paddle's sprite and racket dimensions live, and show the colliders.
 
-## Slider track extent. Sliders need a finite range to map the handle; the paired spinbox is the
-## uncapped numeric entry, so the slider max is only the coarse-drag span, not a real ceiling.
-const SLIDER_SPAN := 500.0
-## Spinbox ceiling, high enough to be no practical limit on a typed value.
+## Spinbox ceiling, high enough to be no practical limit on a typed or drag-scrubbed value.
 const MAX_TUNE := 100000.0
 
 var _drag: DraggableBehavior = DraggableBehavior.new()
@@ -79,38 +76,21 @@ func _add_label(text: String, colour: Color) -> void:
 	add_child(label)
 
 
-# Builds a labelled slider + spinbox pair, two-way bound, that calls apply(value) on any change.
-# The slider spans SLIDER_SPAN for coarse dragging; the spinbox is uncapped for exact entry.
+# Builds a labelled SpinBox that calls apply(value) on change. SpinBox is the native drag-to-scrub
+# control: drag the arrows up or down to scrub, or type an exact value. Uncapped, no slider track.
 func _add_control(label_text: String, step: float, start: float, apply: Callable) -> void:
 	var label := Label.new()
 	label.text = label_text + ":"
 	label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
 	add_child(label)
 
-	var slider := HSlider.new()
-	slider.min_value = -SLIDER_SPAN
-	slider.max_value = SLIDER_SPAN
-	slider.step = step
-	slider.value = start
-	add_child(slider)
-
 	var spinbox := SpinBox.new()
 	spinbox.min_value = -MAX_TUNE
 	spinbox.max_value = MAX_TUNE
 	spinbox.step = step
 	spinbox.value = start
+	spinbox.value_changed.connect(apply)
 	add_child(spinbox)
-
-	slider.value_changed.connect(
-		func(value: float) -> void:
-			spinbox.set_value_no_signal(value)
-			apply.call(value)
-	)
-	spinbox.value_changed.connect(
-		func(value: float) -> void:
-			slider.set_value_no_signal(value)
-			apply.call(value)
-	)
 
 
 func _add_checkbox(text: String, apply: Callable) -> void:
