@@ -63,6 +63,7 @@ func _build_ui() -> void:
 
 	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
+	_add_checkbox("Show State Label", _apply_state_label_visible)
 
 	_readout_label = Label.new()
 	_readout_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -177,6 +178,10 @@ func _apply_body_visible(pressed: bool) -> void:
 
 func _apply_racket_visible(pressed: bool) -> void:
 	_for_each_paddle("set_racket_collider_visible", pressed)
+
+
+func _apply_state_label_visible(pressed: bool) -> void:
+	_for_each_paddle("set_state_label_visible", pressed)
 
 
 func _for_each_paddle(method: StringName, value: Variant) -> void:

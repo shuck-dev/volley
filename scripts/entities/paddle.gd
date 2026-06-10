@@ -94,9 +94,16 @@ func _setup_state_label() -> void:
 	_state_label.z_index = 101
 	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_state_label.add_theme_color_override(&"font_color", Color.WHITE)
+	_state_label.visible = false
 	add_child(_state_label)
 	sprite.animation_changed.connect(_refresh_state_label)
 	_refresh_state_label()
+
+
+# Toggled from the PlayerSprite dev panel; the state label is off until the player turns it on.
+func set_state_label_visible(value: bool) -> void:
+	if _state_label != null:
+		_state_label.visible = value
 
 
 # Centres the label horizontally on the paddle and sits it just above the sprite's top edge. Uses
