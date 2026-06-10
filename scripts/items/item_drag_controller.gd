@@ -596,7 +596,8 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 func _loose_body_host() -> Node:
 	if reconciler != null:
 		return reconciler
-	return get_parent()
+	# No reconciler: the controller hosts the loose body itself rather than climbing to its parent.
+	return self
 
 
 func _apply_preserved_speed_after_accept(item_key: String) -> void:
