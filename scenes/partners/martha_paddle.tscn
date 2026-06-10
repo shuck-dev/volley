@@ -6,24 +6,29 @@
 [ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
 [ext_resource type="Texture2D" uid="uid://c833m4yxk2atr" path="res://assets/art/martha_bow.svg" id="6_bow"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_martha"]
-size = Vector2(24, 60)
+[ext_resource type="SpriteFrames" uid="uid://bmartha01anim" path="res://resources/animations/martha.tres" id="7_marthaframes"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
 size = Vector2(24, 60)
 
-[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ts58t"]
+size = Vector2(24, 20)
+
+[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape")]
+collision_layer = 16
 script = ExtResource("1_script")
 controller = NodePath("PartnerAIController")
 hit_sound = NodePath("HitSound")
 collision = NodePath("Collision")
 sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
+racket_hitbox = NodePath("RacketHitbox")
+racket_shape = NodePath("RacketHitbox/Collision")
 metadata/_edit_group_ = true
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=2081878131]
-texture = SubResource("PlaceholderTexture2D_martha")
+[node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2081878131]
+sprite_frames = ExtResource("7_marthaframes")
+animation = &"ready_grounded"
 
 [node name="Bow" type="Sprite2D" parent="." unique_id=708370465]
 position = Vector2(8.4, -24)
@@ -44,3 +49,12 @@ script = ExtResource("3_tracker")
 script = ExtResource("4_ai")
 paddle = NodePath("..")
 config = ExtResource("5_config")
+
+[node name="RacketHitbox" type="Area2D" parent="." unique_id=1340017728]
+position = Vector2(0, -10)
+collision_layer = 8
+collision_mask = 2
+monitorable = false
+
+[node name="Collision" type="CollisionShape2D" parent="RacketHitbox" unique_id=994213533]
+shape = SubResource("RectangleShape2D_ts58t")

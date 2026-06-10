@@ -72,9 +72,9 @@ Don't background `ggut` to a poll-loop watching a file you didn't write. Run it 
 
 ## Push and merge
 
-Push the branch with `-u` on first push. Open the challenge ready-for-review (not draft) unless more commits are coming. After `gh pr create`, leave the PR for the maintainer to merge; do not enable auto-merge. The `gh` command names stay literal; the noun for the work in flight is "challenge."
+Push the branch with `-u` on first push. **Open the challenge as a draft** (`gh pr create --draft`); every challenge opens draft and stays draft. Josh flips it ready when he is choosing to merge; the dispatcher never marks it ready, not even on a clean battle. Draft does not block review: the spot-check and a full reviewer battle run on the draft exactly as on any challenge; ready is only the merge gate, not a review gate. After `gh pr create`, do not enable auto-merge. The `gh` command names stay literal; the noun for the work in flight is "challenge."
 
-Do not merge yourself. The maintainer merges by hand (Merge when ready).
+Do not merge yourself, and do not flip ready yourself. Both the ready-flip and the merge are Josh's by hand.
 
 ## PR title and body shape
 

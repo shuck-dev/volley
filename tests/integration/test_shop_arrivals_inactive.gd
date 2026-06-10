@@ -8,7 +8,7 @@ const BallRackScene: PackedScene = preload("res://scenes/ball_rack.tscn")
 const GearRackScene: PackedScene = preload("res://scenes/gear_rack.tscn")
 
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
-const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
+const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 
@@ -23,7 +23,7 @@ func before_each() -> void:
 	_item_manager.state = ItemState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
-	_item_manager.items.assign([TrainingBall, GripTape, AnkleWeights, Cadence])
+	_item_manager.items.assign([TrainingBall, WristBrace, AnkleWeights, Cadence])
 	_item_manager.economy.soul_balance = 10000
 	add_child_autofree(_item_manager)
 
@@ -76,11 +76,11 @@ func test_ball_item_taken_from_shop_appears_on_ball_rack() -> void:
 
 
 func test_equipment_item_taken_from_shop_appears_on_gear_rack() -> void:
-	_take_from_shop(_shop_item(GripTape.key))
+	_take_from_shop(_shop_item(WristBrace.key))
 
 	var displayed: Array[String] = _gear_rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "gear rack should gain a slot for the taken equipment item")
-	assert_eq(displayed[0], GripTape.key)
+	assert_eq(displayed[0], WristBrace.key)
 
 
 # --- dev panel one-click path ----------------------------------------------
@@ -101,11 +101,11 @@ func test_dev_panel_purchase_places_ball_on_court_not_on_rack() -> void:
 
 
 func test_dev_panel_purchase_lands_equipment_on_gear_rack() -> void:
-	_item_manager.purchase(GripTape.key)
+	_item_manager.purchase(WristBrace.key)
 
 	assert_eq(
 		_gear_rack.get_displayed_keys(),
-		[GripTape.key],
+		[WristBrace.key],
 		"equipment purchases land on the gear rack so the kit cap still gates equipping",
 	)
 	assert_eq(

@@ -12,7 +12,6 @@ signal rack_slots_changed
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
-	preload("res://resources/items/grip_tape.tres"),
 	preload("res://resources/items/base_ball.tres"),
 	preload("res://resources/items/training_ball.tres"),
 	preload("res://resources/items/court_lines.tres"),

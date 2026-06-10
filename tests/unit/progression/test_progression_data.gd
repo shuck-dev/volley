@@ -45,12 +45,12 @@ func test_items_default_values() -> void:
 
 func test_items_round_trip() -> void:
 	var items := ItemState.new()
-	items.item_levels["paddle_size"] = 2
-	items.item_placements["paddle_size"] = 1
+	items.item_levels["test_item"] = 2
+	items.item_placements["test_item"] = 1
 	var restored := ItemState.new()
 	restored.apply_save_dict(items.to_save_dict())
-	assert_eq(restored.item_levels, {"paddle_size": 2})
-	assert_eq(restored.item_placements, {"paddle_size": 1})
+	assert_eq(restored.item_levels, {"test_item": 2})
+	assert_eq(restored.item_placements, {"test_item": 1})
 
 
 # --- RecordsState ---

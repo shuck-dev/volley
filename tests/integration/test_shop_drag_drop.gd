@@ -3,7 +3,7 @@ extends GutTest
 # Integration: spawn Shop, exit ShopArea, verify ownership + balance cascade.
 
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
-const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
+const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
@@ -21,7 +21,7 @@ func before_each() -> void:
 	_item_manager.state = ItemState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
-	_item_manager.items.assign([GripTape, AnkleWeights, Cadence, Spare])
+	_item_manager.items.assign([WristBrace, AnkleWeights, Cadence, Spare])
 	_item_manager.economy.soul_balance = 10000
 	add_child_autofree(_item_manager)
 
@@ -37,9 +37,9 @@ func _shop_item(key: String) -> ShopItem:
 # --- diegetic drag-as-purchase ---
 func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() -> void:
 	# SH-253: full press-drag-release through the real input handlers (SH-246 purchase path).
-	var item: ShopItem = _shop_item("grip_tape")
+	var item: ShopItem = _shop_item("wrist_brace")
 	var balance_before: int = _item_manager.get_soul_balance()
-	var cost: int = GripTape.base_cost
+	var cost: int = WristBrace.base_cost
 	var viewport: Viewport = item.get_viewport()
 
 	var press := InputEventMouseButton.new()
@@ -48,7 +48,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 	item.pickup_area.input_event.emit(viewport, press, 0)
 
 	assert_true(item.is_dragging(), "press starts the held-token gesture")
-	assert_eq(_item_manager.get_level("grip_tape"), 0, "press alone must not purchase")
+	assert_eq(_item_manager.get_level("wrist_brace"), 0, "press alone must not purchase")
 
 	# Release outside shop bounds via _input; event.position is deterministic under headless.
 	var canvas_transform: Transform2D = item.get_canvas_transform()
@@ -61,7 +61,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 
 	assert_false(item.is_dragging(), "release ends the gesture")
 	assert_eq(
-		_item_manager.get_level("grip_tape"),
+		_item_manager.get_level("wrist_brace"),
 		1,
 		"release outside shop completes the purchase (one purchase event)",
 	)
@@ -71,7 +71,7 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 		"Soul balance debits exactly once at release time",
 	)
 	assert_false(
-		_item_manager.is_on_court("grip_tape"),
+		_item_manager.is_on_court("wrist_brace"),
 		"purchased equipment lands inactive on the rack, not on the player",
 	)
 

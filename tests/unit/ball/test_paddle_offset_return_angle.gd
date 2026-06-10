@@ -89,7 +89,7 @@ func test_centre_hit_returns_within_min_angle_band() -> void:
 
 	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
-	assert_gt(_ball.linear_velocity.x, 0.0)
+	assert_lt(_ball.linear_velocity.x, 0.0, "rightward incoming returns leftward")
 
 
 func test_edge_hit_steepens_vs_centre() -> void:
@@ -140,17 +140,6 @@ func test_preserves_speed() -> void:
 	_ball.effect_processor.process_hit(_paddle)
 
 	assert_almost_eq(_ball.linear_velocity.length(), original_speed, 0.01)
-
-
-func test_preserves_horizontal_direction() -> void:
-	_build_with_max_degrees(MAX_DEGREES)
-	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
-	_ball.linear_velocity = Vector2(100, -80)
-	_ball.speed = _ball.linear_velocity.length()
-
-	_ball.effect_processor.process_hit(_paddle)
-
-	assert_gt(_ball.linear_velocity.x, 0.0, "Side-miss guard: horizontal sign survives the hit")
 
 
 # --- english (paddle vertical velocity at contact) ---
@@ -271,18 +260,3 @@ func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
 	)
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
-
-
-# --- early-return gate: max=0 silences english too ---
-func test_zero_max_degrees_with_english_and_paddle_motion_leaves_velocity_untouched() -> void:
-	# Early-return on max_degrees=0 keeps english dormant even with paddle vertical velocity.
-	_build_with_stats(0.0, 0.001)
-	_paddle.velocity = Vector2(0.0, 400.0)
-	_ball.global_position = Vector2(0, 0)
-	var incoming := Vector2(100, 0)
-	_ball.linear_velocity = incoming
-	_ball.speed = _ball.linear_velocity.length()
-
-	_ball.effect_processor.process_hit(_paddle)
-
-	assert_eq(_ball.linear_velocity, incoming, "max_degrees=0 short-circuits english entirely")

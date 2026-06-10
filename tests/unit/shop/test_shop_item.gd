@@ -3,7 +3,7 @@ extends GutTest
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 const ShopDragTuningScript: GDScript = preload("res://scripts/shop/shop_drag_tuning.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
-const GripTape: ItemDefinition = preload("res://resources/items/grip_tape.tres")
+const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
 
 
@@ -83,18 +83,18 @@ class TestShopItemArt:
 
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
-		_item_manager.items.assign([GripTape])
+		_item_manager.items.assign([WristBrace])
 		_item_manager.economy.soul_balance = 1000
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
 		add_child_autofree(_item)
-		_item.configure(_item_manager, GripTape)
+		_item.configure(_item_manager, WristBrace)
 
 	func test_configure_instantiates_item_art_under_art_holder() -> void:
 		assert_eq(_item.art_holder.get_child_count(), 1)
 
 	func test_configure_stores_item_definition() -> void:
-		assert_eq(_item.item_definition, GripTape)
+		assert_eq(_item.item_definition, WristBrace)
 
 
 class TestShopItemInputRelease:
@@ -232,34 +232,34 @@ class TestShopItemInsideShopDrag:
 		_press_anchor = anchor
 
 	func test_pure_click_inside_shop_no_body_no_purchase() -> void:
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		_start_with_press_at(_item, Vector2.ZERO)
 		var ok: bool = _item.attempt_release(Vector2.ZERO)
 		assert_true(ok)
 		assert_true(_item.visible, "pure click restores the slot")
-		assert_eq(_item_manager.get_level(GripTape.key), 0, "pure click never purchases")
+		assert_eq(_item_manager.get_level(WristBrace.key), 0, "pure click never purchases")
 
 	func test_sub_threshold_release_treated_as_click() -> void:
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		_start_with_press_at(_item, Vector2.ZERO)
 		# Travel of 1.9px is below the default 2.0px threshold.
 		var ok: bool = _item.attempt_release(Vector2(1.9, 0.0))
 		assert_true(ok)
 		assert_true(_item.visible, "sub-threshold travel keeps the slot visible")
-		assert_eq(_item_manager.get_level(GripTape.key), 0, "sub-threshold never purchases")
+		assert_eq(_item_manager.get_level(WristBrace.key), 0, "sub-threshold never purchases")
 
 	func test_supra_threshold_release_spawns_falling_body_and_hides_slot() -> void:
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		_start_with_press_at(_item, Vector2.ZERO)
 		# 2.1px clears the default 2.0px threshold so the inside-shop drag spawns a body.
 		var ok: bool = _item.attempt_release(Vector2(2.1, 0.0))
 		assert_true(ok)
 		assert_false(_item.visible, "the slot stays hidden until the settled-body decision lands")
-		assert_eq(_item_manager.get_level(GripTape.key), 0, "purchase has not committed yet")
+		assert_eq(_item_manager.get_level(WristBrace.key), 0, "purchase has not committed yet")
 
 	func test_equipment_role_inside_shop_drag_spawns_body() -> void:
 		# Regression for the deleted supports_drop gate: equipment items also produce falling bodies.
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		_start_with_press_at(_item, Vector2.ZERO)
 		var ok: bool = _item.attempt_release(Vector2(50.0, 0.0))
 		assert_true(ok)
@@ -269,7 +269,7 @@ class TestShopItemInsideShopDrag:
 		)
 
 	func test_threshold_reads_from_tuning_resource() -> void:
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		# Bump the threshold so a 5px travel falls below it.
 		_item.tuning.drag_threshold_px = 10.0
 		_start_with_press_at(_item, Vector2.ZERO)
@@ -279,7 +279,7 @@ class TestShopItemInsideShopDrag:
 
 	func test_out_and_back_drag_still_spawns_body() -> void:
 		# _max_travel_seen captures peak excursion, so a player who drags out and back to origin still drops a body.
-		_item = _build_item(GripTape)
+		_item = _build_item(WristBrace)
 		_start_with_press_at(_item, Vector2.ZERO)
 		_item._max_travel_seen = 50.0
 		var ok: bool = _item.attempt_release(Vector2.ZERO)
@@ -311,19 +311,19 @@ class TestShopItemNotifyBodySettled:
 
 	func before_each() -> void:
 		_item_manager = ItemFactory.create_manager(self)
-		_item_manager.items.assign([GripTape])
+		_item_manager.items.assign([WristBrace])
 		_item_manager.economy.soul_balance = 10000
 		_item = ShopItemScene.instantiate()
 		_item._item_manager = _item_manager
 		add_child_autofree(_item)
-		_item.configure(_item_manager, GripTape)
+		_item.configure(_item_manager, WristBrace)
 		_shop_area = _make_shop_area(Vector2(200, 200))
 		_item.bind_shop_area(_shop_area)
 		_item.visible = false
 
 	func _make_body() -> HeldBody:
 		var body: HeldBody = HeldBodyScene.instantiate()
-		body.item_key = GripTape.key
+		body.item_key = WristBrace.key
 		add_child_autofree(body)
 		return body
 
@@ -331,14 +331,16 @@ class TestShopItemNotifyBodySettled:
 		var body: HeldBody = _make_body()
 		_item.notify_body_settled(body, Vector2(10, 10))
 		assert_true(_item.visible, "settle inside shop returns the slot")
-		assert_eq(_item_manager.get_level(GripTape.key), 0, "settle inside shop must not purchase")
+		assert_eq(
+			_item_manager.get_level(WristBrace.key), 0, "settle inside shop must not purchase"
+		)
 
 	func test_settle_outside_shop_commits_purchase() -> void:
 		var body: HeldBody = _make_body()
 		# 9999, 9999 is well outside the 200x200 shop area centred on origin.
 		_item.notify_body_settled(body, Vector2(9999, 9999))
 		assert_eq(
-			_item_manager.get_level(GripTape.key), 1, "settle outside shop commits the purchase"
+			_item_manager.get_level(WristBrace.key), 1, "settle outside shop commits the purchase"
 		)
 		assert_false(
 			_item.visible, "purchased slot stays hidden until the shop refresh removes its node"
@@ -350,7 +352,7 @@ class TestShopItemNotifyBodySettled:
 		var body: HeldBody = _make_body()
 		_item.notify_body_settled(body, Vector2(9999, 9999))
 		assert_eq(
-			_item_manager.get_level(GripTape.key), 0, "unaffordable-at-settle does not purchase"
+			_item_manager.get_level(WristBrace.key), 0, "unaffordable-at-settle does not purchase"
 		)
 		assert_true(
 			_item.visible, "unaffordable settle restores the slot rather than leaking the body"

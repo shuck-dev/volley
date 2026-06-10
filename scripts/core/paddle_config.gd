@@ -5,10 +5,6 @@ extends Resource
 
 ## Maximum paddle travel speed in pixels per second.
 @export var paddle_speed := 560.0
-## Default paddle height in pixels.
-@export var paddle_size := 54.0
-## Minimum paddle height after shrink effects, in pixels.
-@export var paddle_size_min := 27.0
 ## Maximum return-angle magnitude (degrees off horizontal) when the ball strikes the paddle edge.
 @export_range(0.0, 90.0) var paddle_return_angle_max_degrees := 0.0
 ## Scales paddle vertical velocity into a bounce-angle bias (radians per pixel/sec).
@@ -22,8 +18,6 @@ extends Resource
 func to_dict() -> Dictionary:
 	return {
 		&"paddle_speed": paddle_speed,
-		&"paddle_size": paddle_size,
-		&"paddle_size_min": paddle_size_min,
 		&"paddle_return_angle_max_degrees": paddle_return_angle_max_degrees,
 		&"paddle_english_coefficient": paddle_english_coefficient,
 		&"paddle_bounce_min_angle_degrees": paddle_bounce_min_angle_degrees,

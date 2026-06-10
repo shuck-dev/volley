@@ -28,6 +28,8 @@ const EXCLUDE_PATHS = [
 	"res://scripts/core/venue_bound_debug_draw.gd",
 	# SH-297: pure enum + label container; only consumed via const access from callers.
 	"res://scripts/items/cursor_state.gd",
+	# Dev-only collider overlay; _draw paths skip in headless tests, same as the debug draws above.
+	"res://scripts/entities/collider_overlay.gd",
 ]
 
 

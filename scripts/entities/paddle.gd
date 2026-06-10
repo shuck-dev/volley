@@ -4,27 +4,45 @@ extends CharacterBody2D
 ## Emits the ball that triggered the hit; null when emitted without a ball context (e.g. tests).
 signal paddle_hit(ball: Ball)
 
-# Upper limit only; the venue floor handles the bottom physically.
-# Tuned high enough to chase arcing balls into PLAY-ARC, low enough to stay on-screen.
 const PADDLE_TOP_Y := -540.0
+## Slack in pixels for the grounded test; the foot counts as on the floor within this of the surface.
+const GROUNDED_EPSILON := 2.0
+## Gap in pixels between the paddle's top edge and the dev state label sitting above it.
+const STATE_LABEL_GAP := 8.0
 
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
-@export var sprite: Sprite2D
+@export var sprite: AnimatedSprite2D
 @export var tracker: HitTracker
+## Mid-body Area2D that detects the ball; the racket zone, separate from the wall body.
+@export var racket_hitbox: Area2D
+## The racket's RectangleShape2D, owning the contact-offset half-height.
+@export var racket_shape: CollisionShape2D
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
 
 var _item_manager: Node
 
-var _lane_x := 0.0
+var _lane_x: float = 0.0
 var _paddle_speed: float = 0.0
 var _collision_shape: RectangleShape2D
-var _sprite_natural_height := 0.0
 
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
+
+## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
+var _floor_surface_y: float = NAN
+## Previous frame's Y, used to derive actual vertical motion so the state reflects real movement
+## (driven, timeout-controlled, or at rest) rather than the stale velocity member.
+var _last_y: float = 0.0
+var _vertical_motion: float = 0.0
+
+var _sprite_width_scale: float = 1.0
+var _collider_overlay: ColliderOverlay
+var _state_label: Label
+
+var _animation_state_machine: RefCounted
 
 
 func _ready() -> void:
@@ -38,10 +56,27 @@ func _ready() -> void:
 		_collision_shape.size = collision.shape.size
 		collision.shape = _collision_shape
 
-	if sprite != null:
-		_sprite_natural_height = sprite.get_rect().size.y
+	_fit_body_to_sprite()
 
-	_apply_size()
+	if racket_hitbox != null:
+		racket_hitbox.body_entered.connect(_on_racket_body_entered)
+
+	_resolve_floor_surface()
+	_last_y = global_position.y
+
+	_collider_overlay = ColliderOverlay.new()
+	_collider_overlay.z_index = 100
+	add_child(_collider_overlay)
+
+	_setup_state_label()
+
+	_ensure_animation_state_machine()
+
+	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
+	# from load rather than sitting on a default or the scene's authored animation.
+	_update_animation_state()
+
+	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
 func on_ball_hit(ball: Ball = null) -> bool:
@@ -52,6 +87,54 @@ func on_ball_hit(ball: Ball = null) -> bool:
 	hit_sound.play()
 	paddle_hit.emit(ball)
 	return true
+
+
+# The ball entered the racket zone; route it to the ball's hit entry. The ball passes through
+# the character body, so the racket Area2D is now the sole paddle-hit trigger.
+func _on_racket_body_entered(body: Node) -> void:
+	if body is Ball:
+		(body as Ball).hit_by_paddle(self)
+
+
+# Dev placeholder: labels the live animation state over the coloured sprite, so each blocked-out
+# state reads clearly while real art is pending. Updates whenever the sprite's animation changes.
+func _setup_state_label() -> void:
+	if not OS.is_debug_build() or sprite == null:
+		return
+	_state_label = Label.new()
+	_state_label.z_index = 101
+	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_state_label.add_theme_color_override(&"font_color", Color.WHITE)
+	_state_label.visible = false
+	add_child(_state_label)
+	sprite.animation_changed.connect(_refresh_state_label)
+	_refresh_state_label()
+
+
+# Toggled from the PlayerSprite dev panel; the state label is off until the player turns it on.
+func set_state_label_visible(value: bool) -> void:
+	if _state_label != null:
+		_state_label.visible = value
+
+
+# Centres the label horizontally on the paddle and sits it just above the sprite's top edge. Uses
+# the body collider half-height, which tracks the sprite, so the label rides above the visible paddle.
+func _position_state_label() -> void:
+	if _state_label == null:
+		return
+	var half_height: float = STATE_LABEL_GAP
+	if _collision_shape != null:
+		half_height = _collision_shape.size.y * 0.5 + STATE_LABEL_GAP
+	_state_label.size = Vector2.ZERO
+	var min_size: Vector2 = _state_label.get_minimum_size()
+	_state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
+
+
+func _refresh_state_label() -> void:
+	if _state_label == null or sprite == null:
+		return
+	_state_label.text = String(sprite.animation)
+	_position_state_label()
 
 
 func reset_streak() -> void:
@@ -72,15 +155,108 @@ func clamp_to_arena() -> void:
 	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
 
 
+# The animation state tracks grounded/flying and motion every physics frame, not just when a
+# controller calls drive(), so a grounded/flying transition updates the moment it happens.
+func _physics_process(_delta: float) -> void:
+	tick_animation_state()
+
+
+# Derives real vertical motion from the position delta and resolves the animation state. Called from
+# the base _physics_process, and from any subclass that overrides _physics_process (e.g. PlayerPaddle)
+# so the state still tracks every frame instead of being shadowed by the override.
+func tick_animation_state() -> void:
+	_vertical_motion = global_position.y - _last_y
+	_last_y = global_position.y
+	_update_animation_state()
+
+
 func get_speed() -> float:
 	return _paddle_speed
 
 
-# Half of the collider's vertical extent; the normalised denominator for contact-offset return angle.
+# Half of the racket zone's vertical extent; the normalised denominator for contact-offset return
+# angle. The racket, not the wall body, defines where on the paddle the ball is judged to strike.
 func get_half_height() -> float:
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		return (racket_shape.shape as RectangleShape2D).size.y * 0.5
 	if _collision_shape == null:
 		return 0.0
 	return _collision_shape.size.y * 0.5
+
+
+func get_movement_state() -> StringName:
+	return _animation_state_machine.get_state()
+
+
+# Finds the floor (a StaticBody in the "floor" group) and records its top-surface world Y. The paddle
+# slides on a code-clamped lane with no gravity, so is_on_floor() is unreliable; grounded is a
+# position test against this line instead. Leaves _floor_surface_y as NAN if no floor is present.
+func _resolve_floor_surface() -> void:
+	var floors: Array = get_tree().get_nodes_in_group(&"floor")
+	if floors.is_empty():
+		return
+	var floor_body: Node2D = floors[0] as Node2D
+	if floor_body == null:
+		return
+	var half: float = 0.0
+	for child in floor_body.get_children():
+		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
+			half = ((child as CollisionShape2D).shape as RectangleShape2D).size.y * 0.5
+			break
+	_floor_surface_y = floor_body.global_position.y - half
+
+
+# Grounded when the paddle's foot (centre plus the BODY half-height, i.e. the sprite extent, not the
+# small racket zone) has reached the floor surface. With no resolved floor line (no floor in the
+# scene, e.g. a bare unit test) the paddle is treated as flying.
+func _is_grounded() -> bool:
+	if is_nan(_floor_surface_y):
+		return false
+	var foot_offset: float = 0.0
+	if _collision_shape != null:
+		foot_offset = _collision_shape.size.y * 0.5
+	return global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
+
+
+func _ensure_animation_state_machine() -> void:
+	if _animation_state_machine == null:
+		_animation_state_machine = (
+			load("res://scripts/core/paddle_animation_state_machine.gd").new()
+		)
+		_animation_state_machine.state_changed.connect(_on_animation_state_changed)
+
+
+## Updates the animation state machine and plays any new state.
+func _update_animation_state() -> void:
+	_ensure_animation_state_machine()
+	var grounded: bool = _is_grounded()
+	_animation_state_machine.update(grounded, _vertical_motion)
+
+
+## Wired to the machine's state_changed signal; plays the animation when the state changes.
+func _on_animation_state_changed(state: StringName) -> void:
+	if sprite != null:
+		sprite.play(state)
+
+
+## Handles the paddle_hit signal to initiate the swing animation.
+func _on_paddle_hit_for_swing(_ball: Ball) -> void:
+	_ensure_animation_state_machine()
+
+	var grounded: bool = _is_grounded()
+	_animation_state_machine.on_hit(grounded, _vertical_motion)
+
+	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
+		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
+
+
+## Clears the swing pending state when the animation finishes.
+func _on_swing_finished() -> void:
+	if _animation_state_machine == null:
+		return
+
+	var grounded: bool = _is_grounded()
+	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
 
 
 func _resolved_paddle_speed() -> float:
@@ -101,28 +277,97 @@ func _bind_stat_updates() -> void:
 
 
 func _refresh_from_stats() -> void:
-	_apply_size()
 	_paddle_speed = _resolved_paddle_speed()
 
 
-func _apply_size() -> void:
-	if _collision_shape == null:
+func set_sprite_height_scale(factor: float) -> void:
+	if sprite == null:
 		return
+	sprite.scale.y = factor
+	_fit_body_to_sprite()
 
-	var arena_height: float = _resolve(GameRules.base.arena_height, &"arena_height")
-	var paddle_size_min: float = _resolve(GameRules.paddle.paddle_size_min, &"paddle_size_min")
-	var paddle_size: float = _resolve(GameRules.paddle.paddle_size, &"paddle_size")
-	var new_size: float = clampf(paddle_size, paddle_size_min, arena_height)
 
-	# Anchor the collider's foot: RectangleShape2D is centred on the body, so growing size.y without
-	# shifting position.y plants half the delta below the floor and traps depenetration during AT_EQUIP_POSE.
-	var old_size: float = _collision_shape.size.y
-	if _size_initialised and is_equal_approx(new_size, old_size):
+func set_sprite_width_scale(factor: float) -> void:
+	_sprite_width_scale = factor
+	if sprite == null:
 		return
-	_collision_shape.size.y = new_size
+	sprite.scale.x = factor
+	_fit_body_to_sprite()
+
+
+# Sizes the wall body to the sprite's on-screen dimensions (frame size times scale), foot-anchored,
+# so the character collides with walls and floor across its visible body. The body tracks the sprite,
+# not paddle_size; scrubbing the sprite size moves the wall collider with it.
+func _fit_body_to_sprite() -> void:
+	if _collision_shape == null or sprite == null:
+		return
+	if sprite.sprite_frames == null or sprite.sprite_frames.get_frame_count(sprite.animation) == 0:
+		return
+	var frame: Texture2D = sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
+	if frame == null:
+		return
+	var new_size := Vector2(frame.get_width() * sprite.scale.x, frame.get_height() * sprite.scale.y)
+	var old_height: float = _collision_shape.size.y
+	_collision_shape.size = new_size
 	if _size_initialised:
-		position.y -= (new_size - old_size) * 0.5
+		position.y -= (new_size.y - old_height) * 0.5
 	_size_initialised = true
+	_refresh_overlay_shapes()
 
-	if sprite != null and _sprite_natural_height > 0.0:
-		sprite.scale.y = new_size / _sprite_natural_height
+
+# Sets the racket zone's horizontal position, live-tunable from the dev panel.
+func set_racket_position_x(offset_x: float) -> void:
+	if racket_hitbox != null:
+		racket_hitbox.position.x = offset_x
+	_refresh_overlay_shapes()
+
+
+# Sets the racket zone's vertical position (mid-body offset), live-tunable from the dev panel.
+func set_racket_position_y(offset_y: float) -> void:
+	if racket_hitbox != null:
+		racket_hitbox.position.y = offset_y
+	_refresh_overlay_shapes()
+
+
+# Sets the racket zone's width, live-tunable from the dev panel.
+func set_racket_width(width: float) -> void:
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		var rect := racket_shape.shape as RectangleShape2D
+		rect.size.x = width
+	_refresh_overlay_shapes()
+
+
+# Sets the racket zone's height, live-tunable from the dev panel.
+func set_racket_height(height: float) -> void:
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		var rect := racket_shape.shape as RectangleShape2D
+		rect.size.y = height
+	_refresh_overlay_shapes()
+
+
+# Toggles the body-collider overlay independently of the racket, drawn above the sprite.
+func set_body_collider_visible(shown: bool) -> void:
+	if _collider_overlay == null:
+		return
+	_refresh_overlay_shapes()
+	_collider_overlay.set_body_active(shown)
+
+
+# Toggles the racket-collider overlay independently of the body, drawn above the sprite.
+func set_racket_collider_visible(shown: bool) -> void:
+	if _collider_overlay == null:
+		return
+	_refresh_overlay_shapes()
+	_collider_overlay.set_racket_active(shown)
+
+
+func _refresh_overlay_shapes() -> void:
+	if _collider_overlay == null:
+		return
+	var body_size: Vector2 = _collision_shape.size if _collision_shape != null else Vector2.ZERO
+	var racket_size: Vector2 = Vector2.ZERO
+	var racket_offset: Vector2 = Vector2.ZERO
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		racket_size = (racket_shape.shape as RectangleShape2D).size
+		racket_offset = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
+	_collider_overlay.set_shapes(body_size, racket_size, racket_offset)

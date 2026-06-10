@@ -15,7 +15,7 @@ extends Resource
 @export var kit_slots := 3.0
 ## Additive offset applied on top of ball_speed_min when computing the rally floor.
 @export var ball_speed_offset := 0.0
-## Arena vertical extent in pixels; upper bound for paddle_size and the AI math half-height.
+## Arena vertical extent in pixels; upper bound for the paddle and the AI math half-height.
 @export var arena_height := 660.0
 
 
