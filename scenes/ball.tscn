@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c4d57kq6juqi0"]
+[gd_scene format=3 uid="uid://c4d57kq6juqi0"]
 
 [ext_resource type="Script" uid="uid://cju8q2f2ny1so" path="res://scripts/entities/ball/ball.gd" id="1_7s4qf"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_cxlvu"]
@@ -44,7 +44,7 @@ hitbox_inflation = 4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea" unique_id=429755375]
 shape = SubResource("CircleShape2D_press")
 
-[node name="ConsolidationCue" type="CPUParticles2D" parent="."]
+[node name="ConsolidationCue" type="CPUParticles2D" parent="." unique_id=528947500]
 z_index = 1
 emitting = false
 amount = 16
@@ -59,3 +59,5 @@ scale_amount_min = 0.25
 scale_amount_max = 0.25
 color_ramp = SubResource("Gradient_cuefade")
 script = ExtResource("5_cue")
+
+[connection signal="tier_advanced" from="." to="ConsolidationCue" method="_on_ball_tier_advanced"]

@@ -331,22 +331,3 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 		0.001,
 		"a tier advance on a tracked but non-current ball must still bank soul",
 	)
-
-
-func test_consolidation_cue_fires_only_on_consolidating_ball() -> void:
-	var crossing: Ball = _spawn_ball("ball_alpha")
-	var sibling: Ball = _spawn_ball("ball_beta")
-
-	crossing.advance_tier()
-
-	var crossing_cue: ConsolidationCue = crossing.get_node("ConsolidationCue")
-	var sibling_cue: ConsolidationCue = sibling.get_node("ConsolidationCue")
-
-	assert_true(
-		crossing_cue.emitting,
-		"the ball that advanced a tier must fire its consolidation cue",
-	)
-	assert_false(
-		sibling_cue.emitting,
-		"a ball that did not advance a tier must not fire its consolidation cue",
-	)

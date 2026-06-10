@@ -95,9 +95,6 @@ func _ready() -> void:
 	_setup_effect_processor()
 	_ball_setup()
 
-	if not tier_advanced.is_connected(_on_tier_advanced):
-		tier_advanced.connect(_on_tier_advanced)
-
 
 func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
@@ -367,12 +364,6 @@ func _ball_setup() -> void:
 
 	input_pickable = false
 	_wire_grab_area()
-
-
-func _on_tier_advanced(_ball: Ball, _new_tier: int) -> void:
-	var cue: ConsolidationCue = get_node_or_null("ConsolidationCue") as ConsolidationCue
-	if cue != null:
-		cue.fire()
 
 
 func _on_grab_area_grabbed(_area: GrabArea) -> void:
