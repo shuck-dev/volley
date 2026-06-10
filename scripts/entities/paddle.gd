@@ -33,6 +33,7 @@ var _movement_state: MovementState = MovementState.IDLE
 var _swing_pending: bool = false
 
 var _sprite_width_scale: float = 1.0
+var _draw_colliders: bool = false
 
 
 func _ready() -> void:
@@ -203,7 +204,34 @@ func set_sprite_width_scale(factor: float) -> void:
 	sprite.scale.x = factor
 
 
+# Sets the racket zone's vertical position (mid-body offset), live-tunable from the dev panel.
+func set_racket_position_y(offset_y: float) -> void:
+	if racket_hitbox != null:
+		racket_hitbox.position.y = offset_y
+
+
+# Sets the racket zone's height, live-tunable from the dev panel. Width stays as authored.
+func set_racket_height(height: float) -> void:
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		var rect := racket_shape.shape as RectangleShape2D
+		rect.size.y = height
+
+
+# Draws the racket and body collision rectangles when the dev toggle is on. CollisionShape2D.visible
+# is an editor property with no runtime effect, so the paddle paints the shapes itself.
 func set_collider_visible(visible: bool) -> void:
-	if collision == null:
+	_draw_colliders = visible
+	queue_redraw()
+
+
+func _draw() -> void:
+	if not _draw_colliders:
 		return
-	collision.visible = visible
+	if _collision_shape != null:
+		draw_rect(
+			Rect2(-_collision_shape.size * 0.5, _collision_shape.size), Color(0.2, 0.6, 1.0, 0.35)
+		)
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		var rsize: Vector2 = (racket_shape.shape as RectangleShape2D).size
+		var rpos: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
+		draw_rect(Rect2(rpos - rsize * 0.5, rsize), Color(1.0, 0.4, 0.2, 0.5))

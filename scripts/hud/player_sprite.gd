@@ -10,9 +10,15 @@ var _width_slider: HSlider
 var _width_spinbox: SpinBox
 var _readout_label: Label
 var _collider_visibility_checkbox: CheckBox
+var _racket_pos_slider: HSlider
+var _racket_pos_spinbox: SpinBox
+var _racket_height_slider: HSlider
+var _racket_height_spinbox: SpinBox
 
 var _sprite_height_scale: float = 1.0
 var _sprite_width_scale: float = 1.0
+var _racket_position_y: float = -10.0
+var _racket_height: float = 20.0
 
 
 func _ready() -> void:
@@ -51,6 +57,7 @@ func _build_ui() -> void:
 
 	_add_height_controls()
 	_add_width_controls()
+	_add_racket_controls()
 
 	_add_collider_visibility_checkbox()
 
@@ -113,6 +120,50 @@ func _add_width_controls() -> void:
 	_width_spinbox.step = 0.05
 	_width_spinbox.value_changed.connect(_on_width_spinbox_changed)
 	add_child(_width_spinbox)
+
+
+func _add_racket_controls() -> void:
+	var pos_label := Label.new()
+	pos_label.text = "Racket Y:"
+	pos_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.6))
+	add_child(pos_label)
+
+	_racket_pos_slider = HSlider.new()
+	_racket_pos_slider.min_value = -100.0
+	_racket_pos_slider.max_value = 100.0
+	_racket_pos_slider.value = _racket_position_y
+	_racket_pos_slider.step = 1.0
+	_racket_pos_slider.value_changed.connect(_on_racket_pos_slider_changed)
+	add_child(_racket_pos_slider)
+
+	_racket_pos_spinbox = SpinBox.new()
+	_racket_pos_spinbox.min_value = -100.0
+	_racket_pos_spinbox.max_value = 100.0
+	_racket_pos_spinbox.value = _racket_position_y
+	_racket_pos_spinbox.step = 1.0
+	_racket_pos_spinbox.value_changed.connect(_on_racket_pos_spinbox_changed)
+	add_child(_racket_pos_spinbox)
+
+	var size_label := Label.new()
+	size_label.text = "Racket Height:"
+	size_label.add_theme_color_override("font_color", Color(1.0, 0.7, 0.6))
+	add_child(size_label)
+
+	_racket_height_slider = HSlider.new()
+	_racket_height_slider.min_value = 2.0
+	_racket_height_slider.max_value = 120.0
+	_racket_height_slider.value = _racket_height
+	_racket_height_slider.step = 1.0
+	_racket_height_slider.value_changed.connect(_on_racket_height_slider_changed)
+	add_child(_racket_height_slider)
+
+	_racket_height_spinbox = SpinBox.new()
+	_racket_height_spinbox.min_value = 2.0
+	_racket_height_spinbox.max_value = 120.0
+	_racket_height_spinbox.value = _racket_height
+	_racket_height_spinbox.step = 1.0
+	_racket_height_spinbox.value_changed.connect(_on_racket_height_spinbox_changed)
+	add_child(_racket_height_spinbox)
 
 
 func _add_collider_visibility_checkbox() -> void:
@@ -190,6 +241,30 @@ func _on_width_spinbox_changed(value: float) -> void:
 	_apply_width(value)
 
 
+func _on_racket_pos_slider_changed(value: float) -> void:
+	if _racket_pos_spinbox != null:
+		_racket_pos_spinbox.value = value
+	_apply_racket_position(value)
+
+
+func _on_racket_pos_spinbox_changed(value: float) -> void:
+	if _racket_pos_slider != null:
+		_racket_pos_slider.value = value
+	_apply_racket_position(value)
+
+
+func _on_racket_height_slider_changed(value: float) -> void:
+	if _racket_height_spinbox != null:
+		_racket_height_spinbox.value = value
+	_apply_racket_height(value)
+
+
+func _on_racket_height_spinbox_changed(value: float) -> void:
+	if _racket_height_slider != null:
+		_racket_height_slider.value = value
+	_apply_racket_height(value)
+
+
 func _on_collider_visibility_toggled(pressed: bool) -> void:
 	_set_collider_visibility(pressed)
 
@@ -204,6 +279,20 @@ func _apply_width(value: float) -> void:
 	_sprite_width_scale = value
 	_refresh_readout()
 	_apply_to_paddles()
+
+
+func _apply_racket_position(value: float) -> void:
+	_racket_position_y = value
+	for paddle in get_tree().get_nodes_in_group(&"paddles"):
+		if paddle.has_method("set_racket_position_y"):
+			paddle.set_racket_position_y(value)
+
+
+func _apply_racket_height(value: float) -> void:
+	_racket_height = value
+	for paddle in get_tree().get_nodes_in_group(&"paddles"):
+		if paddle.has_method("set_racket_height"):
+			paddle.set_racket_height(value)
 
 
 func _set_collider_visibility(visible: bool) -> void:
