@@ -199,12 +199,16 @@ func _resolve_floor_surface() -> void:
 	_floor_surface_y = floor_body.global_position.y - half
 
 
-# Grounded when the paddle's foot (centre plus half-height) has reached the floor surface. With no
-# resolved floor line (no floor in the scene, e.g. a bare unit test) the paddle is treated as flying.
+# Grounded when the paddle's foot (centre plus the BODY half-height, i.e. the sprite extent, not the
+# small racket zone) has reached the floor surface. With no resolved floor line (no floor in the
+# scene, e.g. a bare unit test) the paddle is treated as flying.
 func _is_grounded() -> bool:
 	if is_nan(_floor_surface_y):
 		return false
-	return global_position.y + get_half_height() >= _floor_surface_y - GROUNDED_EPSILON
+	var foot_offset: float = 0.0
+	if _collision_shape != null:
+		foot_offset = _collision_shape.size.y * 0.5
+	return global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
 
 
 # Resolves the animation state from grounded/flying, vertical motion, and the swing overlay. Swing
