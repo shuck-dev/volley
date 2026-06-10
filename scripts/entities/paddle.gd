@@ -4,9 +4,9 @@ extends CharacterBody2D
 ## Emits the ball that triggered the hit; null when emitted without a ball context (e.g. tests).
 signal paddle_hit(ball: Ball)
 
-enum MovementState { IDLE, WALK }
-
 const PADDLE_TOP_Y := -540.0
+## Slack in pixels for the grounded test; the foot counts as on the floor within this of the surface.
+const GROUNDED_EPSILON := 2.0
 ## Gap in pixels between the paddle's top edge and the dev state label sitting above it.
 const STATE_LABEL_GAP := 8.0
 
@@ -31,8 +31,11 @@ var _collision_shape: RectangleShape2D
 # False until the first _apply_size lands; the initial call is sizing, not a resize.
 var _size_initialised: bool = false
 
-var _movement_state: MovementState = MovementState.IDLE
+var _current_state: StringName = &"ready_grounded"
 var _swing_pending: bool = false
+
+## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
+var _floor_surface_y: float = NAN
 
 var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
@@ -55,15 +58,18 @@ func _ready() -> void:
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
+	_resolve_floor_surface()
+
 	_collider_overlay = ColliderOverlay.new()
 	_collider_overlay.z_index = 100
 	add_child(_collider_overlay)
 
 	_setup_state_label()
 
-	# Play the initial state's animation so the sprite matches the FSM (IDLE) from the first frame,
+	# Play the initial state's animation so the sprite matches the FSM from the first frame,
 	# rather than sitting on whatever the scene authored as the default animation.
-	_play_movement_animation()
+	if sprite != null:
+		sprite.play(_current_state)
 
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
@@ -139,11 +145,15 @@ func drive(velocity_y: float) -> void:
 	position.x = _lane_x
 	clamp_to_arena()
 
-	_update_movement_state(velocity_y)
-
 
 func clamp_to_arena() -> void:
 	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
+
+
+# The animation state tracks grounded/flying and motion every physics frame, not just when a
+# controller calls drive(), so a grounded/flying transition updates the moment it happens.
+func _physics_process(_delta: float) -> void:
+	_update_animation_state()
 
 
 func get_speed() -> float:
@@ -160,50 +170,70 @@ func get_half_height() -> float:
 	return _collision_shape.size.y * 0.5
 
 
-func get_movement_state() -> MovementState:
-	return _movement_state
+func get_movement_state() -> StringName:
+	return _current_state
 
 
-func _update_movement_state(velocity_y: float) -> void:
-	var new_state: MovementState = (
-		MovementState.WALK if not is_zero_approx(velocity_y) else MovementState.IDLE
-	)
-
-	if new_state == _movement_state:
+# Finds the floor (a StaticBody in the "floor" group) and records its top-surface world Y. The paddle
+# slides on a code-clamped lane with no gravity, so is_on_floor() is unreliable; grounded is a
+# position test against this line instead. Leaves _floor_surface_y as NAN if no floor is present.
+func _resolve_floor_surface() -> void:
+	var floors: Array = get_tree().get_nodes_in_group(&"floor")
+	if floors.is_empty():
 		return
-
-	_movement_state = new_state
-	_play_movement_animation()
-
-
-func _play_movement_animation() -> void:
-	if sprite == null:
+	var floor_body: Node2D = floors[0] as Node2D
+	if floor_body == null:
 		return
+	var half: float = 0.0
+	for child in floor_body.get_children():
+		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
+			half = ((child as CollisionShape2D).shape as RectangleShape2D).size.y * 0.5
+			break
+	_floor_surface_y = floor_body.global_position.y - half
+
+
+# Grounded when the paddle's foot (centre plus half-height) has reached the floor surface. With no
+# resolved floor line (no floor in the scene, e.g. a bare unit test) the paddle is treated as flying.
+func _is_grounded() -> bool:
+	if is_nan(_floor_surface_y):
+		return false
+	return global_position.y + get_half_height() >= _floor_surface_y - GROUNDED_EPSILON
+
+
+# Resolves the animation state from grounded/flying, vertical motion, and the swing overlay. Swing
+# wins: swinging plays swing_grounded/swing_flying. Otherwise a flying paddle plays flying_up/
+# flying_down while it moves vertically and ready_flying when still; grounded plays ready_grounded.
+func _update_animation_state() -> void:
+	var grounded: bool = _is_grounded()
+	var new_state: StringName
 
 	if _swing_pending:
-		return
+		new_state = &"swing_grounded" if grounded else &"swing_flying"
+	elif grounded:
+		new_state = &"ready_grounded"
+	elif not is_zero_approx(velocity.y):
+		new_state = &"flying_up" if velocity.y < 0.0 else &"flying_down"
+	else:
+		new_state = &"ready_flying"
 
-	match _movement_state:
-		MovementState.IDLE:
-			sprite.play(&"idle")
-		MovementState.WALK:
-			sprite.play(&"walk")
+	if new_state == _current_state:
+		return
+	_current_state = new_state
+	if sprite != null:
+		sprite.play(new_state)
 
 
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
-	if sprite == null:
-		return
-
 	_swing_pending = true
-	sprite.play(&"swing")
+	_update_animation_state()
 
-	if not sprite.animation_finished.is_connected(_on_swing_finished):
+	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
 		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
 
 
 func _on_swing_finished() -> void:
 	_swing_pending = false
-	_play_movement_animation()
+	_update_animation_state()
 
 
 func _resolved_paddle_speed() -> float:
@@ -293,19 +323,19 @@ func set_racket_height(height: float) -> void:
 
 
 # Toggles the body-collider overlay independently of the racket, drawn above the sprite.
-func set_body_collider_visible(visible: bool) -> void:
+func set_body_collider_visible(shown: bool) -> void:
 	if _collider_overlay == null:
 		return
 	_refresh_overlay_shapes()
-	_collider_overlay.set_body_active(visible)
+	_collider_overlay.set_body_active(shown)
 
 
 # Toggles the racket-collider overlay independently of the body, drawn above the sprite.
-func set_racket_collider_visible(visible: bool) -> void:
+func set_racket_collider_visible(shown: bool) -> void:
 	if _collider_overlay == null:
 		return
 	_refresh_overlay_shapes()
-	_collider_overlay.set_racket_active(visible)
+	_collider_overlay.set_racket_active(shown)
 
 
 func _refresh_overlay_shapes() -> void:

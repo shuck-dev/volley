@@ -39,7 +39,7 @@ script = ExtResource("5_wttuf")
 left_anchor = NodePath("../VenueLeftBound")
 right_anchor = NodePath("../VenueRightBound")
 
-[node name="VenueFloor" type="StaticBody2D" parent="." unique_id=984529763]
+[node name="VenueFloor" type="StaticBody2D" parent="." unique_id=984529763 groups=["floor"]]
 position = Vector2(0, 410)
 
 [node name="VenueFloorShape" type="CollisionShape2D" parent="VenueFloor" unique_id=1971162894]

@@ -27,7 +27,7 @@ metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1878723155]
 sprite_frames = ExtResource("6_partnerframes")
-animation = &"idle"
+animation = &"ready_grounded"
 
 [node name="Collision" type="CollisionShape2D" parent="." unique_id=712647188]
 shape = SubResource("RectangleShape2D_partner")

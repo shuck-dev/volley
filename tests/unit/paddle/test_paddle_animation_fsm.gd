@@ -1,13 +1,24 @@
 extends GutTest
 
-const PaddleScript := preload("res://scripts/entities/paddle.gd")
+# The animation state resolves from grounded/flying, vertical motion, and the swing overlay, with
+# swing winning. The double overrides _is_grounded (the paddle's own method) so grounded is
+# controllable without a floor in the scene; velocity.y is set directly to drive the motion states.
 
-var _paddle: Paddle
+
+class PaddleDouble:
+	extends Paddle
+	var grounded: bool = true
+
+	func _is_grounded() -> bool:
+		return grounded
+
+
+var _paddle: PaddleDouble
 var _sprite: AnimatedSprite2D
 
 
 func before_each() -> void:
-	_paddle = PaddleScript.new()
+	_paddle = PaddleDouble.new()
 
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
@@ -26,75 +37,80 @@ func before_each() -> void:
 	add_child_autofree(_paddle)
 
 
-# --- movement state transitions ---
+# Sets grounded and vertical velocity, then resolves the state as a physics frame would.
+func _state(grounded: bool, velocity_y: float) -> void:
+	_paddle.grounded = grounded
+	_paddle.velocity = Vector2(0.0, velocity_y)
+	_paddle._update_animation_state()
 
 
-func test_starts_idle() -> void:
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.IDLE)
+# --- grounded ready ---
 
 
-func test_drive_with_nonzero_velocity_transitions_to_walk() -> void:
-	_paddle.drive(100.0)
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.WALK)
+func test_starts_ready_grounded() -> void:
+	assert_eq(_paddle.get_movement_state(), &"ready_grounded")
 
 
-func test_drive_with_zero_velocity_stays_idle() -> void:
-	_paddle.drive(0.0)
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.IDLE)
+func test_grounded_still_is_ready_grounded() -> void:
+	_state(true, 0.0)
+	assert_eq(_sprite.animation, &"ready_grounded")
 
 
-func test_drive_zero_after_walk_transitions_back_to_idle() -> void:
-	_paddle.drive(100.0)
-	_paddle.drive(0.0)
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.IDLE)
+# --- flying motion ---
 
 
-# --- animation follows movement state ---
+func test_flying_upward_is_flying_up() -> void:
+	_state(false, -100.0)
+	assert_eq(_sprite.animation, &"flying_up")
 
 
-func test_idle_state_plays_idle_animation() -> void:
-	_paddle.drive(0.0)
-	assert_eq(_sprite.animation, &"idle")
+func test_flying_downward_is_flying_down() -> void:
+	_state(false, 100.0)
+	assert_eq(_sprite.animation, &"flying_down")
 
 
-func test_walk_state_plays_walk_animation() -> void:
-	_paddle.drive(100.0)
-	assert_eq(_sprite.animation, &"walk")
+func test_flying_still_is_ready_flying() -> void:
+	_state(false, 0.0)
+	assert_eq(_sprite.animation, &"ready_flying")
 
 
-func test_returning_to_idle_resumes_idle_animation() -> void:
-	_paddle.drive(100.0)
-	_paddle.drive(0.0)
-	assert_eq(_sprite.animation, &"idle")
+func test_returning_to_floor_is_ready_grounded() -> void:
+	_state(false, -100.0)
+	_state(true, 0.0)
+	assert_eq(_sprite.animation, &"ready_grounded")
 
 
-# --- swing animation ---
+# --- swing wins ---
 
 
-func test_swing_fires_swing_animation() -> void:
+func test_swing_while_grounded_is_swing_grounded() -> void:
+	_paddle.grounded = true
 	_paddle.on_ball_hit()
-	assert_eq(_sprite.animation, &"swing")
+	assert_eq(_sprite.animation, &"swing_grounded")
 
 
-func test_swing_does_not_change_movement_state_when_idle() -> void:
+func test_swing_while_flying_is_swing_flying() -> void:
+	_paddle.grounded = false
 	_paddle.on_ball_hit()
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.IDLE)
+	assert_eq(_sprite.animation, &"swing_flying")
 
 
-func test_swing_does_not_change_movement_state_when_walking() -> void:
-	_paddle.drive(100.0)
+func test_swing_overrides_flying_motion() -> void:
+	_state(false, 100.0)
+	assert_eq(_sprite.animation, &"flying_down")
 	_paddle.on_ball_hit()
-	assert_eq(_paddle.get_movement_state(), Paddle.MovementState.WALK)
+	assert_eq(_sprite.animation, &"swing_flying", "swing wins over flying_down")
 
 
-func test_swing_resumes_idle_after_animation_finishes() -> void:
-	_paddle.on_ball_hit()
-	_sprite.animation_finished.emit()
-	assert_eq(_sprite.animation, &"idle")
-
-
-func test_swing_resumes_walk_after_animation_finishes_while_walking() -> void:
-	_paddle.drive(100.0)
+func test_swing_resumes_grounded_state_after_finish() -> void:
+	_paddle.grounded = true
 	_paddle.on_ball_hit()
 	_sprite.animation_finished.emit()
-	assert_eq(_sprite.animation, &"walk")
+	assert_eq(_sprite.animation, &"ready_grounded")
+
+
+func test_swing_resumes_flying_state_after_finish() -> void:
+	_state(false, 100.0)
+	_paddle.on_ball_hit()
+	_sprite.animation_finished.emit()
+	assert_eq(_sprite.animation, &"flying_down", "resumes the live flying state after swing")

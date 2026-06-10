@@ -86,7 +86,7 @@ mouse_filter = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right Wall" unique_id=2042401507]
 shape = SubResource("RectangleShape2D_vert")
 
-[node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318]
+[node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318 groups=["floor"]]
 position = Vector2(0, 400)
 physics_material_override = ExtResource("1_0wfyh")
 

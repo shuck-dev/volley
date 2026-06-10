@@ -27,7 +27,7 @@ metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
 sprite_frames = ExtResource("4_samframes")
-animation = &"idle"
+animation = &"flying_down"
 
 [node name="AnkleAnchor" type="Node2D" parent="." unique_id=2001000001]
 position = Vector2(0, 24)
