@@ -28,6 +28,8 @@ var _size_initialised: bool = false
 var _movement_state: MovementState = MovementState.IDLE
 var _swing_pending: bool = false
 
+var _sprite_base_height: float = 0.0
+
 
 func _ready() -> void:
 	add_to_group(&"paddles")
@@ -42,6 +44,7 @@ func _ready() -> void:
 
 	_apply_size()
 
+	_capture_sprite_base_height()
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
@@ -176,11 +179,28 @@ func _apply_size() -> void:
 	_scale_sprite(new_size)
 
 
+func _capture_sprite_base_height() -> void:
+	if sprite == null:
+		return
+
+	if sprite.sprite_frames == null or sprite.sprite_frames.get_frame_count(sprite.animation) == 0:
+		return
+
+	var frame_texture: Texture2D = sprite.sprite_frames.get_frame_texture(sprite.animation, 0)
+	if frame_texture == null:
+		return
+
+	_sprite_base_height = frame_texture.get_height() * sprite.scale.y
+
+
 func _scale_sprite(paddle_height: float) -> void:
 	if sprite == null:
 		return
 
-	var scale_factor: float = paddle_height / GameRules.paddle.paddle_size
+	if _sprite_base_height <= 0.0:
+		return
+
+	var scale_factor: float = paddle_height / _sprite_base_height
 	sprite.scale.y = scale_factor
 	if _size_initialised:
-		sprite.position.y = -(paddle_height - GameRules.paddle.paddle_size) * 0.5
+		sprite.position.y = -(paddle_height - _sprite_base_height * sprite.scale.y) * 0.5

@@ -6,6 +6,7 @@ extends VBoxContainer
 var _drag: DraggableBehavior = DraggableBehavior.new()
 var _slider: HSlider
 var _label_value: Label
+var _spinbox: SpinBox
 
 
 func _ready() -> void:
@@ -56,6 +57,14 @@ func _build_ui() -> void:
 	add_child(_label_value)
 	_refresh_label()
 
+	_spinbox = SpinBox.new()
+	_spinbox.min_value = GameRules.paddle.paddle_size_min
+	_spinbox.max_value = GameRules.paddle.paddle_size * 3.0
+	_spinbox.value = GameRules.paddle.paddle_size
+	_spinbox.step = 1.0
+	_spinbox.value_changed.connect(_on_spinbox_changed)
+	add_child(_spinbox)
+
 
 func _add_header() -> void:
 	var header := Label.new()
@@ -71,6 +80,18 @@ func _refresh_label() -> void:
 
 
 func _on_slider_changed(value: float) -> void:
+	if _spinbox != null:
+		_spinbox.value = value
+	_apply_size(value)
+
+
+func _on_spinbox_changed(value: float) -> void:
+	if _slider != null:
+		_slider.value = value
+	_apply_size(value)
+
+
+func _apply_size(value: float) -> void:
 	GameRules.paddle.paddle_size = value
 	_refresh_label()
 	_apply_size_to_paddles()
