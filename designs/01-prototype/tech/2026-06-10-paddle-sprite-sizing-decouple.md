@@ -25,16 +25,15 @@ Two independent systems. The sprite never reads `paddle_size`; gameplay never re
 
 The collider and the sprite are not kept in sync automatically. Art is drawn to read correctly around the hitbox; the panel's collider-visibility toggle exists to check they line up. Full independence, no default-derive leash.
 
-## Racket hit-detection is split from the physical bounce
+## Racket is an Area2D; the return is code-applied, not restitution
 
-Two separate concerns, conflated today on one collider:
+The ball must interact with ONLY a small racket zone, not the whole character body. The standard 2D idiom (fighting-game hitbox/hurtbox, bullet-hell) is: the `CharacterBody2D` handles terrain, and separate child `Area2D` nodes on their own layers handle hit-detection. A child `Area2D` carries independent `collision_layer`/`collision_mask` (per-CollisionObject), which is the normal, supported pattern. (A child physics BODY shares the parent's layer; an Area2D does not. That is why the racket is an Area2D, not a body.)
 
-- **Physical bounce + walls.** The existing `CharacterBody2D` collider. The ball physically bounces off it and `move_and_slide` uses it against walls. UNCHANGED. The physical bounce off the body footprint stays exactly as it is.
-- **Racket hit-detection.** What counts as a registered hit (streak, sound, speed-up) must come only from the racket zone, not the whole body. This is DETECTION, not a bounce: a child `Area2D`, racket-sized, mid-body, that detects the ball entering and fires `on_ball_hit`. Position and size are PANEL-TUNABLE.
+Today the ball returns by pure physics restitution (`bounce = 1.0`) off the paddle body, and the existing `paddle_return_angle_max_degrees` / `paddle_english_coefficient` / bounce min-max stats shape that engine reflection. Arcade ball games (Breakout, Pong, Arkanoid) conventionally CODE-APPLY the paddle return instead, because the return angle should depend on the contact point and paddle motion, which is exactly what those stats encode. So:
 
-The racket `Area2D` carries its OWN `collision_layer`/`collision_mask`, separate from the body (layer/mask is per-CollisionObject, so the Area2D is its own object with its own channel). It masks the ball's layer so it detects the ball entering the racket zone; on its own layer so it is independent of the body's wall/bounce collision.
-
-The `Area2D`'s `body_entered` fires when the ball enters; its handler routes `on_ball_hit` to the `Paddle`. The ball's physical bounce off the `CharacterBody2D` is untouched; the Area2D only changes WHAT REGISTERS as a hit.
+- **Wall body.** The `CharacterBody2D`, on a layer the ball does NOT mask. The ball passes through the character body entirely. `move_and_slide` against walls only.
+- **Racket hitbox.** A child `Area2D`, racket-sized, mid-body, on its own layer, masking the ball. Detects the ball entering. Position and size PANEL-TUNABLE.
+- **Code-applied return.** On racket detection, the ball's velocity is reflected in code using the existing return-angle, english, and bounce-clamp stats. Physics restitution off the paddle is RETIRED. The ball no longer bounces off any paddle collider; the racket Area2D detects and the return is computed.
 
 ## Collider visibility draws at runtime
 
