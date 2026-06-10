@@ -5,6 +5,8 @@ extends VBoxContainer
 
 ## Spinbox ceiling, high enough to be no practical limit on a typed or drag-scrubbed value.
 const MAX_TUNE := 100000.0
+## Size floor: a RectangleShape2D or sprite scale cannot be zero or negative.
+const MIN_SIZE := 0.01
 
 var _drag: DraggableBehavior = DraggableBehavior.new()
 var _readout_label: Label
@@ -51,12 +53,13 @@ func _draw() -> void:
 func _build_ui() -> void:
 	_add_label("--- DEBUG: Player Sprite ---", Color(1.0, 1.0, 0.6))
 
-	_add_control("Sprite Height", 0.05, _sprite_height_scale, _apply_sprite_height)
-	_add_control("Sprite Width", 0.05, _sprite_width_scale, _apply_sprite_width)
-	_add_control("Racket X", 1.0, _racket_position_x, _apply_racket_position_x)
-	_add_control("Racket Y", 1.0, _racket_position_y, _apply_racket_position_y)
-	_add_control("Racket Width", 1.0, _racket_width, _apply_racket_width)
-	_add_control("Racket Height", 1.0, _racket_height, _apply_racket_height)
+	# Sizes floor at MIN_SIZE (a RectangleShape2D/scale cannot be negative); positions may go negative.
+	_add_control("Sprite Height", 0.05, _sprite_height_scale, _apply_sprite_height, MIN_SIZE)
+	_add_control("Sprite Width", 0.05, _sprite_width_scale, _apply_sprite_width, MIN_SIZE)
+	_add_control("Racket X", 1.0, _racket_position_x, _apply_racket_position_x, -MAX_TUNE)
+	_add_control("Racket Y", 1.0, _racket_position_y, _apply_racket_position_y, -MAX_TUNE)
+	_add_control("Racket Width", 1.0, _racket_width, _apply_racket_width, MIN_SIZE)
+	_add_control("Racket Height", 1.0, _racket_height, _apply_racket_height, MIN_SIZE)
 
 	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
@@ -78,14 +81,16 @@ func _add_label(text: String, colour: Color) -> void:
 
 # Builds a labelled SpinBox that calls apply(value) on change. SpinBox is the native drag-to-scrub
 # control: drag the arrows up or down to scrub, or type an exact value. Uncapped, no slider track.
-func _add_control(label_text: String, step: float, start: float, apply: Callable) -> void:
+func _add_control(
+	label_text: String, step: float, start: float, apply: Callable, min_value: float
+) -> void:
 	var label := Label.new()
 	label.text = label_text + ":"
 	label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
 	add_child(label)
 
 	var spinbox := SpinBox.new()
-	spinbox.min_value = -MAX_TUNE
+	spinbox.min_value = min_value
 	spinbox.max_value = MAX_TUNE
 	spinbox.step = step
 	spinbox.value = start
