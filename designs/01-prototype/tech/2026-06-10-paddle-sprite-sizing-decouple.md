@@ -33,7 +33,7 @@ Today the ball returns by pure physics restitution (`bounce = 1.0`) off the padd
 
 - **Wall body.** The `CharacterBody2D`, on a layer the ball does NOT mask. The ball passes through the character body entirely. `move_and_slide` against walls only.
 - **Racket hitbox.** A child `Area2D`, racket-sized, mid-body, on its own layer, masking the ball. Detects the ball entering. Position and size PANEL-TUNABLE.
-- **Code-applied return.** On racket detection, the ball's velocity is reflected in code using the existing return-angle, english, and bounce-clamp stats. Physics restitution off the paddle is RETIRED. The ball no longer bounces off any paddle collider; the racket Area2D detects and the return is computed.
+- **Code-applied return (already exists).** `effect_processor._apply_paddle_offset_return` ALREADY sets `ball.linear_velocity = direction * ball.speed` from contact offset, english, and the bounce clamps. Physics restitution is redundant; the code overwrites the velocity on every hit. So retiring restitution changes no feel: only the TRIGGER moves. The racket Area2D detecting the ball fires the same `on_ball_hit` + `process_hit` path. The ball passes through the body; the racket detection drives the existing return. `half_height` (the offset denominator) should reference the racket zone, not the old footprint collider.
 
 ## Collider visibility draws at runtime
 

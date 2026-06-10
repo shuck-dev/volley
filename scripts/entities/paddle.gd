@@ -12,6 +12,10 @@ const PADDLE_TOP_Y := -540.0
 @export var collision: CollisionShape2D
 @export var sprite: AnimatedSprite2D
 @export var tracker: HitTracker
+## Mid-body Area2D that detects the ball; the racket zone, separate from the wall body.
+@export var racket_hitbox: Area2D
+## The racket's RectangleShape2D, owning the contact-offset half-height.
+@export var racket_shape: CollisionShape2D
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
@@ -44,6 +48,9 @@ func _ready() -> void:
 
 	_apply_size()
 
+	if racket_hitbox != null:
+		racket_hitbox.body_entered.connect(_on_racket_body_entered)
+
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
 
@@ -55,6 +62,13 @@ func on_ball_hit(ball: Ball = null) -> bool:
 	hit_sound.play()
 	paddle_hit.emit(ball)
 	return true
+
+
+# The ball entered the racket zone; route it to the ball's hit entry. The ball passes through
+# the character body, so the racket Area2D is now the sole paddle-hit trigger.
+func _on_racket_body_entered(body: Node) -> void:
+	if body is Ball:
+		(body as Ball).hit_by_paddle(self)
 
 
 func reset_streak() -> void:
@@ -81,8 +95,11 @@ func get_speed() -> float:
 	return _paddle_speed
 
 
-# Half of the collider's vertical extent; the normalised denominator for contact-offset return angle.
+# Half of the racket zone's vertical extent; the normalised denominator for contact-offset return
+# angle. The racket, not the wall body, defines where on the paddle the ball is judged to strike.
 func get_half_height() -> float:
+	if racket_shape != null and racket_shape.shape is RectangleShape2D:
+		return (racket_shape.shape as RectangleShape2D).size.y * 0.5
 	if _collision_shape == null:
 		return 0.0
 	return _collision_shape.size.y * 0.5
