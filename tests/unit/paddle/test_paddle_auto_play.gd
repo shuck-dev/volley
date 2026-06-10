@@ -142,3 +142,16 @@ func test_timeout_end_does_not_re_enable_autoplay() -> void:
 	_timeout.timeout_started.emit()
 	_timeout.timeout_ended.emit()
 	assert_false(_controller.is_enabled())
+
+
+func test_toggle_off_during_timeout_keeps_paddle_parked() -> void:
+	_timeout.configure(_paddle)
+	_timeout.call_timeout()
+	assert_true(_timeout.is_active(), "precondition: timeout is active")
+
+	_controller.toggle()
+	_controller.toggle()
+	assert_false(
+		_paddle.is_physics_processing(),
+		"toggle off during timeout must not re-enable paddle physics_process",
+	)

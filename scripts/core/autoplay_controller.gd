@@ -16,9 +16,10 @@ func _ready() -> void:
 func toggle() -> void:
 	var desired: bool = not _enabled
 	set_enabled(desired)
-	# `paddle.set_physics_process` mirrors the actual enabled state so we
-	# don't disable player input just because set_enabled refused.
-	paddle.set_physics_process(not _enabled)
+	# A running timeout owns physics_process; do not steal the restore back from it.
+	var timeout_owns: bool = timeout_controller != null and timeout_controller.is_active()
+	if not timeout_owns:
+		paddle.set_physics_process(not _enabled)
 	autoplay_toggled.emit(_enabled)
 
 
