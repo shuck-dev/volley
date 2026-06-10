@@ -779,8 +779,6 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	_character_drop_area = area
-	if paddle == null and area != null:
-		paddle = area.get_parent()
 	_character_paddle = paddle
 	_register_builtin_targets()
 
