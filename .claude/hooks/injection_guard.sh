@@ -36,7 +36,7 @@
 #
 # Usage (manual test):
 #   echo '{"tool_name":"WebFetch","tool_response":{"content":"..."}}' \
-#     | scripts/swarm/injection_guard.sh
+#     | .claude/hooks/injection_guard.sh
 
 set -u
 
