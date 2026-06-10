@@ -33,7 +33,7 @@ var _movement_state: MovementState = MovementState.IDLE
 var _swing_pending: bool = false
 
 var _sprite_width_scale: float = 1.0
-var _draw_colliders: bool = false
+var _collider_overlay: ColliderOverlay
 
 
 func _ready() -> void:
@@ -51,6 +51,10 @@ func _ready() -> void:
 
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
+
+	_collider_overlay = ColliderOverlay.new()
+	_collider_overlay.z_index = 100
+	add_child(_collider_overlay)
 
 	paddle_hit.connect(_on_paddle_hit_for_swing)
 
@@ -208,6 +212,7 @@ func set_sprite_width_scale(factor: float) -> void:
 func set_racket_position_y(offset_y: float) -> void:
 	if racket_hitbox != null:
 		racket_hitbox.position.y = offset_y
+	_refresh_overlay_shapes()
 
 
 # Sets the racket zone's height, live-tunable from the dev panel. Width stays as authored.
@@ -215,23 +220,24 @@ func set_racket_height(height: float) -> void:
 	if racket_shape != null and racket_shape.shape is RectangleShape2D:
 		var rect := racket_shape.shape as RectangleShape2D
 		rect.size.y = height
+	_refresh_overlay_shapes()
 
 
-# Draws the racket and body collision rectangles when the dev toggle is on. CollisionShape2D.visible
-# is an editor property with no runtime effect, so the paddle paints the shapes itself.
+# Toggles the collider overlay, which draws the shapes ABOVE the sprite via a raised-z_index child.
 func set_collider_visible(visible: bool) -> void:
-	_draw_colliders = visible
-	queue_redraw()
-
-
-func _draw() -> void:
-	if not _draw_colliders:
+	if _collider_overlay == null:
 		return
-	if _collision_shape != null:
-		draw_rect(
-			Rect2(-_collision_shape.size * 0.5, _collision_shape.size), Color(0.2, 0.6, 1.0, 0.35)
-		)
+	_refresh_overlay_shapes()
+	_collider_overlay.set_active(visible)
+
+
+func _refresh_overlay_shapes() -> void:
+	if _collider_overlay == null:
+		return
+	var body_size: Vector2 = _collision_shape.size if _collision_shape != null else Vector2.ZERO
+	var racket_size: Vector2 = Vector2.ZERO
+	var racket_offset: Vector2 = Vector2.ZERO
 	if racket_shape != null and racket_shape.shape is RectangleShape2D:
-		var rsize: Vector2 = (racket_shape.shape as RectangleShape2D).size
-		var rpos: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-		draw_rect(Rect2(rpos - rsize * 0.5, rsize), Color(1.0, 0.4, 0.2, 0.5))
+		racket_size = (racket_shape.shape as RectangleShape2D).size
+		racket_offset = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
+	_collider_overlay.set_shapes(body_size, racket_size, racket_offset)

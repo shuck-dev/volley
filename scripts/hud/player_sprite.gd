@@ -3,6 +3,9 @@ extends VBoxContainer
 
 ## Dev panel to tune player paddle sprite dimensions live.
 
+## Spinbox ceiling, high enough to be no practical limit on typed values; sliders keep a coarse range.
+const MAX_TUNE := 100000.0
+
 var _drag: DraggableBehavior = DraggableBehavior.new()
 var _height_slider: HSlider
 var _height_spinbox: SpinBox
@@ -92,7 +95,7 @@ func _add_height_controls() -> void:
 
 	_height_spinbox = SpinBox.new()
 	_height_spinbox.min_value = 0.1
-	_height_spinbox.max_value = 5.0
+	_height_spinbox.max_value = MAX_TUNE
 	_height_spinbox.value = 1.0
 	_height_spinbox.step = 0.05
 	_height_spinbox.value_changed.connect(_on_height_spinbox_changed)
@@ -115,7 +118,7 @@ func _add_width_controls() -> void:
 
 	_width_spinbox = SpinBox.new()
 	_width_spinbox.min_value = 0.1
-	_width_spinbox.max_value = 5.0
+	_width_spinbox.max_value = MAX_TUNE
 	_width_spinbox.value = 1.0
 	_width_spinbox.step = 0.05
 	_width_spinbox.value_changed.connect(_on_width_spinbox_changed)
@@ -137,8 +140,8 @@ func _add_racket_controls() -> void:
 	add_child(_racket_pos_slider)
 
 	_racket_pos_spinbox = SpinBox.new()
-	_racket_pos_spinbox.min_value = -100.0
-	_racket_pos_spinbox.max_value = 100.0
+	_racket_pos_spinbox.min_value = -MAX_TUNE
+	_racket_pos_spinbox.max_value = MAX_TUNE
 	_racket_pos_spinbox.value = _racket_position_y
 	_racket_pos_spinbox.step = 1.0
 	_racket_pos_spinbox.value_changed.connect(_on_racket_pos_spinbox_changed)
@@ -159,7 +162,7 @@ func _add_racket_controls() -> void:
 
 	_racket_height_spinbox = SpinBox.new()
 	_racket_height_spinbox.min_value = 2.0
-	_racket_height_spinbox.max_value = 120.0
+	_racket_height_spinbox.max_value = MAX_TUNE
 	_racket_height_spinbox.value = _racket_height
 	_racket_height_spinbox.step = 1.0
 	_racket_height_spinbox.value_changed.connect(_on_racket_height_spinbox_changed)
