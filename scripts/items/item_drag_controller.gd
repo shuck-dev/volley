@@ -66,6 +66,7 @@ var _builtin_targets: Array[DropTarget] = []
 
 ## Set after the player paddle spawns so the character target can find a live Area2D.
 var _character_drop_area: Area2D
+var _character_paddle: Node
 var _character_target: CharacterDropTargetScript = null
 
 
@@ -777,8 +778,11 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
-func set_character_drop_target(area: Area2D) -> void:
+func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	_character_drop_area = area
+	if paddle == null and area != null:
+		paddle = area.get_parent()
+	_character_paddle = paddle
 	_register_builtin_targets()
 
 
@@ -813,7 +817,9 @@ func _make_character_target() -> DropTarget:
 	if _character_drop_area == null or timeout_controller == null:
 		return null
 	var character_target: CharacterDropTargetScript = CharacterDropTargetScript.new()
-	character_target.configure(_item_manager, _character_drop_area, timeout_controller)
+	character_target.configure(
+		_item_manager, _character_drop_area, timeout_controller, _character_paddle
+	)
 	# Track the live target so equipped-art presses route into grab_equipped_from_character.
 	_character_target = character_target
 	if not character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
