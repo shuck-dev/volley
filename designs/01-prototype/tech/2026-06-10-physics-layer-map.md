@@ -9,7 +9,7 @@ The ball's `collision_layer`/`collision_mask` are NOT the `ball.tscn` defaults. 
 - `play_active.tres`, `out_rest.tres`: layer 2, mask 3 (the in-play ball is on **layer 2**).
 - `stored.tres`: 0 / 0 (inert while held).
 
-So reading `ball.tscn` for the ball's layer is wrong; the state config is the source of truth.
+`ball.tscn`'s scene default is now set to the in-play value (layer 2, mask 3) so the scene SHOWS the collidable truth instead of the misleading Godot default of 1/1. The runtime apply still owns the per-state changes: it only departs from the scene default for the `stored` state (layer 0, mask 0, frozen), which takes a held ball out of physics so the racket Area2D cannot register a phantom hit on it. That per-state toggle is load-bearing and stays; only the in-play surprise was removed.
 
 ## Current map (as traced)
 
