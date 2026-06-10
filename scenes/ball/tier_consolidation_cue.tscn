@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://btvcue0tier01"]
+
+[ext_resource type="Script" uid="uid://t9zwojf0qy8ma" path="res://scripts/entities/ball/tier_consolidation_cue.gd" id="1_cue"]
+[ext_resource type="Texture2D" uid="uid://cv278vwyo0awu" path="res://assets/ui/tier_cue_star.svg" id="2_star"]
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.84, 0, 1, 1, 0.84, 0, 0)
+
+[node name="TierConsolidationCue" type="CPUParticles2D"]
+z_index = 1
+emitting = true
+amount = 16
+texture = ExtResource("2_star")
+lifetime = 0.35
+one_shot = true
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 80.0
+scale_amount_min = 0.25
+scale_amount_max = 0.25
+color_ramp = SubResource("Gradient_fade")
+script = ExtResource("1_cue")
