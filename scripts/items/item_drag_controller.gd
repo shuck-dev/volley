@@ -389,8 +389,7 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 	var body: HeldBody = _held_body
 	var host: Node = get_loose_body_host()
 	if host != null and body.get_parent() != host:
-		body.get_parent().remove_child(body)
-		host.add_child(body)
+		body.reparent(host)
 	body.global_position = release_position
 	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
@@ -589,8 +588,7 @@ func _adopt_loose_body_as_held(body: HeldBody) -> void:
 	body.reclaim_scale_from_art_holder()
 	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
 	if body.get_parent() != self:
-		body.get_parent().remove_child(body)
-		add_child(body)
+		body.reparent(self)
 
 
 func _loose_body_host() -> Node:
