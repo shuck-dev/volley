@@ -158,6 +158,13 @@ func clamp_to_arena() -> void:
 # The animation state tracks grounded/flying and motion every physics frame, not just when a
 # controller calls drive(), so a grounded/flying transition updates the moment it happens.
 func _physics_process(_delta: float) -> void:
+	tick_animation_state()
+
+
+# Derives real vertical motion from the position delta and resolves the animation state. Called from
+# the base _physics_process, and from any subclass that overrides _physics_process (e.g. PlayerPaddle)
+# so the state still tracks every frame instead of being shadowed by the override.
+func tick_animation_state() -> void:
 	_vertical_motion = global_position.y - _last_y
 	_last_y = global_position.y
 	_update_animation_state()
