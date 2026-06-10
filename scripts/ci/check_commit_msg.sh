@@ -9,7 +9,7 @@
 #   - No scope parens: `fix(ci):` is rejected.
 #   - No `SH-N` prefix in subject.
 #   - No `[Codename]` suffix or `[Codename]` anywhere in subject.
-#   - Total message length (all lines combined) must be under 400 chars.
+#   - Total message length (all lines combined) must be under 200 chars.
 #   - A `Signed-off-by:` trailer is present (DCO; commit with -s).
 #
 # Skips merge commits, revert commits, and fixup/squash commits.
@@ -34,10 +34,10 @@ esac
 
 errors=()
 
-# Total char count (under 400).
+# Total char count (under 200).
 total_chars=$(printf '%s' "$msg_body" | wc -c)
-if (( total_chars >= 400 )); then
-  errors+=("total message length is ${total_chars} chars; must be under 400 (move detail to the PR description)")
+if (( total_chars >= 200 )); then
+  errors+=("total message length is ${total_chars} chars; must be under 200 (move detail to the PR description)")
 fi
 
 # Subject must be `type: subject` or `type!: subject` with type in the closed set.

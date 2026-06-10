@@ -30,6 +30,7 @@ script = ExtResource("1_item")
 key = "court_lines"
 type = &"kit"
 role = &"equipment"
+anchor_node_path = NodePath("GripAnchor")
 display_name = "Court Lines"
 art = ExtResource("6_art")
 descriptions = Array[String](["Wider than it looks", "The start line keeps moving", "Drew them everywhere"])
