@@ -1,0 +1,100 @@
+[gd_resource type="SpriteFrames" format=3 uid="uid://bsam001anim01"]
+
+[sub_resource type="Gradient" id="Gradient_flying_down"]
+colors = PackedColorArray(0.8, 0.7, 0.2, 1, 0.8, 0.7, 0.2, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_flying_down"]
+gradient = SubResource("Gradient_flying_down")
+width = 21
+height = 108
+
+[sub_resource type="Gradient" id="Gradient_flying_up"]
+colors = PackedColorArray(0.3, 0.8, 0.4, 1, 0.3, 0.8, 0.4, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_flying_up"]
+gradient = SubResource("Gradient_flying_up")
+width = 21
+height = 108
+
+[sub_resource type="Gradient" id="Gradient_ready_flying"]
+colors = PackedColorArray(0.4, 0.7, 0.9, 1, 0.4, 0.7, 0.9, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ready_flying"]
+gradient = SubResource("Gradient_ready_flying")
+width = 21
+height = 108
+
+[sub_resource type="Gradient" id="Gradient_ready_grounded"]
+colors = PackedColorArray(0.3, 0.5, 0.9, 1, 0.3, 0.5, 0.9, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ready_grounded"]
+gradient = SubResource("Gradient_ready_grounded")
+width = 21
+height = 108
+
+[sub_resource type="Gradient" id="Gradient_swing_flying"]
+colors = PackedColorArray(0.9, 0.4, 0.7, 1, 0.9, 0.4, 0.7, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing_flying"]
+gradient = SubResource("Gradient_swing_flying")
+width = 21
+height = 108
+
+[sub_resource type="Gradient" id="Gradient_swing_grounded"]
+colors = PackedColorArray(0.9, 0.3, 0.3, 1, 0.9, 0.3, 0.3, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing_grounded"]
+gradient = SubResource("Gradient_swing_grounded")
+width = 21
+height = 108
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_flying_down")
+}],
+"loop": false,
+"name": &"flying_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_flying_up")
+}],
+"loop": false,
+"name": &"flying_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_ready_flying")
+}],
+"loop": false,
+"name": &"ready_flying",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_ready_grounded")
+}],
+"loop": false,
+"name": &"ready_grounded",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_swing_flying")
+}],
+"loop": false,
+"name": &"swing_flying",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("GradientTexture2D_swing_grounded")
+}],
+"loop": false,
+"name": &"swing_grounded",
+"speed": 5.0
+}]

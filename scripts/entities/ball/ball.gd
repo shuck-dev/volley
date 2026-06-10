@@ -149,11 +149,20 @@ func _on_body_entered(body: Node) -> void:
 	if freeze:
 		return
 
-	if body.has_method("on_ball_hit"):
-		var hit_registered: bool = body.on_ball_hit(self)
-		if hit_registered:
-			increase_speed()
-		effect_processor.process_hit(body as Paddle)
+	if body is Paddle:
+		hit_by_paddle(body as Paddle)
+
+
+# Entry point for a paddle hit. Called by the paddle's racket hitbox Area2D on detection,
+# now that the ball passes through the character body instead of physically colliding with it.
+func hit_by_paddle(paddle: Paddle) -> void:
+	if freeze:
+		return
+
+	var hit_registered: bool = paddle.on_ball_hit(self)
+	if hit_registered:
+		increase_speed()
+	effect_processor.process_hit(paddle)
 
 
 func register_miss_zone(zone: MissZone) -> void:
