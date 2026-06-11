@@ -31,7 +31,7 @@ supported modes. So resolution is a hardcoded 16:9 list (1280x720, 1600x900, 192
 Apply is three `DisplayServer` calls plus the frame cap: `window_set_mode`, `window_set_size` (windowed
 only; a no-op in fullscreen), `window_set_vsync_mode`, and `Engine.max_fps` for the cap (0 means
 uncapped). Refresh rate is shown, not set; `screen_get_refresh_rate()` reports the detected value,
-guarding the `-1.0` fallback. The FPS cap is how the user actually bounds the frame rate. The settings panel
+guarding the `-1.0` fallback. The FPS cap is how the user bounds the frame rate. The settings panel
 also shows a live FPS readout (`Engine.get_frames_per_second()`, polled while the panel is open),
 alongside the refresh rate, so the player can see the effect of the cap and vsync choices in place.
 
