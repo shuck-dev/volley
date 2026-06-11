@@ -17,8 +17,8 @@ and Audio tabs. Settings are independent of the gameplay save system, so a save 
 | Display | Resolution | Windowed only. Hardcoded 16:9 list filtered to `<= DisplayServer.screen_get_size()` |
 | Display | Refresh rate | Read-only display of the detected rate. Godot cannot set it; the OS/monitor owns it |
 | Display | VSync | **On / Off only** (see renderer note) |
-| Display | FPS cap | `Engine.max_fps`. Off (0) plus a list (30/60/120/144/165/240). The real frame control when VSync is off |
-| Display | FPS counter | Toggle for an on-screen FPS readout |
+| Display | FPS cap | `Engine.max_fps`. Off (0) or 30 / 60 / 120 / 144 / 165 / 240 |
+| Display | FPS readout | Live FPS shown in the settings panel itself (alongside refresh rate), not an option the player sets |
 | Audio | Master / Music / SFX volume | Sliders, linear 0.0 to 1.0 |
 
 ## Display: enumerate and apply
@@ -30,9 +30,10 @@ supported modes. So resolution is a hardcoded 16:9 list (1280x720, 1600x900, 192
 
 Apply is three `DisplayServer` calls plus the frame cap: `window_set_mode`, `window_set_size` (windowed
 only; a no-op in fullscreen), `window_set_vsync_mode`, and `Engine.max_fps` for the cap (0 means
-uncapped). Refresh rate is shown, not set: `screen_get_refresh_rate()` reports the detected value (guard
-the `-1.0` fallback), and the FPS cap is how the user actually bounds the frame rate. The FPS counter is
-a toggled label reading `Engine.get_frames_per_second()`.
+uncapped). Refresh rate is shown, not set; `screen_get_refresh_rate()` reports the detected value,
+guarding the `-1.0` fallback. The FPS cap is how the user actually bounds the frame rate. The settings panel
+also shows a live FPS readout (`Engine.get_frames_per_second()`, polled while the panel is open),
+alongside the refresh rate, so the player can see the effect of the cap and vsync choices in place.
 
 The `canvas_items` stretch (1080p base, per #907) scales transparently when the window resizes; the 4K
 path is exclusive fullscreen scaling the 1080p canvas up. No extra code. One catch: set
