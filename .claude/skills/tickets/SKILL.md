@@ -43,4 +43,4 @@ Attach design docs, scratchpads, PRs, and commits as `links`; relate sibling and
 
 ## Self-check before save
 
-A finished ticket is one story shape inside twelve lines, a title that names the subject and reads alone, a human user as the actor, and ACs that each name an outcome the user observes, with every supporting fact attached as a link. The status, assignee, and estimate rules are their own memories: new tickets default to Vault, Josh is assigned only in an active cycle, and tickets carry no estimate.
+A finished ticket is one story shape inside twelve lines, a title that names the subject and reads alone, a human user as the actor, and ACs that each name an outcome the user observes, with every supporting fact attached as a link. The status, assignee, and estimate rules are their own memories: new tickets default to Vault, tickets are never assigned (collaborators pick up their own), and tickets carry no estimate.
