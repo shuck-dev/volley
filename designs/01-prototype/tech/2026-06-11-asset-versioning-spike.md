@@ -1,6 +1,6 @@
-# Asset versioning spike (SH-461)
+# Asset versioning spike
 
-Decision record for how Volley versions binary assets. Closes the SH-461 spike; blocks SH-482 (Sam
+Decision record for how Volley versions binary assets. Closes the spike (#819); blocks #900 (Sam
 Level-of-Detail). Implementation is follow-up work, not part of this spike.
 
 ## Decision
@@ -32,14 +32,15 @@ iterates. The rejected alternatives:
 |---|---|
 | Commit binaries directly | Concepts land in history forever; every clone pulls them; fails the "clone stays lean, assets not pulled by default" requirement. |
 | GitHub LFS | Bandwidth billed to the repo owner for every public clone (bots included); free tier exhausts fast; documented account-wide LFS disables. Wrong for a public repo. |
-| R2 + pointer manifest (no LFS) | Zero infra, but a per-fetch `make assets` step the contributor must remember; stale bytes between fetches. Worse under high churn, which is the stated horizon. |
+| R2 + pointer manifest (no LFS) | Zero infra, but a per-fetch `make assets` step the contributor must remember; stale bytes between fetches. Worse under high churn. |
 
-The proxy beats the plain manifest specifically because assets are **soon and churny**: per-fetch friction
-compounds with churn, one-time infra setup does not.
+Sprites and audio are expected within the prototype phase and will iterate often, so assets are soon and
+churny. The proxy beats the plain manifest on that horizon: per-fetch friction compounds with churn, while
+one-time infra setup does not.
 
 ## Size gate
 
-Blocks a large binary from entering plain git history, regardless of backend.
+The size gate blocks large binaries from plain git history, regardless of backend.
 
 - **Local:** `pre-commit` framework `check-added-large-files` (auto-skips LFS-tracked files), threshold
   ~500KB, keyed so `assets/` and `concepts/` route through LFS rather than tripping the gate.
@@ -49,9 +50,9 @@ Blocks a large binary from entering plain git history, regardless of backend.
 
 ## `.import` policy
 
-Commit the per-asset `.import` sidecars (official Godot guidance: they carry non-default import settings;
-ignoring them forces a default reimport on checkout). Accept that engine upgrades churn them. Ignore
-`.godot/imported/` (the binary cache).
+Commit the per-asset `.import` sidecars, ignore `.godot/imported/` (the binary cache). The size gate
+excludes `.import` files from its threshold. Import-settings detail lives in
+[art/tech-pipeline.md](../../art/tech-pipeline.md#import), the home for import behaviour.
 
 ## Infra
 
@@ -72,14 +73,16 @@ LFS objects rather than re-pull (implementation note). If projected usage would 
 revisit before paying: the R2 + manifest fallback (zero always-on infra, per-fetch friction) is the
 escape hatch.
 
-## Contributor setup (to document in CONTRIBUTING when implemented)
+## Contributor setup
+
+The flow the implementation must deliver and document in CONTRIBUTING:
 
 1. `git lfs install` (once per machine).
 2. Clone. Working tree has pointers; `assets/` LFS objects fetch on checkout via the proxy.
 3. `make concepts` only if you want the concept art.
 
-## Follow-up (separate ticket, not this spike)
+## Follow-up (separate tickets, not this spike)
 
 Wire `.lfsconfig` at the proxy, `.gitattributes` LFS-tracking `assets/` and `concepts/`, stand up the
 Cloudflare Worker, add the size-gate hook + CI check, un-gitignore `concepts/`, create `assets/`,
-document setup in CONTRIBUTING. This unblocks SH-482.
+document setup in CONTRIBUTING. This unblocks #900.
