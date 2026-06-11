@@ -65,7 +65,7 @@ The `Settings` autoload, the `settings.tscn` TabContainer screen, the `Music`/`S
 player rerouting, and wiring the screen into the menu. Each AC above is an implementation surface.
 
 ## Citations
-Godot 4 docs (verified this session):
+Godot 4 docs:
 - DisplayServer (no mode-enumeration API; `screen_get_size`/`screen_get_refresh_rate`; window mode/size/vsync): https://github.com/godotengine/godot-docs/blob/master/classes/class_displayserver.md
 - Window (`content_scale_aspect`): https://github.com/godotengine/godot-docs/blob/master/classes/class_window.md
 - Viewports (`canvas_items` stretch scaling): https://github.com/godotengine/godot-docs/blob/master/tutorials/rendering/viewports.md
