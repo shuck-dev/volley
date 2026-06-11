@@ -1,0 +1,88 @@
+# Asset versioning spike
+
+Decision record for how Volley versions binary assets. Closes the spike (#819); blocks #900 (Sam
+Level-of-Detail). Implementation is follow-up work, not part of this spike.
+
+## Decision
+
+Store binary assets on **Cloudflare R2**, fronted by a **Git LFS proxy** (`git-lfs-s3-proxy` on a
+Cloudflare Worker). One backend, two directory-keyed classes. The repo holds LFS pointers, never bytes.
+
+## Two classes, split by directory
+
+| Class | Directory | Needed to run the game? | Fetched by default? |
+|---|---|---|---|
+| Assets | `assets/` (sprites, audio, imported game content) | Yes | Yes, on build/run/CI |
+| Concepts | `concepts/` (concept art, reference, PSDs) | No | No, opt-in only |
+
+- **Assets** pull transparently via `git lfs pull` on the run/build path. CI fetches them as a build step.
+- **Concepts** are excluded from the default fetch; pulled only on demand with
+  `git lfs pull --include="concepts/**"` (wrapped as `make concepts`).
+
+A public clone gets pointers and no bytes. A contributor who wants to run the game fetches `assets/`; a
+contributor who wants the art additionally fetches `concepts/`. Nobody drags down concept art to build.
+
+## Key tradeoff
+
+One piece of self-hosted infra (a Cloudflare Worker running the LFS proxy) plus a contributor `git-lfs`
+install, bought in exchange for **zero clone-bandwidth cost** and **transparent updates** as churny art
+iterates. The rejected alternatives:
+
+| Option | Why not |
+|---|---|
+| Commit binaries directly | Concepts land in history forever; every clone pulls them; fails the "clone stays lean, assets not pulled by default" requirement. |
+| GitHub LFS | Bandwidth billed to the repo owner for every public clone (bots included); free tier exhausts fast; documented account-wide LFS disables. Wrong for a public repo. |
+| R2 + pointer manifest (no LFS) | Zero infra, but a per-fetch `make assets` step the contributor must remember; stale bytes between fetches. Worse under high churn. |
+
+Sprites and audio are expected within the prototype phase and will iterate often, so assets are soon and
+churny. The proxy beats the plain manifest on that horizon: per-fetch friction compounds with churn, while
+one-time infra setup does not.
+
+## Size gate
+
+The size gate blocks large binaries from plain git history, regardless of backend.
+
+- **Local:** `pre-commit` framework `check-added-large-files` (auto-skips LFS-tracked files), threshold
+  ~500KB, keyed so `assets/` and `concepts/` route through LFS rather than tripping the gate.
+- **Hard gate:** a CI PR check comparing added files against the merge base, failing the PR on any plain
+  binary over threshold. Catches contributors who skipped local hook install.
+- Both **exclude `.import` sidecars** from the threshold (they are generated config, can be large).
+
+## `.import` policy
+
+Commit the per-asset `.import` sidecars, ignore `.godot/imported/` (the binary cache). The size gate
+excludes `.import` files from its threshold. Import-settings detail lives in
+[art/tech-pipeline.md](../../art/tech-pipeline.md#import), the home for import behaviour.
+
+## Infra
+
+The Cloudflare Worker running the LFS proxy is the chosen infra, on the condition that it stays within
+the R2 and Worker free tiers (both permanent, not trials):
+
+| Resource | Free tier | Our load |
+|---|---|---|
+| R2 storage | 10 GB-month | ~50MB now, low single-digit GB with sprites/audio. Storage is the first ceiling to bump; overage is $0.015/GB-month. |
+| R2 egress | Free, always | The meter that kills GitHub LFS does not exist here. |
+| R2 Class B (reads) | 10M/month | One read per asset object fetched. Vast headroom. |
+| R2 Class A (writes) | 1M/month | Only studio uploads of new art. Trivial. |
+| Worker requests | 100,000/day | One request per LFS object transfer. A full asset fetch is N requests; hundreds of full fetches/day stay under cap. |
+
+The realistic first ceiling is R2 storage at 10 GB, not requests or bandwidth, and overage there is cents.
+The one load that could eat Worker requests is CI re-fetching every asset on every job, so CI must cache
+LFS objects rather than re-pull (implementation note). If projected usage would exceed the free tier,
+revisit before paying: the R2 + manifest fallback (zero always-on infra, per-fetch friction) is the
+escape hatch.
+
+## Contributor setup
+
+The flow the implementation must deliver and document in CONTRIBUTING:
+
+1. `git lfs install` (once per machine).
+2. Clone. Working tree has pointers; `assets/` LFS objects fetch on checkout via the proxy.
+3. `make concepts` only if you want the concept art.
+
+## Follow-up (separate tickets, not this spike)
+
+Wire `.lfsconfig` at the proxy, `.gitattributes` LFS-tracking `assets/` and `concepts/`, stand up the
+Cloudflare Worker, add the size-gate hook + CI check, un-gitignore `concepts/`, create `assets/`,
+document setup in CONTRIBUTING. This unblocks #900.
