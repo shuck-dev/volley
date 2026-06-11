@@ -168,6 +168,11 @@ At most one `spike` issue per swarm dispatch. Run additional spikes sequentially
 
 Before any recap, status report, or claim about challenge state, run `gh pr list --state open --json number,state,mergeable,labels,headRefOid` (or `gh pr view <n> --json ...` for a specific challenge). Don't recap from in-context memory of the last dispatch; dispatches and merges can happen between turns. The first action of any state-summary turn is the hydrate command, not text.
 
+State has three surfaces; read whichever the claim rests on, not just the first:
+- **PR fields** (above): read `state` and `mergedAt` for done/open, never `mergeable` (it reads `UNKNOWN` post-merge); `headRefOid` for the live SHA; `statusCheckRollup` for CI.
+- **Reviews and threads:** `gh api repos/.../pulls/<n>/reviews` for the real verdict (`reviewDecision` is empty here because main has no required-review branch protection, so it never reflects the bot's APPROVE/REQUEST_CHANGES; read `.../reviews` directly), and `.../comments` for inline findings (`position: null` means outdated after a push).
+- **Merge queue:** the REST `merge-queue` endpoint 404s; read it via GraphQL when asserting queued/dequeued/about-to-merge: `gh api graphql -f query='{repository(owner:"shuck-dev",name:"volley"){mergeQueue{entries(first:20){nodes{position state pullRequest{number}}}}}}'`. Empty is normal (maintainer merges by hand).
+
 Same rule for inline-comment threads: before claiming a thread is replied or unaddressed, run `gh api repos/.../pulls/<n>/comments` and read.
 
 ## What's in flight
