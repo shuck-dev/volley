@@ -33,7 +33,7 @@ only; a no-op in fullscreen), `window_set_vsync_mode`, and `Engine.max_fps` for 
 uncapped). Refresh rate is shown, not set; `screen_get_refresh_rate()` reports the detected value,
 guarding the `-1.0` fallback. The FPS cap is how the user bounds the frame rate. The settings panel
 also shows a live FPS readout (`Engine.get_frames_per_second()`, polled while the panel is open),
-alongside the refresh rate, so the player can see the effect of the cap and vsync choices in place.
+alongside the refresh rate, so the player sees the cap and vsync choices take effect.
 
 The `canvas_items` stretch (1080p base, per #907) scales transparently when the window resizes; the 4K
 path is exclusive fullscreen scaling the 1080p canvas up. No extra code. One catch: set
