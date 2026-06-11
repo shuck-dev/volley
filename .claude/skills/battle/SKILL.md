@@ -5,7 +5,7 @@ description: Dispatcher-side entry to battling a challenge: the review loop, own
 
 # Battling a challenge
 
-A *challenge* is the PR (see [`pr`](../pr/SKILL.md)); a *battle* is the review run against it. The loop is owned by the memory branch [[feedback_battle_review_process]] under [[trunk_dev_cycle]]: descend there for the full process, and into its leaves for depth. The reviewer agent's own contract lives in [`reviewers`](../reviewers/SKILL.md).
+A *challenge* is the PR (see [`pr`](../pr/SKILL.md)); a *battle* is the review run against it. The loop is owned by the memory branch [[feedback_battle_review_process]] (the golden authority for the convergence order: on reviewer return, reply to threads, THEN synth the verdict, THEN edit) under [[trunk_dev_cycle]]: descend there for the full process, and into its leaves for depth. The reviewer agent's own contract lives in [`reviewers`](../reviewers/SKILL.md).
 
 The shape, in brief:
 
