@@ -15,7 +15,10 @@ and Audio tabs. Settings are independent of the gameplay save system, so a save 
 |---|---|---|
 | Display | Window mode | Windowed / Borderless Fullscreen / Exclusive Fullscreen |
 | Display | Resolution | Windowed only. Hardcoded 16:9 list filtered to `<= DisplayServer.screen_get_size()` |
+| Display | Refresh rate | Read-only display of the detected rate. Godot cannot set it; the OS/monitor owns it |
 | Display | VSync | **On / Off only** (see renderer note) |
+| Display | FPS cap | `Engine.max_fps`. Off (0) plus a list (30/60/120/144/165/240). The real frame control when VSync is off |
+| Display | FPS counter | Toggle for an on-screen FPS readout |
 | Audio | Master / Music / SFX volume | Sliders, linear 0.0 to 1.0 |
 
 ## Display: enumerate and apply
@@ -25,8 +28,11 @@ Godot 4 has **no video-mode enumeration API**. `DisplayServer` exposes `screen_g
 supported modes. So resolution is a hardcoded 16:9 list (1280x720, 1600x900, 1920x1080, 2560x1440,
 3840x2160) filtered at startup to those fitting the detected screen.
 
-Apply is three calls: `window_set_mode`, `window_set_size` (windowed only; a no-op in fullscreen),
-`window_set_vsync_mode`.
+Apply is three `DisplayServer` calls plus the frame cap: `window_set_mode`, `window_set_size` (windowed
+only; a no-op in fullscreen), `window_set_vsync_mode`, and `Engine.max_fps` for the cap (0 means
+uncapped). Refresh rate is shown, not set: `screen_get_refresh_rate()` reports the detected value (guard
+the `-1.0` fallback), and the FPS cap is how the user actually bounds the frame rate. The FPS counter is
+a toggled label reading `Engine.get_frames_per_second()`.
 
 The `canvas_items` stretch (1080p base, per #907) scales transparently when the window resizes; the 4K
 path is exclusive fullscreen scaling the 1080p canvas up. No extra code. One catch: set
