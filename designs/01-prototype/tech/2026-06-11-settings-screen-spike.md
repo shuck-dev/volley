@@ -38,9 +38,9 @@ exposing them would show the user a no-op. VSync is On/Off only unless the rende
 
 ## Audio: bus setup required first
 
-Volley has only the implicit Master bus (no `default_bus_layout.tres`). The audio options need, created
-in the editor Audio panel: `Music` and `SFX` buses, both sending to Master, with stream players routed
-by name. The editor writes `default_bus_layout.tres`.
+Volley runs on the engine's implicit Master bus alone. The audio options need two more, created in the
+editor Audio panel: `Music` and `SFX`, both sending to Master, with stream players routed by name. The
+editor then writes `default_bus_layout.tres`.
 
 Volume is the one thing every project gets wrong: **persist the linear slider value (0.0 to 1.0); apply
 `linear_to_db()` only at the `AudioServer.set_bus_volume_db` call site; never store dB.** A mute toggle
@@ -65,5 +65,12 @@ The `Settings` autoload, the `settings.tscn` TabContainer screen, the `Music`/`S
 player rerouting, and wiring the screen into the menu. Each AC above is an implementation surface.
 
 ## Citations
-DisplayServer / Window / Viewports / ConfigFile / AudioServer / audio-buses / singletons, Godot 4 docs
-(full URLs in the two angle agents' returns, this session).
+Godot 4 docs (verified this session):
+- DisplayServer (no mode-enumeration API; `screen_get_size`/`screen_get_refresh_rate`; window mode/size/vsync): https://github.com/godotengine/godot-docs/blob/master/classes/class_displayserver.md
+- Window (`content_scale_aspect`): https://github.com/godotengine/godot-docs/blob/master/classes/class_window.md
+- Viewports (`canvas_items` stretch scaling): https://github.com/godotengine/godot-docs/blob/master/tutorials/rendering/viewports.md
+- ConfigFile (`load`/`get_value` default/`set_value`/`save`): https://github.com/godotengine/godot-docs/blob/master/classes/class_configfile.md
+- AudioServer (`set_bus_volume_db`/`set_bus_mute`): https://github.com/godotengine/godot-docs/blob/master/classes/class_audioserver.md
+- Audio buses (bus layout, `default_bus_layout.tres`): https://github.com/godotengine/godot-docs/blob/master/tutorials/audio/audio_buses.md
+- `linear_to_db` (@GlobalScope): https://github.com/godotengine/godot-docs/blob/master/classes/class_@globalscope.md
+- Singletons / Autoload (load order, `_enter_tree`): https://github.com/godotengine/godot-docs/blob/master/tutorials/scripting/singletons_autoload.md
