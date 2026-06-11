@@ -56,9 +56,21 @@ ignoring them forces a default reimport on checkout). Accept that engine upgrade
 ## Infra
 
 The Cloudflare Worker running the LFS proxy is the chosen infra, on the condition that it stays within
-R2 and Worker free-tier usage (10GB R2 storage, Worker free request allowance). If projected usage would
-exceed the free tier, revisit before paying: the R2 + manifest fallback (zero always-on infra, per-fetch
-friction) is the escape hatch.
+the R2 and Worker free tiers (both permanent, not trials):
+
+| Resource | Free tier | Our load |
+|---|---|---|
+| R2 storage | 10 GB-month | ~50MB now, low single-digit GB with sprites/audio. Storage is the first ceiling to bump; overage is $0.015/GB-month. |
+| R2 egress | Free, always | The meter that kills GitHub LFS does not exist here. |
+| R2 Class B (reads) | 10M/month | One read per asset object fetched. Vast headroom. |
+| R2 Class A (writes) | 1M/month | Only studio uploads of new art. Trivial. |
+| Worker requests | 100,000/day | One request per LFS object transfer. A full asset fetch is N requests; hundreds of full fetches/day stay under cap. |
+
+The realistic first ceiling is R2 storage at 10 GB, not requests or bandwidth, and overage there is cents.
+The one load that could eat Worker requests is CI re-fetching every asset on every job, so CI must cache
+LFS objects rather than re-pull (implementation note). If projected usage would exceed the free tier,
+revisit before paying: the R2 + manifest fallback (zero always-on infra, per-fetch friction) is the
+escape hatch.
 
 ## Contributor setup (to document in CONTRIBUTING when implemented)
 
