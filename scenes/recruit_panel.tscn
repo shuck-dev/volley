@@ -18,3 +18,4 @@ focus_mode = 0
 text = "0 Soul"
 
 [node name="RecruitSound" type="AudioStreamPlayer" parent="." unique_id=1828611794]
+bus = &"SFX"
