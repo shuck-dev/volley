@@ -61,10 +61,7 @@ while IFS= read -r -d '' filepath; do
     PARENT_OF["$filename"]="$parent_value"
 done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
 
-# A real memory dir always holds the trunk spine. If MEMORY.md and the trunks
-# are absent, MEMORY_DIR points at the wrong tree (e.g. the repo root when the
-# boot command was run with a cwd-relative "."). Fail loudly rather than render
-# a plausible-but-empty forest that reads as a broken one.
+# No spine means MEMORY_DIR is the wrong tree, not an empty forest.
 if [[ -z "${IS_NODE[MEMORY]:-}" || -z "${IS_NODE[trunk_unordered]:-}" ]]; then
     echo "lint-graph-edges: $MEMORY_DIR has no MEMORY.md/trunk spine; wrong dir?" >&2
     exit 2
