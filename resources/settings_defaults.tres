@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SettingsDefaults" format=3 uid="uid://lm5g404a67bk8"]
+
+[ext_resource type="Script" uid="uid://425k6npim77wo" path="res://scripts/core/settings_defaults.gd" id="1_sd"]
+
+[resource]
+script = ExtResource("1_sd")
+default_window_mode = 0
+default_vsync = true
+default_fps_cap = 0
+fps_cap_options = [0, 30, 60, 120, 144, 165, 240]
+resolution_list = [Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440), Vector2i(3840, 2160)]
+default_master_volume = 1.0
+default_music_volume = 1.0
+default_sfx_volume = 1.0
