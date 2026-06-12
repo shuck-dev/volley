@@ -16,6 +16,32 @@ Sometimes maintainers will pick up a ticket themselves to hit a deadline. When t
 
 The project is built in [Godot](https://godotengine.org). Install the editor version listed in `project.godot` (under `config/features`), open the project folder, and you should be playing within a minute.
 
+### Asset setup (Git LFS)
+
+Large binaries under `assets/` and `concepts/` are stored in Git LFS, fetched through a Cloudflare
+R2 proxy. One-time setup:
+
+```sh
+git lfs install
+```
+
+After that, a normal clone fetches `assets/` automatically using the published download key already
+baked into `.lfsconfig`:
+
+```
+vlfs_dl_448b7e551036da1e613d5a44638fdd2d
+```
+
+This key is intentionally public. The proxy enforces a rate limit and per-window byte cap, so
+possession of the key cannot exhaust the R2 free tier. Only the upload key (needed to push art)
+stays private; ask a maintainer if you need it.
+
+Concept art under `concepts/` is opt-in and not fetched on clone. Pull it when you need it:
+
+```sh
+make concepts
+```
+
 ## Tests and lint
 
 Tests use [GUT (Godot Unit Test)](https://github.com/bitwes/Gut), vendored under `addons/gut/`. Run the suite headlessly:

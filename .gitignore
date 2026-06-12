@@ -41,8 +41,6 @@ addons/signal_lens/
 # the text docs reference external works in ways we keep internal.
 designs/art/mood-boards/
 
-# Concept art, local only until a binary-asset strategy is chosen (see the asset-management spike).
-concepts/
 
 # Private design docs: internal-only, synced to Notion rather than the public repo.
 designs/private/

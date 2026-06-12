@@ -49,6 +49,19 @@ jobs:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', 'addons/**', '**/*.import') }}
 
+      - name: Cache LFS objects
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: .git/lfs/objects
+          key: lfs-${{ hashFiles('.lfsconfig') }}-${{ hashFiles('assets/**') }}
+          restore-keys: |
+            lfs-${{ hashFiles('.lfsconfig') }}-
+
+      - name: Fetch LFS assets
+        run: |
+          git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
+          git lfs pull --include="assets/**"
+
       - name: Import Project
         # Single pass. Cold-cache UID warnings and their paired
         # "Failed loading resource" errors are filtered in the Leak gate step
