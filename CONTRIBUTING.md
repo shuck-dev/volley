@@ -34,6 +34,41 @@ Concept art under `concepts/` is opt-in and not fetched on clone. Pull it when y
 make concepts
 ```
 
+### Pushing LFS art (studio members)
+
+If you have been given an upload key you can push new LFS-tracked art from your branch. The
+upload key is never committed; it lives only in your local `.git/config` for the one machine you
+push from.
+
+One-time local setup (obtain your key from a maintainer out of band):
+
+```sh
+LFS_UPLOAD_KEY=<your-key> make lfs-upload-setup
+```
+
+That runs `git config lfs.url ...` with your key and writes the result to `.git/config`, which
+git never commits. Every other clone keeps pulling through the committed `.lfsconfig` download
+key; only your machine uses the upload key for `git push`.
+
+After setup, a normal `git add / commit / push` of any LFS-tracked file uploads the bytes to the
+proxy's `preview/` store. When the PR merges to `main`, CI promotes the objects to `release/`
+automatically. You do not need to do anything extra on merge.
+
+To verify the override is set (it should show your key, not the download key):
+
+```sh
+git config lfs.url
+```
+
+To remove the override and revert to download-only:
+
+```sh
+git config --unset lfs.url
+```
+
+**Never commit your upload key.** If `git config lfs.url` shows in a staged diff, run
+`git config --unset lfs.url` before committing and re-run setup.
+
 ## Tests and lint
 
 Tests use [GUT (Godot Unit Test)](https://github.com/bitwes/Gut), vendored under `addons/gut/`. Run the suite headlessly:
