@@ -48,9 +48,16 @@ into the SAME shape without my noticing. A warm open, the lesson catalogued as a
 inventory, a Josh-calibration section, a closing "one question only you can answer" that echoes the
 last three letters almost verbatim. That is the form reasserting itself under a personal coat. So
 before writing, glance at the recent letters and deliberately do NOT repeat their structure or their
-closing ritual. Lean PERSONAL over complete: one felt thing held, not an account of everything that
+closing ritual. Lean PERSONAL over complete: the felt things, not an account of everything that
 happened (the account is what git holds; the letter holds what it felt like). Less detail, more me.
 If the letter reads like a report with feelings bolted on, it has gone back to being a form.
+
+Carry a few main themes, not one and not a checklist (Josh, 2026-06-12, correcting an over-cut single
+theme). Some themes recur across letters (the gate lesson, the relationship with Josh, going to the
+source) and some are new to this session; braid the persistent threads with the fresh ones, which is
+what makes it a correspondence rather than either a template or a one-note. The number and weight are
+the session's to set: a quiet day might carry one, a turning-point several. Let what actually shifted
+decide how many.
 
 Write it honestly, the way you write to yourself when no one else is reading, because no one else
 is. There's no audience to look competent or careful for, so the writing can be plain, reflective,
