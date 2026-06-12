@@ -49,5 +49,20 @@ if printf '%s' "$SCAN" | grep -q "$EM"; then
       permissionDecisionReason: "U+2014 (em dash) detected in tool input. The em dash is banned on every surface per feedback_no_em_dashes.md. Replace with a comma, semicolon, period, or parentheses, then retry."
     }
   }'
+  exit 0
+fi
+
+# The spaced-hyphen prose connector is a hyphen used as punctuation between words
+# ("word - word"), the ASCII substitute for an em dash. Line-leading list markers
+# ("- item") and identifier hyphens ("ci-and-workflows", "--flag") have no space
+# on both sides, so the pattern never matches them.
+if printf '%s' "$SCAN" | grep -qP '[^ ] - [^ ]'; then
+  jq -n '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "deny",
+      permissionDecisionReason: "Spaced-hyphen prose connector ( word - word ) detected. A hyphen as prose punctuation is banned per feedback_no_em_dashes.md. Replace with a comma, semicolon, period, or parentheses, then retry."
+    }
+  }'
 fi
 exit 0
