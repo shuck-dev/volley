@@ -1,16 +1,16 @@
 extends Node
 
-const _CFG_PATH := "user://settings.cfg"
-const _SEC_DISPLAY := "display"
-const _SEC_AUDIO := "audio"
+const _CONFIG_PATH := "user://settings.cfg"
+const _SECTION_DISPLAY := "display"
+const _SECTION_AUDIO := "audio"
 
 var _config: ConfigFile
 var _defaults: Resource
 
-var _config_path: String = _CFG_PATH
+var _config_path: String = _CONFIG_PATH
 
 
-func _init(config_path: String = _CFG_PATH) -> void:
+func _init(config_path: String = _CONFIG_PATH) -> void:
 	_config_path = config_path
 	_config = ConfigFile.new()
 	_defaults = load("res://scripts/core/settings_defaults.gd").new()
@@ -47,39 +47,44 @@ func _apply_all() -> void:
 
 
 func _apply_audio() -> void:
-	var master: float = _config.get_value(
-		_SEC_AUDIO, "master_volume", _defaults.default_master_volume
-	)
-	var music: float = _config.get_value(_SEC_AUDIO, "music_volume", _defaults.default_music_volume)
-	var sfx: float = _config.get_value(_SEC_AUDIO, "sfx_volume", _defaults.default_sfx_volume)
-
-	_set_bus_volume("Master", master)
-	_set_bus_volume("Music", music)
-	_set_bus_volume("SFX", sfx)
+	for key: String in ["master_volume", "music_volume", "sfx_volume"]:
+		_apply_audio_key(key, _config.get_value(_SECTION_AUDIO, key, _audio_default(key)))
 
 
 func _apply_display() -> void:
-	var mode: int = _config.get_value(_SEC_DISPLAY, "window_mode", _defaults.default_window_mode)
-	var vsync: bool = _config.get_value(_SEC_DISPLAY, "vsync", _defaults.default_vsync)
-	var fps_cap: int = _config.get_value(_SEC_DISPLAY, "fps_cap", _defaults.default_fps_cap)
-	var size: Vector2i = _config.get_value(_SEC_DISPLAY, "resolution", Vector2i(1920, 1080))
+	for key: String in ["window_mode", "vsync", "fps_cap", "resolution"]:
+		_apply_display_key(key, _config.get_value(_SECTION_DISPLAY, key, _display_default(key)))
 
-	DisplayServer.window_set_mode(mode as DisplayServer.WindowMode)
-	DisplayServer.window_set_vsync_mode(
-		DisplayServer.VSYNC_ENABLED if vsync else DisplayServer.VSYNC_DISABLED
-	)
 
-	if mode == DisplayServer.WINDOW_MODE_WINDOWED:
-		DisplayServer.window_set_size(size)
+func _audio_default(key: String) -> Variant:
+	match key:
+		"master_volume":
+			return _defaults.default_master_volume
+		"music_volume":
+			return _defaults.default_music_volume
+		"sfx_volume":
+			return _defaults.default_sfx_volume
+	return null
 
-	Engine.max_fps = fps_cap
+
+func _display_default(key: String) -> Variant:
+	match key:
+		"window_mode":
+			return _defaults.default_window_mode
+		"vsync":
+			return _defaults.default_vsync
+		"fps_cap":
+			return _defaults.default_fps_cap
+		"resolution":
+			return _defaults.default_resolution
+	return null
 
 
 func _apply(section: String, key: String, value: Variant) -> void:
 	match section:
-		_SEC_AUDIO:
+		_SECTION_AUDIO:
 			_apply_audio_key(key, value)
-		_SEC_DISPLAY:
+		_SECTION_DISPLAY:
 			_apply_display_key(key, value)
 
 

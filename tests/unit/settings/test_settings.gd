@@ -43,10 +43,15 @@ func test_set_value_persists_across_reload() -> void:
 func test_settings_file_is_independent_of_save_manager() -> void:
 	_settings.set_value("audio", "sfx_volume", 0.3)
 
-	assert_true(FileAccess.file_exists(_tmp_path), "settings file exists at its own path")
+	var save_path := "user://save_data.json"
 
-	var save_path := "user://save.json"
-	assert_true(_tmp_path != save_path, "settings path is separate from the gameplay save path")
+	if FileAccess.file_exists(save_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
+
+	assert_false(FileAccess.file_exists(save_path), "save file absent after deletion")
+
+	var value: float = _settings.get_value("audio", "sfx_volume", 1.0)
+	assert_almost_eq(value, 0.3, 0.001, "setting survives save-file wipe")
 
 
 func test_set_value_no_op_on_same_value() -> void:

@@ -13,6 +13,9 @@ extends Resource
 ## Ordered list of available FPS cap choices (0 = uncapped).
 @export var fps_cap_options: Array[int] = [0, 30, 60, 120, 144, 165, 240]
 
+## Default windowed resolution when no saved value is present.
+@export var default_resolution: Vector2i = Vector2i(1920, 1080)
+
 ## Hardcoded 16:9 resolutions filtered at runtime against screen size.
 @export var resolution_list: Array[Vector2i] = [
 	Vector2i(1280, 720),
