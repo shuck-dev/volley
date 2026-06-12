@@ -110,7 +110,7 @@ Do not `run(play)` until Josh answers.
 
 Three dispatch shapes for code work, picked by issue type. The cognitive separation between test and impl is the point; pick the shape that achieves it for the kind of issue at hand.
 
-Author specialists, by scope: `gdscript-implementer` for broad GDScript + scene implementation that ends with a PR (`.claude/agents/authors/gdscript-implementer.md`); `test-author` for GUT unit tests only; `integration-scenario-author` for integration scenarios only. Use `general-purpose` when no specialist fits the topic and the unit of work needs Bash to ship.
+Author specialists, by scope: `gdscript-implementer` for broad GDScript + scene implementation that ends with a PR (`.claude/agents/authors/gdscript-implementer.md`); `infra-implementer` for non-game plumbing that ends with a PR (CI workflows, hooks, `.gitattributes`/`.lfsconfig`, Makefile, project/export config, wrangler/Worker, root `ci/`; not the AI/memory tooling, which is leaving for a sister repo; `.claude/agents/authors/infra-implementer.md`); `test-author` for GUT unit tests only; `integration-scenario-author` for integration scenarios only. Use `general-purpose` when the work fits no specialist's named lane and needs Bash to ship; for infra specifically, that means a one-off with no settled home (a throwaway helper, a cross-cutting chore), while anything in `infra-implementer`'s named lanes goes to it.
 
 ### User stories: blind test-author handoff
 
