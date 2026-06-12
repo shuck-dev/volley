@@ -132,8 +132,9 @@ additionally run the promote step on merge to main. New steps stay SHA-pinned, m
 
 Account `volcanoem@gmail.com`, ID `effe9646943c4ead286bad9d06e16e74`.
 
-- Worker deployed at `https://volley-lfs-proxy.volcanoem.workers.dev`. The single-path version is
-  verified end to end (auth matrix, presigned signing, R2 round trip); the prefix split is in rework.
+- Worker deployed at `https://volley-lfs-proxy.volcanoem.workers.dev`, verified end to end (auth
+  matrix, presigned signing, R2 round trip). The `preview/`/`release/` build is tested and lands live on
+  the next deploy with the `PROMOTE_KEY` secret.
 - R2 bucket `volley-assets`, region WEUR, Standard storage class.
 - S3 endpoint `https://effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com`.
 - R2 API token: Account token, Object Read and Write, scoped to `volley-assets`, no expiry. Its Access
