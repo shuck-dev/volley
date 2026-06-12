@@ -15,7 +15,7 @@ Cut: session history, rationale duplicating the issue AC, meta-commentary, a `##
 
 Tone: professional prose, complete sentences, past tense. No casual phrasing or fragments, no em dashes (use colons/commas), no AI-register words ("delve", "leverage", "robust"), no scope understatement ("small game").
 
-References: no issue number in the body at all. The GitHub `#N` lives in the branch name only, never in the PR body or commits. A `closes #N` verb auto-closes the issue on merge, the live hazard; a bare `#N` does not, but the body still carries no number, because the branch name drives the link and keeping numbers out of the body removes the habit that produces the verb form. No Linear `SH-N` on any public surface (`feedback_design_docs_subject_first_github_ids`). The Linear link is made by hand after the PR is up.
+References: the branch name carries the GitHub `#N` and drives the issue link; the body describes the change; the Linear link is made by hand after the PR is up. Public surfaces stay GitHub-facing, so Linear `SH-N` stays private (`feedback_design_docs_subject_first_github_ids`). Why the branch is the number's only home: a `closes #N` verb hands GitHub the issue-close on merge, carrying the Linear issue to Closed against the manual-merge intent, and keeping every number in the branch makes that form one nobody reaches for.
 
 Aliases: spell out Josh's zsh aliases on every public surface (body, commit, repo docs): `./scripts/ci/run_gut.sh` not `ggut`, `git checkout -b` not `gcb`. A contributor or CI runner does not have them.
 
