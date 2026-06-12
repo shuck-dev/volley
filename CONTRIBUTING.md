@@ -32,7 +32,7 @@ lefthook install
 
 CI runs the same checks on every PR, so whatever passes locally will pass there.
 
-A pre-commit hook also enforces a **500 KB size gate** on staged files. Any binary over that threshold must be tracked via Git LFS rather than committed directly. The hook skips `.import` sidecars (generated config) and files already tracked by LFS. CI runs the same check on every pull request as a backstop for skipped local hooks.
+A pre-commit hook also enforces a **500 KB size gate** on staged files. Any binary over that threshold must be tracked via Git LFS rather than committed directly. The hook skips `.import` sidecars (generated config) and files already tracked by LFS. CI runs the same check on every pull request as a backstop for skipped local hooks. If you pull a change that adds or removes hooks, re-run `lefthook install` to pick up the new hook set.
 
 ## Submitting a PR
 
