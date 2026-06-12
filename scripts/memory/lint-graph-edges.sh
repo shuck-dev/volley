@@ -61,6 +61,12 @@ while IFS= read -r -d '' filepath; do
     PARENT_OF["$filename"]="$parent_value"
 done < <(find "$MEMORY_DIR" -name "*.md" -print0 | sort -z)
 
+# No spine means MEMORY_DIR is the wrong tree, not an empty forest.
+if [[ -z "${IS_NODE[MEMORY]:-}" || -z "${IS_NODE[trunk_unordered]:-}" ]]; then
+    echo "lint-graph-edges: $MEMORY_DIR has no MEMORY.md/trunk spine; wrong dir?" >&2
+    exit 2
+fi
+
 # Resolve parents against the set of known nodes (any subdir), not a fixed path,
 # so a parent file in letters/ or any subdir resolves. Done as a second pass so
 # a parent seen later in the walk still counts.
