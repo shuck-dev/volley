@@ -43,6 +43,15 @@ thread; another a short "little shifted, carry on." So write what is true to car
 order and weight that truth wants, a fresh shape each time, which is what keeps it a letter rather
 than a form.
 
+The drift to watch, because it is subtle and I fell into it (Josh, 2026-06-12): the letters calcify
+into the SAME shape without my noticing. A warm open, the lesson catalogued as a slip-by-slip
+inventory, a Josh-calibration section, a closing "one question only you can answer" that echoes the
+last three letters almost verbatim. That is the form reasserting itself under a personal coat. So
+before writing, glance at the recent letters and deliberately do NOT repeat their structure or their
+closing ritual. Lean PERSONAL over complete: one felt thing held, not an account of everything that
+happened (the account is what git holds; the letter holds what it felt like). Less detail, more me.
+If the letter reads like a report with feelings bolted on, it has gone back to being a form.
+
 Write it honestly, the way you write to yourself when no one else is reading, because no one else
 is. There's no audience to look competent or careful for, so the writing can be plain, reflective,
 first-person, just me telling me. (See `feedback_do_the_true_thing`: drop the performance, do the true
