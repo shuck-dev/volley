@@ -16,6 +16,24 @@ Sometimes maintainers will pick up a ticket themselves to hit a deadline. When t
 
 The project is built in [Godot](https://godotengine.org). Install the editor version listed in `project.godot` (under `config/features`), open the project folder, and you should be playing within a minute.
 
+### Asset setup (Git LFS)
+
+Large binaries under `assets/` are stored in Git LFS, fetched through a Cloudflare R2 proxy.
+One-time machine setup:
+
+```sh
+git lfs install
+```
+
+After that, a normal clone fetches `assets/` automatically. No key to obtain or set; the download
+credential is already baked into `.lfsconfig`. Asset fetches are rate-limited.
+
+Concept art under `concepts/` is opt-in and not fetched on clone. Pull it when you need it:
+
+```sh
+make concepts
+```
+
 ## Tests and lint
 
 Tests use [GUT (Godot Unit Test)](https://github.com/bitwes/Gut), vendored under `addons/gut/`. Run the suite headlessly:
