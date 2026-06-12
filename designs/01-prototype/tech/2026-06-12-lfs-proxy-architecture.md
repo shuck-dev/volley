@@ -18,17 +18,18 @@ The Worker implements the Git LFS batch API and presigns S3-compatible R2 URLs, 
 directly to and from R2 and never pass through the Worker (whose request body caps at 100MB, below a
 single large asset). This follows the FlyByWire Simulations R2 LFS Worker pattern.
 
-## Two keys
+## Three keys
 
 | Key | Grants | Held by |
 |---|---|---|
-| `DOWNLOAD_KEY` | download | published; CI, every cloner |
-| `UPLOAD_KEY` | upload | studio and CI; given out on request |
+| `DOWNLOAD_KEY` | download from release/ | published; every cloner, CI |
+| `UPLOAD_KEY` | upload to preview/, read preview/ | studio and CI; given out on request |
+| `PROMOTE_KEY` | promote preview/ to release/ | CI on main only |
 
-The LFS `basic` transfer with presigned PUT URLs needs no verify action, so the Worker carries two
-keys. The Worker exposes no list endpoint, so a holder of the download key can fetch an object whose
-oid they know but cannot enumerate the bucket. `UPLOAD_KEY` lives only as a Worker secret and in the
-hands of people who push art; it is never published or committed.
+The LFS `basic` transfer with presigned PUT URLs needs no verify action. The Worker exposes no list
+endpoint, so a key holder can fetch an object whose oid they know but cannot enumerate the bucket.
+`UPLOAD_KEY` and `PROMOTE_KEY` live only as Worker secrets; neither is
+published or committed. `UPLOAD_KEY` is given to studio members who push art, `PROMOTE_KEY` to CI.
 
 ## The download key is public; the Worker guards the tier
 
@@ -54,21 +55,31 @@ commit or tag, so deleting it breaks that checkout). The pipeline avoids the pro
 rather than cleaning up after it, using two R2 prefixes named for the build lifecycle:
 
 - **`preview/<oid>`** holds bytes pushed from a PR branch. Uploads presign here. An R2 lifecycle rule
-  expires the `preview/` prefix by age (grace window, e.g. 14 days), so the bytes of an abandoned PR
-  evaporate on their own. R2 does this natively; there is no GC script and no history hazard, because
-  only `preview/` is reaped.
+  expires the `preview/` prefix at **30 days**, so the bytes of an abandoned PR evaporate on their own.
+  R2 does this natively; there is no GC script and no history hazard, because only `preview/` is reaped.
 - **`release/<oid>`** is the canonical store. Objects arrive only when CI promotes them on merge to
-  main, copying `preview/<oid>` to `release/<oid>`. `release/` has no expiry; history references it
-  forever.
+  main. `release/` has no expiry; history references it forever.
 
 Flow:
 
-1. **Upload** (PR work): the Worker presigns a PUT to `preview/<oid>`.
-2. **Promote** (merge to main): a CI job copies each landed oid from `preview/` to `release/`. CI is
-   the only writer of `release/` bytes.
-3. **Download**: the Worker resolves `release/<oid>` first and falls back to `preview/<oid>`, so an
-   open PR's CI can fetch the assets it just pushed before they are promoted.
+1. **Upload** (PR work): the Worker presigns a PUT to `preview/<oid>`. Only an `UPLOAD_KEY` holder can
+   upload.
+2. **Promote** (merge to main): a CI job calls the Worker's `/promote` endpoint, authenticated by a
+   distinct `PROMOTE_KEY` that only CI-on-main holds. The Worker copies each oid from `preview/` to
+   `release/` using its R2 binding. This makes "CI is the only writer of `release/`" an enforced
+   property, not a convention. Each oid is independent: an already-promoted oid is a no-op (so the step
+   is idempotent and retry-safe), a missing `preview/` object fails that oid, and any failure returns a
+   non-2xx so CI retries.
+3. **Download**: the Worker resolves `release/<oid>`. An `UPLOAD_KEY` holder (studio, CI) additionally
+   falls back to `preview/<oid>`, so an open PR's CI fetches the assets it just pushed before they are
+   promoted. The public `DOWNLOAD_KEY` resolves `release/` only, keeping unreleased `preview/` art off
+   the published key.
 4. **Cleanup**: the R2 lifecycle rule expires stale `preview/` objects. Automatic, server-side.
+
+**Parked-PR policy.** A PR open past the 30-day window has its `preview/` bytes reaped, and its next CI
+run would fail the LFS fetch. The recovery is a re-push of the branch, which re-uploads the objects to
+`preview/`. The window is set comfortably longer than a healthy PR lifetime, so reaping a still-open
+PR's bytes signals a stale PR, and the re-push is the explicit revive.
 
 This maps onto the existing CI split (`publish.yml` is Preview Release, `release.yml` is Live Release):
 the bucket prefix is the build-lifecycle stage. `release/` only ever holds merged content, so orphans
