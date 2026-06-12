@@ -60,6 +60,39 @@ ai/swarm/_bootstrap.md
 # the injection-guard hook log. Not committed.
 ai/scratchpads/
 
+# Art-app autosaves and temp files (commit the source masters, not the crash recovery)
+*-autosave.kra
+*.kra~
+*.psd~
+*.xcf~
+*.psb.tmp
+*.psd.tmp
+*.ai.tmp
+*.svg.tmp
+~*.ai
+~*.psd
+.~lock.*
+*.aseprite-data
+*.ase~
+*.aseprite~
+*.blend1
+*.blend2
+*.blend@
+# Animation apps (Spine, DragonBones, After Effects, Moho)
+*.spine-backup
+*.dbbak
+*.aep~
+*.aep.lock
+*.moho~
+# Frame-by-frame apps (OpenToonz, TVPaint, Pencil2D) autosaves and backups
+*.tnz~
+*.tvpp~
+*.pclx~
+*.pcl~
+*_bak.pclx
+backup/*.tnz
+/sandbox/
+
 # OS junk
 .DS_Store
 Thumbs.db
