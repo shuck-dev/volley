@@ -1,6 +1,6 @@
 # Auto-sync re-runs installHooks() on every git command, and 2.1.x refuses to
-# write while core.hooksPath is set locally — printing "Skipping hook sync" on
-# every invocation. Disable it; run `lefthook install` manually after edits here.
+# write while core.hooksPath is set locally (printing "Skipping hook sync" on
+# every invocation). Disable it; run `lefthook install` manually after edits here.
 no_auto_install: true
 
 output:
@@ -46,6 +46,11 @@ pre-commit:
       exclude:
         - "addons/**"
       run: ./scripts/ci/run_gut.sh
+    check-asset-size:
+      exclude:
+        - "addons/**"
+        - "*.import"
+      run: ./scripts/ci/check_asset_size.sh
     pip-audit:
       glob: "requirements-dev.txt"
       run: pip-audit --requirement requirements-dev.txt --strict

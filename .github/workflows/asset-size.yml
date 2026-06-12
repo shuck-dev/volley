@@ -1,0 +1,35 @@
+name: Asset size gate
+
+on:
+  pull_request:
+    branches:
+      - main
+  merge_group:
+
+concurrency:
+  group: asset-size-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check-asset-size:
+    name: check-asset-size
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Check asset sizes
+        run: |
+          if [[ "${{ github.event_name }}" == "merge_group" ]]; then
+            base_sha="${{ github.event.merge_group.base_sha }}"
+          else
+            base_sha="${{ github.event.pull_request.base.sha }}"
+          fi
+          bash scripts/ci/check_asset_size.sh --diff "$base_sha"
