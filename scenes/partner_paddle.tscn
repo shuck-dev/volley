@@ -34,6 +34,7 @@ shape = SubResource("RectangleShape2D_partner")
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=1223391424]
 stream = ExtResource("2_sfxr")
+bus = &"SFX"
 
 [node name="HitTracker" type="Node" parent="." unique_id=1514534862]
 script = ExtResource("3_tracker")
