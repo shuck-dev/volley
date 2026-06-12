@@ -60,22 +60,23 @@ rather than cleaning up after it, using two R2 prefixes named for the build life
 - **`preview/<oid>`** holds bytes pushed from a PR branch. Uploads presign here. An R2 lifecycle rule
   expires the `preview/` prefix at **30 days**, so the bytes of an abandoned PR evaporate on their own.
   R2 does this natively; there is no GC script and no history hazard, because only `preview/` is reaped.
-- **`release/<oid>`** is the canonical store. Objects arrive only when CI promotes them on merge to
-  main. `release/` has no expiry; history references it forever.
+- **`release/<oid>`** is the canonical store. Objects arrive only when CI promotes them on a GitHub
+  Release. `release/` has no expiry; history references it forever.
 
 Flow:
 
 1. **Upload** (PR work): the Worker presigns a PUT to `preview/<oid>`. Only an `UPLOAD_KEY` holder can
    upload.
-2. **Promote** (merge to main): a CI job calls the Worker's `/promote` endpoint, authenticated by a
-   distinct `PROMOTE_KEY`. The Worker copies each oid from `preview/` to `release/` using its R2
-   binding. The promote job runs only on `push` to `main`, never on a `pull_request` event, so it never
-   executes in a fork PR's context and `PROMOTE_KEY` is never exposed to fork-triggered runs. (The repo
-   uses no `pull_request_target`, which would otherwise hand a fork PR access to repo secrets.) That
-   closes the enforcement chain: `PROMOTE_KEY` is reachable only from a trusted on-main run, so "CI is
-   the only writer of `release/`" is enforced, not conventional. Each oid is independent: an
-   already-promoted oid is a no-op (idempotent and retry-safe), a missing `preview/` object fails that
-   oid, and any failure returns a non-2xx so CI retries.
+2. **Promote** (on a GitHub Release): the `release.yml` workflow, which triggers only on
+   `release: published`, calls the Worker's `/promote` endpoint, authenticated by a distinct
+   `PROMOTE_KEY`. The Worker copies each oid from `preview/` to `release/` using its R2 binding. Because
+   the workflow runs only on a maintainer-cut release, never on a `pull_request` event, `PROMOTE_KEY` is
+   never exposed to a fork-triggered run. (The repo uses no `pull_request_target`, which would otherwise
+   hand a fork PR access to repo secrets.) That closes the enforcement chain: `PROMOTE_KEY` is reachable
+   only from a trusted release run, so "CI is the only writer of `release/`" is enforced, not
+   conventional. Merging to main alone does not promote; the bytes stay in `preview/` until a release.
+   Each oid is independent: an already-promoted oid is a no-op (idempotent and retry-safe), a missing
+   `preview/` object fails that oid, and any failure returns a non-2xx so CI retries.
 3. **Download**: the Worker resolves `release/<oid>`. An `UPLOAD_KEY` holder (studio, CI) additionally
    falls back to `preview/<oid>`, so an open PR's CI fetches the assets it just pushed before they are
    promoted. The public `DOWNLOAD_KEY` resolves `release/` only, keeping unreleased `preview/` art off
@@ -88,8 +89,8 @@ run would fail the LFS fetch. The recovery is a re-push of the branch, which re-
 PR's bytes signals a stale PR, and the re-push is the explicit revive.
 
 This maps onto the existing CI split (`publish.yml` is Preview Release, `release.yml` is Live Release):
-the bucket prefix is the build-lifecycle stage. `release/` only ever holds merged content, so orphans
-are structurally impossible there.
+the bucket prefix is the build-lifecycle stage, and promote runs in `release.yml` on a published
+release. `release/` only ever holds released content, so orphans are structurally impossible there.
 
 ## What goes into LFS: track by path, gate by size
 
@@ -117,8 +118,8 @@ The repo's Leak gate fails the test run on a standalone `Failed loading resource
 scenes reference files under `assets/`, so a checkout with bare LFS pointers under `assets/` would fail
 the run. Each workflow therefore needs, before its Import Project step: an `actions/cache` of LFS
 objects keyed on the pointer-file hash, then `git lfs pull --include="assets/**"` (assets only, never
-`concepts/`), authenticated by the `LFS_DOWNLOAD_KEY` Actions secret. `release.yml` and `publish.yml`
-additionally run the promote step on merge to main. New steps stay SHA-pinned, matching checkout.
+`concepts/`), authenticated by the `LFS_DOWNLOAD_KEY` Actions secret. `release.yml` additionally runs
+the promote step on a published release. New steps stay SHA-pinned, matching checkout.
 
 ## Three tracks
 
