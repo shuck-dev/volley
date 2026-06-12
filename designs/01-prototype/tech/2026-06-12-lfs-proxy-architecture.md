@@ -65,11 +65,14 @@ Flow:
 1. **Upload** (PR work): the Worker presigns a PUT to `preview/<oid>`. Only an `UPLOAD_KEY` holder can
    upload.
 2. **Promote** (merge to main): a CI job calls the Worker's `/promote` endpoint, authenticated by a
-   distinct `PROMOTE_KEY` that only CI-on-main holds. The Worker copies each oid from `preview/` to
-   `release/` using its R2 binding. This makes "CI is the only writer of `release/`" an enforced
-   property, not a convention. Each oid is independent: an already-promoted oid is a no-op (so the step
-   is idempotent and retry-safe), a missing `preview/` object fails that oid, and any failure returns a
-   non-2xx so CI retries.
+   distinct `PROMOTE_KEY`. The Worker copies each oid from `preview/` to `release/` using its R2
+   binding. The promote job runs only on `push` to `main`, never on a `pull_request` event, so it never
+   executes in a fork PR's context and `PROMOTE_KEY` is never exposed to fork-triggered runs. (The repo
+   uses no `pull_request_target`, which would otherwise hand a fork PR access to repo secrets.) That
+   closes the enforcement chain: `PROMOTE_KEY` is reachable only from a trusted on-main run, so "CI is
+   the only writer of `release/`" is enforced, not conventional. Each oid is independent: an
+   already-promoted oid is a no-op (idempotent and retry-safe), a missing `preview/` object fails that
+   oid, and any failure returns a non-2xx so CI retries.
 3. **Download**: the Worker resolves `release/<oid>`. An `UPLOAD_KEY` holder (studio, CI) additionally
    falls back to `preview/<oid>`, so an open PR's CI fetches the assets it just pushed before they are
    promoted. The public `DOWNLOAD_KEY` resolves `release/` only, keeping unreleased `preview/` art off
@@ -117,10 +120,10 @@ additionally run the promote step on merge to main. New steps stay SHA-pinned, m
 ## Three tracks
 
 1. **`volley-lfs-proxy`** (standalone project): the Worker, `wrangler.jsonc` bound to `volley-assets`,
-   the batch handler, the `preview/`/`release/` split, the promote endpoint, the rate limit, the vitest
-   suite. The single-path version is deployed and verified; the prefix split is the current rework.
+   the batch handler, the `preview/`/`release/` split, the `/promote` endpoint, the rate limit, and the
+   vitest suite. Built and tested; redeploy with the `PROMOTE_KEY` secret lands the prefix split live.
 2. **Cloudflare account setup**: R2 enabled, bucket created, token minted, secrets set. The `preview/`
-   lifecycle rule is added with `wrangler r2 bucket lifecycle`.
+   30-day lifecycle rule is added with `wrangler r2 bucket lifecycle`.
 3. **volley repo wiring**: `.gitattributes` tracking the large paths, committed `.lfsconfig` with the
    published download key, `make concepts`, `concepts/` un-gitignored, the CI fetch-and-cache steps, the
    promote-on-merge step, and CONTRIBUTING setup.
