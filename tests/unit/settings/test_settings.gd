@@ -50,8 +50,11 @@ func test_settings_file_is_independent_of_save_manager() -> void:
 
 	assert_false(FileAccess.file_exists(save_path), "save file absent after deletion")
 
-	var value: float = _settings.get_value("audio", "sfx_volume", 1.0)
-	assert_almost_eq(value, 0.3, 0.001, "setting survives save-file wipe")
+	var cold: Node = _SETTINGS_SCRIPT.new(_tmp_path)
+	add_child_autofree(cold)
+
+	var value: float = cold.get_value("audio", "sfx_volume", 1.0)
+	assert_almost_eq(value, 0.3, 0.001, "setting survives save-file wipe on a cold load")
 
 
 func test_set_value_no_op_on_same_value() -> void:
