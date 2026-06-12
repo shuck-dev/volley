@@ -2,79 +2,126 @@
 
 Implementation record for SH-489, standing up the R2-backed Git LFS pipeline the
 [asset-versioning spike](2026-06-11-asset-versioning-spike.md) decided. The spike chose the backend
-(Cloudflare R2 behind an LFS proxy); this record fixes how the proxy is built and captures the live
-infra it runs on.
+(Cloudflare R2 behind an LFS proxy); this record fixes how the proxy is built, how the bucket stays
+free of orphaned bytes, and the live infra it runs on.
 
 ## Proxy: a wrangler Worker with an R2 binding
 
-The spike named the off-the-shelf `git-lfs-s3-proxy` (a Cloudflare Pages deploy that bakes the R2
-credentials into each client's `.lfsconfig` URL). The build instead uses a **standalone wrangler
-Worker with a native R2 binding**, in its own repo `volley-lfs-proxy`, matching the existing
-`linear-mcp` and `nano-banana-mcp` Workers. Two reasons carry the choice: it holds the R2 keys as
-Worker secrets, so the write credential stays off every contributor's `.lfsconfig` (the ticket's hard
-requirement), and it deploys the way the studio already deploys Workers.
+The build uses a standalone wrangler Worker with a native R2 binding, in its own project
+`volley-lfs-proxy`, matching the existing `linear-mcp` and `nano-banana-mcp` Workers. The load-bearing
+reason is deploy-pattern match: the studio already ships Workers this way, and the Worker holds the R2
+keys as Worker secrets so the write credential stays off contributor config. (The off-the-shelf
+`git-lfs-s3-proxy` is also a Worker and could hold secrets the same way; the deciding factor is the
+existing toolchain, not a credential property.)
 
-The Worker implements the Git LFS batch API and presigns S3-compatible R2 URLs, so object bytes
-stream directly to and from R2 and never pass through the Worker (whose request body caps at 100MB,
-below a single large asset). This follows the FlyByWire Simulations R2 LFS Worker pattern.
+The Worker implements the Git LFS batch API and presigns S3-compatible R2 URLs, so object bytes stream
+directly to and from R2 and never pass through the Worker (whose request body caps at 100MB, below a
+single large asset). This follows the FlyByWire Simulations R2 LFS Worker pattern.
 
-Three keys separate read from write at the Worker layer, each carried as a Worker secret:
+## Two keys
 
 | Key | Grants | Held by |
 |---|---|---|
-| `DOWNLOAD_KEY` | download, list | published openly; CI, every cloner |
-| `UPLOAD_KEY` | download and upload | studio only, given out on request |
+| `DOWNLOAD_KEY` | download | published; CI, every cloner |
+| `UPLOAD_KEY` | upload | studio and CI; given out on request |
 
-The LFS `basic` transfer with presigned PUT URLs needs no separate verify action, so the Worker
-carries only the two keys above. The `UPLOAD_KEY` is never published or stored in a repo file; a studio
-member who needs to push art asks for it.
+The LFS `basic` transfer with presigned PUT URLs needs no verify action, so the Worker carries two
+keys. The Worker exposes no list endpoint, so a holder of the download key can fetch an object whose
+oid they know but cannot enumerate the bucket. `UPLOAD_KEY` lives only as a Worker secret and in the
+hands of people who push art; it is never published or committed.
 
-## The download key is public; the Worker is the guard
+## The download key is public; the Worker guards the tier
 
-The audience for fetching `assets/` is anyone who clones, so the `DOWNLOAD_KEY` is treated as a
-published value, printed in CONTRIBUTING and carried in `.lfsconfig.example`. Its openness is fine
-because secrecy is not what protects the bucket: the Worker enforces a rate limit and a per-window
-byte cap on the download path, so a key in a scraper's hands still cannot burn the R2 free tier.
-CI reads the same key from a `gh` Actions secret (`LFS_DOWNLOAD_KEY`) to keep the workflow file clean,
-not because the value is confidential. Only `UPLOAD_KEY` and the R2 Secret Access Key stay truly
-secret, as Worker secrets the studio holds.
+Anyone who clones fetches `assets/`, so `DOWNLOAD_KEY` is a published value, printed in CONTRIBUTING.
+Secrecy is not the protection: the Worker rate-limits the download path (a fixed window of
+`DOWNLOAD_RATE_LIMIT` requests per `DOWNLOAD_RATE_WINDOW_SECONDS` per client IP), so an open key in a
+scraper's hands cannot drain the R2 free tier. CI reads the same key from a `gh` Actions secret
+(`LFS_DOWNLOAD_KEY`) for a clean workflow file, not for confidentiality.
 
-A reveal-gate page (Turnstile captcha that surfaces the key to a human) and per-contributor token
-issuance are possible later hardening if scraping becomes real; they sit behind the same Worker rate
-limit and are out of scope here.
+The rate-limit counter is the one piece that trades strictness for simplicity. It is stored per
+window in R2 and read-incremented without a lock, so concurrent requests on one edge can overshoot the
+window by up to their concurrency. The accepted worst case is a single-digit multiple of the configured
+limit, which the R2 free tier absorbs; if real abuse appears, the counter moves to a Durable Object or
+Workers KV for atomicity. A Turnstile reveal page and per-contributor tokens are possible later
+hardening behind the same limit.
+
+## preview/ and release/: orphans cannot accumulate
+
+A naive single-path bucket accumulates orphans: bytes pushed for a PR that never merges sit in R2
+forever, referenced by nothing on main. Git LFS has no server-side garbage collection, and deleting
+unreferenced objects is hazardous (an object orphaned from main's tip may still be reached by an older
+commit or tag, so deleting it breaks that checkout). The pipeline avoids the problem by construction
+rather than cleaning up after it, using two R2 prefixes named for the build lifecycle:
+
+- **`preview/<oid>`** holds bytes pushed from a PR branch. Uploads presign here. An R2 lifecycle rule
+  expires the `preview/` prefix by age (grace window, e.g. 14 days), so the bytes of an abandoned PR
+  evaporate on their own. R2 does this natively; there is no GC script and no history hazard, because
+  only `preview/` is reaped.
+- **`release/<oid>`** is the canonical store. Objects arrive only when CI promotes them on merge to
+  main, copying `preview/<oid>` to `release/<oid>`. `release/` has no expiry; history references it
+  forever.
+
+Flow:
+
+1. **Upload** (PR work): the Worker presigns a PUT to `preview/<oid>`.
+2. **Promote** (merge to main): a CI job copies each landed oid from `preview/` to `release/`. CI is
+   the only writer of `release/` bytes.
+3. **Download**: the Worker resolves `release/<oid>` first and falls back to `preview/<oid>`, so an
+   open PR's CI can fetch the assets it just pushed before they are promoted.
+4. **Cleanup**: the R2 lifecycle rule expires stale `preview/` objects. Automatic, server-side.
+
+This maps onto the existing CI split (`publish.yml` is Preview Release, `release.yml` is Live Release):
+the bucket prefix is the build-lifecycle stage. `release/` only ever holds merged content, so orphans
+are structurally impossible there.
+
+## What goes into LFS: track by path, gate by size
+
+Git LFS routes a file to LFS when its path matches an LFS pattern in `.gitattributes` at `git add`
+time. It cannot route by size; size is invisible to the filter. The asset policy ("large files go to
+LFS, small files stay in plain git") is therefore expressed as two cooperating mechanisms:
+
+- **`.gitattributes` tracks the large-by-nature paths** (concept art wholesale, and the large asset
+  formats: source art, audio, sprite sheets). Because `.gitattributes` is committed and git honours it
+  on every machine with no setup, it protects even a cloner who never installed the local hooks. This
+  is the cloner-proof routing.
+- **The size gate (SH-488) is the backstop.** Its local pre-commit hook catches a large plain file
+  early, and its CI check fails the PR if a plain binary over 500KB reaches the diff. The CI half is
+  what protects against a cloner who skipped the local hook: the local hook is a convenience, the PR
+  gate is the guarantee.
+
+The small assets already committed to git history (a few KB each) stay as plain bytes; tracking is
+going-forward, with no history rewrite. The exact `.gitattributes` patterns are settled in the wiring
+challenge.
+
+## CI integration
+
+`test.yml`, `publish.yml`, and `release.yml` each run `godot --headless --import` (Import Project).
+The repo's Leak gate fails the test run on a standalone `Failed loading resource` error, and tested
+scenes reference files under `assets/`, so a checkout with bare LFS pointers under `assets/` would fail
+the run. Each workflow therefore needs, before its Import Project step: an `actions/cache` of LFS
+objects keyed on the pointer-file hash, then `git lfs pull --include="assets/**"` (assets only, never
+`concepts/`), authenticated by the `LFS_DOWNLOAD_KEY` Actions secret. `release.yml` and `publish.yml`
+additionally run the promote step on merge to main. New steps stay SHA-pinned, matching checkout.
 
 ## Three tracks
 
-1. **`volley-lfs-proxy`** (standalone local project): the Worker, `wrangler.jsonc` bound to
-   `volley-assets`, the batch handler, vitest suite. **Done and deployed**, verified end to end.
-2. **Cloudflare account setup**: **done**. R2 enabled, bucket created, token minted, secrets set.
-3. **volley repo wiring** (separate challenge, the remaining work): committed `.gitattributes` tracking
-   `assets/**` and `concepts/**`; committed `.lfsconfig` carrying the Worker URL with the published
-   download key (so a clone is zero-config); `make concepts`; `concepts/` un-gitignored; an `assets/`
-   directory; CONTRIBUTING setup, published key, and rate-limit note.
-
-### CI integration
-
-`test.yml`, `publish.yml`, and `release.yml` each run `godot --headless --import` (Import Project),
-which walks the whole tree. Bare LFS pointers under `assets/` would import as garbage, so each workflow
-needs, **before its Import Project step**: an `actions/cache` of LFS objects keyed on the pointer-file
-hash, then `git lfs pull --include="assets/**"` (assets only, never `concepts/`), authenticated by the
-`LFS_DOWNLOAD_KEY` Actions secret. `test.yml` needs this for the same reason as the build workflows: its
-import step, not its assertions, is what requires real bytes. Checkout stays SHA-pinned; the new steps
-follow suit.
+1. **`volley-lfs-proxy`** (standalone project): the Worker, `wrangler.jsonc` bound to `volley-assets`,
+   the batch handler, the `preview/`/`release/` split, the promote endpoint, the rate limit, the vitest
+   suite. The single-path version is deployed and verified; the prefix split is the current rework.
+2. **Cloudflare account setup**: R2 enabled, bucket created, token minted, secrets set. The `preview/`
+   lifecycle rule is added with `wrangler r2 bucket lifecycle`.
+3. **volley repo wiring**: `.gitattributes` tracking the large paths, committed `.lfsconfig` with the
+   published download key, `make concepts`, `concepts/` un-gitignored, the CI fetch-and-cache steps, the
+   promote-on-merge step, and CONTRIBUTING setup.
 
 ## Live infra
 
 Account `volcanoem@gmail.com`, ID `effe9646943c4ead286bad9d06e16e74`.
 
-- Worker deployed at `https://volley-lfs-proxy.volcanoem.workers.dev`, verified end to end (auth matrix,
-  presigned signing, R2 round trip).
+- Worker deployed at `https://volley-lfs-proxy.volcanoem.workers.dev`. The single-path version is
+  verified end to end (auth matrix, presigned signing, R2 round trip); the prefix split is in rework.
 - R2 bucket `volley-assets`, region WEUR, Standard storage class.
 - S3 endpoint `https://effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com`.
-- R2 API token: Account token, Object Read and Write, scoped to `volley-assets`, no expiry. Access Key
-  ID `9d7317e3a2fb0ce6dd2f3f5e4a0e217a`. The Secret Access Key is held by Josh and enters the Worker
-  through `wrangler secret put`; it is never committed.
-
-The read and write split that contributors see is enforced by the Worker's `DOWNLOAD_KEY` and
-`UPLOAD_KEY`; the single R2 token behind them carries object read and write because the Worker presigns
-both GET and PUT.
+- R2 API token: Account token, Object Read and Write, scoped to `volley-assets`, no expiry. Its Access
+  Key ID lives in the Worker's `wrangler.jsonc` vars; its Secret Access Key is held by Josh and set as a
+  Worker secret, never committed.
