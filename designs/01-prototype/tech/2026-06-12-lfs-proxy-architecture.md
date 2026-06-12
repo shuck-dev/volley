@@ -33,11 +33,14 @@ published or committed. `UPLOAD_KEY` is given to studio members who push art, `P
 
 ## The download key is public; the Worker guards the tier
 
-Anyone who clones fetches `assets/`, so `DOWNLOAD_KEY` is a published value, printed in CONTRIBUTING.
-Secrecy is not the protection: the Worker rate-limits the download path (a fixed window of
-`DOWNLOAD_RATE_LIMIT` requests per `DOWNLOAD_RATE_WINDOW_SECONDS` per client IP), so an open key in a
-scraper's hands cannot drain the R2 free tier. CI reads the same key from a `gh` Actions secret
-(`LFS_DOWNLOAD_KEY`) for a clean workflow file, not for confidentiality.
+Anyone who clones fetches `assets/`, so `DOWNLOAD_KEY` is a published value. It is published by being
+embedded in the committed `.lfsconfig` URL, which makes a clone zero-config: `git lfs pull` just works
+with no key for the contributor to obtain or set. CONTRIBUTING therefore needs no key step, only
+`git lfs install` and a note that fetches are rate-limited. Secrecy is not the protection: the Worker
+rate-limits the download path (a fixed window of `DOWNLOAD_RATE_LIMIT` requests per
+`DOWNLOAD_RATE_WINDOW_SECONDS` per client IP), so an open key in a scraper's hands cannot drain the R2
+free tier. CI reads the same key from a `gh` Actions secret (`LFS_DOWNLOAD_KEY`) for a clean workflow
+file, not for confidentiality.
 
 The rate-limit counter is the one piece that trades strictness for simplicity. It is stored per
 window in R2 and read-incremented without a lock, so concurrent requests on one edge can overshoot the
