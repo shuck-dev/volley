@@ -65,9 +65,12 @@ ai/scratchpads/
 *.kra~
 *.psd~
 *.xcf~
-*.{psb,psd}.tmp
-*.{ai,svg}.tmp
-~*.{ai,psd}
+*.psb.tmp
+*.psd.tmp
+*.ai.tmp
+*.svg.tmp
+~*.ai
+~*.psd
 .~lock.*
 *.aseprite-data
 *.ase~
@@ -88,7 +91,7 @@ ai/scratchpads/
 *.pcl~
 *_bak.pclx
 backup/*.tnz
-sandbox/
+/sandbox/
 
 # OS junk
 .DS_Store

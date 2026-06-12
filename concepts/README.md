@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:088aca93e8250a86d4f40f6bdb9b40b99ba137135adcb7ca499c8f63414c2dfe
-size 192
+# Concept art
+
+Concept art lives here, tracked via Git LFS through the R2 proxy. This directory is opt-in: a
+normal clone does not pull these files. Run `make concepts` to fetch them locally.
