@@ -76,31 +76,6 @@ jobs:
           mkdir -p logs
           godot --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=.gutconfig.json -gexit
 
-  promote-lfs:
-    name: Promote LFS objects to release
-    needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          lfs: false
-
-      - name: Collect merged LFS oids
-        id: oids
-        run: |
-          git lfs ls-files --long | awk '{print $1}' | jq -Rsc 'split("\n") | map(select(. != ""))' > oids.json
-
-      - name: Promote preview objects to release
-        run: |
-          curl -fsSL -X POST \
-            -H "Authorization: Basic $(printf 'volley:%s' "${{ secrets.LFS_PROMOTE_KEY }}" | base64 -w0)" \
-            -H "Content-Type: application/json" \
-            -d "{\"oids\": $(cat oids.json)}" \
-            https://volley-lfs-proxy.volcanoem.workers.dev/promote
-
   deploy-production:
     name: Deploy to Production
     needs: test
