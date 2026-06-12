@@ -18,23 +18,15 @@ The project is built in [Godot](https://godotengine.org). Install the editor ver
 
 ### Asset setup (Git LFS)
 
-Large binaries under `assets/` and `concepts/` are stored in Git LFS, fetched through a Cloudflare
-R2 proxy. One-time setup:
+Large binaries under `assets/` are stored in Git LFS, fetched through a Cloudflare R2 proxy.
+One-time machine setup:
 
 ```sh
 git lfs install
 ```
 
-After that, a normal clone fetches `assets/` automatically using the published download key already
-baked into `.lfsconfig`:
-
-```
-vlfs_dl_448b7e551036da1e613d5a44638fdd2d
-```
-
-This key is intentionally public. The proxy enforces a rate limit and per-window byte cap, so
-possession of the key cannot exhaust the R2 free tier. Only the upload key (needed to push art)
-stays private; ask a maintainer if you need it.
+After that, a normal clone fetches `assets/` automatically. No key to obtain or set; the download
+credential is already baked into `.lfsconfig`. Asset fetches are rate-limited.
 
 Concept art under `concepts/` is opt-in and not fetched on clone. Pull it when you need it:
 
