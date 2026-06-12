@@ -60,14 +60,18 @@ To verify the override is set (it should show your key, not the download key):
 git config lfs.url
 ```
 
+That output contains your upload key, so keep it off shared screens and chat channels.
+
 To remove the override and revert to download-only:
 
 ```sh
 git config --unset lfs.url
 ```
 
-**Never commit your upload key.** If `git config lfs.url` shows in a staged diff, run
-`git config --unset lfs.url` before committing and re-run setup.
+**Never commit your upload key.** The override lives in `.git/config`, which git never stages, so the
+key cannot reach a commit on its own. The one path into history is an accidental edit to the committed
+`.lfsconfig`; if that file shows in a staged diff, restore it with `git checkout .lfsconfig` before
+committing.
 
 ## Tests and lint
 
