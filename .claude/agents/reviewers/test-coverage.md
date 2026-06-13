@@ -52,7 +52,7 @@ Coverage numbers are a sanity check, not the verdict. A changed file at 80% cove
 
 ## Out of scope
 
-- Test pass/fail (GUT in CI via `./scripts/ci/run_gut.sh`).
+- Test pass/fail (GUT in CI via `./ci/run_gut.sh`).
 - Formatting, style, naming (that's code-quality or gdscript-conventions).
 - Total project coverage as a headline number (the artifact carries it, reviewers don't chase it).
 
