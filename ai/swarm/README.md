@@ -97,7 +97,7 @@ Review happens in the Dandori Challenge, never on local files. "Ready for your r
 
 ## Bash allowlist
 
-Minions with `Bash` in their tool list are capped by a deny-by-default allowlist in `.claude/settings.json`. The standard pattern set lives at [`ai/swarm/bash-allowlist.json`](bash-allowlist.json): `gh` subcommands for PR and label operations, `git` subcommands for claim, commit, and push, plus the in-tree test runner (`./scripts/ci/run_gut.sh`). A command that is not in the allowlist prompts for confirmation instead of running silently, so an injected minion cannot `curl` an exfil endpoint, rewrite history, or shell out arbitrarily. Copy the `permissions` block from the JSON into your local `.claude/settings.json` (the settings file itself is gitignored so each developer can layer further restrictions).
+Minions with `Bash` in their tool list are capped by a deny-by-default allowlist in `.claude/settings.json`. The standard pattern set lives at [`ai/swarm/bash-allowlist.json`](bash-allowlist.json): `gh` subcommands for PR and label operations, `git` subcommands for claim, commit, and push, plus the in-tree test runner (`./ci/run_gut.sh`). A command that is not in the allowlist prompts for confirmation instead of running silently, so an injected minion cannot `curl` an exfil endpoint, rewrite history, or shell out arbitrarily. Copy the `permissions` block from the JSON into your local `.claude/settings.json` (the settings file itself is gitignored so each developer can layer further restrictions).
 
 ## PR lifecycle
 
@@ -276,7 +276,7 @@ This layer is a **directive, not a fence**. PostToolUse `additionalContext` is p
 
 **Shell quoting on verdict pass-through.** Reviewer minions return a `comment` field that Gru pastes into a Dandori Challenge. Gru uses `gh pr comment --body-file -` with the comment on stdin, never `--body "..."` with inline interpolation. Backticks, `$(...)`, quotes, or escapes in a reviewer's comment never touch a shell.
 
-**Bash on code-writing minions.** `test-author` and `integration-scenario-author` hold `Bash` because they run `./scripts/ci/run_gut.sh`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these minions run in a worktree and their prompts do not accept shell instructions from third-party data.
+**Bash on code-writing minions.** `test-author` and `integration-scenario-author` hold `Bash` because they run `./ci/run_gut.sh`, lint, and `gh pr view`. Broad enough to do harm if the prompt turns against them. Narrow per-tool sandboxing is not available in Claude Code today; the accepted mitigation is that these minions run in a worktree and their prompts do not accept shell instructions from third-party data.
 
 **Secret exfiltration via test output.** A minion running tests sees test output, which could contain values read from environment variables or local `.env`. Audited 2026-04-21: no `.env*` files are present in the repo, and the only environment variable test code reads is `COVERAGE_FILE`, which is a path, not a secret. The standing rule remains that local `.env` does not carry production secrets and tests do not read them.
 
