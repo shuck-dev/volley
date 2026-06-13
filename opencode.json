@@ -1,9 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "share": "disabled",
+  "tools": {
+    "task": false
+  },
   "instructions": [
     "AGENTS.md"
   ],
+  "permission": {
+    "external_directory": {
+      "/home/josh/gamedev/volley-ai/**": "allow"
+    }
+  },
   "mcp": {
     "godotiq": {
       "type": "local",
