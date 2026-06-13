@@ -82,7 +82,7 @@ For multi-file refactors, baseline `validate(target="project")` before the first
 
 ## Tests
 
-Run `./scripts/ci/run_gut.sh` until green before push. The full GUT suite finishes in under 5 seconds; if it hangs, that is a real bug (test deadlock, infinite loop, init-order issue), not a slow suite. Investigate the hang rather than extending the timeout.
+Run `./ci/run_gut.sh` until green before push. The full GUT suite finishes in under 5 seconds; if it hangs, that is a real bug (test deadlock, infinite loop, init-order issue), not a slow suite. Investigate the hang rather than extending the timeout.
 
 If the ticket is paired with a `test-author` or `integration-scenario-author` dispatch, the failing tests should already be in the worktree's inbox file. Make them pass without weakening them.
 
