@@ -122,7 +122,7 @@ jobs:
           relative_project_path: ./
           cache: true
           export_debug: true
-          presets_to_export: WebNoThreads
+          presets_to_export: WebThreaded
 
       - name: Download Butler
         run: |
