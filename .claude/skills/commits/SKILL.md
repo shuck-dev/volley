@@ -33,9 +33,11 @@ For breaking changes (save wipes, API renames, workflow-input shifts), use `feat
 
 ## Issue references
 
-**GitHub IDs (`#N`) are the only ID on every open surface, branch names included.** The repo is open source; readers follow GitHub links, not Linear. The branch is `feature/<gh-number>-<slug>` (the GitHub issue number, no `sh-` prefix, no `gh-` prefix). Reference the GitHub issue with a bare `#123` (just the number, no leading verb) in the commit body or PR body. Linear IDs (`SH-N`) are private and appear on no open surface: not the branch, not the title, not the body, not commits, not comments. When a branch covers two issues, chain the numbers: `feature/691-692-slug`.
+**The GitHub issue number lives in the branch name only.** The repo is open source; readers follow GitHub links, not Linear. The branch is `feature/<gh-number>-<slug>` (the GitHub issue number, no `sh-` prefix, no `gh-` prefix). When a branch covers two issues, chain the numbers: `feature/691-692-slug`. Linear IDs (`SH-N`) are private and appear on no open surface: not the branch, not the title, not the body, not commits, not comments.
 
-The bare `#N` is the reference to reach for. A leading GitHub action-verb (`closes #N`) fires GitHub's own issue-close on merge; we do not want that. See [`designs/ai/lane-semantics.md`](../../../designs/ai/lane-semantics.md).
+**Each surface carries one thing.** The branch name carries the issue number and drives Linear movement. The PR body and commits describe the change. The Linear attachment link is made by hand after the PR opens (see below). With the number living in the branch, the body stays a clean description and the issue link stays deliberate.
+
+Why the branch is the number's only home: a closing verb in a body (`closes`/`fixes`/`resolves #N`) hands GitHub the issue-close on merge, which carries the linked Linear issue to Closed against the manual-merge intent. Keeping every number in the branch makes that form one nobody reaches for. See [`designs/ai/lane-semantics.md`](../../../designs/ai/lane-semantics.md).
 
 **Linear transitions: the Shuck team PR automations move the issue on PR state** (draft open to Dispatched, marked-ready to Challenged, no action on merge so Completed is manual). BUT those automations only fire on a PR that Linear has *linked* to the issue, and Linear forms that link by finding a Linear ID (`SH-N`) in the branch name, PR title, or PR body. A fully GitHub-facing PR with no `SH-N` anywhere is unlinked, so it drives no transition.
 
