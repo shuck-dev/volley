@@ -100,3 +100,6 @@ Thumbs.db
 # live-update smoke PR touch, safe to revert
 
 .godotiq/
+
+# OpenCode local config (personal memory pointer, machine-specific)
+.opencode/
