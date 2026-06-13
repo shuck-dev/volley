@@ -8,9 +8,28 @@
     "AGENTS.md"
   ],
   "permission": {
+    "bash": {
+      "rm -rf *": "deny",
+      "rm *": "ask"
+    },
+    "linear_save_issue": "ask",
+    "linear_save_project": "ask",
+    "linear_save_comment": "ask",
+    "linear_save_document": "ask",
+    "linear_save_milestone": "ask",
+    "linear_save_initiative": "ask",
+    "linear_save_status_update": "ask",
+    "linear_delete_status_update": "ask",
+    "linear_create_issue_label": "ask",
+    "linear_delete_comment": "ask",
+    "linear_create_attachment": "ask",
+    "linear_create_attachment_from_upload": "ask",
+    "linear_delete_attachment": "ask",
     "external_directory": {
+      "*": "ask",
       "/home/josh/gamedev/volley-ai/**": "allow",
-      "*": "ask"
+      "/tmp/opencode-swarm-reports/**": "allow",
+      "/tmp/**": "allow"
     }
   },
   "mcp": {
@@ -25,6 +44,22 @@
         "GODOTIQ_PROJECT_ROOT": "/home/josh/gamedev/volley",
         "GODOTIQ_ADDON_HOST": "172.30.160.1"
       }
+    },
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp",
+      "headers": {
+        "Authorization": "Bearer {env:LINEAR_API_KEY}"
+      }
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "enabled": true
     }
   }
 }
