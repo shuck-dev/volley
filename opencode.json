@@ -4,6 +4,12 @@
   "instructions": [
     "AGENTS.md"
   ],
+  "permission": {
+    "external_directory": {
+      "/home/josh/gamedev/volley-ai/**": "allow",
+      "*": "ask"
+    }
+  },
   "mcp": {
     "godotiq": {
       "type": "local",
