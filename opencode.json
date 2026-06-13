@@ -9,7 +9,8 @@
   ],
   "permission": {
     "external_directory": {
-      "/home/josh/gamedev/volley-ai/**": "allow"
+      "/home/josh/gamedev/volley-ai/**": "allow",
+      "*": "ask"
     }
   },
   "mcp": {
