@@ -103,3 +103,6 @@ Thumbs.db
 
 # OpenCode local config (personal memory pointer, machine-specific)
 .opencode/
+
+# Skills live in the sister AI repo (volley-ai); symlinked in locally.
+.claude/skills
