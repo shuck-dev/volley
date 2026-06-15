@@ -2,152 +2,139 @@
 
 ## Purpose and audience
 
-Shuck World is the studio website for Shuck Games. It presents the studio identity
-and anchors Volley's public presence. The game lives on players' desktops; the site
-is where they first meet it.
+Shuck World is the studio website for Shuck Games. It presents the studio
+identity and anchors Volley's public presence. The game lives on players'
+desktops; the site is where they first meet it.
 
 **Primary audiences, in priority order:**
 
-1. **Players.** Someone who heard about Volley. They land on the site and within 10
-   seconds know what the game is, what it feels like, and how to get it. The site
-   must feel like the game: warm, personal, slightly theatrical.
-2. **Press and potential collaborators.** A press kit page that a journalist can scan
-   in 30 seconds: key art, short description, studio bio, contact. Not hidden behind
-   a blog or buried in marketing copy.
-3. **The existing community.** Players who want to check the devlog, see what is new,
-   or find the itch.io page again. The site is a hub, not a destination; the game is
-   the destination.
+1. **Players.** Someone who heard about Volley. They land on the site and within
+   10 seconds know what the game is, what it feels like, and how to get it.
+2. **Press.** A press kit page scanable in 30 seconds: key art, short
+   description, studio bio, contact.
+3. **Community.** Players checking the devlog, finding the itch.io page, or
+   signing the guestbook. The site is a hub; the game is the destination.
 
 **What the site is not:**
 
-- Not a marketing funnel. No mailing-list capture, no pre-order, no "wishlist now."
-  The game is free and always will be. The call to action is "download and play,"
-  not "give us your email."
-- Not a corporate portfolio. The about page names real people but does not read like
-  a LinkedIn summary. The voice matches the game: kind, earnest, personal.
+- Not a marketing funnel. No mailing-list capture, no pre-order. The call to
+  action is "download and play," not "give us your email."
+- Not a corporate portfolio. The about page names real people but does not
+  read like a LinkedIn summary. The voice is kind, earnest, personal.
 
-## 90s-theatrical direction
+## Full 90s-era authenticity
 
-Volley's fiction lives in a 90s-desktop-computer frame: the game window, the cursor
-overlay, the item art, the partner portraits. The website should feel like it belongs
-to the same world, not like it was bolted on by a modern SaaS startup.
+The site must read as if it was built in 1998. Not a parody, not a modern site
+with retro styling. If someone loads shuck.gg and does not wonder whether they
+stepped into a time machine, we are not trying hard enough.
 
-**The aesthetic is retro-computing, not retro-web-parody.** The difference:
+This direction is anchored in two research docs:
 
-- Retro-computing: chunky system fonts, bordered containers, a single accent color,
-  deliberate whitespace, a slight frame-within-a-frame nesting. It reads as "this was
-  made by people who used Win95" not "this is a Geocities joke."
-- Retro-web-parody: animated GIFs, Comic Sans, starfield backgrounds, hit counters,
-  under-construction banners. These are funny for about five seconds and exhausting
-  after that.
+- `research/references.md` loops through 90s game studio site patterns (id
+  Software, Blizzard, Looking Glass, Bullfrog, 3D Realms)
+- `research/yesterweb-reference.md` analyzes a Neocities-era revival site with
+  a tiered checklist of what to copy and what to avoid
 
-**References that anchor the direction:**
+**Must-have elements for authentic 90s feel:**
 
-- Classic game studio sites of the late 90s (id Software, Blizzard circa 1998, Looking
-  Glass Studios): utilitarian, game-first, no fluff. Screenshots and download links.
-- The "brutalist web" movement: raw HTML, system fonts, no frameworks, content over
-  chrome. See brutalistwebsites.com and the motherfuckingwebsite.com lineage.
-- Personal sites of the early 2000s blogging era: warm, voice-driven, a single
-  person talking to you. The site feels authored, not generated.
+1. **Table-based layout.** A `<table width="100%">` with a fixed-width left
+   sidebar and fluid content area. The single highest-ROI choice.
+2. **System fonts only.** Body: `Verdana, Arial, Helvetica`. Headings: `Times
+   New Roman` or `Impact`. No custom webfonts, no Roboto, no Open Sans.
+3. **All body tag color attributes.** `<body bgcolor="#000000" text="#00FF00"
+   link="#FFFF00" vlink="#008000" alink="#FF0000">`. Adjust to shuck's palette.
+4. **A visitor counter GIF** at the bottom of pages. `88x31.lol` provides a retro
+   badge via a single `<img>` tag (see embeds research).
+5. **At least one `<marquee>`** on the homepage for a news ticker or welcome.
+6. **88x31 button collection** in the sidebar or on a dedicated Links page.
+   Include shuck's own button plus community and affiliate badges.
+7. **"Last updated" timestamp** in the footer.
+8. **`<hr>` dividers with period styling** (`noshade`, beveled).
 
-**Concrete elements:**
+**Strongly consider:**
 
-- System font stack. No webfonts. The same font the player's OS uses for file dialogs.
-  This ties the site to the desktop metaphor the game already uses.
-- One accent color (the Volley green, roughly `#4a8`). Everything else is monochrome
-  plus that one green. Links are green. Buttons are green. The game window is green.
-- Bordered containers. A 1px solid border around cards, sections, the page itself.
-  Not skeuomorphic window chrome, just clear visual boundaries.
-- No rounded corners. The game's windows have square corners. The site matches.
-- Small interactions feel deliberate. A hover state that changes the border color.
-  A clicked state that inverts. Nothing animates for attention; things respond to
-  touch.
+9. A "Best viewed in" badge (e.g., "Best viewed in Netscape Navigator 4.0 at
+   800x600").
+10. Animated GIF elements: a spinning email icon, a "NEW!" stamp.
+11. Image-based nav buttons or text nav separated by `|` pipes.
+12. A guestbook page (see embeds research: Atabook via `<iframe>`).
+13. A webring widget if shuck joins a webring (webri.ng recommended).
 
-**Anti-patterns to avoid:**
+**Modern tells to avoid:**
 
-- Parallax scrolling, gradient hero sections, animated counters, cookie banners,
-  newsletter popups. The site loads fast and gets out of the way.
-- "Made with Webflow / Squarespace / Framer" badges. The site is hand-built and
-  feels like it.
-- Dark mode toggle. The game has two brightness states. The site picks one.
+14. CSS flexbox or grid for main layout (use tables).
+15. Any post-2000 font (Roboto, Open Sans, Lato).
+16. SVG logos (use a GIF or JPEG with visible compression).
+17. Responsive or mobile layouts (90s sites assumed 800x600 minimum).
+18. CSS3 effects: `border-radius`, `box-shadow`, smooth gradients, CSS variables.
+19. Google Analytics or modern scripts (use the hit counter instead).
+
+Full pattern list with analysis: `research/yesterweb-reference.md`.
 
 ## Content pages
 
-The minimum site is four pages, each scannable in under 15 seconds:
+The site has six pages. The home page is one screen tall and puts the download
+button front and center.
 
 | Page | Content | Who it is for |
 |------|---------|---------------|
-| **Home** | Game name, one-line description, screenshot, download button | First-time visitors |
-| **About** | Studio bio (2-3 sentences), team names, why we make this | Press, curious players |
-| **Devlog** | Reverse-chronological posts, one paragraph each, irregular cadence | Community, returning visitors |
-| **Press** | Key art, short description, studio contact, fact sheet | Journalists, creators |
+| **Home** | Game name, one-liner, screenshot, download button, marquee news ticker | First-time visitors |
+| **About** | Studio bio, team names, why we make Volley | Press, curious players |
+| **Devlog** | Reverse-chronological posts, one paragraph each, irregular cadence | Community |
+| **Press** | Key art, fact sheet, studio contact, downloadable screenshots | Journalists |
+| **Guestbook** | Embedded Atabook guestbook via `<iframe>` | Community |
+| **Links** | 88x31 button collection, webring nav (Prev, Next, Random) | Community |
 
-Additional pages that can follow after the minimum ships: a dedicated Volley page
-with deeper description and gameplay detail, a partners page introducing the
-characters, and a gallery.
+The guestbook and links pages add network effects: visitors navigate between
+88x31 badges, leave a message, join the webring.
 
-The home page is one screen tall. No scroll required to reach the download button.
-The download button is the largest element on the page and is always visible.
+## Embedded services
 
-## Build and host approach
+Live 90s-era elements served by third-party embeds. No backend code required.
+Full research: `research/embeds.md`.
 
-**Static site, no framework.** The site is HTML, CSS, and a handful of images. No
-JavaScript framework, no build step, no node_modules. A static-site generator
-is acceptable if it produces static output with zero client-side JS (11ty and
-Hugo are the leading candidates). The devlog is markdown files compiled at build
-time; no CMS, no database.
+| Feature | Service | Embed method |
+|---------|---------|-------------|
+| Hit counter | 88x31.lol | `<img>` tag, no JS |
+| Guestbook | Atabook | `<iframe>`, no JS |
+| Webring | webri.ng | `<a>` tags, no JS |
 
-**Host: Cloudflare Pages.** Free tier, auto-deploys from a git push to main.
-Cloudflare R2 stores static assets (images, screenshots, trailers) outside the
-repo to keep clone times low. R2 assets are fetched at build time via a script
-or `wrangler r2 object get`.
+All three embed in pure static HTML. No JavaScript requirement, no custom
+backend, no build step. The embed URLs can be swapped if any service goes down.
 
-**Deploy flow:**
+## Build and host
 
-```
-push to main  →  GitHub Actions builds the site  →  deploys to Cloudflare Pages
-                     (fetches R2 assets)              (instant, atomic swaps)
-```
+Full deploy plan: `research/infra.md`.
 
-The GitHub Pages experiment (issue #826) is superseded by this approach:
-Cloudflare Pages is faster, supports custom domains natively, and does not tie
-the site to a GitHub organisation namespace.
+**Static HTML, no build step.** The site is hand-written HTML, CSS, and images.
+No framework, no SSG, no node_modules.
 
-**Domain:** shuck.world is registered and points to Cloudflare. DNS is already on
-Cloudflare. Enabling Pages on the apex domain is a single toggle in the dashboard.
+**Host: Cloudflare Pages.** Connects to the GitHub repo. Auto-deploys on `git
+push` to main. Custom domain `shuck.gg` with automatic SSL. No Workers, no KV.
+
+**Assets: Cloudflare R2.** Images, GIFs, screenshots stored outside the repo.
+Served via `assets.shuck.gg` (R2 custom domain, public bucket). Sync at deploy
+time via `wrangler r2 object put`.
+
+**Cost: $0/month.** Both Pages and R2 free tiers cover the site's needs:
+unlimited bandwidth, 500 builds/month, 10 GB storage, 10M reads/month.
 
 ## Open questions for the spike
 
-These are the things this discovery phase cannot answer. They become the spike's
-agenda:
+1. **Devlog or skip?** A blog means date-based URLs, an RSS feed, and a content
+   cadence. If posts will be irregular, skip it initially. Minimum pages ship
+   faster.
 
-1. **Is the devlog worth the build complexity?** A blog means markdown processing,
-   an RSS feed, date-based URLs. If the first six months of posts are irregular
-   and short, skip the devlog until there is momentum. The home page + about +
-   press kit ships faster and covers 90% of the audience needs.
+2. **Download target?** Itch.io (discovery, ratings, existing audience) or
+   direct R2 binary download (on-brand, fast). Pick one as primary.
 
-2. **Where does the download point?** Direct binary download from R2, a link to
-   the itch.io page, or both? Itch provides discovery, ratings, and an existing
-   audience. Direct download is faster and stays on-brand. The spike should pick
-   one as the primary call to action and use the other as a secondary link.
+3. **Press kit freshness.** Game screenshots change every two weeks. Options:
+   freeze at launch and update at milestones, or automate from CI.
 
-3. **How does the press kit handle game updates?** If the game changes every two
-   weeks, the screenshots and trailer in the press kit go stale. Options: freeze
-   the press kit to the initial release and update it at major milestones, or
-   automate screenshot capture from the build pipeline. The spike picks one.
+4. **Repo location?** In the Volley monorepo (shared CI) or its own repo
+   (independent deploy cadence). A 6-page HTML site weighs nothing either way.
 
-4. **Is the site part of the Volley repo or its own repo?** Keeping it in the
-   Volley monorepo means shared CI, shared deploy, no new repo overhead. A
-   separate repo means independent deploy cadence and cleaner ownership. The
-   spike decides based on the build complexity (a 4-page HTML site weighs nothing
-   either way).
-
-5. **What is the actual R2 asset pipeline?** The sketch says "fetch at build time."
-   Does that mean a shell script that runs `wrangler`, a CI step that downloads
-   from a public R2 bucket, or embedding assets directly in the repo? The spike
-   prototypes one path and names the tradeoffs.
-
-6. **Accessibility baseline.** The site should be navigable by keyboard and
-   readable by screen readers. The retro aesthetic must not compromise this.
-   The spike should pick an accessibility standard (WCAG 2.1 AA) and verify the
-   prototype against it.
+5. **Accessibility.** The 90s aesthetic must not compromise keyboard navigation
+   or screen reader access. Pick a standard (WCAG 2.1 AA) and verify the
+   prototype. Note: table-based layouts and body tag colors do not inherently
+   violate accessibility; they require testing.
