@@ -181,15 +181,6 @@ func _make_partner_stub() -> Node2D:
 	return partner
 
 
-func _on_partner_ball_added_for_test(partner: Node2D, ball: Ball) -> void:
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner):
-			ball.effect_processor.paddles.append(partner)
-
-	if partner.has_method("set_ball"):
-		partner.set_ball(ball)
-
-
 func test_set_partner_paddle_targets_already_attached_balls() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
@@ -250,7 +241,13 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 
 func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 	var partner: Node2D = _make_partner_stub()
-	_reconciler.ball_added.connect(_on_partner_ball_added_for_test.bind(partner))
+	var handler := func(ball: Ball):
+		if ball.effect_processor != null:
+			if not ball.effect_processor.paddles.has(partner):
+				ball.effect_processor.paddles.append(partner)
+		if partner.has_method("set_ball"):
+			partner.set_ball(ball)
+	_reconciler.ball_added.connect(handler)
 
 	var ball: Ball = _spawn_ball("ball_alpha")
 
@@ -262,7 +259,7 @@ func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 		"partner should land on the new ball's paddle list"
 	)
 
-	_reconciler.ball_added.disconnect(_on_partner_ball_added_for_test.bind(partner))
+	_reconciler.ball_added.disconnect(handler)
 
 
 func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:

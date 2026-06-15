@@ -456,9 +456,6 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 	return null
 
 
-# --- BallTracker-absorbed multi-ball tracking ---
-
-
 func get_balls() -> Array[Ball]:
 	return _balls
 
@@ -483,17 +480,21 @@ func _detach(old_ball: Ball) -> void:
 		return
 	var was_tracked: bool = _balls.has(old_ball)
 	_balls.erase(old_ball)
+
 	if is_instance_valid(old_ball):
 		if old_ball.missed.is_connected(_on_ball_missed):
 			old_ball.missed.disconnect(_on_ball_missed)
 
 		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
 			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
+
 		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
+
 	if _current_ball == old_ball:
 		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
 		_set_current(fallback)
+
 	if was_tracked:
 		ball_removed.emit(old_ball)
 
@@ -539,8 +540,10 @@ func _register_ball(ball: Ball) -> void:
 
 	if not ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
 		ball.at_max_speed_changed.connect(_on_ball_final_consolidation_changed)
+
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
+
 	if ball.effect_processor != null:
 		var paddles: Array[Node2D] = []
 		if player_paddle != null:

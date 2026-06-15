@@ -215,9 +215,11 @@ func _activate_partner() -> void:
 		if ball.effect_processor != null:
 			if not ball.effect_processor.paddles.has(partner_paddle):
 				ball.effect_processor.paddles.append(partner_paddle)
+
 	var current: Ball = ball_system.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(current)
+
 	ball_system.ball_added.connect(_on_partner_ball_added)
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(ball_system)
@@ -245,6 +247,7 @@ func _deactivate_partner() -> void:
 	for ball in ball_system.get_balls():
 		if is_instance_valid(ball) and ball.effect_processor != null:
 			ball.effect_processor.paddles.erase(partner_paddle)
+
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null
