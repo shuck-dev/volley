@@ -85,6 +85,10 @@ func _ready() -> void:
 		ball_system.spawn_origin = global_position
 		ball_system.pre_existing_balls_parent = self
 
+	if ball_system == null:
+		ball_system = BallReconciler.new()
+		add_child(ball_system)
+
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
 	ball_system.court_config = court_config
