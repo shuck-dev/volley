@@ -3,7 +3,7 @@ extends VBoxContainer
 
 ## Live per-ball play_state readout. Debug builds only.
 
-var _tracker: BallTracker
+var _tracker: BallReconciler
 var _rows: Dictionary = {}
 var _drag := DraggableBehavior.new()
 
@@ -18,7 +18,7 @@ func _ready() -> void:
 	resized.connect(queue_redraw)
 	_add_header()
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
+	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
 	if _tracker != null:
 		_attach_to_tracker()
@@ -32,7 +32,7 @@ func _exit_tree() -> void:
 
 
 func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallTracker
+	var tracker := node as BallReconciler
 
 	if tracker == null:
 		return

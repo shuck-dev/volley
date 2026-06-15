@@ -29,7 +29,7 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 @export var grab_area: GrabArea
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
-## Apex-arc threshold y; BallTracker injects at attach time from the SoulBound marker.
+## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
 var bound_y: float
 
 var speed := 0.0

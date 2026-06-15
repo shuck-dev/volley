@@ -92,7 +92,7 @@ func test_ball_added_emissions_attach_balls_to_court() -> void:
 	# Two `ball_added` emissions through the reconciler should leave Court tracking both.
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
-	var balls: Array[Ball] = _court.ball_tracker.get_balls()
+	var balls: Array[Ball] = _reconciler.get_balls()
 	assert_eq(balls.size(), 2, "Court should track both balls after two ball_added emits")
 	assert_true(balls.has(first))
 	assert_true(balls.has(second))
@@ -101,11 +101,11 @@ func test_ball_added_emissions_attach_balls_to_court() -> void:
 func test_ball_removed_drops_court_tracking() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
-	assert_eq(_court.ball_tracker.get_balls().size(), 2)
-	assert_true(_court.ball_tracker.get_balls().has(second), "precondition: both balls tracked")
+	assert_eq(_reconciler.get_balls().size(), 2)
+	assert_true(_reconciler.get_balls().has(second), "precondition: both balls tracked")
 
 	_reconciler.release_ball("ball_alpha")
-	var remaining: Array[Ball] = _court.ball_tracker.get_balls()
+	var remaining: Array[Ball] = _reconciler.get_balls()
 	assert_false(remaining.has(first), "released ball should be detached from Court")
 	assert_eq(remaining.size(), 1)
 
@@ -120,7 +120,7 @@ func _make_miss_zone() -> MissZone:
 func test_miss_zone_registered_before_attach_routes_future_balls() -> void:
 	# Register the zone with the tracker before any ball spawns; later attaches inherit it.
 	var zone: MissZone = _make_miss_zone()
-	_court.ball_tracker.register_miss_zone(zone)
+	_reconciler.register_miss_zone(zone)
 
 	var ball: Ball = _spawn_ball("ball_alpha")
 	assert_not_null(ball)
@@ -134,7 +134,7 @@ func test_miss_zone_registered_after_attach_applies_retroactively() -> void:
 	# Spawn first, register second; the live ball should still pick up the zone.
 	var ball: Ball = _spawn_ball("ball_alpha")
 	var zone: MissZone = _make_miss_zone()
-	_court.ball_tracker.register_miss_zone(zone)
+	_reconciler.register_miss_zone(zone)
 	watch_signals(ball)
 
 	zone.body_entered.emit(ball)
@@ -150,7 +150,7 @@ func test_register_miss_zone_globally_picks_up_group_members() -> void:
 	zone.add_to_group(&"miss_zones")
 	var ball: Ball = _spawn_ball("ball_alpha")
 
-	_court.ball_tracker.register_miss_zone_globally()
+	_reconciler.register_miss_zone_globally()
 	watch_signals(ball)
 	zone.body_entered.emit(ball)
 
@@ -162,9 +162,9 @@ func test_unregister_miss_zone_drops_zone_for_future_attaches() -> void:
 	# but not on the dropped zone, proving unregister actually removes from the tracked set.
 	var kept_zone: MissZone = _make_miss_zone()
 	var dropped_zone: MissZone = _make_miss_zone()
-	_court.ball_tracker.register_miss_zone(kept_zone)
-	_court.ball_tracker.register_miss_zone(dropped_zone)
-	_court.ball_tracker.unregister_miss_zone(dropped_zone)
+	_reconciler.register_miss_zone(kept_zone)
+	_reconciler.register_miss_zone(dropped_zone)
+	_reconciler.unregister_miss_zone(dropped_zone)
 
 	var ball: Ball = _spawn_ball("ball_alpha")
 	watch_signals(ball)
@@ -189,11 +189,11 @@ func test_set_partner_paddle_targets_already_attached_balls() -> void:
 	var second: Ball = _spawn_ball("ball_beta")
 	var partner: Node2D = _make_partner_stub()
 
-	_court.ball_tracker.set_partner_paddle(partner)
+	_reconciler.set_partner_paddle(partner)
 
 	assert_eq(
 		partner.last_ball,
-		_court.ball_tracker.get_current_ball(),
+		_reconciler.get_current_ball(),
 		"partner should be told about the current ball on registration"
 	)
 	assert_true(
@@ -210,12 +210,12 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	var partner: Node2D = _make_partner_stub()
-	_court.ball_tracker.set_partner_paddle(partner)
+	_reconciler.set_partner_paddle(partner)
 	assert_true(
 		first.effect_processor.paddles.has(partner), "precondition: partner attached to first"
 	)
 
-	_court.ball_tracker.clear_partner_paddle(partner)
+	_reconciler.clear_partner_paddle(partner)
 
 	assert_false(
 		first.effect_processor.paddles.has(partner),
@@ -230,7 +230,7 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 	# Setting the partner before any ball exists is silent; later-attached balls still inherit it.
 	var partner: Node2D = _make_partner_stub()
-	_court.ball_tracker.set_partner_paddle(partner)
+	_reconciler.set_partner_paddle(partner)
 	assert_null(partner.last_ball, "no ball yet, partner should not have been handed one")
 
 	var ball: Ball = _spawn_ball("ball_alpha")
@@ -248,8 +248,8 @@ func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
 	# Thread 3: calling set_partner_paddle with the same paddle twice must not append it twice.
 	var ball: Ball = _spawn_ball("ball_alpha")
 	var partner: Node2D = _make_partner_stub()
-	_court.ball_tracker.set_partner_paddle(partner)
-	_court.ball_tracker.set_partner_paddle(partner)
+	_reconciler.set_partner_paddle(partner)
+	_reconciler.set_partner_paddle(partner)
 	assert_eq(
 		ball.effect_processor.paddles.count(partner),
 		1,
@@ -260,17 +260,17 @@ func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
 func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 	# Thread 4: when a ball is already current, attaching a second ball must not overwrite _current_ball.
 	var first: Ball = _spawn_ball("ball_alpha")
-	var initial_current: Ball = _court.ball_tracker.get_current_ball()
+	var initial_current: Ball = _reconciler.get_current_ball()
 	assert_eq(initial_current, first, "precondition: first ball is current")
 
 	var second: Ball = _spawn_ball("ball_beta")
 	assert_eq(
-		_court.ball_tracker.get_current_ball(),
+		_reconciler.get_current_ball(),
 		first,
 		"attaching a second ball mid-rally must not overwrite the current ball",
 	)
 	assert_true(
-		_court.ball_tracker.get_balls().has(second),
+		_reconciler.get_balls().has(second),
 		"second ball is still tracked even though it did not become current",
 	)
 
@@ -317,7 +317,7 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 	var second: Ball = _spawn_ball("ball_beta")
 
 	assert_eq(
-		_court.ball_tracker.get_current_ball(),
+		_reconciler.get_current_ball(),
 		first,
 		"precondition: the second ball is tracked but not current",
 	)

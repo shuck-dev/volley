@@ -1,13 +1,21 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner.
+## Live-ball lifecycle owner. Absorbed BallTracker's multi-ball tracking and
+## re-emission responsibilities so court_config is set on each ball before
+## its _ready() runs.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
 signal ball_added(ball: Ball)
 ## Emitted whenever a ball leaves the tracked set (release, deactivate).
 signal ball_removed(ball: Ball)
+signal ball_missed(ball: Ball)
+## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
+signal ball_final_consolidation_changed(in_final: bool)
+## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
+signal ball_tier_advanced(ball: Ball, new_tier: int)
+signal current_ball_changed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -17,6 +25,9 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var ball_rack: RackDisplay
 @export var spawn_origin: Vector2 = Vector2.ZERO
 @export var pre_existing_balls_parent: Node
+@export var court_config: CourtConfig
+
+var bound_y: float = 0.0
 
 var _item_manager: Node
 var _balls_by_key: Dictionary = {}
@@ -25,12 +36,20 @@ var _initial_reconcile_pending: bool = true
 var _adopting_pre_existing: bool = false
 var _stored_kit_reconciled: bool = false
 
+var _balls: Array[Ball] = []
+var _current_ball: Ball
+var _partner_paddle: Node2D
+var _player_paddle: Node2D
+var _miss_zones: Array[MissZone] = []
 
-func configure(item_manager: Node) -> void:
-	_item_manager = item_manager
+
+func configure(player_paddle: Node2D) -> void:
+	_player_paddle = player_paddle
 
 
 func _ready() -> void:
+	add_to_group(&"ball_trackers")
+
 	if _item_manager == null:
 		_item_manager = ItemManager
 
@@ -126,7 +145,9 @@ func adopt_pre_existing_balls() -> void:
 
 		_apply_post_adopt_position(ball, key)
 		ball_spawned.emit(key, ball)
-		ball_added.emit(ball)
+		if court_config != null:
+			ball.court_config = court_config
+		_register_ball(ball)
 	_adopting_pre_existing = false
 
 
@@ -183,6 +204,8 @@ func ensure_ball_for_key(
 		return existing
 
 	var ball: Ball = ball_scene.instantiate()
+	if court_config != null:
+		ball.court_config = court_config
 	add_child(ball)
 	ball.item_key = item_key
 	ball.global_position = spawn_position
@@ -190,7 +213,7 @@ func ensure_ball_for_key(
 	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
-	ball_added.emit(ball)
+	_register_ball(ball)
 	_apply_preserved_speed(ball, preserved_speed)
 	return ball
 
@@ -200,12 +223,14 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	var ball: Ball = get_ball_for_key(item_key)
 	if ball == null:
 		ball = ball_scene.instantiate()
+		if court_config != null:
+			ball.court_config = court_config
 		add_child(ball)
 		ball.item_key = item_key
 		_apply_item_art(ball, item_key)
 		_balls_by_key[item_key] = ball
 		ball_spawned.emit(item_key, ball)
-		ball_added.emit(ball)
+		_register_ball(ball)
 
 	ball.global_position = position
 	ball.enter_out_rest()
@@ -216,6 +241,8 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 ## Spawns a STORED ball at `spawn_position` and registers it under `item_key`.
 func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = ball_scene.instantiate()
+	if court_config != null:
+		ball.court_config = court_config
 	add_child(ball)
 	ball.item_key = item_key
 	ball.enter_stored()
@@ -224,7 +251,7 @@ func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
-	ball_added.emit(ball)
+	_register_ball(ball)
 	return ball
 
 
@@ -260,7 +287,7 @@ func release_ball(item_key: String) -> Ball:
 
 	_initial_reconcile_pending = false
 	_balls_by_key.erase(item_key)
-	ball_removed.emit(ball)
+	_detach(ball)
 	return ball
 
 
@@ -274,7 +301,7 @@ func _on_item_level_changed(item_key: String) -> void:
 		return
 
 	_balls_by_key.erase(item_key)
-	ball_removed.emit(ball)
+	_detach(ball)
 	ball.queue_free()
 
 
@@ -326,7 +353,7 @@ func _reconcile_initial_state() -> void:
 		_reconcile_stored_kit_items()
 
 
-## Populates STORED Balls for kit ball-role items absent from the court. Rack owns slot→world mapping.
+## Populates STORED Balls for kit ball-role items absent from the court. Rack owns slot->world mapping.
 func _reconcile_stored_kit_items() -> void:
 	if ball_rack == null:
 		return
@@ -427,4 +454,140 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
 		if item.key == item_key:
 			return item
-	return null
+	return nil
+
+
+# --- BallTracker-absorbed multi-ball tracking ---
+
+
+func get_balls() -> Array[Ball]:
+	return _balls
+
+
+func get_current_ball() -> Ball:
+	return _current_ball
+
+
+## Sets court_config and bound_y on the ball, then registers it for tracking.
+func attach(new_ball: Ball) -> void:
+	if new_ball == null or _balls.has(new_ball):
+		return
+	if court_config != null:
+		new_ball.court_config = court_config
+	new_ball.bound_y = bound_y
+	_register_ball(new_ball)
+
+
+## Removes the ball from tracking, disconnects signals, and emits ball_removed.
+func _detach(old_ball: Ball) -> void:
+	if old_ball == null:
+		return
+	var was_tracked: bool = _balls.has(old_ball)
+	_balls.erase(old_ball)
+	if is_instance_valid(old_ball):
+		if old_ball.missed.is_connected(_on_ball_missed):
+			old_ball.missed.disconnect(_on_ball_missed)
+
+		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
+		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
+	if _current_ball == old_ball:
+		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
+		_set_current(fallback)
+		if _partner_paddle != null and fallback != null and _partner_paddle.has_method("set_ball"):
+			_partner_paddle.set_ball(fallback)
+	if was_tracked:
+		ball_removed.emit(old_ball)
+
+
+func register_miss_zone_globally() -> void:
+	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
+		if zone is MissZone and not _miss_zones.has(zone):
+			_miss_zones.append(zone)
+			for tracked in _balls:
+				if is_instance_valid(tracked):
+					tracked.register_miss_zone(zone)
+
+
+func register_miss_zone(zone: MissZone) -> void:
+	if zone == null or _miss_zones.has(zone):
+		return
+	_miss_zones.append(zone)
+	for tracked in _balls:
+		if is_instance_valid(tracked):
+			tracked.register_miss_zone(zone)
+
+
+func unregister_miss_zone(zone: MissZone) -> void:
+	_miss_zones.erase(zone)
+
+
+func set_partner_paddle(paddle: Node2D) -> void:
+	_partner_paddle = paddle
+	if paddle == null:
+		return
+	for tracked in _balls:
+		if not is_instance_valid(tracked):
+			continue
+		if tracked.effect_processor != null:
+			if not tracked.effect_processor.paddles.has(paddle):
+				tracked.effect_processor.paddles.append(paddle)
+	if _current_ball != null and paddle.has_method("set_ball"):
+		paddle.set_ball(_current_ball)
+
+
+func clear_partner_paddle(paddle: Node2D) -> void:
+	for tracked in _balls:
+		if is_instance_valid(tracked) and tracked.effect_processor != null:
+			tracked.effect_processor.paddles.erase(paddle)
+	if _partner_paddle == paddle:
+		_partner_paddle = null
+
+
+func _set_current(new_current: Ball) -> void:
+	if _current_ball == new_current:
+		return
+	_current_ball = new_current
+	current_ball_changed.emit(new_current)
+
+
+func _register_ball(ball: Ball) -> void:
+	if ball == null or _balls.has(ball):
+		return
+	_balls.append(ball)
+	if _current_ball == null:
+		_set_current(ball)
+
+	if not ball.missed.is_connected(_on_ball_missed):
+		ball.missed.connect(_on_ball_missed)
+
+	if not ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+		ball.at_max_speed_changed.connect(_on_ball_final_consolidation_changed)
+	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+		ball.tier_advanced.connect(_on_ball_tier_advanced)
+	if ball.effect_processor != null:
+		var paddles: Array[Node2D] = []
+		if _player_paddle != null:
+			paddles.append(_player_paddle)
+		if _partner_paddle != null:
+			paddles.append(_partner_paddle)
+		ball.effect_processor.paddles = paddles
+	for zone in _miss_zones:
+		if is_instance_valid(zone):
+			ball.register_miss_zone(zone)
+	if _partner_paddle != null and _partner_paddle.has_method("set_ball"):
+		_partner_paddle.set_ball(ball)
+	ball_added.emit(ball)
+
+
+func _on_ball_missed(ball: Ball) -> void:
+	ball_missed.emit(ball)
+
+
+func _on_ball_final_consolidation_changed(in_final: bool) -> void:
+	ball_final_consolidation_changed.emit(in_final)
+
+
+func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
+	ball_tier_advanced.emit(ball, new_tier)

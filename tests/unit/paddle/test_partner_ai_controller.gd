@@ -144,15 +144,15 @@ func test_noise_resamples_during_drift_when_direction_changes() -> void:
 
 
 # With two live approaching balls the partner covers the soonest-arriving one.
-func _bind_tracker_for_multiball() -> BallTracker:
-	var tracker: BallTracker = load("res://scripts/court/ball_tracker.gd").new()
+func _bind_tracker_for_multiball() -> BallReconciler:
+	var tracker: BallReconciler = load("res://scripts/items/ball_reconciler.gd").new()
 	add_child_autofree(tracker)
 	_controller.bind_tracker(tracker)
 	return tracker
 
 
 func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
-	var tracker: BallTracker = _bind_tracker_for_multiball()
+	var tracker: BallReconciler = _bind_tracker_for_multiball()
 
 	# Near ball: close x, fast → tiny time-to-arrival.
 	var near_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
@@ -169,7 +169,7 @@ func test_commits_to_soonest_arriving_of_two_live_balls() -> void:
 
 
 func test_ignores_away_ball_and_tracks_the_approaching_one() -> void:
-	var tracker: BallTracker = _bind_tracker_for_multiball()
+	var tracker: BallReconciler = _bind_tracker_for_multiball()
 
 	# Velocities set after attach: Ball._ready resets linear_velocity to its serve vector.
 	var approaching_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 200.0, 200.0), Vector2.ZERO)
@@ -186,7 +186,7 @@ func test_ignores_away_ball_and_tracks_the_approaching_one() -> void:
 
 
 func test_switches_when_a_sooner_ball_appears() -> void:
-	var tracker: BallTracker = _bind_tracker_for_multiball()
+	var tracker: BallReconciler = _bind_tracker_for_multiball()
 
 	var first_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 50.0, 200.0), Vector2(200.0, 0.0))
 	tracker.attach(first_ball)

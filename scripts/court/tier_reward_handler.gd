@@ -36,7 +36,7 @@ func on_ball_removed(ball: Ball) -> void:
 	_tiers_reached_first_time_by_ball.erase(ball)
 
 
-## Pays the consolidation reward for whichever ball crossed a tier; driven by BallTracker.ball_tier_advanced.
+## Pays the consolidation reward for whichever ball crossed a tier; driven by BallReconciler.ball_tier_advanced.
 func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 	var is_entering_final: bool = ball != null and ball.in_final
 	var completed_tier: int = new_tier - 1 if not is_entering_final else new_tier
