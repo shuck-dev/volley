@@ -12,11 +12,22 @@ design, AI personality, unsorted). Descend a trunk when its domain comes up.
 The "letters" are session handoff notes. Read the most recent one first;
 it knows where we left off.
 
-## Tooling
+## GodotIQ
 
-Prefer GodotIQ tools over raw file reads. Build 3D content in .tscn scene
-files, not in code. Always verify changes with evidence (compilation checks,
-convention validation, runtime health), not visual inspection alone.
+Prefer GodotIQ tools over raw file reads. Do not read .tscn or .gd files
+directly; use godotiq_file_context, scene_map, and script_ops instead.
+Do not grep for signal connections; use signal_map and dependency_graph
+to trace the complete graph in one call. Do not guess positions or scales;
+use placement and suggest_scale.
+
+Build 3D content in .tscn scene files, not in code. Use build_scene for
+batch node creation (grid, scatter, line, nodes). One call per logical
+group. Verify each phase with spatial_audit before moving on.
+
+Always verify changes with evidence: check_errors for compilation,
+validate for conventions, verify_project_runs for runtime health,
+read_debug_console for runtime errors. Screenshots only for visual
+changes. Do not repeat tool calls; keep results in context.
 
 ## Swarm and Battle
 
