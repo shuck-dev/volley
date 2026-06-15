@@ -132,6 +132,6 @@ jobs:
           chmod +x butler
 
       - name: Push to Itch.io Preview
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebNoThreads" ${{ env.ITCH_PROJECT }}:html5-preview
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebThreaded" ${{ env.ITCH_PROJECT }}:html5-preview
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
