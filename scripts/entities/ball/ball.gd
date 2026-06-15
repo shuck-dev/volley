@@ -81,6 +81,8 @@ func _ready() -> void:
 		_item_manager = ItemManager
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
+	if court_config.physics == null:
+		court_config.physics = load("res://scripts/core/court_physics.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
 	min_speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager)
