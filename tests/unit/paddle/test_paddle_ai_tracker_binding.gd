@@ -73,7 +73,7 @@ func test_ball_removed_clears_ball_ref_but_preserves_autoplay_toggle() -> void:
 	_controller.set_enabled(true)
 	assert_true(_controller.is_enabled(), "precondition: controller enabled with ball")
 
-	_tracker.detach(ball)
+	_tracker._detach(ball)
 
 	assert_null(_controller.ball, "controller drops its ball ref when tracker empties")
 	assert_true(_controller.is_enabled(), "autoplay toggle survives transient ball removal")
@@ -87,7 +87,7 @@ func test_autoplay_resumes_on_replacement_ball_after_grab_drop_cycle() -> void:
 	_tracker.attach(first)
 	_controller.set_enabled(true)
 
-	_tracker.detach(first)
+	_tracker._detach(first)
 	var replacement: Ball = _spawn_ball()
 	_tracker.attach(replacement)
 
