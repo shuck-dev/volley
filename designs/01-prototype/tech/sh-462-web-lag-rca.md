@@ -110,7 +110,8 @@ file a targeted report with our profile data.
 ## Why this is visible to us before others
 
 - Most Godot web games ship single-threaded (default since 4.3). Threaded exports need
-  COOP/COEP headers, which itch and Game Jolt historically did not serve.
+  COOP/COEP headers, which itch historically did not serve until its recent
+  SharedArrayBuffer support.
 - Firefox is a minority of browser share for gaming.
 - Players who hit the stutter likely quit rather than report.
 
