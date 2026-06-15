@@ -281,15 +281,25 @@ Prefer building game UI as `.tscn` scenes with Control nodes in the editor, not 
     → Visible and editable in Godot editor, survives script errors
 ```
 
-### Background Agent Supervision
+### Background Agent and Swarm Supervision
 
-If your tool supports background agents or parallel task execution:
+If your tool supports background agents, parallel task execution, or swarm dispatch:
 
 1. After completion, **read every file created or modified** by the background task
 2. Run `check_errors(scope="project")` on the entire project
 3. Run `validate` on every new or modified script
 4. Launch the game and verify with `verify_project_runs`, `state_inspect`, `input`, and `read_debug_console`; use a screenshot only for visual changes
-5. Prefer sequential execution for files that might overlap — concurrent modifications to the same file silently overwrite each other
+5. Prefer sequential execution for files that might overlap; concurrent modifications to the same file silently overwrite each other
+
+When dispatching swarm reviewers for a PR battle:
+
+6. **Dispatch, then end the turn.** Fan reviewers via `swarm_dispatch`, then stop. Minion reports arrive through the session harness when each reviewer finishes. Do not poll `swarm_status` for progress.
+
+7. **A minion report is complete when it arrives.** If a report shows "In Progress" or lacks a verdict section, the minion finished its session at that point. Verify once that no further output landed, then carry that review surface yourself.
+
+8. **Ground every claim with a live read.** Before stating a PR's merge state, CI status, or review count, run the live `gh` query. Never carry state from memory across turns.
+
+9. **Fix discovered issues, then fire the bot review.** Post findings inline at the relevant `path:line`. Push fixes, verify CI resolves, then fire the bot review naming the resolved SHA.
 
 ---
 
