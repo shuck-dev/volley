@@ -90,7 +90,7 @@ func _ready() -> void:
 	ball_system.court_config = court_config
 	if soul_bound != null:
 		ball_system.bound_y = soul_bound.global_position.y
-	ball_system.set_player_paddle(player_paddle)
+	ball_system.player_paddle = player_paddle
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)
@@ -118,6 +118,9 @@ func _ready() -> void:
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
 	ball = new_ball
+
+	if partner_paddle != null and new_ball != null and partner_paddle.has_method("set_ball"):
+		partner_paddle.set_ball(new_ball)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -205,7 +208,17 @@ func _activate_partner() -> void:
 	add_child(partner_paddle)
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
-	ball_system.set_partner_paddle(partner_paddle)
+
+	for ball in ball_system.get_balls():
+		if not is_instance_valid(ball):
+			continue
+		if ball.effect_processor != null:
+			if not ball.effect_processor.paddles.has(partner_paddle):
+				ball.effect_processor.paddles.append(partner_paddle)
+	var current: Ball = ball_system.get_current_ball()
+	if current != null and partner_paddle.has_method("set_ball"):
+		partner_paddle.set_ball(current)
+	ball_system.ball_added.connect(_on_partner_ball_added)
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(ball_system)
 
@@ -227,7 +240,11 @@ func _deactivate_partner() -> void:
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(null)
-	ball_system.clear_partner_paddle(partner_paddle)
+	ball_system.ball_added.disconnect(_on_partner_ball_added)
+
+	for ball in ball_system.get_balls():
+		if is_instance_valid(ball) and ball.effect_processor != null:
+			ball.effect_processor.paddles.erase(partner_paddle)
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null
@@ -237,6 +254,18 @@ func _deactivate_partner() -> void:
 		right_wall.visible = true
 
 	partner_changed.emit()
+
+
+func _on_partner_ball_added(ball: Ball) -> void:
+	if partner_paddle == null:
+		return
+
+	if ball.effect_processor != null:
+		if not ball.effect_processor.paddles.has(partner_paddle):
+			ball.effect_processor.paddles.append(partner_paddle)
+
+	if partner_paddle.has_method("set_ball"):
+		partner_paddle.set_ball(ball)
 
 
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.

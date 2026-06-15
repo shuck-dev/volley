@@ -38,17 +38,12 @@ var _stored_kit_reconciled: bool = false
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
-var _partner_paddle: Node2D
-var _player_paddle: Node2D
+@export var player_paddle: Node2D
 var _miss_zones: Array[MissZone] = []
 
 
 func configure(item_manager: Node) -> void:
 	_item_manager = item_manager
-
-
-func set_player_paddle(player_paddle: Node2D) -> void:
-	_player_paddle = player_paddle
 
 
 func _ready() -> void:
@@ -499,8 +494,6 @@ func _detach(old_ball: Ball) -> void:
 	if _current_ball == old_ball:
 		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
 		_set_current(fallback)
-		if _partner_paddle != null and fallback != null and _partner_paddle.has_method("set_ball"):
-			_partner_paddle.set_ball(fallback)
 	if was_tracked:
 		ball_removed.emit(old_ball)
 
@@ -527,28 +520,6 @@ func unregister_miss_zone(zone: MissZone) -> void:
 	_miss_zones.erase(zone)
 
 
-func set_partner_paddle(paddle: Node2D) -> void:
-	_partner_paddle = paddle
-	if paddle == null:
-		return
-	for tracked in _balls:
-		if not is_instance_valid(tracked):
-			continue
-		if tracked.effect_processor != null:
-			if not tracked.effect_processor.paddles.has(paddle):
-				tracked.effect_processor.paddles.append(paddle)
-	if _current_ball != null and paddle.has_method("set_ball"):
-		paddle.set_ball(_current_ball)
-
-
-func clear_partner_paddle(paddle: Node2D) -> void:
-	for tracked in _balls:
-		if is_instance_valid(tracked) and tracked.effect_processor != null:
-			tracked.effect_processor.paddles.erase(paddle)
-	if _partner_paddle == paddle:
-		_partner_paddle = null
-
-
 func _set_current(new_current: Ball) -> void:
 	if _current_ball == new_current:
 		return
@@ -572,16 +543,12 @@ func _register_ball(ball: Ball) -> void:
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 	if ball.effect_processor != null:
 		var paddles: Array[Node2D] = []
-		if _player_paddle != null:
-			paddles.append(_player_paddle)
-		if _partner_paddle != null:
-			paddles.append(_partner_paddle)
+		if player_paddle != null:
+			paddles.append(player_paddle)
 		ball.effect_processor.paddles = paddles
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
 			ball.register_miss_zone(zone)
-	if _partner_paddle != null and _partner_paddle.has_method("set_ball"):
-		_partner_paddle.set_ball(ball)
 	ball_added.emit(ball)
 
 

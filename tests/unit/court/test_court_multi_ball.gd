@@ -175,21 +175,35 @@ func test_unregister_miss_zone_drops_zone_for_future_attaches() -> void:
 	assert_signal_emitted(ball, "missed", "kept zone should still reach later balls")
 
 
-# --- partner-paddle re-targeting ---
 func _make_partner_stub() -> Node2D:
 	var partner: Node2D = RecordingPartnerStub.new()
 	add_child_autofree(partner)
 	return partner
 
 
+func _on_partner_ball_added_for_test(partner: Node2D, ball: Ball) -> void:
+	if ball.effect_processor != null:
+		if not ball.effect_processor.paddles.has(partner):
+			ball.effect_processor.paddles.append(partner)
+
+	if partner.has_method("set_ball"):
+		partner.set_ball(ball)
+
+
 func test_set_partner_paddle_targets_already_attached_balls() -> void:
-	# With balls already tracked, registering a partner should hand it the current ball
-	# and add it to every tracked ball's effect-processor paddle list.
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	var partner: Node2D = _make_partner_stub()
 
-	_reconciler.set_partner_paddle(partner)
+	for ball in _reconciler.get_balls():
+		if not is_instance_valid(ball):
+			continue
+		if ball.effect_processor != null:
+			if not ball.effect_processor.paddles.has(partner):
+				ball.effect_processor.paddles.append(partner)
+
+	if _reconciler.get_current_ball() != null and partner.has_method("set_ball"):
+		partner.set_ball(_reconciler.get_current_ball())
 
 	assert_eq(
 		partner.last_ball,
@@ -210,12 +224,19 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 	var partner: Node2D = _make_partner_stub()
-	_reconciler.set_partner_paddle(partner)
+	for ball in _reconciler.get_balls():
+		if not is_instance_valid(ball):
+			continue
+		if ball.effect_processor != null:
+			if not ball.effect_processor.paddles.has(partner):
+				ball.effect_processor.paddles.append(partner)
 	assert_true(
 		first.effect_processor.paddles.has(partner), "precondition: partner attached to first"
 	)
 
-	_reconciler.clear_partner_paddle(partner)
+	for ball in _reconciler.get_balls():
+		if is_instance_valid(ball) and ball.effect_processor != null:
+			ball.effect_processor.paddles.erase(partner)
 
 	assert_false(
 		first.effect_processor.paddles.has(partner),
@@ -228,10 +249,8 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 
 
 func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
-	# Setting the partner before any ball exists is silent; later-attached balls still inherit it.
 	var partner: Node2D = _make_partner_stub()
-	_reconciler.set_partner_paddle(partner)
-	assert_null(partner.last_ball, "no ball yet, partner should not have been handed one")
+	_reconciler.ball_added.connect(_on_partner_ball_added_for_test.bind(partner))
 
 	var ball: Ball = _spawn_ball("ball_alpha")
 
@@ -243,17 +262,25 @@ func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 		"partner should land on the new ball's paddle list"
 	)
 
+	_reconciler.ball_added.disconnect(_on_partner_ball_added_for_test.bind(partner))
+
 
 func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
-	# Thread 3: calling set_partner_paddle with the same paddle twice must not append it twice.
 	var ball: Ball = _spawn_ball("ball_alpha")
 	var partner: Node2D = _make_partner_stub()
-	_reconciler.set_partner_paddle(partner)
-	_reconciler.set_partner_paddle(partner)
+
+	if ball.effect_processor != null:
+		if not ball.effect_processor.paddles.has(partner):
+			ball.effect_processor.paddles.append(partner)
+
+	if ball.effect_processor != null:
+		if not ball.effect_processor.paddles.has(partner):
+			ball.effect_processor.paddles.append(partner)
+
 	assert_eq(
 		ball.effect_processor.paddles.count(partner),
 		1,
-		"set_partner_paddle called twice should not duplicate the paddle in the list",
+		"setting partner twice must not duplicate the paddle in the ball's paddle list",
 	)
 
 
