@@ -69,7 +69,11 @@ var tier_ceiling: float:
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
 var _item_manager: Node
-var _emit_tracker: BallSpeedEmitTracker = BallSpeedEmitTracker.new()
+# Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
+var _last_speed := 0.0
+var _last_min := 0.0
+var _last_max := 0.0
+var _was_at_max := false
 # Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
 var _arc_acceleration: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
@@ -104,7 +108,11 @@ func _physics_process(delta: float) -> void:
 	_update_play_state()
 	_emit_max_speed_if_changed()
 
-	if _emit_tracker.should_emit_speed(speed, tier_floor, tier_ceiling):
+	if (
+		absf(speed - _last_speed) >= 10.0
+		or not is_equal_approx(tier_floor, _last_min)
+		or not is_equal_approx(tier_ceiling, _last_max)
+	):
 		_emit_speed_changed()
 
 	if play_state == PlayState.PLAY_ARC:
@@ -143,7 +151,9 @@ func _enter_normal() -> void:
 
 
 func _emit_speed_changed() -> void:
-	_emit_tracker.record_speed(speed, tier_floor, tier_ceiling)
+	_last_speed = speed
+	_last_min = tier_floor
+	_last_max = tier_ceiling
 	speed_changed.emit(speed, tier_floor, tier_ceiling)
 
 
@@ -315,7 +325,8 @@ func _apply_speed() -> void:
 
 
 func _emit_max_speed_if_changed() -> void:
-	if _emit_tracker.consume_max_change(in_final):
+	if in_final != _was_at_max:
+		_was_at_max = in_final
 		at_max_speed_changed.emit(in_final)
 
 
