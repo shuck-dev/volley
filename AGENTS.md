@@ -1,5 +1,3 @@
-<!-- GODOTIQ RULES START -->
-<!-- godotiq-rules-version: 0.4.0 -->
 # Volley
 
 A Godot game built with AI assistance. Uses opencode (the coding agent)
@@ -53,4 +51,3 @@ verdict: `gh workflow run bot-review.yml -f pr=N -f event=VERDICT`.
 Re-battle (re-review) only when new code substantively changes the diff.
 Once reviewers converge and are just spinning, the bottleneck is a decision,
 not more review signal.
-<!-- GODOTIQ RULES END -->
