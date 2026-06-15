@@ -90,7 +90,7 @@ func _ready() -> void:
 	ball_system.court_config = court_config
 	if soul_bound != null:
 		ball_system.bound_y = soul_bound.global_position.y
-	ball_system.configure(player_paddle)
+	ball_system.set_player_paddle(player_paddle)
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)

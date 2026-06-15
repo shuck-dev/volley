@@ -43,7 +43,11 @@ var _player_paddle: Node2D
 var _miss_zones: Array[MissZone] = []
 
 
-func configure(player_paddle: Node2D) -> void:
+func configure(item_manager: Node) -> void:
+	_item_manager = item_manager
+
+
+func set_player_paddle(player_paddle: Node2D) -> void:
 	_player_paddle = player_paddle
 
 
