@@ -101,14 +101,14 @@ Mozilla is actively tracking this:
 - **[Bug 1943371](https://bugzilla.mozilla.org/show_bug.cgi?id=1943371):** Investigating
   parallel module compilation for the same Godot game.
 - **[Bug 1920115](https://bugzilla.mozilla.org/show_bug.cgi?id=1920115):** March 2025 fix
-  (commit `bbc06f4`) -- TaskController allows high-priority tasks to run before timers.
+  (commit `bbc06f4`): TaskController allows high-priority tasks to run before timers.
   Relevant to Worker message scheduling.
 
 ## Why this is niche
 
 - Most Godot web games ship single-threaded (default since 4.3). Threaded exports need
   COOP/COEP headers, which itch and Game Jolt historically did not serve.
-- Firefox is ~3-5% of browser share for gaming.
+- Firefox is a minority of browser share for gaming.
 - Players who hit the stutter likely quit rather than report.
 - Volley is one of the few Godot games exercising the threaded web path on Firefox.
 
@@ -119,7 +119,7 @@ Chrome embeds in-page normally.
 ## Recommendation
 
 Ship `WebThreaded` with the itch SharedArrayBuffer toggle. Chrome gets the full fix,
-Firefox exchanges one stutter family for another. Neither is a Volley bug -- both are
+Firefox exchanges one stutter family for another. Neither is a Volley bug; both are
 browser-level. Link the upstream Firefox bugs in the SH-462 issue for tracking.
 
 The PR (#966) implements this by flipping `presets_to_export: WebThreaded` in
