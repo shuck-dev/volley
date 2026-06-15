@@ -1,7 +1,14 @@
 [gd_resource type="Resource" script_class="CourtConfig" format=3 uid="uid://b66666sh366cc"]
 
 [ext_resource type="Script" uid="uid://c4ayxy1m7fhfn" path="res://scripts/core/court_config.gd" id="1_courtcfg"]
+[ext_resource type="Script" uid="uid://euer3rnvxfi3" path="res://scripts/core/court_physics.gd" id="2_physics"]
+
+[sub_resource type="Resource" id="CourtPhysics"]
+script = ExtResource("2_physics")
+arc_bend = 600.0
+arc_height_max = 220.0
 
 [resource]
 script = ExtResource("1_courtcfg")
+physics = SubResource("CourtPhysics")
 court_width = 600.0
