@@ -26,6 +26,7 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var spawn_origin: Vector2 = Vector2.ZERO
 @export var pre_existing_balls_parent: Node
 @export var court_config: CourtConfig
+@export var player_paddle: Node2D
 
 var bound_y: float = 0.0
 
@@ -38,7 +39,6 @@ var _stored_kit_reconciled: bool = false
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
-@export var player_paddle: Node2D
 var _miss_zones: Array[MissZone] = []
 
 
