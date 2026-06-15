@@ -1,4 +1,4 @@
-# SH-462 investigation report (2026-06-15)
+# Web lag spikes investigation report (2026-06-15)
 
 ## Problem
 
@@ -91,26 +91,32 @@ However, the frame-level logging that captures engine `_process(delta)` reveals 
   clusters.
 - **FPS cap:** irrelevant. The engine is not running during the gaps (`_process` frozen).
 
-## Upstream Firefox bugs
+## Upstream context
 
-Mozilla is actively tracking this:
+Firefox's Emscripten pthread scheduling is known to produce worker starvation in
+threaded Godot web builds. Mozilla is tracking related patterns:
 
 - **[Bug 1939938](https://bugzilla.mozilla.org/show_bug.cgi?id=1939938):** Godot game
-  spends ~4s on multiple background threads, 800ms doing malloc on 6 DOMWorkers. Firefox
-  team profiling the exact starvation pattern.
-- **[Bug 1943371](https://bugzilla.mozilla.org/show_bug.cgi?id=1943371):** Investigating
-  parallel module compilation for the same Godot game.
+  spends ~4s on multiple background threads during WASM compilation (loading-time,
+  not runtime). Demonstrates Mozilla awareness of Godot web thread pressure.
 - **[Bug 1920115](https://bugzilla.mozilla.org/show_bug.cgi?id=1920115):** March 2025 fix
   (commit `bbc06f4`): TaskController allows high-priority tasks to run before timers.
   Relevant to Worker message scheduling.
 
-## Why this is niche
+These bugs do not track Volley's specific runtime starvation pattern. No Mozilla bug
+currently tracks the intermittent worker starvation we observe. Volley is a candidate to
+file a targeted report with our profile data.
+
+## Why this is visible to us before others
 
 - Most Godot web games ship single-threaded (default since 4.3). Threaded exports need
   COOP/COEP headers, which itch and Game Jolt historically did not serve.
 - Firefox is a minority of browser share for gaming.
 - Players who hit the stutter likely quit rather than report.
-- Volley is one of the few Godot games exercising the threaded web path on Firefox.
+
+Volley may be one of the first Godot titles exercising the threaded web path on Firefox
+at scale. As more games adopt threaded web exports, browser-side scheduler pressure will
+increase.
 
 Note: the threaded build requires Firefox to open the game in a popup tab (itch
 behaviour when serving COEP `credentialless` which Firefox stable does not ship).
@@ -119,9 +125,12 @@ Chrome embeds in-page normally.
 ## Recommendation
 
 Ship `WebThreaded` with the itch SharedArrayBuffer toggle. Chrome gets the full fix,
-Firefox exchanges one stutter family for another. Neither is a Volley bug; both are
-browser-level. Link the upstream Firefox bugs in the SH-462 issue for tracking.
+Firefox exchanges one stutter family for another (30ms CC pauses replaced by 80-150ms
+pthread starvation clusters). Neither is engine-tunable at our level.
 
-The PR (#966) implements this by flipping `presets_to_export: WebThreaded` in
-`publish.yml` and updating the butler push path. `project.godot` sets
-`3d/physics_engine=Dummy` to eliminate the unused Jolt thread pool.
+A 120s+ Firefox threaded profile is needed to establish the long-run worst-case
+frequency before declaring the tradeoff acceptable. The Firefox popup-tab UX cost
+(itch's COEP-credentialless fallback) is a further factor.
+
+The PR (#966) implements the publish change. The `3d/physics_engine=Dummy` change is
+housekeeping (removes unused Jolt thread pool) and does not affect web lag.
