@@ -9,6 +9,12 @@
   ],
   "permission": {
     "bash": {
+      "gh pr merge*": "deny",
+      "gh release delete*": "deny",
+      "gh release create*": "deny",
+      "git rebase*": "deny",
+      "git pull *--rebase*": "deny",
+      "git branch *-D *": "deny",
       "rm -rf *": "deny",
       "rm *": "ask"
     },
