@@ -113,7 +113,6 @@ file a targeted report with our profile data.
   COOP/COEP headers, which itch historically did not serve until its recent
   SharedArrayBuffer support.
 - Firefox is a minority of browser share for gaming.
-- Players who hit the stutter likely quit rather than report.
 
 Note: the threaded build requires Firefox to open the game in a popup tab (itch
 behaviour when serving COEP `credentialless` which Firefox stable does not ship).
