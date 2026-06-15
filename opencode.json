@@ -8,6 +8,7 @@
     "AGENTS.md"
   ],
   "permission": {
+    "webfetch": "deny",
     "bash": {
       "rm -rf *": "deny",
       "rm *": "ask"
