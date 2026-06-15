@@ -13,7 +13,7 @@ const MARKER_ARROW_COLOR := Color(0.4, 1.0, 0.6, 0.9)
 var dev_visible: bool = false
 var follow_last_hit: bool = false
 
-var _tracker: BallTracker
+var _tracker: BallReconciler
 var _ball_subscriptions: Dictionary = {}
 # Paddle-relative offset_norm so the marker tracks the paddle: { offset_norm, target_angle, horizontal_sign }.
 var _last_hits: Dictionary = {}
@@ -29,7 +29,7 @@ func _ready() -> void:
 	visible = false
 	add_to_group(&"dev_overlays")
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
+	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
 	if _tracker != null:
 		_attach_to_tracker()
@@ -43,7 +43,7 @@ func _exit_tree() -> void:
 
 
 func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallTracker
+	var tracker := node as BallReconciler
 
 	if tracker == null:
 		return

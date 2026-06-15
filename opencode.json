@@ -10,6 +10,17 @@
   "permission": {
     "webfetch": "deny",
     "bash": {
+      "gh pr merge*": "deny",
+      "gh release delete*": "deny",
+      "gh release create*": "deny",
+      "git rebase*": "ask",
+      "*git rebase*": "ask",
+      "git filter-branch*": "deny",
+      "*git filter-branch*": "deny",
+      "git push *--force*": "ask",
+      "*git push *--force*": "ask",
+      "git pull *--rebase*": "deny",
+      "git branch *-D *": "deny",
       "rm -rf *": "deny",
       "rm *": "ask"
     },

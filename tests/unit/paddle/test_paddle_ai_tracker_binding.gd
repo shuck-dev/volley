@@ -1,21 +1,21 @@
 extends GutTest
 
-# Tests that PaddleAIController self-wires to a BallTracker:
+# Tests that PaddleAIController self-wires to a BallReconciler:
 # - ball_added attaches the controller's ball ref
 # - ball_removed clears the ball ref but preserves the autoplay toggle
 # - set_enabled(true) is a silent no-op when no ball is bound
 
-const BallTrackerScript: GDScript = preload("res://scripts/court/ball_tracker.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const PaddleAIControllerScript: GDScript = preload("res://scripts/core/paddle_ai_controller.gd")
 
-var _tracker: BallTracker
+var _tracker: BallReconciler
 var _controller: PaddleAIController
 var _paddle: Paddle
 var _config: PaddleAIConfig
 
 
 func before_each() -> void:
-	_tracker = BallTrackerScript.new()
+	_tracker = BallReconcilerScript.new()
 	add_child_autofree(_tracker)
 
 	_paddle = load("res://scripts/entities/paddle.gd").new()
@@ -73,7 +73,7 @@ func test_ball_removed_clears_ball_ref_but_preserves_autoplay_toggle() -> void:
 	_controller.set_enabled(true)
 	assert_true(_controller.is_enabled(), "precondition: controller enabled with ball")
 
-	_tracker.detach(ball)
+	_tracker._detach(ball)
 
 	assert_null(_controller.ball, "controller drops its ball ref when tracker empties")
 	assert_true(_controller.is_enabled(), "autoplay toggle survives transient ball removal")
@@ -87,7 +87,7 @@ func test_autoplay_resumes_on_replacement_ball_after_grab_drop_cycle() -> void:
 	_tracker.attach(first)
 	_controller.set_enabled(true)
 
-	_tracker.detach(first)
+	_tracker._detach(first)
 	var replacement: Ball = _spawn_ball()
 	_tracker.attach(replacement)
 

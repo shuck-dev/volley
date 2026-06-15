@@ -4,7 +4,7 @@ extends VBoxContainer
 ## Debug numeric readout of paddle-bounce tunables plus per-hit resolved values.
 
 var _drag := DraggableBehavior.new()
-var _tracker: BallTracker
+var _tracker: BallReconciler
 var _ball_subscriptions: Dictionary = {}
 var _label_max_degrees: Label
 var _label_english: Label
@@ -25,7 +25,7 @@ func _ready() -> void:
 	resized.connect(queue_redraw)
 	_build_labels()
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallTracker
+	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
 	if _tracker != null:
 		_attach_to_tracker()
@@ -39,7 +39,7 @@ func _exit_tree() -> void:
 
 
 func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallTracker
+	var tracker := node as BallReconciler
 
 	if tracker == null:
 		return

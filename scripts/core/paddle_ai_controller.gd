@@ -7,7 +7,7 @@ extends Node
 var ball: Ball
 
 var _enabled := false
-var _tracker: BallTracker
+var _tracker: BallReconciler
 
 # --- reaction delay ---
 var _position_buffer: Array[float]
@@ -28,7 +28,7 @@ func _init_position_buffer() -> void:
 
 
 ## Replaces Court-mediated `controller.ball = ...` injection; the tracker drives enable/disable lifecycle.
-func bind_tracker(tracker: BallTracker) -> void:
+func bind_tracker(tracker: BallReconciler) -> void:
 	if _tracker == tracker:
 		return
 	if _tracker != null:
