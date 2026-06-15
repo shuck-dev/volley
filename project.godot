@@ -89,6 +89,10 @@ camera_right={
 2d/layer_names/layer_1="world"
 2d/layer_names/layer_2="items"
 
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
