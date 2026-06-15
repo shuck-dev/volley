@@ -114,10 +114,6 @@ file a targeted report with our profile data.
 - Firefox is a minority of browser share for gaming.
 - Players who hit the stutter likely quit rather than report.
 
-Volley may be one of the first Godot titles exercising the threaded web path on Firefox
-at scale. As more games adopt threaded web exports, browser-side scheduler pressure will
-increase.
-
 Note: the threaded build requires Firefox to open the game in a popup tab (itch
 behaviour when serving COEP `credentialless` which Firefox stable does not ship).
 Chrome embeds in-page normally.
