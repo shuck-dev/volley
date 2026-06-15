@@ -454,7 +454,7 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
 		if item.key == item_key:
 			return item
-	return nil
+	return null
 
 
 # --- BallTracker-absorbed multi-ball tracking ---
