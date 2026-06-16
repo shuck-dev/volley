@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
+[ext_resource type="Script" uid="uid://dl1mtfv7t6vqe" path="res://scripts/core/venue_parallax.gd" id="8_qo0oe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(4000, 40)
@@ -29,6 +30,9 @@ script = ExtResource("1_qaugd")
 shop = NodePath("Shop")
 court = NodePath("Court")
 dev_item_panel = NodePath("DevHUD/DevItemUI")
+
+[node name="VenueParallax" type="Node2D" parent="." unique_id=1359575070]
+script = ExtResource("8_qo0oe")
 
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
 
