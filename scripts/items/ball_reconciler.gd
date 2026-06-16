@@ -53,8 +53,7 @@ func _ready() -> void:
 		_item_manager = ItemManager
 
 	_item_manager.court_changed.connect(_on_court_changed)
-	if _item_manager.has_signal("item_manager_state_changed"):
-		_item_manager.item_manager_state_changed.connect(_reconcile)
+	_item_manager.item_manager_state_changed.connect(_reconcile)
 
 	# Position persistence: SaveManager pulls live positions from us before each
 	# disk write so balls reload where the player left them, not the spawn marker.
@@ -317,14 +316,17 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 
 
 func _reconcile() -> void:
-	# Remove balls whose item level has dropped to zero.
+	var keys_to_remove: Array[String] = []
 	for key: String in _balls_by_key:
 		if _item_manager.get_level(key) <= 0:
-			var ball: Ball = get_ball_for_key(key)
-			if ball != null:
-				_balls_by_key.erase(key)
-				_detach(ball)
-				ball.queue_free()
+			keys_to_remove.append(key)
+
+	for key: String in keys_to_remove:
+		var ball: Ball = get_ball_for_key(key)
+		if ball != null:
+			_balls_by_key.erase(key)
+			_detach(ball)
+			ball.queue_free()
 
 	if _initial_reconcile_pending:
 		_initial_reconcile_pending = false
