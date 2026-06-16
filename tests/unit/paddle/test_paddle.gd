@@ -10,7 +10,7 @@ func before_each() -> void:
 	var sound := AudioStreamPlayer.new()
 	_paddle.add_child(sound)
 	_paddle.hit_sound = sound
-	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
+	var tracker := HitTracker.new()
 	_paddle.tracker = tracker
 	_paddle.add_child(tracker)
 	add_child_autofree(_paddle)
@@ -44,15 +44,13 @@ func test_pitch_increases_after_cooldown_expires() -> void:
 
 # --- _on_racket_body_entered directional gate ---
 func test_racket_rejects_ball_moving_away_from_paddle() -> void:
-	_paddle.position = Vector2(-300, 0)
-	_paddle._lane_x = -300.0
-
-	watch_signals(_paddle)
+	var paddle := _new_paddle_at(-300)
+	watch_signals(paddle)
 	var ball := Ball.new()
 	add_child_autofree(ball)
 	ball.linear_velocity = Vector2(-100, 0)
-	_paddle._on_racket_body_entered(ball)
-	assert_signal_not_emitted(_paddle, "paddle_hit")
+	paddle._on_racket_body_entered(ball)
+	assert_signal_not_emitted(paddle, "paddle_hit")
 
 
 # --- reset_streak ---
@@ -64,3 +62,16 @@ func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 	_paddle.tracker._process(HitTracker.COOLDOWN)
 	_paddle.on_ball_hit()
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.05, 0.001)
+
+
+func _new_paddle_at(x: float) -> Paddle:
+	var paddle := PaddleScript.new()
+	paddle.position = Vector2(x, 0)
+	var sound := AudioStreamPlayer.new()
+	paddle.add_child(sound)
+	paddle.hit_sound = sound
+	var tracker := HitTracker.new()
+	paddle.tracker = tracker
+	paddle.add_child(tracker)
+	add_child_autofree(paddle)
+	return paddle
