@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
-[ext_resource type="Script" uid="uid://dl1mtfv7t6vqe" path="res://scripts/core/venue_parallax.gd" id="8_qo0oe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
 size = Vector2(4000, 40)
@@ -31,8 +30,57 @@ shop = NodePath("Shop")
 court = NodePath("Court")
 dev_item_panel = NodePath("DevHUD/DevItemUI")
 
-[node name="VenueParallax" type="Node2D" parent="." unique_id=1359575070]
-script = ExtResource("8_qo0oe")
+[node name="ParallaxDeepBack" type="Parallax2D" parent="." unique_id=1359575071]
+follow_viewport = true
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxDeepBack" unique_id=1359575072]
+offset_left = -2000.0
+offset_top = -1500.0
+offset_right = 2000.0
+offset_bottom = 1500.0
+color = Color(0.05, 0.05, 0.12, 1)
+
+[node name="ParallaxBackground" type="Parallax2D" parent="." unique_id=1359575073]
+follow_viewport = true
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground" unique_id=1359575074]
+offset_left = -2000.0
+offset_top = -1500.0
+offset_right = 2000.0
+offset_bottom = 1500.0
+color = Color(0.1, 0.1, 0.2, 1)
+
+[node name="ParallaxNearFore" type="Parallax2D" parent="." unique_id=1359575075]
+follow_viewport = true
+scroll_scale = Vector2(1.3, 1.3)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxNearFore" unique_id=1359575076]
+offset_left = -2000.0
+offset_top = -1500.0
+offset_right = 2000.0
+offset_bottom = 1500.0
+color = Color(0.18, 0.16, 0.28, 1)
+
+[node name="ParallaxForeground" type="Parallax2D" parent="." unique_id=1359575077]
+follow_viewport = true
+scroll_scale = Vector2(1.8, 1.8)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxForeground" unique_id=1359575078]
+offset_left = -2000.0
+offset_top = -1500.0
+offset_right = 2000.0
+offset_bottom = 1500.0
+color = Color(0.22, 0.2, 0.32, 1)
 
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
 
