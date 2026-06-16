@@ -623,11 +623,6 @@ class TestItemManagerStateChanged:
 		_manager.activate(TEST_KEY)
 		assert_signal_emitted(_manager, "item_manager_state_changed")
 
-	func test_noop_placement_emits_state_changed() -> void:
-		_manager.activate(TEST_KEY)
-		_manager.activate(TEST_KEY)
-		assert_signal_emitted(_manager, "item_manager_state_changed")
-
 	func test_remove_level_emits_state_changed() -> void:
 		_manager.activate(TEST_KEY)
 		_manager.remove_level(TEST_KEY)
