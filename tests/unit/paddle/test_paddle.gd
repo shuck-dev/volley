@@ -42,6 +42,19 @@ func test_pitch_increases_after_cooldown_expires() -> void:
 	assert_almost_eq(_paddle.hit_sound.pitch_scale, 1.10, 0.001)
 
 
+# --- _on_racket_body_entered directional gate ---
+func test_racket_rejects_ball_moving_away_from_paddle() -> void:
+	_paddle.position = Vector2(-300, 0)
+	_paddle._lane_x = -300.0
+
+	watch_signals(_paddle)
+	var ball := Ball.new()
+	add_child_autofree(ball)
+	ball.linear_velocity = Vector2(-100, 0)
+	_paddle._on_racket_body_entered(ball)
+	assert_signal_not_emitted(_paddle, "paddle_hit")
+
+
 # --- reset_streak ---
 func test_pitch_resets_to_baseline_on_first_hit_after_reset() -> void:
 	_paddle.on_ball_hit()

@@ -89,11 +89,12 @@ func on_ball_hit(ball: Ball = null) -> bool:
 	return true
 
 
-# The ball entered the racket zone; route it to the ball's hit entry. The ball passes through
-# the character body, so the racket Area2D is now the sole paddle-hit trigger.
 func _on_racket_body_entered(body: Node) -> void:
 	if body is Ball:
-		(body as Ball).hit_by_paddle(self)
+		var ball := body as Ball
+		if _lane_x * ball.linear_velocity.x >= 0:
+			return
+		ball.hit_by_paddle(self)
 
 
 # Dev placeholder: labels the live animation state over the coloured sprite, so each blocked-out
@@ -155,15 +156,15 @@ func clamp_to_arena() -> void:
 	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
 
 
-# The animation state tracks grounded/flying and motion every physics frame, not just when a
-# controller calls drive(), so a grounded/flying transition updates the moment it happens.
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	_physics_move(delta)
 	tick_animation_state()
 
 
-# Derives real vertical motion from the position delta and resolves the animation state. Called from
-# the base _physics_process, and from any subclass that overrides _physics_process (e.g. PlayerPaddle)
-# so the state still tracks every frame instead of being shadowed by the override.
+func _physics_move(_delta: float) -> void:
+	pass
+
+
 func tick_animation_state() -> void:
 	_vertical_motion = global_position.y - _last_y
 	_last_y = global_position.y
