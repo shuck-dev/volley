@@ -47,26 +47,32 @@ Six divergence points remain, identified via full signal-path trace. Three are s
 
 ## Decision
 
-Collapse the three overlapping change signals (`item_placement_changed`, `court_changed`, `rack_slots_changed`) into one `item_manager_state_changed`. Both consumers already do full rebuilds on every signal they receive; one signal per mutation batch is strictly less work and removes the ordering dependency.
+Collapse the three overlapping rack-state signals (`item_placement_changed`, `court_changed`, `rack_slots_changed`) into one `item_manager_state_changed`. Both rack consumers already do full rebuilds on every signal they receive; one signal per mutation batch is strictly less work and removes the ordering dependency.
 
-BallReconciler switches from event-driven copying to reading ItemManager state directly: it holds no independent `_balls_by_key` and reads ball-to-existence directly from `ItemManager.item_placements` on each reconciliation pass. RackDisplay keeps `refresh()` but receives it from the single signal instead of five.
+BallReconciler keeps `_balls_by_key` as a Ball node registry (it stores live Node references, not placement mirrors), but derives which keys have entries from `ItemManager.item_placements` instead of tracking that independently via signals. `get_ball_for_key()` callers need the node lookup regardless; the change is that _existence_ (should a ball exist for this key) comes from the owner, not from the reconciler tracking `court_changed` and `item_level_changed`.
+
+Other consumers of `item_placement_changed` (`CharacterDropTarget`, `Paddle`, `SpeedBar`, `SoulBonus`, `DevEquippedPanel`) keep listening to the old placement signal or migrate to `item_manager_state_changed` at their own pace. The three rack-specific signals are what collide; the placement signal carries a `(item_key, placement)` payload that non-rack consumers need. The spike does not force them to migrate.
+
+RackDisplay connects `item_manager_state_changed` to `refresh()`. The CONNECT_DEFERRED is preserved because `_assign_rack_slot` can fire from inside a slot's `input_event` handler. A synchronous `refresh()` in that path would free the emitting `Area2D` mid-emission. The single signal fires deferred or uses `call_deferred` in the rack-display handler; the key property is that only ONE signal drives refresh, not five.
+
+`purchase()` currently calls `_set_item_placement` then emits `item_level_changed` on its own. Both operations must be batched under the single `item_manager_state_changed` and fire exactly once when the full mutation completes.
 
 ## Signal-timing impact
 
 - **Before:** RackDisplay receives 5 signals from 3 emitters. If any signal fires out of order, the rack renders stale. If any path forgets to emit, the rack silently degrades.
 - **After:** One signal fires after every batch of ItemManager mutations. RackDisplay calls `refresh()` once. Ordering is structural -- nothing to get wrong.
-- **Deferred rebuild** (Divergence E): eliminated because `refresh()` is called synchronously from the single signal. The CONNECT_DEFERRED on `rack_slots_changed` is removed. A click on a stale Area2D in the same frame cannot happen because the signal fires after the mutation, not deferred to the next idle frame.
+- **Deferred rebuild** (Divergence E): CONNECT_DEFERRED is kept but scoped to the single signal. The rack still rebuilds one frame later to avoid freeing the emitting Area2D mid-emission; the improvement is that ONE signal always fires, instead of five signals where any could be missing.
 
 ## Save-shape impact
 
-No change. `ItemState` already persists `item_placements`, `rack_slot_index_by_key`, and `loose_in_venue`. BallReconciler's position provider (`collect_item_positions`) and play-state provider (`collect_ball_play_states`) inject into `ItemState` at save time. This pattern is orthogonal: BallReconciler owns the live Ball nodes and their runtime positions; ItemManager owns the inventory semantics. The derive-from-owner change is a runtime relationship, not a persistence change.
+No change. `ItemState` already persists `item_placements`, `rack_slot_index_by_key`, and `loose_in_venue`. BallReconciler's position provider (`collect_item_positions`) and play-state provider (`collect_ball_play_states`) iterate `_balls_by_key`; when membership derives from ItemManager, the save-provider rewrite (iterating `_balls` array instead) is included in the reconciler ticket.
 
 ## Implementation split
 
-1. **Collapse signals and fix divergences A-C.** Merge `item_placement_changed`, `court_changed`, and `rack_slots_changed` into `item_manager_state_changed`. Fix the three silent-mutation paths in ItemManager so every rack-state mutation emits the signal.
+1. **Collapse signals and fix divergences A-C.** Merge `item_placement_changed`, `court_changed`, and `rack_slots_changed` into `item_manager_state_changed` for the rack path. Fix the three silent-mutation paths in ItemManager so every rack-state mutation emits the signal. Keep the placement payload on the old signal for non-rack consumers; they migrate independently. Batch `purchase()` sub-operations under the single signal.
 
-2. **Reconcile BallReconciler.** Replace `_balls_by_key` with a `reconcile()` method that reads `ItemManager.item_placements` directly. Remove `_on_court_changed` and `_on_item_level_changed` signal handlers. BallReconciler listens only to `item_manager_state_changed`.
+2. **Reconcile BallReconciler.** Derive `_balls_by_key` membership from `ItemManager.item_placements` instead of tracking via `court_changed` and `item_level_changed`. Keep the map itself (callers need Ball node lookup). Remove the two signal handlers. Listen only to `item_manager_state_changed`. Rewrite `collect_item_positions` and `collect_ball_play_states` to iterate `_balls` instead of `_balls_by_key`.
 
-3. **Single-source RackDisplay refresh.** Remove per-signal handlers (`_on_item_placement_changed`, `_on_rack_slots_changed`, `_on_item_level_changed`, `_on_ball_spawned`, `_on_ball_removed`). Connect `item_manager_state_changed` to `refresh()`. Remove CONNECT_DEFERRED.
+3. **Single-source RackDisplay refresh.** Replace five per-signal handlers with `item_manager_state_changed` connected to `refresh()`. Keep CONNECT_DEFERRED for re-entrance safety: the signal can fire from inside a slot's `input_event` handler, and synchronous `refresh()` would free the emitting `Area2D`.
 
 Ticket order: (1) signals + divergences, (2) reconciler, (3) rack display. Each is independently shippable on trunk.
