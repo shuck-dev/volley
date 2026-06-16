@@ -85,6 +85,7 @@ camera_right={
 
 [physics]
 
+common/physics_ticks_per_second=120
 3d/physics_engine="Dummy"
 2d/layer_names/layer_1="world"
 2d/layer_names/layer_2="items"
