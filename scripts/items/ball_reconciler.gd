@@ -53,7 +53,8 @@ func _ready() -> void:
 		_item_manager = ItemManager
 
 	_item_manager.court_changed.connect(_on_court_changed)
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	if _item_manager.has_signal("item_manager_state_changed"):
+		_item_manager.item_manager_state_changed.connect(_reconcile)
 
 	# Position persistence: SaveManager pulls live positions from us before each
 	# disk write so balls reload where the player left them, not the spawn marker.
@@ -63,7 +64,7 @@ func _ready() -> void:
 
 	# Deferred so sibling listeners connect to ball_spawned before we emit.
 	call_deferred(&"adopt_pre_existing_balls")
-	call_deferred(&"_reconcile_initial_state")
+	call_deferred(&"_reconcile")
 
 
 func _has_save_manager_autoload() -> bool:
@@ -74,17 +75,14 @@ func _has_save_manager_autoload() -> bool:
 ## ball lives in the registry post-step-5, so the registry walk is the whole story.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
-	for key: String in _balls_by_key:
-		var raw: Variant = _balls_by_key[key]
-		if not is_instance_valid(raw):
+	for ball in _balls:
+		if not is_instance_valid(ball):
 			continue
-
-		var ball: Ball = raw
-		# STORED entries live at rack-slot positions reconstructed from rack_slot_index_by_key on load.
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
-
-		positions[key] = ball.global_position
+		if ball.item_key.is_empty():
+			continue
+		positions[ball.item_key] = ball.global_position
 	return positions
 
 
@@ -92,17 +90,14 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 ## STORED balls are reconstructed from the rack so they do not need a play-state entry.
 func collect_ball_play_states() -> Dictionary[String, int]:
 	var states: Dictionary[String, int] = {}
-	for key: String in _balls_by_key:
-		var raw: Variant = _balls_by_key[key]
-		if not is_instance_valid(raw):
+	for ball in _balls:
+		if not is_instance_valid(ball):
 			continue
-
-		var ball: Ball = raw
-
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
-
-		states[key] = int(ball.play_state)
+		if ball.item_key.is_empty():
+			continue
+		states[ball.item_key] = int(ball.play_state)
 	return states
 
 
@@ -290,20 +285,6 @@ func release_ball(item_key: String) -> Ball:
 	return ball
 
 
-## Retires the tracked Ball when an item drops to level 0 so no pickable ghost survives a full removal.
-func _on_item_level_changed(item_key: String) -> void:
-	if _item_manager.get_level(item_key) > 0:
-		return
-
-	var ball: Ball = get_ball_for_key(item_key)
-	if ball == null:
-		return
-
-	_balls_by_key.erase(item_key)
-	_detach(ball)
-	ball.queue_free()
-
-
 func _on_court_changed(item_key: String, on_court: bool) -> void:
 	if not _adopting_pre_existing:
 		_initial_reconcile_pending = false
@@ -335,8 +316,16 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		ball.global_position = ball_rack.get_slot_position_for(item_key)
 
 
-## One-shot: skipped once any signal-driven court_changed activity has begun.
-func _reconcile_initial_state() -> void:
+func _reconcile() -> void:
+	# Remove balls whose item level has dropped to zero.
+	for key: String in _balls_by_key:
+		if _item_manager.get_level(key) <= 0:
+			var ball: Ball = get_ball_for_key(key)
+			if ball != null:
+				_balls_by_key.erase(key)
+				_detach(ball)
+				ball.queue_free()
+
 	if _initial_reconcile_pending:
 		_initial_reconcile_pending = false
 		for key in _item_manager.get_court_items():
@@ -346,7 +335,6 @@ func _reconcile_initial_state() -> void:
 					_spawn_position_for(key),
 					_item_manager.get_default_ball_launch_velocity(),
 				)
-	# STORED kit items are independent of the court-pending flag; court_changed cannot spawn them.
 	if not _stored_kit_reconciled:
 		_stored_kit_reconciled = true
 		_reconcile_stored_kit_items()
