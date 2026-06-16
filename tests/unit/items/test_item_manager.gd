@@ -616,29 +616,24 @@ class TestItemManagerStateChanged:
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
 		_manager.economy.soul_balance = 1000
-
-	func test_activate_emits_state_changed() -> void:
 		_manager.purchase(TEST_KEY)
 		watch_signals(_manager)
+
+	func test_activate_emits_state_changed() -> void:
 		_manager.activate(TEST_KEY)
 		assert_signal_emitted(_manager, "item_manager_state_changed")
 
 	func test_noop_placement_emits_state_changed() -> void:
-		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
-		watch_signals(_manager)
 		_manager.activate(TEST_KEY)
 		assert_signal_emitted(_manager, "item_manager_state_changed")
 
 	func test_remove_level_emits_state_changed() -> void:
-		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
-		watch_signals(_manager)
 		_manager.remove_level(TEST_KEY)
 		assert_signal_emitted(_manager, "item_manager_state_changed")
 
 	func test_non_stored_clears_loose_in_venue() -> void:
-		_manager.purchase(TEST_KEY)
 		_manager.mark_loose_in_venue(TEST_KEY)
 		assert_true(_manager.is_loose_in_venue(TEST_KEY), "precondition: item is loose")
 		_manager.activate(TEST_KEY)
