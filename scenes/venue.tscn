@@ -54,18 +54,6 @@ offset_right = -500.0
 offset_bottom = 1200.0
 color = Color(0.05, 0.2, 0.05, 0.7)
 
-[node name="ParallaxNearFore" type="Parallax2D" parent="." unique_id=1359575075]
-scroll_scale = Vector2(1.3, 1.3)
-repeat_size = Vector2(4000, 0)
-repeat_times = 4
-
-[node name="ColorRect" type="ColorRect" parent="ParallaxNearFore" unique_id=1359575076]
-offset_left = 500.0
-offset_top = -1200.0
-offset_right = 2500.0
-offset_bottom = 1200.0
-color = Color(0.25, 0.1, 0.05, 0.7)
-
 [node name="ParallaxForeground" type="Parallax2D" parent="." unique_id=1359575077]
 scroll_scale = Vector2(1.8, 1.8)
 repeat_size = Vector2(4000, 0)
