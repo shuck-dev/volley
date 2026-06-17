@@ -21,14 +21,6 @@
 [ext_resource type="Texture2D" uid="uid://dajgrxis6fo1h" path="res://assets/sprites/sam/swing_flying/Swing_flying_04.png" id="19_i1tn7"]
 [ext_resource type="Texture2D" uid="uid://dp2epn6ljdgvi" path="res://assets/sprites/sam/swing_flying/Swing_flying_05.png" id="20_7d1k5"]
 
-[sub_resource type="Gradient" id="Gradient_swing_grounded"]
-colors = PackedColorArray(0.9, 0.3, 0.3, 1, 0.9, 0.3, 0.3, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing_grounded"]
-gradient = SubResource("Gradient_swing_grounded")
-width = 21
-height = 108
-
 [resource]
 animations = [{
 "frames": [{
@@ -139,7 +131,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_swing_grounded")
+"texture": ExtResource("16_wbhxb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_dg27t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_2jnnh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_i1tn7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_7d1k5")
 }],
 "loop": false,
 "name": &"swing_grounded",
