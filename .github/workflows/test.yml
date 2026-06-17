@@ -5,6 +5,7 @@ on:
     branches:
       - main
   merge_group:
+  workflow_call:
 
 concurrency:
   group: tests-${{ github.ref }}
@@ -21,7 +22,7 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
@@ -50,10 +51,6 @@ jobs:
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', 'addons/**', '**/*.import') }}
 
       - name: Import Project
-        # Single pass. Cold-cache UID warnings and their paired
-        # "Failed loading resource" errors are filtered in the Leak gate step
-        # (see ai/scratchpads/godot-ci-uid-cache.md). Godot's incremental
-        # importer handles per-file changes once the .godot cache is warm.
         run: godot --headless --path . --import
 
       - name: Run Tests
@@ -69,11 +66,6 @@ jobs:
           set -e
           sed -E 's/\x1b\[[0-9;]*m//g' test_output.txt > test_output.plain
           fail=0
-          # Filter cold-cache UID warning class (godot#101677, #115205, #109636);
-          # see ai/scratchpads/godot-ci-uid-cache.md. WARNING pattern is unique
-          # enough to filter unconditionally. Failed-loading-resource ERROR is
-          # filtered only when its path matches a UID warning seen earlier in the
-          # run; standalone Failed-loading ERRORs still fail the gate.
           warnings=$(awk '
           {
             if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
