@@ -1,90 +1,129 @@
 [gd_resource type="SpriteFrames" format=3 uid="uid://bsam001anim01"]
 
-[sub_resource type="Gradient" id="Gradient_flying_down"]
-colors = PackedColorArray(0.8, 0.7, 0.2, 1, 0.8, 0.7, 0.2, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_flying_down"]
-gradient = SubResource("Gradient_flying_down")
-width = 21
-height = 108
-
-[sub_resource type="Gradient" id="Gradient_flying_up"]
-colors = PackedColorArray(0.3, 0.8, 0.4, 1, 0.3, 0.8, 0.4, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_flying_up"]
-gradient = SubResource("Gradient_flying_up")
-width = 21
-height = 108
-
-[sub_resource type="Gradient" id="Gradient_ready_flying"]
-colors = PackedColorArray(0.4, 0.7, 0.9, 1, 0.4, 0.7, 0.9, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ready_flying"]
-gradient = SubResource("Gradient_ready_flying")
-width = 21
-height = 108
-
-[sub_resource type="Gradient" id="Gradient_ready_grounded"]
-colors = PackedColorArray(0.3, 0.5, 0.9, 1, 0.3, 0.5, 0.9, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ready_grounded"]
-gradient = SubResource("Gradient_ready_grounded")
-width = 21
-height = 108
-
-[sub_resource type="Gradient" id="Gradient_swing_flying"]
-colors = PackedColorArray(0.9, 0.4, 0.7, 1, 0.9, 0.4, 0.7, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing_flying"]
-gradient = SubResource("Gradient_swing_flying")
-width = 21
-height = 108
-
-[sub_resource type="Gradient" id="Gradient_swing_grounded"]
-colors = PackedColorArray(0.9, 0.3, 0.3, 1, 0.9, 0.3, 0.3, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_swing_grounded"]
-gradient = SubResource("Gradient_swing_grounded")
-width = 21
-height = 108
+[ext_resource type="Texture2D" uid="uid://bwkluaxwmrs8g" path="res://assets/sprites/sam/flying_up/flying_up_01.png" id="1_ysull"]
+[ext_resource type="Texture2D" uid="uid://dx38rew7758c5" path="res://assets/sprites/sam/flying_up/flying_up_02.png" id="2_ot5un"]
+[ext_resource type="Texture2D" uid="uid://c0u4n38v3nu3t" path="res://assets/sprites/sam/flying_up/flying_up_03.png" id="3_uspdf"]
+[ext_resource type="Texture2D" uid="uid://4ikx6gvdmqc1" path="res://assets/sprites/sam/flying_up/flying_up_04.png" id="4_xswg0"]
+[ext_resource type="Texture2D" uid="uid://b01mmupowmyc8" path="res://assets/sprites/sam/flying_up/flying_up_05.png" id="5_yc0uj"]
+[ext_resource type="Texture2D" uid="uid://df6wynr1aeofd" path="res://assets/sprites/sam/flying_up/flying_up_06.png" id="6_et4af"]
+[ext_resource type="Texture2D" uid="uid://bqxcfyw4ydw7j" path="res://assets/sprites/sam/flying_up/flying_up_07.png" id="7_yvpr5"]
+[ext_resource type="Texture2D" uid="uid://sblbb1pvpbyw" path="res://assets/sprites/sam/ready_flying/flying_idle_01.png" id="8_gilbc"]
+[ext_resource type="Texture2D" uid="uid://bfblcuv1f2eix" path="res://assets/sprites/sam/ready_flying/flying_idle_02.png" id="9_0exrp"]
+[ext_resource type="Texture2D" uid="uid://cpm61807mud2y" path="res://assets/sprites/sam/ready_flying/flying_idle_03.png" id="10_ua10h"]
+[ext_resource type="Texture2D" uid="uid://dai26l1e4dnyn" path="res://assets/sprites/sam/ready_flying/flying_idle_04.png" id="11_lgnhs"]
+[ext_resource type="Texture2D" uid="uid://diw2ggpuq7lb0" path="res://assets/sprites/sam/ready_grounded/ready_grounded_01.png" id="12_f2t5l"]
+[ext_resource type="Texture2D" uid="uid://6wse64ljc4si" path="res://assets/sprites/sam/ready_grounded/ready_grounded_02.png" id="13_br5dj"]
+[ext_resource type="Texture2D" uid="uid://dtms4msbskblf" path="res://assets/sprites/sam/ready_grounded/ready_grounded_03.png" id="14_3npww"]
+[ext_resource type="Texture2D" uid="uid://c1diw6bbqps3o" path="res://assets/sprites/sam/ready_grounded/ready_grounded_04.png" id="15_r5wsh"]
+[ext_resource type="Texture2D" uid="uid://dr3o7lirmur1p" path="res://assets/sprites/sam/swing_flying/Swing_flying_01.png" id="16_wbhxb"]
+[ext_resource type="Texture2D" uid="uid://dylvxtorlj1a6" path="res://assets/sprites/sam/swing_flying/Swing_flying_02.png" id="17_dg27t"]
+[ext_resource type="Texture2D" uid="uid://cdiwd0vf14lli" path="res://assets/sprites/sam/swing_flying/Swing_flying_03.png" id="18_2jnnh"]
+[ext_resource type="Texture2D" uid="uid://dajgrxis6fo1h" path="res://assets/sprites/sam/swing_flying/Swing_flying_04.png" id="19_i1tn7"]
+[ext_resource type="Texture2D" uid="uid://dp2epn6ljdgvi" path="res://assets/sprites/sam/swing_flying/Swing_flying_05.png" id="20_7d1k5"]
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_flying_down")
+"texture": ExtResource("1_ysull")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ot5un")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_uspdf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_xswg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_yc0uj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_et4af")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_yvpr5")
 }],
-"loop": false,
+"loop": true,
 "name": &"flying_down",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_flying_up")
+"texture": ExtResource("1_ysull")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ot5un")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_uspdf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_xswg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_yc0uj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_et4af")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_yvpr5")
 }],
-"loop": false,
+"loop": true,
 "name": &"flying_up",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_ready_flying")
+"texture": ExtResource("8_gilbc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0exrp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ua10h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_lgnhs")
 }],
-"loop": false,
+"loop": true,
 "name": &"ready_flying",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_ready_grounded")
+"texture": ExtResource("12_f2t5l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_br5dj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_3npww")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_r5wsh")
 }],
-"loop": false,
+"loop": true,
 "name": &"ready_grounded",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_swing_flying")
+"texture": ExtResource("16_wbhxb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_dg27t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_2jnnh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_i1tn7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_7d1k5")
 }],
 "loop": false,
 "name": &"swing_flying",
@@ -92,7 +131,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_swing_grounded")
+"texture": ExtResource("16_wbhxb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_dg27t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_2jnnh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_i1tn7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_7d1k5")
 }],
 "loop": false,
 "name": &"swing_grounded",
