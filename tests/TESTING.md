@@ -203,7 +203,9 @@ Integration tests are reserved for full player-loop completions (per `memory/fee
 
 ## Known gaps
 
-The physics dispatch path (`body_entered` -> `_on_body_entered` -> duck-typed method call) is not covered by automated tests. It requires real physics collisions and is intentionally left as a manual QA item; it's two lines that rarely change.
+The physics dispatch path is not covered by automated tests. It requires real physics collisions and is intentionally left as a manual QA item.
+
+Visual rendering, sprites, and animations are not unit tested. Tests use bare class instances without scene children, so sprites and textures are never loaded. CI does not pull LFS assets for the test job.
 
 ## Test budget
 
