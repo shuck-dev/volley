@@ -92,7 +92,7 @@ func on_ball_hit(ball: Ball = null) -> bool:
 func _on_racket_body_entered(body: Node) -> void:
 	if body is Ball:
 		var ball := body as Ball
-		if _lane_x * ball.linear_velocity.x >= 0:
+		if _lane_x * ball.linear_velocity.x <= 0:
 			return
 		ball.hit_by_paddle(self)
 

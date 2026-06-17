@@ -48,7 +48,7 @@ func test_racket_rejects_ball_moving_away_from_paddle() -> void:
 	watch_signals(paddle)
 	var ball := Ball.new()
 	add_child_autofree(ball)
-	ball.linear_velocity = Vector2(-100, 0)
+	ball.linear_velocity = Vector2(100, 0)
 	paddle._on_racket_body_entered(ball)
 	assert_signal_not_emitted(paddle, "paddle_hit")
 
