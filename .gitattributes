@@ -21,7 +21,8 @@ concepts/.gdignore !filter !diff !merge text
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 *.flac filter=lfs diff=lfs merge=lfs -text
 
-# Sprite sheets and large textures.
+# Sprites and textures.
+*.png filter=lfs diff=lfs merge=lfs -text
 *.webp filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text
 *.hdr filter=lfs diff=lfs merge=lfs -text
