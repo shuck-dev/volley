@@ -247,7 +247,6 @@ func _on_animation_state_changed(state: StringName) -> void:
 
 	if animation_player != null and animation_player.has_animation(state):
 		animation_player.play(state)
-		animation_player.seek(0.0, true)
 
 
 ## Handles the paddle_hit signal to initiate the swing animation.
