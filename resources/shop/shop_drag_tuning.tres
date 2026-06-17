@@ -6,5 +6,5 @@
 script = ExtResource("1_tuning")
 drag_threshold_px = 2.0
 settle_velocity_threshold = 4.0
-settle_frames_required = 6
+settle_frames_required = 12
 max_lifetime_s = 4.0

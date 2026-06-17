@@ -10,7 +10,7 @@ extends Resource
 @export var settle_velocity_threshold: float = 4.0
 
 ## Consecutive slow frames required before notify_body_settled fires.
-@export var settle_frames_required: int = 6
+@export var settle_frames_required: int = 12
 
 ## Hard time cap; a runaway body resolves on this even if velocity never falls below the threshold.
 @export var max_lifetime_s: float = 4.0

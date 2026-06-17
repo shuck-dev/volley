@@ -23,7 +23,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var velocity_threshold: float = tuning.settle_velocity_threshold if tuning != null else 4.0
-	var frames_required: int = tuning.settle_frames_required if tuning != null else 6
+	var frames_required: int = tuning.settle_frames_required if tuning != null else 12
 	var lifetime_cap: float = tuning.max_lifetime_s if tuning != null else 4.0
 
 	_elapsed += delta
