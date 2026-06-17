@@ -18,6 +18,7 @@ const STATE_LABEL_GAP := 8.0
 @export var racket_hitbox: Area2D
 ## The racket's RectangleShape2D, owning the contact-offset half-height.
 @export var racket_shape: CollisionShape2D
+@export var animation_player: AnimationPlayer
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
@@ -35,6 +36,7 @@ var _floor_surface_y: float = NAN
 ## (driven, timeout-controlled, or at rest) rather than the stale velocity member.
 var _last_y: float = 0.0
 var _vertical_motion: float = 0.0
+var _was_grounded: bool = false
 
 var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
@@ -207,11 +209,16 @@ func _resolve_floor_surface() -> void:
 # scene, e.g. a bare unit test) the paddle is treated as flying.
 func _is_grounded() -> bool:
 	if is_nan(_floor_surface_y):
+		_was_grounded = false
 		return false
 	var foot_offset: float = 0.0
 	if _body_shape != null:
-		foot_offset = _body_shape.size.y * 0.5
-	return global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
+		foot_offset = _body_shape.size.y * 0.5 + collision.position.y
+	var grounded: bool = global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
+	if not grounded and _was_grounded:
+		grounded = global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON * 4
+	_was_grounded = grounded
+	return grounded
 
 
 func _ensure_animation_state_machine() -> void:
@@ -237,6 +244,10 @@ func _on_animation_state_changed(state: StringName) -> void:
 		and sprite.sprite_frames.has_animation(state)
 	):
 		sprite.play(state)
+
+	if animation_player != null and animation_player.has_animation(state):
+		animation_player.play(state)
+		animation_player.seek(0.0, true)
 
 
 ## Handles the paddle_hit signal to initiate the swing animation.
@@ -340,6 +351,7 @@ func _refresh_overlay_shapes() -> void:
 	if _collider_overlay == null:
 		return
 	var body_size: Vector2 = _body_shape.size if _body_shape != null else Vector2.ZERO
+	var body_offset: Vector2 = collision.position if collision != null else Vector2.ZERO
 	var racket_size: Vector2 = _racket_shape.size if _racket_shape != null else Vector2.ZERO
 	var racket_offset: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-	_collider_overlay.set_shapes(body_size, racket_size, racket_offset)
+	_collider_overlay.set_shapes(body_size, body_offset, racket_size, racket_offset)
