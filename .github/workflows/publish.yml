@@ -24,8 +24,6 @@ env:
 jobs:
   test:
     uses: ./.github/workflows/test.yml
-    with:
-      lfs-include: "assets/**"
 
   deploy-preview:
     name: Deploy to Preview

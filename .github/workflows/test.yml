@@ -6,12 +6,6 @@ on:
       - main
   merge_group:
   workflow_call:
-    inputs:
-      lfs-include:
-        description: LFS fetch include pattern (empty = skip)
-        type: string
-        default: ""
-        required: false
 
 concurrency:
   group: tests-${{ github.ref }}
@@ -55,15 +49,6 @@ jobs:
         with:
           path: .godot
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', 'addons/**', '**/*.import') }}
-
-      - name: Fetch LFS assets
-        if: inputs.lfs-include != ''
-        run: |
-          git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
-          git lfs pull --include="${{ inputs.lfs-include }}"
-
-      - name: Import Project
-        run: godot --headless --path . --import
 
       - name: Run Tests
         env:
