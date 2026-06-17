@@ -17,12 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GodotIQRuntime="*uid://5f55jejx8ekg"
 Settings="*res://scripts/core/settings.gd"
 SaveManager="*res://scripts/progression/save_manager.gd"
 ItemManager="*res://scripts/items/item_manager.gd"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
 ConfigHotReload="*res://addons/config_hot_reload/config_hot_reload.gd"
+GodotIQRuntime="*uid://5f55jejx8ekg"
 
 [debug]
 
@@ -88,10 +88,6 @@ camera_right={
 3d/physics_engine="Dummy"
 2d/layer_names/layer_1="world"
 2d/layer_names/layer_2="items"
-
-[audio]
-
-buses/default_bus_layout="res://default_bus_layout.tres"
 
 [rendering]
 

@@ -1,8 +1,59 @@
-<!-- godotiq-rules-version: 0.4.0 -->
-<!-- v0.4.0: Strengthened autonomy/verification, added click_at/click_at_world input docs,
-     UI construction guidelines, background agent supervision, efficient workflow section,
-     tile/grid guidance improvements -->
-# GodotIQ — AI-Assisted Godot Development
+<!-- GODOTIQ CORE START -->
+<!-- godotiq-rules-version: 0.5.13 -->
+# GodotIQ — Core Rules
+
+You have GodotIQ MCP tools (`godotiq_*`). ALWAYS prefer them over raw file operations on Godot files.
+
+- **DO NOT** read `.tscn`/`.gd`/`.tres` directly with `Read`/`cat` — `file_context`, `scene_map` and `script_ops` return structured data with cross-references, transforms and signal wiring that raw text cannot provide.
+- **DO NOT** grep for signal connections or function callers — `dependency_graph` / `signal_map` trace the complete graph in one call.
+- **DO NOT** hand-calculate positions or guess scales — `placement` / `suggest_scale` return validated suggestions.
+- **DO NOT** build the world in code: terrain, structures and decorations belong in `.tscn` via `build_scene`/`node_ops`; only game logic belongs in scripts.
+- **DO NOT** write `.tscn`/`.gd` behind a running editor with native file tools — GodotIQ's write tools detect the editor and route safely; raw writes risk stale-buffer overwrites and UID corruption.
+
+## Mandatory Workflows
+
+1. **Session start:** `project_summary(detail="brief")` FIRST — architecture, autoloads, counts in ~500 chars.
+2. **Before editing any file:** `file_context(file, detail="brief")`; for signature/signal changes also `impact_check(file, action, target)`. NEVER modify a `.gd` without `file_context` first.
+3. **3D scene work:** `scene_map(focus, radius, detail="brief")` → `placement` for positions → `build_scene` (batches: grid/line/scatter) or `node_ops(validate=true)` → `save_scene()` → self-verify with `explore`/`spatial_audit`.
+4. **Visual QA after scene work:** `explore(mode="tour")` — describe each screenshot, fix issues, tour again; `explore(mode="inspect", positions=[...])` for close-ups.
+5. **After every code change:** `validate(target=file, detail="brief")` for Pro convention checks, then `check_errors(scope=file)` for compilation/parser errors. One script, one validate/check cycle — never batch five scripts then debug.
+6. **Multi-file refactor:** `impact_check` BEFORE changing; `validate(target="project")` baseline before/after; then `check_errors(scope="project")` and `signal_map(find="orphans")`.
+7. **Testing/debugging:** `run(action="play")` → `verify_project_runs()` → `read_debug_console()` for errors → `state_inspect` for values (cheap, preferred) → `verify_motion` for movement → `screenshot(scale=0.25, quality=0.3)` only when visuals changed (expensive) → `run(action="stop")`.
+
+## Token Efficiency
+
+- Default to `detail="brief"`; full payloads can emit 50k–140k chars and crash the session.
+- Always filter: `focus`+`radius` (scene_map), `path_filter` (asset_registry), `scope="file:..."` (signal_map).
+- Prefer `state_inspect` (~200 chars) over `screenshot` (10k+) when you need data, not pixels; max 1 screenshot per verification point.
+- Batch: one `build_scene` or one `exec` loop beats 20 single `node_ops`; group edits → one `save_scene` → one verification cycle.
+- Act on tool responses immediately; every bridge response carries `_editor_state` (open_scene, game_running, recent_errors) — react to it.
+
+## Error Recovery
+
+| Error | Action |
+|---|---|
+| `GAME_NOT_RUNNING` | `run(action="play")` |
+| `RUNTIME_NOT_ATTACHED` | game playing but runtime tools unavailable: `run(action="stop")` then `play` to retry the handshake; if persistent, check the addon is enabled |
+| `NO_GAME_SESSION` | restart the game with `run` |
+| `NODE_NOT_FOUND` | `scene_tree(detail="brief")` to find the correct name |
+| `ADDON_NOT_CONNECTED` | enable the GodotIQ addon in the Godot editor |
+| `BLOCKED_EDITOR_OPEN` | the editor is open: use bridge ops (`node_ops`/`script_ops`/`save_scene`) instead of direct disk writes |
+| `TIMEOUT` | wait, check `state_inspect`; truly dead → `run(action="stop")`, retry |
+| `SCRIPT_ERRORS` | `check_errors(scope="scene")`, fix the scripts, rerun |
+| `BLOCKED` (node_ops) | read the `validation` array, adjust position/scale |
+| `NO_SCENE` / `PARENT_NOT_FOUND` / `NO_NODES` (build_scene) | open a scene / fix or create the parent / pass exactly one mode with valid data |
+| Partial success (build_scene) | check `errors`, retry only the failed items |
+
+## Conventions
+
+- GDScript: `snake_case.gd` files, `PascalCase` classes, type hints everywhere (`var hp: int = 0`, `-> void`), `@onready` for node refs, `is_instance_valid()` for null checks.
+- `node_ops` paths are relative to the scene root: `"Entities/Worker_1"`, not `"Main/Entities/Worker_1"`.
+- Scripts created this session: reference with `load()`, not `preload()`.
+
+**Full reference:** `GODOTIQ_RULES.md` in the project root — read the relevant section before non-trivial work (3D building patterns, Godot quirks, verification recipes, spatial validation, per-tool reference).
+<!-- GODOTIQ CORE END -->
+
+# GodotIQ — AI-Assisted Godot Development (Full Reference)
 
 You have GodotIQ MCP tools. ALWAYS prefer these over raw file operations.
 
@@ -68,7 +119,7 @@ However, your visual interpretation is not perfect. After describing what you se
 Verify your own work autonomously. Provide verification evidence directly instead of asking the user to check.
 
 **Evidence-based completion:** Every fix or feature must include the right evidence for the change:
-1. Code/script changes: `check_errors` or `validate`
+1. Code/script changes: `check_errors` for compilation evidence (plus `validate` for Pro convention evidence)
 2. Runtime behavior changes: `verify_project_runs`, `run`, `input`, `state_inspect`, `verify_motion`, or `read_debug_console`
 3. Spatial/layout changes: `spatial_audit`, `scene_tree`, `ui_map`, and screenshot only when visual inspection is genuinely required
 4. A short explanation of why the evidence confirms correctness
@@ -393,9 +444,9 @@ When a Pro tool returns a Community response, use these alternatives:
    → Fallback: estimate (4,0,1.5), use node_ops(validate=true) to check collisions
 
 4. Call godotiq_validate after code changes
-   → Community response: "8 issues: 2 errors, 4 warnings, 2 info"
-   → Tell user: "Found 8 code issues but I need Pro to see the details.
-     I'll check for compilation errors with check_errors instead."
+   → Community response: "8 issues: 6 warnings, 2 info"
+   → Tell user: "Found 8 convention issues but I need Pro to see the details.
+     I'll still check compilation with check_errors."
    → Fallback: check_errors(scope="scene")
 ~~~
 
@@ -557,9 +608,10 @@ Use tour mode after major 3D work. Use inspect mode when you need to verify spec
 
 ```
 godotiq_validate(target=file, detail="brief")   → convention check
+godotiq_check_errors(scope=file)                → compilation/parser check
 ```
 
-`validate` (Pro) checks conventions: naming, type hints, orphan signals, and also catches compilation errors. `check_errors` (free) checks compilation only. Pro agents: use `validate` — it covers both. Community agents: use `check_errors` only.
+`validate` (Pro) checks conventions: naming, type hints, orphan signals, and related code-quality rules. It does not replace the Godot parser. Use `check_errors` for compilation/parser errors on both Pro and Community.
 
 ### 6. Multi-File Refactoring
 
@@ -592,7 +644,7 @@ Use `state_inspect` for data. Use `read_debug_console` for errors. Use `verify_p
 
 ## Tool Reference
 
-### UNDERSTAND — Project Analysis (no addon needed)
+### UNDERSTAND — Project Analysis (no addon needed unless marked)
 
 **`godotiq_project_summary`** — Call FIRST in every session. Returns architecture, autoloads, file counts. Use `detail="brief"` (always).
 
@@ -612,9 +664,9 @@ Use `state_inspect` for data. Use `read_debug_console` for errors. Use `verify_p
 
 **`godotiq_spatial_audit`** — Automated 3D issue scan: floating objects, scale mismatches, z-fighting, overlapping.
 
-**`godotiq_check_errors`** — Check GDScript files for compilation/parse errors. Call before `godotiq_run` or after writing scripts. Use `scope="scene"` for current scene scripts + autoloads, `scope="project"` for all scripts in the project.
+**`godotiq_check_errors`** — Check GDScript files for compilation/parse errors (bridge tool — requires the GodotIQ addon running). Call before `godotiq_run` or after writing scripts. Use `scope="scene"` for current scene scripts + autoloads, `scope="project"` for all scripts in the project.
 
-**`godotiq_read_debug_console`** — Cheap text-only reader for Godot Debugger/console errors captured by the addon. Use first when Play errors occur; do not ask the user to copy/paste the Debug window unless this is unavailable.
+**`godotiq_read_debug_console`** — Cheap text-only reader for Godot Debugger/console errors captured by the addon (bridge tool — requires the GodotIQ addon running). Use first when Play errors occur; do not ask the user to copy/paste the Debug window unless this is unavailable.
 
 **`godotiq_asset_registry`** — Asset inventory with usage tracking. ALWAYS use `path_filter` to limit scope.
 
@@ -705,6 +757,8 @@ Paths in `node_ops` are relative to scene root:
 ## Error Recovery
 
 - `GAME_NOT_RUNNING` → `godotiq_run(action="play")`
+- `RUNTIME_NOT_ATTACHED` → game is playing but the GodotIQ runtime did not attach, so runtime tools (screenshot/input/state_inspect/exec context=game) are unavailable. `godotiq_run(action="stop")` then `godotiq_run(action="play")` to retry the handshake; if it persists, check the GodotIQ addon is enabled in the project.
+- `NO_GAME_SESSION` → debugger session unavailable; restart the game with `godotiq_run`.
 - `NODE_NOT_FOUND` → `godotiq_scene_tree(detail="brief")` to find correct name
 - `ADDON_NOT_CONNECTED` → Enable GodotIQ addon in Godot editor
 - `TIMEOUT` → The adaptive timeout should handle most cases. If it still times out, wait a few seconds and check with `godotiq_state_inspect`. If the game truly did not start, call `godotiq_run(action="stop")` then try again.
