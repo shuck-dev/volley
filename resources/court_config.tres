@@ -5,10 +5,7 @@
 
 [sub_resource type="Resource" id="CourtPhysics"]
 script = ExtResource("2_physics")
-arc_bend = 600.0
-arc_height_max = 220.0
 
 [resource]
 script = ExtResource("1_courtcfg")
 physics = SubResource("CourtPhysics")
-court_width = 600.0

@@ -6,13 +6,13 @@
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
-size = Vector2(24, 65)
+size = Vector2(21, 108)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_drop"]
-size = Vector2(26, 60)
+size = Vector2(21, 108)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
-size = Vector2(24, 65)
+size = Vector2(21, 64)
 
 [node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape")]
 collision_layer = 16

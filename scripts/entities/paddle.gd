@@ -234,8 +234,7 @@ func _on_animation_state_changed(state: StringName) -> void:
 	if (
 		sprite != null
 		and sprite.sprite_frames != null
-		and sprite.sprite_frames.get_frame_count(state) > 0
-		and sprite.sprite_frames.get_frame_texture(state, 0) != null
+		and sprite.sprite_frames.has_animation(state)
 	):
 		sprite.play(state)
 
