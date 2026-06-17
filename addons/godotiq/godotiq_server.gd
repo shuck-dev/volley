@@ -4,12 +4,13 @@ extends Node
 ## dispatches requests to editor handlers or forwards to the running game.
 
 const DEFAULT_PORT := 6007
-const ADDON_VERSION := "0.5.7"
+const ADDON_VERSION := "0.5.13"
 const SCREENSHOT_TIMEOUT_MS := 30000
 const PERF_TIMEOUT_MS := 5000
 const INPUT_TIMEOUT_MS := 65000
 const EXEC_TIMEOUT_MS := 10000
 const STATE_TIMEOUT_MS := 5000
+const RUN_ATTACH_TIMEOUT_MS := 3000
 var _exec_counter: int = 0
 
 var _tcp_server: TCPServer
@@ -20,6 +21,7 @@ var _pending_screenshot = null  # Deferred editor screenshot capture data
 var _pending_run = null  # Poll for scene play confirmation {peer_id, id, timeout_at, started_at}
 var _pending_scene_open = null  # Deferred scene open + play {peer_id, id, scene_path, timeout}
 var _game_running: bool = false
+var _runtime_attached: bool = false  # set by _capture via mark_runtime_attached()
 var _next_peer_id: int = 1
 var _port: int = DEFAULT_PORT
 var _bridge_token: String = ""
@@ -299,20 +301,21 @@ func _process(_delta: float) -> void:
 			"script_warnings": s.get("script_warnings", []),
 		}
 
-	# 4b. Poll for scene play confirmation
+	# 4b. Poll for scene play confirmation. Success is gated on the runtime
+	# attach heartbeat (own short sub-timeout): playing-but-unattached past
+	# the window still succeeds, but with an explicit runtime_attached:false
+	# + warning — never a bare success:true (BUG-02 readiness contract).
 	if _pending_run != null:
 		var r: Dictionary = _pending_run
-		if EditorInterface.is_playing_scene():
-			_pending_run = null
-			var waited: float = (Time.get_ticks_msec() - r.get("started_at", Time.get_ticks_msec())) / 1000.0
-			var resp := {"action": "play", "success": true, "scene": r.get("scene", ""), "waited_seconds": waited}
-			if r.get("main_scene_empty", false):
-				resp["main_scene_empty"] = true
-				resp["hint"] = "No main_scene set. Use set_main_scene to configure."
-			var sw = r.get("script_warnings", [])
-			if sw.size() > 0:
-				resp["script_warnings"] = sw
-			send_response(r["peer_id"], r["id"], resp)
+		if _is_game_playing():
+			if _runtime_attached:
+				_pending_run = null
+				send_response(r["peer_id"], r["id"], _build_run_response(r, true))
+			elif not r.has("attach_timeout_at"):
+				r["attach_timeout_at"] = Time.get_ticks_msec() + RUN_ATTACH_TIMEOUT_MS
+			elif Time.get_ticks_msec() > r["attach_timeout_at"]:
+				_pending_run = null
+				send_response(r["peer_id"], r["id"], _build_run_response(r, false))
 		elif Time.get_ticks_msec() > r["timeout_at"]:
 			_pending_run = null
 			var timeout_secs: float = (r["timeout_at"] - r.get("started_at", r["timeout_at"])) / 1000.0
@@ -406,6 +409,10 @@ func _dispatch(peer_id: int, id: String, method: String, params: Dictionary) -> 
 			_handle_set_main_scene(peer_id, id, params)
 		"reload_script":
 			_handle_reload_script(peer_id, id, params)
+		"uid_probe":
+			_handle_uid_probe(peer_id, id, params)
+		"wait_for_import":
+			_handle_wait_for_import(peer_id, id, params)
 		"explore_camera":
 			_handle_game_forward(peer_id, id, "godotiq:explore_camera", params, 10000)
 		_:
@@ -417,8 +424,13 @@ func _dispatch(peer_id: int, id: String, method: String, params: Dictionary) -> 
 func _handle_ping(peer_id: int, id: String) -> void:
 	send_response(peer_id, id, {
 		"editor_version": Engine.get_version_info().get("string", "unknown"),
-		"game_running": _game_running,
+		# Live editor state, not the stale-on-session-reuse flag — keeps the
+		# payload consistent with _editor_state.game_running.
+		"game_running": _is_game_playing(),
 		"addon_version": ADDON_VERSION,
+		# Editor process id — consumed by the Python editor-open guard to
+		# identify which editor holds this project (BUG-04).
+		"pid": OS.get_process_id(),
 	})
 
 
@@ -435,8 +447,11 @@ func _handle_editor_context(peer_id: int, id: String) -> void:
 	send_response(peer_id, id, {
 		"open_scenes": open_scenes,
 		"selected_nodes": selected,
-		"game_running": _game_running,
+		"game_running": _is_game_playing(),
 		"project_path": ProjectSettings.globalize_path("res://"),
+		# Editor process id — consumed by the Python editor-open guard to
+		# identify which editor holds this project (BUG-04).
+		"pid": OS.get_process_id(),
 	})
 
 
@@ -457,6 +472,82 @@ func _handle_set_main_scene(peer_id: int, id: String, params: Dictionary) -> voi
 	send_response(peer_id, id, {"main_scene": scene, "saved": saved})
 
 
+func _wait_for_import_idle(fs, timeout_ms: int) -> Dictionary:
+	# Poll until the editor filesystem scan/import queue is idle (BUG-08).
+	# "Idle" means the EDITOR's state is updated — on-disk import artifacts
+	# (.godot/imported) may still flush asynchronously. fs is untyped so
+	# contract tests can inject a fake in headless runs.
+	var start_ms: int = Time.get_ticks_msec()
+	var polls: int = 0
+	# Grace frames: scan() requested just before this call starts DEFERRED,
+	# so is_scanning() is still false on an immediate first check and the
+	# wait would return without covering the scan it was meant to observe
+	# (reproduced 18/20 in the BUG-08 loop, 2026-06-10).
+	for _grace in range(2):
+		if fs.is_scanning():
+			break
+		await Engine.get_main_loop().process_frame
+	while fs.is_scanning():
+		var waited: int = Time.get_ticks_msec() - start_ms
+		if waited >= timeout_ms:
+			return {
+				"idle": false,
+				"timed_out": true,
+				"waited_ms": waited,
+				"polls": polls,
+				"scan_progress": fs.get_scanning_progress(),
+			}
+		polls += 1
+		# Main-loop signal, not get_tree(): works even when this node is
+		# not (yet) inside the tree, which headless contract tests rely on.
+		await Engine.get_main_loop().process_frame
+	return {
+		"idle": true,
+		"timed_out": false,
+		"waited_ms": Time.get_ticks_msec() - start_ms,
+		"polls": polls,
+	}
+
+
+func _handle_wait_for_import(peer_id: int, id: String, params: Dictionary) -> void:
+	# Explicit, agent-requested wait — scan()/reimport stay fire-and-forget
+	# everywhere else; bridge ops must never block by default (BUG-08).
+	var timeout_ms: int = int(params.get("timeout_ms", 30000))
+	var status: Dictionary = await _wait_for_import_idle(
+		EditorInterface.get_resource_filesystem(), timeout_ms
+	)
+	send_response(peer_id, id, status)
+
+
+func _handle_uid_probe(peer_id: int, id: String, params: Dictionary) -> void:
+	# Read-only probe of the editor's IN-MEMORY ResourceUID view (BUG-05).
+	# Used by the Python uid_to_path/path_to_uid divergence check to compare
+	# editor memory against the fresh-disk resolution. Must never reimport
+	# or rescan — on divergence the recommended fix is an editor restart.
+	var uid_text: String = str(params.get("uid", ""))
+	var res_path: String = str(params.get("path", ""))
+	if uid_text.is_empty() and res_path.is_empty():
+		_send_error(peer_id, id, "MISSING_PARAM", "Provide 'uid' or 'path'")
+		return
+	if not uid_text.is_empty():
+		var uid_int := ResourceUID.text_to_id(uid_text)
+		var known := uid_int != ResourceUID.INVALID_ID and ResourceUID.has_id(uid_int)
+		send_response(peer_id, id, {
+			"probe": "uid_to_path",
+			"uid": uid_text,
+			"path": ResourceUID.get_id_path(uid_int) if known else null,
+		})
+		return
+	if not res_path.begins_with("res://"):
+		res_path = "res://" + res_path
+	var id_for_path := ResourceSaver.get_resource_id_for_path(res_path, false)
+	send_response(peer_id, id, {
+		"probe": "path_to_uid",
+		"path": res_path,
+		"uid": ResourceUID.id_to_text(id_for_path) if id_for_path != ResourceUID.INVALID_ID else null,
+	})
+
+
 func _handle_reload_script(peer_id: int, id: String, params: Dictionary) -> void:
 	var path: String = str(params.get("path", ""))
 	if path.is_empty() or not path.ends_with(".gd"):
@@ -466,7 +557,11 @@ func _handle_reload_script(peer_id: int, id: String, params: Dictionary) -> void
 	if script == null or not (script is GDScript):
 		send_response(peer_id, id, {"reloaded": false, "error": "Failed to load script: %s" % path})
 		return
-	var err: int = script.reload()
+	# Typed local: a user script declaring a non-static reload() shadows the
+	# untyped call (callp yields null → Nil-to-int crash); the typed call
+	# binds the native GDScript.reload().
+	var gd_script: GDScript = script
+	var err: int = gd_script.reload()
 	if err != OK:
 		send_response(peer_id, id, {"reloaded": false, "error": "Reload failed with code %d" % err})
 		return
@@ -497,6 +592,11 @@ func _collect_tscn_matches(dir: EditorFileSystemDirectory, scene_name: String, m
 
 
 func _handle_run(peer_id: int, id: String, params: Dictionary) -> void:
+	# Reset attachment at launch start — resetting only in on_game_stopped()
+	# leaves a stale-true window when the stopped callback is missed or a
+	# late capture from a previous session lands on the next run.
+	_runtime_attached = false
+
 	# Step 1: Save all open scenes
 	EditorInterface.save_all_scenes()
 
@@ -597,6 +697,29 @@ func _handle_run(peer_id: int, id: String, params: Dictionary) -> void:
 		}
 
 
+func _build_run_response(r: Dictionary, runtime_attached: bool) -> Dictionary:
+	var waited: float = (Time.get_ticks_msec() - r.get("started_at", Time.get_ticks_msec())) / 1000.0
+	var resp := {
+		"action": "play",
+		"success": true,
+		"scene": r.get("scene", ""),
+		"waited_seconds": waited,
+		"runtime_attached": runtime_attached,
+	}
+	if not runtime_attached:
+		resp["warning"] = (
+			"Scene is playing but the GodotIQ runtime did not attach; "
+			+ "runtime tools (screenshot, input, state_inspect, exec context=game) are unavailable."
+		)
+	if r.get("main_scene_empty", false):
+		resp["main_scene_empty"] = true
+		resp["hint"] = "No main_scene set. Use set_main_scene to configure."
+	var sw = r.get("script_warnings", [])
+	if sw.size() > 0:
+		resp["script_warnings"] = sw
+	return resp
+
+
 func _get_scripts_from_packed_scene(scene_path: String) -> Array[String]:
 	var result: Array[String] = []
 	var packed = load(scene_path)
@@ -640,7 +763,10 @@ func _check_scripts_valid(script_paths: Array[String]) -> Array[Dictionary]:
 		if res == null:
 			errors.append({"file": path, "error": "Failed to load script"})
 		elif res is GDScript:
-			var err: int = res.reload()
+			# Typed local — see _check_loaded_script: a non-static reload()
+			# shadow crashes the untyped call path.
+			var gd_script: GDScript = res
+			var err: int = gd_script.reload()
 			if err != OK:
 				errors.append({"file": path, "error": "Script reload failed (error %d)" % err})
 	return errors
@@ -762,6 +888,67 @@ func _find_by_name_recursive(node: Node, target_name: String) -> Node:
 	return null
 
 
+## Lazy proxy around EditorUndoRedoManager. The action is created only when
+## the first do/undo registration arrives, so read-only or all-failed batches
+## never call create_action() at all — an open action left behind would
+## silently swallow EVERY later node_ops batch until editor restart (E6/E6b).
+class LazyEditorAction:
+	extends RefCounted
+
+	const UNSET := {}  # identity sentinel for unused optional method-arg slots
+
+	var created := false
+	var _manager: Object
+	var _action_name: String
+	var _context: Node
+
+	func _init(manager: Object, action_name: String, context: Node) -> void:
+		_manager = manager
+		_action_name = action_name
+		_context = context
+
+	func _ensure() -> void:
+		if not created:
+			_manager.create_action(_action_name, 0, _context)  # 0 = MERGE_DISABLE
+			created = true
+
+	func add_do_property(obj: Object, prop: String, value) -> void:
+		_ensure()
+		_manager.add_do_property(obj, prop, value)
+
+	func add_undo_property(obj: Object, prop: String, value) -> void:
+		_ensure()
+		_manager.add_undo_property(obj, prop, value)
+
+	func add_do_method(obj: Object, method: String, a1 = UNSET, a2 = UNSET, a3 = UNSET, a4 = UNSET) -> void:
+		_ensure()
+		_callv_vararg("add_do_method", obj, method, [a1, a2, a3, a4])
+
+	func add_undo_method(obj: Object, method: String, a1 = UNSET, a2 = UNSET, a3 = UNSET, a4 = UNSET) -> void:
+		_ensure()
+		_callv_vararg("add_undo_method", obj, method, [a1, a2, a3, a4])
+
+	func add_do_reference(obj: Object) -> void:
+		_ensure()
+		_manager.add_do_reference(obj)
+
+	func add_undo_reference(obj: Object) -> void:
+		_ensure()
+		_manager.add_undo_reference(obj)
+
+	func commit_if_created() -> void:
+		if created:
+			_manager.commit_action()
+
+	func _callv_vararg(manager_method: String, obj: Object, method: String, slots: Array) -> void:
+		var args: Array = [obj, method]
+		for slot in slots:
+			if is_same(slot, UNSET):
+				break
+			args.append(slot)
+		_manager.callv(manager_method, args)
+
+
 func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 	var operations: Array = params.get("operations", [])
 	if not (operations is Array) or operations.size() == 0:
@@ -779,50 +966,22 @@ func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 		return
 
 	var action_name := "GodotIQ: %d node operation(s)" % operations.size()
-	undo_redo.create_action(action_name, 0, scene_root)  # 0 = MERGE_DISABLE
+	var action := LazyEditorAction.new(undo_redo, action_name, scene_root)
 
 	var results: Array = []
-	var any_succeeded := false
-
 	for op_data in operations:
 		if not (op_data is Dictionary):
 			results.append({"status": "error", "error": "Invalid operation format"})
 			continue
-		var result := _execute_node_op(op_data, scene_root, undo_redo)
+		var result := _execute_node_op(op_data, scene_root, action)
 		results.append(result)
-		if result["status"] == "ok" and result.get("op", "") != "get_property":
-			any_succeeded = true
 
-	if any_succeeded:
-		undo_redo.commit_action()
+	# Always close the action once anything was registered — even if later ops
+	# in the batch failed. An uncommitted action poisons the manager globally.
+	action.commit_if_created()
 
-		# Verification read-back and property change notifications
-		var modified_nodes: Dictionary = {}
-		for result in results:
-			if result["status"] != "ok":
-				continue
-			var node_ref = result.get("_node_ref")
-			if node_ref != null and is_instance_valid(node_ref):
-				modified_nodes[node_ref] = true
-				# Read back the property to verify it was actually set
-				var prop_name: String = result.get("_prop_name", "")
-				var expected = result.get("_expected")
-				if prop_name != "" and expected != null:
-					var actual = node_ref.get(prop_name)
-					if actual is Vector3:
-						result["verified"] = (actual as Vector3).is_equal_approx(expected as Vector3)
-						result["actual_value"] = [actual.x, actual.y, actual.z]
-					elif actual is Vector2:
-						result["verified"] = (actual as Vector2).is_equal_approx(expected as Vector2)
-						result["actual_value"] = [actual.x, actual.y]
-					else:
-						result["verified"] = actual == expected
-
-		# Batch notify property changes on all modified nodes
-		for node in modified_nodes:
-			if is_instance_valid(node):
-				node.notify_property_list_changed()
-
+	if action.created:
+		_verify_node_op_results(results)
 		_godotiq_action_history.append({
 			"action": action_name,
 			"operations": results.size(),
@@ -833,22 +992,150 @@ func _handle_node_ops(peer_id: int, id: String, params: Dictionary) -> void:
 				_godotiq_action_history.size() - MAX_HISTORY_SIZE
 			)
 
+	# Truth in reporting: scene_modified only counts effects observed by the
+	# post-commit read-back; all_verified is false if any mutating op failed
+	# verification (or errored). get_property is read-only and never counts.
+	var scene_modified := false
+	var all_verified := true
+	for result in results:
+		if str(result.get("op", "")) == "get_property":
+			continue
+		if result.get("_effect_observed", false):
+			scene_modified = true
+		if str(result.get("status", "")) != "ok" or result.get("verified", false) != true:
+			all_verified = false
+
 	# Clean up internal metadata from ALL results before sending response
 	for result in results:
 		result.erase("_node_ref")
+		result.erase("_parent_ref")
 		result.erase("_prop_name")
 		result.erase("_expected")
+		result.erase("_expected_anchors")
+		result.erase("_old_name")
+		result.erase("_verify")
+		result.erase("_effect_observed")
 
 	send_response(peer_id, id, {
 		"results": results,
-		"scene_modified": any_succeeded,
-		"undo_available": any_succeeded,
+		"scene_modified": scene_modified,
+		"all_verified": all_verified,
+		"undo_available": action.created,
 		"action_name": action_name,
 	})
 
 
+## Post-commit read-back for every mutating operation: confirm against the
+## live tree that the requested change actually happened. verified:false
+## downgrades the op status to "unverified" ("ok"/"error" keep their meaning).
+func _verify_node_op_results(results: Array) -> void:
+	var modified_nodes: Dictionary = {}
+	for result in results:
+		if str(result.get("status", "")) != "ok":
+			continue
+		var kind: String = str(result.get("_verify", ""))
+		if kind.is_empty():
+			continue
+		var node = result.get("_node_ref")
+		var node_ok: bool = node != null and is_instance_valid(node)
+		var verified := false
+		var effect := false
+		match kind:
+			"property":
+				if node_ok:
+					modified_nodes[node] = true
+					var prop_name: String = str(result.get("_prop_name", ""))
+					var expected = result.get("_expected")
+					var actual = node.get(prop_name)
+					verified = _values_match(actual, expected)
+					result["actual_value"] = _value_to_json(actual)
+					effect = verified
+			"rename":
+				if node_ok:
+					modified_nodes[node] = true
+					var actual_name := str(node.name)
+					var requested := str(result.get("new_name", ""))
+					var old_name := str(result.get("_old_name", ""))
+					result["actual_name"] = actual_name
+					verified = actual_name == requested
+					if not verified and actual_name != old_name:
+						# Godot deduplicated the name (sibling collision).
+						result["name_collision"] = true
+					effect = actual_name != old_name
+			"delete":
+				# The node object survives via the undo reference; deletion
+				# is confirmed by it having left the tree.
+				verified = node_ok and not node.is_inside_tree()
+				effect = verified
+			"child_present":
+				var parent = result.get("_parent_ref")
+				if node_ok and parent != null and is_instance_valid(parent):
+					modified_nodes[node] = true
+					verified = node.is_inside_tree() and node.get_parent() == parent
+					var actual_name := str(node.name)
+					result["actual_name"] = actual_name
+					var requested := str(result.get("node", result.get("new_name", "")))
+					if verified and not requested.is_empty() and actual_name != requested:
+						result["name_collision"] = true
+				effect = verified
+			"reparent":
+				var parent = result.get("_parent_ref")
+				if node_ok and parent != null and is_instance_valid(parent):
+					modified_nodes[node] = true
+					verified = node.is_inside_tree() and node.get_parent() == parent
+				effect = verified
+			"anchors":
+				if node_ok:
+					modified_nodes[node] = true
+					var expected_anchors: Array = result.get("_expected_anchors", [])
+					if expected_anchors.size() == 4:
+						verified = (
+							is_equal_approx(float(node.get("anchor_left")), float(expected_anchors[0]))
+							and is_equal_approx(float(node.get("anchor_top")), float(expected_anchors[1]))
+							and is_equal_approx(float(node.get("anchor_right")), float(expected_anchors[2]))
+							and is_equal_approx(float(node.get("anchor_bottom")), float(expected_anchors[3]))
+						)
+						result["actual_anchors"] = [
+							node.get("anchor_left"), node.get("anchor_top"),
+							node.get("anchor_right"), node.get("anchor_bottom"),
+						]
+					effect = verified
+		result["verified"] = verified
+		result["_effect_observed"] = effect
+		if not verified:
+			result["status"] = "unverified"
+
+	# Batch notify property changes on all modified nodes
+	for node in modified_nodes:
+		if is_instance_valid(node):
+			node.notify_property_list_changed()
+
+
+func _values_match(actual, expected) -> bool:
+	if actual is Vector3 and expected is Vector3:
+		return (actual as Vector3).is_equal_approx(expected as Vector3)
+	if actual is Vector2 and expected is Vector2:
+		return (actual as Vector2).is_equal_approx(expected as Vector2)
+	if actual is Color and expected is Color:
+		return (actual as Color).is_equal_approx(expected as Color)
+	if (actual is float or actual is int) and (expected is float or expected is int):
+		return is_equal_approx(float(actual), float(expected))
+	return actual == expected
+
+
+# Ops whose effect is a serializable property override (allowed on nodes
+# inside instances marked Editable Children).
+const _INSTANCE_PROPERTY_OPS: Array[String] = ["move", "rotate", "scale", "set_property", "set_anchors"]
+# Ops that restructure the tree: never serializable for instance-internal
+# nodes, not even with Editable Children (the editor UI forbids them too).
+const _INSTANCE_STRUCTURAL_OPS: Array[String] = ["delete", "rename", "reparent"]
+
+
 func _execute_node_op(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var op: String = str(op_data.get("op", ""))
+	var guard := _instance_internal_guard(op, op_data, scene_root)
+	if not guard.is_empty():
+		return guard
 	match op:
 		"move":
 			return _op_move(op_data, scene_root, ur)
@@ -883,19 +1170,85 @@ func _find_node_by_name_or_path(name_or_path: String, scene_root: Node) -> Node:
 	return _find_by_name_recursive(scene_root, name_or_path)
 
 
+## Blocks mutations that would be silently dropped on save because the target
+## node is internal to an instanced child scene (owner != scene_root, E7).
+## Property overrides are allowed when the instance has Editable Children
+## enabled — those DO serialize. Returns {} when the op may proceed.
+func _instance_internal_guard(op: String, op_data: Dictionary, scene_root: Node) -> Dictionary:
+	var target_key := ""
+	if op in _INSTANCE_PROPERTY_OPS or op in _INSTANCE_STRUCTURAL_OPS or op == "duplicate":
+		target_key = "node"
+	elif op == "add_child":
+		target_key = "parent"
+	else:
+		return {}
+	var name_or_path := str(op_data.get(target_key, ""))
+	if name_or_path.is_empty():
+		return {}  # let the op report its own missing-param error
+	var node := _find_node_by_name_or_path(name_or_path, scene_root)
+	if node == null or node == scene_root or node.owner == scene_root:
+		return {}  # not found (op reports it), or a regular owned node
+	var instance_root := _owned_instance_ancestor(node, scene_root)
+	if instance_root == null:
+		return {
+			"op": op,
+			"node": name_or_path,
+			"status": "error",
+			"code": "INSTANCE_INTERNAL_NODE",
+			"error": (
+				"Node '%s' is not owned by the edited scene, so this change would be "
+				+ "silently lost on save (likely an instance-internal or runtime-created node)."
+			) % name_or_path,
+		}
+	var editable: bool = scene_root.is_editable_instance(instance_root)
+	if editable and (op in _INSTANCE_PROPERTY_OPS or op == "add_child" or op == "duplicate"):
+		return {}  # serializable as overrides / added nodes
+	var source_scene := str(instance_root.scene_file_path)
+	var message: String
+	if editable:
+		message = (
+			"Node '%s' is internal to instanced scene '%s': %s cannot be serialized "
+			+ "even with Editable Children. Edit the source scene '%s' directly."
+		) % [name_or_path, str(instance_root.name), op, source_scene]
+	else:
+		message = (
+			"Node '%s' is internal to instanced scene '%s' (Editable Children is OFF): "
+			+ "the change would apply live but be silently lost on save. Enable Editable "
+			+ "Children on '%s' for property overrides, or edit the source scene '%s' directly."
+		) % [name_or_path, str(instance_root.name), str(instance_root.name), source_scene]
+	return {
+		"op": op,
+		"node": name_or_path,
+		"status": "error",
+		"code": "INSTANCE_INTERNAL_NODE",
+		"error": message,
+	}
+
+
+## Walks up from an instance-internal node to the instance root that the
+## edited scene actually owns (handles nested instances).
+func _owned_instance_ancestor(node: Node, scene_root: Node) -> Node:
+	var current := node.get_parent()
+	while current != null and current != scene_root:
+		if current.owner == scene_root and not str(current.scene_file_path).is_empty():
+			return current
+		current = current.get_parent()
+	return null
+
+
 func _op_move(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var node_name: String = str(op_data.get("node", ""))
 	var node := _find_node_by_name_or_path(node_name, scene_root)
 	if node == null:
 		return {"op": "move", "node": node_name, "status": "error", "error": "Node not found: %s" % node_name}
 
-	var pos: Array = op_data.get("position", op_data.get("value", [0, 0, 0]))
-	if not (pos is Array) or pos.size() < 2:
+	var pos = op_data.get("position", op_data.get("value", [0, 0, 0]))
+	if not _is_numeric_array(pos, 2):
 		return {"op": "move", "node": node_name, "status": "error", "error": "position must be an array of at least 2 numbers"}
 	var new_pos_value  # Variant: Vector3 or Vector2
 	if node is Node3D:
-		if pos.size() < 3:
-			return {"op": "move", "node": node_name, "status": "error", "error": "Node3D position requires [x, y, z]"}
+		if not _is_numeric_array(pos, 3):
+			return {"op": "move", "node": node_name, "status": "error", "error": "Node3D position requires [x, y, z] numbers"}
 		var old_pos := (node as Node3D).position
 		new_pos_value = Vector3(float(pos[0]), float(pos[1]), float(pos[2]))
 		ur.add_do_property(node, "position", new_pos_value)
@@ -913,7 +1266,7 @@ func _op_move(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	else:
 		return {"op": "move", "node": node_name, "status": "error", "error": "Node does not support position"}
 
-	return {"op": "move", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "position", "_expected": new_pos_value}
+	return {"op": "move", "node": node_name, "status": "ok", "_verify": "property", "_node_ref": node, "_prop_name": "position", "_expected": new_pos_value}
 
 
 func _op_rotate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -925,15 +1278,15 @@ func _op_rotate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	if not (node is Node3D):
 		return {"op": "rotate", "node": node_name, "status": "error", "error": "Rotate only supports Node3D"}
 
-	var rot: Array = op_data.get("rotation", op_data.get("value", [0, 0, 0]))
-	if not (rot is Array) or rot.size() < 3:
-		return {"op": "rotate", "node": node_name, "status": "error", "error": "rotation requires [x, y, z]"}
+	var rot = op_data.get("rotation", op_data.get("value", [0, 0, 0]))
+	if not _is_numeric_array(rot, 3):
+		return {"op": "rotate", "node": node_name, "status": "error", "error": "rotation requires [x, y, z] numbers"}
 	var n3d: Node3D = node
 	var old_rot := n3d.rotation_degrees
 	var new_rot := Vector3(float(rot[0]), float(rot[1]), float(rot[2]))
 	ur.add_do_property(node, "rotation_degrees", new_rot)
 	ur.add_undo_property(node, "rotation_degrees", old_rot)
-	return {"op": "rotate", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "rotation_degrees", "_expected": new_rot}
+	return {"op": "rotate", "node": node_name, "status": "ok", "_verify": "property", "_node_ref": node, "_prop_name": "rotation_degrees", "_expected": new_rot}
 
 
 func _op_scale(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -945,15 +1298,15 @@ func _op_scale(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	if not (node is Node3D):
 		return {"op": "scale", "node": node_name, "status": "error", "error": "Scale only supports Node3D"}
 
-	var sc: Array = op_data.get("scale", op_data.get("value", [1, 1, 1]))
-	if not (sc is Array) or sc.size() < 3:
-		return {"op": "scale", "node": node_name, "status": "error", "error": "scale requires [x, y, z]"}
+	var sc = op_data.get("scale", op_data.get("value", [1, 1, 1]))
+	if not _is_numeric_array(sc, 3):
+		return {"op": "scale", "node": node_name, "status": "error", "error": "scale requires [x, y, z] numbers"}
 	var n3d: Node3D = node
 	var old_scale := n3d.scale
 	var new_scale := Vector3(float(sc[0]), float(sc[1]), float(sc[2]))
 	ur.add_do_property(node, "scale", new_scale)
 	ur.add_undo_property(node, "scale", old_scale)
-	return {"op": "scale", "node": node_name, "status": "ok", "_node_ref": node, "_prop_name": "scale", "_expected": new_scale}
+	return {"op": "scale", "node": node_name, "status": "ok", "_verify": "property", "_node_ref": node, "_prop_name": "scale", "_expected": new_scale}
 
 
 func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -975,6 +1328,8 @@ func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 
 	if parts.size() > 1:
 		# Sub-path: modify only the component
+		if not (value is int or value is float):
+			return {"op": "set_property", "node": node_name, "status": "error", "error": "Sub-path '%s' requires a numeric value" % property}
 		var sub_path: String = parts[1]
 		var ref_value = old_value
 		if ref_value is Vector3:
@@ -1005,7 +1360,7 @@ func _op_set_property(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 
 	ur.add_do_property(node, base_property, value)
 	ur.add_undo_property(node, base_property, old_value)
-	return {"op": "set_property", "node": node_name, "status": "ok", "property": property, "_node_ref": node, "_prop_name": base_property, "_expected": value}
+	return {"op": "set_property", "node": node_name, "status": "ok", "property": property, "_verify": "property", "_node_ref": node, "_prop_name": base_property, "_expected": value}
 
 
 func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -1023,6 +1378,8 @@ func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 		if packed == null or not (packed is PackedScene):
 			return {"op": "add_child", "status": "error", "error": "Failed to load scene: %s" % scene_path}
 		new_node = packed.instantiate()
+		if new_node == null:
+			return {"op": "add_child", "status": "error", "error": "Scene could not be instantiated: %s" % scene_path}
 	elif type_name != "":
 		if not ClassDB.class_exists(type_name) or not ClassDB.can_instantiate(type_name):
 			return {"op": "add_child", "status": "error", "error": "Cannot instantiate type: %s" % type_name}
@@ -1033,20 +1390,26 @@ func _op_add_child(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var child_name: String = str(op_data.get("name", "NewNode"))
 	new_node.name = child_name
 
+	# Validate position BEFORE the first undo/redo registration: a malformed
+	# value must produce a per-op error, never a mid-action runtime crash.
+	var pos = op_data.get("position", null)
+	if pos != null and not _is_numeric_array(pos, 2):
+		new_node.free()
+		return {"op": "add_child", "node": child_name, "status": "error", "error": "position must be an array of at least 2 numbers"}
+
 	ur.add_do_method(parent, "add_child", new_node)
 	ur.add_do_method(self, "_set_owner_recursive", new_node, scene_root)
 	ur.add_do_reference(new_node)
 	ur.add_undo_method(parent, "remove_child", new_node)
 
 	# Set position after adding if provided
-	var pos = op_data.get("position", null)
 	if pos is Array and pos.size() >= 2:
 		if new_node is Node3D and pos.size() >= 3:
 			ur.add_do_property(new_node, "position", Vector3(float(pos[0]), float(pos[1]), float(pos[2])))
 		elif new_node is Node2D or new_node is Control:
 			ur.add_do_property(new_node, "position", Vector2(float(pos[0]), float(pos[1])))
 
-	return {"op": "add_child", "node": child_name, "parent": parent_name, "status": "ok"}
+	return {"op": "add_child", "node": child_name, "parent": parent_name, "status": "ok", "_verify": "child_present", "_node_ref": new_node, "_parent_ref": parent}
 
 
 func _op_delete(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -1063,7 +1426,7 @@ func _op_delete(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	ur.add_undo_method(parent, "add_child", node)
 	ur.add_undo_method(node, "set_owner", scene_root)
 	ur.add_undo_reference(node)
-	return {"op": "delete", "node": node_name, "status": "ok"}
+	return {"op": "delete", "node": node_name, "status": "ok", "_verify": "delete", "_node_ref": node}
 
 
 func _op_duplicate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -1081,7 +1444,7 @@ func _op_duplicate(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	ur.add_do_method(self, "_set_owner_recursive", dup, scene_root)
 	ur.add_do_reference(dup)
 	ur.add_undo_method(parent, "remove_child", dup)
-	return {"op": "duplicate", "node": node_name, "new_name": dup_name, "status": "ok"}
+	return {"op": "duplicate", "node": node_name, "new_name": dup_name, "status": "ok", "_verify": "child_present", "_node_ref": dup, "_parent_ref": parent}
 
 
 func _op_reparent(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -1102,7 +1465,7 @@ func _op_reparent(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	ur.add_undo_method(new_parent, "remove_child", node)
 	ur.add_undo_method(old_parent, "add_child", node)
 	ur.add_undo_method(self, "_set_owner_recursive", node, scene_root)
-	return {"op": "reparent", "node": node_name, "new_parent": new_parent_name, "status": "ok"}
+	return {"op": "reparent", "node": node_name, "new_parent": new_parent_name, "status": "ok", "_verify": "reparent", "_node_ref": node, "_parent_ref": new_parent}
 
 
 func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
@@ -1153,9 +1516,9 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 		ctrl.anchor_bottom = old_anchors[3]
 
 	elif op_data.has("anchors"):
-		var anchors: Array = op_data["anchors"]
-		if not (anchors is Array) or anchors.size() < 4:
-			return {"op": "set_anchors", "node": node_name, "status": "error", "error": "anchors requires [left, top, right, bottom]"}
+		var anchors = op_data["anchors"]
+		if not _is_numeric_array(anchors, 4):
+			return {"op": "set_anchors", "node": node_name, "status": "error", "error": "anchors requires [left, top, right, bottom] numbers"}
 		new_anchors = [float(anchors[0]), float(anchors[1]), float(anchors[2]), float(anchors[3])]
 
 	else:
@@ -1170,7 +1533,7 @@ func _op_set_anchors(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	ur.add_undo_property(ctrl, "anchor_right", old_anchors[2])
 	ur.add_undo_property(ctrl, "anchor_bottom", old_anchors[3])
 
-	var result: Dictionary = {"op": "set_anchors", "node": node_name, "status": "ok", "anchors": new_anchors}
+	var result: Dictionary = {"op": "set_anchors", "node": node_name, "status": "ok", "anchors": new_anchors, "_verify": "anchors", "_node_ref": ctrl, "_expected_anchors": new_anchors}
 	if preset_name != "":
 		result["preset"] = preset_name
 	return result
@@ -1187,7 +1550,7 @@ func _op_rename(op_data: Dictionary, scene_root: Node, ur) -> Dictionary:
 	var old_name: String = node.name
 	ur.add_do_property(node, "name", new_name)
 	ur.add_undo_property(node, "name", old_name)
-	return {"op": "rename", "node": node_name, "status": "ok", "new_name": new_name}
+	return {"op": "rename", "node": node_name, "status": "ok", "new_name": new_name, "_verify": "rename", "_node_ref": node, "_old_name": old_name}
 
 
 func _op_get_property(op_data: Dictionary, scene_root: Node) -> Dictionary:
@@ -1244,6 +1607,15 @@ func _value_to_json(value) -> Variant:
 			],
 		}
 	return str(value)
+
+
+func _is_numeric_array(value, min_size: int) -> bool:
+	if not (value is Array) or value.size() < min_size:
+		return false
+	for i in range(min_size):
+		if not (value[i] is int or value[i] is float):
+			return false
+	return true
 
 
 func _to_vector3(value, fallback: Vector3 = Vector3.ZERO) -> Vector3:
@@ -1509,19 +1881,43 @@ func _exec_editor_via_file(code: String) -> Dictionary:
 	}
 
 
-func _handle_save_scene(peer_id: int, id: String, _params: Dictionary) -> void:
+func _handle_save_scene(peer_id: int, id: String, params: Dictionary) -> void:
 	var scene_root := EditorInterface.get_edited_scene_root()
 	if scene_root == null:
 		_send_error(peer_id, id, "NO_SCENE", "No scene is currently open in the editor")
 		return
 
-	EditorInterface.save_scene()
-
 	var scene_path: String = scene_root.scene_file_path
+
+	# Optional guard: refuse to save when a different scene than the caller
+	# expects is active (E2/E3 — wrong-tab edits persisted or stranded).
+	var expected_scene := str(params.get("expected_scene", ""))
+	if not expected_scene.is_empty() and expected_scene != scene_path:
+		_send_error(peer_id, id, "SCENE_MISMATCH",
+			"Active scene is '%s' but expected_scene is '%s' — nothing was saved. Open the expected scene first (godotiq_exec: EditorInterface.open_scene_from_path)." % [scene_path, expected_scene])
+		return
+
+	var existed_before := scene_path != "" and FileAccess.file_exists(scene_path)
+	var mtime_before: int = FileAccess.get_modified_time(scene_path) if existed_before else 0
+
+	var err: int = EditorInterface.save_scene()
+
+	var exists_after := scene_path != "" and FileAccess.file_exists(scene_path)
+	var mtime_changed := exists_after and FileAccess.get_modified_time(scene_path) != mtime_before
+	var saved := err == OK and exists_after
+	# EditorInterface.save_scene() returns OK even when ResourceSaver fails
+	# (verified live: read-only dir -> OK, file untouched). When the timestamp
+	# did not move, a write probe disambiguates the permission failure from a
+	# legitimate same-second rewrite — the probe never fails on writable paths.
+	var write_failed := false
+	if saved and existed_before and not mtime_changed and not _scene_write_probe(scene_path):
+		write_failed = true
+		saved = false
+		err = ERR_FILE_CANT_WRITE
 
 	# Compute feedback: file size and node count
 	var file_size_kb := 0
-	if FileAccess.file_exists(scene_path):
+	if exists_after:
 		var f := FileAccess.open(scene_path, FileAccess.READ)
 		if f != null:
 			file_size_kb = maxi(1, int(f.get_length() / 1024.0))
@@ -1529,13 +1925,45 @@ func _handle_save_scene(peer_id: int, id: String, _params: Dictionary) -> void:
 
 	var node_count := _count_nodes(scene_root)
 
-	send_response(peer_id, id, {
-		"saved": true,
+	var response := {
+		"saved": saved,
 		"scene_path": scene_path,
 		"scene_name": scene_root.name,
 		"file_size_kb": file_size_kb,
 		"node_count": node_count,
-	})
+		# Informational only (1-second fs granularity): a save within the same
+		# second as the previous write legitimately reports false.
+		"file_mtime_changed": mtime_changed,
+	}
+	if not saved:
+		var detail := ""
+		if write_failed:
+			detail = "; the scene file/directory is not writable (check permissions and the editor log)"
+		elif not exists_after:
+			detail = "; file missing: %s" % scene_path
+		response["error_code"] = err
+		response["error"] = (
+			"save_scene failed (Error %d)%s — the scene was NOT written to disk."
+			% [err, detail]
+		)
+		_record_error("save_scene failed for '%s' (Error %d)" % [scene_path, err])
+	send_response(peer_id, id, response)
+
+
+## True when both the scene file and its directory accept writes. READ_WRITE
+## does not truncate, and the directory probe file is removed immediately.
+func _scene_write_probe(scene_path: String) -> bool:
+	var f := FileAccess.open(scene_path, FileAccess.READ_WRITE)
+	if f == null:
+		return false
+	f.close()
+	var probe_path := scene_path.get_base_dir().path_join(".godotiq_write_probe.tmp")
+	var p := FileAccess.open(probe_path, FileAccess.WRITE)
+	if p == null:
+		return false
+	p.close()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(probe_path))
+	return true
 
 
 func _count_nodes(root: Node) -> int:
@@ -2101,23 +2529,41 @@ func _create_build_node(spec: Dictionary, parent: Node, scene_root: Node, ur) ->
 
 # --- Game-side forwarding ---
 
+func _is_game_playing() -> bool:
+	# Liveness comes from the editor, not from _game_running: that flag is
+	# driven only by the debugger `started` signal, which Godot does not
+	# re-fire on session reuse — unreliable from the second run on.
+	# (Also the contract-test seam: EditorInterface is editor-only.)
+	return EditorInterface.is_playing_scene()
+
+
 func _handle_game_forward(peer_id: int, id: String, msg_type: String, params: Dictionary, timeout_ms: int) -> void:
-	if not _game_running:
+	if not _is_game_playing():
 		_send_error(peer_id, id, "GAME_NOT_RUNNING", "No game session is running")
 		return
 	if debugger == null:
 		_send_error(peer_id, id, "NO_DEBUGGER", "Debugger plugin not available")
 		return
+	if not _runtime_attached:
+		_send_error(peer_id, id, "RUNTIME_NOT_ATTACHED",
+			"Game is running but the GodotIQ runtime did not attach; runtime tools are unavailable. Restart the game with godotiq_run to retry the handshake.")
+		return
 	var req_key := "%d:%s" % [peer_id, id]
+	var forward_params: Dictionary = params.duplicate(true)
+	forward_params["_request_id"] = req_key
+	# Register the pending entry only AFTER a successful send — a failed send
+	# must fail loud now, not linger until the timeout sweep.
+	var sent: bool = debugger.send_to_game(msg_type, [JSON.stringify(forward_params)])
+	if not sent:
+		_send_error(peer_id, id, "NO_GAME_SESSION",
+			"Debugger session unavailable; cannot reach the running game. Restart the game with godotiq_run.")
+		return
 	_pending_game_requests[req_key] = {
 		"peer_id": peer_id,
 		"request_id": id,
 		"method": msg_type,
 		"timeout_at": Time.get_ticks_msec() + timeout_ms,
 	}
-	var forward_params: Dictionary = params.duplicate(true)
-	forward_params["_request_id"] = req_key
-	debugger.send_to_game(msg_type, [JSON.stringify(forward_params)])
 
 
 func handle_game_response(response_type: String, data: Array) -> void:
@@ -2169,6 +2615,12 @@ func handle_game_response(response_type: String, data: Array) -> void:
 
 # --- Game lifecycle callbacks ---
 
+func mark_runtime_attached() -> void:
+	# Called by the debugger plugin on ANY godotiq:* capture — every captured
+	# message proves the game-side runtime registered its message capture.
+	_runtime_attached = true
+
+
 func on_game_started() -> void:
 	_game_running = true
 	send_event("game_started", {})
@@ -2176,6 +2628,7 @@ func on_game_started() -> void:
 
 func on_game_stopped() -> void:
 	_game_running = false
+	_runtime_attached = false
 	# Fail all pending game requests
 	for req_id in _pending_game_requests.keys():
 		var entry: Dictionary = _pending_game_requests[req_id]
@@ -2367,35 +2820,12 @@ func _handle_check_errors(peer_id: int, id: String, params: Dictionary):
 		checked += 1
 		if checked % 10 == 0:
 			await get_tree().process_frame
-	# Merge Logger entries — Logger entries replace basic errors for the same file
-	var final_errors: Array = []
-	if _has_logger:
-		var logger_entries := _get_script_errors()
-		var logger_by_file: Dictionary = {}  # file -> [entries]
-		for entry in logger_entries:
-			if not logger_by_file.has(entry.file):
-				logger_by_file[entry.file] = []
-			logger_by_file[entry.file].append({"file": entry.file, "line": entry.line, "error": entry.message})
-		# For files with Logger entries, use those instead of basic errors
-		for file_path in basic_errors:
-			if logger_by_file.has(file_path):
-				final_errors.append_array(logger_by_file[file_path])
-				logger_by_file.erase(file_path)
-			else:
-				final_errors.append(basic_errors[file_path])
-		# Add Logger entries for files not in basic_errors
-		for file_path in logger_by_file:
-			final_errors.append_array(logger_by_file[file_path])
-	else:
-		final_errors = basic_errors.values()
-	# Deduplicate by file+line+message
-	var seen := {}
-	var deduped: Array = []
-	for err in final_errors:
-		var key := "%s|%d|%s" % [err.file, err.line, err.error]
-		if not seen.has(key):
-			seen[key] = true
-			deduped.append(err)
+	# Let trailing async Logger callbacks land before the merge — the check
+	# loop only yields every 10 scripts, so the last <10 batch may still be
+	# in flight when we read _get_script_errors().
+	await get_tree().process_frame
+	var logger_entries: Array = _get_script_errors() if _has_logger else []
+	var deduped := _merge_and_dedup_errors(basic_errors, logger_entries)
 	_checking_errors = false
 	send_response(peer_id, id, {
 		"errors": deduped,
@@ -2405,14 +2835,61 @@ func _handle_check_errors(peer_id: int, id: String, params: Dictionary):
 	})
 
 
+func _merge_and_dedup_errors(basic_errors: Dictionary, logger_entries: Array) -> Array:
+	# Logger entries carry a real line and replace the line-unavailable basic
+	# error for the same file.
+	var final_errors: Array = []
+	var logger_by_file: Dictionary = {}  # file -> [entries]
+	for entry in logger_entries:
+		if not logger_by_file.has(entry.file):
+			logger_by_file[entry.file] = []
+		logger_by_file[entry.file].append({"file": entry.file, "line": entry.line, "error": entry.message})
+	# For files with Logger entries, use those instead of basic errors
+	for file_path in basic_errors:
+		if logger_by_file.has(file_path):
+			final_errors.append_array(logger_by_file[file_path])
+			logger_by_file.erase(file_path)
+		else:
+			final_errors.append(basic_errors[file_path])
+	# Add Logger entries for files not in basic_errors
+	for file_path in logger_by_file:
+		final_errors.append_array(logger_by_file[file_path])
+	# Deduplicate by file+line+message. All string placeholders on purpose:
+	# basic errors carry line:null (line_unavailable) and an int placeholder
+	# on null is unsafe.
+	var seen := {}
+	var deduped: Array = []
+	for err in final_errors:
+		var key := "%s|%s|%s" % [err.file, str(err.line), err.error]
+		if not seen.has(key):
+			seen[key] = true
+			deduped.append(err)
+	return deduped
+
+
 func _check_loaded_script(path: String, script_res) -> Dictionary:
+	# GDScript.reload() returns only an int error code — there is no real
+	# line to report. line:null + line_unavailable:true, never a hardcoded
+	# 0: the error is often real and a fake line 0 reads as a false positive.
 	if script_res == null:
-		return {"file": path, "line": 0, "error": "Failed to load script"}
-	if not script_res.has_method("reload"):
+		return {"file": path, "line": null, "line_unavailable": true, "error": "Failed to load script"}
+	# A project script may declare its own non-static `reload()` (an FPS
+	# weapon, say): the untyped call dispatches through callp, which refuses
+	# the non-static shadow and yields null — int(null) then crashed HERE,
+	# making check_errors flag the addon itself as a permanent project
+	# error. A GDScript-typed local binds the native method instead, so the
+	# shadowing script is still genuinely compile-checked.
+	var reload_result
+	if script_res is GDScript:
+		var gd_script: GDScript = script_res
+		reload_result = gd_script.reload()
+	elif script_res.has_method("reload"):
+		reload_result = script_res.reload()
+	else:
 		return {}
-	var reload_err: int = int(script_res.reload())
+	var reload_err: int = reload_result if reload_result is int else OK
 	if reload_err != OK:
-		return {"file": path, "line": 0, "error": "Script reload failed (error %d)" % reload_err}
+		return {"file": path, "line": null, "line_unavailable": true, "error": "Script reload failed (error %d)" % reload_err}
 	return {}
 
 

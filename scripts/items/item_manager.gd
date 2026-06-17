@@ -9,6 +9,8 @@ signal court_changed(item_key: String, on_court: bool)
 signal equip_refused(item_key: String, reason: StringName)
 ## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
 signal rack_slots_changed
+## Emitted after every rack-state mutation so consumers derive from one signal.
+signal item_manager_state_changed
 
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
@@ -365,6 +367,7 @@ func remove_level(item_key: String) -> void:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(item_key, Placement.STORED)
 			state.rack_slot_index_by_key.erase(item_key)
+			item_manager_state_changed.emit()
 
 		SaveManager.save()
 
@@ -442,9 +445,12 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
+		state.loose_in_venue.erase(item_key)
 		_effect_manager.unregister_source(item)
 		_effect_manager.register_source(item, get_level(item_key))
 		state.rack_slot_index_by_key.erase(item_key)
+
+	item_manager_state_changed.emit()
 
 	if previous == placement and not state.loose_in_venue.has(item_key):
 		return
