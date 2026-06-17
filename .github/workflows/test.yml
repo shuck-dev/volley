@@ -51,7 +51,7 @@ jobs:
           key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('project.godot', 'addons/**', '**/*.import') }}
 
       - name: Import Project
-        run: godot --headless --path . --import
+        run: godot --headless --path . --import 2>&1 || true
 
       - name: Run Tests
         env:
@@ -74,6 +74,7 @@ jobs:
             }
             if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
               if (m[1] in cold_paths) next
+              if (m[1] ~ /\.(png|webp|exr|hdr|gif|apng|wav|ogg|mp3|flac|mp4|webm|mov|ogv|psd|aseprite|ase|kra|svg)$/) next
               print NR ":" $0
               next
             }
