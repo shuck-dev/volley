@@ -22,7 +22,10 @@ concepts/.gdignore !filter !diff !merge text
 *.flac filter=lfs diff=lfs merge=lfs -text
 
 # Sprites and textures.
-assets/sprites/**/*.png filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+
+# Addon PNGs are small and committed directly.
+addons/**/*.png !filter !diff !merge text
 *.webp filter=lfs diff=lfs merge=lfs -text
 *.exr filter=lfs diff=lfs merge=lfs -text
 *.hdr filter=lfs diff=lfs merge=lfs -text
