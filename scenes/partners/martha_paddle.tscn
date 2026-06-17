@@ -12,7 +12,7 @@
 size = Vector2(24, 60)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ts58t"]
-size = Vector2(24, 20)
+size = Vector2(24, 65)
 
 [node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape")]
 collision_layer = 16
@@ -52,7 +52,7 @@ paddle = NodePath("..")
 config = ExtResource("5_config")
 
 [node name="RacketHitbox" type="Area2D" parent="." unique_id=1340017728]
-position = Vector2(0, -10)
+position = Vector2(0, 0)
 collision_layer = 8
 collision_mask = 2
 monitorable = false
