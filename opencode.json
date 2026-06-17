@@ -22,7 +22,9 @@
       "git pull *--rebase*": "deny",
       "git branch *-D *": "deny",
       "rm -rf *": "deny",
-      "rm *": "ask"
+      "rm *": "ask",
+      "*linear.app/graphql*issueCreate*": "ask",
+      "*linear.app/graphql*issueUpdate*": "ask"
     },
     "linear_save_issue": "ask",
     "linear_save_project": "ask",
