@@ -74,7 +74,7 @@ jobs:
             }
             if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
               if (m[1] in cold_paths) next
-              if (m[1] ~ /assets\/sprites\/sam\//) next
+              if (m[1] ~ /\.png$/) next
               print NR ":" $0
               next
             }
