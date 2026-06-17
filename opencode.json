@@ -23,6 +23,7 @@
       "git branch *-D *": "deny",
       "rm -rf *": "deny",
       "rm *": "ask",
+      "python*": "deny",
       "*linear.app/graphql*issueCreate*": "ask",
       "*linear.app/graphql*issueUpdate*": "ask"
     },
