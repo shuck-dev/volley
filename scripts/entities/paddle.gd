@@ -231,7 +231,11 @@ func _update_animation_state() -> void:
 
 ## Wired to the machine's state_changed signal; plays the animation when the state changes.
 func _on_animation_state_changed(state: StringName) -> void:
-	if sprite != null:
+	if (
+		sprite != null
+		and sprite.sprite_frames != null
+		and sprite.sprite_frames.has_animation(state)
+	):
 		sprite.play(state)
 
 
