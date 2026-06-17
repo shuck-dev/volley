@@ -30,6 +30,42 @@ shop = NodePath("Shop")
 court = NodePath("Court")
 dev_item_panel = NodePath("DevHUD/DevItemUI")
 
+[node name="ParallaxDeepBack" type="Parallax2D" parent="." unique_id=1359575071]
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxDeepBack" unique_id=1359575072]
+offset_left = -2000.0
+offset_top = -1500.0
+offset_right = 2000.0
+offset_bottom = 1500.0
+color = Color(0.05, 0.05, 0.3, 1)
+
+[node name="ParallaxBackground" type="Parallax2D" parent="." unique_id=1359575073]
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground" unique_id=1359575074]
+offset_left = -2500.0
+offset_top = -1200.0
+offset_right = -500.0
+offset_bottom = 1200.0
+color = Color(0.05, 0.2, 0.05, 0.7)
+
+[node name="ParallaxForeground" type="Parallax2D" parent="." unique_id=1359575077]
+scroll_scale = Vector2(1.8, 1.8)
+repeat_size = Vector2(4000, 0)
+repeat_times = 4
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxForeground" unique_id=1359575078]
+offset_left = -800.0
+offset_top = -400.0
+offset_right = 800.0
+offset_bottom = 1500.0
+color = Color(0.3, 0.15, 0.05, 0.7)
+
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
 
 [node name="DevHUD" parent="." unique_id=720275437 instance=ExtResource("4_hud")]
