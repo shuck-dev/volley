@@ -27,6 +27,7 @@ func test_cannot_purchase_after_first_buy() -> void:
 func test_adds_kit_slot_on_purchase() -> void:
 	_manager.economy.soul_balance = 100000
 	_manager.purchase("spare")
+	_manager.activate("spare")
 	assert_eq(
 		Stats.resolve(GameRules.base.kit_slots, &"kit_slots", _manager),
 		GameRules.base.kit_slots + 1.0,

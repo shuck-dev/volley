@@ -55,6 +55,9 @@ func _register_existing_items() -> void:
 ## Resyncs effect registrations and emits signals after progression data has been
 ## reset externally (e.g. dev clear-save).
 func reload_from_progression() -> void:
+	if not OS.is_debug_build():
+		return
+
 	for item in items:
 		_effect_manager.unregister_source(item)
 
@@ -310,23 +313,15 @@ func purchase(item_key: String) -> bool:
 	if not can_purchase(item_key):
 		return false
 
-	var was_unowned := get_level(item_key) == 0
 	subtract_soul(calculate_cost(item_key))
 	var new_level := get_level(item_key) + 1
 	state.item_levels[item_key] = new_level
 
-	if was_unowned:
-		var item := _get_item(item_key)
-		var goes_to_rack: bool = item.role == &"equipment" and item.type != &"court"
-		var landing: int = Placement.STORED if goes_to_rack else _natural_target(item)
-		if landing == Placement.STORED:
-			_assign_rack_slot(item_key, item.role)
-		else:
-			_set_item_placement(item_key, landing)
-	elif _is_placed(item_key):
+	if _is_placed(item_key):
 		_refresh_registration(item_key)
 
 	item_level_changed.emit(item_key)
+	item_manager_state_changed.emit()
 	SaveManager.save()
 
 	return true
