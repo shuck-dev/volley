@@ -28,7 +28,7 @@ metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2081878131]
 sprite_frames = ExtResource("7_marthaframes")
-animation = &"ready_grounded"
+animation = &""
 
 [node name="Bow" type="Sprite2D" parent="." unique_id=708370465]
 position = Vector2(8.4, -24)
