@@ -12,7 +12,6 @@ size = Vector2(36, 180)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oowu5"]
 size = Vector2(24, 65)
-size = Vector2(24, 20)
 
 [node name="PartnerPaddle" type="CharacterBody2D" unique_id=775348359 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape")]
 collision_layer = 16
