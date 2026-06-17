@@ -81,35 +81,3 @@ func test_equipment_item_taken_from_shop_appears_on_gear_rack() -> void:
 	var displayed: Array[String] = _gear_rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "gear rack should gain a slot for the taken equipment item")
 	assert_eq(displayed[0], WristBrace.key)
-
-
-# --- dev panel one-click path ----------------------------------------------
-
-
-func test_dev_panel_purchase_places_ball_on_court_not_on_rack() -> void:
-	_item_manager.purchase(TrainingBall.key)
-
-	assert_true(
-		_item_manager.is_on_court(TrainingBall.key),
-		"dev-panel purchase should land a ball on the court",
-	)
-	assert_eq(
-		_ball_rack.get_displayed_keys().size(),
-		0,
-		"dev-panel purchase should skip the rack entirely",
-	)
-
-
-func test_dev_panel_purchase_lands_equipment_on_gear_rack() -> void:
-	_item_manager.purchase(WristBrace.key)
-
-	assert_eq(
-		_gear_rack.get_displayed_keys(),
-		[WristBrace.key],
-		"equipment purchases land on the gear rack so the kit cap still gates equipping",
-	)
-	assert_eq(
-		_item_manager.get_kit_items(&"equipment").size(),
-		1,
-		"equipment kit holds the unactivated purchase",
-	)

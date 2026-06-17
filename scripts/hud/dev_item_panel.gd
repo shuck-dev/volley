@@ -19,12 +19,11 @@ func _ready() -> void:
 		var row := HBoxContainer.new()
 		container.add_child(row)
 
-		var buy_button := Button.new()
-		buy_button.pressed.connect(_on_item_pressed.bind(item.key))
-		buy_button.focus_mode = Control.FOCUS_NONE
-		buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(buy_button)
-		_buttons[item.key] = buy_button
+		var item_info := Button.new()
+		item_info.focus_mode = Control.FOCUS_NONE
+		item_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(item_info)
+		_buttons[item.key] = item_info
 
 		var remove_button := Button.new()
 		remove_button.text = "-"
@@ -76,10 +75,6 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _on_item_pressed(item_key: String) -> void:
-	ItemManager.purchase(item_key)
-
-
 func _on_remove_level_pressed(item_key: String) -> void:
 	# Double-check the gate at press time even though the button reflects it visually; the poll
 	# runs once per frame and a same-frame state flip could race the click.
@@ -109,7 +104,6 @@ func _refresh_buttons() -> void:
 		var level := ItemManager.get_level(item.key)
 		var cost := ItemManager.calculate_cost(item.key)
 		button.text = "%s Lv%d [%d Soul]" % [item.display_name, level, cost]
-		button.disabled = not ItemManager.can_purchase(item.key)
 
 
 func _setup_soul_controls() -> void:
