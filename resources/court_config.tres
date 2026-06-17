@@ -5,6 +5,7 @@
 
 [sub_resource type="Resource" id="CourtPhysics"]
 script = ExtResource("2_physics")
+arc_height_max = 400.0
 
 [resource]
 script = ExtResource("1_courtcfg")
