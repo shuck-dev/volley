@@ -19,11 +19,11 @@ func _ready() -> void:
 		var row := HBoxContainer.new()
 		container.add_child(row)
 
-		var buy_button := Button.new()
-		buy_button.focus_mode = Control.FOCUS_NONE
-		buy_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(buy_button)
-		_buttons[item.key] = buy_button
+		var item_info := Button.new()
+		item_info.focus_mode = Control.FOCUS_NONE
+		item_info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(item_info)
+		_buttons[item.key] = item_info
 
 		var remove_button := Button.new()
 		remove_button.text = "-"
