@@ -11,7 +11,7 @@
     "webfetch": "deny",
     "bash": {
       "gh pr merge*": "deny",
-      "gh pr close*": "ask",
+      "gh pr close*": "deny",
       "gh release delete*": "deny",
       "gh release create*": "deny",
       "git rebase*": "ask",
