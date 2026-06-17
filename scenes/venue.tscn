@@ -48,10 +48,10 @@ repeat_size = Vector2(4000, 0)
 repeat_times = 4
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxBackground" unique_id=1359575074]
-offset_left = -2000.0
-offset_top = -1500.0
-offset_right = 2000.0
-offset_bottom = 1500.0
+offset_left = -2500.0
+offset_top = -1200.0
+offset_right = -500.0
+offset_bottom = 1200.0
 color = Color(0.06, 0.08, 0.16, 0.5)
 
 [node name="ParallaxNearFore" type="Parallax2D" parent="." unique_id=1359575075]
@@ -60,10 +60,10 @@ repeat_size = Vector2(4000, 0)
 repeat_times = 4
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxNearFore" unique_id=1359575076]
-offset_left = -2000.0
-offset_top = -1500.0
-offset_right = 2000.0
-offset_bottom = 1500.0
+offset_left = 500.0
+offset_top = -1200.0
+offset_right = 2500.0
+offset_bottom = 1200.0
 color = Color(0.12, 0.07, 0.2, 0.4)
 
 [node name="ParallaxForeground" type="Parallax2D" parent="." unique_id=1359575077]
@@ -72,9 +72,9 @@ repeat_size = Vector2(4000, 0)
 repeat_times = 4
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxForeground" unique_id=1359575078]
-offset_left = -2000.0
-offset_top = -1500.0
-offset_right = 2000.0
+offset_left = -800.0
+offset_top = -400.0
+offset_right = 800.0
 offset_bottom = 1500.0
 color = Color(0.18, 0.1, 0.25, 0.3)
 
