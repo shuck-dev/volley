@@ -21,14 +21,6 @@
 [ext_resource type="Texture2D" uid="uid://dajgrxis6fo1h" path="res://assets/sprites/sam/swing_flying/Swing_flying_04.png" id="19_i1tn7"]
 [ext_resource type="Texture2D" uid="uid://dp2epn6ljdgvi" path="res://assets/sprites/sam/swing_flying/Swing_flying_05.png" id="20_7d1k5"]
 
-[sub_resource type="Gradient" id="Gradient_flying_down"]
-colors = PackedColorArray(0.8, 0.7, 0.2, 1, 0.8, 0.7, 0.2, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_flying_down"]
-gradient = SubResource("Gradient_flying_down")
-width = 21
-height = 108
-
 [sub_resource type="Gradient" id="Gradient_swing_grounded"]
 colors = PackedColorArray(0.9, 0.3, 0.3, 1, 0.9, 0.3, 0.3, 1)
 
@@ -41,7 +33,25 @@ height = 108
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("GradientTexture2D_flying_down")
+"texture": ExtResource("1_ysull")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ot5un")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_uspdf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_xswg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_yc0uj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_et4af")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_yvpr5")
 }],
 "loop": false,
 "name": &"flying_down",
