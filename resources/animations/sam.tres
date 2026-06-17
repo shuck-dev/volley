@@ -146,6 +146,23 @@ animations = [{
 "texture": ExtResource("20_7d1k5")
 }],
 "loop": false,
-"name": &"swing_grounded",
+ "name": &"swing_grounded",
+ "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_f2t5l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_br5dj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_3npww")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_r5wsh")
+}],
+"loop": false,
+"name": &"low_swing_grounded",
 "speed": 5.0
 }]
