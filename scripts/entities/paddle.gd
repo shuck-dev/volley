@@ -233,7 +233,7 @@ func _ensure_animation_state_machine() -> void:
 func _update_animation_state() -> void:
 	_ensure_animation_state_machine()
 	var grounded: bool = _is_grounded()
-	_animation_state_machine.update(grounded, _vertical_motion)
+	_animation_state_machine.update(grounded, _vertical_motion, _is_crouching())
 
 
 ## Wired to the machine's state_changed signal; plays the animation when the state changes.
@@ -254,7 +254,7 @@ func _on_paddle_hit_for_swing(_ball: Ball) -> void:
 	_ensure_animation_state_machine()
 
 	var grounded: bool = _is_grounded()
-	_animation_state_machine.on_hit(grounded, _vertical_motion)
+	_animation_state_machine.on_hit(grounded, _vertical_motion, _is_crouching())
 
 	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
 		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
@@ -267,6 +267,10 @@ func _on_swing_finished() -> void:
 
 	var grounded: bool = _is_grounded()
 	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
+
+
+func _is_crouching() -> bool:
+	return false
 
 
 func _resolved_paddle_speed() -> float:

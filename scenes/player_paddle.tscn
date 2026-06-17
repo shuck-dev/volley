@@ -191,6 +191,33 @@ tracks/1/keys = {
 "values": [Vector2(90, 201.715)]
 }
 
+[sub_resource type="Animation" id="Animation_lsgr"]
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodyCollision:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-8, 12.92)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodyCollision:shape:size")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(90, 208)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kkbar"]
 _data = {
 &"RESET": SubResource("Animation_kkbar"),
@@ -199,7 +226,8 @@ _data = {
 &"ready_flying": SubResource("Animation_qaqj4"),
 &"ready_grounded": SubResource("Animation_8ruhj"),
 &"swing_flying": SubResource("Animation_sm6h2"),
-&"swing_grounded": SubResource("Animation_oty7i")
+ &"swing_grounded": SubResource("Animation_oty7i"),
+&"low_swing_grounded": SubResource("Animation_lsgr")
 }
 
 [node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "animation_player")]

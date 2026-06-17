@@ -29,3 +29,7 @@ func _physics_move(_delta: float) -> void:
 		racket_hitbox.position.y = _base_racket_y
 
 	_refresh_overlay_shapes()
+
+
+func _is_crouching() -> bool:
+	return _is_grounded() and Input.is_action_pressed("paddle_down")
