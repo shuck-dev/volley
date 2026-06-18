@@ -61,3 +61,4 @@ shape = SubResource("RectangleShape2D_ts58t")
 
 [node name="GroundRay" type="RayCast2D" parent="." unique_id=253019722]
 position = Vector2(0, 30)
+target_position = Vector2(0, 10)
