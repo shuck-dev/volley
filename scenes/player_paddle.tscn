@@ -6,231 +6,15 @@
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
-size = Vector2(90, 208)
+size = Vector2(90, 201.715)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_drop"]
 size = Vector2(90, 283)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
-size = Vector2(21, 64)
+size = Vector2(21, 94.325)
 
-[sub_resource type="Animation" id="Animation_kkbar"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-
-[sub_resource type="Animation" id="Animation_k7j1o"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 201.715)]
-}
-
-[sub_resource type="Animation" id="Animation_optai"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 201.715)]
-}
-
-[sub_resource type="Animation" id="Animation_qaqj4"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 201.715)]
-}
-
-[sub_resource type="Animation" id="Animation_8ruhj"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 12.92)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 208)]
-}
-
-[sub_resource type="Animation" id="Animation_sm6h2"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 201.715)]
-}
-
-[sub_resource type="Animation" id="Animation_oty7i"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 22.5)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 201.715)]
-}
-
-[sub_resource type="Animation" id="Animation_lsgr"]
-length = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("BodyCollision:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 12.92)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("BodyCollision:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(90, 208)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_kkbar"]
-_data = {
-&"RESET": SubResource("Animation_kkbar"),
-&"flying_down": SubResource("Animation_k7j1o"),
-&"flying_up": SubResource("Animation_optai"),
-&"ready_flying": SubResource("Animation_qaqj4"),
-&"ready_grounded": SubResource("Animation_8ruhj"),
-&"swing_flying": SubResource("Animation_sm6h2"),
- &"swing_grounded": SubResource("Animation_oty7i"),
-&"low_swing_grounded": SubResource("Animation_lsgr")
-}
-
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "animation_player")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_mo4dg")
 hit_sound = NodePath("HitSound")
@@ -239,13 +23,13 @@ sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 racket_hitbox = NodePath("RacketHitbox")
 racket_shape = NodePath("RacketHitbox/RacketCollision")
-animation_player = NodePath("AnimationPlayer")
+ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"ready_flying"
+animation = &"flying_up"
 
 [node name="AnkleAnchor" type="Node2D" parent="." unique_id=2001000001]
 position = Vector2(0, 24)
@@ -257,7 +41,7 @@ position = Vector2(-12, 0)
 position = Vector2(-12, -10)
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1850417808]
-position = Vector2(-8, 22.5)
+position = Vector2(-8, 5.595)
 shape = SubResource("RectangleShape2D_ut3sq")
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]
@@ -268,6 +52,7 @@ bus = &"SFX"
 script = ExtResource("3_mo4dg")
 
 [node name="CharacterDropTarget" type="Area2D" parent="." unique_id=2001000010]
+visible = false
 collision_layer = 0
 collision_mask = 0
 input_pickable = false
@@ -277,7 +62,8 @@ position = Vector2(-8, 22.5)
 shape = SubResource("RectangleShape2D_drop")
 
 [node name="RacketHitbox" type="Area2D" parent="." unique_id=2060046537]
-position = Vector2(8, 0)
+visible = false
+position = Vector2(8, -39.04)
 collision_layer = 8
 collision_mask = 2
 monitorable = false
@@ -285,5 +71,6 @@ monitorable = false
 [node name="RacketCollision" type="CollisionShape2D" parent="RacketHitbox" unique_id=1404787416]
 shape = SubResource("RectangleShape2D_k7j1o")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=238864905]
-libraries/ = SubResource("AnimationLibrary_kkbar")
+[node name="GroundRay" type="RayCast2D" parent="." unique_id=394874363]
+position = Vector2(-48, 96)
+target_position = Vector2(0, 10)

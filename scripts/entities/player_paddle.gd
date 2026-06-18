@@ -13,6 +13,9 @@ func _ready() -> void:
 
 func _physics_move(_delta: float) -> void:
 	var direction := Input.get_axis("paddle_up", "paddle_down")
+	if direction > 0.0 and is_grounded():
+		velocity = Vector2.ZERO
+		return
 	velocity = Vector2(0.0, direction * _paddle_speed)
 	move_and_slide()
 	position.x = _lane_x
@@ -21,7 +24,7 @@ func _physics_move(_delta: float) -> void:
 	if racket_hitbox == null or _body_shape == null or _racket_shape == null:
 		return
 
-	if _is_grounded() and Input.is_action_pressed("paddle_down"):
+	if is_grounded() and Input.is_action_pressed("paddle_down"):
 		racket_hitbox.position.y = (
 			collision.position.y + _body_shape.size.y * 0.5 - _racket_shape.size.y * 0.5
 		)
@@ -32,4 +35,4 @@ func _physics_move(_delta: float) -> void:
 
 
 func _is_crouching() -> bool:
-	return _is_grounded() and Input.is_action_pressed("paddle_down")
+	return is_grounded() and Input.is_action_pressed("paddle_down")

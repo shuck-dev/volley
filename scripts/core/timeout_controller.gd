@@ -76,6 +76,7 @@ func call_timeout() -> void:
 	_saved_collision_mask = main_character.collision_mask
 	main_character.set_collision_mask_value(2, false)
 	main_character.drive_blocked = true
+	main_character.set_body_collision_enabled(true)
 	timeout_started.emit()
 	_begin_walk_off()
 
@@ -113,7 +114,7 @@ func _half_height() -> float:
 
 # Either descend first (airborne) or skip straight to the horizontal walk (already on floor).
 func _begin_walk_off() -> void:
-	if main_character.is_on_floor():
+	if main_character.is_grounded():
 		_start_horizontal_walk(_equip_pose_x, _on_reached_equip_pose, State.WALKING_OFF)
 	else:
 		_state = State.DESCENDING
@@ -155,7 +156,7 @@ func _physics_process(delta: float) -> void:
 func _step_descent(_delta: float) -> void:
 	main_character.velocity = Vector2(0.0, config.descent_speed)
 	main_character.move_and_slide()
-	if main_character.is_on_floor():
+	if main_character.is_grounded():
 		main_character.velocity = Vector2.ZERO
 		_start_horizontal_walk(_equip_pose_x, _on_reached_equip_pose, State.WALKING_OFF)
 
@@ -216,5 +217,6 @@ func _finish_at_lane() -> void:
 		main_character.velocity = Vector2.ZERO
 		main_character.collision_mask = _saved_collision_mask
 		main_character.drive_blocked = false
+		main_character.set_body_collision_enabled(false)
 		main_character.set_physics_process(true)
 	timeout_ended.emit()
