@@ -9,8 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://bqxcfyw4ydw7j" path="res://assets/sprites/sam/flying_up/flying_up_07.png" id="7_yvpr5"]
 [ext_resource type="Texture2D" uid="uid://sblbb1pvpbyw" path="res://assets/sprites/sam/ready_flying/flying_idle_01.png" id="8_gilbc"]
 [ext_resource type="Texture2D" uid="uid://bfblcuv1f2eix" path="res://assets/sprites/sam/ready_flying/flying_idle_02.png" id="9_0exrp"]
-[ext_resource type="Texture2D" uid="uid://cpm61807mud2y" path="res://assets/sprites/sam/ready_flying/flying_idle_03.png" id="10_ua10h"]
-[ext_resource type="Texture2D" uid="uid://dai26l1e4dnyn" path="res://assets/sprites/sam/ready_flying/flying_idle_04.png" id="11_lgnhs"]
 [ext_resource type="Texture2D" uid="uid://diw2ggpuq7lb0" path="res://assets/sprites/sam/ready_grounded/ready_grounded_01.png" id="12_f2t5l"]
 [ext_resource type="Texture2D" uid="uid://6wse64ljc4si" path="res://assets/sprites/sam/ready_grounded/ready_grounded_02.png" id="13_br5dj"]
 [ext_resource type="Texture2D" uid="uid://dtms4msbskblf" path="res://assets/sprites/sam/ready_grounded/ready_grounded_03.png" id="14_3npww"]
@@ -45,7 +43,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_yvpr5")
 }],
-"loop": true,
+"loop": 1,
 "name": &"flying_down",
 "speed": 5.0
 }, {
@@ -71,8 +69,25 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_yvpr5")
 }],
-"loop": true,
+"loop": 1,
 "name": &"flying_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_f2t5l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_br5dj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_3npww")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_r5wsh")
+}],
+"loop": 0,
+"name": &"low_swing_grounded",
 "speed": 5.0
 }, {
 "frames": [{
@@ -81,14 +96,8 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("9_0exrp")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_ua10h")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_lgnhs")
 }],
-"loop": true,
+"loop": 1,
 "name": &"ready_flying",
 "speed": 5.0
 }, {
@@ -105,7 +114,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("15_r5wsh")
 }],
-"loop": true,
+"loop": 1,
 "name": &"ready_grounded",
 "speed": 5.0
 }, {
@@ -125,7 +134,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_7d1k5")
 }],
-"loop": false,
+"loop": 0,
 "name": &"swing_flying",
 "speed": 5.0
 }, {
@@ -145,24 +154,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_7d1k5")
 }],
-"loop": false,
- "name": &"swing_grounded",
- "speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("12_f2t5l")
-}, {
-"duration": 1.0,
-"texture": ExtResource("13_br5dj")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_3npww")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_r5wsh")
-}],
-"loop": false,
-"name": &"low_swing_grounded",
+"loop": 0,
+"name": &"swing_grounded",
 "speed": 5.0
 }]
