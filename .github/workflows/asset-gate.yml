@@ -1,4 +1,4 @@
-name: Asset size gate
+name: Asset gate
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
   merge_group:
 
 concurrency:
-  group: asset-size-${{ github.ref }}
+  group: asset-gate-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -20,8 +20,6 @@ jobs:
     name: check-asset-size
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -35,3 +33,19 @@ jobs:
             base_sha="${{ github.event.pull_request.base.sha }}"
           fi
           bash ci/check_asset_size.sh --diff "$base_sha"
+
+  push-lfs-preview:
+    name: push-lfs-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Push LFS objects to GitHub LFS
+        continue-on-error: true
+        run: |
+          git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
+          git lfs pull --include="assets/**"
+          git lfs ls-files -l | awk '{print $1}' | xargs git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin
