@@ -40,18 +40,32 @@ jobs:
           git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
           git lfs pull --include="assets/**"
 
-      - name: Post previews
+      - name: Generate and upload previews
         if: steps.changed.outputs.count != '0'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           while read -r file; do
             name=$(basename "$file" .png)
             webp="/tmp/${name}.webp"
             cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
 
-            data=$(base64 -w0 "$webp")
-            body="**\`${file}\`**\n![](data:image/webp;base64,${data})"
+            key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
+            curl -sSf -X PUT \
+              -H "Authorization: Basic $(echo -n "volley:${{ secrets.LFS_UPLOAD_KEY }}" | base64 -w0)" \
+              -H "Content-Type: image/webp" \
+              --data-binary "@${webp}" \
+              "https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
+          done < /tmp/changed.txt
 
+      - name: Post preview comments
+        if: steps.changed.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while read -r file; do
+            name=$(basename "$file" .png)
+            key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
+            url="https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
+
+            body="**\`${file}\`**"$'\n'"![${name}](${url})"
             gh pr comment ${{ github.event.pull_request.number }} --body "$body"
           done < /tmp/changed.txt
