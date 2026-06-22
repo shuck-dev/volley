@@ -37,7 +37,7 @@ var _collider_overlay: ColliderOverlay
 var _state_label: Label
 
 var _animation_state_machine: RefCounted
-var _default_racket_pos: Vector2
+var _default_racket_position: Vector2
 
 
 func _ready() -> void:
@@ -54,7 +54,7 @@ func _ready() -> void:
 
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
-		_default_racket_pos = racket_hitbox.position
+		_default_racket_position = racket_hitbox.position
 
 	if ground_ray == null:
 		ground_ray = get_node_or_null("GroundRay") as RayCast2D
