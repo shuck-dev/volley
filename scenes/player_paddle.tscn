@@ -4,7 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
-[ext_resource type="Script" path="res://scripts/items/racket_position_marker.gd" id="5_rpm"]
+[ext_resource type="Script" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
