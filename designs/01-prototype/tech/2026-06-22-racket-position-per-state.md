@@ -1,12 +1,8 @@
 # Racket hitbox position per animation state
 
-Resolves SH-518 (visual tuning of the racket collision zone during Sam's
-low-swing pose). Continues `2026-06-06-paddle-animation-collision-spike.md`,
-which decided the CharacterBody2D body collider stays fixed across states.
-That decision stands. This doc addresses a separate shape: the RacketHitbox
-Area2D, the mid-body zone that detects the ball and feeds the return-angle
-calculus. That zone shifts with the crouch pose and the prior decision did not
-cover it.
+Resolves SH-518. The racket hitbox (RacketHitbox Area2D, the mid-body zone
+that detects the ball) shifts with Sam's crouch pose. The body collider stays
+fixed per `2026-06-06-paddle-animation-collision-spike.md`.
 
 ## Decision
 
