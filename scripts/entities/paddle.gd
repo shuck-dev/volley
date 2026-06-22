@@ -37,7 +37,6 @@ var _collider_overlay: ColliderOverlay
 var _state_label: Label
 
 var _animation_state_machine: RefCounted
-var _default_racket_position: Vector2
 
 
 func _ready() -> void:
@@ -54,7 +53,6 @@ func _ready() -> void:
 
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
-		_default_racket_position = racket_hitbox.position
 
 	if ground_ray == null:
 		ground_ray = get_node_or_null("GroundRay") as RayCast2D
@@ -222,8 +220,6 @@ func _on_animation_state_changed(state: StringName) -> void:
 	):
 		sprite.play(state)
 
-	_apply_racket_position(state)
-
 
 ## Handles the paddle_hit signal to initiate the swing animation.
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
@@ -243,10 +239,6 @@ func _on_swing_finished() -> void:
 
 	var grounded: bool = is_grounded()
 	_animation_state_machine.on_swing_finished(grounded, _vertical_motion, _is_crouching())
-
-
-func _apply_racket_position(_state: StringName) -> void:
-	pass
 
 
 func _is_crouching() -> bool:

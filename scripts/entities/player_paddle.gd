@@ -3,12 +3,16 @@ extends Paddle
 
 @export var low_anchor: Marker2D
 
+var _default_racket_position: Vector2
 var _development_offset := Vector2.ZERO
 var _low_states := [&"ready_grounded_low", &"low_swing_grounded"]
 
 
 func _ready() -> void:
 	super()
+
+	if racket_hitbox != null:
+		_default_racket_position = racket_hitbox.position
 
 
 func _physics_move(_delta: float) -> void:
@@ -22,7 +26,9 @@ func _physics_move(_delta: float) -> void:
 	clamp_to_arena()
 
 
-func _apply_racket_position(state: StringName) -> void:
+func _on_animation_state_changed(state: StringName) -> void:
+	super(state)
+
 	if racket_hitbox == null:
 		return
 
@@ -41,9 +47,14 @@ func _is_crouching() -> bool:
 
 func set_racket_position_x(offset_x: float) -> void:
 	_development_offset.x = offset_x
-	_apply_racket_position(get_movement_state())
+	_apply_racket_position_to_state()
 
 
 func set_racket_position_y(offset_y: float) -> void:
 	_development_offset.y = offset_y
-	_apply_racket_position(get_movement_state())
+	_apply_racket_position_to_state()
+
+
+func _apply_racket_position_to_state() -> void:
+	var state := get_movement_state()
+	_on_animation_state_changed(state)
