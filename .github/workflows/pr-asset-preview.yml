@@ -49,7 +49,7 @@ jobs:
             cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
 
             key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
-            curl -sf -X PUT \
+            curl -sSf -X PUT \
               -H "Authorization: Basic $(echo -n "volley:${{ secrets.LFS_UPLOAD_KEY }}" | base64 -w0)" \
               -H "Content-Type: image/webp" \
               --data-binary "@${webp}" \
@@ -67,5 +67,5 @@ jobs:
             url="https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
 
             gh pr comment ${{ github.event.pull_request.number }} \
-              --body "**\`${file}\`**\n![${name}](${url})"
+              --body "$(printf '**`%s`**\n![%s](%s)' "$file" "$name" "$url")"
           done < /tmp/changed.txt
