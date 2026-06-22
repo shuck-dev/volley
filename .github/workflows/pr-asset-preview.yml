@@ -66,9 +66,6 @@ jobs:
             key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
             url="https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
 
-            body="$(
-              printf '**`%s`**\n' "$file"
-              printf '![%s](%s)' "$name" "$url"
-            )"
+            body="**\`${file}\`**"$'\n'"![${name}](${url})"
             gh pr comment ${{ github.event.pull_request.number }} --body "$body"
           done < /tmp/changed.txt
