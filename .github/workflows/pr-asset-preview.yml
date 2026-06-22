@@ -1,0 +1,57 @@
+name: PR asset preview
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "assets/**"
+
+concurrency:
+  group: pr-asset-preview-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    name: post-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Install tools
+        run: sudo apt update && sudo apt install -y webp
+
+      - name: Find changed assets
+        id: changed
+        run: |
+          git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- 'assets/**/*.png' > /tmp/changed.txt
+          echo "count=$(wc -l < /tmp/changed.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Pull LFS objects
+        if: steps.changed.outputs.count != '0'
+        run: |
+          git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
+          git lfs pull --include="assets/**"
+
+      - name: Post previews
+        if: steps.changed.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while read -r file; do
+            name=$(basename "$file" .png)
+            webp="/tmp/${name}.webp"
+            cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
+
+            data=$(base64 -w0 "$webp")
+            body="**\`${file}\`**\n![](data:image/webp;base64,${data})"
+
+            gh pr comment ${{ github.event.pull_request.number }} --body "$body"
+          done < /tmp/changed.txt
