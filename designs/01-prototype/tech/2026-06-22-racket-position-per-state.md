@@ -1,8 +1,10 @@
 # Racket hitbox position per animation state
 
-Resolves SH-518. The racket hitbox (RacketHitbox Area2D, the mid-body zone
-that detects the ball) shifts with Sam's crouch pose. The body collider stays
-fixed per `2026-06-06-paddle-animation-collision-spike.md`.
+The racket hitbox (RacketHitbox Area2D, the mid-body zone that detects the
+ball) shifts with Sam's crouch pose. The CharacterBody2D body collider stays
+fixed per `2026-06-06-paddle-animation-collision-spike.md`. The prior spike
+anticipated this in passing: "if a future ready pose ever extends the paddle's
+reach, the collider question reopens for that state alone."
 
 ## Decision
 
@@ -31,10 +33,11 @@ state transition via the paddle animation state machine. Adding a racket-positio
 lookup there is a two-line addition with no structural refactoring.
 
 **Dev panel survives.** The existing `set_racket_position_x` and
-`set_racket_position_y` on `paddle.gd` become additive offsets applied on top
-of the per-state position. The spinboxes that appeared broken for Y (the
-`_physics_move` override was writing over them every frame) now work as live
-fine-tune controls.
+`set_racket_position_y` on `paddle.gd` store an additive offset applied on top
+of the per-state marker position. Each state transition recomputes
+`racket_hitbox.position = marker.position + offset`, preserving the offset
+across states. The spinboxes that appeared broken for Y (the `_physics_move`
+override was writing over them every frame) now work as live fine-tune controls.
 
 ## Why not the alternatives
 
@@ -50,13 +53,13 @@ fine-tune controls.
 PlayerPaddle (CharacterBody2D)
 ├── Sprite (AnimatedSprite2D)
 ├── RacketPositions (Node2D)
-│   ├── RPos_ready_grounded (Marker2D)
-│   ├── RPos_ready_flying (Marker2D)
-│   ├── RPos_flying_up (Marker2D)
-│   ├── RPos_flying_down (Marker2D)
-│   ├── RPos_swing_grounded (Marker2D)
-│   ├── RPos_low_swing_grounded (Marker2D)
-│   └── RPos_swing_flying (Marker2D)
+│   ├── RPos_ready_grounded (RacketPositionMarker)
+│   ├── RPos_ready_flying (RacketPositionMarker)
+│   ├── RPos_flying_up (RacketPositionMarker)
+│   ├── RPos_flying_down (RacketPositionMarker)
+│   ├── RPos_swing_grounded (RacketPositionMarker)
+│   ├── RPos_low_swing_grounded (RacketPositionMarker)
+│   └── RPos_swing_flying (RacketPositionMarker)
 ├── RacketHitbox (Area2D)
 │   └── RacketCollision (CollisionShape2D)
 ├── ...existing nodes...
@@ -65,6 +68,33 @@ PlayerPaddle (CharacterBody2D)
 All seven markers exist in the scene. States that share the default position
 can omit their marker; the code falls back to the scene-authored RacketHitbox
 position. The container keeps the tree tidy.
+
+## Editor tool
+
+The Marker2D crosshair alone does not show the RacketHitbox extents. An editor
+tool renders the collision shape so the designer sees the actual hitzone while
+dragging.
+
+A custom `RacketPositionMarker` class extends `Marker2D` with `@tool`:
+
+```
+@tool
+class_name RacketPositionMarker
+extends Marker2D
+
+@export var collision_size := Vector2(20, 20)
+
+func _draw() -> void:
+	draw_rect(Rect2(-collision_size * 0.5, collision_size), Color.RED, false, 2.0)
+```
+
+- `collision_size` is set to match the RacketCollision RectangleShape2D.
+- `_draw()` fires in the editor; the rectangle follows the marker around as the
+  designer drags it.
+- The colour and line weight are editor-only visualisation; they do not appear
+  at runtime.
+- The markers in the scene shape above use `RacketPositionMarker` instead of
+  raw `Marker2D`.
 
 ## Code shape
 
@@ -80,6 +110,7 @@ implementation is a no-op; partner paddles inherit it unchanged.
 `_base_racket_y` and the crouch-position formula in `_physics_move` are
 removed. The racket position is no longer touched in the physics loop.
 
-## Implementation
+## Out of scope
 
-SH-xxx (child of SH-518).
+Restitution physics, `Paddle.get_half_height()`, and the body collider shape.
+Those stay one fixed authored collider per the prior decision.
