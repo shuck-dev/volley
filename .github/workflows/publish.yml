@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 30
     environment: preview
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
@@ -43,6 +43,11 @@ jobs:
         run: |
           git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
           git lfs pull --include="assets/**"
+
+      - name: Push LFS objects to GitHub LFS
+        continue-on-error: true
+        run: |
+          git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin "$(git lfs ls-files -l | awk '{print $1}')"
 
       - name: Cache Godot import artifacts
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
