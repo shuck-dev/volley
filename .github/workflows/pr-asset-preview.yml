@@ -77,7 +77,7 @@ jobs:
             --jq '.[] | select(.user.login == "github-actions[bot]") | select(.body | contains("PR asset preview")) | .id' | head -1)
 
           if [ -n "$comment_id" ]; then
-            gh api "repos/${{ github.repository }}/pulls/comments/$comment_id" -X PATCH \
+            gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X PATCH \
               -f body="**PR asset preview** (updated ${{ github.sha:0:7 }}):
         ${body}"
           else
