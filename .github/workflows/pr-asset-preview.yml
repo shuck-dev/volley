@@ -74,5 +74,5 @@ jobs:
               -F commit_id="$commit_id" \
               -F path="$file" \
               -F body="$body" \
-              -F position=1
+              -F subject_type=file
           done < /tmp/changed.txt
