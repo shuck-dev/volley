@@ -56,16 +56,23 @@ jobs:
               "https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
           done < /tmp/changed.txt
 
-      - name: Post preview comments
+      - name: Post previews on files
         if: steps.changed.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          commit_id=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" --jq '.head.sha')
+
           while read -r file; do
             name=$(basename "$file" .png)
             key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
             url="https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
 
             body="**\`${file}\`**"$'\n'"![${name}](${url})"
-            gh pr comment ${{ github.event.pull_request.number }} --body "$body"
+
+            gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments" \
+              -F commit_id="$commit_id" \
+              -F path="$file" \
+              -F body="$body" \
+              -F position=1
           done < /tmp/changed.txt
