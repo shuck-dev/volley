@@ -44,8 +44,11 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Push LFS objects to GitHub LFS
-        continue-on-error: true
         run: |
           git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
           git lfs pull --include="assets/**"
-          git lfs ls-files -l | awk '{print $1}' | xargs git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin
+          git lfs ls-files -l | awk '{print $1}' | while read -r oid; do
+            if [ -f ".git/lfs/objects/${oid:0:2}/${oid:2:2}/$oid" ]; then
+              printf "%s\n" "$oid"
+            fi
+          done | xargs -r git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin
