@@ -48,4 +48,4 @@ jobs:
         run: |
           git config lfs.url "https://volley:${{ secrets.LFS_DOWNLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
           git lfs pull --include="assets/**"
-          git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin "$(git lfs ls-files -l | awk '{print $1}')"
+          git -c lfs.url=https://github.com/shuck-dev/volley.git/info/lfs lfs push --object-id origin $(git lfs ls-files -l | awk '{print $1}')
