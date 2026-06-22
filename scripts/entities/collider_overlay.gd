@@ -36,8 +36,8 @@ func set_shapes(
 	queue_redraw()
 
 
-func set_ray_visible(visible: bool, ray_node: RayCast2D) -> void:
-	_show_ground_ray = visible
+func set_ray_visible(show_ray: bool, ray_node: RayCast2D) -> void:
+	_show_ground_ray = show_ray
 	_ray_node = ray_node
 	queue_redraw()
 

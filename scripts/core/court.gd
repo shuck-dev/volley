@@ -213,12 +213,12 @@ func _activate_partner() -> void:
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	for ball in ball_system.get_balls():
-		if not is_instance_valid(ball):
+	for active_ball in ball_system.get_balls():
+		if not is_instance_valid(active_ball):
 			continue
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner_paddle):
-				ball.effect_processor.paddles.append(partner_paddle)
+		if active_ball.effect_processor != null:
+			if not active_ball.effect_processor.paddles.has(partner_paddle):
+				active_ball.effect_processor.paddles.append(partner_paddle)
 
 	var current: Ball = ball_system.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
@@ -248,9 +248,9 @@ func _deactivate_partner() -> void:
 		partner_paddle.controller.bind_tracker(null)
 	ball_system.ball_added.disconnect(_on_partner_ball_added)
 
-	for ball in ball_system.get_balls():
-		if is_instance_valid(ball) and ball.effect_processor != null:
-			ball.effect_processor.paddles.erase(partner_paddle)
+	for active_ball in ball_system.get_balls():
+		if is_instance_valid(active_ball) and active_ball.effect_processor != null:
+			active_ball.effect_processor.paddles.erase(partner_paddle)
 
 	partner_paddle.queue_free()
 	partner_paddle = null
@@ -263,16 +263,16 @@ func _deactivate_partner() -> void:
 	partner_changed.emit()
 
 
-func _on_partner_ball_added(ball: Ball) -> void:
+func _on_partner_ball_added(incoming_ball: Ball) -> void:
 	if partner_paddle == null:
 		return
 
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner_paddle):
-			ball.effect_processor.paddles.append(partner_paddle)
+	if incoming_ball.effect_processor != null:
+		if not incoming_ball.effect_processor.paddles.has(partner_paddle):
+			incoming_ball.effect_processor.paddles.append(partner_paddle)
 
 	if partner_paddle.has_method("set_ball"):
-		partner_paddle.set_ball(ball)
+		partner_paddle.set_ball(incoming_ball)
 
 
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
