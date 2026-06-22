@@ -242,7 +242,7 @@ func _on_swing_finished() -> void:
 		return
 
 	var grounded: bool = is_grounded()
-	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
+	_animation_state_machine.on_swing_finished(grounded, _vertical_motion, _is_crouching())
 
 
 func _apply_racket_position(_state: StringName) -> void:

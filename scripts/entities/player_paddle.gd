@@ -41,11 +41,9 @@ func _is_crouching() -> bool:
 
 func set_racket_position_x(offset_x: float) -> void:
 	_dev_offset.x = offset_x
-	var state := _animation_state_machine.get_state()
-	_apply_racket_position(state)
+	_apply_racket_position(get_movement_state())
 
 
 func set_racket_position_y(offset_y: float) -> void:
 	_dev_offset.y = offset_y
-	var state := _animation_state_machine.get_state()
-	_apply_racket_position(state)
+	_apply_racket_position(get_movement_state())

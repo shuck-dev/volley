@@ -6,4 +6,6 @@ extends Marker2D
 
 
 func _draw() -> void:
+	if not Engine.is_editor_hint():
+		return
 	draw_rect(Rect2(-collision_size * 0.5, collision_size), Color.RED, false, 2.0)

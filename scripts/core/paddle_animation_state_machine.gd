@@ -30,9 +30,9 @@ func on_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> 
 
 ## Clears swing pending and recomputes the state.
 ## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_swing_finished(grounded: bool, vertical_motion: float) -> void:
+func on_swing_finished(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = false
-	update(grounded, vertical_motion)
+	update(grounded, vertical_motion, crouching)
 
 
 func get_state() -> StringName:
