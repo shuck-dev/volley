@@ -76,6 +76,7 @@ func call_timeout() -> void:
 	_saved_collision_mask = main_character.collision_mask
 	main_character.set_collision_mask_value(2, false)
 	main_character.drive_blocked = true
+	main_character.set_body_collision_enabled(true)
 	timeout_started.emit()
 	_begin_walk_off()
 
@@ -216,5 +217,6 @@ func _finish_at_lane() -> void:
 		main_character.velocity = Vector2.ZERO
 		main_character.collision_mask = _saved_collision_mask
 		main_character.drive_blocked = false
+		main_character.set_body_collision_enabled(false)
 		main_character.set_physics_process(true)
 	timeout_ended.emit()

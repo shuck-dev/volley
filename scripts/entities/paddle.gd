@@ -5,8 +5,6 @@ extends CharacterBody2D
 signal paddle_hit(ball: Ball)
 
 const PADDLE_TOP_Y := -540.0
-## Slack in pixels for the grounded test; the foot counts as on the floor within this of the surface.
-const GROUNDED_EPSILON := 2.0
 ## Gap in pixels between the paddle's top edge and the dev state label sitting above it.
 const STATE_LABEL_GAP := 8.0
 
@@ -18,7 +16,7 @@ const STATE_LABEL_GAP := 8.0
 @export var racket_hitbox: Area2D
 ## The racket's RectangleShape2D, owning the contact-offset half-height.
 @export var racket_shape: CollisionShape2D
-@export var animation_player: AnimationPlayer
+@export var ground_ray: RayCast2D
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
@@ -30,14 +28,10 @@ var _paddle_speed: float = 0.0
 var _body_shape: RectangleShape2D
 var _racket_shape: RectangleShape2D
 
-## World Y of the floor's top surface, resolved at ready from the floor group. NAN until found.
-var _floor_surface_y: float = NAN
 ## Previous frame's Y, used to derive actual vertical motion so the state reflects real movement
 ## (driven, timeout-controlled, or at rest) rather than the stale velocity member.
 var _last_y: float = 0.0
 var _vertical_motion: float = 0.0
-var _was_grounded: bool = false
-
 var _sprite_width_scale: float = 1.0
 var _collider_overlay: ColliderOverlay
 var _state_label: Label
@@ -60,7 +54,12 @@ func _ready() -> void:
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
-	_resolve_floor_surface()
+	if ground_ray == null:
+		ground_ray = get_node_or_null("GroundRay") as RayCast2D
+
+	if collision != null:
+		collision.disabled = true
+
 	_last_y = global_position.y
 
 	_collider_overlay = ColliderOverlay.new()
@@ -144,6 +143,9 @@ func reset_streak() -> void:
 func drive(velocity_y: float) -> void:
 	if drive_blocked:
 		return
+	if velocity_y > 0.0 and is_grounded():
+		velocity = Vector2.ZERO
+		return
 
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
@@ -158,6 +160,8 @@ func clamp_to_arena() -> void:
 func _physics_process(delta: float) -> void:
 	_physics_move(delta)
 	tick_animation_state()
+	if _collider_overlay != null:
+		_collider_overlay.tick_ray_draw()
 
 
 func _physics_move(_delta: float) -> void:
@@ -186,39 +190,10 @@ func get_movement_state() -> StringName:
 	return _animation_state_machine.get_state()
 
 
-# Finds the floor (a StaticBody in the "floor" group) and records its top-surface world Y. The paddle
-# slides on a code-clamped lane with no gravity, so is_on_floor() is unreliable; grounded is a
-# position test against this line instead. Leaves _floor_surface_y as NAN if no floor is present.
-func _resolve_floor_surface() -> void:
-	var floors: Array = get_tree().get_nodes_in_group(&"floor")
-	if floors.is_empty():
-		return
-	var floor_body: Node2D = floors[0] as Node2D
-	if floor_body == null:
-		return
-	var half: float = 0.0
-	for child in floor_body.get_children():
-		if child is CollisionShape2D and (child as CollisionShape2D).shape is RectangleShape2D:
-			half = ((child as CollisionShape2D).shape as RectangleShape2D).size.y * 0.5
-			break
-	_floor_surface_y = floor_body.global_position.y - half
-
-
-# Grounded when the paddle's foot (centre plus the BODY half-height, i.e. the sprite extent, not the
-# small racket zone) has reached the floor surface. With no resolved floor line (no floor in the
-# scene, e.g. a bare unit test) the paddle is treated as flying.
-func _is_grounded() -> bool:
-	if is_nan(_floor_surface_y):
-		_was_grounded = false
-		return false
-	var foot_offset: float = 0.0
-	if _body_shape != null:
-		foot_offset = _body_shape.size.y * 0.5 + collision.position.y
-	var grounded: bool = global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON
-	if not grounded and _was_grounded:
-		grounded = global_position.y + foot_offset >= _floor_surface_y - GROUNDED_EPSILON * 4
-	_was_grounded = grounded
-	return grounded
+func is_grounded() -> bool:
+	if ground_ray == null:
+		return super.is_on_floor()
+	return ground_ray.is_colliding()
 
 
 func _ensure_animation_state_machine() -> void:
@@ -232,7 +207,7 @@ func _ensure_animation_state_machine() -> void:
 ## Updates the animation state machine and plays any new state.
 func _update_animation_state() -> void:
 	_ensure_animation_state_machine()
-	var grounded: bool = _is_grounded()
+	var grounded: bool = is_grounded()
 	_animation_state_machine.update(grounded, _vertical_motion, _is_crouching())
 
 
@@ -245,15 +220,12 @@ func _on_animation_state_changed(state: StringName) -> void:
 	):
 		sprite.play(state)
 
-	if animation_player != null and animation_player.has_animation(state):
-		animation_player.play(state)
-
 
 ## Handles the paddle_hit signal to initiate the swing animation.
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
 	_ensure_animation_state_machine()
 
-	var grounded: bool = _is_grounded()
+	var grounded: bool = is_grounded()
 	_animation_state_machine.on_hit(grounded, _vertical_motion, _is_crouching())
 
 	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
@@ -265,7 +237,7 @@ func _on_swing_finished() -> void:
 	if _animation_state_machine == null:
 		return
 
-	var grounded: bool = _is_grounded()
+	var grounded: bool = is_grounded()
 	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
 
 
@@ -335,11 +307,22 @@ func set_racket_height(height: float) -> void:
 
 
 # Toggles the body-collider overlay independently of the racket, drawn above the sprite.
+func set_body_collision_enabled(enabled: bool) -> void:
+	if collision != null:
+		collision.disabled = not enabled
+
+
 func set_body_collider_visible(shown: bool) -> void:
 	if _collider_overlay == null:
 		return
 	_refresh_overlay_shapes()
 	_collider_overlay.set_body_active(shown)
+
+
+func set_ground_ray_visible(shown: bool) -> void:
+	if _collider_overlay == null:
+		return
+	_collider_overlay.set_ray_visible(shown, ground_ray)
 
 
 # Toggles the racket-collider overlay independently of the body, drawn above the sprite.

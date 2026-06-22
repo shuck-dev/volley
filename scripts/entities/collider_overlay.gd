@@ -12,6 +12,9 @@ var _body_offset: Vector2 = Vector2.ZERO
 var _racket_size: Vector2 = Vector2.ZERO
 var _racket_offset: Vector2 = Vector2.ZERO
 
+var _show_ground_ray: bool = false
+var _ray_node: RayCast2D = null
+
 
 func set_body_active(active: bool) -> void:
 	_body_active = active
@@ -33,6 +36,17 @@ func set_shapes(
 	queue_redraw()
 
 
+func set_ray_visible(visible: bool, ray_node: RayCast2D) -> void:
+	_show_ground_ray = visible
+	_ray_node = ray_node
+	queue_redraw()
+
+
+func tick_ray_draw() -> void:
+	if _show_ground_ray:
+		queue_redraw()
+
+
 func _draw() -> void:
 	if _body_active and _body_size != Vector2.ZERO:
 		draw_rect(Rect2(_body_offset - _body_size * 0.5, _body_size), Color(0.2, 0.6, 1.0, 0.35))
@@ -41,3 +55,10 @@ func _draw() -> void:
 		draw_rect(
 			Rect2(_racket_offset - _racket_size * 0.5, _racket_size), Color(1.0, 0.4, 0.2, 0.5)
 		)
+
+	if _show_ground_ray and is_instance_valid(_ray_node):
+		var colliding: bool = _ray_node.is_colliding()
+		var colour := Color.GREEN if colliding else Color.RED
+		var origin := _ray_node.position
+		var end := origin + Vector2(0.0, _ray_node.target_position.y)
+		draw_line(origin, end, colour, 2.0)

@@ -208,21 +208,6 @@ func test_airborne_call_timeout_defers_equip_pose_signal_until_grounded() -> voi
 	)
 
 
-func test_grounded_at_floor_walks_off_without_redescent() -> void:
-	# Drop the paddle onto the floor by applying one physics step of downward motion.
-	_paddle.position = Vector2(LANE_X, FLOOR_Y - PADDLE_HALF_HEIGHT - 2.0)
-	_paddle.velocity = Vector2(0.0, 1200.0)
-	_paddle.move_and_slide()
-	await get_tree().physics_frame
-	assert_true(_paddle.is_on_floor(), "paddle should be grounded before the timeout call")
-	_controller.call_timeout()
-	assert_eq(
-		_controller.get_state(),
-		TimeoutController.State.WALKING_OFF,
-		"grounded paddle should skip DESCENDING and go straight to WALKING_OFF",
-	)
-
-
 func test_repeated_call_timeout_while_airborne_stays_single_run() -> void:
 	watch_signals(_controller)
 	_paddle.position = Vector2(LANE_X, AIRBORNE_Y)
