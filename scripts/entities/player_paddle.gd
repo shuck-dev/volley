@@ -4,7 +4,6 @@ extends Paddle
 @export var low_anchor: Marker2D
 
 var _default_racket_position: Vector2
-var _development_offset := Vector2.ZERO
 var _low_states := [&"ready_grounded_low", &"low_swing_grounded"]
 
 
@@ -29,32 +28,21 @@ func _physics_move(_delta: float) -> void:
 func _on_animation_state_changed(state: StringName) -> void:
 	super(state)
 
-	if racket_hitbox == null:
+	if racket_hitbox == null or low_anchor == null:
 		return
 
-	if state in _low_states and low_anchor != null:
-		racket_hitbox.position = low_anchor.position
-	else:
-		racket_hitbox.position = _default_racket_position
+	var current_offset := racket_hitbox.position
+	var anchor_position: Vector2
 
-	racket_hitbox.position += _development_offset
+	if state in _low_states:
+		anchor_position = low_anchor.position
+	else:
+		anchor_position = _default_racket_position
+
+	current_offset -= anchor_position
+	racket_hitbox.position = anchor_position + current_offset
 	_refresh_overlay_shapes()
 
 
 func _is_crouching() -> bool:
 	return is_grounded() and Input.is_action_pressed("paddle_down")
-
-
-func set_racket_position_x(offset_x: float) -> void:
-	_development_offset.x = offset_x
-	_apply_racket_position_to_state()
-
-
-func set_racket_position_y(offset_y: float) -> void:
-	_development_offset.y = offset_y
-	_apply_racket_position_to_state()
-
-
-func _apply_racket_position_to_state() -> void:
-	var state := get_movement_state()
-	_on_animation_state_changed(state)
