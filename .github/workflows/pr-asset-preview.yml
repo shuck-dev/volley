@@ -42,11 +42,6 @@ jobs:
 
       - name: Generate and upload previews
         if: steps.changed.outputs.count != '0'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL: https://effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com
-          AWS_REGION: auto
         run: |
           while read -r file; do
             name=$(basename "$file" .png)
@@ -54,11 +49,11 @@ jobs:
             cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
 
             key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
-            aws s3 cp "$webp" "s3://volley-assets/${key}" \
-              --acl public-read \
-              --content-type image/webp
-
-            echo "https://volley-assets.effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com/${key}" >> /tmp/urls.txt
+            curl -sf -X PUT \
+              -H "Authorization: Basic $(echo -n "volley:${{ secrets.LFS_UPLOAD_KEY }}" | base64 -w0)" \
+              -H "Content-Type: image/webp" \
+              --data-binary "@${webp}" \
+              "https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
           done < /tmp/changed.txt
 
       - name: Post preview comments
@@ -69,7 +64,7 @@ jobs:
           while read -r file; do
             name=$(basename "$file" .png)
             key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
-            url="https://volley-assets.effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com/${key}"
+            url="https://volley-lfs-proxy.volcanoem.workers.dev/${key}"
 
             gh pr comment ${{ github.event.pull_request.number }} \
               --body "**\`${file}\`**\n![${name}](${url})"
