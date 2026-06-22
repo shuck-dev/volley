@@ -43,7 +43,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_yvpr5")
 }],
-"loop": 1,
+"loop": true,
 "name": &"flying_down",
 "speed": 5.0
 }, {
@@ -69,7 +69,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("7_yvpr5")
 }],
-"loop": 1,
+"loop": true,
 "name": &"flying_up",
 "speed": 5.0
 }, {
@@ -86,7 +86,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("15_r5wsh")
 }],
-"loop": 0,
+"loop": false,
 "name": &"low_swing_grounded",
 "speed": 5.0
 }, {
@@ -97,7 +97,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("9_0exrp")
 }],
-"loop": 1,
+"loop": true,
 "name": &"ready_flying",
 "speed": 5.0
 }, {
@@ -114,7 +114,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("15_r5wsh")
 }],
-"loop": 1,
+"loop": true,
 "name": &"ready_grounded",
 "speed": 5.0
 }, {
@@ -134,7 +134,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_7d1k5")
 }],
-"loop": 0,
+"loop": false,
 "name": &"swing_flying",
 "speed": 5.0
 }, {
@@ -154,7 +154,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_7d1k5")
 }],
-"loop": 0,
+"loop": false,
 "name": &"swing_grounded",
 "speed": 5.0
 }]
