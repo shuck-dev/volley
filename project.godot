@@ -36,7 +36,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/config_hot_reload/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/item_preview/plugin.cfg")
+enabled=PackedStringArray("res://addons/config_hot_reload/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/item_preview/plugin.cfg")
 
 [gdscript]
 
