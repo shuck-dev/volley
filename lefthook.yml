@@ -54,3 +54,11 @@ pre-commit:
     pip-audit:
       glob: "requirements-dev.txt"
       run: pip-audit --requirement requirements-dev.txt --strict
+
+pre-push:
+  commands:
+    lfs-push:
+      run: git lfs push origin HEAD
+      skip:
+        - merge
+        - rebase
