@@ -48,7 +48,7 @@ jobs:
           while read -r file; do
             name=$(basename "$file" .png)
             webp="/tmp/${name}.webp"
-            cwebp -q 90 -m 6 -mt "$file" -o "$webp" -quiet
+            cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
 
             data=$(base64 -w0 "$webp")
             body="**\`${file}\`**\n![](data:image/webp;base64,${data})"
