@@ -40,18 +40,37 @@ jobs:
           git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
           git lfs pull --include="assets/**"
 
-      - name: Post previews
+      - name: Generate and upload previews
         if: steps.changed.outputs.count != '0'
         env:
-          GH_TOKEN: ${{ github.token }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: https://effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com
+          AWS_REGION: auto
         run: |
           while read -r file; do
             name=$(basename "$file" .png)
             webp="/tmp/${name}.webp"
             cwebp -q 80 -m 6 -mt "$file" -o "$webp" -quiet
 
-            data=$(base64 -w0 "$webp")
-            body="**\`${file}\`**\n![](data:image/webp;base64,${data})"
+            key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
+            aws s3 cp "$webp" "s3://volley-assets/${key}" \
+              --acl public-read \
+              --content-type image/webp
 
-            gh pr comment ${{ github.event.pull_request.number }} --body "$body"
+            echo "https://volley-assets.effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com/${key}" >> /tmp/urls.txt
+          done < /tmp/changed.txt
+
+      - name: Post preview comments
+        if: steps.changed.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while read -r file; do
+            name=$(basename "$file" .png)
+            key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
+            url="https://volley-assets.effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com/${key}"
+
+            gh pr comment ${{ github.event.pull_request.number }} \
+              --body "**\`${file}\`**\n![${name}](${url})"
           done < /tmp/changed.txt
