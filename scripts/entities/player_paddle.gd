@@ -4,7 +4,7 @@ extends Paddle
 @export var low_anchor: Marker2D
 
 var _dev_offset := Vector2.ZERO
-var _low_states := [&"ready_grounded_crouch", &"low_swing_grounded"]
+var _low_states := [&"ready_grounded_low", &"low_swing_grounded"]
 
 
 func _ready() -> void:
