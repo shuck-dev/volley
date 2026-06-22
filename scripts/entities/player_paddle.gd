@@ -1,14 +1,14 @@
 class_name PlayerPaddle
 extends Paddle
 
-var _base_racket_y: float = 0.0
+@export var low_anchor: Marker2D
+
+var _dev_offset := Vector2.ZERO
+var _low_states := [&"ready_grounded_crouch", &"low_swing_grounded"]
 
 
 func _ready() -> void:
 	super()
-
-	if racket_hitbox != null:
-		_base_racket_y = racket_hitbox.position.y
 
 
 func _physics_move(_delta: float) -> void:
@@ -21,18 +21,31 @@ func _physics_move(_delta: float) -> void:
 	position.x = _lane_x
 	clamp_to_arena()
 
-	if racket_hitbox == null or _body_shape == null or _racket_shape == null:
+
+func _apply_racket_position(state: StringName) -> void:
+	if racket_hitbox == null:
 		return
 
-	if is_grounded() and Input.is_action_pressed("paddle_down"):
-		racket_hitbox.position.y = (
-			collision.position.y + _body_shape.size.y * 0.5 - _racket_shape.size.y * 0.5
-		)
+	if state in _low_states and low_anchor != null:
+		racket_hitbox.position = low_anchor.position
 	else:
-		racket_hitbox.position.y = _base_racket_y
+		racket_hitbox.position = _default_racket_pos
 
+	racket_hitbox.position += _dev_offset
 	_refresh_overlay_shapes()
 
 
 func _is_crouching() -> bool:
 	return is_grounded() and Input.is_action_pressed("paddle_down")
+
+
+func set_racket_position_x(offset_x: float) -> void:
+	_dev_offset.x = offset_x
+	var state := _animation_state_machine.get_state()
+	_apply_racket_position(state)
+
+
+func set_racket_position_y(offset_y: float) -> void:
+	_dev_offset.y = offset_y
+	var state := _animation_state_machine.get_state()
+	_apply_racket_position(state)

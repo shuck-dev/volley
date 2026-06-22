@@ -48,7 +48,7 @@ static func _resolve_state(
 		return &"swing_flying"
 
 	if grounded:
-		return &"ready_grounded"
+		return &"ready_grounded_crouch" if crouching else &"ready_grounded"
 
 	if not is_zero_approx(vertical_motion):
 		return &"flying_up" if vertical_motion < 0.0 else &"flying_down"
