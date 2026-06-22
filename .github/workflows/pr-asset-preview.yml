@@ -35,53 +35,38 @@ jobs:
           echo "count=$(wc -l < /tmp/changed.txt)" >> "$GITHUB_OUTPUT"
           cat /tmp/changed.txt
 
+      - name: Pull LFS objects
+        if: steps.changed.outputs.count != '0'
+        run: |
+          git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
+          git lfs pull --include="assets/**"
+
       - name: Generate previews
         if: steps.changed.outputs.count != '0'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL: https://effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com
-          AWS_REGION: auto
         run: |
           mkdir -p /tmp/previews
 
           while read -r file; do
             name=$(basename "$file" .png)
             cwebp -q 80 -m 6 -mt "$file" -o "/tmp/previews/${name}.webp"
-
-            key="pr-previews/${{ github.event.pull_request.number }}/${name}.webp"
-            aws s3 cp "/tmp/previews/${name}.webp" "s3://volley-assets/${key}" \
-              --acl public-read \
-              --content-type image/webp
-
-            echo "https://volley-assets.effe9646943c4ead286bad9d06e16e74.r2.cloudflarestorage.com/${key}" >> /tmp/urls.txt
           done < /tmp/changed.txt
-
-          cat /tmp/urls.txt
 
       - name: Post preview comment
         if: steps.changed.outputs.count != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          body=""
-          while read -r url; do
-            name=$(basename "$url" .webp)
-            body="${body}![${name}](${url})|"
-          done < /tmp/urls.txt
+          body="**Changed assets:**"
+          while read -r file; do
+            body="${body}\n- \`${file}\`"
+          done < /tmp/changed.txt
 
-          body=$(echo "$body" | sed 's/|$//; s/|/\n/g')
-
-          # Find and update existing preview comment, or create new one
           comment_id=$(gh api "repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
-            --jq '.[] | select(.user.login == "github-actions[bot]") | select(.body | contains("PR asset preview")) | .id' | head -1)
+            --jq '.[] | select(.user.login == "github-actions[bot]") | select(.body | contains("Changed assets:")) | .id' | head -1)
 
           if [ -n "$comment_id" ]; then
             gh api "repos/${{ github.repository }}/issues/comments/$comment_id" -X PATCH \
-              -f body="**PR asset preview** (updated ${{ github.sha:0:7 }}):
-        ${body}"
+              -f body="$body"
           else
-            gh pr comment ${{ github.event.pull_request.number }} \
-              --body "**PR asset preview** (${{ github.sha:0:7 }}):
-        ${body}"
+            gh pr comment ${{ github.event.pull_request.number }} --body "$body"
           fi
