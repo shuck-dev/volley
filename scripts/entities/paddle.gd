@@ -171,6 +171,7 @@ func _physics_process(delta: float) -> void:
 	if sprite != null:
 		if is_grounded():
 			sprite.position.y = 0.0
+			_bob_time = 0.0
 		elif get_movement_state() == &"ready_flying":
 			sprite.position.y = sin(_bob_time * bob_frequency) * bob_amplitude
 		else:
