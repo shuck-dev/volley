@@ -4,6 +4,7 @@ extends GutTest
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 
 func _stub_art() -> PackedScene:

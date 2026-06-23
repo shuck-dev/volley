@@ -486,8 +486,7 @@ func attempt_release(release_position: Vector2) -> bool:
 	if was_temporary:
 		over_court = false
 	_finalise_gesture(item_key, release_position, over_court)
-	if rack != null:
-		rack.refresh()
+	rack.refresh()
 	return true
 
 
@@ -942,8 +941,7 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
 	grab_from_rack(item_key, press_position)
-	if rack != null:
-		rack.refresh()
+	rack.refresh()
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
