@@ -16,16 +16,10 @@ func _ready() -> void:
 func toggle() -> void:
 	var desired: bool = not _enabled
 	set_enabled(desired)
-	# A running timeout owns physics_process; do not steal the restore back from it.
-	var timeout_owns: bool = timeout_controller != null and timeout_controller.is_active()
-	if not timeout_owns:
-		paddle.set_physics_process(not _enabled)
 	autoplay_toggled.emit(_enabled)
 
 
-## Force autoplay off without restoring on timeout_ended; the player re-toggles manually.
-## Bypasses toggle() because timeout owns paddle physics during the walk; flipping
-## set_physics_process here fights the walk-off freeze.
+## Force autoplay off without calling toggle(); the player re-enables manually after timeout.
 func _on_timeout_started() -> void:
 	if not _enabled:
 		return

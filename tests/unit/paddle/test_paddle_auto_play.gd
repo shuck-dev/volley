@@ -61,12 +61,12 @@ func test_toggle_emits_autoplay_toggled_false_on_second_call() -> void:
 	assert_signal_emitted_with_parameters(_controller, "autoplay_toggled", [false])
 
 
-func test_toggle_disables_paddle_physics_process_when_active() -> void:
+func test_toggle_does_not_disable_paddle_physics_process() -> void:
 	_controller.toggle()
-	assert_false(_paddle.is_physics_processing())
+	assert_true(_paddle.is_physics_processing())
 
 
-func test_toggle_re_enables_paddle_physics_process_when_deactivated() -> void:
+func test_toggle_keeps_physics_enabled_when_toggled_off() -> void:
 	_controller.toggle()
 	_controller.toggle()
 	assert_true(_paddle.is_physics_processing())
@@ -144,7 +144,7 @@ func test_timeout_end_does_not_re_enable_autoplay() -> void:
 	assert_false(_controller.is_enabled())
 
 
-func test_toggle_off_during_timeout_keeps_paddle_parked() -> void:
+func test_toggle_during_timeout_does_not_re_enable_physics() -> void:
 	_timeout.configure(_paddle)
 	_timeout.call_timeout()
 	assert_true(_timeout.is_active(), "precondition: timeout is active")
@@ -153,5 +153,5 @@ func test_toggle_off_during_timeout_keeps_paddle_parked() -> void:
 	_controller.toggle()
 	assert_false(
 		_paddle.is_physics_processing(),
-		"toggle off during timeout must not re-enable paddle physics_process",
+		"toggle during timeout must not re-enable paddle physics_process",
 	)
