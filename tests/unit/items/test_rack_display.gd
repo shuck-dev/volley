@@ -3,6 +3,7 @@ extends GutTest
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 
 
 func _stub_art() -> PackedScene:
@@ -198,6 +199,48 @@ func _make_rack_with_reconciler(
 	rack.configure_reconciler(reconciler)
 	add_child_autofree(rack)
 	return rack
+
+
+func test_owned_items_show_on_the_rack() -> void:
+	var ball := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([ball])
+	manager.economy.soul_balance = 1000
+	var rack: Node2D = _make_rack(&"ball", manager)
+	manager.take(ball.key)
+	rack.refresh()
+
+	var displayed: Array[String] = rack.get_displayed_keys()
+	assert_eq(displayed.size(), 1, "rack should show the owned item after take and refresh")
+	assert_eq(displayed[0], ball.key)
+
+
+func test_grab_removes_item_from_the_rack() -> void:
+	var ball := _make_item("ball_alpha", &"ball")
+	var manager: Node = _make_manager_with([ball])
+	manager.economy.soul_balance = 1000
+	var reconciler: BallReconciler = _make_reconciler(manager)
+	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
+	manager.take(ball.key)
+	reconciler.adopt_stored(ball.key, Vector2.ZERO)
+	rack.refresh()
+
+	assert_eq(rack.get_displayed_keys().size(), 1, "precondition: rack shows the owned item")
+
+	var drop_target: Area2D = Area2D.new()
+	var shape: CollisionShape2D = CollisionShape2D.new()
+	shape.shape = RectangleShape2D.new()
+	drop_target.add_child(shape)
+	add_child_autofree(drop_target)
+
+	var drag: ItemDragController = ItemDragControllerScript.new()
+	drag.configure(manager, rack, drop_target, reconciler)
+	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
+	add_child_autofree(drag)
+
+	drag.grab_from_rack(ball.key)
+	rack.refresh()
+
+	assert_eq(rack.get_displayed_keys().size(), 0, "grab should remove the item from the rack")
 
 
 func _find_slot(rack: Node2D, item_key: String) -> Node2D:
