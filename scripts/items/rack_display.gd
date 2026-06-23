@@ -20,6 +20,7 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 	_cache_slot_markers()
+	_item_manager.item_manager_state_changed.connect(refresh)
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_item_manager.item_placement_changed.connect(_on_item_placement_changed)
 	if not _item_manager.rack_slots_changed.is_connected(_on_rack_slots_changed):
