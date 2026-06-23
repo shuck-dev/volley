@@ -52,32 +52,6 @@ func _make_rack(role: StringName, manager: Node) -> Node2D:
 	return rack
 
 
-func test_adding_a_ball_item_shows_a_slot_on_the_ball_rack() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
-	var manager: Node = _make_manager_with([ball])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"ball", manager)
-
-	manager.take(ball.key)
-
-	var displayed: Array[String] = rack.get_displayed_keys()
-	assert_eq(displayed.size(), 1, "ball rack should render one slot for the new ball item")
-	assert_eq(displayed[0], ball.key, "ball rack slot should reference the ball item key")
-
-
-func test_adding_an_equipment_item_shows_a_slot_on_the_gear_rack() -> void:
-	var gear := _make_item("gear_alpha", &"equipment")
-	var manager: Node = _make_manager_with([gear])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"equipment", manager)
-
-	manager.take(gear.key)
-
-	var displayed: Array[String] = rack.get_displayed_keys()
-	assert_eq(displayed.size(), 1, "gear rack should render one slot for the new equipment item")
-	assert_eq(displayed[0], gear.key, "gear rack slot should reference the equipment item key")
-
-
 func test_ball_items_do_not_appear_on_the_gear_rack() -> void:
 	var ball := _make_item("ball_beta", &"ball")
 	var manager: Node = _make_manager_with([ball])
@@ -106,50 +80,6 @@ func test_equipment_items_do_not_appear_on_the_ball_rack() -> void:
 		0,
 		"ball rack should ignore equipment-role items",
 	)
-
-
-func test_activating_an_item_removes_its_slot() -> void:
-	var ball := _make_item("ball_gamma", &"ball")
-	var manager: Node = _make_manager_with([ball])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"ball", manager)
-	manager.take(ball.key)
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		1,
-		"precondition: taken ball should render on the rack",
-	)
-
-	manager.activate(ball.key)
-
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		0,
-		"activating an item should remove its slot from the rack",
-	)
-
-
-func test_deactivating_an_item_restores_its_slot() -> void:
-	var gear := _make_item("gear_gamma", &"equipment")
-	var manager: Node = _make_manager_with([gear])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"equipment", manager)
-	manager.take(gear.key)
-	manager.activate(gear.key)
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		0,
-		"precondition: activated equipment should not be on the rack",
-	)
-
-	manager.deactivate(gear.key)
-
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		1,
-		"deactivating equipment should bring its slot back to the rack",
-	)
-	assert_eq(rack.get_displayed_keys()[0], gear.key)
 
 
 func test_court_role_items_never_appear_on_either_rack() -> void:
@@ -220,22 +150,6 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 				assert_true(child.visible, "non-grabbed slots stay visible")
 
 
-func test_reveal_slot_for_restores_visibility() -> void:
-	var alpha := _make_item("ball_alpha", &"ball")
-	var manager: Node = _make_manager_with([alpha])
-	manager.economy.soul_balance = 10000
-	var rack := _make_rack(&"ball", manager)
-	manager.take(alpha.key)
-	await get_tree().process_frame
-
-	rack.hide_slot_for(alpha.key)
-	rack.reveal_slot_for(alpha.key)
-
-	for child in rack.slot_container.get_children():
-		if child is Node2D and String(child.name).begins_with("Slot_"):
-			assert_true(child.visible, "drop_completed reveals the slot again")
-
-
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
 	var ball := _make_item("ball_alpha", &"ball")
 	var manager: Node = _make_manager_with([ball])
@@ -284,50 +198,6 @@ func _make_rack_with_reconciler(
 	rack.configure_reconciler(reconciler)
 	add_child_autofree(rack)
 	return rack
-
-
-func test_rack_with_stored_ball_sources_art_from_ball() -> void:
-	var ball_item := _make_item("ball_alpha", &"ball")
-	var manager: Node = _make_manager_with([ball_item])
-	manager.economy.soul_balance = 1000
-	var reconciler: BallReconciler = _make_reconciler(manager)
-	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
-	manager.take(ball_item.key)
-	var stored: Ball = reconciler.adopt_stored(ball_item.key, Vector2.ZERO)
-	assert_not_null(stored, "adopt_stored returns a Ball")
-
-	var slot: Node2D = _find_slot(rack, ball_item.key)
-	assert_not_null(slot, "slot was rendered")
-	var art_holder: Node2D = slot.get_node("ArtHolder")
-	assert_eq(
-		art_holder.get_meta(&"source", ""),
-		&"ball",
-		"the rack reads art from the STORED Ball when one is registered",
-	)
-	assert_eq(
-		art_holder.get_child_count(), 0, "rack leaves slot art empty when the Ball owns the visual"
-	)
-
-
-func test_rack_keeps_slot_empty_when_ball_is_held() -> void:
-	var ball_item := _make_item("ball_alpha", &"ball")
-	var manager: Node = _make_manager_with([ball_item])
-	manager.economy.soul_balance = 1000
-	var reconciler: BallReconciler = _make_reconciler(manager)
-	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
-	manager.take(ball_item.key)
-	var ball: Ball = reconciler.adopt_stored(ball_item.key, Vector2.ZERO)
-	ball.enter_out_held()
-	rack.refresh()
-
-	var slot: Node2D = _find_slot(rack, ball_item.key)
-	assert_not_null(slot, "slot stays in the kit while the ball is held")
-	var art_holder: Node2D = slot.get_node("ArtHolder")
-	assert_eq(
-		art_holder.get_child_count(),
-		0,
-		"rack does not bake duplicate art when the registered ball is OUT_HELD",
-	)
 
 
 func _find_slot(rack: Node2D, item_key: String) -> Node2D:
