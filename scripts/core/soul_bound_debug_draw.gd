@@ -2,7 +2,6 @@
 class_name SoulBoundDebugDraw
 extends Node2D
 
-## Editor-and-debug-only line at the soul bound; never drawn in a release build.
 @export var debug_color: Color = Color(1.0, 0.7, 0.2, 0.4)
 @export var bound_y: float = 0.0
 @export var court_width: float = 600.0

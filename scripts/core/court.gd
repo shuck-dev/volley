@@ -19,6 +19,7 @@ signal partner_changed
 @export_group("Bounds")
 @export var right_wall: StaticBody2D
 @export var soul_bound: Marker2D
+@export var soul_bound_debug_draw: SoulBoundDebugDraw
 
 @export_group("Spawns")
 @export var player_spawn: Marker2D
@@ -96,11 +97,10 @@ func _ready() -> void:
 		ball_system.bound_y = soul_bound.global_position.y
 	ball_system.player_paddle = player_paddle
 
-	var debug_draw := get_node_or_null("SoulBoundDebugDraw") as SoulBoundDebugDraw
-	if debug_draw != null:
-		debug_draw.bound_y = soul_bound.global_position.y if soul_bound != null else 0.0
+	if soul_bound_debug_draw != null and soul_bound != null:
+		soul_bound_debug_draw.bound_y = soul_bound.global_position.y
 		if court_config != null:
-			debug_draw.court_width = court_config.court_width
+			soul_bound_debug_draw.court_width = court_config.court_width
 
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
