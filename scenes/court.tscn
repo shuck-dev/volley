@@ -213,3 +213,5 @@ reconciler = NodePath("../BallReconciler")
 cursor_overlay = NodePath("CursorOverlay")
 
 [node name="CursorOverlay" parent="ItemDragController" unique_id=1431747376 instance=ExtResource("24_cursor")]
+
+[node name="SoulBoundDebugDraw" type="Node2D" parent="." unique_id=2018238293]
