@@ -15,7 +15,7 @@ size = Vector2(90, 283)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
 size = Vector2(21, 94.325)
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray", "low_anchor")]
 collision_layer = 16
 script = ExtResource("1_mo4dg")
 hit_sound = NodePath("HitSound")
@@ -41,9 +41,10 @@ position = Vector2(-12, 0)
 [node name="WristAnchor" type="Node2D" parent="." unique_id=2001000003]
 position = Vector2(-12, -10)
 
-[node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
+[node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800 node_paths=PackedStringArray("racket_collision")]
 position = Vector2(8, 59.29)
 script = ExtResource("5_rpm")
+racket_collision = NodePath("../RacketHitbox/RacketCollision")
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1850417808]
 position = Vector2(-8, 5.595)
