@@ -193,7 +193,7 @@ func get_movement_state() -> StringName:
 func is_grounded() -> bool:
 	if ground_ray == null:
 		return super.is_on_floor()
-	return ground_ray.is_colliding()
+	return ground_ray.is_colliding() or is_on_floor()
 
 
 func _ensure_animation_state_machine() -> void:
