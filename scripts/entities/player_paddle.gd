@@ -6,7 +6,7 @@ extends Paddle
 var _default_racket_position: Vector2
 var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 
-@onready var dev_overlay: PaddleDevOverlay = $PaddleDevOverlay
+@onready var dev_overlay: PaddleDevOverlay = $DevOverlay
 
 
 func _ready() -> void:
