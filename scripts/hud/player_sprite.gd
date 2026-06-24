@@ -103,27 +103,13 @@ func _get_sprite_height() -> float:
 func _for_each_overlay(method: StringName, value: Variant) -> void:
 	for paddle in get_tree().get_nodes_in_group(&"paddles"):
 		var overlay: DevOverlay = _find_overlay(paddle)
-		if overlay == null:
-			print("no overlay found on ", paddle.name)
-			continue
-		if not overlay.has_method(method):
-			print("overlay has no method: ", method)
+		if overlay == null or not overlay.has_method(method):
 			continue
 		overlay.call(method, value)
-		print("called ", method, " on ", paddle.name)
 
 
 func _find_overlay(paddle: Node) -> DevOverlay:
-	print("_find_overlay on ", paddle.name, ": ", paddle.get_child_count(), " children")
 	for child in paddle.get_children():
-		print(
-			"  child: ",
-			child.name,
-			" class=",
-			child.get_class(),
-			" is_DevOverlay=",
-			child is DevOverlay
-		)
 		if child is DevOverlay:
 			return child
 	return null
