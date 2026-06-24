@@ -1,22 +1,22 @@
 [gd_scene format=3 uid="uid://cb465l1s3r4np"]
 
-[ext_resource type="Script" path="res://scripts/dev/body_collider_overlay.gd" id="1_body"]
-[ext_resource type="Script" path="res://scripts/dev/racket_collider_overlay.gd" id="2_racket"]
-[ext_resource type="Script" path="res://scripts/dev/ground_ray_overlay.gd" id="3_ray"]
-[ext_resource type="Script" path="res://scripts/dev/animation_state_label.gd" id="4_label"]
-[ext_resource type="Script" path="res://scripts/dev/dev_overlay.gd" id="5_root"]
+[ext_resource type="Script" uid="uid://dbrd03qsmmyvb" path="res://scripts/dev/body_collider_overlay.gd" id="1_body"]
+[ext_resource type="Script" uid="uid://vds1ga6lltxd" path="res://scripts/dev/racket_collider_overlay.gd" id="2_racket"]
+[ext_resource type="Script" uid="uid://buqpbmh1c35bs" path="res://scripts/dev/ground_ray_overlay.gd" id="3_ray"]
+[ext_resource type="Script" uid="uid://4xd1ibgc7g5s" path="res://scripts/dev/animation_state_label.gd" id="4_label"]
+[ext_resource type="Script" uid="uid://bupyhn2n2kkoo" path="res://scripts/dev/dev_overlay.gd" id="5_root"]
 
 [node name="DevOverlay" type="Node2D" unique_id=1273165983]
 script = ExtResource("5_root")
 
-[node name="BodyColliderOverlay" type="Node2D" parent="."]
+[node name="BodyColliderOverlay" type="Node2D" parent="." unique_id=1973741024]
 script = ExtResource("1_body")
 
-[node name="RacketColliderOverlay" type="Node2D" parent="."]
+[node name="RacketColliderOverlay" type="Node2D" parent="." unique_id=396412507]
 script = ExtResource("2_racket")
 
-[node name="GroundRayOverlay" type="Node2D" parent="."]
+[node name="GroundRayOverlay" type="Node2D" parent="." unique_id=1286020694]
 script = ExtResource("3_ray")
 
-[node name="AnimationStateLabel" type="Label" parent="."]
+[node name="AnimationStateLabel" type="Label" parent="." unique_id=831184665]
 script = ExtResource("4_label")
