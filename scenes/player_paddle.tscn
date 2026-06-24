@@ -83,5 +83,5 @@ shape = SubResource("RectangleShape2D_k7j1o")
 position = Vector2(-48, 96)
 target_position = Vector2(0, 10)
 
-[node name="PaddleDevOverlay" parent="." unique_id=704420345 instance=ExtResource("6_pdo")]
+[node name="DevOverlay" parent="." unique_id=704420345 instance=ExtResource("6_pdo")]
 script = null
