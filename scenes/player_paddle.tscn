@@ -44,7 +44,6 @@ position = Vector2(-12, -10)
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
 script = ExtResource("5_rpm")
-racket_collision = NodePath("../RacketHitbox/RacketCollision")
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1850417808]
 position = Vector2(-8, 5.595)
