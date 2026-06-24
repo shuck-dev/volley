@@ -84,4 +84,8 @@ position = Vector2(-48, 96)
 target_position = Vector2(0, 10)
 
 [node name="DevOverlay" parent="." unique_id=704420345 instance=ExtResource("6_pdo")]
-script = null
+collision = NodePath("BodyCollision")
+racket_hitbox = NodePath("RacketHitbox")
+racket_shape = NodePath("RacketHitbox/RacketCollision")
+sprite = NodePath("Sprite")
+ground_ray = NodePath("GroundRay")
