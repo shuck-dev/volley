@@ -16,8 +16,6 @@ func _ready() -> void:
 
 	_apply_debug_overlay(false)
 
-	call_deferred(&"_attach_paddle_overlays")
-
 
 func _exit_tree() -> void:
 	if ProgressionManager.shop_unlocked_changed.is_connected(_on_shop_unlocked_changed):
@@ -48,18 +46,3 @@ func _apply_debug_overlay(pressed: bool) -> void:
 	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
 		if overlay.has_method("set_dev_visible"):
 			overlay.set_dev_visible(pressed)
-
-
-func _attach_paddle_overlays() -> void:
-	var overlay_script := load("res://scripts/dev/paddle_dev_overlay.gd")
-	for paddle in get_tree().get_nodes_in_group(&"paddles"):
-		if paddle.has_node("PaddleDevOverlay"):
-			continue
-		var overlay: Node = overlay_script.new()
-		overlay.name = "PaddleDevOverlay"
-		overlay.collision = paddle.collision
-		overlay.racket_hitbox = paddle.racket_hitbox
-		overlay.racket_shape = paddle.racket_shape
-		overlay.sprite = paddle.sprite
-		overlay.ground_ray = paddle.ground_ray
-		paddle.add_child(overlay)
