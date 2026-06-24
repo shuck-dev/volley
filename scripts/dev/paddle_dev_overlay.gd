@@ -16,7 +16,15 @@ extends Node2D
 func _ready() -> void:
 	if not OS.is_debug_build():
 		queue_free()
+		print("PaddleDevOverlay: freed (not debug build)")
 		return
+
+	print(
+		"PaddleDevOverlay._ready: body_collider=",
+		body_collider != null,
+		" state_label=",
+		state_label != null
+	)
 
 	if body_collider != null:
 		body_collider.collision = collision
@@ -41,11 +49,13 @@ func _physics_process(_delta: float) -> void:
 
 
 func set_body_collider_visible(shown: bool) -> void:
+	print("set_body_collider_visible: ", shown, " body_collider=", body_collider != null)
 	if body_collider != null:
 		body_collider.visible = shown
 
 
 func set_racket_collider_visible(shown: bool) -> void:
+	print("set_racket_collider_visible: ", shown, " racket_collider=", racket_collider != null)
 	if racket_collider != null:
 		racket_collider.visible = shown
 
