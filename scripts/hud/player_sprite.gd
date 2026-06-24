@@ -191,5 +191,8 @@ func _apply_ground_ray_visible(pressed: bool) -> void:
 
 func _for_each_paddle(method: StringName, value: Variant) -> void:
 	for paddle in get_tree().get_nodes_in_group(&"paddles"):
-		if paddle.has_method(method):
+		var overlay: Node = paddle.get_node_or_null("PaddleDevOverlay")
+		if overlay != null and overlay.has_method(method):
+			overlay.call(method, value)
+		elif paddle.has_method(method):
 			paddle.call(method, value)
