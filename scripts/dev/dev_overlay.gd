@@ -1,4 +1,4 @@
-class_name PaddleDevOverlay
+class_name DevOverlay
 extends Node2D
 
 @export var collision: CollisionShape2D
