@@ -8,10 +8,10 @@ var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 
 
 func _ready() -> void:
-	super()
-
 	if racket_hitbox != null:
 		_default_racket_position = racket_hitbox.position
+
+	super()
 
 
 func _physics_move(_delta: float) -> void:
