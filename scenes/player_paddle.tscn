@@ -16,11 +16,10 @@ size = Vector2(90, 283)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
 size = Vector2(21, 94.325)
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "dev_overlay", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_mo4dg")
 low_anchor = NodePath("LowRacketAnchor")
-dev_overlay = NodePath("PaddleDevOverlay")
 hit_sound = NodePath("HitSound")
 collision = NodePath("BodyCollision")
 sprite = NodePath("Sprite")

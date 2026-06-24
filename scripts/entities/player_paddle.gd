@@ -2,10 +2,11 @@ class_name PlayerPaddle
 extends Paddle
 
 @export var low_anchor: Marker2D
-@export var dev_overlay: PaddleDevOverlay
 
 var _default_racket_position: Vector2
 var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
+
+@onready var dev_overlay: PaddleDevOverlay = $PaddleDevOverlay
 
 
 func _ready() -> void:
