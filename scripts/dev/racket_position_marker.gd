@@ -19,7 +19,7 @@ func _draw() -> void:
 func _collision_size() -> Vector2:
 	if racket_collision == null:
 		return Vector2.ZERO
-	var shape: RectangleShape2D = racket_collision.shape as RectangleShape2D
+	var shape: RectangleShape2D = racket_collision.shape
 	if shape == null:
 		return Vector2.ZERO
 	return shape.size
