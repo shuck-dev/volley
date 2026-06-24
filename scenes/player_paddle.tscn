@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
 [ext_resource type="Script" uid="uid://40boov56vi13" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
-[ext_resource type="Script" path="res://scripts/dev/paddle_dev_overlay.gd" id="6_pdo"]
+[ext_resource type="PackedScene" path="res://scenes/dev/paddle_dev_overlay.tscn" id="6_pdo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
@@ -83,8 +83,7 @@ shape = SubResource("RectangleShape2D_k7j1o")
 position = Vector2(-48, 96)
 target_position = Vector2(0, 10)
 
-[node name="PaddleDevOverlay" type="Node" parent="."]
-script = ExtResource("6_pdo")
+[node name="PaddleDevOverlay" parent="." instance=ExtResource("6_pdo")]
 collision = NodePath("BodyCollision")
 racket_hitbox = NodePath("RacketHitbox")
 racket_shape = NodePath("RacketHitbox/RacketCollision")

@@ -10,14 +10,16 @@ const STATE_LABEL_GAP := 8.0
 @export var sprite: AnimatedSprite2D
 @export var ground_ray: RayCast2D
 
-var _collider_overlay: ColliderOverlay
-var _state_label: Label
 var _body_shape: RectangleShape2D
 var _racket_shape: RectangleShape2D
+
+@onready var _collider_overlay: ColliderOverlay = $ColliderOverlay
+@onready var _state_label: Label = $StateLabel
 
 
 func _ready() -> void:
 	if not OS.is_debug_build():
+		queue_free()
 		return
 
 	if collision != null and collision.shape is RectangleShape2D:
@@ -25,30 +27,13 @@ func _ready() -> void:
 	if racket_shape != null and racket_shape.shape is RectangleShape2D:
 		_racket_shape = racket_shape.shape
 
-	_collider_overlay = ColliderOverlay.new()
-	_collider_overlay.z_index = 100
-	add_child(_collider_overlay)
-
-	_setup_state_label()
+	sprite.animation_changed.connect(_refresh_state_label)
+	_refresh_state_label()
 
 
 func _physics_process(_delta: float) -> void:
-	if _collider_overlay != null:
-		_refresh_overlay_shapes()
-		_collider_overlay.tick_ray_draw()
-
-
-func _setup_state_label() -> void:
-	if sprite == null:
-		return
-	_state_label = Label.new()
-	_state_label.z_index = 101
-	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_state_label.add_theme_color_override(&"font_color", Color.WHITE)
-	_state_label.visible = false
-	add_child(_state_label)
-	sprite.animation_changed.connect(_refresh_state_label)
-	_refresh_state_label()
+	_refresh_overlay_shapes()
+	_collider_overlay.tick_ray_draw()
 
 
 func set_state_label_visible(value: bool) -> void:
@@ -57,8 +42,6 @@ func set_state_label_visible(value: bool) -> void:
 
 
 func _position_state_label() -> void:
-	if _state_label == null:
-		return
 	var half_height: float = STATE_LABEL_GAP
 	if _body_shape != null:
 		half_height = _body_shape.size.y * 0.5 + STATE_LABEL_GAP
@@ -68,35 +51,25 @@ func _position_state_label() -> void:
 
 
 func _refresh_state_label() -> void:
-	if _state_label == null or sprite == null:
+	if sprite == null:
 		return
 	_state_label.text = String(sprite.animation)
 	_position_state_label()
 
 
 func set_body_collider_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
-	_refresh_overlay_shapes()
 	_collider_overlay.set_body_active(shown)
 
 
 func set_ground_ray_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
 	_collider_overlay.set_ray_visible(shown, ground_ray)
 
 
 func set_racket_collider_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
-	_refresh_overlay_shapes()
 	_collider_overlay.set_racket_active(shown)
 
 
 func _refresh_overlay_shapes() -> void:
-	if _collider_overlay == null:
-		return
 	var body_size: Vector2 = _body_shape.size if _body_shape != null else Vector2.ZERO
 	var body_offset: Vector2 = collision.position if collision != null else Vector2.ZERO
 	var racket_size: Vector2 = _racket_shape.size if _racket_shape != null else Vector2.ZERO
