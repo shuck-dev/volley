@@ -5,11 +5,11 @@
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
 [ext_resource type="Script" uid="uid://40boov56vi13" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
-[ext_resource type="Script" path="res://scripts/dev/dev_overlay.gd" id="6_pdo"]
-[ext_resource type="Script" path="res://scripts/dev/body_collider_overlay.gd" id="7_body"]
-[ext_resource type="Script" path="res://scripts/dev/racket_collider_overlay.gd" id="8_racket"]
-[ext_resource type="Script" path="res://scripts/dev/ground_ray_overlay.gd" id="9_ray"]
-[ext_resource type="Script" path="res://scripts/dev/animation_state_label.gd" id="10_label"]
+[ext_resource type="Script" uid="uid://bupyhn2n2kkoo" path="res://scripts/dev/dev_overlay.gd" id="6_pdo"]
+[ext_resource type="Script" uid="uid://dbrd03qsmmyvb" path="res://scripts/dev/body_collider_overlay.gd" id="7_body"]
+[ext_resource type="Script" uid="uid://vds1ga6lltxd" path="res://scripts/dev/racket_collider_overlay.gd" id="8_racket"]
+[ext_resource type="Script" uid="uid://buqpbmh1c35bs" path="res://scripts/dev/ground_ray_overlay.gd" id="9_ray"]
+[ext_resource type="Script" uid="uid://4xd1ibgc7g5s" path="res://scripts/dev/animation_state_label.gd" id="10_label"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
@@ -89,20 +89,33 @@ target_position = Vector2(0, 10)
 
 [node name="DevOverlay" type="Node2D" parent="."]
 script = ExtResource("6_pdo")
-collision = NodePath("BodyCollision")
-racket_hitbox = NodePath("RacketHitbox")
-racket_shape = NodePath("RacketHitbox/RacketCollision")
-sprite = NodePath("Sprite")
-ground_ray = NodePath("GroundRay")
 
 [node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay"]
 script = ExtResource("7_body")
+collision = NodePath("../BodyCollision")
 
 [node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay"]
 script = ExtResource("8_racket")
+racket_hitbox = NodePath("../RacketHitbox")
+racket_shape = NodePath("../RacketHitbox/RacketCollision")
 
 [node name="GroundRayOverlay" type="Node2D" parent="DevOverlay"]
 script = ExtResource("9_ray")
+ground_ray = NodePath("../GroundRay")
 
 [node name="AnimationStateLabel" type="Label" parent="DevOverlay"]
+script = ExtResource("10_label")
+sprite = NodePath("../Sprite")
+collision = NodePath("../BodyCollision")
+
+[node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=933292946]
+script = ExtResource("7_body")
+
+[node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=498550284]
+script = ExtResource("8_racket")
+
+[node name="GroundRayOverlay" type="Node2D" parent="DevOverlay" unique_id=1006474149]
+script = ExtResource("9_ray")
+
+[node name="AnimationStateLabel" type="Label" parent="DevOverlay" unique_id=1992226190]
 script = ExtResource("10_label")
