@@ -8,12 +8,11 @@ const STATE_LABEL_GAP := 8.0
 @export var racket_shape: CollisionShape2D
 @export var sprite: AnimatedSprite2D
 @export var ground_ray: RayCast2D
+@export var collider_overlay: ColliderOverlay
+@export var state_label: Label
 
 var _body_shape: RectangleShape2D
 var _racket_shape: RectangleShape2D
-
-@onready var _collider_overlay: ColliderOverlay = $ColliderOverlay
-@onready var _state_label: Label = $StateLabel
 
 
 func _ready() -> void:
@@ -26,46 +25,46 @@ func _ready() -> void:
 	if racket_shape != null and racket_shape.shape is RectangleShape2D:
 		_racket_shape = racket_shape.shape
 
-	sprite.animation_changed.connect(_refresh_state_label)
-	_refresh_state_label()
+	sprite.animation_changed.connect(_refreshstate_label)
+	_refreshstate_label()
 
 
 func _physics_process(_delta: float) -> void:
 	_refresh_overlay_shapes()
-	_collider_overlay.tick_ray_draw()
+	collider_overlay.tick_ray_draw()
 
 
-func set_state_label_visible(value: bool) -> void:
-	if _state_label != null:
-		_state_label.visible = value
+func setstate_label_visible(value: bool) -> void:
+	if state_label != null:
+		state_label.visible = value
 
 
-func _position_state_label() -> void:
+func _positionstate_label() -> void:
 	var half_height: float = STATE_LABEL_GAP
 	if _body_shape != null:
 		half_height = _body_shape.size.y * 0.5 + STATE_LABEL_GAP
-	_state_label.size = Vector2.ZERO
-	var min_size: Vector2 = _state_label.get_minimum_size()
-	_state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
+	state_label.size = Vector2.ZERO
+	var min_size: Vector2 = state_label.get_minimum_size()
+	state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
 
 
-func _refresh_state_label() -> void:
+func _refreshstate_label() -> void:
 	if sprite == null:
 		return
-	_state_label.text = String(sprite.animation)
-	_position_state_label()
+	state_label.text = String(sprite.animation)
+	_positionstate_label()
 
 
 func set_body_collider_visible(shown: bool) -> void:
-	_collider_overlay.set_body_active(shown)
+	collider_overlay.set_body_active(shown)
 
 
 func set_ground_ray_visible(shown: bool) -> void:
-	_collider_overlay.set_ray_visible(shown, ground_ray)
+	collider_overlay.set_ray_visible(shown, ground_ray)
 
 
 func set_racket_collider_visible(shown: bool) -> void:
-	_collider_overlay.set_racket_active(shown)
+	collider_overlay.set_racket_active(shown)
 
 
 func _refresh_overlay_shapes() -> void:
@@ -73,4 +72,4 @@ func _refresh_overlay_shapes() -> void:
 	var body_offset: Vector2 = collision.position if collision != null else Vector2.ZERO
 	var racket_size: Vector2 = _racket_shape.size if _racket_shape != null else Vector2.ZERO
 	var racket_offset: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-	_collider_overlay.set_shapes(body_size, body_offset, racket_size, racket_offset)
+	collider_overlay.set_shapes(body_size, body_offset, racket_size, racket_offset)

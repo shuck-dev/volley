@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://cb465l1s3r4np"]
 
 [ext_resource type="Script" uid="uid://ci1ime7lpgf6w" path="res://scripts/dev/paddle_dev_overlay.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/collider_overlay.gd" id="2_co"]
 
-[node name="PaddleDevOverlay" type="Node2D" unique_id=1273165983]
+[node name="PaddleDevOverlay" type="Node2D" unique_id=1273165983 node_paths=PackedStringArray("collider_overlay", "state_label")]
 script = ExtResource("1_script")
 
 [node name="ColliderOverlay" type="Node2D" parent="." unique_id=508581845]
+script = ExtResource("2_co")
 z_index = 100
 
 [node name="StateLabel" type="Label" parent="." unique_id=854448848]
