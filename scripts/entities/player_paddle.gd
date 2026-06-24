@@ -14,9 +14,6 @@ func _ready() -> void:
 	if racket_hitbox != null:
 		_default_racket_position = racket_hitbox.position
 
-	if low_anchor != null and _racket_shape != null:
-		low_anchor.collision_size = _racket_shape.size
-
 
 func _physics_move(_delta: float) -> void:
 	var direction := Input.get_axis("paddle_up", "paddle_down")
