@@ -210,28 +210,6 @@ func _refresh_from_stats() -> void:
 	_paddle_speed = _resolved_paddle_speed()
 
 
-func set_sprite_height_scale(factor: float) -> void:
-	if sprite == null:
-		return
-	sprite.scale.y = factor
-
-
-func set_sprite_width_scale(factor: float) -> void:
-	if sprite == null:
-		return
-	sprite.scale.x = factor
-
-
-func set_racket_position_x(offset_x: float) -> void:
-	if racket_hitbox != null:
-		racket_hitbox.position.x = offset_x
-
-
-func set_racket_position_y(offset_y: float) -> void:
-	if racket_hitbox != null:
-		racket_hitbox.position.y = offset_y
-
-
 func set_racket_width(width: float) -> void:
 	if _racket_shape != null:
 		_racket_shape.size.x = width

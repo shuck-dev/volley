@@ -1,18 +1,16 @@
 class_name PaddleDevOverlay
 extends Node2D
 
-const STATE_LABEL_GAP := 8.0
-
 @export var collision: CollisionShape2D
 @export var racket_hitbox: Area2D
 @export var racket_shape: CollisionShape2D
 @export var sprite: AnimatedSprite2D
 @export var ground_ray: RayCast2D
-@export var collider_overlay: ColliderOverlay
-@export var state_label: Label
 
-var _body_shape: RectangleShape2D
-var _racket_shape: RectangleShape2D
+@export var body_collider: BodyColliderOverlay
+@export var racket_collider: RacketColliderOverlay
+@export var ray_overlay: GroundRayOverlay
+@export var state_label: AnimationStateLabel
 
 
 func _ready() -> void:
@@ -20,56 +18,43 @@ func _ready() -> void:
 		queue_free()
 		return
 
-	if collision != null and collision.shape is RectangleShape2D:
-		_body_shape = collision.shape
-	if racket_shape != null and racket_shape.shape is RectangleShape2D:
-		_racket_shape = racket_shape.shape
-
-	sprite.animation_changed.connect(_refreshstate_label)
-	_refreshstate_label()
+	if body_collider != null:
+		body_collider.collision = collision
+		body_collider.queue_redraw()
+	if racket_collider != null:
+		racket_collider.racket_hitbox = racket_hitbox
+		racket_collider.racket_shape = racket_shape
+		racket_collider.queue_redraw()
+	if ray_overlay != null:
+		ray_overlay.ground_ray = ground_ray
+		ray_overlay.queue_redraw()
+	if state_label != null and sprite != null:
+		state_label.sprite = sprite
+		state_label.collision = collision
+		sprite.animation_changed.connect(state_label._refresh)
+		state_label._refresh()
 
 
 func _physics_process(_delta: float) -> void:
-	_refresh_overlay_shapes()
-	collider_overlay.tick_ray_draw()
-
-
-func setstate_label_visible(value: bool) -> void:
-	if state_label != null:
-		state_label.visible = value
-
-
-func _positionstate_label() -> void:
-	var half_height: float = STATE_LABEL_GAP
-	if _body_shape != null:
-		half_height = _body_shape.size.y * 0.5 + STATE_LABEL_GAP
-	state_label.size = Vector2.ZERO
-	var min_size: Vector2 = state_label.get_minimum_size()
-	state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
-
-
-func _refreshstate_label() -> void:
-	if sprite == null:
-		return
-	state_label.text = String(sprite.animation)
-	_positionstate_label()
+	if ray_overlay != null:
+		ray_overlay.queue_redraw()
 
 
 func set_body_collider_visible(shown: bool) -> void:
-	collider_overlay.set_body_active(shown)
-
-
-func set_ground_ray_visible(shown: bool) -> void:
-	collider_overlay.set_ray_visible(shown, ground_ray)
+	if body_collider != null:
+		body_collider.visible = shown
 
 
 func set_racket_collider_visible(shown: bool) -> void:
-	collider_overlay.set_racket_active(shown)
+	if racket_collider != null:
+		racket_collider.visible = shown
 
 
-func _refresh_overlay_shapes() -> void:
-	var body_size: Vector2 = _body_shape.size if _body_shape != null else Vector2.ZERO
-	var body_offset: Vector2 = collision.position if collision != null else Vector2.ZERO
-	var racket_size: Vector2 = _racket_shape.size if _racket_shape != null else Vector2.ZERO
-	var racket_offset: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-	collider_overlay.set_shapes(body_size, body_offset, racket_size, racket_offset)
+func set_ground_ray_visible(shown: bool) -> void:
+	if ray_overlay != null:
+		ray_overlay.visible = shown
+
+
+func set_state_label_visible(shown: bool) -> void:
+	if state_label != null:
+		state_label.visible = shown

@@ -1,17 +1,20 @@
 [gd_scene format=3 uid="uid://cb465l1s3r4np"]
 
-[ext_resource type="Script" uid="uid://ci1ime7lpgf6w" path="res://scripts/dev/paddle_dev_overlay.gd" id="1_script"]
-[ext_resource type="Script" path="res://scripts/entities/collider_overlay.gd" id="2_co"]
+[ext_resource type="Script" path="res://scripts/dev/body_collider_overlay.gd" id="1_body"]
+[ext_resource type="Script" path="res://scripts/dev/racket_collider_overlay.gd" id="2_racket"]
+[ext_resource type="Script" path="res://scripts/dev/ground_ray_overlay.gd" id="3_ray"]
+[ext_resource type="Script" path="res://scripts/dev/animation_state_label.gd" id="4_label"]
 
-[node name="PaddleDevOverlay" type="Node2D" unique_id=1273165983 node_paths=PackedStringArray("collider_overlay", "state_label")]
-script = ExtResource("1_script")
+[node name="PaddleDevOverlay" type="Node2D" unique_id=1273165983]
 
-[node name="ColliderOverlay" type="Node2D" parent="." unique_id=508581845]
-script = ExtResource("2_co")
-z_index = 100
+[node name="BodyColliderOverlay" type="Node2D" parent="."]
+script = ExtResource("1_body")
 
-[node name="StateLabel" type="Label" parent="." unique_id=854448848]
-visible = false
-z_index = 101
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-horizontal_alignment = 1
+[node name="RacketColliderOverlay" type="Node2D" parent="."]
+script = ExtResource("2_racket")
+
+[node name="GroundRayOverlay" type="Node2D" parent="."]
+script = ExtResource("3_ray")
+
+[node name="AnimationStateLabel" type="Label" parent="."]
+script = ExtResource("4_label")

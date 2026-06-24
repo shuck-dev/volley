@@ -1,0 +1,18 @@
+class_name BodyColliderOverlay
+extends Node2D
+
+@export var collision: CollisionShape2D
+
+
+func _ready() -> void:
+	if not OS.is_debug_build():
+		queue_free()
+
+
+func _draw() -> void:
+	if collision == null:
+		return
+	var shape: RectangleShape2D = collision.shape
+	if shape == null:
+		return
+	draw_rect(Rect2(collision.position - shape.size * 0.5, shape.size), Color(0.2, 0.6, 1.0, 0.35))
