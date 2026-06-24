@@ -10,6 +10,10 @@ func _ready() -> void:
 	visible = false
 
 
+func _physics_process(_delta: float) -> void:
+	queue_redraw()
+
+
 func _draw() -> void:
 	if racket_hitbox == null:
 		return
