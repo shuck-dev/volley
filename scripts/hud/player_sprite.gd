@@ -114,7 +114,16 @@ func _for_each_overlay(method: StringName, value: Variant) -> void:
 
 
 func _find_overlay(paddle: Node) -> DevOverlay:
+	print("_find_overlay on ", paddle.name, ": ", paddle.get_child_count(), " children")
 	for child in paddle.get_children():
+		print(
+			"  child: ",
+			child.name,
+			" class=",
+			child.get_class(),
+			" is_DevOverlay=",
+			child is DevOverlay
+		)
 		if child is DevOverlay:
 			return child
 	return null

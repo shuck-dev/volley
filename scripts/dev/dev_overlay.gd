@@ -15,8 +15,18 @@ extends Node2D
 
 func _ready() -> void:
 	if not OS.is_debug_build():
+		print("DevOverlay: freeing, not debug build")
 		queue_free()
 		return
+
+	print(
+		"DevOverlay._ready: collision=",
+		collision != null,
+		" body_collider=",
+		body_collider != null,
+		" state_label=",
+		state_label != null
+	)
 
 	if body_collider != null:
 		body_collider.collision = collision
