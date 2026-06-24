@@ -4,7 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
-[ext_resource type="Script" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
+[ext_resource type="Script" uid="uid://40boov56vi13" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
@@ -15,7 +15,7 @@ size = Vector2(90, 283)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
 size = Vector2(21, 94.325)
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray", "low_anchor")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_mo4dg")
 hit_sound = NodePath("HitSound")
@@ -41,10 +41,9 @@ position = Vector2(-12, 0)
 [node name="WristAnchor" type="Node2D" parent="." unique_id=2001000003]
 position = Vector2(-12, -10)
 
-[node name="LowRacketAnchor" type="Marker2D" parent="."]
-script = ExtResource("5_rpm")
+[node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
-collision_size = Vector2(21, 94.325)
+script = ExtResource("5_rpm")
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1850417808]
 position = Vector2(-8, 5.595)
