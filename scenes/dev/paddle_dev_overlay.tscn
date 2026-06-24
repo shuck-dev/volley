@@ -4,8 +4,10 @@
 [ext_resource type="Script" path="res://scripts/dev/racket_collider_overlay.gd" id="2_racket"]
 [ext_resource type="Script" path="res://scripts/dev/ground_ray_overlay.gd" id="3_ray"]
 [ext_resource type="Script" path="res://scripts/dev/animation_state_label.gd" id="4_label"]
+[ext_resource type="Script" path="res://scripts/dev/paddle_dev_overlay.gd" id="5_root"]
 
 [node name="DevOverlay" type="Node2D" unique_id=1273165983]
+script = ExtResource("5_root")
 
 [node name="BodyColliderOverlay" type="Node2D" parent="."]
 script = ExtResource("1_body")
