@@ -2,7 +2,6 @@ class_name RacketColliderOverlay
 extends Node2D
 
 @export var racket_hitbox: Area2D
-@export var racket_shape: CollisionShape2D
 
 
 func _ready() -> void:
@@ -11,10 +10,14 @@ func _ready() -> void:
 
 
 func _draw() -> void:
-	if racket_shape == null:
+	if racket_hitbox == null:
 		return
-	var shape: RectangleShape2D = racket_shape.shape
+	var collision: CollisionShape2D = racket_hitbox.get_node_or_null("RacketCollision")
+	if collision == null:
+		return
+	var shape: RectangleShape2D = collision.shape
 	if shape == null:
 		return
-	var offset: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-	draw_rect(Rect2(offset - shape.size * 0.5, shape.size), Color(1.0, 0.4, 0.2, 0.5))
+	draw_rect(
+		Rect2(racket_hitbox.position - shape.size * 0.5, shape.size), Color(1.0, 0.4, 0.2, 0.5)
+	)

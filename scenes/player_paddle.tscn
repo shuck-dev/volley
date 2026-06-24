@@ -87,35 +87,21 @@ shape = SubResource("RectangleShape2D_k7j1o")
 position = Vector2(-48, 96)
 target_position = Vector2(0, 10)
 
-[node name="DevOverlay" type="Node2D" parent="."]
+[node name="DevOverlay" type="Node2D" parent="." unique_id=1403862545]
 script = ExtResource("6_pdo")
 
-[node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay"]
+[node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=933292946 node_paths=PackedStringArray("collision")]
 script = ExtResource("7_body")
-collision = NodePath("../BodyCollision")
+collision = NodePath("../../BodyCollision")
 
-[node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay"]
+[node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=498550284 node_paths=PackedStringArray("racket_hitbox")]
 script = ExtResource("8_racket")
-racket_hitbox = NodePath("../RacketHitbox")
-racket_shape = NodePath("../RacketHitbox/RacketCollision")
+racket_hitbox = NodePath("../../RacketHitbox")
 
-[node name="GroundRayOverlay" type="Node2D" parent="DevOverlay"]
+[node name="GroundRayOverlay" type="Node2D" parent="DevOverlay" unique_id=1006474149 node_paths=PackedStringArray("ground_ray")]
 script = ExtResource("9_ray")
-ground_ray = NodePath("../GroundRay")
+ground_ray = NodePath("../../GroundRay")
 
-[node name="AnimationStateLabel" type="Label" parent="DevOverlay"]
+[node name="AnimationStateLabel" type="Label" parent="DevOverlay" unique_id=1992226190 node_paths=PackedStringArray("sprite")]
 script = ExtResource("10_label")
-sprite = NodePath("../Sprite")
-collision = NodePath("../BodyCollision")
-
-[node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=933292946]
-script = ExtResource("7_body")
-
-[node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=498550284]
-script = ExtResource("8_racket")
-
-[node name="GroundRayOverlay" type="Node2D" parent="DevOverlay" unique_id=1006474149]
-script = ExtResource("9_ray")
-
-[node name="AnimationStateLabel" type="Label" parent="DevOverlay" unique_id=1992226190]
-script = ExtResource("10_label")
+sprite = NodePath("../../Sprite")
