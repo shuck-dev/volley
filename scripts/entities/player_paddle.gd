@@ -15,6 +15,12 @@ func _ready() -> void:
 		_default_racket_position = racket_hitbox.position
 
 
+func _ensure_animation_state_machine() -> void:
+	if _animation_state_machine == null:
+		_animation_state_machine = PlayerPaddleAnimationStateMachine.new()
+		_animation_state_machine.state_changed.connect(_on_animation_state_changed)
+
+
 func _physics_move(_delta: float) -> void:
 	var direction := Input.get_axis("paddle_up", "paddle_down")
 	if direction > 0.0 and is_grounded():
