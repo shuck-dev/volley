@@ -44,7 +44,7 @@ static func _resolve_state(
 ) -> StringName:
 	if swing_pending:
 		if grounded:
-			return &"low_swing_grounded" if crouching else &"swing_grounded"
+			return &"swing_grounded_low" if crouching else &"swing_grounded"
 		return &"swing_flying"
 
 	if grounded:

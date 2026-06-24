@@ -5,7 +5,7 @@ extends Paddle
 
 var _default_racket_position: Vector2
 var _development_offset := Vector2.ZERO
-var _low_states := [&"ready_grounded_low", &"low_swing_grounded"]
+var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 
 
 func _ready() -> void:
@@ -27,6 +27,16 @@ func _physics_move(_delta: float) -> void:
 
 
 func _on_animation_state_changed(state: StringName) -> void:
+	print(
+		"state: ",
+		state,
+		" grounded: ",
+		is_grounded(),
+		" crouching: ",
+		_is_crouching(),
+		" pos: ",
+		position
+	)
 	super(state)
 
 	if racket_hitbox == null or low_anchor == null:
