@@ -44,10 +44,6 @@ func _is_crouching() -> bool:
 	return is_grounded() and Input.is_action_pressed("paddle_down")
 
 
-func is_grounded() -> bool:
-	return position.y >= 0.0
-
-
 func set_racket_position_x(offset_x: float) -> void:
 	_development_offset.x = offset_x
 	var state := get_movement_state()
