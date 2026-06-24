@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_tracker"]
 [ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
-[ext_resource type="Script" path="res://scripts/dev/paddle_dev_overlay.gd" id="6_pdo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
 size = Vector2(24, 60)
@@ -62,11 +61,3 @@ shape = SubResource("RectangleShape2D_ts58t")
 
 [node name="GroundRay" type="RayCast2D" parent="." unique_id=253019722]
 position = Vector2(0, 30)
-
-[node name="PaddleDevOverlay" type="Node" parent="."]
-script = ExtResource("6_pdo")
-collision = NodePath("Collision")
-racket_hitbox = NodePath("RacketHitbox")
-racket_shape = NodePath("RacketHitbox/Collision")
-sprite = NodePath("Sprite")
-ground_ray = NodePath("GroundRay")
