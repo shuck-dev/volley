@@ -34,6 +34,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	if _collider_overlay != null:
+		_refresh_overlay_shapes()
 		_collider_overlay.tick_ray_draw()
 
 
