@@ -74,7 +74,6 @@ position = Vector2(-8, 22.5)
 shape = SubResource("RectangleShape2D_drop")
 
 [node name="RacketHitbox" type="Area2D" parent="." unique_id=2060046537]
-visible = false
 position = Vector2(8, -39.04)
 collision_layer = 8
 collision_mask = 2

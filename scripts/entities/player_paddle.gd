@@ -36,6 +36,17 @@ func _on_animation_state_changed(state: StringName) -> void:
 	else:
 		racket_hitbox.position = _default_racket_position
 
+	print(
+		"state=",
+		state,
+		" low_anchor=",
+		low_anchor.position if low_anchor != null else "null",
+		" default=",
+		_default_racket_position,
+		" result=",
+		racket_hitbox.position
+	)
+
 
 func _is_crouching() -> bool:
 	return is_grounded() and Input.is_action_pressed("paddle_down")
