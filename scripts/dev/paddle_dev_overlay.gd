@@ -1,5 +1,5 @@
 class_name PaddleDevOverlay
-extends Node
+extends Node2D
 
 const STATE_LABEL_GAP := 8.0
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ci1ime7lpgf6w" path="res://scripts/dev/paddle_dev_overlay.gd" id="1_script"]
 
-[node name="PaddleDevOverlay" type="Node" unique_id=1273165983]
+[node name="PaddleDevOverlay" type="Node2D" unique_id=1273165983]
 script = ExtResource("1_script")
 
 [node name="ColliderOverlay" type="Node2D" parent="." unique_id=508581845]
