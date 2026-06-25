@@ -14,7 +14,7 @@ size = Vector2(24, 60)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ts58t"]
 size = Vector2(24, 65)
 
-[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape")]
+[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_unscj")
 controller = NodePath("PartnerAIController")
@@ -24,6 +24,7 @@ sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 racket_hitbox = NodePath("RacketHitbox")
 racket_shape = NodePath("RacketHitbox/Collision")
+ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=2081878131]
