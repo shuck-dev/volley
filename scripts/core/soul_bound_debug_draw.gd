@@ -20,8 +20,13 @@ func _ready() -> void:
 		court_width = court_config.court_width
 
 
+func set_soul_bound_visible(shown: bool) -> void:
+	visible = shown
+
+
 func _physics_process(_delta: float) -> void:
-	queue_redraw()
+	if visible:
+		queue_redraw()
 
 
 func _draw() -> void:
