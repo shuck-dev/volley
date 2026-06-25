@@ -171,18 +171,13 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	btn.name = "DockButton"
 	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.custom_minimum_size.x = 60
-	btn.anchor_left = 1.0
-	btn.anchor_right = 1.0
-	btn.anchor_top = 0.0
-	btn.anchor_bottom = 0.0
-	btn.offset_left = -62
-	btn.offset_right = -2
-	btn.offset_top = 2
-	btn.offset_bottom = 26
-	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.custom_minimum_size = Vector2(60, 22)
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	wrapper.add_child(btn)
+	btn.offset_left = wrapper.offset_left
+	btn.offset_top = -24
+	btn.offset_right = wrapper.offset_right
+	btn.offset_bottom = -2
+	dev_hud.add_child(btn)
 
 	wrapper.position = Vector2(position.x - panel.size.x - 20, position.y)
 	wrapper.anchors_preset = Control.PRESET_TOP_LEFT
@@ -198,6 +193,10 @@ func _on_dock_pressed(panel: Control) -> void:
 	var dev_hud := wrapper.get_parent() if wrapper else null
 	if dev_hud == null:
 		return
+
+	var dock_btn := dev_hud.get_node_or_null("DockButton")
+	if dock_btn != null:
+		dock_btn.queue_free()
 
 	wrapper.remove_child(panel)
 	dev_hud.remove_child(wrapper)
