@@ -1,5 +1,9 @@
 # Volley
 
+**Dispatch first. Plan, dispatch, review, synthesise. Code is minion work.
+Never write game code from the main session. Switch to the Dispatch agent to
+plan work; switch to Memory to edit memory.**
+
 A Godot game built with AI assistance. Uses opencode (the coding agent)
 and GodotIQ (the Godot editor bridge).
 
