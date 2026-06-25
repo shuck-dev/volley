@@ -101,14 +101,14 @@ func _build_tab_row() -> void:
 	_toggle_button = Button.new()
 	_toggle_button.text = "\u2630"
 	_toggle_button.focus_mode = Control.FOCUS_NONE
-	_toggle_button.tooltip_text = "Collapse / expand panel container"
+	_toggle_button.tooltip_text = "Collapse / expand"
 	_toggle_button.custom_minimum_size = Vector2(24, 24)
 	_toggle_button.toggle_mode = true
 	_toggle_button.pressed.connect(_on_toggle_pressed)
-	_tab_row.add_child(_toggle_button)
+	add_child(_toggle_button)
 
 	_clear_save_button = Button.new()
-	_clear_save_button.text = "Clear"
+	_clear_save_button.text = "Clear Save"
 	_clear_save_button.focus_mode = Control.FOCUS_NONE
 	_clear_save_button.custom_minimum_size = Vector2(40, 24)
 	_clear_save_button.pressed.connect(_on_clear_save_pressed)
@@ -231,19 +231,17 @@ func _on_toggle_pressed() -> void:
 
 
 func _collapse_container() -> void:
-	for child in _tab_row.get_children():
-		if child != _toggle_button:
-			child.visible = false
-	_tab_row.alignment = BoxContainer.ALIGNMENT_END
-	_content_area.visible = false
-	offset_bottom = offset_top + _toggle_button.size.y + 4
+	var body := _tab_row.get_parent()
+	if body:
+		body.visible = false
+	_toggle_button.position = Vector2(size.x - _toggle_button.size.x - 4, 4)
+	offset_bottom = offset_top + _toggle_button.size.y + 8
 
 
 func _expand_container() -> void:
-	for child in _tab_row.get_children():
-		child.visible = true
-	_tab_row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	_content_area.visible = true
+	var body := _tab_row.get_parent()
+	if body:
+		body.visible = true
 	_fit_to_content()
 
 
