@@ -11,7 +11,7 @@
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 [ext_resource type="Script" uid="uid://lnxk7w1w6dq6" path="res://scripts/hud/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/hud/player_sprite.gd" id="9_paddlesize"]
-[ext_resource type="Script" uid="uid://h2s3raa2p4t0" path="res://scripts/hud/dev_overlay_panel.gd" id="12_kihct"]
+[ext_resource type="Script" uid="uid://bjy1kckwyj4xv" path="res://scripts/hud/dev_overlay_panel.gd" id="12_kihct"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
 script = ExtResource("1_ahhtf")

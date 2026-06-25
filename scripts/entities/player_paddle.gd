@@ -1,17 +1,22 @@
 class_name PlayerPaddle
 extends Paddle
 
-var _base_racket_y: float = 0.0
+@export var low_anchor: Marker2D
+
+var _default_racket_position: Vector2
+var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 
 
 func _ready() -> void:
-	super()
-
 	if racket_hitbox != null:
-		_base_racket_y = racket_hitbox.position.y
+		_default_racket_position = racket_hitbox.position
+
+	super()
 
 
 func _physics_move(_delta: float) -> void:
+	if input_blocked:
+		return
 	var direction := Input.get_axis("paddle_up", "paddle_down")
 	if direction > 0.0 and is_grounded():
 		velocity = Vector2.ZERO
@@ -21,17 +26,17 @@ func _physics_move(_delta: float) -> void:
 	position.x = _lane_x
 	clamp_to_arena()
 
-	if racket_hitbox == null or _body_shape == null or _racket_shape == null:
+
+func _on_animation_state_changed(state: StringName) -> void:
+	super(state)
+
+	if racket_hitbox == null or low_anchor == null:
 		return
 
-	if is_grounded() and Input.is_action_pressed("paddle_down"):
-		racket_hitbox.position.y = (
-			collision.position.y + _body_shape.size.y * 0.5 - _racket_shape.size.y * 0.5
-		)
+	if state in _low_states:
+		racket_hitbox.position = low_anchor.position
 	else:
-		racket_hitbox.position.y = _base_racket_y
-
-	_refresh_overlay_shapes()
+		racket_hitbox.position = _default_racket_position
 
 
 func _is_crouching() -> bool:
