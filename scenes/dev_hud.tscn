@@ -99,7 +99,6 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 3
 theme_override_constants/separation = 2
-alignment = 1
 script = ExtResource("3_5ysmq")
 
 [node name="DevBallStatePanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203100]

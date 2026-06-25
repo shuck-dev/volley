@@ -51,9 +51,7 @@ func _draw() -> void:
 
 
 func _apply_background() -> void:
-	alignment = BoxContainer.ALIGNMENT_CENTER
 	add_theme_constant_override("separation", 2)
-	resized.connect(queue_redraw)
 
 
 func _build_live_labels() -> void:
