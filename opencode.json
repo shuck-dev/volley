@@ -11,22 +11,33 @@
   "permission": {
     "webfetch": "deny",
     "bash": {
+      // Josh owns the merge, close, and release lifecycle.
       "gh pr merge*": "deny",
       "gh pr close*": "deny",
       "gh release delete*": "deny",
       "gh release create*": "deny",
+      // Rewrites history; ask first.
       "git rebase*": "ask",
       "*git rebase*": "ask",
+      // Banned history-rewrite commands.
       "git filter-branch*": "deny",
       "*git filter-branch*": "deny",
+      // Rewrites the remote; need consent.
       "git push *--force*": "ask",
       "*git push *--force*": "ask",
+      // Merge instead to avoid silent conflicts.
       "git pull *--rebase*": "deny",
+      // Force-delete branches; use worktree cleanup instead.
       "git branch *-D *": "deny",
+      // Destructive recursive delete.
       "rm -rf *": "deny",
+      // File deletion; confirm each.
       "rm *": "ask",
+      // Use MCP tools instead.
       "python*": "deny",
+      // Blocked, never poll.
       "*sleep *": "deny",
+      // Use the Linear MCP tool instead.
       "*linear.app/graphql*issueCreate*": "ask",
       "*linear.app/graphql*issueUpdate*": "ask"
     },
