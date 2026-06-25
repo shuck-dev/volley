@@ -14,6 +14,8 @@
       "gh pr close*": "deny",
       "gh release delete*": "deny",
       "gh release create*": "deny",
+      "gh issue *": "deny",
+      "*gh issue*": "deny",
       "git rebase*": "ask",
       "*git rebase*": "ask",
       "git filter-branch*": "deny",
