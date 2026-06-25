@@ -1,4 +1,3 @@
-@tool
 class_name SoulBoundDebugDraw
 extends Node2D
 
@@ -8,15 +7,16 @@ extends Node2D
 
 
 func _ready() -> void:
-	if not Engine.is_editor_hint() and not OS.is_debug_build():
-		return
+	if not OS.is_debug_build():
+		queue_free()
+	visible = false
 
+
+func _physics_process(_delta: float) -> void:
 	queue_redraw()
 
 
 func _draw() -> void:
-	if not Engine.is_editor_hint() and not OS.is_debug_build():
-		return
 	if court_width <= 0.0:
 		return
 
