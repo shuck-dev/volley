@@ -65,6 +65,7 @@ func _build_ui() -> void:
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
 	_add_checkbox("Show State Label", _apply_state_label_visible)
 	_add_checkbox("Show Ground Ray", _apply_ground_ray_visible)
+	_add_checkbox("Show Soul Bound", _apply_soul_bound_visible)
 
 	_readout_label = Label.new()
 	_readout_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -187,6 +188,13 @@ func _apply_state_label_visible(pressed: bool) -> void:
 
 func _apply_ground_ray_visible(pressed: bool) -> void:
 	_for_each_paddle("set_ground_ray_visible", pressed)
+
+
+func _apply_soul_bound_visible(pressed: bool) -> void:
+	for court in get_tree().get_nodes_in_group(&"courts"):
+		var draw: Variant = court.get("soul_bound_debug_draw")
+		if draw != null and draw.has_method("set_soul_bound_visible"):
+			draw.set_soul_bound_visible(pressed)
 
 
 func _for_each_paddle(method: StringName, value: Variant) -> void:
