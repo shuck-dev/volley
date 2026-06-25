@@ -172,6 +172,15 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.custom_minimum_size.x = 60
+	btn.anchor_left = 1.0
+	btn.anchor_right = 1.0
+	btn.anchor_top = 0.0
+	btn.anchor_bottom = 0.0
+	btn.offset_left = -62
+	btn.offset_right = -2
+	btn.offset_top = 2
+	btn.offset_bottom = 26
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
 	wrapper.add_child(btn)
 
