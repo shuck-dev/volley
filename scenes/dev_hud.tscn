@@ -55,14 +55,14 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ContentArea" type="Control" parent="DevPanelContainer/ContentBody" unique_id=1383531137]
+[node name="ContentArea" type="VBoxContainer" parent="DevPanelContainer/ContentBody" unique_id=1676088217]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DevItemUI" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1055282224]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("7_debug")
@@ -70,14 +70,14 @@ script = ExtResource("2_oo0fn")
 
 [node name="DevShopPanel" type="PanelContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=25044506]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("3_shoppnl")
 
 [node name="DevMenu" type="PanelContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1716321773]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 script = ExtResource("3_devmenu")
@@ -85,7 +85,7 @@ managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevI
 
 [node name="DevEquippedPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203103]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
@@ -93,7 +93,7 @@ script = ExtResource("8_equipped")
 
 [node name="DevStatPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=425250304]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 2
@@ -102,7 +102,7 @@ script = ExtResource("3_5ysmq")
 
 [node name="DevBallStatePanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203100]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
@@ -110,7 +110,7 @@ script = ExtResource("4_ballstate")
 
 [node name="DevBouncePanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203101]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
@@ -118,7 +118,7 @@ script = ExtResource("5_bouncepanel")
 
 [node name="PlayerSprite" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203104]
 visible = false
-layout_mode = 0
+layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
