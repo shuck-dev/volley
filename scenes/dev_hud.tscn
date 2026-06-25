@@ -65,7 +65,7 @@ alignment = 1
 [node name="DevItemUI" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1055282224]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource("7_debug")
 script = ExtResource("2_oo0fn")
