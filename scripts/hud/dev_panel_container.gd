@@ -141,7 +141,6 @@ func _on_pop_out_pressed() -> void:
 		return
 
 	_detach_panel(_active_panel, dev_hud)
-	_add_dock_button(_active_panel)
 	panel_popped_out.emit(_active_panel)
 
 
@@ -157,20 +156,34 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	panel.add_child(bg)
 	panel.move_child(bg, 0)
 
-	panel.position = Vector2(position.x - panel.size.x - 10, position.y)
-	panel.anchors_preset = Control.PRESET_TOP_LEFT
-	panel.visible = true
+	var bar = HBoxContainer.new()
+	bar.name = "_pop_bar"
+	bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	bar.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	bar.custom_minimum_size.y = 22
 
+	var label = Label.new()
+	label.text = DISPLAY_NAMES.get(panel.name, str(panel.name))
+	label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar.add_child(label)
 
-func _add_dock_button(panel: Control) -> void:
-	var btn := Button.new()
+	var btn = Button.new()
 	btn.name = "DockButton"
 	btn.text = "\u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.tooltip_text = "Dock panel back into container"
-	btn.custom_minimum_size.x = 24
+	btn.tooltip_text = "Dock"
+	btn.custom_minimum_size = Vector2(22, 22)
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	panel.add_child(btn)
+	bar.add_child(btn)
+
+	panel.add_child(bar)
+	panel.move_child(bar, 1)
+
+	panel.position = Vector2(position.x - panel.size.x - 10, position.y)
+	panel.anchors_preset = Control.PRESET_TOP_LEFT
+	panel.visible = true
 
 
 func _on_dock_pressed(panel: Control) -> void:
@@ -188,10 +201,15 @@ func _remove_dock_button(panel: Control) -> void:
 		btn.queue_free()
 
 
+func _remove_pop_decorations(panel: Control) -> void:
+	for child_name in ["_pop_bg", "_pop_bar", "DockButton"]:
+		var child := panel.get_node_or_null(child_name)
+		if child != null:
+			child.queue_free()
+
+
 func _reattach_panel(panel: Control) -> void:
-	var pop_bg := panel.get_node_or_null("_pop_bg")
-	if pop_bg != null:
-		pop_bg.queue_free()
+	_remove_pop_decorations(panel)
 
 	var old_parent := panel.get_parent()
 	if old_parent != null:
@@ -237,8 +255,13 @@ func _add_clear_save_button() -> void:
 	var btn := Button.new()
 	btn.text = "Clear Save"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.pressed.connect(_on_clear_save_pressed)
-	get_child(0).add_child(btn)
+	btn.custom_minimum_size.x = 80
+	btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	btn.offset_left = -82
+	btn.offset_top = -24
+	btn.offset_right = -2
+	btn.offset_bottom = -2
+	add_child(btn)
 
 
 func _on_clear_save_pressed() -> void:
