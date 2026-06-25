@@ -110,7 +110,6 @@ func _set_row(row_cells: Array, values: PackedStringArray) -> void:
 func _make_cell(text: String, color: Color) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_font_size_override("font_size", 11)
 	label.add_theme_color_override("font_color", color)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return label
