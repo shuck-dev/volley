@@ -8,9 +8,9 @@
 [ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/hud/dev_ball_state_panel.gd" id="4_ballstate"]
 [ext_resource type="Script" uid="uid://bkfp6d5w1iaip" path="res://scripts/hud/dev_bounce_panel.gd" id="5_bouncepanel"]
 [ext_resource type="Script" uid="uid://ce43fqg0u1yhu" path="res://scripts/hud/dev_bounce_overlay.gd" id="6_bounceover"]
+[ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 [ext_resource type="Script" uid="uid://lnxk7w1w6dq6" path="res://scripts/hud/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/hud/player_sprite.gd" id="9_paddlesize"]
-[ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
 script = ExtResource("1_ahhtf")

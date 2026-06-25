@@ -4,6 +4,12 @@
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
+[ext_resource type="Script" uid="uid://40boov56vi13" path="res://scripts/dev/racket_position_marker.gd" id="5_rpm"]
+[ext_resource type="Script" uid="uid://bupyhn2n2kkoo" path="res://scripts/dev/dev_overlay.gd" id="6_pdo"]
+[ext_resource type="Script" uid="uid://dbrd03qsmmyvb" path="res://scripts/dev/body_collider_overlay.gd" id="7_body"]
+[ext_resource type="Script" uid="uid://vds1ga6lltxd" path="res://scripts/dev/racket_collider_overlay.gd" id="8_racket"]
+[ext_resource type="Script" uid="uid://buqpbmh1c35bs" path="res://scripts/dev/ground_ray_overlay.gd" id="9_ray"]
+[ext_resource type="Script" uid="uid://4xd1ibgc7g5s" path="res://scripts/dev/animation_state_label.gd" id="10_label"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
@@ -14,9 +20,10 @@ size = Vector2(90, 283)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
 size = Vector2(21, 94.325)
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_mo4dg")
+low_anchor = NodePath("LowRacketAnchor")
 hit_sound = NodePath("HitSound")
 collision = NodePath("BodyCollision")
 sprite = NodePath("Sprite")
@@ -29,7 +36,7 @@ metadata/_edit_group_ = true
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"flying_down"
+animation = &"ready_grounded_low"
 
 [node name="AnkleAnchor" type="Node2D" parent="." unique_id=2001000001]
 position = Vector2(0, 24)
@@ -39,6 +46,11 @@ position = Vector2(-12, 0)
 
 [node name="WristAnchor" type="Node2D" parent="." unique_id=2001000003]
 position = Vector2(-12, -10)
+
+[node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800 node_paths=PackedStringArray("racket_collision")]
+position = Vector2(8, 59.29)
+script = ExtResource("5_rpm")
+racket_collision = NodePath("../RacketHitbox/RacketCollision")
 
 [node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1850417808]
 position = Vector2(-8, 5.595)
@@ -62,7 +74,6 @@ position = Vector2(-8, 22.5)
 shape = SubResource("RectangleShape2D_drop")
 
 [node name="RacketHitbox" type="Area2D" parent="." unique_id=2060046537]
-visible = false
 position = Vector2(8, -39.04)
 collision_layer = 8
 collision_mask = 2
@@ -74,3 +85,22 @@ shape = SubResource("RectangleShape2D_k7j1o")
 [node name="GroundRay" type="RayCast2D" parent="." unique_id=394874363]
 position = Vector2(-48, 96)
 target_position = Vector2(0, 10)
+
+[node name="DevOverlay" type="Node2D" parent="." unique_id=1403862545]
+script = ExtResource("6_pdo")
+
+[node name="BodyColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=933292946 node_paths=PackedStringArray("collision")]
+script = ExtResource("7_body")
+collision = NodePath("../../BodyCollision")
+
+[node name="RacketColliderOverlay" type="Node2D" parent="DevOverlay" unique_id=498550284 node_paths=PackedStringArray("racket_hitbox")]
+script = ExtResource("8_racket")
+racket_hitbox = NodePath("../../RacketHitbox")
+
+[node name="GroundRayOverlay" type="Node2D" parent="DevOverlay" unique_id=1006474149 node_paths=PackedStringArray("ground_ray")]
+script = ExtResource("9_ray")
+ground_ray = NodePath("../../GroundRay")
+
+[node name="AnimationStateLabel" type="Label" parent="DevOverlay" unique_id=1992226190 node_paths=PackedStringArray("sprite")]
+script = ExtResource("10_label")
+sprite = NodePath("../../Sprite")
