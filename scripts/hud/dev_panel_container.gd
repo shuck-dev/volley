@@ -80,8 +80,6 @@ func _build_tab_row() -> void:
 		_tab_row.add_child(btn)
 		_tab_buttons.append(btn)
 
-	_tab_row.alignment = BoxContainer.ALIGNMENT_END
-
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -207,7 +205,7 @@ func _collapse_container() -> void:
 func _expand_container() -> void:
 	for child in _tab_row.get_children():
 		child.visible = true
-	_tab_row.alignment = BoxContainer.ALIGNMENT_END
+	_tab_row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_content_area.visible = true
 	_fit_to_content()
 
