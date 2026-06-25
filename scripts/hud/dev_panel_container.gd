@@ -154,8 +154,14 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
 	dev_hud.add_child(panel)
 
-	if panel.theme == null:
-		panel.theme = load("res://resources/themes/debug_theme.tres")
+	var bg = ColorRect.new()
+	bg.name = "_pop_bg"
+	bg.color = Color(0.0, 0.0, 0.0, 0.75)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var s = panel.get_combined_minimum_size()
+	bg.size = Vector2(maxf(s.x, 100), maxf(s.y + 24, 100))
+	panel.add_child(bg)
+	panel.move_child(bg, 0)
 
 	var btn = Button.new()
 	btn.name = "DockButton"
@@ -178,9 +184,10 @@ func _on_dock_pressed(panel: Control) -> void:
 	if panel.get_parent() == _content_area:
 		return
 
-	var dock_btn := panel.get_node_or_null("DockButton")
-	if dock_btn != null:
-		dock_btn.queue_free()
+	for pop_child in ["DockButton", "_pop_bg"]:
+		var child := panel.get_node_or_null(pop_child)
+		if child != null:
+			child.queue_free()
 
 	panel.get_parent().remove_child(panel)
 	_content_area.add_child(panel)
