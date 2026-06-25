@@ -66,6 +66,11 @@ func _collect_panels() -> void:
 		if child is Control and child.name != "DevMenu":
 			_panels.append(child)
 			child.visible = false
+			if child is VBoxContainer:
+				child.alignment = BoxContainer.ALIGNMENT_CENTER
+			if child is PanelContainer:
+				child.add_theme_constant_override("content_margin_left", 0)
+				child.add_theme_constant_override("content_margin_right", 0)
 
 
 func _build_tab_row() -> void:

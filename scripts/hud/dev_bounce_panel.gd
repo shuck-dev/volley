@@ -97,7 +97,7 @@ func _add_header() -> void:
 
 func _make_label() -> Label:
 	var label := Label.new()
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	return label
 
