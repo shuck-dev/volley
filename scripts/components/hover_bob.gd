@@ -12,14 +12,17 @@ var _active: bool = false
 func _ready() -> void:
 	if sprite == null:
 		return
+
 	if not sprite.has_signal("animation_changed"):
 		return
+
 	sprite.animation_changed.connect(_on_animation_changed)
 	set_process(false)
 
 
 func _on_animation_changed() -> void:
 	var anim_name: StringName = sprite.get("animation")
+
 	if anim_name == &"ready_flying":
 		_active = true
 		_time = 0.0
