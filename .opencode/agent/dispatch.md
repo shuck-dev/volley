@@ -12,7 +12,10 @@ permission:
     "git rebase*": ask
     "git filter-branch*": deny
     "git push *--force*": ask
+    "git push *-f*": ask
     "git pull *--rebase*": deny
+    "git pull *-r*": deny
+    "git merge*": deny
     "python*": deny
     "*sleep *": deny
 ---
