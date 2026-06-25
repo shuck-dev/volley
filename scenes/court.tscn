@@ -28,7 +28,7 @@
 size = Vector2(22, 500)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
-size = Vector2(800, 20)
+size = Vector2(1600, 20)
 
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "timeout_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
@@ -61,7 +61,7 @@ item_key = "base_ball"
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(400, 139)
+position = Vector2(750, 139)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
@@ -94,13 +94,13 @@ shape = SubResource("RectangleShape2D_court_floor")
 [node name="MissZones" type="Node2D" parent="Bounds" unique_id=2106668172]
 
 [node name="LeftMissZone" parent="Bounds/MissZones" unique_id=1411673623 instance=ExtResource("10_miss_zone")]
-position = Vector2(-430.8, 0)
+position = Vector2(-750, 0)
 
 [node name="RightMissZone" parent="Bounds/MissZones" unique_id=500636962 instance=ExtResource("10_miss_zone")]
-position = Vector2(430.8, 0)
+position = Vector2(750, 0)
 
 [node name="SoulBound" type="Marker2D" parent="Bounds" unique_id=630029583]
-position = Vector2(0, -111)
+position = Vector2(0, -400)
 
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194 node_paths=PackedStringArray("timeout_controller")]
 script = ExtResource("7_tipki")
@@ -112,21 +112,25 @@ script = ExtResource("19_timeout")
 config = ExtResource("20_timeout_cfg")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
-position = Vector2(300, 0)
+position = Vector2(750, 0)
 
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
-position = Vector2(-300, 0)
+position = Vector2(-750, 0)
 
 [node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
-position = Vector2(-600, 349.8)
+z_index = -50
+position = Vector2(-486, 179.79999)
 reconciler = NodePath("../BallReconciler")
 
 [node name="GearRack" parent="." unique_id=445509089 node_paths=PackedStringArray("reconciler") instance=ExtResource("9_c7axm")]
-position = Vector2(600, 349.8)
+z_index = -50
+position = Vector2(1050, 349.8)
 reconciler = NodePath("../BallReconciler")
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
-position = Vector2(870, 349.8)
+visible = false
+z_index = -50
+position = Vector2(1320, 349.8)
 
 [node name="CurrentVolleyCountLabel" type="Label" parent="." unique_id=1644947756 node_paths=PackedStringArray("court")]
 offset_left = -90.0
@@ -207,7 +211,7 @@ rack_drop_target = NodePath("../BallRack/DropTarget")
 gear_rack = NodePath("../GearRack")
 gear_rack_drop_target = NodePath("../GearRack/DropTarget")
 timeout_controller = NodePath("../TimeoutController")
-court_bounds = Rect2(-420, -360, 840, 720)
+court_bounds = Rect2(-800, -360, 1600, 720)
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
 reconciler = NodePath("../BallReconciler")
 cursor_overlay = NodePath("CursorOverlay")

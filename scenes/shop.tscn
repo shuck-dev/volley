@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_shop"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
-size = Vector2(500, 400)
+size = Vector2(500, 287)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
@@ -16,9 +16,9 @@ items_anchor = NodePath("ItemsAnchor")
 
 [node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
-offset_top = -220.0
+offset_top = -123.0
 offset_right = 100.0
-offset_bottom = -180.0
+offset_bottom = -83.0
 text = "Soul: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -28,6 +28,7 @@ position = Vector2(0, -80)
 input_pickable = false
 
 [node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea" unique_id=922703322]
+position = Vector2(0, 92.5)
 shape = SubResource("RectangleShape2D_area")
 
 [node name="Table" type="StaticBody2D" parent="." unique_id=1043709126]
