@@ -2,14 +2,22 @@ class_name SoulBoundDebugDraw
 extends Node2D
 
 @export var debug_color: Color = Color(1.0, 0.7, 0.2, 0.4)
-@export var bound_y: float = 0.0
-@export var court_width: float = 600.0
+@export var soul_bound: Marker2D
+@export var court_config: CourtConfig
+
+var bound_y: float = 0.0
+var court_width: float = 600.0
 
 
 func _ready() -> void:
 	if not OS.is_debug_build():
 		queue_free()
 	visible = false
+
+	if soul_bound != null:
+		bound_y = soul_bound.global_position.y
+	if court_config != null:
+		court_width = court_config.court_width
 
 
 func _physics_process(_delta: float) -> void:

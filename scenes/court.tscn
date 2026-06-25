@@ -31,7 +31,7 @@ size = Vector2(22, 500)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
 size = Vector2(800, 20)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "timeout_controller", "drag_controller", "right_wall", "soul_bound", "soul_bound_debug_draw", "player_spawn", "partner_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "timeout_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
 court_config = ExtResource("25_courtcfg")
 ball_system = NodePath("BallReconciler")
@@ -215,5 +215,7 @@ cursor_overlay = NodePath("CursorOverlay")
 
 [node name="CursorOverlay" parent="ItemDragController" unique_id=1431747376 instance=ExtResource("24_cursor")]
 
-[node name="SoulBoundDebugDraw" type="Node2D" parent="." unique_id=2018238293]
+[node name="SoulBoundDebugDraw" type="Node2D" parent="." unique_id=2018238293 node_paths=PackedStringArray("soul_bound")]
 script = ExtResource("26_bb6bh")
+soul_bound = NodePath("../Bounds/SoulBound")
+court_config = ExtResource("25_courtcfg")
