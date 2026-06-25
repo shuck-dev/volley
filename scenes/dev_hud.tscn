@@ -120,3 +120,7 @@ focus_mode = 0
 text = "Clearance"
 
 [node name="DevOverlayPanel" type="VBoxContainer" parent="." unique_id=828573405]
+offset_left = 220.0
+offset_top = 360.0
+offset_right = 460.0
+offset_bottom = 400.0
