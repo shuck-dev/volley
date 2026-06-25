@@ -36,5 +36,6 @@ func _on_animation_changed() -> void:
 func _process(delta: float) -> void:
 	if not _active:
 		return
+
 	_time += delta
 	sprite.position.y = sin(_time * frequency) * amplitude
