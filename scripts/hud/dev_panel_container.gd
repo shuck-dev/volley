@@ -66,10 +66,6 @@ func _collect_panels() -> void:
 		if child is Control and child.name != "DevMenu":
 			_panels.append(child)
 			child.visible = false
-			child.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-			child.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			if child is VBoxContainer:
-				child.alignment = BoxContainer.ALIGNMENT_CENTER
 
 
 func _build_tab_row() -> void:
@@ -156,79 +152,54 @@ func _on_pop_out_pressed() -> void:
 
 func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
-	dev_hud.add_child(panel)
 
-	var bg = ColorRect.new()
-	bg.name = "_pop_bg"
-	bg.color = Color(0.0, 0.0, 0.0, 0.7)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.custom_minimum_size = Vector2(100, 100)
-	panel.add_child(bg)
-	panel.move_child(bg, 0)
+	var wrapper = PanelContainer.new()
+	wrapper.name = "_pop_wrapper"
+	wrapper.theme = load("res://resources/themes/debug_theme.tres")
+	wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	var bar = HBoxContainer.new()
-	bar.name = "_pop_bar"
-	bar.mouse_filter = Control.MOUSE_FILTER_PASS
-	bar.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	bar.custom_minimum_size.y = 22
+	var theme_bg = wrapper.get_theme_stylebox("panel", "PanelContainer")
+	if theme_bg == null:
+		var fallback = StyleBoxFlat.new()
+		fallback.bg_color = Color(0.0, 0.0, 0.0, 0.7)
+		wrapper.add_theme_stylebox_override("panel", fallback)
 
-	var label = Label.new()
-	label.text = DISPLAY_NAMES.get(panel.name, str(panel.name))
-	label.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	bar.add_child(label)
+	dev_hud.add_child(wrapper)
+	wrapper.add_child(panel)
 
 	var btn = Button.new()
 	btn.name = "DockButton"
-	btn.text = "\u2B07"
+	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.tooltip_text = "Dock"
-	btn.custom_minimum_size = Vector2(22, 22)
+	btn.custom_minimum_size.x = 60
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	bar.add_child(btn)
+	wrapper.add_child(btn)
 
-	panel.add_child(bar)
-	panel.move_child(bar, 1)
-
-	panel.position = Vector2(position.x - panel.size.x - 10, position.y)
-	panel.anchors_preset = Control.PRESET_TOP_LEFT
+	wrapper.position = Vector2(position.x - panel.size.x - 20, position.y)
+	wrapper.anchors_preset = Control.PRESET_TOP_LEFT
 	panel.visible = true
+	wrapper.visible = true
 
 
 func _on_dock_pressed(panel: Control) -> void:
-	if panel.get_parent() == _content_area:
+	var wrapper := panel.get_parent()
+	if wrapper == _content_area:
 		return
 
-	_remove_dock_button(panel)
-	_reattach_panel(panel)
-	panel_docked.emit(panel)
+	var dev_hud := wrapper.get_parent() if wrapper else null
+	if dev_hud == null:
+		return
 
+	wrapper.remove_child(panel)
+	dev_hud.remove_child(wrapper)
+	wrapper.queue_free()
 
-func _remove_dock_button(panel: Control) -> void:
-	var btn := panel.get_node_or_null("DockButton")
-	if btn != null:
-		btn.queue_free()
-
-
-func _remove_pop_decorations(panel: Control) -> void:
-	for child_name in ["_pop_bg", "_pop_bar", "DockButton"]:
-		var child := panel.get_node_or_null(child_name)
-		if child != null:
-			child.queue_free()
-
-
-func _reattach_panel(panel: Control) -> void:
-	_remove_pop_decorations(panel)
-
-	var old_parent := panel.get_parent()
-	if old_parent != null:
-		old_parent.remove_child(panel)
 	_content_area.add_child(panel)
 	panel.visible = false
 	panel.position = Vector2.ZERO
 	panel.anchors_preset = Control.PRESET_TOP_LEFT
+
+	panel_docked.emit(panel)
 
 
 func _on_toggle_pressed() -> void:
