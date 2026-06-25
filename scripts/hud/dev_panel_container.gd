@@ -234,7 +234,6 @@ func _collapse_container() -> void:
 	for child in _tab_row.get_children():
 		if child != _toggle_button:
 			child.visible = false
-	_tab_row.alignment = BoxContainer.ALIGNMENT_END
 	_content_area.visible = false
 	add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	offset_bottom = offset_top + _toggle_button.size.y + 4
@@ -243,7 +242,6 @@ func _collapse_container() -> void:
 func _expand_container() -> void:
 	for child in _tab_row.get_children():
 		child.visible = true
-	_tab_row.alignment = BoxContainer.ALIGNMENT_BEGIN
 	_content_area.visible = true
 	add_theme_stylebox_override("panel", null)
 	_fit_to_content()
