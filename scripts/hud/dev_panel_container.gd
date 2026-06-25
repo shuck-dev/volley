@@ -166,21 +166,21 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	btn.name = "DockButton"
 	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
-	btn.custom_minimum_size = Vector2(60, 22)
-	btn.anchor_left = 1.0
-	btn.anchor_right = 1.0
-	btn.anchor_top = 0.0
-	btn.anchor_bottom = 0.0
-	btn.offset_left = -62
-	btn.offset_right = -2
-	btn.offset_top = 2
-	btn.offset_bottom = 26
+	btn.size = Vector2(menu_label_width(panel) + 28, 22)
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	wrapper.add_child(btn)
+	btn.position = Vector2(wrapper.position.x, wrapper.position.y - 24)
+	dev_hud.add_child(btn)
 
 	wrapper.position = Vector2(position.x - wrapper.get_combined_minimum_size().x - 20, position.y)
 	panel.visible = true
 	wrapper.visible = true
+
+
+func menu_label_width(panel: Control) -> int:
+	var label = Label.new()
+	label.text = DISPLAY_NAMES.get(panel.name, str(panel.name))
+	label.add_theme_font_size_override("font_size", 14)
+	return int(label.get_minimum_size().x)
 
 
 func _on_dock_pressed(panel: Control) -> void:
@@ -191,6 +191,10 @@ func _on_dock_pressed(panel: Control) -> void:
 	var dev_hud := wrapper.get_parent()
 	if dev_hud == null:
 		return
+
+	var dock_btn := dev_hud.get_node_or_null("DockButton")
+	if dock_btn != null:
+		dock_btn.queue_free()
 
 	wrapper.remove_child(panel)
 	dev_hud.remove_child(wrapper)
