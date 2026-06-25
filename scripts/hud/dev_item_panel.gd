@@ -53,6 +53,7 @@ func _ready() -> void:
 
 	_refresh_buttons()
 	_setup_soul_controls()
+	_setup_clear_save_control()
 
 	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))

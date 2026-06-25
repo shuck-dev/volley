@@ -49,8 +49,6 @@ func _ready() -> void:
 	if _panels.size() > 0:
 		_switch_tab(0)
 
-	_add_clear_save_button()
-
 
 func _gui_input(event: InputEvent) -> void:
 	if _drag.try_start(self, event):
@@ -249,26 +247,6 @@ func _expand_container() -> void:
 func _fit_to_content() -> void:
 	if _active_panel != null and _active_panel.get_parent() == _content_area:
 		offset_bottom = offset_top + _tab_row.size.y + _active_panel.size.y + 8
-
-
-func _add_clear_save_button() -> void:
-	var btn := Button.new()
-	btn.text = "Clear Save"
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.custom_minimum_size.x = 80
-	btn.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	btn.offset_left = -82
-	btn.offset_top = -24
-	btn.offset_right = -2
-	btn.offset_bottom = -2
-	add_child(btn)
-
-
-func _on_clear_save_pressed() -> void:
-	SaveManager.clear_save()
-	ItemManager.reload_from_progression()
-	get_tree().reload_current_scene()
-	SaveManager.unblock_writes.call_deferred()
 
 
 func get_active_panel() -> Control:
