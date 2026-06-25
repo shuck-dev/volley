@@ -27,6 +27,7 @@ var _pop_out_button: Button
 var _toggle_button: Button
 var _tab_row: HBoxContainer
 var _content_area: Control
+var _clear_save_button: Button
 var _collapsed: bool = false
 
 
@@ -105,6 +106,13 @@ func _build_tab_row() -> void:
 	_toggle_button.pressed.connect(_on_toggle_pressed)
 	_tab_row.add_child(_toggle_button)
 
+	_clear_save_button = Button.new()
+	_clear_save_button.text = "Clear"
+	_clear_save_button.focus_mode = Control.FOCUS_NONE
+	_clear_save_button.custom_minimum_size = Vector2(40, 24)
+	_clear_save_button.pressed.connect(_on_clear_save_pressed)
+	_tab_row.add_child(_clear_save_button)
+
 
 func _on_tab_pressed(index: int) -> void:
 	_switch_tab(index)
@@ -149,8 +157,8 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	var bg = ColorRect.new()
 	bg.name = "_pop_bg"
 	bg.color = Color(0.0, 0.0, 0.0, 0.7)
-	bg.size = panel.size
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel.add_child(bg)
 	panel.move_child(bg, 0)
 
@@ -247,6 +255,13 @@ func _expand_container() -> void:
 func _fit_to_content() -> void:
 	if _active_panel != null and _active_panel.get_parent() == _content_area:
 		offset_bottom = offset_top + _tab_row.size.y + _active_panel.size.y + 8
+
+
+func _on_clear_save_pressed() -> void:
+	SaveManager.clear_save()
+	ItemManager.reload_from_progression()
+	get_tree().reload_current_scene()
+	SaveManager.unblock_writes.call_deferred()
 
 
 func get_active_panel() -> Control:
