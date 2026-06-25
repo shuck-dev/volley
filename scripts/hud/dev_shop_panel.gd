@@ -15,8 +15,8 @@ func _ready() -> void:
 		return
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_shell()
-	ItemManager.soul_balance_changed.connect(_rebuild.call_deferred)
-	ItemManager.item_level_changed.connect(_rebuild.call_deferred)
+	ItemManager.soul_balance_changed.connect(func(_v): _rebuild.call_deferred())
+	ItemManager.item_level_changed.connect(func(_k, _l): _rebuild.call_deferred())
 	_rebuild.call_deferred()
 
 
