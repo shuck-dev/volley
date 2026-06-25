@@ -49,6 +49,8 @@ func _ready() -> void:
 	if _panels.size() > 0:
 		_switch_tab(0)
 
+	_add_clear_save_button()
+
 
 func _gui_input(event: InputEvent) -> void:
 	if _drag.try_start(self, event):
@@ -146,6 +148,15 @@ func _on_pop_out_pressed() -> void:
 func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
 	dev_hud.add_child(panel)
+
+	var bg = ColorRect.new()
+	bg.name = "_pop_bg"
+	bg.color = Color(0.0, 0.0, 0.0, 0.7)
+	bg.size = panel.size
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(bg)
+	panel.move_child(bg, 0)
+
 	panel.position = Vector2(position.x - panel.size.x - 10, position.y)
 	panel.anchors_preset = Control.PRESET_TOP_LEFT
 	panel.visible = true
@@ -178,6 +189,10 @@ func _remove_dock_button(panel: Control) -> void:
 
 
 func _reattach_panel(panel: Control) -> void:
+	var pop_bg := panel.get_node_or_null("_pop_bg")
+	if pop_bg != null:
+		pop_bg.queue_free()
+
 	var old_parent := panel.get_parent()
 	if old_parent != null:
 		old_parent.remove_child(panel)
@@ -216,6 +231,21 @@ func _expand_container() -> void:
 func _fit_to_content() -> void:
 	if _active_panel != null and _active_panel.get_parent() == _content_area:
 		offset_bottom = offset_top + _tab_row.size.y + _active_panel.size.y + 8
+
+
+func _add_clear_save_button() -> void:
+	var btn := Button.new()
+	btn.text = "Clear Save"
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.pressed.connect(_on_clear_save_pressed)
+	get_child(0).add_child(btn)
+
+
+func _on_clear_save_pressed() -> void:
+	SaveManager.clear_save()
+	ItemManager.reload_from_progression()
+	get_tree().reload_current_scene()
+	SaveManager.unblock_writes.call_deferred()
 
 
 func get_active_panel() -> Control:
