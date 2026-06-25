@@ -39,6 +39,7 @@ func _draw() -> void:
 
 
 func _build_ui() -> void:
+	alignment = BoxContainer.ALIGNMENT_CENTER
 	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
 	_add_checkbox("Show State Label", _apply_state_label_visible)
