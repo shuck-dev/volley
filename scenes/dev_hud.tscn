@@ -74,7 +74,7 @@ layout_mode = 0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("3_shoppnl")
-items_anchor_path = NodePath("../../../Shop/ItemsAnchor")
+items_anchor_path = NodePath("../../../../../Shop/ItemsAnchor")
 
 [node name="DevMenu" type="PanelContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1716321773]
 visible = false
