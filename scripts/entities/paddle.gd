@@ -5,8 +5,6 @@ extends CharacterBody2D
 signal paddle_hit(ball: Ball)
 
 const PADDLE_TOP_Y := -540.0
-## Gap in pixels between the paddle's top edge and the dev state label sitting above it.
-const STATE_LABEL_GAP := 8.0
 
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
@@ -22,6 +20,9 @@ const STATE_LABEL_GAP := 8.0
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
+## Set by AutoplayController during autoplay; suppresses _physics_move input so PlayerPaddle
+## does not clobber the AI driver's velocity with Input.get_axis defaults.
+var input_blocked: bool = false
 
 var _item_manager: Node
 
@@ -30,13 +31,8 @@ var _paddle_speed: float = 0.0
 var _body_shape: RectangleShape2D
 var _racket_shape: RectangleShape2D
 
-## Previous frame's Y, used to derive actual vertical motion so the state reflects real movement
-## (driven, timeout-controlled, or at rest) rather than the stale velocity member.
 var _last_y: float = 0.0
 var _vertical_motion: float = 0.0
-var _sprite_width_scale: float = 1.0
-var _collider_overlay: ColliderOverlay
-var _state_label: Label
 
 var _animation_state_machine: RefCounted
 var _bob_time := 0.0
@@ -65,12 +61,6 @@ func _ready() -> void:
 
 	_last_y = global_position.y
 
-	_collider_overlay = ColliderOverlay.new()
-	_collider_overlay.z_index = 100
-	add_child(_collider_overlay)
-
-	_setup_state_label()
-
 	_ensure_animation_state_machine()
 
 	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
@@ -98,47 +88,6 @@ func _on_racket_body_entered(body: Node) -> void:
 		ball.hit_by_paddle(self)
 
 
-# Dev placeholder: labels the live animation state over the coloured sprite, so each blocked-out
-# state reads clearly while real art is pending. Updates whenever the sprite's animation changes.
-func _setup_state_label() -> void:
-	if not OS.is_debug_build() or sprite == null:
-		return
-	_state_label = Label.new()
-	_state_label.z_index = 101
-	_state_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_state_label.add_theme_color_override(&"font_color", Color.WHITE)
-	_state_label.visible = false
-	add_child(_state_label)
-	sprite.animation_changed.connect(_refresh_state_label)
-	_refresh_state_label()
-
-
-# Toggled from the PlayerSprite dev panel; the state label is off until the player turns it on.
-func set_state_label_visible(value: bool) -> void:
-	if _state_label != null:
-		_state_label.visible = value
-
-
-# Centres the label horizontally on the paddle and sits it just above the sprite's top edge. Uses
-# the body collider half-height, which tracks the sprite, so the label rides above the visible paddle.
-func _position_state_label() -> void:
-	if _state_label == null:
-		return
-	var half_height: float = STATE_LABEL_GAP
-	if _body_shape != null:
-		half_height = _body_shape.size.y * 0.5 + STATE_LABEL_GAP
-	_state_label.size = Vector2.ZERO
-	var min_size: Vector2 = _state_label.get_minimum_size()
-	_state_label.position = Vector2(-min_size.x * 0.5, -half_height - min_size.y)
-
-
-func _refresh_state_label() -> void:
-	if _state_label == null or sprite == null:
-		return
-	_state_label.text = String(sprite.animation)
-	_position_state_label()
-
-
 func reset_streak() -> void:
 	tracker.reset()
 
@@ -164,9 +113,6 @@ func _physics_process(delta: float) -> void:
 	_physics_move(delta)
 	tick_animation_state()
 	_bob_time += delta
-
-	if _collider_overlay != null:
-		_collider_overlay.tick_ray_draw()
 
 	if sprite != null:
 		if is_grounded():
@@ -252,7 +198,7 @@ func _on_swing_finished() -> void:
 		return
 
 	var grounded: bool = is_grounded()
-	_animation_state_machine.on_swing_finished(grounded, _vertical_motion)
+	_animation_state_machine.on_swing_finished(grounded, _vertical_motion, _is_crouching())
 
 
 func _is_crouching() -> bool:
@@ -280,78 +226,16 @@ func _refresh_from_stats() -> void:
 	_paddle_speed = _resolved_paddle_speed()
 
 
-func set_sprite_height_scale(factor: float) -> void:
-	if sprite == null:
-		return
-	sprite.scale.y = factor
-
-
-func set_sprite_width_scale(factor: float) -> void:
-	_sprite_width_scale = factor
-	if sprite == null:
-		return
-	sprite.scale.x = factor
-
-
-func set_racket_position_x(offset_x: float) -> void:
-	if racket_hitbox != null:
-		racket_hitbox.position.x = offset_x
-	_refresh_overlay_shapes()
-
-
-# Sets the racket zone's vertical position (mid-body offset), live-tunable from the dev panel.
-func set_racket_position_y(offset_y: float) -> void:
-	if racket_hitbox != null:
-		racket_hitbox.position.y = offset_y
-	_refresh_overlay_shapes()
-
-
-# Sets the racket zone's width, live-tunable from the dev panel.
 func set_racket_width(width: float) -> void:
 	if _racket_shape != null:
 		_racket_shape.size.x = width
-	_refresh_overlay_shapes()
 
 
-# Sets the racket zone's height, live-tunable from the dev panel.
 func set_racket_height(height: float) -> void:
 	if _racket_shape != null:
 		_racket_shape.size.y = height
-	_refresh_overlay_shapes()
 
 
-# Toggles the body-collider overlay independently of the racket, drawn above the sprite.
 func set_body_collision_enabled(enabled: bool) -> void:
 	if collision != null:
 		collision.disabled = not enabled
-
-
-func set_body_collider_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
-	_refresh_overlay_shapes()
-	_collider_overlay.set_body_active(shown)
-
-
-func set_ground_ray_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
-	_collider_overlay.set_ray_visible(shown, ground_ray)
-
-
-# Toggles the racket-collider overlay independently of the body, drawn above the sprite.
-func set_racket_collider_visible(shown: bool) -> void:
-	if _collider_overlay == null:
-		return
-	_refresh_overlay_shapes()
-	_collider_overlay.set_racket_active(shown)
-
-
-func _refresh_overlay_shapes() -> void:
-	if _collider_overlay == null:
-		return
-	var body_size: Vector2 = _body_shape.size if _body_shape != null else Vector2.ZERO
-	var body_offset: Vector2 = collision.position if collision != null else Vector2.ZERO
-	var racket_size: Vector2 = _racket_shape.size if _racket_shape != null else Vector2.ZERO
-	var racket_offset: Vector2 = racket_hitbox.position if racket_hitbox != null else Vector2.ZERO
-	_collider_overlay.set_shapes(body_size, body_offset, racket_size, racket_offset)
