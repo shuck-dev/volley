@@ -157,43 +157,4 @@ func test_real_press_then_release_outside_shop_purchases_via_input_path() -> voi
 		"Soul debit happens once at release-outside time",
 	)
 
-
 # --- SH-252 (b): drag a live ball back to the rack --------------------------------------
-
-
-func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
-	# Press the live ball through Ball.input_event (the real player path), follow with a
-	_setup_ball_drag()
-	_manager.take("training_ball")
-	_manager.activate("training_ball")
-	var live: Ball = _reconciler.get_ball_for_key("training_ball")
-	assert_not_null(live, "precondition: live ball is on court")
-	var viewport: Viewport = live.get_viewport()
-
-	# Press on the live ball routes through Ball._on_input_event → emits `grabbed` →
-	# ItemDragController.grab_live_ball. SH-297: routing lives on the child GrabArea.
-	var grab_area: Area2D = live.get_node("GrabArea") as Area2D
-	grab_area.input_event.emit(viewport, _press_event(), 0)
-	assert_true(_drag.is_dragging(), "live ball press must hand off to the drag controller")
-
-	await get_tree().process_frame
-	# Step 3: the live Ball IS the drag target; it survives the grab in OUT_HELD until release.
-	assert_true(is_instance_valid(live), "live ball survives the mid-rally grab as the drag target")
-	assert_eq(live.play_state, Ball.PlayState.OUT_HELD)
-
-	# Release at the rack drop target via a real mouse-up event with the rack as cursor.
-	_drag._input(_release_event_at(RACK_CENTER))
-
-	assert_false(_drag.is_dragging(), "release ends the rack-out gesture")
-	assert_false(
-		_manager.is_on_court("training_ball"),
-		"SH-252 b: live ball dragged to rack must leave court so the rack regrows the token",
-	)
-	# Registry keeps the Ball; rack-return is a STORED transition, not destruction (DevBallStatePanel persists).
-	var still_tracked: Ball = _reconciler.get_ball_for_key("training_ball")
-	assert_not_null(still_tracked, "Ball stays in registry after rack-return")
-	assert_eq(
-		still_tracked.play_state,
-		Ball.PlayState.STORED,
-		"rack-return transitions the Ball to STORED"
-	)

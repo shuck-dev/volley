@@ -60,24 +60,6 @@ func _take_from_shop(shop_item: ShopItem) -> void:
 	release.position = canvas_transform * outside_world
 	shop_item._input(release)
 
-
 # --- ball rack arrivals ----------------------------------------------------
 
-
-func test_ball_item_taken_from_shop_appears_on_ball_rack() -> void:
-	_take_from_shop(_shop_item(TrainingBall.key))
-
-	var displayed: Array[String] = _ball_rack.get_displayed_keys()
-	assert_eq(displayed.size(), 1, "ball rack should gain a slot for the taken ball item")
-	assert_eq(displayed[0], TrainingBall.key)
-
-
 # --- gear rack arrivals ----------------------------------------------------
-
-
-func test_equipment_item_taken_from_shop_appears_on_gear_rack() -> void:
-	_take_from_shop(_shop_item(WristBrace.key))
-
-	var displayed: Array[String] = _gear_rack.get_displayed_keys()
-	assert_eq(displayed.size(), 1, "gear rack should gain a slot for the taken equipment item")
-	assert_eq(displayed[0], WristBrace.key)

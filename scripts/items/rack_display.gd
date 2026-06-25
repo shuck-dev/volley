@@ -20,15 +20,6 @@ func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
 	_cache_slot_markers()
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
-	_item_manager.item_placement_changed.connect(_on_item_placement_changed)
-	if not _item_manager.rack_slots_changed.is_connected(_on_rack_slots_changed):
-		# Deferred: a slot mutation can fire from inside a slot's own input_event handler, and a
-		# synchronous refresh would free that Area2D mid-emission. Defer to the idle frame.
-		_item_manager.rack_slots_changed.connect(_on_rack_slots_changed, CONNECT_DEFERRED)
-	if reconciler != null:
-		reconciler.ball_spawned.connect(_on_ball_spawned)
-		reconciler.ball_removed.connect(_on_ball_removed)
 	refresh()
 
 
@@ -228,23 +219,3 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 		if item.key == item_key:
 			return item
 	return null
-
-
-func _on_item_level_changed(_item_key: String) -> void:
-	refresh()
-
-
-func _on_item_placement_changed(_item_key: String, _placement: int) -> void:
-	refresh()
-
-
-func _on_rack_slots_changed() -> void:
-	refresh()
-
-
-func _on_ball_spawned(_item_key: String, _ball: Ball) -> void:
-	refresh()
-
-
-func _on_ball_removed(_ball: Ball) -> void:
-	refresh()
