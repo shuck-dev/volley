@@ -14,8 +14,9 @@ const DISPLAY_NAMES := {
 	"DevBallStatePanel": "Ball",
 	"DevBouncePanel": "Bnc",
 	"PlayerSprite": "Spr",
-	"DevMenu": "Dev",
 }
+
+const TAB_MIN_WIDTH := 40
 
 var _drag := DraggableBehavior.new()
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 		return
 
 	mouse_filter = Control.MOUSE_FILTER_PASS
+
 	_tab_row = find_child("TabRow", true, false) as HBoxContainer
 	_content_area = find_child("ContentArea", true, false) as Control
 
@@ -60,7 +62,7 @@ func _input(event: InputEvent) -> void:
 
 func _collect_panels() -> void:
 	for child in _content_area.get_children():
-		if child is Control:
+		if child is Control and child.name != "DevMenu":
 			_panels.append(child)
 			child.visible = false
 
@@ -75,7 +77,8 @@ func _build_tab_row() -> void:
 		btn.text = DISPLAY_NAMES.get(_panels[i].name, str(_panels[i].name))
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.toggle_mode = true
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.custom_minimum_size.x = TAB_MIN_WIDTH
+		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		btn.pressed.connect(_on_tab_pressed.bind(i))
 		_tab_row.add_child(btn)
 		_tab_buttons.append(btn)
@@ -89,7 +92,7 @@ func _build_tab_row() -> void:
 	_pop_out_button.text = "\u2197"
 	_pop_out_button.focus_mode = Control.FOCUS_NONE
 	_pop_out_button.tooltip_text = "Pop out active panel"
-	_pop_out_button.custom_minimum_size.x = 28
+	_pop_out_button.custom_minimum_size = Vector2(24, 24)
 	_pop_out_button.pressed.connect(_on_pop_out_pressed)
 	_tab_row.add_child(_pop_out_button)
 
@@ -97,7 +100,7 @@ func _build_tab_row() -> void:
 	_toggle_button.text = "\u2630"
 	_toggle_button.focus_mode = Control.FOCUS_NONE
 	_toggle_button.tooltip_text = "Collapse / expand panel container"
-	_toggle_button.custom_minimum_size = Vector2(28, 28)
+	_toggle_button.custom_minimum_size = Vector2(24, 24)
 	_toggle_button.toggle_mode = true
 	_toggle_button.pressed.connect(_on_toggle_pressed)
 	_tab_row.add_child(_toggle_button)
