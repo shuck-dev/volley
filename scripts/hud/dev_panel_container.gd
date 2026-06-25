@@ -66,6 +66,7 @@ func _collect_panels() -> void:
 		if child is Control and child.name != "DevMenu":
 			_panels.append(child)
 			child.visible = false
+			child.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 			child.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			if child is VBoxContainer:
 				child.alignment = BoxContainer.ALIGNMENT_CENTER
