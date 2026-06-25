@@ -15,8 +15,6 @@ const PADDLE_TOP_Y := -540.0
 ## The racket's RectangleShape2D, owning the contact-offset half-height.
 @export var racket_shape: CollisionShape2D
 @export var ground_ray: RayCast2D
-@export var bob_amplitude := 10.0
-@export var bob_frequency := 3.0
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
@@ -35,7 +33,6 @@ var _last_y: float = 0.0
 var _vertical_motion: float = 0.0
 
 var _animation_state_machine: RefCounted
-var _bob_time := 0.0
 
 
 func _ready() -> void:
@@ -112,16 +109,6 @@ func clamp_to_arena() -> void:
 func _physics_process(delta: float) -> void:
 	_physics_move(delta)
 	tick_animation_state()
-	_bob_time += delta
-
-	if sprite != null:
-		if is_grounded():
-			sprite.position.y = 0.0
-			_bob_time = 0.0
-		elif get_movement_state() == &"ready_flying":
-			sprite.position.y = sin(_bob_time * bob_frequency) * bob_amplitude
-		else:
-			sprite.position.y = 0.0
 
 
 func _physics_move(_delta: float) -> void:
