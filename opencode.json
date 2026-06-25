@@ -16,6 +16,9 @@
       "gh pr close*": "deny",
       "gh release delete*": "deny",
       "gh release create*": "deny",
+      // Deny open-surface issue operations across all agents.
+      "gh issue *": "deny",
+      "*gh issue*": "deny",
       // Rewrites history; ask first.
       "git rebase*": "ask",
       "*git rebase*": "ask",
