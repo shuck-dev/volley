@@ -74,6 +74,15 @@ func _build_tab_row() -> void:
 		child.queue_free()
 	_tab_buttons.clear()
 
+	_toggle_button = Button.new()
+	_toggle_button.text = "\u2630"
+	_toggle_button.focus_mode = Control.FOCUS_NONE
+	_toggle_button.tooltip_text = "Collapse / expand"
+	_toggle_button.custom_minimum_size = Vector2(24, 24)
+	_toggle_button.toggle_mode = true
+	_toggle_button.pressed.connect(_on_toggle_pressed)
+	_tab_row.add_child(_toggle_button)
+
 	for i in _panels.size():
 		var btn := Button.new()
 		btn.text = DISPLAY_NAMES.get(_panels[i].name, str(_panels[i].name))
@@ -97,15 +106,6 @@ func _build_tab_row() -> void:
 	_pop_out_button.custom_minimum_size = Vector2(24, 24)
 	_pop_out_button.pressed.connect(_on_pop_out_pressed)
 	_tab_row.add_child(_pop_out_button)
-
-	_toggle_button = Button.new()
-	_toggle_button.text = "\u2630"
-	_toggle_button.focus_mode = Control.FOCUS_NONE
-	_toggle_button.tooltip_text = "Collapse / expand"
-	_toggle_button.custom_minimum_size = Vector2(24, 24)
-	_toggle_button.toggle_mode = true
-	_toggle_button.pressed.connect(_on_toggle_pressed)
-	_tab_row.add_child(_toggle_button)
 
 	_clear_save_button = Button.new()
 	_clear_save_button.text = "Clear Save"
@@ -231,9 +231,8 @@ func _on_toggle_pressed() -> void:
 
 
 func _collapse_container() -> void:
-	for child in _tab_row.get_children():
-		if child != _toggle_button:
-			child.visible = false
+	for i in _tab_row.get_child_count():
+		_tab_row.get_child(i).visible = (i == 0)
 	_content_area.visible = false
 	add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	offset_bottom = offset_top + _toggle_button.size.y + 4
