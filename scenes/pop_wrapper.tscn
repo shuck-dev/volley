@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://ppcb7lgobnte"]
+
+[ext_resource type="Script" uid="uid://cnb1uqcu1xcf2" path="res://scripts/hud/pop_wrapper.gd" id="1_wrapper"]
+[ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="2_debug"]
+
+[node name="PopWrapper" type="PanelContainer" unique_id=1391944039]
+mouse_filter = 1
+theme = ExtResource("2_debug")
+script = ExtResource("1_wrapper")
+
+[node name="InnerBox" type="VBoxContainer" parent="." unique_id=1118875216]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PopBar" type="HBoxContainer" parent="InnerBox" unique_id=1512095046]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PopLabel" type="Label" parent="InnerBox/PopBar" unique_id=1947853976]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 0.6, 1)
+text = "Panel"
+
+[node name="PopDockButton" type="Button" parent="InnerBox/PopBar" unique_id=1567857347]
+custom_minimum_size = Vector2(24, 22)
+layout_mode = 2
+focus_mode = 0
+text = "⬇"

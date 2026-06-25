@@ -72,6 +72,7 @@ func _build_tab_row() -> void:
 	for child in _tab_row.get_children():
 		_tab_row.remove_child(child)
 		child.queue_free()
+	_tab_buttons.clear()
 
 	for i in _panels.size():
 		var btn := Button.new()
@@ -118,6 +119,17 @@ func _on_tab_pressed(index: int) -> void:
 	_switch_tab(index)
 
 
+func _rebuild_tabs() -> void:
+	_build_tab_row()
+	if _panels.size() > 0:
+		_switch_tab(0)
+	else:
+		_active_panel = null
+		if not _collapsed:
+			_content_area.visible = false
+			offset_bottom = offset_top + _tab_row.size.y + 4
+
+
 func _switch_tab(index: int) -> void:
 	if index < 0 or index >= _panels.size():
 		return
@@ -132,6 +144,7 @@ func _switch_tab(index: int) -> void:
 			p.visible = (p == _active_panel)
 
 	if not _collapsed:
+		_content_area.visible = true
 		_fit_to_content()
 
 
@@ -146,64 +159,59 @@ func _on_pop_out_pressed() -> void:
 	if dev_hud == null:
 		return
 
-	_detach_panel(_active_panel, dev_hud)
-	panel_popped_out.emit(_active_panel)
+	var panel: Control = _active_panel
+	_panels.erase(panel)
+	_rebuild_tabs()
+	_detach_panel(panel, dev_hud)
+	panel_popped_out.emit(panel)
 
 
 func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
 
-	var wrapper = PanelContainer.new()
-	wrapper.name = "_pop_wrapper"
-	wrapper.set_script(load("res://scripts/hud/pop_wrapper.gd"))
-	wrapper.theme = load("res://resources/themes/debug_theme.tres")
-	wrapper.mouse_filter = Control.MOUSE_FILTER_PASS
+	var pop_scene := load("res://scenes/pop_wrapper.tscn") as PackedScene
+	var wrapper := pop_scene.instantiate() as PanelContainer
+
+	var label := wrapper.get_node_or_null("InnerBox/PopBar/PopLabel") as Label
+	if label != null:
+		label.text = DISPLAY_NAMES.get(panel.name, str(panel.name))
+
+	var dock := wrapper.get_node_or_null("InnerBox/PopBar/PopDockButton") as Button
+	if dock != null:
+		dock.pressed.connect(_on_dock_pressed.bind(panel))
+
+	var inner := wrapper.get_node_or_null("InnerBox") as VBoxContainer
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(panel)
 
 	dev_hud.add_child(wrapper)
-	wrapper.add_child(panel)
-
-	var btn = Button.new()
-	btn.name = "DockButton"
-	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.size = Vector2(menu_label_width(panel) + 28, 22)
-	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	btn.position = Vector2(wrapper.position.x, wrapper.position.y - 24)
-	dev_hud.add_child(btn)
-
-	wrapper.position = Vector2(position.x - wrapper.get_combined_minimum_size().x - 20, position.y)
+	wrapper.position = Vector2(position.x - panel.size.x - 20, position.y)
 	panel.visible = true
 	wrapper.visible = true
 
 
-func menu_label_width(panel: Control) -> int:
-	var label = Label.new()
-	label.text = DISPLAY_NAMES.get(panel.name, str(panel.name))
-	label.add_theme_font_size_override("font_size", 14)
-	return int(label.get_minimum_size().x)
-
-
 func _on_dock_pressed(panel: Control) -> void:
-	var wrapper := panel.get_parent()
-	if wrapper == _content_area or wrapper == null:
+	var wrapper := panel.get_parent().get_parent() as Control
+	if not wrapper is PanelContainer:
 		return
 
 	var dev_hud := wrapper.get_parent()
 	if dev_hud == null:
 		return
 
-	var dock_btn := dev_hud.get_node_or_null("DockButton")
-	if dock_btn != null:
-		dock_btn.queue_free()
-
-	wrapper.remove_child(panel)
 	dev_hud.remove_child(wrapper)
 	wrapper.queue_free()
 
+	panel.mouse_filter = Control.MOUSE_FILTER_PASS
+	_panels.append(panel)
 	_content_area.add_child(panel)
 	panel.visible = false
 	panel.position = Vector2.ZERO
 	panel.anchors_preset = Control.PRESET_TOP_LEFT
+
+	_rebuild_tabs()
+	if _panels.has(panel):
+		_switch_tab(_panels.find(panel))
 
 	panel_docked.emit(panel)
 
