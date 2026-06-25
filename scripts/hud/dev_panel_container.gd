@@ -152,44 +152,50 @@ func _on_pop_out_pressed() -> void:
 
 func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
-	dev_hud.add_child(panel)
 
-	var bg = ColorRect.new()
-	bg.name = "_pop_bg"
-	bg.color = Color(0.0, 0.0, 0.0, 0.75)
-	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var s = panel.get_combined_minimum_size()
-	bg.size = Vector2(maxf(s.x, 100), maxf(s.y + 24, 100))
-	panel.add_child(bg)
-	panel.move_child(bg, 0)
+	var wrapper = PanelContainer.new()
+	wrapper.name = "_pop_wrapper"
+	wrapper.set_script(load("res://scripts/hud/pop_wrapper.gd"))
+	wrapper.theme = load("res://resources/themes/debug_theme.tres")
+	wrapper.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	dev_hud.add_child(wrapper)
+	wrapper.add_child(panel)
 
 	var btn = Button.new()
 	btn.name = "DockButton"
 	btn.text = DISPLAY_NAMES.get(panel.name, str(panel.name)) + " \u2B07"
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.custom_minimum_size = Vector2(60, 22)
+	btn.anchor_left = 1.0
+	btn.anchor_right = 1.0
+	btn.anchor_top = 0.0
+	btn.anchor_bottom = 0.0
+	btn.offset_left = -62
+	btn.offset_right = -2
+	btn.offset_top = 2
+	btn.offset_bottom = 26
 	btn.pressed.connect(_on_dock_pressed.bind(panel))
-	btn.offset_left = 0
-	btn.offset_top = -24
-	btn.offset_right = panel.size.x
-	btn.offset_bottom = -2
-	panel.add_child(btn)
+	wrapper.add_child(btn)
 
-	panel.position = Vector2(position.x - panel.size.x - 10, position.y)
-	panel.anchors_preset = Control.PRESET_TOP_LEFT
+	wrapper.position = Vector2(position.x - wrapper.get_combined_minimum_size().x - 20, position.y)
 	panel.visible = true
+	wrapper.visible = true
 
 
 func _on_dock_pressed(panel: Control) -> void:
-	if panel.get_parent() == _content_area:
+	var wrapper := panel.get_parent()
+	if wrapper == _content_area or wrapper == null:
 		return
 
-	for pop_child in ["DockButton", "_pop_bg"]:
-		var child := panel.get_node_or_null(pop_child)
-		if child != null:
-			child.queue_free()
+	var dev_hud := wrapper.get_parent()
+	if dev_hud == null:
+		return
 
-	panel.get_parent().remove_child(panel)
+	wrapper.remove_child(panel)
+	dev_hud.remove_child(wrapper)
+	wrapper.queue_free()
+
 	_content_area.add_child(panel)
 	panel.visible = false
 	panel.position = Vector2.ZERO
