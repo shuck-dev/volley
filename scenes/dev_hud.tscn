@@ -45,7 +45,7 @@ offset_right = 210.0
 offset_bottom = 620.0
 theme = ExtResource("7_debug")
 script = ExtResource("3_devmenu")
-managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../PlayerSprite"), NodePath("../DevEquippedPanel")])
+managed_panels = "[NodePath(\"../DevShopPanel\"), NodePath(\"../DevItemUI\"), NodePath(\"../DevStatPanel\"), NodePath(\"../DevBallStatePanel\"), NodePath(\"../DevBouncePanel\"), NodePath(\"../PlayerSprite\"), NodePath(\"../DevEquippedPanel\"), NodePath(\"../DevOverlayPanel\")]"
 
 [node name="DevEquippedPanel" type="VBoxContainer" parent="." unique_id=1944203103]
 visible = false
