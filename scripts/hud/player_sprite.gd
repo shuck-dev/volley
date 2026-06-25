@@ -35,12 +35,10 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _build_ui() -> void:
-	_add_label("--- DEBUG: Player Sprite ---", Color(1.0, 1.0, 0.6))
-
 	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
 	_add_checkbox("Show State Label", _apply_state_label_visible)

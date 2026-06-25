@@ -17,7 +17,7 @@ size = Vector2(4000, 40)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j16ra"]
 size = Vector2(40, 4000)
 
-[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court", "dev_item_panel")]
+[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,7 +28,6 @@ mouse_filter = 2
 script = ExtResource("1_qaugd")
 shop = NodePath("Shop")
 court = NodePath("Court")
-dev_item_panel = NodePath("DevHUD/DevItemUI")
 
 [node name="ParallaxDeepBack" type="Parallax2D" parent="." unique_id=1359575071]
 z_index = -1000

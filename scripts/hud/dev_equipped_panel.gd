@@ -34,16 +34,11 @@ func _input(event: InputEvent) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Equipped ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
-	resized.connect(queue_redraw)
+	return
 
 
 func _make_label() -> Label:

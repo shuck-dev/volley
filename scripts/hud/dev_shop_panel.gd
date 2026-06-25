@@ -107,13 +107,6 @@ func _build_shell() -> void:
 	_content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_content)
 
-	var title := Label.new()
-	title.text = "--- SHOP ---"
-	title.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_content.add_child(title)
-
 	_grid = GridContainer.new()
 	_grid.columns = COLUMN_COUNT
 	_grid.add_theme_constant_override("h_separation", 12)

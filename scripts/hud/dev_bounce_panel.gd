@@ -72,11 +72,10 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _build_labels() -> void:
-	_add_header()
 	_label_max_degrees = _make_label()
 	add_child(_label_max_degrees)
 	_label_english = _make_label()

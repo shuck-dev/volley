@@ -47,7 +47,7 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _apply_background() -> void:
@@ -90,11 +90,7 @@ func _read_version() -> String:
 
 
 func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Stats ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
+	return
 
 
 func _make_stat_label() -> Label:

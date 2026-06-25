@@ -6,103 +6,18 @@
 [ext_resource type="Script" uid="uid://cwuynn50ikjek" path="res://scripts/hud/dev_menu.gd" id="3_devmenu"]
 [ext_resource type="Script" uid="uid://cobj86hrkbj2r" path="res://scripts/hud/dev_shop_panel.gd" id="3_shoppnl"]
 [ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/hud/dev_ball_state_panel.gd" id="4_ballstate"]
+[ext_resource type="Script" uid="uid://dowc6rb43ngh5" path="res://scripts/hud/dev_panel_container.gd" id="4_kihct"]
 [ext_resource type="Script" uid="uid://bkfp6d5w1iaip" path="res://scripts/hud/dev_bounce_panel.gd" id="5_bouncepanel"]
 [ext_resource type="Script" uid="uid://ce43fqg0u1yhu" path="res://scripts/hud/dev_bounce_overlay.gd" id="6_bounceover"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 [ext_resource type="Script" uid="uid://lnxk7w1w6dq6" path="res://scripts/hud/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/hud/player_sprite.gd" id="9_paddlesize"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_menu")]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container", "dev_menu")]
 script = ExtResource("1_ahhtf")
 clearance_button = NodePath("ClearanceButton")
-dev_menu = NodePath("DevMenu")
-
-[node name="DevItemUI" type="VBoxContainer" parent="." unique_id=1055282224]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 40.0
-offset_bottom = 40.0
-theme = ExtResource("7_debug")
-script = ExtResource("2_oo0fn")
-
-[node name="DevShopPanel" type="PanelContainer" parent="." unique_id=25044506]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -380.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = 180.0
-grow_horizontal = 0
-theme = ExtResource("7_debug")
-script = ExtResource("3_shoppnl")
-items_anchor_path = NodePath("../../Shop/ItemsAnchor")
-
-[node name="DevMenu" type="PanelContainer" parent="." unique_id=1716321773]
-offset_left = 10.0
-offset_top = 520.0
-offset_right = 210.0
-offset_bottom = 620.0
-theme = ExtResource("7_debug")
-script = ExtResource("3_devmenu")
-managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../PlayerSprite"), NodePath("../DevEquippedPanel")])
-
-[node name="DevEquippedPanel" type="VBoxContainer" parent="." unique_id=1944203103]
-visible = false
-offset_left = 220.0
-offset_top = 270.0
-offset_right = 460.0
-offset_bottom = 400.0
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-script = ExtResource("8_equipped")
-
-[node name="DevStatPanel" type="VBoxContainer" parent="." unique_id=425250304]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -230.0
-offset_top = -10.0
-offset_right = -10.0
-offset_bottom = -10.0
-grow_horizontal = 0
-grow_vertical = 0
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-alignment = 1
-script = ExtResource("3_5ysmq")
-
-[node name="DevBallStatePanel" type="VBoxContainer" parent="." unique_id=1944203100]
-visible = false
-offset_left = 220.0
-offset_top = 10.0
-offset_right = 460.0
-offset_bottom = 140.0
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-script = ExtResource("4_ballstate")
-
-[node name="DevBouncePanel" type="VBoxContainer" parent="." unique_id=1944203101]
-visible = false
-offset_left = 220.0
-offset_top = 150.0
-offset_right = 460.0
-offset_bottom = 260.0
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-script = ExtResource("5_bouncepanel")
-
-[node name="PlayerSprite" type="VBoxContainer" parent="." unique_id=1944203104]
-visible = false
-offset_left = 220.0
-offset_top = 270.0
-offset_right = 460.0
-offset_bottom = 350.0
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-script = ExtResource("9_paddlesize")
+dev_panel_container = NodePath("DevPanelContainer")
+dev_menu = NodePath("DevPanelContainer/ContentBody/ContentArea/DevMenu")
 
 [node name="DevBounceOverlay" type="Node2D" parent="." unique_id=1944203102]
 script = ExtResource("6_bounceover")
@@ -118,3 +33,94 @@ offset_bottom = -5.0
 grow_vertical = 0
 focus_mode = 0
 text = "Clearance"
+
+[node name="DevPanelContainer" type="PanelContainer" parent="." unique_id=29274969]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -310.0
+offset_top = 10.0
+offset_right = -10.0
+mouse_filter = 1
+theme = ExtResource("7_debug")
+script = ExtResource("4_kihct")
+
+[node name="ContentBody" type="VBoxContainer" parent="DevPanelContainer" unique_id=332398289]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="TabRow" type="HBoxContainer" parent="DevPanelContainer/ContentBody" unique_id=246145934]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContentArea" type="Control" parent="DevPanelContainer/ContentBody" unique_id=1383531137]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="DevItemUI" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1055282224]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("7_debug")
+script = ExtResource("2_oo0fn")
+
+[node name="DevShopPanel" type="PanelContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=25044506]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("3_shoppnl")
+items_anchor_path = NodePath("../../../Shop/ItemsAnchor")
+
+[node name="DevMenu" type="PanelContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1716321773]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource("7_debug")
+script = ExtResource("3_devmenu")
+managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../PlayerSprite"), NodePath("../DevEquippedPanel")])
+
+[node name="DevEquippedPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203103]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("8_equipped")
+
+[node name="DevStatPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=425250304]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+alignment = 1
+script = ExtResource("3_5ysmq")
+
+[node name="DevBallStatePanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203100]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("4_ballstate")
+
+[node name="DevBouncePanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203101]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("5_bouncepanel")
+
+[node name="PlayerSprite" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203104]
+visible = false
+layout_mode = 0
+size_flags_horizontal = 3
+theme = ExtResource("7_debug")
+theme_override_constants/separation = 2
+script = ExtResource("9_paddlesize")
