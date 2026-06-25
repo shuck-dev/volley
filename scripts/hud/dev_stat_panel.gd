@@ -1,8 +1,6 @@
 extends VBoxContainer
 
 var _labels: Dictionary = {}
-var _speed_label: Label
-var _speed_bar: Control
 var _drag := DraggableBehavior.new()
 # Debug-only: flattened view of every stat's base value for diff readouts.
 # Cached once because `_refresh` hits this per stat per frame.
@@ -24,7 +22,6 @@ func _ready() -> void:
 		return
 
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	_speed_bar = get_parent().get_node_or_null("SpeedBar")
 	_build_live_labels()
 	_add_version_label()
 	_refresh()
@@ -56,9 +53,6 @@ func _apply_background() -> void:
 
 func _build_live_labels() -> void:
 	_add_header()
-	_speed_label = _make_stat_label()
-	_speed_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
-	add_child(_speed_label)
 	for stat_key: StringName in _base_values():
 		var label := _make_stat_label()
 		add_child(label)
@@ -99,14 +93,8 @@ func _make_stat_label() -> Label:
 
 
 func _refresh() -> void:
-	_refresh_speed_label()
 	for stat_key: StringName in _labels:
 		_refresh_stat_label(stat_key)
-
-
-func _refresh_speed_label() -> void:
-	if _speed_label != null and is_instance_valid(_speed_bar):
-		_speed_label.text = "ball_speed: %.1f" % _speed_bar.current_speed
 
 
 func _refresh_stat_label(stat_key: StringName) -> void:
