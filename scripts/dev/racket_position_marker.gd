@@ -8,6 +8,8 @@ extends Marker2D
 func _draw() -> void:
 	if not Engine.is_editor_hint():
 		return
+	if racket_collision == null:
+		return
 	var shape: RectangleShape2D = racket_collision.shape
 	if shape == null:
 		return
