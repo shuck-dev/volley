@@ -15,6 +15,8 @@ func _ready() -> void:
 
 
 func _physics_move(_delta: float) -> void:
+	if input_blocked:
+		return
 	var direction := Input.get_axis("paddle_up", "paddle_down")
 	if direction > 0.0 and is_grounded():
 		velocity = Vector2.ZERO
