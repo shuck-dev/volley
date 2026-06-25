@@ -159,6 +159,7 @@ func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	bg.color = Color(0.0, 0.0, 0.0, 0.7)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.custom_minimum_size = Vector2(100, 100)
 	panel.add_child(bg)
 	panel.move_child(bg, 0)
 
@@ -241,7 +242,7 @@ func _collapse_container() -> void:
 			child.visible = false
 	_tab_row.alignment = BoxContainer.ALIGNMENT_END
 	_content_area.visible = false
-	custom_minimum_size.y = _toggle_button.size.y + 4
+	offset_bottom = offset_top + _toggle_button.size.y + 4
 
 
 func _expand_container() -> void:
