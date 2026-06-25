@@ -20,6 +20,9 @@ const STATE_LABEL_GAP := 8.0
 
 ## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
 var drive_blocked: bool = false
+## Set by AutoplayController during autoplay; suppresses _physics_move input so PlayerPaddle
+## does not clobber the AI driver's velocity with Input.get_axis defaults.
+var input_blocked: bool = false
 
 var _item_manager: Node
 
