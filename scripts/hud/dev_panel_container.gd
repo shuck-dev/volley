@@ -247,7 +247,7 @@ func _expand_container() -> void:
 	for child in _tab_row.get_children():
 		child.visible = true
 	_content_area.visible = true
-	add_theme_stylebox_override("panel", null)
+	remove_theme_stylebox_override("panel")
 	_fit_to_content()
 
 
