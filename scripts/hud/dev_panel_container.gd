@@ -140,7 +140,7 @@ func _switch_tab(index: int) -> void:
 	_active_panel = _panels[index]
 
 	for p in _panels:
-		if p.get_parent() == _content_area:
+		if is_instance_valid(p) and p.get_parent() == _content_area:
 			p.visible = (p == _active_panel)
 
 	if not _collapsed:
@@ -195,10 +195,15 @@ func _on_dock_pressed(panel: Control) -> void:
 	if not wrapper is PanelContainer:
 		return
 
+	var inner := panel.get_parent()
+	if inner:
+		inner.remove_child(panel)
+
 	var dev_hud := wrapper.get_parent()
 	if dev_hud == null:
 		return
 
+	wrapper.remove_child(inner)
 	dev_hud.remove_child(wrapper)
 	wrapper.queue_free()
 
