@@ -87,14 +87,6 @@ func _build_labels() -> void:
 	_refresh_last_hit()
 
 
-func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Bounce ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
-
-
 func _make_label() -> Label:
 	var label := Label.new()
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

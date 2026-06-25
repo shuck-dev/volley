@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/hud/dev_ball_state_panel.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://cgvfq6q1n825h" path="res://scripts/dev/dev_ball_state_panel.gd" id="1_script"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="2_theme"]
 
 [node name="DevBallStatePanel" type="VBoxContainer"]

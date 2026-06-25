@@ -52,14 +52,6 @@ func _build_ui() -> void:
 	_refresh_readout()
 
 
-func _add_label(text: String, colour: Color) -> void:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", colour)
-	add_child(label)
-
-
 func _add_checkbox(text: String, apply: Callable) -> void:
 	var checkbox := CheckBox.new()
 	checkbox.text = text

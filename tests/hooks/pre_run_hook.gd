@@ -5,6 +5,8 @@ const CoverageScript = preload("res://addons/coverage/coverage.gd")
 const EXCLUDE_PATHS = [
 	"res://addons/*",
 	"res://tests/*",
+	# Dev-only debug panels and overlays, not unit-testable
+	"res://scripts/dev/*",
 	# Require full scene with nodes, not unit-testable
 	"res://scripts/hud/*",
 	"res://scripts/core/venue.gd",

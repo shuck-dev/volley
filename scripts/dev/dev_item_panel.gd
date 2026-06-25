@@ -155,21 +155,6 @@ func _on_remove_soul_pressed(input: SpinBox) -> void:
 	ItemManager.subtract_soul(int(input.value))
 
 
-func _setup_clear_save_control() -> void:
-	var clear_save_button := Button.new()
-	clear_save_button.text = "Clear Save"
-	clear_save_button.focus_mode = Control.FOCUS_NONE
-	clear_save_button.pressed.connect(_on_clear_save_pressed)
-	add_child(clear_save_button)
-
-
-func _on_clear_save_pressed() -> void:
-	SaveManager.clear_save()
-	ItemManager.reload_from_progression()
-	get_tree().reload_current_scene()
-	SaveManager.unblock_writes.call_deferred()
-
-
 func _draw() -> void:
 	pass
 
