@@ -72,11 +72,10 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _build_labels() -> void:
-	_add_header()
 	_label_max_degrees = _make_label()
 	add_child(_label_max_degrees)
 	_label_english = _make_label()
@@ -88,17 +87,9 @@ func _build_labels() -> void:
 	_refresh_last_hit()
 
 
-func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Bounce ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
-
-
 func _make_label() -> Label:
 	var label := Label.new()
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	return label
 

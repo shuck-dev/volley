@@ -20,13 +20,6 @@ func _ready() -> void:
 
 	add_child(_content)
 
-	var header := Label.new()
-	header.text = "--- DEV ---"
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_content.add_child(header)
-
 	for path in managed_panels:
 		var panel: Control = get_node_or_null(path)
 		if panel != null:

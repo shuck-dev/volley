@@ -1,8 +1,6 @@
 extends VBoxContainer
 
 var _labels: Dictionary = {}
-var _speed_label: Label
-var _speed_bar: Control
 var _drag := DraggableBehavior.new()
 # Debug-only: flattened view of every stat's base value for diff readouts.
 # Cached once because `_refresh` hits this per stat per frame.
@@ -24,7 +22,6 @@ func _ready() -> void:
 		return
 
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	_speed_bar = get_parent().get_node_or_null("SpeedBar")
 	_build_live_labels()
 	_add_version_label()
 	_refresh()
@@ -47,20 +44,15 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _apply_background() -> void:
-	alignment = BoxContainer.ALIGNMENT_CENTER
 	add_theme_constant_override("separation", 2)
-	resized.connect(queue_redraw)
 
 
 func _build_live_labels() -> void:
 	_add_header()
-	_speed_label = _make_stat_label()
-	_speed_label.add_theme_color_override("font_color", Color(0.6, 0.8, 1.0))
-	add_child(_speed_label)
 	for stat_key: StringName in _base_values():
 		var label := _make_stat_label()
 		add_child(label)
@@ -90,11 +82,7 @@ func _read_version() -> String:
 
 
 func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Stats ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
+	return
 
 
 func _make_stat_label() -> Label:
@@ -105,14 +93,8 @@ func _make_stat_label() -> Label:
 
 
 func _refresh() -> void:
-	_refresh_speed_label()
 	for stat_key: StringName in _labels:
 		_refresh_stat_label(stat_key)
-
-
-func _refresh_speed_label() -> void:
-	if _speed_label != null and is_instance_valid(_speed_bar):
-		_speed_label.text = "ball_speed: %.1f" % _speed_bar.current_speed
 
 
 func _refresh_stat_label(stat_key: StringName) -> void:

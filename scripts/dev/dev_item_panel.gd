@@ -53,7 +53,6 @@ func _ready() -> void:
 
 	_refresh_buttons()
 	_setup_soul_controls()
-	_setup_clear_save_control()
 
 	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
@@ -156,28 +155,9 @@ func _on_remove_soul_pressed(input: SpinBox) -> void:
 	ItemManager.subtract_soul(int(input.value))
 
 
-func _setup_clear_save_control() -> void:
-	var clear_save_button := Button.new()
-	clear_save_button.text = "Clear Save"
-	clear_save_button.focus_mode = Control.FOCUS_NONE
-	clear_save_button.pressed.connect(_on_clear_save_pressed)
-	add_child(clear_save_button)
-
-
-func _on_clear_save_pressed() -> void:
-	SaveManager.clear_save()
-	ItemManager.reload_from_progression()
-	get_tree().reload_current_scene()
-	SaveManager.unblock_writes.call_deferred()
-
-
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Items ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
+	return

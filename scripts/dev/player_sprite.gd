@@ -35,12 +35,11 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _build_ui() -> void:
-	_add_label("--- DEBUG: Player Sprite ---", Color(1.0, 1.0, 0.6))
-
+	alignment = BoxContainer.ALIGNMENT_CENTER
 	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
 	_add_checkbox("Show State Label", _apply_state_label_visible)
@@ -51,14 +50,6 @@ func _build_ui() -> void:
 	_readout_label.add_theme_color_override("font_color", Color(0.8, 1.0, 0.8))
 	add_child(_readout_label)
 	_refresh_readout()
-
-
-func _add_label(text: String, colour: Color) -> void:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_color_override("font_color", colour)
-	add_child(label)
 
 
 func _add_checkbox(text: String, apply: Callable) -> void:

@@ -2,6 +2,7 @@ class_name DevHud
 extends CanvasLayer
 
 @export var clearance_button: Button
+@export var dev_panel_container: PanelContainer
 @export var dev_menu: PanelContainer
 
 

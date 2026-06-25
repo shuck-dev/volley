@@ -73,15 +73,11 @@ func _physics_process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.0, 0.0, 0.0, 0.6))
+	pass
 
 
 func _add_header() -> void:
-	var header := Label.new()
-	header.text = "--- DEBUG: Ball States ---"
-	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	header.add_theme_color_override("font_color", Color(1.0, 1.0, 0.6))
-	add_child(header)
+	return
 
 
 func _on_ball_added(ball: Ball) -> void:
@@ -89,7 +85,7 @@ func _on_ball_added(ball: Ball) -> void:
 		return
 
 	var label := Label.new()
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", Color(0.8, 0.8, 0.8))
 	label.text = _format_row(ball)
 	add_child(label)
