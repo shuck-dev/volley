@@ -137,11 +137,6 @@ func _update_play_state() -> void:
 
 
 func _enter_arc() -> void:
-	## The ball may overshoot the bound between physics frames; snap Y to the bound so the arc
-	## parabola starts exactly at the marker line instead of several pixels above it.
-	if global_position.y < bound_y:
-		global_position.y = bound_y
-
 	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
 	gravity_scale = 0.0
 	if court_config.physics == null:
