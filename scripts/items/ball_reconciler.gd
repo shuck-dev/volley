@@ -140,6 +140,7 @@ func adopt_pre_existing_balls() -> void:
 		ball_spawned.emit(key, ball)
 		if court_config != null:
 			ball.court_config = court_config
+		ball.bound_y = bound_y
 		_register_ball(ball)
 	_adopting_pre_existing = false
 
@@ -220,6 +221,7 @@ func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 		ball.court_config = court_config
 	add_child(ball)
 	ball.item_key = item_key
+	ball.bound_y = bound_y
 	ball.enter_stored()
 	ball.global_position = spawn_position
 	_apply_item_art(ball, item_key)
