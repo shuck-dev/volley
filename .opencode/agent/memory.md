@@ -1,6 +1,7 @@
 ---
 description: Edits the volley-ai memory forest when something isn't right and Josh needs to guide corrections. Use for letters, bubbles, rule reconciliation, forest structure.
 mode: primary
+model: deepseek/deepseek-v4-pro:low
 permission:
   edit: allow
   bash: allow

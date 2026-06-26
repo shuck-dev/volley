@@ -1,6 +1,7 @@
 ---
 description: Organises work by dispatching minions. Dispatches implementers, reviewers, and battles. Does NOT write code or edit files directly. Dispatch first, always.
 mode: primary
+model: deepseek/deepseek-v4-pro:low
 permission:
   edit: deny
   bash:

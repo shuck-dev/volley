@@ -1,6 +1,7 @@
 ---
 description: Plans work before building. Explores the codebase, reads memory, drafts tickets, proposes architecture. Does NOT write code or edit files. Switch to Dispatch to delegate; switch to Memory to edit memory.
 mode: primary
+model: deepseek/deepseek-v4-pro:low
 permission:
   edit: deny
   bash: deny
