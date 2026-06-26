@@ -154,6 +154,9 @@ func _draw() -> void:
 	if live_ball == null:
 		return
 
+	if live_ball.court_config == null or live_ball.court_config.physics == null:
+		return
+
 	var apex_y: float = live_ball.bound_y - live_ball.court_config.physics.arc_height_max
 	var min_x: float = all_positions[0].x
 	var max_x: float = all_positions[0].x
