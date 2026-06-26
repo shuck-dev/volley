@@ -203,6 +203,7 @@ func ensure_ball_for_key(
 	ball.item_key = item_key
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
+	ball.bound_y = bound_y
 	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
@@ -220,6 +221,7 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 			ball.court_config = court_config
 		add_child(ball)
 		ball.item_key = item_key
+		ball.bound_y = bound_y
 		_apply_item_art(ball, item_key)
 		_balls_by_key[item_key] = ball
 		ball_spawned.emit(item_key, ball)
