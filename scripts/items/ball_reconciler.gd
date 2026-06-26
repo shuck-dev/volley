@@ -196,18 +196,7 @@ func ensure_ball_for_key(
 		_apply_preserved_speed(existing, preserved_speed)
 		return existing
 
-	var ball: Ball = ball_scene.instantiate()
-	if court_config != null:
-		ball.court_config = court_config
-	add_child(ball)
-	ball.item_key = item_key
-	ball.global_position = spawn_position
-	ball.linear_velocity = initial_velocity
-	ball.bound_y = bound_y
-	_apply_item_art(ball, item_key)
-	_balls_by_key[item_key] = ball
-	ball_spawned.emit(item_key, ball)
-	_register_ball(ball)
+	var ball: Ball = _create_ball(item_key, spawn_position, initial_velocity)
 	_apply_preserved_speed(ball, preserved_speed)
 	return ball
 
@@ -216,16 +205,7 @@ func ensure_ball_for_key(
 func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var ball: Ball = get_ball_for_key(item_key)
 	if ball == null:
-		ball = ball_scene.instantiate()
-		if court_config != null:
-			ball.court_config = court_config
-		add_child(ball)
-		ball.item_key = item_key
-		ball.bound_y = bound_y
-		_apply_item_art(ball, item_key)
-		_balls_by_key[item_key] = ball
-		ball_spawned.emit(item_key, ball)
-		_register_ball(ball)
+		ball = _create_ball(item_key, position, velocity)
 
 	ball.global_position = position
 	ball.enter_out_rest()
@@ -263,6 +243,22 @@ func bring_into_play(
 
 
 ## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
+func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+	var ball: Ball = ball_scene.instantiate()
+	if court_config != null:
+		ball.court_config = court_config
+	add_child(ball)
+	ball.item_key = item_key
+	ball.global_position = spawn_position
+	ball.linear_velocity = initial_velocity
+	ball.bound_y = bound_y
+	_apply_item_art(ball, item_key)
+	_balls_by_key[item_key] = ball
+	ball_spawned.emit(item_key, ball)
+	_register_ball(ball)
+	return ball
+
+
 func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 	if preserved_speed < 0.0:
 		return
