@@ -12,12 +12,13 @@
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
 [ext_resource type="Script" uid="uid://lnxk7w1w6dq6" path="res://scripts/dev/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/dev/player_sprite.gd" id="9_paddlesize"]
+[ext_resource type="Script" uid="uid://dyqpeklr0o4wn" path="res://scripts/dev/soul_bound_overlay.gd" id="13_hqk2e"]
+[ext_resource type="Script" uid="uid://08w53i5wkvn8" path="res://scripts/dev/arc_travel_overlay.gd" id="14_tmy36"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container", "dev_menu")]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container")]
 script = ExtResource("1_ahhtf")
 clearance_button = NodePath("ClearanceButton")
 dev_panel_container = NodePath("DevPanelContainer")
-dev_menu = NodePath("DevPanelContainer/ContentBody/ContentArea/DevMenu")
 
 [node name="DevBounceOverlay" type="Node2D" parent="." unique_id=1944203102]
 script = ExtResource("6_bounceover")
@@ -124,3 +125,9 @@ size_flags_horizontal = 4
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
 script = ExtResource("9_paddlesize")
+
+[node name="SoulBoundOverlay" type="Node2D" parent="." unique_id=1068909754]
+script = ExtResource("13_hqk2e")
+
+[node name="ArcTravelOverlay" type="Node2D" parent="." unique_id=671493851]
+script = ExtResource("14_tmy36")

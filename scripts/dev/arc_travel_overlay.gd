@@ -1,0 +1,177 @@
+class_name ArcTravelOverlay
+extends Node2D
+
+const ARC_COLOR := Color(0.4, 0.9, 0.4)
+const LINE_WIDTH := 1.5
+const ENVELOPE_COLOR := Color(0.4, 0.9, 0.4, 0.3)
+const DASH_LENGTH := 6.0
+const DASH_GAP := 4.0
+const ARC_ALPHAS := [0.15, 0.3, 0.5]
+const MAX_ARCS := 3
+
+var dev_visible: bool = false
+
+var _tracker: BallReconciler
+var _ball_arcs: Dictionary = {}  # instance_id keys
+
+
+func _ready() -> void:
+	if not OS.is_debug_build():
+		queue_free()
+		return
+
+	z_index = 4095
+	top_level = true
+	visible = false
+	add_to_group(&"dev_overlays")
+
+	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
+
+	if _tracker != null:
+		_attach_to_tracker()
+	else:
+		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
+
+
+func _exit_tree() -> void:
+	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
+		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+
+
+func _on_node_added_waiting_for_tracker(node: Node) -> void:
+	var tracker := node as BallReconciler
+	if tracker == null:
+		return
+	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
+	_tracker = tracker
+	_attach_to_tracker()
+
+
+func _attach_to_tracker() -> void:
+	pass
+
+
+func set_dev_visible(value: bool) -> void:
+	dev_visible = value
+	visible = value
+	if value:
+		queue_redraw()
+
+
+func _process(_delta: float) -> void:
+	if not dev_visible or _tracker == null:
+		return
+
+	var live_ids: Array[int] = []
+	for ball: Ball in _tracker.get_balls():
+		if not is_instance_valid(ball):
+			continue
+		var id := ball.get_instance_id()
+		live_ids.append(id)
+
+		var in_arc := ball.play_state == Ball.PlayState.PLAY_ARC
+		var entry: Dictionary = _ball_arcs.get(id, {})
+
+		if in_arc:
+			var cur: Array = entry.get("current", [])
+			cur.append(ball.global_position)
+			entry["current"] = cur
+			if not entry.has("completed"):
+				entry["completed"] = []
+		elif entry.has("current") and not entry["current"].is_empty():
+			var completed: Array = entry.get("completed", [])
+			completed.append(entry["current"])
+			if completed.size() > MAX_ARCS:
+				completed.pop_front()
+			entry["completed"] = completed
+			entry["current"] = []
+
+		_ball_arcs[id] = entry
+
+	for id in _ball_arcs.keys():
+		if not live_ids.has(id):
+			_ball_arcs.erase(id)
+
+	queue_redraw()
+
+
+func _draw() -> void:
+	for entry: Dictionary in _ball_arcs.values():
+		var completed: Array = entry.get("completed", [])
+		for arc_idx: int in range(completed.size()):
+			var arc: Array = completed[arc_idx]
+			if arc.size() < 2:
+				continue
+			var alpha: float = (
+				ARC_ALPHAS[arc_idx]
+				if arc_idx < ARC_ALPHAS.size()
+				else ARC_ALPHAS[ARC_ALPHAS.size() - 1]
+			)
+			var color := Color(0.4, 0.9, 0.4, alpha)
+			for i in range(arc.size() - 1):
+				var a: Vector2 = _project_to_canvas(arc[i])
+				var b: Vector2 = _project_to_canvas(arc[i + 1])
+				draw_line(a, b, color, LINE_WIDTH)
+
+		var current: Array = entry.get("current", [])
+		var curr_sz: int = current.size()
+		if curr_sz >= 2:
+			for i in range(curr_sz - 1):
+				var a: Vector2 = _project_to_canvas(current[i])
+				var b: Vector2 = _project_to_canvas(current[i + 1])
+				var alpha: float = float(i) / float(curr_sz)
+				var color := Color(0.4, 0.9, 0.4, alpha)
+				draw_line(a, b, color, LINE_WIDTH)
+
+	var all_positions: Array[Vector2] = []
+	for entry: Dictionary in _ball_arcs.values():
+		for arc: Array in entry.get("completed", []):
+			for p: Vector2 in arc:
+				all_positions.append(p)
+		for p: Vector2 in entry.get("current", []):
+			all_positions.append(p)
+
+	if all_positions.size() < 2:
+		return
+
+	var live_ball: Ball = null
+	for ball: Ball in _tracker.get_balls():
+		if is_instance_valid(ball):
+			live_ball = ball
+			break
+
+	if live_ball == null:
+		return
+
+	if live_ball.court_config == null or live_ball.court_config.physics == null:
+		return
+
+	var apex_y: float = live_ball.bound_y - live_ball.court_config.physics.arc_height_max
+	var min_x: float = all_positions[0].x
+	var max_x: float = all_positions[0].x
+	for p: Vector2 in all_positions:
+		if p.x < min_x:
+			min_x = p.x
+		if p.x > max_x:
+			max_x = p.x
+
+	var left: Vector2 = _project_to_canvas(Vector2(min_x, apex_y))
+	var right: Vector2 = _project_to_canvas(Vector2(max_x, apex_y))
+	var sx: float = left.x
+	var ex: float = right.x
+	var y: float = left.y
+	var direction: float = signf(ex - sx)
+	var d: float = sx
+
+	while absf(d - ex) > DASH_LENGTH * 0.5:
+		var dash_end: float = d + direction * DASH_LENGTH
+		if (direction > 0 and dash_end > ex) or (direction < 0 and dash_end < ex):
+			dash_end = ex
+		draw_line(Vector2(d, y), Vector2(dash_end, y), ENVELOPE_COLOR, 1.0)
+		d = dash_end + direction * DASH_GAP
+		if (direction > 0 and d > ex) or (direction < 0 and d < ex):
+			break
+
+
+func _project_to_canvas(world_pos: Vector2) -> Vector2:
+	return get_viewport().get_canvas_transform() * world_pos

@@ -106,5 +106,6 @@ ground_ray = NodePath("../../GroundRay")
 script = ExtResource("10_label")
 sprite = NodePath("../../Sprite")
 
-[node name="HoverBob" type="Node" parent="." unique_id=519261022]
+[node name="HoverBob" type="Node" parent="." unique_id=519261022 node_paths=PackedStringArray("sprite")]
 script = ExtResource("11_lx3j3")
+sprite = NodePath("../Sprite")
