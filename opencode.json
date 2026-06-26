@@ -25,6 +25,9 @@
       // Banned history-rewrite commands.
       "git filter-branch*": "deny",
       "*git filter-branch*": "deny",
+      // Force-adding files bypasses gitignore; never allowed.
+      "git add *-f*": "deny",
+      "git add *--force*": "deny",
       // Rewrites the remote; need consent.
       "git push *--force*": "ask",
       "*git push *--force*": "ask",
