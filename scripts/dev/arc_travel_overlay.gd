@@ -48,17 +48,6 @@ func _on_node_added_waiting_for_tracker(node: Node) -> void:
 
 
 func _attach_to_tracker() -> void:
-	_tracker.ball_added.connect(_on_ball_added)
-	_tracker.ball_removed.connect(_on_ball_removed)
-	for ball in _tracker.get_balls():
-		_on_ball_added(ball)
-
-
-func _on_ball_added(_ball: Ball) -> void:
-	pass
-
-
-func _on_ball_removed(_ball: Ball) -> void:
 	pass
 
 
