@@ -174,23 +174,25 @@ func _add_checkbox(text: String, handler: Callable) -> void:
 	add_child(checkbox)
 
 
-func _for_overlay_of_type(overlay_script: Script, method: StringName, value: Variant) -> void:
+func _on_cone_toggled(pressed: bool) -> void:
 	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
-		if overlay.get_script() == overlay_script:
-			overlay.call(method, value)
+		if overlay is DevBounceOverlay:
+			overlay.set_dev_visible(pressed)
 			return
 
 
-func _on_cone_toggled(pressed: bool) -> void:
-	_for_overlay_of_type(DevBounceOverlay, &"set_dev_visible", pressed)
-
-
 func _on_soul_bound_toggled(pressed: bool) -> void:
-	_for_overlay_of_type(SoulBoundOverlay, &"set_dev_visible", pressed)
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay is SoulBoundOverlay:
+			overlay.set_dev_visible(pressed)
+			return
 
 
 func _on_arc_travel_toggled(pressed: bool) -> void:
-	_for_overlay_of_type(ArcTravelOverlay, &"set_dev_visible", pressed)
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay is ArcTravelOverlay:
+			overlay.set_dev_visible(pressed)
+			return
 
 
 func _on_cone_follow_toggled(pressed: bool) -> void:
