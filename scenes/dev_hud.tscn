@@ -124,3 +124,7 @@ size_flags_horizontal = 4
 theme = ExtResource("7_debug")
 theme_override_constants/separation = 2
 script = ExtResource("9_paddlesize")
+
+[node name="SoulBoundOverlay" type="Node2D" parent="." unique_id=1068909754]
+
+[node name="ArcTravelOverlay" type="Node2D" parent="." unique_id=671493851]

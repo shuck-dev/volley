@@ -24,6 +24,7 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 2)
 	resized.connect(queue_redraw)
 	_build_labels()
+	_build_checks()
 
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
@@ -155,3 +156,46 @@ func _on_bounce_resolved(
 	_last_incoming_y_sign = incoming_y_sign
 	_has_last_hit = true
 	_refresh_last_hit()
+
+
+func _build_checks() -> void:
+	_add_checkbox("Show Cone Overlay", _on_cone_toggled)
+	_add_checkbox("Show Soul Bound", _on_soul_bound_toggled)
+	_add_checkbox("Show Arc Travel", _on_arc_travel_toggled)
+	_add_checkbox("Cone follows last hit", _on_cone_follow_toggled)
+
+
+func _add_checkbox(text: String, handler: Callable) -> void:
+	var checkbox := CheckBox.new()
+	checkbox.text = text
+	checkbox.button_pressed = false
+	checkbox.focus_mode = Control.FOCUS_NONE
+	checkbox.toggled.connect(handler)
+	add_child(checkbox)
+
+
+func _for_overlay_of_type(overlay_script: Script, method: StringName, value: Variant) -> void:
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay.get_script() == overlay_script:
+			overlay.call(method, value)
+			return
+
+
+func _on_cone_toggled(pressed: bool) -> void:
+	_for_overlay_of_type(DevBounceOverlay, &"set_dev_visible", pressed)
+
+
+func _on_soul_bound_toggled(pressed: bool) -> void:
+	_for_overlay_of_type(SoulBoundOverlay, &"set_dev_visible", pressed)
+
+
+func _on_arc_travel_toggled(pressed: bool) -> void:
+	_for_overlay_of_type(ArcTravelOverlay, &"set_dev_visible", pressed)
+
+
+func _on_cone_follow_toggled(pressed: bool) -> void:
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay is DevBounceOverlay:
+			overlay.follow_last_hit = pressed
+			overlay.queue_redraw()
+			return
