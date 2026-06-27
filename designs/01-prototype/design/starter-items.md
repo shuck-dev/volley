@@ -1,18 +1,17 @@
 # Starter Items
 
-The player begins with nothing. The ball shop carries 5 ball items and Pluck (cursor gear). No other shop categories exist; this is the ball shop.
+The player begins with an old ball. The ball shop carries 5 ball items and Pluck (cursor gear).
 
 ## Economy
 
-Each hit generates 1 soul. Soul persists through misses. Level costs use the
-existing formula (base_cost × 1.6^level) via the Tinkerer.
+Each hit generates 1 base soul.
 
-Balls are not unique. All duplicates cost 2× per copy.
+Balls are not unique. All duplicates cost 2× per copy. First shop is a mix of standard balls tennis etc.
 
 | Ball | Base cost |
 |---|---|
 | Old ball | Free |
-| Tennis ball | 40 |
+| Tennis ball | 10 |
 | Goop | 80 |
 | Comeback | 100 |
 | Cadence | 100 |
@@ -24,26 +23,26 @@ Pluck is unique, one purchase.
 ## Stock refresh
 
 Button on the ball shop. Re-rolls which balls are available in the shop.
-Pool is the 5 starter balls + Pluck. No random generation. First refresh is free
-and teaches: you can change what's available.
+Introduced after shop is cleared for the first time, first is free then scales based on shop worth.
 
 ---
 
 ## Old ball
 
 Role: ball
-Default starter. No effects. Already on the court.
+Default starter. No effects.
 
-## Tennis ball
+## Standard ball (tennis, baseball, golf etc)
 
 Role: ball
-Classic yellow ball, fresh from a fresh can.
+
+Soul burst amount is random per ball
 
 - L1: baseline rally. Hit, miss, consolidate.
 - L2: bonus soul on consolidation.
 - L3: bigger consolidation soul burst.
 
-Most balls grant some consolidation soul. Tennis ball is the simplest expression of it.
+Most balls grant some consolidation soul.
 
 ## Goop
 
@@ -54,7 +53,7 @@ Zach found it under the floorboards.
 - L2: each consolidation splits one more.
 - L3: only the original merges; the rest fold into it.
 
-Not merging is a missed bonus, no penalty.
+Not merging before consolidation is a missed bonus, no penalty.
 
 ## Comeback
 
@@ -62,8 +61,8 @@ Role: ball
 Worn felt ball from an old toybox.
 
 - L1: balls curve toward where you reach.
-- L2: once per consolidation, a ball that would miss semicircles around you. One save per cycle.
-- L3: save shared with partner; can be spent on their miss before yours. You don't choose which.
+- L2: once per consolidation, a ball that would miss semicircles around you. One save per consolidation.
+- L3: save shared with partner; can be spent on their miss or yours. You don't choose which.
 
 ## Cheater
 
