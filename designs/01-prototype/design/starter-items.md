@@ -1,41 +1,43 @@
 # Starter Items
 
-The player begins with up to 5 ball items and Pluck (cursor gear). These are the initial shop inventory, not owned at start. No other shop categories exist; this is the ball shop.
-
-## Shortfall
-
-Current starter is one ball (base_ball) with a passive `ball_speed_min` stat.
-No mechanic is taught. The player never notices the effect.
+The player begins with nothing. The ball shop carries 5 ball items and Pluck (cursor gear). No other shop categories exist; this is the ball shop.
 
 ## Economy
 
 Each hit generates 1 soul. Soul persists through misses. Level costs use the
 existing formula (base_cost × 1.6^level) via the Tinkerer.
 
-| Ball | Base cost | Duplicate cost |
-|---|---|---|
-| Tennis ball | Free | Default ball, always on court |
-| Goop | 80 | 2× per copy |
-| Comeback | 100 | 2× per copy |
-| Cadence | 100 | 2× per copy |
-| Cheater | 120 | 2× per copy |
-| Pluck | 60 | Unique, purchased once |
+Balls are not unique. All duplicates cost 2× per copy.
 
-Balls are not unique. Each duplicate costs base_cost × 2^copies_owned.
+| Ball | Base cost |
+|---|---|
+| Old ball | Free |
+| Tennis ball | 40 |
+| Goop | 80 |
+| Comeback | 100 |
+| Cadence | 100 |
+| Cheater | 120 |
+| Pluck | 60 |
+
 Pluck is unique, one purchase.
 
 ## Stock refresh
 
-Button on the ball rack. Re-rolls which balls are available in the shop.
+Button on the ball shop. Re-rolls which balls are available in the shop.
 Pool is the 5 starter balls + Pluck. No random generation. First refresh is free
 and teaches: you can change what's available.
 
 ---
 
+## Old ball
+
+Role: ball
+Default starter. No effects. Already on the court.
+
 ## Tennis ball
 
 Role: ball
-Scuffed, already on the court.
+Classic yellow ball, fresh from a fresh can.
 
 - L1: baseline rally. Hit, miss, consolidate.
 - L2: bonus soul on consolidation.
