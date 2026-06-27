@@ -1,61 +1,103 @@
 # Starter Items
 
-The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
+The player begins with up to 5 ball items and Pluck (cursor gear). All are owned-from-start
+and appear in the ball rack. No other shop categories exist; this is the ball shop.
 
-## Ball: split-and-merge
+## Shortfall
+
+Current starter is one ball (base_ball) with a passive `ball_speed_min` stat.
+No mechanic is taught. The player never notices the effect.
+
+## Stock refresh
+
+Button on the ball rack. Re-rolls which owned balls are on the rack vs in storage.
+Pool is the 5 starter balls + Pluck. No random generation. First refresh is free
+and teaches: you can change what's available.
+
+---
+
+## Tennis ball
 
 Role: ball
-A ball of goop Zach found under the floorboards.
+Scuffed, already on the court.
 
-- L1: at consolidation it splits in two; collide them to merge for a soul burst.
-- L2: each further consolidation splits one more, so the court fills as you climb; the merge burst scales with how many you fold together.
-- L3: only the original ball merges, the rest fold into it and not each other; gather them all back before the next consolidation and the next split adds one more, snowballing the burst as the juggle grows.
+- L1: baseline rally. Hit, miss, consolidate.
+- L2: bonus soul on consolidation.
+- L3: bigger consolidation soul burst.
+
+Most balls grant some consolidation soul. Tennis ball is the simplest expression of it.
+
+## Goop
+
+Role: ball
+Zach found it under the floorboards.
+
+- L1: at consolidation splits in two. Collide to merge for a soul burst.
+- L2: each consolidation splits one more.
+- L3: only the original merges; the rest fold into it.
 
 Not merging is a missed bonus, no penalty.
 
-## Helmet
+## Comeback
 
-Role: equipment : head
-A pink cycling helmet, Steph's; it doesn't fit.
+Role: ball
+Worn felt ball from an old toybox.
 
-- L1: head the ball, a new contact distinct from the racquet.
-- L2: a normal hit adds one step of speed, but ram a header and it jumps several at once, the harder the ram the bigger the jump, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
-- L3: consecutive headers build a growing soul reward, but a racquet hit or a miss breaks the streak; the fast ball L2 rewards is the hardest to chain, so power fights rhythm.
+- L1: balls curve toward where you reach.
+- L2: once per consolidation, a ball that would miss semicircles around you. One save per cycle.
+- L3: save shared with partner; can be spent on their miss before yours. You don't choose which.
 
-## Friendship bracelet
+## Cheater
 
-Role: equipment : arm
+Role: ball
+Shifting weights inside, doesn't fly true.
 
-One of a twinned pair; Zach wears the other.
+| L | Trigger | Frequency | Reward |
+|---|---|---|---|
+| L1 | Wobble, always on. Sine curve off straight line | Every hit | Small bonus per hit |
+| L2 | Lurch, every 3-5 hits. Lateral physics push | ~1 in 4 hits | Medium bonus per hit |
+| L3 | Mad dash, every 15s | 3s burst | Large soul burst |
 
-- L1: each hit sheds a soul bead off the ball; the ball collects beads it passes through, and they never run out.
-- L2: each hit sheds twice as many beads, so the court fills with more soul to sweep.
-- L3: collected beads still bank their soul, but they also speed the ball up without counting toward consolidation, so sweeping up everything makes a faster, harder-to-keep-alive ball that climbs you no quicker.
+## Cadence
 
-## Magnetism
+Role: ball
 
-Role: equipment
-A comeback ball from an old toybox.
+| L | Trigger | Frequency | Reward |
+|---|---|---|---|
+| L1 | Steady speed rhythm, rises and falls | ~half of hits | Base bonus per hit |
+| L2 | Rhythm is erratic | Most hits | Increased bonus per hit |
+| L3 | Wobble, every 15s | 5s activation | Large soul burst on hits during wobble |
 
-- L1: balls curve toward where you reach, so you pull a return to your paddle instead of chasing it.
-- L2: once per consolidation, a ball that would be a miss semicircles around you and comes back into play. One save per cycle.
-- L3: still one save per consolidation, but now shared with your partner; it can be spent on their miss before yours, and you do not choose which.
-
-## Cadence (pick)
-
-Role: equipment : neck
-
-Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat.
-
-- L1: the ball's speed rises and falls in a steady, repeating rhythm.
-- L2: the ball breaks past the speed limit and keeps speeding up; you choose when to consolidate by blowing the whistle, so the longer you wait the bigger the step up, but the faster ball is harder to keep alive.
-- L3: the rhythm stops being steady, its fast and slow stretches changing length, so you cannot tell when the ball will be fast.
+Sister to Cheater. Cheater is visual deception; Cadence is tempo deception.
 
 ## Pluck
 
-Role: cursor gear, a new role (see SH-441). Zach's pick, the friend's-pick slot in the starter shop.
-A glove of Zach's, worn by the cursor, not the character.
+Role: cursor gear
+Zach's glove, worn by the cursor.
 
-- L1: pick one ball out of play, hold it safe (in hand it can't be missed), and release it back into the rally at its speed.
-- L2: hold more than one at once, pulling several balls out of the air and keeping them safe in hand.
-- L3: throw a held ball back onto the court, its speed set by how fast you flick the release; a hard throw launches it fast toward consolidation, a gentle one drops it in, and a fast ball is harder to keep alive.
+```mermaid
+graph TD
+    capacity["Capacity: pick, release all; 1 ball, upgrades to 5"]
+    capacity --> throw["Throw (speed by flick, upgrades to faster)"]
+    capacity --> choose["Choose (pick which to release)"]
+    throw --> juggle["Juggle"]
+    choose --> juggle
+```
+
+---
+
+## Mechanic coverage
+
+| Item        | Mechanic |
+|-------------|----------|
+| Tennis ball | Rally loop (hit, miss, consolidate) |
+| Goop        | Multi-ball management, merging |
+| Comeback    | Positioning shapes ball path |
+| Cheater     | Reading the ball in flight, unpredictability |
+| Cadence     | Reading tempo, rhythm disruption |
+| Pluck       | Manual ball handling |
+
+## Removed
+
+Helmet, Friendship bracelet; old starter equipment. Move to future shop.
+Magnetism repurposed into Comeback. Cadence repurposed from equipment into ball.
