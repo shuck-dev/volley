@@ -7,6 +7,23 @@ The player begins with up to 5 ball items and Pluck (cursor gear). These are the
 Current starter is one ball (base_ball) with a passive `ball_speed_min` stat.
 No mechanic is taught. The player never notices the effect.
 
+## Economy
+
+Each hit generates 1 soul. Soul persists through misses. Level costs use the
+existing formula (base_cost × 1.6^level) via the Tinkerer.
+
+| Ball | Base cost | Duplicate cost |
+|---|---|---|
+| Tennis ball | Free | Default ball, always on court |
+| Goop | 80 | 2× per copy |
+| Comeback | 100 | 2× per copy |
+| Cadence | 100 | 2× per copy |
+| Cheater | 120 | 2× per copy |
+| Pluck | 60 | Unique, purchased once |
+
+Balls are not unique. Each duplicate costs base_cost × 2^copies_owned.
+Pluck is unique, one purchase.
+
 ## Stock refresh
 
 Button on the ball rack. Re-rolls which balls are available in the shop.
