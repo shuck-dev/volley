@@ -1,7 +1,6 @@
 # Starter Items
 
-The player begins with up to 5 ball items and Pluck (cursor gear). All are owned-from-start
-and appear in the ball rack. No other shop categories exist; this is the ball shop.
+The player begins with up to 5 ball items and Pluck (cursor gear). These are the initial shop inventory, not owned at start. No other shop categories exist; this is the ball shop.
 
 ## Shortfall
 
@@ -10,7 +9,7 @@ No mechanic is taught. The player never notices the effect.
 
 ## Stock refresh
 
-Button on the ball rack. Re-rolls which owned balls are on the rack vs in storage.
+Button on the ball rack. Re-rolls which balls are available in the shop.
 Pool is the 5 starter balls + Pluck. No random generation. First refresh is free
 and teaches: you can change what's available.
 
