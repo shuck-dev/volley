@@ -83,7 +83,7 @@ Shifting weights inside, doesn't fly true.
 
 | L | Trigger | Frequency | Reward |
 |---|---|---|---|
-| L1 | Wobble, always on. Sine curve off straight line | Every hit | Small bonus per hit |
+| L1 | Wobble, random interval. Small lateral nudge off straight line | Most hits | Small bonus per hit |
 | L2 | Lurch, every 3-5 hits. Lateral physics push | ~1 in 4 hits | Medium bonus per hit |
 | L3 | Mad dash, every 15s | 3s burst | Large soul burst |
 
