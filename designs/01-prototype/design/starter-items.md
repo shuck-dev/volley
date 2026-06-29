@@ -4,7 +4,7 @@ The player begins with an old ball. The ball shop carries 5 ball items and Pluck
 
 ## Economy
 
-Each hit generates 1 base soul.
+Each hit generates 1 base soul. On consolidation, the soul accumulated since the last consolidation releases as a burst, scaled by the ball's release multiplier. Accumulated soul resets on miss with no release.
 
 Duplicate ball behaviour is deferred. First rotation is a mix of standard balls like tennis, baseball, golf.
 
@@ -29,8 +29,9 @@ Each ball levels up by accumulating consolidations across all rallies. A consoli
 | `hits_to_consolidation` | 10 | Paddle hits to fill a tier band (global) |
 | `consolidations_to_l2` | 5 | Consolidations before L2 unlocks (per ball) |
 | `consolidations_to_l3` | 10 | Cumulative total needed for L3 (per ball) |
+| `consolidation_release_multiplier` | 1.0 | Soul release = accumulated × multiplier (per ball) |
 
-`hits_to_consolidation` is one global number. `consolidations_to_l2` and `consolidations_to_l3` are per-ball tunable; stronger balls gate behind higher counts. Five consolidations per level is the starter default.
+`hits_to_consolidation` is one global number. `consolidations_to_l2`, `consolidations_to_l3`, and `consolidation_release_multiplier` are per-ball tunable; stronger balls gate behind higher counts or multipliers. Five consolidations per level is the starter default. Each ball tracks `accumulated_soul` as a runtime counter, reset on consolidation release or miss.
 
 ## Stock refresh
 
