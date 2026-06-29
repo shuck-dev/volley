@@ -6,7 +6,7 @@ The player begins with an old ball. The ball shop carries 5 ball items and Pluck
 
 Each hit generates 1 base soul.
 
-Balls are not unique. All duplicates cost 2× per copy. First shop is a mix of standard balls tennis etc.
+Duplicate ball behaviour is deferred. First rotation is a mix of standard balls like tennis, baseball, golf.
 
 | Ball | Base cost |
 |---|---|
@@ -30,12 +30,11 @@ Each ball levels up by accumulating consolidations across all rallies. A consoli
 | `consolidations_to_l2` | 5 | Consolidations before L2 unlocks (per ball) |
 | `consolidations_to_l3` | 10 | Cumulative total needed for L3 (per ball) |
 
-`hits_to_consolidation` is one global number. `consolidations_to_l2` and `consolidations_to_l3` are per-ball tunable, stronger balls gate behind higher counts. Five consolidations per level is the starter default.
+`hits_to_consolidation` is one global number. `consolidations_to_l2` and `consolidations_to_l3` are per-ball tunable; stronger balls gate behind higher counts. Five consolidations per level is the starter default.
 
 ## Stock refresh
 
-Button on the ball shop. Re-rolls which balls are available in the shop.
-Introduced after shop is cleared for the first time, first is free then scales based on shop worth.
+Button on the ball shop. Re-rolls which balls are available in the shop. Introduced after the shop is cleared. First refresh is free; subsequent refreshes scale with the base cost of the balls currently in rotation.
 
 ---
 
@@ -48,7 +47,7 @@ Default starter. No effects.
 
 Role: ball
 
-Soul burst amount is random per ball
+Soul burst amount is random per ball.
 
 - L1: baseline rally. Hit, miss, consolidate.
 - L2: bonus soul on consolidation.
@@ -95,7 +94,7 @@ Role: ball
 |---|---|---|---|
 | L1 | Steady speed rhythm, rises and falls | ~half of hits | Base bonus per hit |
 | L2 | Rhythm is erratic | Most hits | Increased bonus per hit |
-| L3 | Wobble, every 15s | 5s activation | Large soul burst on hits during wobble |
+| L3 | Surge, every 15s | 5s activation | Large soul burst on hits during surge |
 
 Sister to Cheater. Cheater is visual deception; Cadence is tempo deception.
 
