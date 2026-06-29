@@ -1,61 +1,132 @@
 # Starter Items
 
-The player starts with the initial ball and racquet; these items add to that, new balls and worn gear.
+The player begins with an old ball. The ball shop carries 5 ball items and Pluck (cursor gear).
 
-## Ball: split-and-merge
+## Economy
+
+Each hit banks 1 soul immediately and increments the burst counter. On consolidation, the burst counter releases as a burst, scaled by the ball's release multiplier. The burst counter resets on miss; already-banked soul from hits is safe.
+
+Balls are not unique. Duplicates work identically to the first copy. All duplicates cost 2× per copy. First rotation is a mix of standard balls like tennis, baseball, golf.
+
+| Ball | Base cost |
+|---|---|
+| Old ball | Free |
+| Tennis ball | 10 |
+| Goop | 80 |
+| Comeback | 100 |
+| Cadence | 100 |
+| Cheater | 120 |
+| Pluck | 60 |
+
+Pluck is unique, one purchase.
+
+## Ball upgrade model
+
+Each ball levels up by accumulating consolidations across all rallies. A consolidation is one tier completion.
+
+| Parameter | Default | Description |
+|---|---|---|
+| `hits_to_consolidation` | 10 | Paddle hits to fill a tier band (global) |
+| `consolidations_to_l2` | 5 | Consolidations before L2 unlocks (per ball) |
+| `consolidations_to_l3` | 10 | Cumulative total needed for L3 (per ball) |
+| `consolidation_release_multiplier` | 1.0 | Soul release = accumulated × multiplier (per ball) |
+
+`hits_to_consolidation` is one global number. `consolidations_to_l2` and `consolidations_to_l3` are per-ball tunable; stronger balls gate behind higher counts. `consolidation_release_multiplier` tunes the release reward independently. Five consolidations per level is the starter default. Each ball tracks `accumulated_soul` as a runtime counter, reset on consolidation release or miss.
+
+## Stock refresh
+
+Button on the ball shop. Re-rolls which balls are available in the shop. Introduced after the shop is cleared. First refresh is free; subsequent refreshes scale with the base cost of the balls currently in rotation.
+
+---
+
+## Old ball
 
 Role: ball
-A ball of goop Zach found under the floorboards.
+Default starter. No effects.
 
-- L1: at consolidation it splits in two; collide them to merge for a soul burst.
-- L2: each further consolidation splits one more, so the court fills as you climb; the merge burst scales with how many you fold together.
-- L3: only the original ball merges, the rest fold into it and not each other; gather them all back before the next consolidation and the next split adds one more, snowballing the burst as the juggle grows.
+## Standard ball (tennis, baseball, golf etc)
 
-Not merging is a missed bonus, no penalty.
+Role: ball
 
-## Helmet
+Soul burst amount is random per ball.
 
-Role: equipment : head
-A pink cycling helmet, Steph's; it doesn't fit.
+- L1: baseline rally. Hit, miss, consolidate.
+- L2: bonus soul on consolidation.
+- L3: bigger consolidation soul burst.
 
-- L1: head the ball, a new contact distinct from the racquet.
-- L2: a normal hit adds one step of speed, but ram a header and it jumps several at once, the harder the ram the bigger the jump, rushing the ball toward the next consolidation; a faster ball is harder to keep alive.
-- L3: consecutive headers build a growing soul reward, but a racquet hit or a miss breaks the streak; the fast ball L2 rewards is the hardest to chain, so power fights rhythm.
+Most balls grant some consolidation soul.
 
-## Friendship bracelet
+## Goop
 
-Role: equipment : arm
+Role: ball
+Zach found it under the floorboards.
 
-One of a twinned pair; Zach wears the other.
+- L1: at consolidation splits in two. Collide to merge for a soul burst.
+- L2: each consolidation splits one more.
+- L3: only the original merges; the rest fold into it.
 
-- L1: each hit sheds a soul bead off the ball; the ball collects beads it passes through, and they never run out.
-- L2: each hit sheds twice as many beads, so the court fills with more soul to sweep.
-- L3: collected beads still bank their soul, but they also speed the ball up without counting toward consolidation, so sweeping up everything makes a faster, harder-to-keep-alive ball that climbs you no quicker.
+Not merging before consolidation is a missed bonus, no penalty.
 
-## Magnetism
+## Comeback
 
-Role: equipment
-A comeback ball from an old toybox.
+Role: ball
+Worn felt ball from an old toybox.
 
-- L1: balls curve toward where you reach, so you pull a return to your paddle instead of chasing it.
-- L2: once per consolidation, a ball that would be a miss semicircles around you and comes back into play. One save per cycle.
-- L3: still one save per consolidation, but now shared with your partner; it can be spent on their miss before yours, and you do not choose which.
+- L1: balls curve toward where you reach.
+- L2: once per consolidation, a ball that would miss semicircles around you. One save per consolidation. More balls on court means more chances to miss; the save is a safety net, not a guarantee.
+- L3: save shared with partner; can be spent on their miss or yours. You don't choose which. Two players, one save; more court pressure thins it further.
 
-## Cadence (pick)
+## Cheater
 
-Role: equipment : neck
+Role: ball
+Shifting weights inside, doesn't fly true.
 
-Whistle + out of tune. Standard coach's whistle, brass tarnished, plays a note that's slightly flat.
+| L | Trigger | Frequency | Reward |
+|---|---|---|---|
+| L1 | Wobble, random interval. Small lateral nudge off straight line | Most hits | Small bonus per hit |
+| L2 | Lurch, every 3-5 hits. Lateral physics push | ~1 in 4 hits | Medium bonus per hit |
+| L3 | Mad dash, every 15s | 3s burst | Large soul burst |
 
-- L1: the ball's speed rises and falls in a steady, repeating rhythm.
-- L2: the ball breaks past the speed limit and keeps speeding up; you choose when to consolidate by blowing the whistle, so the longer you wait the bigger the step up, but the faster ball is harder to keep alive.
-- L3: the rhythm stops being steady, its fast and slow stretches changing length, so you cannot tell when the ball will be fast.
+## Cadence
+
+Role: ball
+
+| L | Trigger | Frequency | Reward |
+|---|---|---|---|
+| L1 | Steady speed rhythm, rises and falls | ~half of hits | Base bonus per hit |
+| L2 | Rhythm is erratic | Most hits | Increased bonus per hit |
+| L3 | Surge, every 15s | 5s activation | Large soul burst on hits during surge |
+
+Sister to Cheater. Both teach reading an unpredictable ball: Cheater through spatial deception, Cadence through tempo deception.
 
 ## Pluck
 
-Role: cursor gear, a new role (see SH-441). Zach's pick, the friend's-pick slot in the starter shop.
-A glove of Zach's, worn by the cursor, not the character.
+Role: cursor gear
+Zach's glove, worn by the cursor.
 
-- L1: pick one ball out of play, hold it safe (in hand it can't be missed), and release it back into the rally at its speed.
-- L2: hold more than one at once, pulling several balls out of the air and keeping them safe in hand.
-- L3: throw a held ball back onto the court, its speed set by how fast you flick the release; a hard throw launches it fast toward consolidation, a gentle one drops it in, and a fast ball is harder to keep alive.
+```mermaid
+graph TD
+    capacity["Capacity: pick, release all; 1 ball, upgrades to 5"]
+    capacity --> throw["Throw (speed by flick, upgrades to faster)"]
+    capacity --> choose["Choose (pick which to release)"]
+    throw --> juggle["Juggle"]
+    choose --> juggle
+```
+
+---
+
+## Mechanic coverage
+
+| Item        | Mechanic |
+|-------------|----------|
+| Tennis ball | Rally loop (hit, miss, consolidate) |
+| Goop        | Multi-ball management, merging |
+| Comeback    | Positioning shapes ball path |
+| Cheater     | Reading the ball in flight, unpredictability |
+| Cadence     | Reading tempo, rhythm disruption |
+| Pluck       | Manual ball handling |
+
+## Removed
+
+Helmet, Friendship bracelet; old starter equipment. Move to future shop.
+Magnetism repurposed into Comeback. Cadence repurposed from equipment into ball.
