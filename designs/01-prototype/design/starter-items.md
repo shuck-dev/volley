@@ -20,6 +20,18 @@ Balls are not unique. All duplicates cost 2× per copy. First shop is a mix of s
 
 Pluck is unique, one purchase.
 
+## Ball upgrade model
+
+Each ball levels up by accumulating consolidations across all rallies. A consolidation is one tier completion.
+
+| Parameter | Default | Description |
+|---|---|---|
+| `hits_to_consolidation` | 10 | Paddle hits to fill a tier band (global) |
+| `consolidations_to_l2` | 5 | Consolidations before L2 unlocks (per ball) |
+| `consolidations_to_l3` | 10 | Cumulative total needed for L3 (per ball) |
+
+`hits_to_consolidation` is one global number. `consolidations_to_l2` and `consolidations_to_l3` are per-ball tunable, stronger balls gate behind higher counts. Five consolidations per level is the starter default.
+
 ## Stock refresh
 
 Button on the ball shop. Re-rolls which balls are available in the shop.
