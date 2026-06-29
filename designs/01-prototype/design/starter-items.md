@@ -20,13 +20,13 @@ Balls are not unique. Duplicates work identically to the first copy. All duplica
 
 Pluck is unique, one purchase.
 
-| Tier | Restock | Balls |
-|---|---|---|
-| Common | 50% | Standard ball |
-| Scarce | 20% | Goop, Comeback |
-| Rare | 5% | Cadence, Cheater |
+| Tier | Restock |
+|---|---|
+| Common | 50% |
+| Scarce | 20% |
+| Rare | 5% |
 
-Old ball always shows. Within a tier, balls split the pool equally.
+Within a tier, balls split the pool equally. Old ball always shows.
 
 ## Ball upgrade model
 
