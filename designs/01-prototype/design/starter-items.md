@@ -14,7 +14,7 @@ Balls are not unique. Duplicates work identically to the first copy. All duplica
 | Standard ball | 10 | Common | 50% |
 | Goop | 80 | Scarce | 20% |
 | Comeback | 100 | Scarce | 20% |
-| Cadence | 100 | Scarce | 20% |
+| Cadence | 100 | Rare | 5% |
 | Cheater | 120 | Rare | 5% |
 | Pluck | 60 | Unique | |
 
