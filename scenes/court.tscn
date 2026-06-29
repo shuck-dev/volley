@@ -61,7 +61,7 @@ item_key = "base_ball"
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
 [node name="Right Wall" type="StaticBody2D" parent="Bounds" unique_id=1091055427]
-position = Vector2(750, 139)
+position = Vector2(700, 139)
 physics_material_override = ExtResource("1_0wfyh")
 metadata/_edit_group_ = true
 
