@@ -8,17 +8,25 @@ Each hit banks 1 soul immediately and increments the burst counter. On consolida
 
 Balls are not unique. Duplicates work identically to the first copy. All duplicates cost 2× per copy. First rotation is a mix of standard balls like tennis, baseball, golf.
 
-| Ball | Base cost | Tier | Restock |
-|---|---|---|---|
-| Old ball | Free | | 100% |
-| Standard ball | 10 | Common | 50% |
-| Goop | 80 | Scarce | 20% |
-| Comeback | 100 | Scarce | 20% |
-| Cadence | 100 | Rare | 5% |
-| Cheater | 120 | Rare | 5% |
-| Pluck | 60 | Unique | |
+| Ball | Base cost | Tier |
+|---|---|---|
+| Old ball | Free | |
+| Standard ball | 10 | Common |
+| Goop | 80 | Scarce |
+| Comeback | 100 | Scarce |
+| Cadence | 100 | Rare |
+| Cheater | 120 | Rare |
+| Pluck | 60 | Unique |
 
-Pluck is unique, one purchase. Common, Scarce, and Rare tiers weight restock probability. Scarce balls split their pool equally. Old ball always shows.
+Pluck is unique, one purchase.
+
+| Tier | Restock | Balls |
+|---|---|---|
+| Common | 50% | Standard ball |
+| Scarce | 20% | Goop, Comeback |
+| Rare | 5% | Cadence, Cheater |
+
+Old ball always shows. Within a tier, balls split the pool equally.
 
 ## Ball upgrade model
 
