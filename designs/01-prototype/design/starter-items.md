@@ -73,8 +73,8 @@ Role: ball
 Worn felt ball from an old toybox.
 
 - L1: balls curve toward where you reach.
-- L2: once per consolidation, a ball that would miss semicircles around you. One save per consolidation.
-- L3: save shared with partner; can be spent on their miss or yours. You don't choose which.
+- L2: once per consolidation, a ball that would miss semicircles around you. One save per consolidation. More balls on court means more chances to miss; the save is a safety net, not a guarantee.
+- L3: save shared with partner; can be spent on their miss or yours. You don't choose which. Two players, one save; more court pressure thins it further.
 
 ## Cheater
 
@@ -97,7 +97,7 @@ Role: ball
 | L2 | Rhythm is erratic | Most hits | Increased bonus per hit |
 | L3 | Surge, every 15s | 5s activation | Large soul burst on hits during surge |
 
-Sister to Cheater. Cheater is visual deception; Cadence is tempo deception.
+Sister to Cheater. Both teach reading an unpredictable ball: Cheater through spatial deception, Cadence through tempo deception.
 
 ## Pluck
 
