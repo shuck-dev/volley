@@ -4,7 +4,7 @@ The player begins with an old ball. The ball shop carries 5 ball items and Pluck
 
 ## Economy
 
-Each hit generates 1 base soul. On consolidation, the soul accumulated since the last consolidation releases as a burst, scaled by the ball's release multiplier. Accumulated soul resets on miss with no release.
+Each hit banks 1 soul immediately and increments the burst counter. On consolidation, the burst counter releases as a burst, scaled by the ball's release multiplier. The burst counter resets on miss; already-banked soul from hits is safe.
 
 Balls are not unique. Duplicates work identically to the first copy. All duplicates cost 2× per copy. First rotation is a mix of standard balls like tennis, baseball, golf.
 
