@@ -17,6 +17,7 @@ func _ready() -> void:
 	add_theme_constant_override("separation", 2)
 	resized.connect(queue_redraw)
 	_add_header()
+	_add_overlay_toggle()
 
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
@@ -109,6 +110,26 @@ func _on_ball_removed(ball: Ball) -> void:
 		label.queue_free()
 
 	_rows.erase(ball)
+
+
+func _add_overlay_toggle() -> void:
+	_connect_overlay_toggle.call_deferred()
+
+
+func _connect_overlay_toggle() -> void:
+	var overlay := get_tree().get_first_node_in_group(&"cursor_overlay") as BallDropOverlay
+	if overlay == null:
+		return
+	var checkbox := CheckBox.new()
+	checkbox.text = "Show drop ring"
+	checkbox.button_pressed = false
+	checkbox.focus_mode = Control.FOCUS_NONE
+	checkbox.toggled.connect(
+		func(pressed: bool) -> void:
+			if is_instance_valid(overlay):
+				overlay.visible = pressed
+	)
+	add_child(checkbox)
 
 
 func _on_ball_state_changed(_state: int, ball: Ball) -> void:

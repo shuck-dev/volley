@@ -32,7 +32,6 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
-@export var cursor_overlay: CursorOverlay
 @export var expansion_ring_hold_s: float = 0.25
 @export var expansion_ring_scale: float = 1.5
 
@@ -105,11 +104,15 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
-	if cursor_overlay != null:
-		if not cursor_state_changed.is_connected(cursor_overlay.set_state):
-			cursor_state_changed.connect(cursor_overlay.set_state)
-
 	_register_builtin_targets()
+	_connect_cursor_overlay.call_deferred()
+
+
+func _connect_cursor_overlay() -> void:
+	var overlay := get_tree().get_first_node_in_group(&"cursor_overlay") as BallDropOverlay
+	if overlay != null:
+		if not cursor_state_changed.is_connected(overlay.set_state):
+			cursor_state_changed.connect(overlay.set_state)
 
 
 func _process(delta: float) -> void:

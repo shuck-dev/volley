@@ -1,4 +1,4 @@
-class_name CursorOverlay
+class_name BallDropOverlay
 extends Node2D
 
 ## Placeholder visual for the grab cursor state machine; replaced by SH-298 textures.
@@ -17,13 +17,13 @@ func _ready() -> void:
 	if style == null:
 		style = DEFAULT_STYLE
 	z_index = 4096
-	top_level = true
 	visible = false
 	add_to_group(&"dev_overlays")
+	add_to_group(&"cursor_overlay")
 
 
 func set_state(state: int, world_position: Vector2) -> void:
-	global_position = world_position
+	global_position = get_viewport().get_canvas_transform() * world_position
 	if state == _state:
 		return
 	_state = state

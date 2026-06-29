@@ -1,8 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dq3kw7n8sh297"]
+[gd_scene format=3 uid="uid://bj5nsuanmc44b"]
 
-[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/cursor_overlay.gd" id="1_cursor"]
-[ext_resource type="Resource" uid="uid://d24d8dno1pta4" path="res://resources/hud/cursor_style.tres" id="2_style"]
+[ext_resource type="Script" path="res://scripts/hud/cursor_overlay.gd" id="1_cursor"]
 
-[node name="CursorOverlay" type="Node2D"]
+[node name="CursorOverlay" type="Node2D" unique_id=1579397178]
 script = ExtResource("1_cursor")
-style = ExtResource("2_style")
