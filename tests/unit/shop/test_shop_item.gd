@@ -4,7 +4,7 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 const ShopDragTuningScript: GDScript = preload("res://scripts/shop/shop_drag_tuning.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
 const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 
 
 class TestShopItemContract:

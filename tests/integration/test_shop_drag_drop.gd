@@ -7,7 +7,7 @@ const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tr
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
 const Spare: ItemDefinition = preload("res://resources/items/spare.tres")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
@@ -80,9 +80,9 @@ func test_real_press_on_shop_item_starts_drag_and_release_outside_purchases() ->
 
 
 func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
-	# TrainingBall carries an at_rest_shape so CourtDropTarget has a real radius to query.
-	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
+	# StandardBall carries an at_rest_shape so CourtDropTarget has a real radius to query.
 
+	_item_manager.items.assign([StandardBall] as Array[ItemDefinition])
 	# Shop builds children in `_ready`; respawn picks up the swapped item list.
 	_shop.queue_free()
 	await get_tree().process_frame
@@ -104,16 +104,16 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 	# Wait one frame so _ready joins the drag_controller group.
 	await get_tree().process_frame
 
-	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
+	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_standard_ball")
 	item.start_drag()
 
 	var court_release: Vector2 = _shop.shop_area.global_position + Vector2(0, 300)
 	item.attempt_release(court_release)
 
 	assert_eq(
-		_item_manager.get_level("training_ball"), 1, "purchase committed at outside-shop release"
+		_item_manager.get_level("standard_ball"), 1, "purchase committed at outside-shop release"
 	)
-	var ball: Ball = reconciler.get_ball_for_key("training_ball")
+	var ball: Ball = reconciler.get_ball_for_key("standard_ball")
 	assert_not_null(
 		ball, "shop-to-court release spawns a live ball through the drag controller (SH-320)"
 	)
@@ -123,7 +123,7 @@ func test_shop_to_court_release_spawns_ball_at_release_position() -> void:
 func test_shop_release_outside_court_spawns_ball_in_registry_via_falling_body() -> void:
 	# Outside the venue rejects every drop target; the ball-role fallthrough drops a Ball directly
 	# into the registry (OUT_REST) via release_into_rest instead of the retired HeldBody loose path.
-	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
+	_item_manager.items.assign([StandardBall] as Array[ItemDefinition])
 	_shop.queue_free()
 	await get_tree().process_frame
 	_shop = ShopScene.instantiate()
@@ -144,12 +144,12 @@ func test_shop_release_outside_court_spawns_ball_in_registry_via_falling_body() 
 	add_child_autofree(drag)
 	await get_tree().process_frame
 
-	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_training_ball")
+	var item: ShopItem = _shop.items_anchor.get_node("ShopItem_standard_ball")
 	item.start_drag()
 	item.attempt_release(Vector2(99999, 99999))
 
 	# Purchase commits inside notify_body_settled, not at release; only the registry Ball must exist now.
 	assert_not_null(
-		reconciler.get_ball_for_key("training_ball"),
+		reconciler.get_ball_for_key("standard_ball"),
 		"ball-role fallthrough lands a registry Ball, not a HeldBody",
 	)

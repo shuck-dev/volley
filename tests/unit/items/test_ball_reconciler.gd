@@ -149,7 +149,7 @@ func test_off_event_without_tracked_ball_is_noop() -> void:
 
 
 func test_reload_reconciles_on_court_items_without_authored_ball_node() -> void:
-	# Simulates a session reload where training_ball is ON_COURT in the save but
+	# Simulates a session reload where standard_ball is ON_COURT in the save but
 	# has no authored Ball child in the scene (SH-289 GONE-on-buy regression).
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
@@ -249,15 +249,15 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	saved_manager.economy = EconomyState.new()
 	saved_manager._effect_manager = EffectManager.new()
 	var base_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
-	var training_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("training_ball")
-	var typed_items: Array[ItemDefinition] = [base_ball_item, training_ball_item]
+	var standard_ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("standard_ball")
+	var typed_items: Array[ItemDefinition] = [base_ball_item, standard_ball_item]
 	saved_manager.items.assign(typed_items)
 	add_child_autofree(saved_manager)
 
-	# Simulate saved state: training_ball ON_COURT, base_ball level set so adopt_authored works.
+	# Simulate saved state: standard_ball ON_COURT, base_ball level set so adopt_authored works.
 	ItemFactory.give(saved_manager, "base_ball")
-	ItemFactory.give(saved_manager, "training_ball")
-	saved_manager.state.item_placements["training_ball"] = Placement.ON_COURT
+	ItemFactory.give(saved_manager, "standard_ball")
+	saved_manager.state.item_placements["standard_ball"] = Placement.ON_COURT
 
 	# Host has one authored Ball child for base_ball (the always-present authored scene child).
 	var fresh_host := Node2D.new()
@@ -275,8 +275,8 @@ func test_reconcile_spawns_saved_on_court_ball_when_authored_sibling_triggers_co
 	await get_tree().process_frame
 
 	assert_not_null(
-		fresh_reconciler.get_ball_for_key("training_ball"),
-		"reconcile must spawn training_ball even when base_ball adopt triggers court_changed first",
+		fresh_reconciler.get_ball_for_key("standard_ball"),
+		"reconcile must spawn standard_ball even when base_ball adopt triggers court_changed first",
 	)
 
 

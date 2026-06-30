@@ -15,20 +15,20 @@ func test_ball_positions_default_empty() -> void:
 
 func test_ball_play_states_round_trips() -> void:
 	_data.ball_play_states["base_ball"] = Ball.PlayState.OUT_REST
-	_data.ball_play_states["training_ball"] = Ball.PlayState.PLAY_ARC
+	_data.ball_play_states["standard_ball"] = Ball.PlayState.PLAY_ARC
 	var restored := ItemState.new()
 	restored.apply_save_dict(_data.to_save_dict())
 	assert_eq(restored.ball_play_states["base_ball"], int(Ball.PlayState.OUT_REST))
-	assert_eq(restored.ball_play_states["training_ball"], int(Ball.PlayState.PLAY_ARC))
+	assert_eq(restored.ball_play_states["standard_ball"], int(Ball.PlayState.PLAY_ARC))
 
 
 func test_ball_positions_round_trip_via_dict() -> void:
 	_data.ball_positions["base_ball"] = Vector2(123.5, -42.0)
-	_data.ball_positions["training_ball"] = Vector2(0.0, 0.0)
+	_data.ball_positions["standard_ball"] = Vector2(0.0, 0.0)
 	var restored := ItemState.new()
 	restored.apply_save_dict(_data.to_save_dict())
 	assert_eq(restored.ball_positions["base_ball"], Vector2(123.5, -42.0))
-	assert_eq(restored.ball_positions["training_ball"], Vector2.ZERO)
+	assert_eq(restored.ball_positions["standard_ball"], Vector2.ZERO)
 
 
 func test_ball_positions_survives_json_string_round_trip() -> void:
@@ -66,11 +66,11 @@ func test_rack_slot_index_by_key_defaults_empty() -> void:
 
 func test_rack_slot_index_by_key_round_trips() -> void:
 	_data.rack_slot_index_by_key["base_ball"] = 0
-	_data.rack_slot_index_by_key["training_ball"] = 2
+	_data.rack_slot_index_by_key["standard_ball"] = 2
 	var restored := ItemState.new()
 	restored.apply_save_dict(_data.to_save_dict())
 	assert_eq(restored.rack_slot_index_by_key["base_ball"], 0)
-	assert_eq(restored.rack_slot_index_by_key["training_ball"], 2)
+	assert_eq(restored.rack_slot_index_by_key["standard_ball"], 2)
 
 
 func test_rack_slot_index_by_key_survives_json_string_round_trip() -> void:

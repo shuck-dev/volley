@@ -7,7 +7,7 @@ const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
 const BallRackScene: PackedScene = preload("res://scenes/ball_rack.tscn")
 const GearRackScene: PackedScene = preload("res://scenes/gear_rack.tscn")
 
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
@@ -23,7 +23,7 @@ func before_each() -> void:
 	_item_manager.state = ItemState.new()
 	_item_manager.economy = EconomyState.new()
 	_item_manager._effect_manager = EffectManager.new()
-	_item_manager.items.assign([TrainingBall, WristBrace, AnkleWeights, Cadence])
+	_item_manager.items.assign([StandardBall, WristBrace, AnkleWeights, Cadence])
 	_item_manager.economy.soul_balance = 10000
 	add_child_autofree(_item_manager)
 

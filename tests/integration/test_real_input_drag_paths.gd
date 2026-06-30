@@ -6,7 +6,7 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ShopScene: PackedScene = preload("res://scenes/shop.tscn")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 const Cadence: ItemDefinition = preload("res://resources/items/cadence.tres")
@@ -77,7 +77,7 @@ func _setup_ball_drag() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	var typed_items: Array[ItemDefinition] = [TrainingBall]
+	var typed_items: Array[ItemDefinition] = [StandardBall]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)

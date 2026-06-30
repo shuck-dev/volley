@@ -16,7 +16,7 @@ func before_each() -> void:
 		. items
 		. assign(
 			[
-				preload("res://resources/items/training_ball.tres"),
+				preload("res://resources/items/standard_ball.tres"),
 			]
 		)
 	)

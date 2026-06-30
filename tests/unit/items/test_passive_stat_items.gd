@@ -5,7 +5,6 @@ extends GutTest
 
 var _items: Array[ItemDefinition] = [
 	preload("res://resources/items/ankle_weights.tres"),
-	preload("res://resources/items/training_ball.tres"),
 ]
 
 var _wrist_brace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")

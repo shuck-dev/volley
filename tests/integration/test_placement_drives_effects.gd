@@ -3,7 +3,7 @@ extends GutTest
 # Integration: placement drives effects.
 
 const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const BaseBall: ItemDefinition = preload("res://resources/items/base_ball.tres")
 const AnkleWeights: ItemDefinition = preload("res://resources/items/ankle_weights.tres")
 
 var _manager: Node
@@ -14,7 +14,7 @@ func before_each() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	_manager.items.assign([WristBrace, TrainingBall, AnkleWeights])
+	_manager.items.assign([WristBrace, BaseBall, AnkleWeights])
 	_manager.economy.soul_balance = 100000
 	add_child_autofree(_manager)
 
@@ -72,20 +72,20 @@ func test_equipment_lifecycle_rack_player_rack_player() -> void:
 func test_ball_lifecycle_rack_court_rack() -> void:
 	var base_min: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager)
 
-	_manager.take("training_ball")
+	_manager.take("base_ball")
 	assert_almost_eq(
 		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
 		base_min,
 		0.01,
 		"rack-resident ball must not affect ball stats",
 	)
-	assert_false(_manager.is_on_court("training_ball"))
+	assert_false(_manager.is_on_court("base_ball"))
 
 	# Onto the court: in play and registered.
-	assert_true(_manager.activate("training_ball"))
-	assert_true(_manager.is_on_court("training_ball"), "activated ball should be on the court")
+	assert_true(_manager.activate("base_ball"))
+	assert_true(_manager.is_on_court("base_ball"), "activated ball should be on the court")
 	assert_true(
-		"training_ball" in _manager.get_court_items(),
+		"base_ball" in _manager.get_court_items(),
 		"court occupancy query should list the ball",
 	)
 	assert_gt(
@@ -95,9 +95,9 @@ func test_ball_lifecycle_rack_court_rack() -> void:
 	)
 
 	# Back to rack: out of play and unregistered.
-	assert_true(_manager.deactivate("training_ball"))
-	assert_false(_manager.is_on_court("training_ball"))
-	assert_false("training_ball" in _manager.get_court_items())
+	assert_true(_manager.deactivate("base_ball"))
+	assert_false(_manager.is_on_court("base_ball"))
+	assert_false("base_ball" in _manager.get_court_items())
 	assert_almost_eq(
 		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
 		base_min,
@@ -120,8 +120,8 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	# Place one equipment item and one ball; leave a third owned on the rack.
 	_manager.take("wrist_brace")
 	_manager.activate("wrist_brace")
-	_manager.take("training_ball")
-	_manager.activate("training_ball")
+	_manager.take("base_ball")
+	_manager.activate("base_ball")
 	_manager.take("ankle_weights")  # owned but never placed.
 
 	var equipped_speed: float = Stats.resolve(
@@ -140,12 +140,12 @@ func test_save_and_reload_preserves_placement_and_effects() -> void:
 	reloaded.state.apply_save_dict(JSON.parse_string(saved_blob))
 	reloaded.economy = EconomyState.new()
 	reloaded._effect_manager = EffectManager.new()
-	reloaded.items.assign([WristBrace, TrainingBall, AnkleWeights])
+	reloaded.items.assign([WristBrace, BaseBall, AnkleWeights])
 	add_child_autofree(reloaded)
 
 	# Placement survives the round-trip.
 	assert_true(reloaded.is_on_court("wrist_brace"), "equipment placement must survive reload")
-	assert_true(reloaded.is_on_court("training_ball"), "ball placement must survive reload")
+	assert_true(reloaded.is_on_court("base_ball"), "ball placement must survive reload")
 	assert_false(
 		reloaded.is_on_court("ankle_weights"),
 		"rack-resident items must stay off-court after reload",

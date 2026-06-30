@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_5blea"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
+[resource]
+script = ExtResource("1_item")
+key = "standard_ball"
+type = &"kit"
+role = &"ball"
+display_name = "Standard Ball"
+art = ExtResource("1_5blea")
+descriptions = Array[String](["A different ball every time", "Bonus soul at higher tiers", "The reliable choice"])
+base_cost = 10
+max_level = 10
+at_rest_shape = SubResource("at_rest_shape_1")

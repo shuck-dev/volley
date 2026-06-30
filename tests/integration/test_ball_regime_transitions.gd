@@ -6,7 +6,7 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const BaseBall: ItemDefinition = preload("res://resources/items/base_ball.tres")
 
 const COURT_BOUNDS: Rect2 = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 const VENUE_BOUNDS: Rect2 = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
@@ -26,7 +26,7 @@ func before_each() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	var typed_items: Array[ItemDefinition] = [TrainingBall]
+	var typed_items: Array[ItemDefinition] = [BaseBall]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
@@ -108,26 +108,26 @@ func _all_balls_under_host() -> Array:
 
 
 func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
-	_manager.take("training_ball")
-	_manager.activate("training_ball")
+	_manager.take("base_ball")
+	_manager.activate("base_ball")
 	var placed_min: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
-	assert_true(_manager.is_on_court("training_ball"), "precondition: ball placed")
-	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
+	assert_true(_manager.is_on_court("base_ball"), "precondition: ball placed")
+	assert_not_null(_reconciler.get_ball_for_key("base_ball"), "precondition: live ball exists")
 
-	_drag.grab_live_ball("training_ball")
+	_drag.grab_live_ball("base_ball")
 	await get_tree().process_frame
 	var released: bool = _drag.attempt_release(_drop_target.global_position)
 
 	assert_true(released)
 	await get_tree().process_frame
 	assert_false(
-		_manager.is_on_court("training_ball"),
+		_manager.is_on_court("base_ball"),
 		"rack release should deactivate a permanent ball",
 	)
 	# Registry membership = existence; the Ball survives, transitioned to STORED at its rack slot.
-	var stored: Ball = _reconciler.get_ball_for_key("training_ball")
+	var stored: Ball = _reconciler.get_ball_for_key("base_ball")
 	assert_not_null(stored, "reconciler keeps tracking; deactivate transitions to STORED")
 	assert_eq(
 		stored.play_state, Ball.PlayState.STORED, "rack release transitions the Ball to STORED"
@@ -139,7 +139,7 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 		"effect should deregister once the ball is stored again",
 	)
 	assert_true(
-		"training_ball" in _rack.get_displayed_keys(),
+		"base_ball" in _rack.get_displayed_keys(),
 		"rack refresh should regrow the token in its slot",
 	)
 
@@ -148,8 +148,8 @@ func test_drag_permanent_ball_off_court_onto_rack_regrows_token() -> void:
 
 
 func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
-	_manager.take("training_ball")
-	_drag.grab_from_rack("training_ball")
+	_manager.take("base_ball")
+	_drag.grab_from_rack("base_ball")
 	for ball in _all_balls_under_host():
 		ball.queue_free()
 	await get_tree().process_frame
@@ -160,12 +160,12 @@ func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 	assert_true(released, "release inside venue always resolves")
 	# Step 5: the at-rest ball lives as a Ball in OUT_REST in the registry, not a HeldBody.
 	assert_false(
-		_manager.is_on_court("training_ball"), "rack-origin venue release does not flip on-court"
+		_manager.is_on_court("base_ball"), "rack-origin venue release does not flip on-court"
 	)
 	assert_true(
-		_manager.is_loose_in_venue("training_ball"), "rack filter relies on loose-in-venue overlay"
+		_manager.is_loose_in_venue("base_ball"), "rack filter relies on loose-in-venue overlay"
 	)
-	var ball: Ball = _reconciler.get_ball_for_key("training_ball")
+	var ball: Ball = _reconciler.get_ball_for_key("base_ball")
 	assert_not_null(ball, "venue release registers the Ball with the reconciler")
 	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
 	assert_false(ball.freeze, "OUT_REST unfreezes so gravity integrates")
@@ -176,12 +176,12 @@ func test_drag_ball_onto_mid_venue_position_drops_loose() -> void:
 
 
 func test_save_round_trip_preserves_live_ball_placement() -> void:
-	_manager.take("training_ball")
-	_manager.activate("training_ball")
+	_manager.take("base_ball")
+	_manager.activate("base_ball")
 	var placed_min: float = Stats.resolve(
 		GameRules.base.ball_speed_min, &"ball_speed_min", _manager
 	)
-	assert_not_null(_reconciler.get_ball_for_key("training_ball"), "precondition: live ball exists")
+	assert_not_null(_reconciler.get_ball_for_key("base_ball"), "precondition: live ball exists")
 
 	var saved_blob: String = JSON.stringify(_manager.state.to_save_dict())
 
@@ -190,7 +190,7 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	reloaded_manager.state.apply_save_dict(JSON.parse_string(saved_blob))
 	reloaded_manager.economy = EconomyState.new()
 	reloaded_manager._effect_manager = EffectManager.new()
-	var typed_items: Array[ItemDefinition] = [TrainingBall]
+	var typed_items: Array[ItemDefinition] = [BaseBall]
 	reloaded_manager.items.assign(typed_items)
 	add_child_autofree(reloaded_manager)
 
@@ -204,10 +204,10 @@ func test_save_round_trip_preserves_live_ball_placement() -> void:
 	await get_tree().process_frame
 
 	assert_true(
-		reloaded_manager.is_on_court("training_ball"),
+		reloaded_manager.is_on_court("base_ball"),
 		"placement must survive the save/reload cycle",
 	)
-	var reloaded_ball: Ball = reloaded_reconciler.get_ball_for_key("training_ball")
+	var reloaded_ball: Ball = reloaded_reconciler.get_ball_for_key("base_ball")
 	assert_not_null(reloaded_ball, "reconciler re-spawned the ball from progression on load")
 	assert_true(
 		reloaded_ball.get_parent() == reloaded_reconciler,

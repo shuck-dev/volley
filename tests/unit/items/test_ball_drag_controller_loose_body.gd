@@ -3,7 +3,7 @@ extends GutTest
 
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
-const TrainingBall: ItemDefinition = preload("res://resources/items/training_ball.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 
 var _controller: ItemDragController
 var _item_manager: Node
@@ -11,7 +11,7 @@ var _item_manager: Node
 
 func before_each() -> void:
 	_item_manager = ItemFactory.create_manager(self)
-	_item_manager.items.assign([TrainingBall] as Array[ItemDefinition])
+	_item_manager.items.assign([StandardBall] as Array[ItemDefinition])
 	_controller = ItemDragControllerScript.new()
 	_controller.configure(_item_manager, null, null, null)
 	add_child_autofree(_controller)
@@ -19,7 +19,7 @@ func before_each() -> void:
 
 func _make_body() -> HeldBody:
 	var body: HeldBody = HeldBodyScene.instantiate()
-	body.item_key = TrainingBall.key
+	body.item_key = StandardBall.key
 	add_child_autofree(body)
 	return body
 
@@ -28,7 +28,7 @@ func test_register_loose_body_marks_item_loose_in_venue() -> void:
 	var body: HeldBody = _make_body()
 	_controller.register_loose_body(body)
 	assert_true(
-		_item_manager.is_loose_in_venue(TrainingBall.key),
+		_item_manager.is_loose_in_venue(StandardBall.key),
 		"register_loose_body promotes the key to loose-in-venue",
 	)
 
@@ -45,18 +45,18 @@ func test_register_loose_body_wires_grab_for_regrab() -> void:
 func test_register_loose_body_clears_overlay_on_body_free() -> void:
 	var body: HeldBody = _make_body()
 	_controller.register_loose_body(body)
-	assert_true(_item_manager.is_loose_in_venue(TrainingBall.key))
+	assert_true(_item_manager.is_loose_in_venue(StandardBall.key))
 	body.queue_free()
 	await get_tree().process_frame
 	assert_false(
-		_item_manager.is_loose_in_venue(TrainingBall.key),
+		_item_manager.is_loose_in_venue(StandardBall.key),
 		"tree_exited handler clears the loose-in-venue overlay so the rack can re-show the slot",
 	)
 
 
 func test_register_loose_body_null_input_is_a_no_op() -> void:
 	_controller.register_loose_body(null)
-	assert_false(_item_manager.is_loose_in_venue(TrainingBall.key))
+	assert_false(_item_manager.is_loose_in_venue(StandardBall.key))
 
 
 func test_get_loose_body_host_returns_a_node() -> void:

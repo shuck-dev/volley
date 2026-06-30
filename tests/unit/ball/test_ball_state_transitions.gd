@@ -15,7 +15,7 @@ func before_each() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	_manager.items.assign([preload("res://resources/items/training_ball.tres")])
+	_manager.items.assign([preload("res://resources/items/standard_ball.tres")])
 	add_child_autofree(_manager)
 
 	_config = load("res://scripts/core/court_config.gd").new()

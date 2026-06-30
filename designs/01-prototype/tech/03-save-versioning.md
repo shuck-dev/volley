@@ -31,9 +31,9 @@ Systems do not know about each other on save or load. Each slice contains its ow
     "schema_version": 3,
     "economy": { "fp_balance": 240, "total_earned": 1820 },
     "items": {
-        "item_levels": { "training_ball": 2 },
-        "item_placements": { "training_ball": 1 },
-        "rack_slot_index_by_key": { "training_ball": 0 }
+        "item_levels": { "standard_ball": 2 },
+        "item_placements": { "standard_ball": 1 },
+        "rack_slot_index_by_key": { "standard_ball": 0 }
     },
     "partners": { "active": "martha", "unlocked": ["martha"] },
     "records": { "personal_volley_best": 17 },
