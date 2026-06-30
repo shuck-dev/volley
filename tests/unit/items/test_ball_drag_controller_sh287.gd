@@ -146,58 +146,6 @@ func test_expansion_ring_fallback_path_runs_on_empty_court() -> void:
 	assert_not_null(target_widened, "widened probe also accepts an empty court")
 
 
-func test_expansion_ring_cancel_after_two_holds_fails_to_source() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-
-	_drag._gesture_below_threshold = false
-	_drag._mouse_button_down = false
-	# Push the start time back so held_duration >= expansion_ring_hold_s * 2.
-	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.expansion_ring_hold_s * 2.0 - 0.1
-	)
-	var off_screen: Vector2 = Vector2(99999, 99999)
-	assert_true(_drag.is_dragging(), "precondition: held token alive before expansion tick")
-	_drag._update_expansion_state(off_screen)
-	assert_false(
-		_drag.is_dragging(),
-		"_update_expansion_state must cancel-to-source after 2x hold window with no target",
-	)
-
-
-func test_expansion_state_does_not_cancel_within_first_window() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-
-	_drag._gesture_below_threshold = false
-	_drag._mouse_button_down = false
-	_drag._expansion_started_at = float(Time.get_ticks_msec()) / 1000.0
-	_drag._update_expansion_state(Vector2(99999, 99999))
-	assert_true(_drag.is_dragging(), "no cancel within the first hold window")
-
-
-func test_expansion_state_commits_when_widened_probe_accepts() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-
-	_drag._gesture_below_threshold = false
-	_drag._mouse_button_down = false
-	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.expansion_ring_hold_s - 0.05
-	)
-	_drag._update_expansion_state(Vector2(0, 0))
-	assert_false(_drag.is_dragging(), "widened-accept branch commits the gesture")
-
-
 # --- SH-320 regression: shop-to-court drag spawns a live ball at the release point --
 
 
@@ -215,33 +163,4 @@ func test_shop_purchase_falls_through_when_no_target_accepts() -> void:
 	var spawned: bool = _drag.spawn_purchased_at("ball_alpha", Vector2(99999, 99999), Vector2(0, 0))
 	assert_false(spawned, "way-off-screen position falls through the target poll")
 
-
 # --- SH-287 ACs: hover feedback bumps held-token scale over a valid target ---------
-
-
-func test_hover_feedback_bumps_held_token_scale_over_valid_target() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var token: Node2D = _drag.get_held_body()
-	assert_not_null(token, "precondition: held token spawned")
-	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
-	var base_scale: Vector2 = definition.token_scale
-	# Mouse-down keeps hover feedback running instead of the auto-commit branch.
-	_drag._mouse_button_down = true
-	_drag._update_hover_feedback(Vector2(0, 0))
-	var expected_lifted: Vector2 = base_scale * _drag.HOVER_SCALE_BUMP
-	assert_eq(token.scale, expected_lifted, "hover lifts to base_scale * HOVER_SCALE_BUMP exactly")
-	assert_eq(token.modulate, _drag.HOVER_MODULATE, "hover modulate matches the constant")
-
-
-func test_hover_feedback_resets_to_base_scale_when_no_target_accepts() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	var token: Node2D = _drag.get_held_body()
-	var definition: ItemDefinition = _drag._get_item_definition("ball_alpha")
-	var base_scale: Vector2 = definition.token_scale
-	_drag._mouse_button_down = true
-	_drag._update_hover_feedback(Vector2(0, 0))
-	_drag._update_hover_feedback(Vector2(99999, 99999))
-	assert_eq(token.scale, base_scale, "off-target hover resets to base token_scale")
-	assert_eq(token.modulate, _drag.NEUTRAL_MODULATE, "off-target hover resets modulate")

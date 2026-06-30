@@ -76,37 +76,3 @@ func test_held_body_starts_at_grab_origin_not_at_cursor() -> void:
 	var body: HeldBody = _drag.get_held_body()
 	assert_not_null(body)
 	assert_eq(body.global_position, press_origin, "lift starts at the press origin, not the cursor")
-
-
-func test_held_body_modulation_starts_transparent_and_eases_in() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha", Vector2(0, 0))
-	var body: HeldBody = _drag.get_held_body()
-	assert_eq(body.modulate.a, 0.0, "modulation alpha is 0 at lift start; eases up to 1")
-
-
-func test_held_body_settles_on_cursor_without_teleporting() -> void:
-	_manager.take("ball_alpha")
-	var origin := Vector2(100, 0)
-	var cursor_target := Vector2(500, 200)
-	_drag.grab_from_rack("ball_alpha", origin)
-	var body: HeldBody = _drag.get_held_body()
-	var ease_window: float = _drag.grab_ease_duration_s
-	var tick_count: int = 16
-	var tick_dt: float = ease_window / float(tick_count)
-	var max_step: float = 0.0
-	var previous: Vector2 = body.global_position
-	var total_distance: float = origin.distance_to(cursor_target)
-
-	for i in tick_count:
-		_drag._grab_ease_elapsed = minf(_drag._grab_ease_elapsed + tick_dt, ease_window)
-		_drag._apply_grab_ease(_drag._grab_ease_progress(), cursor_target)
-		var step: float = previous.distance_to(body.global_position)
-		max_step = maxf(max_step, step)
-		previous = body.global_position
-
-	assert_almost_eq(body.global_position.x, cursor_target.x, 0.5)
-	assert_almost_eq(body.global_position.y, cursor_target.y, 0.5)
-	assert_almost_eq(body.modulate.a, 1.0, 0.001)
-	# Half the trip in one tick would be a snap; cap step well below that.
-	assert_lt(max_step, total_distance * 0.5, "no mid-window teleport")

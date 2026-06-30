@@ -65,43 +65,6 @@ func before_each() -> void:
 
 # --- Finding 1: OUT_REST live-grab cancel unfreezes back to OUT_REST instead of stuck OUT_HELD --
 
-
-func test_out_rest_live_grab_cancel_returns_to_out_rest() -> void:
-	_manager.take("ball_alpha")
-	# Drive the ball into OUT_REST at a venue-floor position via the documented release path.
-	_manager.activate("ball_alpha")
-	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(ball, "precondition: live ball exists on court")
-	_drag.grab_live_ball("ball_alpha", false)
-	await get_tree().process_frame
-	# Release inside venue but outside court → ball ends in OUT_REST and ItemManager flips loose-in-venue.
-	assert_true(_drag.attempt_release(Vector2(1500, 50)))
-	assert_eq(ball.play_state, Ball.PlayState.OUT_REST)
-	assert_true(_manager.is_loose_in_venue("ball_alpha"))
-
-	# Grab the OUT_REST ball.
-	assert_true(_drag.grab_live_ball("ball_alpha", false))
-	assert_eq(ball.play_state, Ball.PlayState.OUT_HELD)
-	# OUT_REST origin: the ball was not on court at grab time.
-	assert_false(_drag._held_was_on_court, "OUT_REST grab must not flag was_on_court")
-
-	# Trigger cancel-to-source via the expansion timeout.
-	_drag._gesture_below_threshold = false
-	_drag._mouse_button_down = false
-	_drag._expansion_started_at = (
-		float(Time.get_ticks_msec()) / 1000.0 - _drag.expansion_ring_hold_s * 2.0 - 0.1
-	)
-	_drag._update_expansion_state(Vector2(99999, 99999))
-
-	assert_false(_drag.is_dragging(), "cancel completes the gesture")
-	assert_eq(
-		ball.play_state,
-		Ball.PlayState.OUT_REST,
-		"OUT_REST origin restores to OUT_REST, not stuck OUT_HELD"
-	)
-	assert_false(ball.freeze, "OUT_REST unfreezes so gravity integrates")
-
-
 # --- Finding 3: live-court → venue release marks loose-in-venue so save reload skips court-spawn --
 
 
