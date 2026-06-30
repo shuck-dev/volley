@@ -5,8 +5,6 @@ extends Node2D
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
-signal cursor_state_changed(state: int, world_position: Vector2)
-
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
@@ -131,7 +129,7 @@ func is_dragging() -> bool:
 	return _drag_target() != null
 
 
-## Returns the active drag-target node for cursor follow / ease / hover; HeldBody for rack+temp grabs, Ball for live grabs.
+## Returns the active drag-target node for cursor follow
 func _drag_target() -> Node2D:
 	# A dev-only remove_level can free the held ball mid-gesture; drop the dangling ref.
 	if _held is Ball and not is_instance_valid(_held):
@@ -348,6 +346,7 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 	body.go_loose(release_velocity)
 	register_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
+	_held = null
 
 
 ## Spawns a loose HeldBody at the release point and wires re-grab + loose-in-venue overlay.
