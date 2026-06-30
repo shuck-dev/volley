@@ -32,7 +32,6 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
-@export var cursor_overlay: CursorOverlay
 @export var expansion_ring_hold_s: float = 0.25
 @export var expansion_ring_scale: float = 1.5
 
@@ -104,10 +103,6 @@ func _ready() -> void:
 	if reconciler != null:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
-
-	if cursor_overlay != null:
-		if not cursor_state_changed.is_connected(cursor_overlay.set_state):
-			cursor_state_changed.connect(cursor_overlay.set_state)
 
 	_register_builtin_targets()
 
@@ -936,7 +931,7 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	_cursor_state = state
-	cursor_state_changed.emit(state, world_position)
+	BallDropOverlay.update_state(state, world_position)
 
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:

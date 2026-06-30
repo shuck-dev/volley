@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dq3kw7n8sh3a7"]
+
+[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/ball_drop_overlay.gd" id="1_cursor"]
+
+[node name="CursorOverlay" type="Node2D" unique_id=1579397178]
+script = ExtResource("1_cursor")
