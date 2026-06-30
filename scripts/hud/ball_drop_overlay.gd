@@ -6,6 +6,8 @@ extends Node2D
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 const DEFAULT_STYLE: CursorStyle = preload("res://resources/hud/cursor_style.tres")
 
+static var instance: BallDropOverlay
+
 ## Colour-per-state plus ring metrics; tunable per-scene by swapping the style resource.
 @export var style: CursorStyle = DEFAULT_STYLE
 
@@ -14,12 +16,17 @@ var _state: int = CursorStateScript.State.DEFAULT
 
 
 func _ready() -> void:
+	instance = self
 	if style == null:
 		style = DEFAULT_STYLE
 	z_index = 4096
 	visible = false
 	add_to_group(&"dev_overlays")
-	add_to_group(&"cursor_overlay")
+
+
+func _exit_tree() -> void:
+	if instance == self:
+		instance = null
 
 
 func set_state(state: int, world_position: Vector2) -> void:
@@ -38,6 +45,11 @@ func set_dev_visible(value: bool) -> void:
 
 func get_state() -> int:
 	return _state
+
+
+static func update_state(state: int, world_position: Vector2) -> void:
+	if is_instance_valid(instance):
+		instance.set_state(state, world_position)
 
 
 func _draw() -> void:

@@ -105,14 +105,6 @@ func _ready() -> void:
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
 	_register_builtin_targets()
-	_connect_cursor_overlay.call_deferred()
-
-
-func _connect_cursor_overlay() -> void:
-	var overlay := get_tree().get_first_node_in_group(&"cursor_overlay") as BallDropOverlay
-	if overlay != null:
-		if not cursor_state_changed.is_connected(overlay.set_state):
-			cursor_state_changed.connect(overlay.set_state)
 
 
 func _process(delta: float) -> void:
@@ -940,6 +932,7 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	_cursor_state = state
 	cursor_state_changed.emit(state, world_position)
+	BallDropOverlay.update_state(state, world_position)
 
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:

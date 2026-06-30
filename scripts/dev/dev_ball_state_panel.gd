@@ -117,8 +117,7 @@ func _add_overlay_toggle() -> void:
 
 
 func _connect_overlay_toggle() -> void:
-	var overlay := get_tree().get_first_node_in_group(&"cursor_overlay") as BallDropOverlay
-	if overlay == null:
+	if not is_instance_valid(BallDropOverlay.instance):
 		return
 	var checkbox := CheckBox.new()
 	checkbox.text = "Show drop ring"
@@ -126,8 +125,8 @@ func _connect_overlay_toggle() -> void:
 	checkbox.focus_mode = Control.FOCUS_NONE
 	checkbox.toggled.connect(
 		func(pressed: bool) -> void:
-			if is_instance_valid(overlay):
-				overlay.visible = pressed
+			if is_instance_valid(BallDropOverlay.instance):
+				BallDropOverlay.instance.visible = pressed
 	)
 	add_child(checkbox)
 
