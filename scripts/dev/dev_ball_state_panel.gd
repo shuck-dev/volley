@@ -126,7 +126,7 @@ func _connect_overlay_toggle() -> void:
 	checkbox.toggled.connect(
 		func(pressed: bool) -> void:
 			if is_instance_valid(BallDropOverlay.instance):
-				BallDropOverlay.instance.visible = pressed
+				BallDropOverlay.instance.dev_visible = pressed
 	)
 	add_child(checkbox)
 

@@ -931,7 +931,6 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	_cursor_state = state
-	cursor_state_changed.emit(state, world_position)
 	BallDropOverlay.update_state(state, world_position)
 
 

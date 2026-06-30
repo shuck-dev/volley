@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://bj5nsuanmc44b"]
-
-[ext_resource type="Script" path="res://scripts/hud/cursor_overlay.gd" id="1_cursor"]
-
-[node name="CursorOverlay" type="Node2D" unique_id=1579397178]
-script = ExtResource("1_cursor")

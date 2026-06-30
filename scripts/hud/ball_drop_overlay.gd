@@ -21,7 +21,6 @@ func _ready() -> void:
 		style = DEFAULT_STYLE
 	z_index = 4096
 	visible = false
-	add_to_group(&"dev_overlays")
 
 
 func _exit_tree() -> void:
