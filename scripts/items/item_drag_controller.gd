@@ -647,7 +647,7 @@ func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	_register_builtin_targets(area, paddle)
 
 
-## Priority order: court strict projection first, character equip, role-aware racks, venue catch-all last.
+## Priority order: character equip, role-aware racks, court projection, venue catch-all last.
 func _register_builtin_targets(
 	character_area: Area2D = null, character_paddle: Node = null
 ) -> void:
@@ -656,10 +656,10 @@ func _register_builtin_targets(
 	_character_target = null
 
 	for target: DropTarget in [
-		_make_court_target(),
 		_make_character_target(character_area, character_paddle),
 		_make_rack_target(rack_drop_target, &"ball"),
 		_make_rack_target(gear_rack_drop_target, &"equipment"),
+		_make_court_target(),
 		_make_venue_target(),
 	]:
 		if target == null:
