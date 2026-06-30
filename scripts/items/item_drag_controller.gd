@@ -16,13 +16,6 @@ const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag.
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
-const HOVER_SCALE_BUMP: Vector2 = Vector2(1.08, 1.08)
-const HOVER_MODULATE: Color = Color(1.15, 1.15, 1.15, 1.0)
-const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
-@export var grab_ease_duration_s: float = 0.08
-@export var grab_ease_start_scale: Vector2 = Vector2(0.85, 0.85)
-@export var grab_ease_start_modulate: Color = Color(1.0, 1.0, 1.0, 0.0)
-@export var grab_ease_end_modulate: Color = Color(1.0, 1.0, 1.0, 1.0)
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -33,8 +26,6 @@ const NEUTRAL_MODULATE: Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 @export var cursor_overlay: CursorOverlay
-@export var expansion_ring_hold_s: float = 0.25
-@export var expansion_ring_scale: float = 1.5
 
 var _item_manager: Node
 var _held_body: HeldBody = null
@@ -51,13 +42,7 @@ var _gesture_below_threshold: bool = true
 var _mouse_button_down: bool = false
 ## Negative means no preserved energy; positive carries rally speed across grab+release.
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
-var _grab_origin_position: Vector2 = Vector2.ZERO
-var _grab_ease_elapsed: float = 0.0
-var _grab_target_scale: Vector2 = Vector2.ONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
-## Negative means expansion-ring polling has not started timing yet.
-var _expansion_started_at: float = -1.0
-## True after a real player mouse-up while no drop target accepted; the gesture stays alive following the cursor.
 var _release_pending: bool = false
 
 var _drop_targets: Array[DropTarget] = []
@@ -112,37 +97,24 @@ func _ready() -> void:
 	_register_builtin_targets()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var drag_target: Node2D = _drag_target()
 	if drag_target == null:
 		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
-
 	var cursor_target: Vector2 = _cursor_position()
-	_grab_ease_elapsed = minf(_grab_ease_elapsed + delta, grab_ease_duration_s)
-	var ease_progress: float = _grab_ease_progress()
-	_apply_grab_ease(ease_progress, cursor_target)
-
-	var follow_position: Vector2 = drag_target.global_position
-	_track_cursor_motion(follow_position)
+	drag_target.global_position = cursor_target
+	_track_cursor_motion(cursor_target)
 	if _gesture_below_threshold:
-		if follow_position.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
+		if cursor_target.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
 			_gesture_below_threshold = false
-
-	_update_cursor_state(follow_position)
-
+	_update_cursor_state(cursor_target)
 	if not _mouse_button_down:
-		# Release-pending gestures retry at the cursor every frame so the player can drag
-		# to a valid spot after a wall-pinned release; never auto-cancel to source.
-		var release_target: Vector2 = cursor_target if _release_pending else follow_position
-		if not attempt_release(release_target):
-			if _release_pending:
-				_update_hover_feedback(release_target)
-			else:
-				_update_expansion_state(follow_position)
-	elif ease_progress >= 1.0:
-		# Hover feedback is suppressed until the lift ease settles to avoid mid-tween bumps.
-		_update_hover_feedback(follow_position)
+		if not attempt_release(cursor_target):
+			pass
+	else:
+		if _held_body != null and _held_body.phase == HeldBody.Phase.LIFTING:
+			_held_body.mark_held()
 
 
 func _input(event: InputEvent) -> void:
@@ -324,11 +296,6 @@ func _adopt_live_ball_as_held(ball: Ball, item_key: String) -> void:
 	_held_is_temporary = false
 	_press_position = spawn_position
 	_gesture_below_threshold = true
-	_grab_origin_position = spawn_position
-	_grab_ease_elapsed = 0.0
-	# Live grabs keep the ball's existing scale (typically Vector2.ONE; art lives on the ItemArtHolder).
-	_grab_target_scale = ball.scale
-	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
 
@@ -391,7 +358,6 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 	if host != null and body.get_parent() != host:
 		body.reparent(host)
 	body.global_position = release_position
-	body.modulate = grab_ease_end_modulate
 	body.go_loose(release_velocity)
 	register_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
@@ -446,11 +412,6 @@ func attempt_release(release_position: Vector2) -> bool:
 		return true
 
 	var target: DropTarget = _find_accepting_target(item_key, release_position, 1.0)
-	if target == null and _expansion_started_at >= 0.0:
-		var held_duration: float = _now_seconds() - _expansion_started_at
-		if held_duration >= expansion_ring_hold_s:
-			target = _find_accepting_target(item_key, release_position, expansion_ring_scale)
-
 	if target == null:
 		return false
 
@@ -567,11 +528,6 @@ func _on_loose_body_grabbed(body: HeldBody) -> void:
 	_held_origin = &"live"
 	_press_position = spawn_position
 	_gesture_below_threshold = true
-	_grab_origin_position = spawn_position
-	_grab_ease_elapsed = 0.0
-	# Re-grab keeps the loose body's at-rest visual; rack pickups shrink to token_scale instead.
-	_grab_target_scale = body.scale
-	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
 	_mouse_button_down = true
@@ -625,69 +581,6 @@ func _find_accepting_target(
 	return null
 
 
-func _update_hover_feedback(world_position: Vector2) -> void:
-	var drag_target: Node2D = _drag_target()
-	if drag_target == null:
-		return
-	var hovering: bool = _find_accepting_target(_held_key, world_position, 1.0) != null
-	# Use the grab's target scale so loose-body re-grabs keep their at-rest size; rack pickups still ride token_scale.
-	var base_scale: Vector2 = _grab_target_scale
-	if hovering:
-		drag_target.scale = base_scale * HOVER_SCALE_BUMP
-		drag_target.modulate = HOVER_MODULATE
-	else:
-		drag_target.scale = base_scale
-		drag_target.modulate = NEUTRAL_MODULATE
-
-
-func _update_expansion_state(world_position: Vector2) -> void:
-	if _drag_target() == null:
-		return
-	if _expansion_started_at < 0.0:
-		_expansion_started_at = _now_seconds()
-		return
-
-	var held_duration: float = _now_seconds() - _expansion_started_at
-	if held_duration < expansion_ring_hold_s:
-		return
-
-	var widened: DropTarget = _find_accepting_target(
-		_held_key, world_position, expansion_ring_scale
-	)
-	if widened != null:
-		attempt_release(world_position)
-		return
-
-	if held_duration >= expansion_ring_hold_s * 2.0:
-		_cancel_to_source()
-
-
-## Routes a timed-out gesture back to its origin: on-court deactivate, OUT_REST unfreeze, or STORED restore.
-func _cancel_to_source() -> void:
-	var item_key: String = _held_key
-	var was_on_court: bool = _held_was_on_court
-	var origin: StringName = _held_origin
-	var drag_target: Node2D = _drag_target()
-	var release_position: Vector2 = (
-		drag_target.global_position if drag_target != null else _press_position
-	)
-
-	if origin == &"equipped":
-		# Re-equip through the gate so a slot filled during the hold refuses the snap-back.
-		if _item_manager != null:
-			_item_manager.equip(item_key)
-	elif origin == &"live" and was_on_court:
-		if _item_manager != null and _item_manager.is_on_court(item_key):
-			_item_manager.deactivate(item_key)
-	elif origin == &"live" and _held_ball != null:
-		# OUT_REST origin: deactivate is a no-op so unfreeze back to OUT_REST at the cancel point.
-		_held_ball.enter_out_rest()
-	elif origin == &"rack" and _held_ball != null:
-		_restore_held_ball_to_stored(item_key)
-
-	_finalise_gesture(item_key, release_position, false)
-
-
 ## Returns a held Ball to its rack slot in STORED state; safety net when rack accept's deactivate is a no-op.
 func _restore_held_ball_to_stored(item_key: String) -> void:
 	if _held_ball == null:
@@ -735,10 +628,6 @@ func _reset_gesture_state() -> void:
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
-	_grab_origin_position = Vector2.ZERO
-	_grab_ease_elapsed = 0.0
-	_grab_target_scale = Vector2.ONE
-	_expansion_started_at = -1.0
 	_release_pending = false
 	_set_court_exclude_rids([])
 
@@ -759,8 +648,7 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	if body == null:
 		return false
 	body.global_position = spawn_position
-	body.scale = grab_ease_start_scale * target_scale
-	body.modulate = grab_ease_start_modulate
+	body.scale = target_scale
 	add_child(body)
 
 	_held_body = body
@@ -768,10 +656,6 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	_held_is_temporary = is_temporary
 	_press_position = spawn_position
 	_gesture_below_threshold = true
-	_grab_origin_position = spawn_position
-	_grab_ease_elapsed = 0.0
-	_grab_target_scale = target_scale
-	_expansion_started_at = -1.0
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
 	return true
@@ -889,30 +773,6 @@ func _get_item_definition(item_key: String) -> ItemDefinition:
 		if item.key == item_key:
 			return item
 	return null
-
-
-func _now_seconds() -> float:
-	return float(Time.get_ticks_msec()) / 1000.0
-
-
-func _grab_ease_progress() -> float:
-	if grab_ease_duration_s <= 0.0:
-		return 1.0
-	return clampf(_grab_ease_elapsed / grab_ease_duration_s, 0.0, 1.0)
-
-
-func _apply_grab_ease(progress: float, cursor_target: Vector2) -> void:
-	var drag_target: Node2D = _drag_target()
-	if drag_target == null:
-		return
-	# Cubic ease-out: 1 - (1 - t)^3.
-	var inv: float = 1.0 - progress
-	var eased: float = 1.0 - inv * inv * inv
-	drag_target.global_position = _grab_origin_position.lerp(cursor_target, eased)
-	drag_target.scale = (grab_ease_start_scale * _grab_target_scale).lerp(_grab_target_scale, eased)
-	drag_target.modulate = grab_ease_start_modulate.lerp(grab_ease_end_modulate, eased)
-	if progress >= 1.0 and _held_body != null and _held_body.phase == HeldBody.Phase.LIFTING:
-		_held_body.mark_held()
 
 
 func _update_cursor_state(world_position: Vector2) -> void:
