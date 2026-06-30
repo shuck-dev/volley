@@ -28,9 +28,8 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var cursor_overlay: CursorOverlay
 
 var _item_manager: Node
-var _held_body: HeldBody = null
-## Live-grab keeps the existing Ball alive across the gesture; rack/temp grabs spawn a HeldBody instead.
-var _held_ball: Ball = null
+## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
+var _held: Node2D = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
 var _held_was_on_court: bool = false
@@ -49,9 +48,6 @@ var _drop_targets: Array[DropTarget] = []
 ## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
 var _builtin_targets: Array[DropTarget] = []
 
-## Set after the player paddle spawns so the character target can find a live Area2D.
-var _character_drop_area: Area2D
-var _character_paddle: Node
 var _character_target: CharacterDropTargetScript = null
 
 
@@ -113,8 +109,8 @@ func _process(_delta: float) -> void:
 		if not attempt_release(cursor_target):
 			pass
 	else:
-		if _held_body != null and _held_body.phase == HeldBody.Phase.LIFTING:
-			_held_body.mark_held()
+		if _held is HeldBody and (_held as HeldBody).phase == HeldBody.Phase.LIFTING:
+			(_held as HeldBody).mark_held()
 
 
 func _input(event: InputEvent) -> void:
@@ -142,11 +138,9 @@ func is_dragging() -> bool:
 ## Returns the active drag-target node for cursor follow / ease / hover; HeldBody for rack+temp grabs, Ball for live grabs.
 func _drag_target() -> Node2D:
 	# A dev-only remove_level can free the held ball mid-gesture; drop the dangling ref.
-	if _held_ball != null and not is_instance_valid(_held_ball):
-		_held_ball = null
-	if _held_ball != null:
-		return _held_ball
-	return _held_body
+	if _held is Ball and not is_instance_valid(_held):
+		_held = null
+	return _held
 
 
 func get_held_key() -> String:
@@ -154,7 +148,7 @@ func get_held_key() -> String:
 
 
 func get_held_body() -> HeldBody:
-	return _held_body
+	return _held as HeldBody
 
 
 func get_cursor_state() -> int:
@@ -212,8 +206,7 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 		return false
 
 	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
-	if _item_manager != null:
-		_item_manager.release_rack_slot(item_key)
+	_item_manager.release_rack_slot(item_key)
 
 	_held_was_on_court = false
 	_held_origin = &"rack"
@@ -230,7 +223,7 @@ func grab_equipped_from_character(item_key: String, press_position: Variant = nu
 		return false
 	if _drag_target() != null:
 		return false
-	if _item_manager == null or _item_manager.get_level(item_key) <= 0:
+	if _item_manager.get_level(item_key) <= 0:
 		return false
 	if _item_manager.get_placement(item_key) != Placement.EQUIPPED:
 		return false
@@ -273,11 +266,10 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 		return false
 
 	# Capture on-court state before clearing the overlay; OUT_REST cancels must skip deactivate.
-	var was_on_court: bool = _item_manager != null and _item_manager.is_on_court(item_key)
+	var was_on_court: bool = _item_manager.is_on_court(item_key)
 	# OUT_REST pickup also routes through here; clear the loose-in-venue overlay so a release-over-rack
 	# (or any non-venue target) restores the slot exactly like a live-grab originating from the court.
-	if _item_manager != null:
-		_item_manager.clear_loose_in_venue(item_key)
+	_item_manager.clear_loose_in_venue(item_key)
 	existing.enter_out_held()
 	# Self-overlap exclusion: the held ball's own body would otherwise reject the release projection.
 	_set_court_exclude_rids([existing.get_rid()])
@@ -291,7 +283,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 
 func _adopt_live_ball_as_held(ball: Ball, item_key: String) -> void:
 	var spawn_position: Vector2 = ball.global_position
-	_held_ball = ball
+	_held = ball
 	_held_key = item_key
 	_held_is_temporary = false
 	_press_position = spawn_position
@@ -340,20 +332,19 @@ func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocit
 	reconciler.release_into_rest(item_key, world_position, gesture_velocity)
 	# Loose-in-venue overlay makes is_on_court return false regardless of placement, so save/reload
 	# skips the spurious court-spawn at the saved venue-floor position.
-	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(item_key, world_position)
+	_item_manager.mark_loose_in_venue(item_key, world_position)
 
 
 ## Equipment attempt_release: rehome the in-flight HeldBody as loose at the release point.
 func _release_held_body_as_loose(release_position: Vector2) -> void:
-	if _held_body == null:
+	if not (_held is HeldBody):
 		return
 	# Equipment leaving the body must deactivate effects; otherwise the stat impact survives
 	# the held-into-venue transition because placement never funnels through STORED.
-	if _item_manager != null and _item_manager.get_placement(_held_key) == Placement.EQUIPPED:
+	if _item_manager.get_placement(_held_key) == Placement.EQUIPPED:
 		_item_manager.unequip(_held_key)
 	var release_velocity: Vector2 = _compute_release_velocity()
-	var body: HeldBody = _held_body
+	var body: HeldBody = _held as HeldBody
 	var host: Node = get_loose_body_host()
 	if host != null and body.get_parent() != host:
 		body.reparent(host)
@@ -361,7 +352,6 @@ func _release_held_body_as_loose(release_position: Vector2) -> void:
 	body.go_loose(release_velocity)
 	register_loose_body(body)
 	# Drop the handle so finalisation does not free the loose body.
-	_held_body = null
 
 
 ## Spawns a loose HeldBody at the release point and wires re-grab + loose-in-venue overlay.
@@ -395,7 +385,7 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var item_key: String = _held_key
 	var was_temporary: bool = _held_is_temporary
-	var has_live_ball: bool = _held_ball != null
+	var has_live_ball: bool = _held is Ball
 
 	# Direct callers bypass _process; re-check distance to keep the no-op gate honest.
 	var below_threshold: bool = _gesture_below_threshold
@@ -453,7 +443,7 @@ func attempt_release(release_position: Vector2) -> bool:
 
 # Transitions the held Ball from OUT_HELD → PLAY_NORMAL/PLAY_ARC at the release point with gesture velocity.
 func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -> void:
-	var ball: Ball = _held_ball
+	var ball: Ball = _held as Ball
 	if ball == null:
 		return
 	# Capture rally tempo before any state transition; the OUT_HELD freeze suppressed _physics_process,
@@ -472,7 +462,7 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 	if ball.effect_processor != null:
 		ball.effect_processor.sync_base_speed()
 	# Keep ItemManager in sync: a rack-origin gesture leaves placement=STORED until activate runs.
-	if _item_manager != null and not _item_manager.is_on_court(_held_key):
+	if not _item_manager.is_on_court(_held_key):
 		_item_manager.activate(_held_key)
 
 
@@ -487,8 +477,7 @@ func register_loose_body(body: HeldBody) -> void:
 	if body == null:
 		return
 	track_loose_body(body)
-	if _item_manager != null:
-		_item_manager.mark_loose_in_venue(body.item_key, body.global_position)
+	_item_manager.mark_loose_in_venue(body.item_key, body.global_position)
 	if not body.tree_exited.is_connected(_on_loose_body_freed):
 		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
 
@@ -517,11 +506,10 @@ func _on_loose_body_grabbed(body: HeldBody) -> void:
 	var spawn_position: Vector2 = body.global_position
 	body.grabbed.disconnect(_on_loose_body_grabbed)
 	# Re-grab consumes the loose-in-venue overlay so the rack reveals normally on the next release path.
-	if _item_manager != null:
-		_item_manager.clear_loose_in_venue(item_key)
+	_item_manager.clear_loose_in_venue(item_key)
 	_adopt_loose_body_as_held(body)
 
-	_held_body = body
+	_held = body
 	_held_key = item_key
 	_held_is_temporary = false
 	_held_was_on_court = false
@@ -583,26 +571,25 @@ func _find_accepting_target(
 
 ## Returns a held Ball to its rack slot in STORED state; safety net when rack accept's deactivate is a no-op.
 func _restore_held_ball_to_stored(item_key: String) -> void:
-	if _held_ball == null:
+	if not (_held is Ball):
 		return
 	# Live OUT_REST → rack-drop carries a loose-in-venue overlay that would otherwise hide the restored slot.
-	if _item_manager != null:
-		_item_manager.clear_loose_in_venue(item_key)
-		# Rack pickups freed the slot on grab; re-claim one before reading the slot position.
-		_item_manager.reassign_rack_slot(item_key)
-	_held_ball.enter_stored()
+	_item_manager.clear_loose_in_venue(item_key)
+	# Rack pickups freed the slot on grab; re-claim one before reading the slot position.
+	_item_manager.reassign_rack_slot(item_key)
+	(_held as Ball).enter_stored()
 	if rack != null:
-		_held_ball.global_position = rack.get_slot_position_for(item_key)
+		(_held as Ball).global_position = rack.get_slot_position_for(item_key)
 
 
 func _finalise_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
 	# Live-grab path: the Ball survives or was queue_freed by the reconciler via court_changed; do not free here.
-	if _held_body != null:
-		_held_body.queue_free()
+	if _held is HeldBody:
+		(_held as HeldBody).queue_free()
 
 	# A rack-origin gesture that ends back on the rack freed its slot on grab; reclaim one so the
 	# next insert sees the slot occupied. Court/venue endings stay slotless.
-	if _item_manager != null and _ended_on_rack(item_key):
+	if _ended_on_rack(item_key):
 		_item_manager.reassign_rack_slot(item_key)
 
 	_reset_gesture_state()
@@ -618,8 +605,7 @@ func _ended_on_rack(item_key: String) -> bool:
 
 
 func _reset_gesture_state() -> void:
-	_held_body = null
-	_held_ball = null
+	_held = null
 	_held_key = ""
 	_held_is_temporary = false
 	_held_was_on_court = false
@@ -651,7 +637,7 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	body.scale = target_scale
 	add_child(body)
 
-	_held_body = body
+	_held = body
 	_held_key = item_key
 	_held_is_temporary = is_temporary
 	_press_position = spawn_position
@@ -663,20 +649,20 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	_character_drop_area = area
-	_character_paddle = paddle
-	_register_builtin_targets()
+	_register_builtin_targets(area, paddle)
 
 
 ## Priority order: court strict projection first, character equip, role-aware racks, venue catch-all last.
-func _register_builtin_targets() -> void:
+func _register_builtin_targets(
+	character_area: Area2D = null, character_paddle: Node = null
+) -> void:
 	_drop_targets.clear()
 	_builtin_targets.clear()
 	_character_target = null
 
 	for target: DropTarget in [
 		_make_court_target(),
-		_make_character_target(),
+		_make_character_target(character_area, character_paddle),
 		_make_rack_target(rack_drop_target, &"ball"),
 		_make_rack_target(gear_rack_drop_target, &"equipment"),
 		_make_venue_target(),
@@ -695,13 +681,11 @@ func _make_court_target() -> CourtDropTarget:
 	return court_target
 
 
-func _make_character_target() -> DropTarget:
-	if _character_drop_area == null or timeout_controller == null:
+func _make_character_target(area: Area2D, paddle: Node) -> DropTarget:
+	if area == null or timeout_controller == null:
 		return null
 	var character_target: CharacterDropTargetScript = CharacterDropTargetScript.new()
-	character_target.configure(
-		_item_manager, _character_drop_area, timeout_controller, _character_paddle
-	)
+	character_target.configure(_item_manager, area, timeout_controller, paddle)
 	# Track the live target so equipped-art presses route into grab_equipped_from_character.
 	_character_target = character_target
 	if not character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
@@ -823,7 +807,7 @@ func _on_pickup_started(item_key: String) -> void:
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
 	# Loose-in-venue items have their rack entry filtered out by ItemManager.get_kit_items; nothing to reveal.
-	if _item_manager != null and _item_manager.is_loose_in_venue(item_key):
+	if _item_manager.is_loose_in_venue(item_key):
 		return
 	if rack != null:
 		rack.reveal_slot_for(item_key)
@@ -841,7 +825,7 @@ func _on_equipped_art_pressed(item_key: String) -> void:
 func _on_loose_body_freed(item_key: String) -> void:
 	# Body left the tree (queue_free or re-grab adoption); clearing restores the slot via refresh.
 	# Re-grab paths immediately re-hide via pickup_started so any single-frame flicker is masked.
-	if _item_manager != null:
+	if is_instance_valid(_item_manager):
 		_item_manager.clear_loose_in_venue(item_key)
 	if rack != null:
 		rack.reveal_slot_for(item_key)
