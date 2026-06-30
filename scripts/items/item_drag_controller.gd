@@ -25,7 +25,7 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
-@export var cursor_overlay: CursorOverlay
+@export var cursor_overlay: BallDropOverlay
 
 var _item_manager: Node
 ## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
