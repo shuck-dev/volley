@@ -111,10 +111,10 @@ script = ExtResource("19_timeout")
 config = ExtResource("20_timeout_cfg")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
-position = Vector2(750, 0)
+position = Vector2(700, 0)
 
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
-position = Vector2(-750, 0)
+position = Vector2(-700, 0)
 
 [node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
 z_index = -50
