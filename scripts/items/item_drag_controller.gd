@@ -86,10 +86,6 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
-	if cursor_overlay != null:
-		if not cursor_state_changed.is_connected(cursor_overlay.set_state):
-			cursor_state_changed.connect(cursor_overlay.set_state)
-
 	_register_builtin_targets()
 
 
@@ -780,7 +776,7 @@ func _position_accepted_by_any_target(item_key: String, world_position: Vector2)
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	_cursor_state = state
-	cursor_state_changed.emit(state, world_position)
+	BallDropOverlay.update_state(state, world_position)
 
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:

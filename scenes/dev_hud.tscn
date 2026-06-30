@@ -14,6 +14,8 @@
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/dev/player_sprite.gd" id="9_paddlesize"]
 [ext_resource type="Script" uid="uid://dyqpeklr0o4wn" path="res://scripts/dev/soul_bound_overlay.gd" id="13_hqk2e"]
 [ext_resource type="Script" uid="uid://08w53i5wkvn8" path="res://scripts/dev/arc_travel_overlay.gd" id="14_tmy36"]
+[ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/ball_drop_overlay.tscn" id="15_qtjg3"]
+[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/ball_drop_overlay.gd" id="16_ikufa"]
 
 [node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container")]
 script = ExtResource("1_ahhtf")
@@ -131,3 +133,6 @@ script = ExtResource("13_hqk2e")
 
 [node name="ArcTravelOverlay" type="Node2D" parent="." unique_id=671493851]
 script = ExtResource("14_tmy36")
+
+[node name="BallDropOverlay" type="Node2D" parent="." unique_id=1579397178 instance=ExtResource("15_qtjg3")]
+script = ExtResource("16_ikufa")
