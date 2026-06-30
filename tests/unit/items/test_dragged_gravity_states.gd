@@ -120,9 +120,10 @@ func test_lift_settle_promotes_phase_and_arms_loose_gravity() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha", Vector2(0, 0))
 	var body: HeldBody = _drag.get_held_body()
-	_drag._grab_ease_elapsed = _drag.grab_ease_duration_s
-	_drag._apply_grab_ease(_drag._grab_ease_progress(), Vector2(50, 50))
-	assert_eq(body.phase, HeldBody.Phase.HELD, "lift settle promotes phase to HELD")
+	assert_eq(body.phase, HeldBody.Phase.LIFTING, "starts in LIFTING phase")
+	_drag._mouse_button_down = true
+	_drag._process(0.0)
+	assert_eq(body.phase, HeldBody.Phase.HELD, "lift settle promotes phase to HELD via _process")
 	assert_eq(body.gravity_scale, 0.0, "gravity stays off while the body is cursor-pinned")
 	assert_gt(body.loose_gravity_scale, 0.0, "loose gravity is armed for a future floor release")
 
