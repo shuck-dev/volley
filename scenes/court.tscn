@@ -84,7 +84,7 @@ mouse_filter = 2
 position = Vector2(0, -247.25)
 shape = SubResource("RectangleShape2D_vert")
 
-[node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318 groups=["floor"]]
+[node name="CourtFloor" type="StaticBody2D" parent="Bounds" unique_id=1779452318]
 position = Vector2(0, 400)
 physics_material_override = ExtResource("1_0wfyh")
 
