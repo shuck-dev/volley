@@ -2,7 +2,84 @@ extends GutTest
 
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
-const WristBrace: ItemDefinition = preload("res://resources/items/wrist_brace.tres")
+const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
+
+
+func test_unaffordable_unowned_cannot_be_dragged() -> void:
+	var ctx: Dictionary = _make_item(null)
+	ctx["manager"].economy.soul_balance = 0
+	assert_false(ctx["item"].can_be_dragged())
+
+
+func test_affordable_unowned_can_be_dragged() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	assert_true(ctx["item"].can_be_dragged())
+
+
+func test_owned_can_be_dragged_regardless_of_balance() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	ctx["manager"].take(StandardBall.key)
+	ctx["manager"].economy.soul_balance = 0
+	assert_true(ctx["item"].can_be_dragged())
+
+
+func test_release_outside_shop_commits_purchase() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	var item: ShopItem = ctx["item"]
+
+	item.start_drag()
+	var ok: bool = item.attempt_release(Vector2(800, 300))
+	assert_true(ok)
+	assert_false(item.visible, "slot hidden after purchase")
+	assert_eq(ctx["manager"].get_level(StandardBall.key), 1, "purchase committed")
+
+
+func test_inside_shop_drag_spawns_body_without_purchase() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	var item: ShopItem = ctx["item"]
+	item.bind_shop_area(_make_shop_area(Vector2(800, 800)))
+
+	item.start_drag()
+	item._press_position = Vector2.ZERO
+	item._max_travel_seen = 50.0
+	var ok: bool = item.attempt_release(Vector2.ZERO)
+	assert_true(ok)
+	assert_false(item.visible, "slot hidden after inside-shop drag")
+	assert_eq(ctx["manager"].get_level(StandardBall.key), 0, "purchase deferred to settle")
+
+
+func test_settle_outside_shop_commits_purchase() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	var item: ShopItem = ctx["item"]
+	item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
+	item.visible = false
+	item.notify_body_settled(_make_body(StandardBall.key), Vector2(9999, 9999))
+
+	assert_eq(ctx["manager"].get_level(StandardBall.key), 1, "purchase committed on outside settle")
+	assert_false(item.visible, "slot hidden after purchase")
+
+
+func test_settle_outside_shop_when_unaffordable_restores_slot() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	var item: ShopItem = ctx["item"]
+	item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
+	item.visible = false
+	ctx["manager"].economy.soul_balance = 0
+	item.notify_body_settled(_make_body(StandardBall.key), Vector2(9999, 9999))
+
+	assert_true(item.visible, "slot restored when unaffordable")
+	assert_eq(ctx["manager"].get_level(StandardBall.key), 0, "no purchase when broke")
+
+
+func test_settle_inside_shop_restores_slot() -> void:
+	var ctx: Dictionary = _make_item(StandardBall)
+	var item: ShopItem = ctx["item"]
+	item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
+	item.visible = false
+	item.notify_body_settled(_make_body(StandardBall.key), Vector2(10, 10))
+
+	assert_true(item.visible, "slot restored after inside settle")
+	assert_eq(ctx["manager"].get_level(StandardBall.key), 0, "no purchase on inside settle")
 
 
 func _make_item(definition: ItemDefinition) -> Dictionary:
@@ -34,76 +111,3 @@ func _make_body(key: String) -> HeldBody:
 	body.item_key = key
 	add_child_autofree(body)
 	return body
-
-
-## Player cannot drag or buy items they cannot afford.
-func test_unaffordable_and_unowned_cannot_be_dragged() -> void:
-	var ctx: Dictionary = _make_item(null)
-	ctx["manager"].economy.soul_balance = 0
-	assert_false(ctx["item"].can_be_dragged())
-
-
-## Player can drag affordable, unowned items.
-func test_affordable_unowned_can_be_dragged() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	assert_true(ctx["item"].can_be_dragged())
-
-
-## Player can drag owned items even without balance.
-func test_owned_can_be_dragged_regardless_of_balance() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	ctx["manager"].take(WristBrace.key)
-	ctx["manager"].economy.soul_balance = 0
-	assert_true(ctx["item"].can_be_dragged())
-
-
-## Releasing inside shop without movement restores the slot without purchase.
-func test_release_without_movement_restores_slot() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	var item: ShopItem = ctx["item"]
-	item.bind_shop_area(_make_shop_area(Vector2(800, 800)))
-
-	item.start_drag()
-	item._press_position = Vector2.ZERO
-	item._max_travel_seen = 0.0
-
-	var ok: bool = item.attempt_release(Vector2.ZERO)
-	assert_true(ok)
-	assert_true(item.visible, "slot visible after pure click")
-	assert_eq(ctx["manager"].get_level(WristBrace.key), 0, "no purchase on pure click")
-
-
-## Releasing outside shop area commits the purchase.
-func test_release_outside_shop_commits_purchase() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	var item: ShopItem = ctx["item"]
-
-	item.start_drag()
-	var ok: bool = item.attempt_release(Vector2(800, 300))
-	assert_true(ok)
-	assert_false(item.visible, "slot hidden after purchase")
-	assert_eq(ctx["manager"].get_level(WristBrace.key), 1, "purchase committed")
-
-
-## Body settling outside shop commits the purchase.
-func test_settle_outside_shop_commits_purchase() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	var item: ShopItem = ctx["item"]
-	item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
-	item.visible = false
-	item.notify_body_settled(_make_body(WristBrace.key), Vector2(9999, 9999))
-
-	assert_eq(ctx["manager"].get_level(WristBrace.key), 1, "purchase committed on outside settle")
-	assert_false(item.visible, "slot hidden after purchase")
-
-
-## Body settling inside shop restores the slot without purchase.
-func test_settle_inside_shop_restores_slot() -> void:
-	var ctx: Dictionary = _make_item(WristBrace)
-	var item: ShopItem = ctx["item"]
-	item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
-	item.visible = false
-	item.notify_body_settled(_make_body(WristBrace.key), Vector2(10, 10))
-
-	assert_true(item.visible, "slot restored after inside settle")
-	assert_eq(ctx["manager"].get_level(WristBrace.key), 0, "no purchase on inside settle")
