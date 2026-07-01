@@ -16,11 +16,13 @@ func test_unaffordable_unowned_cannot_be_dragged() -> void:
 
 func test_affordable_unowned_can_be_dragged() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	assert_true(_item.can_be_dragged())
 
 
 func test_owned_can_be_dragged_regardless_of_balance() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	_manager.take(StandardBall.key)
 	_manager.economy.soul_balance = 0
 	assert_true(_item.can_be_dragged())
@@ -28,6 +30,7 @@ func test_owned_can_be_dragged_regardless_of_balance() -> void:
 
 func test_release_outside_shop_commits_purchase() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	_item.start_drag()
 	var ok: bool = _item.attempt_release(Vector2(800, 300))
 	assert_true(ok)
@@ -37,6 +40,7 @@ func test_release_outside_shop_commits_purchase() -> void:
 
 func test_inside_shop_drag_spawns_body_without_purchase() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	_item.bind_shop_area(_make_shop_area(Vector2(800, 800)))
 	_item.start_drag()
 	_item._press_position = Vector2.ZERO
@@ -49,6 +53,7 @@ func test_inside_shop_drag_spawns_body_without_purchase() -> void:
 
 func test_settle_outside_shop_commits_purchase() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
 	_item.visible = false
 	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(9999, 9999))
@@ -68,6 +73,7 @@ func test_settle_outside_shop_when_unaffordable_restores_slot() -> void:
 
 func test_settle_inside_shop_restores_slot() -> void:
 	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
 	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
 	_item.visible = false
 	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(10, 10))
@@ -78,7 +84,6 @@ func test_settle_inside_shop_restores_slot() -> void:
 func _setup_item(definition: ItemDefinition) -> void:
 	_manager = ItemFactory.create_manager(self)
 	_manager.items.assign([definition])
-	_manager.economy.soul_balance = 10000
 	_item = ShopItemScene.instantiate()
 	_item._item_manager = _manager
 	add_child_autofree(_item)
