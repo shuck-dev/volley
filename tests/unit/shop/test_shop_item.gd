@@ -20,7 +20,14 @@ func test_affordable_unowned_can_be_dragged() -> void:
 	assert_true(_item.can_be_dragged())
 
 
-func test_owned_can_be_dragged_regardless_of_balance() -> void:
+func test_owned_item_can_be_dragged() -> void:
+	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
+	_manager.take(StandardBall.key)
+	assert_true(_item.can_be_dragged())
+
+
+func test_owned_item_can_be_dragged_when_broke() -> void:
 	_setup_item(StandardBall)
 	_manager.economy.soul_balance = 10000
 	_manager.take(StandardBall.key)
