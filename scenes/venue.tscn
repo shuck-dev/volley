@@ -8,9 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(4000, 40)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s1xkn"]
 size = Vector2(4000, 40)
 
@@ -30,6 +27,7 @@ shop = NodePath("Shop")
 court = NodePath("Court")
 
 [node name="ParallaxDeepBack" type="Parallax2D" parent="." unique_id=1359575071]
+visible = false
 z_index = -1000
 scroll_scale = Vector2(0.05, 0.05)
 repeat_size = Vector2(4000, 0)
@@ -43,6 +41,7 @@ offset_bottom = 1500.0
 color = Color(0.05, 0.05, 0.3, 1)
 
 [node name="ParallaxBackground" type="Parallax2D" parent="." unique_id=1359575073]
+visible = false
 z_index = -900
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(4000, 0)
@@ -56,6 +55,7 @@ offset_bottom = 1200.0
 color = Color(0.05, 0.2, 0.05, 0.7)
 
 [node name="ParallaxForeground" type="Parallax2D" parent="." unique_id=1359575077]
+visible = false
 z_index = -800
 scroll_scale = Vector2(1.8, 1.8)
 scroll_offset = Vector2(-1, 0)
@@ -77,20 +77,6 @@ color = Color(0.3, 0.15, 0.05, 0.7)
 script = ExtResource("5_wttuf")
 left_anchor = NodePath("../VenueLeftBound")
 right_anchor = NodePath("../VenueRightBound")
-
-[node name="VenueFloor" type="StaticBody2D" parent="." unique_id=984529763 groups=["floor"]]
-position = Vector2(0, 410)
-
-[node name="VenueFloorShape" type="CollisionShape2D" parent="VenueFloor" unique_id=1971162894]
-shape = SubResource("RectangleShape2D_floor")
-
-[node name="VenueFloorVisual" type="ColorRect" parent="VenueFloor" unique_id=679684262]
-offset_left = -2000.0
-offset_top = -20.0
-offset_right = 2000.0
-offset_bottom = 20.0
-mouse_filter = 2
-color = Color(0.15, 0.1, 0.08, 1)
 
 [node name="Shop" parent="." unique_id=1688593906 instance=ExtResource("3_shop")]
 z_index = -50
@@ -123,9 +109,9 @@ collision_shape = NodePath("VenueRightBoundShape")
 [node name="VenueRightBoundShape" type="CollisionShape2D" parent="VenueRightBound" unique_id=1823696433]
 shape = SubResource("RectangleShape2D_j16ra")
 
-[node name="SkewedFloor" type="Node2D" parent="." unique_id=529474721]
+[node name="VenueFloor" type="Node2D" parent="." unique_id=529474721]
 z_index = -850
 
-[node name="FloorPolygon" type="Polygon2D" parent="SkewedFloor" unique_id=1386414696]
+[node name="FloorPolygon" type="Polygon2D" parent="VenueFloor" unique_id=1386414696]
 color = Color(0.15, 0.1, 0.08, 1)
 polygon = PackedVector2Array(-900, 405, 900, 405, 400, -50, -400, -50)
