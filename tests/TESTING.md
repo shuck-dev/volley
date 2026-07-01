@@ -156,9 +156,9 @@ Worked example (SH-247 ball-grab, lifted from `tests/integration/test_real_input
 ```gdscript
 func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
     _setup_ball_drag()
-    _manager.take("training_ball")
-    _manager.activate("training_ball")
-    var live: Ball = _reconciler.get_ball_for_key("training_ball")
+    _manager.take("standard_ball")
+    _manager.activate("standard_ball")
+    var live: Ball = _reconciler.get_ball_for_key("standard_ball")
     var viewport: Viewport = live.get_viewport()
 
     # Press on the live ball: routes through Ball._on_input_event → emits
@@ -182,7 +182,7 @@ func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
     _drag._input(release)
 
     assert_false(_drag.is_dragging())
-    assert_false(_manager.is_on_court("training_ball"))
+    assert_false(_manager.is_on_court("standard_ball"))
 ```
 
 The same shape applies to shop drag-as-purchase: press via `pickup_area.input_event`, release via `ShopItem._input`. The release event carries `event.position` in viewport coordinates, transformed through the canvas; tests passing `canvas_transform * world_point` get a deterministic release point under headless.
