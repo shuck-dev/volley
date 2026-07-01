@@ -92,7 +92,7 @@ position = Vector2(0, -1500)
 shape = SubResource("RectangleShape2D_s1xkn")
 
 [node name="VenueLeftBound" type="StaticBody2D" parent="." unique_id=1925147373 node_paths=PackedStringArray("collision_shape")]
-position = Vector2(-1700, 0)
+position = Vector2(-1920, 0)
 collision_layer = 4
 script = ExtResource("7_bound")
 collision_shape = NodePath("VenueLeftBoundShape")
@@ -113,5 +113,6 @@ shape = SubResource("RectangleShape2D_j16ra")
 z_index = -850
 
 [node name="FloorPolygon" type="Polygon2D" parent="VenueFloor" unique_id=1386414696]
+position = Vector2(0, 159)
 color = Color(0.15, 0.1, 0.08, 1)
-polygon = PackedVector2Array(-900, 405, 900, 405, 400, -50, -400, -50)
+polygon = PackedVector2Array(-2920, 405, 2920, 405, 1297.7778, -50, -1297.7778, -50)
