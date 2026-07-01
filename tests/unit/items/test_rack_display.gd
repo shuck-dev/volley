@@ -141,6 +141,8 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	manager.take(beta.key)
 	await get_tree().process_frame
 
+	rack.refresh()
+	await get_tree().process_frame
 	rack.hide_slot_for(alpha.key)
 
 	for child in rack.slot_container.get_children():
