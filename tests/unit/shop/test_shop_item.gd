@@ -9,7 +9,7 @@ var _item: ShopItem
 
 
 func test_unaffordable_unowned_cannot_be_dragged() -> void:
-	_setup_item(null)
+	_setup_item(StandardBall)
 	_manager.economy.soul_balance = 0
 	assert_false(_item.can_be_dragged())
 
@@ -77,13 +77,12 @@ func test_settle_inside_shop_restores_slot() -> void:
 
 func _setup_item(definition: ItemDefinition) -> void:
 	_manager = ItemFactory.create_manager(self)
-	if definition != null:
-		_manager.items.assign([definition])
+	_manager.items.assign([definition])
 	_manager.economy.soul_balance = 10000
 	_item = ShopItemScene.instantiate()
 	_item._item_manager = _manager
 	add_child_autofree(_item)
-	_item.configure(_manager, definition if definition != null else _manager.items[0])
+	_item.configure(_manager, definition)
 
 
 func _make_shop_area(size: Vector2) -> Area2D:
