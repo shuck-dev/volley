@@ -122,3 +122,10 @@ collision_shape = NodePath("VenueRightBoundShape")
 
 [node name="VenueRightBoundShape" type="CollisionShape2D" parent="VenueRightBound" unique_id=1823696433]
 shape = SubResource("RectangleShape2D_j16ra")
+
+[node name="SkewedFloor" type="Node2D" parent="." unique_id=529474721]
+z_index = -850
+
+[node name="FloorPolygon" type="Polygon2D" parent="SkewedFloor" unique_id=1386414696]
+color = Color(0.15, 0.1, 0.08, 1)
+polygon = PackedVector2Array(-900, 405, 900, 405, 400, -50, -400, -50)

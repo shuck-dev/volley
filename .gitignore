@@ -104,5 +104,8 @@ Thumbs.db
 # OpenCode local config (personal memory pointer, machine-specific)
 .opencode/
 
+# Primary agent definitions are project source of truth (not machine-specific)
+!.opencode/agent/
+
 # Skills live in the sister AI repo (volley-ai); symlinked in locally.
 .claude/skills
