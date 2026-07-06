@@ -158,8 +158,6 @@ func register_target(target: DropTarget) -> void:
 
 
 func unregister_target(target: DropTarget) -> void:
-	if target.is_builtin:
-		return
 	_drop_targets_root.remove_child(target)
 
 
@@ -678,7 +676,6 @@ func _register_builtin_targets() -> void:
 	]:
 		if target == null:
 			continue
-		target.is_builtin = true
 		_drop_targets_root.add_child(target)
 
 
