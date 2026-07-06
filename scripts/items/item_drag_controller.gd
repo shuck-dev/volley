@@ -42,8 +42,6 @@ var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
 
-var _drop_targets_root: Node = null
-
 var _character_target: CharacterDropTargetScript = null
 
 
@@ -82,9 +80,6 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
-	_drop_targets_root = Node.new()
-	_drop_targets_root.name = "DropTargets"
-	add_child(_drop_targets_root)
 	_register_builtin_targets()
 
 
@@ -154,16 +149,17 @@ func get_cursor_state() -> int:
 func register_target(target: DropTarget) -> void:
 	if target == null:
 		return
-	_drop_targets_root.add_child(target)
+	add_child(target)
 
 
 func unregister_target(target: DropTarget) -> void:
-	_drop_targets_root.remove_child(target)
+	remove_child(target)
+	target.queue_free()
 
 
 func get_registered_targets() -> Array[DropTarget]:
 	var result: Array[DropTarget] = []
-	for child in _drop_targets_root.get_children():
+	for child in get_children():
 		if child is DropTarget:
 			result.append(child as DropTarget)
 	return result
@@ -485,7 +481,7 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for child in _drop_targets_root.get_children():
+	for child in get_children():
 		if child is CourtDropTarget:
 			var target: CourtDropTarget = child as CourtDropTarget
 			if target.can_accept(item_key, world_position, 1.0):
@@ -560,7 +556,7 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for child in _drop_targets_root.get_children():
+	for child in get_children():
 		var target: DropTarget = child as DropTarget
 		if target == null:
 			continue
@@ -619,7 +615,7 @@ func _reset_gesture_state() -> void:
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for child in _drop_targets_root.get_children():
+	for child in get_children():
 		if child is CourtDropTarget:
 			(child as CourtDropTarget).set_exclude_rids(rids)
 			return
@@ -650,7 +646,7 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	for child in _drop_targets_root.get_children():
+	for child in get_children():
 		if child is CharacterDropTarget:
 			var target: CharacterDropTarget = child as CharacterDropTarget
 			target.configure(_item_manager, area, timeout_controller, paddle)
@@ -662,9 +658,10 @@ func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 
 ## Priority order: character equip, role-aware racks, court projection, venue catch-all last.
 func _register_builtin_targets() -> void:
-	for child in _drop_targets_root.get_children():
-		_drop_targets_root.remove_child(child)
-		child.queue_free()
+	for child in get_children():
+		if child is DropTarget:
+			remove_child(child)
+			child.queue_free()
 	_character_target = null
 
 	for target: DropTarget in [
@@ -676,7 +673,7 @@ func _register_builtin_targets() -> void:
 	]:
 		if target == null:
 			continue
-		_drop_targets_root.add_child(target)
+		add_child(target)
 
 
 func _make_court_target() -> CourtDropTarget:
