@@ -746,7 +746,7 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
 	grab_from_rack(item_key, press_position)
-	rack.refresh()
+	rack.refresh.call_deferred()
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:
