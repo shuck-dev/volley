@@ -149,7 +149,8 @@ func unregister_target(target: DropTarget) -> void:
 func get_registered_targets() -> Array[DropTarget]:
 	var result: Array[DropTarget] = []
 	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
-		result.append(node as DropTarget)
+		if node is DropTarget:
+			result.append(node)
 	return result
 
 
@@ -468,10 +469,9 @@ func get_loose_body_host() -> Node:
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
 	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
-		var target: CourtDropTarget = node as CourtDropTarget
-		if target == null:
+		if not (node is CourtDropTarget):
 			continue
-		if target.can_accept(item_key, world_position, 1.0):
+		if node.can_accept(item_key, world_position, 1.0):
 			return true
 		return false
 	return false
@@ -527,9 +527,10 @@ func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
 	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
-		var target: DropTarget = node as DropTarget
-		if target.can_accept(item_key, world_position, scale_factor):
-			return target
+		if not (node is DropTarget):
+			continue
+		if node.can_accept(item_key, world_position, scale_factor):
+			return node
 	return null
 
 
@@ -583,10 +584,9 @@ func _reset_gesture_state() -> void:
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
 	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
-		var target: CourtDropTarget = node as CourtDropTarget
-		if target == null:
+		if not (node is CourtDropTarget):
 			continue
-		target.set_exclude_rids(rids)
+		node.set_exclude_rids(rids)
 		return
 
 
@@ -616,13 +616,12 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
-		var target: CharacterDropTarget = node as CharacterDropTarget
-		if target == null:
+		if not (node is CharacterDropTarget):
 			continue
-		target.configure(_item_manager, area, timeout_controller, paddle)
-		_character_target = target
-		if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-			target.equipped_art_pressed.connect(_on_equipped_art_pressed)
+		node.configure(_item_manager, area, timeout_controller, paddle)
+		_character_target = node
+		if not node.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+			node.equipped_art_pressed.connect(_on_equipped_art_pressed)
 		return
 
 
