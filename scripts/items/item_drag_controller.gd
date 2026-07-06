@@ -42,9 +42,7 @@ var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
 
-var _drop_targets: Array[DropTarget] = []
-## Built-ins are rebuilt on `_ready` and ignored by `unregister_target`.
-var _builtin_targets: Array[DropTarget] = []
+var _drop_targets_root: Node = null
 
 var _character_target: CharacterDropTargetScript = null
 
@@ -84,6 +82,9 @@ func _ready() -> void:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
 
+	_drop_targets_root = Node.new()
+	_drop_targets_root.name = "DropTargets"
+	add_child(_drop_targets_root)
 	_register_builtin_targets()
 
 
@@ -153,19 +154,21 @@ func get_cursor_state() -> int:
 func register_target(target: DropTarget) -> void:
 	if target == null:
 		return
-	if _drop_targets.has(target):
-		return
-	_drop_targets.append(target)
+	_drop_targets_root.add_child(target)
 
 
 func unregister_target(target: DropTarget) -> void:
-	if _builtin_targets.has(target):
+	if target.is_builtin:
 		return
-	_drop_targets.erase(target)
+	_drop_targets_root.remove_child(target)
 
 
 func get_registered_targets() -> Array[DropTarget]:
-	return _drop_targets.duplicate()
+	var result: Array[DropTarget] = []
+	for child in _drop_targets_root.get_children():
+		if child is DropTarget:
+			result.append(child as DropTarget)
+	return result
 
 
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
@@ -484,8 +487,9 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for target: DropTarget in _drop_targets:
-		if target is CourtDropTarget:
+	for child in _drop_targets_root.get_children():
+		if child is CourtDropTarget:
+			var target: CourtDropTarget = child as CourtDropTarget
 			if target.can_accept(item_key, world_position, 1.0):
 				return true
 			return false
@@ -558,7 +562,10 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for target: DropTarget in _drop_targets:
+	for child in _drop_targets_root.get_children():
+		var target: DropTarget = child as DropTarget
+		if target == null:
+			continue
 		if target.can_accept(item_key, world_position, scale_factor):
 			return target
 	return null
@@ -614,9 +621,10 @@ func _reset_gesture_state() -> void:
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for target: DropTarget in _drop_targets:
-		if target is CourtDropTarget:
-			(target as CourtDropTarget).set_exclude_rids(rids)
+	for child in _drop_targets_root.get_children():
+		if child is CourtDropTarget:
+			(child as CourtDropTarget).set_exclude_rids(rids)
+			return
 
 
 func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
@@ -644,19 +652,25 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	_register_builtin_targets(area, paddle)
+	for child in _drop_targets_root.get_children():
+		if child is CharacterDropTarget:
+			var target: CharacterDropTarget = child as CharacterDropTarget
+			target.configure(_item_manager, area, timeout_controller, paddle)
+			_character_target = target
+			if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+				target.equipped_art_pressed.connect(_on_equipped_art_pressed)
+			return
 
 
 ## Priority order: character equip, role-aware racks, court projection, venue catch-all last.
-func _register_builtin_targets(
-	character_area: Area2D = null, character_paddle: Node = null
-) -> void:
-	_drop_targets.clear()
-	_builtin_targets.clear()
+func _register_builtin_targets() -> void:
+	for child in _drop_targets_root.get_children():
+		_drop_targets_root.remove_child(child)
+		child.queue_free()
 	_character_target = null
 
 	for target: DropTarget in [
-		_make_character_target(character_area, character_paddle),
+		CharacterDropTarget.new(),
 		_make_rack_target(rack_drop_target, &"ball"),
 		_make_rack_target(gear_rack_drop_target, &"equipment"),
 		_make_court_target(),
@@ -664,8 +678,8 @@ func _register_builtin_targets(
 	]:
 		if target == null:
 			continue
-		_drop_targets.append(target)
-		_builtin_targets.append(target)
+		target.is_builtin = true
+		_drop_targets_root.add_child(target)
 
 
 func _make_court_target() -> CourtDropTarget:
@@ -674,18 +688,6 @@ func _make_court_target() -> CourtDropTarget:
 	var court_target: CourtDropTarget = CourtDropTarget.new()
 	court_target.configure(_item_manager, reconciler, get_world_2d(), court_bounds)
 	return court_target
-
-
-func _make_character_target(area: Area2D, paddle: Node) -> DropTarget:
-	if area == null or timeout_controller == null:
-		return null
-	var character_target: CharacterDropTargetScript = CharacterDropTargetScript.new()
-	character_target.configure(_item_manager, area, timeout_controller, paddle)
-	# Track the live target so equipped-art presses route into grab_equipped_from_character.
-	_character_target = character_target
-	if not character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-		character_target.equipped_art_pressed.connect(_on_equipped_art_pressed)
-	return character_target
 
 
 func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:

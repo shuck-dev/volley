@@ -65,6 +65,8 @@ func before_each() -> void:
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	_drag.gear_rack = _rack
+	_drag.gear_rack_drop_target = _drop_target
 	add_child_autofree(_drag)
 
 
@@ -446,8 +448,11 @@ func test_grab_equipped_release_on_non_accepting_target_stays_deactivated() -> v
 	# so the held token keeps following the cursor while the item stays deactivated.
 	_add_equipment_to_manager("gear_w")
 	_manager.state.item_placements["gear_w"] = Placement.EQUIPPED
-	_drag.venue_bounds = Rect2()
 	_wire_character_drop_target()
+	# Propagate zero bounds to the VenueDropTarget child created at _ready.
+	for child in _drag._drop_targets_root.get_children():
+		if child is VenueDropTarget:
+			(child as VenueDropTarget).set_bounds(Rect2())
 	_drag.grab_equipped_from_character("gear_w", Vector2.ZERO)
 	_drag._gesture_below_threshold = false
 

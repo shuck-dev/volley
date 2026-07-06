@@ -26,6 +26,10 @@ func set_world(world: World2D) -> void:
 	_world = world
 
 
+func set_bounds(venue_bounds: Rect2) -> void:
+	_venue_bounds = venue_bounds
+
+
 func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
 	if _venue_bounds.size == Vector2.ZERO:
 		return false
