@@ -5,15 +5,17 @@ extends Node2D
 
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
+
+enum State { IDLE, DRAGGING, PENDING_RELEASE }
+
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
-const PRESERVED_SPEED_NONE: float = -1.0
-## Minimum cursor travel before a rack-origin gesture counts as a real drag.
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
+const DROP_TARGET_GROUP := &"drop_targets"
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -36,25 +38,10 @@ var _held_origin: StringName = &"rack"
 var _cursor_samples: Array = []
 var _press_position: Vector2 = Vector2.ZERO
 var _gesture_below_threshold: bool = true
-var _mouse_button_down: bool = false
-## Negative means no preserved energy; positive carries rally speed across grab+release.
-var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
-var _release_pending: bool = false
+var _state: State = State.IDLE
 
 var _character_target: CharacterDropTargetScript = null
-
-
-func configure(
-	item_manager: Node,
-	rack_display: RackDisplay,
-	drop_area: Area2D,
-	ball_reconciler: BallReconciler,
-) -> void:
-	_item_manager = item_manager
-	rack = rack_display
-	rack_drop_target = drop_area
-	reconciler = ball_reconciler
 
 
 func _ready() -> void:
@@ -84,23 +71,26 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	var drag_target: Node2D = _drag_target()
-	if drag_target == null:
-		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
-		return
-	var cursor_target: Vector2 = _cursor_position()
-	drag_target.global_position = cursor_target
-	_track_cursor_motion(cursor_target)
-	if _gesture_below_threshold:
-		if cursor_target.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
-			_gesture_below_threshold = false
-	_update_cursor_state(cursor_target)
-	if not _mouse_button_down:
-		if not attempt_release(cursor_target):
-			pass
-	else:
-		if _held is HeldBody and (_held as HeldBody).phase == HeldBody.Phase.LIFTING:
-			(_held as HeldBody).mark_held()
+	match _state:
+		State.IDLE:
+			_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
+			return
+		State.DRAGGING, State.PENDING_RELEASE:
+			var drag_target: Node2D = _drag_target()
+			if drag_target == null:
+				_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
+				return
+			var cursor_target: Vector2 = _cursor_position()
+			drag_target.global_position = cursor_target
+			_track_cursor_motion(cursor_target)
+			if _gesture_below_threshold:
+				if cursor_target.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
+					_gesture_below_threshold = false
+			_update_cursor_state(cursor_target)
+			if _held is HeldBody and (_held as HeldBody).phase == HeldBody.Phase.LIFTING:
+				(_held as HeldBody).mark_held()
+			if _state == State.PENDING_RELEASE:
+				attempt_release(cursor_target)
 
 
 func _input(event: InputEvent) -> void:
@@ -111,14 +101,12 @@ func _input(event: InputEvent) -> void:
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 
-	_mouse_button_down = mouse_button.pressed
-	if mouse_button.pressed or _drag_target() == null:
+	if mouse_button.pressed or _state != State.DRAGGING:
 		return
 
 	# Use event position so a Camera2D in the venue doesn't break rack hit-testing.
-	if not attempt_release(_event_world_position(mouse_button)):
-		# Gesture stays alive: keep following the cursor and retry release each frame.
-		_release_pending = true
+	_state = State.PENDING_RELEASE
+	attempt_release(_event_world_position(mouse_button))
 
 
 func is_dragging() -> bool:
@@ -150,6 +138,7 @@ func register_target(target: DropTarget) -> void:
 	if target == null:
 		return
 	add_child(target)
+	target.add_to_group(DROP_TARGET_GROUP)
 
 
 func unregister_target(target: DropTarget) -> void:
@@ -159,9 +148,8 @@ func unregister_target(target: DropTarget) -> void:
 
 func get_registered_targets() -> Array[DropTarget]:
 	var result: Array[DropTarget] = []
-	for child in get_children():
-		if child is DropTarget:
-			result.append(child as DropTarget)
+	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
+		result.append(node as DropTarget)
 	return result
 
 
@@ -201,8 +189,7 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 
 	_held_was_on_court = false
 	_held_origin = &"rack"
-	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
-	_mouse_button_down = true
+	_state = State.DRAGGING
 	pickup_started.emit(item_key)
 	return true
 
@@ -230,7 +217,7 @@ func grab_equipped_from_character(item_key: String, press_position: Variant = nu
 	# `equipped` origin re-equips on cancel (capacity re-checked); on_court keeps rack/timeout drops honest.
 	_held_was_on_court = true
 	_held_origin = &"equipped"
-	_mouse_button_down = true
+	_state = State.DRAGGING
 	pickup_started.emit(item_key)
 	return true
 
@@ -249,7 +236,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 			return false
 		_held_was_on_court = false
 		_held_origin = &"live"
-		_mouse_button_down = true
+		_state = State.DRAGGING
 		pickup_started.emit(item_key)
 		return true
 
@@ -267,7 +254,7 @@ func grab_live_ball(item_key: String, is_temporary: bool = false) -> bool:
 	_adopt_live_ball_as_held(existing, item_key)
 	_held_was_on_court = was_on_court
 	_held_origin = &"live"
-	_mouse_button_down = true
+	_state = State.DRAGGING
 	pickup_started.emit(item_key)
 	return true
 
@@ -407,7 +394,6 @@ func attempt_release(release_position: Vector2) -> bool:
 			_release_live_ball_to_court(release_position, velocity)
 		else:
 			target.accept(item_key, release_position, velocity)
-			_apply_preserved_speed_after_accept(item_key)
 	elif target is VenueDropTarget:
 		if was_temporary:
 			# Temporary balls never join the registry; fall through to finalise (which frees the HeldBody).
@@ -481,12 +467,13 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for child in get_children():
-		if child is CourtDropTarget:
-			var target: CourtDropTarget = child as CourtDropTarget
-			if target.can_accept(item_key, world_position, 1.0):
-				return true
-			return false
+	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
+		var target: CourtDropTarget = node as CourtDropTarget
+		if target == null:
+			continue
+		if target.can_accept(item_key, world_position, 1.0):
+			return true
+		return false
 	return false
 
 
@@ -511,7 +498,7 @@ func _on_loose_body_grabbed(body: HeldBody) -> void:
 	_gesture_below_threshold = true
 	_cursor_samples.clear()
 	_track_cursor_motion(spawn_position)
-	_mouse_button_down = true
+	_state = State.DRAGGING
 	pickup_started.emit(item_key)
 
 
@@ -536,30 +523,11 @@ func _loose_body_host() -> Node:
 	return self
 
 
-func _apply_preserved_speed_after_accept(item_key: String) -> void:
-	if _held_preserved_speed < 0.0:
-		return
-	if reconciler == null:
-		return
-	var ball: Ball = reconciler.get_ball_for_key(item_key)
-	if ball == null:
-		return
-	ball.speed = _held_preserved_speed
-	# Re-sync the effect processor's base so the next physics frame's speed-limit clamp
-	# does not snap us back to ball_speed_min.
-	if ball.effect_processor != null:
-		ball.effect_processor.sync_base_speed()
-	if ball.linear_velocity.length() > 0.0:
-		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
-
-
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for child in get_children():
-		var target: DropTarget = child as DropTarget
-		if target == null:
-			continue
+	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
+		var target: DropTarget = node as DropTarget
 		if target.can_accept(item_key, world_position, scale_factor):
 			return target
 	return null
@@ -579,6 +547,7 @@ func _restore_held_ball_to_stored(item_key: String) -> void:
 
 
 func _finalise_gesture(item_key: String, release_position: Vector2, over_court: bool) -> void:
+	_state = State.IDLE
 	# Live-grab path: the Ball survives or was queue_freed by the reconciler via court_changed; do not free here.
 	if _held is HeldBody:
 		(_held as HeldBody).queue_free()
@@ -606,19 +575,19 @@ func _reset_gesture_state() -> void:
 	_held_is_temporary = false
 	_held_was_on_court = false
 	_held_origin = &"rack"
-	_held_preserved_speed = PRESERVED_SPEED_NONE
 	_cursor_samples.clear()
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
-	_release_pending = false
 	_set_court_exclude_rids([])
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for child in get_children():
-		if child is CourtDropTarget:
-			(child as CourtDropTarget).set_exclude_rids(rids)
-			return
+	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
+		var target: CourtDropTarget = node as CourtDropTarget
+		if target == null:
+			continue
+		target.set_exclude_rids(rids)
+		return
 
 
 func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
@@ -646,14 +615,15 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 ## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	for child in get_children():
-		if child is CharacterDropTarget:
-			var target: CharacterDropTarget = child as CharacterDropTarget
-			target.configure(_item_manager, area, timeout_controller, paddle)
-			_character_target = target
-			if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-				target.equipped_art_pressed.connect(_on_equipped_art_pressed)
-			return
+	for node in get_tree().get_nodes_in_group(DROP_TARGET_GROUP):
+		var target: CharacterDropTarget = node as CharacterDropTarget
+		if target == null:
+			continue
+		target.configure(_item_manager, area, timeout_controller, paddle)
+		_character_target = target
+		if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+			target.equipped_art_pressed.connect(_on_equipped_art_pressed)
+		return
 
 
 ## Priority order: character equip, role-aware racks, court projection, venue catch-all last.
@@ -674,6 +644,7 @@ func _register_builtin_targets() -> void:
 		if target == null:
 			continue
 		add_child(target)
+		target.add_to_group(DROP_TARGET_GROUP)
 
 
 func _make_court_target() -> CourtDropTarget:

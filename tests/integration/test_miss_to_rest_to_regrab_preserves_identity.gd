@@ -42,7 +42,10 @@ func before_each() -> void:
 	_host.add_child(_reconciler)
 
 	_drag = ItemDragControllerScript.new()
-	_drag.configure(_manager, _rack, _drop_target, _reconciler)
+	_drag._item_manager = _manager
+	_drag.rack = _rack
+	_drag.rack_drop_target = _drop_target
+	_drag.reconciler = _reconciler
 	_drag.court_bounds = COURT_BOUNDS
 	_drag.venue_bounds = VENUE_BOUNDS
 	add_child_autofree(_drag)

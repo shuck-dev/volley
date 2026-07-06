@@ -70,7 +70,10 @@ func before_each() -> void:
 	add_child_autofree(drop_area)
 
 	_drag = ItemDragControllerScript.new()
-	_drag.configure(_manager, rack, drop_area, reconciler)
+	_drag._item_manager = _manager
+	_drag.rack = rack
+	_drag.rack_drop_target = drop_area
+	_drag.reconciler = reconciler
 	_drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	var timeout: TimeoutController = TimeoutControllerScript.new()

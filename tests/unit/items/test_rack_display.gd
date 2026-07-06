@@ -240,7 +240,10 @@ func test_grab_removes_item_from_the_rack() -> void:
 	add_child_autofree(drop_target)
 
 	var drag: ItemDragController = ItemDragControllerScript.new()
-	drag.configure(manager, rack, drop_target, reconciler)
+	drag._item_manager = manager
+	drag.rack = rack
+	drag.rack_drop_target = drop_target
+	drag.reconciler = reconciler
 	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	add_child_autofree(drag)
 
