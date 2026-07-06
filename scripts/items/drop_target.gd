@@ -1,5 +1,5 @@
 class_name DropTarget
-extends RefCounted
+extends Node
 
 ## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
 

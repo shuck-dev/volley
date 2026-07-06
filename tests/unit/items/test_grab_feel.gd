@@ -67,6 +67,10 @@ func before_each() -> void:
 	add_child_autofree(_drag)
 
 
+func after_each() -> void:
+	await get_tree().process_frame
+
+
 func test_held_body_starts_at_grab_origin_not_at_cursor() -> void:
 	_manager.take("ball_alpha")
 	var press_origin := Vector2(123, 45)
