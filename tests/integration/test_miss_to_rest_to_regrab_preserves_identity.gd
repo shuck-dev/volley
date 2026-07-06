@@ -48,6 +48,10 @@ func before_each() -> void:
 	add_child_autofree(_drag)
 
 
+func after_each() -> void:
+	await get_tree().process_frame
+
+
 func _build_rack(manager: Node) -> RackDisplay:
 	var rack: RackDisplay = RackDisplayScript.new()
 	rack.role = &"ball"

@@ -82,6 +82,10 @@ func before_each() -> void:
 	_base_speed = GameRules.paddle.paddle_speed
 
 
+func after_each() -> void:
+	await get_tree().process_frame
+
+
 func test_grab_off_character_deactivates_effect_immediately() -> void:
 	ItemFactory.give(_manager, "equip_a")
 	_manager.equip("equip_a")

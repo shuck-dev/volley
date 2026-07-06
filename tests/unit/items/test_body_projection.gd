@@ -9,6 +9,10 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 
+func after_each() -> void:
+	await get_tree().process_frame
+
+
 func _make_ball_definition(key: String, radius: float = 12.0) -> ItemDefinition:
 	var item: ItemDefinition = ItemTestHelpersScript.make_ball_item(key)
 	var shape := CircleShape2D.new()
@@ -47,6 +51,7 @@ func _make_harness(definitions: Array) -> Dictionary:
 			Rect2(Vector2(-600, -400), Vector2(1200, 800)),
 		)
 	)
+	add_child_autofree(target)
 	return {"host": host, "reconciler": reconciler, "target": target, "manager": manager}
 
 

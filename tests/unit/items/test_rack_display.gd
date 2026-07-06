@@ -7,6 +7,10 @@ const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_dra
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
 
+func after_each() -> void:
+	await get_tree().process_frame
+
+
 func _stub_art() -> PackedScene:
 	var scene := PackedScene.new()
 	# PackedScene.pack snapshots the node but does not take ownership; freeing avoids a CanvasItem RID leak at exit.
