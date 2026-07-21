@@ -12,6 +12,11 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var shop_area: Area2D
 @export var soul_label: Label
 @export var items_anchor: Node2D
+@export var refresh_button: Button
+@export var refresh_count_label: Label
+@export var refresh_cost_label: Label
+
+var refresh_count: int = 0
 
 var _item_manager: Node
 ## Cached so tree_exiting can unregister after `get_tree()` would return null.
@@ -28,9 +33,12 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_update_soul_label(_item_manager.get_soul_balance())
 	_spawn_items()
+	_update_refresh_ui()
 	_register_shop_target()
 	if not tree_exiting.is_connected(_on_tree_exiting):
 		tree_exiting.connect(_on_tree_exiting)
+	if refresh_button != null and not refresh_button.pressed.is_connected(_on_refresh_pressed):
+		refresh_button.pressed.connect(_on_refresh_pressed)
 
 
 ## Deferred so the controller has run `_ready` and joined the `drag_controller` group.
@@ -80,6 +88,33 @@ func _spawn_items() -> void:
 		shop_item.bind_shop_area(shop_area)
 
 
+func _rotation_cost() -> int:
+	var total: int = 0
+	for child: Node in items_anchor.get_children():
+		var shop_item: ShopItem = child as ShopItem
+		if shop_item != null and shop_item.item_definition != null:
+			total += _item_manager.calculate_cost(shop_item.item_definition.key)
+	return total
+
+
+func _on_refresh_pressed() -> void:
+	var cost: int = _rotation_cost() * refresh_count
+	if cost > 0:
+		if _item_manager.get_soul_balance() < cost:
+			return
+		_item_manager.subtract_soul(cost)
+	refresh_count += 1
+	_clear_items()
+	_spawn_items()
+	_update_refresh_ui()
+
+
+func _clear_items() -> void:
+	for child: Node in items_anchor.get_children():
+		if child is ShopItem:
+			child.queue_free()
+
+
 func _get_visible_items() -> Array[ItemDefinition]:
 	var available: Array[ItemDefinition] = []
 	for definition: ItemDefinition in _item_manager.items:
@@ -89,17 +124,34 @@ func _get_visible_items() -> Array[ItemDefinition]:
 			continue
 		if _item_manager.get_level(definition.key) == 0:
 			available.append(definition)
-		if available.size() >= config.display_slots:
-			break
-	return available
+	available.shuffle()
+	return available.slice(0, config.display_slots)
 
 
 func _update_soul_label(balance: int) -> void:
-	soul_label.text = "Soul: %d" % balance
+	if soul_label != null:
+		soul_label.text = "Soul: %d" % balance
 
 
 func _on_soul_balance_changed(balance: int) -> void:
 	_update_soul_label(balance)
+	_update_refresh_ui()
+
+
+func _update_refresh_ui() -> void:
+	var next_cost: int = _rotation_cost() * refresh_count
+	if refresh_count_label != null:
+		refresh_count_label.text = "Refreshes: %d" % refresh_count
+	if refresh_cost_label != null:
+		if next_cost == 0:
+			refresh_cost_label.text = "Next: Free"
+		else:
+			refresh_cost_label.text = "Next: %d" % next_cost
+	if refresh_button != null:
+		if next_cost > 0 and _item_manager.get_soul_balance() < next_cost:
+			refresh_button.disabled = true
+		else:
+			refresh_button.disabled = false
 
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.
