@@ -286,10 +286,10 @@ func unequip(item_key: String) -> bool:
 	return deactivate(item_key)
 
 
-## Returns total cost of an item at its current level
+## Returns total cost of an item at its current level; each subsequent copy costs double the previous.
 func calculate_cost(item_key: String) -> int:
 	var item: ItemDefinition = _get_item(item_key)
-	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
+	return int(item.base_cost * pow(2.0, get_level(item_key)))
 
 
 ## Returns true if the item is unowned and affordable. Used by drop targets.
@@ -349,7 +349,7 @@ func remove_level(item_key: String) -> void:
 	var current_level := get_level(item_key)
 	if current_level > 0:
 		var item := _get_item(item_key)
-		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
+		var refund := int(item.base_cost * pow(2.0, current_level - 1))
 		_refund_soul(refund)
 		_set_level(item_key, current_level - 1)
 

@@ -88,6 +88,22 @@ func test_settle_inside_shop_restores_slot() -> void:
 	assert_eq(_manager.get_level(StandardBall.key), 0, "no purchase on inside settle")
 
 
+func test_owned_ball_can_be_upgraded_from_shop() -> void:
+	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
+	# First purchase via the shop flow
+	_item.start_drag()
+	_item.attempt_release(Vector2(800, 300))
+	assert_eq(_manager.get_level(StandardBall.key), 1, "first purchase sets level 1")
+
+	# Second purchase: owned ball can be re-purchased for upgrade
+	_item.visible = true
+	_item.start_drag()
+	_item.attempt_release(Vector2(800, 300))
+	assert_eq(_manager.get_level(StandardBall.key), 2, "re-purchase upgrades to level 2")
+	assert_false(_item.visible, "slot hidden after re-purchase")
+
+
 func _setup_item(definition: ItemDefinition) -> void:
 	_manager = ItemFactory.create_manager(self)
 	_manager.items.assign([definition])

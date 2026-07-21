@@ -321,6 +321,9 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 			_release_ball_from_registry(reconciler, ball)
 			visible = true
 			return
+	else:
+		# Already owned: attempt upgrade via purchase; silent on failure (max level, broke).
+		_complete_purchase()
 
 	visible = false
 	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
@@ -377,7 +380,8 @@ func _start_drag() -> void:
 
 func _complete_purchase() -> bool:
 	if is_owned():
-		return false
+		# Already owned: attempt upgrade via purchase()
+		return _item_manager.purchase(item_definition.key)
 	if not can_be_owned():
 		return false
 	return _item_manager.take(item_definition.key)
