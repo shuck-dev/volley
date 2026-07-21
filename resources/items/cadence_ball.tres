@@ -3,9 +3,65 @@
 [ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_art"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://ypinkudmmgdn" path="res://scripts/items/effect/condition.gd" id="2_ijjqn"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://buncwlrnw4fu2" path="res://scripts/items/effect/outcomes/oscillate_stat_outcome.gd" id="5_osc"]
+[ext_resource type="Script" uid="uid://dmekm818a7ire" path="res://scripts/items/effect/outcomes/random_stat_outcome.gd" id="6_random"]
+[ext_resource type="Script" uid="uid://csph4ocah4fdm" path="res://scripts/items/effect/outcomes/game_action_outcome.gd" id="7_game"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
 radius = 7.2
+
+[sub_resource type="Resource" id="trigger_1"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="outcome_1"]
+script = ExtResource("5_osc")
+stat_key = &"ball_speed_min"
+amplitude = 0.1
+range_stat_key = &"ball_speed_max_range"
+
+[sub_resource type="Resource" id="effect_1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_1")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_1")])
+min_active_level = 1
+max_active_level = 1
+
+[sub_resource type="Resource" id="trigger_2"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="outcome_2"]
+script = ExtResource("6_random")
+stat_key = &"ball_speed_min"
+operation = &"add"
+min_value = -30.0
+max_value = 50.0
+
+[sub_resource type="Resource" id="effect_2"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_2")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_2")])
+min_active_level = 2
+max_active_level = 2
+
+[sub_resource type="Resource" id="trigger_3"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="outcome_3"]
+script = ExtResource("7_game")
+action_key = &"soul_burst"
+
+[sub_resource type="Resource" id="effect_3"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_3")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("outcome_3")])
+min_active_level = 3
+max_active_level = null
 
 [resource]
 script = ExtResource("1_item")
@@ -20,5 +76,5 @@ consolidations_to_l2 = 5
 consolidations_to_l3 = 10
 upgrade_cost = 50
 purchasable = true
-effects = Array[ExtResource("2_effect")]([])
+effects = Array[ExtResource("2_effect")]([SubResource("effect_1"), SubResource("effect_2"), SubResource("effect_3")])
 at_rest_shape = SubResource("at_rest_shape_1")
