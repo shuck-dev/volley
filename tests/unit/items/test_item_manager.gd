@@ -569,3 +569,49 @@ class TestItemManagerStateChanged:
 			_manager.is_loose_in_venue(TEST_KEY),
 			"activate should clear loose_in_venue from non-STORED branch",
 		)
+
+
+class TestBootstrapStarters:
+	extends GutTest
+	const BOOTSTRAP_KEY := "base_ball"
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var ball_item := ItemDefinition.new()
+		ball_item.key = BOOTSTRAP_KEY
+		ball_item.role = &"ball"
+		ball_item.base_cost = 40
+		ball_item.cost_scaling = 2.0
+		ball_item.max_level = 10
+		ball_item.effects = []
+		_manager.items.assign([ball_item])
+
+	func test_sets_level_to_one_on_fresh_save() -> void:
+		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 0, "precondition: level is zero")
+		_manager._bootstrap_starters()
+		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 1)
+
+	func test_sets_placement_to_stored_on_fresh_save() -> void:
+		_manager._bootstrap_starters()
+		assert_eq(_manager.get_placement(BOOTSTRAP_KEY), Placement.STORED)
+
+	func test_assigns_rack_slot_on_fresh_save() -> void:
+		_manager._bootstrap_starters()
+		assert_ne(_manager.get_rack_slot_index(BOOTSTRAP_KEY), -1)
+
+	func test_is_idempotent_on_second_call() -> void:
+		_manager._bootstrap_starters()
+		var level_after_first: int = _manager.get_level(BOOTSTRAP_KEY)
+		_manager._bootstrap_starters()
+		assert_eq(_manager.get_level(BOOTSTRAP_KEY), level_after_first)
+
+	func test_skips_when_already_owned_from_save() -> void:
+		_manager.state.item_levels[BOOTSTRAP_KEY] = 2
+		_manager._bootstrap_starters()
+		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 2)
+
+	func test_emits_item_level_changed_on_fresh_save() -> void:
+		watch_signals(_manager)
+		_manager._bootstrap_starters()
+		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [BOOTSTRAP_KEY])
