@@ -13,13 +13,8 @@ signal rack_slots_changed
 signal item_manager_state_changed
 
 var items: Array[ItemDefinition] = [
-	preload("res://resources/items/ankle_weights.tres"),
 	preload("res://resources/items/base_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
-	preload("res://resources/items/court_lines.tres"),
-	preload("res://resources/items/spare.tres"),
-	preload("res://resources/items/cadence.tres"),
-	preload("res://resources/items/wrist_brace.tres"),
 ]
 
 var state: ItemState
