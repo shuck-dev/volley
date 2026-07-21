@@ -8,11 +8,13 @@ size = Vector2(500, 287)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "refresh_button", "refresh_cost_label") groups=["hot_reloadable_config"]]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 soul_label = NodePath("SoulLabel")
 items_anchor = NodePath("ItemsAnchor")
+refresh_button = NodePath("RefreshButton")
+refresh_cost_label = NodePath("RefreshCostLabel")
 
 [node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
@@ -60,6 +62,21 @@ offset_right = 200.0
 offset_bottom = 144.0
 mouse_filter = 2
 color = Color(0.35, 0.2, 0.1, 1)
+
+[node name="RefreshButton" type="Button" parent="." unique_id=681031276]
+offset_left = -30.0
+offset_top = -195.0
+offset_right = 30.0
+offset_bottom = -170.0
+text = "Refresh"
+
+[node name="RefreshCostLabel" type="Label" parent="." unique_id=681031277]
+offset_left = -100.0
+offset_top = -170.0
+offset_right = 100.0
+offset_bottom = -150.0
+text = "FREE"
+horizontal_alignment = 1
 
 [node name="ItemsAnchor" type="Node2D" parent="." unique_id=681031275]
 position = Vector2(0, -30)

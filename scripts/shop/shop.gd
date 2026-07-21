@@ -12,8 +12,11 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var shop_area: Area2D
 @export var soul_label: Label
 @export var items_anchor: Node2D
+@export var refresh_button: Button
+@export var refresh_cost_label: Label
 
 var _item_manager: Node
+var _refresh_count: int = 0
 ## Cached so tree_exiting can unregister after `get_tree()` would return null.
 var _registered_target: ShopDropTarget = null
 var _registered_controller: Node = null
@@ -29,6 +32,9 @@ func _ready() -> void:
 	_update_soul_label(_item_manager.get_soul_balance())
 	_spawn_items()
 	_register_shop_target()
+	_update_refresh_ui()
+	if refresh_button != null:
+		refresh_button.pressed.connect(_on_refresh_pressed)
 	if not tree_exiting.is_connected(_on_tree_exiting):
 		tree_exiting.connect(_on_tree_exiting)
 
@@ -64,6 +70,42 @@ func _on_tree_exiting() -> void:
 	_registered_controller = null
 
 
+func _on_refresh_pressed() -> void:
+	var cost: int = _get_refresh_cost()
+	if cost > 0 and _item_manager.get_soul_balance() < cost:
+		return
+	if cost > 0:
+		_item_manager.subtract_soul(cost)
+	_refresh_count += 1
+	_clear_items()
+	_spawn_items()
+	_update_refresh_ui()
+
+
+func _get_refresh_cost() -> int:
+	if _refresh_count == 0:
+		return 0
+	return int(config.refresh_base_cost * pow(config.refresh_cost_scaling, _refresh_count - 1))
+
+
+func _update_refresh_ui() -> void:
+	if refresh_cost_label == null:
+		return
+	var cost: int = _get_refresh_cost()
+	if cost == 0:
+		refresh_cost_label.text = "FREE"
+	else:
+		refresh_cost_label.text = "%d soul" % cost
+	if refresh_button == null:
+		return
+	refresh_button.disabled = cost > 0 and _item_manager.get_soul_balance() < cost
+
+
+func _clear_items() -> void:
+	for child in items_anchor.get_children():
+		child.queue_free()
+
+
 func _spawn_items() -> void:
 	var visible_items: Array[ItemDefinition] = _get_visible_items()
 	var count: int = visible_items.size()
@@ -91,6 +133,7 @@ func _get_visible_items() -> Array[ItemDefinition]:
 			available.append(definition)
 		if available.size() >= config.display_slots:
 			break
+	available.shuffle()
 	return available
 
 
