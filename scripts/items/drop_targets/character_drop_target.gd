@@ -39,8 +39,6 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	if not _is_equipment_role(item_key):
 		return false
-	if _item_manager.get_kit_remaining() < 1:
-		return false
 	if _timeout_controller == null:
 		return false
 	if _timeout_controller.get_state() != TimeoutController.State.AT_EQUIP_POSE:
@@ -51,7 +49,7 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	if _item_manager == null:
 		return
-	# equip emits equip_refused on capacity races; no-op on failure so the held token stays put.
+	# No-op on failure so the held token stays put.
 	if not _item_manager.equip(item_key):
 		return
 	# Mount happens via item_placement_changed → EQUIPPED, keeping equip and unequip symmetric.

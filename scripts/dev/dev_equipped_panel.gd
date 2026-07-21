@@ -1,9 +1,8 @@
 extends VBoxContainer
 
-## Dev-only readout of the kit: items currently EQUIPPED and how many slots remain.
+## Dev-only readout of items currently EQUIPPED.
 
 var _list: VBoxContainer
-var _cap_label: Label
 var _drag := DraggableBehavior.new()
 
 
@@ -13,9 +12,6 @@ func _ready() -> void:
 		return
 
 	mouse_filter = Control.MOUSE_FILTER_PASS
-	_add_header()
-	_cap_label = _make_label()
-	add_child(_cap_label)
 	_list = VBoxContainer.new()
 	add_child(_list)
 	ItemManager.item_placement_changed.connect(_refresh.unbind(2))
@@ -49,7 +45,7 @@ func _make_label() -> Label:
 
 
 func _refresh() -> void:
-	if _list == null or _cap_label == null:
+	if _list == null:
 		return
 	for child in _list.get_children():
 		child.queue_free()
@@ -59,11 +55,6 @@ func _refresh() -> void:
 		if ItemManager.state.item_placements[item_key] == Placement.EQUIPPED:
 			equipped.append(item_key)
 	equipped.sort()
-
-	var remaining: int = ItemManager.get_kit_remaining()
-	var used: int = equipped.size()
-	var cap: int = used + remaining
-	_cap_label.text = "kit: %d / %d" % [used, cap]
 
 	if equipped.is_empty():
 		var label := _make_label()

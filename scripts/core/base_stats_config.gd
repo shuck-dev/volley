@@ -11,8 +11,6 @@ extends Resource
 @export var soul_per_hit := 1.0
 ## Per-frame pull strength of the ball toward the nearest paddle; 0.0 disables magnetism.
 @export var ball_magnetism := 0.0
-## Number of equipment slots in the player's kit; item-tunable, not yet read in production.
-@export var kit_slots := 3.0
 ## Additive offset applied on top of ball_speed_min when computing the rally floor.
 @export var ball_speed_offset := 0.0
 ## Arena vertical extent in pixels; upper bound for the paddle and the AI math half-height.
@@ -26,7 +24,6 @@ func to_dict() -> Dictionary:
 		&"ball_speed_increment": ball_speed_increment,
 		&"soul_per_hit": soul_per_hit,
 		&"ball_magnetism": ball_magnetism,
-		&"kit_slots": kit_slots,
 		&"ball_speed_offset": ball_speed_offset,
 		&"arena_height": arena_height,
 	}
