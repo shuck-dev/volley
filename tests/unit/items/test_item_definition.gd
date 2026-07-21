@@ -65,3 +65,23 @@ func test_returns_only_effects_active_at_level() -> void:
 func test_returns_empty_when_no_effects_defined() -> void:
 	_item.effects = []
 	assert_eq(_item.get_effects_for_level(1).size(), 0)
+
+
+# --- standard_ball.tres data checks ---
+func test_standard_ball_tres_has_consolidation_fields() -> void:
+	var ball: ItemDefinition = load("res://resources/items/standard_ball.tres")
+	assert_eq(ball.consolidations_to_l2, 5, "consolidations_to_l2 should be 5")
+	assert_eq(ball.consolidations_to_l3, 10, "consolidations_to_l3 should be 10")
+	assert_eq(ball.upgrade_cost, 50, "upgrade_cost should be 50")
+	assert_eq(
+		ball.consolidation_release_multiplier,
+		0.5,
+		"consolidation_release_multiplier should be 0.5",
+	)
+	assert_gt(ball.effects.size(), 0, "should have at least one effect")
+	assert_eq(
+		ball.effects[0].trigger.type,
+		&"on_consolidation",
+		"first effect trigger should be on_consolidation",
+	)
+	assert_gt(ball.effects[0].outcomes.size(), 0, "effect should have at least one outcome")

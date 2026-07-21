@@ -58,10 +58,18 @@ func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 	if ball != null:
 		ball.increment_soul_multiplier(1.0)
 
-	_item_manager.process_event(&"on_consolidation")
+	var actions: Array[StringName] = _item_manager.process_event(&"on_consolidation")
 
 	if ball != null and not ball.item_key.is_empty():
 		_item_manager.record_consolidation(ball.item_key)
+		if actions.has(&"soul_burst"):
+			var item_def: ItemDefinition = _resolve_item(ball.item_key)
+			if item_def != null and item_def.consolidation_release_multiplier > 0.0:
+				var bonus: int = int(
+					ball.accumulated_soul * item_def.consolidation_release_multiplier
+				)
+				if bonus > 0:
+					_item_manager.add_soul(bonus)
 
 	consolidation_fired.emit()
 
@@ -79,3 +87,10 @@ func _handle_first_reach(ball: Ball, completed_tier: int) -> void:
 
 	if ball == null or ball.item_key.is_empty():
 		return
+
+
+func _resolve_item(item_key: String) -> ItemDefinition:
+	for item: ItemDefinition in _item_manager.items:
+		if item.key == item_key:
+			return item
+	return null

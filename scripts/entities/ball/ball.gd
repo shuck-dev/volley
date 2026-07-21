@@ -45,6 +45,8 @@ var ball_world_max_speed: float
 var current_tier := 0
 ## True while the top tier's final-consolidation window is open; the ball climbs above max_speed up to the world max.
 var in_final := false
+## Soul points this ball has generated in the current rally; reset on miss.
+var accumulated_soul: float = 0.0
 ## Accumulated soul multiplier for this ball; incremented by each consolidation event, reset on miss.
 var soul_multiplier: float = 1.0
 
@@ -190,6 +192,7 @@ func _on_miss_zone_body_entered(body: Node) -> void:
 
 
 func _on_missed(_ball: Ball) -> void:
+	accumulated_soul = 0.0
 	reset_soul_multiplier()
 	enter_out_rest()
 

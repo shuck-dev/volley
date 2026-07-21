@@ -289,4 +289,6 @@ func _accumulate_soul() -> void:
 	var whole_points: int = int(_soul_accumulator)
 	if whole_points > 0:
 		_item_manager.add_soul(whole_points)
+		if _hitting_ball != null:
+			_hitting_ball.accumulated_soul += whole_points
 		_soul_accumulator -= float(whole_points)

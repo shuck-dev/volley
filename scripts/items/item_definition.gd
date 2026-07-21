@@ -25,6 +25,8 @@ extends Resource
 @export var consolidations_to_l2: int = 5
 ## Consolidations needed to reach the third upgrade tier.
 @export var consolidations_to_l3: int = 10
+## Random-change multiplier for the soul burst on consolidation; 0 disables the burst.
+@export var consolidation_release_multiplier: float = 0.0
 ## Per-character anchor for equipped visual; empty path falls back to character root.
 @export var anchor_node_path: NodePath
 

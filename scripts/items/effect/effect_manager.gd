@@ -1,6 +1,10 @@
 class_name EffectManager
 extends Node
 
+# preload workaround for autoload class_name ordering (godotengine/godot#75582)
+@warning_ignore("shadowed_global_identifier")
+const SoulBurstOutcome = preload("res://scripts/items/effect/outcomes/soul_burst_outcome.gd")
+
 var _effect_state: EffectState = EffectState.new()
 var _event_effects: Array[Dictionary] = []
 
@@ -79,7 +83,10 @@ func register_source(source: Resource, level: int) -> void:
 
 func _collect_game_actions(effect: Effect, actions: Array[StringName]) -> void:
 	for outcome in effect.outcomes:
-		if outcome is GameActionOutcome:
+		if outcome is SoulBurstOutcome:
+			if randf() < outcome.burst_chance:
+				actions.append(outcome.action_key)
+		elif outcome is GameActionOutcome:
 			actions.append(outcome.action_key)
 
 

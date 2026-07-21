@@ -3,9 +3,25 @@
 [ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_5blea"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_s36c6"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trig"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_out"]
+[ext_resource type="Script" path="res://scripts/items/effect/outcomes/soul_burst_outcome.gd" id="5_sb"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
 radius = 7.2
+
+[sub_resource type="Resource" id="trig_consol"]
+script = ExtResource("3_trig")
+type = &"on_consolidation"
+
+[sub_resource type="Resource" id="out_soul_burst"]
+script = ExtResource("5_sb")
+burst_chance = 0.3
+
+[sub_resource type="Resource" id="effect_soul"]
+script = ExtResource("2_s36c6")
+trigger = SubResource("trig_consol")
+outcomes = Array[ExtResource("4_out")]([SubResource("out_soul_burst")])
 
 [resource]
 script = ExtResource("1_item")
@@ -17,4 +33,9 @@ art = ExtResource("1_5blea")
 descriptions = Array[String](["A different ball every time", "Bonus soul at higher tiers", "The reliable choice"])
 base_cost = 10
 max_level = 10
+consolidations_to_l2 = 5
+consolidations_to_l3 = 10
+upgrade_cost = 50
+consolidation_release_multiplier = 0.5
+effects = Array[ExtResource("2_s36c6")]([SubResource("effect_soul")])
 at_rest_shape = SubResource("at_rest_shape_1")
