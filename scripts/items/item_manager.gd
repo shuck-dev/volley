@@ -52,7 +52,7 @@ func _register_existing_items() -> void:
 ## Handles the legacy base_ball item that was previously pre-placed on the court.
 func _bootstrap_starters() -> void:
 	for item in items:
-		if item.key == "base_ball" and get_level(item.key) <= 0:
+		if state.item_levels.is_empty() and item.key == "base_ball":
 			state.item_levels[item.key] = 1
 			item_level_changed.emit(item.key)
 			_set_item_placement(item.key, Placement.STORED)

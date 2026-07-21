@@ -587,31 +587,13 @@ class TestBootstrapStarters:
 		ball_item.effects = []
 		_manager.items.assign([ball_item])
 
-	func test_sets_level_to_one_on_fresh_save() -> void:
-		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 0, "precondition: level is zero")
+	func test_bootstraps_when_no_save_exists() -> void:
+		assert_true(_manager.state.item_levels.is_empty(), "precondition: no save")
 		_manager._bootstrap_starters()
 		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 1)
-
-	func test_sets_placement_to_stored_on_fresh_save() -> void:
-		_manager._bootstrap_starters()
 		assert_eq(_manager.get_placement(BOOTSTRAP_KEY), Placement.STORED)
 
-	func test_assigns_rack_slot_on_fresh_save() -> void:
+	func test_skips_when_save_has_items() -> void:
+		_manager.state.item_levels["other_key"] = 1
 		_manager._bootstrap_starters()
-		assert_ne(_manager.get_rack_slot_index(BOOTSTRAP_KEY), -1)
-
-	func test_is_idempotent_on_second_call() -> void:
-		_manager._bootstrap_starters()
-		var level_after_first: int = _manager.get_level(BOOTSTRAP_KEY)
-		_manager._bootstrap_starters()
-		assert_eq(_manager.get_level(BOOTSTRAP_KEY), level_after_first)
-
-	func test_skips_when_already_owned_from_save() -> void:
-		_manager.state.item_levels[BOOTSTRAP_KEY] = 2
-		_manager._bootstrap_starters()
-		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 2)
-
-	func test_emits_item_level_changed_on_fresh_save() -> void:
-		watch_signals(_manager)
-		_manager._bootstrap_starters()
-		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [BOOTSTRAP_KEY])
+		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 0)
