@@ -35,6 +35,7 @@ func _ready() -> void:
 
 	add_child(_effect_manager)
 	_register_existing_items()
+	_bootstrap_starters()
 
 
 func _register_existing_items() -> void:
@@ -45,6 +46,16 @@ func _register_existing_items() -> void:
 			_effect_manager.register_source(item, get_level(item.key))
 		elif not state.rack_slot_index_by_key.has(item.key):
 			_assign_rack_slot(item.key, item.role)
+
+
+## Bootstraps starter items that should be owned from the first playthrough.
+## Handles the legacy base_ball item that was previously pre-placed on the court.
+func _bootstrap_starters() -> void:
+	for item in items:
+		if item.key == "base_ball" and get_level(item.key) <= 0:
+			state.item_levels[item.key] = 1
+			item_level_changed.emit(item.key)
+			_set_item_placement(item.key, Placement.STORED)
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
