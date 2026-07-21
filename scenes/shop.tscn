@@ -8,11 +8,14 @@ size = Vector2(500, 287)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "refresh_button", "refresh_count_label", "refresh_cost_label") groups=["hot_reloadable_config"]]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 soul_label = NodePath("SoulLabel")
 items_anchor = NodePath("ItemsAnchor")
+refresh_button = NodePath("RefreshButton")
+refresh_count_label = NodePath("RefreshCountLabel")
+refresh_cost_label = NodePath("RefreshCostLabel")
 
 [node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
