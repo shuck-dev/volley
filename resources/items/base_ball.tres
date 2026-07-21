@@ -13,7 +13,6 @@ type = &"kit"
 role = &"ball"
 display_name = "Old ball"
 art = ExtResource("1_5blea")
-descriptions = Array[String](["Already moving", "Starts fast. Stays fast", "Never cooled down"])
 base_cost = 40
 max_level = 10
 purchasable = false
