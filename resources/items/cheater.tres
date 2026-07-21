@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_art"]
+[ext_resource type="Script" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" path="res://scripts/items/effect/outcomes/wobble_outcome.gd" id="5_wobble"]
+
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
+[sub_resource type="Resource" id="l1_outcome"]
+script = ExtResource("5_wobble")
+strength = 0.04
+hit_interval = 1
+
+[sub_resource type="Resource" id="l1_trigger"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="l1_effect"]
+script = ExtResource("2_effect")
+trigger = SubResource("l1_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("l1_outcome")])
+min_active_level = 1
+max_active_level = 1
+
+[sub_resource type="Resource" id="l2_outcome"]
+script = ExtResource("5_wobble")
+strength = 0.075
+hit_interval = 3
+
+[sub_resource type="Resource" id="l2_trigger"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="l2_effect"]
+script = ExtResource("2_effect")
+trigger = SubResource("l2_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("l2_outcome")])
+min_active_level = 2
+max_active_level = 2
+
+[sub_resource type="Resource" id="l3_outcome"]
+script = ExtResource("5_wobble")
+strength = 0.13
+hit_interval = 1
+
+[sub_resource type="Resource" id="l3_trigger"]
+script = ExtResource("3_trigger")
+type = &"timer"
+parameters = {
+"interval": 15.0
+}
+
+[sub_resource type="Resource" id="l3_effect"]
+script = ExtResource("2_effect")
+trigger = SubResource("l3_trigger")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("l3_outcome")])
+min_active_level = 3
+max_active_level = 3
+
+[resource]
+script = ExtResource("1_item")
+key = "cheater"
+type = &"kit"
+role = &"ball"
+display_name = "Cheater"
+art = ExtResource("1_art")
+descriptions = Array[String](["Wobble, random interval", "Lurch every 3-5 hits", "Mad dash every 15s"])
+base_cost = 120
+max_level = 3
+consolidations_to_l2 = 5
+consolidations_to_l3 = 10
+upgrade_cost = 50
+purchasable = true
+effects = Array[ExtResource("2_effect")]([SubResource("l1_effect"), SubResource("l2_effect"), SubResource("l3_effect")])
+at_rest_shape = SubResource("at_rest_shape_1")
