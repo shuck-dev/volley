@@ -48,8 +48,8 @@ func _register_existing_items() -> void:
 			_assign_rack_slot(item.key, item.role)
 
 
-## Bootstraps starter items that should be owned from the first playthrough.
-## Handles the legacy base_ball item that was previously pre-placed on the court.
+## Bootstraps base_ball on the first-ever playthrough so a new save starts
+## with the Old ball in the rack. Idempotent: skipped when any save data exists.
 func _bootstrap_starters() -> void:
 	for item in items:
 		if state.item_levels.is_empty() and item.key == "base_ball":
