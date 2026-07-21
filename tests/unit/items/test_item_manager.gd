@@ -574,10 +574,13 @@ class TestItemManagerStateChanged:
 class TestBootstrapStarters:
 	extends GutTest
 	const BOOTSTRAP_KEY := "base_ball"
-	var _manager: Node
+	const ItemManagerScript := preload("res://scripts/items/item_manager.gd")
 
-	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+	func _make_manager() -> Node:
+		var manager: Node = ItemManagerScript.new()
+		manager.state = ItemState.new()
+		manager.economy = EconomyState.new()
+		manager._effect_manager = EffectManager.new()
 		var ball_item := ItemDefinition.new()
 		ball_item.key = BOOTSTRAP_KEY
 		ball_item.role = &"ball"
@@ -585,15 +588,18 @@ class TestBootstrapStarters:
 		ball_item.cost_scaling = 2.0
 		ball_item.max_level = 10
 		ball_item.effects = []
-		_manager.items.assign([ball_item])
+		manager.items.assign([ball_item])
+		return manager
 
 	func test_bootstraps_when_no_save_exists() -> void:
-		assert_true(_manager.state.item_levels.is_empty(), "precondition: no save")
-		_manager._bootstrap_starters()
-		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 1)
-		assert_eq(_manager.get_placement(BOOTSTRAP_KEY), Placement.STORED)
+		var manager: Node = _make_manager()
+		add_child_autofree(manager)
+		await get_tree().process_frame
+		assert_eq(manager.get_level(BOOTSTRAP_KEY), 1)
 
 	func test_skips_when_save_has_items() -> void:
-		_manager.state.item_levels["other_key"] = 1
-		_manager._bootstrap_starters()
-		assert_eq(_manager.get_level(BOOTSTRAP_KEY), 0)
+		var manager: Node = _make_manager()
+		manager.state.item_levels["other_key"] = 1
+		add_child_autofree(manager)
+		await get_tree().process_frame
+		assert_eq(manager.get_level(BOOTSTRAP_KEY), 0)

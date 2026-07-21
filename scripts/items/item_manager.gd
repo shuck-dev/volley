@@ -35,7 +35,7 @@ func _ready() -> void:
 
 	add_child(_effect_manager)
 	_register_existing_items()
-	_bootstrap_starters()
+	call_deferred(&"_bootstrap_starter_items")
 
 
 func _register_existing_items() -> void:
@@ -50,7 +50,7 @@ func _register_existing_items() -> void:
 
 ## Bootstraps base_ball on the first-ever playthrough so a new save starts
 ## with the Old ball in the rack. Idempotent: skipped when any save data exists.
-func _bootstrap_starters() -> void:
+func _bootstrap_starter_items() -> void:
 	for item in items:
 		if state.item_levels.is_empty() and item.key == "base_ball":
 			state.item_levels[item.key] = 1
