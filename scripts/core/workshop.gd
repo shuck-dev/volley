@@ -53,8 +53,9 @@ func _on_upgrade_pressed() -> void:
 	var cost: int = definition.upgrade_cost
 	if _item_manager.get_soul_balance() < cost:
 		return
+	if not _item_manager.upgrade_ball(_docked_item_key):
+		return
 	_item_manager.subtract_soul(cost)
-	_item_manager.upgrade_ball(_docked_item_key)
 	_item_manager.reassign_rack_slot(_docked_item_key)
 	_position_ball_on_rack(_docked_item_key)
 	_docked_item_key = ""
