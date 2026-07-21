@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_art"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
+[resource]
+script = ExtResource("1_item")
+key = "cadence"
+type = &"kit"
+role = &"ball"
+display_name = "Cadence"
+art = ExtResource("1_art")
+base_cost = 100
+max_level = 3
+consolidations_to_l2 = 5
+consolidations_to_l3 = 10
+upgrade_cost = 50
+purchasable = true
+effects = Array[ExtResource("2_effect")]([])
+at_rest_shape = SubResource("at_rest_shape_1")
