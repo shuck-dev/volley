@@ -1,0 +1,73 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_art"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="Script" uid="uid://dbqsqxhdwee6s" path="res://scripts/items/effect/trigger.gd" id="3_trigger"]
+[ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
+[ext_resource type="Script" uid="uid://dhv8qa7d0py3f" path="res://scripts/items/effect/outcomes/curve_toward_player_outcome.gd" id="5_curve"]
+
+[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
+radius = 7.2
+
+# L1 effect: on_hit trigger, curve ball toward player paddle position. Levels 1+.
+[sub_resource type="Resource" id="curve_outcome_l1"]
+script = ExtResource("5_curve")
+strength = 0.15
+
+[sub_resource type="Resource" id="trigger_on_hit"]
+script = ExtResource("3_trigger")
+type = &"on_hit"
+
+[sub_resource type="Resource" id="effect_l1"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_on_hit")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("curve_outcome_l1")])
+min_active_level = 1
+
+# L2 effect: on_miss trigger, curve toward player after miss. Levels 2+.
+[sub_resource type="Resource" id="curve_outcome_l2"]
+script = ExtResource("5_curve")
+strength = 0.3
+
+[sub_resource type="Resource" id="trigger_on_miss"]
+script = ExtResource("3_trigger")
+type = &"on_miss"
+
+[sub_resource type="Resource" id="effect_l2"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_on_miss")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("curve_outcome_l2")])
+min_active_level = 2
+
+# L3 effect: on_consolidation trigger, strong curve toward player. Level 3 only.
+[sub_resource type="Resource" id="curve_outcome_l3"]
+script = ExtResource("5_curve")
+strength = 0.5
+
+[sub_resource type="Resource" id="trigger_on_consolidation"]
+script = ExtResource("3_trigger")
+type = &"on_consolidation"
+
+[sub_resource type="Resource" id="effect_l3"]
+script = ExtResource("2_effect")
+trigger = SubResource("trigger_on_consolidation")
+outcomes = Array[ExtResource("4_outcome")]([SubResource("curve_outcome_l3")])
+min_active_level = 3
+
+[resource]
+script = ExtResource("1_item")
+key = "comeback"
+type = &"kit"
+role = &"ball"
+display_name = "Comeback"
+art = ExtResource("1_art")
+descriptions = Array[String](["Ball curves toward your reach", "Strong curve on miss", "Fierce curve on consolidation"])
+base_cost = 100
+max_level = 3
+consolidations_to_l2 = 5
+consolidations_to_l3 = 10
+upgrade_cost = 50
+purchasable = true
+effects = Array[ExtResource("2_effect")]([SubResource("effect_l1"), SubResource("effect_l2"), SubResource("effect_l3")])
+at_rest_shape = SubResource("at_rest_shape_1")
