@@ -85,6 +85,8 @@ func _get_visible_items() -> Array[ItemDefinition]:
 	for definition: ItemDefinition in _item_manager.items:
 		if not definition.purchasable:
 			continue
+		if definition.role != &"ball":
+			continue
 		if _item_manager.get_level(definition.key) == 0:
 			available.append(definition)
 		if available.size() >= config.display_slots:
