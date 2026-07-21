@@ -372,6 +372,37 @@ func adopt_authored(item_key: String) -> void:
 		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
 
+## Records one consolidation for a ball. Increments the per-ball counter used by the workshop gate.
+func record_consolidation(item_key: String) -> void:
+	if state == null:
+		return
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return
+	state.ball_consolidations[item_key] = state.ball_consolidations.get(item_key, 0) + 1
+
+
+## Returns the number of recorded consolidations for a ball.
+func get_consolidations(item_key: String) -> int:
+	return state.ball_consolidations.get(item_key, 0)
+
+
+## Returns true when the consolidation threshold for the next upgrade level is met.
+func can_upgrade(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return false
+	var current_level := get_level(item_key)
+	if current_level <= 0 or current_level >= item.max_level:
+		return false
+	var consolidations := get_consolidations(item_key)
+	if current_level == 1 and consolidations >= item.consolidations_to_l2:
+		return true
+	if current_level == 2 and consolidations >= item.consolidations_to_l3:
+		return true
+	return false
+
+
 ## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
 ## Returns true when the level increased. Intended for tier-completion ball upgrades.
 func upgrade_ball(item_key: String) -> bool:

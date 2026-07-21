@@ -3,6 +3,8 @@ extends Node2D
 @export var drop_area: Area2D
 @export var upgrade_button: Button
 @export var upgrade_cost_label: Label
+@export var ball_reconciler: BallReconciler
+@export var ball_rack: Node
 
 var _item_manager: Node
 var _docked_item_key: String = ""
@@ -25,7 +27,6 @@ func dock_ball(item_key: String) -> void:
 		return
 	_docked_item_key = item_key
 	_item_manager.deactivate(item_key)
-	_item_manager.reassign_rack_slot(item_key)
 	_position_ball_at_self(item_key)
 	_show_upgrade_ui()
 
@@ -50,13 +51,14 @@ func _on_upgrade_pressed() -> void:
 	var definition: ItemDefinition = _get_definition(_docked_item_key)
 	if definition == null:
 		return
+	if not _item_manager.can_upgrade(_docked_item_key):
+		return
 	var cost: int = definition.upgrade_cost
 	if _item_manager.get_soul_balance() < cost:
 		return
 	if not _item_manager.upgrade_ball(_docked_item_key):
 		return
 	_item_manager.subtract_soul(cost)
-	_item_manager.reassign_rack_slot(_docked_item_key)
 	_position_ball_on_rack(_docked_item_key)
 	_docked_item_key = ""
 	_hide_upgrade_ui()
@@ -76,7 +78,7 @@ func _position_ball_on_rack(item_key: String) -> void:
 		return
 	if ball.has_method("enter_stored"):
 		ball.enter_stored()
-	var rack: Node = _find_rack()
+	var rack: Node = ball_rack
 	if rack != null and rack.has_method("get_slot_position_for"):
 		var slot_pos: Variant = rack.get_slot_position_for(item_key)
 		if slot_pos is Vector2 and ball is Node2D:
@@ -84,32 +86,12 @@ func _position_ball_on_rack(item_key: String) -> void:
 
 
 func _find_ball(item_key: String) -> Node:
-	var reconciler: Node = _find_reconciler()
+	var reconciler: Node = ball_reconciler
 	if reconciler == null:
 		return null
 	if not reconciler.has_method("get_ball_for_key"):
 		return null
 	return reconciler.get_ball_for_key(item_key)
-
-
-func _find_reconciler() -> Node:
-	var venue: Node = get_parent()
-	if venue == null:
-		return null
-	var court: Node = venue.get_node_or_null("Court")
-	if court == null:
-		return null
-	return court.get_node_or_null("BallReconciler")
-
-
-func _find_rack() -> Node:
-	var venue: Node = get_parent()
-	if venue == null:
-		return null
-	var court: Node = venue.get_node_or_null("Court")
-	if court == null:
-		return null
-	return court.get_node_or_null("BallRack")
 
 
 func _get_definition(item_key: String) -> ItemDefinition:

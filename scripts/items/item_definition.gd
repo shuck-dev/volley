@@ -21,6 +21,10 @@ extends Resource
 @export var at_rest_shape: Shape2D
 ## Soul cost for one upgrade in the workshop; player pays this per upgrade level.
 @export var upgrade_cost: int = 50
+## Consolidations needed to reach the second upgrade tier.
+@export var consolidations_to_l2: int = 5
+## Consolidations needed to reach the third upgrade tier.
+@export var consolidations_to_l3: int = 10
 ## Per-character anchor for equipped visual; empty path falls back to character root.
 @export var anchor_node_path: NodePath
 

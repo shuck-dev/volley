@@ -59,6 +59,10 @@ func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 		ball.increment_soul_multiplier(1.0)
 
 	_item_manager.process_event(&"on_consolidation")
+
+	if ball != null and not ball.item_key.is_empty():
+		_item_manager.record_consolidation(ball.item_key)
+
 	consolidation_fired.emit()
 
 

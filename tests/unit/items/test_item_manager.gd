@@ -550,6 +550,56 @@ class TestEquipFlow:
 		assert_false(_manager.unequip("gear_a"))
 
 
+class TestConsolidationCounter:
+	extends GutTest
+	const BALL_KEY := "test_ball"
+	const EQUIP_KEY := "test_speed"
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var ball_item := ItemDefinition.new()
+		ball_item.key = BALL_KEY
+		ball_item.role = &"ball"
+		ball_item.base_cost = 100
+		ball_item.cost_scaling = 2.0
+		ball_item.max_level = 3
+		ball_item.consolidations_to_l2 = 3
+		ball_item.consolidations_to_l3 = 6
+		ball_item.effects = []
+		_manager.items.append(ball_item)
+		_manager.economy.soul_balance = 10000
+
+	func test_record_consolidation_increments_counter() -> void:
+		ItemFactory.give(_manager, BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		assert_eq(_manager.get_consolidations(BALL_KEY), 1)
+		_manager.record_consolidation(BALL_KEY)
+		assert_eq(_manager.get_consolidations(BALL_KEY), 2)
+
+	func test_can_upgrade_returns_false_below_threshold() -> void:
+		ItemFactory.give(_manager, BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		assert_false(_manager.can_upgrade(BALL_KEY))
+
+	func test_can_upgrade_returns_true_when_threshold_met() -> void:
+		ItemFactory.give(_manager, BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		_manager.record_consolidation(BALL_KEY)
+		assert_true(_manager.can_upgrade(BALL_KEY))
+
+	func test_can_upgrade_returns_false_at_max_level() -> void:
+		ItemFactory.give(_manager, BALL_KEY, 3)
+		_manager.state.ball_consolidations[BALL_KEY] = 10
+		assert_false(_manager.can_upgrade(BALL_KEY))
+
+	func test_record_consolidation_skips_non_ball_role() -> void:
+		_manager.record_consolidation(EQUIP_KEY)
+		assert_eq(_manager.get_consolidations(EQUIP_KEY), 0)
+
+
 class TestItemManagerStateChanged:
 	extends GutTest
 	const TEST_KEY := "test_speed"
