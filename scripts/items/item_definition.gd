@@ -19,6 +19,8 @@ extends Resource
 @export var purchasable: bool = true
 ## Authored at-rest shape for drop-target body projection; null falls back to bounds-only acceptance.
 @export var at_rest_shape: Shape2D
+## Soul cost for one upgrade in the workshop; player pays this per upgrade level.
+@export var upgrade_cost: int = 50
 ## Per-character anchor for equipped visual; empty path falls back to character root.
 @export var anchor_node_path: NodePath
 

@@ -299,9 +299,9 @@ func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 	)
 
 
-# Regression: first-reach tier upgrades must fire independently per ball, not once globally.
-# Ball A reaching tier 0 first should not consume the first-reach slot for ball B.
-func test_first_reach_upgrade_fires_independently_per_ball() -> void:
+# First-reach no longer triggers auto-upgrades; upgrades are player-driven through the workshop.
+# Ball A reaching tier 0 should not change the level of either ball.
+func test_first_reach_does_not_auto_upgrade() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
 
@@ -318,8 +318,8 @@ func test_first_reach_upgrade_fires_independently_per_ball() -> void:
 
 	assert_eq(
 		_manager.get_level("ball_alpha"),
-		alpha_level_before + 1,
-		"first ball reaching tier 0 for the first time must trigger its upgrade",
+		alpha_level_before,
+		"first ball reaching tier 0 must not auto-upgrade (upgrade is now player-driven)",
 	)
 
 	second.current_tier = 0
@@ -329,8 +329,8 @@ func test_first_reach_upgrade_fires_independently_per_ball() -> void:
 
 	assert_eq(
 		_manager.get_level("ball_beta"),
-		beta_level_before + 1,
-		"second ball reaching tier 0 for the first time must also trigger its own upgrade, independent of ball_alpha",
+		beta_level_before,
+		"second ball reaching tier 0 must also not auto-upgrade (upgrade is now player-driven)",
 	)
 
 

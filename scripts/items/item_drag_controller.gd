@@ -9,6 +9,9 @@ const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd
 const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
+const WorkshopDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/workshop_drop_target.gd"
+)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -19,6 +22,7 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var rack_drop_target: Area2D
 @export var gear_rack: RackDisplay
 @export var gear_rack_drop_target: Area2D
+@export var workshop_drop_target: Area2D
 @export var timeout_controller: TimeoutController
 @export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
@@ -419,6 +423,10 @@ func attempt_release(release_position: Vector2) -> bool:
 			_release_held_body_as_loose(release_position)
 		_finalise_gesture(item_key, release_position, false)
 		return true
+	elif target is WorkshopDropTarget:
+		target.accept(item_key, release_position, Vector2.ZERO)
+		_finalise_gesture(item_key, release_position, false)
+		return true
 	else:
 		# Restore is the safety net when ItemManager was already STORED so accept's deactivate was a no-op.
 		target.accept(item_key, release_position, Vector2.ZERO)
@@ -666,6 +674,7 @@ func _register_builtin_targets() -> void:
 
 	for target: DropTarget in [
 		CharacterDropTarget.new(),
+		_make_workshop_target(),
 		_make_rack_target(rack_drop_target, &"ball"),
 		_make_rack_target(gear_rack_drop_target, &"equipment"),
 		_make_court_target(),
@@ -690,6 +699,15 @@ func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
 	var rack_target: RackDropTarget = RackDropTarget.new()
 	rack_target.configure(_item_manager, area, role)
 	return rack_target
+
+
+func _make_workshop_target() -> WorkshopDropTarget:
+	if workshop_drop_target == null:
+		return null
+	var workshop_node: Node = workshop_drop_target.get_parent()
+	var ws_target: WorkshopDropTarget = WorkshopDropTargetScript.new()
+	ws_target.configure(_item_manager, workshop_drop_target, workshop_node)
+	return ws_target
 
 
 func _make_venue_target() -> VenueDropTarget:
