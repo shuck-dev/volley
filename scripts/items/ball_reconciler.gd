@@ -5,17 +5,14 @@ extends Node
 
 signal ball_spawned(item_key: String, ball: Ball)
 
-## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
+## Emitted whenever a ball is in play.
 signal ball_added(ball: Ball)
 
-## Emitted whenever a ball leaves the tracked set (release, deactivate).
+## Emitted whenever a ball leaves play.
 signal ball_removed(ball: Ball)
 signal ball_missed(ball: Ball)
 
-## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
 signal ball_final_consolidation_changed(in_final: bool)
-
-## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 
 signal current_ball_changed(ball: Ball)
@@ -56,8 +53,7 @@ func _ready() -> void:
 	_item_manager.court_changed.connect(_on_court_changed)
 	_item_manager.item_manager_state_changed.connect(_reconcile)
 
-	# Position persistence: SaveManager pulls live positions from us before each
-	# disk write so balls reload where the player left them, not the spawn marker.
+	# Position persistence
 	if _has_save_manager_autoload():
 		SaveManager.set_position_provider(collect_item_positions)
 		SaveManager.set_play_state_provider(collect_ball_play_states)
@@ -107,12 +103,15 @@ func has_ball_in_play() -> bool:
 	for raw: Variant in _balls_by_key.values():
 		if not is_instance_valid(raw):
 			continue
+
 		var ball: Ball = raw
+
 		if (
 			ball.play_state == Ball.PlayState.PLAY_NORMAL
 			or ball.play_state == Ball.PlayState.PLAY_ARC
 		):
 			return true
+
 	return false
 
 
@@ -120,41 +119,22 @@ func has_ball_in_play() -> bool:
 func get_ball_for_key(item_key: String) -> Ball:
 	if _balls_by_key.has(item_key):
 		var raw: Variant = _balls_by_key[item_key]
+
 		if is_instance_valid(raw):
 			return raw
+
 		_balls_by_key.erase(item_key)
+
 		return null
+
 	for key in _balls_by_key:
 		if BallKey.is_instance(item_key, key):
 			var raw: Variant = _balls_by_key[key]
+
 			if is_instance_valid(raw):
 				return raw
+
 	return null
-
-
-## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries rally speed through grab-and-release.
-func ensure_ball_for_key(
-	item_key: String,
-	spawn_position: Vector2,
-	initial_velocity: Vector2,
-	preserved_speed: float = PRESERVED_SPEED_NONE,
-) -> Ball:
-	var existing: Ball = get_ball_for_key(item_key)
-	if existing != null:
-		# Re-entry from STORED/OUT_REST/OUT_HELD goes through enter_play so physics flags flip cleanly.
-		if (
-			existing.play_state != Ball.PlayState.PLAY_NORMAL
-			and existing.play_state != Ball.PlayState.PLAY_ARC
-		):
-			existing.enter_play()
-		existing.global_position = spawn_position
-		existing.linear_velocity = initial_velocity
-		_apply_preserved_speed(existing, preserved_speed)
-		return existing
-
-	var ball: Ball = _create_ball(item_key, spawn_position, initial_velocity)
-	_apply_preserved_speed(ball, preserved_speed)
-	return ball
 
 
 ## Ensures a registry Ball at `position`, in OUT_REST, carrying `velocity`.
@@ -195,7 +175,16 @@ func bring_into_play(
 ) -> Ball:
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
-	return ensure_ball_for_key(item_key, spawn_position, initial_velocity, preserved_speed)
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball != null:
+		ball.enter_play()
+		ball.global_position = spawn_position
+		ball.linear_velocity = initial_velocity
+		_apply_preserved_speed(ball, preserved_speed)
+		return ball
+	ball = _create_ball(item_key, spawn_position, initial_velocity)
+	_apply_preserved_speed(ball, preserved_speed)
+	return ball
 
 
 ## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
@@ -242,7 +231,6 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 	_initial_reconcile_pending = false
 	if on_court:
 		var existing: Ball = get_ball_for_key(item_key)
-		# Existing PLAY balls (pre-existing, mid-rally) already live at the right spot; reposition would clobber them.
 		if (
 			existing != null
 			and (
@@ -251,11 +239,16 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		ensure_ball_for_key(
-			item_key,
-			_spawn_position_for(item_key),
-			_item_manager.get_default_ball_launch_velocity(),
-		)
+		var ball: Ball
+		var pos := _spawn_position_for(item_key)
+		var vel := _item_manager.get_default_ball_launch_velocity()
+		if existing != null:
+			ball = existing
+			ball.global_position = pos
+			ball.linear_velocity = vel
+			ball.enter_play()
+		else:
+			ball = _create_ball(item_key, pos, vel)
 		return
 
 	var ball: Ball = get_ball_for_key(item_key)
@@ -285,10 +278,8 @@ func _reconcile() -> void:
 		_initial_reconcile_pending = false
 		for key in _item_manager.get_court_items():
 			if get_ball_for_key(key) == null:
-				ensure_ball_for_key(
-					key,
-					_spawn_position_for(key),
-					_item_manager.get_default_ball_launch_velocity(),
+				_create_ball(
+					key, _spawn_position_for(key), _item_manager.get_default_ball_launch_velocity()
 				)
 	_reconcile_stored_kit_items()
 
