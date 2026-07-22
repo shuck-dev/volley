@@ -257,14 +257,14 @@ func deactivate(item_key: String) -> bool:
 
 ## Free kit slots; clamped at zero so over-capacity loads do not report negative.
 func get_kit_remaining() -> int:
-	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
+	var capacity: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
 	var equipped_count: int = 0
 
 	for key: String in state.item_placements:
 		if int(state.item_placements[key]) == Placement.EQUIPPED:
 			equipped_count += 1
 
-	return max(0, cap - equipped_count)
+	return max(0, capacity - equipped_count)
 
 
 ## Equipment-role placement gated by kit capacity; emits `equip_refused` on capacity rejection.
