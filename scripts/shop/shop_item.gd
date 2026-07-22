@@ -153,13 +153,14 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		if not _complete_purchase() and not is_owned():
+		if not _complete_purchase():
 			return false
-		var key: String = item_definition.key if not is_owned() else _next_instance_key()
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 		if controller != null and controller.has_method("spawn_purchased_at"):
-			spawned = controller.spawn_purchased_at(key, release_position, _release_velocity())
+			spawned = controller.spawn_purchased_at(
+				item_definition.key, release_position, _release_velocity()
+			)
 		if not spawned:
 			_drop_falling_body(release_position)
 		_finalise_gesture(release_position, true)
@@ -366,16 +367,6 @@ func _start_drag() -> void:
 	visible = false
 	_mouse_button_down = true
 	pickup_started.emit(item_definition.key)
-
-
-func _next_instance_key() -> String:
-	if not _is_ball_role() or not is_owned():
-		return item_definition.key
-	for key in _item_manager.get_kit_items(&"ball"):
-		if BallKey.is_instance(item_definition.key, key):
-			return key
-		return _item_manager.generate_instance_key(item_definition.key)
-	return item_definition.key
 
 
 func _complete_purchase() -> bool:
