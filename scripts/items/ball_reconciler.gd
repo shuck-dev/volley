@@ -124,6 +124,7 @@ func adopt_pre_existing_balls() -> void:
 
 		var key: String = ball.item_key
 		var definition: ItemDefinition = _get_item_definition(key)
+
 		if definition != null and definition.role == &"ball":
 			assert(
 				BallKey.base_key(key) != key,

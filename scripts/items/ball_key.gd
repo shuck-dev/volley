@@ -19,6 +19,7 @@ static func base_key(instance_key: String) -> String:
 	var regex := RegEx.new()
 	regex.compile("_\\d+$")
 	var result := regex.search(instance_key)
+
 	if result:
 		return instance_key.substr(0, result.get_start())
 	return instance_key
