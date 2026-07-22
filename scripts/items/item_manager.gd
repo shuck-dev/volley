@@ -223,10 +223,20 @@ func get_court_items() -> Array[String]:
 			continue
 		if _get_placement(key) != Placement.ON_COURT:
 			continue
+		if not _key_in_catalog(key):
+			continue
 		var item := _get_item(key)
 		if item != null and item.role == &"ball":
 			result.append(key)
 	return result
+
+
+func _key_in_catalog(item_key: String) -> bool:
+	var base := _base_key(item_key)
+	for item in items:
+		if item.key == base:
+			return true
+	return false
 
 
 ## Slot index assigned to `item_key` while STORED; -1 when not stored.
@@ -276,6 +286,8 @@ func get_kit_items(role: StringName) -> Array[String]:
 		if state.item_levels[key] <= 0:
 			continue
 		if _get_placement(key) != Placement.STORED:
+			continue
+		if not _key_in_catalog(key):
 			continue
 		var item := _get_item(key)
 		if item != null and item.role == role:
@@ -566,4 +578,5 @@ func _get_item(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in items:
 		if item.key == base_key:
 			return item
+	assert(false, "Unknown item key: %s" % item_key)
 	return null
