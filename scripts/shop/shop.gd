@@ -13,7 +13,6 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var soul_label: Label
 @export var items_anchor: Node2D
 @export var restock_button: Button
-@export var refresh_count_label: Label
 
 var _item_manager: Node
 ## Cached so tree_exiting can unregister after `get_tree()` would return null.
@@ -141,8 +140,6 @@ func _update_restock_button() -> void:
 	else:
 		restock_button.text = "Restock (%d Soul)" % cost
 		restock_button.disabled = _item_manager.get_soul_balance() < cost
-	if refresh_count_label != null:
-		refresh_count_label.text = "Refresh: %d" % _refresh_count
 
 
 func _update_soul_label(balance: int) -> void:

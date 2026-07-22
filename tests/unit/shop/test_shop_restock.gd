@@ -84,13 +84,6 @@ func test_restock_button_enabled_when_affordable() -> void:
 	assert_false(_shop.restock_button.disabled, "button enabled when affordable")
 
 
-func test_refresh_count_label_shows_count() -> void:
-	assert_not_null(_shop.refresh_count_label, "refresh_count_label assigned")
-	assert_eq(_shop.refresh_count_label.text, "Refresh: 0")
-	_shop.restock()
-	assert_eq(_shop.refresh_count_label.text, "Refresh: 1")
-
-
 func test_calculate_restock_cost_returns_zero_for_first_refresh() -> void:
 	_shop._refresh_count = 0
 	assert_eq(_shop._calculate_restock_cost(), 0)
