@@ -560,7 +560,7 @@ func _base_key(item_key: String) -> String:
 
 
 func generate_instance_key(base_key: String) -> String:
-	return BallKey.next_instance(base_key, state.item_levels)
+	return BallKey.generate(base_key, state.item_levels)
 
 
 func get_owned_count(base_key: String) -> int:

@@ -8,7 +8,7 @@ static func is_instance(item_type: String, key: String) -> bool:
 	return regex.search(key) != null
 
 
-static func next_instance(item_type: String, existing_keys: Dictionary) -> String:
+static func generate(item_type: String, existing_keys: Dictionary) -> String:
 	var n := 1
 	while existing_keys.has("%s_%d" % [item_type, n]):
 		n += 1
