@@ -34,20 +34,9 @@ func _ready() -> void:
 		_effect_manager.name = "EffectManager"
 
 	add_child(_effect_manager)
-	_register_existing_items()
 
-
-func _register_existing_items() -> void:
 	for key in state.item_levels:
 		if state.item_levels[key] <= 0:
-			continue
-		var base := BallKey.base_key(key)
-		var found := false
-		for item in items:
-			if item.key == base:
-				found = true
-				break
-		if not found:
 			continue
 		var item := _get_item(key)
 		if item == null:
@@ -56,6 +45,8 @@ func _register_existing_items() -> void:
 			_effect_manager.register_source(item, state.item_levels[key])
 		elif not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key, item.role)
+
+	item_manager_state_changed.emit()
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -70,7 +61,17 @@ func reload_from_progression() -> void:
 	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
 
-	_register_existing_items()
+	for key in state.item_levels:
+		if state.item_levels[key] <= 0:
+			continue
+		var item := _get_item(key)
+		if item == null:
+			continue
+		if _is_placed(key):
+			_effect_manager.register_source(item, state.item_levels[key])
+		elif not state.rack_slot_index_by_key.has(key):
+			_assign_rack_slot(key, item.role)
+
 	soul_balance_changed.emit(economy.soul_balance)
 
 	for item in items:
