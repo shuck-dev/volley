@@ -444,7 +444,7 @@ func take(item_key: String) -> bool:
 	if item.role == &"ball":
 		if not take_ball(item_key):
 			return false
-		register_instance(BallKey.generate(item_key, state.item_levels), item.role)
+		register_instance(generate_instance_key(item_key), item.role)
 		return true
 	return take_equipment(item_key)
 
@@ -531,6 +531,10 @@ func get_owned_count(base_key: String) -> int:
 		elif key == base_key and state.item_levels[key] > 0:
 			count += 1
 	return count
+
+
+func generate_instance_key(base_key: String) -> String:
+	return BallKey.generate(base_key, state.item_levels)
 
 
 func register_instance(item_key: String, role: StringName) -> void:

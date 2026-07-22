@@ -145,14 +145,14 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 
 ## Spawns a purchased ball on the rack.
 func spawn_stored(template_key: String, position: Vector2) -> Ball:
-	var key := BallKey.generate(template_key, _balls_by_key)
+	var key := _item_manager.generate_instance_key(template_key)
 	_item_manager.register_instance(key, _get_item_definition(template_key).role)
 	return _create_stored(key, position)
 
 
 ## Spawns a ball onto the court.
 func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
-	var key := BallKey.generate(template_key, _balls_by_key)
+	var key := _item_manager.generate_instance_key(template_key)
 	_item_manager.register_instance(key, &"ball")
 	if not _item_manager.is_on_court(key):
 		_item_manager.activate(key)
@@ -161,8 +161,7 @@ func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -
 
 ## Spawns a ball onto the venue floor.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
-	var key := BallKey.generate(template_key, _balls_by_key)
-	_item_manager.register_instance(key, &"ball")
+	var key := _item_manager.generate_instance_key(template_key)
 	var ball := _create_ball(key, position, velocity)
 	ball.global_position = position
 	ball.enter_out_rest()

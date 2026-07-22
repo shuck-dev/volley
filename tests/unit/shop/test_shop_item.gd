@@ -42,7 +42,7 @@ func test_release_outside_shop_commits_purchase() -> void:
 	var ok: bool = _item.attempt_release(Vector2(800, 300))
 	assert_true(ok)
 	assert_false(_item.visible, "slot hidden after purchase")
-	assert_eq(_manager.get_level(StandardBall.key), 1, "purchase committed")
+	assert_eq(_manager.economy.soul_balance, 9990, "purchase committed")
 
 
 func test_inside_shop_drag_spawns_body_without_purchase() -> void:
@@ -64,7 +64,7 @@ func test_settle_outside_shop_commits_purchase() -> void:
 	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
 	_item.visible = false
 	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(9999, 9999))
-	assert_eq(_manager.get_level(StandardBall.key), 1, "purchase committed on outside settle")
+	assert_eq(_manager.economy.soul_balance, 9990, "purchase committed on outside settle")
 	assert_false(_item.visible, "slot hidden after purchase")
 
 

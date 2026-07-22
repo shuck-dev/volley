@@ -362,9 +362,11 @@ func _complete_purchase() -> bool:
 
 
 func _complete_ball_purchase() -> bool:
+	if is_owned():
+		return false
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
 		return false
-	return _item_manager.take(item_definition.key)
+	return _item_manager.take_ball(item_definition.key)
 
 
 func _complete_equipment_purchase() -> bool:
