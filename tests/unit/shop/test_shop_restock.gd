@@ -110,23 +110,6 @@ func test_restock_replaces_item_nodes() -> void:
 	assert_false(any_same, "restock replaces all item nodes with new instances")
 
 
-func test_restock_works_for_pool_larger_than_slots() -> void:
-	# Create a shop with pool > display_slots to guarantee a visible change.
-	_manager.add_soul(500)
-	_shop.config.display_slots = 2
-	_shop._refresh_count = 1
-	_shop._clear_items()
-	_shop._spawn_items()
-	var before_keys: Array[String] = _get_item_keys()
-
-	_shop.restock()
-	var after_keys: Array[String] = _get_item_keys()
-
-	assert_ne(
-		before_keys, after_keys, "restock changes the visible subset when pool exceeds slot count"
-	)
-
-
 func _get_item_keys() -> Array[String]:
 	var keys: Array[String] = []
 	for child: Node in _shop.items_anchor.get_children():

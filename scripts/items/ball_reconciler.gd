@@ -239,16 +239,14 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		var ball: Ball
 		var pos := _spawn_position_for(item_key)
 		var vel := _item_manager.get_default_ball_launch_velocity()
 		if existing != null:
-			ball = existing
-			ball.global_position = pos
-			ball.linear_velocity = vel
-			ball.enter_play()
+			existing.global_position = pos
+			existing.linear_velocity = vel
+			existing.enter_play()
 		else:
-			ball = _create_ball(item_key, pos, vel)
+			_create_ball(item_key, pos, vel)
 		return
 
 	var ball: Ball = get_ball_for_key(item_key)
