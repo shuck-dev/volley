@@ -116,8 +116,7 @@ func has_ball_in_play() -> bool:
 	return false
 
 
-## Returns the tracked Ball for `item_key`, matching instance keys exactly. Also resolves template
-## keys to any matching instance key so callers can look up by base item name.
+## Returns the tracked Ball for `item_key` and instances.
 func get_ball_for_key(item_key: String) -> Ball:
 	if _balls_by_key.has(item_key):
 		var raw: Variant = _balls_by_key[item_key]
@@ -173,11 +172,10 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 ## Spawns a STORED ball at `spawn_position` and registers it under `item_key`.
 func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = ball_scene.instantiate()
-	if court_config != null:
-		ball.court_config = court_config
+	ball.court_config = court_config
+	ball.bound_y = bound_y
 	add_child(ball)
 	ball.item_key = item_key
-	ball.bound_y = bound_y
 	ball.enter_stored()
 	ball.global_position = spawn_position
 	_apply_item_art(ball, item_key)
@@ -203,8 +201,8 @@ func bring_into_play(
 ## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
 func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	var ball: Ball = ball_scene.instantiate()
-	if court_config != null:
-		ball.court_config = court_config
+	ball.court_config = court_config
+	ball.bound_y = bound_y
 	add_child(ball)
 	ball.item_key = item_key
 	ball.global_position = spawn_position
@@ -372,8 +370,7 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	if court_config != null:
-		new_ball.court_config = court_config
+	new_ball.court_config = court_config
 	new_ball.bound_y = bound_y
 	_register_ball(new_ball)
 

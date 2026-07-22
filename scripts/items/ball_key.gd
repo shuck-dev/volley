@@ -10,8 +10,10 @@ static func is_instance(item_type: String, key: String) -> bool:
 
 static func generate(item_type: String, existing_keys: Dictionary) -> String:
 	var n := 1
+
 	while existing_keys.has("%s_%d" % [item_type, n]):
 		n += 1
+
 	return "%s_%d" % [item_type, n]
 
 
@@ -22,4 +24,5 @@ static func base_key(instance_key: String) -> String:
 
 	if result:
 		return instance_key.substr(0, result.get_start())
+
 	return instance_key
