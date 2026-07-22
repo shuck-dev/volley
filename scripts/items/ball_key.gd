@@ -3,10 +3,8 @@ extends RefCounted
 
 
 static func is_instance(item_type: String, key: String) -> bool:
-	if not key.begins_with(item_type + "_"):
-		return false
-	var suffix := key.substr(item_type.length() + 1)
-	return suffix.is_valid_int()
+	var base := base_key(key)
+	return base != key and base == item_type
 
 
 static func next_instance(item_type: String, existing_keys: Dictionary) -> String:
