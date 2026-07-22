@@ -35,7 +35,6 @@ func _ready() -> void:
 
 	add_child(_effect_manager)
 	_register_existing_items()
-	call_deferred(&"_bootstrap_starter_items")
 
 
 func _register_existing_items() -> void:
@@ -46,16 +45,6 @@ func _register_existing_items() -> void:
 			_effect_manager.register_source(item, get_level(item.key))
 		elif not state.rack_slot_index_by_key.has(item.key):
 			_assign_rack_slot(item.key, item.role)
-
-
-## Bootstraps base_ball on the first-ever playthrough so a new save starts
-## with the Old ball in the rack. Idempotent: skipped when any save data exists.
-func _bootstrap_starter_items() -> void:
-	for item in items:
-		if state.item_levels.is_empty() and item.key == "base_ball":
-			state.item_levels[item.key] = 1
-			item_level_changed.emit(item.key)
-			_set_item_placement(item.key, Placement.STORED)
 
 
 ## Resyncs effect registrations and emits signals after progression data has been

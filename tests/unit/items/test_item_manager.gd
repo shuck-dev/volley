@@ -569,37 +569,3 @@ class TestItemManagerStateChanged:
 			_manager.is_loose_in_venue(TEST_KEY),
 			"activate should clear loose_in_venue from non-STORED branch",
 		)
-
-
-class TestBootstrapStarters:
-	extends GutTest
-	const BOOTSTRAP_KEY := "base_ball"
-	const ItemManagerScript := preload("res://scripts/items/item_manager.gd")
-
-	func _make_manager() -> Node:
-		var manager: Node = ItemManagerScript.new()
-		manager.state = ItemState.new()
-		manager.economy = EconomyState.new()
-		manager._effect_manager = EffectManager.new()
-		var ball_item := ItemDefinition.new()
-		ball_item.key = BOOTSTRAP_KEY
-		ball_item.role = &"ball"
-		ball_item.base_cost = 40
-		ball_item.cost_scaling = 2.0
-		ball_item.max_level = 10
-		ball_item.effects = []
-		manager.items.assign([ball_item])
-		return manager
-
-	func test_bootstraps_when_no_save_exists() -> void:
-		var manager: Node = _make_manager()
-		add_child_autofree(manager)
-		await get_tree().process_frame
-		assert_eq(manager.get_level(BOOTSTRAP_KEY), 1)
-
-	func test_skips_when_save_has_items() -> void:
-		var manager: Node = _make_manager()
-		manager.state.item_levels["other_key"] = 1
-		add_child_autofree(manager)
-		await get_tree().process_frame
-		assert_eq(manager.get_level(BOOTSTRAP_KEY), 0)

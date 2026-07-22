@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://scenes/items/old_ball.tscn" id="1_5blea"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_xxsyp"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
 radius = 7.2
@@ -11,9 +12,7 @@ script = ExtResource("1_item")
 key = "base_ball"
 type = &"kit"
 role = &"ball"
-display_name = "Old ball"
+display_name = "Old Ball"
 art = ExtResource("1_5blea")
-base_cost = 40
 max_level = 10
-purchasable = false
 at_rest_shape = SubResource("at_rest_shape_1")
