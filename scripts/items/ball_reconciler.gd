@@ -1,9 +1,7 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner. Absorbed BallTracker's multi-ball tracking and
-## re-emission responsibilities so court_config is set on each ball before
-## its _ready() runs.
+## Live-ball lifecycle owner.
 
 signal ball_spawned(item_key: String, ball: Ball)
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
@@ -65,23 +63,25 @@ func _has_save_manager_autoload() -> bool:
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
-## Snapshot of live ball positions keyed by item_key. Every loose / at-rest / in-play
-## ball lives in the registry post-step-5, so the registry walk is the whole story.
+## Snapshot of live ball positions keyed by item_key.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
 	for ball in _balls:
 		if not is_instance_valid(ball):
 			continue
+
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
+
 		if ball.item_key.is_empty():
 			continue
+
 		positions[ball.item_key] = ball.global_position
+
 	return positions
 
 
-## Snapshot of live ball PlayState enums keyed by item_key. Mirrors collect_item_positions;
-## STORED balls are reconstructed from the rack so they do not need a play-state entry.
+## Snapshot of live ball PlayState enums keyed by item_key.
 func collect_ball_play_states() -> Dictionary[String, int]:
 	var states: Dictionary[String, int] = {}
 	for ball in _balls:
