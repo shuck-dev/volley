@@ -60,6 +60,7 @@ func _on_ball_added(ball: Ball) -> void:
 	var label := Label.new()
 	label.text = _get_display_name(ball)
 	label.add_theme_color_override(&"font_color", Color.WHITE)
+	label.add_theme_font_size_override(&"font_size", 12)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(label)
 	_labels[ball] = label
@@ -86,7 +87,7 @@ func _process(_delta: float) -> void:
 
 		var label: Label = _labels[ball]
 		var screen_pos := _project_to_canvas(ball.global_position)
-		label.position = screen_pos - label.size * 0.5
+		label.position = screen_pos - Vector2(label.size.x * 0.5, label.size.y + 10)
 
 
 func _project_to_canvas(world_pos: Vector2) -> Vector2:
