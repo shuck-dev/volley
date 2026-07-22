@@ -55,7 +55,7 @@ func can_be_dragged() -> bool:
 func is_owned() -> bool:
 	if item_definition == null or _item_manager == null:
 		return false
-	return _item_manager.get_level(item_definition.key) > 0
+	return _item_manager.get_owned_count(item_definition.key) > 0
 
 
 func is_dragging() -> bool:

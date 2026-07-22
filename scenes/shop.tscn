@@ -66,8 +66,12 @@ color = Color(0.35, 0.2, 0.1, 1)
 position = Vector2(0, -30)
 
 [node name="RefreshButton" type="Button" parent="." unique_id=823133525]
-offset_left = -60.0
-offset_top = 50.0
-offset_right = 60.0
-offset_bottom = 74.0
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 103.0
+offset_top = -127.0
+offset_right = 247.0
+offset_bottom = -91.0
+grow_horizontal = 2
+size_flags_vertical = 0
 text = "Restock (Free)"

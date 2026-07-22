@@ -322,7 +322,7 @@ class TestKitItemsBall:
 		_manager.take("kit_ball")
 		var ball_kit: Array[String] = _manager.get_kit_items(&"ball")
 		assert_eq(ball_kit.size(), 1)
-		assert_eq(ball_kit[0], "kit_ball")
+		assert_eq(ball_kit[0], "kit_ball_1")
 
 	func test_get_kit_items_excludes_ball_when_queried_for_equipment_role() -> void:
 		_manager.take("kit_ball")
@@ -343,7 +343,7 @@ class TestKitItemsBall:
 		_manager.deactivate("kit_ball")
 		var kit: Array[String] = _manager.get_kit_items(&"ball")
 		assert_eq(kit.size(), 1)
-		assert_eq(kit[0], "kit_ball")
+		assert_eq(kit[0], "kit_ball_1")
 
 
 class TestRackSlotAssignment:

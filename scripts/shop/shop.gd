@@ -70,7 +70,7 @@ func _on_tree_exiting() -> void:
 
 
 func _spawn_items() -> void:
-	var visible_items: Array[ItemDefinition] = _get_visible_items()
+	var visible_items: Array[ItemDefinition] = _get_item_pool()
 	var count: int = visible_items.size()
 	var spacing: float = config.item_spacing
 	var start_x: float = -(count - 1) * spacing / 2.0
@@ -85,15 +85,14 @@ func _spawn_items() -> void:
 		shop_item.bind_shop_area(shop_area)
 
 
-func _get_visible_items() -> Array[ItemDefinition]:
+func _get_item_pool() -> Array[ItemDefinition]:
 	var available: Array[ItemDefinition] = []
 	for definition: ItemDefinition in _item_manager.items:
 		if not definition.purchasable:
 			continue
 		if definition.role != &"ball":
 			continue
-		if _item_manager.get_level(definition.key) == 0:
-			available.append(definition)
+		available.append(definition)
 	available.shuffle()
 	return available.slice(0, config.display_slots)
 

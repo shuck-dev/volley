@@ -228,7 +228,8 @@ func test_grab_removes_item_from_the_rack() -> void:
 	var reconciler: BallReconciler = _make_reconciler(manager)
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball.key)
-	reconciler.adopt_stored(ball.key, Vector2.ZERO)
+	var instance_key := "ball_alpha_1"
+	reconciler.adopt_stored(instance_key, Vector2.ZERO)
 	rack.refresh()
 
 	assert_eq(rack.get_displayed_keys().size(), 1, "precondition: rack shows the owned item")
@@ -243,7 +244,7 @@ func test_grab_removes_item_from_the_rack() -> void:
 	drag.configure(manager, rack, drop_target, reconciler)
 	add_child_autofree(drag)
 
-	drag.grab_from_rack(ball.key)
+	drag.grab_from_rack(instance_key)
 	rack.refresh()
 
 	assert_eq(rack.get_displayed_keys().size(), 0, "grab should remove the item from the rack")

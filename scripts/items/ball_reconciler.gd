@@ -167,14 +167,18 @@ func has_ball_in_play() -> bool:
 
 
 func get_ball_for_key(item_key: String) -> Ball:
-	if not _balls_by_key.has(item_key):
-		return null
-
-	var raw: Variant = _balls_by_key[item_key]
-	if not is_instance_valid(raw):
+	if _balls_by_key.has(item_key):
+		var raw: Variant = _balls_by_key[item_key]
+		if is_instance_valid(raw):
+			return raw
 		_balls_by_key.erase(item_key)
 		return null
-	return raw
+	for key in _balls_by_key:
+		if BallKey.is_instance(item_key, key):
+			var raw: Variant = _balls_by_key[key]
+			if is_instance_valid(raw):
+				return raw
+	return null
 
 
 ## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries rally speed through grab-and-release.
