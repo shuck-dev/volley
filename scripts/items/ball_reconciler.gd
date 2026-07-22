@@ -147,14 +147,14 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Generates an instance key, creates a STORED ball, registers it in item state.
+## Spawns a purchased ball on the rack.
 func spawn_stored(template_key: String, position: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, _get_item_definition(template_key).role)
 	return _create_stored(key, position)
 
 
-## Generates an instance key, creates a ball in play, registers it in item state.
+## Spawns a ball onto the court.
 func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, &"ball")
@@ -163,7 +163,7 @@ func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -
 	return _create_ball(key, position, velocity)
 
 
-## Generates an instance key, creates a ball in OUT_REST, registers it in item state.
+## Spawns a ball onto the venue floor.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, &"ball")
@@ -174,7 +174,7 @@ func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Creates a STORED ball at `position` registered under `item_key`.
+## Puts a ball on the rack at a slot position.
 func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
