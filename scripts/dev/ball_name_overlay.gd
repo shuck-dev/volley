@@ -1,8 +1,9 @@
 class_name BallNameOverlay
-extends CanvasLayer
+extends Node2D
 
 ## Each ball on court shows its display name as a label that follows the ball.
 
+var dev_visible: bool = false
 var _tracker: BallReconciler
 var _labels: Dictionary = {}
 
@@ -12,7 +13,11 @@ func _ready() -> void:
 		queue_free()
 		return
 
-	layer = 128
+	z_index = 4095
+	top_level = true
+	visible = false
+	add_to_group(&"dev_overlays")
+
 	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
 	if _tracker != null:
@@ -43,6 +48,11 @@ func _attach_to_tracker() -> void:
 		_on_ball_added(ball)
 
 
+func set_dev_visible(value: bool) -> void:
+	dev_visible = value
+	visible = value
+
+
 func _on_ball_added(ball: Ball) -> void:
 	if ball == null or _labels.has(ball):
 		return
@@ -67,7 +77,7 @@ func _on_ball_removed(ball: Ball) -> void:
 
 
 func _process(_delta: float) -> void:
-	if _labels.is_empty():
+	if not dev_visible or _labels.is_empty():
 		return
 
 	for ball: Ball in _labels.keys():

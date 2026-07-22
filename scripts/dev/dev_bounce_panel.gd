@@ -162,6 +162,7 @@ func _build_checks() -> void:
 	_add_checkbox("Show Cone Overlay", _on_cone_toggled)
 	_add_checkbox("Show Soul Bound", _on_soul_bound_toggled)
 	_add_checkbox("Show Arc Travel", _on_arc_travel_toggled)
+	_add_checkbox("Show Ball Names", _on_ball_name_toggled)
 	_add_checkbox("Cone follows last hit", _on_cone_follow_toggled)
 
 
@@ -200,4 +201,11 @@ func _on_cone_follow_toggled(pressed: bool) -> void:
 		if overlay is DevBounceOverlay:
 			overlay.follow_last_hit = pressed
 			overlay.queue_redraw()
+			return
+
+
+func _on_ball_name_toggled(pressed: bool) -> void:
+	for overlay in get_tree().get_nodes_in_group(&"dev_overlays"):
+		if overlay is BallNameOverlay:
+			overlay.set_dev_visible(pressed)
 			return
