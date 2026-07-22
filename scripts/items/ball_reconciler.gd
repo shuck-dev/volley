@@ -24,7 +24,6 @@ const PRESERVED_SPEED_NONE: float = -1.0
 ## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
 @export var ball_rack: RackDisplay
 @export var spawn_origin: Vector2 = Vector2.ZERO
-@export var pre_existing_balls_parent: Node
 @export var court_config: CourtConfig
 @export var player_paddle: Node2D
 
@@ -33,8 +32,6 @@ var bound_y: float = 0.0
 var _item_manager: ItemManager
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
-## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
-var _adopting_pre_existing: bool = false
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
@@ -60,8 +57,7 @@ func _ready() -> void:
 		SaveManager.set_position_provider(collect_item_positions)
 		SaveManager.set_play_state_provider(collect_ball_play_states)
 
-	# Deferred so sibling listeners connect to ball_spawned before we emit.
-	call_deferred(&"adopt_pre_existing_balls")
+	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
 
 
@@ -97,61 +93,6 @@ func collect_ball_play_states() -> Dictionary[String, int]:
 			continue
 		states[ball.item_key] = int(ball.play_state)
 	return states
-
-
-## Idempotent; safe to call repeatedly across scene reloads. The host injects the container
-## whose pre-existing Ball children should be adopted; nothing is adopted until it is set.
-func adopt_pre_existing_balls() -> void:
-	var parent: Node = pre_existing_balls_parent
-	if parent == null:
-		return
-
-	_adopting_pre_existing = true
-	for child in parent.get_children():
-		if not (child is Ball):
-			continue
-
-		var ball: Ball = child
-		if ball.is_temporary:
-			continue
-		if ball.is_queued_for_deletion():
-			continue
-		if _is_tracked(ball):
-			continue
-		if ball.item_key == "":
-			push_warning("BallReconciler: skipping adoption of pre-existing Ball with no item_key")
-			continue
-
-		var key: String = ball.item_key
-		var definition: ItemDefinition = _get_item_definition(key)
-
-		if definition != null and definition.role == &"ball":
-			assert(
-				BallKey.base_key(key) != key,
-				(
-					'Ball in scene with key "%s" must use instance suffix (e.g. "%s_1"), not a bare template key'
-					% [key, key]
-				)
-			)
-		_balls_by_key[key] = ball
-		_apply_item_art(ball, key)
-		# Authored ball needs level >= 1 and ON_COURT so the rack hides its token.
-		_item_manager.adopt_pre_existing(key)
-
-		_apply_post_adopt_position(ball, key)
-		ball_spawned.emit(key, ball)
-		if court_config != null:
-			ball.court_config = court_config
-		ball.bound_y = bound_y
-		_register_ball(ball)
-	_adopting_pre_existing = false
-
-
-func _is_tracked(ball: Ball) -> bool:
-	for tracked in _balls_by_key.values():
-		if tracked == ball:
-			return true
-	return false
 
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
@@ -293,8 +234,7 @@ func release_ball(item_key: String) -> Ball:
 
 
 func _on_court_changed(item_key: String, on_court: bool) -> void:
-	if not _adopting_pre_existing:
-		_initial_reconcile_pending = false
+	_initial_reconcile_pending = false
 	if on_court:
 		var existing: Ball = get_ball_for_key(item_key)
 		# Existing PLAY balls (pre-existing, mid-rally) already live at the right spot; reposition would clobber them.
@@ -374,45 +314,6 @@ func ensure_stored_ball_for_key(item_key: String) -> Ball:
 
 func _default_spawn_position() -> Vector2:
 	return spawn_origin
-
-
-## Post-adoption placement: STORED snaps to its rack slot; other placements use the saved
-## position AND play state if SaveManager has them, otherwise the ball keeps its scene state.
-func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
-	if _item_manager.get_placement(item_key) == Placement.STORED:
-		if ball_rack != null:
-			ball.global_position = ball_rack.get_slot_position_for(item_key)
-		ball.enter_stored()
-		return
-
-	if not _has_save_manager_autoload():
-		return
-	var saved: ItemState = SaveManager.items
-
-	if saved == null:
-		return
-
-	if saved.ball_positions.has(item_key):
-		ball.global_position = saved.ball_positions[item_key]
-
-	if saved.ball_play_states.has(item_key):
-		_apply_saved_play_state(ball, saved.ball_play_states[item_key])
-
-
-func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
-	match play_state:
-		# OUT_HELD demotes to OUT_REST because the drag-controller context is gone on load;
-		# restoring HELD would leave the ball frozen mid-air with miss-detection suppressed.
-		Ball.PlayState.OUT_REST, Ball.PlayState.OUT_HELD:
-			ball.enter_out_rest()
-			# Velocity is not persisted yet; without zeroing, the body keeps the integration-frame
-			# momentum it picked up between scene spawn and adopt, and visibly hops on load.
-			ball.linear_velocity = Vector2.ZERO
-			ball.angular_velocity = 0.0
-		Ball.PlayState.PLAY_NORMAL, Ball.PlayState.PLAY_ARC:
-			ball.enter_play()
-		_:
-			pass
 
 
 ## Prefer the saved position so reloaded balls keep their last in-play spot.

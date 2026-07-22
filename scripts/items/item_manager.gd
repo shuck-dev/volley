@@ -438,16 +438,6 @@ func remove_level(item_key: String) -> void:
 		SaveManager.save()
 
 
-## Adopts a pre-existing on-court item at level >= 1 with on-court placement; idempotent.
-func adopt_pre_existing(item_key: String) -> void:
-	if get_level(item_key) <= 0:
-		state.item_levels[item_key] = 1
-		item_level_changed.emit(item_key)
-
-	if not is_on_court(item_key):
-		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
-
-
 ## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
 ## Returns true when the level increased. Intended for tier-completion ball upgrades.
 func upgrade_ball(item_key: String) -> bool:
