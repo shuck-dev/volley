@@ -1,8 +1,6 @@
 class_name ShopItem
 extends Node2D
 
-## Diegetic shop item; the drag IS the buy gesture, release outside shop commits.
-
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
@@ -17,8 +15,7 @@ var _item_manager: ItemManager
 var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
-var _last_input_frame: int = -1
-## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
+## Tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
 ## Cursor position when the gesture started; used to gate sub-threshold clicks from real drags.
 var _press_position: Vector2 = Vector2.ZERO
@@ -56,14 +53,6 @@ func is_owned() -> bool:
 	if item_definition == null or _item_manager == null:
 		return false
 	return _item_manager.get_owned_count(item_definition.key) > 0
-
-
-func is_dragging() -> bool:
-	return _held_token != null
-
-
-func get_held_token() -> Node2D:
-	return _held_token
 
 
 func _ready() -> void:
@@ -127,13 +116,8 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
-	_last_input_frame = Engine.get_physics_frames()
 	if mouse_button.pressed and can_be_dragged() and _held_token == null:
 		_start_drag()
-
-
-func get_last_input_frame() -> int:
-	return _last_input_frame
 
 
 ## Test seam / production entry. Begins the held-token gesture from the item's current spot.
