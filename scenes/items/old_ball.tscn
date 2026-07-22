@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://cw56x7wx234p6" path="res://assets/items/training_ball.png" id="1_gm3nh"]
+[ext_resource type="Script" path="res://scripts/items/standard_ball_art.gd" id="2_art"]
+
+[node name="StandardBall" type="Node2D"]
+script = ExtResource("2_art")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_gm3nh")

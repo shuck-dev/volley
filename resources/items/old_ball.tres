@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cgigxt4euhw51"]
 
-[ext_resource type="PackedScene" path="res://scenes/items/standard_ball.tscn" id="1_5blea"]
+[ext_resource type="PackedScene" path="res://scenes/items/old_ball.tscn" id="1_5blea"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/item_definition.gd" id="1_item"]
 
 [sub_resource type="CircleShape2D" id="at_rest_shape_1"]
