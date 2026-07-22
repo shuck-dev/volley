@@ -446,26 +446,48 @@ func upgrade_ball(item_key: String) -> bool:
 	return true
 
 
+## Deducts soul for purchasing a ball. The reconciler owns instance key generation
+## and state registration; this only handles economics.
+func take_ball(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return false
+	if economy.soul_balance < calculate_for_purchase(item_key):
+		return false
+	subtract_soul(calculate_for_purchase(item_key))
+	SaveManager.save()
+	return true
+
+
+## Acquires an equipment item. The item is owned but inert until equipped.
+func take_equipment(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"equipment":
+		return false
+	if get_level(item_key) >= 1:
+		return false
+	if economy.soul_balance < calculate_cost(item_key):
+		return false
+	subtract_soul(calculate_cost(item_key))
+	state.item_levels[item_key] = 1
+	_assign_rack_slot(item_key, item.role)
+	item_level_changed.emit(item_key)
+	SaveManager.save()
+	return true
+
+
 ## Acquires an item without registering its effects. The item is owned but
-## inert until equipped into the kit. Returns true on success.
+## inert until equipped. Routes to take_ball or take_equipment by role.
 func take(item_key: String) -> bool:
 	var item := _get_item(item_key)
 	if item == null:
 		return false
-	var instance_key := item_key
 	if item.role == &"ball":
-		instance_key = generate_instance_key(item_key)
-	else:
-		if get_level(item_key) >= 1:
+		if not take_ball(item_key):
 			return false
-	if economy.soul_balance < calculate_for_purchase(item_key):
-		return false
-	subtract_soul(calculate_for_purchase(item_key))
-	state.item_levels[instance_key] = 1
-	_assign_rack_slot(instance_key, item.role)
-	item_level_changed.emit(instance_key)
-	SaveManager.save()
-	return true
+		register_instance(BallKey.generate(item_key, state.item_levels), item.role)
+		return true
+	return take_equipment(item_key)
 
 
 ## Returns points to the balance without counting them as newly earned.
@@ -542,10 +564,6 @@ func _base_key(item_key: String) -> String:
 	return item_key
 
 
-func generate_instance_key(base_key: String) -> String:
-	return BallKey.generate(base_key, state.item_levels)
-
-
 func get_owned_count(base_key: String) -> int:
 	var count := 0
 	for key in state.item_levels:
@@ -554,6 +572,13 @@ func get_owned_count(base_key: String) -> int:
 		elif key == base_key and state.item_levels[key] > 0:
 			count += 1
 	return count
+
+
+func register_instance(item_key: String, role: StringName) -> void:
+	state.item_levels[item_key] = 1
+	_assign_rack_slot(item_key, role)
+	item_manager_state_changed.emit()
+	SaveManager.save()
 
 
 func _get_item(item_key: String) -> ItemDefinition:

@@ -233,7 +233,7 @@ func test_grab_removes_item_from_the_rack() -> void:
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball.key)
 	var instance_key := "ball_alpha_1"
-	reconciler.adopt_stored(instance_key, Vector2.ZERO)
+	reconciler._create_stored(instance_key, Vector2.ZERO)
 	rack.refresh()
 
 	assert_eq(rack.get_displayed_keys().size(), 1, "precondition: rack shows the owned item")

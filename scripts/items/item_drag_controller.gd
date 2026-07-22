@@ -313,7 +313,7 @@ func _adopt_purchased_into_rack(item_key: String) -> void:
 		return
 	if reconciler.get_ball_for_key(item_key) != null:
 		return
-	reconciler.adopt_stored(item_key, rack.get_slot_position_for(item_key))
+	reconciler.spawn_stored(item_key, rack.get_slot_position_for(item_key))
 
 
 ## Funnels ball-role venue-floor releases into the reconciler with the loose-in-venue overlay set.

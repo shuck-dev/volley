@@ -240,9 +240,8 @@ func _drop_ball_role(clamped_position: Vector2, controller: Node) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 	if reconciler == null:
 		return
-	var purchase_key: String = ItemManager.generate_instance_key(item_definition.key)
-	var ball: Ball = reconciler.release_into_rest(
-		purchase_key, clamped_position, _release_velocity()
+	var ball: Ball = reconciler.spawn_at_rest(
+		item_definition.key, clamped_position, _release_velocity()
 	)
 	if ball == null:
 		return
@@ -384,20 +383,24 @@ func _complete_purchase() -> String:
 	if not can_be_owned():
 		return ""
 	if _is_ball_role():
-		if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
-			return ""
-	else:
-		if is_owned():
-			return ""
-	var purchase_key: String = item_definition.key
+		return _complete_ball_purchase()
+	return _complete_equipment_purchase()
 
-	if _is_ball_role():
-		purchase_key = ItemManager.generate_instance_key(item_definition.key)
 
-	if not _item_manager.take(item_definition.key):
+func _complete_ball_purchase() -> String:
+	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
 		return ""
+	if _item_manager.take(item_definition.key):
+		return item_definition.key
+	return ""
 
-	return purchase_key
+
+func _complete_equipment_purchase() -> String:
+	if is_owned():
+		return ""
+	if _item_manager.take_equipment(item_definition.key):
+		return item_definition.key
+	return ""
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:

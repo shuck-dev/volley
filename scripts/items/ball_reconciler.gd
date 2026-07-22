@@ -20,8 +20,6 @@ signal current_ball_changed(ball: Ball)
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
-@export var ball_scene: PackedScene = BallScene
-
 ## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
 @export var ball_rack: RackDisplay
 
@@ -149,9 +147,39 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Spawns a STORED ball at `spawn_position` and registers it under `item_key`.
-func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
-	var ball: Ball = ball_scene.instantiate()
+## Generates an instance key for `template_key`, creates a STORED ball at `position`,
+## and registers the instance in item state.
+func spawn_stored(template_key: String, position: Vector2) -> Ball:
+	var key := BallKey.generate(template_key, _balls_by_key)
+	_item_manager.register_instance(key, _get_item_definition(template_key).role)
+	return _create_stored(key, position)
+
+
+## Generates an instance key for `template_key`, creates a ball at `position` with
+## `velocity`, activates it on court, and registers the instance in item state.
+func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
+	var key := BallKey.generate(template_key, _balls_by_key)
+	_item_manager.register_instance(key, &"ball")
+	if not _item_manager.is_on_court(key):
+		_item_manager.activate(key)
+	return _create_ball(key, position, velocity)
+
+
+## Generates an instance key for `template_key`, creates a ball at `position` with
+## `velocity` in OUT_REST, and registers the instance in item state.
+func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
+	var key := BallKey.generate(template_key, _balls_by_key)
+	_item_manager.register_instance(key, &"ball")
+	var ball := _create_ball(key, position, velocity)
+	ball.global_position = position
+	ball.enter_out_rest()
+	ball.linear_velocity = velocity
+	return ball
+
+
+## Creates a STORED ball at `position` registered under `item_key`.
+func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
+	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	add_child(ball)
@@ -189,7 +217,7 @@ func bring_into_play(
 
 ## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
 func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
-	var ball: Ball = ball_scene.instantiate()
+	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	add_child(ball)
@@ -303,7 +331,7 @@ func ensure_stored_ball_for_key(item_key: String) -> Ball:
 		return null
 	if _item_manager.get_rack_slot_index(item_key) < 0:
 		return null
-	return adopt_stored(item_key, ball_rack.get_slot_position_for(item_key))
+	return _create_stored(item_key, ball_rack.get_slot_position_for(item_key))
 
 
 func _default_spawn_position() -> Vector2:
