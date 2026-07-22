@@ -4,23 +4,30 @@ extends Node
 ## Live-ball lifecycle owner.
 
 signal ball_spawned(item_key: String, ball: Ball)
+
 ## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
 signal ball_added(ball: Ball)
+
 ## Emitted whenever a ball leaves the tracked set (release, deactivate).
 signal ball_removed(ball: Ball)
 signal ball_missed(ball: Ball)
+
 ## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
 signal ball_final_consolidation_changed(in_final: bool)
+
 ## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
 signal ball_tier_advanced(ball: Ball, new_tier: int)
+
 signal current_ball_changed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 @export var ball_scene: PackedScene = BallScene
+
 ## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
 @export var ball_rack: RackDisplay
+
 @export var spawn_origin: Vector2 = Vector2.ZERO
 @export var court_config: CourtConfig
 @export var player_paddle: Node2D
