@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://jbv38w0jxsaf"]
 
-[ext_resource type="Texture2D" uid="uid://cw56x7wx234p6" path="res://assets/items/training_ball.png" id="1_gm3nh"]
 [ext_resource type="Script" uid="uid://xrxnqxclv2jo" path="res://scripts/items/standard_ball_art.gd" id="2_art"]
+[ext_resource type="Texture2D" uid="uid://xm8ltt8fkfk4" path="res://assets/items/Baseball_old.png" id="2_lgr3n"]
 
 [node name="StandardBall" type="Node2D" unique_id=1838579657]
 script = ExtResource("2_art")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=998667019]
-texture = ExtResource("1_gm3nh")
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("2_lgr3n")
