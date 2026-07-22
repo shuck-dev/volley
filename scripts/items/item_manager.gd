@@ -117,54 +117,39 @@ func is_game_state_active(game_state: StringName) -> bool:
 func get_level(item_key: String) -> int:
 	if state.item_levels.has(item_key):
 		return state.item_levels[item_key]
+
 	var base := _base_key(item_key)
+
 	if base != item_key:
 		return 0
+
 	var item_def := _get_item(item_key)
+
 	if item_def != null and item_def.role == &"ball":
 		var max_level := 0
 		for key in state.item_levels:
 			if BallKey.is_instance(item_key, key):
 				max_level = max(max_level, state.item_levels[key])
+
 		return max(max_level, get_owned_count(item_key))
+
 	return 0
 
 
-## Returns the current placement of an item. Defaults to STORED (on the rack).
-## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
+## Returns the current placement of an item.
 func _get_placement(item_key: String) -> int:
 	if state.loose_in_venue.has(item_key):
 		return Placement.LOOSE_IN_VENUE
+
 	if state.item_placements.has(item_key):
 		return state.item_placements[item_key]
-	var base := _base_key(item_key)
-	if state.item_placements.has(base):
-		return state.item_placements[base]
-	if base != item_key:
-		return Placement.STORED
-	for key in state.item_levels:
-		if BallKey.is_instance(item_key, key) and state.item_levels[key] > 0:
-			if state.item_placements.has(key):
-				return state.item_placements[key]
+
 	return Placement.STORED
 
 
 ## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
 func get_placement(item_key: String) -> int:
 	return _get_placement(item_key)
-
-
-func _resolve_placement_key(item_key: String) -> String:
-	if state.item_levels.has(item_key):
-		return item_key
-	var item := _get_item(item_key)
-	if item == null or item.role != &"ball":
-		return item_key
-	var prefix := item_key + "_"
-	for key in state.item_levels:
-		if key.begins_with(prefix) and state.item_levels[key] > 0:
-			return key
-	return item_key
 
 
 ## True when a loose body for this item exists on the venue floor.
