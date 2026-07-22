@@ -16,7 +16,7 @@ static func get_definition(item_manager: Node, item_key: String) -> ItemDefiniti
 	if item_manager == null:
 		return null
 	for item: ItemDefinition in item_manager.items:
-		if item.key == item_key:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
 			return item
 	return null
 
