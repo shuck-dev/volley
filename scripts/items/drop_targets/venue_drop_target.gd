@@ -6,7 +6,6 @@ extends DropTarget
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
-var _court_bounds: Rect2
 var _world: World2D
 
 
@@ -14,12 +13,10 @@ func configure(
 	item_manager: Node,
 	reconciler: BallReconciler,
 	venue_bounds: Rect2,
-	court_bounds: Rect2,
 ) -> void:
 	_item_manager = item_manager
 	_reconciler = reconciler
 	_venue_bounds = venue_bounds
-	_court_bounds = court_bounds
 
 
 func set_world(world: World2D) -> void:

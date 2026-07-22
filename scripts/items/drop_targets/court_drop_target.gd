@@ -30,18 +30,15 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not _is_ball_role(item_key):
 		return false
-	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
-	if clamped != position:
-		# Off-court cursor falls through to VenueDropTarget for clamping.
+	if _court_bounds.size != Vector2.ZERO and not _court_bounds.has_point(position):
 		return false
-	return _projection_clear(item_key, clamped, scale_factor)
+	return _projection_clear(item_key, position, scale_factor)
 
 
 func accept(item_key: String, position: Vector2, gesture_velocity: Vector2) -> void:
 	if _reconciler == null:
 		return
-	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
-	_reconciler.bring_into_play(item_key, clamped, gesture_velocity)
+	_reconciler.bring_into_play(item_key, position, gesture_velocity)
 
 
 func _is_ball_role(item_key: String) -> bool:

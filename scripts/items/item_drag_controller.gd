@@ -20,8 +20,8 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var gear_rack: RackDisplay
 @export var gear_rack_drop_target: Area2D
 @export var timeout_controller: TimeoutController
-@export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
+@export var court_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
@@ -696,7 +696,7 @@ func _make_venue_target() -> VenueDropTarget:
 	if reconciler == null:
 		return null
 	var venue_target: VenueDropTarget = VenueDropTarget.new()
-	venue_target.configure(_item_manager, reconciler, venue_bounds, court_bounds)
+	venue_target.configure(_item_manager, reconciler, venue_bounds)
 	# Body projection on the venue rect rejects loose drops that would land in walls/partners.
 	venue_target.set_world(get_world_2d())
 	return venue_target
