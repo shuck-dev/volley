@@ -442,7 +442,7 @@ func _apply_item_art(ball: Ball, item_key: String) -> void:
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
 			return item
 	return null
 

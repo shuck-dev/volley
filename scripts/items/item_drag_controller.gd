@@ -745,7 +745,7 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
 			return item
 	return null
 
