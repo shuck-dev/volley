@@ -33,8 +33,10 @@ func _ready() -> void:
 	_register_shop_target()
 	if not tree_exiting.is_connected(_on_tree_exiting):
 		tree_exiting.connect(_on_tree_exiting)
-	if restock_button != null and not restock_button.pressed.is_connected(_on_restock_pressed):
-		restock_button.pressed.connect(_on_restock_pressed)
+	if restock_button != null:
+		restock_button.focus_mode = Control.FOCUS_NONE
+		if not restock_button.pressed.is_connected(_on_restock_pressed):
+			restock_button.pressed.connect(_on_restock_pressed)
 	_update_restock_button()
 
 
