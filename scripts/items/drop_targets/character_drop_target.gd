@@ -7,7 +7,7 @@ signal equipped_art_pressed(item_key: String)
 
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _drop_area: Area2D
 var _timeout_controller: TimeoutController
 var _paddle: Node

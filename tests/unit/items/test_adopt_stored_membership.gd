@@ -41,8 +41,8 @@ func _on_ball_spawned(item_key: String, ball: Ball) -> void:
 
 
 func test_adopt_stored_spawns_and_registers() -> void:
-	var ball: Ball = _reconciler.adopt_stored("ball_alpha", Vector2(10, 20))
-	assert_not_null(ball, "adopt_stored returns the spawned ball when flag is on")
+	var ball: Ball = _reconciler._create_stored("ball_alpha", Vector2(10, 20))
+	assert_not_null(ball, "_create_stored returns the spawned ball")
 	assert_eq(ball.get_parent(), _reconciler, "spawned ball parented to the reconciler")
 	assert_eq(ball.play_state, Ball.PlayState.STORED, "spawned ball enters STORED state")
 	assert_eq(ball.global_position, Vector2(10, 20), "spawned ball lands at spawn_position")

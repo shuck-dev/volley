@@ -3,7 +3,7 @@ extends DropTarget
 
 ## Accepts ball-role items at positions whose authored shape clears walls, partners, and other balls.
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _reconciler: BallReconciler
 var _world: World2D
 var _court_bounds: Rect2

@@ -1,8 +1,6 @@
 class_name ShopItem
 extends Node2D
 
-## Diegetic shop item; the drag IS the buy gesture, release outside shop commits.
-
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
@@ -13,12 +11,11 @@ signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
 var item_definition: ItemDefinition
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
-var _last_input_frame: int = -1
-## SH-287: tracks mouse-button state so _process can poll for valid targets when mouse is up.
+## Tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
 ## Cursor position when the gesture started; used to gate sub-threshold clicks from real drags.
 var _press_position: Vector2 = Vector2.ZERO
@@ -55,15 +52,7 @@ func can_be_dragged() -> bool:
 func is_owned() -> bool:
 	if item_definition == null or _item_manager == null:
 		return false
-	return _item_manager.get_level(item_definition.key) > 0
-
-
-func is_dragging() -> bool:
-	return _held_token != null
-
-
-func get_held_token() -> Node2D:
-	return _held_token
+	return _item_manager.get_owned_count(item_definition.key) > 0
 
 
 func _ready() -> void:
@@ -127,13 +116,8 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
-	_last_input_frame = Engine.get_physics_frames()
 	if mouse_button.pressed and can_be_dragged() and _held_token == null:
 		_start_drag()
-
-
-func get_last_input_frame() -> int:
-	return _last_input_frame
 
 
 ## Test seam / production entry. Begins the held-token gesture from the item's current spot.
@@ -153,8 +137,7 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		# Fall back to a dropped body if no controller target accepts the spawn.
-		if not _complete_purchase() and not is_owned():
+		if not _complete_purchase():
 			return false
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
@@ -168,20 +151,16 @@ func attempt_release(release_position: Vector2) -> bool:
 		visible = false
 		return true
 
-	# Inside-shop branch.
+	# Inside-shop branch: revert to shelf position, no ball spawn.
 	var threshold: float = tuning.drag_threshold_px if tuning != null else 2.0
 	var release_travel: float = release_position.distance_to(_press_position)
 	var gesture_travel: float = maxf(_max_travel_seen, release_travel)
 	if gesture_travel < threshold:
-		# Pure click: no body spawned, slot returns visible, no purchase.
-		_finalise_gesture(release_position, false)
-		visible = true
-		return true
+		# Pure click: no action, slot returns visible.
+		pass
 
-	# Real drag inside shop: spawn falling body; settle decides commit-vs-cancel.
-	_drop_falling_body(release_position)
 	_finalise_gesture(release_position, false)
-	# Visibility flip waits on the settle decision; the body's settle watcher resolves it.
+	visible = true
 	return true
 
 
@@ -240,9 +219,8 @@ func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
 func _drop_ball_role(clamped_position: Vector2, controller: Node) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 	if reconciler == null:
-		# No reconciler reachable (test isolation, broken venue): bail without leaking a HeldBody.
 		return
-	var ball: Ball = reconciler.release_into_rest(
+	var ball: Ball = reconciler.spawn_at_rest(
 		item_definition.key, clamped_position, _release_velocity()
 	)
 	if ball == null:
@@ -285,14 +263,6 @@ func notify_body_settled(body: RigidBody2D, settled_position: Vector2) -> void:
 		_notify_ball_settled(body, settled_position)
 		return
 
-	if _is_position_inside_shop(settled_position):
-		# Inside shop on rest: no purchase commits, slot returns.
-		body.queue_free()
-		visible = true
-		return
-
-	# Outside shop: re-check affordability at settle time. The player may have spent soul
-	# elsewhere mid-flight; in that case free the body and restore the slot rather than leak it.
 	if not is_owned():
 		if not _complete_purchase():
 			body.queue_free()
@@ -311,11 +281,6 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 	var controller: Node = _drag_controller()
 	var reconciler: Node = _resolve_reconciler(controller)
 
-	if _is_position_inside_shop(settled_position):
-		_release_ball_from_registry(reconciler, ball)
-		visible = true
-		return
-
 	if not is_owned():
 		if not _complete_purchase():
 			_release_ball_from_registry(reconciler, ball)
@@ -323,23 +288,20 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 			return
 
 	visible = false
-	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
-	if _item_manager != null and _item_manager.has_method("mark_loose_in_venue"):
-		_item_manager.mark_loose_in_venue(item_definition.key, settled_position)
-	drop_completed.emit(item_definition.key, settled_position, true)
+	ItemManager.adopt_instance(ball.item_key)
+	ItemManager.mark_loose_in_venue(ball.item_key, settled_position)
+	drop_completed.emit(ball.item_key, settled_position, true)
 
 
 func _release_ball_from_registry(reconciler: Node, ball: Ball) -> void:
 	if reconciler != null and reconciler.has_method("release_ball"):
-		reconciler.release_ball(item_definition.key)
+		reconciler.release_ball(ball.item_key)
 	if is_instance_valid(ball):
 		ball.queue_free()
 
 
 func _release_velocity() -> Vector2:
-	if _item_manager != null and _item_manager.has_method("get_default_ball_launch_velocity"):
-		return _item_manager.get_default_ball_launch_velocity()
-	return Vector2.ZERO
+	return ItemManager.get_default_ball_launch_velocity()
 
 
 func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
@@ -376,11 +338,23 @@ func _start_drag() -> void:
 
 
 func _complete_purchase() -> bool:
-	if is_owned():
-		return false
 	if not can_be_owned():
 		return false
-	return _item_manager.take(item_definition.key)
+	if _is_ball_role():
+		return _complete_ball_purchase()
+	return _complete_equipment_purchase()
+
+
+func _complete_ball_purchase() -> bool:
+	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
+		return false
+	return _item_manager.take_ball(item_definition.key)
+
+
+func _complete_equipment_purchase() -> bool:
+	if is_owned():
+		return false
+	return _item_manager.take_equipment(item_definition.key)
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:

@@ -101,8 +101,8 @@ func test_collect_item_positions_skips_stored_balls() -> void:
 	await get_tree().process_frame
 
 	var positions: Dictionary[String, Vector2] = _reconciler.collect_item_positions()
-	assert_true(positions.has("ball_alpha"), "on-court ball position included in snapshot")
+	assert_true(positions.has("ball_alpha_1"), "on-court ball position included in snapshot")
 	assert_false(
-		positions.has("ball_beta"),
+		positions.has("ball_beta_1"),
 		"STORED ball positions are reconstructed from rack slot index, not from world coords"
 	)

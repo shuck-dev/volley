@@ -12,11 +12,13 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var shop_area: Area2D
 @export var soul_label: Label
 @export var items_anchor: Node2D
+@export var restock_button: Button
 
-var _item_manager: Node
+var _item_manager: ItemManager
 ## Cached so tree_exiting can unregister after `get_tree()` would return null.
 var _registered_target: ShopDropTarget = null
 var _registered_controller: Node = null
+var _refresh_count: int = 0
 
 
 func _ready() -> void:
@@ -31,6 +33,11 @@ func _ready() -> void:
 	_register_shop_target()
 	if not tree_exiting.is_connected(_on_tree_exiting):
 		tree_exiting.connect(_on_tree_exiting)
+	if restock_button != null:
+		restock_button.focus_mode = Control.FOCUS_NONE
+		if not restock_button.pressed.is_connected(_on_restock_pressed):
+			restock_button.pressed.connect(_on_restock_pressed)
+	_update_restock_button()
 
 
 ## Deferred so the controller has run `_ready` and joined the `drag_controller` group.
@@ -65,7 +72,7 @@ func _on_tree_exiting() -> void:
 
 
 func _spawn_items() -> void:
-	var visible_items: Array[ItemDefinition] = _get_visible_items()
+	var visible_items: Array[ItemDefinition] = _get_item_pool()
 	var count: int = visible_items.size()
 	var spacing: float = config.item_spacing
 	var start_x: float = -(count - 1) * spacing / 2.0
@@ -80,18 +87,60 @@ func _spawn_items() -> void:
 		shop_item.bind_shop_area(shop_area)
 
 
-func _get_visible_items() -> Array[ItemDefinition]:
+func _get_item_pool() -> Array[ItemDefinition]:
 	var available: Array[ItemDefinition] = []
 	for definition: ItemDefinition in _item_manager.items:
 		if not definition.purchasable:
 			continue
 		if definition.role != &"ball":
 			continue
-		if _item_manager.get_level(definition.key) == 0:
-			available.append(definition)
-		if available.size() >= config.display_slots:
-			break
-	return available
+		available.append(definition)
+	available.shuffle()
+	return available.slice(0, config.display_slots)
+
+
+func _clear_items() -> void:
+	for child: Node in items_anchor.get_children():
+		items_anchor.remove_child(child)
+		child.free()
+
+
+func restock() -> void:
+	var cost: int = _calculate_restock_cost()
+	if cost > 0:
+		if _item_manager.get_soul_balance() < cost:
+			return
+		_item_manager.subtract_soul(cost)
+	_clear_items()
+	_spawn_items()
+	_refresh_count += 1
+	_update_restock_button()
+
+
+func _calculate_restock_cost() -> int:
+	if _refresh_count == 0:
+		return 0
+	var total: int = 0
+	for child: Node in items_anchor.get_children():
+		var shop_item: ShopItem = child as ShopItem
+		if shop_item != null and shop_item.item_definition != null:
+			total += shop_item.item_definition.base_cost
+	return max(1, ceili(total * config.restock_cost_multiplier))
+
+
+func _on_restock_pressed() -> void:
+	restock()
+
+
+func _update_restock_button() -> void:
+	if restock_button == null:
+		return
+	var cost: int = _calculate_restock_cost()
+	if cost == 0:
+		restock_button.text = "Restock (Free)"
+	else:
+		restock_button.text = "Restock (%d Soul)" % cost
+		restock_button.disabled = _item_manager.get_soul_balance() < cost
 
 
 func _update_soul_label(balance: int) -> void:
@@ -100,6 +149,7 @@ func _update_soul_label(balance: int) -> void:
 
 func _on_soul_balance_changed(balance: int) -> void:
 	_update_soul_label(balance)
+	_update_restock_button()
 
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.

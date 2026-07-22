@@ -25,7 +25,7 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
-var _item_manager: Node
+var _item_manager: ItemManager
 ## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
 var _held: Node2D = null
 var _held_key: String = ""
@@ -313,7 +313,7 @@ func _adopt_purchased_into_rack(item_key: String) -> void:
 		return
 	if reconciler.get_ball_for_key(item_key) != null:
 		return
-	reconciler.adopt_stored(item_key, rack.get_slot_position_for(item_key))
+	reconciler.spawn_stored(item_key, rack.get_slot_position_for(item_key))
 
 
 ## Funnels ball-role venue-floor releases into the reconciler with the loose-in-venue overlay set.
@@ -745,7 +745,7 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
 			return item
 	return null
 
@@ -776,7 +776,7 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
 	grab_from_rack(item_key, press_position)
-	rack.refresh()
+	rack.refresh.call_deferred()
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:

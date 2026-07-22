@@ -54,7 +54,8 @@ static var class_ref_by_name = {} :
 ## on.  It is further populated during a run so that we only have to create
 ## a new instance once to get the class name string.
 static var gdscript_native_class_names_by_type = {
-	Tween:"Tween"
+	Tween:"Tween",
+	CanvasItem:"CanvasItem",
 }
 
 
@@ -194,16 +195,16 @@ static var TestCollector = LazyLoader.new('res://addons/gut/test_collector.gd'):
 static var ThingCounter = LazyLoader.new('res://addons/gut/thing_counter.gd'):
 	get: return ThingCounter.get_loaded()
 	set(val): pass
+static var UpdateDetector = LazyLoader.new('res://addons/gut/update_detector.gd'):
+	get: return UpdateDetector.get_loaded()
+	set(val): pass
 # --------------------------------
 
 static var gut_fonts = GutFonts.new()
 static var avail_fonts = gut_fonts.get_font_names()
 
 static var version_numbers = VersionNumbers.new(
-	# gut_versrion (source of truth)
-	'9.6.0',
-	# required_godot_version
-	'4.6'
+	'9.6.1' # gut_versrion (source of truth)
 )
 
 
@@ -234,7 +235,7 @@ static func get_error_tracker():
 		_error_tracker = GutErrorTracker.new()
 	return _error_tracker
 
-
+static var inner_class_registry = InnerClassRegistry.new()
 
 
 # ##############################################################################
@@ -314,14 +315,9 @@ static func make_install_check_text(template_paths=DOUBLE_TEMPLATES, ver_nums=ve
 		!FileAccess.file_exists(template_paths.SCRIPT)):
 
 		text = 'One or more GUT template files are missing.  If this is an exported project, you must include *.txt files in the export to run GUT.  If it is not an exported project then reinstall GUT.'
-	elif(!ver_nums.is_godot_version_valid()):
-		text = ver_nums.get_bad_version_text()
 
 	return text
 
-
-static func is_install_valid(template_paths=DOUBLE_TEMPLATES, ver_nums=version_numbers):
-	return make_install_check_text(template_paths, ver_nums) == INSTALL_OK_TEXT
 
 
 # ------------------------------------------------------------------------------

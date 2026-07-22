@@ -6,7 +6,7 @@ extends Node
 ## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
 signal consolidation_fired
 
-var _item_manager: Node
+var _item_manager: ItemManager
 
 # Per-ball flag guarding the once-per-rally final-consolidation reward.
 var _final_banked_by_ball: Dictionary = {}
