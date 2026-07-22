@@ -19,7 +19,12 @@ var _hidden_key: String = ""
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
+	_item_manager.item_manager_state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
 	_cache_slot_markers()
+	refresh()
+
+
+func _on_state_changed() -> void:
 	refresh()
 
 
