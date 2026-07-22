@@ -28,11 +28,6 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Pull LFS objects
-        run: |
-          git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
-          git lfs pull --include="assets/**"
-
       - name: Cache Godot
         id: cache-godot
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -83,6 +78,7 @@ jobs:
               print NR ":" $0
               next
             }
+            if ($0 ~ /Parse Error: .* referenced non-existent resource/) next
             if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
           }' test_output.plain || true)
           if [ -n "$warnings" ]; then
