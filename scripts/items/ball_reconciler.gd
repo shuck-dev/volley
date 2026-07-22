@@ -20,7 +20,7 @@ signal current_ball_changed(ball: Ball)
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
-## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
+## Ball-role rack for STORED slot positions.
 @export var ball_rack: RackDisplay
 
 @export var spawn_origin: Vector2 = Vector2.ZERO
@@ -147,16 +147,14 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Generates an instance key for `template_key`, creates a STORED ball at `position`,
-## and registers the instance in item state.
+## Generates an instance key, creates a STORED ball, registers it in item state.
 func spawn_stored(template_key: String, position: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, _get_item_definition(template_key).role)
 	return _create_stored(key, position)
 
 
-## Generates an instance key for `template_key`, creates a ball at `position` with
-## `velocity`, activates it on court, and registers the instance in item state.
+## Generates an instance key, creates a ball in play, registers it in item state.
 func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, &"ball")
@@ -165,8 +163,7 @@ func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -
 	return _create_ball(key, position, velocity)
 
 
-## Generates an instance key for `template_key`, creates a ball at `position` with
-## `velocity` in OUT_REST, and registers the instance in item state.
+## Generates an instance key, creates a ball in OUT_REST, registers it in item state.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := BallKey.generate(template_key, _balls_by_key)
 	_item_manager.register_instance(key, &"ball")
@@ -318,9 +315,7 @@ func _reconcile_stored_kit_items() -> void:
 		ensure_stored_ball_for_key(key)
 
 
-## Guarantees a tracked STORED Ball for a kit ball-role key so its slot is indexed and grabbable.
-## The one-shot _reconcile_stored_kit_items guard can leave a second stored ball untracked;
-## this lets the rack/grab paths lazily back-fill it without re-running the whole sweep.
+## Lazy-backfill a tracked STORED Ball for a kit ball-role key.
 func ensure_stored_ball_for_key(item_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
@@ -338,8 +333,7 @@ func _default_spawn_position() -> Vector2:
 	return spawn_origin
 
 
-## Prefer the saved position so reloaded balls keep their last in-play spot.
-## Falls back to the default spawn when no save data exists for the key.
+## Reads the saved position for `item_key`, falls back to spawn_origin.
 func _spawn_position_for(item_key: String) -> Vector2:
 	if not _has_save_manager_autoload():
 		return _default_spawn_position()
