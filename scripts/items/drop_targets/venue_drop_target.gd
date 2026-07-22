@@ -3,7 +3,7 @@ extends DropTarget
 
 ## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
 var _world: World2D

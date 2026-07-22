@@ -438,8 +438,8 @@ func remove_level(item_key: String) -> void:
 		SaveManager.save()
 
 
-## Adopts an authored on-court item at level >= 1 with on-court placement; idempotent.
-func adopt_authored(item_key: String) -> void:
+## Adopts a pre-existing on-court item at level >= 1 with on-court placement; idempotent.
+func adopt_pre_existing(item_key: String) -> void:
 	if get_level(item_key) <= 0:
 		state.item_levels[item_key] = 1
 		item_level_changed.emit(item_key)

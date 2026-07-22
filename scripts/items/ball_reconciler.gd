@@ -30,7 +30,7 @@ const PRESERVED_SPEED_NONE: float = -1.0
 
 var bound_y: float = 0.0
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 ## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
@@ -100,7 +100,7 @@ func collect_ball_play_states() -> Dictionary[String, int]:
 
 
 ## Idempotent; safe to call repeatedly across scene reloads. The host injects the container
-## whose authored Ball children should be adopted; nothing is adopted until it is set.
+## whose pre-existing Ball children should be adopted; nothing is adopted until it is set.
 func adopt_pre_existing_balls() -> void:
 	var parent: Node = pre_existing_balls_parent
 	if parent == null:
@@ -119,21 +119,23 @@ func adopt_pre_existing_balls() -> void:
 		if _is_tracked(ball):
 			continue
 		if ball.item_key == "":
-			push_warning("BallReconciler: skipping adoption of authored Ball with no item_key")
+			push_warning("BallReconciler: skipping adoption of pre-existing Ball with no item_key")
 			continue
 
 		var key: String = ball.item_key
+		var definition: ItemDefinition = _get_item_definition(key)
+		if definition != null and definition.role == &"ball":
+			assert(
+				BallKey.base_key(key) != key,
+				(
+					'Ball in scene with key "%s" must use instance suffix (e.g. "%s_1"), not a bare template key'
+					% [key, key]
+				)
+			)
 		_balls_by_key[key] = ball
 		_apply_item_art(ball, key)
 		# Authored ball needs level >= 1 and ON_COURT so the rack hides its token.
-		if _item_manager.has_method("adopt_authored"):
-			_item_manager.adopt_authored(key)
-		elif (
-			_item_manager.has_method("activate")
-			and _item_manager.get_level(key) > 0
-			and not _item_manager.is_on_court(key)
-		):
-			_item_manager.activate(key)
+		_item_manager.adopt_pre_existing(key)
 
 		_apply_post_adopt_position(ball, key)
 		ball_spawned.emit(key, ball)
@@ -165,6 +167,8 @@ func has_ball_in_play() -> bool:
 	return false
 
 
+## Returns the tracked Ball for `item_key`, matching instance keys exactly. Also resolves template
+## keys to any matching instance key so callers can look up by base item name.
 func get_ball_for_key(item_key: String) -> Ball:
 	if _balls_by_key.has(item_key):
 		var raw: Variant = _balls_by_key[item_key]
@@ -292,7 +296,7 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 		_initial_reconcile_pending = false
 	if on_court:
 		var existing: Ball = get_ball_for_key(item_key)
-		# Existing PLAY balls (authored, mid-rally) already live at the right spot; reposition would clobber them.
+		# Existing PLAY balls (pre-existing, mid-rally) already live at the right spot; reposition would clobber them.
 		if (
 			existing != null
 			and (
@@ -421,7 +425,7 @@ func _spawn_position_for(item_key: String) -> Vector2:
 	return _default_spawn_position()
 
 
-## Swaps the art into the authored ItemArtHolder slot on Ball; idempotent across re-applications.
+## Swaps the art into the pre-existing ItemArtHolder slot on Ball; idempotent across re-applications.
 func _apply_item_art(ball: Ball, item_key: String) -> void:
 	var definition: ItemDefinition = _get_item_definition(item_key)
 	if definition == null or definition.art == null:

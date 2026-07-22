@@ -13,7 +13,7 @@ signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 
 var item_definition: ItemDefinition
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
@@ -153,15 +153,14 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		# Fall back to a dropped body if no controller target accepts the spawn.
-		if not _complete_purchase() and not is_owned():
+		var purchase_key: String = _complete_purchase()
+		if purchase_key == "" and not is_owned():
 			return false
+		var key: String = purchase_key if purchase_key != "" else _next_instance_key()
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 		if controller != null and controller.has_method("spawn_purchased_at"):
-			spawned = controller.spawn_purchased_at(
-				item_definition.key, release_position, _release_velocity()
-			)
+			spawned = controller.spawn_purchased_at(key, release_position, _release_velocity())
 		if not spawned:
 			_drop_falling_body(release_position)
 		_finalise_gesture(release_position, true)
@@ -240,10 +239,10 @@ func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
 func _drop_ball_role(clamped_position: Vector2, controller: Node) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 	if reconciler == null:
-		# No reconciler reachable (test isolation, broken venue): bail without leaking a HeldBody.
 		return
+	var purchase_key: String = ItemManager.generate_instance_key(item_definition.key)
 	var ball: Ball = reconciler.release_into_rest(
-		item_definition.key, clamped_position, _release_velocity()
+		purchase_key, clamped_position, _release_velocity()
 	)
 	if ball == null:
 		return
@@ -323,23 +322,19 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 			return
 
 	visible = false
-	# Mark as loose-in-venue so the rack filter hides the slot while the Ball rests on the venue floor.
-	if _item_manager != null and _item_manager.has_method("mark_loose_in_venue"):
-		_item_manager.mark_loose_in_venue(item_definition.key, settled_position)
-	drop_completed.emit(item_definition.key, settled_position, true)
+	ItemManager.mark_loose_in_venue(ball.item_key, settled_position)
+	drop_completed.emit(ball.item_key, settled_position, true)
 
 
 func _release_ball_from_registry(reconciler: Node, ball: Ball) -> void:
 	if reconciler != null and reconciler.has_method("release_ball"):
-		reconciler.release_ball(item_definition.key)
+		reconciler.release_ball(ball.item_key)
 	if is_instance_valid(ball):
 		ball.queue_free()
 
 
 func _release_velocity() -> Vector2:
-	if _item_manager != null and _item_manager.has_method("get_default_ball_launch_velocity"):
-		return _item_manager.get_default_ball_launch_velocity()
-	return Vector2.ZERO
+	return ItemManager.get_default_ball_launch_velocity()
 
 
 func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
@@ -375,12 +370,31 @@ func _start_drag() -> void:
 	pickup_started.emit(item_definition.key)
 
 
-func _complete_purchase() -> bool:
-	if is_owned():
-		return false
+func _next_instance_key() -> String:
+	if not _is_ball_role() or not is_owned():
+		return item_definition.key
+	for key in _item_manager.get_kit_items(&"ball"):
+		if BallKey.is_instance(item_definition.key, key):
+			return key
+		return _item_manager.generate_instance_key(item_definition.key)
+	return item_definition.key
+
+
+func _complete_purchase() -> String:
 	if not can_be_owned():
-		return false
-	return _item_manager.take(item_definition.key)
+		return ""
+	if _is_ball_role():
+		if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
+			return ""
+	else:
+		if is_owned():
+			return ""
+	var purchase_key: String = item_definition.key
+	if _is_ball_role():
+		purchase_key = ItemManager.generate_instance_key(item_definition.key)
+	if not _item_manager.take(item_definition.key):
+		return ""
+	return purchase_key
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:

@@ -10,7 +10,7 @@ const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 ## Optional. When set, the rack can source slot art from STORED Balls in the registry (step 7.1+).
 @export var reconciler: BallReconciler
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _slots: Array[Node2D] = []
 var _slot_markers: Array[Node2D] = []
 var _hidden_key: String = ""
@@ -62,7 +62,7 @@ func refresh() -> void:
 		var definition: ItemDefinition = _get_item_definition(item_key)
 		if definition == null or definition.art == null:
 			continue
-		var slot: Node2D = _build_slot(definition, _slot_markers[slot_index].position)
+		var slot: Node2D = _build_slot(item_key, definition, _slot_markers[slot_index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
 	_apply_slot_visibility()
@@ -88,24 +88,23 @@ func _cache_slot_markers() -> void:
 			_slot_markers.append(child)
 
 
-func _build_slot(definition: ItemDefinition, slot_position: Vector2) -> Node2D:
+func _build_slot(item_key: String, definition: ItemDefinition, slot_position: Vector2) -> Node2D:
 	var slot: Node2D = Node2D.new()
-	slot.name = "Slot_%s" % definition.key
+	slot.name = "Slot_%s" % item_key
 	slot.position = slot_position
-	slot.set_meta(&"item_key", definition.key)
-	# Scale the art via a holder so it matches the standard token size (SH-261).
+	slot.set_meta(&"item_key", item_key)
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
 	art_holder.scale = definition.token_scale
-	_populate_art_holder(art_holder, definition)
+	_populate_art_holder(art_holder, item_key, definition)
 	slot.add_child(art_holder)
-	_attach_slot_input(slot, definition.key)
+	_attach_slot_input(slot, item_key)
 	return slot
 
 
 ## Slot stays empty when the registry owns a Ball for this key; the Ball renders the art itself.
-func _populate_art_holder(art_holder: Node2D, definition: ItemDefinition) -> void:
-	if _registered_ball_for(definition.key) != null:
+func _populate_art_holder(art_holder: Node2D, item_key: String, definition: ItemDefinition) -> void:
+	if _registered_ball_for(item_key) != null:
 		art_holder.set_meta(&"source", &"ball")
 		return
 	art_holder.set_meta(&"source", &"definition")
@@ -117,7 +116,7 @@ func _registered_ball_for(item_key: String) -> Ball:
 		return null
 	# A second stored ball can be left untracked by the reconciler's one-shot kit reconcile;
 	# back-fill it here so every rendered stored ball-role slot is backed by a live, grabbable ball.
-	if role == &"ball" and reconciler.has_method("ensure_stored_ball_for_key"):
+	if role == &"ball" and reconciler != null:
 		return reconciler.ensure_stored_ball_for_key(item_key)
 	return reconciler.get_ball_for_key(item_key)
 

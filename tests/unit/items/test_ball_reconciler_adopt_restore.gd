@@ -16,23 +16,25 @@ func before_each() -> void:
 	_manager.items.assign([ball_alpha] as Array[ItemDefinition])
 	_manager.economy.soul_balance = 10000
 	_manager.take("ball_alpha")
-	_manager.activate("ball_alpha")
+	var instance_key: String = "ball_alpha_1"
+	_manager.activate(instance_key)
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
-	# The host injects the container whose authored Balls are adopted; here the test is the host.
+	# The host injects the container whose pre-existing Balls are adopted; here the test is the host.
 	_reconciler.pre_existing_balls_parent = self
 	add_child_autofree(_reconciler)
 
 	_ball = load("res://scenes/ball.tscn").instantiate()
-	_ball.item_key = "ball_alpha"
+	_ball.item_key = instance_key
 	_ball.global_position = Vector2(100, 100)
 	add_child_autofree(_ball)
 
 
 func _seed_save(position: Vector2, play_state: int) -> void:
-	SaveManager.items.ball_positions = {"ball_alpha": position} as Dictionary[String, Vector2]
-	SaveManager.items.ball_play_states = {"ball_alpha": play_state} as Dictionary[String, int]
+	var instance_key: String = "ball_alpha_1"
+	SaveManager.items.ball_positions = {instance_key: position} as Dictionary[String, Vector2]
+	SaveManager.items.ball_play_states = {instance_key: play_state} as Dictionary[String, int]
 
 
 func test_adopt_restores_saved_out_rest_position_and_state() -> void:

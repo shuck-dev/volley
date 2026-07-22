@@ -215,10 +215,11 @@ func test_owned_items_show_on_the_rack() -> void:
 	var rack: Node2D = _make_rack(&"ball", manager)
 	manager.take(ball.key)
 	rack.refresh()
+	var instance_key: String = "ball_alpha_1"
 
 	var displayed: Array[String] = rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "rack should show the owned item after take and refresh")
-	assert_eq(displayed[0], ball.key)
+	assert_eq(displayed[0], instance_key)
 
 
 func test_grab_removes_item_from_the_rack() -> void:

@@ -37,7 +37,7 @@ var _active_partner_definition: Resource
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
-var _item_manager: Node
+var _item_manager: ItemManager
 var _is_autoplay_active := false
 var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler

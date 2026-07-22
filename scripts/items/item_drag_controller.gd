@@ -25,7 +25,7 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
-var _item_manager: Node
+var _item_manager: ItemManager
 ## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
 var _held: Node2D = null
 var _held_key: String = ""

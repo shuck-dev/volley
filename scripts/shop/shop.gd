@@ -14,7 +14,7 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var items_anchor: Node2D
 @export var restock_button: Button
 
-var _item_manager: Node
+var _item_manager: ItemManager
 ## Cached so tree_exiting can unregister after `get_tree()` would return null.
 var _registered_target: ShopDropTarget = null
 var _registered_controller: Node = null
