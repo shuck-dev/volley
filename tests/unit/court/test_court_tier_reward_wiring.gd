@@ -19,11 +19,11 @@ func before_each() -> void:
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 
-	var ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("base_ball")
+	var ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("old_ball")
 	var typed_items: Array[ItemDefinition] = [ball_item]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 0
-	_manager.state.item_levels["base_ball"] = 1
+	_manager.state.item_levels["old_ball"] = 1
 	add_child_autofree(_manager)
 
 	_reconciler = BallReconcilerScript.new()
@@ -54,9 +54,9 @@ func before_each() -> void:
 
 
 func _spawn_ball() -> Ball:
-	_manager.take("base_ball")
-	_manager.activate("base_ball")
-	return _reconciler.get_ball_for_key("base_ball")
+	_manager.take("old_ball")
+	_manager.activate("old_ball")
+	return _reconciler.get_ball_for_key("old_ball")
 
 
 func _top_tier() -> int:
