@@ -6,7 +6,6 @@ extends DropTarget
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
-var _court_bounds: Rect2
 var _exclude_rids: Array[RID] = []
 
 
@@ -14,12 +13,10 @@ func configure(
 	item_manager: Node,
 	reconciler: BallReconciler,
 	world: World2D,
-	court_bounds: Rect2,
 ) -> void:
 	_item_manager = item_manager
 	_reconciler = reconciler
 	_world = world
-	_court_bounds = court_bounds
 
 
 ## RIDs to exclude from the projection (e.g. the held item's own body).
@@ -29,9 +26,6 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 
 func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not _is_ball_role(item_key):
-		return false
-	var clamped: Vector2 = DropTarget.clamp_to_rect(position, _court_bounds)
-	if clamped != position:
 		return false
 	return _projection_clear(item_key, position, scale_factor)
 

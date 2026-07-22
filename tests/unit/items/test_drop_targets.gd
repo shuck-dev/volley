@@ -50,9 +50,7 @@ func test_court_target_rejects_equipment_role() -> void:
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	add_child_autofree(target)
-	target.configure(
-		manager, reconciler, host.get_world_2d(), Rect2(Vector2(-600, -400), Vector2(1200, 800))
-	)
+	target.configure(manager, reconciler, host.get_world_2d())
 	assert_false(target.can_accept("grip", Vector2.ZERO))
 
 
@@ -67,6 +65,6 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	var court := Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	var target: VenueDropTarget = VenueDropTargetScript.new()
 	add_child_autofree(target)
-	target.configure(manager, reconciler, venue, court)
+	target.configure(manager, reconciler, venue)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))

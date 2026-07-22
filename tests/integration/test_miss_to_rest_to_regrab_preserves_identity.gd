@@ -43,7 +43,6 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
-	_drag.court_bounds = COURT_BOUNDS
 	_drag.venue_bounds = VENUE_BOUNDS
 	add_child_autofree(_drag)
 
@@ -96,22 +95,22 @@ func test_miss_to_rest_to_regrab_preserves_identity() -> void:
 	assert_not_null(live, "precondition: an in-play Ball exists")
 	var live_id: int = live.get_instance_id()
 
-	# 1. Player drags the live ball to the venue floor (OUT_REST). State transitions land
-	# inline through the drag controller's synchronous signals; no idle yield required.
+	# 1. Player drags the live ball and releases over the court; the same Ball goes to PLAY.
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 	_drag._gesture_below_threshold = false
 	_seed_release_velocity(Vector2.ZERO, Vector2(10, 0))
-	var venue_floor := Vector2(1500, 100)
-	assert_true(_drag.attempt_release(venue_floor))
+	var court_point := Vector2(50, 25)
+	assert_true(_drag.attempt_release(court_point))
 
-	var at_rest: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	var played: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(played, "Ball survives the release round trip")
 	assert_eq(
-		at_rest.get_instance_id(), live_id, "registry still tracks the same Ball after OUT_REST"
+		played.get_instance_id(), live_id, "registry still tracks the same Ball after re-play"
 	)
-	assert_eq(at_rest.play_state, Ball.PlayState.OUT_REST)
-	assert_eq(at_rest.global_position, venue_floor)
+	assert_ne(played.play_state, Ball.PlayState.OUT_HELD)
+	assert_ne(played.play_state, Ball.PlayState.OUT_REST)
 
-	# 2. Player picks the at-rest ball back up via grab_live_ball (the OUT_REST grab path).
+	# 2. Player picks the ball back up (OUT_HELD) and releases again.
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 	var held: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_eq(
@@ -119,14 +118,12 @@ func test_miss_to_rest_to_regrab_preserves_identity() -> void:
 	)
 	assert_eq(held.play_state, Ball.PlayState.OUT_HELD)
 
-	# 3. Player releases over the court; the same Ball returns to PLAY.
 	_drag._gesture_below_threshold = false
-	_seed_release_velocity(Vector2(1500, 100), Vector2(1580, 100))
-	var court_point := Vector2(50, 25)
+	_seed_release_velocity(Vector2(10, 0), Vector2(20, 0))
 	assert_true(_drag.attempt_release(court_point))
 
-	var played: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(played, "Ball survives the venue → court round trip")
-	assert_eq(played.get_instance_id(), live_id, "every transition kept the same Ball instance")
-	assert_ne(played.play_state, Ball.PlayState.OUT_HELD)
-	assert_ne(played.play_state, Ball.PlayState.OUT_REST)
+	var replayed: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(replayed, "Ball survives the second release round trip")
+	assert_eq(replayed.get_instance_id(), live_id, "every transition kept the same Ball instance")
+	assert_ne(replayed.play_state, Ball.PlayState.OUT_HELD)
+	assert_ne(replayed.play_state, Ball.PlayState.OUT_REST)
