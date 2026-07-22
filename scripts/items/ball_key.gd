@@ -3,8 +3,9 @@ extends RefCounted
 
 
 static func is_instance(item_type: String, key: String) -> bool:
-	var base := base_key(key)
-	return base != key and base == item_type
+	var regex := RegEx.new()
+	regex.compile("^%s_\\d+$" % item_type)
+	return regex.search(key) != null
 
 
 static func next_instance(item_type: String, existing_keys: Dictionary) -> String:
@@ -15,10 +16,9 @@ static func next_instance(item_type: String, existing_keys: Dictionary) -> Strin
 
 
 static func base_key(instance_key: String) -> String:
-	var last_underscore := instance_key.rfind("_")
-	if last_underscore == -1:
-		return instance_key
-	var suffix := instance_key.substr(last_underscore + 1)
-	if suffix.is_valid_int():
-		return instance_key.substr(0, last_underscore)
+	var regex := RegEx.new()
+	regex.compile("_\\d+$")
+	var result := regex.search(instance_key)
+	if result:
+		return instance_key.substr(0, result.get_start())
 	return instance_key
