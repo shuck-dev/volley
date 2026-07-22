@@ -151,20 +151,16 @@ func attempt_release(release_position: Vector2) -> bool:
 		visible = false
 		return true
 
-	# Inside-shop branch.
+	# Inside-shop branch: revert to shelf position, no ball spawn.
 	var threshold: float = tuning.drag_threshold_px if tuning != null else 2.0
 	var release_travel: float = release_position.distance_to(_press_position)
 	var gesture_travel: float = maxf(_max_travel_seen, release_travel)
 	if gesture_travel < threshold:
-		# Pure click: no body spawned, slot returns visible, no purchase.
-		_finalise_gesture(release_position, false)
-		visible = true
-		return true
+		# Pure click: no action, slot returns visible.
+		pass
 
-	# Real drag inside shop: spawn falling body; settle decides commit-vs-cancel.
-	_drop_falling_body(release_position)
 	_finalise_gesture(release_position, false)
-	# Visibility flip waits on the settle decision; the body's settle watcher resolves it.
+	visible = true
 	return true
 
 
@@ -350,8 +346,6 @@ func _complete_purchase() -> bool:
 
 
 func _complete_ball_purchase() -> bool:
-	if is_owned():
-		return false
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
 		return false
 	return _item_manager.take_ball(item_definition.key)

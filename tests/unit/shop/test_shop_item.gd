@@ -45,19 +45,6 @@ func test_release_outside_shop_commits_purchase() -> void:
 	assert_eq(_manager.economy.soul_balance, 9990, "purchase committed")
 
 
-func test_inside_shop_drag_spawns_body_without_purchase() -> void:
-	_setup_item(StandardBall)
-	_manager.economy.soul_balance = 10000
-	_item.bind_shop_area(_make_shop_area(Vector2(800, 800)))
-	_item.start_drag()
-	_item._press_position = Vector2.ZERO
-	_item._max_travel_seen = 50.0
-	var ok: bool = _item.attempt_release(Vector2.ZERO)
-	assert_true(ok)
-	assert_false(_item.visible, "slot hidden after inside-shop drag")
-	assert_eq(_manager.get_level(StandardBall.key), 0, "purchase deferred to settle")
-
-
 func test_settle_outside_shop_commits_purchase() -> void:
 	_setup_item(StandardBall)
 	_manager.economy.soul_balance = 10000
