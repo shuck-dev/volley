@@ -143,19 +143,22 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	var rack := _make_rack(&"ball", manager)
 	manager.take(alpha.key)
 	manager.take(beta.key)
+	var alpha_key: String = "ball_alpha_1"
+	var beta_key: String = "ball_beta_1"
 	await get_tree().process_frame
 
 	rack.refresh()
 	await get_tree().process_frame
-	rack.hide_slot_for(alpha.key)
+	rack.hide_slot_for(alpha_key)
 
 	for child in rack.slot_container.get_children():
-		if child is Node2D and String(child.name).begins_with("Slot_"):
-			var key: String = child.get_meta(&"item_key", "")
-			if key == alpha.key:
-				assert_false(child.visible, "grabbed slot is hidden during the gesture")
-			elif key == beta.key:
-				assert_true(child.visible, "non-grabbed slots stay visible")
+		if not (child is Node2D) or not String(child.name).begins_with("Slot_"):
+			continue
+		var key: String = child.get_meta(&"item_key", "")
+		if key == alpha_key:
+			assert_false(child.visible, "grabbed slot is hidden during the gesture")
+		elif key == beta_key:
+			assert_true(child.visible, "non-grabbed slots stay visible")
 
 
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:

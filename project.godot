@@ -21,7 +21,6 @@ Settings="*res://scripts/core/settings.gd"
 SaveManager="*res://scripts/progression/save_manager.gd"
 ItemManager="*res://scripts/items/item_manager.gd"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
-ConfigHotReload="*res://addons/config_hot_reload/config_hot_reload.gd"
 GodotIQRuntime="*uid://5f55jejx8ekg"
 
 [debug]
@@ -36,15 +35,13 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/config_hot_reload/plugin.cfg", "res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/item_preview/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg", "res://addons/item_preview/plugin.cfg")
 
 [gdscript]
 
 language_server/enable_gdscript_lsp=false
 
 [global_group]
-
-hot_reloadable_config="Auto-reloads Resource exports from disk in debug builds"
 
 [gui]
 

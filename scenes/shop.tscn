@@ -8,7 +8,7 @@ size = Vector2(500, 287)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "restock_button") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "restock_button")]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 soul_label = NodePath("SoulLabel")
