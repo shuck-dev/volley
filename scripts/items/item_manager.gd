@@ -180,30 +180,6 @@ func is_on_court(item_key: String) -> bool:
 	return placement == Placement.EQUIPPED or placement == Placement.ON_COURT
 
 
-## Returns the list of ball-role item keys currently on the court.
-func get_court_items() -> Array[String]:
-	var result: Array[String] = []
-	for key in state.item_levels:
-		if state.item_levels[key] <= 0:
-			continue
-		if _get_placement(key) != Placement.ON_COURT:
-			continue
-		if not _key_in_catalog(key):
-			continue
-		var item := _get_item(key)
-		if item != null and item.role == &"ball":
-			result.append(key)
-	return result
-
-
-func _key_in_catalog(item_key: String) -> bool:
-	var base := _base_key(item_key)
-	for item in items:
-		if item.key == base:
-			return true
-	return false
-
-
 ## Slot index assigned to `item_key` while STORED; -1 when not stored.
 func get_rack_slot_index(item_key: String) -> int:
 	return state.rack_slot_index_by_key.get(item_key, -1)
@@ -251,8 +227,6 @@ func get_kit_items(role: StringName) -> Array[String]:
 		if state.item_levels[key] <= 0:
 			continue
 		if _get_placement(key) != Placement.STORED:
-			continue
-		if not _key_in_catalog(key):
 			continue
 		var item := _get_item(key)
 		if item != null and item.role == role:

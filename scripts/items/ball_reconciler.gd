@@ -349,7 +349,7 @@ func _reconcile() -> void:
 
 	if _initial_reconcile_pending:
 		_initial_reconcile_pending = false
-		for key in _item_manager.get_court_items():
+		for key in _ball_keys():
 			if get_ball_for_key(key) == null:
 				_create_ball(
 					key, _spawn_position_for(key), _item_manager.get_default_ball_launch_velocity()
@@ -366,6 +366,20 @@ func _reconcile_stored_kit_items() -> void:
 
 func _default_spawn_position() -> Vector2:
 	return spawn_origin
+
+
+func _ball_keys() -> Array[String]:
+	var result: Array[String] = []
+	for key in _item_manager.state.item_levels:
+		if _item_manager.state.item_levels[key] <= 0:
+			continue
+		if _item_manager.get_placement(key) != Placement.ON_COURT:
+			continue
+		var item := _get_item_definition(key)
+
+		if item != null and item.role == &"ball":
+			result.append(key)
+	return result
 
 
 ## Where a reloaded ball lands so it appears where the player left it.
