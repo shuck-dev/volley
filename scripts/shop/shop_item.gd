@@ -393,8 +393,10 @@ func _complete_purchase() -> String:
 
 	if _is_ball_role():
 		purchase_key = ItemManager.generate_instance_key(item_definition.key)
+
 	if not _item_manager.take(item_definition.key):
 		return ""
+
 	return purchase_key
 
 
