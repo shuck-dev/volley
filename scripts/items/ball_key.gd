@@ -2,18 +2,18 @@ class_name BallKey
 extends RefCounted
 
 
-static func is_instance(base_key: String, key: String) -> bool:
-	if not key.begins_with(base_key + "_"):
+static func is_instance(item_type: String, key: String) -> bool:
+	if not key.begins_with(item_type + "_"):
 		return false
-	var suffix := key.substr(base_key.length() + 1)
+	var suffix := key.substr(item_type.length() + 1)
 	return suffix.is_valid_int()
 
 
-static func next_instance(base_key: String, existing_keys: Dictionary) -> String:
+static func next_instance(item_type: String, existing_keys: Dictionary) -> String:
 	var n := 1
-	while existing_keys.has("%s_%d" % [base_key, n]):
+	while existing_keys.has("%s_%d" % [item_type, n]):
 		n += 1
-	return "%s_%d" % [base_key, n]
+	return "%s_%d" % [item_type, n]
 
 
 static func base_key(instance_key: String) -> String:
