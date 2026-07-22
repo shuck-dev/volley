@@ -48,6 +48,7 @@ func _make_harness(definitions: Array) -> Dictionary:
 			manager,
 			reconciler,
 			host.get_world_2d(),
+			Rect2(),
 		)
 	)
 	add_child_autofree(target)

@@ -21,6 +21,7 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var gear_rack_drop_target: Area2D
 @export var timeout_controller: TimeoutController
 @export var venue_bounds: Rect2 = Rect2()
+@export var court_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
@@ -679,7 +680,7 @@ func _make_court_target() -> CourtDropTarget:
 	if reconciler == null:
 		return null
 	var court_target: CourtDropTarget = CourtDropTarget.new()
-	court_target.configure(_item_manager, reconciler, get_world_2d())
+	court_target.configure(_item_manager, reconciler, get_world_2d(), court_bounds)
 	return court_target
 
 

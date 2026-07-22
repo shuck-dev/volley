@@ -50,7 +50,7 @@ func test_court_target_rejects_equipment_role() -> void:
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	add_child_autofree(target)
-	target.configure(manager, reconciler, host.get_world_2d())
+	target.configure(manager, reconciler, host.get_world_2d(), Rect2())
 	assert_false(target.can_accept("grip", Vector2.ZERO))
 
 
