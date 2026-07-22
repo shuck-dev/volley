@@ -153,10 +153,9 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		var purchase_key: String = _complete_purchase()
-		if purchase_key == "" and not is_owned():
+		if not _complete_purchase() and not is_owned():
 			return false
-		var key: String = purchase_key if purchase_key != "" else _next_instance_key()
+		var key: String = item_definition.key if not is_owned() else _next_instance_key()
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 		if controller != null and controller.has_method("spawn_purchased_at"):
@@ -379,28 +378,24 @@ func _next_instance_key() -> String:
 	return item_definition.key
 
 
-func _complete_purchase() -> String:
+func _complete_purchase() -> bool:
 	if not can_be_owned():
-		return ""
+		return false
 	if _is_ball_role():
 		return _complete_ball_purchase()
 	return _complete_equipment_purchase()
 
 
-func _complete_ball_purchase() -> String:
+func _complete_ball_purchase() -> bool:
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
-		return ""
-	if _item_manager.take(item_definition.key):
-		return item_definition.key
-	return ""
+		return false
+	return _item_manager.take(item_definition.key)
 
 
-func _complete_equipment_purchase() -> String:
+func _complete_equipment_purchase() -> bool:
 	if is_owned():
-		return ""
-	if _item_manager.take_equipment(item_definition.key):
-		return item_definition.key
-	return ""
+		return false
+	return _item_manager.take_equipment(item_definition.key)
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:
