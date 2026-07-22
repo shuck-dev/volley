@@ -9,7 +9,7 @@ radius = 7.2
 
 [resource]
 script = ExtResource("1_item")
-key = "base_ball"
+key = "old_ball"
 type = &"kit"
 role = &"ball"
 display_name = "Old Ball"
