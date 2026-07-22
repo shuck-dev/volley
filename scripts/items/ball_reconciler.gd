@@ -35,7 +35,6 @@ var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 ## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
 var _adopting_pre_existing: bool = false
-var _stored_kit_reconciled: bool = false
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
@@ -341,9 +340,7 @@ func _reconcile() -> void:
 					_spawn_position_for(key),
 					_item_manager.get_default_ball_launch_velocity(),
 				)
-	if not _stored_kit_reconciled:
-		_stored_kit_reconciled = true
-		_reconcile_stored_kit_items()
+	_reconcile_stored_kit_items()
 
 
 ## Populates STORED Balls for kit ball-role items absent from the court. Rack owns slot->world mapping.

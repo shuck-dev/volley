@@ -481,6 +481,7 @@ func take(item_key: String) -> bool:
 	state.item_levels[instance_key] = 1
 	_assign_rack_slot(instance_key, item.role)
 	item_level_changed.emit(instance_key)
+	item_manager_state_changed.emit()
 	SaveManager.save()
 	return true
 
