@@ -566,5 +566,4 @@ func _get_item(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in items:
 		if item.key == base_key:
 			return item
-	assert(false, "Unknown item key: %s" % item_key)
 	return null
