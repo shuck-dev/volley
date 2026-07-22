@@ -78,16 +78,6 @@ func test_settle_outside_shop_when_unaffordable_restores_slot() -> void:
 	assert_eq(_manager.get_level(StandardBall.key), 0, "no purchase when broke")
 
 
-func test_settle_inside_shop_restores_slot() -> void:
-	_setup_item(StandardBall)
-	_manager.economy.soul_balance = 10000
-	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
-	_item.visible = false
-	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(10, 10))
-	assert_true(_item.visible, "slot restored after inside settle")
-	assert_eq(_manager.get_level(StandardBall.key), 0, "no purchase on inside settle")
-
-
 func _setup_item(definition: ItemDefinition) -> void:
 	_manager = ItemFactory.create_manager(self)
 	_manager.items.assign([definition])

@@ -150,15 +150,6 @@ func spawn_stored(template_key: String, position: Vector2) -> Ball:
 	return _create_stored(key, position)
 
 
-## Spawns a ball onto the court.
-func spawn_in_play(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
-	var key := _item_manager.generate_instance_key(template_key)
-	_item_manager.register_instance(key, &"ball")
-	if not _item_manager.is_on_court(key):
-		_item_manager.activate(key)
-	return _create_ball(key, position, velocity)
-
-
 ## Spawns a ball onto the venue floor.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := _item_manager.generate_instance_key(template_key)

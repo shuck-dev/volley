@@ -267,14 +267,6 @@ func notify_body_settled(body: RigidBody2D, settled_position: Vector2) -> void:
 		_notify_ball_settled(body, settled_position)
 		return
 
-	if _is_position_inside_shop(settled_position):
-		# Inside shop on rest: no purchase commits, slot returns.
-		body.queue_free()
-		visible = true
-		return
-
-	# Outside shop: re-check affordability at settle time. The player may have spent soul
-	# elsewhere mid-flight; in that case free the body and restore the slot rather than leak it.
 	if not is_owned():
 		if not _complete_purchase():
 			body.queue_free()
@@ -293,11 +285,6 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 	var controller: Node = _drag_controller()
 	var reconciler: Node = _resolve_reconciler(controller)
 
-	if _is_position_inside_shop(settled_position):
-		_release_ball_from_registry(reconciler, ball)
-		visible = true
-		return
-
 	if not is_owned():
 		if not _complete_purchase():
 			_release_ball_from_registry(reconciler, ball)
@@ -305,6 +292,7 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 			return
 
 	visible = false
+	ItemManager.adopt_instance(ball.item_key)
 	ItemManager.mark_loose_in_venue(ball.item_key, settled_position)
 	drop_completed.emit(ball.item_key, settled_position, true)
 

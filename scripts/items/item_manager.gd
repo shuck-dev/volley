@@ -544,6 +544,12 @@ func register_instance(item_key: String, role: StringName) -> void:
 	SaveManager.save()
 
 
+func adopt_instance(item_key: String) -> void:
+	state.item_levels[item_key] = 1
+	item_manager_state_changed.emit()
+	SaveManager.save()
+
+
 func _get_item(item_key: String) -> ItemDefinition:
 	var base_key := _base_key(item_key)
 	for item: ItemDefinition in items:
