@@ -175,6 +175,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	if hit_registered:
 		increase_speed()
 	effect_processor.process_hit(paddle)
+	_item_manager.process_event(&"on_hit")
 
 
 func register_miss_zone(zone: MissZone) -> void:
