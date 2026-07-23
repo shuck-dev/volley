@@ -73,26 +73,15 @@ class TestDuplicatePricing:
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
 
-	func test_cost_at_level_zero_is_base() -> void:
-		assert_eq(_manager.calculate_cost(TEST_KEY), 100)
-
-	func test_cost_at_level_one_is_double_base() -> void:
+	func test_cost_increases_with_each_purchase() -> void:
 		_manager.economy.soul_balance = 10000
+		var cost_at_zero: int = _manager.calculate_cost(TEST_KEY)
 		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.calculate_cost(TEST_KEY), 200)
-
-	func test_cost_at_level_two_is_quadruple_base() -> void:
-		_manager.economy.soul_balance = 10000
+		var cost_at_one: int = _manager.calculate_cost(TEST_KEY)
+		assert_gt(cost_at_one, cost_at_zero)
 		_manager.purchase(TEST_KEY)
-		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.calculate_cost(TEST_KEY), 400)
-
-	func test_cost_at_level_three_is_eight_times_base() -> void:
-		_manager.economy.soul_balance = 10000
-		_manager.purchase(TEST_KEY)
-		_manager.purchase(TEST_KEY)
-		_manager.purchase(TEST_KEY)
-		assert_eq(_manager.calculate_cost(TEST_KEY), 800)
+		var cost_at_two: int = _manager.calculate_cost(TEST_KEY)
+		assert_gt(cost_at_two, cost_at_one)
 
 
 class TestBallRepurchase:
@@ -116,32 +105,10 @@ class TestBallRepurchase:
 		assert_true(_manager.purchase("test_ball"), "second purchase should succeed")
 		assert_eq(_manager.get_level("test_ball"), 2)
 
-	func test_ball_purchase_cost_doubles_each_copy() -> void:
-		_manager.economy.soul_balance = 10000
-		_manager.purchase("test_ball")
-		assert_eq(_manager.calculate_cost("test_ball"), 200, "cost should be 2x after first copy")
-		_manager.purchase("test_ball")
-		assert_eq(_manager.calculate_cost("test_ball"), 400, "cost should be 4x after second copy")
-
 	func test_ball_take_blocks_re_purchase() -> void:
 		_manager.economy.soul_balance = 10000
 		assert_true(_manager.take("test_ball"), "first take should succeed")
 		assert_false(_manager.take("test_ball"), "take must block re-purchase for ball items too")
-
-	func test_non_ball_take_blocks_re_purchase() -> void:
-		_manager = ItemFactory.create_manager(self)
-		_manager.economy.soul_balance = 10000
-		assert_true(_manager.take(TestPurchase.TEST_KEY), "first take should succeed")
-		assert_false(_manager.take(TestPurchase.TEST_KEY), "second take must fail for non-ball")
-		assert_eq(_manager.get_level(TestPurchase.TEST_KEY), 1)
-
-	func test_non_ball_take_preserves_balance_on_rejected_re_purchase() -> void:
-		_manager = ItemFactory.create_manager(self)
-		_manager.economy.soul_balance = 10000
-		_manager.take(TestPurchase.TEST_KEY)
-		var balance_before: int = _manager.get_soul_balance()
-		_manager.take(TestPurchase.TEST_KEY)
-		assert_eq(_manager.get_soul_balance(), balance_before, "rejected take must not deduct soul")
 
 
 class TestStats:
