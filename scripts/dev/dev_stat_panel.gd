@@ -1,5 +1,15 @@
 extends VBoxContainer
 
+## Ball-owned stats are per-instance (see DevBallStatePanel); everything else
+## here is genuinely global (economy, arena, paddle).
+const BALL_STAT_KEYS: Array[StringName] = [
+	&"ball_speed_min",
+	&"ball_speed_max_range",
+	&"ball_speed_increment",
+	&"ball_speed_offset",
+	&"ball_magnetism",
+]
+
 var _labels: Dictionary = {}
 var _drag := DraggableBehavior.new()
 # Debug-only: flattened view of every stat's base value for diff readouts.
@@ -11,6 +21,8 @@ func _base_values() -> Dictionary:
 	if _cached_base_values.is_empty():
 		_cached_base_values = GameRules.BASE_CONFIG.to_dict()
 		_cached_base_values.merge(GameRules.PADDLE_CONFIG.to_dict())
+		for stat_key: StringName in BALL_STAT_KEYS:
+			_cached_base_values.erase(stat_key)
 	return _cached_base_values
 
 
