@@ -1,10 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bmux7h1a7i7ei"]
 
 [ext_resource type="Texture2D" uid="uid://1y3uu6hmaau7" path="res://assets/items/cadence.png" id="1_gm3nh"]
-[ext_resource type="Script" path="res://scripts/items/standard_ball_art.gd" id="2_art"]
+[ext_resource type="Script" uid="uid://xrxnqxclv2jo" path="res://scripts/items/standard_ball_art.gd" id="2_art"]
 
-[node name="Cadence" type="Node2D"]
+[node name="Cadence" type="Node2D" unique_id=1813520677]
 script = ExtResource("2_art")
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1872735944]
+scale = Vector2(0.04, 0.04)
 texture = ExtResource("1_gm3nh")
