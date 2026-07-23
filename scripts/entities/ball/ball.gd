@@ -68,7 +68,7 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-var _item_manager: Node
+var _item_manager: ItemManager
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
@@ -175,6 +175,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	if hit_registered:
 		increase_speed()
 	effect_processor.process_hit(paddle)
+	_item_manager.process_event(&"on_hit")
 
 
 func register_miss_zone(zone: MissZone) -> void:

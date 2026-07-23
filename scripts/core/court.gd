@@ -37,7 +37,7 @@ var _active_partner_definition: Resource
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
-var _item_manager: Node
+var _item_manager: ItemManager
 var _is_autoplay_active := false
 var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
@@ -83,7 +83,6 @@ func _ready() -> void:
 
 	if ball_system != null:
 		ball_system.spawn_origin = global_position
-		ball_system.pre_existing_balls_parent = self
 
 	if ball_system == null:
 		ball_system = BallReconciler.new()
