@@ -257,7 +257,7 @@ func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	ball._item_manager = _item_manager
+	ball.configure(_item_manager)
 	add_child(ball)
 	ball.item_key = item_key
 	ball.enter_stored()
@@ -275,7 +275,7 @@ func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: V
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	ball._item_manager = _item_manager
+	ball.configure(_item_manager)
 	add_child(ball)
 	ball.item_key = item_key
 	ball.global_position = spawn_position

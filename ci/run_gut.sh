@@ -38,8 +38,19 @@ warnings=$(printf '%s\n' "$plain" | awk '
 }' || true)
 
 errors=$(printf '%s\n' "$plain" | awk '
-	/^(ERROR|SCRIPT ERROR|USER ERROR):/ { print NR ":" $0 }
-' || true)
+{
+	if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
+		cold_paths[m[1]] = 1
+		next
+	}
+	if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
+		if (m[1] in cold_paths) next
+		if (m[1] ~ /\.(png|webp|exr|hdr|gif|apng|wav|ogg|mp3|flac|mp4|webm|mov|ogv|psd|aseprite|ase|kra|svg)$/) next
+		print NR ":" $0
+		next
+	}
+	if ($0 ~ /^(ERROR|SCRIPT ERROR|USER ERROR):/) print NR ":" $0
+}' || true)
 
 if [ -n "$warnings" ]; then
 	printf '%s\n' "$warnings" | head -30

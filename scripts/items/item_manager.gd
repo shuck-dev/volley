@@ -203,7 +203,7 @@ func release_rack_slot(item_key: String) -> void:
 
 ## Re-assigns the lowest free rack slot when a held item returns to the rack.
 func reassign_rack_slot(item_key: String) -> void:
-	_assign_rack_slot(item_key, _get_item(item_key).role)
+	_assign_rack_slot(item_key, _require_item(item_key).role)
 
 
 ## Picks the lowest free slot index among STORED items of the same role and records it.
@@ -247,7 +247,7 @@ func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
 
-	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+	_set_item_placement(item_key, _natural_target(_require_item(item_key)))
 
 	return true
 
@@ -264,7 +264,7 @@ func deactivate(item_key: String) -> bool:
 
 ## Equipment-role placement; returns false silently on role mismatch so callers can fall through.
 func equip(item_key: String) -> bool:
-	var item: ItemDefinition = _get_item(item_key)
+	var item: ItemDefinition = _require_item(item_key)
 	if item.role != &"equipment":
 		return false
 
@@ -277,7 +277,7 @@ func unequip(item_key: String) -> bool:
 
 
 func calculate_for_purchase(item_key: String) -> int:
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	if item.role == &"ball":
 		return int(item.base_cost * pow(2.0, get_owned_count(item.key)))
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
@@ -285,13 +285,13 @@ func calculate_for_purchase(item_key: String) -> int:
 
 ## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
 
 
 ## Returns true if the item is affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	if item.role == &"ball":
 		return economy.soul_balance >= calculate_for_purchase(item_key)
 	return get_level(item_key) == 0 and economy.soul_balance >= calculate_cost(item_key)
@@ -299,7 +299,7 @@ func can_acquire(item_key: String) -> bool:
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	if item.role == &"ball":
 		return (
 			economy.soul_balance >= calculate_for_purchase(item_key)
@@ -353,7 +353,7 @@ func remove_level(item_key: String) -> void:
 
 	var current_level := get_level(item_key)
 	if current_level > 0:
-		var item := _get_item(item_key)
+		var item := _require_item(item_key)
 		var new_level: int = current_level - 1
 		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
@@ -374,7 +374,7 @@ func _register_existing_items() -> void:
 		if item == null:
 			continue
 		if _is_placed(key):
-			_effect_manager.register_source(item, state.item_levels[key], key, item.role == &"ball")
+			_effect_manager.register_source(item, state.item_levels[key], key, _is_instanced(item))
 		elif not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key, item.role)
 
@@ -458,7 +458,7 @@ func _set_level(item_key: String, level: int) -> void:
 
 func _set_item_placement(item_key: String, placement: int) -> void:
 	var previous: int = state.item_placements.get(item_key, Placement.STORED)
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
 
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
@@ -472,7 +472,7 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 		state.item_placements[item_key] = placement
 		state.loose_in_venue.erase(item_key)
 		_effect_manager.unregister_source(item, item_key)
-		_effect_manager.register_source(item, get_level(item_key), item_key, item.role == &"ball")
+		_effect_manager.register_source(item, get_level(item_key), item_key, _is_instanced(item))
 		state.rack_slot_index_by_key.erase(item_key)
 
 	item_manager_state_changed.emit()
@@ -489,11 +489,11 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 
 
 func _refresh_registration(item_key: String) -> void:
-	var item := _get_item(item_key)
+	var item := _require_item(item_key)
 	_effect_manager.unregister_source(item, item_key)
 	var level := get_level(item_key)
 	if level > 0:
-		_effect_manager.register_source(item, level, item_key, item.role == &"ball")
+		_effect_manager.register_source(item, level, item_key, _is_instanced(item))
 
 
 func _is_placed(item_key: String) -> bool:
@@ -502,6 +502,11 @@ func _is_placed(item_key: String) -> bool:
 
 func _natural_target(item: ItemDefinition) -> int:
 	return Placement.ON_COURT if item.role == &"ball" else Placement.EQUIPPED
+
+
+## Ball-role items get instance-scoped effect registration; equipment stays global.
+func _is_instanced(item: ItemDefinition) -> bool:
+	return item.role == &"ball"
 
 
 func _base_key(item_key: String) -> String:
@@ -548,3 +553,12 @@ func _get_item(item_key: String) -> ItemDefinition:
 			return item
 	push_warning("ItemManager: unknown item key: %s" % item_key)
 	return null
+
+
+## Same as `_get_item`, but for call sites reached only from live gameplay on an
+## already-owned item, where a null result means a real internal inconsistency,
+## not a stale/foreign save key. Fails loudly instead of pushing the null onward.
+func _require_item(item_key: String) -> ItemDefinition:
+	var item := _get_item(item_key)
+	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
+	return item

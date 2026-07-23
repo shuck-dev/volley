@@ -82,6 +82,11 @@ var _arc_acceleration: float = 0.0
 var _suppress_miss_detection: bool = false
 
 
+## Injects the item manager seam before _ready runs; falls back to the autoload if never called.
+func configure(item_manager: ItemManager) -> void:
+	_item_manager = item_manager
+
+
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager

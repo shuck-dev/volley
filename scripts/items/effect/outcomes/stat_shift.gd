@@ -13,7 +13,8 @@ const MODE_MULTIPLIER := {
 	Mode.NORMAL: 1.0,
 	Mode.DOUBLE: 2.0,
 }
-const MODE_ORDER: Array[Mode] = [Mode.HALF, Mode.NORMAL, Mode.DOUBLE]
+## Cycle order starting from the initial mode: normal -> double -> half -> normal...
+const MODE_ORDER: Array[Mode] = [Mode.NORMAL, Mode.DOUBLE, Mode.HALF]
 
 var source_key: String
 var stat_key: StringName
