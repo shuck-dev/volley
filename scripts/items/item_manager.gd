@@ -562,3 +562,9 @@ func _require_item(item_key: String) -> ItemDefinition:
 	var item := _get_item(item_key)
 	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
 	return item
+
+
+## Public form of `_require_item`, for callers outside ItemManager (e.g. a ball
+## resolving its own definition to apply its art).
+func get_item(item_key: String) -> ItemDefinition:
+	return _require_item(item_key)

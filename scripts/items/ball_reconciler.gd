@@ -258,11 +258,10 @@ func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	ball.configure(_item_manager)
-	add_child(ball)
 	ball.item_key = item_key
+	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
-	_apply_item_art(ball, item_key)
 
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
@@ -276,12 +275,11 @@ func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: V
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	ball.configure(_item_manager)
-	add_child(ball)
 	ball.item_key = item_key
+	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = bound_y
-	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
 	_register_ball(ball)
@@ -385,28 +383,6 @@ func _spawn_position_for(item_key: String) -> Vector2:
 	if state != null and state.ball_positions.has(item_key):
 		return state.ball_positions[item_key]
 	return _default_spawn_position()
-
-
-## Replaces a ball's sprite with its item art.
-func _apply_item_art(ball: Ball, item_key: String) -> void:
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	if definition == null or definition.art == null:
-		return
-	var holder: Node2D = ball.get_node_or_null("ItemArtHolder") as Node2D
-	if holder == null:
-		push_warning("BallReconciler: ball.tscn missing ItemArtHolder slot; skipping art swap")
-		return
-	for child in holder.get_children():
-		holder.remove_child(child)
-		child.queue_free()
-	holder.scale = definition.token_scale
-	var art_instance: Node = definition.art.instantiate()
-	holder.add_child(art_instance)
-	var default_sprite: Node = ball.get_node_or_null("Sprite")
-	if default_sprite != null:
-		default_sprite.visible = false
-	if art_instance is CadenceArt:
-		(art_instance as CadenceArt).watch_ball(ball)
 
 
 func _get_item_definition(item_key: String) -> ItemDefinition:

@@ -29,6 +29,8 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 @export var grab_area: GrabArea
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
 @export var court_config: CourtConfig
+## Authored slot where this ball's item art gets instantiated at _ready.
+@export var item_art_holder: Node2D
 ## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
 var bound_y: float
 
@@ -109,6 +111,7 @@ func _ready() -> void:
 
 	_setup_effect_processor()
 	_ball_setup()
+	_apply_item_art()
 
 
 func _physics_process(delta: float) -> void:
@@ -398,5 +401,14 @@ func _on_grab_area_grabbed(_area: GrabArea) -> void:
 
 
 func has_item_art() -> bool:
-	var holder: Node = get_node_or_null("ItemArtHolder")
-	return holder != null and is_instance_valid(holder)
+	return item_art_holder != null and is_instance_valid(item_art_holder)
+
+
+func _apply_item_art() -> void:
+	if item_key == "" or item_art_holder == null:
+		return
+	var definition: ItemDefinition = _item_manager.get_item(item_key)
+	item_art_holder.scale = definition.token_scale
+	var art_instance: ItemArt = definition.art.instantiate()
+	item_art_holder.add_child(art_instance)
+	art_instance.watch_ball(self)
