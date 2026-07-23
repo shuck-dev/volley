@@ -82,61 +82,50 @@ func test_remove_modifiers_by_source_removes_across_operations() -> void:
 	assert_eq(_state.get_stat(&"speed"), 100.0)
 
 
-# --- oscillation range value invalidation ---
-func test_add_oscillation_initialises_range_value_from_base_stat() -> void:
-	var oscillation := _make_oscillation(&"speed", "osc_a", 0.1, &"size")
-	_state.add_oscillation(oscillation)
-	# With _time at 0 the wave is 0; advance a fraction to get a non-zero sample.
-	_state.process_frame(0.25)
-	var offset := oscillation.get_offset()
-	# Offset should scale with base size (50.0), not fall back to the default 1.0.
-	assert_almost_eq(offset / 50.0, offset / oscillation._range_value, 0.0001)
-	assert_ne(offset, 0.0)
-
-
-func test_add_modifier_refreshes_oscillation_range_value() -> void:
-	var oscillation := _make_oscillation(&"speed", "osc_a", 0.1, &"size")
-	_state.add_oscillation(oscillation)
+# --- shift range value invalidation ---
+func test_add_modifier_refreshes_shift_range_value() -> void:
+	var shift := _make_shift(&"speed", "osc_a", &"size")
+	_state.add_shift(shift)
 	_state.add_modifier(_make_modifier("item_a", &"size", StatModifier.Operation.ADD, 50.0))
-	# Base size is now 100, oscillation's cached range_value should match.
+	# Base size is now 100, shift's cached range_value should match.
 	assert_eq(_state.get_base_stat(&"size"), 100.0)
-	assert_almost_eq(oscillation._range_value, 100.0, 0.0001)
+	assert_almost_eq(shift._range_value, 100.0, 0.0001)
 
 
-func test_remove_modifiers_by_source_refreshes_oscillation_range_value() -> void:
-	var oscillation := _make_oscillation(&"speed", "osc_a", 0.1, &"size")
-	_state.add_oscillation(oscillation)
+func test_remove_modifiers_by_source_refreshes_shift_range_value() -> void:
+	var shift := _make_shift(&"speed", "osc_a", &"size")
+	_state.add_shift(shift)
 	_state.add_modifier(_make_modifier("item_a", &"size", StatModifier.Operation.ADD, 50.0))
 	_state.remove_modifiers_by_source("item_a")
-	assert_almost_eq(oscillation._range_value, 50.0, 0.0001)
+	assert_almost_eq(shift._range_value, 50.0, 0.0001)
 
 
-func test_clear_temporary_modifiers_refreshes_oscillation_range_value() -> void:
-	var oscillation := _make_oscillation(&"speed", "osc_a", 0.1, &"size")
-	_state.add_oscillation(oscillation)
+func test_clear_temporary_modifiers_refreshes_shift_range_value() -> void:
+	var shift := _make_shift(&"speed", "osc_a", &"size")
+	_state.add_shift(shift)
 	var modifier := _make_modifier("item_a", &"size", StatModifier.Operation.ADD, 50.0)
 	modifier.temporary = true
 	_state.add_modifier(modifier)
 	_state.clear_temporary_modifiers()
-	assert_almost_eq(oscillation._range_value, 50.0, 0.0001)
+	assert_almost_eq(shift._range_value, 50.0, 0.0001)
 
 
-func test_register_base_values_refreshes_oscillation_range_value() -> void:
-	var oscillation := _make_oscillation(&"speed", "osc_a", 0.1, &"size")
-	_state.add_oscillation(oscillation)
+func test_register_base_values_refreshes_shift_range_value() -> void:
+	var shift := _make_shift(&"speed", "osc_a", &"size")
+	_state.add_shift(shift)
 	_state.register_base_values({&"size": 200.0})
-	assert_almost_eq(oscillation._range_value, 200.0, 0.0001)
+	assert_almost_eq(shift._range_value, 200.0, 0.0001)
 
 
-func _make_oscillation(
-	stat: StringName, source: String, amp: float, range_key: StringName
-) -> StatOscillation:
-	var oscillation := StatOscillation.new()
-	oscillation.stat_key = stat
-	oscillation.source_key = source
-	oscillation.amplitude = amp
-	oscillation.range_stat_key = range_key
-	return oscillation
+func _make_shift(stat: StringName, source: String, range_key: StringName) -> StatShift:
+	var shift := StatShift.new()
+	shift.stat_key = stat
+	shift.source_key = source
+	shift.range_stat_key = range_key
+	shift.min_interval = 1.0
+	shift.max_interval = 1.0
+	shift.start()
+	return shift
 
 
 # --- states ---

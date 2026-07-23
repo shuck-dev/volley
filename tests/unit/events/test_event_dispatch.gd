@@ -1,7 +1,6 @@
 extends GutTest
 
 # Verifies the event-based causality system: event dispatch and modify_stat_until_miss.
-# OscillateStatOutcome coverage lives in test_oscillate_stat_outcome.gd.
 
 @warning_ignore("shadowed_global_identifier")
 const HalveStreakOutcome = preload("res://scripts/items/effect/outcomes/halve_streak_outcome.gd")

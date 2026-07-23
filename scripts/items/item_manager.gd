@@ -94,7 +94,7 @@ func register_source(
 	_effect_manager.register_source(source, level, source_key, instanced)
 
 
-## Returns the summed additive modifiers (including oscillations) for a stat key.
+## Returns the summed additive modifiers (including stat shifts) for a stat key.
 func get_modifier(key: StringName, instance_key: String = "") -> float:
 	return _effect_manager.get_modifier(key, instance_key)
 
@@ -112,6 +112,12 @@ func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
 ## Returns whether a named game state is currently active
 func is_game_state_active(game_state: StringName) -> bool:
 	return _effect_manager.is_game_state_active(game_state)
+
+
+## Returns the StatShift instances registered under `instance_key` (e.g. a ball's
+## item_key), for callers that need to observe a specific instance's transitions.
+func get_shifts(instance_key: String) -> Array[StatShift]:
+	return _effect_manager.get_shifts(instance_key)
 
 
 ## Returns current level of an item (0 if not owned)

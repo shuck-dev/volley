@@ -5,7 +5,7 @@ var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _percentage_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
-var _oscillations: Array[StatOscillation] = []
+var _shifts: Array[StatShift] = []
 var _resolving_keys: Array[StringName] = []
 
 
@@ -13,7 +13,7 @@ func get_stat(key: StringName, instance_key: String = "") -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
 
 	var result: float = _base_values[key]
-	result += _sum_oscillations(key, instance_key)
+	result += _sum_shifts(key, instance_key)
 	result += _sum_modifiers(key, _add_modifiers, false, instance_key)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false, instance_key)
 	return result
@@ -28,7 +28,7 @@ func get_base_stat(key: StringName, instance_key: String = "") -> float:
 	_resolving_keys.append(key)
 
 	var result: float = _base_values[key]
-	result += _sum_oscillations(key, instance_key)
+	result += _sum_shifts(key, instance_key)
 	result += _sum_modifiers(key, _add_modifiers, true, instance_key)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true, instance_key)
 	_resolving_keys.erase(key)
@@ -39,34 +39,26 @@ func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
 	return _sum_modifiers(key, _percentage_modifiers, false, instance_key)
 
 
-## Sum of additive modifiers and oscillations for a stat key, range-resolved.
+## Sum of additive modifiers and shifted multipliers for a stat key, range-resolved.
 func get_modifier(key: StringName, instance_key: String = "") -> float:
-	return (
-		_sum_oscillations(key, instance_key)
-		+ _sum_modifiers(key, _add_modifiers, false, instance_key)
-	)
+	return _sum_shifts(key, instance_key) + _sum_modifiers(key, _add_modifiers, false, instance_key)
 
 
 ## Same as `get_modifier` but excludes temporary (until-miss) modifiers.
 func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
-	return (
-		_sum_oscillations(key, instance_key)
-		+ _sum_modifiers(key, _add_modifiers, true, instance_key)
-	)
+	return _sum_shifts(key, instance_key) + _sum_modifiers(key, _add_modifiers, true, instance_key)
 
 
 func add_modifier(modifier: StatModifier) -> void:
 	_array_for_operation(modifier.operation).append(modifier)
-	_refresh_oscillation_range_values()
+	_refresh_shift_range_values()
 
 
 func remove_modifiers_by_source(source_key: String) -> void:
 	_add_modifiers = _add_modifiers.filter(_exclude_source.bind(source_key))
 	_percentage_modifiers = _percentage_modifiers.filter(_exclude_source.bind(source_key))
-	_oscillations = _oscillations.filter(
-		func(oscillation: StatOscillation) -> bool: return oscillation.source_key != source_key
-	)
-	_refresh_oscillation_range_values()
+	_shifts = _shifts.filter(func(shift: StatShift) -> bool: return shift.source_key != source_key)
+	_refresh_shift_range_values()
 
 
 func get_temporary_total(stat_key: StringName, source_key: String) -> float:
@@ -85,24 +77,30 @@ func clear_temporary_modifiers() -> void:
 	var keep_permanent := func(modifier: StatModifier) -> bool: return not modifier.temporary
 	_add_modifiers = _add_modifiers.filter(keep_permanent)
 	_percentage_modifiers = _percentage_modifiers.filter(keep_permanent)
-	_refresh_oscillation_range_values()
+	_refresh_shift_range_values()
 
 
 func register_base_values(values: Dictionary) -> void:
 	for key in values:
 		_base_values[key] = values[key]
-	_refresh_oscillation_range_values()
+	_refresh_shift_range_values()
 
 
-func add_oscillation(oscillation: StatOscillation) -> void:
-	_oscillations.append(oscillation)
-	if oscillation.range_stat_key:
-		oscillation.set_range_value(get_base_stat(oscillation.range_stat_key))
+func add_shift(shift: StatShift) -> void:
+	_shifts.append(shift)
+	if shift.range_stat_key:
+		shift.set_range_value(get_base_stat(shift.range_stat_key))
+
+
+## Shifts registered under `source_key`, for callers that need to observe a specific
+## instance's transitions (e.g. a ball wiring a particle cue to its own shift).
+func get_shifts(source_key: String) -> Array[StatShift]:
+	return _shifts.filter(func(shift: StatShift) -> bool: return shift.source_key == source_key)
 
 
 func process_frame(delta: float) -> void:
-	for oscillation in _oscillations:
-		oscillation.advance(delta)
+	for shift in _shifts:
+		shift.advance(delta)
 
 
 func set_state(state: StringName, source_key: String) -> void:
@@ -126,21 +124,21 @@ func _array_for_operation(operation: StatModifier.Operation) -> Array[StatModifi
 	return _add_modifiers
 
 
-func _sum_oscillations(key: StringName, instance_key: String = "") -> float:
+func _sum_shifts(key: StringName, instance_key: String = "") -> float:
 	var total := 0.0
-	for oscillation in _oscillations:
-		if oscillation.stat_key != key:
+	for shift in _shifts:
+		if shift.stat_key != key:
 			continue
-		if instance_key and oscillation.source_key != instance_key:
+		if instance_key and shift.source_key != instance_key:
 			continue
-		total += oscillation.get_offset()
+		total += shift.get_offset()
 	return total
 
 
-func _refresh_oscillation_range_values() -> void:
-	for oscillation in _oscillations:
-		if oscillation.range_stat_key:
-			oscillation.set_range_value(get_base_stat(oscillation.range_stat_key))
+func _refresh_shift_range_values() -> void:
+	for shift in _shifts:
+		if shift.range_stat_key:
+			shift.set_range_value(get_base_stat(shift.range_stat_key))
 
 
 func _sum_modifiers(

@@ -1,8 +1,10 @@
-class_name StatStep
+class_name StatShift
 extends RefCounted
 
 ## Discrete half/normal/double multiplier on a stat, holding each mode for a
-## random duration before stepping to the next.
+## random duration before shifting to the next.
+
+signal shifted(mode: Mode)
 
 enum Mode { HALF, NORMAL, DOUBLE }
 
@@ -31,7 +33,7 @@ func start() -> void:
 func advance(delta: float) -> void:
 	_time_in_mode += delta
 	if _time_in_mode >= _hold_duration:
-		_step_mode()
+		_shift_mode()
 
 
 func set_range_value(value: float) -> void:
@@ -42,8 +44,9 @@ func get_offset() -> float:
 	return (MODE_MULTIPLIER[_mode] - 1.0) * _range_value
 
 
-func _step_mode() -> void:
+func _shift_mode() -> void:
 	var current_index: int = MODE_ORDER.find(_mode)
 	_mode = MODE_ORDER[(current_index + 1) % MODE_ORDER.size()]
 	_time_in_mode = 0.0
 	_hold_duration = randf_range(min_interval, max_interval)
+	shifted.emit(_mode)

@@ -34,6 +34,10 @@ func is_game_state_active(state: StringName) -> bool:
 	return _effect_state.is_state_active(state)
 
 
+func get_shifts(instance_key: String) -> Array[StatShift]:
+	return _effect_state.get_shifts(instance_key)
+
+
 ## `instance_key` scopes the dispatch to a single ball's registered effects; entries not
 ## registered as instance-scoped (partner/equipment sources) always fire regardless.
 func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
