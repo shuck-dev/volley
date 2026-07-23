@@ -145,7 +145,7 @@ func _format_row(ball: Ball) -> String:
 	var state_name: String = Ball.PlayState.find_key(ball.play_state)
 	var final_mark: String = " FINAL" if ball.in_final else ""
 	return (
-		"%s  %s  T%d[%.0f-%.0f]%s  pos=(%d, %d)"
+		"%s  %s  T%d[%.0f-%.0f]%s  spd=%.0f  pos=(%d, %d)"
 		% [
 			key,
 			state_name,
@@ -153,6 +153,7 @@ func _format_row(ball: Ball) -> String:
 			ball.tier_floor,
 			ball.tier_ceiling,
 			final_mark,
+			ball.speed,
 			int(ball.position.x),
 			int(ball.position.y)
 		]
