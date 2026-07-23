@@ -12,7 +12,7 @@ signal bounce_resolved(
 
 var ball: Ball
 var paddles: Array[Node2D] = []
-var item_manager: Node
+var item_manager: ItemManager
 
 var _base_speed := 0.0
 var _applied_offset := 0.0

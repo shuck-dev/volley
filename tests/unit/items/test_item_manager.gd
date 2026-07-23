@@ -105,11 +105,6 @@ class TestBallRepurchase:
 		assert_true(_manager.purchase("test_ball"), "second purchase should succeed")
 		assert_eq(_manager.get_level("test_ball"), 2)
 
-	func test_ball_take_blocks_re_purchase() -> void:
-		_manager.economy.soul_balance = 10000
-		assert_true(_manager.take("test_ball"), "first take should succeed")
-		assert_false(_manager.take("test_ball"), "take must block re-purchase for ball items too")
-
 
 class TestStats:
 	extends GutTest
@@ -368,7 +363,7 @@ class TestKitItemsBall:
 		_manager.take("kit_ball")
 		var ball_kit: Array[String] = _manager.get_kit_items(&"ball")
 		assert_eq(ball_kit.size(), 1)
-		assert_eq(ball_kit[0], "kit_ball")
+		assert_eq(ball_kit[0], "kit_ball_1")
 
 	func test_get_kit_items_excludes_ball_when_queried_for_equipment_role() -> void:
 		_manager.take("kit_ball")
@@ -380,16 +375,16 @@ class TestKitItemsBall:
 
 	func test_get_kit_items_excludes_activated_ball_items() -> void:
 		_manager.take("kit_ball")
-		_manager.activate("kit_ball")
+		_manager.activate("kit_ball_1")
 		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
 
 	func test_get_kit_items_includes_ball_items_after_deactivation() -> void:
 		_manager.take("kit_ball")
-		_manager.activate("kit_ball")
-		_manager.deactivate("kit_ball")
+		_manager.activate("kit_ball_1")
+		_manager.deactivate("kit_ball_1")
 		var kit: Array[String] = _manager.get_kit_items(&"ball")
 		assert_eq(kit.size(), 1)
-		assert_eq(kit[0], "kit_ball")
+		assert_eq(kit[0], "kit_ball_1")
 
 
 class TestRackSlotAssignment:

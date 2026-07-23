@@ -97,30 +97,30 @@ func test_autosave_timeout_while_blocked_does_not_write() -> void:
 
 # --- position provider ---
 func test_save_captures_positions_from_registered_provider() -> void:
-	var live: Dictionary[String, Vector2] = {"base_ball": Vector2(50.0, 75.0)}
+	var live: Dictionary[String, Vector2] = {"old_ball": Vector2(50.0, 75.0)}
 	_save_manager.set_position_provider(func() -> Dictionary[String, Vector2]: return live)
 	_save_manager.save()
-	assert_eq(_save_manager.items.ball_positions["base_ball"], Vector2(50.0, 75.0))
+	assert_eq(_save_manager.items.ball_positions["old_ball"], Vector2(50.0, 75.0))
 
 
 func test_save_without_provider_leaves_positions_untouched() -> void:
-	_save_manager.items.ball_positions["base_ball"] = Vector2(1.0, 2.0)
+	_save_manager.items.ball_positions["old_ball"] = Vector2(1.0, 2.0)
 	_save_manager.save()
-	assert_eq(_save_manager.items.ball_positions["base_ball"], Vector2(1.0, 2.0))
+	assert_eq(_save_manager.items.ball_positions["old_ball"], Vector2(1.0, 2.0))
 
 
 # --- play_state provider ---
 func test_save_captures_play_states_from_registered_provider() -> void:
-	var live: Dictionary[String, int] = {"base_ball": Ball.PlayState.OUT_REST}
+	var live: Dictionary[String, int] = {"old_ball": Ball.PlayState.OUT_REST}
 	_save_manager.set_play_state_provider(func() -> Dictionary[String, int]: return live)
 	_save_manager.save()
-	assert_eq(_save_manager.items.ball_play_states["base_ball"], int(Ball.PlayState.OUT_REST))
+	assert_eq(_save_manager.items.ball_play_states["old_ball"], int(Ball.PlayState.OUT_REST))
 
 
 func test_save_without_play_state_provider_leaves_states_untouched() -> void:
-	_save_manager.items.ball_play_states["base_ball"] = Ball.PlayState.PLAY_ARC
+	_save_manager.items.ball_play_states["old_ball"] = Ball.PlayState.PLAY_ARC
 	_save_manager.save()
-	assert_eq(_save_manager.items.ball_play_states["base_ball"], int(Ball.PlayState.PLAY_ARC))
+	assert_eq(_save_manager.items.ball_play_states["old_ball"], int(Ball.PlayState.PLAY_ARC))
 
 
 # --- load_from_disk ---

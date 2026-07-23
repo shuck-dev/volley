@@ -13,7 +13,7 @@ signal rack_slots_changed
 signal item_manager_state_changed
 
 var items: Array[ItemDefinition] = [
-	preload("res://resources/items/base_ball.tres"),
+	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
 ]
 
@@ -35,16 +35,7 @@ func _ready() -> void:
 
 	add_child(_effect_manager)
 	_register_existing_items()
-
-
-func _register_existing_items() -> void:
-	for item in items:
-		if get_level(item.key) <= 0:
-			continue
-		if _is_placed(item.key):
-			_effect_manager.register_source(item, get_level(item.key))
-		elif not state.rack_slot_index_by_key.has(item.key):
-			_assign_rack_slot(item.key, item.role)
+	item_manager_state_changed.emit()
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -124,15 +115,36 @@ func is_game_state_active(game_state: StringName) -> bool:
 
 ## Returns current level of an item (0 if not owned)
 func get_level(item_key: String) -> int:
-	return state.item_levels.get(item_key, 0)
+	if state.item_levels.has(item_key):
+		return state.item_levels[item_key]
+
+	var base := _base_key(item_key)
+
+	if base != item_key:
+		return 0
+
+	var item_def := _get_item(item_key)
+
+	if item_def != null and item_def.role == &"ball":
+		var max_level := 0
+		for key in state.item_levels:
+			if BallKey.is_instance(item_key, key):
+				max_level = max(max_level, state.item_levels[key])
+
+		return max(max_level, get_owned_count(item_key))
+
+	return 0
 
 
-## Returns the current placement of an item. Defaults to STORED (on the rack).
-## LOOSE_IN_VENUE overlays the persisted placement so callers see the runtime state.
+## Returns the current placement of an item.
 func _get_placement(item_key: String) -> int:
 	if state.loose_in_venue.has(item_key):
 		return Placement.LOOSE_IN_VENUE
-	return state.item_placements.get(item_key, Placement.STORED)
+
+	if state.item_placements.has(item_key):
+		return state.item_placements[item_key]
+
+	return Placement.STORED
 
 
 ## Returns the current placement; STORED, EQUIPPED, ON_COURT, or LOOSE_IN_VENUE.
@@ -166,15 +178,6 @@ func clear_loose_in_venue(item_key: String) -> void:
 func is_on_court(item_key: String) -> bool:
 	var placement: int = _get_placement(item_key)
 	return placement == Placement.EQUIPPED or placement == Placement.ON_COURT
-
-
-## Returns the list of ball-role item keys currently on the court.
-func get_court_items() -> Array[String]:
-	var result: Array[String] = []
-	for item in items:
-		if item.role == &"ball" and _get_placement(item.key) == Placement.ON_COURT:
-			result.append(item.key)
-	return result
 
 
 ## Slot index assigned to `item_key` while STORED; -1 when not stored.
@@ -220,17 +223,14 @@ func _assign_rack_slot(item_key: String, role: StringName) -> void:
 func get_kit_items(role: StringName) -> Array[String]:
 	var result: Array[String] = []
 
-	for item in items:
-		if item.role != role:
+	for key in state.item_levels:
+		if state.item_levels[key] <= 0:
 			continue
-
-		if get_level(item.key) <= 0:
+		if _get_placement(key) != Placement.STORED:
 			continue
-
-		if _get_placement(item.key) != Placement.STORED:
-			continue
-
-		result.append(item.key)
+		var item := _get_item(key)
+		if item != null and item.role == role:
+			result.append(key)
 
 	return result
 
@@ -257,14 +257,14 @@ func deactivate(item_key: String) -> bool:
 
 ## Free kit slots; clamped at zero so over-capacity loads do not report negative.
 func get_kit_remaining() -> int:
-	var cap: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
+	var capacity: int = int(floor(Stats.resolve(GameRules.base.kit_slots, &"kit_slots", self)))
 	var equipped_count: int = 0
 
 	for key: String in state.item_placements:
 		if int(state.item_placements[key]) == Placement.EQUIPPED:
 			equipped_count += 1
 
-	return max(0, cap - equipped_count)
+	return max(0, capacity - equipped_count)
 
 
 ## Equipment-role placement gated by kit capacity; emits `equip_refused` on capacity rejection.
@@ -286,20 +286,35 @@ func unequip(item_key: String) -> bool:
 	return deactivate(item_key)
 
 
-## Returns total cost of an item at its current level; each subsequent copy costs double the previous.
+func calculate_for_purchase(item_key: String) -> int:
+	var item := _get_item(item_key)
+	if item.role == &"ball":
+		return int(item.base_cost * pow(2.0, get_owned_count(item.key)))
+	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
+
+
+## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
-	var item: ItemDefinition = _get_item(item_key)
-	return int(item.base_cost * pow(2.0, get_level(item_key)))
+	var item := _get_item(item_key)
+	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
 
 
-## Returns true if the item is unowned and affordable. Used by drop targets.
+## Returns true if the item is affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item.role == &"ball":
+		return economy.soul_balance >= calculate_for_purchase(item_key)
 	return get_level(item_key) == 0 and economy.soul_balance >= calculate_cost(item_key)
 
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
 	var item := _get_item(item_key)
+	if item.role == &"ball":
+		return (
+			economy.soul_balance >= calculate_for_purchase(item_key)
+			and get_owned_count(item.key) < item.max_level
+		)
 	return economy.soul_balance >= calculate_cost(item_key) and get_level(item_key) < item.max_level
 
 
@@ -349,27 +364,31 @@ func remove_level(item_key: String) -> void:
 	var current_level := get_level(item_key)
 	if current_level > 0:
 		var item := _get_item(item_key)
-		var refund := int(item.base_cost * pow(2.0, current_level - 1))
+		var new_level: int = current_level - 1
+		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
-		_set_level(item_key, current_level - 1)
+		_set_level(item_key, new_level)
 
 		if current_level - 1 == 0:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(item_key, Placement.STORED)
 			state.rack_slot_index_by_key.erase(item_key)
-			item_manager_state_changed.emit()
+	item_manager_state_changed.emit()
+
+
+func _register_existing_items() -> void:
+	for key in state.item_levels:
+		if state.item_levels[key] <= 0:
+			continue
+		var item := _get_item(key)
+		if item == null:
+			continue
+		if _is_placed(key):
+			_effect_manager.register_source(item, state.item_levels[key])
+		elif not state.rack_slot_index_by_key.has(key):
+			_assign_rack_slot(key, item.role)
 
 		SaveManager.save()
-
-
-## Adopts an authored on-court item at level >= 1 with on-court placement; idempotent.
-func adopt_authored(item_key: String) -> void:
-	if get_level(item_key) <= 0:
-		state.item_levels[item_key] = 1
-		item_level_changed.emit(item_key)
-
-	if not is_on_court(item_key):
-		_set_item_placement(item_key, _natural_target(_get_item(item_key)))
 
 
 ## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
@@ -387,22 +406,48 @@ func upgrade_ball(item_key: String) -> bool:
 	return true
 
 
-## Acquires an item without registering its effects. The item is owned but
-## inert until equipped into the kit. Returns true on success.
-func take(item_key: String) -> bool:
+## Deducts soul for purchasing a ball. The reconciler owns instance key generation
+## and state registration; this only handles economics.
+func take_ball(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"ball":
+		return false
+	if economy.soul_balance < calculate_for_purchase(item_key):
+		return false
+	subtract_soul(calculate_for_purchase(item_key))
+	SaveManager.save()
+	return true
+
+
+## Acquires an equipment item. The item is owned but inert until equipped.
+func take_equipment(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null or item.role != &"equipment":
+		return false
 	if get_level(item_key) >= 1:
 		return false
-
 	if economy.soul_balance < calculate_cost(item_key):
 		return false
-
 	subtract_soul(calculate_cost(item_key))
 	state.item_levels[item_key] = 1
-	_assign_rack_slot(item_key, _get_item(item_key).role)
+	_assign_rack_slot(item_key, item.role)
 	item_level_changed.emit(item_key)
 	SaveManager.save()
-
 	return true
+
+
+## Acquires an item without registering its effects. The item is owned but
+## inert until equipped. Routes to take_ball or take_equipment by role.
+func take(item_key: String) -> bool:
+	var item := _get_item(item_key)
+	if item == null:
+		return false
+	if item.role == &"ball":
+		if not take_ball(item_key):
+			return false
+		register_instance(generate_instance_key(item_key), item.role)
+		return true
+	return take_equipment(item_key)
 
 
 ## Returns points to the balance without counting them as newly earned.
@@ -469,9 +514,47 @@ func _natural_target(item: ItemDefinition) -> int:
 	return Placement.ON_COURT if item.role == &"ball" else Placement.EQUIPPED
 
 
-func _get_item(item_key: String) -> ItemDefinition:
+func _base_key(item_key: String) -> String:
+	var base := BallKey.base_key(item_key)
+	if base == item_key:
+		return item_key
 	for item: ItemDefinition in items:
-		if item.key == item_key:
+		if item.key == base:
+			return base
+	return item_key
+
+
+func get_owned_count(base_key: String) -> int:
+	var count := 0
+	for key in state.item_levels:
+		if BallKey.is_instance(base_key, key) and state.item_levels[key] > 0:
+			count += 1
+		elif key == base_key and state.item_levels[key] > 0:
+			count += 1
+	return count
+
+
+func generate_instance_key(base_key: String) -> String:
+	return BallKey.generate(base_key, state.item_levels)
+
+
+func register_instance(item_key: String, role: StringName) -> void:
+	state.item_levels[item_key] = 1
+	_assign_rack_slot(item_key, role)
+	item_manager_state_changed.emit()
+	SaveManager.save()
+
+
+func adopt_instance(item_key: String) -> void:
+	state.item_levels[item_key] = 1
+	item_manager_state_changed.emit()
+	SaveManager.save()
+
+
+func _get_item(item_key: String) -> ItemDefinition:
+	var base_key := _base_key(item_key)
+	for item: ItemDefinition in items:
+		if item.key == base_key:
 			return item
 	assert(false, "Unknown item key: %s" % item_key)
 	return null

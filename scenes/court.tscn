@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://ctjs62ui6cpso"]
 
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="1_0wfyh"]
-[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
@@ -53,9 +52,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.12, 0.15, 0.25, 1)
-
-[node name="Ball" parent="." unique_id=1842167380 instance=ExtResource("1_o5qli")]
-item_key = "base_ball"
 
 [node name="Bounds" type="Node2D" parent="." unique_id=2106668171]
 
@@ -211,6 +207,6 @@ rack_drop_target = NodePath("../BallRack/DropTarget")
 gear_rack = NodePath("../GearRack")
 gear_rack_drop_target = NodePath("../GearRack/DropTarget")
 timeout_controller = NodePath("../TimeoutController")
-court_bounds = Rect2(-800, -360, 1600, 720)
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
+court_bounds = Rect2(-800, -360, 1600, 720)
 reconciler = NodePath("../BallReconciler")

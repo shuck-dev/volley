@@ -8,11 +8,12 @@ size = Vector2(500, 287)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor") groups=["hot_reloadable_config"]]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "restock_button")]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 soul_label = NodePath("SoulLabel")
 items_anchor = NodePath("ItemsAnchor")
+restock_button = NodePath("RefreshButton")
 
 [node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
@@ -63,3 +64,14 @@ color = Color(0.35, 0.2, 0.1, 1)
 
 [node name="ItemsAnchor" type="Node2D" parent="." unique_id=681031275]
 position = Vector2(0, -30)
+
+[node name="RefreshButton" type="Button" parent="." unique_id=823133525]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 103.0
+offset_top = -127.0
+offset_right = 247.0
+offset_bottom = -91.0
+grow_horizontal = 2
+size_flags_vertical = 0
+text = "Restock (Free)"

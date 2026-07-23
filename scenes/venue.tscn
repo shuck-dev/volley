@@ -16,7 +16,7 @@ size = Vector2(4000, 40)
 size = Vector2(40, 4000)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o1mbd"]
-size = Vector2(5840, 20)
+size = Vector2(5840, 345)
 
 [node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court")]
 layout_mode = 3
@@ -126,4 +126,5 @@ position = Vector2(0, 400)
 physics_material_override = ExtResource("8_qo0oe")
 
 [node name="CollisionShape" type="CollisionShape2D" parent="VenueFloor/FloorCollision" unique_id=1701255113]
+position = Vector2(0, 162.5)
 shape = SubResource("RectangleShape2D_o1mbd")
