@@ -21,8 +21,8 @@ var unlocks: UnlocksState
 var partners: PartnersState
 
 var _config: ProgressionConfig
-var _item_manager: Node
-var _save_manager: Node
+var _item_manager: ItemManager
+var _save_manager: SaveManager
 
 
 func _ready() -> void:

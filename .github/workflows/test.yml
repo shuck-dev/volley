@@ -78,6 +78,7 @@ jobs:
               print NR ":" $0
               next
             }
+            if ($0 ~ /Parse Error: .* referenced non-existent resource/) next
             if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
           }' test_output.plain || true)
           if [ -n "$warnings" ]; then

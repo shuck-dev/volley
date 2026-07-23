@@ -20,12 +20,12 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var gear_rack: RackDisplay
 @export var gear_rack_drop_target: Area2D
 @export var timeout_controller: TimeoutController
-@export var court_bounds: Rect2 = Rect2()
 @export var venue_bounds: Rect2 = Rect2()
+@export var court_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
-var _item_manager: Node
+var _item_manager: ItemManager
 ## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
 var _held: Node2D = null
 var _held_key: String = ""
@@ -313,7 +313,7 @@ func _adopt_purchased_into_rack(item_key: String) -> void:
 		return
 	if reconciler.get_ball_for_key(item_key) != null:
 		return
-	reconciler.adopt_stored(item_key, rack.get_slot_position_for(item_key))
+	reconciler.spawn_stored(item_key, rack.get_slot_position_for(item_key))
 
 
 ## Funnels ball-role venue-floor releases into the reconciler with the loose-in-venue overlay set.
@@ -696,7 +696,7 @@ func _make_venue_target() -> VenueDropTarget:
 	if reconciler == null:
 		return null
 	var venue_target: VenueDropTarget = VenueDropTarget.new()
-	venue_target.configure(_item_manager, reconciler, venue_bounds, court_bounds)
+	venue_target.configure(_item_manager, reconciler, venue_bounds)
 	# Body projection on the venue rect rejects loose drops that would land in walls/partners.
 	venue_target.set_world(get_world_2d())
 	return venue_target
@@ -745,7 +745,7 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
 			return item
 	return null
 
@@ -776,7 +776,7 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 
 func _on_rack_slot_pressed(item_key: String, press_position: Vector2) -> void:
 	grab_from_rack(item_key, press_position)
-	rack.refresh()
+	rack.refresh.call_deferred()
 
 
 func _on_reconciler_ball_spawned(item_key: String, ball: Ball) -> void:

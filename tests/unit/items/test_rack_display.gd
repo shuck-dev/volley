@@ -143,19 +143,22 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	var rack := _make_rack(&"ball", manager)
 	manager.take(alpha.key)
 	manager.take(beta.key)
+	var alpha_key: String = "ball_alpha_1"
+	var beta_key: String = "ball_beta_1"
 	await get_tree().process_frame
 
 	rack.refresh()
 	await get_tree().process_frame
-	rack.hide_slot_for(alpha.key)
+	rack.hide_slot_for(alpha_key)
 
 	for child in rack.slot_container.get_children():
-		if child is Node2D and String(child.name).begins_with("Slot_"):
-			var key: String = child.get_meta(&"item_key", "")
-			if key == alpha.key:
-				assert_false(child.visible, "grabbed slot is hidden during the gesture")
-			elif key == beta.key:
-				assert_true(child.visible, "non-grabbed slots stay visible")
+		if not (child is Node2D) or not String(child.name).begins_with("Slot_"):
+			continue
+		var key: String = child.get_meta(&"item_key", "")
+		if key == alpha_key:
+			assert_false(child.visible, "grabbed slot is hidden during the gesture")
+		elif key == beta_key:
+			assert_true(child.visible, "non-grabbed slots stay visible")
 
 
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
@@ -215,10 +218,11 @@ func test_owned_items_show_on_the_rack() -> void:
 	var rack: Node2D = _make_rack(&"ball", manager)
 	manager.take(ball.key)
 	rack.refresh()
+	var instance_key: String = "ball_alpha_1"
 
 	var displayed: Array[String] = rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "rack should show the owned item after take and refresh")
-	assert_eq(displayed[0], ball.key)
+	assert_eq(displayed[0], instance_key)
 
 
 func test_grab_removes_item_from_the_rack() -> void:
@@ -228,7 +232,8 @@ func test_grab_removes_item_from_the_rack() -> void:
 	var reconciler: BallReconciler = _make_reconciler(manager)
 	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
 	manager.take(ball.key)
-	reconciler.adopt_stored(ball.key, Vector2.ZERO)
+	var instance_key := "ball_alpha_1"
+	reconciler._create_stored(instance_key, Vector2.ZERO)
 	rack.refresh()
 
 	assert_eq(rack.get_displayed_keys().size(), 1, "precondition: rack shows the owned item")
@@ -241,10 +246,9 @@ func test_grab_removes_item_from_the_rack() -> void:
 
 	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(manager, rack, drop_target, reconciler)
-	drag.court_bounds = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	add_child_autofree(drag)
 
-	drag.grab_from_rack(ball.key)
+	drag.grab_from_rack(instance_key)
 	rack.refresh()
 
 	assert_eq(rack.get_displayed_keys().size(), 0, "grab should remove the item from the rack")
