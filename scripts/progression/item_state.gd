@@ -16,9 +16,6 @@ var rack_slot_index_by_key: Dictionary[String, int] = {}
 ## Loose drag-token items keyed by item key, value is their drop position.
 var loose_in_venue: Dictionary[String, Vector2] = {}
 
-## Consolidation count per ball key. Gates workshop upgrades behind thresholds.
-var ball_consolidations: Dictionary[String, int] = {}
-
 
 func clear() -> void:
 	item_levels = {}
@@ -27,7 +24,6 @@ func clear() -> void:
 	ball_play_states = {}
 	rack_slot_index_by_key = {}
 	loose_in_venue = {}
-	ball_consolidations = {}
 
 
 func to_save_dict() -> Dictionary:
@@ -38,7 +34,6 @@ func to_save_dict() -> Dictionary:
 		"ball_play_states": ball_play_states,
 		"rack_slot_index_by_key": rack_slot_index_by_key,
 		"loose_in_venue": _serialize_positions(loose_in_venue),
-		"ball_consolidations": ball_consolidations,
 	}
 
 
@@ -49,7 +44,6 @@ func apply_save_dict(data: Dictionary) -> void:
 	ball_play_states = _to_typed_int_dict(data.get("ball_play_states", {}))
 	rack_slot_index_by_key = _to_typed_int_dict(data.get("rack_slot_index_by_key", {}))
 	loose_in_venue = _parse_positions(data.get("loose_in_venue", {}))
-	ball_consolidations = _to_typed_int_dict(data.get("ball_consolidations", {}))
 
 
 static func _to_typed_int_dict(raw: Dictionary) -> Dictionary[String, int]:

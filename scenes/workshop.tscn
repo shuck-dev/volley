@@ -1,17 +1,8 @@
 [gd_scene format=3 uid="uid://dnx2do12mtfyp"]
 
-[ext_resource type="Script" uid="uid://bebffst1f1ox7" path="res://scripts/core/workshop.gd" id="1_d7fqo"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_d7fqo"]
-size = Vector2(500, 400)
-
-[node name="Workshop" type="Node2D" unique_id=1830461434 node_paths=PackedStringArray("drop_area", "upgrade_button", "upgrade_cost_label")]
+[node name="Workshop" type="Node2D" unique_id=1830461434]
 z_index = 100
 z_as_relative = false
-script = ExtResource("1_d7fqo")
-drop_area = NodePath("DropArea")
-upgrade_button = NodePath("UpgradeButton")
-upgrade_cost_label = NodePath("UpgradeCostLabel")
 metadata/_edit_group_ = true
 
 [node name="Marker" type="ColorRect" parent="." unique_id=1882650834]
@@ -29,22 +20,3 @@ offset_right = -240.0
 offset_bottom = -190.0
 theme_override_font_sizes/font_size = 36
 text = "Workshop"
-
-[node name="DropArea" type="Area2D" parent="." unique_id=1333165920]
-
-[node name="DropShape" type="CollisionShape2D" parent="DropArea" unique_id=128541832]
-shape = SubResource("RectangleShape2D_d7fqo")
-
-[node name="UpgradeButton" type="Button" parent="." unique_id=57890820]
-visible = false
-offset_top = 230.0
-offset_right = 91.0
-offset_bottom = 266.0
-text = "Upgrade"
-
-[node name="UpgradeCostLabel" type="Label" parent="." unique_id=967339765]
-visible = false
-offset_top = 200.0
-offset_right = 1.0
-offset_bottom = 228.0
-text = "Cost: 50"
