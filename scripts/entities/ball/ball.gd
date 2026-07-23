@@ -408,6 +408,8 @@ func _apply_item_art() -> void:
 	if item_key == "" or item_art_holder == null:
 		return
 	var definition: ItemDefinition = _item_manager.get_item(item_key)
+	if definition.art == null:
+		return
 	item_art_holder.scale = definition.token_scale
 	var art_instance: ItemArt = definition.art.instantiate()
 	item_art_holder.add_child(art_instance)

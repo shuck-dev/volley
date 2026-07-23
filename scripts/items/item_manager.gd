@@ -555,16 +555,13 @@ func _get_item(item_key: String) -> ItemDefinition:
 	return null
 
 
-## Same as `_get_item`, but for call sites reached only from live gameplay on an
-## already-owned item, where a null result means a real internal inconsistency,
-## not a stale/foreign save key. Fails loudly instead of pushing the null onward.
+## Same as `_get_item`, but asserts non-null for gameplay call sites where a miss is a real bug.
 func _require_item(item_key: String) -> ItemDefinition:
 	var item := _get_item(item_key)
 	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
 	return item
 
 
-## Public form of `_require_item`, for callers outside ItemManager (e.g. a ball
-## resolving its own definition to apply its art).
+## Public form of `_require_item`, for callers outside ItemManager.
 func get_item(item_key: String) -> ItemDefinition:
 	return _require_item(item_key)

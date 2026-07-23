@@ -5,7 +5,6 @@ extends Node2D
 @export var bounding_rect: Rect2 = Rect2(-20, -20, 40, 40)
 
 
-## Called once by the owning ball after this art is attached. Override for art that
-## reacts to the ball's own state (e.g. a particle cue on a stat shift).
+## Called once by the owning ball after this art is attached; override to react to ball state.
 func watch_ball(_ball: Ball) -> void:
 	pass
