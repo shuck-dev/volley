@@ -286,6 +286,9 @@ func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 			_release_ball_from_registry(reconciler, ball)
 			visible = true
 			return
+	else:
+		# Already owned: attempt upgrade via purchase; silent on failure (max level, broke).
+		_complete_purchase()
 
 	visible = false
 	ItemManager.adopt_instance(ball.item_key)
@@ -348,7 +351,7 @@ func _complete_purchase() -> bool:
 func _complete_ball_purchase() -> bool:
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
 		return false
-	return _item_manager.take_ball(item_definition.key)
+	return _item_manager.take(item_definition.key)
 
 
 func _complete_equipment_purchase() -> bool:

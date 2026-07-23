@@ -364,9 +364,10 @@ func remove_level(item_key: String) -> void:
 	var current_level := get_level(item_key)
 	if current_level > 0:
 		var item := _get_item(item_key)
-		var refund := int(item.base_cost * pow(item.cost_scaling, current_level - 1))
+		var new_level: int = current_level - 1
+		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
-		_set_level(item_key, current_level - 1)
+		_set_level(item_key, new_level)
 
 		if current_level - 1 == 0:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.

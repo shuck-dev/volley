@@ -65,6 +65,47 @@ class TestPurchase:
 		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
 
 
+class TestDuplicatePricing:
+	extends GutTest
+	const TEST_KEY := "test_speed"
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+
+	func test_cost_increases_with_each_purchase() -> void:
+		_manager.economy.soul_balance = 10000
+		var cost_at_zero: int = _manager.calculate_cost(TEST_KEY)
+		_manager.purchase(TEST_KEY)
+		var cost_at_one: int = _manager.calculate_cost(TEST_KEY)
+		assert_gt(cost_at_one, cost_at_zero)
+		_manager.purchase(TEST_KEY)
+		var cost_at_two: int = _manager.calculate_cost(TEST_KEY)
+		assert_gt(cost_at_two, cost_at_one)
+
+
+class TestBallRepurchase:
+	extends GutTest
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = ItemFactory.create_manager(self)
+		var ball := ItemDefinition.new()
+		ball.key = "test_ball"
+		ball.role = &"ball"
+		ball.base_cost = 100
+		ball.cost_scaling = 2.0
+		ball.max_level = 5
+		ball.effects = []
+		_manager.items.assign([ball])
+
+	func test_ball_can_be_purchased_multiple_times() -> void:
+		_manager.economy.soul_balance = 10000
+		assert_true(_manager.purchase("test_ball"), "first purchase should succeed")
+		assert_true(_manager.purchase("test_ball"), "second purchase should succeed")
+		assert_eq(_manager.get_level("test_ball"), 2)
+
+
 class TestStats:
 	extends GutTest
 	const TEST_KEY := "test_speed"
