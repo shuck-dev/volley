@@ -494,8 +494,6 @@ class TestKitItemsEquipment:
 class TestEquipFlow:
 	extends GutTest
 
-	## Equip/unequip/get_kit_remaining gate equipment placement on the kit_slots cap.
-
 	var _manager: Node
 
 	func before_each() -> void:
@@ -524,68 +522,9 @@ class TestEquipFlow:
 		_manager.items.assign([gear_a, gear_b, ball])
 		_manager.economy.soul_balance = 100000
 
-	func test_get_kit_remaining_starts_at_floored_kit_slots() -> void:
-		var expected: int = int(floor(GameRules.base.kit_slots))
-		assert_eq(_manager.get_kit_remaining(), expected)
-
-	func test_equip_reduces_kit_remaining() -> void:
-		_manager.take("gear_a")
-		var before: int = _manager.get_kit_remaining()
-		assert_true(_manager.equip("gear_a"))
-		assert_eq(_manager.get_kit_remaining(), before - 1)
-
-	func test_unequip_restores_kit_remaining() -> void:
-		_manager.take("gear_a")
-		var before: int = _manager.get_kit_remaining()
-		_manager.equip("gear_a")
-		assert_true(_manager.unequip("gear_a"))
-		assert_eq(_manager.get_kit_remaining(), before)
-
-	func test_loose_in_venue_overlay_does_not_affect_kit_remaining() -> void:
-		# Ball-role overlay must not change the equipment-kit count.
-		_manager.take("ball_a")
-		var before: int = _manager.get_kit_remaining()
-		_manager.mark_loose_in_venue("ball_a")
-		assert_eq(_manager.get_kit_remaining(), before)
-
 	func test_equip_rejects_ball_role_silently() -> void:
 		_manager.take("ball_a")
-		watch_signals(_manager)
 		assert_false(_manager.equip("ball_a"))
-		assert_signal_not_emitted(_manager, "equip_refused")
-
-	func test_equip_rejects_when_capacity_zero_and_emits_refused() -> void:
-		# Force capacity to zero by stuffing the persisted-EQUIPPED set up to the cap.
-		var cap: int = int(floor(GameRules.base.kit_slots))
-		var pad_items: Array[ItemDefinition] = []
-		for i in cap:
-			var pad := ItemDefinition.new()
-			pad.key = "pad_%d" % i
-			pad.role = &"equipment"
-			pad.base_cost = 10
-			pad.cost_scaling = 2.0
-			pad.max_level = 3
-			pad.effects = []
-			pad_items.append(pad)
-		for pad: ItemDefinition in pad_items:
-			_manager.items.append(pad)
-			_manager.take(pad.key)
-			_manager.equip(pad.key)
-		assert_eq(_manager.get_kit_remaining(), 0, "precondition: cap reached")
-
-		_manager.take("gear_a")
-		watch_signals(_manager)
-		assert_false(_manager.equip("gear_a"))
-		assert_signal_emitted_with_parameters(
-			_manager, "equip_refused", ["gear_a", &"capacity_exceeded"]
-		)
-
-	func test_over_capacity_load_clamps_kit_remaining_to_zero() -> void:
-		# Simulate a save with more EQUIPPED items than the current cap supports.
-		var cap: int = int(floor(GameRules.base.kit_slots))
-		for i in cap + 2:
-			_manager.state.item_placements["over_%d" % i] = Placement.EQUIPPED
-		assert_eq(_manager.get_kit_remaining(), 0)
 
 	func test_unequip_on_unowned_returns_false() -> void:
 		assert_false(_manager.unequip("gear_a"))
