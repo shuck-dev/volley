@@ -4,8 +4,7 @@
 Never write game code from the main session. Switch to the Dispatch agent to
 plan work; switch to Memory to edit memory.**
 
-A Godot game built with AI assistance. Uses opencode (the coding agent)
-and GodotIQ (the Godot editor bridge).
+A Godot game built with AI assistance.
 
 Read ../volley-ai/MEMORY.md at boot. It maps the project memory: a graph
 of rules, lessons, and design decisions. The "forest" is that memory tree;
@@ -14,22 +13,24 @@ design, AI personality, unsorted). Descend a trunk when its domain comes up.
 The "letters" are session handoff notes. Read the most recent one first;
 it knows where we left off.
 
-## GodotIQ
+## Working in this codebase
 
-Prefer GodotIQ tools over raw file reads. Do not read .tscn or .gd files
-directly; use godotiq_file_context, scene_map, and script_ops instead.
-Do not grep for signal connections; use signal_map and dependency_graph
-to trace the complete graph in one call. Do not guess positions or scales;
-use placement and suggest_scale.
+GDScript conventions live in `CODE_STYLE.md`; read it before writing or
+editing any `.gd` file. Test discipline and GUT usage live in
+`tests/TESTING.md`; read it before writing or editing any test.
 
-Build 3D content in .tscn scene files, not in code. Use build_scene for
-batch node creation (grid, scatter, line, nodes). One call per logical
-group. Verify each phase with spatial_audit before moving on.
+Scenes (`.tscn`) are the source of truth for game objects, terrain, and UI
+layout. Prefer authoring or editing scene files directly over building
+node trees at runtime in code; runtime `Node.new()` construction is for
+genuinely dynamic pools (spawned balls, particles), not static world
+content. A scene edit is a real change to a text-based `.tscn` file, so
+review the diff the same way you would a `.gd` change.
 
-Always verify changes with evidence: check_errors for compilation,
-validate for conventions, verify_project_runs for runtime health,
-read_debug_console for runtime errors. Screenshots only for visual
-changes. Do not repeat tool calls; keep results in context.
+After any code or scene change, run the project's GUT suite
+(`./ci/run_gut.sh` or `godot --headless -s addons/gut/gut_cmdln.gd -gexit`)
+and treat a green run as the correctness bar. A passing suite that covers
+the change is the evidence; do not declare something done on the strength
+of "it should work" alone.
 
 ## Swarm and Battle
 
