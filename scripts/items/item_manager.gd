@@ -13,6 +13,7 @@ signal item_manager_state_changed
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
+	preload("res://resources/items/cadence_ball.tres"),
 ]
 
 var state: ItemState
