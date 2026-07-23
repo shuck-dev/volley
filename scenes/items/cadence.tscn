@@ -1,11 +1,31 @@
 [gd_scene format=3 uid="uid://bmux7h1a7i7ei"]
 
 [ext_resource type="Texture2D" uid="uid://1y3uu6hmaau7" path="res://assets/items/cadence.png" id="1_gm3nh"]
-[ext_resource type="Script" uid="uid://xrxnqxclv2jo" path="res://scripts/items/standard_ball_art.gd" id="2_art"]
+[ext_resource type="Script" uid="uid://wba83m1vcxcb" path="res://scripts/items/cadence_art.gd" id="2_art"]
+[ext_resource type="Texture2D" uid="uid://dukl842aq0orb" path="res://assets/art/shift_cue_bolt.svg" id="3_bolt"]
 
-[node name="Cadence" type="Node2D" unique_id=1813520677]
+[sub_resource type="Gradient" id="Gradient_shiftfade"]
+colors = PackedColorArray(0.4, 0.8, 1, 1, 0.4, 0.8, 1, 0)
+
+[node name="Cadence" type="Node2D" unique_id=1813520677 node_paths=PackedStringArray("shift_cue")]
 script = ExtResource("2_art")
+shift_cue = NodePath("ShiftCue")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1872735944]
 scale = Vector2(0.04, 0.04)
 texture = ExtResource("1_gm3nh")
+
+[node name="ShiftCue" type="CPUParticles2D" parent="." unique_id=1872735945]
+z_index = 1
+emitting = false
+amount = 12
+texture = ExtResource("3_bolt")
+lifetime = 0.3
+one_shot = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 60.0
+initial_velocity_max = 60.0
+scale_amount_min = 0.08
+scale_amount_max = 0.08
+color_ramp = SubResource("Gradient_shiftfade")

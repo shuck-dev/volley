@@ -400,10 +400,13 @@ func _apply_item_art(ball: Ball, item_key: String) -> void:
 		holder.remove_child(child)
 		child.queue_free()
 	holder.scale = definition.token_scale
-	holder.add_child(definition.art.instantiate())
+	var art_instance: Node = definition.art.instantiate()
+	holder.add_child(art_instance)
 	var default_sprite: Node = ball.get_node_or_null("Sprite")
 	if default_sprite != null:
 		default_sprite.visible = false
+	if art_instance is CadenceArt:
+		(art_instance as CadenceArt).watch_ball(ball)
 
 
 func _get_item_definition(item_key: String) -> ItemDefinition:
