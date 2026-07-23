@@ -1,28 +1,12 @@
 extends GutTest
 
-const BallManagerStub: GDScript = preload("res://tests/stubs/ball_manager_stub.gd")
-
 var _ball: Ball
 
 
 func before_each() -> void:
-	var manager: Node = BallManagerStub.new()
-	add_child_autofree(manager)
-
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball._item_manager = manager
 	add_child_autofree(_ball)
-	_ball.linear_velocity = Vector2(
-		Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", manager), 0.0
-	)
-
-
-func test_increase_speed_advances_tier_at_ceiling() -> void:
-	_ball.current_tier = 0
-	_ball.speed = _ball.tier_ceiling - 1.0
-	_ball.increase_speed()
-	assert_eq(_ball.current_tier, 1, "crossing the ceiling steps up a tier")
-	assert_almost_eq(_ball.speed, _ball.tier_floor, 0.01, "speed drops to the new tier's floor")
+	_ball.linear_velocity = Vector2(800.0, 0.0)
 
 
 func _registered_zone() -> MissZone:

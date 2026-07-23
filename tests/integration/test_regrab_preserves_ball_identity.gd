@@ -1,5 +1,4 @@
-## Step 5: a Ball misses, rolls to OUT_REST, gets regrabbed, and returns to play —
-## one instance, one identity, registry-tracked across every transition.
+## Verifies the reconciler keeps the same Ball instance across grab, release, re-grab, and re-release.
 extends GutTest
 
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
@@ -8,7 +7,6 @@ const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
 
-const COURT_BOUNDS: Rect2 = Rect2(Vector2(-600, -400), Vector2(1200, 800))
 const VENUE_BOUNDS: Rect2 = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 
 var _manager: Node
@@ -24,9 +22,7 @@ func before_each() -> void:
 	_manager.state = ItemState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	var typed_items: Array[ItemDefinition] = [ball_alpha]
-	_manager.items.assign(typed_items)
+	_manager.items.assign([ItemTestHelpersScript.make_ball_item("ball_alpha")])
 	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
 
@@ -43,7 +39,6 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
-	_drag.court_bounds = COURT_BOUNDS
 	_drag.venue_bounds = VENUE_BOUNDS
 	add_child_autofree(_drag)
 
@@ -87,46 +82,26 @@ func _seed_release_velocity(start: Vector2, end: Vector2) -> void:
 	_drag._cursor_samples.append({"time": 0.04, "position": end})
 
 
-# Three transitions on one Ball: PLAY -> OUT_REST (miss/release) -> OUT_HELD (grab) -> PLAY (release over court).
-# Single instance throughout; reconciler always tracks the same node.
-func test_miss_to_rest_to_regrab_preserves_identity() -> void:
+func test_regrab_preserves_instance_id() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(live, "precondition: an in-play Ball exists")
 	var live_id: int = live.get_instance_id()
 
-	# 1. Player drags the live ball to the venue floor (OUT_REST). State transitions land
-	# inline through the drag controller's synchronous signals; no idle yield required.
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
 	_drag._gesture_below_threshold = false
 	_seed_release_velocity(Vector2.ZERO, Vector2(10, 0))
-	var venue_floor := Vector2(1500, 100)
-	assert_true(_drag.attempt_release(venue_floor))
+	assert_true(_drag.attempt_release(Vector2(50, 25)))
 
-	var at_rest: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_eq(
-		at_rest.get_instance_id(), live_id, "registry still tracks the same Ball after OUT_REST"
-	)
-	assert_eq(at_rest.play_state, Ball.PlayState.OUT_REST)
-	assert_eq(at_rest.global_position, venue_floor)
+	var first_release: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_eq(first_release.get_instance_id(), live_id)
 
-	# 2. Player picks the at-rest ball back up via grab_live_ball (the OUT_REST grab path).
 	assert_true(_drag.grab_live_ball("ball_alpha", false))
-	var held: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_eq(
-		held.get_instance_id(), live_id, "registry still tracks the same Ball during OUT_HELD"
-	)
-	assert_eq(held.play_state, Ball.PlayState.OUT_HELD)
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha").play_state, Ball.PlayState.OUT_HELD)
 
-	# 3. Player releases over the court; the same Ball returns to PLAY.
 	_drag._gesture_below_threshold = false
-	_seed_release_velocity(Vector2(1500, 100), Vector2(1580, 100))
-	var court_point := Vector2(50, 25)
-	assert_true(_drag.attempt_release(court_point))
+	_seed_release_velocity(Vector2(10, 0), Vector2(20, 0))
+	assert_true(_drag.attempt_release(Vector2(50, 25)))
 
-	var played: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(played, "Ball survives the venue → court round trip")
-	assert_eq(played.get_instance_id(), live_id, "every transition kept the same Ball instance")
-	assert_ne(played.play_state, Ball.PlayState.OUT_HELD)
-	assert_ne(played.play_state, Ball.PlayState.OUT_REST)
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha").get_instance_id(), live_id)

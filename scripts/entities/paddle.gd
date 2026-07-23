@@ -22,7 +22,7 @@ var drive_blocked: bool = false
 ## does not clobber the AI driver's velocity with Input.get_axis defaults.
 var input_blocked: bool = false
 
-var _item_manager: Node
+var _item_manager: ItemManager
 
 var _lane_x: float = 0.0
 var _paddle_speed: float = 0.0

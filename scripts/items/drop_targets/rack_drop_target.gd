@@ -3,7 +3,7 @@ extends DropTarget
 
 ## Accepts role-matched items inside the rack's drop area; deactivates on-court items so the rack regrows.
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _drop_area: Area2D
 var _role: StringName
 

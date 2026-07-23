@@ -68,7 +68,7 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-var _item_manager: Node
+var _item_manager: ItemManager
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0

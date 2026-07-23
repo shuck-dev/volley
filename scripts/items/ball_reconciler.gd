@@ -1,41 +1,37 @@
 class_name BallReconciler
 extends Node
 
-## Live-ball lifecycle owner. Absorbed BallTracker's multi-ball tracking and
-## re-emission responsibilities so court_config is set on each ball before
-## its _ready() runs.
+## Live-ball lifecycle owner.
 
 signal ball_spawned(item_key: String, ball: Ball)
-## Emitted whenever a ball enters the tracked set (spawn, ensure, adoption).
+
+## Emitted whenever a ball is in play.
 signal ball_added(ball: Ball)
-## Emitted whenever a ball leaves the tracked set (release, deactivate).
+
+## Emitted whenever a ball leaves play.
 signal ball_removed(ball: Ball)
 signal ball_missed(ball: Ball)
-## Fires on final-consolidation entry (true) and exit (false), re-emitted from the live ball.
+
 signal ball_final_consolidation_changed(in_final: bool)
-## Fires when any tracked ball crosses a tier ceiling, carrying the ball and its new tier.
 signal ball_tier_advanced(ball: Ball, new_tier: int)
+
 signal current_ball_changed(ball: Ball)
 
 const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
-@export var ball_scene: PackedScene = BallScene
-## Ball-role rack consulted for STORED slot positions during initial kit-walk and deactivate transitions.
+## Ball-role rack for STORED slot positions.
 @export var ball_rack: RackDisplay
+
 @export var spawn_origin: Vector2 = Vector2.ZERO
-@export var pre_existing_balls_parent: Node
 @export var court_config: CourtConfig
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
 
-var _item_manager: Node
+var _item_manager: ItemManager
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
-## Prevents court_changed from clearing _initial_reconcile_pending before _reconcile_initial_state runs.
-var _adopting_pre_existing: bool = false
-var _stored_kit_reconciled: bool = false
 
 var _balls: Array[Ball] = []
 var _current_ball: Ball
@@ -55,38 +51,34 @@ func _ready() -> void:
 	_item_manager.court_changed.connect(_on_court_changed)
 	_item_manager.item_manager_state_changed.connect(_reconcile)
 
-	# Position persistence: SaveManager pulls live positions from us before each
-	# disk write so balls reload where the player left them, not the spawn marker.
+	# Position persistence
 	if _has_save_manager_autoload():
 		SaveManager.set_position_provider(collect_item_positions)
 		SaveManager.set_play_state_provider(collect_ball_play_states)
 
-	# Deferred so sibling listeners connect to ball_spawned before we emit.
-	call_deferred(&"adopt_pre_existing_balls")
+	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
 
 
-func _has_save_manager_autoload() -> bool:
-	return get_tree() != null and get_tree().root.has_node("SaveManager")
-
-
-## Snapshot of live ball positions keyed by item_key. Every loose / at-rest / in-play
-## ball lives in the registry post-step-5, so the registry walk is the whole story.
+## Snapshot of live ball positions keyed by item_key.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
 	for ball in _balls:
 		if not is_instance_valid(ball):
 			continue
+
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
+
 		if ball.item_key.is_empty():
 			continue
+
 		positions[ball.item_key] = ball.global_position
+
 	return positions
 
 
-## Snapshot of live ball PlayState enums keyed by item_key. Mirrors collect_item_positions;
-## STORED balls are reconstructed from the rack so they do not need a play-state entry.
+## Snapshot of live ball PlayState enums keyed by item_key.
 func collect_ball_play_states() -> Dictionary[String, int]:
 	var states: Dictionary[String, int] = {}
 	for ball in _balls:
@@ -100,106 +92,43 @@ func collect_ball_play_states() -> Dictionary[String, int]:
 	return states
 
 
-## Idempotent; safe to call repeatedly across scene reloads. The host injects the container
-## whose authored Ball children should be adopted; nothing is adopted until it is set.
-func adopt_pre_existing_balls() -> void:
-	var parent: Node = pre_existing_balls_parent
-	if parent == null:
-		return
-
-	_adopting_pre_existing = true
-	for child in parent.get_children():
-		if not (child is Ball):
-			continue
-
-		var ball: Ball = child
-		if ball.is_temporary:
-			continue
-		if ball.is_queued_for_deletion():
-			continue
-		if _is_tracked(ball):
-			continue
-		if ball.item_key == "":
-			push_warning("BallReconciler: skipping adoption of authored Ball with no item_key")
-			continue
-
-		var key: String = ball.item_key
-		_balls_by_key[key] = ball
-		_apply_item_art(ball, key)
-		# Authored ball needs level >= 1 and ON_COURT so the rack hides its token.
-		if _item_manager.has_method("adopt_authored"):
-			_item_manager.adopt_authored(key)
-		elif (
-			_item_manager.has_method("activate")
-			and _item_manager.get_level(key) > 0
-			and not _item_manager.is_on_court(key)
-		):
-			_item_manager.activate(key)
-
-		_apply_post_adopt_position(ball, key)
-		ball_spawned.emit(key, ball)
-		if court_config != null:
-			ball.court_config = court_config
-		ball.bound_y = bound_y
-		_register_ball(ball)
-	_adopting_pre_existing = false
-
-
-func _is_tracked(ball: Ball) -> bool:
-	for tracked in _balls_by_key.values():
-		if tracked == ball:
-			return true
-	return false
-
-
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
 func has_ball_in_play() -> bool:
 	for raw: Variant in _balls_by_key.values():
 		if not is_instance_valid(raw):
 			continue
+
 		var ball: Ball = raw
+
 		if (
 			ball.play_state == Ball.PlayState.PLAY_NORMAL
 			or ball.play_state == Ball.PlayState.PLAY_ARC
 		):
 			return true
+
 	return false
 
 
+## Returns the tracked Ball for `item_key` and instances.
 func get_ball_for_key(item_key: String) -> Ball:
-	if not _balls_by_key.has(item_key):
-		return null
+	if _balls_by_key.has(item_key):
+		var raw: Variant = _balls_by_key[item_key]
 
-	var raw: Variant = _balls_by_key[item_key]
-	if not is_instance_valid(raw):
+		if is_instance_valid(raw):
+			return raw
+
 		_balls_by_key.erase(item_key)
+
 		return null
-	return raw
 
+	for key in _balls_by_key:
+		if BallKey.is_instance(item_key, key):
+			var raw: Variant = _balls_by_key[key]
 
-## Returns the tracked Ball for `item_key` or instantiates one; `preserved_speed` >= 0 carries rally speed through grab-and-release.
-func ensure_ball_for_key(
-	item_key: String,
-	spawn_position: Vector2,
-	initial_velocity: Vector2,
-	preserved_speed: float = PRESERVED_SPEED_NONE,
-) -> Ball:
-	var existing: Ball = get_ball_for_key(item_key)
-	if existing != null:
-		# Re-entry from STORED/OUT_REST/OUT_HELD goes through enter_play so physics flags flip cleanly.
-		if (
-			existing.play_state != Ball.PlayState.PLAY_NORMAL
-			and existing.play_state != Ball.PlayState.PLAY_ARC
-		):
-			existing.enter_play()
-		existing.global_position = spawn_position
-		existing.linear_velocity = initial_velocity
-		_apply_preserved_speed(existing, preserved_speed)
-		return existing
+			if is_instance_valid(raw):
+				return raw
 
-	var ball: Ball = _create_ball(item_key, spawn_position, initial_velocity)
-	_apply_preserved_speed(ball, preserved_speed)
-	return ball
+	return null
 
 
 ## Ensures a registry Ball at `position`, in OUT_REST, carrying `velocity`.
@@ -214,25 +143,24 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Spawns a STORED ball at `spawn_position` and registers it under `item_key`.
-func adopt_stored(item_key: String, spawn_position: Vector2) -> Ball:
-	var ball: Ball = ball_scene.instantiate()
-	if court_config != null:
-		ball.court_config = court_config
-	add_child(ball)
-	ball.item_key = item_key
-	ball.bound_y = bound_y
-	ball.enter_stored()
-	ball.global_position = spawn_position
-	_apply_item_art(ball, item_key)
+## Spawns a purchased ball on the rack.
+func spawn_stored(template_key: String, position: Vector2) -> Ball:
+	var key := _item_manager.generate_instance_key(template_key)
+	_item_manager.register_instance(key, _get_item_definition(template_key).role)
+	return _create_stored(key, position)
 
-	_balls_by_key[item_key] = ball
-	ball_spawned.emit(item_key, ball)
-	_register_ball(ball)
+
+## Spawns a ball onto the venue floor.
+func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
+	var key := _item_manager.generate_instance_key(template_key)
+	var ball := _create_ball(key, position, velocity)
+	ball.global_position = position
+	ball.enter_out_rest()
+	ball.linear_velocity = velocity
 	return ball
 
 
-## Activates the item if needed, then ensures a single Ball at `spawn_position` with `initial_velocity`.
+## Puts a ball into active play on the court.
 func bring_into_play(
 	item_key: String,
 	spawn_position: Vector2,
@@ -241,36 +169,16 @@ func bring_into_play(
 ) -> Ball:
 	if not _item_manager.is_on_court(item_key):
 		_item_manager.activate(item_key)
-	return ensure_ball_for_key(item_key, spawn_position, initial_velocity, preserved_speed)
-
-
-## Negative sentinel means no preserved energy; negative check avoids zero-speed edge case.
-func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
-	var ball: Ball = ball_scene.instantiate()
-	if court_config != null:
-		ball.court_config = court_config
-	add_child(ball)
-	ball.item_key = item_key
-	ball.global_position = spawn_position
-	ball.linear_velocity = initial_velocity
-	ball.bound_y = bound_y
-	_apply_item_art(ball, item_key)
-	_balls_by_key[item_key] = ball
-	ball_spawned.emit(item_key, ball)
-	_register_ball(ball)
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball != null:
+		ball.enter_play()
+		ball.global_position = spawn_position
+		ball.linear_velocity = initial_velocity
+		_apply_preserved_speed(ball, preserved_speed)
+		return ball
+	ball = _create_ball(item_key, spawn_position, initial_velocity)
+	_apply_preserved_speed(ball, preserved_speed)
 	return ball
-
-
-func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
-	if preserved_speed < 0.0:
-		return
-	ball.speed = preserved_speed
-	# Re-sync the effect processor's base so the next physics frame's speed-limit clamp
-	# does not snap us back to ball_speed_min.
-	if ball.effect_processor != null:
-		ball.effect_processor.sync_base_speed()
-	if ball.linear_velocity.length() > 0.0:
-		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 
 
 func release_ball(item_key: String) -> Ball:
@@ -284,75 +192,7 @@ func release_ball(item_key: String) -> Ball:
 	return ball
 
 
-func _on_court_changed(item_key: String, on_court: bool) -> void:
-	if not _adopting_pre_existing:
-		_initial_reconcile_pending = false
-	if on_court:
-		var existing: Ball = get_ball_for_key(item_key)
-		# Existing PLAY balls (authored, mid-rally) already live at the right spot; reposition would clobber them.
-		if (
-			existing != null
-			and (
-				existing.play_state == Ball.PlayState.PLAY_NORMAL
-				or existing.play_state == Ball.PlayState.PLAY_ARC
-			)
-		):
-			return
-		ensure_ball_for_key(
-			item_key,
-			_spawn_position_for(item_key),
-			_item_manager.get_default_ball_launch_velocity(),
-		)
-		return
-
-	var ball: Ball = get_ball_for_key(item_key)
-	if ball == null:
-		return
-
-	# Membership = existence; deactivate becomes a state change, registry entry survives.
-	ball.enter_stored()
-	if ball_rack != null:
-		ball.global_position = ball_rack.get_slot_position_for(item_key)
-
-
-func _reconcile() -> void:
-	var keys_to_remove: Array[String] = []
-	for key: String in _balls_by_key:
-		if _item_manager.get_level(key) <= 0:
-			keys_to_remove.append(key)
-
-	for key: String in keys_to_remove:
-		var ball: Ball = get_ball_for_key(key)
-		if ball != null:
-			_balls_by_key.erase(key)
-			_detach(ball)
-			ball.queue_free()
-
-	if _initial_reconcile_pending:
-		_initial_reconcile_pending = false
-		for key in _item_manager.get_court_items():
-			if get_ball_for_key(key) == null:
-				ensure_ball_for_key(
-					key,
-					_spawn_position_for(key),
-					_item_manager.get_default_ball_launch_velocity(),
-				)
-	if not _stored_kit_reconciled:
-		_stored_kit_reconciled = true
-		_reconcile_stored_kit_items()
-
-
-## Populates STORED Balls for kit ball-role items absent from the court. Rack owns slot->world mapping.
-func _reconcile_stored_kit_items() -> void:
-	if ball_rack == null:
-		return
-	for key in _item_manager.get_kit_items(&"ball"):
-		ensure_stored_ball_for_key(key)
-
-
-## Guarantees a tracked STORED Ball for a kit ball-role key so its slot is indexed and grabbable.
-## The one-shot _reconcile_stored_kit_items guard can leave a second stored ball untracked;
-## this lets the rack/grab paths lazily back-fill it without re-running the whole sweep.
+## Lazy-backfill a tracked STORED Ball for a kit ball-role key.
 func ensure_stored_ball_for_key(item_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
@@ -363,87 +203,7 @@ func ensure_stored_ball_for_key(item_key: String) -> Ball:
 		return null
 	if _item_manager.get_rack_slot_index(item_key) < 0:
 		return null
-	return adopt_stored(item_key, ball_rack.get_slot_position_for(item_key))
-
-
-func _default_spawn_position() -> Vector2:
-	return spawn_origin
-
-
-## Post-adoption placement: STORED snaps to its rack slot; other placements use the saved
-## position AND play state if SaveManager has them, otherwise the ball keeps its scene state.
-func _apply_post_adopt_position(ball: Ball, item_key: String) -> void:
-	if _item_manager.get_placement(item_key) == Placement.STORED:
-		if ball_rack != null:
-			ball.global_position = ball_rack.get_slot_position_for(item_key)
-		ball.enter_stored()
-		return
-
-	if not _has_save_manager_autoload():
-		return
-	var saved: ItemState = SaveManager.items
-
-	if saved == null:
-		return
-
-	if saved.ball_positions.has(item_key):
-		ball.global_position = saved.ball_positions[item_key]
-
-	if saved.ball_play_states.has(item_key):
-		_apply_saved_play_state(ball, saved.ball_play_states[item_key])
-
-
-func _apply_saved_play_state(ball: Ball, play_state: int) -> void:
-	match play_state:
-		# OUT_HELD demotes to OUT_REST because the drag-controller context is gone on load;
-		# restoring HELD would leave the ball frozen mid-air with miss-detection suppressed.
-		Ball.PlayState.OUT_REST, Ball.PlayState.OUT_HELD:
-			ball.enter_out_rest()
-			# Velocity is not persisted yet; without zeroing, the body keeps the integration-frame
-			# momentum it picked up between scene spawn and adopt, and visibly hops on load.
-			ball.linear_velocity = Vector2.ZERO
-			ball.angular_velocity = 0.0
-		Ball.PlayState.PLAY_NORMAL, Ball.PlayState.PLAY_ARC:
-			ball.enter_play()
-		_:
-			pass
-
-
-## Prefer the saved position so reloaded balls keep their last in-play spot.
-## Falls back to the default spawn when no save data exists for the key.
-func _spawn_position_for(item_key: String) -> Vector2:
-	if not _has_save_manager_autoload():
-		return _default_spawn_position()
-	var state: ItemState = SaveManager.items
-	if state != null and state.ball_positions.has(item_key):
-		return state.ball_positions[item_key]
-	return _default_spawn_position()
-
-
-## Swaps the art into the authored ItemArtHolder slot on Ball; idempotent across re-applications.
-func _apply_item_art(ball: Ball, item_key: String) -> void:
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	if definition == null or definition.art == null:
-		return
-	var holder: Node2D = ball.get_node_or_null("ItemArtHolder") as Node2D
-	if holder == null:
-		push_warning("BallReconciler: ball.tscn missing ItemArtHolder slot; skipping art swap")
-		return
-	for child in holder.get_children():
-		holder.remove_child(child)
-		child.queue_free()
-	holder.scale = definition.token_scale
-	holder.add_child(definition.art.instantiate())
-	var default_sprite: Node = ball.get_node_or_null("Sprite")
-	if default_sprite != null:
-		default_sprite.visible = false
-
-
-func _get_item_definition(item_key: String) -> ItemDefinition:
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key:
-			return item
-	return null
+	return _create_stored(item_key, ball_rack.get_slot_position_for(item_key))
 
 
 func get_balls() -> Array[Ball]:
@@ -454,39 +214,13 @@ func get_current_ball() -> Ball:
 	return _current_ball
 
 
-## Sets court_config and bound_y on the ball, then registers it for tracking.
+## Adopts a ball already in the scene tree.
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	if court_config != null:
-		new_ball.court_config = court_config
+	new_ball.court_config = court_config
 	new_ball.bound_y = bound_y
 	_register_ball(new_ball)
-
-
-## Removes the ball from tracking, disconnects signals, and emits ball_removed.
-func _detach(old_ball: Ball) -> void:
-	if old_ball == null:
-		return
-	var was_tracked: bool = _balls.has(old_ball)
-	_balls.erase(old_ball)
-
-	if is_instance_valid(old_ball):
-		if old_ball.missed.is_connected(_on_ball_missed):
-			old_ball.missed.disconnect(_on_ball_missed)
-
-		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
-			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
-
-		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
-			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
-
-	if _current_ball == old_ball:
-		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
-		_set_current(fallback)
-
-	if was_tracked:
-		ball_removed.emit(old_ball)
 
 
 func register_miss_zone_globally() -> void:
@@ -509,6 +243,194 @@ func register_miss_zone(zone: MissZone) -> void:
 
 func unregister_miss_zone(zone: MissZone) -> void:
 	_miss_zones.erase(zone)
+
+
+func _has_save_manager_autoload() -> bool:
+	return get_tree() != null and get_tree().root.has_node("SaveManager")
+
+
+## Internal: spawns a STORED ball at a slot position.
+func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
+	var ball: Ball = BallScene.instantiate()
+	ball.court_config = court_config
+	ball.bound_y = bound_y
+	add_child(ball)
+	ball.item_key = item_key
+	ball.enter_stored()
+	ball.global_position = spawn_position
+	_apply_item_art(ball, item_key)
+
+	_balls_by_key[item_key] = ball
+	ball_spawned.emit(item_key, ball)
+	_register_ball(ball)
+	return ball
+
+
+## Internal: spawns a Ball node without key generation.
+func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+	var ball: Ball = BallScene.instantiate()
+	ball.court_config = court_config
+	ball.bound_y = bound_y
+	add_child(ball)
+	ball.item_key = item_key
+	ball.global_position = spawn_position
+	ball.linear_velocity = initial_velocity
+	ball.bound_y = bound_y
+	_apply_item_art(ball, item_key)
+	_balls_by_key[item_key] = ball
+	ball_spawned.emit(item_key, ball)
+	_register_ball(ball)
+	return ball
+
+
+func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
+	if preserved_speed < 0.0:
+		return
+	ball.speed = preserved_speed
+	if ball.effect_processor != null:
+		ball.effect_processor.sync_base_speed()
+	if ball.linear_velocity.length() > 0.0:
+		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
+
+
+func _on_court_changed(item_key: String, on_court: bool) -> void:
+	_initial_reconcile_pending = false
+	if on_court:
+		var existing: Ball = get_ball_for_key(item_key)
+		if (
+			existing != null
+			and (
+				existing.play_state == Ball.PlayState.PLAY_NORMAL
+				or existing.play_state == Ball.PlayState.PLAY_ARC
+			)
+		):
+			return
+		var pos := _spawn_position_for(item_key)
+		var vel := _item_manager.get_default_ball_launch_velocity()
+		if existing != null:
+			existing.global_position = pos
+			existing.linear_velocity = vel
+			existing.enter_play()
+		else:
+			_create_ball(item_key, pos, vel)
+		return
+
+	var ball: Ball = get_ball_for_key(item_key)
+	if ball == null:
+		return
+
+	ball.enter_stored()
+	if ball_rack != null:
+		ball.global_position = ball_rack.get_slot_position_for(item_key)
+
+
+func _reconcile() -> void:
+	var keys_to_remove: Array[String] = []
+	for key: String in _balls_by_key:
+		if _item_manager.get_level(key) <= 0:
+			keys_to_remove.append(key)
+
+	for key: String in keys_to_remove:
+		var ball: Ball = get_ball_for_key(key)
+		if ball != null:
+			_balls_by_key.erase(key)
+			_detach(ball)
+			ball.queue_free()
+
+	if _initial_reconcile_pending:
+		_initial_reconcile_pending = false
+		for key in _ball_keys():
+			if get_ball_for_key(key) == null:
+				_create_ball(
+					key, _spawn_position_for(key), _item_manager.get_default_ball_launch_velocity()
+				)
+	_reconcile_stored_kit_items()
+
+
+func _reconcile_stored_kit_items() -> void:
+	if ball_rack == null:
+		return
+	for key in _item_manager.get_kit_items(&"ball"):
+		ensure_stored_ball_for_key(key)
+
+
+func _default_spawn_position() -> Vector2:
+	return spawn_origin
+
+
+func _ball_keys() -> Array[String]:
+	var result: Array[String] = []
+	for key in _item_manager.state.item_levels:
+		if _item_manager.state.item_levels[key] <= 0:
+			continue
+		if _item_manager.get_placement(key) != Placement.ON_COURT:
+			continue
+		var item := _get_item_definition(key)
+
+		if item != null and item.role == &"ball":
+			result.append(key)
+	return result
+
+
+## Where a reloaded ball lands so it appears where the player left it.
+func _spawn_position_for(item_key: String) -> Vector2:
+	if not _has_save_manager_autoload():
+		return _default_spawn_position()
+	var state: ItemState = SaveManager.items
+	if state != null and state.ball_positions.has(item_key):
+		return state.ball_positions[item_key]
+	return _default_spawn_position()
+
+
+## Replaces a ball's sprite with its item art.
+func _apply_item_art(ball: Ball, item_key: String) -> void:
+	var definition: ItemDefinition = _get_item_definition(item_key)
+	if definition == null or definition.art == null:
+		return
+	var holder: Node2D = ball.get_node_or_null("ItemArtHolder") as Node2D
+	if holder == null:
+		push_warning("BallReconciler: ball.tscn missing ItemArtHolder slot; skipping art swap")
+		return
+	for child in holder.get_children():
+		holder.remove_child(child)
+		child.queue_free()
+	holder.scale = definition.token_scale
+	holder.add_child(definition.art.instantiate())
+	var default_sprite: Node = ball.get_node_or_null("Sprite")
+	if default_sprite != null:
+		default_sprite.visible = false
+
+
+func _get_item_definition(item_key: String) -> ItemDefinition:
+	for item: ItemDefinition in _item_manager.items:
+		if item.key == item_key or BallKey.is_instance(item.key, item_key):
+			return item
+	return null
+
+
+## Releases a ball from tracking.
+func _detach(old_ball: Ball) -> void:
+	if old_ball == null:
+		return
+	var was_tracked: bool = _balls.has(old_ball)
+	_balls.erase(old_ball)
+
+	if is_instance_valid(old_ball):
+		if old_ball.missed.is_connected(_on_ball_missed):
+			old_ball.missed.disconnect(_on_ball_missed)
+
+		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
+			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
+
+		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
+
+	if _current_ball == old_ball:
+		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
+		_set_current(fallback)
+
+	if was_tracked:
+		ball_removed.emit(old_ball)
 
 
 func _set_current(new_current: Ball) -> void:
