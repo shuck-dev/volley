@@ -10,37 +10,42 @@ func _ready() -> void:
 	_effect_state.register_base_values(GameRules.PADDLE_CONFIG.to_dict())
 
 
-func get_stat(key: StringName) -> float:
-	return _effect_state.get_stat(key)
+func get_stat(key: StringName, instance_key: String = "") -> float:
+	return _effect_state.get_stat(key, instance_key)
 
 
-func get_base_stat(key: StringName) -> float:
-	return _effect_state.get_base_stat(key)
+func get_base_stat(key: StringName, instance_key: String = "") -> float:
+	return _effect_state.get_base_stat(key, instance_key)
 
 
-func get_modifier(key: StringName) -> float:
-	return _effect_state.get_modifier(key)
+func get_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_state.get_modifier(key, instance_key)
 
 
-func get_permanent_modifier(key: StringName) -> float:
-	return _effect_state.get_permanent_modifier(key)
+func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_state.get_permanent_modifier(key, instance_key)
 
 
-func get_percentage_offset(key: StringName) -> float:
-	return _effect_state.get_percentage_offset(key)
+func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
+	return _effect_state.get_percentage_offset(key, instance_key)
 
 
 func is_game_state_active(state: StringName) -> bool:
 	return _effect_state.is_state_active(state)
 
 
-func process_event(event_type: StringName) -> Array[StringName]:
+## `instance_key` scopes the dispatch to a single ball's registered effects; entries not
+## registered as instance-scoped (partner/equipment sources) always fire regardless.
+func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
 	var game_actions: Array[StringName] = []
 	for registered in _event_effects:
 		var effect: Effect = registered.effect
-		if effect.trigger.type == event_type:
-			_collect_game_actions(effect, game_actions)
-			_apply_effect(effect, registered.source_key, registered.level)
+		if effect.trigger.type != event_type:
+			continue
+		if instance_key and registered.instanced and registered.source_key != instance_key:
+			continue
+		_collect_game_actions(effect, game_actions)
+		_apply_effect(effect, registered.source_key, registered.level)
 
 	if event_type == &"on_miss":
 		_effect_state.clear_temporary_modifiers()
@@ -52,28 +57,32 @@ func process_frame(delta: float) -> void:
 	_effect_state.process_frame(delta)
 
 
-func unregister_source(source: Resource) -> void:
+func unregister_source(source: Resource, source_key: String = "") -> void:
 	assert(source.has_method("get_key"), "Effect source must implement get_key()")
-	_clear_source(source.get_key())
+	_clear_source(source_key if source_key else source.get_key())
 
 
-func register_source(source: Resource, level: int) -> void:
+func register_source(
+	source: Resource, level: int, source_key: String = "", instanced: bool = false
+) -> void:
 	assert(source.has_method("get_key"), "Effect source must implement get_key()")
 	assert(
 		source.has_method("get_effects_for_level"),
 		"Effect source must implement get_effects_for_level()"
 	)
-	var source_key: String = source.get_key()
-	_clear_source(source_key)
+	var resolved_key: String = source_key if source_key else source.get_key()
+	_clear_source(resolved_key)
 	for effect in source.get_effects_for_level(level):
 		if effect.trigger.type == &"always":
-			_apply_effect(effect, source_key, level)
+			_apply_effect(effect, resolved_key, level)
 		else:
 			assert(
 				not _has_temporary_outcome_on_miss(effect),
-				"%s: on_miss + temporary modifier will be immediately cleared" % source_key,
+				"%s: on_miss + temporary modifier will be immediately cleared" % resolved_key,
 			)
-			var entry := {"effect": effect, "source_key": source_key, "level": level}
+			var entry := {
+				"effect": effect, "source_key": resolved_key, "level": level, "instanced": instanced
+			}
 			_event_effects.append(entry)
 
 

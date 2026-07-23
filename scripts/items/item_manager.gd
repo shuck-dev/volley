@@ -44,7 +44,7 @@ func reload_from_progression() -> void:
 		return
 
 	for item in items:
-		_effect_manager.unregister_source(item)
+		_effect_manager.unregister_source(item, item.key)
 
 	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
@@ -67,8 +67,8 @@ func unregister_partner(partner: Resource) -> void:
 
 
 ## Dispatches a game event to the effect system for causality processing
-func process_event(event_type: StringName) -> Array[StringName]:
-	return _effect_manager.process_event(event_type)
+func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
+	return _effect_manager.process_event(event_type, instance_key)
 
 
 ## Advances continuous effects like oscillation
@@ -83,28 +83,30 @@ func get_default_ball_launch_velocity() -> Vector2:
 
 
 ## Returns the resolved stat value (base + additive modifiers + percentage offset) for a stat key.
-func get_stat(key: StringName) -> float:
-	return _effect_manager.get_stat(key)
+func get_stat(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_stat(key, instance_key)
 
 
 ## Registers an effect source with the effect system at the given level.
-func register_source(source: Resource, level: int) -> void:
-	_effect_manager.register_source(source, level)
+func register_source(
+	source: Resource, level: int, source_key: String = "", instanced: bool = false
+) -> void:
+	_effect_manager.register_source(source, level, source_key, instanced)
 
 
 ## Returns the summed additive modifiers (including oscillations) for a stat key.
-func get_modifier(key: StringName) -> float:
-	return _effect_manager.get_modifier(key)
+func get_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_modifier(key, instance_key)
 
 
 ## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
-func get_permanent_modifier(key: StringName) -> float:
-	return _effect_manager.get_permanent_modifier(key)
+func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_permanent_modifier(key, instance_key)
 
 
 ## Returns the summed percentage offset for a stat (e.g. 0.8 means +80%)
-func get_percentage_offset(key: StringName) -> float:
-	return _effect_manager.get_percentage_offset(key)
+func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_percentage_offset(key, instance_key)
 
 
 ## Returns whether a named game state is currently active
@@ -366,7 +368,7 @@ func _register_existing_items() -> void:
 		if item == null:
 			continue
 		if _is_placed(key):
-			_effect_manager.register_source(item, state.item_levels[key])
+			_effect_manager.register_source(item, state.item_levels[key], key, item.role == &"ball")
 		elif not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key, item.role)
 
@@ -458,13 +460,13 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
 		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item)
+		_effect_manager.unregister_source(item, item_key)
 		_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
 		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item)
-		_effect_manager.register_source(item, get_level(item_key))
+		_effect_manager.unregister_source(item, item_key)
+		_effect_manager.register_source(item, get_level(item_key), item_key, item.role == &"ball")
 		state.rack_slot_index_by_key.erase(item_key)
 
 	item_manager_state_changed.emit()
@@ -482,10 +484,10 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 
 func _refresh_registration(item_key: String) -> void:
 	var item := _get_item(item_key)
-	_effect_manager.unregister_source(item)
+	_effect_manager.unregister_source(item, item_key)
 	var level := get_level(item_key)
 	if level > 0:
-		_effect_manager.register_source(item, level)
+		_effect_manager.register_source(item, level, item_key, item.role == &"ball")
 
 
 func _is_placed(item_key: String) -> bool:
@@ -538,5 +540,5 @@ func _get_item(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in items:
 		if item.key == base_key:
 			return item
-	assert(false, "Unknown item key: %s" % item_key)
+	push_warning("ItemManager: unknown item key: %s" % item_key)
 	return null

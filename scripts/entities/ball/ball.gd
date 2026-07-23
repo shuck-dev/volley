@@ -55,7 +55,9 @@ var tier_floor: float:
 		if current_tier == 0:
 			return base_floor
 
-		var lift: float = _item_manager.get_modifier(&"tier_floor_lift") * ball_world_max_speed
+		var lift: float = (
+			_item_manager.get_modifier(&"tier_floor_lift", item_key) * ball_world_max_speed
+		)
 
 		return minf(base_floor + lift, tier_ceiling)
 
@@ -87,13 +89,17 @@ func _ready() -> void:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
-	min_speed = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager)
+	min_speed = Stats.resolve(
+		GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager, item_key
+	)
 	max_speed = (
 		min_speed
-		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _item_manager)
+		+ Stats.resolve(
+			GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _item_manager, item_key
+		)
 	)
 	speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", _item_manager
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _item_manager, item_key
 	)
 
 	_setup_effect_processor()
@@ -175,7 +181,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	if hit_registered:
 		increase_speed()
 	effect_processor.process_hit(paddle)
-	_item_manager.process_event(&"on_hit")
+	_item_manager.process_event(&"on_hit", item_key)
 
 
 func register_miss_zone(zone: MissZone) -> void:
@@ -304,7 +310,7 @@ func advance_tier() -> void:
 	_apply_speed()
 
 	tier_advanced.emit(self, current_tier)
-	_item_manager.process_event(&"on_tier_completed")
+	_item_manager.process_event(&"on_tier_completed", item_key)
 
 
 func _tier_fraction(field: String) -> float:

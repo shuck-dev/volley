@@ -9,17 +9,17 @@ var _oscillations: Array[StatOscillation] = []
 var _resolving_keys: Array[StringName] = []
 
 
-func get_stat(key: StringName) -> float:
+func get_stat(key: StringName, instance_key: String = "") -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
 
 	var result: float = _base_values[key]
-	result += _sum_oscillations(key)
-	result += _sum_modifiers(key, _add_modifiers, false)
-	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false)
+	result += _sum_oscillations(key, instance_key)
+	result += _sum_modifiers(key, _add_modifiers, false, instance_key)
+	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false, instance_key)
 	return result
 
 
-func get_base_stat(key: StringName) -> float:
+func get_base_stat(key: StringName, instance_key: String = "") -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
 	assert(
 		key not in _resolving_keys,
@@ -28,25 +28,31 @@ func get_base_stat(key: StringName) -> float:
 	_resolving_keys.append(key)
 
 	var result: float = _base_values[key]
-	result += _sum_oscillations(key)
-	result += _sum_modifiers(key, _add_modifiers, true)
-	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true)
+	result += _sum_oscillations(key, instance_key)
+	result += _sum_modifiers(key, _add_modifiers, true, instance_key)
+	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true, instance_key)
 	_resolving_keys.erase(key)
 	return result
 
 
-func get_percentage_offset(key: StringName) -> float:
-	return _sum_modifiers(key, _percentage_modifiers, false)
+func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
+	return _sum_modifiers(key, _percentage_modifiers, false, instance_key)
 
 
 ## Sum of additive modifiers and oscillations for a stat key, range-resolved.
-func get_modifier(key: StringName) -> float:
-	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, false)
+func get_modifier(key: StringName, instance_key: String = "") -> float:
+	return (
+		_sum_oscillations(key, instance_key)
+		+ _sum_modifiers(key, _add_modifiers, false, instance_key)
+	)
 
 
 ## Same as `get_modifier` but excludes temporary (until-miss) modifiers.
-func get_permanent_modifier(key: StringName) -> float:
-	return _sum_oscillations(key) + _sum_modifiers(key, _add_modifiers, true)
+func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
+	return (
+		_sum_oscillations(key, instance_key)
+		+ _sum_modifiers(key, _add_modifiers, true, instance_key)
+	)
 
 
 func add_modifier(modifier: StatModifier) -> void:
@@ -120,11 +126,14 @@ func _array_for_operation(operation: StatModifier.Operation) -> Array[StatModifi
 	return _add_modifiers
 
 
-func _sum_oscillations(key: StringName) -> float:
+func _sum_oscillations(key: StringName, instance_key: String = "") -> float:
 	var total := 0.0
 	for oscillation in _oscillations:
-		if oscillation.stat_key == key:
-			total += oscillation.get_offset()
+		if oscillation.stat_key != key:
+			continue
+		if instance_key and oscillation.source_key != instance_key:
+			continue
+		total += oscillation.get_offset()
 	return total
 
 
@@ -135,12 +144,20 @@ func _refresh_oscillation_range_values() -> void:
 
 
 func _sum_modifiers(
-	key: StringName, modifiers: Array[StatModifier], exclude_temporary: bool
+	key: StringName,
+	modifiers: Array[StatModifier],
+	exclude_temporary: bool,
+	instance_key: String = ""
 ) -> float:
 	var total := 0.0
 	for modifier in modifiers:
-		if modifier.stat_key == key and not (exclude_temporary and modifier.temporary):
-			total += _resolve_value(modifier)
+		if modifier.stat_key != key:
+			continue
+		if exclude_temporary and modifier.temporary:
+			continue
+		if instance_key and modifier.source_key != instance_key:
+			continue
+		total += _resolve_value(modifier)
 	return total
 
 

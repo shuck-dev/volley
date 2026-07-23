@@ -40,7 +40,7 @@ func _sync_speed_limits() -> void:
 
 func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager
+		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager, ball.item_key
 	)
 
 	if not is_equal_approx(new_min, ball.min_speed):
@@ -51,16 +51,21 @@ func _sync_min_speed() -> void:
 func _sync_max_speed() -> void:
 	ball.max_speed = (
 		ball.min_speed
-		+ Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", item_manager)
+		+ Stats.resolve(
+			GameRules.base.ball_speed_max_range,
+			&"ball_speed_max_range",
+			item_manager,
+			ball.item_key
+		)
 	)
 	ball.speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", item_manager
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", item_manager, ball.item_key
 	)
 
 
 func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
-		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager
+		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager, ball.item_key
 	)
 	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
 
@@ -71,7 +76,7 @@ func process_hit(struck_paddle: Paddle) -> void:
 
 func _apply_magnetism(delta: float) -> void:
 	var magnetism: float = Stats.resolve(
-		GameRules.base.ball_magnetism, &"ball_magnetism", item_manager
+		GameRules.base.ball_magnetism, &"ball_magnetism", item_manager, ball.item_key
 	)
 
 	if magnetism <= 0.0 or paddles.is_empty():
