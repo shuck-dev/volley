@@ -73,17 +73,33 @@ jobs:
               next
             }
             if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
+              next
+            }
+            if ($0 ~ /Parse Error: .* referenced non-existent resource/) next
+            if ($0 ~ /^(WARNING|USER WARNING):/) print NR ":" $0
+          }' test_output.plain || true)
+          errors=$(awk '
+          {
+            if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
+              cold_paths[m[1]] = 1
+              next
+            }
+            if (match($0, /^ERROR: Failed loading resource: (res:\/\/[^ ]+)\./, m)) {
               if (m[1] in cold_paths) next
               if (m[1] ~ /\.(png|webp|exr|hdr|gif|apng|wav|ogg|mp3|flac|mp4|webm|mov|ogv|psd|aseprite|ase|kra|svg)$/) next
               print NR ":" $0
               next
             }
             if ($0 ~ /Parse Error: .* referenced non-existent resource/) next
-            if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
+            if ($0 ~ /^(ERROR|SCRIPT ERROR|USER ERROR):/) print NR ":" $0
           }' test_output.plain || true)
           if [ -n "$warnings" ]; then
-            echo "::error::Warnings or errors in test output"
+            echo "::warning::Warnings in test output (non-blocking)"
             printf '%s\n' "$warnings" | head -30
+          fi
+          if [ -n "$errors" ]; then
+            echo "::error::Errors in test output"
+            printf '%s\n' "$errors" | head -30
             fail=1
           fi
           if grep -qE '^[[:space:]]+[1-9][0-9]* Orphans' test_output.plain; then

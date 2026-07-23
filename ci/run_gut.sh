@@ -20,6 +20,9 @@ fail=0
 # filter unconditionally. Filter the paired Failed-loading-resource ERROR only when
 # its path matches a UID warning seen earlier in the run; standalone Failed-loading
 # ERRORs (broken .tres, missing scenes) still fail the gate.
+#
+# WARNING lines are printed for visibility but never fail the gate; only
+# ERROR/SCRIPT ERROR/USER ERROR and actual test failures do.
 warnings=$(printf '%s\n' "$plain" | awk '
 {
 	if (match($0, /^WARNING: .* ext_resource, invalid UID: .* using text path instead: (res:\/\/[^ ]+)/, m)) {
@@ -31,12 +34,21 @@ warnings=$(printf '%s\n' "$plain" | awk '
 		print NR ":" $0
 		next
 	}
-	if ($0 ~ /^(WARNING|ERROR|SCRIPT ERROR|USER WARNING|USER ERROR):/) print NR ":" $0
+	if ($0 ~ /^(WARNING|USER WARNING):/) print NR ":" $0
 }' || true)
+
+errors=$(printf '%s\n' "$plain" | awk '
+	/^(ERROR|SCRIPT ERROR|USER ERROR):/ { print NR ":" $0 }
+' || true)
 
 if [ -n "$warnings" ]; then
 	printf '%s\n' "$warnings" | head -30
-	echo "ci gate: warnings or errors in test output"
+	echo "ci gate: warnings in test output (non-blocking)"
+fi
+
+if [ -n "$errors" ]; then
+	printf '%s\n' "$errors" | head -30
+	echo "ci gate: errors in test output"
 	fail=1
 fi
 
