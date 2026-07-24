@@ -8,15 +8,9 @@ A ball whose speed breathes. Every few seconds it holds normal, then swings to d
 
 `StatShiftOutcome.apply()` builds a `StatShift` (`scripts/items/effect/outcomes/stat_shift.gd`): a small state machine cycling `NORMAL -> DOUBLE -> HALF -> NORMAL`, holding each mode for a random duration between `min_interval` and `max_interval`. `get_offset()` reads the mode's multiplier (0.5, 1.0, 2.0) and reports it as a delta from 1.0: `-0.5` at half, `0.0` at normal, `+1.0` at double. `EffectState.get_percentage_offset` sums this alongside ordinary percentage modifiers, so `ball_speed_scale` behaves exactly like any other percentage stat: it just happens to move on a timer instead of an item purchase.
 
-`BallEffectProcessor._apply_speed_offset()` is where the shift actually reaches the ball:
+`BallEffectProcessor` is where the shift actually reaches the ball. `ball.speed` stays the clamped, unshifted progression value, the same field every other ball's tier logic reads and writes. A second field, `effect_processor.scaled_speed`, carries the value the ball actually moves at: the clamped speed multiplied by `1.0` plus Cadence's percentage offset. `Ball` reads `scaled_speed`, not `speed`, wherever it sets its velocity.
 
-```gdscript
-var clamped_speed: float = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
-var speed_scale: float = 1.0 + item_manager.get_percentage_offset(&"ball_speed_scale", ball.item_key)
-ball.speed = clamped_speed * speed_scale
-```
-
-Tier progression clamps first, exactly as it does for every other ball. Cadence's multiply happens after, on the clamped result. A ball at its tier ceiling still completes the tier at the ceiling; Cadence just lets the felt speed run past that ceiling once the clamp has already done its job. Half a tier's floor speed still counts as the tier's floor for progression purposes; the player just experiences it slower.
+The split matters. An earlier version wrote the scaled value straight into `ball.speed`, and the routine that rebuilds the ball's base speed after every hit and tier-advance reads `ball.speed` back out to do it. A Cadence ball's own scale was feeding back into the value the next hit built on, so a run of hits under a steady double compounded the ball far past what two hits should add. Keeping `ball.speed` as the single unshifted source of truth, and `scaled_speed` as a pure read of it, closes that loop. Tier progression clamps first, exactly as it does for every other ball. Cadence's multiply happens after, on the clamped result, and never feeds back into it.
 
 ## Why the shift lives outside the clamp
 
