@@ -25,38 +25,44 @@ How each of today's nine exports resolves in the target state:
 | Export | Resolves by |
 | --- | --- |
 | `rack`, `gear_rack` | `&"racks"` group, distinguished by `role`; method calls become signals |
-| `rack_drop_target`, `gear_rack_drop_target` | the `RackDropTarget` self-registers; controller never sees the Area2D |
+| `rack_drop_target`, `gear_rack_drop_target` | the `RackDropTarget` self-registers; controller never sees it |
 | `reconciler` | `&"ball_trackers"` group (already populated) |
 | `timeout_controller` | new `&"timeout"` group |
 | `cursor_overlay` | new `&"cursor_overlay"` group |
-| `venue_bounds`, `court_bounds` | `Area2D` zones the drop targets own, replacing the `Rect2` numbers |
+| `venue_bounds`, `court_bounds` | each target's own `Area2D` shape, replacing the `Rect2` numbers |
 
-Each built-in drop target (`CourtDropTarget`, `VenueDropTarget`, `RackDropTarget`, `CharacterDropTarget`) becomes a scene node that calls `register_target(self)` on the controller in its own `_ready()`, and holds its dependencies as its own exports wired in its scene. `_register_builtin_targets()` and the controller's factory methods are deleted.
+Each built-in drop target (`CourtDropTarget`, `VenueDropTarget`, `RackDropTarget`, `CharacterDropTarget`) is an `Area2D` scene node that calls `register_target(self)` on the controller in its own `_ready()`, holds its remaining dependencies as its own exports, and reads its region from its own shape. `_register_builtin_targets()` and the controller's factory methods are deleted.
+
+The base `DropTarget` extends `Area2D`, so a target is its own drop region rather than a `Node` pointing at a separate one. This is why the four targets converge on a single shape and why no `court_area` or `drop_area` NodePath survives.
 
 ## Scene changes
 
-**`court.tscn`:** remove the `ItemDragController` node; add `CourtDropZone` (Area2D, `input_pickable = false`, RectangleShape2D 1600x720) as a child of Court.
+**`court.tscn`:** remove the `ItemDragController` node; the `CourtDropTarget` is itself an Area2D (`input_pickable = false`, RectangleShape2D 1600x720) sized where Court's players can see it.
 
-**`venue.tscn`:** add `ItemDragController` as a direct child of Venue; add `VenueDropZone` (Area2D, RectangleShape2D 2400x1440) as a child of Venue.
+**`venue.tscn`:** add `ItemDragController` as a direct child of Venue; the `VenueDropTarget` Area2D (RectangleShape2D 2400x1440) lives here as its own drop region.
 
 **`court.gd`:** replace the `drag_controller` export with a group lookup; keep the `set_character_drop_target()` wiring from `_ready()`, since that is a method call, not an export.
 
 ## What the refactor removes and keeps
 
-Removed: every `@export` on `ItemDragController`; the `configure()` public API; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and on the court and venue targets.
+Removed: every `@export` on `ItemDragController`; the `configure()` public API; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and on the court and venue targets; the `drop_area` and `court_area` NodePaths, since a target is now its own Area2D.
+
+Changed: `DropTarget` extends `Area2D` rather than `Node`, so every target owns its drop region.
 
 Kept: `register_target()` and `unregister_target()` as the controller's target-facing API; group-based discovery of the controller from its consumers. Tests wire targets through `register_target()` directly, a pure API with nothing to mock.
 
 ## Delivery: outcome-oriented PR sequence
 
-Four PRs carry this refactor, and each one closes a concern end to end rather than a layer of the stack. Production code, scenes, tests, and any consumer land together; the old surface for that concern is deleted in the same PR, so main never sits on a half-migrated seam.
+Five PRs carry this refactor, and each one closes a concern end to end rather than a layer of the stack. Production code, scenes, tests, and any consumer land together; the old surface for that concern is deleted in the same PR, so main never sits on a half-migrated seam.
 
-**PR 1: drop targets self-register.** The four drop targets become scene nodes that register themselves with the controller on `_ready()`; the factory methods are gone. Bounds and collaborator wiring stay on today's mechanism; this PR moves only *where* the targets live. Closes the "drop targets live as scene nodes, not runtime-constructed" criterion on its own.
+**PR 1: drop targets self-register.** The four drop targets become scene nodes that register themselves with the controller on `_ready()`; the factory methods are gone. Each target is still a `Node`, and Court and Venue carry their bounds as `Rect2` exports set in `court.tscn`. This PR moves only *where* the targets live. Closes the "drop targets live as scene nodes, not runtime-constructed" criterion on its own.
 
-**PR 2: Rect2 bounds become Area2D drop zones.** `court_bounds` and `venue_bounds` become `Area2D` nodes a designer can see and resize. `shop_item.gd`'s `venue_bounds` dependency is fixed here, since it reads the same zone.
+**PR 2: a drop target is its own Area2D.** `DropTarget` extends `Area2D` instead of `Node`, so every target owns its geometry directly rather than holding a NodePath to a separate area. This unifies the four targets on one shape and clears the base-class barrier that kept a target's script off an Area2D. `RackDropTarget`'s `drop_area` export and the shop target's constructed area collapse into the target node itself.
 
-**PR 3: collaborators resolve by group, the controller moves under Venue.** The remaining exports resolve through group lookups in `_ready()`, the controller becomes a child of Venue, and `configure()` is deleted once nothing calls it. `shop_item.gd`'s reconciler dependency is fixed here for the same reason.
+**PR 3: Rect2 bounds become editor zones.** With each target already an Area2D, `court_bounds` and `venue_bounds` stop being `Rect2` numbers and become the target's own `RectangleShape2D`, sized in the editor. `shop_item.gd`'s `venue_bounds` dependency is fixed here, since it reads the same shape.
 
-**PR 4: state-machine enum.** `IDLE` / `DRAGGING` / `PENDING_RELEASE` replace the scattered booleans that track gesture state by hand today.
+**PR 4: collaborators resolve by group, the controller moves under Venue.** The remaining exports resolve through group lookups in `_ready()`, the controller becomes a child of Venue, and `configure()` is deleted once nothing calls it. `shop_item.gd`'s reconciler dependency is fixed here for the same reason.
 
-PR 4 does not change the export count; that is already zero by the time it lands. It is folded into SH-542 as a deliberate scope choice: the exports and the gesture booleans live in the same file, under the same reviewer, and answer the same question of what state this class should stop carrying implicitly. Splitting the enum into its own ticket would mean touching `item_drag_controller.gd` a fifth time for a change that belongs with the other three. Read the PR 4 inclusion as intentional, not as scope creep.
+**PR 5: state-machine enum.** `IDLE` / `DRAGGING` / `PENDING_RELEASE` replace the scattered booleans that track gesture state by hand today.
+
+PR 5 does not change the export count; that is already zero by the time it lands. It is folded into SH-542 as a deliberate scope choice: the exports and the gesture booleans live in the same file, under the same reviewer, and answer the same question of what state this class should stop carrying implicitly. Splitting the enum into its own ticket would mean touching `item_drag_controller.gd` an extra time for a change that belongs with the rest. Read the PR 5 inclusion as intentional, not as scope creep.
