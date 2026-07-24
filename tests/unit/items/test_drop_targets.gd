@@ -77,7 +77,6 @@ func test_court_target_self_registers_with_controller_on_ready() -> void:
 
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	add_child_autofree(target)
-	# Self-registration runs on a deferred call so it lands after every sibling's _ready.
 	await get_tree().process_frame
 
 	assert_true(

@@ -14,8 +14,6 @@ var _paddle: Node
 
 
 func _ready() -> void:
-	# Deferred: the paddle spawns dynamically inside Court._ready, so a same-frame lookup
-	# can race the controller joining the group depending on instantiation order.
 	call_deferred(&"_register_with_controller")
 
 

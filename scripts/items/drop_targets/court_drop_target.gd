@@ -23,8 +23,6 @@ func _ready() -> void:
 		_court_bounds = court_bounds
 		_world = get_viewport().find_world_2d()
 
-	# Deferred: sibling _ready order is declaration order, so a same-frame group lookup can
-	# race the controller joining the group.
 	call_deferred(&"_register_with_controller")
 
 
@@ -34,7 +32,6 @@ func _register_with_controller() -> void:
 		ctrl.register_target(self)
 
 
-## Test seam / back-compat: direct construction still wires collaborators without scene exports.
 func configure(
 	item_manager: Node,
 	reconciler: BallReconciler,

@@ -78,8 +78,6 @@ func _ready() -> void:
 	if drag_controller != null:
 		var character_area: Area2D = player_paddle.get_node_or_null("CharacterDropTarget")
 		if character_area != null:
-			# Deferred: CharacterDropTarget registers itself with the controller on a deferred
-			# call too, so this waits for that registration to land first.
 			drag_controller.call_deferred(
 				&"set_character_drop_target", character_area, player_paddle
 			)

@@ -50,9 +50,6 @@ func before_each() -> void:
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	add_child_autofree(_drag)
 
-	# Targets normally self-register from their own `_ready()`; wired by hand here, out of the
-	# tree, so deferred self-registration on add-to-tree cannot double-fire. Rack before court
-	# before venue matches the production priority order.
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.configure(_manager, _drop_target, &"ball")
 	autofree(rack_target)

@@ -43,7 +43,6 @@ var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
 
 var _character_target: CharacterDropTargetScript = null
-## Self-registered targets stay parented in their own scene (Court, Rack, PlayerPaddle), not the controller.
 var _targets: Array[DropTarget] = []
 
 
@@ -145,8 +144,6 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-## Lets a target register itself (self-registering scene node, or a subsystem like Shop) without the
-## controller owning or reparenting it.
 func register_target(target: DropTarget) -> void:
 	if target == null:
 		return
@@ -641,7 +638,6 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	return true
 
 
-## Hands the self-registered CharacterDropTarget its runtime collaborators once the paddle spawns.
 func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
 	if _character_target == null:
 		return

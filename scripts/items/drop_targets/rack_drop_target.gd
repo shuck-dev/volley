@@ -17,8 +17,6 @@ func _ready() -> void:
 	_drop_area = drop_area
 	_role = role
 
-	# Deferred: sibling _ready order is declaration order, and this node can precede the
-	# controller, so a same-frame group lookup can race the controller joining the group.
 	call_deferred(&"_register_with_controller")
 
 
