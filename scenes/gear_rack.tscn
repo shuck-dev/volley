@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://mws700v36gko"]
 
 [ext_resource type="Script" path="res://scripts/items/rack_display.gd" id="1_rack"]
+[ext_resource type="Script" uid="uid://bmqkgc57u27r6" path="res://scripts/items/drop_targets/rack_drop_target.gd" id="2_rdt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gear_rack_drop"]
 size = Vector2(180, 120)
@@ -61,3 +62,8 @@ monitorable = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1742093713]
 shape = SubResource("RectangleShape2D_gear_rack_drop")
+
+[node name="RackDropTarget" type="Node" parent="." unique_id=1742093714 node_paths=PackedStringArray("drop_area")]
+script = ExtResource("2_rdt")
+drop_area = NodePath("../DropTarget")
+role = &"equipment"

@@ -21,6 +21,8 @@
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/item_drag_controller.gd" id="22_drag"]
 [ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
+[ext_resource type="Script" uid="uid://cbjvktojqsqqd" path="res://scripts/items/drop_targets/court_drop_target.gd" id="26_cdt"]
+[ext_resource type="Script" uid="uid://clyfa8heojc04" path="res://scripts/items/drop_targets/venue_drop_target.gd" id="27_vdt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vert"]
 size = Vector2(22, 1005.5)
@@ -210,3 +212,13 @@ timeout_controller = NodePath("../TimeoutController")
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
 court_bounds = Rect2(-800, -360, 1600, 720)
 reconciler = NodePath("../BallReconciler")
+
+[node name="CourtDropTarget" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("reconciler")]
+script = ExtResource("26_cdt")
+reconciler = NodePath("../BallReconciler")
+court_bounds = Rect2(-800, -360, 1600, 720)
+
+[node name="VenueDropTarget" type="Node" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+script = ExtResource("27_vdt")
+reconciler = NodePath("../BallReconciler")
+venue_bounds = Rect2(-1200, -720, 2400, 1440)

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bxyckxy4cf7r0"]
 
 [ext_resource type="Script" uid="uid://brl2uxlwp7fvg" path="res://scripts/items/rack_display.gd" id="1_rack"]
+[ext_resource type="Script" uid="uid://bmqkgc57u27r6" path="res://scripts/items/drop_targets/rack_drop_target.gd" id="2_rdt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ball_rack_drop"]
 size = Vector2(180, 120)
@@ -59,3 +60,8 @@ monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1349315970]
 shape = SubResource("RectangleShape2D_ball_rack_drop")
+
+[node name="RackDropTarget" type="Node" parent="." unique_id=1349315971 node_paths=PackedStringArray("drop_area")]
+script = ExtResource("2_rdt")
+drop_area = NodePath("../DropTarget")
+role = &"ball"

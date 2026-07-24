@@ -13,6 +13,16 @@ var _timeout_controller: TimeoutController
 var _paddle: Node
 
 
+func _ready() -> void:
+	call_deferred(&"_register_with_controller")
+
+
+func _register_with_controller() -> void:
+	var ctrl: Node = get_tree().get_first_node_in_group(&"drag_controller")
+	if ctrl != null:
+		ctrl.register_target(self)
+
+
 func configure(
 	item_manager: Node,
 	drop_area: Area2D,
