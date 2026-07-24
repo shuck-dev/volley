@@ -377,8 +377,7 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 	)
 
 
-# Regression: an on-hit effect item (cadence_ball's oscillation shape) must only mutate the
-# stats of the ball carrying it, not every ball sharing the effect pool.
+# Regression: an on-hit effect must only mutate its own ball, not every ball in the pool.
 func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
 	var plain_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
@@ -406,8 +405,7 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	)
 
 
-# Regression: two owned instances of the same ball type must not clobber each other's effect
-# registration; each carries its own on_hit modifier, keyed by its own instance key.
+# Regression: two owned instances of the same ball type must not clobber each other's effects.
 func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
 	var typed_items: Array[ItemDefinition] = [effect_item]

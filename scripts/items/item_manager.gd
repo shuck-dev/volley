@@ -114,8 +114,7 @@ func is_game_state_active(game_state: StringName) -> bool:
 	return _effect_manager.is_game_state_active(game_state)
 
 
-## Returns the StatShift instances registered under `instance_key` (e.g. a ball's
-## item_key), for callers that need to observe a specific instance's transitions.
+## Returns the StatShift instances registered under `instance_key` (e.g. a ball's item_key).
 func get_shifts(instance_key: String) -> Array[StatShift]:
 	return _effect_manager.get_shifts(instance_key)
 

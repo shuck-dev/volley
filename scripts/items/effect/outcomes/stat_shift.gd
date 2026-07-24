@@ -1,8 +1,7 @@
 class_name StatShift
 extends RefCounted
 
-## Discrete half/normal/double multiplier on a stat, holding each mode for a
-## random duration before shifting to the next.
+## Discrete half/normal/double multiplier on a stat, holding each mode for a random duration.
 
 signal shifted(mode: Mode)
 

@@ -92,8 +92,7 @@ func add_shift(shift: StatShift) -> void:
 		shift.set_range_value(get_base_stat(shift.range_stat_key))
 
 
-## Shifts registered under `source_key`, for callers that need to observe a specific
-## instance's transitions (e.g. a ball wiring a particle cue to its own shift).
+## Shifts registered under `source_key` (e.g. a ball wiring a cue to its own shift).
 func get_shifts(source_key: String) -> Array[StatShift]:
 	return _shifts.filter(func(shift: StatShift) -> bool: return shift.source_key == source_key)
 
