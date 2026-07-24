@@ -117,6 +117,20 @@ func test_register_base_values_refreshes_shift_range_value() -> void:
 	assert_almost_eq(shift._range_value, 200.0, 0.0001)
 
 
+func test_get_stat_with_instance_key_only_reflects_that_instances_shift() -> void:
+	var shift_a := _make_shift(&"speed", "ball_a", &"")
+	var shift_b := _make_shift(&"speed", "ball_b", &"")
+	shift_a.instanced = true
+	shift_b.instanced = true
+	shift_a._mode = StatShift.Mode.DOUBLE
+	shift_b._mode = StatShift.Mode.HALF
+	_state.add_shift(shift_a)
+	_state.add_shift(shift_b)
+
+	assert_eq(_state.get_stat(&"speed", "ball_a"), 101.0)
+	assert_eq(_state.get_stat(&"speed", "ball_b"), 99.5)
+
+
 func _make_shift(stat: StringName, source: String, range_key: StringName) -> StatShift:
 	var shift := StatShift.new()
 	shift.stat_key = stat
