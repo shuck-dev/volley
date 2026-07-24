@@ -6,6 +6,15 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const CourtDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/court_drop_target.gd"
+)
+const VenueDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/venue_drop_target.gd"
+)
+const RackDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/rack_drop_target.gd"
+)
 
 const VENUE_BOUNDS: Rect2 = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 
@@ -39,8 +48,25 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
-	_drag.venue_bounds = VENUE_BOUNDS
 	add_child_autofree(_drag)
+
+	# Targets normally self-register from their own `_ready()`; wired by hand here, out of the
+	# tree, so deferred self-registration on add-to-tree cannot double-fire. Rack before court
+	# before venue matches the production priority order.
+	var rack_target: RackDropTarget = RackDropTargetScript.new()
+	rack_target.configure(_manager, _drop_target, &"ball")
+	autofree(rack_target)
+	_drag.register_target(rack_target)
+
+	var court_target: CourtDropTarget = CourtDropTargetScript.new()
+	court_target.configure(_manager, _reconciler, _host.get_world_2d(), Rect2())
+	autofree(court_target)
+	_drag.register_target(court_target)
+
+	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
+	venue_target.configure(_manager, _reconciler, VENUE_BOUNDS)
+	autofree(venue_target)
+	_drag.register_target(venue_target)
 
 
 func after_each() -> void:

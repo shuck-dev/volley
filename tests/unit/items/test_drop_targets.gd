@@ -13,6 +13,7 @@ const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
 )
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 
 
 func after_each() -> void:
@@ -68,3 +69,18 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	target.configure(manager, reconciler, venue)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))
+
+
+func test_court_target_self_registers_with_controller_on_ready() -> void:
+	var drag: ItemDragController = ItemDragControllerScript.new()
+	add_child_autofree(drag)
+
+	var target: CourtDropTarget = CourtDropTargetScript.new()
+	add_child_autofree(target)
+	# Self-registration runs on a deferred call so it lands after every sibling's _ready.
+	await get_tree().process_frame
+
+	assert_true(
+		drag.get_registered_targets().has(target),
+		"CourtDropTarget should register itself with the drag_controller-group controller",
+	)

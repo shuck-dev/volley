@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://buqpbmh1c35bs" path="res://scripts/dev/ground_ray_overlay.gd" id="9_ray"]
 [ext_resource type="Script" uid="uid://4xd1ibgc7g5s" path="res://scripts/dev/animation_state_label.gd" id="10_label"]
 [ext_resource type="Script" uid="uid://bqb2k2jh41jwo" path="res://scripts/components/hover_bob.gd" id="11_lx3j3"]
+[ext_resource type="Script" uid="uid://dxoon5i51g8oe" path="res://scripts/items/drop_targets/character_drop_target.gd" id="12_cdt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ut3sq"]
 size = Vector2(90, 201.715)
@@ -69,6 +70,7 @@ visible = false
 collision_layer = 0
 collision_mask = 0
 input_pickable = false
+script = ExtResource("12_cdt")
 
 [node name="DropCollision" type="CollisionShape2D" parent="CharacterDropTarget" unique_id=2001000011]
 position = Vector2(-8, 22.5)

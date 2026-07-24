@@ -67,6 +67,8 @@ func _on_tree_exiting() -> void:
 		and _registered_controller.has_method("unregister_target")
 	):
 		_registered_controller.unregister_target(_registered_target)
+	# The controller no longer parents registered targets, so Shop owns freeing its own.
+	_registered_target.free()
 	_registered_target = null
 	_registered_controller = null
 
