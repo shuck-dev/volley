@@ -31,7 +31,7 @@ jobs:
       - name: Find changed assets
         id: changed
         run: |
-          git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- 'assets/**/*.png' > /tmp/changed.txt
+          git diff --name-only --diff-filter=d "origin/${{ github.base_ref }}...HEAD" -- 'assets/**/*.png' > /tmp/changed.txt
           echo "count=$(wc -l < /tmp/changed.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Pull LFS objects
