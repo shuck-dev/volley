@@ -301,7 +301,7 @@ Effect 3 (level 3)
   note: the single per-consolidation save covers either side, first to need it
 ```
 
-`ball_magnetism` is a registered stat and `BallEffectProcessor._apply_magnetism` already pulls each ball toward a paddle every frame; the level-1 delta is retargeting that pull to the player (today it picks the nearest paddle). Levels 2-3 add a once-per-consolidation rescue: an `on_would_miss` trigger, a per-cycle save counter reset on consolidation, and a semicircle return path. Level 3 lets the partner's near-miss consume the same single save.
+`ball_magnetism` and the per-frame pull toward a paddle are not implemented; level 1 needs both, targeting the player specifically. Levels 2-3 add a once-per-consolidation rescue: an `on_would_miss` trigger, a per-cycle save counter reset on consolidation, and a semicircle return path. Level 3 lets the partner's near-miss consume the same single save.
 
 ### Cadence (equipment): the whistle
 

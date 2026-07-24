@@ -81,7 +81,6 @@ Resolution order: add, then percentage, then multiply. Two `+50%` modifiers give
 | `ball_speed_max_range` | 300.0 | px/s (range above min) |
 | `ball_speed_increment` | 15.0 | px/s |
 | `soul_per_hit` | 1.0 | unit |
-| `ball_magnetism` | 0.0 | force |
 | `paddle_return_angle_max_degrees` | 0.0 | degrees |
 | `ball_speed_offset` | 0.0 | px/s |
 | `arena_height` | 986.0 | px |

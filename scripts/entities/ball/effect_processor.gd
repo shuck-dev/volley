@@ -26,8 +26,7 @@ func _ready() -> void:
 		item_manager = ItemManager
 
 
-func process_frame(delta: float) -> void:
-	_apply_magnetism(delta)
+func process_frame(_delta: float) -> void:
 	_sync_speed_limits()
 
 
@@ -82,39 +81,8 @@ func refresh_scaled_speed() -> void:
 
 
 func process_hit(struck_paddle: Paddle) -> void:
+	refresh_scaled_speed()
 	_apply_paddle_offset_return(struck_paddle)
-
-
-func _apply_magnetism(delta: float) -> void:
-	var magnetism: float = Stats.resolve(
-		GameRules.base.ball_magnetism, &"ball_magnetism", item_manager, ball.item_key
-	)
-
-	if magnetism <= 0.0 or paddles.is_empty():
-		return
-
-	var closest_paddle: Node2D = null
-	var closest_distance := INF
-	for paddle in paddles:
-		if not is_instance_valid(paddle):
-			continue
-		var distance: float = ball.global_position.distance_to(paddle.global_position)
-
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_paddle = paddle
-
-	if closest_paddle == null:
-		return
-
-	var pull_direction: Vector2 = (
-		(closest_paddle.global_position - ball.global_position).normalized()
-	)
-	var pull_strength: float = magnetism * delta
-	var new_direction: Vector2 = (
-		(ball.linear_velocity.normalized() + pull_direction * pull_strength).normalized()
-	)
-	ball.linear_velocity = new_direction * ball.speed
 
 
 # Where on the paddle the ball struck drives the return angle.
@@ -158,7 +126,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	var target_angle: float = _clamp_off_horizontal_and_vertical(blended_angle, incoming_y_sign)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
 
-	ball.linear_velocity = direction * ball.speed
+	ball.linear_velocity = direction * scaled_speed
 
 	if OS.is_debug_build():
 		bounce_resolved.emit(
