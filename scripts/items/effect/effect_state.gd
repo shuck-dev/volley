@@ -139,7 +139,7 @@ func _sum_modifiers(
 			continue
 		if exclude_temporary and modifier.temporary:
 			continue
-		if instance_key and modifier.source_key != instance_key:
+		if instance_key and modifier.instanced and modifier.source_key != instance_key:
 			continue
 		total += _resolve_value(modifier)
 	return total

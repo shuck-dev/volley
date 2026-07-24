@@ -7,12 +7,13 @@ extends Outcome
 @export var range_stat_key: StringName
 
 
-func apply(effect_state: EffectState, source_key: String, level: int) -> void:
+func apply(effect_state: EffectState, source_key: String, level: int, instanced: bool) -> void:
 	var modifier := StatModifier.new()
 	modifier.source_key = source_key
 	modifier.stat_key = stat_key
 	modifier.operation = StatModifier.OPERATION_BY_NAME[operation]
 	modifier.value = scaled_value(value, level)
+	modifier.instanced = instanced
 	if range_stat_key:
 		modifier.range_stat_key = range_stat_key
 	effect_state.add_modifier(modifier)

@@ -4,7 +4,7 @@ extends Resource
 @export var level_scaling := 1.0
 
 
-func apply(_effect_state: EffectState, _source_key: String, _level: int) -> void:
+func apply(_effect_state: EffectState, _source_key: String, _level: int, _instanced: bool) -> void:
 	assert(false, "Outcome.apply() must be overridden by subclass")
 
 

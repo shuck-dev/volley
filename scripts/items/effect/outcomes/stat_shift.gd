@@ -18,6 +18,7 @@ const MODE_ORDER: Array[Mode] = [Mode.NORMAL, Mode.DOUBLE, Mode.HALF]
 var source_key: String
 var stat_key: StringName
 var range_stat_key: StringName
+var instanced := false
 var min_interval: float
 var max_interval: float
 var _mode: Mode = Mode.NORMAL

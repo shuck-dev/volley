@@ -7,13 +7,14 @@ extends Outcome
 @export var max_interval: float = 5.0
 
 
-func apply(effect_state: EffectState, source_key: String, _level: int) -> void:
+func apply(effect_state: EffectState, source_key: String, _level: int, instanced: bool) -> void:
 	var shift := StatShift.new()
 	shift.source_key = source_key
 	shift.stat_key = stat_key
 	shift.range_stat_key = range_stat_key
 	shift.min_interval = min_interval
 	shift.max_interval = max_interval
+	shift.instanced = instanced
 	shift.start()
 	effect_state.add_shift(shift)
 

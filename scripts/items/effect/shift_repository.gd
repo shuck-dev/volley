@@ -24,7 +24,7 @@ func sum_for(key: StringName, instance_key: String = "") -> float:
 	for shift in _shifts:
 		if shift.stat_key != key:
 			continue
-		if instance_key and shift.source_key != instance_key:
+		if instance_key and shift.instanced and shift.source_key != instance_key:
 			continue
 		total += shift.get_offset()
 	return total

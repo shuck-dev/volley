@@ -49,7 +49,7 @@ func process_event(event_type: StringName, instance_key: String = "") -> Array[S
 		if instance_key and registered.instanced and registered.source_key != instance_key:
 			continue
 		_collect_game_actions(effect, game_actions)
-		_apply_effect(effect, registered.source_key, registered.level)
+		_apply_effect(effect, registered.source_key, registered.level, registered.instanced)
 
 	if event_type == &"on_miss":
 		_effect_state.clear_temporary_modifiers()
@@ -78,7 +78,7 @@ func register_source(
 	_clear_source(resolved_key)
 	for effect in source.get_effects_for_level(level):
 		if effect.trigger.type == &"always":
-			_apply_effect(effect, resolved_key, level)
+			_apply_effect(effect, resolved_key, level, instanced)
 		else:
 			assert(
 				not _has_temporary_outcome_on_miss(effect),
@@ -112,6 +112,6 @@ func _clear_source(source_key: String) -> void:
 	)
 
 
-func _apply_effect(effect: Effect, source_key: String, level: int) -> void:
+func _apply_effect(effect: Effect, source_key: String, level: int, instanced: bool) -> void:
 	for outcome in effect.outcomes:
-		outcome.apply(_effect_state, source_key, level)
+		outcome.apply(_effect_state, source_key, level, instanced)
