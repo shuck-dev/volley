@@ -4,7 +4,7 @@ extends Outcome
 @export var action_key: StringName
 
 
-func apply(_effect_state: EffectState, _source_key: String, _level: int) -> void:
+func apply(_effect_state: EffectState, _source_key: String, _level: int, _instanced: bool) -> void:
 	pass
 
 

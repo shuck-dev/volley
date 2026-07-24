@@ -31,14 +31,15 @@ jobs:
       - name: Find changed assets
         id: changed
         run: |
-          git diff --name-only "origin/${{ github.base_ref }}...HEAD" -- 'assets/**/*.png' > /tmp/changed.txt
+          git diff --name-only --diff-filter=d "origin/${{ github.base_ref }}...HEAD" -- 'assets/**/*.png' > /tmp/changed.txt
           echo "count=$(wc -l < /tmp/changed.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Pull LFS objects
         if: steps.changed.outputs.count != '0'
         run: |
           git config lfs.url "https://volley:${{ secrets.LFS_UPLOAD_KEY }}@volley-lfs-proxy.volcanoem.workers.dev"
-          git lfs pull --include="assets/**"
+          include=$(paste -sd, /tmp/changed.txt)
+          git lfs pull --include="${include}"
 
       - name: Generate and upload previews
         if: steps.changed.outputs.count != '0'

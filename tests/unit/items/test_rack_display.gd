@@ -14,7 +14,7 @@ func after_each() -> void:
 func _stub_art() -> PackedScene:
 	var scene := PackedScene.new()
 	# PackedScene.pack snapshots the node but does not take ownership; freeing avoids a CanvasItem RID leak at exit.
-	var template := Node2D.new()
+	var template := ItemArt.new()
 	scene.pack(template)
 	template.free()
 	return scene

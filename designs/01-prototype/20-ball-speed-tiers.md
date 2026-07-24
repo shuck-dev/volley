@@ -69,17 +69,11 @@ Completing a non-top tier hands off to the next band. The top tier has nothing a
 
 `Ball` gains `current_tier: int` and `tier_floor` / `tier_ceiling` derived from `current_tier` against a `SpeedTierTable` resource. Each tier entry in the table carries `{ floor, ceiling, max_range, reward }`, where `max_range` is the per-tier promotion of the flat `ball_speed_max_range` stat from design/21-ball-dynamics.md. Tier 0's `max_range` holds the existing flat value from design/21-ball-dynamics.md's base-stats tuning surface, so that surface keeps its meaning and lives on the Tier 0 entry. `increase_speed` clamps against `tier_ceiling` instead of `max_speed`. Crossing `tier_ceiling` triggers `_advance_tier` which emits `tier_advanced(new_tier)` and `on_tier_completed` through `ItemManager.process_event`.
 
-`speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `at_max_speed_changed` is repurposed to fire only on final consolidation entry/exit. The Cadence "ceiling outcome" (which currently latches on `on_max_speed_reached`) is out of scope here: Cadence's interaction with the tier model lives in its own tickets (SH-449 names the lifted cap and on-whistle consolidate as L2/L3; SH-59 the L3 burst). This work only retires the dead `on_max_speed_reached` trigger.
+`speed_changed` grows to carry tier floor and ceiling instead of global min and max, so the speed bar can render the current band. `on_max_speed_reached` is retired; see `tech/cadence.md` for what replaced it.
 
 ## Items under the tier model
 
 The four items that currently shape ball speed keep their fantasy. Each stops trying to slide a single linear ceiling and starts interacting with the tier stack.
-
-### Cadence
-
-Current: oscillates `ball_speed_offset` within `ball_speed_max_range`; on `on_max_speed_reached` raises `ball_speed_max_range`.
-
-Out of scope here. The oscillation feel effect is untouched. Cadence's tier interaction (its lifted cap and on-whistle consolidate) lands in SH-449 and SH-59, which own the item end to end. This work only retires the dead `on_max_speed_reached` trigger; whether Cadence retargets to `on_tier_completed` is that ticket's call.
 
 ### Court Lines
 

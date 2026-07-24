@@ -61,6 +61,26 @@ func _spawn_ball(item_key: String) -> Ball:
 	return _reconciler.get_ball_for_key(item_key)
 
 
+## Ball item carrying an on_hit effect that bumps ball_speed_offset, mirroring cadence_ball's shape.
+func _make_on_hit_ball_item(key: String) -> ItemDefinition:
+	var outcome := StatUntilMissOutcome.new()
+	outcome.stat_key = &"ball_speed_offset"
+	outcome.operation = &"add"
+	outcome.value = 100.0
+
+	var trigger := Trigger.new()
+	trigger.type = &"on_hit"
+
+	var effect := Effect.new()
+	effect.trigger = trigger
+	effect.outcomes = [outcome]
+	effect.min_active_level = 1
+
+	var item: ItemDefinition = ItemTestHelpersScript.make_ball_item(key)
+	item.effects = [effect]
+	return item
+
+
 func test_each_ball_owns_its_own_speed_state() -> void:
 	var first: Ball = _spawn_ball("ball_alpha")
 	var second: Ball = _spawn_ball("ball_beta")
@@ -354,4 +374,60 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 		2.0,
 		0.001,
 		"a tier advance on a tracked but non-current ball must still bank soul",
+	)
+
+
+# Regression: an on-hit effect must only mutate its own ball, not every ball in the pool.
+func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
+	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
+	var plain_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
+	var typed_items: Array[ItemDefinition] = [effect_item, plain_item]
+	_manager.items.assign(typed_items)
+
+	var hit_ball: Ball = _spawn_ball("ball_cadence")
+	var other_ball: Ball = _spawn_ball("ball_plain")
+
+	var other_offset_before: float = _manager.get_modifier(
+		&"ball_speed_offset", other_ball.item_key
+	)
+
+	hit_ball._on_body_entered(_paddle)
+
+	assert_gt(
+		_manager.get_modifier(&"ball_speed_offset", hit_ball.item_key),
+		0.0,
+		"the hit ball's own on_hit effect should apply its stat modifier",
+	)
+	assert_eq(
+		_manager.get_modifier(&"ball_speed_offset", other_ball.item_key),
+		other_offset_before,
+		"a second ball must not receive the first ball's on_hit stat modifier",
+	)
+
+
+# Regression: two owned instances of the same ball type must not clobber each other's effects.
+func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
+	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
+	var typed_items: Array[ItemDefinition] = [effect_item]
+	_manager.items.assign(typed_items)
+
+	var first: Ball = _spawn_ball("ball_cadence")
+	var second_key: String = _manager.generate_instance_key("ball_cadence")
+	_manager.take("ball_cadence")
+	_manager.activate(second_key)
+	var second: Ball = _reconciler.get_ball_for_key(second_key)
+
+	assert_ne(first.item_key, second.item_key, "precondition: distinct instance keys")
+
+	first._on_body_entered(_paddle)
+
+	assert_gt(
+		_manager.get_modifier(&"ball_speed_offset", first.item_key),
+		0.0,
+		"the struck instance's own effect should register under its own instance key",
+	)
+	assert_eq(
+		_manager.get_modifier(&"ball_speed_offset", second.item_key),
+		0.0,
+		"the sibling instance of the same ball type must keep its own, unaffected registration",
 	)

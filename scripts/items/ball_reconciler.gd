@@ -12,7 +12,6 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 signal ball_missed(ball: Ball)
 
-signal ball_final_consolidation_changed(in_final: bool)
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 
 signal current_ball_changed(ball: Ball)
@@ -254,11 +253,11 @@ func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	add_child(ball)
+	ball.configure(_item_manager)
 	ball.item_key = item_key
+	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
-	_apply_item_art(ball, item_key)
 
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
@@ -271,12 +270,12 @@ func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: V
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	add_child(ball)
+	ball.configure(_item_manager)
 	ball.item_key = item_key
+	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = bound_y
-	_apply_item_art(ball, item_key)
 	_balls_by_key[item_key] = ball
 	ball_spawned.emit(item_key, ball)
 	_register_ball(ball)
@@ -382,25 +381,6 @@ func _spawn_position_for(item_key: String) -> Vector2:
 	return _default_spawn_position()
 
 
-## Replaces a ball's sprite with its item art.
-func _apply_item_art(ball: Ball, item_key: String) -> void:
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	if definition == null or definition.art == null:
-		return
-	var holder: Node2D = ball.get_node_or_null("ItemArtHolder") as Node2D
-	if holder == null:
-		push_warning("BallReconciler: ball.tscn missing ItemArtHolder slot; skipping art swap")
-		return
-	for child in holder.get_children():
-		holder.remove_child(child)
-		child.queue_free()
-	holder.scale = definition.token_scale
-	holder.add_child(definition.art.instantiate())
-	var default_sprite: Node = ball.get_node_or_null("Sprite")
-	if default_sprite != null:
-		default_sprite.visible = false
-
-
 func _get_item_definition(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in _item_manager.items:
 		if item.key == item_key or BallKey.is_instance(item.key, item_key):
@@ -418,9 +398,6 @@ func _detach(old_ball: Ball) -> void:
 	if is_instance_valid(old_ball):
 		if old_ball.missed.is_connected(_on_ball_missed):
 			old_ball.missed.disconnect(_on_ball_missed)
-
-		if old_ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
-			old_ball.at_max_speed_changed.disconnect(_on_ball_final_consolidation_changed)
 
 		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
@@ -450,9 +427,6 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.missed.is_connected(_on_ball_missed):
 		ball.missed.connect(_on_ball_missed)
 
-	if not ball.at_max_speed_changed.is_connected(_on_ball_final_consolidation_changed):
-		ball.at_max_speed_changed.connect(_on_ball_final_consolidation_changed)
-
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
@@ -469,10 +443,6 @@ func _register_ball(ball: Ball) -> void:
 
 func _on_ball_missed(ball: Ball) -> void:
 	ball_missed.emit(ball)
-
-
-func _on_ball_final_consolidation_changed(in_final: bool) -> void:
-	ball_final_consolidation_changed.emit(in_final)
 
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:

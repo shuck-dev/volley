@@ -9,7 +9,7 @@ extends Outcome
 @export var max_value: float = 0.0
 
 
-func apply(effect_state: EffectState, source_key: String, level: int) -> void:
+func apply(effect_state: EffectState, source_key: String, level: int, instanced: bool) -> void:
 	var add_amount: float = scaled_value(value, level)
 
 	var cap: float = scaled_value(max_value, level) if max_value > 0.0 else 0.0
@@ -26,6 +26,7 @@ func apply(effect_state: EffectState, source_key: String, level: int) -> void:
 	modifier.operation = StatModifier.OPERATION_BY_NAME[operation]
 	modifier.value = add_amount
 	modifier.temporary = true
+	modifier.instanced = instanced
 	if range_stat_key:
 		modifier.range_stat_key = range_stat_key
 	effect_state.add_modifier(modifier)

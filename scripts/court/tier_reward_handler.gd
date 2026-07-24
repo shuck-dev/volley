@@ -8,8 +8,6 @@ signal consolidation_fired
 
 var _item_manager: ItemManager
 
-# Per-ball flag guarding the once-per-rally final-consolidation reward.
-var _final_banked_by_ball: Dictionary = {}
 var _tiers_reached_first_time_by_ball: Dictionary = {}
 
 
@@ -23,37 +21,21 @@ func bind(item_manager: Node) -> void:
 
 func reset_rally(ball: Ball = null) -> void:
 	if ball == null:
-		_final_banked_by_ball.clear()
 		_tiers_reached_first_time_by_ball.clear()
 	else:
-		_final_banked_by_ball.erase(ball)
 		_tiers_reached_first_time_by_ball.erase(ball)
 
 
-## Prunes a removed ball's entries so the dicts don't grow unbounded.
+## Prunes a removed ball's entries so the dict doesn't grow unbounded.
 func on_ball_removed(ball: Ball) -> void:
-	_final_banked_by_ball.erase(ball)
 	_tiers_reached_first_time_by_ball.erase(ball)
 
 
 ## Pays the consolidation reward for whichever ball crossed a tier; driven by BallReconciler.ball_tier_advanced.
 func on_tier_advanced(ball: Ball, new_tier: int) -> void:
-	var is_entering_final: bool = ball != null and ball.in_final
-	var completed_tier: int = new_tier - 1 if not is_entering_final else new_tier
+	var completed_tier: int = new_tier - 1
 
 	_handle_first_reach(ball, completed_tier)
-
-	var is_top_tier: bool = (
-		GameRules.speed_tiers.is_top_tier(GameRules.speed_tiers.get_tier(new_tier))
-		and ball != null
-		and ball.in_final
-	)
-
-	if is_top_tier and _final_banked_by_ball.get(ball, false):
-		return
-
-	if is_top_tier:
-		_final_banked_by_ball[ball] = true
 
 	if ball != null:
 		ball.increment_soul_multiplier(1.0)

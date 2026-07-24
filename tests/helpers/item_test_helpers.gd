@@ -8,7 +8,7 @@ const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd
 
 static func stub_art() -> PackedScene:
 	var scene := PackedScene.new()
-	var template := Node2D.new()
+	var template := ItemArt.new()
 	scene.pack(template)
 	template.free()
 	return scene

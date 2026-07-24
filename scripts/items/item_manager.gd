@@ -13,6 +13,7 @@ signal item_manager_state_changed
 var items: Array[ItemDefinition] = [
 	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
+	preload("res://resources/items/cadence_ball.tres"),
 ]
 
 var state: ItemState
@@ -43,7 +44,7 @@ func reload_from_progression() -> void:
 		return
 
 	for item in items:
-		_effect_manager.unregister_source(item)
+		_effect_manager.unregister_source(item, item.key)
 
 	for partner in ProgressionManager.partners_roster:
 		_effect_manager.unregister_source(partner)
@@ -65,50 +66,41 @@ func unregister_partner(partner: Resource) -> void:
 	_effect_manager.unregister_source(partner)
 
 
-## Dispatches a game event to the effect system for causality processing
-func process_event(event_type: StringName) -> Array[StringName]:
-	return _effect_manager.process_event(event_type)
-
-
-## Advances continuous effects like oscillation
-func process_frame(delta: float) -> void:
-	_effect_manager.process_frame(delta)
-
-
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
 func get_default_ball_launch_velocity() -> Vector2:
 	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min")
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
-## Returns the resolved stat value (base + additive modifiers + percentage offset) for a stat key.
-func get_stat(key: StringName) -> float:
-	return _effect_manager.get_stat(key)
+## The effect system's public query/registration API; see designs/effect-system/README.md.
+func get_effect_manager() -> EffectManager:
+	return _effect_manager
 
 
-## Registers an effect source with the effect system at the given level.
-func register_source(source: Resource, level: int) -> void:
-	_effect_manager.register_source(source, level)
+## Duck-typed seam for `Stats.resolve`; kept on ItemManager since callers hold this as the
+## injected `item_manager` reference, not an EffectManager reference.
+func get_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_modifier(key, instance_key)
 
 
-## Returns the summed additive modifiers (including oscillations) for a stat key.
-func get_modifier(key: StringName) -> float:
-	return _effect_manager.get_modifier(key)
+## Duck-typed seam for `Stats.resolve`; see `get_modifier`.
+func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_percentage_offset(key, instance_key)
 
 
 ## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
-func get_permanent_modifier(key: StringName) -> float:
-	return _effect_manager.get_permanent_modifier(key)
+func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_permanent_modifier(key, instance_key)
 
 
-## Returns the summed percentage offset for a stat (e.g. 0.8 means +80%)
-func get_percentage_offset(key: StringName) -> float:
-	return _effect_manager.get_percentage_offset(key)
+## Dispatches a game event to the effect system for causality processing
+func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
+	return _effect_manager.process_event(event_type, instance_key)
 
 
-## Returns whether a named game state is currently active
-func is_game_state_active(game_state: StringName) -> bool:
-	return _effect_manager.is_game_state_active(game_state)
+## Advances continuous effects like oscillation
+func process_frame(delta: float) -> void:
+	_effect_manager.process_frame(delta)
 
 
 ## Returns current level of an item (0 if not owned)
@@ -194,7 +186,7 @@ func release_rack_slot(item_key: String) -> void:
 
 ## Re-assigns the lowest free rack slot when a held item returns to the rack.
 func reassign_rack_slot(item_key: String) -> void:
-	_assign_rack_slot(item_key, _get_item(item_key).role)
+	_assign_rack_slot(item_key, get_item(item_key).role)
 
 
 ## Picks the lowest free slot index among STORED items of the same role and records it.
@@ -238,7 +230,7 @@ func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
 
-	_set_item_placement(item_key, _natural_target(_get_item(item_key)))
+	_set_item_placement(item_key, _natural_target(get_item(item_key)))
 
 	return true
 
@@ -255,7 +247,7 @@ func deactivate(item_key: String) -> bool:
 
 ## Equipment-role placement; returns false silently on role mismatch so callers can fall through.
 func equip(item_key: String) -> bool:
-	var item: ItemDefinition = _get_item(item_key)
+	var item: ItemDefinition = get_item(item_key)
 	if item.role != &"equipment":
 		return false
 
@@ -268,7 +260,7 @@ func unequip(item_key: String) -> bool:
 
 
 func calculate_for_purchase(item_key: String) -> int:
-	var item := _get_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return int(item.base_cost * pow(2.0, get_owned_count(item.key)))
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
@@ -276,13 +268,13 @@ func calculate_for_purchase(item_key: String) -> int:
 
 ## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
-	var item := _get_item(item_key)
+	var item := get_item(item_key)
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
 
 
 ## Returns true if the item is affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
-	var item := _get_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return economy.soul_balance >= calculate_for_purchase(item_key)
 	return get_level(item_key) == 0 and economy.soul_balance >= calculate_cost(item_key)
@@ -290,7 +282,7 @@ func can_acquire(item_key: String) -> bool:
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
-	var item := _get_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return (
 			economy.soul_balance >= calculate_for_purchase(item_key)
@@ -344,7 +336,7 @@ func remove_level(item_key: String) -> void:
 
 	var current_level := get_level(item_key)
 	if current_level > 0:
-		var item := _get_item(item_key)
+		var item := get_item(item_key)
 		var new_level: int = current_level - 1
 		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
@@ -365,7 +357,7 @@ func _register_existing_items() -> void:
 		if item == null:
 			continue
 		if _is_placed(key):
-			_effect_manager.register_source(item, state.item_levels[key])
+			_effect_manager.register_source(item, state.item_levels[key], key, _is_instanced(item))
 		elif not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key, item.role)
 
@@ -449,7 +441,7 @@ func _set_level(item_key: String, level: int) -> void:
 
 func _set_item_placement(item_key: String, placement: int) -> void:
 	var previous: int = state.item_placements.get(item_key, Placement.STORED)
-	var item := _get_item(item_key)
+	var item := get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
 
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
@@ -457,13 +449,13 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 	if placement == Placement.STORED:
 		state.item_placements.erase(item_key)
 		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item)
+		_effect_manager.unregister_source(item, item_key)
 		_assign_rack_slot(item_key, item.role)
 	else:
 		state.item_placements[item_key] = placement
 		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item)
-		_effect_manager.register_source(item, get_level(item_key))
+		_effect_manager.unregister_source(item, item_key)
+		_effect_manager.register_source(item, get_level(item_key), item_key, _is_instanced(item))
 		state.rack_slot_index_by_key.erase(item_key)
 
 	item_manager_state_changed.emit()
@@ -480,11 +472,11 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 
 
 func _refresh_registration(item_key: String) -> void:
-	var item := _get_item(item_key)
-	_effect_manager.unregister_source(item)
+	var item := get_item(item_key)
+	_effect_manager.unregister_source(item, item_key)
 	var level := get_level(item_key)
 	if level > 0:
-		_effect_manager.register_source(item, level)
+		_effect_manager.register_source(item, level, item_key, _is_instanced(item))
 
 
 func _is_placed(item_key: String) -> bool:
@@ -493,6 +485,11 @@ func _is_placed(item_key: String) -> bool:
 
 func _natural_target(item: ItemDefinition) -> int:
 	return Placement.ON_COURT if item.role == &"ball" else Placement.EQUIPPED
+
+
+## Ball-role items get instance-scoped effect registration; equipment stays global.
+func _is_instanced(item: ItemDefinition) -> bool:
+	return item.role == &"ball"
 
 
 func _base_key(item_key: String) -> String:
@@ -537,5 +534,12 @@ func _get_item(item_key: String) -> ItemDefinition:
 	for item: ItemDefinition in items:
 		if item.key == base_key:
 			return item
-	assert(false, "Unknown item key: %s" % item_key)
+	push_warning("ItemManager: unknown item key: %s" % item_key)
 	return null
+
+
+## Same as `_get_item`, but asserts non-null; a miss here is a real bug, not an unowned item.
+func get_item(item_key: String) -> ItemDefinition:
+	var item := _get_item(item_key)
+	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
+	return item

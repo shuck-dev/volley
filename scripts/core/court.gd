@@ -3,7 +3,6 @@ extends Node2D
 
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
-signal ball_final_consolidation_changed(in_final: bool)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, soul_rate: float)
 signal partner_changed
@@ -97,7 +96,6 @@ func _ready() -> void:
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)
-	ball_system.ball_final_consolidation_changed.connect(_on_ball_final_consolidation_changed)
 	ball_system.ball_tier_advanced.connect(_on_ball_tier_advanced)
 	ball_system.ball_removed.connect(_tier_reward_handler.on_ball_removed)
 	ball_system.register_miss_zone_globally()
@@ -158,19 +156,12 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(new_tier)
 
 
-# Final-consolidation entry still fires the legacy max-speed event Cadence latches on.
-func _on_ball_final_consolidation_changed(in_final: bool) -> void:
-	ball_final_consolidation_changed.emit(in_final)
-	if in_final:
-		_item_manager.process_event(&"on_max_speed_reached")
-
-
 func _on_ball_missed(missed_ball: Ball) -> void:
 	_tier_reward_handler.reset_rally(missed_ball)
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	var actions: Array[StringName] = _item_manager.process_event(&"on_miss")
+	var actions: Array[StringName] = _item_manager.process_event(&"on_miss", missed_ball.item_key)
 	var should_halve: bool = actions.has(&"halve_streak")
 
 	if should_halve:

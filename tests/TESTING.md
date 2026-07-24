@@ -137,7 +137,7 @@ This is the GUT-native answer to fragmented input-table suites; collapse those r
 
 ### A green GUT run is the authority for "does it compile", not `--check-only`
 
-`godot --headless --check-only --script <file>` reports "Compilation failed" on any script that references an autoload singleton (`ItemManager`, `GameRules`, `Stats`) or a global `class_name`, because the isolated check loads no autoloads. The script is fine; this is an open engine bug ([godotengine/godot#111515](https://github.com/godotengine/godot/issues/111515), `--debug` even crashes on it). Validate in project context instead: a GUT run loads every script with autoloads up, and the godotiq `validate`/`check_errors` tools do too. When an isolated check disagrees with a green suite, trust the suite.
+`godot --headless --check-only --script <file>` reports "Compilation failed" on any script that references an autoload singleton (`ItemManager`, `GameRules`, `Stats`) or a global `class_name`, because the isolated check loads no autoloads. The script is fine; this is an open engine bug ([godotengine/godot#111515](https://github.com/godotengine/godot/issues/111515), `--debug` even crashes on it). Validate in project context instead: a GUT run loads every script with autoloads up. When an isolated check disagrees with a green suite, trust the suite.
 
 ## Real-input rule for player-facing acceptance criteria
 

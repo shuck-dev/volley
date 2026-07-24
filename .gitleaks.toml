@@ -1,9 +1,2 @@
 [extend]
 useDefault = true
-
-[[rules]]
-id = "godotiq-bridge-token"
-description = "GodotIQ bridge auth token (local Godot editor bridge secret)"
-path = '''(^|/)\.godotiq/bridge_token$'''
-regex = '''[0-9a-fA-F]{32,}'''
-keywords = []

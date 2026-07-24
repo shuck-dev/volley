@@ -21,7 +21,6 @@ Settings="*res://scripts/core/settings.gd"
 SaveManager="*res://scripts/progression/save_manager.gd"
 ItemManager="*res://scripts/items/item_manager.gd"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
-GodotIQRuntime="*uid://5f55jejx8ekg"
 
 [debug]
 
@@ -35,7 +34,7 @@ window/stretch/mode="canvas_items"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godotiq/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg")
 
 [gdscript]
 
