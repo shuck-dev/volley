@@ -126,7 +126,7 @@ func _physics_process(delta: float) -> void:
 
 	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
-		linear_velocity = linear_velocity.normalized() * speed
+		linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
 
 
 # NORMAL <-> ARC crossing, read off the body's current Y vs the soul bound.
@@ -312,7 +312,8 @@ func _tier_fraction(field: String) -> float:
 
 func _apply_speed() -> void:
 	effect_processor.sync_base_speed()
-	linear_velocity = linear_velocity.normalized() * speed
+	effect_processor.refresh_scaled_speed()
+	linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
 	if play_state == PlayState.PLAY_ARC:
 		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)

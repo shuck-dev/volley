@@ -14,6 +14,9 @@ var ball: Ball
 var paddles: Array[Node2D] = []
 var item_manager: ItemManager
 
+## Speed after the tier clamp and any uncapped scale.
+var scaled_speed := 0.0
+
 var _base_speed := 0.0
 var _applied_offset := 0.0
 
@@ -67,14 +70,15 @@ func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
 		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager, ball.item_key
 	)
-	var clamped_speed: float = clampf(
-		_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling
-	)
-	# Uncapped by tier bounds: a Cadence-style shift feels its full swing after progression clamps.
+	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
+	refresh_scaled_speed()
+
+
+func refresh_scaled_speed() -> void:
 	var speed_scale: float = (
 		1.0 + item_manager.get_percentage_offset(&"ball_speed_scale", ball.item_key)
 	)
-	ball.speed = clamped_speed * speed_scale
+	scaled_speed = ball.speed * speed_scale
 
 
 func process_hit(struck_paddle: Paddle) -> void:
@@ -113,7 +117,7 @@ func _apply_magnetism(delta: float) -> void:
 	ball.linear_velocity = new_direction * ball.speed
 
 
-# Where on the paddle the ball struck drives the return angle; centre returns flat, edges steepen.
+# Where on the paddle the ball struck drives the return angle.
 func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	if struck_paddle == null:
 		return
@@ -123,8 +127,6 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	if incoming_x_sign == 0.0:
 		return
 
-	# The ball passes through the paddle (no physics restitution), so the return reverses the
-	# horizontal direction in code: a ball arriving rightward leaves leftward.
 	var horizontal_sign: float = -incoming_x_sign
 
 	var max_degrees: float = (
@@ -138,22 +140,24 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 
 	var half_height: float = struck_paddle.get_half_height()
 
-	# Offset angle only shapes the return when a max-angle and a valid half-height exist; the
-	# reversal above always happens so the ball returns even at a zero return-angle.
+	# Offset angle only shapes the return when a max-angle and a valid half-height exist
 	var offset_norm: float = 0.0
 	if max_degrees > 0.0 and half_height > 0.0:
 		offset_norm = clampf(
 			(ball.global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
 		)
+
 	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
 	var english_coefficient: float = Stats.resolve(
 		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", item_manager
 	)
+
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
 	var incoming_y_sign: float = signf(ball.linear_velocity.y)
 	var blended_angle: float = _blend_english_into_offset(offset_angle, english_angle)
 	var target_angle: float = _clamp_off_horizontal_and_vertical(blended_angle, incoming_y_sign)
 	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
+
 	ball.linear_velocity = direction * ball.speed
 
 	if OS.is_debug_build():
