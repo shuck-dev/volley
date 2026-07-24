@@ -5,7 +5,7 @@ var _base_values: Dictionary[StringName, float] = {}
 var _add_modifiers: Array[StatModifier] = []
 var _percentage_modifiers: Array[StatModifier] = []
 var _active_states: Dictionary[StringName, String] = {}
-var _shifts: Array[StatShift] = []
+var _shifts: ShiftRepository = ShiftRepository.new()
 var _resolving_keys: Array[StringName] = []
 
 
@@ -13,7 +13,7 @@ func get_stat(key: StringName, instance_key: String = "") -> float:
 	assert(_base_values.has(key), "EffectState: unregistered stat key: " + key)
 
 	var result: float = _base_values[key]
-	result += _sum_shifts(key, instance_key)
+	result += _shifts.sum_for(key, instance_key)
 	result += _sum_modifiers(key, _add_modifiers, false, instance_key)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, false, instance_key)
 	return result
@@ -28,7 +28,7 @@ func get_base_stat(key: StringName, instance_key: String = "") -> float:
 	_resolving_keys.append(key)
 
 	var result: float = _base_values[key]
-	result += _sum_shifts(key, instance_key)
+	result += _shifts.sum_for(key, instance_key)
 	result += _sum_modifiers(key, _add_modifiers, true, instance_key)
 	result *= 1.0 + _sum_modifiers(key, _percentage_modifiers, true, instance_key)
 	_resolving_keys.erase(key)
@@ -41,24 +41,29 @@ func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
 
 ## Sum of additive modifiers and shifted multipliers for a stat key, range-resolved.
 func get_modifier(key: StringName, instance_key: String = "") -> float:
-	return _sum_shifts(key, instance_key) + _sum_modifiers(key, _add_modifiers, false, instance_key)
+	return (
+		_shifts.sum_for(key, instance_key)
+		+ _sum_modifiers(key, _add_modifiers, false, instance_key)
+	)
 
 
 ## Same as `get_modifier` but excludes temporary (until-miss) modifiers.
 func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
-	return _sum_shifts(key, instance_key) + _sum_modifiers(key, _add_modifiers, true, instance_key)
+	return (
+		_shifts.sum_for(key, instance_key) + _sum_modifiers(key, _add_modifiers, true, instance_key)
+	)
 
 
 func add_modifier(modifier: StatModifier) -> void:
 	_array_for_operation(modifier.operation).append(modifier)
-	_refresh_shift_range_values()
+	_shifts.refresh_range_values(get_base_stat)
 
 
 func remove_modifiers_by_source(source_key: String) -> void:
 	_add_modifiers = _add_modifiers.filter(_exclude_source.bind(source_key))
 	_percentage_modifiers = _percentage_modifiers.filter(_exclude_source.bind(source_key))
-	_shifts = _shifts.filter(func(shift: StatShift) -> bool: return shift.source_key != source_key)
-	_refresh_shift_range_values()
+	_shifts.remove_by_source(source_key)
+	_shifts.refresh_range_values(get_base_stat)
 
 
 func get_temporary_total(stat_key: StringName, source_key: String) -> float:
@@ -77,29 +82,28 @@ func clear_temporary_modifiers() -> void:
 	var keep_permanent := func(modifier: StatModifier) -> bool: return not modifier.temporary
 	_add_modifiers = _add_modifiers.filter(keep_permanent)
 	_percentage_modifiers = _percentage_modifiers.filter(keep_permanent)
-	_refresh_shift_range_values()
+	_shifts.refresh_range_values(get_base_stat)
 
 
 func register_base_values(values: Dictionary) -> void:
 	for key in values:
 		_base_values[key] = values[key]
-	_refresh_shift_range_values()
+	_shifts.refresh_range_values(get_base_stat)
 
 
 func add_shift(shift: StatShift) -> void:
-	_shifts.append(shift)
+	_shifts.add(shift)
 	if shift.range_stat_key:
 		shift.set_range_value(get_base_stat(shift.range_stat_key))
 
 
 ## Shifts registered under `source_key` (e.g. a ball wiring a cue to its own shift).
 func get_shifts(source_key: String) -> Array[StatShift]:
-	return _shifts.filter(func(shift: StatShift) -> bool: return shift.source_key == source_key)
+	return _shifts.for_source(source_key)
 
 
 func process_frame(delta: float) -> void:
-	for shift in _shifts:
-		shift.advance(delta)
+	_shifts.process_frame(delta)
 
 
 func set_state(state: StringName, source_key: String) -> void:
@@ -121,23 +125,6 @@ func _array_for_operation(operation: StatModifier.Operation) -> Array[StatModifi
 		StatModifier.Operation.PERCENTAGE:
 			return _percentage_modifiers
 	return _add_modifiers
-
-
-func _sum_shifts(key: StringName, instance_key: String = "") -> float:
-	var total := 0.0
-	for shift in _shifts:
-		if shift.stat_key != key:
-			continue
-		if instance_key and shift.source_key != instance_key:
-			continue
-		total += shift.get_offset()
-	return total
-
-
-func _refresh_shift_range_values() -> void:
-	for shift in _shifts:
-		if shift.range_stat_key:
-			shift.set_range_value(get_base_stat(shift.range_stat_key))
 
 
 func _sum_modifiers(
