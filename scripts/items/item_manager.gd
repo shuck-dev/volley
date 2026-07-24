@@ -66,6 +66,33 @@ func unregister_partner(partner: Resource) -> void:
 	_effect_manager.unregister_source(partner)
 
 
+## Default launch velocity for a ball that lacks a player-supplied gesture.
+func get_default_ball_launch_velocity() -> Vector2:
+	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min")
+	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
+
+
+## The effect system's public query/registration API; see designs/effect-system/README.md.
+func get_effect_manager() -> EffectManager:
+	return _effect_manager
+
+
+## Duck-typed seam for `Stats.resolve`; kept on ItemManager since callers hold this as the
+## injected `item_manager` reference, not an EffectManager reference.
+func get_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_modifier(key, instance_key)
+
+
+## Duck-typed seam for `Stats.resolve`; see `get_modifier`.
+func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_percentage_offset(key, instance_key)
+
+
+## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
+func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
+	return _effect_manager.get_permanent_modifier(key, instance_key)
+
+
 ## Dispatches a game event to the effect system for causality processing
 func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
 	return _effect_manager.process_event(event_type, instance_key)
@@ -74,49 +101,6 @@ func process_event(event_type: StringName, instance_key: String = "") -> Array[S
 ## Advances continuous effects like oscillation
 func process_frame(delta: float) -> void:
 	_effect_manager.process_frame(delta)
-
-
-## Default launch velocity for a ball that lacks a player-supplied gesture.
-func get_default_ball_launch_velocity() -> Vector2:
-	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min")
-	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
-
-
-## Returns the resolved stat value (base + additive modifiers + percentage offset) for a stat key.
-func get_stat(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_stat(key, instance_key)
-
-
-## Registers an effect source with the effect system at the given level.
-func register_source(
-	source: Resource, level: int, source_key: String = "", instanced: bool = false
-) -> void:
-	_effect_manager.register_source(source, level, source_key, instanced)
-
-
-## Returns the summed additive modifiers (including stat shifts) for a stat key.
-func get_modifier(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_modifier(key, instance_key)
-
-
-## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
-func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_permanent_modifier(key, instance_key)
-
-
-## Returns the summed percentage offset for a stat (e.g. 0.8 means +80%)
-func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_percentage_offset(key, instance_key)
-
-
-## Returns whether a named game state is currently active
-func is_game_state_active(game_state: StringName) -> bool:
-	return _effect_manager.is_game_state_active(game_state)
-
-
-## Returns the StatShift instances registered under `instance_key` (e.g. a ball's item_key).
-func get_shifts(instance_key: String) -> Array[StatShift]:
-	return _effect_manager.get_shifts(instance_key)
 
 
 ## Returns current level of an item (0 if not owned)
@@ -202,7 +186,7 @@ func release_rack_slot(item_key: String) -> void:
 
 ## Re-assigns the lowest free rack slot when a held item returns to the rack.
 func reassign_rack_slot(item_key: String) -> void:
-	_assign_rack_slot(item_key, _require_item(item_key).role)
+	_assign_rack_slot(item_key, get_item(item_key).role)
 
 
 ## Picks the lowest free slot index among STORED items of the same role and records it.
@@ -246,7 +230,7 @@ func activate(item_key: String) -> bool:
 	if get_level(item_key) <= 0:
 		return false
 
-	_set_item_placement(item_key, _natural_target(_require_item(item_key)))
+	_set_item_placement(item_key, _natural_target(get_item(item_key)))
 
 	return true
 
@@ -263,7 +247,7 @@ func deactivate(item_key: String) -> bool:
 
 ## Equipment-role placement; returns false silently on role mismatch so callers can fall through.
 func equip(item_key: String) -> bool:
-	var item: ItemDefinition = _require_item(item_key)
+	var item: ItemDefinition = get_item(item_key)
 	if item.role != &"equipment":
 		return false
 
@@ -276,7 +260,7 @@ func unequip(item_key: String) -> bool:
 
 
 func calculate_for_purchase(item_key: String) -> int:
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return int(item.base_cost * pow(2.0, get_owned_count(item.key)))
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
@@ -284,13 +268,13 @@ func calculate_for_purchase(item_key: String) -> int:
 
 ## Returns total cost of an item at its current level
 func calculate_cost(item_key: String) -> int:
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
 
 
 ## Returns true if the item is affordable. Used by drop targets.
 func can_acquire(item_key: String) -> bool:
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return economy.soul_balance >= calculate_for_purchase(item_key)
 	return get_level(item_key) == 0 and economy.soul_balance >= calculate_cost(item_key)
@@ -298,7 +282,7 @@ func can_acquire(item_key: String) -> bool:
 
 ## Returns whether the player can afford and has not maxed an item
 func can_purchase(item_key: String) -> bool:
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	if item.role == &"ball":
 		return (
 			economy.soul_balance >= calculate_for_purchase(item_key)
@@ -352,7 +336,7 @@ func remove_level(item_key: String) -> void:
 
 	var current_level := get_level(item_key)
 	if current_level > 0:
-		var item := _require_item(item_key)
+		var item := get_item(item_key)
 		var new_level: int = current_level - 1
 		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
@@ -457,7 +441,7 @@ func _set_level(item_key: String, level: int) -> void:
 
 func _set_item_placement(item_key: String, placement: int) -> void:
 	var previous: int = state.item_placements.get(item_key, Placement.STORED)
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	assert(item.role != StringName(), "ItemDefinition.role must be set: " + item.key)
 
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
@@ -488,7 +472,7 @@ func _set_item_placement(item_key: String, placement: int) -> void:
 
 
 func _refresh_registration(item_key: String) -> void:
-	var item := _require_item(item_key)
+	var item := get_item(item_key)
 	_effect_manager.unregister_source(item, item_key)
 	var level := get_level(item_key)
 	if level > 0:
@@ -554,13 +538,8 @@ func _get_item(item_key: String) -> ItemDefinition:
 	return null
 
 
-## Same as `_get_item`, but asserts non-null for gameplay call sites where a miss is a real bug.
-func _require_item(item_key: String) -> ItemDefinition:
+## Same as `_get_item`, but asserts non-null; a miss here is a real bug, not an unowned item.
+func get_item(item_key: String) -> ItemDefinition:
 	var item := _get_item(item_key)
 	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
 	return item
-
-
-## Public form of `_require_item`, for callers outside ItemManager.
-func get_item(item_key: String) -> ItemDefinition:
-	return _require_item(item_key)

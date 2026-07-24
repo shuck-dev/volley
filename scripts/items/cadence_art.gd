@@ -22,7 +22,7 @@ func _on_play_state_changed(_state: Ball.PlayState) -> void:
 func _connect_shifts() -> void:
 	if _ball == null:
 		return
-	for shift: StatShift in ItemManager.get_shifts(_ball.item_key):
+	for shift: StatShift in ItemManager.get_effect_manager().get_shifts(_ball.item_key):
 		if not shift.shifted.is_connected(_on_shifted):
 			shift.shifted.connect(_on_shifted)
 
