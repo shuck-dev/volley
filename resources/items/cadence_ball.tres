@@ -13,8 +13,7 @@ radius = 7.2
 
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_shift")
-stat_key = &"ball_speed_min"
-range_stat_key = &"ball_speed_max_range"
+stat_key = &"ball_speed_scale"
 
 [sub_resource type="Resource" id="trigger_1"]
 script = ExtResource("3_trigger")

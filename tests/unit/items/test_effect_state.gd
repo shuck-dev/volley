@@ -131,6 +131,25 @@ func test_get_stat_with_instance_key_only_reflects_that_instances_shift() -> voi
 	assert_eq(_state.get_stat(&"speed", "ball_b"), 99.5)
 
 
+# --- percentage-offset shift (Cadence's uncapped speed_scale) ---
+func test_get_percentage_offset_reflects_shift_mode() -> void:
+	var shift := _make_shift(&"speed_scale", "ball_a", &"")
+	shift.instanced = true
+	shift._mode = StatShift.Mode.DOUBLE
+	_state.add_shift(shift)
+
+	assert_almost_eq(_state.get_percentage_offset(&"speed_scale", "ball_a"), 1.0, 0.0001)
+
+
+func test_get_percentage_offset_half_mode_yields_negative_offset() -> void:
+	var shift := _make_shift(&"speed_scale", "ball_a", &"")
+	shift.instanced = true
+	shift._mode = StatShift.Mode.HALF
+	_state.add_shift(shift)
+
+	assert_almost_eq(_state.get_percentage_offset(&"speed_scale", "ball_a"), -0.5, 0.0001)
+
+
 func _make_shift(stat: StringName, source: String, range_key: StringName) -> StatShift:
 	var shift := StatShift.new()
 	shift.stat_key = stat

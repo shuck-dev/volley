@@ -36,7 +36,10 @@ func get_base_stat(key: StringName, instance_key: String = "") -> float:
 
 
 func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
-	return _sum_modifiers(key, _percentage_modifiers, false, instance_key)
+	return (
+		_shifts.sum_for(key, instance_key)
+		+ _sum_modifiers(key, _percentage_modifiers, false, instance_key)
+	)
 
 
 ## Sum of additive modifiers and shifted multipliers for a stat key, range-resolved.

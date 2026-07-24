@@ -67,7 +67,14 @@ func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
 		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager, ball.item_key
 	)
-	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
+	var clamped_speed: float = clampf(
+		_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling
+	)
+	# Uncapped by tier bounds: a Cadence-style shift feels its full swing after progression clamps.
+	var speed_scale: float = (
+		1.0 + item_manager.get_percentage_offset(&"ball_speed_scale", ball.item_key)
+	)
+	ball.speed = clamped_speed * speed_scale
 
 
 func process_hit(struck_paddle: Paddle) -> void:
