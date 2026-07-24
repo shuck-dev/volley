@@ -143,16 +143,14 @@ func _on_ball_state_changed(_state: int, ball: Ball) -> void:
 func _format_row(ball: Ball) -> String:
 	var key: String = ball.item_key if ball.item_key != "" else "ball"
 	var state_name: String = Ball.PlayState.find_key(ball.play_state)
-	var final_mark: String = " FINAL" if ball.in_final else ""
 	return (
-		"%s  %s  T%d[%.0f-%.0f]%s  spd=%.0f  pos=(%d, %d)"
+		"%s  %s  T%d[%.0f-%.0f]  spd=%.0f  pos=(%d, %d)"
 		% [
 			key,
 			state_name,
 			ball.current_tier,
 			ball.tier_floor,
 			ball.tier_ceiling,
-			final_mark,
 			ball.speed,
 			int(ball.position.x),
 			int(ball.position.y)

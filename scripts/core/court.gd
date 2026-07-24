@@ -3,7 +3,6 @@ extends Node2D
 
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
-signal ball_final_consolidation_changed(in_final: bool, ball: Ball)
 signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, soul_rate: float)
 signal partner_changed
@@ -97,7 +96,6 @@ func _ready() -> void:
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)
-	ball_system.ball_final_consolidation_changed.connect(_on_ball_final_consolidation_changed)
 	ball_system.ball_tier_advanced.connect(_on_ball_tier_advanced)
 	ball_system.ball_removed.connect(_tier_reward_handler.on_ball_removed)
 	ball_system.register_miss_zone_globally()
@@ -156,14 +154,6 @@ func _on_paddle_hit(hitting_ball: Ball) -> void:
 
 func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(new_tier)
-
-
-# Final-consolidation entry still fires the legacy max-speed event Cadence latches on.
-func _on_ball_final_consolidation_changed(in_final: bool, consolidating_ball: Ball) -> void:
-	ball_final_consolidation_changed.emit(in_final, consolidating_ball)
-	if in_final:
-		var instance_key: String = consolidating_ball.item_key if consolidating_ball != null else ""
-		_item_manager.process_event(&"on_max_speed_reached", instance_key)
 
 
 func _on_ball_missed(missed_ball: Ball) -> void:

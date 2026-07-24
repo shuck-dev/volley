@@ -12,7 +12,6 @@ signal ball_added(ball: Ball)
 signal ball_removed(ball: Ball)
 signal ball_missed(ball: Ball)
 
-signal ball_final_consolidation_changed(in_final: bool, ball: Ball)
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 
 signal current_ball_changed(ball: Ball)
@@ -36,9 +35,6 @@ var _initial_reconcile_pending: bool = true
 var _balls: Array[Ball] = []
 var _current_ball: Ball
 var _miss_zones: Array[MissZone] = []
-## Bound per-ball callables so `at_max_speed_changed` can carry the emitting ball; tracked here
-## because a `.bind()`'d Callable does not equal its unbound form for `is_connected`/`disconnect`.
-var _consolidation_subscriptions: Dictionary = {}
 
 
 func configure(item_manager: Node) -> void:
@@ -403,15 +399,8 @@ func _detach(old_ball: Ball) -> void:
 		if old_ball.missed.is_connected(_on_ball_missed):
 			old_ball.missed.disconnect(_on_ball_missed)
 
-		if _consolidation_subscriptions.has(old_ball):
-			var bound_callback: Callable = _consolidation_subscriptions[old_ball]
-			if old_ball.at_max_speed_changed.is_connected(bound_callback):
-				old_ball.at_max_speed_changed.disconnect(bound_callback)
-
 		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
-
-	_consolidation_subscriptions.erase(old_ball)
 
 	if _current_ball == old_ball:
 		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
@@ -438,11 +427,6 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.missed.is_connected(_on_ball_missed):
 		ball.missed.connect(_on_ball_missed)
 
-	if not _consolidation_subscriptions.has(ball):
-		var bound_callback := _on_ball_final_consolidation_changed.bind(ball)
-		_consolidation_subscriptions[ball] = bound_callback
-		ball.at_max_speed_changed.connect(bound_callback)
-
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
@@ -459,10 +443,6 @@ func _register_ball(ball: Ball) -> void:
 
 func _on_ball_missed(ball: Ball) -> void:
 	ball_missed.emit(ball)
-
-
-func _on_ball_final_consolidation_changed(in_final: bool, ball: Ball) -> void:
-	ball_final_consolidation_changed.emit(in_final, ball)
 
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:

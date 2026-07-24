@@ -28,7 +28,7 @@ func _make_until_miss_effect(stat_key: StringName, operation: StringName, value:
 	outcome.value = value
 
 	var trigger := Trigger.new()
-	trigger.type = &"on_max_speed_reached"
+	trigger.type = &"on_hit"
 
 	var effect := Effect.new()
 	effect.trigger = trigger
@@ -42,7 +42,7 @@ func test_process_event_fires_matching_trigger() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
 
 	assert_eq(
 		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
@@ -55,7 +55,7 @@ func test_process_event_ignores_non_matching_trigger() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	_manager.process_event(&"on_hit")
+	_manager.process_event(&"on_tier_completed")
 
 	assert_eq(
 		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
@@ -79,7 +79,7 @@ func test_process_event_scales_value_by_level() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 2)
 
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
 
 	assert_eq(
 		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
@@ -92,9 +92,9 @@ func test_modify_stat_until_miss_stacks_on_repeated_events() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	_manager.process_event(&"on_max_speed_reached")
-	_manager.process_event(&"on_max_speed_reached")
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
+	_manager.process_event(&"on_hit")
+	_manager.process_event(&"on_hit")
 
 	assert_eq(
 		Stats.resolve(GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _manager),
@@ -106,8 +106,8 @@ func test_miss_event_clears_until_miss_modifiers() -> void:
 	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
-	_manager.process_event(&"on_max_speed_reached")
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
+	_manager.process_event(&"on_hit")
 
 	_manager.process_event(&"on_miss")
 
@@ -134,7 +134,7 @@ func test_miss_preserves_permanent_modifiers() -> void:
 	var event_effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [always_effect, event_effect])
 	_manager.register_source(item, 1)
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
 
 	_manager.process_event(&"on_miss")
 
@@ -148,7 +148,7 @@ func test_unregister_removes_event_effects() -> void:
 	var effect := _make_until_miss_effect(&"ball_speed_max_range", &"add", 30.0)
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
-	_manager.process_event(&"on_max_speed_reached")
+	_manager.process_event(&"on_hit")
 
 	_manager.unregister_source(item)
 
@@ -163,7 +163,7 @@ func test_process_event_returns_empty_array_when_no_game_actions() -> void:
 	var item := _make_item("test_item", [effect])
 	_manager.register_source(item, 1)
 
-	var actions: Array[StringName] = _manager.process_event(&"on_max_speed_reached")
+	var actions: Array[StringName] = _manager.process_event(&"on_hit")
 
 	assert_eq(actions.size(), 0)
 

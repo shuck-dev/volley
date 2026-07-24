@@ -2,8 +2,6 @@ class_name Ball
 extends RigidBody2D
 
 signal missed(ball: Ball)
-## Fires only on final-consolidation entry (true) and exit (false), not on every tier ceiling touch.
-signal at_max_speed_changed(is_at_max: bool)
 ## Carries the current tier's floor and ceiling so a listener can render the active band.
 signal speed_changed(speed: float, tier_floor: float, tier_ceiling: float)
 ## Fires when the rally crosses a tier ceiling and steps up to the next tier.
@@ -45,8 +43,6 @@ var is_temporary := false
 var ball_world_max_speed: float
 ## Current rung of the speed ladder; 0 at rally start, stepped up on each tier completion.
 var current_tier := 0
-## True while the top tier's final-consolidation window is open; the ball climbs above max_speed up to the world max.
-var in_final := false
 ## Accumulated soul multiplier for this ball; incremented by each consolidation event, reset on miss.
 var soul_multiplier: float = 1.0
 
@@ -63,11 +59,9 @@ var tier_floor: float:
 
 		return minf(base_floor + lift, tier_ceiling)
 
-## Speed that completes the current tier; the world max while the final-consolidation window is open.
+## Speed that completes the current tier.
 var tier_ceiling: float:
 	get:
-		if in_final:
-			return ball_world_max_speed
 		return _tier_fraction("ceiling_fraction") * ball_world_max_speed
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
@@ -77,7 +71,6 @@ var _item_manager: ItemManager
 var _last_speed := 0.0
 var _last_min := 0.0
 var _last_max := 0.0
-var _was_at_max := false
 # Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
 var _arc_acceleration: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
@@ -120,7 +113,6 @@ func _physics_process(delta: float) -> void:
 
 	effect_processor.process_frame(delta)
 	_update_play_state()
-	_emit_max_speed_if_changed()
 
 	if (
 		absf(speed - _last_speed) >= 10.0
@@ -270,10 +262,8 @@ func enter_out_rest() -> void:
 	OUT_REST_CONFIG.apply(self)
 
 	current_tier = 0
-	in_final = false
 	speed = tier_floor
 	effect_processor.sync_base_speed()
-	_emit_max_speed_if_changed()
 	_emit_speed_changed()
 	set_play_state(PlayState.OUT_REST)
 
@@ -288,14 +278,6 @@ func enter_out_held() -> void:
 
 
 func increase_speed() -> void:
-	if in_final:
-		if speed >= ball_world_max_speed:
-			return
-
-		speed = minf(speed + speed_increment, ball_world_max_speed)
-		_apply_speed()
-		return
-
 	if speed + speed_increment >= tier_ceiling:
 		advance_tier()
 		return
@@ -304,13 +286,12 @@ func increase_speed() -> void:
 	_apply_speed()
 
 
-# Crossing a tier ceiling steps up a rung, or opens the final-consolidation window when the top tier completes.
+# Crossing a tier ceiling steps up a rung; the top tier has no rung above it, so speed plateaus there.
 func advance_tier() -> void:
 	var is_top_tier: bool = current_tier >= GameRules.speed_tiers.tier_count() - 1
 
 	if is_top_tier:
-		in_final = true
-		speed = max_speed
+		speed = tier_ceiling
 	else:
 		current_tier += 1
 		speed = tier_floor
@@ -335,14 +316,7 @@ func _apply_speed() -> void:
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
 	if play_state == PlayState.PLAY_ARC:
 		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
-	_emit_max_speed_if_changed()
 	_emit_speed_changed()
-
-
-func _emit_max_speed_if_changed() -> void:
-	if in_final != _was_at_max:
-		_was_at_max = in_final
-		at_max_speed_changed.emit(in_final)
 
 
 func _setup_effect_processor() -> void:
@@ -374,7 +348,6 @@ func _baseline_collision_radius() -> float:
 
 func _ball_setup() -> void:
 	current_tier = 0
-	in_final = false
 	speed = tier_floor
 	effect_processor.sync_base_speed()
 	lock_rotation = true

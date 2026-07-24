@@ -113,7 +113,6 @@ func test_miss_resets_soul_multiplier_to_one() -> void:
 
 	assert_almost_eq(ball.soul_multiplier, 1.0, 0.001, "miss must reset ball.soul_multiplier to 1")
 
-	ball.in_final = false
 	ball.current_tier = _top_tier()
 	ball.advance_tier()
 
