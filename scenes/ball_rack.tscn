@@ -58,7 +58,7 @@ position = Vector2(67.5, 30)
 [node name="RackDropTarget" type="Area2D" parent="." unique_id=1349315971]
 script = ExtResource("2_rdt")
 role = &"ball"
-drop_priority = 0
+priority = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RackDropTarget"]
 shape = SubResource("RectangleShape2D_ball_rack_drop")

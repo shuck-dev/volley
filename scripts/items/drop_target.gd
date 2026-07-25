@@ -3,8 +3,8 @@ extends Area2D
 
 ## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
 
-## Lower values are consulted first in the group-query accept walk.
-@export var drop_priority: int = 0
+## Higher values are consulted later in the group-query accept walk.
+## Area2D.priority is a built-in engine property with default 0.
 
 
 func _ready() -> void:

@@ -43,7 +43,7 @@ func before_each() -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = _manager
 	rack_target.role = &"ball"
-	rack_targetdrop_priority = 0
+	rack_target.priority = 0
 	rack_target.position = _drop_target.position
 	var rack_target_shape := CollisionShape2D.new()
 	var rack_target_rect := RectangleShape2D.new()
@@ -55,14 +55,14 @@ func before_each() -> void:
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.item_manager = _manager
 	court_target.reconciler = _reconciler
-	court_targetdrop_priority = 10
+	court_target.priority = 10
 	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.item_manager = _manager
 	venue_target.reconciler = _reconciler
 	venue_target.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
-	venue_targetdrop_priority = 20
+	venue_target.priority = 20
 	add_child_autofree(venue_target)
 
 
@@ -153,7 +153,7 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
 	gear_rack_target.item_manager = _manager
 	gear_rack_target.role = &"equipment"
-	gear_rack_targetdrop_priority = 0
+	gear_rack_target.priority = 0
 	gear_rack_target.position = _drop_target.position
 	var gear_rack_target_shape := CollisionShape2D.new()
 	var gear_rack_target_rect := RectangleShape2D.new()
@@ -163,7 +163,7 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_targetdrop_priority = 30
+	character_target.priority = 30
 	add_child_autofree(character_target)
 	_drag.configure_character_target(null)
 
