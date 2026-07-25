@@ -31,9 +31,7 @@ func contains_point(world_position: Vector2) -> bool:
 	if rectangle == null:
 		return false
 
-	var shape_transform: Transform2D = global_transform * collision_shape.transform
-
-	return rectangle.get_rect().has_point(shape_transform.affine_inverse() * world_position)
+	return rectangle.get_rect().has_point(collision_shape.to_local(world_position))
 
 
 func _get_collision_shape() -> CollisionShape2D:
