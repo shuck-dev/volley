@@ -220,6 +220,10 @@ court_bounds = Rect2(-800, -360, 1600, 720)
 reconciler = NodePath("../BallReconciler")
 
 [node name="CourtDropTarget" type="Area2D" parent="." unique_id=1902001003 node_paths=PackedStringArray("reconciler")]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+input_pickable = false
 priority = 10
 script = ExtResource("26_cdt")
 reconciler = NodePath("../BallReconciler")
@@ -229,6 +233,10 @@ court_bounds = Rect2(-800, -360, 1600, 720)
 shape = SubResource("RectangleShape2D_court_drop")
 
 [node name="VenueDropTarget" type="Area2D" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+input_pickable = false
 priority = 20
 script = ExtResource("27_vdt")
 reconciler = NodePath("../BallReconciler")

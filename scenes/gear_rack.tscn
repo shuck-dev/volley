@@ -57,9 +57,13 @@ position = Vector2(22.5, 30)
 position = Vector2(67.5, 30)
 
 [node name="RackDropTarget" type="Area2D" parent="." unique_id=1742093714]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+input_pickable = false
 script = ExtResource("2_rdt")
 role = &"equipment"
 priority = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RackDropTarget"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RackDropTarget" unique_id=1742093713]
 shape = SubResource("RectangleShape2D_gear_rack_drop")
