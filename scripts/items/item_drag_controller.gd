@@ -17,8 +17,6 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 @export var gear_rack: RackDisplay
 @export var gear_rack_drop_target: Area2D
 @export var timeout_controller: TimeoutController
-@export var venue_bounds: Rect2 = Rect2()
-@export var court_bounds: Rect2 = Rect2()
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 

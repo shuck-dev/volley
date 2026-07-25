@@ -137,6 +137,10 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
+		# Held until the cursor reaches somewhere a target will take, so a refused drop costs nothing.
+		if not _any_target_accepts(release_position):
+			return false
+
 		if not _complete_purchase():
 			return false
 		var controller: Node = _drag_controller()
@@ -177,27 +181,29 @@ func _drop_falling_body(release_position: Vector2) -> void:
 	if item_definition == null:
 		return
 	var controller: Node = _drag_controller()
-	var clamped_position: Vector2 = _clamp_release_into_venue(release_position, controller)
 	if _is_ball_role():
-		_drop_ball_role(clamped_position, controller)
+		_drop_ball_role(release_position, controller)
 		return
-	_drop_equipment_body(clamped_position, controller)
+	_drop_equipment_body(release_position, controller)
 
 
 func _is_ball_role() -> bool:
 	return item_definition != null and item_definition.role == &"ball"
 
 
-func _clamp_release_into_venue(release_position: Vector2, controller: Node) -> Vector2:
-	if controller == null or not ("venue_bounds" in controller):
-		return release_position
-	var bounds: Rect2 = controller.venue_bounds
-	if bounds.size == Vector2.ZERO:
-		return release_position
-	return DropTarget.clamp_to_rect(release_position, bounds)
+## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.
+func _any_target_accepts(release_position: Vector2) -> bool:
+	if item_definition == null:
+		return false
+
+	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		if (target as DropTarget).can_accept(item_definition.key, release_position):
+			return true
+
+	return false
 
 
-func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
+func _drop_equipment_body(release_position: Vector2, controller: Node) -> void:
 	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
 	if body == null:
 		return
@@ -206,7 +212,7 @@ func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
 		var resolved: Node = controller.get_loose_body_host()
 		if resolved != null:
 			host = resolved
-	body.global_position = clamped_position
+	body.global_position = release_position
 	host.add_child(body)
 	body.go_loose(_release_velocity())
 	if controller != null and controller.has_method("track_loose_body"):
@@ -216,12 +222,12 @@ func _drop_equipment_body(clamped_position: Vector2, controller: Node) -> void:
 
 ## Spawns the Ball directly in OUT_REST via the reconciler; if it settles inside-shop the Ball is
 ## torn down for refund, otherwise the purchase commits and the Ball stays in the registry.
-func _drop_ball_role(clamped_position: Vector2, controller: Node) -> void:
+func _drop_ball_role(release_position: Vector2, controller: Node) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 	if reconciler == null:
 		return
 	var ball: Ball = reconciler.spawn_at_rest(
-		item_definition.key, clamped_position, _release_velocity()
+		item_definition.key, release_position, _release_velocity()
 	)
 	if ball == null:
 		return

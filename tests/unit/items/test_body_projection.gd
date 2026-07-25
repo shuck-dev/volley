@@ -44,6 +44,7 @@ func _make_harness(definitions: Array) -> Dictionary:
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	target.item_manager = manager
 	target.reconciler = reconciler
+	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.COURT_SIZE))
 	host.add_child(target)
 	return {"host": host, "reconciler": reconciler, "target": target, "manager": manager}
 

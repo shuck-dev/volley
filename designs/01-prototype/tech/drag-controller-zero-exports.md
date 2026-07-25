@@ -31,11 +31,11 @@ How each of today's nine exports resolves in the target state:
 | `reconciler` | `&"ball_trackers"` group (already populated) |
 | `timeout_controller` | new `&"timeout"` group |
 | `cursor_overlay` | new `&"cursor_overlay"` group |
-| `venue_bounds`, `court_bounds` | each target's own `Area2D` shape, replacing the `Rect2` numbers |
+| `venue_bounds`, `court_bounds` | deleted; each target reads its region from its own `Area2D` shape |
 
-Each built-in drop target (`CourtDropTarget`, `VenueDropTarget`, `RackDropTarget`, `CharacterDropTarget`) is an `Area2D` scene node that joins `&"drop_targets"`, declares an `@export var priority: int`, and reads its region from its own shape. The base `DropTarget` extends `Area2D`, so a target is its own drop region rather than a `Node` pointing at a separate one. This is why the four targets converge on a single shape and why no `court_area` or `drop_area` NodePath survives.
+Each built-in drop target (`CourtDropTarget`, `VenueDropTarget`, `RackDropTarget`, `CharacterDropTarget`) is an `Area2D` scene node that joins `&"drop_targets"`, carries a priority, and reads its region from its own shape. The base `DropTarget` extends `Area2D`, so a target is its own drop region rather than a `Node` pointing at a separate one. This is why the four targets converge on a single shape and why no `court_area` or `drop_area` NodePath survives.
 
-Priority replaces registration order. Today a target's place in the accept walk is an emergent property of when it registered; a declared `priority` makes that order explicit and visible on the target itself, so a reader sees "rack before court before venue" in the data rather than inferring it from wiring timing.
+Priority replaces registration order. Today a target's place in the accept walk is an emergent property of when it registered; a declared priority makes that order explicit and visible on the target itself, so a reader sees the precedence in the data rather than inferring it from wiring timing. It is Area2D's own `priority` field rather than a new export, and the accept walk keeps the lowest value among the targets that accept, so specificity reads as ordering: character 0, shop 10, racks 20, court 30, venue 50. The catch-all sits last on purpose, since a venue that accepts anything anywhere would otherwise swallow every release before a narrower target is asked.
 
 The character target needs more than the accept walk: the controller configures it with the paddle and timeout, wires its `equipped_art_pressed` signal, and toggles its equipped visuals during a drag. It reaches that one target through a `&"character_target"` sub-group, a `get_first_node_in_group` when the paddle spawns, replacing the `set_character_drop_target()` push and the `_character_target` handle the old registration kept.
 
@@ -51,7 +51,7 @@ The character target needs more than the accept walk: the controller configures 
 
 ## What the refactor removes and keeps
 
-Removed: every `@export` on `ItemDragController`; the `configure()` public API; `register_target()`, `unregister_target()`, and the `_targets` list; `set_character_drop_target()` and the `_character_target` handle; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and targets; the `drop_area` and `court_area` NodePaths.
+Removed: every `@export` on `ItemDragController`; the `configure()` public API; `register_target()`, `unregister_target()`, and the `_targets` list; `set_character_drop_target()` and the `_character_target` handle; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and targets; the `drop_area` and `court_area` NodePaths; the release clamp that pulled an out-of-bounds shop drop back inside the venue.
 
 Changed: `ItemDragController` becomes an autoload; `DropTarget` extends `Area2D`; drop targets join `&"drop_targets"` and carry a `priority`; the character target joins `&"character_target"`.
 
@@ -65,7 +65,7 @@ Five PRs carry this refactor, and each one closes a concern end to end rather th
 
 **PR 2: a drop target is its own Area2D.** `DropTarget` extends `Area2D` instead of `Node`, so every target owns its geometry directly rather than pointing at a separate area. This unifies the four targets on one shape and clears the base-class barrier that kept a target's script off an Area2D. `RackDropTarget`'s `drop_area` export and the shop target's constructed area collapse into the target node itself.
 
-**PR 3: Rect2 bounds become editor zones.** With each target already an Area2D, `court_bounds` and `venue_bounds` stop being `Rect2` numbers and become the target's own `RectangleShape2D`, sized in the editor. `shop_item.gd`'s `venue_bounds` dependency is fixed here, since it reads the same shape.
+**PR 3: Rect2 bounds become editor zones.** With each target already an Area2D, `court_bounds` and `venue_bounds` stop being `Rect2` numbers and become the target's own `RectangleShape2D`, sized in the editor. Every containment question routes through one `DropTarget.contains_point()` that asks the shape, so the rect-reconstruction helper and the per-target bounds checks collapse into it. `shop_item.gd`'s `venue_bounds` dependency goes away rather than moving. The shop clamped a release back inside the venue, silently relocating a drop the player aimed elsewhere. It refuses the release instead, so the item stays held until the cursor reaches somewhere a target will take it. The shop reaches its own release path rather than the controller's, so it checks containment itself; a clamp that rescues an out-of-bounds drop is the wrong shape either way, since the position it invents is one nothing agreed to.
 
 **PR 4: the controller becomes an autoload.** `ItemDragController` moves out of the scene tree into `project.godot` as an autoload, and its remaining collaborators (`rack`, `gear_rack`, `reconciler`, `timeout_controller`, `cursor_overlay`) resolve through group lookups at use-time. `configure()` is deleted once nothing calls it. `shop_item.gd`'s reconciler dependency is fixed here for the same reason.
 

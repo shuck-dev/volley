@@ -19,28 +19,23 @@ static func get_definition(item_manager: Node, item_key: String) -> ItemDefiniti
 	return null
 
 
-## Zero-sized bounds pass through so an un-configured court does not collapse releases to origin.
-static func clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
-	if bounds.size == Vector2.ZERO:
-		return world_position
-	return Vector2(
-		clampf(world_position.x, bounds.position.x, bounds.position.x + bounds.size.x),
-		clampf(world_position.y, bounds.position.y, bounds.position.y + bounds.size.y),
-	)
+## A target with no rectangular collider contains nothing, so it accepts nothing.
+func contains_point(world_position: Vector2) -> bool:
+	var collision_shape: CollisionShape2D = _get_collision_shape()
+
+	if collision_shape == null:
+		return false
+
+	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
+
+	if rectangle == null:
+		return false
+
+	return rectangle.get_rect().has_point(collision_shape.to_local(world_position))
 
 
-## Returns empty `Rect2()` when self has no rectangular collider child.
-func area_world_rect() -> Rect2:
-	var shape_owner: CollisionShape2D = null
+func _get_collision_shape() -> CollisionShape2D:
 	for child in get_children():
 		if child is CollisionShape2D:
-			shape_owner = child
-			break
-	if shape_owner == null:
-		return Rect2()
-	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
-	if rectangle == null:
-		return Rect2()
-	var half_size: Vector2 = rectangle.size * 0.5
-	var center: Vector2 = global_position + shape_owner.position
-	return Rect2(center - half_size, rectangle.size)
+			return child as CollisionShape2D
+	return null

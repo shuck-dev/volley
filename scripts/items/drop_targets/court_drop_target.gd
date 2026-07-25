@@ -2,20 +2,17 @@ class_name CourtDropTarget
 extends DropTarget
 
 @export var reconciler: BallReconciler
-@export var court_bounds: Rect2 = Rect2()
 
 var item_manager: Node
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
-var _court_bounds: Rect2
 var _exclude_rids: Array[RID] = []
 
 
 func _ready() -> void:
 	_item_manager = item_manager if item_manager != null else ItemManager
 	_reconciler = reconciler
-	_court_bounds = court_bounds
 	_world = get_viewport().find_world_2d()
 
 	add_to_group(&"drop_targets")
@@ -29,7 +26,7 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not _is_ball_role(item_key):
 		return false
-	if _court_bounds.size != Vector2.ZERO and not _court_bounds.has_point(world_position):
+	if not contains_point(world_position):
 		return false
 	return _projection_clear(item_key, world_position, scale_factor)
 

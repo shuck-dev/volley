@@ -10,8 +10,6 @@ const CharacterDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/character_drop_target.gd"
 )
 
-const VENUE_BOUNDS: Rect2 = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
-
 var _manager: Node
 var _rack: RackDisplay
 var _drop_target: Area2D
@@ -36,9 +34,7 @@ func before_each() -> void:
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	add_child_autofree(_drag)
 
-	ItemTestHelpers.make_drop_targets(
-		_manager, _reconciler, _drop_target.position, VENUE_BOUNDS, self
-	)
+	ItemTestHelpers.make_drop_targets(_manager, _reconciler, _drop_target.position, self)
 
 
 func after_each() -> void:
