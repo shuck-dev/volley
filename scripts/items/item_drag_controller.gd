@@ -631,7 +631,7 @@ func configure_character_target(paddle: Node = null) -> void:
 	var target: CharacterDropTarget = _character_target()
 	if target == null:
 		return
-	target.configure(_item_manager, null, timeout_controller, paddle)
+	target.configure(_item_manager, timeout_controller, paddle)
 	if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
 		target.equipped_art_pressed.connect(_on_equipped_art_pressed)
 

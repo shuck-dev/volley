@@ -1,12 +1,13 @@
 class_name CharacterDropTarget
 extends DropTarget
 
+## Accepts equipment-role items dropped on the main character during the equip pose; capacity gate lives in ItemManager.equip.
+
 signal equipped_art_pressed(item_key: String)
 
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
 
 var _item_manager: ItemManager
-var _drop_area: Area2D
 var _timeout_controller: TimeoutController
 var _paddle: Node
 
@@ -17,13 +18,9 @@ func _ready() -> void:
 
 
 func configure(
-	item_manager: Node,
-	drop_area = null,
-	timeout_controller: TimeoutController = null,
-	paddle: Node = null
+	item_manager: Node, timeout_controller: TimeoutController = null, paddle: Node = null
 ) -> void:
 	_item_manager = item_manager
-	_drop_area = drop_area
 	_timeout_controller = timeout_controller
 	_paddle = paddle
 
