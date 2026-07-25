@@ -1,6 +1,6 @@
 # Drag Controller: Autoload and Groups
 
-Design for making `ItemDragController` a global service that finds its collaborators through groups, part of [SH-542](https://linear.app/shuck-games/issue/SH-542).
+Design for making `ItemDragController` a global service that finds its collaborators through groups, part of #1075.
 
 ## The problem: the controller reaches out to everything, and holds it all
 
@@ -59,7 +59,7 @@ Kept: the accept walk (first `can_accept` wins), now over a sorted group query r
 
 ## Delivery: outcome-oriented PR sequence
 
-Five PRs carry this refactor, and each one closes a concern end to end rather than a layer of the stack. Production code, scenes, tests, and any consumer land together; the old surface for that concern is deleted in the same PR, so main never sits on a half-migrated seam.
+Six PRs carry this refactor, and each one closes a concern end to end rather than a layer of the stack. Production code, scenes, tests, and any consumer land together; the old surface for that concern is deleted in the same PR, so main never sits on a half-migrated seam.
 
 **PR 1: targets carry themselves.** The four drop targets become scene nodes: each joins `&"drop_targets"`, declares its `priority`, and the controller finds them by querying that group and sorting, first `can_accept` wins. The character target also joins `&"character_target"` so the controller reaches it for equipping without the old push. `register_target()`, `unregister_target()`, `_targets`, `set_character_drop_target()`, and the factory methods are gone. Court and Venue still carry their bounds as `Rect2` exports and the controller still lives in the scene; this PR changes only how targets are discovered. Closes the "drop targets live as scene nodes, not runtime-constructed" criterion on its own.
 
@@ -67,8 +67,16 @@ Five PRs carry this refactor, and each one closes a concern end to end rather th
 
 **PR 3: Rect2 bounds become editor zones.** With each target already an Area2D, `court_bounds` and `venue_bounds` stop being `Rect2` numbers and become the target's own `RectangleShape2D`, sized in the editor. Every containment question routes through one `DropTarget.contains_point()` that asks the shape, so the rect-reconstruction helper and the per-target bounds checks collapse into it. `shop_item.gd`'s `venue_bounds` dependency goes away rather than moving. The shop clamped a release back inside the venue, silently relocating a drop the player aimed elsewhere. It refuses the release instead, so the item stays held until the cursor reaches somewhere a target will take it. The shop reaches its own release path rather than the controller's, so it checks containment itself; a clamp that rescues an out-of-bounds drop is the wrong shape either way, since the position it invents is one nothing agreed to.
 
-**PR 4: the controller becomes an autoload.** `ItemDragController` moves out of the scene tree into `project.godot` as an autoload, and its remaining collaborators (`rack`, `gear_rack`, `reconciler`, `timeout_controller`, `cursor_overlay`) resolve through group lookups at use-time. `configure()` is deleted once nothing calls it. `shop_item.gd`'s reconciler dependency is fixed here for the same reason.
+**PR 4a: collaborators resolve through groups.** The remaining exports (`rack`, `gear_rack`, `reconciler`, `timeout_controller`, `cursor_overlay`) become group lookups at use-time, and `configure()` is deleted once nothing calls it. `shop_item.gd`'s reconciler dependency is fixed here for the same reason. The controller still lives in `court.tscn`; only how it finds its collaborators changes.
 
-**PR 5: state-machine enum.** `IDLE` / `DRAGGING` / `PENDING_RELEASE` replace the scattered booleans that track gesture state by hand today.
+**PR 4b: the controller becomes an autoload.** `ItemDragController` moves out of the scene tree into `project.godot`. This is separated from 4a because it is not only a wiring change: the controller is a `Node2D` that reads the cursor through its own `get_canvas_transform()` and falls back to its own `global_position`, and an autoload sits at the tree root rather than inside the loaded scene, so its canvas space is the root's. Resolving what cursor position means for a node outside the scene is the whole of this PR's risk, and bundling it with 4a would hide that question behind a larger diff.
 
-PR 5 does not change the export count; that is already zero by the time it lands. It is folded into SH-542 as a deliberate scope choice: the exports and the gesture booleans live in the same file, under the same reviewer, and answer the same question of what state this class should stop carrying implicitly. Splitting the enum into its own ticket would mean touching `item_drag_controller.gd` an extra time for a change that belongs with the rest. Read the PR 5 inclusion as intentional, not as scope creep.
+**PR 5: state-machine enum, and gesture data in one place.** `IDLE` / `DRAGGING` / `PENDING_RELEASE` replace the scattered booleans that track gesture state by hand today, so `_gesture_below_threshold` stops being a flag a test has to reach in and set.
+
+The cursor sampling moves with it. `_cursor_samples`, `_track_cursor_motion` and `_compute_release_velocity` are four private members implementing one idea, and they become a single gesture object the controller holds rather than state smeared across the class. That is what "gesture data is carried in one place" asks for; the enum alone answers what state a drag is in, not where its history lives.
+
+Keep the sampling rather than deleting it. Nothing branches on the resulting velocity, every consumer only seeds a `RigidBody2D`, and three fallbacks return `ItemManager.get_default_ball_launch_velocity()` anyway, so the machinery reads as dead weight. It is not: that default is a fixed diagonal, so without the gesture every ball launched from the rack onto the court departs along the same line at the same speed. The release gesture is what lets a player aim, and the only reason it looks removable is that nothing teaches it. Encapsulating it makes the mechanic legible enough to tune or surface later; deleting it forecloses that quietly.
+
+PR 5 does not change the export count; that is already zero by the time it lands. It is folded in as a deliberate scope choice: the exports and the gesture state live in the same file, under the same reviewer, and answer the same question of what state this class should stop carrying implicitly. Splitting the enum into its own ticket would mean touching `item_drag_controller.gd` an extra time for a change that belongs with the rest. Read the PR 5 inclusion as intentional, not as scope creep.
+
+The delivery order has already been revised once against what the work turned up, and the record of that is worth more than a plan that looks clean. PR 2 landed with an inverted priority ordering that made the character target unreachable behind the venue catch-all, found only because a test had to place its target far outside the venue to pass. PR 3 removed a release clamp on the reasoning that a gesture only commits where a target accepts, which held for the controller's release path and not for the shop's own. Both corrections are folded into the sections above rather than appended, so the document describes the design as it now stands.
