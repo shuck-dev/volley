@@ -1,9 +1,9 @@
 class_name RackDropTarget
 extends DropTarget
 
-var item_manager: Node
 @export var role: StringName = &"ball"
 
+var item_manager: Node
 var _item_manager: Node
 var _role: StringName
 

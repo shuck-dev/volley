@@ -1,10 +1,10 @@
 class_name VenueDropTarget
 extends DropTarget
 
-var item_manager: Node
 @export var reconciler: BallReconciler
 @export var venue_bounds: Rect2 = Rect2()
 
+var item_manager: Node
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
@@ -31,7 +31,10 @@ func can_accept(item_key: String, world_position: Vector2, scale_factor: float =
 	var lo: Vector2 = _venue_bounds.position
 	var hi: Vector2 = lo + _venue_bounds.size
 	var inside: bool = (
-		world_position.x >= lo.x and world_position.x <= hi.x and world_position.y >= lo.y and world_position.y <= hi.y
+		world_position.x >= lo.x
+		and world_position.x <= hi.x
+		and world_position.y >= lo.y
+		and world_position.y <= hi.y
 	)
 	if not inside:
 		return false
