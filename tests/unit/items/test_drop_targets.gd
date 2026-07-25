@@ -28,6 +28,33 @@ func test_shop_target_accepts_inside_shop_zone() -> void:
 	assert_false(target.can_accept("ball_alpha", Vector2(900, 900)))
 
 
+func test_nested_target_accepts_at_its_on_screen_position() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[ItemDefinition])
+	var rack := Node2D.new()
+	rack.position = Vector2(-486, 180)
+	add_child_autofree(rack)
+
+	var target: RackDropTarget = RackDropTargetScript.new()
+	target.item_manager = manager
+	target.role = &"ball"
+
+	var shape: CollisionShape2D = ItemTestHelpers.attach_rect_shape(Vector2(200, 100))
+	shape.position = Vector2(40, 0)
+	target.add_child(shape)
+	rack.add_child(target)
+
+	assert_true(
+		target.can_accept("ball_alpha", Vector2(-446, 180)),
+		"a release over the rack's own shape should land on it",
+	)
+	assert_false(
+		target.can_accept("ball_alpha", Vector2.ZERO),
+		"the world origin is nowhere near the rack, so nothing should drop there",
+	)
+
+
 func test_rack_target_accepts_matching_ball_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
