@@ -37,7 +37,7 @@ func configure(
 	_hydrate_equipped_visuals()
 
 
-func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(item_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
 	if _item_manager == null:
 		return false
 	if not _is_equipment_role(item_key):
@@ -46,7 +46,7 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	if _timeout_controller.get_state() != TimeoutController.State.AT_EQUIP_POSE:
 		return false
-	return _position_inside_area(position)
+	return _position_inside_area(world_position)
 
 
 func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:

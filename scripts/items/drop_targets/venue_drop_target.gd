@@ -25,27 +25,26 @@ func set_world(world: World2D) -> void:
 	_world = world
 
 
-func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
+func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
 	if _venue_bounds.size == Vector2.ZERO:
 		return false
-	# Inclusive max-edge check; Rect2.has_point treats max as exclusive.
 	var lo: Vector2 = _venue_bounds.position
 	var hi: Vector2 = lo + _venue_bounds.size
 	var inside: bool = (
-		position.x >= lo.x and position.x <= hi.x and position.y >= lo.y and position.y <= hi.y
+		world_position.x >= lo.x and world_position.x <= hi.x and world_position.y >= lo.y and world_position.y <= hi.y
 	)
 	if not inside:
 		return false
 	if _world == null:
 		return true
-	return _projection_clear(item_key, position, scale_factor)
+	return _projection_clear(item_key, world_position, scale_factor)
 
 
 func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	pass
 
 
-func _projection_clear(item_key: String, position: Vector2, scale_factor: float) -> bool:
+func _projection_clear(item_key: String, world_position: Vector2, scale_factor: float) -> bool:
 	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
 	if space == null:
 		return true
@@ -55,7 +54,7 @@ func _projection_clear(item_key: String, position: Vector2, scale_factor: float)
 	var shape: Shape2D = _scaled_shape(definition.at_rest_shape, scale_factor)
 	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	params.shape = shape
-	params.transform = Transform2D(0.0, position)
+	params.transform = Transform2D(0.0, world_position)
 	params.collide_with_bodies = true
 	params.collide_with_areas = false
 	return space.intersect_shape(params, 1).is_empty()

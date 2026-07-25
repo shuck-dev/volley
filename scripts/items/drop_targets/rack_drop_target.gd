@@ -15,10 +15,10 @@ func _ready() -> void:
 	add_to_group(&"drop_targets")
 
 
-func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(item_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
 	if not _is_role_match(item_key):
 		return false
-	return _position_inside_area(position)
+	return _position_inside_area(world_position)
 
 
 func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
