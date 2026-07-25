@@ -138,13 +138,12 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-## Drop targets in the scene, sorted so the lowest `priority` is consulted first.
-func _sorted_drop_targets() -> Array[DropTarget]:
-	var targets: Array[DropTarget] = []
+## The one CourtDropTarget in the scene, or null before it joins the group.
+func _court_target() -> CourtDropTarget:
 	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
-		targets.append(target as DropTarget)
-	targets.sort_custom(func(a: DropTarget, b: DropTarget) -> bool: return a.priority < b.priority)
-	return targets
+		if target is CourtDropTarget:
+			return target as CourtDropTarget
+	return null
 
 
 func _character_target() -> CharacterDropTarget:
@@ -467,10 +466,10 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for target in _sorted_drop_targets():
-		if target is CourtDropTarget:
-			return (target as CourtDropTarget).can_accept(item_key, world_position, 1.0)
-	return false
+	var court: CourtDropTarget = _court_target()
+	if court == null:
+		return false
+	return court.can_accept(item_key, world_position, 1.0)
 
 
 ## Re-grabs a loose body the player pressed; reuses the same body so the gesture stays diegetic.
@@ -539,10 +538,14 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for target in _sorted_drop_targets():
-		if target.can_accept(item_key, world_position, scale_factor):
-			return target
-	return null
+	var winner: DropTarget = null
+	for node: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		var target: DropTarget = node as DropTarget
+		if not target.can_accept(item_key, world_position, scale_factor):
+			continue
+		if winner == null or target.priority < winner.priority:
+			winner = target
+	return winner
 
 
 ## Returns a held Ball to its rack slot in STORED state; safety net when rack accept's deactivate is a no-op.
@@ -595,10 +598,9 @@ func _reset_gesture_state() -> void:
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for target in _sorted_drop_targets():
-		if target is CourtDropTarget:
-			(target as CourtDropTarget).set_exclude_rids(rids)
-			return
+	var court: CourtDropTarget = _court_target()
+	if court != null:
+		court.set_exclude_rids(rids)
 
 
 func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
