@@ -26,7 +26,7 @@ A question that can't be answered without exploring code, prototyping, or resear
 
 **Entry.** The question, time-boxed. "Is the AI prediction good enough for two balls?" is a spike. "Can we use Godot 4.5's new audio bus features?" is a spike. "Walk the new contributor onboarding cold and see where it breaks" is a spike.
 
-**Shape.** A writeup in [`ai/scratchpads/`](../../ai/scratchpads) by default (promoted to [`designs/research/`](../research/) only when the work earns it) and often a throwaway prototype branch. The prototype is for evidence, not for merging.
+**Shape.** A scratchpad writeup by default (promoted to [`designs/research/`](../research/) only when the work earns it) and often a throwaway prototype branch. The prototype is for evidence, not for merging.
 
 **Deliverable.** **Feature issues filed in Linear.** The writeup is a vehicle; the tickets are what carries the value forward. A spike that ends without feature issues is unfinished, the question got answered, but nothing acts on the answer.
 
