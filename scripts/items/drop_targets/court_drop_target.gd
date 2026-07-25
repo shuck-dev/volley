@@ -1,7 +1,7 @@
 class_name CourtDropTarget
 extends DropTarget
 
-@export var item_manager: Node
+var item_manager: Node
 @export var reconciler: BallReconciler
 @export var court_bounds: Rect2 = Rect2()
 
