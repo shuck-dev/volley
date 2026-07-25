@@ -1,6 +1,6 @@
 # Bot identity: shuck-volley-bot
 
-The swarm's automated actions on this repo run under a GitHub App, `shuck-volley-bot[bot]`, so agent-driven reviews are attributed to a distinct identity in the Reviews tab rather than appearing as the maintainer's own actions.
+The project's automated review actions on this repo run under a GitHub App, `shuck-volley-bot[bot]`, so AI-driven reviews are attributed to a distinct identity in the Reviews tab rather than appearing as the maintainer's own actions.
 
 ## Account
 

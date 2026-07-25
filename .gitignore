@@ -45,16 +45,8 @@ designs/private/
 # Final essays, persistent research notes, critical reviews, and meta planning docs stay tracked.
 designs/research/drafts/
 
-# Swarm scratchpad: ephemeral per work unit, scrubbed on completion.
-# The README and per-agent definitions stay tracked; working state does not.
-ai/swarm/agents/
-ai/swarm/tasks/
-ai/swarm/inbox/
-ai/swarm/_bootstrap.md
-
-# Scratchpads: ephemeral working state; per-session notes, research dumps,
-# the injection-guard hook log. Not committed.
-ai/scratchpads/
+AGENTS.md
+CLAUDE.md
 
 # Art-app autosaves and temp files (commit the source masters, not the crash recovery)
 *-autosave.kra
