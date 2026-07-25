@@ -95,6 +95,7 @@ func test_grab_from_rack_and_release_over_court_launches_ball() -> void:
 
 	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(ball)
+	assert_true(_manager.is_on_court("ball_alpha"))
 	assert_eq(ball.global_position, court_point)
 	assert_gt(ball.linear_velocity.length(), 0.0)
 
