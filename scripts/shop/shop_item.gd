@@ -137,6 +137,10 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
+		# Held until the cursor reaches somewhere a target will take, so a refused drop costs nothing.
+		if not _any_target_accepts(release_position):
+			return false
+
 		if not _complete_purchase():
 			return false
 		var controller: Node = _drag_controller()
@@ -185,6 +189,18 @@ func _drop_falling_body(release_position: Vector2) -> void:
 
 func _is_ball_role() -> bool:
 	return item_definition != null and item_definition.role == &"ball"
+
+
+## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.
+func _any_target_accepts(release_position: Vector2) -> bool:
+	if item_definition == null:
+		return false
+
+	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		if (target as DropTarget).can_accept(item_definition.key, release_position):
+			return true
+
+	return false
 
 
 func _drop_equipment_body(release_position: Vector2, controller: Node) -> void:

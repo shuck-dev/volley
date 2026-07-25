@@ -55,6 +55,28 @@ func test_nested_target_accepts_at_its_on_screen_position() -> void:
 	)
 
 
+func test_rotated_target_accepts_along_its_turned_edge() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[ItemDefinition])
+
+	var target: RackDropTarget = RackDropTargetScript.new()
+	target.item_manager = manager
+	target.role = &"ball"
+	target.rotation = PI / 2
+	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(400, 100)))
+	add_child_autofree(target)
+
+	assert_true(
+		target.can_accept("ball_alpha", Vector2(0, 180)),
+		"the long edge turned upright, so a point far along Y is inside",
+	)
+	assert_false(
+		target.can_accept("ball_alpha", Vector2(180, 0)),
+		"the short edge now runs along X, so the same distance out is outside",
+	)
+
+
 func test_rack_target_accepts_matching_ball_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
