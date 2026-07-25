@@ -35,8 +35,10 @@ func test_rack_target_accepts_matching_ball_role() -> void:
 	manager.items.assign([ball] as Array[ItemDefinition])
 	var area: Area2D = ItemTestHelpers.make_drop_area(Vector2(-500, 0), Vector2(200, 100), self)
 	var target: RackDropTarget = RackDropTargetScript.new()
+	target.item_manager = manager
+	target.drop_area = area
+	target.role = &"ball"
 	add_child_autofree(target)
-	target.configure(manager, area, &"ball")
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 
 
@@ -50,8 +52,10 @@ func test_court_target_rejects_equipment_role() -> void:
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
+	target.item_manager = manager
+	target.reconciler = reconciler
+	target.court_bounds = Rect2()
 	add_child_autofree(target)
-	target.configure(manager, reconciler, host.get_world_2d(), Rect2())
 	assert_false(target.can_accept("grip", Vector2.ZERO))
 
 
@@ -65,21 +69,32 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	var venue := Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	var court := Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	var target: VenueDropTarget = VenueDropTargetScript.new()
+	target.item_manager = manager
+	target.reconciler = reconciler
+	target.venue_bounds = venue
 	add_child_autofree(target)
-	target.configure(manager, reconciler, venue)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))
 
 
 func test_court_target_self_registers_with_controller_on_ready() -> void:
+	var manager: Node = ItemFactory.create_manager(self)
+	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[ItemDefinition])
+
 	var drag: ItemDragController = ItemDragControllerScript.new()
 	add_child_autofree(drag)
 
 	var target: CourtDropTarget = CourtDropTargetScript.new()
+	target.item_manager = manager
 	add_child_autofree(target)
 	await get_tree().process_frame
 
 	assert_true(
-		drag.get_registered_targets().has(target),
-		"CourtDropTarget should register itself with the drag_controller-group controller",
+		target.is_in_group(&"drop_targets"),
+		"CourtDropTarget should join the drop_targets group on _ready",
+	)
+	assert_true(
+		drag.can_court_accept_at("ball_alpha", Vector2.ZERO),
+		"controller's accept-walk should consult the group-joined court target",
 	)

@@ -51,19 +51,24 @@ func before_each() -> void:
 	add_child_autofree(_drag)
 
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
-	rack_target.configure(_manager, _drop_target, &"ball")
-	autofree(rack_target)
-	_drag.register_target(rack_target)
+	rack_target.item_manager = _manager
+	rack_target.drop_area = _drop_target
+	rack_target.role = &"ball"
+	rack_target.priority = 0
+	add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
-	court_target.configure(_manager, _reconciler, _host.get_world_2d(), Rect2())
-	autofree(court_target)
-	_drag.register_target(court_target)
+	court_target.item_manager = _manager
+	court_target.reconciler = _reconciler
+	court_target.priority = 10
+	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
-	venue_target.configure(_manager, _reconciler, VENUE_BOUNDS)
-	autofree(venue_target)
-	_drag.register_target(venue_target)
+	venue_target.item_manager = _manager
+	venue_target.reconciler = _reconciler
+	venue_target.venue_bounds = VENUE_BOUNDS
+	venue_target.priority = 20
+	add_child_autofree(venue_target)
 
 
 func after_each() -> void:

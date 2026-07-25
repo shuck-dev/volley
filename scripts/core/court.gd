@@ -79,7 +79,7 @@ func _ready() -> void:
 		var character_area: Area2D = player_paddle.get_node_or_null("CharacterDropTarget")
 		if character_area != null:
 			drag_controller.call_deferred(
-				&"set_character_drop_target", character_area, player_paddle
+				&"configure_character_target", character_area, player_paddle
 			)
 
 	if ball_system != null:

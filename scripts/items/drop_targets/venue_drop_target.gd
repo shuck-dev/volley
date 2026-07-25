@@ -11,35 +11,15 @@ var _item_manager: Node
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
 var _world: World2D
-## True once `configure()` has run; `_ready()` then leaves the test-seam values alone.
-var _configured_directly: bool = false
 
 
 func _ready() -> void:
-	if not _configured_directly:
-		_item_manager = item_manager if item_manager != null else ItemManager
-		_reconciler = reconciler
-		_venue_bounds = venue_bounds
-		_world = get_viewport().find_world_2d()
-
-	call_deferred(&"_register_with_controller")
-
-
-func _register_with_controller() -> void:
-	var ctrl: Node = get_tree().get_first_node_in_group(&"drag_controller")
-	if ctrl != null:
-		ctrl.register_target(self)
-
-
-func configure(
-	item_manager: Node,
-	reconciler: BallReconciler,
-	venue_bounds: Rect2,
-) -> void:
-	_configured_directly = true
-	_item_manager = item_manager
+	_item_manager = item_manager if item_manager != null else ItemManager
 	_reconciler = reconciler
 	_venue_bounds = venue_bounds
+	_world = get_viewport().find_world_2d()
+
+	add_to_group(&"drop_targets")
 
 
 func set_world(world: World2D) -> void:

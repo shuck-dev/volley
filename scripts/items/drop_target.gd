@@ -3,6 +3,9 @@ extends Node
 
 ## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
 
+## Lower values are consulted first in the group-query accept walk.
+@export var priority: int = 0
+
 
 func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
 	return false

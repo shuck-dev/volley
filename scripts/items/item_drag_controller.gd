@@ -6,9 +6,6 @@ extends Node2D
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
-const CharacterDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/character_drop_target.gd"
-)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -41,9 +38,6 @@ var _mouse_button_down: bool = false
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
-
-var _character_target: CharacterDropTargetScript = null
-var _targets: Array[DropTarget] = []
 
 
 func configure(
@@ -144,25 +138,17 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-func register_target(target: DropTarget) -> void:
-	if target == null:
-		return
-	if _targets.has(target):
-		assert(false, "ItemDragController.register_target: %s already registered" % target)
-		return
-	_targets.append(target)
-	if target is CharacterDropTargetScript:
-		_character_target = target
+## Drop targets in the scene, sorted so the lowest `priority` is consulted first.
+func _sorted_drop_targets() -> Array[DropTarget]:
+	var targets: Array[DropTarget] = []
+	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		targets.append(target as DropTarget)
+	targets.sort_custom(func(a: DropTarget, b: DropTarget) -> bool: return a.priority < b.priority)
+	return targets
 
 
-func unregister_target(target: DropTarget) -> void:
-	_targets.erase(target)
-	if target == _character_target:
-		_character_target = null
-
-
-func get_registered_targets() -> Array[DropTarget]:
-	return _targets.duplicate()
+func _character_target() -> CharacterDropTarget:
+	return get_tree().get_first_node_in_group(&"character_target") as CharacterDropTarget
 
 
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
@@ -481,7 +467,7 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for target in _targets:
+	for target in _sorted_drop_targets():
 		if target is CourtDropTarget:
 			return (target as CourtDropTarget).can_accept(item_key, world_position, 1.0)
 	return false
@@ -553,7 +539,7 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for target in _targets:
+	for target in _sorted_drop_targets():
 		if target.can_accept(item_key, world_position, scale_factor):
 			return target
 	return null
@@ -609,7 +595,7 @@ func _reset_gesture_state() -> void:
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for target in _targets:
+	for target in _sorted_drop_targets():
 		if target is CourtDropTarget:
 			(target as CourtDropTarget).set_exclude_rids(rids)
 			return
@@ -638,12 +624,14 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	return true
 
 
-func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	if _character_target == null:
+## Configures the paddle's character target once it joins the `&"character_target"` group.
+func configure_character_target(area: Area2D, paddle: Node = null) -> void:
+	var target: CharacterDropTarget = _character_target()
+	if target == null:
 		return
-	_character_target.configure(_item_manager, area, timeout_controller, paddle)
-	if not _character_target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-		_character_target.equipped_art_pressed.connect(_on_equipped_art_pressed)
+	target.configure(_item_manager, area, timeout_controller, paddle)
+	if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+		target.equipped_art_pressed.connect(_on_equipped_art_pressed)
 
 
 func _track_cursor_motion(sample_position: Vector2) -> void:
@@ -736,8 +724,9 @@ func _on_pickup_started(item_key: String) -> void:
 		rack.hide_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.hide_slot_for(item_key)
-	if _character_target != null:
-		_character_target.set_equipped_visual_visibility(item_key, false)
+	var character_target: CharacterDropTarget = _character_target()
+	if character_target != null:
+		character_target.set_equipped_visual_visibility(item_key, false)
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
@@ -748,9 +737,10 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 		rack.reveal_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.reveal_slot_for(item_key)
-	if _character_target != null:
+	var character_target: CharacterDropTarget = _character_target()
+	if character_target != null:
 		# Grab-time unequip already freed the visual; this reveal targets the snap-back case still EQUIPPED.
-		_character_target.set_equipped_visual_visibility(item_key, true)
+		character_target.set_equipped_visual_visibility(item_key, true)
 
 
 func _on_equipped_art_pressed(item_key: String) -> void:

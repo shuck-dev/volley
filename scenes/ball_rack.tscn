@@ -65,3 +65,4 @@ shape = SubResource("RectangleShape2D_ball_rack_drop")
 script = ExtResource("2_rdt")
 drop_area = NodePath("../DropTarget")
 role = &"ball"
+priority = 0

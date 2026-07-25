@@ -217,8 +217,10 @@ reconciler = NodePath("../BallReconciler")
 script = ExtResource("26_cdt")
 reconciler = NodePath("../BallReconciler")
 court_bounds = Rect2(-800, -360, 1600, 720)
+priority = 10
 
 [node name="VenueDropTarget" type="Node" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
 script = ExtResource("27_vdt")
 reconciler = NodePath("../BallReconciler")
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
+priority = 20

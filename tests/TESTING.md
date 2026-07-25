@@ -13,16 +13,16 @@ tests/
 
 ## Principles
 
-### Use real instances, not doubles
+### Use real instances for game nodes
 
-GUT `double()` has known issues in headless CI (cache bug [#491](https://github.com/bitwes/Gut/issues/491)) and doesn't properly simulate physics nodes. Use real instances with `add_child_autofree()`:
+Default to real instances with `add_child_autofree()`. A doubled node has no real behaviour, so a test that drives it through the accept-walk, a physics step, or a signal proves nothing; and a physics node (`Area2D`, `RigidBody2D`) doubled has no geometry, so collision-dependent logic reads empty. Test game logic through the real thing:
 
 ```gdscript
 var _ball: RigidBody2D
 
 func before_each() -> void:
-    _ball = load("res://scripts/ball.gd").new()
-    add_child_autofree(_ball)
+	_ball = load("res://scripts/ball.gd").new()
+	add_child_autofree(_ball)
 ```
 
 ### Only stub what you can't instantiate
@@ -67,8 +67,8 @@ When a system under test runs a `Tween` to drive state, awaiting the tween's rea
 ```gdscript
 var tween: Tween = _controller._walk_tween
 if tween != null and tween.is_valid():
-    tween.pause()
-    tween.custom_step(_walk_duration + 0.001)
+	tween.pause()
+	tween.custom_step(_walk_duration + 0.001)
 await get_tree().process_frame
 ```
 
@@ -112,13 +112,13 @@ For a behaviour that is one rule over a table of inputs, use `use_parameters` in
 
 ```gdscript
 func test_fill_ratio(p = use_parameters([
-    # [current, min, max, expected_ratio]
-    [400.0, 400.0, 700.0, 0.0],
-    [550.0, 400.0, 700.0, 0.5],
-    [700.0, 400.0, 700.0, 1.0],
+	# [current, min, max, expected_ratio]
+	[400.0, 400.0, 700.0, 0.0],
+	[550.0, 400.0, 700.0, 0.5],
+	[700.0, 400.0, 700.0, 1.0],
 ])):
-    _bar.update_speed(p[0], p[0], p[1], p[2])
-    assert_almost_eq(_fill_ratio(), p[3], 0.01)
+	_bar.update_speed(p[0], p[0], p[1], p[2])
+	assert_almost_eq(_fill_ratio(), p[3], 0.01)
 ```
 
 This is the GUT-native answer to fragmented input-table suites; collapse those rather than copy a function per input.
@@ -155,34 +155,34 @@ Worked example (SH-247 ball-grab, lifted from `tests/integration/test_real_input
 
 ```gdscript
 func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
-    _setup_ball_drag()
-    _manager.take("standard_ball")
-    _manager.activate("standard_ball")
-    var live: Ball = _reconciler.get_ball_for_key("standard_ball")
-    var viewport: Viewport = live.get_viewport()
+	_setup_ball_drag()
+	_manager.take("standard_ball")
+	_manager.activate("standard_ball")
+	var live: Ball = _reconciler.get_ball_for_key("standard_ball")
+	var viewport: Viewport = live.get_viewport()
 
-    # Press on the live ball: routes through Ball._on_input_event → emits
-    # `pressed` → ItemDragController.grab_live_ball.
-    var press := InputEventMouseButton.new()
-    press.button_index = MOUSE_BUTTON_LEFT
-    press.pressed = true
-    live.input_event.emit(viewport, press, 0)
-    assert_true(_drag.is_dragging())
+	# Press on the live ball: routes through Ball._on_input_event → emits
+	# `pressed` → ItemDragController.grab_live_ball.
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	live.input_event.emit(viewport, press, 0)
+	assert_true(_drag.is_dragging())
 
-    await get_tree().process_frame
-    assert_false(is_instance_valid(live), "live ball is freed during the hold")
+	await get_tree().process_frame
+	assert_false(is_instance_valid(live), "live ball is freed during the hold")
 
-    # Release at the rack drop target via a real mouse-up event. The drag
-    # controller's _input reads the release point off the event; the cursor
-    # position is whatever you put on the event.
-    var release := InputEventMouseButton.new()
-    release.button_index = MOUSE_BUTTON_LEFT
-    release.pressed = false
-    release.position = RACK_CENTER
-    _drag._input(release)
+	# Release at the rack drop target via a real mouse-up event. The drag
+	# controller's _input reads the release point off the event; the cursor
+	# position is whatever you put on the event.
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.pressed = false
+	release.position = RACK_CENTER
+	_drag._input(release)
 
-    assert_false(_drag.is_dragging())
-    assert_false(_manager.is_on_court("standard_ball"))
+	assert_false(_drag.is_dragging())
+	assert_false(_manager.is_on_court("standard_ball"))
 ```
 
 The same shape applies to shop drag-as-purchase: press via `pickup_area.input_event`, release via `ShopItem._input`. The release event carries `event.position` in viewport coordinates, transformed through the canvas; tests passing `canvas_transform * world_point` get a deterministic release point under headless.

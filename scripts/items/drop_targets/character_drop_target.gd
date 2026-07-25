@@ -14,13 +14,8 @@ var _paddle: Node
 
 
 func _ready() -> void:
-	call_deferred(&"_register_with_controller")
-
-
-func _register_with_controller() -> void:
-	var ctrl: Node = get_tree().get_first_node_in_group(&"drag_controller")
-	if ctrl != null:
-		ctrl.register_target(self)
+	add_to_group(&"drop_targets")
+	add_to_group(&"character_target")
 
 
 func configure(

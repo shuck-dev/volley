@@ -41,19 +41,24 @@ func before_each() -> void:
 	add_child_autofree(_drag)
 
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
-	rack_target.configure(_manager, _drop_target, &"ball")
-	autofree(rack_target)
-	_drag.register_target(rack_target)
+	rack_target.item_manager = _manager
+	rack_target.drop_area = _drop_target
+	rack_target.role = &"ball"
+	rack_target.priority = 0
+	add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
-	court_target.configure(_manager, _reconciler, get_tree().root.get_world_2d(), Rect2())
-	autofree(court_target)
-	_drag.register_target(court_target)
+	court_target.item_manager = _manager
+	court_target.reconciler = _reconciler
+	court_target.priority = 10
+	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
-	venue_target.configure(_manager, _reconciler, Rect2(Vector2(-2000, -1200), Vector2(4000, 2400)))
-	autofree(venue_target)
-	_drag.register_target(venue_target)
+	venue_target.item_manager = _manager
+	venue_target.reconciler = _reconciler
+	venue_target.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	venue_target.priority = 20
+	add_child_autofree(venue_target)
 
 
 func after_each() -> void:
@@ -141,14 +146,16 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	_drag.gear_rack_drop_target = _drop_target
 
 	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
-	gear_rack_target.configure(_manager, _drop_target, &"equipment")
-	autofree(gear_rack_target)
-	_drag.register_target(gear_rack_target)
+	gear_rack_target.item_manager = _manager
+	gear_rack_target.drop_area = _drop_target
+	gear_rack_target.role = &"equipment"
+	gear_rack_target.priority = 0
+	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	autofree(character_target)
-	_drag.register_target(character_target)
-	_drag.set_character_drop_target(
+	character_target.priority = 30
+	add_child_autofree(character_target)
+	_drag.configure_character_target(
 		ItemTestHelpers.make_drop_area(Vector2(0, 0), Vector2(40, 80), self)
 	)
 
