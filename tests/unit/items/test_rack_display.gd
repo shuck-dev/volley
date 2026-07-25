@@ -117,22 +117,23 @@ func test_rack_scene_drop_target_accepts_drop() -> void:
 	var gear_rack_scene: PackedScene = load("res://scenes/gear_rack.tscn")
 	var ball_rack_instance: Node = ball_rack_scene.instantiate()
 	var gear_rack_instance: Node = gear_rack_scene.instantiate()
-	add_child_autofree(ball_rack_instance)
-	add_child_autofree(gear_rack_instance)
 
 	var rack_target: RackDropTarget = (
 		ball_rack_instance.get_node("RackDropTarget") as RackDropTarget
 	)
 	rack_target.item_manager = manager
-	assert_true(
-		rack_target.can_accept("ball_alpha", ball_rack_instance.global_position),
-		"ball rack drop target should accept a matching ball at the rack position",
-	)
-
 	var gear_target: RackDropTarget = (
 		gear_rack_instance.get_node("RackDropTarget") as RackDropTarget
 	)
 	gear_target.item_manager = manager
+
+	add_child_autofree(ball_rack_instance)
+	add_child_autofree(gear_rack_instance)
+
+	assert_true(
+		rack_target.can_accept("ball_alpha", ball_rack_instance.global_position),
+		"ball rack drop target should accept a matching ball at the rack position",
+	)
 	assert_true(
 		gear_target.can_accept("grip", gear_rack_instance.global_position),
 		"gear rack drop target should accept matching equipment at the rack position",
