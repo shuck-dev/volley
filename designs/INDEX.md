@@ -12,7 +12,7 @@ If you are an **artist** picking up a brief, read [Art / Bible](art/bible.md) fi
 
 If you are an **engineer** new to the codebase, read [North Star](north-star.md) and the active phase folder ([01-prototype/](01-prototype/INDEX.md)).
 
-If you are a **writer** working on copy, beats, or character voice, read [Narrative](narrative/INDEX.md) and the essay [STYLE guide](ai/STYLE.md).
+If you are working on the game's **fiction**, read [Narrative](narrative/INDEX.md).
 
 If you are one of **Josh's collaborators** looking for the settled design on a specific point, the discipline folder is the answer.
 
@@ -22,7 +22,7 @@ If you are an **open-source visitor**, [The Case for Open Development](research/
 
 Two kinds of folder.
 
-**Discipline folders** hold settled work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `ai/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
+**Discipline folders** hold settled work, owned by the people who do that discipline. `art/`, `narrative/`, `tech-art/`, `process/`, `research/`, `characters/`, `concept/`. When something here changes, the next brief and the next ticket pick the change up.
 
 **Phase folders** hold drafts and decisions tied to a stage of the game's life. `01-prototype/`, `03-beta/`, `04-content/`. Work starts in the active phase folder, gets argued through, and settles into the relevant discipline folder when it earns its place in discipline.
 
@@ -43,7 +43,6 @@ The two-folder layout is the navigation: discipline tells you *what kind of doc*
 | [Tech-art](tech-art/INDEX.md) | The seam between art and engine. |
 | [Process](process/INDEX.md) | How the team writes, files, dispatches, runs the work. |
 | [Research](research/INDEX.md) | Public essay, internal plans, references, structural studies. |
-| [AI](ai/INDEX.md) | The agent system that helps build the game. |
 
 ## Phase
 
