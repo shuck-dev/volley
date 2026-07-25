@@ -6,9 +6,6 @@ extends Node2D
 signal pickup_started(item_key: String)
 signal drop_completed(item_key: String, release_position: Vector2, over_court: bool)
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
-const CharacterDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/character_drop_target.gd"
-)
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
@@ -41,8 +38,6 @@ var _mouse_button_down: bool = false
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
-
-var _character_target: CharacterDropTargetScript = null
 
 
 func configure(
@@ -79,8 +74,6 @@ func _ready() -> void:
 	if reconciler != null:
 		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
 			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
-
-	_register_builtin_targets()
 
 
 func _process(_delta: float) -> void:
@@ -145,24 +138,16 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-## Lets subsystems with their own area resources (Shop) join the target poll without owning the held body.
-func register_target(target: DropTarget) -> void:
-	if target == null:
-		return
-	add_child(target)
+## The one CourtDropTarget in the scene, or null before it joins the group.
+func _court_target() -> CourtDropTarget:
+	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		if target is CourtDropTarget:
+			return target as CourtDropTarget
+	return null
 
 
-func unregister_target(target: DropTarget) -> void:
-	remove_child(target)
-	target.queue_free()
-
-
-func get_registered_targets() -> Array[DropTarget]:
-	var result: Array[DropTarget] = []
-	for child in get_children():
-		if child is DropTarget:
-			result.append(child as DropTarget)
-	return result
+func _character_target() -> CharacterDropTarget:
+	return get_tree().get_first_node_in_group(&"character_target") as CharacterDropTarget
 
 
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
@@ -481,13 +466,10 @@ func get_loose_body_host() -> Node:
 
 ## Returns true if a release at `world_position` would be accepted by the court drop target.
 func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	for child in get_children():
-		if child is CourtDropTarget:
-			var target: CourtDropTarget = child as CourtDropTarget
-			if target.can_accept(item_key, world_position, 1.0):
-				return true
-			return false
-	return false
+	var court: CourtDropTarget = _court_target()
+	if court == null:
+		return false
+	return court.can_accept(item_key, world_position, 1.0)
 
 
 ## Re-grabs a loose body the player pressed; reuses the same body so the gesture stays diegetic.
@@ -556,13 +538,14 @@ func _apply_preserved_speed_after_accept(item_key: String) -> void:
 func _find_accepting_target(
 	item_key: String, world_position: Vector2, scale_factor: float
 ) -> DropTarget:
-	for child in get_children():
-		var target: DropTarget = child as DropTarget
-		if target == null:
+	var winner: DropTarget = null
+	for node: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		var target: DropTarget = node as DropTarget
+		if not target.can_accept(item_key, world_position, scale_factor):
 			continue
-		if target.can_accept(item_key, world_position, scale_factor):
-			return target
-	return null
+		if winner == null or target.priority < winner.priority:
+			winner = target
+	return winner
 
 
 ## Returns a held Ball to its rack slot in STORED state; safety net when rack accept's deactivate is a no-op.
@@ -615,10 +598,9 @@ func _reset_gesture_state() -> void:
 
 
 func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	for child in get_children():
-		if child is CourtDropTarget:
-			(child as CourtDropTarget).set_exclude_rids(rids)
-			return
+	var court: CourtDropTarget = _court_target()
+	if court != null:
+		court.set_exclude_rids(rids)
 
 
 func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
@@ -644,62 +626,14 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	return true
 
 
-## Wires the character drop area once the player paddle is spawned; rebuilds the priority list so the character target slots in after court.
-func set_character_drop_target(area: Area2D, paddle: Node = null) -> void:
-	for child in get_children():
-		if child is CharacterDropTarget:
-			var target: CharacterDropTarget = child as CharacterDropTarget
-			target.configure(_item_manager, area, timeout_controller, paddle)
-			_character_target = target
-			if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-				target.equipped_art_pressed.connect(_on_equipped_art_pressed)
-			return
-
-
-## Priority order: character equip, role-aware racks, court projection, venue catch-all last.
-func _register_builtin_targets() -> void:
-	for child in get_children():
-		if child is DropTarget:
-			remove_child(child)
-			child.queue_free()
-	_character_target = null
-
-	for target: DropTarget in [
-		CharacterDropTarget.new(),
-		_make_rack_target(rack_drop_target, &"ball"),
-		_make_rack_target(gear_rack_drop_target, &"equipment"),
-		_make_court_target(),
-		_make_venue_target(),
-	]:
-		if target == null:
-			continue
-		add_child(target)
-
-
-func _make_court_target() -> CourtDropTarget:
-	if reconciler == null:
-		return null
-	var court_target: CourtDropTarget = CourtDropTarget.new()
-	court_target.configure(_item_manager, reconciler, get_world_2d(), court_bounds)
-	return court_target
-
-
-func _make_rack_target(area: Area2D, role: StringName) -> RackDropTarget:
-	if area == null:
-		return null
-	var rack_target: RackDropTarget = RackDropTarget.new()
-	rack_target.configure(_item_manager, area, role)
-	return rack_target
-
-
-func _make_venue_target() -> VenueDropTarget:
-	if reconciler == null:
-		return null
-	var venue_target: VenueDropTarget = VenueDropTarget.new()
-	venue_target.configure(_item_manager, reconciler, venue_bounds)
-	# Body projection on the venue rect rejects loose drops that would land in walls/partners.
-	venue_target.set_world(get_world_2d())
-	return venue_target
+## Configures the paddle's character target once it joins the `&"character_target"` group.
+func configure_character_target(area: Area2D, paddle: Node = null) -> void:
+	var target: CharacterDropTarget = _character_target()
+	if target == null:
+		return
+	target.configure(_item_manager, area, timeout_controller, paddle)
+	if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
+		target.equipped_art_pressed.connect(_on_equipped_art_pressed)
 
 
 func _track_cursor_motion(sample_position: Vector2) -> void:
@@ -792,8 +726,9 @@ func _on_pickup_started(item_key: String) -> void:
 		rack.hide_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.hide_slot_for(item_key)
-	if _character_target != null:
-		_character_target.set_equipped_visual_visibility(item_key, false)
+	var character_target: CharacterDropTarget = _character_target()
+	if character_target != null:
+		character_target.set_equipped_visual_visibility(item_key, false)
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
@@ -804,9 +739,10 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 		rack.reveal_slot_for(item_key)
 	if gear_rack != null:
 		gear_rack.reveal_slot_for(item_key)
-	if _character_target != null:
+	var character_target: CharacterDropTarget = _character_target()
+	if character_target != null:
 		# Grab-time unequip already freed the visual; this reveal targets the snap-back case still EQUIPPED.
-		_character_target.set_equipped_visual_visibility(item_key, true)
+		character_target.set_equipped_visual_visibility(item_key, true)
 
 
 func _on_equipped_art_pressed(item_key: String) -> void:

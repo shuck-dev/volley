@@ -42,16 +42,9 @@ func _make_harness(definitions: Array) -> Dictionary:
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
-	(
-		target
-		. configure(
-			manager,
-			reconciler,
-			host.get_world_2d(),
-			Rect2(),
-		)
-	)
-	add_child_autofree(target)
+	target.item_manager = manager
+	target.reconciler = reconciler
+	host.add_child(target)
 	return {"host": host, "reconciler": reconciler, "target": target, "manager": manager}
 
 

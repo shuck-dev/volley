@@ -3,23 +3,24 @@ extends DropTarget
 
 ## Accepts ball-role items at positions whose authored shape clears walls, partners, and other balls.
 
-var _item_manager: ItemManager
+@export var item_manager: Node
+@export var reconciler: BallReconciler
+@export var court_bounds: Rect2 = Rect2()
+
+var _item_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
 var _court_bounds: Rect2
 var _exclude_rids: Array[RID] = []
 
 
-func configure(
-	item_manager: Node,
-	reconciler: BallReconciler,
-	world: World2D,
-	court_bounds: Rect2,
-) -> void:
-	_item_manager = item_manager
+func _ready() -> void:
+	_item_manager = item_manager if item_manager != null else ItemManager
 	_reconciler = reconciler
-	_world = world
 	_court_bounds = court_bounds
+	_world = get_viewport().find_world_2d()
+
+	add_to_group(&"drop_targets")
 
 
 ## RIDs to exclude from the projection (e.g. the held item's own body).

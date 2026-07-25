@@ -13,16 +13,16 @@ tests/
 
 ## Principles
 
-### Use real instances, not doubles
+### Use real instances for game nodes
 
-GUT `double()` has known issues in headless CI (cache bug [#491](https://github.com/bitwes/Gut/issues/491)) and doesn't properly simulate physics nodes. Use real instances with `add_child_autofree()`:
+Default to real instances with `add_child_autofree()`. A doubled node has no real behaviour, so a test that drives it through the accept-walk, a physics step, or a signal proves nothing; and a physics node (`Area2D`, `RigidBody2D`) doubled has no geometry, so collision-dependent logic reads empty. Test game logic through the real thing:
 
 ```gdscript
 var _ball: RigidBody2D
 
 func before_each() -> void:
-    _ball = load("res://scripts/ball.gd").new()
-    add_child_autofree(_ball)
+	_ball = load("res://scripts/ball.gd").new()
+	add_child_autofree(_ball)
 ```
 
 ### Only stub what you can't instantiate
@@ -67,8 +67,8 @@ When a system under test runs a `Tween` to drive state, awaiting the tween's rea
 ```gdscript
 var tween: Tween = _controller._walk_tween
 if tween != null and tween.is_valid():
-    tween.pause()
-    tween.custom_step(_walk_duration + 0.001)
+	tween.pause()
+	tween.custom_step(_walk_duration + 0.001)
 await get_tree().process_frame
 ```
 
@@ -91,18 +91,7 @@ GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no 
 
 `before_all` / `before_each` / `after_each` / `after_all`. An inner `class X extends GutTest` is collected as its own group with its own lifecycle hooks; this is the only grouping GUT offers and it is one level deep (no nested-class nesting). Test order within a class is not guaranteed.
 
-### Assertions (the families we use)
-
-| Family | Methods |
-|---|---|
-| Equality | `assert_eq`, `assert_ne`, `assert_almost_eq`, `assert_almost_ne`, `assert_same`, `assert_eq_deep` |
-| Ordering | `assert_gt`, `assert_gte`, `assert_lt`, `assert_lte`, `assert_between` |
-| Truth / null | `assert_true`, `assert_false`, `assert_null`, `assert_not_null` |
-| Type | `assert_is`, `assert_typeof`, `assert_has_method` |
-| Signals | `assert_signal_emitted`, `assert_signal_emitted_with_parameters`, `assert_signal_emit_count`, `assert_has_signal` (call `watch_signals(obj)` first) |
-| Collections | `assert_has`, `assert_does_not_have` |
-| Lifecycle / leaks | `assert_freed`, `assert_not_freed`, `assert_no_new_orphans` |
-| Engine output | `assert_engine_error`, `assert_push_warning` (and their `_count` forms) |
+### Assertions
 
 Prefer the signal asserts for behaviour that other systems hear; prefer public-state equality for the rest. The accessor/property assert helpers (`assert_accessors`, `assert_property`, `assert_exports`) pin a getter/setter pair by name, which is implementation, so avoid them unless the accessor contract itself is the player-facing surface.
 
@@ -112,13 +101,13 @@ For a behaviour that is one rule over a table of inputs, use `use_parameters` in
 
 ```gdscript
 func test_fill_ratio(p = use_parameters([
-    # [current, min, max, expected_ratio]
-    [400.0, 400.0, 700.0, 0.0],
-    [550.0, 400.0, 700.0, 0.5],
-    [700.0, 400.0, 700.0, 1.0],
+	# [current, min, max, expected_ratio]
+	[400.0, 400.0, 700.0, 0.0],
+	[550.0, 400.0, 700.0, 0.5],
+	[700.0, 400.0, 700.0, 1.0],
 ])):
-    _bar.update_speed(p[0], p[0], p[1], p[2])
-    assert_almost_eq(_fill_ratio(), p[3], 0.01)
+	_bar.update_speed(p[0], p[0], p[1], p[2])
+	assert_almost_eq(_fill_ratio(), p[3], 0.01)
 ```
 
 This is the GUT-native answer to fragmented input-table suites; collapse those rather than copy a function per input.
@@ -138,68 +127,6 @@ This is the GUT-native answer to fragmented input-table suites; collapse those r
 ### A green GUT run is the authority for "does it compile", not `--check-only`
 
 `godot --headless --check-only --script <file>` reports "Compilation failed" on any script that references an autoload singleton (`ItemManager`, `GameRules`, `Stats`) or a global `class_name`, because the isolated check loads no autoloads. The script is fine; this is an open engine bug ([godotengine/godot#111515](https://github.com/godotengine/godot/issues/111515), `--debug` even crashes on it). Validate in project context instead: a GUT run loads every script with autoloads up. When an isolated check disagrees with a green suite, trust the suite.
-
-## Real-input rule for player-facing acceptance criteria
-
-Every player-facing AC has at least one integration test that drives the player's real input handler end-to-end. The handler is whichever of `_input`, `_unhandled_input`, or `Area2D.input_event` the production code routes through. The test seam (helpers like `start_drag()`, `attempt_release(position)`, `grab_from_rack()`) is for tuning isolation only; it cannot be the sole verification of an AC.
-
-This rule exists because two consecutive Rides on the equip-loop drag work shipped with full green test suites and failed Josh's hands-on playtest on the same player ACs ([SH-218](https://linear.app/shuck-games/issue/SH-218), then [SH-247](https://linear.app/shuck-games/issue/SH-247) / [SH-245](https://linear.app/shuck-games/issue/SH-245)). Both rounds covered the seam; neither covered the press-drag-release the player actually performs. Naming and enforcing the rule is the fix.
-
-The test seam is fine for: stat clamping, edge-cap branches, save round-trips, error paths the input handler delegates to. When you use the seam in those cases, leave a one-line comment naming why the real-input path is covered elsewhere.
-
-### Standard pattern: press-drag-release through real `InputEventMouseButton`
-
-The press routes through whichever `Area2D.input_event` signal the production scene listens to (`pickup_area.input_event` on a shop slot, `ClickArea.input_event` on a rack slot, `Ball.input_event` on a live ball). The release routes through the controller's `_input(InputEventMouseButton)` handler with the cursor position carried on the event itself. Both ends are deterministic under headless; no viewport polling involved.
-
-Worked example (SH-247 ball-grab, lifted from `tests/integration/test_real_input_drag_paths.gd`):
-
-```gdscript
-func test_real_press_on_live_ball_then_drag_to_rack_returns_token() -> void:
-    _setup_ball_drag()
-    _manager.take("standard_ball")
-    _manager.activate("standard_ball")
-    var live: Ball = _reconciler.get_ball_for_key("standard_ball")
-    var viewport: Viewport = live.get_viewport()
-
-    # Press on the live ball: routes through Ball._on_input_event → emits
-    # `pressed` → ItemDragController.grab_live_ball.
-    var press := InputEventMouseButton.new()
-    press.button_index = MOUSE_BUTTON_LEFT
-    press.pressed = true
-    live.input_event.emit(viewport, press, 0)
-    assert_true(_drag.is_dragging())
-
-    await get_tree().process_frame
-    assert_false(is_instance_valid(live), "live ball is freed during the hold")
-
-    # Release at the rack drop target via a real mouse-up event. The drag
-    # controller's _input reads the release point off the event; the cursor
-    # position is whatever you put on the event.
-    var release := InputEventMouseButton.new()
-    release.button_index = MOUSE_BUTTON_LEFT
-    release.pressed = false
-    release.position = RACK_CENTER
-    _drag._input(release)
-
-    assert_false(_drag.is_dragging())
-    assert_false(_manager.is_on_court("standard_ball"))
-```
-
-The same shape applies to shop drag-as-purchase: press via `pickup_area.input_event`, release via `ShopItem._input`. The release event carries `event.position` in viewport coordinates, transformed through the canvas; tests passing `canvas_transform * world_point` get a deterministic release point under headless.
-
-## Audit of `tests/integration/`
-
-Integration tests are reserved for full player-loop completions (per `memory/feedback_integration_tests_loop_completion_only.md`): a rally, an equip cycle, a save/load round-trip, a shop-to-court spawn, a real-input drag from rack to court. Two-component glue and signal-handoff coverage lives in `tests/unit/`. Every player-facing AC drives the real input handler at least once.
-
-| File | Loop completion(s) covered | Real-input coverage |
-|---|---|---|
-| `test_real_input_drag_paths.gd` | Shop press-drag-release purchase loop (SH-253), live-ball mid-rally grab → rack-return loop (SH-252b). | All cases drive `pickup_area.input_event` / `Area2D.input_event` and `_input(InputEventMouseButton)`. Reference file for the standard pattern. |
-| `test_ball_regime_transitions.gd` | Rack → court spawn, court → rack regrow, rack → mid-venue OUT_REST, save/reload preserves live ball, real press-drag-release on rack (SH-245), real press on live ball mid-rally (SH-247), pre-existing scene Ball grabbable mid-rally. | SH-245 / SH-247 / SH-262 scenarios drive `Area2D.input_event`; the earlier scenarios pin placement-state outcomes that the real-input scenarios then exercise end-to-end. |
-| `test_placement_drives_effects.gd` | Equipment rack → player → rack cycle, ball rack → court → rack cycle, save/reload preserves placement and running effects. | None needed; placement is data, not pointer input. |
-| `test_miss_to_rest_to_regrab_preserves_identity.gd` | PLAY → OUT_REST → OUT_HELD → PLAY on a single Ball instance. | Drives the production drag-controller path. |
-| `test_shop_drag_drop.gd` | Real-input shop press-drag-release (SH-253), shop-to-court ball spawn (SH-320), shop-to-venue OUT_REST spawn. | All three drive real `_input` or the production drag-controller path. |
-| `test_shop_arrivals_inactive.gd` | Shop take → ball-rack arrival, shop take → gear-rack arrival, dev-panel purchase → court-spawn (ball) and gear-rack landing (equipment, kit-cap gated). | `_take_from_shop` drives `pickup_area.input_event` + `ShopItem._input`. |
-| `test_timeout_blocks_autoplay_drive.gd` | SH-405 autoplay vs timeout: drive call during in-flight timeout is a no-op via `drive_blocked`. | Drives the production paddle.drive() path; timeout is real `TimeoutController`. |
 
 ## Known gaps
 

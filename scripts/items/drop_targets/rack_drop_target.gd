@@ -3,19 +3,21 @@ extends DropTarget
 
 ## Accepts role-matched items inside the rack's drop area; deactivates on-court items so the rack regrows.
 
-var _item_manager: ItemManager
+@export var item_manager: Node
+@export var drop_area: Area2D
+@export var role: StringName = &"ball"
+
+var _item_manager: Node
 var _drop_area: Area2D
 var _role: StringName
 
 
-func configure(
-	item_manager: Node,
-	drop_area: Area2D,
-	role: StringName,
-) -> void:
-	_item_manager = item_manager
+func _ready() -> void:
+	_item_manager = item_manager if item_manager != null else ItemManager
 	_drop_area = drop_area
 	_role = role
+
+	add_to_group(&"drop_targets")
 
 
 func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:

@@ -3,6 +3,18 @@ extends GutTest
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const TimeoutControllerScript: GDScript = preload("res://scripts/core/timeout_controller.gd")
+const CourtDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/court_drop_target.gd"
+)
+const VenueDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/venue_drop_target.gd"
+)
+const RackDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/rack_drop_target.gd"
+)
+const CharacterDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/character_drop_target.gd"
+)
 
 var _manager: Node
 var _rack: RackDisplay
@@ -26,8 +38,27 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
-	_drag.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	add_child_autofree(_drag)
+
+	var rack_target: RackDropTarget = RackDropTargetScript.new()
+	rack_target.item_manager = _manager
+	rack_target.drop_area = _drop_target
+	rack_target.role = &"ball"
+	rack_target.priority = 0
+	add_child_autofree(rack_target)
+
+	var court_target: CourtDropTarget = CourtDropTargetScript.new()
+	court_target.item_manager = _manager
+	court_target.reconciler = _reconciler
+	court_target.priority = 10
+	add_child_autofree(court_target)
+
+	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
+	venue_target.item_manager = _manager
+	venue_target.reconciler = _reconciler
+	venue_target.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+	venue_target.priority = 20
+	add_child_autofree(venue_target)
 
 
 func after_each() -> void:
@@ -113,7 +144,18 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	_drag.timeout_controller = timeout
 	_drag.gear_rack = _rack
 	_drag.gear_rack_drop_target = _drop_target
-	_drag.set_character_drop_target(
+
+	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
+	gear_rack_target.item_manager = _manager
+	gear_rack_target.drop_area = _drop_target
+	gear_rack_target.role = &"equipment"
+	gear_rack_target.priority = 0
+	add_child_autofree(gear_rack_target)
+
+	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
+	character_target.priority = 30
+	add_child_autofree(character_target)
+	_drag.configure_character_target(
 		ItemTestHelpers.make_drop_area(Vector2(0, 0), Vector2(40, 80), self)
 	)
 

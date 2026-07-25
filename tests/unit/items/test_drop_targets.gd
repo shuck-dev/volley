@@ -34,8 +34,10 @@ func test_rack_target_accepts_matching_ball_role() -> void:
 	manager.items.assign([ball] as Array[ItemDefinition])
 	var area: Area2D = ItemTestHelpers.make_drop_area(Vector2(-500, 0), Vector2(200, 100), self)
 	var target: RackDropTarget = RackDropTargetScript.new()
+	target.item_manager = manager
+	target.drop_area = area
+	target.role = &"ball"
 	add_child_autofree(target)
-	target.configure(manager, area, &"ball")
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 
 
@@ -49,8 +51,10 @@ func test_court_target_rejects_equipment_role() -> void:
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
+	target.item_manager = manager
+	target.reconciler = reconciler
+	target.court_bounds = Rect2()
 	add_child_autofree(target)
-	target.configure(manager, reconciler, host.get_world_2d(), Rect2())
 	assert_false(target.can_accept("grip", Vector2.ZERO))
 
 
@@ -64,7 +68,9 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	var venue := Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
 	var court := Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	var target: VenueDropTarget = VenueDropTargetScript.new()
+	target.item_manager = manager
+	target.reconciler = reconciler
+	target.venue_bounds = venue
 	add_child_autofree(target)
-	target.configure(manager, reconciler, venue)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))

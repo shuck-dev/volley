@@ -6,6 +6,10 @@ extends DropTarget
 var _shop_area: Area2D
 
 
+func _ready() -> void:
+	add_to_group(&"drop_targets")
+
+
 func configure(shop_area: Area2D) -> void:
 	_shop_area = shop_area
 

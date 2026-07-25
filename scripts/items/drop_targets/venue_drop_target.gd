@@ -3,20 +3,23 @@ extends DropTarget
 
 ## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
 
-var _item_manager: ItemManager
+@export var item_manager: Node
+@export var reconciler: BallReconciler
+@export var venue_bounds: Rect2 = Rect2()
+
+var _item_manager: Node
 var _reconciler: BallReconciler
 var _venue_bounds: Rect2
 var _world: World2D
 
 
-func configure(
-	item_manager: Node,
-	reconciler: BallReconciler,
-	venue_bounds: Rect2,
-) -> void:
-	_item_manager = item_manager
+func _ready() -> void:
+	_item_manager = item_manager if item_manager != null else ItemManager
 	_reconciler = reconciler
 	_venue_bounds = venue_bounds
+	_world = get_viewport().find_world_2d()
+
+	add_to_group(&"drop_targets")
 
 
 func set_world(world: World2D) -> void:

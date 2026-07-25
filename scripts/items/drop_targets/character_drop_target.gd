@@ -13,6 +13,11 @@ var _timeout_controller: TimeoutController
 var _paddle: Node
 
 
+func _ready() -> void:
+	add_to_group(&"drop_targets")
+	add_to_group(&"character_target")
+
+
 func configure(
 	item_manager: Node,
 	drop_area: Area2D,

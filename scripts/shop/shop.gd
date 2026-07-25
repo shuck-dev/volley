@@ -15,9 +15,7 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var restock_button: Button
 
 var _item_manager: ItemManager
-## Cached so tree_exiting can unregister after `get_tree()` would return null.
-var _registered_target: ShopDropTarget = null
-var _registered_controller: Node = null
+var _shop_drop_target: ShopDropTarget = null
 var _refresh_count: int = 0
 
 
@@ -30,7 +28,7 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_update_soul_label(_item_manager.get_soul_balance())
 	_spawn_items()
-	_register_shop_target()
+	_spawn_shop_target()
 	if not tree_exiting.is_connected(_on_tree_exiting):
 		tree_exiting.connect(_on_tree_exiting)
 	if restock_button != null:
@@ -40,35 +38,20 @@ func _ready() -> void:
 	_update_restock_button()
 
 
-## Deferred so the controller has run `_ready` and joined the `drag_controller` group.
-func _register_shop_target() -> void:
-	call_deferred(&"_do_register_shop_target")
-
-
-func _do_register_shop_target() -> void:
-	var controller: Node = get_tree().get_first_node_in_group(&"drag_controller")
-	if controller == null:
-		return
-	if not controller.has_method("register_target"):
-		return
+func _spawn_shop_target() -> void:
 	var target: ShopDropTarget = ShopDropTarget.new()
 	target.configure(shop_area)
-	controller.register_target(target)
-	_registered_target = target
-	_registered_controller = controller
+	add_child(target)
+	_shop_drop_target = target
 
 
-## Scene reload can free the Shop while the controller lives on, leaving a freed Area2D in the poll.
+## Scene reload can free the Shop before this fires; free the target explicitly since it holds
+## no scene ownership of its own.
 func _on_tree_exiting() -> void:
-	if _registered_target == null:
+	if _shop_drop_target == null:
 		return
-	if (
-		is_instance_valid(_registered_controller)
-		and _registered_controller.has_method("unregister_target")
-	):
-		_registered_controller.unregister_target(_registered_target)
-	_registered_target = null
-	_registered_controller = null
+	_shop_drop_target.free()
+	_shop_drop_target = null
 
 
 func _spawn_items() -> void:
