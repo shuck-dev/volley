@@ -37,6 +37,8 @@ Each built-in drop target (`CourtDropTarget`, `VenueDropTarget`, `RackDropTarget
 
 Priority replaces registration order. Today a target's place in the accept walk is an emergent property of when it registered; a declared `priority` makes that order explicit and visible on the target itself, so a reader sees "rack before court before venue" in the data rather than inferring it from wiring timing.
 
+The character target needs more than the accept walk: the controller configures it with the paddle and timeout, wires its `equipped_art_pressed` signal, and toggles its equipped visuals during a drag. It reaches that one target through a `&"character_target"` sub-group, a `get_first_node_in_group` when the paddle spawns, replacing the `set_character_drop_target()` push and the `_character_target` handle the old registration kept.
+
 ## Scene changes
 
 **`court.tscn`:** remove the `ItemDragController` node; the `CourtDropTarget` is itself an Area2D (`input_pickable = false`, RectangleShape2D 1600x720) that joins `&"drop_targets"`, sized where Court's players can see it.
@@ -45,13 +47,13 @@ Priority replaces registration order. Today a target's place in the accept walk 
 
 **`project.godot`:** register `ItemDragController` as an autoload.
 
-**`court.gd`:** reach the controller by its autoload name; keep the `set_character_drop_target()` wiring from `_ready()`, since that is a method call, not an export.
+**`court.gd`:** reach the controller by its autoload name. The paddle's character target joins `&"character_target"` itself, so Court no longer hand-wires it through `set_character_drop_target()`.
 
 ## What the refactor removes and keeps
 
-Removed: every `@export` on `ItemDragController`; the `configure()` public API; `register_target()`, `unregister_target()`, and the `_targets` list; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and targets; the `drop_area` and `court_area` NodePaths.
+Removed: every `@export` on `ItemDragController`; the `configure()` public API; `register_target()`, `unregister_target()`, and the `_targets` list; `set_character_drop_target()` and the `_character_target` handle; `_register_builtin_targets()` and its factory methods; the `Rect2` bounds on the controller and targets; the `drop_area` and `court_area` NodePaths.
 
-Changed: `ItemDragController` becomes an autoload; `DropTarget` extends `Area2D`; drop targets join `&"drop_targets"` and carry a `priority`.
+Changed: `ItemDragController` becomes an autoload; `DropTarget` extends `Area2D`; drop targets join `&"drop_targets"` and carry a `priority`; the character target joins `&"character_target"`.
 
 Kept: the accept walk (first `can_accept` wins), now over a sorted group query rather than a held list; group-based discovery, generalized to every collaborator. Tests place targets in the group and drive the controller through its public accept path, with nothing to mock.
 
@@ -59,7 +61,7 @@ Kept: the accept walk (first `can_accept` wins), now over a sorted group query r
 
 Five PRs carry this refactor, and each one closes a concern end to end rather than a layer of the stack. Production code, scenes, tests, and any consumer land together; the old surface for that concern is deleted in the same PR, so main never sits on a half-migrated seam.
 
-**PR 1: targets carry themselves.** The four drop targets become scene nodes: each joins `&"drop_targets"`, declares its `priority`, and the controller finds them by querying that group and sorting, first `can_accept` wins. `register_target()`, `unregister_target()`, `_targets`, and the factory methods are gone. Court and Venue still carry their bounds as `Rect2` exports and the controller still lives in the scene; this PR changes only how targets are discovered. Closes the "drop targets live as scene nodes, not runtime-constructed" criterion on its own.
+**PR 1: targets carry themselves.** The four drop targets become scene nodes: each joins `&"drop_targets"`, declares its `priority`, and the controller finds them by querying that group and sorting, first `can_accept` wins. The character target also joins `&"character_target"` so the controller reaches it for equipping without the old push. `register_target()`, `unregister_target()`, `_targets`, `set_character_drop_target()`, and the factory methods are gone. Court and Venue still carry their bounds as `Rect2` exports and the controller still lives in the scene; this PR changes only how targets are discovered. Closes the "drop targets live as scene nodes, not runtime-constructed" criterion on its own.
 
 **PR 2: a drop target is its own Area2D.** `DropTarget` extends `Area2D` instead of `Node`, so every target owns its geometry directly rather than pointing at a separate area. This unifies the four targets on one shape and clears the base-class barrier that kept a target's script off an Area2D. `RackDropTarget`'s `drop_area` export and the shop target's constructed area collapse into the target node itself.
 
