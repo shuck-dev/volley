@@ -1,6 +1,8 @@
 class_name VenueDropTarget
 extends DropTarget
 
+## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
+
 @export var reconciler: BallReconciler
 @export var venue_bounds: Rect2 = Rect2()
 
@@ -16,7 +18,6 @@ func _ready() -> void:
 	_reconciler = reconciler
 	_venue_bounds = venue_bounds
 	_world = get_viewport().find_world_2d()
-	input_pickable = false
 
 	add_to_group(&"drop_targets")
 

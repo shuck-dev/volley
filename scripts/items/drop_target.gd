@@ -2,10 +2,6 @@ class_name DropTarget
 extends Area2D
 
 
-func _ready() -> void:
-	input_pickable = false
-
-
 func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
 	return false
 

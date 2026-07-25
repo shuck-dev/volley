@@ -17,11 +17,11 @@ func _ready() -> void:
 	_reconciler = reconciler
 	_court_bounds = court_bounds
 	_world = get_viewport().find_world_2d()
-	input_pickable = false
 
 	add_to_group(&"drop_targets")
 
 
+## RIDs to exclude from the projection (e.g. the held item's own body).
 func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 
