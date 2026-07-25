@@ -29,6 +29,3 @@
 - [STYLE](research-STYLE)
 - [Visual Positioning](research-visual-positioning)
 - [Early Clone Games](research-early-clone-games)
-
-**AI**
-- [Swarm Architecture](ai-swarm-architecture)
