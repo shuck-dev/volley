@@ -4,19 +4,16 @@ extends DropTarget
 ## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
 
 @export var reconciler: BallReconciler
-@export var venue_bounds: Rect2 = Rect2()
 
 var item_manager: Node
 var _item_manager: Node
 var _reconciler: BallReconciler
-var _venue_bounds: Rect2
 var _world: World2D
 
 
 func _ready() -> void:
 	_item_manager = item_manager if item_manager != null else ItemManager
 	_reconciler = reconciler
-	_venue_bounds = venue_bounds
 	_world = get_viewport().find_world_2d()
 
 	add_to_group(&"drop_targets")
@@ -27,17 +24,7 @@ func set_world(world: World2D) -> void:
 
 
 func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
-	if _venue_bounds.size == Vector2.ZERO:
-		return false
-	var lo: Vector2 = _venue_bounds.position
-	var hi: Vector2 = lo + _venue_bounds.size
-	var inside: bool = (
-		world_position.x >= lo.x
-		and world_position.x <= hi.x
-		and world_position.y >= lo.y
-		and world_position.y <= hi.y
-	)
-	if not inside:
+	if not contains_point(world_position):
 		return false
 	if _world == null:
 		return true

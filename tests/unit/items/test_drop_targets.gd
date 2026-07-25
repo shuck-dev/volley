@@ -53,7 +53,7 @@ func test_court_target_rejects_equipment_role() -> void:
 	var target: CourtDropTarget = CourtDropTargetScript.new()
 	target.item_manager = manager
 	target.reconciler = reconciler
-	target.court_bounds = Rect2()
+	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.COURT_SIZE))
 	add_child_autofree(target)
 	assert_false(target.can_accept("grip", Vector2.ZERO))
 
@@ -65,12 +65,10 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	var reconciler: BallReconciler = BallReconcilerScript.new()
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
-	var venue := Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
-	var court := Rect2(Vector2(-600, -400), Vector2(1200, 800))
 	var target: VenueDropTarget = VenueDropTargetScript.new()
 	target.item_manager = manager
 	target.reconciler = reconciler
-	target.venue_bounds = venue
+	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.VENUE_SIZE))
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))

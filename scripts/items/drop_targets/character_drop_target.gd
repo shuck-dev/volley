@@ -162,4 +162,4 @@ func _is_equipment_role(item_key: String) -> bool:
 
 
 func _position_inside_area(world_position: Vector2) -> bool:
-	return area_world_rect().has_point(world_position)
+	return contains_point(world_position)

@@ -14,6 +14,10 @@ const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
 )
 
+## Drop regions wide enough that a test releasing near the origin lands inside them.
+const COURT_SIZE: Vector2 = Vector2(1600, 720)
+const VENUE_SIZE: Vector2 = Vector2(4000, 2400)
+
 ## Mirror of the priorities authored in the shipped scenes; lower is consulted first.
 const CHARACTER_PRIORITY: int = 0
 const RACK_PRIORITY: int = 20
@@ -75,10 +79,9 @@ static func make_drop_area(position: Vector2, size: Vector2, test: Node) -> Area
 	return area
 
 
-## Builds the rack, court and venue targets at production priorities so drop-target
-## precedence in a test matches what the shipped scenes resolve to.
+## Priorities mirror the shipped scenes so precedence in a test resolves as it does in play.
 static func make_drop_targets(
-	manager: Node, reconciler: Node, rack_position: Vector2, venue_bounds: Rect2, test: Node
+	manager: Node, reconciler: Node, rack_position: Vector2, test: Node
 ) -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = manager
@@ -92,13 +95,14 @@ static func make_drop_targets(
 	court_target.item_manager = manager
 	court_target.reconciler = reconciler
 	court_target.priority = COURT_PRIORITY
+	court_target.add_child(attach_rect_shape(COURT_SIZE))
 	test.add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.item_manager = manager
 	venue_target.reconciler = reconciler
-	venue_target.venue_bounds = venue_bounds
 	venue_target.priority = VENUE_PRIORITY
+	venue_target.add_child(attach_rect_shape(VENUE_SIZE))
 	test.add_child_autofree(venue_target)
 
 
