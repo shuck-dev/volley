@@ -16,3 +16,9 @@ How the agent reconstitutes itself across sessions: the rule corpus (structure a
 |---|---|
 | [Memory Forest](memory-forest.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a forest of typed parent-trees with a small crown the agent descends, each root indexing its own tree, maintained by reconciliation, offered not forced. An instance of the general forest model (extract to forest-model.md pending). |
 | [Letters as Memory](letters-as-memory.md) | The letters-to-my-next-self as a human-modelled memory gradient (recent full, fading band, consolidated digest), carrying self and posture across sessions the agent does not remember. |
+
+## References
+
+| Doc | Purpose |
+|---|---|
+| [Why AI Loves Em-Dashes](why-ai-loves-em-dashes.md) | Research note on the em-dash prose tell, why the model reaches for it and how the no-em-dash rule counters it. |
