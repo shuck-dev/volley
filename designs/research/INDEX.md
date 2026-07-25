@@ -19,6 +19,7 @@ The essay's style guide and the planning, audit, and critique docs are agent-fac
 | [Open Development Plan](open-development-plan.md) | Earlier internal plan that seeded the essay. |
 | [Paddle Bounce](paddle-bounce.md) | How paddle-and-ball games actually compute return angle. Background for `01-prototype/tech/03-paddle-bounce.md`. |
 | [Points vs NoEstimates](points-vs-noestimates.md) | The case for dropping story points: where points came from and the political reason they exist, why estimates miss (the planning fallacy) and why the velocity fix breaks (Goodhart), and the NoEstimates alternative of forecasting from flow. |
+| [Why AI Loves Em-Dashes](why-ai-loves-em-dashes.md) | Research note on the em-dash prose tell, why the model reaches for it and how the no-em-dash rule counters it. |
 
 ## Working folders
 
