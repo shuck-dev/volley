@@ -8,7 +8,7 @@ Background research that informs Volley!'s direction. Each doc stands alone; tog
 |---|---|
 | [The Case for Open Development](the-case-for-open-development.md) | The published essay. ~15,900 words across fourteen sections plus bibliography. The case for open development as the most reliable practice for a new indie to be seen, with implications past games. |
 
-The essay's style guide and the planning, audit, and critique docs are agent-facing and now live under [`ai/`](../ai/INDEX.md).
+The AI-tooling design docs live in the sister repo, `volley-ai`.
 
 ## Sister research
 
