@@ -68,18 +68,6 @@
     }
   },
   "mcp": {
-    "godotiq": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "godotiq"
-      ],
-      "enabled": true,
-      "environment": {
-        "GODOTIQ_PROJECT_ROOT": "/home/josh/gamedev/volley",
-        "GODOTIQ_ADDON_HOST": "172.30.160.1"
-      }
-    },
     "linear": {
       "type": "remote",
       "url": "https://mcp.linear.app/mcp",
