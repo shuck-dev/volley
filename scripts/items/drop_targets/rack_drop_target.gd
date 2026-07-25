@@ -1,8 +1,6 @@
 class_name RackDropTarget
 extends DropTarget
 
-## Accepts role-matched items inside the rack's drop area; deactivates on-court items so the rack regrows.
-
 @export var item_manager: Node
 @export var role: StringName = &"ball"
 

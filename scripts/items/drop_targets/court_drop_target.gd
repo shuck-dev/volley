@@ -1,8 +1,6 @@
 class_name CourtDropTarget
 extends DropTarget
 
-## Accepts ball-role items at positions whose authored shape clears walls, partners, and other balls.
-
 @export var item_manager: Node
 @export var reconciler: BallReconciler
 @export var court_bounds: Rect2 = Rect2()
@@ -24,7 +22,6 @@ func _ready() -> void:
 	add_to_group(&"drop_targets")
 
 
-## RIDs to exclude from the projection (e.g. the held item's own body).
 func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 

@@ -1,8 +1,6 @@
 class_name VenueDropTarget
 extends DropTarget
 
-## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
-
 @export var item_manager: Node
 @export var reconciler: BallReconciler
 @export var venue_bounds: Rect2 = Rect2()

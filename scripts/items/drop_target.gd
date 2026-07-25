@@ -1,8 +1,6 @@
 class_name DropTarget
 extends Area2D
 
-## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
-
 
 func _ready() -> void:
 	input_pickable = false

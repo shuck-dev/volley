@@ -1,8 +1,6 @@
 class_name ShopDropTarget
 extends DropTarget
 
-## Releases inside the shop area cancel the gesture back to the source slot with no purchase.
-
 
 func _ready() -> void:
 	add_to_group(&"drop_targets")

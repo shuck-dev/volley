@@ -1,8 +1,6 @@
 class_name CharacterDropTarget
 extends DropTarget
 
-## Accepts equipment-role items dropped on the main character during the equip pose; capacity gate lives in ItemManager.equip.
-
 signal equipped_art_pressed(item_key: String)
 
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
@@ -144,7 +142,6 @@ func _on_equipped_press_input(
 	equipped_art_pressed.emit(item_key)
 
 
-## Toggles visibility of the mounted art; used during a drag-from-character gesture so the player sees one body, not two.
 func set_equipped_visual_visibility(item_key: String, visible_state: bool) -> void:
 	if not is_inside_tree():
 		return
