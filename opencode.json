@@ -16,6 +16,9 @@
       "gh pr close*": "deny",
       "gh release delete*": "deny",
       "gh release create*": "deny",
+      // Must run pre-commit hooks.
+      "git commit *--no-verify*": "deny",
+      "git commit *-n*": "deny",
       // Deny open-surface issue operations across all agents.
       "gh issue *": "deny",
       "*gh issue*": "deny",
