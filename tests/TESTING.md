@@ -91,18 +91,7 @@ GUT 9.x is a third-party Asset Library plugin (`addons/gut/`); Godot 4 ships no 
 
 `before_all` / `before_each` / `after_each` / `after_all`. An inner `class X extends GutTest` is collected as its own group with its own lifecycle hooks; this is the only grouping GUT offers and it is one level deep (no nested-class nesting). Test order within a class is not guaranteed.
 
-### Assertions (the families we use)
-
-| Family | Methods |
-|---|---|
-| Equality | `assert_eq`, `assert_ne`, `assert_almost_eq`, `assert_almost_ne`, `assert_same`, `assert_eq_deep` |
-| Ordering | `assert_gt`, `assert_gte`, `assert_lt`, `assert_lte`, `assert_between` |
-| Truth / null | `assert_true`, `assert_false`, `assert_null`, `assert_not_null` |
-| Type | `assert_is`, `assert_typeof`, `assert_has_method` |
-| Signals | `assert_signal_emitted`, `assert_signal_emitted_with_parameters`, `assert_signal_emit_count`, `assert_has_signal` (call `watch_signals(obj)` first) |
-| Collections | `assert_has`, `assert_does_not_have` |
-| Lifecycle / leaks | `assert_freed`, `assert_not_freed`, `assert_no_new_orphans` |
-| Engine output | `assert_engine_error`, `assert_push_warning` (and their `_count` forms) |
+### Assertions
 
 Prefer the signal asserts for behaviour that other systems hear; prefer public-state equality for the rest. The accessor/property assert helpers (`assert_accessors`, `assert_property`, `assert_exports`) pin a getter/setter pair by name, which is implementation, so avoid them unless the accessor contract itself is the player-facing surface.
 
@@ -138,10 +127,6 @@ This is the GUT-native answer to fragmented input-table suites; collapse those r
 ### A green GUT run is the authority for "does it compile", not `--check-only`
 
 `godot --headless --check-only --script <file>` reports "Compilation failed" on any script that references an autoload singleton (`ItemManager`, `GameRules`, `Stats`) or a global `class_name`, because the isolated check loads no autoloads. The script is fine; this is an open engine bug ([godotengine/godot#111515](https://github.com/godotengine/godot/issues/111515), `--debug` even crashes on it). Validate in project context instead: a GUT run loads every script with autoloads up. When an isolated check disagrees with a green suite, trust the suite.
-
-## Integration Tests
-
-Integration tests are reserved for player actions. If a full gameplay-loop is too complex to test, split it up into mutlitple test suites.
 
 ## Known gaps
 
