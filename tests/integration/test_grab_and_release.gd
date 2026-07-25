@@ -42,9 +42,14 @@ func before_each() -> void:
 
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = _manager
-	rack_target.drop_area = _drop_target
 	rack_target.role = &"ball"
 	rack_target.priority = 0
+	rack_target.position = _drop_target.position
+	var rack_target_shape := CollisionShape2D.new()
+	var rack_target_rect := RectangleShape2D.new()
+	rack_target_rect.size = Vector2(300, 200)
+	rack_target_shape.shape = rack_target_rect
+	rack_target.add_child(rack_target_shape)
 	add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
@@ -147,17 +152,20 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 
 	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
 	gear_rack_target.item_manager = _manager
-	gear_rack_target.drop_area = _drop_target
 	gear_rack_target.role = &"equipment"
 	gear_rack_target.priority = 0
+	gear_rack_target.position = _drop_target.position
+	var gear_rack_target_shape := CollisionShape2D.new()
+	var gear_rack_target_rect := RectangleShape2D.new()
+	gear_rack_target_rect.size = Vector2(300, 200)
+	gear_rack_target_shape.shape = gear_rack_target_rect
+	gear_rack_target.add_child(gear_rack_target_shape)
 	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
 	character_target.priority = 30
 	add_child_autofree(character_target)
-	_drag.configure_character_target(
-		ItemTestHelpers.make_drop_area(Vector2(0, 0), Vector2(40, 80), self)
-	)
+	_drag.configure_character_target(null)
 
 	assert_true(_drag.grab_equipped_from_character("gear", Vector2.ZERO))
 	assert_eq(_manager.get_placement("gear"), Placement.STORED)

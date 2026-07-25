@@ -19,6 +19,7 @@ func _ready() -> void:
 	_reconciler = reconciler
 	_court_bounds = court_bounds
 	_world = get_viewport().find_world_2d()
+	input_pickable = false
 
 	add_to_group(&"drop_targets")
 

@@ -56,15 +56,10 @@ position = Vector2(22.5, 30)
 [node name="SlotMarker7" type="Node2D" parent="SlotContainer" unique_id=1742093727]
 position = Vector2(67.5, 30)
 
-[node name="DropTarget" type="Area2D" parent="." unique_id=1742093712]
-monitoring = false
-monitorable = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DropTarget" unique_id=1742093713]
-shape = SubResource("RectangleShape2D_gear_rack_drop")
-
-[node name="RackDropTarget" type="Node" parent="." unique_id=1742093714 node_paths=PackedStringArray("drop_area")]
+[node name="RackDropTarget" type="Area2D" parent="." unique_id=1742093714]
 script = ExtResource("2_rdt")
-drop_area = NodePath("../DropTarget")
 role = &"equipment"
-priority = 0
+drop_priority = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RackDropTarget"]
+shape = SubResource("RectangleShape2D_gear_rack_drop")

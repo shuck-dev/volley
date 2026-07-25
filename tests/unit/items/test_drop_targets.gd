@@ -20,10 +20,14 @@ func after_each() -> void:
 
 
 func test_shop_target_accepts_inside_shop_zone() -> void:
-	var area: Area2D = ItemTestHelpers.make_drop_area(Vector2(100, 0), Vector2(200, 100), self)
 	var target: ShopDropTarget = ShopDropTargetScript.new()
+	target.position = Vector2(100, 0)
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(200, 100)
+	shape.shape = rect
+	target.add_child(shape)
 	add_child_autofree(target)
-	target.configure(area)
 	assert_true(target.can_accept("ball_alpha", Vector2(100, 0)))
 	assert_false(target.can_accept("ball_alpha", Vector2(900, 900)))
 
@@ -32,11 +36,15 @@ func test_rack_target_accepts_matching_ball_role() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
 	manager.items.assign([ball] as Array[ItemDefinition])
-	var area: Area2D = ItemTestHelpers.make_drop_area(Vector2(-500, 0), Vector2(200, 100), self)
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.item_manager = manager
-	target.drop_area = area
 	target.role = &"ball"
+	target.position = Vector2(-500, 0)
+	var rack_shape := CollisionShape2D.new()
+	var rack_rect := RectangleShape2D.new()
+	rack_rect.size = Vector2(200, 100)
+	rack_shape.shape = rack_rect
+	target.add_child(rack_shape)
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 

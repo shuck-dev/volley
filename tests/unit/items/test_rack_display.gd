@@ -108,7 +108,11 @@ func test_court_role_items_never_appear_on_either_rack() -> void:
 	)
 
 
-func test_rack_exposes_a_drop_target_child() -> void:
+func test_rack_scene_drop_target_accepts_drop() -> void:
+	var ball := _make_item("ball_alpha", &"ball")
+	var grip := _make_item("grip", &"equipment")
+	var manager: Node = _make_manager_with([ball, grip])
+
 	var ball_rack_scene: PackedScene = load("res://scenes/ball_rack.tscn")
 	var gear_rack_scene: PackedScene = load("res://scenes/gear_rack.tscn")
 	var ball_rack_instance: Node = ball_rack_scene.instantiate()
@@ -116,21 +120,22 @@ func test_rack_exposes_a_drop_target_child() -> void:
 	add_child_autofree(ball_rack_instance)
 	add_child_autofree(gear_rack_instance)
 
-	assert_not_null(
-		ball_rack_instance.get_node_or_null("DropTarget"),
-		"ball rack scene should expose a DropTarget child",
+	var rack_target: RackDropTarget = (
+		ball_rack_instance.get_node("RackDropTarget") as RackDropTarget
 	)
-	assert_not_null(
-		gear_rack_instance.get_node_or_null("DropTarget"),
-		"gear rack scene should expose a DropTarget child",
-	)
+	rack_target.item_manager = manager
 	assert_true(
-		ball_rack_instance.get_node("DropTarget") is Area2D,
-		"ball rack DropTarget should be an Area2D",
+		rack_target.can_accept("ball_alpha", ball_rack_instance.global_position),
+		"ball rack drop target should accept a matching ball at the rack position",
 	)
+
+	var gear_target: RackDropTarget = (
+		gear_rack_instance.get_node("RackDropTarget") as RackDropTarget
+	)
+	gear_target.item_manager = manager
 	assert_true(
-		gear_rack_instance.get_node("DropTarget") is Area2D,
-		"gear rack DropTarget should be an Area2D",
+		gear_target.can_accept("grip", gear_rack_instance.global_position),
+		"gear rack drop target should accept matching equipment at the rack position",
 	)
 
 

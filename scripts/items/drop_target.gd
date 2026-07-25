@@ -1,10 +1,14 @@
 class_name DropTarget
-extends Node
+extends Area2D
 
 ## Abstract drop target consulted by ItemDragController; first `can_accept` wins.
 
 ## Lower values are consulted first in the group-query accept walk.
 @export var priority: int = 0
+
+
+func _ready() -> void:
+	input_pickable = false
 
 
 func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
@@ -34,12 +38,10 @@ static func clamp_to_rect(world_position: Vector2, bounds: Rect2) -> Vector2:
 	)
 
 
-## Returns empty `Rect2()` when the area is missing/freed or has no rectangular collider.
-static func area_world_rect(area: Area2D) -> Rect2:
-	if not is_instance_valid(area):
-		return Rect2()
+## Returns empty `Rect2()` when self has no rectangular collider child.
+func area_world_rect() -> Rect2:
 	var shape_owner: CollisionShape2D = null
-	for child in area.get_children():
+	for child in get_children():
 		if child is CollisionShape2D:
 			shape_owner = child
 			break
@@ -48,6 +50,6 @@ static func area_world_rect(area: Area2D) -> Rect2:
 	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
 	if rectangle == null:
 		return Rect2()
-	var half_extents: Vector2 = rectangle.size * 0.5
-	var center: Vector2 = area.global_position + shape_owner.position
-	return Rect2(center - half_extents, rectangle.size)
+	var half_size: Vector2 = rectangle.size * 0.5
+	var center: Vector2 = global_position + shape_owner.position
+	return Rect2(center - half_size, rectangle.size)
