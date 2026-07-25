@@ -16,14 +16,3 @@ How the agent reconstitutes itself across sessions: the rule corpus (structure a
 |---|---|
 | [Memory Forest](memory-forest.md) | Why the flat rule corpus fails the agent, and the design that replaces it: a forest of typed parent-trees with a small crown the agent descends, each root indexing its own tree, maintained by reconciliation, offered not forced. An instance of the general forest model (extract to forest-model.md pending). |
 | [Letters as Memory](letters-as-memory.md) | The letters-to-my-next-self as a human-modelled memory gradient (recent full, fading band, consolidated digest), carrying self and posture across sessions the agent does not remember. |
-
-## Agent-assisted writing
-
-The open-development essay stays human-facing under [`research/`](../research/the-case-for-open-development.md); its style guide, audits, and critiques are agent-facing and live here.
-
-| Doc | Purpose |
-|---|---|
-| [STYLE](STYLE.md) | The guide every editor, human or agent, reads before touching the essay: voice, forbidden tics, citation rules, AI prose tells. |
-| [Why AI Loves Em-Dashes](why-ai-loves-em-dashes.md) | Research note on the em-dash prose tell. |
-| `meta/` | Essay planning and audits: `BOOK-EXTENSION`, `PERSUASION-AUDIT`, and `archive/` of completed fact-check, citation, and misattribution audits. |
-| `critiques/` | Critical reviews of the essay across rounds. |
