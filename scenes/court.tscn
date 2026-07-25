@@ -227,9 +227,9 @@ court_bounds = Rect2(-800, -360, 1600, 720)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CourtDropTarget" unique_id=1418307811]
 shape = SubResource("RectangleShape2D_court_drop")
-debug_color = Color(0.85867465, 0.25372228, 0.6592964, 0.41960785)
 
 [node name="VenueDropTarget" type="Area2D" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+priority = 20
 script = ExtResource("27_vdt")
 reconciler = NodePath("../BallReconciler")
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
