@@ -45,11 +45,7 @@ func before_each() -> void:
 	rack_target.role = &"ball"
 	rack_target.priority = 0
 	rack_target.position = _drop_target.position
-	var rack_target_shape := CollisionShape2D.new()
-	var rack_target_rect := RectangleShape2D.new()
-	rack_target_rect.size = Vector2(300, 200)
-	rack_target_shape.shape = rack_target_rect
-	rack_target.add_child(rack_target_shape)
+	rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
@@ -156,15 +152,12 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	gear_rack_target.role = &"equipment"
 	gear_rack_target.priority = 0
 	gear_rack_target.position = _drop_target.position
-	var gear_rack_target_shape := CollisionShape2D.new()
-	var gear_rack_target_rect := RectangleShape2D.new()
-	gear_rack_target_rect.size = Vector2(300, 200)
-	gear_rack_target_shape.shape = gear_rack_target_rect
-	gear_rack_target.add_child(gear_rack_target_shape)
+	gear_rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
 	character_target.priority = 30
+	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
 	add_child_autofree(character_target)
 	_drag.configure_character_target(null)
 
@@ -175,3 +168,33 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	_drag._gesture_below_threshold = false
 	assert_true(_drag.attempt_release(_drop_target.global_position))
 	assert_false(_drag.is_dragging())
+
+
+func test_grab_equipped_from_character_and_release_near_character_stays_equipped() -> void:
+	var equipment: ItemDefinition = ItemTestHelpers.make_equipment_item("gear")
+	var typed_items: Array[ItemDefinition] = [equipment]
+	for existing in _manager.items:
+		typed_items.append(existing)
+	_manager.items.assign(typed_items)
+	_manager.take("gear")
+	_manager.state.item_placements["gear"] = Placement.EQUIPPED
+
+	var timeout: TimeoutController = TimeoutControllerScript.new()
+	add_child_autofree(timeout)
+	timeout._state = TimeoutController.State.AT_EQUIP_POSE
+	_drag.timeout_controller = timeout
+
+	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
+	character_target.priority = 30
+	character_target.position = Vector2(3000, 3000)
+	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
+	add_child_autofree(character_target)
+	_drag.configure_character_target(null)
+
+	assert_true(_drag.grab_equipped_from_character("gear", Vector2.ZERO))
+	assert_eq(_manager.get_placement("gear"), Placement.STORED)
+
+	_drag._track_cursor_motion(character_target.global_position)
+	_drag._gesture_below_threshold = false
+	assert_true(_drag.attempt_release(character_target.global_position))
+	assert_eq(_manager.get_placement("gear"), Placement.EQUIPPED)

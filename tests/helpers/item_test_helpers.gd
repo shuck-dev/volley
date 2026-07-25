@@ -55,10 +55,14 @@ static func make_rack(manager: Node, test: Node) -> RackDisplay:
 static func make_drop_area(position: Vector2, size: Vector2, test: Node) -> Area2D:
 	var area := Area2D.new()
 	area.global_position = position
+	area.add_child(attach_rect_shape(size))
+	test.add_child_autofree(area)
+	return area
+
+
+static func attach_rect_shape(size: Vector2) -> CollisionShape2D:
 	var collision := CollisionShape2D.new()
 	var rectangle := RectangleShape2D.new()
 	rectangle.size = size
 	collision.shape = rectangle
-	area.add_child(collision)
-	test.add_child_autofree(area)
-	return area
+	return collision

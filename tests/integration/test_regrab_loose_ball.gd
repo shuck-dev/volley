@@ -55,11 +55,7 @@ func before_each() -> void:
 	rack_target.role = &"ball"
 	rack_target.priority = 0
 	rack_target.position = _drop_target.position
-	var rack_target_shape := CollisionShape2D.new()
-	var rack_target_rect := RectangleShape2D.new()
-	rack_target_rect.size = Vector2(300, 200)
-	rack_target_shape.shape = rack_target_rect
-	rack_target.add_child(rack_target_shape)
+	rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
