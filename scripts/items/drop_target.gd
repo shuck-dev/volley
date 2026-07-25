@@ -20,7 +20,6 @@ static func get_definition(item_manager: Node, item_key: String) -> ItemDefiniti
 
 
 ## A target with no rectangular collider contains nothing, so it accepts nothing.
-## Edges count as inside, which Rect2.has_point would exclude at the max corner.
 func contains_point(world_position: Vector2) -> bool:
 	var shape_owner: CollisionShape2D = _shape_owner()
 	if shape_owner == null:
@@ -28,16 +27,8 @@ func contains_point(world_position: Vector2) -> bool:
 	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
 	if rectangle == null:
 		return false
-	var bounds: Rect2 = rectangle.get_rect()
-	var local: Vector2 = (
-		(global_transform * shape_owner.transform).affine_inverse() * world_position
-	)
-	return (
-		local.x >= bounds.position.x
-		and local.x <= bounds.end.x
-		and local.y >= bounds.position.y
-		and local.y <= bounds.end.y
-	)
+	var transform: Transform2D = global_transform * shape_owner.transform
+	return rectangle.get_rect().has_point(transform.affine_inverse() * world_position)
 
 
 func _shape_owner() -> CollisionShape2D:
