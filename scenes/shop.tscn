@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://hvh6q02lrntj"]
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_shop"]
+[ext_resource type="Script" uid="uid://byx6hv8g11f5e" path="res://scripts/items/drop_targets/shop_drop_target.gd" id="2_shopdrop"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(500, 287)
@@ -27,6 +28,8 @@ vertical_alignment = 1
 [node name="ShopArea" type="Area2D" parent="." unique_id=477736559]
 position = Vector2(0, -80)
 input_pickable = false
+script = ExtResource("2_shopdrop")
+priority = 10
 
 [node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea" unique_id=922703322]
 position = Vector2(0, 92.5)

@@ -15,7 +15,6 @@ const DEFAULT_DRAG_TUNING: ShopDragTuning = preload("res://resources/shop/shop_d
 @export var restock_button: Button
 
 var _item_manager: ItemManager
-var _shop_drop_target: ShopDropTarget = null
 var _refresh_count: int = 0
 
 
@@ -28,30 +27,11 @@ func _ready() -> void:
 	_item_manager.item_level_changed.connect(_on_item_level_changed)
 	_update_soul_label(_item_manager.get_soul_balance())
 	_spawn_items()
-	_spawn_shop_target()
-	if not tree_exiting.is_connected(_on_tree_exiting):
-		tree_exiting.connect(_on_tree_exiting)
 	if restock_button != null:
 		restock_button.focus_mode = Control.FOCUS_NONE
 		if not restock_button.pressed.is_connected(_on_restock_pressed):
 			restock_button.pressed.connect(_on_restock_pressed)
 	_update_restock_button()
-
-
-func _spawn_shop_target() -> void:
-	var target: ShopDropTarget = ShopDropTarget.new()
-	target.configure(shop_area)
-	add_child(target)
-	_shop_drop_target = target
-
-
-## Scene reload can free the Shop before this fires; free the target explicitly since it holds
-## no scene ownership of its own.
-func _on_tree_exiting() -> void:
-	if _shop_drop_target == null:
-		return
-	_shop_drop_target.free()
-	_shop_drop_target = null
 
 
 func _spawn_items() -> void:

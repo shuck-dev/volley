@@ -71,7 +71,7 @@ collision_layer = 0
 collision_mask = 0
 input_pickable = false
 script = ExtResource("12_cdt")
-priority = 30
+priority = 0
 
 [node name="DropCollision" type="CollisionShape2D" parent="CharacterDropTarget" unique_id=2001000011]
 position = Vector2(-8, 22.5)

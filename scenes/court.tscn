@@ -30,6 +30,12 @@ size = Vector2(22, 1005.5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_court_floor"]
 size = Vector2(1600, 20)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_court_drop"]
+size = Vector2(1600, 720)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
+size = Vector2(2400, 1440)
+
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "timeout_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
 court_config = ExtResource("25_courtcfg")
@@ -205,22 +211,36 @@ ball_rack = NodePath("../BallRack")
 [node name="ItemDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "gear_rack", "gear_rack_drop_target", "timeout_controller", "reconciler")]
 script = ExtResource("22_drag")
 rack = NodePath("../BallRack")
-rack_drop_target = NodePath("../BallRack/DropTarget")
+rack_drop_target = NodePath("../BallRack/RackDropTarget")
 gear_rack = NodePath("../GearRack")
-gear_rack_drop_target = NodePath("../GearRack/DropTarget")
+gear_rack_drop_target = NodePath("../GearRack/RackDropTarget")
 timeout_controller = NodePath("../TimeoutController")
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
 court_bounds = Rect2(-800, -360, 1600, 720)
 reconciler = NodePath("../BallReconciler")
 
-[node name="CourtDropTarget" type="Node" parent="." unique_id=1902001003 node_paths=PackedStringArray("reconciler")]
+[node name="CourtDropTarget" type="Area2D" parent="." unique_id=1902001003 node_paths=PackedStringArray("reconciler")]
+collision_layer = 0
+collision_mask = 0
+input_pickable = false
+monitoring = false
+priority = 30
 script = ExtResource("26_cdt")
 reconciler = NodePath("../BallReconciler")
 court_bounds = Rect2(-800, -360, 1600, 720)
-priority = 10
 
-[node name="VenueDropTarget" type="Node" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CourtDropTarget" unique_id=1418307811]
+shape = SubResource("RectangleShape2D_court_drop")
+
+[node name="VenueDropTarget" type="Area2D" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+collision_layer = 0
+collision_mask = 0
+input_pickable = false
+monitoring = false
+priority = 50
 script = ExtResource("27_vdt")
 reconciler = NodePath("../BallReconciler")
 venue_bounds = Rect2(-1200, -720, 2400, 1440)
-priority = 20
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VenueDropTarget" unique_id=509177813]
+shape = SubResource("RectangleShape2D_venue_drop")

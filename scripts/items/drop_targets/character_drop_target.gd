@@ -8,7 +8,6 @@ signal equipped_art_pressed(item_key: String)
 const _EQUIPPED_ART_GROUP_PREFIX: String = "equipped_art:"
 
 var _item_manager: ItemManager
-var _drop_area: Area2D
 var _timeout_controller: TimeoutController
 var _paddle: Node
 
@@ -19,13 +18,9 @@ func _ready() -> void:
 
 
 func configure(
-	item_manager: Node,
-	drop_area: Area2D,
-	timeout_controller: TimeoutController,
-	paddle: Node = null
+	item_manager: Node, timeout_controller: TimeoutController = null, paddle: Node = null
 ) -> void:
 	_item_manager = item_manager
-	_drop_area = drop_area
 	_timeout_controller = timeout_controller
 	_paddle = paddle
 
@@ -39,8 +34,8 @@ func configure(
 	_hydrate_equipped_visuals()
 
 
-func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0) -> bool:
-	if _drop_area == null or _item_manager == null:
+func can_accept(item_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
+	if _item_manager == null:
 		return false
 	if not _is_equipment_role(item_key):
 		return false
@@ -48,7 +43,7 @@ func can_accept(item_key: String, position: Vector2, _scale_factor: float = 1.0)
 		return false
 	if _timeout_controller.get_state() != TimeoutController.State.AT_EQUIP_POSE:
 		return false
-	return _position_inside_area(position)
+	return _position_inside_area(world_position)
 
 
 func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
@@ -57,7 +52,7 @@ func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) ->
 	# No-op on failure so the held token stays put.
 	if not _item_manager.equip(item_key):
 		return
-	# Mount happens via item_placement_changed → EQUIPPED, keeping equip and unequip symmetric.
+	# Mount happens via item_placement_changed -> EQUIPPED, keeping equip and unequip symmetric.
 
 
 # Group lookup keeps the visual discoverable by RackDropTarget without state on either target.
@@ -87,11 +82,11 @@ func _mount_equipped_visual(item_key: String) -> void:
 	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
 	if definition == null or definition.art == null:
 		return
-	if _drop_area == null or not _drop_area.is_inside_tree():
+	if not is_inside_tree():
 		return
 
 	# Idempotency guard: hydrate + signal can both fire for the same item; second call must no-op.
-	if not _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)).is_empty():
+	if not get_tree().get_nodes_in_group(equipped_art_group(item_key)).is_empty():
 		return
 
 	if _paddle == null:
@@ -144,19 +139,18 @@ func _on_equipped_press_input(
 	equipped_art_pressed.emit(item_key)
 
 
-## Toggles visibility of the mounted art; used during a drag-from-character gesture so the player sees one body, not two.
 func set_equipped_visual_visibility(item_key: String, visible_state: bool) -> void:
-	if _drop_area == null or not _drop_area.is_inside_tree():
+	if not is_inside_tree():
 		return
-	for visual: Node in _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)):
+	for visual: Node in get_tree().get_nodes_in_group(equipped_art_group(item_key)):
 		if visual is CanvasItem:
 			(visual as CanvasItem).visible = visible_state
 
 
 func _free_equipped_visual(item_key: String) -> void:
-	if _drop_area == null or not _drop_area.is_inside_tree():
+	if not is_inside_tree():
 		return
-	for visual: Node in _drop_area.get_tree().get_nodes_in_group(equipped_art_group(item_key)):
+	for visual: Node in get_tree().get_nodes_in_group(equipped_art_group(item_key)):
 		visual.queue_free()
 
 
@@ -168,4 +162,4 @@ func _is_equipment_role(item_key: String) -> bool:
 
 
 func _position_inside_area(world_position: Vector2) -> bool:
-	return DropTarget.area_world_rect(_drop_area).has_point(world_position)
+	return area_world_rect().has_point(world_position)

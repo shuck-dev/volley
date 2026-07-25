@@ -1,12 +1,10 @@
 class_name CourtDropTarget
 extends DropTarget
 
-## Accepts ball-role items at positions whose authored shape clears walls, partners, and other balls.
-
-@export var item_manager: Node
 @export var reconciler: BallReconciler
 @export var court_bounds: Rect2 = Rect2()
 
+var item_manager: Node
 var _item_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
@@ -28,18 +26,18 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 
 
-func can_accept(item_key: String, position: Vector2, scale_factor: float = 1.0) -> bool:
+func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not _is_ball_role(item_key):
 		return false
-	if _court_bounds.size != Vector2.ZERO and not _court_bounds.has_point(position):
+	if _court_bounds.size != Vector2.ZERO and not _court_bounds.has_point(world_position):
 		return false
-	return _projection_clear(item_key, position, scale_factor)
+	return _projection_clear(item_key, world_position, scale_factor)
 
 
-func accept(item_key: String, position: Vector2, gesture_velocity: Vector2) -> void:
+func accept(item_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
 	if _reconciler == null:
 		return
-	_reconciler.bring_into_play(item_key, position, gesture_velocity)
+	_reconciler.bring_into_play(item_key, world_position, gesture_velocity)
 
 
 func _is_ball_role(item_key: String) -> bool:
@@ -49,7 +47,7 @@ func _is_ball_role(item_key: String) -> bool:
 	return definition.role == &"ball"
 
 
-func _projection_clear(item_key: String, position: Vector2, scale_factor: float) -> bool:
+func _projection_clear(item_key: String, world_position: Vector2, scale_factor: float) -> bool:
 	if _world == null:
 		return true
 	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
@@ -61,7 +59,7 @@ func _projection_clear(item_key: String, position: Vector2, scale_factor: float)
 	var shape: Shape2D = _scaled_shape(definition.at_rest_shape, scale_factor)
 	var params: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	params.shape = shape
-	params.transform = Transform2D(0.0, position)
+	params.transform = Transform2D(0.0, world_position)
 	params.collide_with_bodies = true
 	params.collide_with_areas = false
 	if not _exclude_rids.is_empty():

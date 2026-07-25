@@ -1,0 +1,65 @@
+## Verifies the reconciler keeps the same Ball instance across grab, release, re-grab, and re-release.
+extends GutTest
+
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
+const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const VENUE_BOUNDS: Rect2 = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
+
+var _manager: Node
+var _host: Node2D
+var _rack: RackDisplay
+var _drop_target: Area2D
+var _reconciler: BallReconciler
+var _drag: ItemDragController
+
+
+func before_each() -> void:
+	_manager = ItemFactory.create_manager(self)
+	_manager.items.assign([ItemTestHelpers.make_ball_item("ball_alpha")] as Array[ItemDefinition])
+	_manager.economy.soul_balance = 10000
+
+	_host = Node2D.new()
+	_host.name = "BallHost"
+	add_child_autofree(_host)
+
+	_rack = ItemTestHelpers.make_rack(_manager, self)
+	_drop_target = ItemTestHelpers.make_drop_area(Vector2(-1500, 0), Vector2(300, 200), self)
+
+	_reconciler = BallReconcilerScript.new()
+	_reconciler.configure(_manager)
+	_host.add_child(_reconciler)
+
+	_drag = ItemDragControllerScript.new()
+	_drag.configure(_manager, _rack, _drop_target, _reconciler)
+	add_child_autofree(_drag)
+
+	ItemTestHelpers.make_drop_targets(
+		_manager, _reconciler, _drop_target.position, VENUE_BOUNDS, self
+	)
+
+
+func after_each() -> void:
+	await get_tree().process_frame
+
+
+func test_regrab_preserves_instance_id() -> void:
+	_manager.take("ball_alpha")
+	_manager.activate("ball_alpha")
+	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_not_null(live, "precondition: an in-play Ball exists")
+	var live_id: int = live.get_instance_id()
+
+	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	_drag._gesture_below_threshold = false
+	assert_true(_drag.attempt_release(Vector2(50, 25)))
+
+	var first_release: Ball = _reconciler.get_ball_for_key("ball_alpha")
+	assert_eq(first_release.get_instance_id(), live_id)
+
+	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha").play_state, Ball.PlayState.OUT_HELD)
+
+	_drag._gesture_below_threshold = false
+	assert_true(_drag.attempt_release(Vector2(50, 25)))
+
+	assert_eq(_reconciler.get_ball_for_key("ball_alpha").get_instance_id(), live_id)

@@ -627,11 +627,11 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 
 
 ## Configures the paddle's character target once it joins the `&"character_target"` group.
-func configure_character_target(area: Area2D, paddle: Node = null) -> void:
+func configure_character_target(paddle: Node = null) -> void:
 	var target: CharacterDropTarget = _character_target()
 	if target == null:
 		return
-	target.configure(_item_manager, area, timeout_controller, paddle)
+	target.configure(_item_manager, timeout_controller, paddle)
 	if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
 		target.equipped_art_pressed.connect(_on_equipped_art_pressed)
 

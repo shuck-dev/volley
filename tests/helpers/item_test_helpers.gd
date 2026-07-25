@@ -4,6 +4,21 @@ extends RefCounted
 ## Shared fixtures for ball-drag and reconciler test suites.
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+const RackDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/rack_drop_target.gd"
+)
+const CourtDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/court_drop_target.gd"
+)
+const VenueDropTargetScript: GDScript = preload(
+	"res://scripts/items/drop_targets/venue_drop_target.gd"
+)
+
+## Mirror of the priorities authored in the shipped scenes; lower is consulted first.
+const CHARACTER_PRIORITY: int = 0
+const RACK_PRIORITY: int = 20
+const COURT_PRIORITY: int = 30
+const VENUE_PRIORITY: int = 50
 
 
 static func stub_art() -> PackedScene:
@@ -55,10 +70,41 @@ static func make_rack(manager: Node, test: Node) -> RackDisplay:
 static func make_drop_area(position: Vector2, size: Vector2, test: Node) -> Area2D:
 	var area := Area2D.new()
 	area.global_position = position
+	area.add_child(attach_rect_shape(size))
+	test.add_child_autofree(area)
+	return area
+
+
+## Builds the rack, court and venue targets at production priorities so drop-target
+## precedence in a test matches what the shipped scenes resolve to.
+static func make_drop_targets(
+	manager: Node, reconciler: Node, rack_position: Vector2, venue_bounds: Rect2, test: Node
+) -> void:
+	var rack_target: RackDropTarget = RackDropTargetScript.new()
+	rack_target.item_manager = manager
+	rack_target.role = &"ball"
+	rack_target.priority = RACK_PRIORITY
+	rack_target.position = rack_position
+	rack_target.add_child(attach_rect_shape(Vector2(300, 200)))
+	test.add_child_autofree(rack_target)
+
+	var court_target: CourtDropTarget = CourtDropTargetScript.new()
+	court_target.item_manager = manager
+	court_target.reconciler = reconciler
+	court_target.priority = COURT_PRIORITY
+	test.add_child_autofree(court_target)
+
+	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
+	venue_target.item_manager = manager
+	venue_target.reconciler = reconciler
+	venue_target.venue_bounds = venue_bounds
+	venue_target.priority = VENUE_PRIORITY
+	test.add_child_autofree(venue_target)
+
+
+static func attach_rect_shape(size: Vector2) -> CollisionShape2D:
 	var collision := CollisionShape2D.new()
 	var rectangle := RectangleShape2D.new()
 	rectangle.size = size
 	collision.shape = rectangle
-	area.add_child(collision)
-	test.add_child_autofree(area)
-	return area
+	return collision
