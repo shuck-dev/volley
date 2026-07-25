@@ -22,12 +22,15 @@ static func get_definition(item_manager: Node, item_key: String) -> ItemDefiniti
 ## A target with no rectangular collider contains nothing, so it accepts nothing.
 func contains_point(world_position: Vector2) -> bool:
 	var shape_owner: CollisionShape2D = _shape_owner()
+
 	if shape_owner == null:
 		return false
+
 	var rectangle: RectangleShape2D = shape_owner.shape as RectangleShape2D
+
 	if rectangle == null:
 		return false
-	var transform: Transform2D = global_transform * shape_owner.transform
+
 	return rectangle.get_rect().has_point(transform.affine_inverse() * world_position)
 
 
