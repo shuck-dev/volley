@@ -29,6 +29,7 @@ vertical_alignment = 1
 position = Vector2(0, -80)
 input_pickable = false
 script = ExtResource("2_shopdrop")
+priority = 10
 
 [node name="ShopAreaShape" type="CollisionShape2D" parent="ShopArea" unique_id=922703322]
 position = Vector2(0, 92.5)

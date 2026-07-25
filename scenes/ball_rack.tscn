@@ -62,7 +62,7 @@ monitoring = false
 input_pickable = false
 script = ExtResource("2_rdt")
 role = &"ball"
-priority = 0
+priority = 20
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RackDropTarget" unique_id=1349315972]
 shape = SubResource("RectangleShape2D_ball_rack_drop")

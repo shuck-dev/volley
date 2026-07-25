@@ -53,7 +53,7 @@ func before_each() -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = _manager
 	rack_target.role = &"ball"
-	rack_target.priority = 0
+	rack_target.priority = 20
 	rack_target.position = _drop_target.position
 	rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(rack_target)
@@ -61,14 +61,14 @@ func before_each() -> void:
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.item_manager = _manager
 	court_target.reconciler = _reconciler
-	court_target.priority = 10
+	court_target.priority = 30
 	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.item_manager = _manager
 	venue_target.reconciler = _reconciler
 	venue_target.venue_bounds = VENUE_BOUNDS
-	venue_target.priority = 20
+	venue_target.priority = 50
 	add_child_autofree(venue_target)
 
 

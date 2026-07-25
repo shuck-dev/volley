@@ -43,7 +43,7 @@ func before_each() -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = _manager
 	rack_target.role = &"ball"
-	rack_target.priority = 0
+	rack_target.priority = 20
 	rack_target.position = _drop_target.position
 	rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(rack_target)
@@ -51,14 +51,14 @@ func before_each() -> void:
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.item_manager = _manager
 	court_target.reconciler = _reconciler
-	court_target.priority = 10
+	court_target.priority = 30
 	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.item_manager = _manager
 	venue_target.reconciler = _reconciler
 	venue_target.venue_bounds = Rect2(Vector2(-2000, -1200), Vector2(4000, 2400))
-	venue_target.priority = 20
+	venue_target.priority = 50
 	add_child_autofree(venue_target)
 
 
@@ -131,7 +131,7 @@ func test_grab_live_ball_and_release_over_court_resumes_rally() -> void:
 	assert_eq(reinstated.global_position, court_point)
 
 
-func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
+func _configure_equipped_gear_drag() -> void:
 	var equipment: ItemDefinition = ItemTestHelpers.make_equipment_item("gear")
 	var typed_items: Array[ItemDefinition] = [equipment]
 	for existing in _manager.items:
@@ -147,16 +147,20 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	_drag.gear_rack = _rack
 	_drag.gear_rack_drop_target = _drop_target
 
+
+func test_grab_equipped_from_character_and_release_over_rack_away_from_character_stores() -> void:
+	_configure_equipped_gear_drag()
+
 	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
 	gear_rack_target.item_manager = _manager
 	gear_rack_target.role = &"equipment"
-	gear_rack_target.priority = 0
+	gear_rack_target.priority = 20
 	gear_rack_target.position = _drop_target.position
 	gear_rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
 	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.priority = 30
+	character_target.priority = 0
 	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
 	add_child_autofree(character_target)
 	_drag.configure_character_target(null)
@@ -168,25 +172,21 @@ func test_grab_equipped_from_character_and_release_on_rack_unequips() -> void:
 	_drag._gesture_below_threshold = false
 	assert_true(_drag.attempt_release(_drop_target.global_position))
 	assert_false(_drag.is_dragging())
+	assert_eq(_manager.get_placement("gear"), Placement.STORED)
 
 
-func test_grab_equipped_from_character_and_release_near_character_stays_equipped() -> void:
-	var equipment: ItemDefinition = ItemTestHelpers.make_equipment_item("gear")
-	var typed_items: Array[ItemDefinition] = [equipment]
-	for existing in _manager.items:
-		typed_items.append(existing)
-	_manager.items.assign(typed_items)
-	_manager.take("gear")
-	_manager.state.item_placements["gear"] = Placement.EQUIPPED
+func test_grab_equipped_from_character_and_release_over_character_and_rack_stays_equipped() -> void:
+	_configure_equipped_gear_drag()
 
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.AT_EQUIP_POSE
-	_drag.timeout_controller = timeout
+	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
+	gear_rack_target.item_manager = _manager
+	gear_rack_target.role = &"equipment"
+	gear_rack_target.priority = 20
+	gear_rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
+	add_child_autofree(gear_rack_target)
 
 	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.priority = 30
-	character_target.position = Vector2(3000, 3000)
+	character_target.priority = 0
 	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
 	add_child_autofree(character_target)
 	_drag.configure_character_target(null)
