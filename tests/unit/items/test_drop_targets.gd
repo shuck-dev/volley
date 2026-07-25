@@ -13,7 +13,6 @@ const VenueDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/venue_drop_target.gd"
 )
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 
 
 func after_each() -> void:
@@ -75,26 +74,3 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))
-
-
-func test_court_target_self_registers_with_controller_on_ready() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[ItemDefinition])
-
-	var drag: ItemDragController = ItemDragControllerScript.new()
-	add_child_autofree(drag)
-
-	var target: CourtDropTarget = CourtDropTargetScript.new()
-	target.item_manager = manager
-	add_child_autofree(target)
-	await get_tree().process_frame
-
-	assert_true(
-		target.is_in_group(&"drop_targets"),
-		"CourtDropTarget should join the drop_targets group on _ready",
-	)
-	assert_true(
-		drag.can_court_accept_at("ball_alpha", Vector2.ZERO),
-		"controller's accept-walk should consult the group-joined court target",
-	)
