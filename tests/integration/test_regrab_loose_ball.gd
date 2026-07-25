@@ -53,7 +53,7 @@ func before_each() -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = _manager
 	rack_target.role = &"ball"
-	rack_target.priority = 0
+	rack_targetdrop_priority = 0
 	rack_target.position = _drop_target.position
 	var rack_target_shape := CollisionShape2D.new()
 	var rack_target_rect := RectangleShape2D.new()
@@ -65,14 +65,14 @@ func before_each() -> void:
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.item_manager = _manager
 	court_target.reconciler = _reconciler
-	court_target.priority = 10
+	court_targetdrop_priority = 10
 	add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.item_manager = _manager
 	venue_target.reconciler = _reconciler
 	venue_target.venue_bounds = VENUE_BOUNDS
-	venue_target.priority = 20
+	venue_targetdrop_priority = 20
 	add_child_autofree(venue_target)
 
 

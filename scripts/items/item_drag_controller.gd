@@ -543,7 +543,7 @@ func _find_accepting_target(
 		var target: DropTarget = node as DropTarget
 		if not target.can_accept(item_key, world_position, scale_factor):
 			continue
-		if winner == null or target.priority < winner.priority:
+		if winner == null or target.drop_priority < winner.drop_priority:
 			winner = target
 	return winner
 
