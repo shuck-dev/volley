@@ -39,7 +39,7 @@ func get_shifts(instance_key: String) -> Array[StatShift]:
 
 
 ## `instance_key` scopes the dispatch to a single ball's registered effects.
-## Entries not registered as instance-scoped (partner/equipment sources) always fire regardless.
+## Entries not registered as instance-scoped (partner sources) always fire regardless.
 func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
 	var game_actions: Array[StringName] = []
 	for registered in _event_effects:

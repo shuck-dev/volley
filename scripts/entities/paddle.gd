@@ -16,8 +16,6 @@ const PADDLE_TOP_Y := -540.0
 @export var racket_shape: CollisionShape2D
 @export var ground_ray: RayCast2D
 
-## Set by TimeoutController during the walk; suppresses drive() so controllers don't fight the pose.
-var drive_blocked: bool = false
 ## Set by AutoplayController during autoplay; suppresses _physics_move input so PlayerPaddle
 ## does not clobber the AI driver's velocity with Input.get_axis defaults.
 var input_blocked: bool = false
@@ -90,8 +88,6 @@ func reset_streak() -> void:
 
 
 func drive(velocity_y: float) -> void:
-	if drive_blocked:
-		return
 	if velocity_y > 0.0 and is_grounded():
 		velocity = Vector2.ZERO
 		return

@@ -24,7 +24,7 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 
 
 func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
-	if not _is_ball_role(item_key):
+	if DropTarget.get_definition(_item_manager, item_key) == null:
 		return false
 	if not contains_point(world_position):
 		return false
@@ -35,13 +35,6 @@ func accept(item_key: String, world_position: Vector2, gesture_velocity: Vector2
 	if _reconciler == null:
 		return
 	_reconciler.bring_into_play(item_key, world_position, gesture_velocity)
-
-
-func _is_ball_role(item_key: String) -> bool:
-	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
-	if definition == null:
-		return false
-	return definition.role == &"ball"
 
 
 func _projection_clear(item_key: String, world_position: Vector2, scale_factor: float) -> bool:

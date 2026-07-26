@@ -55,8 +55,6 @@ func _get_item_pool() -> Array[ItemDefinition]:
 	for definition: ItemDefinition in _item_manager.items:
 		if not definition.purchasable:
 			continue
-		if definition.role != &"ball":
-			continue
 		available.append(definition)
 	available.shuffle()
 	return available.slice(0, config.display_slots)
@@ -116,7 +114,7 @@ func _on_soul_balance_changed(balance: int) -> void:
 
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.
-# Equip/unequip leaves level unchanged, so no item_placement_changed subscription.
+# Activate/deactivate leaves level unchanged, so no item_placement_changed subscription.
 func _on_item_level_changed(item_key: String) -> void:
 	if _item_manager.get_level(item_key) <= 0:
 		return

@@ -2,10 +2,6 @@ class_name ItemDefinition
 extends Resource
 
 @export var key: String
-@export var type: StringName = &""
-## &"equipment" lives on the player; &"ball" lives on the court.
-## Required; missing role fails the placement assertion (SH-414 oscillator-seam regression).
-@export var role: StringName = &""
 @export var display_name: String
 @export var art: PackedScene
 @export var descriptions: Array[String]
@@ -19,8 +15,6 @@ extends Resource
 @export var purchasable: bool = true
 ## Authored at-rest shape for drop-target body projection; null falls back to bounds-only acceptance.
 @export var at_rest_shape: Shape2D
-## Per-character anchor for equipped visual; empty path falls back to character root.
-@export var anchor_node_path: NodePath
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

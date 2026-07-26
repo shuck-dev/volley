@@ -175,22 +175,6 @@ func _drag_controller() -> Node:
 	return tree.get_first_node_in_group(&"drag_controller")
 
 
-## Drops a falling body for the inside-shop or fallthrough case; ball-role lands as a registry Ball
-## in OUT_REST, equipment keeps the HeldBody loose path.
-func _drop_falling_body(release_position: Vector2) -> void:
-	if item_definition == null:
-		return
-	var controller: Node = _drag_controller()
-	if _is_ball_role():
-		_drop_ball_role(release_position, controller)
-		return
-	_drop_equipment_body(release_position, controller)
-
-
-func _is_ball_role() -> bool:
-	return item_definition != null and item_definition.role == &"ball"
-
-
 ## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.
 func _any_target_accepts(release_position: Vector2) -> bool:
 	if item_definition == null:
@@ -203,27 +187,11 @@ func _any_target_accepts(release_position: Vector2) -> bool:
 	return false
 
 
-func _drop_equipment_body(release_position: Vector2, controller: Node) -> void:
-	var body: HeldBody = HeldBody.make_for(item_definition, item_definition.key)
-	if body == null:
+## Drops a falling Ball for the inside-shop or fallthrough case; settling decides refund or commit.
+func _drop_falling_body(release_position: Vector2) -> void:
+	if item_definition == null:
 		return
-	var host: Node = _scene_host()
-	if controller != null and controller.has_method("get_loose_body_host"):
-		var resolved: Node = controller.get_loose_body_host()
-		if resolved != null:
-			host = resolved
-	body.global_position = release_position
-	host.add_child(body)
-	body.go_loose(_release_velocity())
-	if controller != null and controller.has_method("track_loose_body"):
-		controller.track_loose_body(body)
-	_watch_for_settle(body)
-
-
-## Spawns the Ball directly in OUT_REST via the reconciler; if it settles inside-shop the Ball is
-## torn down for refund, otherwise the purchase commits and the Ball stays in the registry.
-func _drop_ball_role(release_position: Vector2, controller: Node) -> void:
-	var reconciler: Node = _resolve_reconciler(controller)
+	var reconciler: Node = _resolve_reconciler(_drag_controller())
 	if reconciler == null:
 		return
 	var ball: Ball = reconciler.spawn_at_rest(
@@ -240,13 +208,6 @@ func _resolve_reconciler(controller: Node) -> Node:
 	return null
 
 
-func _scene_host() -> Node:
-	var current: Node = get_tree().current_scene
-	if current != null:
-		return current
-	return get_tree().root
-
-
 func _watch_for_settle(body: RigidBody2D) -> void:
 	# Poll until the body's velocity falls below a settle threshold or it is freed.
 	# Use load() so the class-name cache (which can be async-stale) doesn't mismatch path-based lookups.
@@ -256,34 +217,12 @@ func _watch_for_settle(body: RigidBody2D) -> void:
 	body.add_child(drop)
 
 
-## Called by ShopItemDrop with the body's resting position once velocity has settled.
-func notify_body_settled(body: RigidBody2D, settled_position: Vector2) -> void:
-	if item_definition == null:
-		if is_instance_valid(body):
-			body.queue_free()
+## Called by ShopItemDrop once the Ball settles; keeps it on commit, releases it on refund.
+func notify_body_settled(ball: Ball, settled_position: Vector2) -> void:
+	if item_definition == null or not is_instance_valid(ball):
+		if is_instance_valid(ball):
+			ball.queue_free()
 		return
-	if not is_instance_valid(body):
-		return
-
-	if body is Ball:
-		_notify_ball_settled(body, settled_position)
-		return
-
-	if not is_owned():
-		if not _complete_purchase():
-			body.queue_free()
-			visible = true
-			return
-	visible = false
-	# Promote the body to a loose-in-venue overlay so the rack filter and re-grab paths treat it like any other loose body.
-	var controller: Node = _drag_controller()
-	if controller != null and controller.has_method("register_loose_body"):
-		controller.register_loose_body(body)
-	drop_completed.emit(item_definition.key, settled_position, true)
-
-
-## Ball-role settle: registry-resident Ball is either kept (purchase commits) or released (refund).
-func _notify_ball_settled(ball: Ball, settled_position: Vector2) -> void:
 	var controller: Node = _drag_controller()
 	var reconciler: Node = _resolve_reconciler(controller)
 
@@ -349,21 +288,9 @@ func _start_drag() -> void:
 func _complete_purchase() -> bool:
 	if not can_be_owned():
 		return false
-	if _is_ball_role():
-		return _complete_ball_purchase()
-	return _complete_equipment_purchase()
-
-
-func _complete_ball_purchase() -> bool:
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
 		return false
 	return _item_manager.take(item_definition.key)
-
-
-func _complete_equipment_purchase() -> bool:
-	if is_owned():
-		return false
-	return _item_manager.take_equipment(item_definition.key)
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:
@@ -395,7 +322,7 @@ func _on_balance_changed(_balance: int) -> void:
 	_refresh_case_overlay()
 
 
-# Case overlay gates on ownership and affordability; neither changes on equip/unequip.
+# Case overlay gates on ownership and affordability; neither changes on activate/deactivate.
 func _on_item_level_changed(item_key: String) -> void:
 	if item_definition != null and item_key == item_definition.key:
 		_refresh_case_overlay()

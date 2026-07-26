@@ -25,8 +25,7 @@ static func create_manager(
 ## Replaces the `state.item_levels[key] = 1` poke that bypasses placement seams.
 static func give(manager: Node, item_key: String, level: int = 1) -> void:
 	manager.state.item_levels[item_key] = level
-	var item: ItemDefinition = manager._get_item(item_key)
-	manager._assign_rack_slot(item_key, item.role)
+	manager._assign_rack_slot(item_key)
 
 
 static func create(
@@ -47,7 +46,6 @@ static func create(
 
 	var item := ItemDefinition.new()
 	item.key = item_key
-	item.role = &"equipment"
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3

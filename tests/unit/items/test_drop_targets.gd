@@ -38,7 +38,6 @@ func test_nested_target_accepts_at_its_on_screen_position() -> void:
 
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.item_manager = manager
-	target.role = &"ball"
 
 	var shape: CollisionShape2D = ItemTestHelpers.attach_rect_shape(Vector2(200, 100))
 	shape.position = Vector2(40, 0)
@@ -62,7 +61,6 @@ func test_rotated_target_accepts_along_its_turned_edge() -> void:
 
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.item_manager = manager
-	target.role = &"ball"
 	target.rotation = PI / 2
 	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(400, 100)))
 	add_child_autofree(target)
@@ -77,23 +75,20 @@ func test_rotated_target_accepts_along_its_turned_edge() -> void:
 	)
 
 
-func test_rack_target_accepts_matching_ball_role() -> void:
+func test_rack_target_accepts_known_item() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
 	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
 	manager.items.assign([ball] as Array[ItemDefinition])
 	var target: RackDropTarget = RackDropTargetScript.new()
 	target.item_manager = manager
-	target.role = &"ball"
 	target.position = Vector2(-500, 0)
 	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(200, 100)))
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 
 
-func test_court_target_rejects_equipment_role() -> void:
+func test_court_target_rejects_unknown_item() -> void:
 	var manager: Node = ItemFactory.create_manager(self)
-	var equipment: ItemDefinition = ItemTestHelpers.make_equipment_item("grip")
-	manager.items.assign([equipment] as Array[ItemDefinition])
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
@@ -104,7 +99,7 @@ func test_court_target_rejects_equipment_role() -> void:
 	target.reconciler = reconciler
 	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.COURT_SIZE))
 	add_child_autofree(target)
-	assert_false(target.can_accept("grip", Vector2.ZERO))
+	assert_false(target.can_accept("unknown_item", Vector2.ZERO))
 
 
 func test_venue_target_accepts_inside_venue_bounds() -> void:

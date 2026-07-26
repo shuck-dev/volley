@@ -45,7 +45,6 @@ func _make_manager_with_balls() -> Node:
 	var definitions: Array[ItemDefinition] = []
 	for key in ["test_ball_a", "test_ball_b", "test_ball_c"]:
 		var definition: ItemDefinition = ItemFactory.create(key, &"ball_speed_min", &"add", 10.0)
-		definition.role = &"ball"
 		definition.base_cost = 10
 		definitions.append(definition)
 	manager.items.assign(definitions)
