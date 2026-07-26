@@ -187,9 +187,7 @@ func _any_target_accepts(release_position: Vector2) -> bool:
 	return false
 
 
-## Drops a falling body for the inside-shop or fallthrough case, spawned directly in OUT_REST via
-## the reconciler; if it settles inside-shop the Ball is torn down for refund, otherwise the
-## purchase commits and the Ball stays in the registry.
+## Drops a falling Ball for the inside-shop or fallthrough case; settling decides refund or commit.
 func _drop_falling_body(release_position: Vector2) -> void:
 	if item_definition == null:
 		return
@@ -219,8 +217,7 @@ func _watch_for_settle(body: RigidBody2D) -> void:
 	body.add_child(drop)
 
 
-## Called by ShopItemDrop with the Ball's resting position once velocity has settled.
-## Registry-resident Ball is either kept (purchase commits) or released (refund).
+## Called by ShopItemDrop once the Ball settles; keeps it on commit, releases it on refund.
 func notify_body_settled(ball: Ball, settled_position: Vector2) -> void:
 	if item_definition == null or not is_instance_valid(ball):
 		if is_instance_valid(ball):
