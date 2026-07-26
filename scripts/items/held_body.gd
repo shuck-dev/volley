@@ -18,7 +18,7 @@ var item_key: String = ""
 
 
 static func make_for(definition: ItemDefinition, key: String) -> HeldBody:
-	# Equipment without an authored at_rest_shape has no physics body to spawn; refuse rather than crash.
+	# An item without an authored at_rest_shape has no physics body to spawn; refuse rather than crash.
 	if definition == null or definition.at_rest_shape == null:
 		return null
 	var body: HeldBody = HELD_BODY_SCENE.instantiate()
@@ -54,7 +54,7 @@ func go_loose(release_velocity: Vector2) -> void:
 		art_holder.scale = pre_loose_scale
 	freeze = false
 	gravity_scale = loose_gravity_scale
-	# Layer 2 is the items layer; paddle masks it off during timeout so resting items can't body-block the walk.
+	# Layer 2 is the items layer.
 	collision_layer = 2
 	collision_mask = 1
 	linear_velocity = release_velocity

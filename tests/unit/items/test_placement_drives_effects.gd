@@ -1,20 +1,13 @@
-## SH-96 placement rule: effects run only on player or court, never on rack.
+## SH-96 placement rule: effects run only on the court, never on the rack.
 extends GutTest
 
-const STAT_KEY := &"paddle_speed"
-const BALL_STAT_KEY := &"ball_speed_min"
-const EFFECT_VALUE := 50.0
-const BALL_EFFECT_VALUE := 30.0
+const STAT_KEY := &"ball_speed_min"
+const EFFECT_VALUE := 30.0
 
 
-func _make_item(
-	item_key: String,
-	role: StringName,
-	stat_key: StringName = STAT_KEY,
-	value: float = EFFECT_VALUE,
-) -> ItemDefinition:
+func _make_item(item_key: String, value: float = EFFECT_VALUE) -> ItemDefinition:
 	var outcome := StatOutcome.new()
-	outcome.stat_key = stat_key
+	outcome.stat_key = STAT_KEY
 	outcome.operation = &"add"
 	outcome.value = value
 
@@ -32,7 +25,6 @@ func _make_item(
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = [effect]
-	item.role = role
 	return item
 
 
@@ -45,58 +37,31 @@ func _make_manager_with(items: Array) -> Node:
 	return manager
 
 
-func test_equipment_on_player_registers_effects_at_level() -> void:
-	var item := _make_item("equip_a", &"equipment")
-	var manager: Node = _make_manager_with([item])
-	ItemFactory.give(manager, item.key)
-	var base_speed: float = GameRules.paddle.paddle_speed
-	manager.activate(item.key)
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_speed + EFFECT_VALUE,
-		"activating equipment on the player should register its effects",
-	)
-
-
-func test_removing_equipment_from_player_unregisters_effects() -> void:
-	var item := _make_item("equip_b", &"equipment")
-	var manager: Node = _make_manager_with([item])
-	ItemFactory.give(manager, item.key)
-	manager.activate(item.key)
-	var base_speed: float = GameRules.paddle.paddle_speed
-	manager.deactivate(item.key)
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_speed,
-		"deactivating equipment should unregister its effects",
-	)
-
-
-func test_ball_on_court_registers_effects_and_enters_play() -> void:
-	var item := _make_item("ball_a", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
+func test_activating_on_court_registers_effects_and_enters_play() -> void:
+	var item := _make_item("ball_a")
 	var manager: Node = _make_manager_with([item])
 	ItemFactory.give(manager, item.key)
 	var base_value: float = GameRules.base.ball_speed_min
 	watch_signals(manager)
 	manager.activate(item.key)
 	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
-		base_value + BALL_EFFECT_VALUE,
-		"activating a ball on the court should register its effects",
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
+		base_value + EFFECT_VALUE,
+		"activating an item on the court should register its effects",
 	)
 	assert_true(
 		manager.is_on_court(item.key),
-		"activated ball should be tracked as on the court",
+		"activated item should be tracked as on the court",
 	)
 	assert_signal_emitted(
 		manager,
 		"court_changed",
-		"court_changed should fire when a ball enters play",
+		"court_changed should fire when an item enters play",
 	)
 
 
-func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void:
-	var item := _make_item("ball_b", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
+func test_removing_from_court_unregisters_effects_and_leaves_play() -> void:
+	var item := _make_item("ball_b")
 	var manager: Node = _make_manager_with([item])
 	ItemFactory.give(manager, item.key)
 	manager.activate(item.key)
@@ -104,34 +69,34 @@ func test_removing_ball_from_court_unregisters_effects_and_leaves_play() -> void
 	watch_signals(manager)
 	manager.deactivate(item.key)
 	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
 		base_value,
-		"deactivating a ball should unregister its effects",
+		"deactivating an item should unregister its effects",
 	)
 	assert_false(
 		manager.is_on_court(item.key),
-		"deactivated ball should no longer be tracked as on the court",
+		"deactivated item should no longer be tracked as on the court",
 	)
 	assert_signal_emitted(
 		manager,
 		"court_changed",
-		"court_changed should fire when a ball leaves play",
+		"court_changed should fire when an item leaves play",
 	)
 
 
 func test_removing_held_item_unregisters_effect_when_loose_overlay_set() -> void:
-	var item := _make_item("equip_held", &"equipment")
+	var item := _make_item("held_item")
 	var manager: Node = _make_manager_with([item])
 	ItemFactory.give(manager, item.key)
 	manager.activate(item.key)
 	manager.mark_loose_in_venue(item.key)
-	var base_speed: float = GameRules.paddle.paddle_speed
+	var base_value: float = GameRules.base.ball_speed_min
 
 	manager.deactivate(item.key)
 
 	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_speed,
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
+		base_value,
 		"removing a held item with the loose overlay set should unregister its effect",
 	)
 	assert_false(
@@ -141,74 +106,37 @@ func test_removing_held_item_unregisters_effect_when_loose_overlay_set() -> void
 
 
 func test_items_on_a_rack_have_no_gameplay_effect() -> void:
-	var equipment := _make_item("equip_rack", &"equipment")
-	var ball := _make_item("ball_rack", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager: Node = _make_manager_with([equipment, ball])
+	var item := _make_item("ball_rack")
+	var manager: Node = _make_manager_with([item])
 	# Owned (i.e. sitting on the rack after purchase) but never activated.
-	ItemFactory.give(manager, equipment.key)
-	ItemFactory.give(manager, ball.key)
-	var base_paddle: float = GameRules.paddle.paddle_speed
-	var base_ball: float = GameRules.base.ball_speed_min
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_paddle,
-		"owned but un-activated equipment should be inert on the rack",
-	)
-	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
-		base_ball,
-		"owned but un-activated balls should be inert on the rack",
-	)
-	assert_false(
-		manager.is_on_court(equipment.key),
-		"rack equipment should not be reported as on the court",
-	)
-	assert_false(
-		manager.is_on_court(ball.key),
-		"rack balls should not be reported as on the court",
-	)
-
-
-func test_levelling_equipment_on_player_updates_running_effects() -> void:
-	var equipment := _make_item("equip_lvl", &"equipment")
-	var manager: Node = _make_manager_with([equipment])
-	manager.economy.soul_balance = 100000
-	manager.purchase(equipment.key)
-	manager.activate(equipment.key)
-	var base_speed: float = GameRules.paddle.paddle_speed
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_speed + EFFECT_VALUE,
-		"precondition: level 1 equipment grants one stack of its effect",
-	)
-	manager.purchase(equipment.key)
-	assert_eq(
-		manager.get_level(equipment.key),
-		2,
-		"precondition: purchase should raise the level to 2",
-	)
-	assert_eq(
-		Stats.resolve(GameRules.paddle.paddle_speed, STAT_KEY, manager),
-		base_speed + 2.0 * EFFECT_VALUE,
-		"levelling placed equipment should update its running effects",
-	)
-
-
-func test_levelling_ball_on_court_updates_running_effects() -> void:
-	var ball := _make_item("ball_lvl", &"ball", BALL_STAT_KEY, BALL_EFFECT_VALUE)
-	var manager: Node = _make_manager_with([ball])
-	manager.economy.soul_balance = 100000
-	manager.purchase(ball.key)
-	manager.activate(ball.key)
+	ItemFactory.give(manager, item.key)
 	var base_value: float = GameRules.base.ball_speed_min
 	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
-		base_value + BALL_EFFECT_VALUE,
-		"precondition: level 1 ball grants one stack of its effect",
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
+		base_value,
+		"an owned but un-activated item should be inert on the rack",
 	)
-	manager.purchase(ball.key)
+	assert_false(
+		manager.is_on_court(item.key),
+		"a racked item should not be reported as on the court",
+	)
+
+
+func test_levelling_a_placed_item_updates_running_effects() -> void:
+	var item := _make_item("ball_lvl")
+	var manager: Node = _make_manager_with([item])
+	manager.economy.soul_balance = 100000
+	manager.purchase(item.key)
+	manager.activate(item.key)
+	var base_value: float = GameRules.base.ball_speed_min
 	assert_eq(
-		Stats.resolve(GameRules.base.ball_speed_min, BALL_STAT_KEY, manager),
-		base_value + 2.0 * BALL_EFFECT_VALUE,
-		"levelling a ball on the court should update its running effects",
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
+		base_value + EFFECT_VALUE,
+		"precondition: level 1 grants one stack of its effect",
+	)
+	manager.purchase(item.key)
+	assert_eq(
+		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),
+		base_value + 2.0 * EFFECT_VALUE,
+		"levelling a placed item should update its running effects",
 	)

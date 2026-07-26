@@ -36,7 +36,6 @@ static func stub_art() -> PackedScene:
 static func make_ball_item(key: String) -> ItemDefinition:
 	var item := ItemDefinition.new()
 	item.key = key
-	item.role = &"ball"
 	item.base_cost = 10
 	item.cost_scaling = 2.0
 	item.max_level = 3
@@ -48,15 +47,8 @@ static func make_ball_item(key: String) -> ItemDefinition:
 	return item
 
 
-static func make_equipment_item(key: String) -> ItemDefinition:
-	var item := make_ball_item(key)
-	item.role = &"equipment"
-	return item
-
-
 static func make_rack(manager: Node, test: Node) -> RackDisplay:
 	var rack: RackDisplay = RackDisplayScript.new()
-	rack.role = &"ball"
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)
@@ -85,7 +77,6 @@ static func make_drop_targets(
 ) -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.item_manager = manager
-	rack_target.role = &"ball"
 	rack_target.priority = RACK_PRIORITY
 	rack_target.position = rack_position
 	rack_target.add_child(attach_rect_shape(Vector2(300, 200)))

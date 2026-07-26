@@ -10,8 +10,6 @@ radius = 7.2
 [resource]
 script = ExtResource("1_item")
 key = "standard_ball"
-type = &"kit"
-role = &"ball"
 display_name = "Standard Ball"
 art = ExtResource("1_5blea")
 descriptions = Array[String](["A different ball every time", "Bonus soul at higher tiers", "The reliable choice"])

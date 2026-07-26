@@ -16,7 +16,6 @@ var _drag: ItemDragController
 
 func _make_rack(manager: Node) -> RackDisplay:
 	var rack: RackDisplay = RackDisplayScript.new()
-	rack.role = &"ball"
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)

@@ -14,9 +14,6 @@ const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
-@export var gear_rack: RackDisplay
-@export var gear_rack_drop_target: Area2D
-@export var timeout_controller: TimeoutController
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 
@@ -59,9 +56,6 @@ func _ready() -> void:
 
 	if rack != null and not rack.slot_pressed.is_connected(_on_rack_slot_pressed):
 		rack.slot_pressed.connect(_on_rack_slot_pressed)
-
-	if gear_rack != null and not gear_rack.slot_pressed.is_connected(_on_rack_slot_pressed):
-		gear_rack.slot_pressed.connect(_on_rack_slot_pressed)
 
 	# Hide rack slots while their item is held so the player sees one body, not two.
 	if not pickup_started.is_connected(_on_pickup_started):
@@ -144,10 +138,6 @@ func _court_target() -> CourtDropTarget:
 	return null
 
 
-func _character_target() -> CharacterDropTarget:
-	return get_tree().get_first_node_in_group(&"character_target") as CharacterDropTarget
-
-
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
 func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	if _drag_target() != null:
@@ -164,19 +154,18 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	var stored: Ball = null
 	if reconciler != null:
 		stored = reconciler.get_ball_for_key(item_key)
-		# The one-shot kit reconcile can leave a second stored ball untracked; back-fill it so a
-		# ball-role rack pickup rides the live-ball path and restore re-claims its slot.
-		if stored == null and _is_ball_role(item_key):
+		# The one-shot reconcile can leave a second stored ball untracked; back-fill it so a
+		# rack pickup rides the live-ball path and restore re-claims its slot.
+		if stored == null:
 			stored = reconciler.ensure_stored_ball_for_key(item_key)
 
 	if stored != null:
-		# Ball-role rack pickup: the STORED Ball IS the drag target. No HeldBody spawn; the ball
+		# The STORED Ball IS the drag target. No HeldBody spawn; the ball
 		# stays in _balls_by_key, transitioned to OUT_HELD until release.
 		stored.enter_out_held()
 		_set_court_exclude_rids([stored.get_rid()])
 		_adopt_live_ball_as_held(stored, item_key)
 	elif not _spawn_held_body(item_key, spawn_position, false):
-		# Equipment-role rack pickup still rides HeldBody; the shop spawn path retires it in a future step.
 		return false
 
 	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
@@ -185,34 +174,6 @@ func grab_from_rack(item_key: String, press_position: Variant = null) -> bool:
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
-	_mouse_button_down = true
-	pickup_started.emit(item_key)
-	return true
-
-
-## Press on an equipped item: spawn a HeldBody and start a drag whose cancel re-equips through the capacity gate.
-## Allowed only at the equip pose; the gesture does not begin during a rally or between-rally lulls.
-func grab_equipped_from_character(item_key: String, press_position: Variant = null) -> bool:
-	if not RallyGate.removal_allowed(timeout_controller):
-		return false
-	if _drag_target() != null:
-		return false
-	if _item_manager.get_level(item_key) <= 0:
-		return false
-	if _item_manager.get_placement(item_key) != Placement.EQUIPPED:
-		return false
-
-	var spawn_position: Vector2 = (
-		press_position if press_position is Vector2 else _cursor_position()
-	)
-	if not _spawn_held_body(item_key, spawn_position, false):
-		return false
-
-	# Deactivate the moment the item leaves the character so its effect ends at removal, not at drop.
-	_item_manager.unequip(item_key)
-	# `equipped` origin re-equips on cancel (capacity re-checked); on_court keeps rack/timeout drops honest.
-	_held_was_on_court = true
-	_held_origin = &"equipped"
 	_mouse_button_down = true
 	pickup_started.emit(item_key)
 	return true
@@ -277,13 +238,10 @@ func spawn_purchased_at(
 		target.accept(item_key, world_position, gesture_velocity)
 		return true
 	if target is VenueDropTarget:
-		if _is_ball_role(item_key):
-			_release_to_rest(item_key, world_position, gesture_velocity)
-		else:
-			_release_loose_body_at(item_key, world_position, gesture_velocity)
+		_release_to_rest(item_key, world_position, gesture_velocity)
 		return true
-	if target is RackDropTarget and _is_ball_role(item_key):
-		# Ball-role rack landing adopts a STORED Ball at the slot; rack accept's deactivate branch
+	if target is RackDropTarget:
+		# Rack landing adopts a STORED Ball at the slot; rack accept's deactivate branch
 		# is a no-op for a just-purchased, not-on-court item.
 		_adopt_purchased_into_rack(item_key)
 		return true
@@ -299,7 +257,7 @@ func _adopt_purchased_into_rack(item_key: String) -> void:
 	reconciler.spawn_stored(item_key, rack.get_slot_position_for(item_key))
 
 
-## Funnels ball-role venue-floor releases into the reconciler with the loose-in-venue overlay set.
+## Funnels venue-floor releases into the reconciler with the loose-in-venue overlay set.
 func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
 	if reconciler == null:
 		return
@@ -307,50 +265,6 @@ func _release_to_rest(item_key: String, world_position: Vector2, gesture_velocit
 	# Loose-in-venue overlay makes is_on_court return false regardless of placement, so save/reload
 	# skips the spurious court-spawn at the saved venue-floor position.
 	_item_manager.mark_loose_in_venue(item_key, world_position)
-
-
-## Equipment attempt_release: rehome the in-flight HeldBody as loose at the release point.
-func _release_held_body_as_loose(release_position: Vector2) -> void:
-	if not (_held is HeldBody):
-		return
-	# Equipment leaving the body must deactivate effects; otherwise the stat impact survives
-	# the held-into-venue transition because placement never funnels through STORED.
-	if _item_manager.get_placement(_held_key) == Placement.EQUIPPED:
-		_item_manager.unequip(_held_key)
-	var release_velocity: Vector2 = _compute_release_velocity()
-	var body: HeldBody = _held as HeldBody
-	var host: Node = get_loose_body_host()
-	if host != null and body.get_parent() != host:
-		body.reparent(host)
-	body.global_position = release_position
-	body.go_loose(release_velocity)
-	register_loose_body(body)
-	# Drop the handle so finalisation does not free the loose body.
-	_held = null
-
-
-## Spawns a loose HeldBody at the release point and wires re-grab + loose-in-venue overlay.
-func _release_loose_body_at(
-	item_key: String, world_position: Vector2, gesture_velocity: Vector2
-) -> void:
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	if definition == null:
-		return
-	var body: HeldBody = HeldBody.make_for(definition, item_key)
-	if body == null:
-		return
-	body.global_position = world_position
-	var host: Node = get_loose_body_host()
-	host.add_child(body)
-	body.go_loose(gesture_velocity)
-	register_loose_body(body)
-
-
-func _is_ball_role(item_key: String) -> bool:
-	var definition: ItemDefinition = _get_item_definition(item_key)
-	if definition == null:
-		return false
-	return definition.role == &"ball"
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -395,11 +309,8 @@ func attempt_release(release_position: Vector2) -> bool:
 		if was_temporary:
 			# Temporary balls never join the registry; fall through to finalise (which frees the HeldBody).
 			pass
-		elif _is_ball_role(item_key):
-			_release_to_rest(item_key, release_position, _compute_release_velocity())
 		else:
-			# Equipment keeps the HeldBody loose path; rehome the existing held body rather than spawning a new one.
-			_release_held_body_as_loose(release_position)
+			_release_to_rest(item_key, release_position, _compute_release_velocity())
 		_finalise_gesture(item_key, release_position, false)
 		return true
 	else:
@@ -624,16 +535,6 @@ func _spawn_held_body(item_key: String, spawn_position: Vector2, is_temporary: b
 	return true
 
 
-## Configures the paddle's character target once it joins the `&"character_target"` group.
-func configure_character_target(paddle: Node = null) -> void:
-	var target: CharacterDropTarget = _character_target()
-	if target == null:
-		return
-	target.configure(_item_manager, timeout_controller, paddle)
-	if not target.equipped_art_pressed.is_connected(_on_equipped_art_pressed):
-		target.equipped_art_pressed.connect(_on_equipped_art_pressed)
-
-
 func _track_cursor_motion(sample_position: Vector2) -> void:
 	var now_ms: float = float(Time.get_ticks_msec()) / 1000.0
 	_cursor_samples.append({"time": now_ms, "position": sample_position})
@@ -722,29 +623,14 @@ func _on_live_ball_grabbed(_ball: Ball, item_key: String) -> void:
 func _on_pickup_started(item_key: String) -> void:
 	if rack != null:
 		rack.hide_slot_for(item_key)
-	if gear_rack != null:
-		gear_rack.hide_slot_for(item_key)
-	var character_target: CharacterDropTarget = _character_target()
-	if character_target != null:
-		character_target.set_equipped_visual_visibility(item_key, false)
 
 
 func _on_drop_completed(item_key: String, _release_position: Vector2, _over_court: bool) -> void:
-	# Loose-in-venue items have their rack entry filtered out by ItemManager.get_kit_items; nothing to reveal.
+	# Loose-in-venue items have their rack entry filtered out by ItemManager.get_stored_items; nothing to reveal.
 	if _item_manager.is_loose_in_venue(item_key):
 		return
 	if rack != null:
 		rack.reveal_slot_for(item_key)
-	if gear_rack != null:
-		gear_rack.reveal_slot_for(item_key)
-	var character_target: CharacterDropTarget = _character_target()
-	if character_target != null:
-		# Grab-time unequip already freed the visual; this reveal targets the snap-back case still EQUIPPED.
-		character_target.set_equipped_visual_visibility(item_key, true)
-
-
-func _on_equipped_art_pressed(item_key: String) -> void:
-	grab_equipped_from_character(item_key)
 
 
 func _on_loose_body_freed(item_key: String) -> void:
@@ -754,5 +640,3 @@ func _on_loose_body_freed(item_key: String) -> void:
 		_item_manager.clear_loose_in_venue(item_key)
 	if rack != null:
 		rack.reveal_slot_for(item_key)
-	if gear_rack != null:
-		gear_rack.reveal_slot_for(item_key)

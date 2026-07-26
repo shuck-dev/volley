@@ -5,7 +5,6 @@ signal slot_pressed(item_key: String, press_position: Vector2)
 
 const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
-@export var role: StringName = &"ball"
 @export var slot_container: Node2D
 ## Optional. When set, the rack can source slot art from STORED Balls in the registry (step 7.1+).
 @export var reconciler: BallReconciler
@@ -50,8 +49,8 @@ func refresh() -> void:
 	var marker_count: int = _slot_markers.size()
 	if marker_count == 0:
 		return
-	var kit_keys: Array[String] = _item_manager.get_kit_items(role)
-	for item_key in kit_keys:
+	var stored_keys: Array[String] = _item_manager.get_stored_items()
+	for item_key in stored_keys:
 		var slot_index: int = _item_manager.get_rack_slot_index(item_key)
 		if slot_index < 0:
 			# Slot freed while the ball is held; it leaves the rack until restore re-claims a slot.
@@ -114,11 +113,9 @@ func _populate_art_holder(art_holder: Node2D, item_key: String, definition: Item
 func _registered_ball_for(item_key: String) -> Ball:
 	if reconciler == null:
 		return null
-	# A second stored ball can be left untracked by the reconciler's one-shot kit reconcile;
-	# back-fill it here so every rendered stored ball-role slot is backed by a live, grabbable ball.
-	if role == &"ball" and reconciler != null:
-		return reconciler.ensure_stored_ball_for_key(item_key)
-	return reconciler.get_ball_for_key(item_key)
+	# A second stored ball can be left untracked by the reconciler's one-shot reconcile;
+	# back-fill it here so every rendered stored slot is backed by a live, grabbable ball.
+	return reconciler.ensure_stored_ball_for_key(item_key)
 
 
 ## World position of the slot for `item_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.

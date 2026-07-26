@@ -145,7 +145,7 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 ## Spawns a purchased ball on the rack.
 func spawn_stored(template_key: String, position: Vector2) -> Ball:
 	var key := _item_manager.generate_instance_key(template_key)
-	_item_manager.register_instance(key, _get_item_definition(template_key).role)
+	_item_manager.register_instance(key)
 	return _create_stored(key, position)
 
 
@@ -191,7 +191,7 @@ func release_ball(item_key: String) -> Ball:
 	return ball
 
 
-## Lazy-backfill a tracked STORED Ball for a kit ball-role key.
+## Lazy-backfill a tracked STORED Ball for a stored item key.
 func ensure_stored_ball_for_key(item_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(item_key)
 	if existing != null:
@@ -343,13 +343,13 @@ func _reconcile() -> void:
 				_create_ball(
 					key, _spawn_position_for(key), _item_manager.get_default_ball_launch_velocity()
 				)
-	_reconcile_stored_kit_items()
+	_reconcile_stored_items()
 
 
-func _reconcile_stored_kit_items() -> void:
+func _reconcile_stored_items() -> void:
 	if ball_rack == null:
 		return
-	for key in _item_manager.get_kit_items(&"ball"):
+	for key in _item_manager.get_stored_items():
 		ensure_stored_ball_for_key(key)
 
 
@@ -364,9 +364,7 @@ func _ball_keys() -> Array[String]:
 			continue
 		if _item_manager.get_placement(key) != Placement.ON_COURT:
 			continue
-		var item := _get_item_definition(key)
-
-		if item != null and item.role == &"ball":
+		if _get_item_definition(key) != null:
 			result.append(key)
 	return result
 

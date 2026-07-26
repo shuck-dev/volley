@@ -10,7 +10,6 @@
 [ext_resource type="Script" uid="uid://bkfp6d5w1iaip" path="res://scripts/dev/dev_bounce_panel.gd" id="5_bouncepanel"]
 [ext_resource type="Script" uid="uid://ce43fqg0u1yhu" path="res://scripts/dev/dev_bounce_overlay.gd" id="6_bounceover"]
 [ext_resource type="Theme" uid="uid://bsv1tc4laq7mr" path="res://resources/themes/debug_theme.tres" id="7_debug"]
-[ext_resource type="Script" uid="uid://lnxk7w1w6dq6" path="res://scripts/dev/dev_equipped_panel.gd" id="8_equipped"]
 [ext_resource type="Script" uid="uid://dpuotehqr0bcy" path="res://scripts/dev/player_sprite.gd" id="9_paddlesize"]
 [ext_resource type="Script" uid="uid://dyqpeklr0o4wn" path="res://scripts/dev/soul_bound_overlay.gd" id="13_hqk2e"]
 [ext_resource type="Script" uid="uid://08w53i5wkvn8" path="res://scripts/dev/arc_travel_overlay.gd" id="14_tmy36"]
@@ -87,15 +86,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("7_debug")
 script = ExtResource("3_devmenu")
-managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../PlayerSprite"), NodePath("../DevEquippedPanel")])
-
-[node name="DevEquippedPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=1944203103]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("7_debug")
-theme_override_constants/separation = 2
-script = ExtResource("8_equipped")
+managed_panels = Array[NodePath]([NodePath("../DevShopPanel"), NodePath("../DevItemUI"), NodePath("../DevStatPanel"), NodePath("../DevBallStatePanel"), NodePath("../DevBouncePanel"), NodePath("../PlayerSprite")])
 
 [node name="DevStatPanel" type="VBoxContainer" parent="DevPanelContainer/ContentBody/ContentArea" unique_id=425250304]
 visible = false

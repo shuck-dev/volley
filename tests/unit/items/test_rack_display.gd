@@ -1,4 +1,4 @@
-## SH-99 rack display renders every owned-but-inactive item of its role.
+## SH-99 rack display renders every owned-but-inactive item.
 extends GutTest
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
@@ -20,10 +20,9 @@ func _stub_art() -> PackedScene:
 	return scene
 
 
-func _make_item(item_key: String, role: StringName) -> ItemDefinition:
+func _make_item(item_key: String) -> ItemDefinition:
 	var item := ItemDefinition.new()
 	item.key = item_key
-	item.role = role
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
@@ -41,9 +40,8 @@ func _make_manager_with(items: Array) -> Node:
 	return manager
 
 
-func _make_rack(role: StringName, manager: Node) -> Node2D:
+func _make_rack(manager: Node) -> Node2D:
 	var rack: Node2D = RackDisplayScript.new()
-	rack.role = role
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)
@@ -58,95 +56,33 @@ func _make_rack(role: StringName, manager: Node) -> Node2D:
 	return rack
 
 
-func test_ball_items_do_not_appear_on_the_gear_rack() -> void:
-	var ball := _make_item("ball_beta", &"ball")
-	var manager: Node = _make_manager_with([ball])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"equipment", manager)
-
-	manager.take(ball.key)
-
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		0,
-		"gear rack should ignore ball-role items",
-	)
-
-
-func test_equipment_items_do_not_appear_on_the_ball_rack() -> void:
-	var gear := _make_item("gear_beta", &"equipment")
-	var manager: Node = _make_manager_with([gear])
-	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"ball", manager)
-
-	manager.take(gear.key)
-
-	assert_eq(
-		rack.get_displayed_keys().size(),
-		0,
-		"ball rack should ignore equipment-role items",
-	)
-
-
-func test_court_role_items_never_appear_on_either_rack() -> void:
-	var court_item := _make_item("court_alpha", &"court")
-	var manager: Node = _make_manager_with([court_item])
-	ItemFactory.give(manager, court_item.key)
-
-	var ball_rack := _make_rack(&"ball", manager)
-	var gear_rack := _make_rack(&"equipment", manager)
-
-	assert_eq(
-		ball_rack.get_displayed_keys().size(),
-		0,
-		"court-role items must not appear on the ball rack",
-	)
-	assert_eq(
-		gear_rack.get_displayed_keys().size(),
-		0,
-		"court-role items must not appear on the gear rack",
-	)
-
-
 func test_rack_scene_drop_target_accepts_drop() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
-	var grip := _make_item("grip", &"equipment")
-	var manager: Node = _make_manager_with([ball, grip])
+	var ball := _make_item("ball_alpha")
+	var manager: Node = _make_manager_with([ball])
 
 	var ball_rack_scene: PackedScene = load("res://scenes/ball_rack.tscn")
-	var gear_rack_scene: PackedScene = load("res://scenes/gear_rack.tscn")
 	var ball_rack_instance: Node = ball_rack_scene.instantiate()
-	var gear_rack_instance: Node = gear_rack_scene.instantiate()
 
 	var rack_target: RackDropTarget = (
 		ball_rack_instance.get_node("RackDropTarget") as RackDropTarget
 	)
 	rack_target.item_manager = manager
-	var gear_target: RackDropTarget = (
-		gear_rack_instance.get_node("RackDropTarget") as RackDropTarget
-	)
-	gear_target.item_manager = manager
 
 	add_child_autofree(ball_rack_instance)
-	add_child_autofree(gear_rack_instance)
 
 	assert_true(
 		rack_target.can_accept("ball_alpha", ball_rack_instance.global_position),
 		"ball rack drop target should accept a matching ball at the rack position",
 	)
-	assert_true(
-		gear_target.can_accept("grip", gear_rack_instance.global_position),
-		"gear rack drop target should accept matching equipment at the rack position",
-	)
 
 
 func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	# SH-332: rack hides the source slot during a grab so the player sees one body, not two.
-	var alpha := _make_item("ball_alpha", &"ball")
-	var beta := _make_item("ball_beta", &"ball")
+	var alpha := _make_item("ball_alpha")
+	var beta := _make_item("ball_beta")
 	var manager: Node = _make_manager_with([alpha, beta])
 	manager.economy.soul_balance = 10000
-	var rack := _make_rack(&"ball", manager)
+	var rack := _make_rack(manager)
 	manager.take(alpha.key)
 	manager.take(beta.key)
 	var alpha_key: String = "ball_alpha_1"
@@ -168,20 +104,20 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 
 
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
+	var ball := _make_item("ball_alpha")
 	var manager: Node = _make_manager_with([ball])
 	manager.economy.soul_balance = 1000
-	var rack := _make_rack(&"ball", manager)
+	var rack := _make_rack(manager)
 	manager.take(ball.key)
 
 	var position: Vector2 = rack.get_slot_position_for(ball.key)
 	# First slot marker sits at local (0, 0); rack is at the origin so global == local.
-	assert_eq(position, Vector2.ZERO, "first kit item resolves to the first slot marker")
+	assert_eq(position, Vector2.ZERO, "first stored item resolves to the first slot marker")
 
 
 func test_get_slot_position_for_returns_zero_for_unknown_key() -> void:
 	var manager: Node = _make_manager_with([])
-	var rack := _make_rack(&"ball", manager)
+	var rack := _make_rack(manager)
 
 	assert_eq(
 		rack.get_slot_position_for("nonexistent"),
@@ -197,11 +133,8 @@ func _make_reconciler(manager: Node) -> BallReconciler:
 	return reconciler
 
 
-func _make_rack_with_reconciler(
-	role: StringName, manager: Node, reconciler: BallReconciler
-) -> Node2D:
+func _make_rack_with_reconciler(manager: Node, reconciler: BallReconciler) -> Node2D:
 	var rack: Node2D = RackDisplayScript.new()
-	rack.role = role
 	var slot_container := Node2D.new()
 	slot_container.name = "SlotContainer"
 	rack.add_child(slot_container)
@@ -218,10 +151,10 @@ func _make_rack_with_reconciler(
 
 
 func test_owned_items_show_on_the_rack() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
+	var ball := _make_item("ball_alpha")
 	var manager: Node = _make_manager_with([ball])
 	manager.economy.soul_balance = 1000
-	var rack: Node2D = _make_rack(&"ball", manager)
+	var rack: Node2D = _make_rack(manager)
 	manager.take(ball.key)
 	rack.refresh()
 	var instance_key: String = "ball_alpha_1"
@@ -232,11 +165,11 @@ func test_owned_items_show_on_the_rack() -> void:
 
 
 func test_grab_removes_item_from_the_rack() -> void:
-	var ball := _make_item("ball_alpha", &"ball")
+	var ball := _make_item("ball_alpha")
 	var manager: Node = _make_manager_with([ball])
 	manager.economy.soul_balance = 1000
 	var reconciler: BallReconciler = _make_reconciler(manager)
-	var rack: Node2D = _make_rack_with_reconciler(&"ball", manager, reconciler)
+	var rack: Node2D = _make_rack_with_reconciler(manager, reconciler)
 	manager.take(ball.key)
 	var instance_key := "ball_alpha_1"
 	reconciler._create_stored(instance_key, Vector2.ZERO)

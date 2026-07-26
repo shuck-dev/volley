@@ -72,7 +72,7 @@ if tween != null and tween.is_valid():
 await get_tree().process_frame
 ```
 
-This pattern lives in `tests/unit/paddle/test_timeout_controller.gd`.
+Pause the tween on the object under test, then step it manually rather than waiting real time.
 
 ### Physics nodes need the scene tree
 

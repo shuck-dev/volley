@@ -1,7 +1,6 @@
 extends GutTest
 
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
-const HeldBodyScene: PackedScene = preload("res://scenes/items/held_body.tscn")
 const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
 
 var _manager: Node
@@ -50,7 +49,7 @@ func test_settle_outside_shop_commits_purchase() -> void:
 	_manager.economy.soul_balance = 10000
 	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
 	_item.visible = false
-	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(9999, 9999))
+	_item.notify_body_settled(_make_ball(StandardBall.key), Vector2(9999, 9999))
 	assert_eq(_manager.economy.soul_balance, 9990, "purchase committed on outside settle")
 	assert_false(_item.visible, "slot hidden after purchase")
 
@@ -60,7 +59,7 @@ func test_settle_outside_shop_when_unaffordable_restores_slot() -> void:
 	_item.bind_shop_area(_make_shop_area(Vector2(200, 200)))
 	_item.visible = false
 	_manager.economy.soul_balance = 0
-	_item.notify_body_settled(_make_held_body(StandardBall.key), Vector2(9999, 9999))
+	_item.notify_body_settled(_make_ball(StandardBall.key), Vector2(9999, 9999))
 	assert_true(_item.visible, "slot restored when unaffordable")
 	assert_eq(_manager.get_level(StandardBall.key), 0, "no purchase when broke")
 
@@ -124,8 +123,8 @@ func _make_shop_area(size: Vector2) -> Area2D:
 	return area
 
 
-func _make_held_body(key: String) -> HeldBody:
-	var body := HeldBodyScene.instantiate()
-	body.item_key = key
-	add_child_autofree(body)
-	return body
+func _make_ball(key: String) -> Ball:
+	var ball: Ball = load("res://scripts/entities/ball/ball.gd").new()
+	ball.item_key = key
+	add_child_autofree(ball)
+	return ball

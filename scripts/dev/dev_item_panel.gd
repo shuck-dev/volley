@@ -1,9 +1,7 @@
 extends VBoxContainer
 
 var _buttons: Dictionary = {}
-var _remove_buttons: Dictionary = {}
 var _drag := DraggableBehavior.new()
-var _timeout_controller: TimeoutController
 
 
 func _ready() -> void:
@@ -30,7 +28,6 @@ func _ready() -> void:
 		remove_button.pressed.connect(_on_remove_level_pressed.bind(item.key))
 		remove_button.focus_mode = Control.FOCUS_NONE
 		row.add_child(remove_button)
-		_remove_buttons[item.key] = remove_button
 
 		var effect_lines := _build_effect_lines(item)
 		if effect_lines.size() > 0:
@@ -54,14 +51,8 @@ func _ready() -> void:
 	_refresh_buttons()
 	_setup_soul_controls()
 
-	# Buttons reflect level and balance; equip/unequip changes neither, so no placement subscription.
 	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
 	ItemManager.soul_balance_changed.connect(_refresh_buttons.unbind(1))
-
-
-## Venue wires the rally-gate refs directly so the dev panel never walks the tree.
-func bind_court(court: Court) -> void:
-	_timeout_controller = court.timeout_controller
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -75,19 +66,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_remove_level_pressed(item_key: String) -> void:
-	# Double-check the gate at press time even though the button reflects it visually; the poll
-	# runs once per frame and a same-frame state flip could race the click.
-	if not RallyGate.removal_allowed(_timeout_controller):
-		return
 	ItemManager.remove_level(item_key)
-
-
-# Poll the gate so the - button only enables at the equip pose, without subscribing to
-# ball state changes; cost is negligible in a debug-only panel.
-func _process(_delta: float) -> void:
-	var allowed: bool = RallyGate.removal_allowed(_timeout_controller)
-	for button: Button in _remove_buttons.values():
-		button.disabled = not allowed
 
 
 func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:

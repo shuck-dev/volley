@@ -92,7 +92,6 @@ class TestBallRepurchase:
 		_manager = ItemFactory.create_manager(self)
 		var ball := ItemDefinition.new()
 		ball.key = "test_ball"
-		ball.role = &"ball"
 		ball.base_cost = 100
 		ball.cost_scaling = 2.0
 		ball.max_level = 5
@@ -122,7 +121,7 @@ class TestStats:
 
 	func test_activate_applies_stat_modifier() -> void:
 		_manager.economy.soul_balance = 1000
-		_manager.take(TEST_KEY)
+		_manager.purchase(TEST_KEY)
 		_manager.activate(TEST_KEY)
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -230,19 +229,22 @@ class TestCanAcquire:
 		_manager.economy.soul_balance = 100
 		assert_true(_manager.can_acquire(TEST_KEY))
 
-	func test_returns_false_when_already_owned() -> void:
-		_manager.economy.soul_balance = 1000
-		_manager.take(TEST_KEY)
-		assert_false(_manager.can_acquire(TEST_KEY))
-
 
 class TestTake:
 	extends GutTest
-	const TEST_KEY := "test_speed"
+	const TEST_KEY := "test_ball"
+	const TEST_INSTANCE_KEY := "test_ball_1"
 	var _manager: Node
 
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
+		var ball := ItemDefinition.new()
+		ball.key = TEST_KEY
+		ball.base_cost = 100
+		ball.cost_scaling = 2.0
+		ball.max_level = 3
+		ball.effects = []
+		_manager.items.assign([ball] as Array[ItemDefinition])
 
 	func test_take_returns_false_when_balance_too_low() -> void:
 		assert_false(_manager.take(TEST_KEY))
@@ -251,33 +253,21 @@ class TestTake:
 		_manager.economy.soul_balance = 100
 		assert_true(_manager.take(TEST_KEY))
 
-	func test_take_marks_item_as_owned() -> void:
+	func test_take_marks_instance_as_owned() -> void:
 		_manager.economy.soul_balance = 100
 		_manager.take(TEST_KEY)
-		assert_eq(_manager.get_level(TEST_KEY), 1)
+		assert_eq(_manager.get_level(TEST_INSTANCE_KEY), 1)
 
 	func test_take_deducts_cost_from_balance() -> void:
 		_manager.economy.soul_balance = 300
 		_manager.take(TEST_KEY)
 		assert_eq(_manager.get_soul_balance(), 200)
 
-	func test_take_returns_false_when_already_owned() -> void:
-		_manager.economy.soul_balance = 1000
-		_manager.take(TEST_KEY)
-		assert_false(_manager.take(TEST_KEY))
-
-	func test_take_does_not_deduct_cost_when_already_owned() -> void:
-		_manager.economy.soul_balance = 1000
-		_manager.take(TEST_KEY)
-		var balance_after_first_take: int = _manager.get_soul_balance()
-		_manager.take(TEST_KEY)
-		assert_eq(_manager.get_soul_balance(), balance_after_first_take)
-
-	func test_take_emits_item_level_changed() -> void:
+	func test_take_emits_item_manager_state_changed() -> void:
 		_manager.economy.soul_balance = 100
 		watch_signals(_manager)
 		_manager.take(TEST_KEY)
-		assert_signal_emitted_with_parameters(_manager, "item_level_changed", [TEST_KEY])
+		assert_signal_emitted(_manager, "item_manager_state_changed")
 
 	func test_take_emits_soul_balance_changed() -> void:
 		_manager.economy.soul_balance = 100
@@ -286,12 +276,12 @@ class TestTake:
 		assert_signal_emitted(_manager, "soul_balance_changed")
 
 	func test_take_does_not_apply_stat_effects() -> void:
-		var base_speed: float = GameRules.paddle.paddle_speed
+		var base_value: float = GameRules.base.ball_speed_min
 		_manager.economy.soul_balance = 100
 		_manager.take(TEST_KEY)
 		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			base_speed,
+			Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
+			base_value,
 			"take should not register the item's effects",
 		)
 
@@ -313,7 +303,7 @@ class TestReloadFromProgression:
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
 		ItemFactory.give(_manager, TEST_KEY)
-		_manager.state.item_placements[TEST_KEY] = Placement.EQUIPPED
+		_manager.state.item_placements[TEST_KEY] = Placement.ON_COURT
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -340,15 +330,14 @@ class TestReloadFromProgression:
 		)
 
 
-class TestKitItemsBall:
+class TestStoredItems:
 	extends GutTest
 	var _manager: Node
 
 	func before_each() -> void:
 		_manager = ItemFactory.create_manager(self)
 		var ball_item := ItemDefinition.new()
-		ball_item.key = "kit_ball"
-		ball_item.role = &"ball"
+		ball_item.key = "stored_ball"
 		ball_item.base_cost = 100
 		ball_item.cost_scaling = 2.0
 		ball_item.max_level = 3
@@ -356,35 +345,31 @@ class TestKitItemsBall:
 		_manager.items.assign([ball_item])
 		_manager.economy.soul_balance = 10000
 
-	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
-		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+	func test_get_stored_items_is_empty_when_nothing_owned() -> void:
+		assert_eq(_manager.get_stored_items().size(), 0)
 
-	func test_get_kit_items_returns_owned_stored_ball_items() -> void:
-		_manager.take("kit_ball")
-		var ball_kit: Array[String] = _manager.get_kit_items(&"ball")
-		assert_eq(ball_kit.size(), 1)
-		assert_eq(ball_kit[0], "kit_ball_1")
+	func test_get_stored_items_returns_owned_stored_items() -> void:
+		_manager.take("stored_ball")
+		var stored: Array[String] = _manager.get_stored_items()
+		assert_eq(stored.size(), 1)
+		assert_eq(stored[0], "stored_ball_1")
 
-	func test_get_kit_items_excludes_ball_when_queried_for_equipment_role() -> void:
-		_manager.take("kit_ball")
-		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
+	func test_get_stored_items_excludes_unowned_items() -> void:
+		assert_eq(_manager.get_level("stored_ball"), 0)
+		assert_eq(_manager.get_stored_items().size(), 0)
 
-	func test_get_kit_items_excludes_unowned_ball_items() -> void:
-		assert_eq(_manager.get_level("kit_ball"), 0)
-		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
+	func test_get_stored_items_excludes_activated_items() -> void:
+		_manager.take("stored_ball")
+		_manager.activate("stored_ball_1")
+		assert_eq(_manager.get_stored_items().size(), 0)
 
-	func test_get_kit_items_excludes_activated_ball_items() -> void:
-		_manager.take("kit_ball")
-		_manager.activate("kit_ball_1")
-		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
-
-	func test_get_kit_items_includes_ball_items_after_deactivation() -> void:
-		_manager.take("kit_ball")
-		_manager.activate("kit_ball_1")
-		_manager.deactivate("kit_ball_1")
-		var kit: Array[String] = _manager.get_kit_items(&"ball")
-		assert_eq(kit.size(), 1)
-		assert_eq(kit[0], "kit_ball_1")
+	func test_get_stored_items_includes_items_after_deactivation() -> void:
+		_manager.take("stored_ball")
+		_manager.activate("stored_ball_1")
+		_manager.deactivate("stored_ball_1")
+		var stored: Array[String] = _manager.get_stored_items()
+		assert_eq(stored.size(), 1)
+		assert_eq(stored[0], "stored_ball_1")
 
 
 class TestRackSlotAssignment:
@@ -397,7 +382,6 @@ class TestRackSlotAssignment:
 		for key: String in ["ball_one", "ball_two"]:
 			var ball_item := ItemDefinition.new()
 			ball_item.key = key
-			ball_item.role = &"ball"
 			ball_item.base_cost = 100
 			ball_item.cost_scaling = 2.0
 			ball_item.max_level = 3
@@ -442,92 +426,6 @@ class TestRackSlotAssignment:
 			1,
 			"the restored ball reclaims the lowest free slot, slot 1",
 		)
-
-
-class TestKitItemsEquipment:
-	extends GutTest
-	var _manager: Node
-
-	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var gear_item := ItemDefinition.new()
-		gear_item.key = "kit_gear"
-		gear_item.role = &"equipment"
-		gear_item.base_cost = 100
-		gear_item.cost_scaling = 2.0
-		gear_item.max_level = 3
-		gear_item.effects = []
-		_manager.items.assign([gear_item])
-		_manager.economy.soul_balance = 10000
-
-	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
-		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
-
-	func test_get_kit_items_returns_owned_stored_equipment_items() -> void:
-		_manager.take("kit_gear")
-		var gear_kit: Array[String] = _manager.get_kit_items(&"equipment")
-		assert_eq(gear_kit.size(), 1)
-		assert_eq(gear_kit[0], "kit_gear")
-
-	func test_get_kit_items_excludes_equipment_when_queried_for_ball_role() -> void:
-		_manager.take("kit_gear")
-		assert_eq(_manager.get_kit_items(&"ball").size(), 0)
-
-	func test_get_kit_items_excludes_unowned_equipment_items() -> void:
-		assert_eq(_manager.get_level("kit_gear"), 0)
-		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
-
-	func test_get_kit_items_excludes_activated_equipment_items() -> void:
-		_manager.take("kit_gear")
-		_manager.activate("kit_gear")
-		assert_eq(_manager.get_kit_items(&"equipment").size(), 0)
-
-	func test_get_kit_items_includes_equipment_items_after_deactivation() -> void:
-		_manager.take("kit_gear")
-		_manager.activate("kit_gear")
-		_manager.deactivate("kit_gear")
-		var kit: Array[String] = _manager.get_kit_items(&"equipment")
-		assert_eq(kit.size(), 1)
-		assert_eq(kit[0], "kit_gear")
-
-
-class TestEquipFlow:
-	extends GutTest
-
-	var _manager: Node
-
-	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var gear_a := ItemDefinition.new()
-		gear_a.key = "gear_a"
-		gear_a.role = &"equipment"
-		gear_a.base_cost = 10
-		gear_a.cost_scaling = 2.0
-		gear_a.max_level = 3
-		gear_a.effects = []
-		var gear_b := ItemDefinition.new()
-		gear_b.key = "gear_b"
-		gear_b.role = &"equipment"
-		gear_b.base_cost = 10
-		gear_b.cost_scaling = 2.0
-		gear_b.max_level = 3
-		gear_b.effects = []
-		var ball := ItemDefinition.new()
-		ball.key = "ball_a"
-		ball.role = &"ball"
-		ball.base_cost = 10
-		ball.cost_scaling = 2.0
-		ball.max_level = 3
-		ball.effects = []
-		_manager.items.assign([gear_a, gear_b, ball])
-		_manager.economy.soul_balance = 100000
-
-	func test_equip_rejects_ball_role_silently() -> void:
-		_manager.take("ball_a")
-		assert_false(_manager.equip("ball_a"))
-
-	func test_unequip_on_unowned_returns_false() -> void:
-		assert_false(_manager.unequip("gear_a"))
 
 
 class TestItemManagerStateChanged:

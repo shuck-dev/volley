@@ -2,13 +2,6 @@ extends GutTest
 
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const TimeoutControllerScript: GDScript = preload("res://scripts/core/timeout_controller.gd")
-const RackDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/rack_drop_target.gd"
-)
-const CharacterDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/character_drop_target.gd"
-)
 
 var _manager: Node
 var _rack: RackDisplay
@@ -96,72 +89,3 @@ func test_grab_live_ball_and_release_over_court_resumes_rally() -> void:
 	var reinstated: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_eq(reinstated, live)
 	assert_eq(reinstated.global_position, court_point)
-
-
-func _configure_equipped_gear_drag() -> void:
-	var equipment: ItemDefinition = ItemTestHelpers.make_equipment_item("gear")
-	var typed_items: Array[ItemDefinition] = [equipment]
-	for existing in _manager.items:
-		typed_items.append(existing)
-	_manager.items.assign(typed_items)
-	_manager.take("gear")
-	_manager.state.item_placements["gear"] = Placement.EQUIPPED
-
-	var timeout: TimeoutController = TimeoutControllerScript.new()
-	add_child_autofree(timeout)
-	timeout._state = TimeoutController.State.AT_EQUIP_POSE
-	_drag.timeout_controller = timeout
-	_drag.gear_rack = _rack
-	_drag.gear_rack_drop_target = _drop_target
-
-
-func test_grab_equipped_from_character_and_release_over_rack_away_from_character_stores() -> void:
-	_configure_equipped_gear_drag()
-
-	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
-	gear_rack_target.item_manager = _manager
-	gear_rack_target.role = &"equipment"
-	gear_rack_target.priority = ItemTestHelpers.RACK_PRIORITY
-	gear_rack_target.position = _drop_target.position
-	gear_rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
-	add_child_autofree(gear_rack_target)
-
-	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.priority = ItemTestHelpers.CHARACTER_PRIORITY
-	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
-	add_child_autofree(character_target)
-	_drag.configure_character_target(null)
-
-	assert_true(_drag.grab_equipped_from_character("gear", Vector2.ZERO))
-	assert_eq(_manager.get_placement("gear"), Placement.STORED)
-
-	_drag._track_cursor_motion(_drop_target.global_position)
-	_drag._gesture_below_threshold = false
-	assert_true(_drag.attempt_release(_drop_target.global_position))
-	assert_false(_drag.is_dragging())
-	assert_eq(_manager.get_placement("gear"), Placement.STORED)
-
-
-func test_grab_equipped_from_character_and_release_over_character_and_rack_stays_equipped() -> void:
-	_configure_equipped_gear_drag()
-
-	var gear_rack_target: RackDropTarget = RackDropTargetScript.new()
-	gear_rack_target.item_manager = _manager
-	gear_rack_target.role = &"equipment"
-	gear_rack_target.priority = ItemTestHelpers.RACK_PRIORITY
-	gear_rack_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(300, 200)))
-	add_child_autofree(gear_rack_target)
-
-	var character_target: CharacterDropTarget = CharacterDropTargetScript.new()
-	character_target.priority = ItemTestHelpers.CHARACTER_PRIORITY
-	character_target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(90, 283)))
-	add_child_autofree(character_target)
-	_drag.configure_character_target(null)
-
-	assert_true(_drag.grab_equipped_from_character("gear", Vector2.ZERO))
-	assert_eq(_manager.get_placement("gear"), Placement.STORED)
-
-	_drag._track_cursor_motion(character_target.global_position)
-	_drag._gesture_below_threshold = false
-	assert_true(_drag.attempt_release(character_target.global_position))
-	assert_eq(_manager.get_placement("gear"), Placement.EQUIPPED)

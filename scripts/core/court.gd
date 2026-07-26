@@ -12,7 +12,6 @@ signal partner_changed
 @export_group("Controllers")
 @export var ball_system: BallReconciler
 @export var autoplay_controller: AutoplayController
-@export var timeout_controller: TimeoutController
 @export var drag_controller: ItemDragController
 
 @export_group("Bounds")
@@ -72,14 +71,6 @@ func _ready() -> void:
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	if timeout_controller != null:
-		timeout_controller.configure(player_paddle)
-
-	if drag_controller != null:
-		var character_area: Area2D = player_paddle.get_node_or_null("CharacterDropTarget")
-		if character_area != null:
-			drag_controller.call_deferred(&"configure_character_target", player_paddle)
-
 	if ball_system != null:
 		ball_system.spawn_origin = global_position
 
@@ -127,11 +118,6 @@ func _on_current_ball_changed(new_ball: Ball) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_autoplay"):
 		autoplay_controller.toggle()
-	if event.is_action_pressed("call_timeout") and timeout_controller != null:
-		if timeout_controller.can_call_timeout():
-			timeout_controller.call_timeout()
-		else:
-			timeout_controller.end_timeout()
 
 
 func _physics_process(delta: float) -> void:
