@@ -229,7 +229,7 @@ func notify_body_settled(ball: Ball, settled_position: Vector2) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 
 	if not is_owned():
-		if not _complete_purchase():
+		if _complete_purchase().is_empty():
 			_release_ball_from_registry(reconciler, ball)
 			visible = true
 			return
