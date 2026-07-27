@@ -15,6 +15,7 @@ var follow_last_hit: bool = false
 
 var _tracker: BallReconciler
 var _ball_subscriptions: Dictionary = {}
+var _paddles: Array[Paddle] = []
 # Paddle-relative offset_norm so the marker tracks the paddle: { offset_norm, target_angle, horizontal_sign }.
 var _last_hits: Dictionary = {}
 
@@ -59,6 +60,10 @@ func _attach_to_tracker() -> void:
 		_on_ball_added(ball)
 
 
+func set_paddles(paddles: Array[Paddle]) -> void:
+	_paddles = paddles
+
+
 func set_dev_visible(value: bool) -> void:
 	dev_visible = value
 	visible = value
@@ -73,7 +78,7 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	for paddle: Paddle in get_tree().get_nodes_in_group(&"paddles"):
+	for paddle in _paddles:
 		if not is_instance_valid(paddle):
 			continue
 		_draw_cone(paddle)

@@ -34,7 +34,6 @@ var _animation_state_machine: RefCounted
 
 
 func _ready() -> void:
-	add_to_group(&"paddles")
 	_lane_x = position.x
 	_paddle_speed = _resolved_paddle_speed()
 	_bind_stat_updates()

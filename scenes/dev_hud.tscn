@@ -14,13 +14,14 @@
 [ext_resource type="Script" uid="uid://dyqpeklr0o4wn" path="res://scripts/dev/soul_bound_overlay.gd" id="13_hqk2e"]
 [ext_resource type="Script" uid="uid://08w53i5wkvn8" path="res://scripts/dev/arc_travel_overlay.gd" id="14_tmy36"]
 [ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/ball_drop_overlay.tscn" id="15_qtjg3"]
-[ext_resource type="Script" uid="uid://bqbdbfpsxq5qo" path="res://scripts/hud/ball_drop_overlay.gd" id="16_ikufa"]
 [ext_resource type="Script" uid="uid://1wacrtyp4x0b" path="res://scripts/dev/ball_name_overlay.gd" id="17_ballname"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container")]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container", "dev_bounce_overlay", "player_sprite")]
 script = ExtResource("1_ahhtf")
 clearance_button = NodePath("ClearanceButton")
 dev_panel_container = NodePath("DevPanelContainer")
+dev_bounce_overlay = NodePath("DevBounceOverlay")
+player_sprite = NodePath("DevPanelContainer/ContentBody/ContentArea/PlayerSprite")
 
 [node name="DevBounceOverlay" type="Node2D" parent="." unique_id=1944203102]
 script = ExtResource("6_bounceover")
@@ -126,8 +127,7 @@ script = ExtResource("13_hqk2e")
 [node name="ArcTravelOverlay" type="Node2D" parent="." unique_id=671493851]
 script = ExtResource("14_tmy36")
 
-[node name="BallDropOverlay" type="Node2D" parent="." unique_id=1579397178 instance=ExtResource("15_qtjg3")]
-script = ExtResource("16_ikufa")
+[node name="BallDropOverlay" parent="." unique_id=1579397178 instance=ExtResource("15_qtjg3")]
 
-[node name="BallNameOverlay" type="Node2D" parent="."]
+[node name="BallNameOverlay" type="Node2D" parent="." unique_id=736343953]
 script = ExtResource("17_ballname")

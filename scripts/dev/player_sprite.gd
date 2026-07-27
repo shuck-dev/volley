@@ -5,6 +5,7 @@ extends VBoxContainer
 
 var _drag: DraggableBehavior = DraggableBehavior.new()
 var _readout_label: Label
+var _paddles: Array[Paddle] = []
 
 
 func _ready() -> void:
@@ -67,8 +68,12 @@ func _refresh_readout() -> void:
 	_readout_label.text = "%.0f x %.0f px" % [_get_sprite_width(), _get_sprite_height()]
 
 
+func set_paddles(paddles: Array[Paddle]) -> void:
+	_paddles = paddles
+
+
 func _sprite_frame_size() -> Vector2:
-	for paddle in get_tree().get_nodes_in_group(&"paddles"):
+	for paddle in _paddles:
 		var sprite: Variant = paddle.get("sprite")
 		if sprite != null and sprite is AnimatedSprite2D:
 			if (
@@ -92,7 +97,7 @@ func _get_sprite_height() -> float:
 
 
 func _for_each_overlay(method: StringName, value: Variant) -> void:
-	for paddle in get_tree().get_nodes_in_group(&"paddles"):
+	for paddle in _paddles:
 		var overlay: DevOverlay = _find_overlay(paddle)
 		if overlay == null or not overlay.has_method(method):
 			continue

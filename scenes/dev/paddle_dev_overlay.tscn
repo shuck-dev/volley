@@ -10,23 +10,19 @@
 [node name="DevOverlay" type="Node2D"]
 script = ExtResource("1_pdo")
 
-[node name="BodyColliderOverlay" type="Node2D" parent="." node_paths=PackedStringArray("collision")]
+[node name="BodyColliderOverlay" type="Node2D" parent="."]
 script = ExtResource("2_body")
-collision = NodePath("../../BodyCollision")
 
-[node name="RacketColliderOverlay" type="Node2D" parent="." node_paths=PackedStringArray("racket_hitbox")]
+[node name="RacketColliderOverlay" type="Node2D" parent="."]
 script = ExtResource("3_racket")
-racket_hitbox = NodePath("../../RacketHitbox")
 
-[node name="GroundRayOverlay" type="Node2D" parent="." node_paths=PackedStringArray("ground_ray")]
+[node name="GroundRayOverlay" type="Node2D" parent="."]
 script = ExtResource("4_ray")
-ground_ray = NodePath("../../GroundRay")
 
-[node name="AnimationStateLabel" type="Label" parent="." node_paths=PackedStringArray("sprite")]
+[node name="AnimationStateLabel" type="Label" parent="."]
 script = ExtResource("5_label")
-sprite = NodePath("../../Sprite")
 
-[node name="LowRacketAnchorMarker" type="Marker2D" parent="." node_paths=PackedStringArray("racket_collision")]
+[node name="LowRacketAnchorMarker" type="Marker2D" parent="."]
 position = Vector2(8, 59.29)
 script = ExtResource("6_rpm")
-racket_collision = NodePath("../../RacketHitbox/RacketCollision")
+
