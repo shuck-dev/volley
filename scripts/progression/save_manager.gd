@@ -1,5 +1,8 @@
 extends Node
 
+## Emitted after the save has been reset and the cleared state written to disk.
+signal save_cleared
+
 const _SLICE_SCRIPTS := {
 	"economy": preload("res://scripts/progression/economy_state.gd"),
 	"items": preload("res://scripts/progression/item_state.gd"),
@@ -160,6 +163,7 @@ func clear_save() -> void:
 	for key: String in _slices:
 		_slices[key].clear()
 	_write_to_disk()
+	save_cleared.emit()
 
 
 ## Resumes normal save behaviour after clear_save().

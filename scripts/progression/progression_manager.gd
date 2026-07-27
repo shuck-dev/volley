@@ -48,19 +48,24 @@ func _ready() -> void:
 		_item_manager = ItemManager
 
 	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
+	_save_manager.save_cleared.connect(_force_shop_unlocked)
 
-	# Shop unlock progression is disabled for now; the shop is available from the start.
-	if not unlocks.shop_unlocked:
-		unlocks.shop_unlocked = true
-
-	if unlocks.shop_unlocked:
-		shop_unlocked_changed.emit.call_deferred(true)
+	_force_shop_unlocked()
 
 	for partner in partners_roster:
 		if partner.key in partners.unlocked_partners:
 			continue
 		if partner.key in partners.recruit_offered_partners:
 			partner_recruit_available.emit.call_deferred(partner)
+
+
+## Shop unlock progression is disabled for now; the shop is available from the start,
+## including right after a save clear.
+func _force_shop_unlocked() -> void:
+	if unlocks.shop_unlocked:
+		return
+	unlocks.shop_unlocked = true
+	shop_unlocked_changed.emit(true)
 
 
 func get_config() -> ProgressionConfig:

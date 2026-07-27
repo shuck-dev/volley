@@ -35,6 +35,15 @@ class TestShopUnlock:
 		_item_manager.add_soul(10)
 		assert_signal_not_emitted(_progression_manager, "shop_unlocked_changed")
 
+	func test_shop_reunlocks_after_save_cleared() -> void:
+		_progression_manager.unlocks.shop_unlocked = false
+		watch_signals(_progression_manager)
+
+		_progression_manager._save_manager.save_cleared.emit()
+
+		assert_true(_progression_manager.is_shop_unlocked())
+		assert_signal_emitted_with_parameters(_progression_manager, "shop_unlocked_changed", [true])
+
 	func test_spending_does_not_reduce_total_earned() -> void:
 		_item_manager.add_soul(100)
 		_item_manager.subtract_soul(100)
@@ -72,14 +81,3 @@ class TestShopPersistence:
 		var progression_manager: Node = ProgressionManagerFactory.create_manager(self, item_manager)
 		item_manager.add_soul(progression_manager._config.shop_unlock_threshold)
 		assert_true(progression_manager.unlocks.shop_unlocked)
-
-	func test_deferred_unlock_signal_emitted_for_preunlocked_save() -> void:
-		var item_manager: Node = ItemFactory.create_manager(self)
-		var unlocks := UnlocksState.new()
-		unlocks.shop_unlocked = true
-		var progression_manager: Node = ProgressionManagerFactory.create_manager(
-			self, item_manager, {"unlocks": unlocks}
-		)
-		watch_signals(progression_manager)
-		await get_tree().process_frame
-		assert_signal_emitted_with_parameters(progression_manager, "shop_unlocked_changed", [true])
