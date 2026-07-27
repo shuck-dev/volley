@@ -361,81 +361,6 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 		_item_manager.activate(_held_key)
 
 
-## Keeps the loose-body helper path alive for Shop's `_drop_falling_body`; venue-floor releases bypass it.
-func track_loose_body(body: HeldBody) -> void:
-	if not body.grabbed.is_connected(_on_loose_body_grabbed):
-		body.grabbed.connect(_on_loose_body_grabbed)
-
-
-## Folds re-grab wiring, ItemManager loose-in-venue promotion, and slot-restore-on-free into one call.
-func register_loose_body(body: HeldBody) -> void:
-	if body == null:
-		return
-	track_loose_body(body)
-	_item_manager.mark_loose_in_venue(body.item_key, body.global_position)
-	if not body.tree_exited.is_connected(_on_loose_body_freed):
-		body.tree_exited.connect(_on_loose_body_freed.bind(body.item_key))
-
-
-## Public accessor for the venue-scoped node loose bodies parent under so they survive transient scenes (Shop teardown).
-func get_loose_body_host() -> Node:
-	return _loose_body_host()
-
-
-## Returns true if a release at `world_position` would be accepted by the court drop target.
-func can_court_accept_at(item_key: String, world_position: Vector2) -> bool:
-	var court: CourtDropTarget = _court_target()
-	if court == null:
-		return false
-	return court.can_accept(item_key, world_position, 1.0)
-
-
-## Re-grabs a loose body the player pressed; reuses the same body so the gesture stays diegetic.
-func _on_loose_body_grabbed(body: HeldBody) -> void:
-	if _drag_target() != null:
-		return
-	var item_key: String = body.item_key
-
-	var spawn_position: Vector2 = body.global_position
-	body.grabbed.disconnect(_on_loose_body_grabbed)
-	# Re-grab consumes the loose-in-venue overlay so the rack reveals normally on the next release path.
-	_item_manager.clear_loose_in_venue(item_key)
-	_adopt_loose_body_as_held(body)
-
-	_held = body
-	_held_key = item_key
-	_held_is_temporary = false
-	_held_was_on_court = false
-	_held_origin = &"live"
-	_press_position = spawn_position
-	_gesture_below_threshold = true
-	_cursor_samples.clear()
-	_track_cursor_motion(spawn_position)
-	_mouse_button_down = true
-	pickup_started.emit(item_key)
-
-
-func _adopt_loose_body_as_held(body: HeldBody) -> void:
-	body.phase = HeldBody.Phase.LIFTING
-	body.linear_velocity = Vector2.ZERO
-	body.gravity_scale = 0.0
-	body.freeze = true
-	body.collision_layer = 0
-	body.collision_mask = 0
-	body._enable_grab_area(false)
-	body.reclaim_scale_from_art_holder()
-	# Reparent to the controller so the lift ease and follow-cursor flow handle it like a fresh grab.
-	if body.get_parent() != self:
-		body.reparent(self)
-
-
-func _loose_body_host() -> Node:
-	if reconciler != null:
-		return reconciler
-	# No reconciler: the controller hosts the loose body itself rather than climbing to its parent.
-	return self
-
-
 func _apply_preserved_speed_after_accept(item_key: String) -> void:
 	if _held_preserved_speed < 0.0:
 		return
@@ -638,14 +563,5 @@ func _on_drop_completed(item_key: String, _release_position: Vector2, _over_cour
 	# Loose-in-venue items have their rack entry filtered out by ItemManager.get_stored_items; nothing to reveal.
 	if _item_manager.is_loose_in_venue(item_key):
 		return
-	if rack != null:
-		rack.reveal_slot_for(item_key)
-
-
-func _on_loose_body_freed(item_key: String) -> void:
-	# Body left the tree (queue_free or re-grab adoption); clearing restores the slot via refresh.
-	# Re-grab paths immediately re-hide via pickup_started so any single-frame flicker is masked.
-	if is_instance_valid(_item_manager):
-		_item_manager.clear_loose_in_venue(item_key)
 	if rack != null:
 		rack.reveal_slot_for(item_key)

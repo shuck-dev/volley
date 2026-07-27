@@ -7,7 +7,6 @@ signal drop_completed(item_key: String, position: Vector2, purchased: bool)
 @export var art_holder: Node2D
 @export var pickup_area: Area2D
 @export var case_overlay: Node2D
-@export var tuning: ShopDragTuning
 
 var item_definition: ItemDefinition
 
@@ -17,10 +16,6 @@ var _shop_area: Area2D
 var _held_token: Node2D = null
 ## Tracks mouse-button state so _process can poll for valid targets when mouse is up.
 var _mouse_button_down: bool = false
-## Cursor position when the gesture started; used to gate sub-threshold clicks from real drags.
-var _press_position: Vector2 = Vector2.ZERO
-## Maximum cursor travel seen during the gesture; out-and-back drags still spawn a body.
-var _max_travel_seen: float = 0.0
 
 
 func configure(item_manager: Node, definition: ItemDefinition) -> void:
@@ -42,19 +37,6 @@ func can_be_owned() -> bool:
 	return _item_manager.can_acquire(item_definition.key)
 
 
-## Pickup permission: owned items stay draggable, unowned must be affordable.
-func can_be_dragged() -> bool:
-	if is_owned():
-		return true
-	return can_be_owned()
-
-
-func is_owned() -> bool:
-	if item_definition == null or _item_manager == null:
-		return false
-	return _item_manager.get_owned_count(item_definition.key) > 0
-
-
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
@@ -71,9 +53,6 @@ func _process(_delta: float) -> void:
 		return
 	var cursor: Vector2 = _cursor_position()
 	_held_token.global_position = cursor
-	var travel: float = cursor.distance_to(_press_position)
-	if travel > _max_travel_seen:
-		_max_travel_seen = travel
 	# SH-287: when mouse is up, poll for a valid commit position so the gesture ends the moment one is reachable.
 	if not _mouse_button_down:
 		attempt_release(cursor)
@@ -116,7 +95,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
-	if mouse_button.pressed and can_be_dragged() and _held_token == null:
+	if mouse_button.pressed and can_be_owned() and _held_token == null:
 		_start_drag()
 
 
@@ -124,7 +103,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 func start_drag() -> bool:
 	if _held_token != null:
 		return false
-	if not can_be_dragged():
+	if not can_be_owned():
 		return false
 	_start_drag()
 	return true
@@ -137,17 +116,18 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		var controller: Node = _drag_controller()
-		var spawned: bool = false
+		if not can_be_owned():
+			_finalise_gesture(release_position, false)
+			visible = true
+			return true
 
-		if controller != null and controller.has_method("try_purchase_and_spawn"):
-			spawned = controller.try_purchase_and_spawn(
-				item_definition.key, release_position, _release_velocity()
-			)
-		elif _any_target_accepts(release_position) and not _complete_purchase().is_empty():
-			_drop_falling_body(release_position)
-			spawned = true
+		var controller: ItemDragController = _drag_controller()
+		if controller == null:
+			return false
 
+		var spawned: bool = controller.try_purchase_and_spawn(
+			item_definition.key, release_position, _release_velocity()
+		)
 		if not spawned:
 			return false
 
@@ -156,14 +136,6 @@ func attempt_release(release_position: Vector2) -> bool:
 		visible = false
 
 		return true
-
-	# Inside-shop branch: revert to shelf position, no ball spawn.
-	var threshold: float = tuning.drag_threshold_px if tuning != null else 2.0
-	var release_travel: float = release_position.distance_to(_press_position)
-	var gesture_travel: float = maxf(_max_travel_seen, release_travel)
-	if gesture_travel < threshold:
-		# Pure click: no action, slot returns visible.
-		pass
 
 	_finalise_gesture(release_position, false)
 	visible = true
@@ -175,79 +147,6 @@ func _drag_controller() -> ItemDragController:
 	if tree == null:
 		return null
 	return tree.get_first_node_in_group(&"drag_controller") as ItemDragController
-
-
-## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.
-func _any_target_accepts(release_position: Vector2) -> bool:
-	if item_definition == null:
-		return false
-
-	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
-		if (target as DropTarget).can_accept(item_definition.key, release_position):
-			return true
-
-	return false
-
-
-## Drops a falling Ball for the inside-shop or fallthrough case; settling decides refund or commit.
-func _drop_falling_body(release_position: Vector2) -> void:
-	if item_definition == null:
-		return
-	var reconciler: Node = _resolve_reconciler(_drag_controller())
-	if reconciler == null:
-		return
-	var ball: Ball = reconciler.spawn_at_rest(
-		item_definition.key, release_position, _release_velocity()
-	)
-	if ball == null:
-		return
-	_watch_for_settle(ball)
-
-
-func _resolve_reconciler(controller: Node) -> Node:
-	if controller != null and "reconciler" in controller and controller.reconciler != null:
-		return controller.reconciler
-	return null
-
-
-func _watch_for_settle(body: RigidBody2D) -> void:
-	# Poll until the body's velocity falls below a settle threshold or it is freed.
-	# Use load() so the class-name cache (which can be async-stale) doesn't mismatch path-based lookups.
-	var drop: Node = load("res://scripts/shop/shop_item_drop.gd").new()
-	drop.tuning = tuning
-	drop.configure(body, self)
-	body.add_child(drop)
-
-
-## Called by ShopItemDrop once the Ball settles; keeps it on commit, releases it on refund.
-func notify_body_settled(ball: Ball, settled_position: Vector2) -> void:
-	if item_definition == null or not is_instance_valid(ball):
-		if is_instance_valid(ball):
-			ball.queue_free()
-		return
-	var controller: Node = _drag_controller()
-	var reconciler: Node = _resolve_reconciler(controller)
-
-	if not is_owned():
-		if _complete_purchase().is_empty():
-			_release_ball_from_registry(reconciler, ball)
-			visible = true
-			return
-	else:
-		# Already owned: attempt upgrade via purchase; silent on failure (max level, broke).
-		_complete_purchase()
-
-	visible = false
-	ItemManager.adopt_instance(ball.item_key)
-	ItemManager.mark_loose_in_venue(ball.item_key, settled_position)
-	drop_completed.emit(ball.item_key, settled_position, true)
-
-
-func _release_ball_from_registry(reconciler: Node, ball: Ball) -> void:
-	if reconciler != null and reconciler.has_method("release_ball"):
-		reconciler.release_ball(ball.item_key)
-	if is_instance_valid(ball):
-		ball.queue_free()
 
 
 func _release_velocity() -> Vector2:
@@ -279,21 +178,10 @@ func _start_drag() -> void:
 	var cursor: Vector2 = _cursor_position()
 	token.global_position = cursor
 	_held_token = token
-	_press_position = cursor
-	_max_travel_seen = 0.0
 	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
 	_mouse_button_down = true
 	pickup_started.emit(item_definition.key)
-
-
-## Returns the newly minted instance key on success, "" on failure.
-func _complete_purchase() -> String:
-	if not can_be_owned():
-		return ""
-	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
-		return ""
-	return _item_manager.take(item_definition.key)
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:
@@ -333,8 +221,5 @@ func _on_item_level_changed(item_key: String) -> void:
 
 func _refresh_case_overlay() -> void:
 	if case_overlay == null:
-		return
-	if is_owned():
-		case_overlay.visible = false
 		return
 	case_overlay.visible = not can_be_owned()
