@@ -30,15 +30,6 @@ scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
 animation = &"ready_grounded_low"
 
-[node name="AnkleAnchor" type="Node2D" parent="." unique_id=2001000001]
-position = Vector2(0, 24)
-
-[node name="GripAnchor" type="Node2D" parent="." unique_id=2001000002]
-position = Vector2(-12, 0)
-
-[node name="WristAnchor" type="Node2D" parent="." unique_id=2001000003]
-position = Vector2(-12, -10)
-
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
 
