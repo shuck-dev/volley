@@ -44,11 +44,17 @@ jobs:
 
       - name: Promote preview objects to release
         run: |
-          curl -fsSL -X POST \
+          status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
             -H "Authorization: Basic $(printf 'volley:%s' "${{ secrets.LFS_PROMOTE_KEY }}" | base64 -w0)" \
             -H "Content-Type: application/json" \
             -d "{\"oids\": $(cat oids.json)}" \
-            https://volley-lfs-proxy.volcanoem.workers.dev/promote
+            https://volley-lfs-proxy.volcanoem.workers.dev/promote)
+          cat response.json
+          echo
+          if [ "$status" -ne 200 ]; then
+            echo "::error::promote request failed with HTTP $status; failing oids listed above"
+            exit 1
+          fi
 
   deploy-production:
     name: Deploy to Production
