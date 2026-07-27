@@ -137,6 +137,11 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
+		if not can_be_owned():
+			_finalise_gesture(release_position, false)
+			visible = true
+			return true
+
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 

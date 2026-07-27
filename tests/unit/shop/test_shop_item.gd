@@ -77,6 +77,19 @@ func test_release_where_no_target_accepts_keeps_the_item_held() -> void:
 	assert_eq(_manager.get_level(StandardBall.key), 0, "a refused drop grants no item")
 
 
+func test_unaffordable_release_outside_shop_cancels_the_drag() -> void:
+	_setup_item(StandardBall)
+	_manager.economy.soul_balance = 10000
+	_item.start_drag()
+	_manager.economy.soul_balance = 0
+
+	var released: bool = _item.attempt_release(Vector2(800, 300))
+
+	assert_true(released, "an unaffordable drop resolves the gesture instead of hanging")
+	assert_true(_item.visible, "slot restored when the drop is unaffordable")
+	assert_eq(_manager.get_level(StandardBall.key), 0, "no purchase when unaffordable")
+
+
 func test_owned_ball_can_be_upgraded_from_shop() -> void:
 	_setup_item(StandardBall)
 	_manager.economy.soul_balance = 10000
