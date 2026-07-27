@@ -59,11 +59,11 @@ func _ready() -> void:
 			partner_recruit_available.emit.call_deferred(partner)
 
 
-## Shop unlock progression is disabled for now; the shop is available from the start,
-## including right after a save clear.
+## Shop unlock progression is disabled until progression is prioritised
 func _force_shop_unlocked() -> void:
 	if unlocks.shop_unlocked:
 		return
+
 	unlocks.shop_unlocked = true
 	shop_unlocked_changed.emit(true)
 
