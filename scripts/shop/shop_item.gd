@@ -130,29 +130,31 @@ func start_drag() -> bool:
 	return true
 
 
-## Release outcomes branch on inside-shop vs outside, plus travel-threshold for inside drags.
+## Tries to release item to a drop target
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		# Held until the cursor reaches somewhere a target will take, so a refused drop costs nothing.
-		if not _any_target_accepts(release_position):
-			return false
-
-		if not _complete_purchase():
-			return false
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
-		if controller != null and controller.has_method("spawn_purchased_at"):
-			spawned = controller.spawn_purchased_at(
+
+		if controller != null and controller.has_method("try_purchase_and_spawn"):
+			spawned = controller.try_purchase_and_spawn(
 				item_definition.key, release_position, _release_velocity()
 			)
-		if not spawned:
+		elif _any_target_accepts(release_position) and not _complete_purchase().is_empty():
 			_drop_falling_body(release_position)
+			spawned = true
+
+		if not spawned:
+			return false
+
 		_finalise_gesture(release_position, true)
+
 		visible = false
+
 		return true
 
 	# Inside-shop branch: revert to shelf position, no ball spawn.
@@ -168,11 +170,11 @@ func attempt_release(release_position: Vector2) -> bool:
 	return true
 
 
-func _drag_controller() -> Node:
+func _drag_controller() -> ItemDragController:
 	var tree: SceneTree = get_tree()
 	if tree == null:
 		return null
-	return tree.get_first_node_in_group(&"drag_controller")
+	return tree.get_first_node_in_group(&"drag_controller") as ItemDragController
 
 
 ## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.
@@ -227,7 +229,7 @@ func notify_body_settled(ball: Ball, settled_position: Vector2) -> void:
 	var reconciler: Node = _resolve_reconciler(controller)
 
 	if not is_owned():
-		if not _complete_purchase():
+		if _complete_purchase().is_empty():
 			_release_ball_from_registry(reconciler, ball)
 			visible = true
 			return
@@ -285,11 +287,12 @@ func _start_drag() -> void:
 	pickup_started.emit(item_definition.key)
 
 
-func _complete_purchase() -> bool:
+## Returns the newly minted instance key on success, "" on failure.
+func _complete_purchase() -> String:
 	if not can_be_owned():
-		return false
+		return ""
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
-		return false
+		return ""
 	return _item_manager.take(item_definition.key)
 
 
