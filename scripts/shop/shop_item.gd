@@ -141,13 +141,14 @@ func attempt_release(release_position: Vector2) -> bool:
 		if not _any_target_accepts(release_position):
 			return false
 
-		if not _complete_purchase():
+		var instance_key: String = _complete_purchase()
+		if instance_key.is_empty():
 			return false
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 		if controller != null and controller.has_method("spawn_purchased_at"):
 			spawned = controller.spawn_purchased_at(
-				item_definition.key, release_position, _release_velocity()
+				instance_key, release_position, _release_velocity()
 			)
 		if not spawned:
 			_drop_falling_body(release_position)
@@ -285,11 +286,12 @@ func _start_drag() -> void:
 	pickup_started.emit(item_definition.key)
 
 
-func _complete_purchase() -> bool:
+## Returns the newly minted instance key on success, "" on failure.
+func _complete_purchase() -> String:
 	if not can_be_owned():
-		return false
+		return ""
 	if _item_manager.get_owned_count(item_definition.key) >= item_definition.max_level:
-		return false
+		return ""
 	return _item_manager.take(item_definition.key)
 
 

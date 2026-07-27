@@ -247,11 +247,11 @@ class TestTake:
 		_manager.items.assign([ball] as Array[ItemDefinition])
 
 	func test_take_returns_false_when_balance_too_low() -> void:
-		assert_false(_manager.take(TEST_KEY))
+		assert_eq(_manager.take(TEST_KEY), "")
 
 	func test_take_returns_true_when_affordable() -> void:
 		_manager.economy.soul_balance = 100
-		assert_true(_manager.take(TEST_KEY))
+		assert_eq(_manager.take(TEST_KEY), TEST_INSTANCE_KEY)
 
 	func test_take_marks_instance_as_owned() -> void:
 		_manager.economy.soul_balance = 100

@@ -364,15 +364,17 @@ func take_ball(item_key: String) -> bool:
 	return true
 
 
-## Acquires a ball item without registering its effects; false if unaffordable.
-func take(item_key: String) -> bool:
+## Acquires a ball item without registering its effects. Returns the new instance
+## key on success, "" if unaffordable.
+func take(item_key: String) -> String:
 	var item := _get_item(item_key)
 	if item == null:
-		return false
+		return ""
 	if not take_ball(item_key):
-		return false
-	register_instance(generate_instance_key(item_key))
-	return true
+		return ""
+	var instance_key: String = generate_instance_key(item_key)
+	register_instance(instance_key)
+	return instance_key
 
 
 ## Returns points to the balance without counting them as newly earned.
