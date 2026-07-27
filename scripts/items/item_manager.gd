@@ -364,16 +364,18 @@ func take_ball(item_key: String) -> bool:
 	return true
 
 
-## Acquires a ball item without registering its effects. Returns the new instance
-## key on success, "" if unaffordable.
+## Acquires a ball item without registering its effects.
 func take(item_key: String) -> String:
 	var item := _get_item(item_key)
 	if item == null:
 		return ""
+
 	if not take_ball(item_key):
 		return ""
+
 	var instance_key: String = generate_instance_key(item_key)
 	register_instance(instance_key)
+
 	return instance_key
 
 

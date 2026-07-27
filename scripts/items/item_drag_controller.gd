@@ -70,16 +70,20 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	var drag_target: Node2D = _drag_target()
+
 	if drag_target == null:
 		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
+
 	var cursor_target: Vector2 = _cursor_position()
 	drag_target.global_position = cursor_target
 	_track_cursor_motion(cursor_target)
+
 	if _gesture_below_threshold:
 		if cursor_target.distance_to(_press_position) >= COMMIT_MOVEMENT_THRESHOLD_PX:
 			_gesture_below_threshold = false
 	_update_cursor_state(cursor_target)
+
 	if not _mouse_button_down:
 		if not attempt_release(cursor_target):
 			pass

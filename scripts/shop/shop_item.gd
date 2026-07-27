@@ -130,30 +130,35 @@ func start_drag() -> bool:
 	return true
 
 
-## Release outcomes branch on inside-shop vs outside, plus travel-threshold for inside drags.
+## Tries to release item to a drop target
 func attempt_release(release_position: Vector2) -> bool:
 	if _held_token == null:
 		return false
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		# Held until the cursor reaches somewhere a target will take, so a refused drop costs nothing.
 		if not _any_target_accepts(release_position):
 			return false
 
 		var instance_key: String = _complete_purchase()
 		if instance_key.is_empty():
 			return false
+
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
+
 		if controller != null and controller.has_method("spawn_purchased_at"):
 			spawned = controller.spawn_purchased_at(
 				instance_key, release_position, _release_velocity()
 			)
+
 		if not spawned:
 			_drop_falling_body(release_position)
+
 		_finalise_gesture(release_position, true)
+
 		visible = false
+
 		return true
 
 	# Inside-shop branch: revert to shelf position, no ball spawn.
