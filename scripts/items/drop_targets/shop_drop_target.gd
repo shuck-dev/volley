@@ -2,10 +2,6 @@ class_name ShopDropTarget
 extends DropTarget
 
 
-func _ready() -> void:
-	add_to_group(&"drop_targets")
-
-
 func can_accept(_item_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
 	return contains_point(world_position)
 
