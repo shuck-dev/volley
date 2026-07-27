@@ -12,21 +12,12 @@ class TestShopUnlock:
 		_progression_manager = ProgressionManagerFactory.create_manager(self, _item_manager)
 		_threshold = _progression_manager._config.shop_unlock_threshold
 
-	func test_shop_not_unlocked_by_default() -> void:
-		assert_false(_progression_manager.is_shop_unlocked())
-
-	func test_shop_unlocks_when_soul_reaches_threshold() -> void:
-		_item_manager.add_soul(_threshold)
+	func test_shop_unlocked_by_default() -> void:
 		assert_true(_progression_manager.is_shop_unlocked())
 
-	func test_shop_does_not_unlock_below_threshold() -> void:
+	func test_shop_stays_unlocked_below_threshold() -> void:
 		_item_manager.add_soul(_threshold - 1)
-		assert_false(_progression_manager.is_shop_unlocked())
-
-	func test_shop_unlocked_signal_emitted_on_unlock() -> void:
-		watch_signals(_progression_manager)
-		_item_manager.add_soul(_threshold)
-		assert_signal_emitted_with_parameters(_progression_manager, "shop_unlocked_changed", [true])
+		assert_true(_progression_manager.is_shop_unlocked())
 
 	func test_shop_signal_not_emitted_below_threshold() -> void:
 		watch_signals(_progression_manager)
@@ -43,16 +34,6 @@ class TestShopUnlock:
 		watch_signals(_progression_manager)
 		_item_manager.add_soul(10)
 		assert_signal_not_emitted(_progression_manager, "shop_unlocked_changed")
-
-	func test_shop_unlocks_when_total_earned_reaches_threshold_even_after_spending() -> void:
-		_item_manager.add_soul(_threshold - 10)
-		_item_manager.subtract_soul(_threshold - 20)
-		assert_false(_progression_manager.is_shop_unlocked(), "not yet at threshold total")
-		_item_manager.add_soul(15)
-		assert_true(
-			_progression_manager.is_shop_unlocked(),
-			"cumulative earnings crossed threshold after spending"
-		)
 
 	func test_spending_does_not_reduce_total_earned() -> void:
 		_item_manager.add_soul(100)

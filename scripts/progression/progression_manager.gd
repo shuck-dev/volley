@@ -49,6 +49,10 @@ func _ready() -> void:
 
 	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
 
+	# Shop unlock progression is disabled for now; the shop is available from the start.
+	if not unlocks.shop_unlocked:
+		unlocks.shop_unlocked = true
+
 	if unlocks.shop_unlocked:
 		shop_unlocked_changed.emit.call_deferred(true)
 
