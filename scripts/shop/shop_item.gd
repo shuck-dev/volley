@@ -137,23 +137,19 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		if not _any_target_accepts(release_position):
-			return false
-
-		var instance_key: String = _complete_purchase()
-		if instance_key.is_empty():
-			return false
-
 		var controller: Node = _drag_controller()
 		var spawned: bool = false
 
-		if controller != null and controller.has_method("spawn_purchased_at"):
-			spawned = controller.spawn_purchased_at(
-				instance_key, release_position, _release_velocity()
+		if controller != null and controller.has_method("try_purchase_and_spawn"):
+			spawned = controller.try_purchase_and_spawn(
+				item_definition.key, release_position, _release_velocity()
 			)
+		elif _any_target_accepts(release_position) and not _complete_purchase().is_empty():
+			_drop_falling_body(release_position)
+			spawned = true
 
 		if not spawned:
-			_drop_falling_body(release_position)
+			return false
 
 		_finalise_gesture(release_position, true)
 
@@ -174,11 +170,11 @@ func attempt_release(release_position: Vector2) -> bool:
 	return true
 
 
-func _drag_controller() -> Node:
+func _drag_controller() -> ItemDragController:
 	var tree: SceneTree = get_tree()
 	if tree == null:
 		return null
-	return tree.get_first_node_in_group(&"drag_controller")
+	return tree.get_first_node_in_group(&"drag_controller") as ItemDragController
 
 
 ## The fallback drop spawns wherever it is told, so the caller checks the position is on a target first.

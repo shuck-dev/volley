@@ -231,34 +231,39 @@ func _adopt_live_ball_as_held(ball: Ball, item_key: String) -> void:
 	_track_cursor_motion(spawn_position)
 
 
-## Routes a just-purchased item to whatever target accepts the release position; venue/rack/court all valid.
-func spawn_purchased_at(
+## Purchases and spawns an item based on the resolution of the prioritised drop target.
+func try_purchase_and_spawn(
 	item_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> bool:
 	var target: DropTarget = _find_accepting_target(item_key, world_position, 1.0)
 	if target == null:
 		return false
+
+	var instance_key: String = _item_manager.take(item_key)
+	if instance_key.is_empty():
+		return false
+
 	if target is CourtDropTarget:
-		target.accept(item_key, world_position, gesture_velocity)
+		target.accept(instance_key, world_position, gesture_velocity)
 		return true
+
 	if target is VenueDropTarget:
-		_release_to_rest(item_key, world_position, gesture_velocity)
+		_release_to_rest(instance_key, world_position, gesture_velocity)
 		return true
+
 	if target is RackDropTarget:
-		# Rack landing adopts a STORED Ball at the slot; rack accept's deactivate branch
-		# is a no-op for a just-purchased, not-on-court item.
-		_adopt_purchased_into_rack(item_key)
+		_adopt_purchased_into_rack(instance_key)
 		return true
-	target.accept(item_key, world_position, gesture_velocity)
+
+	target.accept(instance_key, world_position, gesture_velocity)
+
 	return true
 
 
-func _adopt_purchased_into_rack(item_key: String) -> void:
-	if reconciler == null or rack == null:
+func _adopt_purchased_into_rack(instance_key: String) -> void:
+	if reconciler == null:
 		return
-	if reconciler.get_ball_for_key(item_key) != null:
-		return
-	reconciler.spawn_stored(item_key, rack.get_slot_position_for(item_key))
+	reconciler.ensure_stored_ball_for_key(instance_key)
 
 
 ## Funnels venue-floor releases into the reconciler with the loose-in-venue overlay set.
