@@ -26,12 +26,12 @@ func test_owned_item_can_be_dragged() -> void:
 	assert_true(_item.can_be_dragged())
 
 
-func test_owned_item_can_be_dragged_when_broke() -> void:
+func test_owned_item_cannot_be_dragged_when_broke() -> void:
 	_setup_item(StandardBall)
 	_manager.economy.soul_balance = 10000
 	_manager.take(StandardBall.key)
 	_manager.economy.soul_balance = 0
-	assert_true(_item.can_be_dragged())
+	assert_false(_item.can_be_dragged())
 
 
 func test_release_outside_shop_commits_purchase() -> void:

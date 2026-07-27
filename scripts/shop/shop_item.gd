@@ -42,10 +42,8 @@ func can_be_owned() -> bool:
 	return _item_manager.can_acquire(item_definition.key)
 
 
-## Pickup permission: owned items stay draggable, unowned must be affordable.
+## Pickup permission: every shelf drag is a purchase transaction, owned or not.
 func can_be_dragged() -> bool:
-	if is_owned():
-		return true
 	return can_be_owned()
 
 
@@ -338,8 +336,5 @@ func _on_item_level_changed(item_key: String) -> void:
 
 func _refresh_case_overlay() -> void:
 	if case_overlay == null:
-		return
-	if is_owned():
-		case_overlay.visible = false
 		return
 	case_overlay.visible = not can_be_owned()
