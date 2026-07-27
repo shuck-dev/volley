@@ -37,17 +37,6 @@ func can_be_owned() -> bool:
 	return _item_manager.can_acquire(item_definition.key)
 
 
-## Pickup permission: every shelf drag is a purchase transaction, owned or not.
-func can_be_dragged() -> bool:
-	return can_be_owned()
-
-
-func is_owned() -> bool:
-	if item_definition == null or _item_manager == null:
-		return false
-	return _item_manager.get_owned_count(item_definition.key) > 0
-
-
 func _ready() -> void:
 	if _item_manager == null:
 		_item_manager = ItemManager
@@ -106,7 +95,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	var mouse_button: InputEventMouseButton = event
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
-	if mouse_button.pressed and can_be_dragged() and _held_token == null:
+	if mouse_button.pressed and can_be_owned() and _held_token == null:
 		_start_drag()
 
 
@@ -114,7 +103,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 func start_drag() -> bool:
 	if _held_token != null:
 		return false
-	if not can_be_dragged():
+	if not can_be_owned():
 		return false
 	_start_drag()
 	return true
