@@ -65,6 +65,12 @@ func test_clear_save_resets_every_slice() -> void:
 	assert_eq(_save_manager.partners.active_partner, &"")
 
 
+func test_clear_save_emits_save_cleared() -> void:
+	watch_signals(_save_manager)
+	_save_manager.clear_save()
+	assert_signal_emitted(_save_manager, "save_cleared")
+
+
 func test_save_is_noop_after_clear_save_until_unblocked() -> void:
 	_save_manager.clear_save()
 	_save_manager.save()
