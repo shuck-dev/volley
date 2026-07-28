@@ -21,8 +21,8 @@ const STORED_CONFIG: BallStateConfig = preload("res://resources/ball/states/stor
 const PLAY_ACTIVE_CONFIG: BallStateConfig = preload("res://resources/ball/states/play_active.tres")
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
-## Item key this ball represents; the system reads this on adoption to find the matching ItemDefinition.
-@export var item_key: String = ""
+## Item key this ball represents; the system reads this on adoption to find the matching BallDefinition.
+@export var ball_key: String = ""
 ## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
 @export var grab_area: GrabArea
 ## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
@@ -54,7 +54,7 @@ var tier_floor: float:
 			return base_floor
 
 		var lift: float = (
-			_item_manager.get_modifier(&"tier_floor_lift", item_key) * ball_world_max_speed
+			_ball_manager.get_modifier(&"tier_floor_lift", ball_key) * ball_world_max_speed
 		)
 
 		return minf(base_floor + lift, tier_ceiling)
@@ -66,7 +66,7 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
@@ -78,28 +78,28 @@ var _suppress_miss_detection: bool = false
 
 
 ## Injects the item manager seam before _ready runs; falls back to the autoload if never called.
-func configure(item_manager: ItemManager) -> void:
-	_item_manager = item_manager
+func configure(ball_manager: BallManager) -> void:
+	_ball_manager = ball_manager
 
 
 func _ready() -> void:
-	if _item_manager == null:
-		_item_manager = ItemManager
+	if _ball_manager == null:
+		_ball_manager = BallManager
 	if court_config == null:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
 	min_speed = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _item_manager, item_key
+		GameRules.base.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key
 	)
 	max_speed = (
 		min_speed
 		+ Stats.resolve(
-			GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _item_manager, item_key
+			GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _ball_manager, ball_key
 		)
 	)
 	speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", _item_manager, item_key
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
 	)
 
 	_setup_effect_processor()
@@ -181,7 +181,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	if hit_registered:
 		increase_speed()
 	effect_processor.process_hit(paddle)
-	_item_manager.process_event(&"on_hit", item_key)
+	_ball_manager.process_event(&"on_hit", ball_key)
 
 
 func register_miss_zone(zone: MissZone) -> void:
@@ -299,7 +299,7 @@ func advance_tier() -> void:
 	_apply_speed()
 
 	tier_advanced.emit(self, current_tier)
-	_item_manager.process_event(&"on_tier_completed", item_key)
+	_ball_manager.process_event(&"on_tier_completed", ball_key)
 
 
 func _tier_fraction(field: String) -> float:
@@ -324,7 +324,7 @@ func _setup_effect_processor() -> void:
 	effect_processor = BallEffectProcessor.new()
 	effect_processor.name = "BallEffectProcessor"
 	effect_processor.ball = self
-	effect_processor.item_manager = _item_manager
+	effect_processor.ball_manager = _ball_manager
 	add_child(effect_processor)
 
 
@@ -379,9 +379,9 @@ func has_item_art() -> bool:
 
 
 func _apply_item_art() -> void:
-	if item_key == "" or item_art_holder == null:
+	if ball_key == "" or item_art_holder == null:
 		return
-	var definition: ItemDefinition = _item_manager.get_item(item_key)
+	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	if definition.art == null:
 		return
 	item_art_holder.scale = definition.token_scale

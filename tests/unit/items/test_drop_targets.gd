@@ -22,24 +22,24 @@ func after_each() -> void:
 func test_shop_target_accepts_inside_shop_zone() -> void:
 	var target: ShopDropTarget = ShopDropTargetScript.new()
 	target.position = Vector2(100, 0)
-	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(200, 100)))
+	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(100, 0)))
 	assert_false(target.can_accept("ball_alpha", Vector2(900, 900)))
 
 
 func test_nested_target_accepts_at_its_on_screen_position() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[ItemDefinition])
+	var manager: Node = BallFactory.create_manager(self)
+	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[BallDefinition])
 	var rack := Node2D.new()
 	rack.position = Vector2(-486, 180)
 	add_child_autofree(rack)
 
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 
-	var shape: CollisionShape2D = ItemTestHelpers.attach_rect_shape(Vector2(200, 100))
+	var shape: CollisionShape2D = BallTestHelpers.attach_rect_shape(Vector2(200, 100))
 	shape.position = Vector2(40, 0)
 	target.add_child(shape)
 	rack.add_child(target)
@@ -55,14 +55,14 @@ func test_nested_target_accepts_at_its_on_screen_position() -> void:
 
 
 func test_rotated_target_accepts_along_its_turned_edge() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[ItemDefinition])
+	var manager: Node = BallFactory.create_manager(self)
+	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[BallDefinition])
 
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 	target.rotation = PI / 2
-	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(400, 100)))
+	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(400, 100)))
 	add_child_autofree(target)
 
 	assert_true(
@@ -76,43 +76,43 @@ func test_rotated_target_accepts_along_its_turned_edge() -> void:
 
 
 func test_rack_target_accepts_known_item() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[ItemDefinition])
+	var manager: Node = BallFactory.create_manager(self)
+	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[BallDefinition])
 	var target: RackDropTarget = RackDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 	target.position = Vector2(-500, 0)
-	target.add_child(ItemTestHelpers.attach_rect_shape(Vector2(200, 100)))
+	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
 
 
 func test_court_target_rejects_unknown_item() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
+	var manager: Node = BallFactory.create_manager(self)
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 	target.reconciler = reconciler
-	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.COURT_SIZE))
+	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.COURT_SIZE))
 	add_child_autofree(target)
 	assert_false(target.can_accept("unknown_item", Vector2.ZERO))
 
 
 func test_venue_target_accepts_inside_venue_bounds() -> void:
-	var manager: Node = ItemFactory.create_manager(self)
-	var ball: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[ItemDefinition])
+	var manager: Node = BallFactory.create_manager(self)
+	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
+	manager.items.assign([ball] as Array[BallDefinition])
 	var reconciler: BallReconciler = BallReconcilerScript.new()
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: VenueDropTarget = VenueDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 	target.reconciler = reconciler
-	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.VENUE_SIZE))
+	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.VENUE_SIZE))
 	add_child_autofree(target)
 	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
 	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))

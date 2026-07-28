@@ -4,7 +4,7 @@ extends GutTest
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 var _manager: Node
 var _host: Node2D
@@ -43,9 +43,9 @@ func _make_drop_target(position: Vector2, size: Vector2) -> Area2D:
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	var typed_items: Array[ItemDefinition] = [ball_alpha]
+	_manager = BallFactory.create_manager(self)
+	var ball_alpha: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	var typed_items: Array[BallDefinition] = [ball_alpha]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 10000
 

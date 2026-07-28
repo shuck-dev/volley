@@ -1,4 +1,4 @@
-class_name ItemTestHelpers
+class_name BallTestHelpers
 extends RefCounted
 
 ## Shared fixtures for ball-drag and reconciler test suites.
@@ -33,8 +33,8 @@ static func stub_art() -> PackedScene:
 	return scene
 
 
-static func make_ball_item(key: String) -> ItemDefinition:
-	var item := ItemDefinition.new()
+static func make_ball_item(key: String) -> BallDefinition:
+	var item := BallDefinition.new()
 	item.key = key
 	item.base_cost = 10
 	item.cost_scaling = 2.0
@@ -76,21 +76,21 @@ static func make_drop_targets(
 	manager: Node, reconciler: Node, rack_position: Vector2, test: Node
 ) -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
-	rack_target.item_manager = manager
+	rack_target.ball_manager = manager
 	rack_target.priority = RACK_PRIORITY
 	rack_target.position = rack_position
 	rack_target.add_child(attach_rect_shape(Vector2(300, 200)))
 	test.add_child_autofree(rack_target)
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
-	court_target.item_manager = manager
+	court_target.ball_manager = manager
 	court_target.reconciler = reconciler
 	court_target.priority = COURT_PRIORITY
 	court_target.add_child(attach_rect_shape(COURT_SIZE))
 	test.add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
-	venue_target.item_manager = manager
+	venue_target.ball_manager = manager
 	venue_target.reconciler = reconciler
 	venue_target.priority = VENUE_PRIORITY
 	venue_target.add_child(attach_rect_shape(VENUE_SIZE))

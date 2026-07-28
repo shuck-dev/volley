@@ -123,7 +123,7 @@ func test_bar_renders_band_from_tier_floor_and_ceiling() -> void:
 
 
 # Stand-in reconciler at unit scope: extends BallReconciler so the bar's typed
-# `ball_system` slot accepts it, but overrides `_ready` to skip the ItemManager
+# `ball_system` slot accepts it, but overrides `_ready` to skip the BallManager
 # / SaveManager autoload coupling. The inherited `ball_added` signal is what
 # the bar's production `_ready` wiring connects to.
 class BallSignalSource:

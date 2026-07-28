@@ -12,18 +12,18 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 @export var items_anchor: Node2D
 @export var restock_button: Button
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _refresh_count: int = 0
 
 
 func _ready() -> void:
 	if config == null:
 		config = DEFAULT_CONFIG
-	if _item_manager == null:
-		_item_manager = ItemManager
-	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
-	_update_soul_label(_item_manager.get_soul_balance())
+	if _ball_manager == null:
+		_ball_manager = BallManager
+	_ball_manager.soul_balance_changed.connect(_on_soul_balance_changed)
+	_ball_manager.item_level_changed.connect(_on_item_level_changed)
+	_update_soul_label(_ball_manager.get_soul_balance())
 	_spawn_items()
 	if restock_button != null:
 		restock_button.focus_mode = Control.FOCUS_NONE
@@ -33,23 +33,23 @@ func _ready() -> void:
 
 
 func _spawn_items() -> void:
-	var visible_items: Array[ItemDefinition] = _get_item_pool()
+	var visible_items: Array[BallDefinition] = _get_item_pool()
 	var count: int = visible_items.size()
 	var spacing: float = config.item_spacing
 	var start_x: float = -(count - 1) * spacing / 2.0
 	for index in count:
-		var definition: ItemDefinition = visible_items[index]
+		var definition: BallDefinition = visible_items[index]
 		var shop_item: ShopItem = ShopItemScene.instantiate()
 		shop_item.name = "ShopItem_%s" % definition.key
 		shop_item.position = Vector2(start_x + index * spacing, 0.0)
 		items_anchor.add_child(shop_item)
-		shop_item.configure(_item_manager, definition)
+		shop_item.configure(_ball_manager, definition)
 		shop_item.bind_shop_area(shop_area)
 
 
-func _get_item_pool() -> Array[ItemDefinition]:
-	var available: Array[ItemDefinition] = []
-	for definition: ItemDefinition in _item_manager.items:
+func _get_item_pool() -> Array[BallDefinition]:
+	var available: Array[BallDefinition] = []
+	for definition: BallDefinition in _ball_manager.items:
 		if not definition.purchasable:
 			continue
 		available.append(definition)
@@ -66,9 +66,9 @@ func _clear_items() -> void:
 func restock() -> void:
 	var cost: int = _calculate_restock_cost()
 	if cost > 0:
-		if _item_manager.get_soul_balance() < cost:
+		if _ball_manager.get_soul_balance() < cost:
 			return
-		_item_manager.subtract_soul(cost)
+		_ball_manager.subtract_soul(cost)
 	_clear_items()
 	_spawn_items()
 	_refresh_count += 1
@@ -81,8 +81,8 @@ func _calculate_restock_cost() -> int:
 	var total: int = 0
 	for child: Node in items_anchor.get_children():
 		var shop_item: ShopItem = child as ShopItem
-		if shop_item != null and shop_item.item_definition != null:
-			total += shop_item.item_definition.base_cost
+		if shop_item != null and shop_item.ball_definition != null:
+			total += shop_item.ball_definition.base_cost
 	return max(1, ceili(total * config.restock_cost_multiplier))
 
 
@@ -98,7 +98,7 @@ func _update_restock_button() -> void:
 		restock_button.text = "Restock (Free)"
 	else:
 		restock_button.text = "Restock (%d Soul)" % cost
-		restock_button.disabled = _item_manager.get_soul_balance() < cost
+		restock_button.disabled = _ball_manager.get_soul_balance() < cost
 
 
 func _update_soul_label(balance: int) -> void:
@@ -112,9 +112,9 @@ func _on_soul_balance_changed(balance: int) -> void:
 
 # Refresh the shop pool when an item is purchased so its tile leaves the table.
 # Activate/deactivate leaves level unchanged, so no item_placement_changed subscription.
-func _on_item_level_changed(item_key: String) -> void:
-	if _item_manager.get_level(item_key) <= 0:
+func _on_item_level_changed(ball_key: String) -> void:
+	if _ball_manager.get_level(ball_key) <= 0:
 		return
-	var node: Node = items_anchor.get_node_or_null("ShopItem_%s" % item_key)
+	var node: Node = items_anchor.get_node_or_null("ShopItem_%s" % ball_key)
 	if node != null:
 		node.queue_free()

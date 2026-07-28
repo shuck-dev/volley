@@ -2,19 +2,19 @@ class_name DropTarget
 extends Area2D
 
 
-func can_accept(_item_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(_ball_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
 	return false
 
 
-func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
+func accept(_ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	pass
 
 
-static func get_definition(item_manager: Node, item_key: String) -> ItemDefinition:
-	if item_manager == null:
+static func get_definition(ball_manager: Node, ball_key: String) -> BallDefinition:
+	if ball_manager == null:
 		return null
-	for item: ItemDefinition in item_manager.items:
-		if item.key == item_key or BallKey.is_instance(item.key, item_key):
+	for item: BallDefinition in ball_manager.items:
+		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
 			return item
 	return null
 

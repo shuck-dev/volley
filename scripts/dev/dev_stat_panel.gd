@@ -117,7 +117,7 @@ func _format_modified_stat(
 	stat_key: StringName, current_value: float, sign_prefix: String, diff: float
 ) -> String:
 	var text := "%s: %.1f (%s%.1f)" % [stat_key, current_value, sign_prefix, diff]
-	var percentage_offset: float = ItemManager.get_percentage_offset(stat_key)
+	var percentage_offset: float = BallManager.get_percentage_offset(stat_key)
 	if not is_zero_approx(percentage_offset):
 		var pct_prefix: String = "+" if percentage_offset > 0 else ""
 		text += " [%s%.0f%%]" % [pct_prefix, percentage_offset * 100]

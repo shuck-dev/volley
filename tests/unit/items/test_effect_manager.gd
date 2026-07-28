@@ -11,9 +11,9 @@ func before_each() -> void:
 	add_child_autofree(_manager)
 
 
-func _make_item(item_key: String, effects: Array[Effect]) -> ItemDefinition:
-	var item := ItemDefinition.new()
-	item.key = item_key
+func _make_item(ball_key: String, effects: Array[Effect]) -> BallDefinition:
+	var item := BallDefinition.new()
+	item.key = ball_key
 	item.max_level = 3
 	item.effects = effects
 	return item

@@ -35,7 +35,7 @@ var _active_partner_definition: Resource
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _is_autoplay_active := false
 var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
@@ -60,8 +60,8 @@ func _ready() -> void:
 	if _progression_config == null:
 		_progression_config = ProgressionManager.get_config()
 
-	if _item_manager == null:
-		_item_manager = ItemManager
+	if _ball_manager == null:
+		_ball_manager = BallManager
 
 	if player_paddle == null:
 		player_paddle = player_paddle_scene.instantiate()
@@ -104,7 +104,7 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
-	_tier_reward_handler.bind(_item_manager)
+	_tier_reward_handler.bind(_ball_manager)
 	ball_system.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
 
@@ -121,7 +121,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	_item_manager.process_frame(delta)
+	_ball_manager.process_frame(delta)
 
 
 func _on_paddle_hit(hitting_ball: Ball) -> void:
@@ -147,7 +147,7 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	var actions: Array[StringName] = _item_manager.process_event(&"on_miss", missed_ball.item_key)
+	var actions: Array[StringName] = _ball_manager.process_event(&"on_miss", missed_ball.ball_key)
 	var should_halve: bool = actions.has(&"halve_streak")
 
 	if should_halve:
@@ -204,7 +204,7 @@ func _activate_partner() -> void:
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(ball_system)
 
-	_item_manager.register_partner(partner_definition)
+	_ball_manager.register_partner(partner_definition)
 
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
@@ -217,7 +217,7 @@ func _deactivate_partner() -> void:
 	if partner_paddle == null:
 		return
 	if _active_partner_definition != null:
-		_item_manager.unregister_partner(_active_partner_definition)
+		_ball_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
 	if partner_paddle.controller != null:
@@ -255,7 +255,7 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 func _accumulate_soul() -> void:
 	var rate: float = _progression_config.autoplay_soul_rate
 	var base_points: float = Stats.resolve(
-		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
+		GameRules.base.soul_per_hit, &"soul_per_hit", _ball_manager
 	)
 	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
 	var points_to_add: float = (
@@ -264,5 +264,5 @@ func _accumulate_soul() -> void:
 	_soul_accumulator += points_to_add
 	var whole_points: int = int(_soul_accumulator)
 	if whole_points > 0:
-		_item_manager.add_soul(whole_points)
+		_ball_manager.add_soul(whole_points)
 		_soul_accumulator -= float(whole_points)

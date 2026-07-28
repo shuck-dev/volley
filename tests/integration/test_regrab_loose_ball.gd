@@ -13,16 +13,16 @@ var _drag: ItemDragController
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	_manager.items.assign([ItemTestHelpers.make_ball_item("ball_alpha")] as Array[ItemDefinition])
+	_manager = BallFactory.create_manager(self)
+	_manager.items.assign([BallTestHelpers.make_ball_item("ball_alpha")] as Array[BallDefinition])
 	_manager.economy.soul_balance = 10000
 
 	_host = Node2D.new()
 	_host.name = "BallHost"
 	add_child_autofree(_host)
 
-	_rack = ItemTestHelpers.make_rack(_manager, self)
-	_drop_target = ItemTestHelpers.make_drop_area(Vector2(-1500, 0), Vector2(300, 200), self)
+	_rack = BallTestHelpers.make_rack(_manager, self)
+	_drop_target = BallTestHelpers.make_drop_area(Vector2(-1500, 0), Vector2(300, 200), self)
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
@@ -32,7 +32,7 @@ func before_each() -> void:
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	add_child_autofree(_drag)
 
-	ItemTestHelpers.make_drop_targets(_manager, _reconciler, _drop_target.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _reconciler, _drop_target.position, self)
 
 
 func after_each() -> void:

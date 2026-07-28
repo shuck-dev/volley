@@ -12,7 +12,7 @@ signal bounce_resolved(
 
 var ball: Ball
 var paddles: Array[Node2D] = []
-var item_manager: ItemManager
+var ball_manager: BallManager
 
 ## Speed after the tier clamp and any uncapped scale.
 var scaled_speed := 0.0
@@ -22,8 +22,8 @@ var _applied_offset := 0.0
 
 
 func _ready() -> void:
-	if item_manager == null:
-		item_manager = ItemManager
+	if ball_manager == null:
+		ball_manager = BallManager
 
 
 func process_frame(_delta: float) -> void:
@@ -42,7 +42,7 @@ func _sync_speed_limits() -> void:
 
 func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", item_manager, ball.item_key
+		GameRules.base.ball_speed_min, &"ball_speed_min", ball_manager, ball.ball_key
 	)
 
 	if not is_equal_approx(new_min, ball.min_speed):
@@ -56,18 +56,18 @@ func _sync_max_speed() -> void:
 		+ Stats.resolve(
 			GameRules.base.ball_speed_max_range,
 			&"ball_speed_max_range",
-			item_manager,
-			ball.item_key
+			ball_manager,
+			ball.ball_key
 		)
 	)
 	ball.speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", item_manager, ball.item_key
+		GameRules.base.ball_speed_increment, &"ball_speed_increment", ball_manager, ball.ball_key
 	)
 
 
 func _apply_speed_offset() -> void:
 	_applied_offset = Stats.resolve(
-		GameRules.base.ball_speed_offset, &"ball_speed_offset", item_manager, ball.item_key
+		GameRules.base.ball_speed_offset, &"ball_speed_offset", ball_manager, ball.ball_key
 	)
 	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
 	refresh_scaled_speed()
@@ -75,7 +75,7 @@ func _apply_speed_offset() -> void:
 
 func refresh_scaled_speed() -> void:
 	var speed_scale: float = (
-		1.0 + item_manager.get_percentage_offset(&"ball_speed_scale", ball.item_key)
+		1.0 + ball_manager.get_percentage_offset(&"ball_speed_scale", ball.ball_key)
 	)
 	scaled_speed = ball.speed * speed_scale
 
@@ -102,7 +102,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 		. resolve(
 			GameRules.paddle.paddle_return_angle_max_degrees,
 			&"paddle_return_angle_max_degrees",
-			item_manager,
+			ball_manager,
 		)
 	)
 
@@ -117,7 +117,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 
 	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
 	var english_coefficient: float = Stats.resolve(
-		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", item_manager
+		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", ball_manager
 	)
 
 	var english_angle: float = struck_paddle.velocity.y * english_coefficient
@@ -149,7 +149,7 @@ func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) ->
 		. resolve(
 			GameRules.paddle.paddle_bounce_min_angle_degrees,
 			&"paddle_bounce_min_angle_degrees",
-			item_manager,
+			ball_manager,
 		)
 	)
 	var max_degrees: float = (
@@ -157,7 +157,7 @@ func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) ->
 		. resolve(
 			GameRules.paddle.paddle_bounce_max_angle_degrees,
 			&"paddle_bounce_max_angle_degrees",
-			item_manager,
+			ball_manager,
 		)
 	)
 	var min_magnitude: float = deg_to_rad(min_degrees)

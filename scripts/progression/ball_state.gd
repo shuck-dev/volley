@@ -1,8 +1,8 @@
-class_name ItemState
+class_name BallState
 extends RefCounted
 
-var item_levels: Dictionary[String, int] = {}
-var item_placements: Dictionary[String, int] = {}
+var ball_levels: Dictionary[String, int] = {}
+var ball_placements: Dictionary[String, int] = {}
 
 ## Last in-play position for every non-STORED ball; STORED reconstructs from rack_slot_index_by_key.
 var ball_positions: Dictionary[String, Vector2] = {}
@@ -18,8 +18,8 @@ var loose_in_venue: Dictionary[String, Vector2] = {}
 
 
 func clear() -> void:
-	item_levels = {}
-	item_placements = {}
+	ball_levels = {}
+	ball_placements = {}
 	ball_positions = {}
 	ball_play_states = {}
 	rack_slot_index_by_key = {}
@@ -28,8 +28,8 @@ func clear() -> void:
 
 func to_save_dict() -> Dictionary:
 	return {
-		"item_levels": item_levels,
-		"item_placements": item_placements,
+		"ball_levels": ball_levels,
+		"ball_placements": ball_placements,
 		"ball_positions": _serialize_positions(ball_positions),
 		"ball_play_states": ball_play_states,
 		"rack_slot_index_by_key": rack_slot_index_by_key,
@@ -38,8 +38,8 @@ func to_save_dict() -> Dictionary:
 
 
 func apply_save_dict(data: Dictionary) -> void:
-	item_levels = _to_typed_int_dict(data.get("item_levels", {}))
-	item_placements = _to_typed_int_dict(data.get("item_placements", {}))
+	ball_levels = _to_typed_int_dict(data.get("ball_levels", {}))
+	ball_placements = _to_typed_int_dict(data.get("ball_placements", {}))
 	ball_positions = _parse_positions(data.get("ball_positions", {}))
 	ball_play_states = _to_typed_int_dict(data.get("ball_play_states", {}))
 	rack_slot_index_by_key = _to_typed_int_dict(data.get("rack_slot_index_by_key", {}))

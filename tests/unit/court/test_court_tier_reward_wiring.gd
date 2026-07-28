@@ -4,8 +4,8 @@ extends GutTest
 
 const CourtScript: GDScript = preload("res://scripts/core/court.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const BallManagerScript: GDScript = preload("res://scripts/items/ball_manager.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 var _court: Court
 var _manager: Node
@@ -14,16 +14,16 @@ var _paddle: Paddle
 
 
 func before_each() -> void:
-	_manager = ItemManagerScript.new()
-	_manager.state = ItemState.new()
+	_manager = BallManagerScript.new()
+	_manager.state = BallState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 
-	var ball_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("old_ball")
-	var typed_items: Array[ItemDefinition] = [ball_item]
+	var ball_item: BallDefinition = ItemTestHelpersScript.make_ball_item("old_ball")
+	var typed_items: Array[BallDefinition] = [ball_item]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 0
-	_manager.state.item_levels["old_ball"] = 1
+	_manager.state.ball_levels["old_ball"] = 1
 	add_child_autofree(_manager)
 
 	_reconciler = BallReconcilerScript.new()
@@ -47,7 +47,7 @@ func before_each() -> void:
 	_court.player_paddle = _paddle
 	_court.autoplay_controller = autoplay_stub
 	_court._progression_config = ProgressionConfig.new()
-	_court._item_manager = _manager
+	_court._ball_manager = _manager
 	_court._records = RecordsState.new()
 	_court._partners = PartnersState.new()
 	add_child_autofree(_court)

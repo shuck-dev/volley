@@ -7,7 +7,7 @@ class TestPurchase:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_get_level_returns_zero_before_any_purchase() -> void:
 		assert_eq(_manager.get_level(TEST_KEY), 0)
@@ -71,7 +71,7 @@ class TestDuplicatePricing:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_cost_increases_with_each_purchase() -> void:
 		_manager.economy.soul_balance = 10000
@@ -89,8 +89,8 @@ class TestBallRepurchase:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var ball := ItemDefinition.new()
+		_manager = BallFactory.create_manager(self)
+		var ball := BallDefinition.new()
 		ball.key = "test_ball"
 		ball.base_cost = 100
 		ball.cost_scaling = 2.0
@@ -111,7 +111,7 @@ class TestStats:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_get_stat_returns_base_value_before_any_purchase() -> void:
 		assert_eq(
@@ -154,7 +154,7 @@ class TestSoul:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_add_soul_increases_balance() -> void:
 		_manager.add_soul(50)
@@ -182,7 +182,7 @@ class TestRemoveLevel:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_remove_level_decrements_level() -> void:
 		_manager.economy.soul_balance = 1000
@@ -220,7 +220,7 @@ class TestCanAcquire:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_returns_false_when_balance_too_low() -> void:
 		assert_false(_manager.can_acquire(TEST_KEY))
@@ -237,14 +237,14 @@ class TestTake:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var ball := ItemDefinition.new()
+		_manager = BallFactory.create_manager(self)
+		var ball := BallDefinition.new()
 		ball.key = TEST_KEY
 		ball.base_cost = 100
 		ball.cost_scaling = 2.0
 		ball.max_level = 3
 		ball.effects = []
-		_manager.items.assign([ball] as Array[ItemDefinition])
+		_manager.items.assign([ball] as Array[BallDefinition])
 
 	func test_take_returns_empty_string_when_balance_too_low() -> void:
 		assert_eq(_manager.take(TEST_KEY), "")
@@ -263,11 +263,11 @@ class TestTake:
 		_manager.take(TEST_KEY)
 		assert_eq(_manager.get_soul_balance(), 200)
 
-	func test_take_emits_item_manager_state_changed() -> void:
+	func test_take_emits_ball_manager_state_changed() -> void:
 		_manager.economy.soul_balance = 100
 		watch_signals(_manager)
 		_manager.take(TEST_KEY)
-		assert_signal_emitted(_manager, "item_manager_state_changed")
+		assert_signal_emitted(_manager, "ball_manager_state_changed")
 
 	func test_take_emits_soul_balance_changed() -> void:
 		_manager.economy.soul_balance = 100
@@ -292,7 +292,7 @@ class TestReloadFromProgression:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 
 	func test_reload_reregisters_effects_from_current_levels() -> void:
 		var base_speed: float = GameRules.paddle.paddle_speed
@@ -302,8 +302,8 @@ class TestReloadFromProgression:
 			"no level, no effect"
 		)
 		# Simulate progression data being rewritten externally (e.g. dev clear-save)
-		ItemFactory.give(_manager, TEST_KEY)
-		_manager.state.item_placements[TEST_KEY] = Placement.ON_COURT
+		BallFactory.give(_manager, TEST_KEY)
+		_manager.state.ball_placements[TEST_KEY] = Placement.ON_COURT
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -321,7 +321,7 @@ class TestReloadFromProgression:
 			base_speed + 50.0
 		)
 		# Simulate progression data being rewritten externally
-		_manager.state.item_levels.clear()
+		_manager.state.ball_levels.clear()
 		_manager.reload_from_progression()
 		assert_eq(
 			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
@@ -335,8 +335,8 @@ class TestStoredItems:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var ball_item := ItemDefinition.new()
+		_manager = BallFactory.create_manager(self)
+		var ball_item := BallDefinition.new()
 		ball_item.key = "stored_ball"
 		ball_item.base_cost = 100
 		ball_item.cost_scaling = 2.0
@@ -377,10 +377,10 @@ class TestRackSlotAssignment:
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
-		var typed: Array[ItemDefinition] = []
+		_manager = BallFactory.create_manager(self)
+		var typed: Array[BallDefinition] = []
 		for key: String in ["ball_one", "ball_two"]:
-			var ball_item := ItemDefinition.new()
+			var ball_item := BallDefinition.new()
 			ball_item.key = key
 			ball_item.base_cost = 100
 			ball_item.cost_scaling = 2.0
@@ -390,11 +390,11 @@ class TestRackSlotAssignment:
 		_manager.items.assign(typed)
 
 	func test_first_stored_ball_takes_slot_zero() -> void:
-		ItemFactory.give(_manager, "ball_one")
+		BallFactory.give(_manager, "ball_one")
 		assert_eq(_manager.get_rack_slot_index("ball_one"), 0)
 
 	func test_release_frees_the_slot() -> void:
-		ItemFactory.give(_manager, "ball_one")
+		BallFactory.give(_manager, "ball_one")
 		_manager.release_rack_slot("ball_one")
 		assert_eq(
 			_manager.get_rack_slot_index("ball_one"),
@@ -403,10 +403,10 @@ class TestRackSlotAssignment:
 		)
 
 	func test_concurrent_insert_fills_slot_zero_while_a_ball_is_held() -> void:
-		ItemFactory.give(_manager, "ball_one")
+		BallFactory.give(_manager, "ball_one")
 		_manager.release_rack_slot("ball_one")
 
-		ItemFactory.give(_manager, "ball_two")
+		BallFactory.give(_manager, "ball_two")
 
 		assert_eq(
 			_manager.get_rack_slot_index("ball_two"),
@@ -415,9 +415,9 @@ class TestRackSlotAssignment:
 		)
 
 	func test_restore_reclaims_the_next_free_slot() -> void:
-		ItemFactory.give(_manager, "ball_one")
+		BallFactory.give(_manager, "ball_one")
 		_manager.release_rack_slot("ball_one")
-		ItemFactory.give(_manager, "ball_two")
+		BallFactory.give(_manager, "ball_two")
 
 		_manager.reassign_rack_slot("ball_one")
 
@@ -428,13 +428,13 @@ class TestRackSlotAssignment:
 		)
 
 
-class TestItemManagerStateChanged:
+class TestBallManagerStateChanged:
 	extends GutTest
 	const TEST_KEY := "test_speed"
 	var _manager: Node
 
 	func before_each() -> void:
-		_manager = ItemFactory.create_manager(self)
+		_manager = BallFactory.create_manager(self)
 		_manager.economy.soul_balance = 1000
 		_manager.purchase(TEST_KEY)
 		watch_signals(_manager)

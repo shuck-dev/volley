@@ -11,13 +11,13 @@ var _drag: ItemDragController
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = ItemTestHelpers.make_ball_item("ball_alpha")
-	_manager.items.assign([ball_alpha] as Array[ItemDefinition])
+	_manager = BallFactory.create_manager(self)
+	var ball_alpha: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
+	_manager.items.assign([ball_alpha] as Array[BallDefinition])
 	_manager.economy.soul_balance = 10000
 
-	_rack = ItemTestHelpers.make_rack(_manager, self)
-	_drop_target = ItemTestHelpers.make_drop_area(Vector2(-1000, 0), Vector2(300, 200), self)
+	_rack = BallTestHelpers.make_rack(_manager, self)
+	_drop_target = BallTestHelpers.make_drop_area(Vector2(-1000, 0), Vector2(300, 200), self)
 
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
