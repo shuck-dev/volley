@@ -34,46 +34,6 @@ func after_each() -> void:
 	await get_tree().process_frame
 
 
-func _permanent_balls() -> Array:
-	var result: Array = []
-	for child in _reconciler.get_children():
-		if child is Ball:
-			result.append(child)
-	return result
-
-
-func test_grab_from_rack_and_release_over_court_launches_ball() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-
-	var court_point := Vector2(100, 50)
-	assert_true(_drag.attempt_release(court_point))
-	assert_false(_drag.is_dragging())
-
-	var ball: Ball = _reconciler.get_ball_for_key("ball_alpha")
-	assert_not_null(ball)
-	assert_true(_manager.is_on_court("ball_alpha"))
-	assert_eq(ball.global_position, court_point)
-	assert_gt(ball.linear_velocity.length(), 0.0)
-
-
-func test_click_on_rack_without_movement_cancels_back_to_rack() -> void:
-	_manager.take("ball_alpha")
-	_drag.grab_from_rack("ball_alpha")
-	for ball in _permanent_balls():
-		ball.queue_free()
-	await get_tree().process_frame
-
-	var released: bool = _drag.attempt_release(_drop_target.global_position)
-	assert_true(released)
-	assert_false(_drag.is_dragging())
-	assert_false(_manager.is_on_court("ball_alpha"))
-	assert_eq(_permanent_balls().size(), 0)
-
-
 func test_grab_live_ball_and_release_over_court_resumes_rally() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")

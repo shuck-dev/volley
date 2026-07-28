@@ -23,7 +23,7 @@ static var _ball_collision_shape: CircleShape2D
 @export var cursor_overlay: BallDropOverlay
 
 var _ball_manager: BallManager
-## Held body during a drag gesture (HeldBody for rack/temp grabs, Ball for live grabs).
+## Held body during a drag gesture (a plain drag-proxy node for rack/temp grabs, Ball for live grabs).
 var _held: Node2D = null
 var _held_key: String = ""
 var _held_is_temporary: bool = false
@@ -97,9 +97,6 @@ func _process(_delta: float) -> void:
 	if not _mouse_button_down:
 		if not attempt_release(cursor_target):
 			pass
-	else:
-		if _held is HeldBody and (_held as HeldBody).phase == HeldBody.Phase.LIFTING:
-			(_held as HeldBody).mark_held()
 
 
 func _input(event: InputEvent) -> void:
@@ -136,8 +133,11 @@ func get_held_key() -> String:
 	return _held_key
 
 
-func get_held_body() -> HeldBody:
-	return _held as HeldBody
+## The temporary drag-proxy node, when the held item isn't a live Ball.
+func get_held_body() -> Node2D:
+	if _held is Ball:
+		return null
+	return _held
 
 
 func get_cursor_state() -> int:
@@ -153,7 +153,7 @@ func _court_target() -> CourtDropTarget:
 
 
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
-func grab_from_rack(ball_key: String, press_position: Variant = null) -> bool:
+func grab_from_rack(ball_key: String) -> bool:
 	if _drag_target() != null:
 		return false
 	if _ball_manager.get_level(ball_key) <= 0:
@@ -161,26 +161,17 @@ func grab_from_rack(ball_key: String, press_position: Variant = null) -> bool:
 	if _ball_manager.is_on_court(ball_key):
 		return false
 
-	var spawn_position: Vector2 = (
-		press_position if press_position is Vector2 else _cursor_position()
-	)
-
 	var stored: Ball = null
 	if reconciler != null:
 		stored = reconciler.get_ball_for_key(ball_key)
-		# The one-shot reconcile can leave a second stored ball untracked; back-fill it so a
-		# rack pickup rides the live-ball path and restore re-claims its slot.
-		if stored == null:
-			stored = reconciler.ensure_stored_ball_for_key(ball_key)
 
-	if stored != null:
-		# The STORED Ball IS the drag target. No HeldBody spawn; the ball
-		# stays in _balls_by_key, transitioned to OUT_HELD until release.
-		stored.enter_out_held()
-		_set_court_exclude_rids([stored.get_rid()])
-		_adopt_live_ball_as_held(stored, ball_key)
-	elif not _spawn_held_body(ball_key, spawn_position, false):
+	if stored == null:
 		return false
+
+	# The STORED Ball IS the drag target; it stays in _balls_by_key, now OUT_HELD until release.
+	stored.enter_out_held()
+	_set_court_exclude_rids([stored.get_rid()])
+	_adopt_live_ball_as_held(stored, ball_key)
 
 	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
 	_ball_manager.release_rack_slot(ball_key)
@@ -201,7 +192,7 @@ func grab_live_ball(ball_key: String, is_temporary: bool = false) -> bool:
 	if reconciler != null:
 		existing = reconciler.get_ball_for_key(ball_key)
 
-	# Temporary balls bypass the reconciler; spawn a HeldBody so the gesture does not survive into a tracked entity.
+	# Temporary balls bypass the reconciler; spawn a drag-proxy node so the gesture does not survive into a tracked entity.
 	if is_temporary:
 		if not _spawn_held_body(ball_key, _cursor_position(), is_temporary):
 			return false
@@ -273,7 +264,7 @@ func try_purchase_and_spawn(
 func _adopt_purchased_into_rack(instance_key: String) -> void:
 	if reconciler == null:
 		return
-	reconciler.ensure_stored_ball_for_key(instance_key)
+	reconciler.create_ball_from_key(instance_key)
 
 
 ## Funnels venue-floor releases into the reconciler with the loose-in-venue overlay set.
@@ -414,8 +405,8 @@ func _restore_held_ball_to_stored(ball_key: String) -> void:
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
 	# Live-grab path: the Ball survives or was queue_freed by the reconciler via court_changed; do not free here.
-	if _held is HeldBody:
-		(_held as HeldBody).queue_free()
+	if _held != null and not (_held is Ball):
+		_held.queue_free()
 
 	# A rack-origin gesture that ends back on the rack freed its slot on grab; reclaim one so the
 	# next insert sees the slot occupied. Court/venue endings stay slotless.
@@ -456,10 +447,16 @@ func _set_court_exclude_rids(rids: Array[RID]) -> void:
 
 func _spawn_held_body(ball_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
 	var definition: BallDefinition = _get_ball_definition(ball_key)
-
-	var body: HeldBody = HeldBody.make_for(definition, ball_key, _ball_collision_shape)
-	if body == null:
+	if definition == null:
 		return false
+
+	var body: Node2D = Node2D.new()
+	body.name = "HeldBody_%s" % ball_key
+	if definition.art != null:
+		var art_holder: Node2D = Node2D.new()
+		art_holder.name = "ArtHolder"
+		art_holder.add_child(definition.art.instantiate())
+		body.add_child(art_holder)
 	body.global_position = spawn_position
 	add_child(body)
 
@@ -545,8 +542,8 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	BallDropOverlay.update_state(state, world_position)
 
 
-func _on_rack_slot_pressed(ball_key: String, press_position: Vector2) -> void:
-	grab_from_rack(ball_key, press_position)
+func _on_rack_slot_pressed(ball_key: String, _slot_press_position: Vector2) -> void:
+	grab_from_rack(ball_key)
 	rack.refresh.call_deferred()
 
 

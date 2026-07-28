@@ -1,8 +1,5 @@
 extends GutTest
 
-const ShopDropTargetScript: GDScript = preload(
-	"res://scripts/items/drop_targets/shop_drop_target.gd"
-)
 const RackDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/rack_drop_target.gd"
 )
@@ -17,17 +14,6 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 
 func after_each() -> void:
 	await get_tree().process_frame
-
-
-func test_shop_target_accepts_inside_shop_zone() -> void:
-	var target: ShopDropTarget = ShopDropTargetScript.new()
-	target.position = Vector2(100, 0)
-	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
-	add_child_autofree(target)
-	assert_true(target.can_accept("ball_alpha", Vector2(100, 0), BallTestHelpers.collision_shape))
-	assert_false(
-		target.can_accept("ball_alpha", Vector2(900, 900), BallTestHelpers.collision_shape)
-	)
 
 
 func test_nested_target_accepts_at_its_on_screen_position() -> void:

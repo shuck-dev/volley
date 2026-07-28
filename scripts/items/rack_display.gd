@@ -114,7 +114,7 @@ func _registered_ball_for(ball_key: String) -> Ball:
 		return null
 	# A second stored ball can be left untracked by the reconciler's one-shot reconcile;
 	# back-fill it here so every rendered stored slot is backed by a live, grabbable ball.
-	return reconciler.ensure_stored_ball_for_key(ball_key)
+	return reconciler.create_ball_from_key(ball_key)
 
 
 ## World position of the slot for `ball_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.

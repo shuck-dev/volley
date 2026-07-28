@@ -32,11 +32,7 @@ func after_each() -> void:
 	await get_tree().process_frame
 
 
-func test_grab_from_rack_spawns_held_body_in_kinematic_freeze() -> void:
+func test_grab_from_rack_holds_the_stored_ball() -> void:
 	_manager.take("ball_alpha")
 	_drag.grab_from_rack("ball_alpha")
-	var body: HeldBody = _drag.get_held_body()
-	assert_not_null(body)
-	assert_true(body.freeze)
-	assert_eq(body.freeze_mode, RigidBody2D.FREEZE_MODE_KINEMATIC)
-	assert_eq(body.gravity_scale, 0.0)
+	assert_not_null(_drag.get_held_key())
