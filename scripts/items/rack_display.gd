@@ -94,7 +94,6 @@ func _build_slot(ball_key: String, definition: BallDefinition, slot_position: Ve
 	slot.set_meta(&"ball_key", ball_key)
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
-	art_holder.scale = definition.token_scale
 	_populate_art_holder(art_holder, ball_key, definition)
 	slot.add_child(art_holder)
 	_attach_slot_input(slot, ball_key)

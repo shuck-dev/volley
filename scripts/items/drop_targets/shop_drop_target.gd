@@ -2,7 +2,7 @@ class_name ShopDropTarget
 extends DropTarget
 
 
-func can_accept(_ball_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(_ball_key: String, world_position: Vector2, _collision_shape: Shape2D) -> bool:
 	return contains_point(world_position)
 
 

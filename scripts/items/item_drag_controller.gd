@@ -11,6 +11,11 @@ const CURSOR_SAMPLE_WINDOW: float = 0.08
 const PRESERVED_SPEED_NONE: float = -1.0
 ## Minimum cursor travel before a rack-origin gesture counts as a real drag.
 const COMMIT_MOVEMENT_THRESHOLD_PX: float = 6.0
+const BALL_COLLISION_RADIUS: float = 7.2
+
+## Shared physical footprint for placement-clearance queries and held-body colliders; GDScript
+## consts can't hold a Resource instance, so a static var built in _static_init stands in for one.
+static var _ball_collision_shape: CircleShape2D
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
@@ -33,6 +38,11 @@ var _mouse_button_down: bool = false
 var _held_preserved_speed: float = PRESERVED_SPEED_NONE
 var _cursor_state: int = CursorStateScript.State.DEFAULT
 var _release_pending: bool = false
+
+
+static func _static_init() -> void:
+	_ball_collision_shape = CircleShape2D.new()
+	_ball_collision_shape.radius = BALL_COLLISION_RADIUS
 
 
 func configure(
@@ -235,7 +245,7 @@ func _adopt_live_ball_as_held(ball: Ball, ball_key: String) -> void:
 func try_purchase_and_spawn(
 	ball_key: String, world_position: Vector2, gesture_velocity: Vector2
 ) -> bool:
-	var target: DropTarget = _find_accepting_target(ball_key, world_position, 1.0)
+	var target: DropTarget = _find_accepting_target(ball_key, world_position)
 	if target == null:
 		return false
 
@@ -299,7 +309,7 @@ func attempt_release(release_position: Vector2) -> bool:
 		_finalise_gesture(ball_key, release_position, false)
 		return true
 
-	var target: DropTarget = _find_accepting_target(ball_key, release_position, 1.0)
+	var target: DropTarget = _find_accepting_target(ball_key, release_position)
 	if target == null:
 		return false
 
@@ -378,13 +388,11 @@ func _apply_preserved_speed_after_accept(ball_key: String) -> void:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 
 
-func _find_accepting_target(
-	ball_key: String, world_position: Vector2, scale_factor: float
-) -> DropTarget:
+func _find_accepting_target(ball_key: String, world_position: Vector2) -> DropTarget:
 	var winner: DropTarget = null
 	for node: Node in get_tree().get_nodes_in_group(&"drop_targets"):
 		var target: DropTarget = node as DropTarget
-		if not target.can_accept(ball_key, world_position, scale_factor):
+		if not target.can_accept(ball_key, world_position, _ball_collision_shape):
 			continue
 		if winner == null or target.priority < winner.priority:
 			winner = target
@@ -448,15 +456,11 @@ func _set_court_exclude_rids(rids: Array[RID]) -> void:
 
 func _spawn_held_body(ball_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
 	var definition: BallDefinition = _get_ball_definition(ball_key)
-	var target_scale: Vector2 = Vector2.ONE
-	if definition != null:
-		target_scale = definition.token_scale
 
-	var body: HeldBody = HeldBody.make_for(definition, ball_key)
+	var body: HeldBody = HeldBody.make_for(definition, ball_key, _ball_collision_shape)
 	if body == null:
 		return false
 	body.global_position = spawn_position
-	body.scale = target_scale
 	add_child(body)
 
 	_held = body
@@ -533,7 +537,7 @@ func _derive_cursor_state(world_position: Vector2) -> int:
 func _position_accepted_by_any_target(ball_key: String, world_position: Vector2) -> bool:
 	if ball_key.is_empty():
 		return false
-	return _find_accepting_target(ball_key, world_position, 1.0) != null
+	return _find_accepting_target(ball_key, world_position) != null
 
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:

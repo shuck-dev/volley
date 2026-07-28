@@ -2,7 +2,7 @@ class_name DropTarget
 extends Area2D
 
 
-func can_accept(_ball_key: String, _position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(_ball_key: String, _position: Vector2, _collision_shape: Shape2D) -> bool:
 	return false
 
 

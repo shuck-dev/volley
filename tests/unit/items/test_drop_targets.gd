@@ -24,8 +24,10 @@ func test_shop_target_accepts_inside_shop_zone() -> void:
 	target.position = Vector2(100, 0)
 	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
 	add_child_autofree(target)
-	assert_true(target.can_accept("ball_alpha", Vector2(100, 0)))
-	assert_false(target.can_accept("ball_alpha", Vector2(900, 900)))
+	assert_true(target.can_accept("ball_alpha", Vector2(100, 0), BallTestHelpers.collision_shape))
+	assert_false(
+		target.can_accept("ball_alpha", Vector2(900, 900), BallTestHelpers.collision_shape)
+	)
 
 
 func test_nested_target_accepts_at_its_on_screen_position() -> void:
@@ -45,11 +47,11 @@ func test_nested_target_accepts_at_its_on_screen_position() -> void:
 	rack.add_child(target)
 
 	assert_true(
-		target.can_accept("ball_alpha", Vector2(-446, 180)),
+		target.can_accept("ball_alpha", Vector2(-446, 180), BallTestHelpers.collision_shape),
 		"a release over the rack's own shape should land on it",
 	)
 	assert_false(
-		target.can_accept("ball_alpha", Vector2.ZERO),
+		target.can_accept("ball_alpha", Vector2.ZERO, BallTestHelpers.collision_shape),
 		"the world origin is nowhere near the rack, so nothing should drop there",
 	)
 
@@ -66,11 +68,11 @@ func test_rotated_target_accepts_along_its_turned_edge() -> void:
 	add_child_autofree(target)
 
 	assert_true(
-		target.can_accept("ball_alpha", Vector2(0, 180)),
+		target.can_accept("ball_alpha", Vector2(0, 180), BallTestHelpers.collision_shape),
 		"the long edge turned upright, so a point far along Y is inside",
 	)
 	assert_false(
-		target.can_accept("ball_alpha", Vector2(180, 0)),
+		target.can_accept("ball_alpha", Vector2(180, 0), BallTestHelpers.collision_shape),
 		"the short edge now runs along X, so the same distance out is outside",
 	)
 
@@ -84,7 +86,7 @@ func test_rack_target_accepts_known_item() -> void:
 	target.position = Vector2(-500, 0)
 	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
 	add_child_autofree(target)
-	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0)))
+	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0), BallTestHelpers.collision_shape))
 
 
 func test_court_target_rejects_unknown_item() -> void:
@@ -99,7 +101,7 @@ func test_court_target_rejects_unknown_item() -> void:
 	target.reconciler = reconciler
 	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.COURT_SIZE))
 	add_child_autofree(target)
-	assert_false(target.can_accept("unknown_item", Vector2.ZERO))
+	assert_false(target.can_accept("unknown_item", Vector2.ZERO, BallTestHelpers.collision_shape))
 
 
 func test_venue_target_accepts_inside_venue_bounds() -> void:
@@ -114,5 +116,7 @@ func test_venue_target_accepts_inside_venue_bounds() -> void:
 	target.reconciler = reconciler
 	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.VENUE_SIZE))
 	add_child_autofree(target)
-	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50)))
-	assert_false(target.can_accept("ball_alpha", Vector2(9999, 9999)))
+	assert_true(target.can_accept("ball_alpha", Vector2(1500, 50), BallTestHelpers.collision_shape))
+	assert_false(
+		target.can_accept("ball_alpha", Vector2(9999, 9999), BallTestHelpers.collision_shape)
+	)

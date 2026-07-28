@@ -48,11 +48,7 @@ func _spawn_items() -> void:
 
 
 func _get_item_pool() -> Array[BallDefinition]:
-	var available: Array[BallDefinition] = []
-	for definition: BallDefinition in _ball_manager.items:
-		if not definition.purchasable:
-			continue
-		available.append(definition)
+	var available: Array[BallDefinition] = _ball_manager.items.duplicate()
 	available.shuffle()
 	return available.slice(0, config.display_slots)
 

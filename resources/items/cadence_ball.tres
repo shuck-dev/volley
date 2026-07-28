@@ -8,9 +8,6 @@
 [ext_resource type="Script" uid="uid://ctw4pntulfr8u" path="res://scripts/items/effect/outcome.gd" id="4_outcome"]
 [ext_resource type="Script" uid="uid://canm15pbyty5a" path="res://scripts/items/effect/outcomes/stat_shift_outcome.gd" id="5_shift"]
 
-[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
-radius = 7.2
-
 [sub_resource type="Resource" id="outcome_1"]
 script = ExtResource("5_shift")
 stat_key = &"ball_speed_scale"
@@ -32,4 +29,3 @@ display_name = "Cadence"
 art = ExtResource("1_art")
 base_cost = 100
 effects = Array[ExtResource("2_effect")]([SubResource("effect_1")])
-at_rest_shape = SubResource("at_rest_shape_1")

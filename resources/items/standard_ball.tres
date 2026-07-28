@@ -4,15 +4,10 @@
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_s36c6"]
 
-[sub_resource type="CircleShape2D" id="at_rest_shape_1"]
-radius = 7.2
-
 [resource]
 script = ExtResource("1_item")
 key = "standard_ball"
 display_name = "Standard Ball"
 art = ExtResource("1_5blea")
-descriptions = Array[String](["A different ball every time", "Bonus soul at higher tiers", "The reliable choice"])
 base_cost = 10
 max_level = 10
-at_rest_shape = SubResource("at_rest_shape_1")

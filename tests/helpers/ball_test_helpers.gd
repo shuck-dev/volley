@@ -24,6 +24,14 @@ const RACK_PRIORITY: int = 20
 const COURT_PRIORITY: int = 30
 const VENUE_PRIORITY: int = 50
 
+## Mirrors ItemDragController's shared collision shape for tests exercising can_accept/make_for directly.
+static var collision_shape: CircleShape2D
+
+
+static func _static_init() -> void:
+	collision_shape = CircleShape2D.new()
+	collision_shape.radius = 7.2
+
 
 static func stub_art() -> PackedScene:
 	var scene := PackedScene.new()
@@ -41,9 +49,6 @@ static func make_ball_item(key: String) -> BallDefinition:
 	item.max_level = 3
 	item.effects = []
 	item.art = stub_art()
-	var default_shape := CircleShape2D.new()
-	default_shape.radius = 7.2
-	item.at_rest_shape = default_shape
 	return item
 
 

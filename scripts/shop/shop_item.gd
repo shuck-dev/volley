@@ -21,7 +21,6 @@ var _mouse_button_down: bool = false
 func configure(ball_manager: Node, definition: BallDefinition) -> void:
 	_ball_manager = ball_manager
 	ball_definition = definition
-	_apply_token_scale()
 	_build_art()
 	_refresh_case_overlay()
 
@@ -44,7 +43,6 @@ func _ready() -> void:
 		pickup_area.input_event.connect(_on_input_event)
 	_ball_manager.soul_balance_changed.connect(_on_balance_changed)
 	_ball_manager.item_level_changed.connect(_on_item_level_changed)
-	_apply_token_scale()
 	_refresh_case_overlay()
 
 
@@ -81,12 +79,6 @@ func _build_art() -> void:
 		_art_instance.queue_free()
 	_art_instance = ball_definition.art.instantiate()
 	art_holder.add_child(_art_instance)
-
-
-func _apply_token_scale() -> void:
-	if art_holder == null or ball_definition == null:
-		return
-	art_holder.scale = ball_definition.token_scale
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -163,8 +155,6 @@ func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % ball_definition.key
-	if ball_definition != null:
-		token.scale = ball_definition.token_scale
 	if ball_definition != null and ball_definition.art != null:
 		var art_instance: Node = ball_definition.art.instantiate()
 		token.add_child(art_instance)
