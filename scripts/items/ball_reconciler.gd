@@ -191,8 +191,8 @@ func release_ball(ball_key: String) -> Ball:
 	return ball
 
 
-## Lazy-backfill a tracked STORED Ball for a stored item key.
-func ensure_stored_ball_for_key(ball_key: String) -> Ball:
+## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist.
+func create_ball_from_key(ball_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(ball_key)
 	if existing != null:
 		return existing
@@ -350,7 +350,7 @@ func _reconcile_stored_items() -> void:
 	if ball_rack == null:
 		return
 	for key in _ball_manager.get_stored_items():
-		ensure_stored_ball_for_key(key)
+		create_ball_from_key(key)
 
 
 func _default_spawn_position() -> Vector2:

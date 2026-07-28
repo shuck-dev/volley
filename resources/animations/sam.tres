@@ -11,11 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://6wse64ljc4si" path="res://assets/sprites/sam/ready_grounded/ready_grounded_02.png" id="13_br5dj"]
 [ext_resource type="Texture2D" uid="uid://dtms4msbskblf" path="res://assets/sprites/sam/ready_grounded/ready_grounded_03.png" id="14_3npww"]
 [ext_resource type="Texture2D" uid="uid://c1diw6bbqps3o" path="res://assets/sprites/sam/ready_grounded/ready_grounded_04.png" id="15_r5wsh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/sam/swing_flying/Swing_flying_01.png" id="16_wbhxb"]
-[ext_resource type="Texture2D" path="res://assets/sprites/sam/swing_flying/Swing_flying_02.png" id="17_dg27t"]
-[ext_resource type="Texture2D" path="res://assets/sprites/sam/swing_flying/Swing_flying_03.png" id="18_2jnnh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/sam/swing_flying/Swing_flying_04.png" id="19_i1tn7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/sam/swing_flying/Swing_flying_05.png" id="20_7d1k5"]
 
 [resource]
 animations = [{
@@ -102,19 +97,19 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("16_wbhxb")
+"texture": ExtResource("7_64lvm")
 }, {
 "duration": 1.0,
-"texture": ExtResource("17_dg27t")
+"texture": ExtResource("8_ogmgp")
 }, {
 "duration": 1.0,
-"texture": ExtResource("18_2jnnh")
+"texture": ExtResource("9_pkbgn")
 }, {
 "duration": 1.0,
-"texture": ExtResource("19_i1tn7")
+"texture": ExtResource("10_np2oc")
 }, {
 "duration": 1.0,
-"texture": ExtResource("20_7d1k5")
+"texture": ExtResource("11_ysull")
 }],
 "loop": false,
 "name": &"swing_grounded",

@@ -384,7 +384,6 @@ func _apply_item_art() -> void:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	if definition.art == null:
 		return
-	item_art_holder.scale = definition.token_scale
 	var art_instance: ItemArt = definition.art.instantiate()
 	item_art_holder.add_child(art_instance)
 	art_instance.watch_ball(self)

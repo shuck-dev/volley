@@ -94,7 +94,6 @@ func _build_slot(ball_key: String, definition: BallDefinition, slot_position: Ve
 	slot.set_meta(&"ball_key", ball_key)
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
-	art_holder.scale = definition.token_scale
 	_populate_art_holder(art_holder, ball_key, definition)
 	slot.add_child(art_holder)
 	_attach_slot_input(slot, ball_key)
@@ -115,7 +114,7 @@ func _registered_ball_for(ball_key: String) -> Ball:
 		return null
 	# A second stored ball can be left untracked by the reconciler's one-shot reconcile;
 	# back-fill it here so every rendered stored slot is backed by a live, grabbable ball.
-	return reconciler.ensure_stored_ball_for_key(ball_key)
+	return reconciler.create_ball_from_key(ball_key)
 
 
 ## World position of the slot for `ball_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.

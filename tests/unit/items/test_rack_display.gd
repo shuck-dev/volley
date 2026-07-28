@@ -71,7 +71,9 @@ func test_rack_scene_drop_target_accepts_drop() -> void:
 	add_child_autofree(ball_rack_instance)
 
 	assert_true(
-		rack_target.can_accept("ball_alpha", ball_rack_instance.global_position),
+		rack_target.can_accept(
+			"ball_alpha", ball_rack_instance.global_position, BallTestHelpers.collision_shape
+		),
 		"ball rack drop target should accept a matching ball at the rack position",
 	)
 

@@ -11,7 +11,7 @@ func _ready() -> void:
 	add_to_group(&"drop_targets")
 
 
-func can_accept(ball_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
+func can_accept(ball_key: String, world_position: Vector2, _collision_shape: Shape2D) -> bool:
 	if DropTarget.get_definition(_ball_manager, ball_key) == null:
 		return false
 	return _position_inside_area(world_position)
