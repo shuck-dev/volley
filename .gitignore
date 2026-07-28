@@ -3,6 +3,7 @@
 /android/
 
 # Export output
+/build/
 builds/
 exports/
 

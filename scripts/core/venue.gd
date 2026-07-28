@@ -1,7 +1,7 @@
 class_name Venue
 extends Control
 
-const DEV_HUD_SCENE := "res://scenes/dev_hud.tscn"
+const DEV_HUD_SCENE := "res://scenes/dev/dev_hud.tscn"
 
 @export var shop: Node2D
 @export var court: Court

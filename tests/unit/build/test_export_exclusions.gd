@@ -26,20 +26,36 @@ func test_no_shipped_scene_references_an_export_excluded_resource() -> void:
 	)
 
 
+func test_all_presets_share_the_same_exclude_filter() -> void:
+	var filters := _read_all_exclude_filters()
+	assert_gt(filters.size(), 1, "expected export_presets.cfg to declare multiple presets")
+
+	for filter in filters:
+		assert_eq(filter, filters[0], "every export preset must share the same exclude_filter")
+
+
 func _read_exclude_patterns() -> Array[String]:
-	var text := FileAccess.get_file_as_string(EXPORT_PRESETS_PATH)
-	var regex := RegEx.new()
-	regex.compile('exclude_filter="([^"]*)"')
-	var match_result := regex.search(text)
-	if match_result == null:
+	var filters := _read_all_exclude_filters()
+	if filters.is_empty():
 		return []
 
 	var patterns: Array[String] = []
-	for raw_pattern in match_result.get_string(1).split(","):
+	for raw_pattern in filters[0].split(","):
 		var pattern := raw_pattern.strip_edges()
 		if pattern != "":
 			patterns.append(pattern)
 	return patterns
+
+
+func _read_all_exclude_filters() -> Array[String]:
+	var text := FileAccess.get_file_as_string(EXPORT_PRESETS_PATH)
+	var regex := RegEx.new()
+	regex.compile('exclude_filter="([^"]*)"')
+
+	var filters: Array[String] = []
+	for regex_match in regex.search_all(text):
+		filters.append(regex_match.get_string(1))
+	return filters
 
 
 func _matches_any(path: String, patterns: Array[String]) -> bool:
