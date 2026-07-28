@@ -18,7 +18,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("PlaceholderTexture2D_idle")
 }],
-"loop": false,
+"loop": 0,
 "name": &"idle",
 "speed": 5.0
 }, {
@@ -26,7 +26,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("PlaceholderTexture2D_ready")
 }],
-"loop": false,
+"loop": 0,
 "name": &"ready",
 "speed": 5.0
 }, {
@@ -34,7 +34,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("PlaceholderTexture2D_swing")
 }],
-"loop": false,
+"loop": 0,
 "name": &"swing",
 "speed": 5.0
 }, {
@@ -42,7 +42,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("PlaceholderTexture2D_walk")
 }],
-"loop": false,
+"loop": 0,
 "name": &"walk",
 "speed": 5.0
 }]

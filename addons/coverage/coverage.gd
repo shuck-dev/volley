@@ -449,18 +449,35 @@ class ScriptCoverageCollector:
 		return "\n".join(out_lines)
 
 
+# Godot 4.7 requires overrides to covariantly match the parent's declared return type, so this
+# placeholder collector satisfies ScriptCoverageCollector without doing its expensive real _init.
+class NullCoverageCollector:
+	extends ScriptCoverageCollector
+
+	var _queue: PackedInt32Array
+
+	func _init() -> void:
+		pass
+
+	func get_coverage_queue() -> PackedInt32Array:
+		return _queue
+
+	func add_line_coverage(_line: int, _count := 1) -> void:
+		pass
+
+
 # this is a placeholder class for when we've finalized and don't want coverage anymore
 # some scripts will continue to be instrumented so we must have something to accept all these calls
 class NullCoverage:
 	extends Coverage
 
-	var _queue: PackedInt32Array
+	var _collector := NullCoverageCollector.new()
 
 	func get_coverage_queue() -> PackedInt32Array:
-		return _queue
+		return _collector.get_coverage_queue()
 
-	func get_coverage_collector(_script_name: String):
-		return self
+	func get_coverage_collector(_script_name: String) -> ScriptCoverageCollector:
+		return _collector
 
 	func add_line_coverage(_line: int):
 		pass
@@ -555,7 +572,13 @@ func script_coverage(verbosity := 0):
 	result.append(
 		(
 			"%s%.1f%% Total Coverage: %s/%s lines. Target was %.1f%%"
-			% [pass_fail, coverage_percent, coverage_count(), coverage_line_count(), _coverage_target_total]
+			% [
+				pass_fail,
+				coverage_percent,
+				coverage_count(),
+				coverage_line_count(),
+				_coverage_target_total
+			]
 		)
 	)
 
