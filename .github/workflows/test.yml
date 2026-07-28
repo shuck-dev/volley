@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 env:
-  GODOT_VERSION: "4.6.2"
-  GODOT_LINUX_SHA256: "30e6b6d141f0cd5bebd629ad1d0ef1324e60091bb20662d026b402ba58c59937"
+  GODOT_VERSION: "4.6.3"
+  GODOT_LINUX_SHA256: "d0bc2113065e481c9c2c2b2c37daa4e8be3fe9e27f0ab9ab0b6096e9a37907f3"
 
 jobs:
   test:
