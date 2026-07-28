@@ -123,7 +123,8 @@ jobs:
           else
             base_sha="${{ github.event.pull_request.base.sha }}"
           fi
-          if git diff --name-only "$base_sha" HEAD -- .github/workflows | grep -q .; then
+          merge_base="$(git merge-base "$base_sha" HEAD)"
+          if git diff --name-only "$merge_base" HEAD -- .github/workflows | grep -q .; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
