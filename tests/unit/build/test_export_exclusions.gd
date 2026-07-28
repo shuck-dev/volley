@@ -2,6 +2,9 @@ extends GutTest
 
 const EXPORT_PRESETS_PATH := "res://export_presets.cfg"
 
+## Deliberately ships dev-only content (scripts/dev/*, scenes/dev/*) for internal preview builds.
+const DEV_PRESET_NAMES := ["WebDev"]
+
 
 func test_no_shipped_scene_references_an_export_excluded_resource() -> void:
 	var excluded_patterns := _read_exclude_patterns()
@@ -26,16 +29,20 @@ func test_no_shipped_scene_references_an_export_excluded_resource() -> void:
 	)
 
 
-func test_all_presets_share_the_same_exclude_filter() -> void:
-	var filters := _read_all_exclude_filters()
-	assert_gt(filters.size(), 1, "expected export_presets.cfg to declare multiple presets")
+func test_all_shipping_presets_share_the_same_exclude_filter() -> void:
+	var filters := _read_shipping_exclude_filters()
+	assert_gt(filters.size(), 1, "expected export_presets.cfg to declare multiple shipping presets")
 
 	for filter in filters:
-		assert_eq(filter, filters[0], "every export preset must share the same exclude_filter")
+		assert_eq(
+			filter,
+			filters[0],
+			"every player-facing export preset must share the same exclude_filter"
+		)
 
 
 func _read_exclude_patterns() -> Array[String]:
-	var filters := _read_all_exclude_filters()
+	var filters := _read_shipping_exclude_filters()
 	if filters.is_empty():
 		return []
 
@@ -47,14 +54,17 @@ func _read_exclude_patterns() -> Array[String]:
 	return patterns
 
 
-func _read_all_exclude_filters() -> Array[String]:
+func _read_shipping_exclude_filters() -> Array[String]:
 	var text := FileAccess.get_file_as_string(EXPORT_PRESETS_PATH)
-	var regex := RegEx.new()
-	regex.compile('exclude_filter="([^"]*)"')
+	var preset_regex := RegEx.new()
+	preset_regex.compile('name="([^"]*)"[^\\[]*exclude_filter="([^"]*)"')
 
 	var filters: Array[String] = []
-	for regex_match in regex.search_all(text):
-		filters.append(regex_match.get_string(1))
+	for regex_match in preset_regex.search_all(text):
+		var preset_name := regex_match.get_string(1)
+		if preset_name in DEV_PRESET_NAMES:
+			continue
+		filters.append(regex_match.get_string(2))
 	return filters
 
 
