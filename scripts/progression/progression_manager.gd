@@ -21,7 +21,7 @@ var unlocks: UnlocksState
 var partners: PartnersState
 
 var _config: ProgressionConfig
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _save_manager: SaveManager
 
 
@@ -44,10 +44,10 @@ func _ready() -> void:
 	if _config == null:
 		_config = DEFAULT_CONFIG
 
-	if _item_manager == null:
-		_item_manager = ItemManager
+	if _ball_manager == null:
+		_ball_manager = BallManager
 
-	_item_manager.soul_balance_changed.connect(_on_soul_balance_changed)
+	_ball_manager.soul_balance_changed.connect(_on_soul_balance_changed)
 	_save_manager.save_cleared.connect(_force_shop_unlocked)
 
 	_force_shop_unlocked()
@@ -111,7 +111,7 @@ func recruit_partner(partner_key: StringName) -> bool:
 	if not can_recruit_partner(partner_key):
 		return false
 	var partner: PartnerDefinition = get_partner(partner_key)
-	_item_manager.subtract_soul(partner.unlock_cost)
+	_ball_manager.subtract_soul(partner.unlock_cost)
 	partners.unlocked_partners.append(partner_key)
 	partners.active_partner = partner_key
 	_save_manager.save()

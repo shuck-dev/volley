@@ -9,8 +9,8 @@ var _manager: Node
 
 
 func before_each() -> void:
-	_manager = load("res://scripts/items/item_manager.gd").new()
-	_manager.state = ItemState.new()
+	_manager = load("res://scripts/items/ball_manager.gd").new()
+	_manager.state = BallState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
 	_manager.items.assign([preload("res://resources/items/standard_ball.tres")])
@@ -19,7 +19,7 @@ func before_each() -> void:
 	_config = load("res://scripts/core/court_config.gd").new()
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball._item_manager = _manager
+	_ball._ball_manager = _manager
 	_ball.court_config = _config
 	add_child_autofree(_ball)
 

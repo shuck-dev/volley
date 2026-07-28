@@ -3,15 +3,15 @@ extends DropTarget
 
 @export var reconciler: BallReconciler
 
-var item_manager: Node
-var _item_manager: Node
+var ball_manager: Node
+var _ball_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
 var _exclude_rids: Array[RID] = []
 
 
 func _ready() -> void:
-	_item_manager = item_manager if item_manager != null else ItemManager
+	_ball_manager = ball_manager if ball_manager != null else BallManager
 	_reconciler = reconciler
 	_world = get_viewport().find_world_2d()
 
@@ -23,27 +23,27 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 
 
-func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
-	if DropTarget.get_definition(_item_manager, item_key) == null:
+func can_accept(ball_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
+	if DropTarget.get_definition(_ball_manager, ball_key) == null:
 		return false
 	if not contains_point(world_position):
 		return false
-	return _projection_clear(item_key, world_position, scale_factor)
+	return _projection_clear(ball_key, world_position, scale_factor)
 
 
-func accept(item_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
+func accept(ball_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
 	if _reconciler == null:
 		return
-	_reconciler.bring_into_play(item_key, world_position, gesture_velocity)
+	_reconciler.bring_into_play(ball_key, world_position, gesture_velocity)
 
 
-func _projection_clear(item_key: String, world_position: Vector2, scale_factor: float) -> bool:
+func _projection_clear(ball_key: String, world_position: Vector2, scale_factor: float) -> bool:
 	if _world == null:
 		return true
 	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
 	if space == null:
 		return true
-	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
+	var definition: BallDefinition = DropTarget.get_definition(_ball_manager, ball_key)
 	if definition == null or definition.at_rest_shape == null:
 		return false
 	var shape: Shape2D = _scaled_shape(definition.at_rest_shape, scale_factor)

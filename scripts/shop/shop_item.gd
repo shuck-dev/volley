@@ -1,16 +1,16 @@
 class_name ShopItem
 extends Node2D
 
-signal pickup_started(item_key: String)
-signal drop_completed(item_key: String, position: Vector2, purchased: bool)
+signal pickup_started(ball_key: String)
+signal drop_completed(ball_key: String, position: Vector2, purchased: bool)
 
 @export var art_holder: Node2D
 @export var pickup_area: Area2D
 @export var case_overlay: Node2D
 
-var item_definition: ItemDefinition
+var ball_definition: BallDefinition
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _art_instance: ItemArt
 var _shop_area: Area2D
 var _held_token: Node2D = null
@@ -18,9 +18,9 @@ var _held_token: Node2D = null
 var _mouse_button_down: bool = false
 
 
-func configure(item_manager: Node, definition: ItemDefinition) -> void:
-	_item_manager = item_manager
-	item_definition = definition
+func configure(ball_manager: Node, definition: BallDefinition) -> void:
+	_ball_manager = ball_manager
+	ball_definition = definition
 	_apply_token_scale()
 	_build_art()
 	_refresh_case_overlay()
@@ -32,18 +32,18 @@ func bind_shop_area(area: Area2D) -> void:
 
 
 func can_be_owned() -> bool:
-	if item_definition == null or _item_manager == null:
+	if ball_definition == null or _ball_manager == null:
 		return false
-	return _item_manager.can_acquire(item_definition.key)
+	return _ball_manager.can_acquire(ball_definition.key)
 
 
 func _ready() -> void:
-	if _item_manager == null:
-		_item_manager = ItemManager
+	if _ball_manager == null:
+		_ball_manager = BallManager
 	if pickup_area != null and not pickup_area.input_event.is_connected(_on_input_event):
 		pickup_area.input_event.connect(_on_input_event)
-	_item_manager.soul_balance_changed.connect(_on_balance_changed)
-	_item_manager.item_level_changed.connect(_on_item_level_changed)
+	_ball_manager.soul_balance_changed.connect(_on_balance_changed)
+	_ball_manager.item_level_changed.connect(_on_item_level_changed)
 	_apply_token_scale()
 	_refresh_case_overlay()
 
@@ -75,18 +75,18 @@ func _input(event: InputEvent) -> void:
 
 
 func _build_art() -> void:
-	if item_definition == null or item_definition.art == null:
+	if ball_definition == null or ball_definition.art == null:
 		return
 	if _art_instance != null and is_instance_valid(_art_instance):
 		_art_instance.queue_free()
-	_art_instance = item_definition.art.instantiate()
+	_art_instance = ball_definition.art.instantiate()
 	art_holder.add_child(_art_instance)
 
 
 func _apply_token_scale() -> void:
-	if art_holder == null or item_definition == null:
+	if art_holder == null or ball_definition == null:
 		return
-	art_holder.scale = item_definition.token_scale
+	art_holder.scale = ball_definition.token_scale
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -126,7 +126,7 @@ func attempt_release(release_position: Vector2) -> bool:
 			return false
 
 		var spawned: bool = controller.try_purchase_and_spawn(
-			item_definition.key, release_position, _release_velocity()
+			ball_definition.key, release_position, _release_velocity()
 		)
 		if not spawned:
 			return false
@@ -150,23 +150,23 @@ func _drag_controller() -> ItemDragController:
 
 
 func _release_velocity() -> Vector2:
-	return ItemManager.get_default_ball_launch_velocity()
+	return BallManager.get_default_ball_launch_velocity()
 
 
 func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 	if _held_token != null:
 		_held_token.queue_free()
 	_held_token = null
-	drop_completed.emit(item_definition.key, release_position, purchased)
+	drop_completed.emit(ball_definition.key, release_position, purchased)
 
 
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
-	token.name = "HeldToken_%s" % item_definition.key
-	if item_definition != null:
-		token.scale = item_definition.token_scale
-	if item_definition != null and item_definition.art != null:
-		var art_instance: Node = item_definition.art.instantiate()
+	token.name = "HeldToken_%s" % ball_definition.key
+	if ball_definition != null:
+		token.scale = ball_definition.token_scale
+	if ball_definition != null and ball_definition.art != null:
+		var art_instance: Node = ball_definition.art.instantiate()
 		token.add_child(art_instance)
 	# Parent at scene root so the held visual follows the cursor without being
 	# tied to the shop item's transform.
@@ -181,7 +181,7 @@ func _start_drag() -> void:
 	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
 	_mouse_button_down = true
-	pickup_started.emit(item_definition.key)
+	pickup_started.emit(ball_definition.key)
 
 
 func _is_position_inside_shop(world_position: Vector2) -> bool:
@@ -214,8 +214,8 @@ func _on_balance_changed(_balance: int) -> void:
 
 
 # Case overlay gates on ownership and affordability; neither changes on activate/deactivate.
-func _on_item_level_changed(item_key: String) -> void:
-	if item_definition != null and item_key == item_definition.key:
+func _on_item_level_changed(ball_key: String) -> void:
+	if ball_definition != null and ball_key == ball_definition.key:
 		_refresh_case_overlay()
 
 

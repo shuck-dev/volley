@@ -1,8 +1,8 @@
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const ItemManagerScript: GDScript = preload("res://scripts/items/item_manager.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const BallManagerScript: GDScript = preload("res://scripts/items/ball_manager.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 const CourtScript: GDScript = preload("res://scripts/core/court.gd")
 const RecordingPartnerStub: GDScript = preload("res://tests/stubs/recording_partner_paddle_stub.gd")
 
@@ -14,13 +14,13 @@ var _paddle: Paddle
 
 
 func before_each() -> void:
-	_manager = ItemManagerScript.new()
-	_manager.state = ItemState.new()
+	_manager = BallManagerScript.new()
+	_manager.state = BallState.new()
 	_manager.economy = EconomyState.new()
 	_manager._effect_manager = EffectManager.new()
-	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	var beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
-	var typed_items: Array[ItemDefinition] = [alpha, beta]
+	var alpha: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	var beta: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
+	var typed_items: Array[BallDefinition] = [alpha, beta]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
@@ -49,20 +49,20 @@ func before_each() -> void:
 	_court.player_paddle = _paddle
 	_court.autoplay_controller = autoplay_stub
 	_court._progression_config = ProgressionConfig.new()
-	_court._item_manager = _manager
+	_court._ball_manager = _manager
 	_court._records = RecordsState.new()
 	_court._partners = PartnersState.new()
 	add_child_autofree(_court)
 
 
-func _spawn_ball(item_key: String) -> Ball:
-	_manager.take(item_key)
-	_manager.activate(item_key)
-	return _reconciler.get_ball_for_key(item_key)
+func _spawn_ball(ball_key: String) -> Ball:
+	_manager.take(ball_key)
+	_manager.activate(ball_key)
+	return _reconciler.get_ball_for_key(ball_key)
 
 
 ## Ball item carrying an on_hit effect that bumps ball_speed_offset, mirroring cadence_ball's shape.
-func _make_on_hit_ball_item(key: String) -> ItemDefinition:
+func _make_on_hit_ball_item(key: String) -> BallDefinition:
 	var outcome := StatUntilMissOutcome.new()
 	outcome.stat_key = &"ball_speed_offset"
 	outcome.operation = &"add"
@@ -76,7 +76,7 @@ func _make_on_hit_ball_item(key: String) -> ItemDefinition:
 	effect.outcomes = [outcome]
 	effect.min_active_level = 1
 
-	var item: ItemDefinition = ItemTestHelpersScript.make_ball_item(key)
+	var item: BallDefinition = ItemTestHelpersScript.make_ball_item(key)
 	item.effects = [effect]
 	return item
 
@@ -379,27 +379,27 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 
 # Regression: an on-hit effect must only mutate its own ball, not every ball in the pool.
 func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
-	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
-	var plain_item: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
-	var typed_items: Array[ItemDefinition] = [effect_item, plain_item]
+	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
+	var plain_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
+	var typed_items: Array[BallDefinition] = [effect_item, plain_item]
 	_manager.items.assign(typed_items)
 
 	var hit_ball: Ball = _spawn_ball("ball_cadence")
 	var other_ball: Ball = _spawn_ball("ball_plain")
 
 	var other_offset_before: float = _manager.get_modifier(
-		&"ball_speed_offset", other_ball.item_key
+		&"ball_speed_offset", other_ball.ball_key
 	)
 
 	hit_ball._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", hit_ball.item_key),
+		_manager.get_modifier(&"ball_speed_offset", hit_ball.ball_key),
 		0.0,
 		"the hit ball's own on_hit effect should apply its stat modifier",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", other_ball.item_key),
+		_manager.get_modifier(&"ball_speed_offset", other_ball.ball_key),
 		other_offset_before,
 		"a second ball must not receive the first ball's on_hit stat modifier",
 	)
@@ -407,8 +407,8 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 
 # Regression: two owned instances of the same ball type must not clobber each other's effects.
 func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
-	var effect_item: ItemDefinition = _make_on_hit_ball_item("ball_cadence")
-	var typed_items: Array[ItemDefinition] = [effect_item]
+	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
+	var typed_items: Array[BallDefinition] = [effect_item]
 	_manager.items.assign(typed_items)
 
 	var first: Ball = _spawn_ball("ball_cadence")
@@ -417,17 +417,17 @@ func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	_manager.activate(second_key)
 	var second: Ball = _reconciler.get_ball_for_key(second_key)
 
-	assert_ne(first.item_key, second.item_key, "precondition: distinct instance keys")
+	assert_ne(first.ball_key, second.ball_key, "precondition: distinct instance keys")
 
 	first._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", first.item_key),
+		_manager.get_modifier(&"ball_speed_offset", first.ball_key),
 		0.0,
 		"the struck instance's own effect should register under its own instance key",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", second.item_key),
+		_manager.get_modifier(&"ball_speed_offset", second.ball_key),
 		0.0,
 		"the sibling instance of the same ball type must keep its own, unaffected registration",
 	)

@@ -1,4 +1,4 @@
-class_name ItemDefinition
+class_name BallDefinition
 extends Resource
 
 @export var key: String

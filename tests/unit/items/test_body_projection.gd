@@ -6,15 +6,15 @@ const CourtDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/court_drop_target.gd"
 )
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 
 func after_each() -> void:
 	await get_tree().process_frame
 
 
-func _make_ball_definition(key: String, radius: float = 12.0) -> ItemDefinition:
-	var item: ItemDefinition = ItemTestHelpersScript.make_ball_item(key)
+func _make_ball_definition(key: String, radius: float = 12.0) -> BallDefinition:
+	var item: BallDefinition = ItemTestHelpersScript.make_ball_item(key)
 	var shape := CircleShape2D.new()
 	shape.radius = radius
 	item.at_rest_shape = shape
@@ -34,17 +34,17 @@ func _make_static_wall(host: Node, position: Vector2, size: Vector2) -> StaticBo
 
 
 func _make_harness(definitions: Array) -> Dictionary:
-	var manager: Node = ItemFactory.create_manager(self)
-	manager.items.assign(definitions as Array[ItemDefinition])
+	var manager: Node = BallFactory.create_manager(self)
+	manager.items.assign(definitions as Array[BallDefinition])
 	var host := Node2D.new()
 	add_child_autofree(host)
 	var reconciler: BallReconciler = BallReconcilerScript.new()
 	reconciler.configure(manager)
 	add_child_autofree(reconciler)
 	var target: CourtDropTarget = CourtDropTargetScript.new()
-	target.item_manager = manager
+	target.ball_manager = manager
 	target.reconciler = reconciler
-	target.add_child(ItemTestHelpers.attach_rect_shape(ItemTestHelpers.COURT_SIZE))
+	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.COURT_SIZE))
 	host.add_child(target)
 	return {"host": host, "reconciler": reconciler, "target": target, "manager": manager}
 
@@ -71,7 +71,7 @@ func test_an_obstacle_blocks_the_drop() -> void:
 
 func test_scale_widens_the_projection_until_it_blocks() -> void:
 	# Wall edge sits between the strict half-extent 10 and the widened 15, so only 1.5x overlaps.
-	var item: ItemDefinition = ItemTestHelpersScript.make_ball_item("rect_ball")
+	var item: BallDefinition = ItemTestHelpersScript.make_ball_item("rect_ball")
 	var rect_shape := RectangleShape2D.new()
 	rect_shape.size = Vector2(20, 20)  # half-extent 10 each side
 	item.at_rest_shape = rect_shape

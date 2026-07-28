@@ -2,21 +2,21 @@
 extends Node
 
 signal soul_balance_changed(balance: int)
-signal item_level_changed(item_key: String)
-signal item_placement_changed(item_key: String, placement: int)
-signal court_changed(item_key: String, on_court: bool)
+signal item_level_changed(ball_key: String)
+signal item_placement_changed(ball_key: String, placement: int)
+signal court_changed(ball_key: String, on_court: bool)
 ## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
 signal rack_slots_changed
 ## Emitted after every rack-state mutation so consumers derive from one signal.
-signal item_manager_state_changed
+signal ball_manager_state_changed
 
-var items: Array[ItemDefinition] = [
+var items: Array[BallDefinition] = [
 	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
 	preload("res://resources/items/cadence_ball.tres"),
 ]
 
-var state: ItemState
+var state: BallState
 var economy: EconomyState
 var _effect_manager: EffectManager
 
@@ -34,7 +34,7 @@ func _ready() -> void:
 
 	add_child(_effect_manager)
 	_register_existing_items()
-	item_manager_state_changed.emit()
+	ball_manager_state_changed.emit()
 
 
 ## Resyncs effect registrations and emits signals after progression data has been
@@ -77,8 +77,8 @@ func get_effect_manager() -> EffectManager:
 	return _effect_manager
 
 
-## Duck-typed seam for `Stats.resolve`; kept on ItemManager since callers hold this as the
-## injected `item_manager` reference, not an EffectManager reference.
+## Duck-typed seam for `Stats.resolve`; kept on BallManager since callers hold this as the
+## injected `ball_manager` reference, not an EffectManager reference.
 func get_modifier(key: StringName, instance_key: String = "") -> float:
 	return _effect_manager.get_modifier(key, instance_key)
 
@@ -104,94 +104,94 @@ func process_frame(delta: float) -> void:
 
 
 ## Returns current level of an item (0 if not owned)
-func get_level(item_key: String) -> int:
-	if state.item_levels.has(item_key):
-		return state.item_levels[item_key]
+func get_level(ball_key: String) -> int:
+	if state.ball_levels.has(ball_key):
+		return state.ball_levels[ball_key]
 
-	var base := _base_key(item_key)
+	var base := _base_key(ball_key)
 
-	if base != item_key:
+	if base != ball_key:
 		return 0
 
-	var item_def := _get_item(item_key)
+	var item_def := _get_item(ball_key)
 
 	if item_def == null:
 		return 0
 
 	var max_level := 0
-	for key in state.item_levels:
-		if BallKey.is_instance(item_key, key):
-			max_level = max(max_level, state.item_levels[key])
+	for key in state.ball_levels:
+		if BallKey.is_instance(ball_key, key):
+			max_level = max(max_level, state.ball_levels[key])
 
-	return max(max_level, get_owned_count(item_key))
+	return max(max_level, get_owned_count(ball_key))
 
 
 ## Returns the current placement of an item.
-func _get_placement(item_key: String) -> int:
-	if state.loose_in_venue.has(item_key):
+func _get_placement(ball_key: String) -> int:
+	if state.loose_in_venue.has(ball_key):
 		return Placement.LOOSE_IN_VENUE
 
-	if state.item_placements.has(item_key):
-		return state.item_placements[item_key]
+	if state.ball_placements.has(ball_key):
+		return state.ball_placements[ball_key]
 
 	return Placement.STORED
 
 
 ## Returns the current placement; STORED, ON_COURT, or LOOSE_IN_VENUE.
-func get_placement(item_key: String) -> int:
-	return _get_placement(item_key)
+func get_placement(ball_key: String) -> int:
+	return _get_placement(ball_key)
 
 
 ## True when a loose body for this item exists on the venue floor.
-func is_loose_in_venue(item_key: String) -> bool:
-	return state.loose_in_venue.has(item_key)
+func is_loose_in_venue(ball_key: String) -> bool:
+	return state.loose_in_venue.has(ball_key)
 
 
 ## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.
-func mark_loose_in_venue(item_key: String, position: Vector2 = Vector2.ZERO) -> void:
-	if state.loose_in_venue.has(item_key):
-		state.loose_in_venue[item_key] = position
+func mark_loose_in_venue(ball_key: String, position: Vector2 = Vector2.ZERO) -> void:
+	if state.loose_in_venue.has(ball_key):
+		state.loose_in_venue[ball_key] = position
 		return
-	state.loose_in_venue[item_key] = position
-	item_placement_changed.emit(item_key, Placement.LOOSE_IN_VENUE)
+	state.loose_in_venue[ball_key] = position
+	item_placement_changed.emit(ball_key, Placement.LOOSE_IN_VENUE)
 
 
 ## Clears the loose-in-venue entry. Idempotent. Emits item_placement_changed with the underlying placement.
-func clear_loose_in_venue(item_key: String) -> void:
-	if not state.loose_in_venue.has(item_key):
+func clear_loose_in_venue(ball_key: String) -> void:
+	if not state.loose_in_venue.has(ball_key):
 		return
-	state.loose_in_venue.erase(item_key)
-	item_placement_changed.emit(item_key, _get_placement(item_key))
+	state.loose_in_venue.erase(ball_key)
+	item_placement_changed.emit(ball_key, _get_placement(ball_key))
 
 
 ## True when an item is currently placed on the court, false on the rack or loose in venue.
-func is_on_court(item_key: String) -> bool:
-	return _get_placement(item_key) == Placement.ON_COURT
+func is_on_court(ball_key: String) -> bool:
+	return _get_placement(ball_key) == Placement.ON_COURT
 
 
-## Slot index assigned to `item_key` while STORED; -1 when not stored.
-func get_rack_slot_index(item_key: String) -> int:
-	return state.rack_slot_index_by_key.get(item_key, -1)
+## Slot index assigned to `ball_key` while STORED; -1 when not stored.
+func get_rack_slot_index(ball_key: String) -> int:
+	return state.rack_slot_index_by_key.get(ball_key, -1)
 
 
 ## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
 ## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
-func release_rack_slot(item_key: String) -> void:
-	if not state.rack_slot_index_by_key.has(item_key):
+func release_rack_slot(ball_key: String) -> void:
+	if not state.rack_slot_index_by_key.has(ball_key):
 		return
-	state.rack_slot_index_by_key.erase(item_key)
+	state.rack_slot_index_by_key.erase(ball_key)
 	rack_slots_changed.emit()
 
 
 ## Re-assigns the lowest free rack slot when a held item returns to the rack.
-func reassign_rack_slot(item_key: String) -> void:
-	_assign_rack_slot(item_key)
+func reassign_rack_slot(ball_key: String) -> void:
+	_assign_rack_slot(ball_key)
 
 
 ## Picks the lowest free slot index among STORED items and records it.
 ## Idempotent: an item with an existing assignment keeps it. Survivors of a pop never reshuffle.
-func _assign_rack_slot(item_key: String) -> void:
-	if state.rack_slot_index_by_key.has(item_key):
+func _assign_rack_slot(ball_key: String) -> void:
+	if state.rack_slot_index_by_key.has(ball_key):
 		return
 
 	var used: Dictionary = {}
@@ -202,7 +202,7 @@ func _assign_rack_slot(item_key: String) -> void:
 	while used.has(candidate):
 		candidate += 1
 
-	state.rack_slot_index_by_key[item_key] = candidate
+	state.rack_slot_index_by_key[ball_key] = candidate
 	rack_slots_changed.emit()
 
 
@@ -210,8 +210,8 @@ func _assign_rack_slot(item_key: String) -> void:
 func get_stored_items() -> Array[String]:
 	var result: Array[String] = []
 
-	for key in state.item_levels:
-		if state.item_levels[key] <= 0:
+	for key in state.ball_levels:
+		if state.ball_levels[key] <= 0:
 			continue
 		if _get_placement(key) != Placement.STORED:
 			continue
@@ -222,61 +222,61 @@ func get_stored_items() -> Array[String]:
 
 
 ## Places an owned item on the court and registers effects at current level; false if unowned.
-func activate(item_key: String) -> bool:
-	if get_level(item_key) <= 0:
+func activate(ball_key: String) -> bool:
+	if get_level(ball_key) <= 0:
 		return false
 
-	_set_item_placement(item_key, Placement.ON_COURT)
+	_set_item_placement(ball_key, Placement.ON_COURT)
 
 	return true
 
 
 ## Moves an owned item back to the rack and unregisters its effects; false if unowned.
-func deactivate(item_key: String) -> bool:
-	if get_level(item_key) <= 0:
+func deactivate(ball_key: String) -> bool:
+	if get_level(ball_key) <= 0:
 		return false
 
-	_set_item_placement(item_key, Placement.STORED)
+	_set_item_placement(ball_key, Placement.STORED)
 
 	return true
 
 
-func calculate_for_purchase(item_key: String) -> int:
-	var item := get_item(item_key)
+func calculate_for_purchase(ball_key: String) -> int:
+	var item := get_item(ball_key)
 	return int(item.base_cost * pow(2.0, get_owned_count(item.key)))
 
 
 ## Returns total cost of an item at its current level
-func calculate_cost(item_key: String) -> int:
-	var item := get_item(item_key)
-	return int(item.base_cost * pow(item.cost_scaling, get_level(item_key)))
+func calculate_cost(ball_key: String) -> int:
+	var item := get_item(ball_key)
+	return int(item.base_cost * pow(item.cost_scaling, get_level(ball_key)))
 
 
 ## Returns true if the item is affordable. Used by drop targets.
-func can_acquire(item_key: String) -> bool:
-	return economy.soul_balance >= calculate_for_purchase(item_key)
+func can_acquire(ball_key: String) -> bool:
+	return economy.soul_balance >= calculate_for_purchase(ball_key)
 
 
 ## Returns whether the player can afford and has not maxed an item
-func can_purchase(item_key: String) -> bool:
-	var item := get_item(item_key)
-	return economy.soul_balance >= calculate_cost(item_key) and get_level(item_key) < item.max_level
+func can_purchase(ball_key: String) -> bool:
+	var item := get_item(ball_key)
+	return economy.soul_balance >= calculate_cost(ball_key) and get_level(ball_key) < item.max_level
 
 
 ## Purchases an item if affordable, returns true on success
-func purchase(item_key: String) -> bool:
-	if not can_purchase(item_key):
+func purchase(ball_key: String) -> bool:
+	if not can_purchase(ball_key):
 		return false
 
-	subtract_soul(calculate_cost(item_key))
-	var new_level := get_level(item_key) + 1
-	state.item_levels[item_key] = new_level
+	subtract_soul(calculate_cost(ball_key))
+	var new_level := get_level(ball_key) + 1
+	state.ball_levels[ball_key] = new_level
 
-	if _is_placed(item_key):
-		_refresh_registration(item_key)
+	if _is_placed(ball_key):
+		_refresh_registration(ball_key)
 
-	item_level_changed.emit(item_key)
-	item_manager_state_changed.emit()
+	item_level_changed.emit(ball_key)
+	ball_manager_state_changed.emit()
 	SaveManager.save()
 
 	return true
@@ -302,34 +302,34 @@ func subtract_soul(points: int) -> void:
 
 
 ## Removes one level from an item (dev/debug only)
-func remove_level(item_key: String) -> void:
+func remove_level(ball_key: String) -> void:
 	if not OS.is_debug_build():
 		return
 
-	var current_level := get_level(item_key)
+	var current_level := get_level(ball_key)
 	if current_level > 0:
-		var item := get_item(item_key)
+		var item := get_item(ball_key)
 		var new_level: int = current_level - 1
 		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
 		_refund_soul(refund)
-		_set_level(item_key, new_level)
+		_set_level(ball_key, new_level)
 
 		if current_level - 1 == 0:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
-			_set_item_placement(item_key, Placement.STORED)
-			state.rack_slot_index_by_key.erase(item_key)
-	item_manager_state_changed.emit()
+			_set_item_placement(ball_key, Placement.STORED)
+			state.rack_slot_index_by_key.erase(ball_key)
+	ball_manager_state_changed.emit()
 
 
 func _register_existing_items() -> void:
-	for key in state.item_levels:
-		if state.item_levels[key] <= 0:
+	for key in state.ball_levels:
+		if state.ball_levels[key] <= 0:
 			continue
 		var item := _get_item(key)
 		if item == null:
 			continue
 		if _is_placed(key):
-			_effect_manager.register_source(item, state.item_levels[key], key, true)
+			_effect_manager.register_source(item, state.ball_levels[key], key, true)
 		elif not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key)
 
@@ -338,42 +338,42 @@ func _register_existing_items() -> void:
 
 ## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
 ## Returns true when the level increased. Intended for tier-completion ball upgrades.
-func upgrade_ball(item_key: String) -> bool:
-	var item := _get_item(item_key)
+func upgrade_ball(ball_key: String) -> bool:
+	var item := _get_item(ball_key)
 	if item == null:
 		return false
 
-	var current_level := get_level(item_key)
+	var current_level := get_level(ball_key)
 	if current_level <= 0 or current_level >= item.max_level:
 		return false
 
-	_set_level(item_key, current_level + 1)
+	_set_level(ball_key, current_level + 1)
 	return true
 
 
 ## Deducts soul for purchasing a ball. The reconciler owns instance key generation
 ## and state registration; this only handles economics.
-func take_ball(item_key: String) -> bool:
-	var item := _get_item(item_key)
+func take_ball(ball_key: String) -> bool:
+	var item := _get_item(ball_key)
 	if item == null:
 		return false
-	if economy.soul_balance < calculate_for_purchase(item_key):
+	if economy.soul_balance < calculate_for_purchase(ball_key):
 		return false
-	subtract_soul(calculate_for_purchase(item_key))
+	subtract_soul(calculate_for_purchase(ball_key))
 	SaveManager.save()
 	return true
 
 
 ## Acquires a ball item without registering its effects.
-func take(item_key: String) -> String:
-	var item := _get_item(item_key)
+func take(ball_key: String) -> String:
+	var item := _get_item(ball_key)
 	if item == null:
 		return ""
 
-	if not take_ball(item_key):
+	if not take_ball(ball_key):
 		return ""
 
-	var instance_key: String = generate_instance_key(item_key)
+	var instance_key: String = generate_instance_key(ball_key)
 	register_instance(instance_key)
 
 	return instance_key
@@ -386,106 +386,106 @@ func _refund_soul(points: int) -> void:
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-func _set_level(item_key: String, level: int) -> void:
-	state.item_levels[item_key] = level
+func _set_level(ball_key: String, level: int) -> void:
+	state.ball_levels[ball_key] = level
 
-	if _is_placed(item_key):
-		_refresh_registration(item_key)
+	if _is_placed(ball_key):
+		_refresh_registration(ball_key)
 
-	item_level_changed.emit(item_key)
+	item_level_changed.emit(ball_key)
 
 
-func _set_item_placement(item_key: String, placement: int) -> void:
-	var previous: int = state.item_placements.get(item_key, Placement.STORED)
-	var item := get_item(item_key)
+func _set_item_placement(ball_key: String, placement: int) -> void:
+	var previous: int = state.ball_placements.get(ball_key, Placement.STORED)
+	var item := get_item(ball_key)
 
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
 	# and a placed item never leaks one, regardless of whether the placement value moved.
 	if placement == Placement.STORED:
-		state.item_placements.erase(item_key)
-		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item, item_key)
-		_assign_rack_slot(item_key)
+		state.ball_placements.erase(ball_key)
+		state.loose_in_venue.erase(ball_key)
+		_effect_manager.unregister_source(item, ball_key)
+		_assign_rack_slot(ball_key)
 	else:
-		state.item_placements[item_key] = placement
-		state.loose_in_venue.erase(item_key)
-		_effect_manager.unregister_source(item, item_key)
-		_effect_manager.register_source(item, get_level(item_key), item_key, true)
-		state.rack_slot_index_by_key.erase(item_key)
+		state.ball_placements[ball_key] = placement
+		state.loose_in_venue.erase(ball_key)
+		_effect_manager.unregister_source(item, ball_key)
+		_effect_manager.register_source(item, get_level(ball_key), ball_key, true)
+		state.rack_slot_index_by_key.erase(ball_key)
 
-	item_manager_state_changed.emit()
+	ball_manager_state_changed.emit()
 
-	if previous == placement and not state.loose_in_venue.has(item_key):
+	if previous == placement and not state.loose_in_venue.has(ball_key):
 		return
 
-	item_placement_changed.emit(item_key, placement)
+	item_placement_changed.emit(ball_key, placement)
 	var was_on_court := previous == Placement.ON_COURT
 	var now_on_court := placement == Placement.ON_COURT
 
 	if was_on_court != now_on_court:
-		court_changed.emit(item_key, now_on_court)
+		court_changed.emit(ball_key, now_on_court)
 
 
-func _refresh_registration(item_key: String) -> void:
-	var item := get_item(item_key)
-	_effect_manager.unregister_source(item, item_key)
-	var level := get_level(item_key)
+func _refresh_registration(ball_key: String) -> void:
+	var item := get_item(ball_key)
+	_effect_manager.unregister_source(item, ball_key)
+	var level := get_level(ball_key)
 	if level > 0:
-		_effect_manager.register_source(item, level, item_key, true)
+		_effect_manager.register_source(item, level, ball_key, true)
 
 
-func _is_placed(item_key: String) -> bool:
-	return _get_placement(item_key) != Placement.STORED
+func _is_placed(ball_key: String) -> bool:
+	return _get_placement(ball_key) != Placement.STORED
 
 
-func _base_key(item_key: String) -> String:
-	var base := BallKey.base_key(item_key)
-	if base == item_key:
-		return item_key
-	for item: ItemDefinition in items:
+func _base_key(ball_key: String) -> String:
+	var base := BallKey.base_key(ball_key)
+	if base == ball_key:
+		return ball_key
+	for item: BallDefinition in items:
 		if item.key == base:
 			return base
-	return item_key
+	return ball_key
 
 
 func get_owned_count(base_key: String) -> int:
 	var count := 0
-	for key in state.item_levels:
-		if BallKey.is_instance(base_key, key) and state.item_levels[key] > 0:
+	for key in state.ball_levels:
+		if BallKey.is_instance(base_key, key) and state.ball_levels[key] > 0:
 			count += 1
-		elif key == base_key and state.item_levels[key] > 0:
+		elif key == base_key and state.ball_levels[key] > 0:
 			count += 1
 	return count
 
 
 func generate_instance_key(base_key: String) -> String:
-	return BallKey.generate(base_key, state.item_levels)
+	return BallKey.generate(base_key, state.ball_levels)
 
 
-func register_instance(item_key: String) -> void:
-	state.item_levels[item_key] = 1
-	_assign_rack_slot(item_key)
-	item_manager_state_changed.emit()
+func register_instance(ball_key: String) -> void:
+	state.ball_levels[ball_key] = 1
+	_assign_rack_slot(ball_key)
+	ball_manager_state_changed.emit()
 	SaveManager.save()
 
 
-func adopt_instance(item_key: String) -> void:
-	state.item_levels[item_key] = 1
-	item_manager_state_changed.emit()
+func adopt_instance(ball_key: String) -> void:
+	state.ball_levels[ball_key] = 1
+	ball_manager_state_changed.emit()
 	SaveManager.save()
 
 
-func _get_item(item_key: String) -> ItemDefinition:
-	var base_key := _base_key(item_key)
-	for item: ItemDefinition in items:
+func _get_item(ball_key: String) -> BallDefinition:
+	var base_key := _base_key(ball_key)
+	for item: BallDefinition in items:
 		if item.key == base_key:
 			return item
-	push_warning("ItemManager: unknown item key: %s" % item_key)
+	push_warning("BallManager: unknown item key: %s" % ball_key)
 	return null
 
 
 ## Same as `_get_item`, but asserts non-null; a miss here is a real bug, not an unowned item.
-func get_item(item_key: String) -> ItemDefinition:
-	var item := _get_item(item_key)
-	assert(item != null, "ItemManager: expected a known item for key: %s" % item_key)
+func get_item(ball_key: String) -> BallDefinition:
+	var item := _get_item(ball_key)
+	assert(item != null, "BallManager: expected a known item for key: %s" % ball_key)
 	return item

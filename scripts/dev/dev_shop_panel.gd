@@ -15,10 +15,10 @@ func _ready() -> void:
 		return
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_build_shell()
-	ItemManager.soul_balance_changed.connect(
+	BallManager.soul_balance_changed.connect(
 		func(_a = null, _b = null, _c = null): _rebuild.call_deferred()
 	)
-	ItemManager.item_level_changed.connect(
+	BallManager.item_level_changed.connect(
 		func(_a = null, _b = null, _c = null): _rebuild.call_deferred()
 	)
 	_rebuild.call_deferred()
@@ -61,7 +61,7 @@ func _rebuild() -> void:
 	var stale_keys: Array = []
 	for key in _cells:
 		var found := false
-		for item in ItemManager.items:
+		for item in BallManager.items:
 			if item.key == key:
 				found = true
 				break
@@ -72,7 +72,7 @@ func _rebuild() -> void:
 			cell.queue_free()
 		_cells.erase(key)
 
-	for item in ItemManager.items:
+	for item in BallManager.items:
 		if not _cells.has(item.key):
 			var row_cells: Array[Label] = []
 			for _column in COLUMN_COUNT:
@@ -84,16 +84,16 @@ func _rebuild() -> void:
 
 
 func _refresh() -> void:
-	for item in ItemManager.items:
+	for item in BallManager.items:
 		if not _cells.has(item.key):
 			continue
 		_set_row(_cells[item.key], _row_values(item))
 
 
-func _row_values(item_def: ItemDefinition) -> PackedStringArray:
-	var level: int = ItemManager.get_level(item_def.key)
-	var cost: int = ItemManager.calculate_cost(item_def.key)
-	var balance: int = ItemManager.get_soul_balance()
+func _row_values(item_def: BallDefinition) -> PackedStringArray:
+	var level: int = BallManager.get_level(item_def.key)
+	var cost: int = BallManager.calculate_cost(item_def.key)
+	var balance: int = BallManager.get_soul_balance()
 	return PackedStringArray(
 		[
 			item_def.key,
@@ -120,7 +120,7 @@ func _make_cell(text: String, color: Color) -> Label:
 	return label
 
 
-func _status_for(item_def: ItemDefinition, level: int, cost: int, balance: int) -> String:
+func _status_for(item_def: BallDefinition, level: int, cost: int, balance: int) -> String:
 	if level >= item_def.max_level:
 		return "maxed"
 	if balance < cost:

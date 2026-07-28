@@ -3,7 +3,7 @@ extends GutTest
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
+const StandardBall: BallDefinition = preload("res://resources/items/standard_ball.tres")
 
 var _manager: Node
 var _reconciler: BallReconciler
@@ -12,12 +12,12 @@ var _item: ShopItem
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	_manager.items.assign([StandardBall] as Array[ItemDefinition])
+	_manager = BallFactory.create_manager(self)
+	_manager.items.assign([StandardBall] as Array[BallDefinition])
 	_manager.economy.soul_balance = 10000
 
-	var rack: RackDisplay = ItemTestHelpers.make_rack(_manager, self)
-	var rack_drop_area: Area2D = ItemTestHelpers.make_drop_area(
+	var rack: RackDisplay = BallTestHelpers.make_rack(_manager, self)
+	var rack_drop_area: Area2D = BallTestHelpers.make_drop_area(
 		Vector2(-1000, 0), Vector2(300, 200), self
 	)
 
@@ -29,10 +29,10 @@ func before_each() -> void:
 	_drag.configure(_manager, rack, rack_drop_area, _reconciler)
 	add_child_autofree(_drag)
 
-	ItemTestHelpers.make_drop_targets(_manager, _reconciler, rack_drop_area.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _reconciler, rack_drop_area.position, self)
 
 	_item = ShopItemScene.instantiate()
-	_item._item_manager = _manager
+	_item._ball_manager = _manager
 	add_child_autofree(_item)
 	_item.configure(_manager, StandardBall)
 
@@ -64,6 +64,6 @@ func test_second_purchase_released_on_court_spawns_a_second_distinct_ball() -> v
 
 	var balls_on_court: int = 0
 	for ball: Ball in _reconciler.get_balls():
-		if _manager.is_on_court(ball.item_key):
+		if _manager.is_on_court(ball.ball_key):
 			balls_on_court += 1
 	assert_eq(balls_on_court, 2, "both purchased balls should be distinct and both on the court")

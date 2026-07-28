@@ -3,7 +3,7 @@ extends Node
 
 ## Live-ball lifecycle owner.
 
-signal ball_spawned(item_key: String, ball: Ball)
+signal ball_spawned(ball_key: String, ball: Ball)
 
 ## Emitted whenever a ball is in play.
 signal ball_added(ball: Ball)
@@ -28,7 +28,7 @@ const PRESERVED_SPEED_NONE: float = -1.0
 
 var bound_y: float = 0.0
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 
@@ -37,18 +37,18 @@ var _current_ball: Ball
 var _miss_zones: Array[MissZone] = []
 
 
-func configure(item_manager: Node) -> void:
-	_item_manager = item_manager
+func configure(ball_manager: Node) -> void:
+	_ball_manager = ball_manager
 
 
 func _ready() -> void:
 	add_to_group(&"ball_trackers")
 
-	if _item_manager == null:
-		_item_manager = ItemManager
+	if _ball_manager == null:
+		_ball_manager = BallManager
 
-	_item_manager.court_changed.connect(_on_court_changed)
-	_item_manager.item_manager_state_changed.connect(_reconcile)
+	_ball_manager.court_changed.connect(_on_court_changed)
+	_ball_manager.ball_manager_state_changed.connect(_reconcile)
 
 	# Position persistence
 	if _has_save_manager_autoload():
@@ -59,7 +59,7 @@ func _ready() -> void:
 	call_deferred(&"_reconcile")
 
 
-## Snapshot of live ball positions keyed by item_key.
+## Snapshot of live ball positions keyed by ball_key.
 func collect_item_positions() -> Dictionary[String, Vector2]:
 	var positions: Dictionary[String, Vector2] = {}
 	for ball in _balls:
@@ -69,15 +69,15 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
 
-		if ball.item_key.is_empty():
+		if ball.ball_key.is_empty():
 			continue
 
-		positions[ball.item_key] = ball.global_position
+		positions[ball.ball_key] = ball.global_position
 
 	return positions
 
 
-## Snapshot of live ball PlayState enums keyed by item_key.
+## Snapshot of live ball PlayState enums keyed by ball_key.
 func collect_ball_play_states() -> Dictionary[String, int]:
 	var states: Dictionary[String, int] = {}
 	for ball in _balls:
@@ -85,9 +85,9 @@ func collect_ball_play_states() -> Dictionary[String, int]:
 			continue
 		if ball.play_state == Ball.PlayState.STORED:
 			continue
-		if ball.item_key.is_empty():
+		if ball.ball_key.is_empty():
 			continue
-		states[ball.item_key] = int(ball.play_state)
+		states[ball.ball_key] = int(ball.play_state)
 	return states
 
 
@@ -108,20 +108,20 @@ func has_ball_in_play() -> bool:
 	return false
 
 
-## Returns the tracked Ball for `item_key` and instances.
-func get_ball_for_key(item_key: String) -> Ball:
-	if _balls_by_key.has(item_key):
-		var raw: Variant = _balls_by_key[item_key]
+## Returns the tracked Ball for `ball_key` and instances.
+func get_ball_for_key(ball_key: String) -> Ball:
+	if _balls_by_key.has(ball_key):
+		var raw: Variant = _balls_by_key[ball_key]
 
 		if is_instance_valid(raw):
 			return raw
 
-		_balls_by_key.erase(item_key)
+		_balls_by_key.erase(ball_key)
 
 		return null
 
 	for key in _balls_by_key:
-		if BallKey.is_instance(item_key, key):
+		if BallKey.is_instance(ball_key, key):
 			var raw: Variant = _balls_by_key[key]
 
 			if is_instance_valid(raw):
@@ -131,10 +131,10 @@ func get_ball_for_key(item_key: String) -> Ball:
 
 
 ## Ensures a registry Ball at `position`, in OUT_REST, carrying `velocity`.
-func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -> Ball:
-	var ball: Ball = get_ball_for_key(item_key)
+func release_into_rest(ball_key: String, position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = get_ball_for_key(ball_key)
 	if ball == null:
-		ball = _create_ball(item_key, position, velocity)
+		ball = _create_ball(ball_key, position, velocity)
 
 	ball.global_position = position
 	ball.enter_out_rest()
@@ -144,14 +144,14 @@ func release_into_rest(item_key: String, position: Vector2, velocity: Vector2) -
 
 ## Spawns a purchased ball on the rack.
 func spawn_stored(template_key: String, position: Vector2) -> Ball:
-	var key := _item_manager.generate_instance_key(template_key)
-	_item_manager.register_instance(key)
+	var key := _ball_manager.generate_instance_key(template_key)
+	_ball_manager.register_instance(key)
 	return _create_stored(key, position)
 
 
 ## Spawns a ball onto the venue floor.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
-	var key := _item_manager.generate_instance_key(template_key)
+	var key := _ball_manager.generate_instance_key(template_key)
 	var ball := _create_ball(key, position, velocity)
 	ball.global_position = position
 	ball.enter_out_rest()
@@ -161,48 +161,48 @@ func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -
 
 ## Puts a ball into active play on the court.
 func bring_into_play(
-	item_key: String,
+	ball_key: String,
 	spawn_position: Vector2,
 	initial_velocity: Vector2,
 	preserved_speed: float = PRESERVED_SPEED_NONE,
 ) -> Ball:
-	if not _item_manager.is_on_court(item_key):
-		_item_manager.activate(item_key)
-	var ball: Ball = get_ball_for_key(item_key)
+	if not _ball_manager.is_on_court(ball_key):
+		_ball_manager.activate(ball_key)
+	var ball: Ball = get_ball_for_key(ball_key)
 	if ball != null:
 		ball.enter_play()
 		ball.global_position = spawn_position
 		ball.linear_velocity = initial_velocity
 		_apply_preserved_speed(ball, preserved_speed)
 		return ball
-	ball = _create_ball(item_key, spawn_position, initial_velocity)
+	ball = _create_ball(ball_key, spawn_position, initial_velocity)
 	_apply_preserved_speed(ball, preserved_speed)
 	return ball
 
 
-func release_ball(item_key: String) -> Ball:
-	var ball: Ball = get_ball_for_key(item_key)
+func release_ball(ball_key: String) -> Ball:
+	var ball: Ball = get_ball_for_key(ball_key)
 	if ball == null:
 		return null
 
 	_initial_reconcile_pending = false
-	_balls_by_key.erase(item_key)
+	_balls_by_key.erase(ball_key)
 	_detach(ball)
 	return ball
 
 
 ## Lazy-backfill a tracked STORED Ball for a stored item key.
-func ensure_stored_ball_for_key(item_key: String) -> Ball:
-	var existing: Ball = get_ball_for_key(item_key)
+func ensure_stored_ball_for_key(ball_key: String) -> Ball:
+	var existing: Ball = get_ball_for_key(ball_key)
 	if existing != null:
 		return existing
-	if ball_rack == null or _item_manager == null:
+	if ball_rack == null or _ball_manager == null:
 		return null
-	if _item_manager.get_level(item_key) <= 0:
+	if _ball_manager.get_level(ball_key) <= 0:
 		return null
-	if _item_manager.get_rack_slot_index(item_key) < 0:
+	if _ball_manager.get_rack_slot_index(ball_key) < 0:
 		return null
-	return _create_stored(item_key, ball_rack.get_slot_position_for(item_key))
+	return _create_stored(ball_key, ball_rack.get_slot_position_for(ball_key))
 
 
 func get_balls() -> Array[Ball]:
@@ -249,35 +249,35 @@ func _has_save_manager_autoload() -> bool:
 
 
 ## Internal: spawns a STORED ball at a slot position.
-func _create_stored(item_key: String, spawn_position: Vector2) -> Ball:
+func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	ball.configure(_item_manager)
-	ball.item_key = item_key
+	ball.configure(_ball_manager)
+	ball.ball_key = ball_key
 	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
 
-	_balls_by_key[item_key] = ball
-	ball_spawned.emit(item_key, ball)
+	_balls_by_key[ball_key] = ball
+	ball_spawned.emit(ball_key, ball)
 	_register_ball(ball)
 	return ball
 
 
 ## Internal: spawns a Ball node without key generation.
-func _create_ball(item_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
+func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	var ball: Ball = BallScene.instantiate()
 	ball.court_config = court_config
 	ball.bound_y = bound_y
-	ball.configure(_item_manager)
-	ball.item_key = item_key
+	ball.configure(_ball_manager)
+	ball.ball_key = ball_key
 	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = bound_y
-	_balls_by_key[item_key] = ball
-	ball_spawned.emit(item_key, ball)
+	_balls_by_key[ball_key] = ball
+	ball_spawned.emit(ball_key, ball)
 	_register_ball(ball)
 	return ball
 
@@ -292,10 +292,10 @@ func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 
 
-func _on_court_changed(item_key: String, on_court: bool) -> void:
+func _on_court_changed(ball_key: String, on_court: bool) -> void:
 	_initial_reconcile_pending = false
 	if on_court:
-		var existing: Ball = get_ball_for_key(item_key)
+		var existing: Ball = get_ball_for_key(ball_key)
 		if (
 			existing != null
 			and (
@@ -304,29 +304,29 @@ func _on_court_changed(item_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		var pos := _spawn_position_for(item_key)
-		var vel := _item_manager.get_default_ball_launch_velocity()
+		var pos := _spawn_position_for(ball_key)
+		var vel := _ball_manager.get_default_ball_launch_velocity()
 		if existing != null:
 			existing.global_position = pos
 			existing.linear_velocity = vel
 			existing.enter_play()
 		else:
-			_create_ball(item_key, pos, vel)
+			_create_ball(ball_key, pos, vel)
 		return
 
-	var ball: Ball = get_ball_for_key(item_key)
+	var ball: Ball = get_ball_for_key(ball_key)
 	if ball == null:
 		return
 
 	ball.enter_stored()
 	if ball_rack != null:
-		ball.global_position = ball_rack.get_slot_position_for(item_key)
+		ball.global_position = ball_rack.get_slot_position_for(ball_key)
 
 
 func _reconcile() -> void:
 	var keys_to_remove: Array[String] = []
 	for key: String in _balls_by_key:
-		if _item_manager.get_level(key) <= 0:
+		if _ball_manager.get_level(key) <= 0:
 			keys_to_remove.append(key)
 
 	for key: String in keys_to_remove:
@@ -341,7 +341,7 @@ func _reconcile() -> void:
 		for key in _ball_keys():
 			if get_ball_for_key(key) == null:
 				_create_ball(
-					key, _spawn_position_for(key), _item_manager.get_default_ball_launch_velocity()
+					key, _spawn_position_for(key), _ball_manager.get_default_ball_launch_velocity()
 				)
 	_reconcile_stored_items()
 
@@ -349,7 +349,7 @@ func _reconcile() -> void:
 func _reconcile_stored_items() -> void:
 	if ball_rack == null:
 		return
-	for key in _item_manager.get_stored_items():
+	for key in _ball_manager.get_stored_items():
 		ensure_stored_ball_for_key(key)
 
 
@@ -359,29 +359,29 @@ func _default_spawn_position() -> Vector2:
 
 func _ball_keys() -> Array[String]:
 	var result: Array[String] = []
-	for key in _item_manager.state.item_levels:
-		if _item_manager.state.item_levels[key] <= 0:
+	for key in _ball_manager.state.ball_levels:
+		if _ball_manager.state.ball_levels[key] <= 0:
 			continue
-		if _item_manager.get_placement(key) != Placement.ON_COURT:
+		if _ball_manager.get_placement(key) != Placement.ON_COURT:
 			continue
-		if _get_item_definition(key) != null:
+		if _get_ball_definition(key) != null:
 			result.append(key)
 	return result
 
 
 ## Where a reloaded ball lands so it appears where the player left it.
-func _spawn_position_for(item_key: String) -> Vector2:
+func _spawn_position_for(ball_key: String) -> Vector2:
 	if not _has_save_manager_autoload():
 		return _default_spawn_position()
-	var state: ItemState = SaveManager.items
-	if state != null and state.ball_positions.has(item_key):
-		return state.ball_positions[item_key]
+	var state: BallState = SaveManager.items
+	if state != null and state.ball_positions.has(ball_key):
+		return state.ball_positions[ball_key]
 	return _default_spawn_position()
 
 
-func _get_item_definition(item_key: String) -> ItemDefinition:
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key or BallKey.is_instance(item.key, item_key):
+func _get_ball_definition(ball_key: String) -> BallDefinition:
+	for item: BallDefinition in _ball_manager.items:
+		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
 			return item
 	return null
 
