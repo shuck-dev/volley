@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://di7sl61edbmuc" path="res://scripts/core/venue.gd" id="1_qaugd"]
 [ext_resource type="PackedScene" uid="uid://ctjs62ui6cpso" path="res://scenes/court.tscn" id="2_01afa"]
 [ext_resource type="PackedScene" uid="uid://hvh6q02lrntj" path="res://scenes/shop.tscn" id="3_shop"]
-[ext_resource type="PackedScene" uid="uid://dumhl1skwhd7q" path="res://scenes/dev_hud.tscn" id="4_hud"]
 [ext_resource type="Script" uid="uid://s5unp15ypwlr" path="res://scripts/core/venue_camera.gd" id="5_wttuf"]
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
@@ -74,8 +73,6 @@ offset_bottom = 1500.0
 color = Color(0.3, 0.15, 0.05, 0.7)
 
 [node name="Court" parent="." unique_id=1153872822 instance=ExtResource("2_01afa")]
-
-[node name="DevHUD" parent="." unique_id=720275437 instance=ExtResource("4_hud")]
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1084046387 node_paths=PackedStringArray("left_anchor", "right_anchor")]
 script = ExtResource("5_wttuf")
