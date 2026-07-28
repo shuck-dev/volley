@@ -19,7 +19,7 @@ env:
   GODOT_TEMPLATES_SHA256: "942366dc4e27e7686a99da4d3cfb1b8ae8d3eb9444f6d8217eef16245b599ef2"
   BUTLER_VERSION: "15.26.1"
   BUTLER_SHA256: "b724504bccf259eb01668e1d20b97f6e376d965761e306a75530e19225c510e3"
-  ITCH_PROJECT: Speedyoshi/volley
+  ITCH_PROJECT: shuck-dev/volley-dev
 
 jobs:
   test:
@@ -76,7 +76,7 @@ jobs:
           relative_project_path: ./
           cache: true
           export_debug: true
-          presets_to_export: WebThreaded
+          presets_to_export: WebDev
 
       - name: Download Butler
         run: |
@@ -85,7 +85,7 @@ jobs:
           unzip butler.zip
           chmod +x butler
 
-      - name: Push to Itch.io Preview
-        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebThreaded" ${{ env.ITCH_PROJECT }}:html5-preview
+      - name: Push to Itch.io
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebDev" ${{ env.ITCH_PROJECT }}:html5
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
