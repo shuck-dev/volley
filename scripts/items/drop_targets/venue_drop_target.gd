@@ -5,14 +5,14 @@ extends DropTarget
 
 @export var reconciler: BallReconciler
 
-var item_manager: Node
-var _item_manager: Node
+var ball_manager: Node
+var _ball_manager: Node
 var _reconciler: BallReconciler
 var _world: World2D
 
 
 func _ready() -> void:
-	_item_manager = item_manager if item_manager != null else ItemManager
+	_ball_manager = ball_manager if ball_manager != null else BallManager
 	_reconciler = reconciler
 	_world = get_viewport().find_world_2d()
 
@@ -23,23 +23,23 @@ func set_world(world: World2D) -> void:
 	_world = world
 
 
-func can_accept(item_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
+func can_accept(ball_key: String, world_position: Vector2, scale_factor: float = 1.0) -> bool:
 	if not contains_point(world_position):
 		return false
 	if _world == null:
 		return true
-	return _projection_clear(item_key, world_position, scale_factor)
+	return _projection_clear(ball_key, world_position, scale_factor)
 
 
-func accept(_item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
+func accept(_ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
 	pass
 
 
-func _projection_clear(item_key: String, world_position: Vector2, scale_factor: float) -> bool:
+func _projection_clear(ball_key: String, world_position: Vector2, scale_factor: float) -> bool:
 	var space: PhysicsDirectSpaceState2D = _world.direct_space_state
 	if space == null:
 		return true
-	var definition: ItemDefinition = DropTarget.get_definition(_item_manager, item_key)
+	var definition: BallDefinition = DropTarget.get_definition(_ball_manager, ball_key)
 	if definition == null or definition.at_rest_shape == null:
 		return true
 	var shape: Shape2D = _scaled_shape(definition.at_rest_shape, scale_factor)

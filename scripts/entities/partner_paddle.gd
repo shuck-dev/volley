@@ -4,7 +4,7 @@ extends Paddle
 @export var controller: PartnerAIController
 
 
-# Partners use unmodified base values; ItemManager modifiers belong to the player paddle.
+# Partners use unmodified base values; BallManager modifiers belong to the player paddle.
 func _resolve(base: float, _key: StringName) -> float:
 	return base
 

@@ -11,7 +11,7 @@ var _game: Node2D
 var _ball_stub: Ball
 var _paddle_stub: Paddle
 var _autoplay_controller_stub: AutoplayController
-var _item_manager: Node
+var _ball_manager: Node
 var _last_volley_count := -1
 
 
@@ -19,11 +19,11 @@ func before_each() -> void:
 	_ball_stub = load("res://tests/stubs/ball_stub.gd").new()
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
-	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager.state = ItemState.new()
-	_item_manager.economy = EconomyState.new()
-	_item_manager._effect_manager = EffectManager.new()
-	add_child_autofree(_item_manager)
+	_ball_manager = load("res://scripts/items/ball_manager.gd").new()
+	_ball_manager.state = BallState.new()
+	_ball_manager.economy = EconomyState.new()
+	_ball_manager._effect_manager = EffectManager.new()
+	add_child_autofree(_ball_manager)
 
 	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(_autoplay_controller_stub)
@@ -35,7 +35,7 @@ func before_each() -> void:
 	_game._records = RecordsState.new()
 	_game._partners = PartnersState.new()
 	_game._progression_config = ProgressionConfig.new()
-	_game._item_manager = _item_manager
+	_game._ball_manager = _ball_manager
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
@@ -62,11 +62,11 @@ func _register_halve_streak() -> void:
 	effect.outcomes = [outcome]
 	effect.min_active_level = 1
 
-	var item := ItemDefinition.new()
+	var item := BallDefinition.new()
 	item.key = "halve_streak_source"
 	item.max_level = 1
 	item.effects = [effect]
-	_item_manager._effect_manager.register_source(item, 1)
+	_ball_manager._effect_manager.register_source(item, 1)
 
 
 # --- halve_streak on miss ---
@@ -135,10 +135,10 @@ func test_martha_halve_streak_effect_is_on_miss() -> void:
 # --- register/unregister on activate/deactivate ---
 func test_activate_partner_registers_effects() -> void:
 	var martha: Resource = MARTHA_RESOURCE
-	_item_manager._effect_manager.register_source(martha, 1)
+	_ball_manager._effect_manager.register_source(martha, 1)
 
 	var soul_stat: float = Stats.resolve(
-		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
+		GameRules.base.soul_per_hit, &"soul_per_hit", _ball_manager
 	)
 	var base_soul: float = GameRules.base.soul_per_hit
 
@@ -147,11 +147,11 @@ func test_activate_partner_registers_effects() -> void:
 
 func test_deactivate_partner_unregisters_effects() -> void:
 	var martha: Resource = MARTHA_RESOURCE
-	_item_manager._effect_manager.register_source(martha, 1)
-	_item_manager._effect_manager.unregister_source(martha)
+	_ball_manager._effect_manager.register_source(martha, 1)
+	_ball_manager._effect_manager.unregister_source(martha)
 
 	var soul_stat: float = Stats.resolve(
-		GameRules.base.soul_per_hit, &"soul_per_hit", _item_manager
+		GameRules.base.soul_per_hit, &"soul_per_hit", _ball_manager
 	)
 	var base_soul: float = GameRules.base.soul_per_hit
 

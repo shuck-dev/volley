@@ -1,10 +1,10 @@
 extends GutTest
 
-var _item: ItemDefinition
+var _item: BallDefinition
 
 
 func before_each() -> void:
-	_item = ItemDefinition.new()
+	_item = BallDefinition.new()
 	_item.max_level = 3
 
 

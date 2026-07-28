@@ -1,28 +1,28 @@
 class_name RackDropTarget
 extends DropTarget
 
-var item_manager: Node
-var _item_manager: Node
+var ball_manager: Node
+var _ball_manager: Node
 
 
 func _ready() -> void:
-	_item_manager = item_manager if item_manager != null else ItemManager
+	_ball_manager = ball_manager if ball_manager != null else BallManager
 
 	add_to_group(&"drop_targets")
 
 
-func can_accept(item_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
-	if DropTarget.get_definition(_item_manager, item_key) == null:
+func can_accept(ball_key: String, world_position: Vector2, _scale_factor: float = 1.0) -> bool:
+	if DropTarget.get_definition(_ball_manager, ball_key) == null:
 		return false
 	return _position_inside_area(world_position)
 
 
-func accept(item_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
-	if _item_manager == null:
+func accept(ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
+	if _ball_manager == null:
 		return
-	if not _item_manager.is_on_court(item_key):
+	if not _ball_manager.is_on_court(ball_key):
 		return
-	_item_manager.deactivate(item_key)
+	_ball_manager.deactivate(ball_key)
 
 
 func _position_inside_area(world_position: Vector2) -> bool:

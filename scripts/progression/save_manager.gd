@@ -5,14 +5,14 @@ signal save_cleared
 
 const _SLICE_SCRIPTS := {
 	"economy": preload("res://scripts/progression/economy_state.gd"),
-	"items": preload("res://scripts/progression/item_state.gd"),
+	"items": preload("res://scripts/progression/ball_state.gd"),
 	"records": preload("res://scripts/progression/records_state.gd"),
 	"unlocks": preload("res://scripts/progression/unlocks_state.gd"),
 	"partners": preload("res://scripts/progression/partners_state.gd"),
 }
 
 var economy: EconomyState
-var items: ItemState
+var items: BallState
 var records: RecordsState
 var unlocks: UnlocksState
 var partners: PartnersState

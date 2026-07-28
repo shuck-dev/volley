@@ -45,18 +45,18 @@ func _build_with_stats_and_min_angle(
 	# independent of the production paddle_stats.tres tuning.
 	var max_degrees_delta: float = degrees - GameRules.paddle.paddle_return_angle_max_degrees
 	var english_delta: float = english - GameRules.paddle.paddle_english_coefficient
-	_manager = ItemFactory.create_manager(
+	_manager = BallFactory.create_manager(
 		self, "max_angle_kit", &"paddle_return_angle_max_degrees", &"add", max_degrees_delta
 	)
 
 	if english_delta != 0.0:
-		var english_item := ItemFactory.create(
+		var english_item := BallFactory.create(
 			"english_kit", &"paddle_english_coefficient", &"add", english_delta
 		)
 		_manager.items.append(english_item)
 
 	if min_angle_bonus != 0.0:
-		var min_item := ItemFactory.create(
+		var min_item := BallFactory.create(
 			"min_angle_kit", &"paddle_bounce_min_angle_degrees", &"add", min_angle_bonus
 		)
 		_manager.items.append(min_item)
@@ -73,7 +73,7 @@ func _build_with_stats_and_min_angle(
 		_manager.activate("min_angle_kit")
 
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball._item_manager = _manager
+	_ball._ball_manager = _manager
 	add_child_autofree(_ball)
 
 

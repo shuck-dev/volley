@@ -2,7 +2,7 @@
 extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 var _manager: Node
 var _reconciler: BallReconciler
@@ -13,9 +13,9 @@ var _last_spawned_ball: Ball
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	var alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	var typed_items: Array[ItemDefinition] = [alpha]
+	_manager = BallFactory.create_manager(self)
+	var alpha: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	var typed_items: Array[BallDefinition] = [alpha]
 	_manager.items.assign(typed_items)
 
 	_reconciler = BallReconcilerScript.new()
@@ -34,9 +34,9 @@ func _on_ball_added(_ball: Ball) -> void:
 	_added_count += 1
 
 
-func _on_ball_spawned(item_key: String, ball: Ball) -> void:
+func _on_ball_spawned(ball_key: String, ball: Ball) -> void:
 	_spawned_count += 1
-	_last_spawned_key = item_key
+	_last_spawned_key = ball_key
 	_last_spawned_ball = ball
 
 

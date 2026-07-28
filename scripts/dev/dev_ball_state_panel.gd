@@ -141,7 +141,7 @@ func _on_ball_state_changed(_state: int, ball: Ball) -> void:
 
 
 func _format_row(ball: Ball) -> String:
-	var key: String = ball.item_key if ball.item_key != "" else "ball"
+	var key: String = ball.ball_key if ball.ball_key != "" else "ball"
 	var state_name: String = Ball.PlayState.find_key(ball.play_state)
 	return (
 		"%s  %s  T%d[%.0f-%.0f]  spd=%.0f  pos=(%d, %d)"

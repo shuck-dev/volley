@@ -20,7 +20,7 @@ const PADDLE_TOP_Y := -540.0
 ## does not clobber the AI driver's velocity with Input.get_axis defaults.
 var input_blocked: bool = false
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 
 var _lane_x: float = 0.0
 var _paddle_speed: float = 0.0
@@ -192,16 +192,16 @@ func _resolved_paddle_speed() -> float:
 
 
 func _resolve(base: float, key: StringName) -> float:
-	if _item_manager == null:
-		_item_manager = ItemManager
-	return Stats.resolve(base, key, _item_manager)
+	if _ball_manager == null:
+		_ball_manager = BallManager
+	return Stats.resolve(base, key, _ball_manager)
 
 
 func _bind_stat_updates() -> void:
-	if _item_manager == null:
-		_item_manager = ItemManager
-	_item_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
-	_item_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
+	if _ball_manager == null:
+		_ball_manager = BallManager
+	_ball_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
+	_ball_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
 
 
 func _refresh_from_stats() -> void:

@@ -36,21 +36,21 @@ func test_economy_clear() -> void:
 	assert_eq(economy.total_soul_earned, 0)
 
 
-# --- ItemState ---
+# --- BallState ---
 func test_items_default_values() -> void:
-	var items := ItemState.new()
-	assert_eq(items.item_levels, {} as Dictionary[String, int])
-	assert_eq(items.item_placements, {} as Dictionary[String, int])
+	var items := BallState.new()
+	assert_eq(items.ball_levels, {} as Dictionary[String, int])
+	assert_eq(items.ball_placements, {} as Dictionary[String, int])
 
 
 func test_items_round_trip() -> void:
-	var items := ItemState.new()
-	items.item_levels["test_item"] = 2
-	items.item_placements["test_item"] = 1
-	var restored := ItemState.new()
+	var items := BallState.new()
+	items.ball_levels["test_item"] = 2
+	items.ball_placements["test_item"] = 1
+	var restored := BallState.new()
 	restored.apply_save_dict(items.to_save_dict())
-	assert_eq(restored.item_levels, {"test_item": 2})
-	assert_eq(restored.item_placements, {"test_item": 1})
+	assert_eq(restored.ball_levels, {"test_item": 2})
+	assert_eq(restored.ball_placements, {"test_item": 1})
 
 
 # --- RecordsState ---

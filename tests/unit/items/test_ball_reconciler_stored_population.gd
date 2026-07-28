@@ -3,7 +3,7 @@ extends GutTest
 
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 var _manager: Node
 var _host: Node2D
@@ -28,10 +28,10 @@ func _make_rack(manager: Node) -> RackDisplay:
 
 
 func before_each() -> void:
-	_manager = ItemFactory.create_manager(self)
-	var ball_alpha: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
-	var ball_beta: ItemDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
-	var typed_items: Array[ItemDefinition] = [ball_alpha, ball_beta]
+	_manager = BallFactory.create_manager(self)
+	var ball_alpha: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_alpha")
+	var ball_beta: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_beta")
+	var typed_items: Array[BallDefinition] = [ball_alpha, ball_beta]
 	_manager.items.assign(typed_items)
 	_manager.economy.soul_balance = 10000
 

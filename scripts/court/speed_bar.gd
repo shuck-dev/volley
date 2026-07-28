@@ -33,8 +33,8 @@ func _ready() -> void:
 		var pre_set: Ball = ball
 		ball = null
 		_attach_ball(pre_set)
-	ItemManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
-	ItemManager.item_placement_changed.connect(_on_item_level_changed.unbind(2))
+	BallManager.item_level_changed.connect(_on_item_level_changed.unbind(1))
+	BallManager.item_placement_changed.connect(_on_item_level_changed.unbind(2))
 
 
 func _attach_ball(new_ball: Ball) -> void:
@@ -91,11 +91,11 @@ func _recompute_from_tracked() -> void:
 
 func _on_item_level_changed() -> void:
 	var min_with_perm: float = (
-		GameRules.base.ball_speed_min + ItemManager.get_permanent_modifier(&"ball_speed_min")
+		GameRules.base.ball_speed_min + BallManager.get_permanent_modifier(&"ball_speed_min")
 	)
 	var range_with_perm: float = (
 		GameRules.base.ball_speed_max_range
-		+ ItemManager.get_permanent_modifier(&"ball_speed_max_range")
+		+ BallManager.get_permanent_modifier(&"ball_speed_max_range")
 	)
 	_permanent_max_speed = min_with_perm + range_with_perm
 	queue_redraw()

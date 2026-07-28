@@ -9,7 +9,7 @@ var _shop: Node
 func before_each() -> void:
 	_manager = _make_manager_with_balls()
 	_shop = ShopScene.instantiate()
-	_shop._item_manager = _manager
+	_shop._ball_manager = _manager
 	add_child_autofree(_shop)
 
 
@@ -39,12 +39,12 @@ func test_restock_replaces_item_nodes() -> void:
 
 
 func _make_manager_with_balls() -> Node:
-	var manager: Node = ItemFactory.create_manager(
+	var manager: Node = BallFactory.create_manager(
 		self, "test_ball_a", &"ball_speed_min", &"add", 10.0
 	)
-	var definitions: Array[ItemDefinition] = []
+	var definitions: Array[BallDefinition] = []
 	for key in ["test_ball_a", "test_ball_b", "test_ball_c"]:
-		var definition: ItemDefinition = ItemFactory.create(key, &"ball_speed_min", &"add", 10.0)
+		var definition: BallDefinition = BallFactory.create(key, &"ball_speed_min", &"add", 10.0)
 		definition.base_cost = 10
 		definitions.append(definition)
 	manager.items.assign(definitions)

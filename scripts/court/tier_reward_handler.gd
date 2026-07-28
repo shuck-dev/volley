@@ -6,7 +6,7 @@ extends Node
 ## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
 signal consolidation_fired
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 
 var _tiers_reached_first_time_by_ball: Dictionary = {}
 
@@ -15,8 +15,8 @@ func _ready() -> void:
 	add_to_group(&"tier_reward_handlers")
 
 
-func bind(item_manager: Node) -> void:
-	_item_manager = item_manager
+func bind(ball_manager: Node) -> void:
+	_ball_manager = ball_manager
 
 
 func reset_rally(ball: Ball = null) -> void:
@@ -40,7 +40,7 @@ func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 	if ball != null:
 		ball.increment_soul_multiplier(1.0)
 
-	_item_manager.process_event(&"on_consolidation")
+	_ball_manager.process_event(&"on_consolidation")
 	consolidation_fired.emit()
 
 
@@ -55,8 +55,8 @@ func _handle_first_reach(ball: Ball, completed_tier: int) -> void:
 
 	reached.append(completed_tier)
 
-	if ball == null or ball.item_key.is_empty():
+	if ball == null or ball.ball_key.is_empty():
 		return
 
 	# Deferred: this runs inside the ball's physics callback, where the rack rebuild upgrade triggers is illegal.
-	_item_manager.upgrade_ball.call_deferred(ball.item_key)
+	_ball_manager.upgrade_ball.call_deferred(ball.ball_key)

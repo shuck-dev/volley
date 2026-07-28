@@ -4,7 +4,7 @@ extends GutTest
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
-const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/item_test_helpers.gd")
+const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 
 
 func after_each() -> void:
@@ -20,9 +20,9 @@ func _stub_art() -> PackedScene:
 	return scene
 
 
-func _make_item(item_key: String) -> ItemDefinition:
-	var item := ItemDefinition.new()
-	item.key = item_key
+func _make_item(ball_key: String) -> BallDefinition:
+	var item := BallDefinition.new()
+	item.key = ball_key
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
@@ -32,8 +32,8 @@ func _make_item(item_key: String) -> ItemDefinition:
 
 
 func _make_manager_with(items: Array) -> Node:
-	var manager: Node = ItemFactory.create_manager(self)
-	var typed_items: Array[ItemDefinition] = []
+	var manager: Node = BallFactory.create_manager(self)
+	var typed_items: Array[BallDefinition] = []
 	for item in items:
 		typed_items.append(item)
 	manager.items.assign(typed_items)
@@ -66,7 +66,7 @@ func test_rack_scene_drop_target_accepts_drop() -> void:
 	var rack_target: RackDropTarget = (
 		ball_rack_instance.get_node("RackDropTarget") as RackDropTarget
 	)
-	rack_target.item_manager = manager
+	rack_target.ball_manager = manager
 
 	add_child_autofree(ball_rack_instance)
 
@@ -96,7 +96,7 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	for child in rack.slot_container.get_children():
 		if not (child is Node2D) or not String(child.name).begins_with("Slot_"):
 			continue
-		var key: String = child.get_meta(&"item_key", "")
+		var key: String = child.get_meta(&"ball_key", "")
 		if key == alpha_key:
 			assert_false(child.visible, "grabbed slot is hidden during the gesture")
 		elif key == beta_key:
@@ -193,8 +193,8 @@ func test_grab_removes_item_from_the_rack() -> void:
 	assert_eq(rack.get_displayed_keys().size(), 0, "grab should remove the item from the rack")
 
 
-func _find_slot(rack: Node2D, item_key: String) -> Node2D:
+func _find_slot(rack: Node2D, ball_key: String) -> Node2D:
 	for child in rack.slot_container.get_children():
-		if child is Node2D and child.get_meta(&"item_key", "") == item_key:
+		if child is Node2D and child.get_meta(&"ball_key", "") == ball_key:
 			return child
 	return null

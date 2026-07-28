@@ -5,7 +5,7 @@ const STAT_KEY := &"ball_speed_min"
 const EFFECT_VALUE := 30.0
 
 
-func _make_item(item_key: String, value: float = EFFECT_VALUE) -> ItemDefinition:
+func _make_item(ball_key: String, value: float = EFFECT_VALUE) -> BallDefinition:
 	var outcome := StatOutcome.new()
 	outcome.stat_key = STAT_KEY
 	outcome.operation = &"add"
@@ -19,8 +19,8 @@ func _make_item(item_key: String, value: float = EFFECT_VALUE) -> ItemDefinition
 	effect.outcomes = [outcome]
 	effect.min_active_level = 1
 
-	var item := ItemDefinition.new()
-	item.key = item_key
+	var item := BallDefinition.new()
+	item.key = ball_key
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
@@ -29,8 +29,8 @@ func _make_item(item_key: String, value: float = EFFECT_VALUE) -> ItemDefinition
 
 
 func _make_manager_with(items: Array) -> Node:
-	var manager: Node = ItemFactory.create_manager(self)
-	var typed_items: Array[ItemDefinition] = []
+	var manager: Node = BallFactory.create_manager(self)
+	var typed_items: Array[BallDefinition] = []
 	for item in items:
 		typed_items.append(item)
 	manager.items.assign(typed_items)
@@ -40,7 +40,7 @@ func _make_manager_with(items: Array) -> Node:
 func test_activating_on_court_registers_effects_and_enters_play() -> void:
 	var item := _make_item("ball_a")
 	var manager: Node = _make_manager_with([item])
-	ItemFactory.give(manager, item.key)
+	BallFactory.give(manager, item.key)
 	var base_value: float = GameRules.base.ball_speed_min
 	watch_signals(manager)
 	manager.activate(item.key)
@@ -63,7 +63,7 @@ func test_activating_on_court_registers_effects_and_enters_play() -> void:
 func test_removing_from_court_unregisters_effects_and_leaves_play() -> void:
 	var item := _make_item("ball_b")
 	var manager: Node = _make_manager_with([item])
-	ItemFactory.give(manager, item.key)
+	BallFactory.give(manager, item.key)
 	manager.activate(item.key)
 	var base_value: float = GameRules.base.ball_speed_min
 	watch_signals(manager)
@@ -87,7 +87,7 @@ func test_removing_from_court_unregisters_effects_and_leaves_play() -> void:
 func test_removing_held_item_unregisters_effect_when_loose_overlay_set() -> void:
 	var item := _make_item("held_item")
 	var manager: Node = _make_manager_with([item])
-	ItemFactory.give(manager, item.key)
+	BallFactory.give(manager, item.key)
 	manager.activate(item.key)
 	manager.mark_loose_in_venue(item.key)
 	var base_value: float = GameRules.base.ball_speed_min
@@ -109,7 +109,7 @@ func test_items_on_a_rack_have_no_gameplay_effect() -> void:
 	var item := _make_item("ball_rack")
 	var manager: Node = _make_manager_with([item])
 	# Owned (i.e. sitting on the rack after purchase) but never activated.
-	ItemFactory.give(manager, item.key)
+	BallFactory.give(manager, item.key)
 	var base_value: float = GameRules.base.ball_speed_min
 	assert_eq(
 		Stats.resolve(GameRules.base.ball_speed_min, STAT_KEY, manager),

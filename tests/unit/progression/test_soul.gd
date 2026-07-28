@@ -7,7 +7,7 @@ var _game: Node2D
 var _ball_stub: Ball
 var _paddle_stub: Paddle
 var _autoplay_controller_stub: AutoplayController
-var _item_manager: Node
+var _ball_manager: Node
 var _last_soul_balance := -1
 
 
@@ -15,11 +15,11 @@ func before_each() -> void:
 	_ball_stub = load("res://tests/stubs/ball_stub.gd").new()
 	_paddle_stub = load("res://tests/stubs/paddle_stub.gd").new()
 
-	_item_manager = load("res://scripts/items/item_manager.gd").new()
-	_item_manager.state = ItemState.new()
-	_item_manager.economy = EconomyState.new()
-	_item_manager._effect_manager = EffectManager.new()
-	add_child_autofree(_item_manager)
+	_ball_manager = load("res://scripts/items/ball_manager.gd").new()
+	_ball_manager.state = BallState.new()
+	_ball_manager.economy = EconomyState.new()
+	_ball_manager._effect_manager = EffectManager.new()
+	add_child_autofree(_ball_manager)
 
 	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()
 	add_child_autofree(_autoplay_controller_stub)
@@ -34,11 +34,11 @@ func before_each() -> void:
 	_game._records = RecordsState.new()
 	_game._partners = PartnersState.new()
 	_game._progression_config = progression_config
-	_game._item_manager = _item_manager
+	_game._ball_manager = _ball_manager
 	add_child_autofree(_ball_stub)
 	add_child_autofree(_paddle_stub)
 	add_child_autofree(_game)
-	_item_manager.soul_balance_changed.connect(func(total: int) -> void: _last_soul_balance = total)
+	_ball_manager.soul_balance_changed.connect(func(total: int) -> void: _last_soul_balance = total)
 	_ball_stub.gravity_scale = 0.0
 
 
@@ -110,11 +110,11 @@ func test_soul_accumulator_resets_on_miss() -> void:
 
 # --- soul_per_hit stat ---
 func test_soul_per_hit_uses_effect_system_stat() -> void:
-	var item := ItemFactory.create("soul_doubler", &"soul_per_hit", &"percentage", 1.0)
-	_item_manager.items.assign([item])
-	_item_manager.add_soul(item.base_cost)
-	_item_manager.purchase(item.key)
-	_item_manager.activate(item.key)
+	var item := BallFactory.create("soul_doubler", &"soul_per_hit", &"percentage", 1.0)
+	_ball_manager.items.assign([item])
+	_ball_manager.add_soul(item.base_cost)
+	_ball_manager.purchase(item.key)
+	_ball_manager.activate(item.key)
 
 	_hit()
 	_hit()
@@ -123,11 +123,11 @@ func test_soul_per_hit_uses_effect_system_stat() -> void:
 
 
 func test_soul_per_hit_with_quarter_bonus() -> void:
-	var item := ItemFactory.create("soul_quarter", &"soul_per_hit", &"percentage", 0.25)
-	_item_manager.items.assign([item])
-	_item_manager.add_soul(item.base_cost)
-	_item_manager.purchase(item.key)
-	_item_manager.activate(item.key)
+	var item := BallFactory.create("soul_quarter", &"soul_per_hit", &"percentage", 0.25)
+	_ball_manager.items.assign([item])
+	_ball_manager.add_soul(item.base_cost)
+	_ball_manager.purchase(item.key)
+	_ball_manager.activate(item.key)
 
 	_hit()
 	_hit()

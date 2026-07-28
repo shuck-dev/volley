@@ -3,7 +3,7 @@ extends GutTest
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const StandardBall: ItemDefinition = preload("res://resources/items/standard_ball.tres")
+const StandardBall: BallDefinition = preload("res://resources/items/standard_ball.tres")
 
 var _manager: Node
 var _reconciler: BallReconciler
@@ -88,12 +88,12 @@ func test_owned_ball_can_be_upgraded_from_shop() -> void:
 	assert_false(_item.visible, "slot hidden after re-purchase")
 
 
-func _setup_item(definition: ItemDefinition) -> void:
-	_manager = ItemFactory.create_manager(self)
+func _setup_item(definition: BallDefinition) -> void:
+	_manager = BallFactory.create_manager(self)
 	_manager.items.assign([definition])
 
-	var rack: RackDisplay = ItemTestHelpers.make_rack(_manager, self)
-	var rack_drop_area: Area2D = ItemTestHelpers.make_drop_area(
+	var rack: RackDisplay = BallTestHelpers.make_rack(_manager, self)
+	var rack_drop_area: Area2D = BallTestHelpers.make_drop_area(
 		Vector2(-1000, 0), Vector2(300, 200), self
 	)
 
@@ -105,9 +105,9 @@ func _setup_item(definition: ItemDefinition) -> void:
 	_drag.configure(_manager, rack, rack_drop_area, _reconciler)
 	add_child_autofree(_drag)
 
-	ItemTestHelpers.make_drop_targets(_manager, _reconciler, rack_drop_area.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _reconciler, rack_drop_area.position, self)
 
 	_item = ShopItemScene.instantiate()
-	_item._item_manager = _manager
+	_item._ball_manager = _manager
 	add_child_autofree(_item)
 	_item.configure(_manager, definition)

@@ -5,18 +5,18 @@ const ProgressionManagerScript := preload("res://scripts/progression/progression
 const SaveManagerScript := preload("res://scripts/progression/save_manager.gd")
 
 
-## Builds a ProgressionManager wired to the given ItemManager. Slices can be pre-seeded
+## Builds a ProgressionManager wired to the given BallManager. Slices can be pre-seeded
 ## via the optional dict (e.g. {"unlocks": preset_unlocks}); missing slices default-init.
 static func create_manager(
-	gut_test: GutTest, item_manager: Node, slice_overrides: Dictionary = {}
+	gut_test: GutTest, ball_manager: Node, slice_overrides: Dictionary = {}
 ) -> Node:
 	var progression_manager: Node = ProgressionManagerScript.new()
-	# Share economy with the item_manager so balance accrual is visible across both.
-	progression_manager.economy = item_manager.economy
+	# Share economy with the ball_manager so balance accrual is visible across both.
+	progression_manager.economy = ball_manager.economy
 	progression_manager.records = slice_overrides.get("records", RecordsState.new())
 	progression_manager.unlocks = slice_overrides.get("unlocks", UnlocksState.new())
 	progression_manager.partners = slice_overrides.get("partners", PartnersState.new())
-	progression_manager._item_manager = item_manager
+	progression_manager._ball_manager = ball_manager
 	var mock_save_manager: Node = gut_test.double(SaveManagerScript).new()
 	gut_test.stub(mock_save_manager.save).to_do_nothing()
 	progression_manager._save_manager = mock_save_manager

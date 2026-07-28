@@ -1,7 +1,7 @@
 class_name RackDisplay
 extends Node2D
 
-signal slot_pressed(item_key: String, press_position: Vector2)
+signal slot_pressed(ball_key: String, press_position: Vector2)
 
 const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
@@ -9,16 +9,16 @@ const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 ## Optional. When set, the rack can source slot art from STORED Balls in the registry (step 7.1+).
 @export var reconciler: BallReconciler
 
-var _item_manager: ItemManager
+var _ball_manager: BallManager
 var _slots: Array[Node2D] = []
 var _slot_markers: Array[Node2D] = []
 var _hidden_key: String = ""
 
 
 func _ready() -> void:
-	if _item_manager == null:
-		_item_manager = ItemManager
-	_item_manager.item_manager_state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
+	if _ball_manager == null:
+		_ball_manager = BallManager
+	_ball_manager.ball_manager_state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
 	_cache_slot_markers()
 	refresh()
 
@@ -27,9 +27,9 @@ func _on_state_changed() -> void:
 	refresh()
 
 
-## Injects a non-autoload ItemManager for tests. Must be called before adding to tree.
-func configure(item_manager: Node) -> void:
-	_item_manager = item_manager
+## Injects a non-autoload BallManager for tests. Must be called before adding to tree.
+func configure(ball_manager: Node) -> void:
+	_ball_manager = ball_manager
 
 
 ## Injects a reconciler so the rack can source STORED-ball art from the registry. Test seam.
@@ -49,19 +49,19 @@ func refresh() -> void:
 	var marker_count: int = _slot_markers.size()
 	if marker_count == 0:
 		return
-	var stored_keys: Array[String] = _item_manager.get_stored_items()
-	for item_key in stored_keys:
-		var slot_index: int = _item_manager.get_rack_slot_index(item_key)
+	var stored_keys: Array[String] = _ball_manager.get_stored_items()
+	for ball_key in stored_keys:
+		var slot_index: int = _ball_manager.get_rack_slot_index(ball_key)
 		if slot_index < 0:
 			# Slot freed while the ball is held; it leaves the rack until restore re-claims a slot.
 			continue
 		if slot_index >= marker_count:
-			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [item_key, slot_index])
+			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [ball_key, slot_index])
 			continue
-		var definition: ItemDefinition = _get_item_definition(item_key)
+		var definition: BallDefinition = _get_ball_definition(ball_key)
 		if definition == null or definition.art == null:
 			continue
-		var slot: Node2D = _build_slot(item_key, definition, _slot_markers[slot_index].position)
+		var slot: Node2D = _build_slot(ball_key, definition, _slot_markers[slot_index].position)
 		slot_container.add_child(slot)
 		_slots.append(slot)
 	_apply_slot_visibility()
@@ -72,7 +72,7 @@ func get_displayed_keys() -> Array[String]:
 	for slot in _slots:
 		if slot == null:
 			continue
-		var key: String = slot.get_meta(&"item_key", "")
+		var key: String = slot.get_meta(&"ball_key", "")
 		if key != "":
 			keys.append(key)
 	return keys
@@ -87,53 +87,53 @@ func _cache_slot_markers() -> void:
 			_slot_markers.append(child)
 
 
-func _build_slot(item_key: String, definition: ItemDefinition, slot_position: Vector2) -> Node2D:
+func _build_slot(ball_key: String, definition: BallDefinition, slot_position: Vector2) -> Node2D:
 	var slot: Node2D = Node2D.new()
-	slot.name = "Slot_%s" % item_key
+	slot.name = "Slot_%s" % ball_key
 	slot.position = slot_position
-	slot.set_meta(&"item_key", item_key)
+	slot.set_meta(&"ball_key", ball_key)
 	var art_holder: Node2D = Node2D.new()
 	art_holder.name = "ArtHolder"
 	art_holder.scale = definition.token_scale
-	_populate_art_holder(art_holder, item_key, definition)
+	_populate_art_holder(art_holder, ball_key, definition)
 	slot.add_child(art_holder)
-	_attach_slot_input(slot, item_key)
+	_attach_slot_input(slot, ball_key)
 	return slot
 
 
 ## Slot stays empty when the registry owns a Ball for this key; the Ball renders the art itself.
-func _populate_art_holder(art_holder: Node2D, item_key: String, definition: ItemDefinition) -> void:
-	if _registered_ball_for(item_key) != null:
+func _populate_art_holder(art_holder: Node2D, ball_key: String, definition: BallDefinition) -> void:
+	if _registered_ball_for(ball_key) != null:
 		art_holder.set_meta(&"source", &"ball")
 		return
 	art_holder.set_meta(&"source", &"definition")
 	art_holder.add_child(definition.art.instantiate())
 
 
-func _registered_ball_for(item_key: String) -> Ball:
+func _registered_ball_for(ball_key: String) -> Ball:
 	if reconciler == null:
 		return null
 	# A second stored ball can be left untracked by the reconciler's one-shot reconcile;
 	# back-fill it here so every rendered stored slot is backed by a live, grabbable ball.
-	return reconciler.ensure_stored_ball_for_key(item_key)
+	return reconciler.ensure_stored_ball_for_key(ball_key)
 
 
-## World position of the slot for `item_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.
-func get_slot_position_for(item_key: String) -> Vector2:
+## World position of the slot for `ball_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.
+func get_slot_position_for(ball_key: String) -> Vector2:
 	if slot_container == null:
 		return Vector2.ZERO
 	if _slot_markers.is_empty():
 		_cache_slot_markers()
 
-	var slot_index: int = _item_manager.get_rack_slot_index(item_key)
+	var slot_index: int = _ball_manager.get_rack_slot_index(ball_key)
 	if slot_index < 0 or slot_index >= _slot_markers.size():
 		return Vector2.ZERO
 	return _slot_markers[slot_index].global_position
 
 
-func _attach_slot_input(slot: Node2D, item_key: String) -> void:
+func _attach_slot_input(slot: Node2D, ball_key: String) -> void:
 	var area: Area2D = _build_slot_click_area()
-	area.input_event.connect(_on_slot_input_event.bind(item_key))
+	area.input_event.connect(_on_slot_input_event.bind(ball_key))
 	slot.add_child(area)
 
 
@@ -153,7 +153,7 @@ func _build_slot_click_area() -> Area2D:
 
 
 func _on_slot_input_event(
-	_viewport: Node, event: InputEvent, _shape_idx: int, item_key: String
+	_viewport: Node, event: InputEvent, _shape_idx: int, ball_key: String
 ) -> void:
 	if not (event is InputEventMouseButton):
 		return
@@ -165,22 +165,22 @@ func _on_slot_input_event(
 	# The Area2D input_event reports the press position in world coordinates already.
 	var canvas_transform: Transform2D = get_canvas_transform()
 	var press_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
-	slot_pressed.emit(item_key, press_position)
+	slot_pressed.emit(ball_key, press_position)
 
 
 ## Test seam / production fallback: emits the slot_pressed signal at the supplied position.
-func press_slot(item_key: String, press_position: Vector2 = Vector2.ZERO) -> void:
-	slot_pressed.emit(item_key, press_position)
+func press_slot(ball_key: String, press_position: Vector2 = Vector2.ZERO) -> void:
+	slot_pressed.emit(ball_key, press_position)
 
 
 ## Hides the slot so the player sees one item (the held body), not two; mirrors ShopItem.visible=false on grab.
-func hide_slot_for(item_key: String) -> void:
-	_hidden_key = item_key
+func hide_slot_for(ball_key: String) -> void:
+	_hidden_key = ball_key
 	_apply_slot_visibility()
 
 
-func reveal_slot_for(item_key: String) -> void:
-	if _hidden_key != item_key:
+func reveal_slot_for(ball_key: String) -> void:
+	if _hidden_key != ball_key:
 		return
 	_hidden_key = ""
 	_apply_slot_visibility()
@@ -190,18 +190,18 @@ func _apply_slot_visibility() -> void:
 	for slot in _slots:
 		if slot == null or not is_instance_valid(slot):
 			continue
-		var key: String = slot.get_meta(&"item_key", "")
+		var key: String = slot.get_meta(&"ball_key", "")
 		slot.visible = key != _hidden_key
 
 
-## True when a drag controller currently holds `item_key` as its live drag target.
-func _is_key_being_dragged(item_key: String) -> bool:
+## True when a drag controller currently holds `ball_key` as its live drag target.
+func _is_key_being_dragged(ball_key: String) -> bool:
 	if get_tree() == null:
 		return false
 	for controller: Node in get_tree().get_nodes_in_group(&"drag_controller"):
 		if not (controller.has_method("is_dragging") and controller.has_method("get_held_key")):
 			continue
-		if controller.is_dragging() and controller.get_held_key() == item_key:
+		if controller.is_dragging() and controller.get_held_key() == ball_key:
 			return true
 	return false
 
@@ -215,8 +215,8 @@ func _clear_slots() -> void:
 	_slots.clear()
 
 
-func _get_item_definition(item_key: String) -> ItemDefinition:
-	for item: ItemDefinition in _item_manager.items:
-		if item.key == item_key or BallKey.is_instance(item.key, item_key):
+func _get_ball_definition(ball_key: String) -> BallDefinition:
+	for item: BallDefinition in _ball_manager.items:
+		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
 			return item
 	return null

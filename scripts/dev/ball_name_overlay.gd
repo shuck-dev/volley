@@ -95,11 +95,11 @@ func _project_to_canvas(world_pos: Vector2) -> Vector2:
 
 
 func _get_display_name(ball: Ball) -> String:
-	if ball.item_key.is_empty():
+	if ball.ball_key.is_empty():
 		return "ball"
 
-	for item: ItemDefinition in ItemManager.items:
-		if item.key == ball.item_key:
+	for item: BallDefinition in BallManager.items:
+		if item.key == ball.ball_key:
 			return item.display_name
 
-	return ball.item_key
+	return ball.ball_key

@@ -10,7 +10,7 @@ func _ready() -> void:
 		return
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_add_header()
-	for item in ItemManager.items:
+	for item in BallManager.items:
 		var container := VBoxContainer.new()
 		add_child(container)
 
@@ -51,8 +51,8 @@ func _ready() -> void:
 	_refresh_buttons()
 	_setup_soul_controls()
 
-	ItemManager.item_level_changed.connect(_refresh_buttons.unbind(1))
-	ItemManager.soul_balance_changed.connect(_refresh_buttons.unbind(1))
+	BallManager.item_level_changed.connect(_refresh_buttons.unbind(1))
+	BallManager.soul_balance_changed.connect(_refresh_buttons.unbind(1))
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -65,8 +65,8 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _on_remove_level_pressed(item_key: String) -> void:
-	ItemManager.remove_level(item_key)
+func _on_remove_level_pressed(ball_key: String) -> void:
+	BallManager.remove_level(ball_key)
 
 
 func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:
@@ -75,12 +75,12 @@ func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:
 
 
 func _refresh_buttons() -> void:
-	for item in ItemManager.items:
+	for item in BallManager.items:
 		if not _buttons.has(item.key):
 			continue
 		var button: Button = _buttons[item.key]
-		var level := ItemManager.get_level(item.key)
-		var cost := ItemManager.calculate_cost(item.key)
+		var level := BallManager.get_level(item.key)
+		var cost := BallManager.calculate_cost(item.key)
 		button.text = "%s Lv%d [%d Soul]" % [item.display_name, level, cost]
 
 
@@ -110,7 +110,7 @@ func _setup_soul_controls() -> void:
 	row.add_child(remove_soul_button)
 
 
-func _build_effect_lines(item: ItemDefinition) -> Array[String]:
+func _build_effect_lines(item: BallDefinition) -> Array[String]:
 	var lines: Array[String] = []
 	for effect: Effect in item.effects:
 		var level_range := ""
@@ -127,11 +127,11 @@ func _build_effect_lines(item: ItemDefinition) -> Array[String]:
 
 
 func _on_add_soul_pressed(input: SpinBox) -> void:
-	ItemManager.add_soul(int(input.value))
+	BallManager.add_soul(int(input.value))
 
 
 func _on_remove_soul_pressed(input: SpinBox) -> void:
-	ItemManager.subtract_soul(int(input.value))
+	BallManager.subtract_soul(int(input.value))
 
 
 func _draw() -> void:
