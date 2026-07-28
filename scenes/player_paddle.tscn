@@ -28,9 +28,7 @@ metadata/_edit_group_ = true
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"swing_flying"
-frame = 4
-frame_progress = 1.0
+animation = &"ready_grounded_low"
 
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
