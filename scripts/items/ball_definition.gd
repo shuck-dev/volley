@@ -8,6 +8,8 @@ extends Resource
 @export var cost_scaling := 1.6
 @export var max_level := 3
 @export var effects: Array[Effect]
+## Falls back to the shared global default; give a ball its own resource instance to diverge.
+@export var stats: BaseBallStats = load("res://resources/base_ball_stats.tres")
 
 
 func get_effects_for_level(level: int) -> Array[Effect]:

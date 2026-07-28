@@ -61,10 +61,10 @@ func _spawn_ball(ball_key: String) -> Ball:
 	return _reconciler.get_ball_for_key(ball_key)
 
 
-## Ball item carrying an on_hit effect that bumps ball_speed_offset, mirroring cadence_ball's shape.
+## Ball item carrying an on_hit effect that bumps ball_speed_min, mirroring cadence_ball's shape.
 func _make_on_hit_ball_item(key: String) -> BallDefinition:
 	var outcome := StatUntilMissOutcome.new()
-	outcome.stat_key = &"ball_speed_offset"
+	outcome.stat_key = &"ball_speed_min"
 	outcome.operation = &"add"
 	outcome.value = 100.0
 
@@ -387,19 +387,17 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	var hit_ball: Ball = _spawn_ball("ball_cadence")
 	var other_ball: Ball = _spawn_ball("ball_plain")
 
-	var other_offset_before: float = _manager.get_modifier(
-		&"ball_speed_offset", other_ball.ball_key
-	)
+	var other_offset_before: float = _manager.get_modifier(&"ball_speed_min", other_ball.ball_key)
 
 	hit_ball._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", hit_ball.ball_key),
+		_manager.get_modifier(&"ball_speed_min", hit_ball.ball_key),
 		0.0,
 		"the hit ball's own on_hit effect should apply its stat modifier",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", other_ball.ball_key),
+		_manager.get_modifier(&"ball_speed_min", other_ball.ball_key),
 		other_offset_before,
 		"a second ball must not receive the first ball's on_hit stat modifier",
 	)
@@ -422,12 +420,12 @@ func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	first._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", first.ball_key),
+		_manager.get_modifier(&"ball_speed_min", first.ball_key),
 		0.0,
 		"the struck instance's own effect should register under its own instance key",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", second.ball_key),
+		_manager.get_modifier(&"ball_speed_min", second.ball_key),
 		0.0,
 		"the sibling instance of the same ball type must keep its own, unaffected registration",
 	)

@@ -217,7 +217,8 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	new_ball.court_config = court_config
+	if court_config != null:
+		new_ball.court_config = court_config
 	new_ball.bound_y = bound_y
 	_register_ball(new_ball)
 
@@ -286,8 +287,6 @@ func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
 	if preserved_speed < 0.0:
 		return
 	ball.speed = preserved_speed
-	if ball.effect_processor != null:
-		ball.effect_processor.sync_base_speed()
 	if ball.linear_velocity.length() > 0.0:
 		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 

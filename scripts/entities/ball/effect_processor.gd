@@ -17,9 +17,6 @@ var ball_manager: BallManager
 ## Speed after the tier clamp and any uncapped scale.
 var scaled_speed := 0.0
 
-var _base_speed := 0.0
-var _applied_offset := 0.0
-
 
 func _ready() -> void:
 	if ball_manager == null:
@@ -30,47 +27,36 @@ func process_frame(_delta: float) -> void:
 	_sync_speed_limits()
 
 
-func sync_base_speed() -> void:
-	_base_speed = ball.speed - _applied_offset
-
-
 func _sync_speed_limits() -> void:
 	_sync_min_speed()
 	_sync_max_speed()
-	_apply_speed_offset()
 
 
 func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", ball_manager, ball.ball_key
+		_stats().ball_speed_min, &"ball_speed_min", ball_manager, ball.ball_key
 	)
 
-	if not is_equal_approx(new_min, ball.min_speed):
-		_base_speed += new_min - ball.min_speed
-		ball.min_speed = new_min
+	ball.min_speed = new_min
 
 
 func _sync_max_speed() -> void:
-	ball.max_speed = (
-		ball.min_speed
-		+ Stats.resolve(
-			GameRules.base.ball_speed_max_range,
-			&"ball_speed_max_range",
-			ball_manager,
-			ball.ball_key
-		)
+	ball.max_speed = Stats.resolve(
+		_stats().ball_speed_max, &"ball_speed_max", ball_manager, ball.ball_key
 	)
 	ball.speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", ball_manager, ball.ball_key
+		_stats().ball_speed_increment, &"ball_speed_increment", ball_manager, ball.ball_key
 	)
-
-
-func _apply_speed_offset() -> void:
-	_applied_offset = Stats.resolve(
-		GameRules.base.ball_speed_offset, &"ball_speed_offset", ball_manager, ball.ball_key
-	)
-	ball.speed = clampf(_base_speed + _applied_offset, ball.tier_floor, ball.tier_ceiling)
+	ball.speed = clampf(ball.speed, ball.tier_floor, ball.tier_ceiling)
 	refresh_scaled_speed()
+
+
+## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
+## (unadopted balls, test stubs).
+func _stats() -> BaseBallStats:
+	if ball.ball_key == "":
+		return GameRules.base
+	return ball_manager.get_item(ball.ball_key).stats
 
 
 func refresh_scaled_speed() -> void:
