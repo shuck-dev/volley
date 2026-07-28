@@ -171,7 +171,7 @@ func _on_pop_out_pressed() -> void:
 func _detach_panel(panel: Control, dev_hud: Node) -> void:
 	_content_area.remove_child(panel)
 
-	var pop_scene := load("res://scenes/pop_wrapper.tscn") as PackedScene
+	var pop_scene := load("res://scenes/dev/pop_wrapper.tscn") as PackedScene
 	var wrapper := pop_scene.instantiate() as PanelContainer
 
 	var label := wrapper.get_node_or_null("InnerBox/PopBar/PopLabel") as Label
