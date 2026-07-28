@@ -37,13 +37,9 @@ func to_save_dict() -> Dictionary:
 	}
 
 
-## Reads ball_levels/ball_placements, falling back to the pre-rename item_levels/item_placements
-## keys so saves written before the ball vocabulary rename still load.
 func apply_save_dict(data: Dictionary) -> void:
-	ball_levels = _to_typed_int_dict(data.get("ball_levels", data.get("item_levels", {})))
-	ball_placements = _to_typed_int_dict(
-		data.get("ball_placements", data.get("item_placements", {}))
-	)
+	ball_levels = _to_typed_int_dict(data.get("ball_levels", {}))
+	ball_placements = _to_typed_int_dict(data.get("ball_placements", {}))
 	ball_positions = _parse_positions(data.get("ball_positions", {}))
 	ball_play_states = _to_typed_int_dict(data.get("ball_play_states", {}))
 	rack_slot_index_by_key = _to_typed_int_dict(data.get("rack_slot_index_by_key", {}))
