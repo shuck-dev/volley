@@ -340,12 +340,13 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 	if struck_paddle == null:
 		return
 
-	var result: PaddleBounceMath.Result = (
+	var direction: Variant = (
 		PaddleBounceMath
-		. resolve_bounce(
+		. bounce_direction(
 			linear_velocity,
 			global_position,
-			struck_paddle,
+			struck_paddle.global_position,
+			struck_paddle.get_half_height(),
 			(
 				Stats
 				. resolve(
@@ -354,34 +355,13 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 					_ball_manager,
 				)
 			),
-			Stats.resolve(
-				GameRules.paddle.paddle_english_coefficient,
-				&"paddle_english_coefficient",
-				_ball_manager
-			),
-			(
-				Stats
-				. resolve(
-					GameRules.paddle.paddle_bounce_min_angle_degrees,
-					&"paddle_bounce_min_angle_degrees",
-					_ball_manager,
-				)
-			),
-			(
-				Stats
-				. resolve(
-					GameRules.paddle.paddle_bounce_max_angle_degrees,
-					&"paddle_bounce_max_angle_degrees",
-					_ball_manager,
-				)
-			),
 		)
 	)
 
-	if result == null:
+	if direction == null:
 		return
 
-	linear_velocity = result.direction * scaled_speed
+	linear_velocity = (direction as Vector2) * scaled_speed
 
 
 func _wire_grab_area() -> void:

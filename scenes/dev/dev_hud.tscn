@@ -16,12 +16,11 @@
 [ext_resource type="PackedScene" uid="uid://dq3kw7n8sh3a7" path="res://scenes/hud/ball_drop_overlay.tscn" id="15_qtjg3"]
 [ext_resource type="Script" uid="uid://1wacrtyp4x0b" path="res://scripts/dev/ball_name_overlay.gd" id="17_ballname"]
 
-[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container", "dev_bounce_overlay", "dev_bounce_panel", "player_sprite")]
+[node name="DevHUD" type="CanvasLayer" unique_id=466042378 node_paths=PackedStringArray("clearance_button", "dev_panel_container", "dev_bounce_overlay", "player_sprite")]
 script = ExtResource("1_ahhtf")
 clearance_button = NodePath("ClearanceButton")
 dev_panel_container = NodePath("DevPanelContainer")
 dev_bounce_overlay = NodePath("DevBounceOverlay")
-dev_bounce_panel = NodePath("DevPanelContainer/ContentBody/ContentArea/DevBouncePanel")
 player_sprite = NodePath("DevPanelContainer/ContentBody/ContentArea/PlayerSprite")
 
 [node name="DevBounceOverlay" type="Node2D" parent="." unique_id=1944203102]
