@@ -93,15 +93,8 @@ func _draw_cone(paddle: Paddle) -> void:
 	if return_sign == 0.0:
 		return_sign = -1.0
 
-	# Dead-zone floor reads the same tunable as runtime so the inner V tracks the clamp as Josh tunes.
-	var min_degrees: float = Stats.resolve(
-		GameRules.paddle.paddle_bounce_min_angle_degrees, &"paddle_bounce_min_angle_degrees"
-	)
-	var floor_rad: float = deg_to_rad(min_degrees)
-	var max_degrees_off: float = Stats.resolve(
-		GameRules.paddle.paddle_bounce_max_angle_degrees, &"paddle_bounce_max_angle_degrees"
-	)
-	var ceil_rad: float = deg_to_rad(max_degrees_off)
+	var floor_rad: float = deg_to_rad(PaddleBounceMath.BOUNCE_MIN_ANGLE_DEGREES)
+	var ceil_rad: float = deg_to_rad(PaddleBounceMath.BOUNCE_MAX_ANGLE_DEGREES)
 	var requested_rad: float = deg_to_rad(max_degrees)
 	# Reachable cone half-angle is the requested max, clamped by the global floor/ceiling.
 	var reachable: float = clampf(requested_rad, floor_rad, ceil_rad)
@@ -154,31 +147,35 @@ func _on_paddle_hit(ball: Ball, struck_paddle: Paddle) -> void:
 	if ball == null or not is_instance_valid(struck_paddle):
 		return
 
-	var result: PaddleBounceMath.Result = (
-		PaddleBounceMath
-		. resolve_bounce(
-			ball.linear_velocity,
-			ball.global_position,
-			struck_paddle,
-			Stats.resolve(
-				GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
-			),
-			Stats.resolve(
-				GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient"
-			),
-			Stats.resolve(
-				GameRules.paddle.paddle_bounce_min_angle_degrees, &"paddle_bounce_min_angle_degrees"
-			),
-			Stats.resolve(
-				GameRules.paddle.paddle_bounce_max_angle_degrees, &"paddle_bounce_max_angle_degrees"
-			),
-		)
-	)
-	if result == null:
+	var horizontal_sign: float = PaddleBounceMath.reverse_incoming_direction(ball.linear_velocity)
+	if horizontal_sign == 0.0:
 		return
 
+	var return_angle_max_degrees: float = Stats.resolve(
+		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
+	)
+	var offset_norm: float = (
+		PaddleBounceMath
+		. contact_placement(
+			ball.global_position,
+			struck_paddle.global_position,
+			struck_paddle.get_half_height(),
+			return_angle_max_degrees,
+		)
+	)
+	var placement_angle: float = offset_norm * deg_to_rad(return_angle_max_degrees)
+	var target_angle: float = (
+		PaddleBounceMath
+		. clamp_to_legal_bounce_range(
+			placement_angle,
+			signf(ball.linear_velocity.y),
+			PaddleBounceMath.BOUNCE_MIN_ANGLE_DEGREES,
+			PaddleBounceMath.BOUNCE_MAX_ANGLE_DEGREES,
+		)
+	)
+
 	_last_hits[struck_paddle] = {
-		"offset_norm": result.offset_norm,
-		"target_angle": result.target_angle,
-		"horizontal_sign": result.horizontal_sign,
+		"offset_norm": offset_norm,
+		"target_angle": target_angle,
+		"horizontal_sign": horizontal_sign,
 	}
