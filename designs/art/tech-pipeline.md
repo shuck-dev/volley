@@ -296,7 +296,7 @@ Budgets are re-verified with `perf_snapshot` once representative content ships. 
 
 Volley! targets **Godot 4.6.2** (the version pinned in `project.godot`). Parallax2D requires 4.3 or later; CanvasModulate, AnimatedSprite2D, and Light2D have been stable since 4.0.
 
-Rendering-adjacent addons currently enabled: none. The pipeline above ships in core Godot. GodotIQ, GUT, config_hot_reload, gdfxr, and item_preview are authoring-side only and do not affect runtime rendering.
+Rendering-adjacent addons currently enabled: none. The pipeline above ships in core Godot. GUT, config_hot_reload, gdfxr, and item_preview are authoring-side only and do not affect runtime rendering.
 
 ---
 
