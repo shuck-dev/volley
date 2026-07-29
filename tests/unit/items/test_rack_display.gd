@@ -11,15 +11,6 @@ func after_each() -> void:
 	await get_tree().process_frame
 
 
-func _stub_art() -> PackedScene:
-	var scene := PackedScene.new()
-	# PackedScene.pack snapshots the node but does not take ownership; freeing avoids a CanvasItem RID leak at exit.
-	var template := Node2D.new()
-	scene.pack(template)
-	template.free()
-	return scene
-
-
 func _make_item(ball_key: String) -> BallDefinition:
 	var item := BallDefinition.new()
 	item.key = ball_key
@@ -27,7 +18,6 @@ func _make_item(ball_key: String) -> BallDefinition:
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = []
-	item.preview_art = _stub_art()
 	item.scene = ItemTestHelpersScript.stub_ball_scene()
 	return item
 

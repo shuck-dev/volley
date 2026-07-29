@@ -1,6 +1,5 @@
 [gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://obwrqs2a6y3w"]
 
-[ext_resource type="PackedScene" uid="uid://bmux7h1a7i7ei" path="res://scenes/items/cadence.tscn" id="1_art"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://i5e617319zbs2" path="res://scenes/balls/cadence_ball.tscn" id="2_scene"]
 
@@ -8,6 +7,5 @@
 script = ExtResource("1_item")
 key = "cadence"
 display_name = "Cadence"
-preview_art = ExtResource("1_art")
 scene = ExtResource("2_scene")
 base_cost = 100
