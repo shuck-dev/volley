@@ -6,6 +6,7 @@ const PADDLE_DEV_OVERLAY_SCENE := "res://scenes/dev/paddle_dev_overlay.tscn"
 @export var clearance_button: Button
 @export var dev_panel_container: PanelContainer
 @export var dev_bounce_overlay: DevBounceOverlay
+@export var dev_bounce_panel: DevBouncePanel
 @export var player_sprite: PlayerSprite
 
 var _partner_overlay: Node2D
@@ -76,5 +77,7 @@ func _push_paddles() -> void:
 
 	if dev_bounce_overlay != null:
 		dev_bounce_overlay.set_paddles(paddles)
+	if dev_bounce_panel != null:
+		dev_bounce_panel.set_paddles(paddles)
 	if player_sprite != null:
 		player_sprite.set_paddles(paddles)

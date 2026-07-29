@@ -22,11 +22,11 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var ball_rack: RackDisplay
 
 @export var spawn_origin: Vector2 = Vector2.ZERO
-## Apex ceiling in pixels above the soul bound; injected onto every ball this reconciler spawns.
-@export var arc_height_max: float = 220.0
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
+## Apex ceiling in pixels above the soul bound; Court sets this, then it is passed onto every ball this reconciler spawns.
+var arc_height_max: float = 0.0
 
 var _ball_manager: BallManager
 var _balls_by_key: Dictionary = {}
@@ -431,10 +431,6 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
-	var paddles: Array[Node2D] = []
-	if player_paddle != null:
-		paddles.append(player_paddle)
-	ball.paddles = paddles
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
 			ball.register_miss_zone(zone)

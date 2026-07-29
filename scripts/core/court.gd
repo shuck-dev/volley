@@ -188,12 +188,6 @@ func _activate_partner() -> void:
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	for active_ball in ball_system.get_balls():
-		if not is_instance_valid(active_ball):
-			continue
-		if not active_ball.paddles.has(partner_paddle):
-			active_ball.paddles.append(partner_paddle)
-
 	var current: Ball = ball_system.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(current)
@@ -222,10 +216,6 @@ func _deactivate_partner() -> void:
 		partner_paddle.controller.bind_tracker(null)
 	ball_system.ball_added.disconnect(_on_partner_ball_added)
 
-	for active_ball in ball_system.get_balls():
-		if is_instance_valid(active_ball):
-			active_ball.paddles.erase(partner_paddle)
-
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null
@@ -240,9 +230,6 @@ func _deactivate_partner() -> void:
 func _on_partner_ball_added(incoming_ball: Ball) -> void:
 	if partner_paddle == null:
 		return
-
-	if not incoming_ball.paddles.has(partner_paddle):
-		incoming_ball.paddles.append(partner_paddle)
 
 	if partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(incoming_ball)

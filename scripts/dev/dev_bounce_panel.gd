@@ -4,8 +4,7 @@ extends VBoxContainer
 ## Debug numeric readout of paddle-bounce tunables plus per-hit resolved values.
 
 var _drag := DraggableBehavior.new()
-var _tracker: BallReconciler
-var _ball_subscriptions: Dictionary = {}
+var _paddle_subscriptions: Dictionary = {}
 var _label_max_degrees: Label
 var _label_english: Label
 var _label_last_hit: Label
@@ -26,34 +25,21 @@ func _ready() -> void:
 	_build_labels()
 	_build_checks()
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
 
-	if _tracker != null:
-		_attach_to_tracker()
-	else:
-		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
+## Pushed by DevHud whenever the active paddle roster changes.
+func set_paddles(paddles: Array[Paddle]) -> void:
+	for paddle in _paddle_subscriptions.keys():
+		var callable: Callable = _paddle_subscriptions[paddle]
+		if is_instance_valid(paddle) and paddle.paddle_hit.is_connected(callable):
+			paddle.paddle_hit.disconnect(callable)
+	_paddle_subscriptions.clear()
 
-
-func _exit_tree() -> void:
-	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
-		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-
-
-func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallReconciler
-
-	if tracker == null:
-		return
-	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-	_tracker = tracker
-	_attach_to_tracker()
-
-
-func _attach_to_tracker() -> void:
-	_tracker.ball_added.connect(_on_ball_added)
-	_tracker.ball_removed.connect(_on_ball_removed)
-	for ball in _tracker.get_balls():
-		_on_ball_added(ball)
+	for paddle in paddles:
+		if paddle == null or _paddle_subscriptions.has(paddle):
+			continue
+		var callable := _on_paddle_hit.bind(paddle)
+		paddle.paddle_hit.connect(callable)
+		_paddle_subscriptions[paddle] = callable
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -116,35 +102,37 @@ func _refresh_last_hit() -> void:
 	)
 
 
-func _on_ball_added(ball: Ball) -> void:
-	if ball == null or _ball_subscriptions.has(ball):
+## Independently recomputes the bounce Ball just resolved, rather than Ball reporting it back.
+func _on_paddle_hit(ball: Ball, struck_paddle: Paddle) -> void:
+	if ball == null:
 		return
 
-	var callable := _on_bounce_resolved
-	ball.bounce_resolved.connect(callable)
-	_ball_subscriptions[ball] = callable
-
-
-func _on_ball_removed(ball: Ball) -> void:
-	if not _ball_subscriptions.has(ball):
+	var result: PaddleBounceMath.Result = (
+		PaddleBounceMath
+		. resolve_bounce(
+			ball.linear_velocity,
+			ball.global_position,
+			struck_paddle,
+			Stats.resolve(
+				GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
+			),
+			Stats.resolve(
+				GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient"
+			),
+			Stats.resolve(
+				GameRules.paddle.paddle_bounce_min_angle_degrees, &"paddle_bounce_min_angle_degrees"
+			),
+			Stats.resolve(
+				GameRules.paddle.paddle_bounce_max_angle_degrees, &"paddle_bounce_max_angle_degrees"
+			),
+		)
+	)
+	if result == null:
 		return
-	var callable: Callable = _ball_subscriptions[ball]
 
-	if is_instance_valid(ball) and ball.bounce_resolved.is_connected(callable):
-		ball.bounce_resolved.disconnect(callable)
-	_ball_subscriptions.erase(ball)
-
-
-func _on_bounce_resolved(
-	_struck_paddle: Paddle,
-	offset_norm: float,
-	target_angle: float,
-	incoming_y_sign: float,
-	_horizontal_sign: float,
-) -> void:
-	_last_offset_norm = offset_norm
-	_last_target_angle_deg = rad_to_deg(target_angle)
-	_last_incoming_y_sign = incoming_y_sign
+	_last_offset_norm = result.offset_norm
+	_last_target_angle_deg = rad_to_deg(result.target_angle)
+	_last_incoming_y_sign = result.incoming_y_sign
 	_has_last_hit = true
 	_refresh_last_hit()
 
