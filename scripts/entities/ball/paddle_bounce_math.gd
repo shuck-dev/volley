@@ -15,7 +15,8 @@ class Result:
 	var direction: Vector2
 
 
-## Where on the paddle the ball struck drives the return angle.
+## Where on the paddle the ball struck drives the return angle. Null when the ball
+## has no horizontal motion to bounce off of (e.g. resting dead-centre on a paddle).
 static func resolve_bounce(
 	ball_velocity: Vector2,
 	ball_position: Vector2,
@@ -25,36 +26,53 @@ static func resolve_bounce(
 	bounce_min_angle_degrees: float,
 	bounce_max_angle_degrees: float,
 ) -> Result:
-	var result := Result.new()
-
-	var incoming_x_sign: float = signf(ball_velocity.x)
-	if incoming_x_sign == 0.0:
+	var horizontal_sign: float = _return_horizontal_sign(ball_velocity)
+	if horizontal_sign == 0.0:
 		return null
 
-	result.horizontal_sign = -incoming_x_sign
-
-	var half_height: float = struck_paddle.get_half_height()
-
-	# Offset angle only shapes the return when a max-angle and a valid half-height exist
-	var offset_norm: float = 0.0
-	if return_angle_max_degrees > 0.0 and half_height > 0.0:
-		offset_norm = clampf(
-			(ball_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
-		)
-	result.offset_norm = offset_norm
-
+	var offset_norm: float = _contact_offset_norm(
+		ball_position, struck_paddle, return_angle_max_degrees
+	)
 	var offset_angle: float = offset_norm * deg_to_rad(return_angle_max_degrees)
-	var english_angle: float = struck_paddle.velocity.y * english_coefficient
+	var english_angle: float = _english_angle(struck_paddle, english_coefficient)
 	var incoming_y_sign: float = signf(ball_velocity.y)
-	result.incoming_y_sign = incoming_y_sign
 
 	var blended_angle: float = _blend_english_into_offset(offset_angle, english_angle)
 	var target_angle: float = _clamp_off_horizontal_and_vertical(
 		blended_angle, incoming_y_sign, bounce_min_angle_degrees, bounce_max_angle_degrees
 	)
+
+	var result := Result.new()
+	result.offset_norm = offset_norm
 	result.target_angle = target_angle
-	result.direction = Vector2(result.horizontal_sign * cos(target_angle), sin(target_angle))
+	result.incoming_y_sign = incoming_y_sign
+	result.horizontal_sign = horizontal_sign
+	result.direction = _direction_from_angle(target_angle, horizontal_sign)
 	return result
+
+
+# Bounce always reverses the ball's incoming horizontal direction. Zero when the
+# ball has no horizontal velocity to reverse (straight vertical drop onto a paddle).
+static func _return_horizontal_sign(ball_velocity: Vector2) -> float:
+	return -signf(ball_velocity.x)
+
+
+# Normalized contact point on the paddle face, -1 (top) to 1 (bottom). Zero when
+# there's no return-angle spread to place the contact within, or no paddle height
+# to measure it against.
+static func _contact_offset_norm(
+	ball_position: Vector2, struck_paddle: Paddle, return_angle_max_degrees: float
+) -> float:
+	var half_height: float = struck_paddle.get_half_height()
+	if return_angle_max_degrees <= 0.0 or half_height <= 0.0:
+		return 0.0
+
+	return clampf((ball_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0)
+
+
+# English: spin imparted by the paddle's own motion at the moment of contact.
+static func _english_angle(struck_paddle: Paddle, english_coefficient: float) -> float:
+	return struck_paddle.velocity.y * english_coefficient
 
 
 # Moving paddle forces the bounce into its motion hemisphere so the english never cancels offset.
@@ -81,3 +99,7 @@ static func _clamp_off_horizontal_and_vertical(
 
 	var magnitude: float = clampf(absf(angle), min_magnitude, max_magnitude)
 	return sign_y * magnitude
+
+
+static func _direction_from_angle(target_angle: float, horizontal_sign: float) -> Vector2:
+	return Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
