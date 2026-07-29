@@ -16,7 +16,6 @@
 [ext_resource type="Script" uid="uid://bab6qm77112cl" path="res://scripts/court/soul_bonus.gd" id="18_fpb"]
 [ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/item_drag_controller.gd" id="22_drag"]
-[ext_resource type="Resource" uid="uid://b66666sh366cc" path="res://resources/court_config.tres" id="25_courtcfg"]
 [ext_resource type="Script" uid="uid://cbjvktojqsqqd" path="res://scripts/items/drop_targets/court_drop_target.gd" id="26_cdt"]
 [ext_resource type="Script" uid="uid://clyfa8heojc04" path="res://scripts/items/drop_targets/venue_drop_target.gd" id="27_vdt"]
 
@@ -34,7 +33,7 @@ size = Vector2(2400, 1440)
 
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
-court_config = ExtResource("25_courtcfg")
+arc_height_max = 120.0
 ball_system = NodePath("BallReconciler")
 autoplay_controller = NodePath("AutoplayController")
 drag_controller = NodePath("ItemDragController")

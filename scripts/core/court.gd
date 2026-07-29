@@ -7,7 +7,8 @@ signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, soul_rate: float)
 signal partner_changed
 
-@export var court_config: CourtConfig
+## Apex ceiling in pixels above the soul bound; passed to every ball this court spawns.
+@export var arc_height_max: float = 220.0
 
 @export_group("Controllers")
 @export var ball_system: BallReconciler
@@ -78,9 +79,7 @@ func _ready() -> void:
 		ball_system = BallReconciler.new()
 		add_child(ball_system)
 
-	if court_config == null:
-		court_config = load("res://scripts/core/court_config.gd").new()
-	ball_system.court_config = court_config
+	ball_system.arc_height_max = arc_height_max
 	if soul_bound != null:
 		ball_system.bound_y = soul_bound.global_position.y
 	ball_system.player_paddle = player_paddle

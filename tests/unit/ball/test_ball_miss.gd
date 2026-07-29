@@ -4,7 +4,6 @@ extends GutTest
 const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/out_rest.tres")
 
 var _ball: Ball
-var _config: CourtConfig
 var _manager: Node
 
 
@@ -16,11 +15,8 @@ func before_each() -> void:
 	_manager.items.assign([preload("res://resources/items/standard_ball.tres")])
 	add_child_autofree(_manager)
 
-	_config = load("res://scripts/core/court_config.gd").new()
-
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
 	_ball._ball_manager = _manager
-	_ball.court_config = _config
 	add_child_autofree(_ball)
 
 

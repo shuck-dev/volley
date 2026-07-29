@@ -22,7 +22,8 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var ball_rack: RackDisplay
 
 @export var spawn_origin: Vector2 = Vector2.ZERO
-@export var court_config: CourtConfig
+## Apex ceiling in pixels above the soul bound; injected onto every ball this reconciler spawns.
+@export var arc_height_max: float = 220.0
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
@@ -216,8 +217,7 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	if court_config != null:
-		new_ball.court_config = court_config
+	new_ball.arc_height_max = arc_height_max
 	new_ball.bound_y = bound_y
 	_register_ball(new_ball)
 
@@ -256,7 +256,7 @@ func _instantiate_ball(ball_key: String) -> Ball:
 ## Internal: spawns a STORED ball at a slot position.
 func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	var ball: Ball = _instantiate_ball(ball_key)
-	ball.court_config = court_config
+	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)
 	ball.ball_key = ball_key
@@ -273,7 +273,7 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 ## Internal: spawns a Ball node without key generation.
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	var ball: Ball = _instantiate_ball(ball_key)
-	ball.court_config = court_config
+	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)
 	ball.ball_key = ball_key

@@ -33,8 +33,8 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 @export var ball_key: String = ""
 ## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
 @export var grab_area: GrabArea
-## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
-@export var court_config: CourtConfig
+## Apex ceiling in pixels above the soul bound; injected by Court at attach time.
+@export var arc_height_max: float = 220.0
 ## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
 var bound_y: float
 
@@ -94,10 +94,8 @@ func configure(ball_manager: BallManager) -> void:
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
-	if court_config == null:
-		court_config = load("res://scripts/core/court_config.gd").new()
 
-	ball_world_max_speed = court_config.world_max_speed()
+	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
 	_sync_min_speed()
 	_sync_max_speed()
 
@@ -142,9 +140,7 @@ func _update_play_state() -> void:
 func _enter_arc() -> void:
 	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
 	gravity_scale = 0.0
-	if court_config.physics == null:
-		court_config.physics = load("res://scripts/core/court_physics.gd").new()
-	_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
+	_arc_acceleration = ArcMath.arc_acceleration(-linear_velocity.y, arc_height_max)
 	set_play_state(PlayState.PLAY_ARC)
 
 
@@ -311,7 +307,7 @@ func _apply_speed() -> void:
 	linear_velocity = linear_velocity.normalized() * scaled_speed
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
 	if play_state == PlayState.PLAY_ARC:
-		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
+		_arc_acceleration = ArcMath.arc_acceleration(-linear_velocity.y, arc_height_max)
 	_emit_speed_changed()
 
 

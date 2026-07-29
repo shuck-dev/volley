@@ -12,8 +12,8 @@ var _config: PaddleAIConfig
 
 
 static func ball_below_paddle() -> float:
-	# Quarter-arena below paddle: always in-arena, always saturates speed.
-	return load("res://scripts/core/court_config.gd").new().arena_height * 0.25
+	# Quarter of the paddle's travel range below paddle: always in-range, always saturates speed.
+	return -Paddle.PADDLE_TOP_Y * 0.25
 
 
 func before_each() -> void:
