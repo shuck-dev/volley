@@ -4,24 +4,25 @@ Cadence oscillates ball speed between half, normal, and double on a timer, indep
 
 ## Mechanism
 
-`resources/items/cadence_ball.tres` defines one effect: trigger `always`, one outcome, `StatShiftOutcome` targeting `ball_speed_scale`.
+`resources/items/cadence_ball.tres` points `scene` at `scenes/balls/cadence_ball.tscn`, an inherited scene of `ball.tscn` whose root script is `CadenceBall` (`scripts/entities/ball/cadence_ball.gd`).
 
-`StatShiftOutcome.apply()` builds a `StatShift` (`scripts/items/effect/outcomes/stat_shift.gd`), a state machine cycling `NORMAL -> DOUBLE -> HALF -> NORMAL`, holding each mode for a random duration between `min_interval` and `max_interval`. `get_offset()` returns the mode's multiplier as a delta from 1.0: `-0.5` at half, `0.0` at normal, `+1.0` at double. `EffectState.get_percentage_offset` sums this with ordinary percentage modifiers for the same stat key.
+`CadenceBall` overrides `_setup_effect_processor()` to install a `CadenceBallEffectProcessor` (`scripts/entities/ball/cadence_ball_effect_processor.gd`) instead of the base `BallEffectProcessor`. The subclass owns the half/normal/double cycle directly: `process_frame()` advances a `_time_in_mode` timer against a random `_hold_duration` between `min_interval_seconds` and `max_interval_seconds` (exported, tuned in the scene), and steps `NORMAL -> DOUBLE -> HALF -> NORMAL` when the hold expires, emitting `mode_shifted`.
 
 `BallEffectProcessor` holds two speed fields:
 
-- `ball.speed`: the clamped, unshifted progression value. Tier logic (`increase_speed()`, `advance_tier()`, `sync_base_speed()`) reads and writes only this field.
-- `effect_processor.scaled_speed`: `ball.speed` multiplied by `1.0 + get_percentage_offset(&"ball_speed_scale", ball.item_key)`. `Ball` reads this field wherever it sets `linear_velocity`.
+- `ball.speed`: the clamped, unshifted progression value. Tier logic (`increase_speed()`, `advance_tier()`) reads and writes only this field.
+- `effect_processor.scaled_speed`: `ball.speed` multiplied by the current mode's multiplier (0.5 / 1.0 / 2.0). `Ball` reads this field wherever it sets `linear_velocity`.
 
-`refresh_scaled_speed()` recomputes `scaled_speed` from the current `ball.speed` and the current shift offset. It runs every frame from `_apply_speed_offset()`, and again from `Ball._apply_speed()` on hit, tier-advance, and miss-reset, so `scaled_speed` never carries a stale multiplier between those events.
+`CadenceBallEffectProcessor.refresh_scaled_speed()` overrides the base implementation to multiply by its own mode instead of reading `EffectState`'s percentage offset. It runs every frame from `process_frame()`, and again from `Ball._apply_speed()` on hit, tier-advance, and miss-reset, so `scaled_speed` never carries a stale multiplier between those events.
 
 Tier completion compares `ball.speed` (not `scaled_speed`) against `tier_ceiling`. Cadence's multiply applies after that comparison and does not affect tier-advance timing, the per-tier soul reward, or the first-reach ball upgrade.
 
+`CadenceBall` listens to its own processor's `mode_shifted` signal and restarts `shift_cue` (a `CPUParticles2D` authored directly in `cadence_ball.tscn`) on every mode change.
+
 ## Files
 
-- `resources/items/cadence_ball.tres`: item definition, one effect, one `StatShiftOutcome` on `ball_speed_scale`.
-- `scripts/items/effect/outcomes/stat_shift.gd`: the half/normal/double state machine.
-- `scripts/items/effect/outcomes/stat_shift_outcome.gd`: builds a `StatShift` from the resource's exported fields on `apply()`.
-- `scripts/items/effect/shift_repository.gd`: stores active shifts, sums offset per stat key and per ball instance.
-- `scripts/entities/ball/effect_processor.gd`: `_apply_speed_offset()`, `refresh_scaled_speed()`, `scaled_speed`.
-- `scripts/items/cadence_art.gd`: particle cue tied to `StatShift.shifted`, reconnected on level-up.
+- `resources/items/cadence_ball.tres`: item definition; `scene` points at `scenes/balls/cadence_ball.tscn`, `preview_art` at the lightweight shop/rack preview (`scenes/items/cadence.tscn`).
+- `scenes/balls/cadence_ball.tscn`: inherited scene of `ball.tscn`; root script `CadenceBall`, sprite override, and `shift_cue` particles authored directly.
+- `scripts/entities/ball/cadence_ball.gd`: `CadenceBall`, wires the particle cue to `mode_shifted`.
+- `scripts/entities/ball/cadence_ball_effect_processor.gd`: `CadenceBallEffectProcessor`, the half/normal/double state machine and `refresh_scaled_speed()` override.
+- `scripts/entities/ball/effect_processor.gd`: base `BallEffectProcessor`, `refresh_scaled_speed()`, `scaled_speed`.

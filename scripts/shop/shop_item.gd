@@ -11,7 +11,7 @@ signal drop_completed(ball_key: String, position: Vector2, purchased: bool)
 var ball_definition: BallDefinition
 
 var _ball_manager: BallManager
-var _art_instance: ItemArt
+var _art_instance: Node
 var _shop_area: Area2D
 var _held_token: Node2D = null
 ## Tracks mouse-button state so _process can poll for valid targets when mouse is up.
@@ -73,11 +73,11 @@ func _input(event: InputEvent) -> void:
 
 
 func _build_art() -> void:
-	if ball_definition == null or ball_definition.art == null:
+	if ball_definition == null or ball_definition.preview_art == null:
 		return
 	if _art_instance != null and is_instance_valid(_art_instance):
 		_art_instance.queue_free()
-	_art_instance = ball_definition.art.instantiate()
+	_art_instance = ball_definition.preview_art.instantiate()
 	art_holder.add_child(_art_instance)
 
 
@@ -155,8 +155,8 @@ func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % ball_definition.key
-	if ball_definition != null and ball_definition.art != null:
-		var art_instance: Node = ball_definition.art.instantiate()
+	if ball_definition != null and ball_definition.preview_art != null:
+		var art_instance: Node = ball_definition.preview_art.instantiate()
 		token.add_child(art_instance)
 	# Parent at scene root so the held visual follows the cursor without being
 	# tied to the shop item's transform.

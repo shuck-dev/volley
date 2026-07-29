@@ -16,7 +16,6 @@ signal ball_tier_advanced(ball: Ball, new_tier: int)
 
 signal current_ball_changed(ball: Ball)
 
-const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 ## Ball-role rack for STORED slot positions.
@@ -249,9 +248,14 @@ func _has_save_manager_autoload() -> bool:
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
+## Every BallDefinition carries its own scene; no fallback branch to keep alive as dead code.
+func _instantiate_ball(ball_key: String) -> Ball:
+	return _ball_manager.get_item(ball_key).scene.instantiate()
+
+
 ## Internal: spawns a STORED ball at a slot position.
 func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
-	var ball: Ball = BallScene.instantiate()
+	var ball: Ball = _instantiate_ball(ball_key)
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)
@@ -268,7 +272,7 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 
 ## Internal: spawns a Ball node without key generation.
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
-	var ball: Ball = BallScene.instantiate()
+	var ball: Ball = _instantiate_ball(ball_key)
 	ball.court_config = court_config
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)

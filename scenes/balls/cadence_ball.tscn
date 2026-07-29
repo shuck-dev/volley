@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://i5e617319zbs2"]
+
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://jd0ay546amsok" path="res://scripts/entities/ball/cadence_ball.gd" id="2_cadence"]
+[ext_resource type="Texture2D" uid="uid://bc3bof8fo47tr" path="res://assets/balls/cadence.png" id="3_dvr74"]
+[ext_resource type="Texture2D" uid="uid://dukl842aq0orb" path="res://assets/art/shift_cue_bolt.svg" id="4_bolt"]
+
+[sub_resource type="Gradient" id="Gradient_shiftfade"]
+colors = PackedColorArray(0.4, 0.8, 1, 1, 0.4, 0.8, 1, 0)
+
+[node name="CadenceBall" instance=ExtResource("1_base") node_paths=PackedStringArray("shift_cue")]
+script = ExtResource("2_cadence")
+shift_cue = NodePath("ShiftCue")
+
+[node name="Sprite" parent="."]
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("3_dvr74")
+
+[node name="ShiftCue" type="CPUParticles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 12
+texture = ExtResource("4_bolt")
+one_shot = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 60.0
+initial_velocity_max = 60.0
+scale_amount_min = 0.2
+scale_amount_max = 0.2
+color_ramp = SubResource("Gradient_shiftfade")

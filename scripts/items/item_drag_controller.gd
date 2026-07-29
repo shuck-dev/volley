@@ -446,10 +446,10 @@ func _spawn_held_body(ball_key: String, spawn_position: Vector2, is_temporary: b
 
 	var body: Node2D = Node2D.new()
 	body.name = "HeldBody_%s" % ball_key
-	if definition.art != null:
+	if definition.preview_art != null:
 		var art_holder: Node2D = Node2D.new()
 		art_holder.name = "ArtHolder"
-		art_holder.add_child(definition.art.instantiate())
+		art_holder.add_child(definition.preview_art.instantiate())
 		body.add_child(art_holder)
 	body.global_position = spawn_position
 	add_child(body)

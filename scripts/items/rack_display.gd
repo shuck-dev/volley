@@ -59,7 +59,7 @@ func refresh() -> void:
 			push_error("RackDisplay.refresh: no marker for %s (slot %d)" % [ball_key, slot_index])
 			continue
 		var definition: BallDefinition = _get_ball_definition(ball_key)
-		if definition == null or definition.art == null:
+		if definition == null or definition.preview_art == null:
 			continue
 		var slot: Node2D = _build_slot(ball_key, definition, _slot_markers[slot_index].position)
 		slot_container.add_child(slot)
@@ -106,7 +106,7 @@ func _populate_art_holder(art_holder: Node2D, ball_key: String, definition: Ball
 		art_holder.set_meta(&"source", &"ball")
 		return
 	art_holder.set_meta(&"source", &"definition")
-	art_holder.add_child(definition.art.instantiate())
+	art_holder.add_child(definition.preview_art.instantiate())
 
 
 func _registered_ball_for(ball_key: String) -> Ball:

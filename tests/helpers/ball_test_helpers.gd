@@ -35,10 +35,15 @@ static func _static_init() -> void:
 
 static func stub_art() -> PackedScene:
 	var scene := PackedScene.new()
-	var template := ItemArt.new()
+	var template := Node2D.new()
 	scene.pack(template)
 	template.free()
 	return scene
+
+
+## Real ball.tscn instance; every BallDefinition needs an instantiable scene for BallReconciler.
+static func stub_ball_scene() -> PackedScene:
+	return load("res://scenes/ball.tscn")
 
 
 static func make_ball_item(key: String) -> BallDefinition:
@@ -48,7 +53,8 @@ static func make_ball_item(key: String) -> BallDefinition:
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = []
-	item.art = stub_art()
+	item.preview_art = stub_art()
+	item.scene = stub_ball_scene()
 	return item
 
 
