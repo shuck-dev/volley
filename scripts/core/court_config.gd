@@ -8,6 +8,8 @@ extends Resource
 @export var fair_crossing_seconds: float = 2.083333
 ## Above-bound arc rule. Swap per venue to change how the ball arcs over the soul bound.
 @export var physics: CourtPhysics = load("res://scripts/core/court_physics.gd").new()
+## Arena vertical extent in pixels; upper bound for the paddle and the AI math half-height.
+@export var arena_height: float = 660.0
 
 
 ## Top speed any ball may reach, derived from the court crossing: court_width / fair_crossing_seconds.

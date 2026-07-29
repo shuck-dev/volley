@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="BaseStatsConfig" format=3 uid="uid://s8juy4itgq7a"]
-
-[ext_resource type="Script" uid="uid://db8od7k6e40k" path="res://scripts/core/base_stats_config.gd" id="1"]
-
-[resource]
-script = ExtResource("1")
-ball_speed_min = 225.0

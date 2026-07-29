@@ -4,7 +4,7 @@ Tech spec for the gear capacity model. Covers the capacity stat on the character
 
 ## Capacity
 
-`BaseStatsConfig.kit_slots` (existing) is the cap on equipped equipment items. Each equipped item counts as one. The cap on day one is 3; training raises it.
+`BaseBallStats.kit_slots` (existing) is the cap on equipped equipment items. Each equipped item counts as one. The cap on day one is 3; training raises it.
 
 `ItemManager.get_kit_remaining()` returns `kit_slots` minus the count of items whose **persisted** placement is `EQUIPPED` (read `state.item_placements` directly, bypassing `_get_placement` so the runtime `LOOSE_IN_VENUE` overlay on a held-mid-drag item leaves the count unchanged; capacity reflects the kit on the body, frozen mid-gesture).
 

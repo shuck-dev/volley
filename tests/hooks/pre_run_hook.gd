@@ -20,12 +20,10 @@ const EXCLUDE_PATHS = [
 	# Autoload, not unit-testable
 	"res://scripts/progression/save_manager.gd",
 	# Pure data resource, exercised through GameRules.base / GameRules.paddle
-	"res://scripts/core/base_stats_config.gd",
+	"res://scripts/core/base_ball_stats.gd",
 	"res://scripts/core/paddle_config.gd",
 	# Abstract base class; subclasses override apply() and describe()
 	"res://scripts/items/effect/outcome.gd",
-	# Drawing-heavy @tool Control; _draw paths are untouched in headless tests
-	"res://scripts/court/speed_bar.gd",
 	# Editor/debug-only @tool draw of the venue bounds; _draw paths skip in headless
 	"res://scripts/core/venue_bound_debug_draw.gd",
 	# SH-297: pure enum + label container; only consumed via const access from callers.

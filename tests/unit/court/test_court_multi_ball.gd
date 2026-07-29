@@ -61,10 +61,10 @@ func _spawn_ball(ball_key: String) -> Ball:
 	return _reconciler.get_ball_for_key(ball_key)
 
 
-## Ball item carrying an on_hit effect that bumps ball_speed_offset, mirroring cadence_ball's shape.
+## Ball item carrying an on_hit effect that bumps ball_speed_min, mirroring cadence_ball's shape.
 func _make_on_hit_ball_item(key: String) -> BallDefinition:
 	var outcome := StatUntilMissOutcome.new()
-	outcome.stat_key = &"ball_speed_offset"
+	outcome.stat_key = &"ball_speed_min"
 	outcome.operation = &"add"
 	outcome.value = 100.0
 
@@ -377,7 +377,6 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 	)
 
 
-# Regression: an on-hit effect must only mutate its own ball, not every ball in the pool.
 func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
 	var plain_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
@@ -387,25 +386,52 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	var hit_ball: Ball = _spawn_ball("ball_cadence")
 	var other_ball: Ball = _spawn_ball("ball_plain")
 
-	var other_offset_before: float = _manager.get_modifier(
-		&"ball_speed_offset", other_ball.ball_key
-	)
+	var other_offset_before: float = _manager.get_modifier(&"ball_speed_min", other_ball.ball_key)
 
 	hit_ball._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", hit_ball.ball_key),
+		_manager.get_modifier(&"ball_speed_min", hit_ball.ball_key),
 		0.0,
 		"the hit ball's own on_hit effect should apply its stat modifier",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", other_ball.ball_key),
+		_manager.get_modifier(&"ball_speed_min", other_ball.ball_key),
 		other_offset_before,
 		"a second ball must not receive the first ball's on_hit stat modifier",
 	)
 
 
-# Regression: two owned instances of the same ball type must not clobber each other's effects.
+func test_ball_stats_override_default_stats() -> void:
+	var ball_stat_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_stat")
+	var ball_default_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item(
+		"ball_default"
+	)
+
+	var stats: BaseBallStats = BaseBallStats.new()
+	stats.ball_speed_max = GameRules.base.ball_speed_max + 200.0
+	ball_stat_defintion.stats = stats
+
+	var typed_items: Array[BallDefinition] = [ball_stat_defintion, ball_default_defintion]
+
+	_manager.items.assign(typed_items)
+
+	var ball_stat: Ball = _spawn_ball("ball_stat")
+	var ball_defualt: Ball = _spawn_ball("ball_default")
+
+	assert_eq(
+		ball_defualt.max_speed,
+		GameRules.base.ball_speed_max,
+		"a ball with no stats should use the default"
+	)
+
+	assert_ne(
+		ball_stat.max_speed,
+		GameRules.base.ball_speed_max,
+		"a ball with defined stats should override the default"
+	)
+
+
 func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
 	var typed_items: Array[BallDefinition] = [effect_item]
@@ -422,12 +448,12 @@ func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	first._on_body_entered(_paddle)
 
 	assert_gt(
-		_manager.get_modifier(&"ball_speed_offset", first.ball_key),
+		_manager.get_modifier(&"ball_speed_min", first.ball_key),
 		0.0,
 		"the struck instance's own effect should register under its own instance key",
 	)
 	assert_eq(
-		_manager.get_modifier(&"ball_speed_offset", second.ball_key),
+		_manager.get_modifier(&"ball_speed_min", second.ball_key),
 		0.0,
 		"the sibling instance of the same ball type must keep its own, unaffected registration",
 	)

@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://3l88siilc0hu" path="res://scenes/shipment_mat.tscn" id="10_5mv5b"]
 [ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
-[ext_resource type="Script" uid="uid://cp16q4n8se0mu" path="res://scripts/court/speed_bar.gd" id="11_2768l"]
 [ext_resource type="PackedScene" uid="uid://kyv43r8jy2b" path="res://scenes/recruit_panel.tscn" id="12_rnrgf"]
 [ext_resource type="Script" uid="uid://b8611ynp8yggm" path="res://scripts/court/volley_counter.gd" id="14_vc"]
 [ext_resource type="Script" uid="uid://cve6m1fmtpyg" path="res://scripts/court/personal_best.gd" id="15_pb"]
@@ -173,16 +172,6 @@ theme_override_font_sizes/font_size = 29
 text = "+0% Soul"
 script = ExtResource("18_fpb")
 court = NodePath("..")
-
-[node name="SpeedBar" type="Control" parent="." unique_id=645165939 node_paths=PackedStringArray("ball_system")]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -90.0
-offset_top = -380.4
-offset_right = 90.0
-offset_bottom = -374.4
-script = ExtResource("11_2768l")
-ball_system = NodePath("../BallReconciler")
 
 [node name="RecruitPanel" parent="." unique_id=1288823691 instance=ExtResource("12_rnrgf")]
 offset_left = -599.0

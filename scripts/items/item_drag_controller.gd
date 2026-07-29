@@ -355,8 +355,6 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 	else:
 		ball.linear_velocity = velocity
 	ball.speed = preserved_speed
-	if ball.effect_processor != null:
-		ball.effect_processor.sync_base_speed()
 	# Keep BallManager in sync: a rack-origin gesture leaves placement=STORED until activate runs.
 	if not _ball_manager.is_on_court(_held_key):
 		_ball_manager.activate(_held_key)
@@ -371,10 +369,6 @@ func _apply_preserved_speed_after_accept(ball_key: String) -> void:
 	if ball == null:
 		return
 	ball.speed = _held_preserved_speed
-	# Re-sync the effect processor's base so the next physics frame's speed-limit clamp
-	# does not snap us back to ball_speed_min.
-	if ball.effect_processor != null:
-		ball.effect_processor.sync_base_speed()
 	if ball.linear_velocity.length() > 0.0:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 

@@ -89,17 +89,11 @@ func _ready() -> void:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
-	min_speed = Stats.resolve(
-		GameRules.base.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key
-	)
-	max_speed = (
-		min_speed
-		+ Stats.resolve(
-			GameRules.base.ball_speed_max_range, &"ball_speed_max_range", _ball_manager, ball_key
-		)
-	)
+	var stats: BaseBallStats = get_stats()
+	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
+	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
 	speed_increment = Stats.resolve(
-		GameRules.base.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
+		stats.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
 	)
 
 	_setup_effect_processor()
@@ -263,7 +257,6 @@ func enter_out_rest() -> void:
 
 	current_tier = 0
 	speed = tier_floor
-	effect_processor.sync_base_speed()
 	_emit_speed_changed()
 	set_play_state(PlayState.OUT_REST)
 
@@ -311,7 +304,6 @@ func _tier_fraction(field: String) -> float:
 
 
 func _apply_speed() -> void:
-	effect_processor.sync_base_speed()
 	effect_processor.refresh_scaled_speed()
 	linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
@@ -350,7 +342,6 @@ func _baseline_collision_radius() -> float:
 func _ball_setup() -> void:
 	current_tier = 0
 	speed = tier_floor
-	effect_processor.sync_base_speed()
 	lock_rotation = true
 
 	enter_play()
@@ -387,3 +378,11 @@ func _apply_item_art() -> void:
 	var art_instance: ItemArt = definition.art.instantiate()
 	item_art_holder.add_child(art_instance)
 	art_instance.watch_ball(self)
+
+
+## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
+## (unadopted balls, test stubs).
+func get_stats() -> BaseBallStats:
+	if ball_key == "":
+		return GameRules.base
+	return _ball_manager.get_item(ball_key).stats
