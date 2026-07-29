@@ -377,7 +377,6 @@ func test_non_current_ball_consolidation_banks_soul() -> void:
 	)
 
 
-# Regression: an on-hit effect must only mutate its own ball, not every ball in the pool.
 func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
 	var plain_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
@@ -403,28 +402,33 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 	)
 
 
-# Regression: two owned instances of the same ball type must not clobber each other's effects.
-func test_ball_with_own_stats_resource_diverges_from_shared_default() -> void:
-	var overridden_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_overridden")
+func test_ball_stats_override_default_stats() -> void:
+	var ball_stat_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_stat")
+	var ball_default_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item(
+		"ball_default"
+	)
+
 	var stats: BaseBallStats = BaseBallStats.new()
 	stats.ball_speed_max = GameRules.base.ball_speed_max + 200.0
-	overridden_item.stats = stats
-	var plain_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
-	var typed_items: Array[BallDefinition] = [overridden_item, plain_item]
+	ball_stat_defintion.stats = stats
+
+	var typed_items: Array[BallDefinition] = [ball_stat_defintion, ball_default_defintion]
+
 	_manager.items.assign(typed_items)
 
-	var overridden_ball: Ball = _spawn_ball("ball_overridden")
-	var plain_ball: Ball = _spawn_ball("ball_plain")
+	var ball_stat: Ball = _spawn_ball("ball_stat")
+	var ball_defualt: Ball = _spawn_ball("ball_default")
 
 	assert_eq(
-		plain_ball.max_speed,
+		ball_defualt.max_speed,
 		GameRules.base.ball_speed_max,
-		"precondition: a ball with no stats override resolves the shared default"
+		"a ball with no stats should use the default"
 	)
+
 	assert_ne(
-		overridden_ball.max_speed,
-		plain_ball.max_speed,
-		"a ball carrying its own stats resource must diverge from the shared default"
+		ball_stat.max_speed,
+		GameRules.base.ball_speed_max,
+		"a ball with defined stats should override the default"
 	)
 
 
