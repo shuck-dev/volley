@@ -431,11 +431,10 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
-	if ball.effect_processor != null:
-		var paddles: Array[Node2D] = []
-		if player_paddle != null:
-			paddles.append(player_paddle)
-		ball.effect_processor.paddles = paddles
+	var paddles: Array[Node2D] = []
+	if player_paddle != null:
+		paddles.append(player_paddle)
+	ball.paddles = paddles
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
 			ball.register_miss_zone(zone)

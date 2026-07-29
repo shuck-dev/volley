@@ -85,7 +85,7 @@ func test_centre_hit_returns_within_min_angle_band() -> void:
 	_ball.linear_velocity = Vector2(100, 60)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	var angle: float = atan2(absf(_ball.linear_velocity.y), absf(_ball.linear_velocity.x))
 	assert_almost_eq(rad_to_deg(angle), _min_angle_deg, 0.01)
@@ -99,14 +99,14 @@ func test_edge_hit_steepens_vs_centre() -> void:
 	_ball.global_position = Vector2(0, 0)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var centre_slope: float = absf(_ball.linear_velocity.y / _ball.linear_velocity.x)
 
 	# Top-edge hit (ball above paddle centre).
 	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var edge_slope: float = absf(_ball.linear_velocity.y / _ball.linear_velocity.x)
 
 	assert_gt(edge_slope, centre_slope, "Edge contact should steepen the return angle")
@@ -118,13 +118,13 @@ func test_symmetric_edges_mirror() -> void:
 	_ball.global_position = Vector2(0, -PADDLE_HALF_HEIGHT)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var top_y: float = _ball.linear_velocity.y
 
 	_ball.global_position = Vector2(0, PADDLE_HALF_HEIGHT)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var bottom_y: float = _ball.linear_velocity.y
 
 	assert_almost_eq(top_y, -bottom_y, 0.01)
@@ -137,7 +137,7 @@ func test_preserves_speed() -> void:
 	_ball.speed = _ball.linear_velocity.length()
 	var original_speed: float = _ball.speed
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_almost_eq(_ball.linear_velocity.length(), original_speed, 0.01)
 
@@ -152,7 +152,7 @@ func test_paddle_velocity_biases_bounce_in_direction_of_paddle_motion() -> void:
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	# Moving paddle forces hemisphere by motion direction: downward paddle → positive y bounce.
 	assert_gt(_ball.linear_velocity.y, 0.0, "Paddle moving down should bias bounce downward")
@@ -173,7 +173,7 @@ func test_paddle_up_with_bottom_edge_hit_bounces_up() -> void:
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_lt(_ball.linear_velocity.y, 0.0, "Upward paddle motion forces bounce upward")
 
@@ -187,7 +187,7 @@ func test_paddle_down_with_top_edge_hit_bounces_down() -> void:
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_gt(_ball.linear_velocity.y, 0.0, "Downward paddle motion forces bounce downward")
 
@@ -201,7 +201,7 @@ func test_descending_ball_centre_hit_returns_downward() -> void:
 	_ball.linear_velocity = Vector2(100, 60)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_gt(_ball.linear_velocity.y, 0.0, "Descending centre hit should leave descending")
 	var angle: float = atan2(_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
@@ -215,7 +215,7 @@ func test_ascending_ball_centre_hit_returns_upward() -> void:
 	_ball.linear_velocity = Vector2(100, -60)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_lt(_ball.linear_velocity.y, 0.0, "Ascending centre hit should leave ascending")
 	var angle: float = atan2(-_ball.linear_velocity.y, absf(_ball.linear_velocity.x))
@@ -229,7 +229,7 @@ func test_raising_min_angle_floor_steepens_centre_hit() -> void:
 	_ball.global_position = Vector2(0, 0)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var baseline_y: float = absf(_ball.linear_velocity.y)
 
 	# Same centre hit with the floor raised by an item modifier.
@@ -237,7 +237,7 @@ func test_raising_min_angle_floor_steepens_centre_hit() -> void:
 	_ball.global_position = Vector2(0, 0)
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 	var raised_y: float = absf(_ball.linear_velocity.y)
 
 	assert_gt(
@@ -253,7 +253,7 @@ func test_horizontal_incoming_centre_hit_defaults_downward() -> void:
 	_ball.linear_velocity = Vector2(100, 0)
 	_ball.speed = _ball.linear_velocity.length()
 
-	_ball.effect_processor.process_hit(_paddle)
+	_ball._process_hit(_paddle)
 
 	assert_gt(
 		_ball.linear_velocity.y, 0.0, "Default tiebreaker should send bounce below horizontal"

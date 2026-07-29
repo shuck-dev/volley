@@ -192,9 +192,8 @@ func _activate_partner() -> void:
 	for active_ball in ball_system.get_balls():
 		if not is_instance_valid(active_ball):
 			continue
-		if active_ball.effect_processor != null:
-			if not active_ball.effect_processor.paddles.has(partner_paddle):
-				active_ball.effect_processor.paddles.append(partner_paddle)
+		if not active_ball.paddles.has(partner_paddle):
+			active_ball.paddles.append(partner_paddle)
 
 	var current: Ball = ball_system.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
@@ -225,8 +224,8 @@ func _deactivate_partner() -> void:
 	ball_system.ball_added.disconnect(_on_partner_ball_added)
 
 	for active_ball in ball_system.get_balls():
-		if is_instance_valid(active_ball) and active_ball.effect_processor != null:
-			active_ball.effect_processor.paddles.erase(partner_paddle)
+		if is_instance_valid(active_ball):
+			active_ball.paddles.erase(partner_paddle)
 
 	partner_paddle.queue_free()
 	partner_paddle = null
@@ -243,9 +242,8 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 	if partner_paddle == null:
 		return
 
-	if incoming_ball.effect_processor != null:
-		if not incoming_ball.effect_processor.paddles.has(partner_paddle):
-			incoming_ball.effect_processor.paddles.append(partner_paddle)
+	if not incoming_ball.paddles.has(partner_paddle):
+		incoming_ball.paddles.append(partner_paddle)
 
 	if partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(incoming_ball)

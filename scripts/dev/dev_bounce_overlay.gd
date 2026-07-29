@@ -170,14 +170,8 @@ func _on_ball_added(ball: Ball) -> void:
 	if ball == null or _ball_subscriptions.has(ball):
 		return
 
-	if ball.effect_processor == null:
-		# Effect processor spawns in Ball._ready; defer one frame.
-		await get_tree().process_frame
-
-		if not is_instance_valid(ball) or ball.effect_processor == null:
-			return
 	var callable := _on_bounce_resolved
-	ball.effect_processor.bounce_resolved.connect(callable)
+	ball.bounce_resolved.connect(callable)
 	_ball_subscriptions[ball] = callable
 
 
@@ -186,12 +180,8 @@ func _on_ball_removed(ball: Ball) -> void:
 		return
 	var callable: Callable = _ball_subscriptions[ball]
 
-	if (
-		is_instance_valid(ball)
-		and ball.effect_processor != null
-		and ball.effect_processor.bounce_resolved.is_connected(callable)
-	):
-		ball.effect_processor.bounce_resolved.disconnect(callable)
+	if is_instance_valid(ball) and ball.bounce_resolved.is_connected(callable):
+		ball.bounce_resolved.disconnect(callable)
 	_ball_subscriptions.erase(ball)
 
 

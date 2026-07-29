@@ -8,6 +8,14 @@ signal speed_changed(speed: float, tier_floor: float, tier_ceiling: float)
 signal tier_advanced(ball: Ball, new_tier: int)
 signal grabbed(ball: Ball)
 signal play_state_changed(state: PlayState)
+## Debug-only signal: fired after every paddle bounce, post-clamp and post-english, so dev overlays can echo the resolved direction.
+signal bounce_resolved(
+	struck_paddle: Paddle,
+	offset_norm: float,
+	target_angle: float,
+	incoming_y_sign: float,
+	horizontal_sign: float
+)
 
 enum PlayState {
 	STORED,
@@ -34,7 +42,10 @@ var speed := 0.0
 var min_speed: float
 var max_speed: float
 var speed_increment: float
-var effect_processor: BallEffectProcessor
+## Speed after the tier clamp and any uncapped scale.
+var scaled_speed := 0.0
+## Partner/player paddles this ball reacts to on hit; Court injects the partner paddle at attach time.
+var paddles: Array[Node2D] = []
 var is_temporary := false
 
 ## Hard speed ceiling no item, effect, or final-consolidation climb may exceed; derived from the court at ready.
@@ -87,14 +98,9 @@ func _ready() -> void:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
-	var stats: BaseBallStats = get_stats()
-	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
-	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
-	speed_increment = Stats.resolve(
-		stats.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
-	)
+	_sync_min_speed()
+	_sync_max_speed()
 
-	_setup_effect_processor()
 	_ball_setup()
 
 
@@ -102,7 +108,7 @@ func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
 
-	effect_processor.process_frame(delta)
+	_sync_speed_limits()
 	_update_play_state()
 
 	if (
@@ -117,7 +123,7 @@ func _physics_process(delta: float) -> void:
 
 	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
-		linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
+		linear_velocity = linear_velocity.normalized() * scaled_speed
 
 
 # NORMAL <-> ARC crossing, read off the body's current Y vs the soul bound.
@@ -171,7 +177,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	var hit_registered: bool = paddle.on_ball_hit(self)
 	if hit_registered:
 		increase_speed()
-	effect_processor.process_hit(paddle)
+	_process_hit(paddle)
 	_ball_manager.process_event(&"on_hit", ball_key)
 
 
@@ -301,20 +307,135 @@ func _tier_fraction(field: String) -> float:
 
 
 func _apply_speed() -> void:
-	effect_processor.refresh_scaled_speed()
-	linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
+	refresh_scaled_speed()
+	linear_velocity = linear_velocity.normalized() * scaled_speed
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
 	if play_state == PlayState.PLAY_ARC:
 		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
 	_emit_speed_changed()
 
 
-func _setup_effect_processor() -> void:
-	effect_processor = BallEffectProcessor.new()
-	effect_processor.name = "BallEffectProcessor"
-	effect_processor.ball = self
-	effect_processor.ball_manager = _ball_manager
-	add_child(effect_processor)
+func _sync_speed_limits() -> void:
+	_sync_min_speed()
+	_sync_max_speed()
+
+
+func _sync_min_speed() -> void:
+	min_speed = Stats.resolve(
+		get_stats().ball_speed_min, &"ball_speed_min", _ball_manager, ball_key
+	)
+
+
+func _sync_max_speed() -> void:
+	max_speed = Stats.resolve(
+		get_stats().ball_speed_max, &"ball_speed_max", _ball_manager, ball_key
+	)
+	speed_increment = Stats.resolve(
+		get_stats().ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
+	)
+	speed = clampf(speed, tier_floor, tier_ceiling)
+	refresh_scaled_speed()
+
+
+func refresh_scaled_speed() -> void:
+	var speed_scale: float = (
+		1.0 + _ball_manager.get_percentage_offset(&"ball_speed_scale", ball_key)
+	)
+	scaled_speed = speed * speed_scale
+
+
+func _process_hit(struck_paddle: Paddle) -> void:
+	refresh_scaled_speed()
+	_apply_paddle_offset_return(struck_paddle)
+
+
+# Where on the paddle the ball struck drives the return angle.
+func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
+	if struck_paddle == null:
+		return
+
+	var incoming_x_sign: float = signf(linear_velocity.x)
+
+	if incoming_x_sign == 0.0:
+		return
+
+	var horizontal_sign: float = -incoming_x_sign
+
+	var max_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_return_angle_max_degrees,
+			&"paddle_return_angle_max_degrees",
+			_ball_manager,
+		)
+	)
+
+	var half_height: float = struck_paddle.get_half_height()
+
+	# Offset angle only shapes the return when a max-angle and a valid half-height exist
+	var offset_norm: float = 0.0
+	if max_degrees > 0.0 and half_height > 0.0:
+		offset_norm = clampf(
+			(global_position.y - struck_paddle.global_position.y) / half_height, -1.0, 1.0
+		)
+
+	var offset_angle: float = offset_norm * deg_to_rad(max_degrees)
+	var english_coefficient: float = Stats.resolve(
+		GameRules.paddle.paddle_english_coefficient, &"paddle_english_coefficient", _ball_manager
+	)
+
+	var english_angle: float = struck_paddle.velocity.y * english_coefficient
+	var incoming_y_sign: float = signf(linear_velocity.y)
+	var blended_angle: float = _blend_english_into_offset(offset_angle, english_angle)
+	var target_angle: float = _clamp_off_horizontal_and_vertical(blended_angle, incoming_y_sign)
+	var direction := Vector2(horizontal_sign * cos(target_angle), sin(target_angle))
+
+	linear_velocity = direction * scaled_speed
+
+	if OS.is_debug_build():
+		bounce_resolved.emit(
+			struck_paddle, offset_norm, target_angle, incoming_y_sign, horizontal_sign
+		)
+
+
+# Moving paddle forces the bounce into its motion hemisphere so the english never cancels offset.
+func _blend_english_into_offset(offset_angle: float, english_angle: float) -> float:
+	if is_zero_approx(english_angle):
+		return offset_angle
+
+	return (absf(offset_angle) + absf(english_angle)) * signf(english_angle)
+
+
+# Clamps magnitude off horizontal/vertical; on zero angle the incoming y-sign breaks the tie.
+func _clamp_off_horizontal_and_vertical(angle: float, incoming_y_sign: float) -> float:
+	var min_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_bounce_min_angle_degrees,
+			&"paddle_bounce_min_angle_degrees",
+			_ball_manager,
+		)
+	)
+	var max_degrees: float = (
+		Stats
+		. resolve(
+			GameRules.paddle.paddle_bounce_max_angle_degrees,
+			&"paddle_bounce_max_angle_degrees",
+			_ball_manager,
+		)
+	)
+	var min_magnitude: float = deg_to_rad(min_degrees)
+	var max_magnitude: float = deg_to_rad(max_degrees)
+	var sign_y: float = signf(angle)
+
+	if sign_y == 0.0:
+		sign_y = incoming_y_sign
+
+	if sign_y == 0.0:
+		sign_y = 1.0
+
+	var magnitude: float = clampf(absf(angle), min_magnitude, max_magnitude)
+	return sign_y * magnitude
 
 
 func _wire_grab_area() -> void:

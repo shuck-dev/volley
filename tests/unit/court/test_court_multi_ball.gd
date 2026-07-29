@@ -209,9 +209,8 @@ func test_set_partner_paddle_targets_already_attached_balls() -> void:
 	for ball in _reconciler.get_balls():
 		if not is_instance_valid(ball):
 			continue
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
+		if not ball.paddles.has(partner):
+			ball.paddles.append(partner)
 
 	if _reconciler.get_current_ball() != null and partner.has_method("set_ball"):
 		partner.set_ball(_reconciler.get_current_ball())
@@ -221,14 +220,8 @@ func test_set_partner_paddle_targets_already_attached_balls() -> void:
 		_reconciler.get_current_ball(),
 		"partner should be told about the current ball on registration"
 	)
-	assert_true(
-		first.effect_processor.paddles.has(partner),
-		"partner should be on the first ball's paddle list"
-	)
-	assert_true(
-		second.effect_processor.paddles.has(partner),
-		"partner should be on the second ball's paddle list"
-	)
+	assert_true(first.paddles.has(partner), "partner should be on the first ball's paddle list")
+	assert_true(second.paddles.has(partner), "partner should be on the second ball's paddle list")
 
 
 func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
@@ -238,33 +231,27 @@ func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
 	for ball in _reconciler.get_balls():
 		if not is_instance_valid(ball):
 			continue
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
-	assert_true(
-		first.effect_processor.paddles.has(partner), "precondition: partner attached to first"
-	)
+		if not ball.paddles.has(partner):
+			ball.paddles.append(partner)
+	assert_true(first.paddles.has(partner), "precondition: partner attached to first")
 
 	for ball in _reconciler.get_balls():
-		if is_instance_valid(ball) and ball.effect_processor != null:
-			ball.effect_processor.paddles.erase(partner)
+		if is_instance_valid(ball):
+			ball.paddles.erase(partner)
 
 	assert_false(
-		first.effect_processor.paddles.has(partner),
-		"partner should be removed from the first ball after clear"
+		first.paddles.has(partner), "partner should be removed from the first ball after clear"
 	)
 	assert_false(
-		second.effect_processor.paddles.has(partner),
-		"partner should be removed from the second ball after clear"
+		second.paddles.has(partner), "partner should be removed from the second ball after clear"
 	)
 
 
 func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 	var partner: Node2D = _make_partner_stub()
 	var handler := func(ball: Ball):
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
+		if not ball.paddles.has(partner):
+			ball.paddles.append(partner)
 		if partner.has_method("set_ball"):
 			partner.set_ball(ball)
 	_reconciler.ball_added.connect(handler)
@@ -274,10 +261,7 @@ func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
 	assert_eq(
 		partner.last_ball, ball, "new ball should be handed to the previously-set partner on attach"
 	)
-	assert_true(
-		ball.effect_processor.paddles.has(partner),
-		"partner should land on the new ball's paddle list"
-	)
+	assert_true(ball.paddles.has(partner), "partner should land on the new ball's paddle list")
 
 	_reconciler.ball_added.disconnect(handler)
 
@@ -286,16 +270,14 @@ func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
 	var ball: Ball = _spawn_ball("ball_alpha")
 	var partner: Node2D = _make_partner_stub()
 
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner):
-			ball.effect_processor.paddles.append(partner)
+	if not ball.paddles.has(partner):
+		ball.paddles.append(partner)
 
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner):
-			ball.effect_processor.paddles.append(partner)
+	if not ball.paddles.has(partner):
+		ball.paddles.append(partner)
 
 	assert_eq(
-		ball.effect_processor.paddles.count(partner),
+		ball.paddles.count(partner),
 		1,
 		"setting partner twice must not duplicate the paddle in the ball's paddle list",
 	)

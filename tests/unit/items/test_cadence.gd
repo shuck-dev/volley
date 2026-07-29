@@ -43,24 +43,23 @@ func _make_cadence_ball_item(key: String) -> BallDefinition:
 	return item
 
 
-func _cadence_processor(ball: Ball) -> CadenceBallEffectProcessor:
-	return ball.effect_processor as CadenceBallEffectProcessor
+func _spawn_cadence_ball(key: String) -> CadenceBall:
+	var cadence_item: BallDefinition = _make_cadence_ball_item(key)
+	var typed_items: Array[BallDefinition] = [cadence_item]
+	_manager.items.assign(typed_items)
+	return _spawn_ball(key) as CadenceBall
 
 
 func test_speed_scale_does_not_compound_across_hits() -> void:
-	var cadence_item: BallDefinition = _make_cadence_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [cadence_item]
-	_manager.items.assign(typed_items)
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.DOUBLE
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	_cadence_processor(ball)._mode = CadenceBallEffectProcessor.Mode.DOUBLE
-
-	ball.effect_processor.process_frame(0.016)
+	ball._sync_speed_limits()
 	ball._on_body_entered(_paddle)
 	var speed_after_first_hit: float = ball.speed
 
 	_paddle.tracker.reset()
-	ball.effect_processor.process_frame(0.016)
+	ball._sync_speed_limits()
 	ball._on_body_entered(_paddle)
 	var speed_after_second_hit: float = ball.speed
 
@@ -72,42 +71,29 @@ func test_speed_scale_does_not_compound_across_hits() -> void:
 
 
 func test_double_shift_exceeds_tier_ceiling() -> void:
-	var cadence_item: BallDefinition = _make_cadence_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [cadence_item]
-	_manager.items.assign(typed_items)
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.DOUBLE
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	_cadence_processor(ball)._mode = CadenceBallEffectProcessor.Mode.DOUBLE
+	ball._sync_speed_limits()
 
-	ball.effect_processor.process_frame(0.016)
-
-	assert_gt(ball.effect_processor.scaled_speed, ball.tier_ceiling)
+	assert_gt(ball.scaled_speed, ball.tier_ceiling)
 
 
 func test_half_shift_falls_below_tier_floor() -> void:
-	var cadence_item: BallDefinition = _make_cadence_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [cadence_item]
-	_manager.items.assign(typed_items)
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.HALF
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	_cadence_processor(ball)._mode = CadenceBallEffectProcessor.Mode.HALF
+	ball._sync_speed_limits()
 
-	ball.effect_processor.process_frame(0.016)
-
-	assert_lt(ball.effect_processor.scaled_speed, ball.tier_floor)
+	assert_lt(ball.scaled_speed, ball.tier_floor)
 
 
 func test_mode_shift_fires_particle_cue() -> void:
-	var cadence_item: BallDefinition = _make_cadence_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [cadence_item]
-	_manager.items.assign(typed_items)
-
-	var ball: CadenceBall = _spawn_ball("ball_cadence") as CadenceBall
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
 	assert_not_null(ball, "reconciler should spawn the CadenceBall subclass for a cadence item")
 
-	var processor: CadenceBallEffectProcessor = _cadence_processor(ball)
-	processor._time_in_mode = processor._hold_duration
+	ball._time_in_mode = ball._hold_duration
 
-	processor.process_frame(0.016)
+	ball._advance_mode(0.016)
 
 	assert_true(ball.shift_cue.emitting)
