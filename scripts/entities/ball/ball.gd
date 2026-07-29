@@ -89,7 +89,7 @@ func _ready() -> void:
 		court_config = load("res://scripts/core/court_config.gd").new()
 
 	ball_world_max_speed = court_config.world_max_speed()
-	var stats: BaseBallStats = _resolve_stats()
+	var stats: BaseBallStats = get_stats()
 	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
 	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
 	speed_increment = Stats.resolve(
@@ -382,7 +382,7 @@ func _apply_item_art() -> void:
 
 ## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
 ## (unadopted balls, test stubs).
-func _resolve_stats() -> BaseBallStats:
+func get_stats() -> BaseBallStats:
 	if ball_key == "":
 		return GameRules.base
 	return _ball_manager.get_item(ball_key).stats

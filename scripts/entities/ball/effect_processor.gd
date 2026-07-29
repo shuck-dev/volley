@@ -34,7 +34,7 @@ func _sync_speed_limits() -> void:
 
 func _sync_min_speed() -> void:
 	var new_min: float = Stats.resolve(
-		_stats().ball_speed_min, &"ball_speed_min", ball_manager, ball.ball_key
+		ball.get_stats().ball_speed_min, &"ball_speed_min", ball_manager, ball.ball_key
 	)
 
 	ball.min_speed = new_min
@@ -42,21 +42,13 @@ func _sync_min_speed() -> void:
 
 func _sync_max_speed() -> void:
 	ball.max_speed = Stats.resolve(
-		_stats().ball_speed_max, &"ball_speed_max", ball_manager, ball.ball_key
+		ball.get_stats().ball_speed_max, &"ball_speed_max", ball_manager, ball.ball_key
 	)
 	ball.speed_increment = Stats.resolve(
-		_stats().ball_speed_increment, &"ball_speed_increment", ball_manager, ball.ball_key
+		ball.get_stats().ball_speed_increment, &"ball_speed_increment", ball_manager, ball.ball_key
 	)
 	ball.speed = clampf(ball.speed, ball.tier_floor, ball.tier_ceiling)
 	refresh_scaled_speed()
-
-
-## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
-## (unadopted balls, test stubs).
-func _stats() -> BaseBallStats:
-	if ball.ball_key == "":
-		return GameRules.base
-	return ball_manager.get_item(ball.ball_key).stats
 
 
 func refresh_scaled_speed() -> void:
