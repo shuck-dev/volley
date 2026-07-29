@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_xxsyp"]
-[ext_resource type="PackedScene" uid="uid://24v5r1c0hi6db" path="res://scenes/balls/old_ball.tscn" id="3_scene"]
+[ext_resource type="PackedScene" uid="uid://212nmv8i311x" path="res://scenes/balls/old_ball.tscn" id="3_scene"]
 
 [resource]
 script = ExtResource("1_item")

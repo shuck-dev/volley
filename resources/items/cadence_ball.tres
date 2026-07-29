@@ -1,7 +1,8 @@
 [gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://obwrqs2a6y3w"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
-[ext_resource type="PackedScene" uid="uid://i5e617319zbs2" path="res://scenes/balls/cadence_ball.tscn" id="2_scene"]
+[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_effect"]
+[ext_resource type="PackedScene" uid="uid://bflgu4aj5lkbj" path="res://scenes/balls/cadence_ball.tscn" id="2_scene"]
 
 [resource]
 script = ExtResource("1_item")
