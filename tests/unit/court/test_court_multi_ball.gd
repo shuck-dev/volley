@@ -404,6 +404,30 @@ func test_on_hit_effect_only_mutates_the_hit_ball_offset() -> void:
 
 
 # Regression: two owned instances of the same ball type must not clobber each other's effects.
+func test_ball_with_own_stats_resource_diverges_from_shared_default() -> void:
+	var overridden_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_overridden")
+	var stats: BaseBallStats = BaseBallStats.new()
+	stats.ball_speed_max = GameRules.base.ball_speed_max + 200.0
+	overridden_item.stats = stats
+	var plain_item: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_plain")
+	var typed_items: Array[BallDefinition] = [overridden_item, plain_item]
+	_manager.items.assign(typed_items)
+
+	var overridden_ball: Ball = _spawn_ball("ball_overridden")
+	var plain_ball: Ball = _spawn_ball("ball_plain")
+
+	assert_eq(
+		plain_ball.max_speed,
+		GameRules.base.ball_speed_max,
+		"precondition: a ball with no stats override resolves the shared default"
+	)
+	assert_ne(
+		overridden_ball.max_speed,
+		plain_ball.max_speed,
+		"a ball carrying its own stats resource must diverge from the shared default"
+	)
+
+
 func test_two_instances_of_same_ball_type_do_not_clobber_each_other() -> void:
 	var effect_item: BallDefinition = _make_on_hit_ball_item("ball_cadence")
 	var typed_items: Array[BallDefinition] = [effect_item]
