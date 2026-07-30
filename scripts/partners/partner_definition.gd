@@ -6,7 +6,3 @@ extends Resource
 @export var unlock_threshold: int
 @export var unlock_cost: int
 @export var paddle_scene: PackedScene
-
-
-func get_key() -> String:
-	return key

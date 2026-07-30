@@ -11,7 +11,3 @@ extends Resource
 @export var max_level := 3
 ## Falls back to the shared global default; give a ball its own resource instance to diverge.
 @export var stats: BaseBallStats = load("res://resources/base_ball_stats.tres")
-
-
-func get_key() -> String:
-	return key

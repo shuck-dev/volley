@@ -9,12 +9,3 @@ extends Resource
 @export var ball_speed_increment := 17.0
 ## Soul awarded per paddle hit; items can percentage-modify.
 @export var soul_per_hit := 1.0
-
-
-func to_dict() -> Dictionary:
-	return {
-		&"ball_speed_min": ball_speed_min,
-		&"ball_speed_max": ball_speed_max,
-		&"ball_speed_increment": ball_speed_increment,
-		&"soul_per_hit": soul_per_hit,
-	}
