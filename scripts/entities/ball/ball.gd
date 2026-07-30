@@ -86,17 +86,25 @@ func _ready() -> void:
 		_ball_manager = BallManager
 
 	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
-	_sync_min_speed()
-	_sync_max_speed()
+	var stats: BaseBallStats = get_stats()
+	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
+	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
+	speed_increment = Stats.resolve(
+		stats.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
+	)
+	speed = clampf(speed, tier_floor, tier_ceiling)
+	refresh_scaled_speed()
 
-	_ball_setup()
+	_configure_physics_body()
+	_connect_ball_signals()
+	_wire_grab_area()
+	_serve()
 
 
 func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
 
-	_sync_speed_limits()
 	_update_play_state()
 
 	if (
@@ -301,28 +309,6 @@ func _apply_speed() -> void:
 	_emit_speed_changed()
 
 
-func _sync_speed_limits() -> void:
-	_sync_min_speed()
-	_sync_max_speed()
-
-
-func _sync_min_speed() -> void:
-	min_speed = Stats.resolve(
-		get_stats().ball_speed_min, &"ball_speed_min", _ball_manager, ball_key
-	)
-
-
-func _sync_max_speed() -> void:
-	max_speed = Stats.resolve(
-		get_stats().ball_speed_max, &"ball_speed_max", _ball_manager, ball_key
-	)
-	speed_increment = Stats.resolve(
-		get_stats().ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
-	)
-	speed = clampf(speed, tier_floor, tier_ceiling)
-	refresh_scaled_speed()
-
-
 func refresh_scaled_speed() -> void:
 	var speed_scale: float = (
 		1.0 + _ball_manager.get_percentage_offset(&"ball_speed_scale", ball_key)
@@ -383,24 +369,25 @@ func _baseline_collision_radius() -> float:
 	return (max_axis * 0.5) * maxf(max_scale, 0.001)
 
 
-func _ball_setup() -> void:
-	current_tier = 0
-	speed = tier_floor
+func _configure_physics_body() -> void:
 	lock_rotation = true
-
-	enter_play()
-	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
-
 	contact_monitor = true
 	max_contacts_reported = 1
+	input_pickable = false
 
+
+func _connect_ball_signals() -> void:
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(_on_missed):
 		missed.connect(_on_missed)
 
-	input_pickable = false
-	_wire_grab_area()
+
+func _serve() -> void:
+	current_tier = 0
+	speed = tier_floor
+	enter_play()
+	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 
 
 func _on_grab_area_grabbed(_area: GrabArea) -> void:

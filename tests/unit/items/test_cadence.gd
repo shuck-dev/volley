@@ -54,12 +54,12 @@ func test_speed_scale_does_not_compound_across_hits() -> void:
 	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
 	ball._mode = CadenceBall.Mode.DOUBLE
 
-	ball._sync_speed_limits()
+	ball.refresh_scaled_speed()
 	ball._on_body_entered(_paddle)
 	var speed_after_first_hit: float = ball.speed
 
 	_paddle.tracker.reset()
-	ball._sync_speed_limits()
+	ball.refresh_scaled_speed()
 	ball._on_body_entered(_paddle)
 	var speed_after_second_hit: float = ball.speed
 
@@ -74,7 +74,7 @@ func test_double_shift_exceeds_tier_ceiling() -> void:
 	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
 	ball._mode = CadenceBall.Mode.DOUBLE
 
-	ball._sync_speed_limits()
+	ball.refresh_scaled_speed()
 
 	assert_gt(ball.scaled_speed, ball.tier_ceiling)
 
@@ -83,7 +83,7 @@ func test_half_shift_falls_below_tier_floor() -> void:
 	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
 	ball._mode = CadenceBall.Mode.HALF
 
-	ball._sync_speed_limits()
+	ball.refresh_scaled_speed()
 
 	assert_lt(ball.scaled_speed, ball.tier_floor)
 

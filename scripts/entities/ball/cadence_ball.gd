@@ -50,6 +50,7 @@ func _advance_mode(delta: float) -> void:
 	_mode = MODE_ORDER[(current_index + 1) % MODE_ORDER.size()]
 	_time_in_mode = 0.0
 	_hold_duration = randf_range(min_interval_seconds, max_interval_seconds)
+	refresh_scaled_speed()
 	mode_shifted.emit(_mode)
 	_on_mode_shifted(_mode)
 
