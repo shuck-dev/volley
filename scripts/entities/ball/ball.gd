@@ -98,7 +98,10 @@ func _ready() -> void:
 	_configure_physics_body()
 	_connect_ball_signals()
 	_wire_grab_area()
-	_serve()
+	# A caller that stored the ball before it entered the tree keeps that state; only a
+	# ball that is still at its default serves itself on ready.
+	if play_state != PlayState.STORED:
+		_serve()
 
 
 func _physics_process(delta: float) -> void:

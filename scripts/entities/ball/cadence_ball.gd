@@ -1,9 +1,6 @@
 class_name CadenceBall
 extends Ball
 
-## Fires on every speed-mode shift so the particle cue and dev tooling can react.
-signal mode_shifted(mode: Mode)
-
 enum Mode { HALF, NORMAL, DOUBLE }
 
 const MODE_MULTIPLIER := {
@@ -51,11 +48,10 @@ func _advance_mode(delta: float) -> void:
 	_time_in_mode = 0.0
 	_hold_duration = randf_range(min_interval_seconds, max_interval_seconds)
 	refresh_scaled_speed()
-	mode_shifted.emit(_mode)
-	_on_mode_shifted(_mode)
+	_fire_shift_cue()
 
 
-func _on_mode_shifted(_mode_value: Mode) -> void:
+func _fire_shift_cue() -> void:
 	if shift_cue == null:
 		return
 	shift_cue.restart()
