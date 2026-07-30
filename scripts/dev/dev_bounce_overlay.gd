@@ -74,9 +74,7 @@ func _project_to_canvas(world_pos: Vector2) -> Vector2:
 
 
 func _draw_cone(paddle: Paddle) -> void:
-	var max_degrees: float = Stats.resolve(
-		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
-	)
+	var max_degrees: float = GameRules.paddle.paddle_return_angle_max_degrees
 
 	if max_degrees <= 0.0:
 		return
@@ -151,9 +149,7 @@ func _on_paddle_hit(ball: Ball, struck_paddle: Paddle) -> void:
 	if horizontal_sign == 0.0:
 		return
 
-	var return_angle_max_degrees: float = Stats.resolve(
-		GameRules.paddle.paddle_return_angle_max_degrees, &"paddle_return_angle_max_degrees"
-	)
+	var return_angle_max_degrees: float = GameRules.paddle.paddle_return_angle_max_degrees
 	var offset_norm: float = (
 		PaddleBounceMath
 		. contact_placement(

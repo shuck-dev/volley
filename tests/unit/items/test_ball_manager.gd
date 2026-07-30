@@ -105,50 +105,6 @@ class TestBallRepurchase:
 		assert_eq(_manager.get_level("test_ball"), 2)
 
 
-class TestStats:
-	extends GutTest
-	const TEST_KEY := "test_speed"
-	var _manager: Node
-
-	func before_each() -> void:
-		_manager = BallFactory.create_manager(self)
-
-	func test_get_stat_returns_base_value_before_any_purchase() -> void:
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			GameRules.paddle.paddle_speed
-		)
-
-	func test_activate_applies_stat_modifier() -> void:
-		_manager.economy.soul_balance = 1000
-		_manager.purchase(TEST_KEY)
-		_manager.activate(TEST_KEY)
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			GameRules.paddle.paddle_speed + 50.0
-		)
-
-	func test_multiple_purchases_stack_modifiers() -> void:
-		_manager.economy.soul_balance = 10000
-		_manager.purchase(TEST_KEY)
-		_manager.activate(TEST_KEY)
-		_manager.purchase(TEST_KEY)
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			GameRules.paddle.paddle_speed + 100.0
-		)
-
-	func test_remove_level_reverts_stat_modifier() -> void:
-		_manager.economy.soul_balance = 1000
-		_manager.purchase(TEST_KEY)
-		_manager.activate(TEST_KEY)
-		_manager.remove_level(TEST_KEY)
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			GameRules.paddle.paddle_speed
-		)
-
-
 class TestSoul:
 	extends GutTest
 	var _manager: Node
@@ -274,60 +230,6 @@ class TestTake:
 		watch_signals(_manager)
 		_manager.take(TEST_KEY)
 		assert_signal_emitted(_manager, "soul_balance_changed")
-
-	func test_take_does_not_apply_stat_effects() -> void:
-		var base_value: float = GameRules.base.ball_speed_min
-		_manager.economy.soul_balance = 100
-		_manager.take(TEST_KEY)
-		assert_eq(
-			Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min", _manager),
-			base_value,
-			"take should not register the item's effects",
-		)
-
-
-class TestReloadFromProgression:
-	extends GutTest
-	const TEST_KEY := "test_speed"
-	var _manager: Node
-
-	func before_each() -> void:
-		_manager = BallFactory.create_manager(self)
-
-	func test_reload_reregisters_effects_from_current_levels() -> void:
-		var base_speed: float = GameRules.paddle.paddle_speed
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			base_speed,
-			"no level, no effect"
-		)
-		# Simulate progression data being rewritten externally (e.g. dev clear-save)
-		BallFactory.give(_manager, TEST_KEY)
-		_manager.state.ball_placements[TEST_KEY] = Placement.ON_COURT
-		_manager.reload_from_progression()
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			base_speed + 50.0,
-			"reload should re-register effects matching the restored level"
-		)
-
-	func test_reload_unregisters_previously_registered_effects_when_level_is_zero() -> void:
-		var base_speed: float = GameRules.paddle.paddle_speed
-		_manager.economy.soul_balance = 1000
-		_manager.purchase(TEST_KEY)
-		_manager.activate(TEST_KEY)
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			base_speed + 50.0
-		)
-		# Simulate progression data being rewritten externally
-		_manager.state.ball_levels.clear()
-		_manager.reload_from_progression()
-		assert_eq(
-			Stats.resolve(GameRules.paddle.paddle_speed, &"paddle_speed", _manager),
-			base_speed,
-			"reload should drop effects that no longer have a level"
-		)
 
 
 class TestStoredItems:

@@ -108,35 +108,6 @@ func test_soul_accumulator_resets_on_miss() -> void:
 	assert_eq(_last_soul_balance, 1)
 
 
-# --- soul_per_hit stat ---
-func test_soul_per_hit_uses_effect_system_stat() -> void:
-	var item := BallFactory.create("soul_doubler", &"soul_per_hit", &"percentage", 1.0)
-	_ball_manager.items.assign([item])
-	_ball_manager.add_soul(item.base_cost)
-	_ball_manager.purchase(item.key)
-	_ball_manager.activate(item.key)
-
-	_hit()
-	_hit()
-
-	assert_eq(_last_soul_balance, 4)
-
-
-func test_soul_per_hit_with_quarter_bonus() -> void:
-	var item := BallFactory.create("soul_quarter", &"soul_per_hit", &"percentage", 0.25)
-	_ball_manager.items.assign([item])
-	_ball_manager.add_soul(item.base_cost)
-	_ball_manager.purchase(item.key)
-	_ball_manager.activate(item.key)
-
-	_hit()
-	_hit()
-	_hit()
-	_hit()
-
-	assert_eq(_last_soul_balance, 5)
-
-
 # --- auto_play_changed signal ---
 func test_auto_play_changed_emits_true_when_autoplay_enabled() -> void:
 	watch_signals(_game)

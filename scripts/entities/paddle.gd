@@ -188,13 +188,7 @@ func _is_crouching() -> bool:
 
 
 func _resolved_paddle_speed() -> float:
-	return _resolve(GameRules.paddle.paddle_speed, &"paddle_speed")
-
-
-func _resolve(base: float, key: StringName) -> float:
-	if _ball_manager == null:
-		_ball_manager = BallManager
-	return Stats.resolve(base, key, _ball_manager)
+	return GameRules.paddle.paddle_speed
 
 
 func _bind_stat_updates() -> void:

@@ -87,11 +87,9 @@ func _ready() -> void:
 
 	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
 	var stats: BaseBallStats = get_stats()
-	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
-	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
-	speed_increment = Stats.resolve(
-		stats.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
-	)
+	min_speed = stats.ball_speed_min
+	max_speed = stats.ball_speed_max
+	speed_increment = stats.ball_speed_increment
 	speed = clampf(speed, tier_floor, tier_ceiling)
 	refresh_scaled_speed()
 
@@ -336,14 +334,7 @@ func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
 			global_position,
 			struck_paddle.global_position,
 			struck_paddle.get_half_height(),
-			(
-				Stats
-				. resolve(
-					GameRules.paddle.paddle_return_angle_max_degrees,
-					&"paddle_return_angle_max_degrees",
-					_ball_manager,
-				)
-			),
+			GameRules.paddle.paddle_return_angle_max_degrees,
 		)
 	)
 
