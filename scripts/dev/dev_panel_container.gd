@@ -254,7 +254,6 @@ func _fit_to_content() -> void:
 
 func _on_clear_save_pressed() -> void:
 	SaveManager.clear_save()
-	BallManager.reload_from_progression()
 	get_tree().reload_current_scene()
 	SaveManager.unblock_writes.call_deferred()
 

@@ -119,10 +119,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		autoplay_controller.toggle()
 
 
-func _physics_process(delta: float) -> void:
-	_ball_manager.process_frame(delta)
-
-
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
 	_volley_count += 1
@@ -146,7 +142,6 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	_ball_manager.process_event(&"on_miss", missed_ball.ball_key)
 	_volley_count = 0
 	_soul_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)

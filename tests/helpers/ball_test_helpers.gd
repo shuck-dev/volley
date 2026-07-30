@@ -44,7 +44,6 @@ static func make_ball_item(key: String) -> BallDefinition:
 	item.base_cost = 10
 	item.cost_scaling = 2.0
 	item.max_level = 3
-	item.effects = []
 	item.scene = stub_ball_scene()
 	return item
 

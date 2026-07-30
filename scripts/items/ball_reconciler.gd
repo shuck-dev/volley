@@ -248,18 +248,14 @@ func _has_save_manager_autoload() -> bool:
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
-## Every BallDefinition carries its own scene; no fallback branch to keep alive as dead code.
-func _instantiate_ball(ball_key: String) -> Ball:
-	return _ball_manager.get_item(ball_key).scene.instantiate()
-
-
 ## Internal: spawns a STORED ball at a slot position.
 func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
-	var ball: Ball = _instantiate_ball(ball_key)
+	var definition: BallDefinition = _ball_manager.get_item(ball_key)
+	var ball: Ball = definition.scene.instantiate()
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
-	ball.configure(_ball_manager)
 	ball.ball_key = ball_key
+	ball.set_stats(definition.stats)
 	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
@@ -272,11 +268,12 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 
 ## Internal: spawns a Ball node without key generation.
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
-	var ball: Ball = _instantiate_ball(ball_key)
+	var definition: BallDefinition = _ball_manager.get_item(ball_key)
+	var ball: Ball = definition.scene.instantiate()
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
-	ball.configure(_ball_manager)
 	ball.ball_key = ball_key
+	ball.set_stats(definition.stats)
 	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity

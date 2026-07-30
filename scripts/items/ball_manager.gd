@@ -18,7 +18,6 @@ var items: Array[BallDefinition] = [
 
 var state: BallState
 var economy: EconomyState
-var _effect_manager: EffectManager
 
 
 func _ready() -> void:
@@ -28,79 +27,24 @@ func _ready() -> void:
 	if economy == null:
 		economy = SaveManager.economy
 
-	if _effect_manager == null:
-		_effect_manager = EffectManager.new()
-		_effect_manager.name = "EffectManager"
-
-	add_child(_effect_manager)
 	_register_existing_items()
 	ball_manager_state_changed.emit()
 
 
-## Resyncs effect registrations and emits signals after progression data has been
-## reset externally (e.g. dev clear-save).
-func reload_from_progression() -> void:
-	if not OS.is_debug_build():
-		return
-
-	for item in items:
-		_effect_manager.unregister_source(item, item.key)
-
-	for partner in ProgressionManager.partners_roster:
-		_effect_manager.unregister_source(partner)
-
-	_register_existing_items()
-	soul_balance_changed.emit(economy.soul_balance)
-
-	for item in items:
-		item_level_changed.emit(item.key)
+## Registers a partner as active; kept for the Court partner lifecycle to call into.
+func register_partner(_partner: Resource) -> void:
+	pass
 
 
-## Registers a partner's effects with the effect system
-func register_partner(partner: Resource) -> void:
-	_effect_manager.register_source(partner, 1)
-
-
-## Unregisters a partner's effects from the effect system
-func unregister_partner(partner: Resource) -> void:
-	_effect_manager.unregister_source(partner)
+## Unregisters a partner; kept for the Court partner lifecycle to call into.
+func unregister_partner(_partner: Resource) -> void:
+	pass
 
 
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
 func get_default_ball_launch_velocity() -> Vector2:
 	var min_speed: float = GameRules.base.ball_speed_min
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
-
-
-## The effect system's public query/registration API; see designs/effect-system/README.md.
-func get_effect_manager() -> EffectManager:
-	return _effect_manager
-
-
-## Kept on BallManager since callers hold this as the injected `ball_manager` reference,
-## not an EffectManager reference.
-func get_modifier(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_modifier(key, instance_key)
-
-
-## See `get_modifier`.
-func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_percentage_offset(key, instance_key)
-
-
-## Same as `get_modifier`, excluding temporary (until-miss) modifiers.
-func get_permanent_modifier(key: StringName, instance_key: String = "") -> float:
-	return _effect_manager.get_permanent_modifier(key, instance_key)
-
-
-## Dispatches a game event to the effect system for causality processing
-func process_event(event_type: StringName, instance_key: String = "") -> Array[StringName]:
-	return _effect_manager.process_event(event_type, instance_key)
-
-
-## Advances continuous effects like oscillation
-func process_frame(delta: float) -> void:
-	_effect_manager.process_frame(delta)
 
 
 ## Returns current level of an item (0 if not owned)
@@ -272,9 +216,6 @@ func purchase(ball_key: String) -> bool:
 	var new_level := get_level(ball_key) + 1
 	state.ball_levels[ball_key] = new_level
 
-	if _is_placed(ball_key):
-		_refresh_registration(ball_key)
-
 	item_level_changed.emit(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
@@ -328,9 +269,7 @@ func _register_existing_items() -> void:
 		var item := _get_item(key)
 		if item == null:
 			continue
-		if _is_placed(key):
-			_effect_manager.register_source(item, state.ball_levels[key], key, true)
-		elif not state.rack_slot_index_by_key.has(key):
+		if not _is_placed(key) and not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key)
 
 		SaveManager.save()
@@ -388,29 +327,21 @@ func _refund_soul(points: int) -> void:
 
 func _set_level(ball_key: String, level: int) -> void:
 	state.ball_levels[ball_key] = level
-
-	if _is_placed(ball_key):
-		_refresh_registration(ball_key)
-
 	item_level_changed.emit(ball_key)
 
 
 func _set_item_placement(ball_key: String, placement: int) -> void:
 	var previous: int = state.ball_placements.get(ball_key, Placement.STORED)
-	var item := get_item(ball_key)
 
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
 	# and a placed item never leaks one, regardless of whether the placement value moved.
 	if placement == Placement.STORED:
 		state.ball_placements.erase(ball_key)
 		state.loose_in_venue.erase(ball_key)
-		_effect_manager.unregister_source(item, ball_key)
 		_assign_rack_slot(ball_key)
 	else:
 		state.ball_placements[ball_key] = placement
 		state.loose_in_venue.erase(ball_key)
-		_effect_manager.unregister_source(item, ball_key)
-		_effect_manager.register_source(item, get_level(ball_key), ball_key, true)
 		state.rack_slot_index_by_key.erase(ball_key)
 
 	ball_manager_state_changed.emit()
@@ -424,14 +355,6 @@ func _set_item_placement(ball_key: String, placement: int) -> void:
 
 	if was_on_court != now_on_court:
 		court_changed.emit(ball_key, now_on_court)
-
-
-func _refresh_registration(ball_key: String) -> void:
-	var item := get_item(ball_key)
-	_effect_manager.unregister_source(item, ball_key)
-	var level := get_level(ball_key)
-	if level > 0:
-		_effect_manager.register_source(item, level, ball_key, true)
 
 
 func _is_placed(ball_key: String) -> bool:

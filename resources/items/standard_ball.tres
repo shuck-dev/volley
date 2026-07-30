@@ -1,7 +1,6 @@
 [gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://bid1gsm7ld4jm"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
-[ext_resource type="Script" uid="uid://bwtvbif3wrk20" path="res://scripts/items/effect/effect.gd" id="2_s36c6"]
 [ext_resource type="PackedScene" uid="uid://df1tdndedcf2y" path="res://scenes/balls/standard_ball.tscn" id="3_scene"]
 
 [resource]
