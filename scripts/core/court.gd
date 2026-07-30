@@ -146,14 +146,8 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	var actions: Array[StringName] = _ball_manager.process_event(&"on_miss", missed_ball.ball_key)
-	var should_halve: bool = actions.has(&"halve_streak")
-
-	if should_halve:
-		_volley_count = floori(_volley_count / 2.0)
-	else:
-		_volley_count = 0
-
+	_ball_manager.process_event(&"on_miss", missed_ball.ball_key)
+	_volley_count = 0
 	_soul_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
 
