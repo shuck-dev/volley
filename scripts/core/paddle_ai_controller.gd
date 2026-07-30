@@ -1,7 +1,7 @@
 class_name PaddleAIController
 extends Node
 
-@export var paddle: CharacterBody2D
+@export var paddle: Paddle
 @export var config: PaddleAIConfig
 
 var ball: Ball
@@ -132,6 +132,8 @@ func _get_paddle_speed() -> float:
 func _track() -> void:
 	var bound_y: float = ball.bound_y
 	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+	# Top-of-travel is negative (y-down); the court is vertically symmetric, so its magnitude is the bound.
+	var paddle_travel_bound: float = -Paddle.PADDLE_TOP_Y - paddle.get_half_height()
 	var predicted_y: float = (
 		PaddleAIMath
 		. predict_intercept(
@@ -140,7 +142,7 @@ func _track() -> void:
 			paddle.position.x,
 			bound_y,
 			gravity,
-			ball.court_config.arena_height,
+			paddle_travel_bound,
 		)
 	)
 	var noisy_target: float = predicted_y + _noise_offset

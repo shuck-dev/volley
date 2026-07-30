@@ -4,25 +4,24 @@ extends RefCounted
 ## Pure math functions for paddle AI: ball intercept prediction and noise sampling.
 
 
-## Predicts ball intercept y at target_x under PLAY-ARC physics, clamped to arena range.
+## Predicts ball intercept y at target_x under PLAY-ARC physics, clamped to the paddle's travel range.
 static func predict_intercept(
 	ball_position: Vector2,
 	ball_velocity: Vector2,
 	target_x: float,
 	bound_y: float,
 	gravity: float,
-	arena_height: float,
+	paddle_travel_bound: float,
 ) -> float:
 	var horizontal_speed: float = abs(ball_velocity.x)
 	if horizontal_speed < 1.0:
 		return ball_position.y
 
-	var arena_half: float = arena_height / 2.0
 	var time_to_reach: float = abs(target_x - ball_position.x) / horizontal_speed
 	var intercept_y: float = _simulate_intercept_y(
 		ball_position.y, ball_velocity.y, bound_y, gravity, time_to_reach
 	)
-	return clampf(intercept_y, -arena_half, arena_half)
+	return clampf(intercept_y, -paddle_travel_bound, paddle_travel_bound)
 
 
 static func _simulate_intercept_y(

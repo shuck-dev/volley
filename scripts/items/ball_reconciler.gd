@@ -16,17 +16,17 @@ signal ball_tier_advanced(ball: Ball, new_tier: int)
 
 signal current_ball_changed(ball: Ball)
 
-const BallScene: PackedScene = preload("res://scenes/ball.tscn")
 const PRESERVED_SPEED_NONE: float = -1.0
 
 ## Ball-role rack for STORED slot positions.
 @export var ball_rack: RackDisplay
 
 @export var spawn_origin: Vector2 = Vector2.ZERO
-@export var court_config: CourtConfig
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
+## Apex ceiling in pixels above the soul bound; Court sets this, then it is passed onto every ball this reconciler spawns.
+var arc_height_max: float = 0.0
 
 var _ball_manager: BallManager
 var _balls_by_key: Dictionary = {}
@@ -217,8 +217,7 @@ func get_current_ball() -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	if court_config != null:
-		new_ball.court_config = court_config
+	new_ball.arc_height_max = arc_height_max
 	new_ball.bound_y = bound_y
 	_register_ball(new_ball)
 
@@ -249,10 +248,15 @@ func _has_save_manager_autoload() -> bool:
 	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
+## Every BallDefinition carries its own scene; no fallback branch to keep alive as dead code.
+func _instantiate_ball(ball_key: String) -> Ball:
+	return _ball_manager.get_item(ball_key).scene.instantiate()
+
+
 ## Internal: spawns a STORED ball at a slot position.
 func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
-	var ball: Ball = BallScene.instantiate()
-	ball.court_config = court_config
+	var ball: Ball = _instantiate_ball(ball_key)
+	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)
 	ball.ball_key = ball_key
@@ -268,8 +272,8 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 
 ## Internal: spawns a Ball node without key generation.
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
-	var ball: Ball = BallScene.instantiate()
-	ball.court_config = court_config
+	var ball: Ball = _instantiate_ball(ball_key)
+	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.configure(_ball_manager)
 	ball.ball_key = ball_key
@@ -427,11 +431,6 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
-	if ball.effect_processor != null:
-		var paddles: Array[Node2D] = []
-		if player_paddle != null:
-			paddles.append(player_paddle)
-		ball.effect_processor.paddles = paddles
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
 			ball.register_miss_zone(zone)

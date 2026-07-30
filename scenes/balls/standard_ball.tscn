@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://oz9f4s341w2c9"]
+
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/ball.tscn" id="1_base"]
+[ext_resource type="Texture2D" uid="uid://bd7wwtwqp5lcu" path="res://assets/balls/baseball.png" id="2_7tvw7"]
+
+[node name="StandardBall" instance=ExtResource("1_base")]
+
+[node name="Sprite" parent="."]
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("2_7tvw7")

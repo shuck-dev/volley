@@ -50,4 +50,5 @@ static func create(
 	item.cost_scaling = 2.0
 	item.max_level = 3
 	item.effects = [effect]
+	item.scene = load("res://scenes/ball.tscn")
 	return item

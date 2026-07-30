@@ -4,8 +4,6 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const BallManagerScript: GDScript = preload("res://scripts/items/ball_manager.gd")
 const ItemTestHelpersScript: GDScript = preload("res://tests/helpers/ball_test_helpers.gd")
 const CourtScript: GDScript = preload("res://scripts/core/court.gd")
-const RecordingPartnerStub: GDScript = preload("res://tests/stubs/recording_partner_paddle_stub.gd")
-
 var _manager: Node
 var _host: Node2D
 var _reconciler: BallReconciler
@@ -193,112 +191,6 @@ func test_unregister_miss_zone_drops_zone_for_future_attaches() -> void:
 
 	kept_zone.body_entered.emit(ball)
 	assert_signal_emitted(ball, "missed", "kept zone should still reach later balls")
-
-
-func _make_partner_stub() -> Node2D:
-	var partner: Node2D = RecordingPartnerStub.new()
-	add_child_autofree(partner)
-	return partner
-
-
-func test_set_partner_paddle_targets_already_attached_balls() -> void:
-	var first: Ball = _spawn_ball("ball_alpha")
-	var second: Ball = _spawn_ball("ball_beta")
-	var partner: Node2D = _make_partner_stub()
-
-	for ball in _reconciler.get_balls():
-		if not is_instance_valid(ball):
-			continue
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
-
-	if _reconciler.get_current_ball() != null and partner.has_method("set_ball"):
-		partner.set_ball(_reconciler.get_current_ball())
-
-	assert_eq(
-		partner.last_ball,
-		_reconciler.get_current_ball(),
-		"partner should be told about the current ball on registration"
-	)
-	assert_true(
-		first.effect_processor.paddles.has(partner),
-		"partner should be on the first ball's paddle list"
-	)
-	assert_true(
-		second.effect_processor.paddles.has(partner),
-		"partner should be on the second ball's paddle list"
-	)
-
-
-func test_clear_partner_paddle_removes_partner_from_every_ball() -> void:
-	var first: Ball = _spawn_ball("ball_alpha")
-	var second: Ball = _spawn_ball("ball_beta")
-	var partner: Node2D = _make_partner_stub()
-	for ball in _reconciler.get_balls():
-		if not is_instance_valid(ball):
-			continue
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
-	assert_true(
-		first.effect_processor.paddles.has(partner), "precondition: partner attached to first"
-	)
-
-	for ball in _reconciler.get_balls():
-		if is_instance_valid(ball) and ball.effect_processor != null:
-			ball.effect_processor.paddles.erase(partner)
-
-	assert_false(
-		first.effect_processor.paddles.has(partner),
-		"partner should be removed from the first ball after clear"
-	)
-	assert_false(
-		second.effect_processor.paddles.has(partner),
-		"partner should be removed from the second ball after clear"
-	)
-
-
-func test_set_partner_with_no_balls_then_later_attach_inherits() -> void:
-	var partner: Node2D = _make_partner_stub()
-	var handler := func(ball: Ball):
-		if ball.effect_processor != null:
-			if not ball.effect_processor.paddles.has(partner):
-				ball.effect_processor.paddles.append(partner)
-		if partner.has_method("set_ball"):
-			partner.set_ball(ball)
-	_reconciler.ball_added.connect(handler)
-
-	var ball: Ball = _spawn_ball("ball_alpha")
-
-	assert_eq(
-		partner.last_ball, ball, "new ball should be handed to the previously-set partner on attach"
-	)
-	assert_true(
-		ball.effect_processor.paddles.has(partner),
-		"partner should land on the new ball's paddle list"
-	)
-
-	_reconciler.ball_added.disconnect(handler)
-
-
-func test_set_partner_paddle_twice_does_not_duplicate_in_paddle_list() -> void:
-	var ball: Ball = _spawn_ball("ball_alpha")
-	var partner: Node2D = _make_partner_stub()
-
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner):
-			ball.effect_processor.paddles.append(partner)
-
-	if ball.effect_processor != null:
-		if not ball.effect_processor.paddles.has(partner):
-			ball.effect_processor.paddles.append(partner)
-
-	assert_eq(
-		ball.effect_processor.paddles.count(partner),
-		1,
-		"setting partner twice must not duplicate the paddle in the ball's paddle list",
-	)
 
 
 func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:

@@ -45,13 +45,12 @@ func _find_court() -> Court:
 func _draw() -> void:
 	var court: Court = _find_court()
 
-	if court == null or court.soul_bound == null or court.court_config == null:
+	if court == null or court.soul_bound == null:
 		return
 
 	var bound_y: float = court.soul_bound.global_position.y
-	var court_width: float = court.court_config.court_width
-	var left: Vector2 = _project_to_canvas(Vector2(-court_width * 0.5, bound_y))
-	var right: Vector2 = _project_to_canvas(Vector2(court_width * 0.5, bound_y))
+	var left: Vector2 = _project_to_canvas(Vector2(-GameRules.COURT_WIDTH * 0.5, bound_y))
+	var right: Vector2 = _project_to_canvas(Vector2(GameRules.COURT_WIDTH * 0.5, bound_y))
 
 	draw_line(left, right, BOUND_LINE_COLOR, 2.0)
 

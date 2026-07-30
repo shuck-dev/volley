@@ -25,10 +25,8 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 @export var ball_key: String = ""
 ## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
 @export var grab_area: GrabArea
-## Per-court tunables; injected by Court at attach time. Falls back to a default at construction.
-@export var court_config: CourtConfig
-## Authored slot where this ball's item art gets instantiated at _ready.
-@export var item_art_holder: Node2D
+## Apex ceiling in pixels above the soul bound; injected by Court at attach time.
+@export var arc_height_max: float = 220.0
 ## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
 var bound_y: float
 
@@ -36,7 +34,8 @@ var speed := 0.0
 var min_speed: float
 var max_speed: float
 var speed_increment: float
-var effect_processor: BallEffectProcessor
+## Speed after the tier clamp and any uncapped scale.
+var scaled_speed := 0.0
 var is_temporary := false
 
 ## Hard speed ceiling no item, effect, or final-consolidation climb may exceed; derived from the court at ready.
@@ -85,27 +84,30 @@ func configure(ball_manager: BallManager) -> void:
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
-	if court_config == null:
-		court_config = load("res://scripts/core/court_config.gd").new()
 
-	ball_world_max_speed = court_config.world_max_speed()
+	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
 	var stats: BaseBallStats = get_stats()
 	min_speed = Stats.resolve(stats.ball_speed_min, &"ball_speed_min", _ball_manager, ball_key)
 	max_speed = Stats.resolve(stats.ball_speed_max, &"ball_speed_max", _ball_manager, ball_key)
 	speed_increment = Stats.resolve(
 		stats.ball_speed_increment, &"ball_speed_increment", _ball_manager, ball_key
 	)
+	speed = clampf(speed, tier_floor, tier_ceiling)
+	refresh_scaled_speed()
 
-	_setup_effect_processor()
-	_ball_setup()
-	_apply_item_art()
+	_configure_physics_body()
+	_connect_ball_signals()
+	_wire_grab_area()
+	# A caller that stored the ball before it entered the tree keeps that state; only a
+	# ball that is still at its default serves itself on ready.
+	if play_state != PlayState.STORED:
+		_serve()
 
 
 func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
 
-	effect_processor.process_frame(delta)
 	_update_play_state()
 
 	if (
@@ -120,7 +122,7 @@ func _physics_process(delta: float) -> void:
 
 	# Renormalise in ARC as well as NORMAL: the bend turns direction, the magnitude stays at speed.
 	if play_state == PlayState.PLAY_NORMAL or play_state == PlayState.PLAY_ARC:
-		linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
+		linear_velocity = linear_velocity.normalized() * scaled_speed
 
 
 # NORMAL <-> ARC crossing, read off the body's current Y vs the soul bound.
@@ -139,9 +141,7 @@ func _update_play_state() -> void:
 func _enter_arc() -> void:
 	# No engine gravity above the bound; the court's arc rule supplies the downward bend instead.
 	gravity_scale = 0.0
-	if court_config.physics == null:
-		court_config.physics = load("res://scripts/core/court_physics.gd").new()
-	_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
+	_arc_acceleration = ArcMath.arc_acceleration(-linear_velocity.y, arc_height_max)
 	set_play_state(PlayState.PLAY_ARC)
 
 
@@ -174,7 +174,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	var hit_registered: bool = paddle.on_ball_hit(self)
 	if hit_registered:
 		increase_speed()
-	effect_processor.process_hit(paddle)
+	_process_hit(paddle)
 	_ball_manager.process_event(&"on_hit", ball_key)
 
 
@@ -304,20 +304,53 @@ func _tier_fraction(field: String) -> float:
 
 
 func _apply_speed() -> void:
-	effect_processor.refresh_scaled_speed()
-	linear_velocity = linear_velocity.normalized() * effect_processor.scaled_speed
+	refresh_scaled_speed()
+	linear_velocity = linear_velocity.normalized() * scaled_speed
 	# A mid-arc speed change reshapes the rest of the bend so the apex still honours the new speed.
 	if play_state == PlayState.PLAY_ARC:
-		_arc_acceleration = court_config.physics.arc_acceleration(-linear_velocity.y)
+		_arc_acceleration = ArcMath.arc_acceleration(-linear_velocity.y, arc_height_max)
 	_emit_speed_changed()
 
 
-func _setup_effect_processor() -> void:
-	effect_processor = BallEffectProcessor.new()
-	effect_processor.name = "BallEffectProcessor"
-	effect_processor.ball = self
-	effect_processor.ball_manager = _ball_manager
-	add_child(effect_processor)
+func refresh_scaled_speed() -> void:
+	var speed_scale: float = (
+		1.0 + _ball_manager.get_percentage_offset(&"ball_speed_scale", ball_key)
+	)
+	scaled_speed = speed * speed_scale
+
+
+func _process_hit(struck_paddle: Paddle) -> void:
+	refresh_scaled_speed()
+	_apply_paddle_offset_return(struck_paddle)
+
+
+# Where on the paddle the ball struck drives the return angle.
+func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
+	if struck_paddle == null:
+		return
+
+	var direction: Variant = (
+		PaddleBounceMath
+		. bounce_direction(
+			linear_velocity,
+			global_position,
+			struck_paddle.global_position,
+			struck_paddle.get_half_height(),
+			(
+				Stats
+				. resolve(
+					GameRules.paddle.paddle_return_angle_max_degrees,
+					&"paddle_return_angle_max_degrees",
+					_ball_manager,
+				)
+			),
+		)
+	)
+
+	if direction == null:
+		return
+
+	linear_velocity = (direction as Vector2) * scaled_speed
 
 
 func _wire_grab_area() -> void:
@@ -339,45 +372,31 @@ func _baseline_collision_radius() -> float:
 	return (max_axis * 0.5) * maxf(max_scale, 0.001)
 
 
-func _ball_setup() -> void:
-	current_tier = 0
-	speed = tier_floor
+func _configure_physics_body() -> void:
 	lock_rotation = true
-
-	enter_play()
-	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
-
 	contact_monitor = true
 	max_contacts_reported = 1
+	input_pickable = false
 
+
+func _connect_ball_signals() -> void:
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(_on_missed):
 		missed.connect(_on_missed)
 
-	input_pickable = false
-	_wire_grab_area()
+
+func _serve() -> void:
+	current_tier = 0
+	speed = tier_floor
+	enter_play()
+	linear_velocity = Vector2(min_speed, min_speed * 0.5).normalized() * speed
 
 
 func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	if freeze:
 		return
 	grabbed.emit(self)
-
-
-func has_item_art() -> bool:
-	return item_art_holder != null and is_instance_valid(item_art_holder)
-
-
-func _apply_item_art() -> void:
-	if ball_key == "" or item_art_holder == null:
-		return
-	var definition: BallDefinition = _ball_manager.get_item(ball_key)
-	if definition.art == null:
-		return
-	var art_instance: ItemArt = definition.art.instantiate()
-	item_art_holder.add_child(art_instance)
-	art_instance.watch_ball(self)
 
 
 ## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise

@@ -37,38 +37,29 @@ func _spawn_ball(ball_key: String) -> Ball:
 	return _reconciler.get_ball_for_key(ball_key)
 
 
-func _make_speed_scale_ball_item(key: String) -> BallDefinition:
-	var outcome := StatShiftOutcome.new()
-	outcome.stat_key = &"ball_speed_scale"
-
-	var trigger := Trigger.new()
-	trigger.type = &"always"
-
-	var effect := Effect.new()
-	effect.trigger = trigger
-	effect.outcomes = [outcome]
-	effect.min_active_level = 1
-
+func _make_cadence_ball_item(key: String) -> BallDefinition:
 	var item: BallDefinition = ItemTestHelpersScript.make_ball_item(key)
-	item.effects = [effect]
+	item.scene = load("res://scenes/balls/cadence_ball.tscn")
 	return item
 
 
-func test_speed_scale_does_not_compound_across_hits() -> void:
-	var effect_item: BallDefinition = _make_speed_scale_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [effect_item]
+func _spawn_cadence_ball(key: String) -> CadenceBall:
+	var cadence_item: BallDefinition = _make_cadence_ball_item(key)
+	var typed_items: Array[BallDefinition] = [cadence_item]
 	_manager.items.assign(typed_items)
+	return _spawn_ball(key) as CadenceBall
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	for shift in _manager.get_effect_manager().get_shifts(ball.ball_key):
-		shift._mode = StatShift.Mode.DOUBLE
 
-	ball.effect_processor.process_frame(0.016)
+func test_speed_scale_does_not_compound_across_hits() -> void:
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.DOUBLE
+
+	ball.refresh_scaled_speed()
 	ball._on_body_entered(_paddle)
 	var speed_after_first_hit: float = ball.speed
 
 	_paddle.tracker.reset()
-	ball.effect_processor.process_frame(0.016)
+	ball.refresh_scaled_speed()
 	ball._on_body_entered(_paddle)
 	var speed_after_second_hit: float = ball.speed
 
@@ -80,28 +71,29 @@ func test_speed_scale_does_not_compound_across_hits() -> void:
 
 
 func test_double_shift_exceeds_tier_ceiling() -> void:
-	var effect_item: BallDefinition = _make_speed_scale_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [effect_item]
-	_manager.items.assign(typed_items)
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.DOUBLE
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	for shift in _manager.get_effect_manager().get_shifts(ball.ball_key):
-		shift._mode = StatShift.Mode.DOUBLE
+	ball.refresh_scaled_speed()
 
-	ball.effect_processor.process_frame(0.016)
-
-	assert_gt(ball.effect_processor.scaled_speed, ball.tier_ceiling)
+	assert_gt(ball.scaled_speed, ball.tier_ceiling)
 
 
 func test_half_shift_falls_below_tier_floor() -> void:
-	var effect_item: BallDefinition = _make_speed_scale_ball_item("ball_cadence")
-	var typed_items: Array[BallDefinition] = [effect_item]
-	_manager.items.assign(typed_items)
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	ball._mode = CadenceBall.Mode.HALF
 
-	var ball: Ball = _spawn_ball("ball_cadence")
-	for shift in _manager.get_effect_manager().get_shifts(ball.ball_key):
-		shift._mode = StatShift.Mode.HALF
+	ball.refresh_scaled_speed()
 
-	ball.effect_processor.process_frame(0.016)
+	assert_lt(ball.scaled_speed, ball.tier_floor)
 
-	assert_lt(ball.effect_processor.scaled_speed, ball.tier_floor)
+
+func test_mode_shift_fires_particle_cue() -> void:
+	var ball: CadenceBall = _spawn_cadence_ball("ball_cadence")
+	assert_not_null(ball, "reconciler should spawn the CadenceBall subclass for a cadence item")
+
+	ball._time_in_mode = ball._hold_duration
+
+	ball._advance_mode(0.016)
+
+	assert_true(ball.shift_cue.emitting)

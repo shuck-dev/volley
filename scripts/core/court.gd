@@ -7,7 +7,8 @@ signal ball_tier_advanced(new_tier: int)
 signal auto_play_changed(is_active: bool, soul_rate: float)
 signal partner_changed
 
-@export var court_config: CourtConfig
+## Apex ceiling in pixels above the soul bound; passed to every ball this court spawns.
+@export var arc_height_max: float = 220.0
 
 @export_group("Controllers")
 @export var ball_system: BallReconciler
@@ -78,9 +79,7 @@ func _ready() -> void:
 		ball_system = BallReconciler.new()
 		add_child(ball_system)
 
-	if court_config == null:
-		court_config = load("res://scripts/core/court_config.gd").new()
-	ball_system.court_config = court_config
+	ball_system.arc_height_max = arc_height_max
 	if soul_bound != null:
 		ball_system.bound_y = soul_bound.global_position.y
 	ball_system.player_paddle = player_paddle
@@ -189,13 +188,6 @@ func _activate_partner() -> void:
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	for active_ball in ball_system.get_balls():
-		if not is_instance_valid(active_ball):
-			continue
-		if active_ball.effect_processor != null:
-			if not active_ball.effect_processor.paddles.has(partner_paddle):
-				active_ball.effect_processor.paddles.append(partner_paddle)
-
 	var current: Ball = ball_system.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(current)
@@ -224,10 +216,6 @@ func _deactivate_partner() -> void:
 		partner_paddle.controller.bind_tracker(null)
 	ball_system.ball_added.disconnect(_on_partner_ball_added)
 
-	for active_ball in ball_system.get_balls():
-		if is_instance_valid(active_ball) and active_ball.effect_processor != null:
-			active_ball.effect_processor.paddles.erase(partner_paddle)
-
 	partner_paddle.queue_free()
 	partner_paddle = null
 	_active_partner_definition = null
@@ -242,10 +230,6 @@ func _deactivate_partner() -> void:
 func _on_partner_ball_added(incoming_ball: Ball) -> void:
 	if partner_paddle == null:
 		return
-
-	if incoming_ball.effect_processor != null:
-		if not incoming_ball.effect_processor.paddles.has(partner_paddle):
-			incoming_ball.effect_processor.paddles.append(partner_paddle)
 
 	if partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(incoming_ball)
