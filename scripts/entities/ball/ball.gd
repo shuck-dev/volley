@@ -400,8 +400,10 @@ func _on_grab_area_grabbed(_area: GrabArea) -> void:
 
 
 ## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
-## (unadopted balls, test stubs).
+## (unadopted balls, test stubs, and definitions whose .tres omits a `stats` line, where the
+## script's initialiser does not run).
 func get_stats() -> BaseBallStats:
 	if ball_key == "":
 		return GameRules.base
-	return _ball_manager.get_item(ball_key).stats
+	var stats: BaseBallStats = _ball_manager.get_item(ball_key).stats
+	return stats if stats != null else GameRules.base

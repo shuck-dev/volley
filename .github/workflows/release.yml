@@ -25,37 +25,6 @@ jobs:
   test:
     uses: ./.github/workflows/test.yml
 
-  promote-lfs:
-    name: Promote LFS objects to release
-    needs: test
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          lfs: false
-
-      - name: Collect released LFS oids
-        id: oids
-        run: |
-          git lfs ls-files --long | awk '{print $1}' | jq -Rsc 'split("\n") | map(select(. != ""))' > oids.json
-
-      - name: Promote preview objects to release
-        run: |
-          status=$(curl -sS -o response.json -w "%{http_code}" -X POST \
-            -H "Authorization: Basic $(printf 'volley:%s' "${{ secrets.LFS_PROMOTE_KEY }}" | base64 -w0)" \
-            -H "Content-Type: application/json" \
-            -d "{\"oids\": $(cat oids.json)}" \
-            https://volley-lfs-proxy.volcanoem.workers.dev/promote)
-          cat response.json
-          echo
-          if [ "$status" -ne 200 ]; then
-            echo "::error::promote request failed with HTTP $status; failing oids listed above"
-            exit 1
-          fi
-
   deploy-production:
     name: Deploy to Production
     needs: test
@@ -75,8 +44,6 @@ jobs:
 
       - name: Strip dev addons
         run: |
-          sed -i '/GodotIQRuntime=/d' project.godot
-          sed -i 's|"res://addons/godotiq/plugin.cfg", ||g' project.godot
           sed -i 's|"res://addons/gut/plugin.cfg", ||g' project.godot
           sed -i 's|, "res://addons/gut/plugin.cfg"||g' project.godot
           rm -rf addons/coverage
