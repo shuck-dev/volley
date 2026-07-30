@@ -68,7 +68,7 @@ func unregister_partner(partner: Resource) -> void:
 
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
 func get_default_ball_launch_velocity() -> Vector2:
-	var min_speed: float = Stats.resolve(GameRules.base.ball_speed_min, &"ball_speed_min")
+	var min_speed: float = GameRules.base.ball_speed_min
 	return Vector2(min_speed, min_speed * 0.5).normalized() * min_speed
 
 
@@ -77,13 +77,13 @@ func get_effect_manager() -> EffectManager:
 	return _effect_manager
 
 
-## Duck-typed seam for `Stats.resolve`; kept on BallManager since callers hold this as the
-## injected `ball_manager` reference, not an EffectManager reference.
+## Kept on BallManager since callers hold this as the injected `ball_manager` reference,
+## not an EffectManager reference.
 func get_modifier(key: StringName, instance_key: String = "") -> float:
 	return _effect_manager.get_modifier(key, instance_key)
 
 
-## Duck-typed seam for `Stats.resolve`; see `get_modifier`.
+## See `get_modifier`.
 func get_percentage_offset(key: StringName, instance_key: String = "") -> float:
 	return _effect_manager.get_percentage_offset(key, instance_key)
 

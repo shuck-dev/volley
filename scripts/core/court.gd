@@ -232,9 +232,7 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 ## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_soul() -> void:
 	var rate: float = _progression_config.autoplay_soul_rate
-	var base_points: float = Stats.resolve(
-		GameRules.base.soul_per_hit, &"soul_per_hit", _ball_manager
-	)
+	var base_points: float = GameRules.base.soul_per_hit
 	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier

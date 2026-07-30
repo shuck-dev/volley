@@ -9,7 +9,6 @@ signal panel_docked(panel: Control)
 const DISPLAY_NAMES := {
 	"DevItemUI": "Items",
 	"DevShopPanel": "Shop",
-	"DevStatPanel": "Stats",
 	"DevBallStatePanel": "Ball State",
 	"DevBouncePanel": "Bounce",
 	"PlayerSprite": "Sprite",
