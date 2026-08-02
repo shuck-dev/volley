@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://c1bge5t2s3ds0"]
+
+[ext_resource type="PackedScene" uid="uid://bjwppuc8grsq7" path="res://scenes/balls/goop_ball.tscn" id="1_aeehb"]
+[ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="2_g4j3q"]
+
+[resource]
+script = ExtResource("2_g4j3q")
+key = "goop"
+display_name = "Goop"
+scene = ExtResource("1_aeehb")
+base_cost = 100

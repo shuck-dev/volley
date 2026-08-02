@@ -7,10 +7,10 @@
 [ext_resource type="Texture2D" uid="uid://c4aqd702r8lpn" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_03.png" id="9_pkbgn"]
 [ext_resource type="Texture2D" uid="uid://cdhk2vd3o8tyn" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_04.png" id="10_np2oc"]
 [ext_resource type="Texture2D" uid="uid://cq1fjlx3ml0jc" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_05.png" id="11_ysull"]
-[ext_resource type="Texture2D" uid="uid://diw2ggpuq7lb0" path="res://assets/sprites/sam/ready_grounded/ready_grounded_01.png" id="12_f2t5l"]
-[ext_resource type="Texture2D" uid="uid://6wse64ljc4si" path="res://assets/sprites/sam/ready_grounded/ready_grounded_02.png" id="13_br5dj"]
-[ext_resource type="Texture2D" uid="uid://dtms4msbskblf" path="res://assets/sprites/sam/ready_grounded/ready_grounded_03.png" id="14_3npww"]
-[ext_resource type="Texture2D" uid="uid://c1diw6bbqps3o" path="res://assets/sprites/sam/ready_grounded/ready_grounded_04.png" id="15_r5wsh"]
+[ext_resource type="Texture2D" uid="uid://cvlsbdein3mgc" path="res://assets/sprites/sam/ready_grounded/ready_grounded_01.png" id="12_f2t5l"]
+[ext_resource type="Texture2D" uid="uid://dmqgc8fmae71d" path="res://assets/sprites/sam/ready_grounded/ready_grounded_02.png" id="13_br5dj"]
+[ext_resource type="Texture2D" uid="uid://deqbm8kjfw8x3" path="res://assets/sprites/sam/ready_grounded/ready_grounded_03.png" id="14_3npww"]
+[ext_resource type="Texture2D" uid="uid://kxgaskkt3fcc" path="res://assets/sprites/sam/ready_grounded/ready_grounded_04.png" id="15_r5wsh"]
 
 [resource]
 animations = [{
