@@ -17,7 +17,6 @@ func _make_item(ball_key: String) -> BallDefinition:
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
-	item.effects = []
 	item.scene = ItemTestHelpersScript.stub_ball_scene()
 	return item
 

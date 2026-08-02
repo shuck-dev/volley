@@ -18,7 +18,6 @@ func before_each() -> void:
 	_ball_manager = load("res://scripts/items/ball_manager.gd").new()
 	_ball_manager.state = BallState.new()
 	_ball_manager.economy = EconomyState.new()
-	_ball_manager._effect_manager = EffectManager.new()
 	add_child_autofree(_ball_manager)
 
 	_autoplay_controller_stub = load("res://tests/stubs/autoplay_controller_stub.gd").new()

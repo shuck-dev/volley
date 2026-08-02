@@ -45,18 +45,14 @@ var current_tier := 0
 ## Accumulated soul multiplier for this ball; incremented by each consolidation event, reset on miss.
 var soul_multiplier: float = 1.0
 
-## Entry speed of the current tier, derived from the table fraction of the world max plus any tier-floor lift on tiers above Tier 0.
+## Entry speed of the current tier, derived from the table fraction of the world max.
 var tier_floor: float:
 	get:
 		var base_floor: float = _tier_fraction("floor_fraction") * ball_world_max_speed
 		if current_tier == 0:
 			return base_floor
 
-		var lift: float = (
-			_ball_manager.get_modifier(&"tier_floor_lift", ball_key) * ball_world_max_speed
-		)
-
-		return minf(base_floor + lift, tier_ceiling)
+		return minf(base_floor, tier_ceiling)
 
 ## Speed that completes the current tier.
 var tier_ceiling: float:
@@ -65,7 +61,8 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-var _ball_manager: BallManager
+## Stats snapshot from the BallDefinition the reconciler spawned this ball from; unset for a keyless ball.
+var stats: BaseBallStats
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
@@ -76,15 +73,7 @@ var _arc_acceleration: float = 0.0
 var _suppress_miss_detection: bool = false
 
 
-## Injects the item manager seam before _ready runs; falls back to the autoload if never called.
-func configure(ball_manager: BallManager) -> void:
-	_ball_manager = ball_manager
-
-
 func _ready() -> void:
-	if _ball_manager == null:
-		_ball_manager = BallManager
-
 	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
 	var stats: BaseBallStats = get_stats()
 	min_speed = stats.ball_speed_min
@@ -173,7 +162,6 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	if hit_registered:
 		increase_speed()
 	_process_hit(paddle)
-	_ball_manager.process_event(&"on_hit", ball_key)
 
 
 func register_miss_zone(zone: MissZone) -> void:
@@ -290,7 +278,6 @@ func advance_tier() -> void:
 	_apply_speed()
 
 	tier_advanced.emit(self, current_tier)
-	_ball_manager.process_event(&"on_tier_completed", ball_key)
 
 
 func _tier_fraction(field: String) -> float:
@@ -311,10 +298,7 @@ func _apply_speed() -> void:
 
 
 func refresh_scaled_speed() -> void:
-	var speed_scale: float = (
-		1.0 + _ball_manager.get_percentage_offset(&"ball_speed_scale", ball_key)
-	)
-	scaled_speed = speed * speed_scale
+	scaled_speed = speed
 
 
 func _process_hit(struck_paddle: Paddle) -> void:
@@ -390,11 +374,8 @@ func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	grabbed.emit(self)
 
 
-## Ball-scoped stats when a definition is known (ball_key set); the shared default otherwise
+## Ball-scoped stats when the spawner injected one via `stats`; the shared default otherwise
 ## (unadopted balls, test stubs, and definitions whose .tres omits a `stats` line, where the
 ## script's initialiser does not run).
 func get_stats() -> BaseBallStats:
-	if ball_key == "":
-		return GameRules.base
-	var stats: BaseBallStats = _ball_manager.get_item(ball_key).stats
 	return stats if stats != null else GameRules.base

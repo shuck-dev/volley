@@ -13,7 +13,6 @@ func before_each() -> void:
 	_manager = BallManagerScript.new()
 	_manager.state = BallState.new()
 	_manager.economy = EconomyState.new()
-	_manager._effect_manager = EffectManager.new()
 	_manager.economy.soul_balance = 10000
 	add_child_autofree(_manager)
 

@@ -29,25 +29,6 @@ func _ready() -> void:
 		remove_button.focus_mode = Control.FOCUS_NONE
 		row.add_child(remove_button)
 
-		var effect_lines := _build_effect_lines(item)
-		if effect_lines.size() > 0:
-			var details := VBoxContainer.new()
-			details.visible = false
-			container.add_child(details)
-
-			var toggle := Button.new()
-			toggle.text = "+"
-			toggle.focus_mode = Control.FOCUS_NONE
-			toggle.custom_minimum_size.x = 20
-			toggle.pressed.connect(_on_toggle_details.bind(toggle, details))
-			row.add_child(toggle)
-
-			for line in effect_lines:
-				var label := Label.new()
-				label.text = line
-				label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
-				details.add_child(label)
-
 	_refresh_buttons()
 	_setup_soul_controls()
 
@@ -67,11 +48,6 @@ func _input(event: InputEvent) -> void:
 
 func _on_remove_level_pressed(ball_key: String) -> void:
 	BallManager.remove_level(ball_key)
-
-
-func _on_toggle_details(toggle: Button, details: VBoxContainer) -> void:
-	details.visible = not details.visible
-	toggle.text = "-" if details.visible else "+"
 
 
 func _refresh_buttons() -> void:
@@ -108,22 +84,6 @@ func _setup_soul_controls() -> void:
 	remove_soul_button.focus_mode = Control.FOCUS_NONE
 	remove_soul_button.pressed.connect(_on_remove_soul_pressed.bind(soul_input))
 	row.add_child(remove_soul_button)
-
-
-func _build_effect_lines(item: BallDefinition) -> Array[String]:
-	var lines: Array[String] = []
-	for effect: Effect in item.effects:
-		var level_range := ""
-		if effect.min_active_level > 1 or effect.max_active_level != null:
-			var effective_max: Variant = effect.max_active_level
-			var max_level: int = effective_max if effective_max != null else item.max_level
-			level_range = " (Lv%d-%d)" % [effect.min_active_level, max_level]
-		for outcome: Outcome in effect.outcomes:
-			var line := "%s %s" % [effect.trigger.type, outcome.describe()]
-			if not level_range.is_empty():
-				line += level_range
-			lines.append(line)
-	return lines
 
 
 func _on_add_soul_pressed(input: SpinBox) -> void:

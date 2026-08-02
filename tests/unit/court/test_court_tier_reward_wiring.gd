@@ -17,7 +17,6 @@ func before_each() -> void:
 	_manager = BallManagerScript.new()
 	_manager.state = BallState.new()
 	_manager.economy = EconomyState.new()
-	_manager._effect_manager = EffectManager.new()
 
 	var ball_item: BallDefinition = ItemTestHelpersScript.make_ball_item("old_ball")
 	var typed_items: Array[BallDefinition] = [ball_item]

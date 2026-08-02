@@ -95,7 +95,6 @@ class TestBallRepurchase:
 		ball.base_cost = 100
 		ball.cost_scaling = 2.0
 		ball.max_level = 5
-		ball.effects = []
 		_manager.items.assign([ball])
 
 	func test_ball_can_be_purchased_multiple_times() -> void:
@@ -199,7 +198,6 @@ class TestTake:
 		ball.base_cost = 100
 		ball.cost_scaling = 2.0
 		ball.max_level = 3
-		ball.effects = []
 		_manager.items.assign([ball] as Array[BallDefinition])
 
 	func test_take_returns_empty_string_when_balance_too_low() -> void:
@@ -243,7 +241,6 @@ class TestStoredItems:
 		ball_item.base_cost = 100
 		ball_item.cost_scaling = 2.0
 		ball_item.max_level = 3
-		ball_item.effects = []
 		_manager.items.assign([ball_item])
 		_manager.economy.soul_balance = 10000
 
@@ -287,7 +284,6 @@ class TestRackSlotAssignment:
 			ball_item.base_cost = 100
 			ball_item.cost_scaling = 2.0
 			ball_item.max_level = 3
-			ball_item.effects = []
 			typed.append(ball_item)
 		_manager.items.assign(typed)
 

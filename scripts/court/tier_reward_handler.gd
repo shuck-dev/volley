@@ -1,9 +1,9 @@
 class_name TierRewardHandler
 extends Node
 
-## Fires on_consolidation through the effect system on every tier-up; handles first-reach upgrades.
+## Handles first-reach ball upgrades on every tier-up.
 
-## Fired after on_consolidation is processed so Court can read the updated soul_multiplier.
+## Fired after the tier-up is processed so Court can read the updated soul_multiplier.
 signal consolidation_fired
 
 var _ball_manager: BallManager
@@ -40,7 +40,6 @@ func on_tier_advanced(ball: Ball, new_tier: int) -> void:
 	if ball != null:
 		ball.increment_soul_multiplier(1.0)
 
-	_ball_manager.process_event(&"on_consolidation")
 	consolidation_fired.emit()
 
 

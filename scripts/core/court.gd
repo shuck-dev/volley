@@ -32,7 +32,6 @@ var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
-var _active_partner_definition: Resource
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
@@ -119,10 +118,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		autoplay_controller.toggle()
 
 
-func _physics_process(delta: float) -> void:
-	_ball_manager.process_frame(delta)
-
-
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
 	_volley_count += 1
@@ -146,7 +141,6 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 	# Each ball owns its speed: it resets itself off its own `missed` signal.
 	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	_ball_manager.process_event(&"on_miss", missed_ball.ball_key)
 	_volley_count = 0
 	_soul_accumulator = 0.0
 	volley_count_changed.emit(_volley_count)
@@ -175,7 +169,6 @@ func _activate_partner() -> void:
 	if partner_definition == null or partner_definition.paddle_scene == null:
 		return
 
-	_active_partner_definition = partner_definition
 	partner_paddle = partner_definition.paddle_scene.instantiate()
 	partner_paddle.position = partner_spawn.position
 	add_child(partner_paddle)
@@ -190,8 +183,6 @@ func _activate_partner() -> void:
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(ball_system)
 
-	_ball_manager.register_partner(partner_definition)
-
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
 		right_wall.visible = false
@@ -202,8 +193,6 @@ func _activate_partner() -> void:
 func _deactivate_partner() -> void:
 	if partner_paddle == null:
 		return
-	if _active_partner_definition != null:
-		_ball_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
 	if partner_paddle.controller != null:
@@ -212,7 +201,6 @@ func _deactivate_partner() -> void:
 
 	partner_paddle.queue_free()
 	partner_paddle = null
-	_active_partner_definition = null
 
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_INHERIT
