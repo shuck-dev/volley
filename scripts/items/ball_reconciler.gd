@@ -418,7 +418,9 @@ func _set_current(new_current: Ball) -> void:
 func _register_ball(ball: Ball) -> void:
 	if ball == null or _balls.has(ball):
 		return
+
 	_balls.append(ball)
+
 	if _current_ball == null:
 		_set_current(ball)
 
@@ -427,6 +429,8 @@ func _register_ball(ball: Ball) -> void:
 
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
+
+	_connect_split(ball)
 
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
@@ -440,3 +444,21 @@ func _on_ball_missed(ball: Ball) -> void:
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(ball, new_tier)
+
+
+func _connect_split(ball: Ball) -> void:
+	if ball.has_signal(&"split") and not ball.split.is_connected(_on_split):
+		ball.split.connect(_on_split)
+
+
+func _on_split(ball: Ball) -> void:
+	if ball == null:
+		return
+
+	_spawn_split.call_deferred(ball.ball_key, ball.global_position, ball.linear_velocity)
+
+
+func _spawn_split(source_ball_key: String, spawn_position: Vector2, velocity: Vector2) -> void:
+	var key: String = _ball_manager.generate_instance_key(BallKey.base_key(source_ball_key))
+	_ball_manager.register_instance(key)
+	_create_ball(key, spawn_position, velocity)

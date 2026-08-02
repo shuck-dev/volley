@@ -10,3 +10,5 @@ script = ExtResource("2_1rsci")
 [node name="Sprite" parent="." index="1" unique_id=429755372]
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("2_u5sck")
+
+[connection signal="tier_advanced" from="." to="." method="_on_tier_advanced"]
