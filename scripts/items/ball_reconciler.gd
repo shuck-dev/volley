@@ -255,7 +255,7 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
-	ball.set_stats(definition.stats)
+	ball.stats = definition.stats
 	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
@@ -273,7 +273,7 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
-	ball.set_stats(definition.stats)
+	ball.stats = definition.stats
 	add_child(ball)
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity

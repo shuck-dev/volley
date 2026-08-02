@@ -32,7 +32,6 @@ var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
 var _volley_count := 0
-var _active_partner_definition: Resource
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
@@ -170,7 +169,6 @@ func _activate_partner() -> void:
 	if partner_definition == null or partner_definition.paddle_scene == null:
 		return
 
-	_active_partner_definition = partner_definition
 	partner_paddle = partner_definition.paddle_scene.instantiate()
 	partner_paddle.position = partner_spawn.position
 	add_child(partner_paddle)
@@ -185,8 +183,6 @@ func _activate_partner() -> void:
 	if partner_paddle.controller != null:
 		partner_paddle.controller.bind_tracker(ball_system)
 
-	_ball_manager.register_partner(partner_definition)
-
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
 		right_wall.visible = false
@@ -197,8 +193,6 @@ func _activate_partner() -> void:
 func _deactivate_partner() -> void:
 	if partner_paddle == null:
 		return
-	if _active_partner_definition != null:
-		_ball_manager.unregister_partner(_active_partner_definition)
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
 	if partner_paddle.controller != null:
@@ -207,7 +201,6 @@ func _deactivate_partner() -> void:
 
 	partner_paddle.queue_free()
 	partner_paddle = null
-	_active_partner_definition = null
 
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_INHERIT

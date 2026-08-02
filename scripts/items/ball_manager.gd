@@ -31,16 +31,6 @@ func _ready() -> void:
 	ball_manager_state_changed.emit()
 
 
-## Registers a partner as active; kept for the Court partner lifecycle to call into.
-func register_partner(_partner: Resource) -> void:
-	pass
-
-
-## Unregisters a partner; kept for the Court partner lifecycle to call into.
-func unregister_partner(_partner: Resource) -> void:
-	pass
-
-
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
 func get_default_ball_launch_velocity() -> Vector2:
 	var min_speed: float = GameRules.base.ball_speed_min

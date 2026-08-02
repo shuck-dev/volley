@@ -62,7 +62,7 @@ var tier_ceiling: float:
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
 ## Stats snapshot from the BallDefinition the reconciler spawned this ball from; unset for a keyless ball.
-var _stats: BaseBallStats
+var stats: BaseBallStats
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
@@ -71,11 +71,6 @@ var _last_max := 0.0
 var _arc_acceleration: float = 0.0
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
 var _suppress_miss_detection: bool = false
-
-
-## Injects the stats snapshot the reconciler already resolved from the ball's BallDefinition.
-func set_stats(stats: BaseBallStats) -> void:
-	_stats = stats
 
 
 func _ready() -> void:
@@ -379,8 +374,8 @@ func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	grabbed.emit(self)
 
 
-## Ball-scoped stats when the spawner injected one via set_stats; the shared default otherwise
+## Ball-scoped stats when the spawner injected one via `stats`; the shared default otherwise
 ## (unadopted balls, test stubs, and definitions whose .tres omits a `stats` line, where the
 ## script's initialiser does not run).
 func get_stats() -> BaseBallStats:
-	return _stats if _stats != null else GameRules.base
+	return stats if stats != null else GameRules.base

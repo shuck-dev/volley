@@ -8,7 +8,7 @@ var _ball: Ball
 
 func before_each() -> void:
 	_ball = load("res://scripts/entities/ball/ball.gd").new()
-	_ball.set_stats(preload("res://resources/items/standard_ball.tres").stats)
+	_ball.stats = preload("res://resources/items/standard_ball.tres").stats
 	add_child_autofree(_ball)
 
 
