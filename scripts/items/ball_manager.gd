@@ -14,7 +14,8 @@ var items: Array[BallDefinition] = [
 	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
 	preload("res://resources/items/cadence_ball.tres"),
-	preload("res://resources/items/goop_ball.tres")
+	preload("res://resources/items/goop_ball.tres"),
+	preload("res://resources/items/cheater_ball.tres")
 ]
 
 var state: BallState
