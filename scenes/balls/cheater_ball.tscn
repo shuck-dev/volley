@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://66q03ryfdyv7"]
+
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://b7d2k2obt3dgb" path="res://scripts/entities/ball/cheater_ball.gd" id="2_cheater"]
+[ext_resource type="Texture2D" uid="uid://svkqt4dglwiu" path="res://assets/balls/cheater.png" id="3_sprite"]
+[ext_resource type="Texture2D" uid="uid://ddl764bf0cw0u" path="res://assets/art/wobble_cue_zigzag.svg" id="4_zigzag"]
+
+[sub_resource type="Gradient" id="Gradient_wobblefade"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="CheaterBall" unique_id=1317944244 node_paths=PackedStringArray("wobble_cue") instance=ExtResource("1_base")]
+script = ExtResource("2_cheater")
+wobble_cue = NodePath("WobbleCue")
+min_interval_seconds = 2.0
+max_interval_seconds = 10.0
+wobble_angle_min_degrees = 20.0
+wobble_angle_max_degrees = 40.0
+
+[node name="Sprite" parent="." index="1" unique_id=429755372]
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("3_sprite")
+
+[node name="WobbleCue" type="CPUParticles2D" parent="." index="4" unique_id=997770870]
+z_index = 1
+emitting = false
+amount = 12
+texture = ExtResource("4_zigzag")
+one_shot = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 60.0
+initial_velocity_max = 60.0
+scale_amount_min = 0.2
+scale_amount_max = 0.2
+color_ramp = SubResource("Gradient_wobblefade")
