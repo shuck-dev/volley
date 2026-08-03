@@ -1,12 +1,14 @@
 ## Verifies Goop's split-on-tier-advance and merge-on-contact behaviour through the reconciler.
 extends GutTest
 
+const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const GoopBallScene: PackedScene = preload("res://scenes/balls/goop_ball.tscn")
 
 var _manager: Node
 var _reconciler: BallReconciler
 var _goop: GoopBall
+var _drag: ItemDragController
 
 
 func before_each() -> void:
@@ -15,6 +17,16 @@ func before_each() -> void:
 	_reconciler = BallReconcilerScript.new()
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
+
+	var rack: RackDisplay = BallTestHelpers.make_rack(_manager, self)
+	var drop_target: Area2D = BallTestHelpers.make_drop_area(
+		Vector2(-1000, 0), Vector2(300, 200), self
+	)
+	BallTestHelpers.make_drop_targets(_manager, _reconciler, drop_target.position, self)
+
+	_drag = ItemDragControllerScript.new()
+	_drag.configure(_manager, rack, drop_target, _reconciler)
+	add_child_autofree(_drag)
 
 	_goop = GoopBallScene.instantiate()
 	_reconciler.add_child(_goop)
@@ -59,3 +71,24 @@ func test_goop_contact_during_grace_keeps_child() -> void:
 	await get_tree().process_frame
 
 	assert_true(is_instance_valid(child), "grace window blocks the merge")
+
+
+func test_grabbing_split_child_mid_rally_holds_it_without_rack_ownership() -> void:
+	var child: Ball = await _split()
+
+	assert_true(_drag.grab_temporary(child))
+
+	assert_eq(child.play_state, Ball.PlayState.OUT_HELD)
+	assert_eq(_drag.get_held_key(), "", "temporary grab carries no BallManager key")
+
+
+func test_releasing_split_child_off_court_frees_it_without_creating_a_slot() -> void:
+	var child: Ball = await _split()
+	_drag.grab_temporary(child)
+
+	var venue_point := Vector2(-1000, 0)
+	assert_true(_drag.attempt_release(venue_point))
+	await get_tree().process_frame
+
+	assert_false(is_instance_valid(child), "release off-court frees the temporary child")
+	assert_eq(_manager.get_stored_items().size(), 0, "no rack slot is created for a temporary ball")
