@@ -16,24 +16,6 @@ var _held_token: Node2D = null
 var _mouse_button_down: bool = false
 
 
-func configure(ball_manager: Node, definition: BallDefinition) -> void:
-	_ball_manager = ball_manager
-	ball_definition = definition
-	_build_ball()
-	_refresh_case_overlay()
-
-
-## The Shop scene injects its own ShopArea so release detection can hit-test against it.
-func bind_shop_area(area: Area2D) -> void:
-	_shop_area = area
-
-
-func can_be_owned() -> bool:
-	if ball_definition == null or _ball_manager == null:
-		return false
-	return _ball_manager.can_acquire(ball_definition.key)
-
-
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
@@ -79,29 +61,22 @@ func _input(event: InputEvent) -> void:
 	attempt_release(release_position)
 
 
-func _build_ball() -> void:
-	if ball_definition == null or ball_definition.scene == null:
-		return
-
-	if _ball_instance != null and is_instance_valid(_ball_instance):
-		_ball_instance.queue_free()
-
-	_ball_instance = ball_definition.scene.instantiate()
-	add_child(_ball_instance)
-
-	(_ball_instance as Ball).enter_stored()
+func configure(ball_manager: Node, definition: BallDefinition) -> void:
+	_ball_manager = ball_manager
+	ball_definition = definition
+	_build_ball()
+	_refresh_case_overlay()
 
 
-func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if not (event is InputEventMouseButton):
-		return
+## The Shop scene injects its own ShopArea so release detection can hit-test against it.
+func bind_shop_area(area: Area2D) -> void:
+	_shop_area = area
 
-	var mouse_button: InputEventMouseButton = event
-	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
-		return
 
-	if mouse_button.pressed and can_be_owned() and _held_token == null:
-		_start_drag()
+func can_be_owned() -> bool:
+	if ball_definition == null or _ball_manager == null:
+		return false
+	return _ball_manager.can_acquire(ball_definition.key)
 
 
 ## Test seam / production entry. Begins the held-token gesture from the item's current spot.
@@ -148,6 +123,31 @@ func attempt_release(release_position: Vector2) -> bool:
 	_finalise_gesture(release_position, false)
 	visible = true
 	return true
+
+
+func _build_ball() -> void:
+	if ball_definition == null or ball_definition.scene == null:
+		return
+
+	if _ball_instance != null and is_instance_valid(_ball_instance):
+		_ball_instance.queue_free()
+
+	_ball_instance = ball_definition.scene.instantiate()
+	add_child(_ball_instance)
+
+	(_ball_instance as Ball).enter_stored()
+
+
+func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if not (event is InputEventMouseButton):
+		return
+
+	var mouse_button: InputEventMouseButton = event
+	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
+		return
+
+	if mouse_button.pressed and can_be_owned() and _held_token == null:
+		_start_drag()
 
 
 func _drag_controller() -> ItemDragController:
