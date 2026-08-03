@@ -46,14 +46,14 @@ func test_regrab_preserves_instance_id() -> void:
 	assert_not_null(live, "precondition: an in-play Ball exists")
 	var live_id: int = live.get_instance_id()
 
-	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	assert_true(_drag.grab_live_ball("ball_alpha"))
 	_drag._gesture_below_threshold = false
 	assert_true(_drag.attempt_release(Vector2(50, 25)))
 
 	var first_release: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_eq(first_release.get_instance_id(), live_id)
 
-	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	assert_true(_drag.grab_live_ball("ball_alpha"))
 	assert_eq(_reconciler.get_ball_for_key("ball_alpha").play_state, Ball.PlayState.OUT_HELD)
 
 	_drag._gesture_below_threshold = false

@@ -36,7 +36,6 @@ var max_speed: float
 var speed_increment: float
 ## Speed after the tier clamp and any uncapped scale.
 var scaled_speed := 0.0
-var is_temporary := false
 
 ## Hard speed ceiling no item, effect, or final-consolidation climb may exceed; derived from the court at ready.
 var ball_world_max_speed: float

@@ -23,10 +23,9 @@ static var _ball_collision_shape: CircleShape2D
 @export var cursor_overlay: BallDropOverlay
 
 var _ball_manager: BallManager
-## Held body during a drag gesture (a plain drag-proxy node for rack/temp grabs, Ball for live grabs).
+## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).
 var _held: Node2D = null
 var _held_key: String = ""
-var _held_is_temporary: bool = false
 var _held_was_on_court: bool = false
 ## &"rack" or &"live"; rack origins gate the click-without-movement no-op.
 var _held_origin: StringName = &"rack"
@@ -184,23 +183,13 @@ func grab_from_rack(ball_key: String) -> bool:
 	return true
 
 
-func grab_live_ball(ball_key: String, is_temporary: bool = false) -> bool:
+func grab_live_ball(ball_key: String) -> bool:
 	if _drag_target() != null:
 		return false
 
 	var existing: Ball = null
 	if reconciler != null:
 		existing = reconciler.get_ball_for_key(ball_key)
-
-	# Temporary balls bypass the reconciler; spawn a drag-proxy node so the gesture does not survive into a tracked entity.
-	if is_temporary:
-		if not _spawn_held_body(ball_key, _cursor_position(), is_temporary):
-			return false
-		_held_was_on_court = false
-		_held_origin = &"live"
-		_mouse_button_down = true
-		pickup_started.emit(ball_key)
-		return true
 
 	if existing == null:
 		return false
@@ -225,7 +214,6 @@ func _adopt_live_ball_as_held(ball: Ball, ball_key: String) -> void:
 	var spawn_position: Vector2 = ball.global_position
 	_held = ball
 	_held_key = ball_key
-	_held_is_temporary = false
 	_press_position = spawn_position
 	_gesture_below_threshold = true
 	_cursor_samples.clear()
@@ -283,7 +271,6 @@ func attempt_release(release_position: Vector2) -> bool:
 		return false
 
 	var ball_key: String = _held_key
-	var was_temporary: bool = _held_is_temporary
 	var has_live_ball: bool = _held is Ball
 
 	# Direct callers bypass _process; re-check distance to keep the no-op gate honest.
@@ -294,7 +281,7 @@ func attempt_release(release_position: Vector2) -> bool:
 		)
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
-	if below_threshold and _held_origin == &"rack" and not _held_was_on_court and not was_temporary:
+	if below_threshold and _held_origin == &"rack" and not _held_was_on_court:
 		if has_live_ball:
 			_restore_held_ball_to_stored(ball_key)
 		_finalise_gesture(ball_key, release_position, false)
@@ -306,21 +293,14 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	if target is CourtDropTarget:
 		var velocity: Vector2 = _compute_release_velocity()
-		if was_temporary:
-			# Temporary balls bypass the reconciler so they don't survive the gesture.
-			pass
-		elif has_live_ball:
+		if has_live_ball:
 			# Same Ball survives the gesture; transition OUT_HELD → PLAY in place at the release point.
 			_release_live_ball_to_court(release_position, velocity)
 		else:
 			target.accept(ball_key, release_position, velocity)
 			_apply_preserved_speed_after_accept(ball_key)
 	elif target is VenueDropTarget:
-		if was_temporary:
-			# Temporary balls never join the registry; fall through to finalise (which frees the HeldBody).
-			pass
-		else:
-			_release_to_rest(ball_key, release_position, _compute_release_velocity())
+		_release_to_rest(ball_key, release_position, _compute_release_velocity())
 		_finalise_gesture(ball_key, release_position, false)
 		return true
 	else:
@@ -330,8 +310,6 @@ func attempt_release(release_position: Vector2) -> bool:
 			_restore_held_ball_to_stored(ball_key)
 
 	var over_court: bool = target is CourtDropTarget
-	if was_temporary:
-		over_court = false
 	_finalise_gesture(ball_key, release_position, over_court)
 	rack.refresh()
 	return true
@@ -422,7 +400,6 @@ func _ended_on_rack(ball_key: String) -> bool:
 func _reset_gesture_state() -> void:
 	_held = null
 	_held_key = ""
-	_held_is_temporary = false
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	_held_preserved_speed = PRESERVED_SPEED_NONE
@@ -437,33 +414,6 @@ func _set_court_exclude_rids(rids: Array[RID]) -> void:
 	var court: CourtDropTarget = _court_target()
 	if court != null:
 		court.set_exclude_rids(rids)
-
-
-func _spawn_held_body(ball_key: String, spawn_position: Vector2, is_temporary: bool) -> bool:
-	var definition: BallDefinition = _get_ball_definition(ball_key)
-	if definition == null:
-		return false
-
-	var body: Node2D = Node2D.new()
-	body.name = "HeldBody_%s" % ball_key
-	if definition.scene != null:
-		var art_holder: Node2D = Node2D.new()
-		art_holder.name = "ArtHolder"
-		var art_instance: Node = definition.scene.instantiate()
-		art_holder.add_child(art_instance)
-		(art_instance as Ball).enter_stored()
-		body.add_child(art_holder)
-	body.global_position = spawn_position
-	add_child(body)
-
-	_held = body
-	_held_key = ball_key
-	_held_is_temporary = is_temporary
-	_press_position = spawn_position
-	_gesture_below_threshold = true
-	_cursor_samples.clear()
-	_track_cursor_motion(spawn_position)
-	return true
 
 
 func _track_cursor_motion(sample_position: Vector2) -> void:
@@ -507,13 +457,6 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 	return canvas_transform.affine_inverse() * event.position
 
 
-func _get_ball_definition(ball_key: String) -> BallDefinition:
-	for item: BallDefinition in _ball_manager.items:
-		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
-			return item
-	return null
-
-
 func _update_cursor_state(world_position: Vector2) -> void:
 	var state: int = _derive_cursor_state(world_position)
 	_set_cursor_state(state, world_position)
@@ -548,7 +491,7 @@ func _on_reconciler_ball_spawned(ball_key: String, ball: Ball) -> void:
 
 
 func _on_live_ball_grabbed(_ball: Ball, ball_key: String) -> void:
-	grab_live_ball(ball_key, false)
+	grab_live_ball(ball_key)
 
 
 func _on_pickup_started(ball_key: String) -> void:
