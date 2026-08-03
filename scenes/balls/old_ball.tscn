@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_base"]
 [ext_resource type="Texture2D" uid="uid://xm8ltt8fkfk4" path="res://assets/balls/old.png" id="2_lgr3n"]
 
-[node name="OldBall" instance=ExtResource("1_base")]
+[node name="OldBall" unique_id=1485973691 instance=ExtResource("1_base")]
 
-[node name="Sprite" parent="."]
+[node name="Sprite" parent="." index="1" unique_id=429755372]
 scale = Vector2(0.06, 0.06)
 texture = ExtResource("2_lgr3n")

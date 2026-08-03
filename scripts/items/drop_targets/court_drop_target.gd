@@ -23,9 +23,7 @@ func set_exclude_rids(rids: Array[RID]) -> void:
 	_exclude_rids = rids
 
 
-func can_accept(ball_key: String, world_position: Vector2, collision_shape: Shape2D) -> bool:
-	if DropTarget.get_definition(_ball_manager, ball_key) == null:
-		return false
+func can_accept(_ball_key: String, world_position: Vector2, collision_shape: Shape2D) -> bool:
 	if not contains_point(world_position):
 		return false
 	return _projection_clear(world_position, collision_shape)

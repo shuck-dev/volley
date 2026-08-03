@@ -444,6 +444,7 @@ func _register_ball(ball: Ball) -> void:
 
 func _on_ball_missed(ball: Ball) -> void:
 	ball_missed.emit(ball)
+	free_temporary.call_deferred(ball)
 
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
@@ -462,6 +463,7 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 	ball.global_position = spawn_position
 	ball.linear_velocity = velocity
 
+	ball_spawned.emit("", ball)
 	_register_ball(ball)
 	return ball
 

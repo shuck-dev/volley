@@ -220,6 +220,21 @@ func _adopt_live_ball_as_held(ball: Ball, ball_key: String) -> void:
 	_track_cursor_motion(spawn_position)
 
 
+## Grabs a reconciler-temporary ball (e.g. a Goop split child); no BallManager ownership involved.
+func grab_temporary(ball: Ball) -> bool:
+	if _drag_target() != null or ball == null or not is_instance_valid(ball):
+		return false
+
+	ball.enter_out_held()
+	_set_court_exclude_rids([ball.get_rid()])
+	_adopt_live_ball_as_held(ball, "")
+	_held_was_on_court = false
+	_held_origin = &"live"
+	_mouse_button_down = true
+	pickup_started.emit("")
+	return true
+
+
 ## Purchases and spawns an item based on the resolution of the prioritised drop target.
 func try_purchase_and_spawn(
 	ball_key: String, world_position: Vector2, gesture_velocity: Vector2
@@ -272,6 +287,8 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	var ball_key: String = _held_key
 	var has_live_ball: bool = _held is Ball
+	var held_ball: Ball = _held as Ball
+	var is_temporary: bool = has_live_ball and held_ball.is_temporary
 
 	# Direct callers bypass _process; re-check distance to keep the no-op gate honest.
 	var below_threshold: bool = _gesture_below_threshold
@@ -282,7 +299,7 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court:
-		if has_live_ball:
+		if has_live_ball and not is_temporary:
 			_restore_held_ball_to_stored(ball_key)
 		_finalise_gesture(ball_key, release_position, false)
 		return true
@@ -299,6 +316,12 @@ func attempt_release(release_position: Vector2) -> bool:
 		else:
 			target.accept(ball_key, release_position, velocity)
 			_apply_preserved_speed_after_accept(ball_key)
+	elif is_temporary:
+		# A temporary ball never joins the rack/venue registry; anywhere but the court just frees it.
+		if reconciler != null:
+			reconciler.free_temporary(held_ball)
+		_finalise_gesture(ball_key, release_position, false)
+		return true
 	elif target is VenueDropTarget:
 		_release_to_rest(ball_key, release_position, _compute_release_velocity())
 		_finalise_gesture(ball_key, release_position, false)
@@ -471,8 +494,6 @@ func _derive_cursor_state(world_position: Vector2) -> int:
 
 
 func _position_accepted_by_any_target(ball_key: String, world_position: Vector2) -> bool:
-	if ball_key.is_empty():
-		return false
 	return _find_accepting_target(ball_key, world_position) != null
 
 
@@ -490,8 +511,11 @@ func _on_reconciler_ball_spawned(ball_key: String, ball: Ball) -> void:
 	ball.grabbed.connect(_on_live_ball_grabbed.bind(ball_key))
 
 
-func _on_live_ball_grabbed(_ball: Ball, ball_key: String) -> void:
-	grab_live_ball(ball_key)
+func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:
+	if ball_key.is_empty():
+		grab_temporary(ball)
+	else:
+		grab_live_ball(ball_key)
 
 
 func _on_pickup_started(ball_key: String) -> void:
