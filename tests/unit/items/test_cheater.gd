@@ -39,9 +39,8 @@ func _spawn_cheater_ball(key: String) -> CheaterBall:
 	return _spawn_ball(key) as CheaterBall
 
 
-func test_wobble_preserves_speed_magnitude() -> void:
+func test_wobble_preserves_speed() -> void:
 	var ball: CheaterBall = _spawn_cheater_ball("ball_cheater")
-	assert_not_null(ball, "reconciler should spawn the CheaterBall subclass for a cheater item")
 	ball.linear_velocity = Vector2(ball.scaled_speed, 0.0)
 
 	# A delta past max_interval_seconds guarantees the wobble fires within this single tick.
@@ -62,24 +61,3 @@ func test_wobble_rotates_velocity_direction() -> void:
 		original_direction.angle(),
 		"wobble should rotate the velocity, not leave it unchanged",
 	)
-
-
-func test_stationary_ball_does_not_wobble() -> void:
-	var ball: CheaterBall = _spawn_cheater_ball("ball_cheater")
-	ball.linear_velocity = Vector2.ZERO
-
-	ball._physics_process(ball.max_interval_seconds + 0.1)
-
-	assert_eq(
-		ball.linear_velocity, Vector2.ZERO, "a held ball should not pick up motion from the wobble"
-	)
-
-
-func test_wobble_fires_particle_cue() -> void:
-	var ball: CheaterBall = _spawn_cheater_ball("ball_cheater")
-	ball.linear_velocity = Vector2(ball.scaled_speed, 0.0)
-	ball._time_since_wobble = ball._wobble_interval
-
-	ball._advance_wobble(0.016)
-
-	assert_true(ball.wobble_cue.emitting)

@@ -1,7 +1,6 @@
 class_name CheaterBall
 extends Ball
 
-## Particle cue fired on every wobble; authored in the inherited scene.
 @export var wobble_cue: CPUParticles2D
 @export var min_interval_seconds: float = 1.5
 @export var max_interval_seconds: float = 4.0
