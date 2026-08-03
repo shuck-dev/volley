@@ -39,6 +39,9 @@ func refresh_scaled_speed() -> void:
 
 
 func _advance_mode(delta: float) -> void:
+	if play_state != PlayState.PLAY_NORMAL and play_state != PlayState.PLAY_ARC:
+		return
+
 	_time_in_mode += delta
 	if _time_in_mode < _hold_duration:
 		return
