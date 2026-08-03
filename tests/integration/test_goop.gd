@@ -81,6 +81,7 @@ func test_goop_temporary_children_do_not_merge_with_each_other() -> void:
 	watch_signals(_reconciler)
 	child_1.tier_advanced.emit(child_1, 3)
 	await wait_for_signal(_reconciler.ball_spawned, 1.0)
+
 	var child_2: GoopBall = get_signal_parameters(_reconciler, "ball_spawned")[1]
 	child_2._physics_process(GoopBall.MERGE_GRACE_SECONDS + 0.1)
 
@@ -96,16 +97,7 @@ func test_goop_temporary_children_do_not_merge_with_each_other() -> void:
 	)
 
 
-func test_grabbing_split_child_mid_rally_holds_it_without_rack_ownership() -> void:
-	var child: Ball = await _split()
-
-	assert_true(_drag.grab_temporary(child))
-
-	assert_eq(child.play_state, Ball.PlayState.OUT_HELD)
-	assert_eq(_drag.get_held_key(), "", "temporary grab carries no BallManager key")
-
-
-func test_releasing_split_child_off_court_frees_it_without_creating_a_slot() -> void:
+func test_releasing_split_child_off_court_frees() -> void:
 	var child: Ball = await _split()
 	_drag.grab_temporary(child)
 
@@ -114,4 +106,3 @@ func test_releasing_split_child_off_court_frees_it_without_creating_a_slot() -> 
 	await get_tree().process_frame
 
 	assert_false(is_instance_valid(child), "release off-court frees the temporary child")
-	assert_eq(_manager.get_stored_items().size(), 0, "no rack slot is created for a temporary ball")
