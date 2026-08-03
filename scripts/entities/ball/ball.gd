@@ -4,8 +4,10 @@ extends RigidBody2D
 signal missed(ball: Ball)
 ## Carries the current tier's floor and ceiling so a listener can render the active band.
 signal speed_changed(speed: float, tier_floor: float, tier_ceiling: float)
+
 ## Fires when the rally crosses a tier ceiling and steps up to the next tier.
 signal tier_advanced(ball: Ball, new_tier: int)
+
 signal grabbed(ball: Ball)
 signal play_state_changed(state: PlayState)
 
@@ -23,10 +25,13 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 
 ## Item key this ball represents; the system reads this on adoption to find the matching BallDefinition.
 @export var ball_key: String = ""
+
 ## Authored Area2D that routes pointer presses to the grab hit-box; wired from the scene so the grab hit-box stays scene-based.
 @export var grab_area: GrabArea
+
 ## Apex ceiling in pixels above the soul bound; injected by Court at attach time.
 @export var arc_height_max: float = 220.0
+
 ## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
 var bound_y: float
 
@@ -34,14 +39,19 @@ var speed := 0.0
 var min_speed: float
 var max_speed: float
 var speed_increment: float
+
 ## Speed after the tier clamp and any uncapped scale.
 var scaled_speed := 0.0
+
+## A temporary ball is untracked by BallManager and the save file.
 var is_temporary := false
 
 ## Hard speed ceiling no item, effect, or final-consolidation climb may exceed; derived from the court at ready.
 var ball_world_max_speed: float
+
 ## Current rung of the speed ladder; 0 at rally start, stepped up on each tier completion.
 var current_tier := 0
+
 ## Accumulated soul multiplier for this ball; incremented by each consolidation event, reset on miss.
 var soul_multiplier: float = 1.0
 
@@ -63,22 +73,25 @@ var play_state: PlayState = PlayState.PLAY_NORMAL
 
 ## Stats snapshot from the BallDefinition the reconciler spawned this ball from; unset for a keyless ball.
 var stats: BaseBallStats
+
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
 var _last_max := 0.0
+
 # Zero below the bound; set at the up-cross from the entry speed and the court's arc rule.
 var _arc_acceleration: float = 0.0
+
 # HELD suppresses miss-zone routing; cleared on any non-HELD enter_X.
 var _suppress_miss_detection: bool = false
 
 
 func _ready() -> void:
 	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
-	var stats: BaseBallStats = get_stats()
-	min_speed = stats.ball_speed_min
-	max_speed = stats.ball_speed_max
-	speed_increment = stats.ball_speed_increment
+	var resolved_stats: BaseBallStats = get_stats()
+	min_speed = resolved_stats.ball_speed_min
+	max_speed = resolved_stats.ball_speed_max
+	speed_increment = resolved_stats.ball_speed_increment
 	speed = clampf(speed, tier_floor, tier_ceiling)
 	refresh_scaled_speed()
 

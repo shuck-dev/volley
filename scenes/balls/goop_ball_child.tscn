@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://jlqrns7dpffr"]
+
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_6d64h"]
+[ext_resource type="Script" uid="uid://ca2xj4gbv6bpm" path="res://scripts/entities/ball/goop_ball.gd" id="2_1rsci"]
+[ext_resource type="Texture2D" uid="uid://diq2e6cuyb4us" path="res://assets/balls/goop_red.png" id="2_u5sck"]
+
+[node name="GoopBallChild" unique_id=1458067311 instance=ExtResource("1_6d64h")]
+script = ExtResource("2_1rsci")
+ball_key = "goop_child"
+
+[node name="Sprite" parent="." index="1" unique_id=429755372]
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("2_u5sck")
+
+[connection signal="tier_advanced" from="." to="." method="_on_tier_advanced"]

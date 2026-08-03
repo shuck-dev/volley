@@ -27,5 +27,5 @@ static func create(ball_key: String) -> BallDefinition:
 	item.base_cost = 100
 	item.cost_scaling = 2.0
 	item.max_level = 3
-	item.scene = load("res://scenes/ball.tscn")
+	item.scene = load("res://scenes/balls/ball.tscn")
 	return item

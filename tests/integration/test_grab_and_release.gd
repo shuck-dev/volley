@@ -40,7 +40,7 @@ func test_grab_live_ball_and_release_over_court_resumes_rally() -> void:
 	var live: Ball = _reconciler.get_ball_for_key("ball_alpha")
 	assert_not_null(live)
 
-	assert_true(_drag.grab_live_ball("ball_alpha", false))
+	assert_true(_drag.grab_live_ball("ball_alpha"))
 	assert_eq(live.play_state, Ball.PlayState.OUT_HELD)
 
 	var court_point := Vector2(50, -25)

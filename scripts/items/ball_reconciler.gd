@@ -270,17 +270,23 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	var ball: Ball = definition.scene.instantiate()
+
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
+
 	add_child(ball)
+
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = bound_y
+
 	_balls_by_key[ball_key] = ball
 	ball_spawned.emit(ball_key, ball)
+
 	_register_ball(ball)
+
 	return ball
 
 
@@ -418,7 +424,9 @@ func _set_current(new_current: Ball) -> void:
 func _register_ball(ball: Ball) -> void:
 	if ball == null or _balls.has(ball):
 		return
+
 	_balls.append(ball)
+
 	if _current_ball == null:
 		_set_current(ball)
 
@@ -436,7 +444,33 @@ func _register_ball(ball: Ball) -> void:
 
 func _on_ball_missed(ball: Ball) -> void:
 	ball_missed.emit(ball)
+	free_temporary.call_deferred(ball)
 
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(ball, new_tier)
+
+
+## Spawns an temporary Ball, not tracked or saved.
+func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = scene.instantiate()
+	ball.arc_height_max = arc_height_max
+	ball.bound_y = bound_y
+	ball.is_temporary = true
+
+	add_child(ball)
+
+	ball.global_position = spawn_position
+	ball.linear_velocity = velocity
+
+	ball_spawned.emit("", ball)
+	_register_ball(ball)
+	return ball
+
+
+## Frees a temporary ball.
+func free_temporary(ball: Ball) -> void:
+	if ball == null or not is_instance_valid(ball) or not ball.is_temporary:
+		return
+	_detach(ball)
+	ball.queue_free()

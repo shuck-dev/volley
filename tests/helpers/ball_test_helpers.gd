@@ -35,7 +35,7 @@ static func _static_init() -> void:
 
 ## Real ball.tscn instance; every BallDefinition needs an instantiable scene for BallReconciler.
 static func stub_ball_scene() -> PackedScene:
-	return load("res://scenes/ball.tscn")
+	return load("res://scenes/balls/ball.tscn")
 
 
 static func make_ball_item(key: String) -> BallDefinition:

@@ -14,6 +14,7 @@ var items: Array[BallDefinition] = [
 	preload("res://resources/items/old_ball.tres"),
 	preload("res://resources/items/standard_ball.tres"),
 	preload("res://resources/items/cadence_ball.tres"),
+	preload("res://resources/items/goop_ball.tres")
 ]
 
 var state: BallState
@@ -155,7 +156,7 @@ func get_stored_items() -> Array[String]:
 	return result
 
 
-## Places an owned item on the court and registers effects at current level; false if unowned.
+## Sets a ball to on court, starting its effects
 func activate(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false

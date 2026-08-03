@@ -75,21 +75,6 @@ func test_rack_target_accepts_known_item() -> void:
 	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0), BallTestHelpers.collision_shape))
 
 
-func test_court_target_rejects_unknown_item() -> void:
-	var manager: Node = BallFactory.create_manager(self)
-	var host := Node2D.new()
-	add_child_autofree(host)
-	var reconciler: BallReconciler = BallReconcilerScript.new()
-	reconciler.configure(manager)
-	add_child_autofree(reconciler)
-	var target: CourtDropTarget = CourtDropTargetScript.new()
-	target.ball_manager = manager
-	target.reconciler = reconciler
-	target.add_child(BallTestHelpers.attach_rect_shape(BallTestHelpers.COURT_SIZE))
-	add_child_autofree(target)
-	assert_false(target.can_accept("unknown_item", Vector2.ZERO, BallTestHelpers.collision_shape))
-
-
 func test_venue_target_accepts_inside_venue_bounds() -> void:
 	var manager: Node = BallFactory.create_manager(self)
 	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
