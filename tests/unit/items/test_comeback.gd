@@ -98,3 +98,18 @@ func test_attract_does_nothing_outside_range() -> void:
 		original_velocity.angle(),
 		"a paddle outside attract_range should not curve the ball",
 	)
+
+
+func test_rescue_activates_when_charged() -> void:
+	var ball: ComebackBall = _spawn_comeback_ball("ball_comeback")
+	ball.linear_velocity = Vector2(ball.scaled_speed, 0.0)
+
+	assert_true(ball.rescue(), "a fresh charge should let the rescue start")
+
+
+func test_rescue_does_not_activate_when_uncharged() -> void:
+	var ball: ComebackBall = _spawn_comeback_ball("ball_comeback")
+	ball.linear_velocity = Vector2(ball.scaled_speed, 0.0)
+	ball.rescue()
+
+	assert_false(ball.rescue(), "a second rescue attempt should fail with no charge left")

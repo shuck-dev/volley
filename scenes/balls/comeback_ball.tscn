@@ -6,8 +6,9 @@
 
 [node name="ComebackBall" unique_id=1842167380 instance=ExtResource("1_5iw36")]
 script = ExtResource("2_bmbrl")
-attract_degrees_per_second = 60.0
+attract_degrees_per_second = 45.0
 attract_range = 400.0
+rescue_degrees_per_second = 360.0
 
 [node name="Sprite" parent="." index="1" unique_id=429755372]
 texture = ExtResource("3_k1lra")
