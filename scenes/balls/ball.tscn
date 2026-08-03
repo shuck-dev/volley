@@ -8,9 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://cv278vwyo0awu" path="res://assets/ui/tier_cue_star.svg" id="6_star"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n1dj2"]
+radius = 15.34078
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_press"]
-radius = 11.52
+radius = 15.0
 
 [sub_resource type="Gradient" id="Gradient_cuefade"]
 colors = PackedColorArray(1, 0.84, 0, 1, 1, 0.84, 0, 0)
@@ -30,7 +31,7 @@ scale = Vector2(0.72, 0.72)
 shape = SubResource("CircleShape2D_n1dj2")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=429755372]
-scale = Vector2(0.12, 0.12)
+scale = Vector2(0.06, 0.06)
 texture = ExtResource("3_f7cbr")
 
 [node name="GrabArea" type="Area2D" parent="." unique_id=429755374]
