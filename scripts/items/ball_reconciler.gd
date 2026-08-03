@@ -270,17 +270,23 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	var ball: Ball = definition.scene.instantiate()
+
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
+
 	add_child(ball)
+
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = bound_y
+
 	_balls_by_key[ball_key] = ball
 	ball_spawned.emit(ball_key, ball)
+
 	_register_ball(ball)
+
 	return ball
 
 
@@ -430,8 +436,6 @@ func _register_ball(ball: Ball) -> void:
 	if not ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
-	_connect_split(ball)
-
 	for zone in _miss_zones:
 		if is_instance_valid(zone):
 			ball.register_miss_zone(zone)
@@ -446,19 +450,11 @@ func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(ball, new_tier)
 
 
-func _connect_split(ball: Ball) -> void:
-	if ball.has_signal(&"split") and not ball.split.is_connected(_on_split):
-		ball.split.connect(_on_split)
-
-
-func _on_split(ball: Ball) -> void:
-	if ball == null:
-		return
-
-	_spawn_split.call_deferred(ball.ball_key, ball.global_position, ball.linear_velocity)
-
-
-func _spawn_split(source_ball_key: String, spawn_position: Vector2, velocity: Vector2) -> void:
-	var key: String = _ball_manager.generate_instance_key(BallKey.base_key(source_ball_key))
-	_ball_manager.register_instance(key)
+func spawn_sibling(base_key: String, spawn_position: Vector2, velocity: Vector2) -> void:
+	var key: String = _ball_manager.generate_instance_key(base_key)
+	_ball_manager.register_instance(key, Placement.ON_COURT)
 	_create_ball(key, spawn_position, velocity)
+
+
+func free_ball(ball_key: String) -> void:
+	_ball_manager.unregister_instance(ball_key)

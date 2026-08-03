@@ -156,7 +156,7 @@ func get_stored_items() -> Array[String]:
 	return result
 
 
-## Places an owned item on the court and registers effects at current level; false if unowned.
+## Sets a ball to on court, starting its effects
 func activate(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false
@@ -376,9 +376,15 @@ func generate_instance_key(base_key: String) -> String:
 	return BallKey.generate(base_key, state.ball_levels)
 
 
-func register_instance(ball_key: String) -> void:
+func register_instance(ball_key: String, placement: int = Placement.STORED) -> void:
 	state.ball_levels[ball_key] = 1
-	_assign_rack_slot(ball_key)
+	_set_item_placement(ball_key, placement)
+	ball_manager_state_changed.emit()
+	SaveManager.save()
+
+
+func unregister_instance(ball_key: String) -> void:
+	state.ball_levels.erase(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
 

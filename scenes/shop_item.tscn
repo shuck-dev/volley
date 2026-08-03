@@ -6,9 +6,8 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pickup"]
 size = Vector2(40, 40)
 
-[node name="ShopItem" type="Node2D" node_paths=PackedStringArray("art_holder", "pickup_area", "case_overlay")]
+[node name="ShopItem" type="Node2D" node_paths=PackedStringArray("pickup_area", "case_overlay")]
 script = ExtResource("1_lrx6i")
-art_holder = NodePath("ArtHolder")
 pickup_area = NodePath("PickupArea")
 case_overlay = NodePath("CaseOverlay")
 
@@ -17,8 +16,6 @@ input_pickable = true
 
 [node name="PickupShape" type="CollisionShape2D" parent="PickupArea"]
 shape = SubResource("RectangleShape2D_pickup")
-
-[node name="ArtHolder" type="Node2D" parent="."]
 
 [node name="CaseOverlay" type="Sprite2D" parent="."]
 visible = false
