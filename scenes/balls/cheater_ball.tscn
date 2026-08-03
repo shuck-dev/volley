@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://pi3nk3ewwel3"]
 
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_base"]
 [ext_resource type="Script" uid="uid://b7d2k2obt3dgb" path="res://scripts/entities/ball/cheater_ball.gd" id="2_cheater"]
@@ -11,8 +11,10 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 [node name="CheaterBall" unique_id=1317944244 node_paths=PackedStringArray("wobble_cue") instance=ExtResource("1_base")]
 script = ExtResource("2_cheater")
 wobble_cue = NodePath("WobbleCue")
-min_interval_seconds = 1.5
-max_interval_seconds = 4.0
+min_interval_seconds = 2.0
+max_interval_seconds = 10.0
+wobble_angle_min_degrees = 20.0
+wobble_angle_max_degrees = 40.0
 
 [node name="Sprite" parent="." index="1" unique_id=429755372]
 scale = Vector2(0.06, 0.06)

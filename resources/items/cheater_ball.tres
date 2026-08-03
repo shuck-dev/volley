@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BallDefinition" format=3]
+[gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://ksa0aoeo51un"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
-[ext_resource type="PackedScene" path="res://scenes/balls/cheater_ball.tscn" id="2_scene"]
+[ext_resource type="PackedScene" uid="uid://pi3nk3ewwel3" path="res://scenes/balls/cheater_ball.tscn" id="2_scene"]
 
 [resource]
 script = ExtResource("1_item")

@@ -5,6 +5,7 @@ extends Ball
 @export var wobble_cue: CPUParticles2D
 @export var min_interval_seconds: float = 1.5
 @export var max_interval_seconds: float = 4.0
+@export var wobble_angle_min_degrees: float = 5.0
 @export var wobble_angle_max_degrees: float = 15.0
 
 var _time_since_wobble := 0.0
@@ -31,14 +32,22 @@ func _advance_wobble(delta: float) -> void:
 
 	_time_since_wobble = 0.0
 	_wobble_interval = randf_range(min_interval_seconds, max_interval_seconds)
-	linear_velocity = linear_velocity.rotated(
-		deg_to_rad(randf_range(-wobble_angle_max_degrees, wobble_angle_max_degrees))
+
+	var wobble_angle_degrees: float = randf_range(
+		wobble_angle_min_degrees, wobble_angle_max_degrees
 	)
+
+	if randf() < 0.5:
+		wobble_angle_degrees = -wobble_angle_degrees
+
+	linear_velocity = linear_velocity.rotated(deg_to_rad(wobble_angle_degrees))
+
 	_fire_wobble_cue()
 
 
 func _fire_wobble_cue() -> void:
 	if wobble_cue == null:
 		return
+
 	wobble_cue.restart()
 	wobble_cue.emitting = true
