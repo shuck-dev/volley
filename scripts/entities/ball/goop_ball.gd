@@ -34,8 +34,10 @@ func _on_tier_advanced(_ball: Ball, _tier: int) -> void:
 
 
 func _spawn_child(spawn_velocity: Vector2) -> void:
-	var child: Ball = _reconciler.spawn_temporary(goop_ball_child, global_position, spawn_velocity)
-	(child as GoopBall)._merge_grace_seconds_left = MERGE_GRACE_SECONDS
+	var child: GoopBall = _reconciler.spawn_temporary(
+		goop_ball_child, global_position, spawn_velocity
+	)
+	child._merge_grace_seconds_left = MERGE_GRACE_SECONDS
 
 
 func _on_body_entered(body: Node) -> void:
