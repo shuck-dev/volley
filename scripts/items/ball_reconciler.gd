@@ -455,6 +455,7 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 	var ball: Ball = scene.instantiate()
 	ball.arc_height_max = arc_height_max
 	ball.bound_y = bound_y
+	ball.is_temporary = true
 
 	add_child(ball)
 
@@ -467,7 +468,7 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 
 ## Frees a temporary ball.
 func free_temporary(ball: Ball) -> void:
-	if ball == null or not is_instance_valid(ball):
+	if ball == null or not is_instance_valid(ball) or not ball.is_temporary:
 		return
 	_detach(ball)
 	ball.queue_free()

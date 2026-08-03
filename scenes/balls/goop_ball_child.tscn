@@ -4,8 +4,9 @@
 [ext_resource type="Script" uid="uid://ca2xj4gbv6bpm" path="res://scripts/entities/ball/goop_ball.gd" id="2_1rsci"]
 [ext_resource type="Texture2D" uid="uid://diq2e6cuyb4us" path="res://assets/balls/goop_red.png" id="2_u5sck"]
 
-[node name="GoopBallChild" instance=ExtResource("1_6d64h")]
+[node name="GoopBallChild" unique_id=1458067311 instance=ExtResource("1_6d64h")]
 script = ExtResource("2_1rsci")
+ball_key = "goop_child"
 
 [node name="Sprite" parent="." index="1" unique_id=429755372]
 scale = Vector2(0.06, 0.06)
