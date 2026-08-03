@@ -20,11 +20,14 @@ func _physics_process(delta: float) -> void:
 	if linear_velocity == Vector2.ZERO:
 		return
 
-	_advance_wobble(delta)
+	_wobble(delta)
 	super._physics_process(delta)
 
 
-func _advance_wobble(delta: float) -> void:
+func _wobble(delta: float) -> void:
+	if play_state != PlayState.PLAY_NORMAL and play_state != PlayState.PLAY_ARC:
+		return
+
 	_time_since_wobble += delta
 	if _time_since_wobble < _wobble_interval:
 		return
