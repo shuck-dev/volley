@@ -143,14 +143,6 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-## The one CourtDropTarget in the scene, or null before it joins the group.
-func _court_target() -> CourtDropTarget:
-	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
-		if target is CourtDropTarget:
-			return target as CourtDropTarget
-	return null
-
-
 ## Activation defers to release-over-court so a click-without-movement is a no-op.
 func grab_from_rack(ball_key: String) -> bool:
 	if _drag_target() != null:
@@ -169,7 +161,6 @@ func grab_from_rack(ball_key: String) -> bool:
 
 	# The STORED Ball IS the drag target; it stays in _balls_by_key, now OUT_HELD until release.
 	stored.enter_out_held()
-	_set_court_exclude_rids([stored.get_rid()])
 	_adopt_live_ball_as_held(stored, ball_key)
 
 	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
@@ -200,8 +191,6 @@ func grab_live_ball(ball_key: String) -> bool:
 	# (or any non-venue target) restores the slot exactly like a live-grab originating from the court.
 	_ball_manager.clear_loose_in_venue(ball_key)
 	existing.enter_out_held()
-	# Self-overlap exclusion: the held ball's own body would otherwise reject the release projection.
-	_set_court_exclude_rids([existing.get_rid()])
 	_adopt_live_ball_as_held(existing, ball_key)
 	_held_was_on_court = was_on_court
 	_held_origin = &"live"
@@ -226,7 +215,6 @@ func grab_temporary(ball: Ball) -> bool:
 		return false
 
 	ball.enter_out_held()
-	_set_court_exclude_rids([ball.get_rid()])
 	_adopt_live_ball_as_held(ball, "")
 	_held_was_on_court = false
 	_held_origin = &"live"
@@ -430,13 +418,6 @@ func _reset_gesture_state() -> void:
 	_press_position = Vector2.ZERO
 	_gesture_below_threshold = true
 	_release_pending = false
-	_set_court_exclude_rids([])
-
-
-func _set_court_exclude_rids(rids: Array[RID]) -> void:
-	var court: CourtDropTarget = _court_target()
-	if court != null:
-		court.set_exclude_rids(rids)
 
 
 func _track_cursor_motion(sample_position: Vector2) -> void:
