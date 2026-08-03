@@ -450,11 +450,24 @@ func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(ball, new_tier)
 
 
-func spawn_sibling(base_key: String, spawn_position: Vector2, velocity: Vector2) -> void:
-	var key: String = _ball_manager.generate_instance_key(base_key)
-	_ball_manager.register_instance(key, Placement.ON_COURT)
-	_create_ball(key, spawn_position, velocity)
+## Spawns an temporary Ball, not tracked or saved.
+func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = scene.instantiate()
+	ball.arc_height_max = arc_height_max
+	ball.bound_y = bound_y
+
+	add_child(ball)
+
+	ball.global_position = spawn_position
+	ball.linear_velocity = velocity
+
+	_register_ball(ball)
+	return ball
 
 
-func free_ball(ball_key: String) -> void:
-	_ball_manager.unregister_instance(ball_key)
+## Frees a temporary ball.
+func free_temporary(ball: Ball) -> void:
+	if ball == null or not is_instance_valid(ball):
+		return
+	_detach(ball)
+	ball.queue_free()

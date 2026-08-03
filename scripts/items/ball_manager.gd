@@ -376,15 +376,9 @@ func generate_instance_key(base_key: String) -> String:
 	return BallKey.generate(base_key, state.ball_levels)
 
 
-func register_instance(ball_key: String, placement: int = Placement.STORED) -> void:
+func register_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
-	_set_item_placement(ball_key, placement)
-	ball_manager_state_changed.emit()
-	SaveManager.save()
-
-
-func unregister_instance(ball_key: String) -> void:
-	state.ball_levels.erase(ball_key)
+	_assign_rack_slot(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
 
