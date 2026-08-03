@@ -240,7 +240,7 @@ func try_purchase_and_spawn(
 		return true
 
 	if target is VenueDropTarget:
-		_release_to_rest(instance_key, world_position, gesture_velocity)
+		target.accept(instance_key, world_position, gesture_velocity)
 		return true
 
 	if target is RackDropTarget:
@@ -256,16 +256,6 @@ func _adopt_purchased_into_rack(instance_key: String) -> void:
 	if reconciler == null:
 		return
 	reconciler.create_ball_from_key(instance_key)
-
-
-## Funnels venue-floor releases into the reconciler with the loose-in-venue overlay set.
-func _release_to_rest(ball_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
-	if reconciler == null:
-		return
-	reconciler.release_into_rest(ball_key, world_position, gesture_velocity)
-	# Loose-in-venue overlay makes is_on_court return false regardless of placement, so save/reload
-	# skips the spurious court-spawn at the saved venue-floor position.
-	_ball_manager.mark_loose_in_venue(ball_key, world_position)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -311,7 +301,7 @@ func attempt_release(release_position: Vector2) -> bool:
 		_finalise_gesture(ball_key, release_position, false)
 		return true
 	elif target is VenueDropTarget:
-		_release_to_rest(ball_key, release_position, _compute_release_velocity())
+		target.accept(ball_key, release_position, _compute_release_velocity())
 		_finalise_gesture(ball_key, release_position, false)
 		return true
 	else:

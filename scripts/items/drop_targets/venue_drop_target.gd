@@ -1,7 +1,7 @@
 class_name VenueDropTarget
 extends DropTarget
 
-## Accepts releases inside the venue rect; the controller branches on this type to keep the body alive after release.
+## Accepts releases inside the venue rect, placing the ball loose on the floor rather than in play.
 
 @export var reconciler: BallReconciler
 
@@ -24,5 +24,8 @@ func can_accept(_ball_key: String, world_position: Vector2, collision_shape: Sha
 	return _projection_clear(world_position, collision_shape)
 
 
-func accept(_ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
-	pass
+func accept(ball_key: String, world_position: Vector2, gesture_velocity: Vector2) -> void:
+	if _reconciler == null or _ball_manager == null:
+		return
+	_reconciler.release_into_rest(ball_key, world_position, gesture_velocity)
+	_ball_manager.mark_loose_in_venue(ball_key, world_position)
