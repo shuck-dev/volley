@@ -52,7 +52,6 @@ func _ready() -> void:
 	add_child(_tier_reward_handler)
 
 	_volley_streak_tracker = load("res://scripts/court/volley_streak_tracker.gd").new()
-	add_child(_volley_streak_tracker)
 	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
 
 	if _records == null:

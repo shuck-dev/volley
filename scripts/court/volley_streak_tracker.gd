@@ -1,5 +1,5 @@
 class_name VolleyStreakTracker
-extends Node
+extends RefCounted
 
 ## Owns the shared volley-count streak: increments on every hit, resets on a miss
 ## that leaves no ball in play.
