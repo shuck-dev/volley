@@ -31,7 +31,6 @@ var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
-var _volley_count := 0
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
@@ -39,6 +38,7 @@ var _ball_manager: BallManager
 var _is_autoplay_active := false
 var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
+var _volley_streak_tracker: VolleyStreakTracker
 
 # Ball that triggered the current volley hit; available during the hit-processing window.
 var _hitting_ball: Ball
@@ -50,6 +50,10 @@ func _ready() -> void:
 
 	_tier_reward_handler = load("res://scripts/court/tier_reward_handler.gd").new()
 	add_child(_tier_reward_handler)
+
+	_volley_streak_tracker = load("res://scripts/court/volley_streak_tracker.gd").new()
+	add_child(_volley_streak_tracker)
+	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
 
 	if _records == null:
 		_records = SaveManager.records
@@ -120,14 +124,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
-	_volley_count += 1
+	_volley_streak_tracker.record_hit()
 	_accumulate_soul()
 
-	if _volley_count > _records.personal_volley_best:
-		_records.personal_volley_best = _volley_count
+	if _volley_streak_tracker.count > _records.personal_volley_best:
+		_records.personal_volley_best = _volley_streak_tracker.count
 		personal_volley_best_changed.emit(_records.personal_volley_best)
-
-	volley_count_changed.emit(_volley_count)
 
 	_hitting_ball = null
 
@@ -139,11 +141,15 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 func _on_ball_missed(missed_ball: Ball) -> void:
 	_tier_reward_handler.reset_rally(missed_ball)
 
-	# Each ball owns its speed: it resets itself off its own `missed` signal.
-	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	_volley_count = 0
+	# Ball._on_missed (same signal, connected first) has already flipped the missed ball to
+	# OUT_REST by the time this fires, so has_ball_in_play() reads the other balls cleanly.
+	var has_ball_in_play: bool = ball_system.has_ball_in_play()
+	_volley_streak_tracker.record_miss(has_ball_in_play)
+
+	if has_ball_in_play:
+		return
+
 	_soul_accumulator = 0.0
-	volley_count_changed.emit(_volley_count)
 
 	player_paddle.reset_streak()
 	if partner_paddle != null:
