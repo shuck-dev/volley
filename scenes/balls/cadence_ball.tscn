@@ -15,7 +15,6 @@ min_interval_seconds = 2.0
 max_interval_seconds = 5.0
 
 [node name="Sprite" parent="." index="1" unique_id=429755372]
-scale = Vector2(0.06, 0.06)
 texture = ExtResource("3_dvr74")
 
 [node name="ShiftCue" type="CPUParticles2D" parent="." index="4" unique_id=997770870]

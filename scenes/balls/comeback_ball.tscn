@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cqh0hj8f44vbl"]
+
+[ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_5iw36"]
+[ext_resource type="Script" uid="uid://ckmpks21hwwru" path="res://scripts/entities/ball/comeback_ball.gd" id="2_bmbrl"]
+[ext_resource type="Texture2D" uid="uid://wvlwi25nrkqw" path="res://assets/balls/comeback.png" id="3_k1lra"]
+
+[node name="ComebackBall" unique_id=1842167380 instance=ExtResource("1_5iw36")]
+script = ExtResource("2_bmbrl")
+attract_degrees_per_second = 45.0
+attract_range = 400.0
+rescue_degrees_per_second = 360.0
+
+[node name="Sprite" parent="." index="1" unique_id=429755372]
+texture = ExtResource("3_k1lra")
