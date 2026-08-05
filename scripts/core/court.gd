@@ -47,10 +47,10 @@ func _ready() -> void:
 	add_to_group(&"courts")
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
 
-	_tier_reward_handler = load("res://scripts/court/tier_reward_handler.gd").new()
+	_tier_reward_handler = TierRewardHandler.new()
 	add_child(_tier_reward_handler)
 
-	_volley_streak_tracker = load("res://scripts/court/volley_streak_tracker.gd").new()
+	_volley_streak_tracker = VolleyStreakTracker.new()
 	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
 
 	if _records == null:
@@ -141,9 +141,6 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 
 	var has_ball_in_play: bool = ball_system.has_ball_in_play()
 	_volley_streak_tracker.record_miss(has_ball_in_play)
-
-	if has_ball_in_play:
-		return
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
