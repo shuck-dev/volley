@@ -8,7 +8,6 @@ builds/
 exports/
 
 # Import cache
-*.import
 
 # Temp files
 *.tmp

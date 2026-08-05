@@ -1,0 +1,17 @@
+[remap]
+
+importer="com.timothyqiu.gdfxr.importer"
+type="AudioStreamWAV"
+uid="uid://c3n0vt2mith7b"
+path="res://.godot/imported/paddle_hit_3_clean_tick.sfxr-eb730e80d5e8b5de0c6e5e5b4ce162eb.sample"
+
+[deps]
+
+source_file="res://assets/sfx/paddle_hit_3_clean_tick.sfxr"
+dest_files=["res://.godot/imported/paddle_hit_3_clean_tick.sfxr-eb730e80d5e8b5de0c6e5e5b4ce162eb.sample"]
+
+[params]
+
+loop=false
+bit_depth=0
+sample_rate=0
