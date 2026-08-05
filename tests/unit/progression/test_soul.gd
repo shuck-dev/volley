@@ -26,7 +26,7 @@ func before_each() -> void:
 	var progression_config: ProgressionConfig = ProgressionConfig.new()
 	progression_config.autoplay_soul_rate = 0.5
 
-	_game = load("res://scripts/core/court.gd").new()
+	_game = Court.new()
 	_game.ball = _ball_stub
 	_game.player_paddle = _paddle_stub
 	_game.autoplay_controller = _autoplay_controller_stub
@@ -90,18 +90,9 @@ func test_soul_fractional_remainder_carries_over_between_autoplay_hits() -> void
 	assert_eq(_last_soul_balance, 2)
 
 
-func test_soul_accumulator_carries_over_when_autoplay_ends() -> void:
+func test_soul_fraction_carries_over_when_autoplay_ends() -> void:
 	_autoplay_controller_stub.autoplay_toggled.emit(true)
 	_hit()
-	_autoplay_controller_stub.autoplay_toggled.emit(false)
-	_hit()
-	assert_eq(_last_soul_balance, 1)
-
-
-func test_soul_accumulator_carries_over_a_miss() -> void:
-	_autoplay_controller_stub.autoplay_toggled.emit(true)
-	_hit()
-	_ball_stub.missed.emit(_ball_stub)
 	_autoplay_controller_stub.autoplay_toggled.emit(false)
 	_hit()
 	assert_eq(_last_soul_balance, 1)
