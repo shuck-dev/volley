@@ -31,14 +31,13 @@ var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
-var _volley_count := 0
 var _records: RecordsState
 var _partners: PartnersState
 var _progression_config: ProgressionConfig
 var _ball_manager: BallManager
 var _is_autoplay_active := false
-var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
+var _volley_streak_tracker: VolleyStreakTracker
 
 # Ball that triggered the current volley hit; available during the hit-processing window.
 var _hitting_ball: Ball
@@ -48,8 +47,11 @@ func _ready() -> void:
 	add_to_group(&"courts")
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
 
-	_tier_reward_handler = load("res://scripts/court/tier_reward_handler.gd").new()
+	_tier_reward_handler = TierRewardHandler.new()
 	add_child(_tier_reward_handler)
+
+	_volley_streak_tracker = VolleyStreakTracker.new()
+	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
 
 	if _records == null:
 		_records = SaveManager.records
@@ -120,14 +122,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
-	_volley_count += 1
+	_volley_streak_tracker.record_hit()
 	_accumulate_soul()
 
-	if _volley_count > _records.personal_volley_best:
-		_records.personal_volley_best = _volley_count
+	if _volley_streak_tracker.count > _records.personal_volley_best:
+		_records.personal_volley_best = _volley_streak_tracker.count
 		personal_volley_best_changed.emit(_records.personal_volley_best)
-
-	volley_count_changed.emit(_volley_count)
 
 	_hitting_ball = null
 
@@ -138,16 +138,7 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 
 func _on_ball_missed(missed_ball: Ball) -> void:
 	_tier_reward_handler.reset_rally(missed_ball)
-
-	# Each ball owns its speed: it resets itself off its own `missed` signal.
-	# Court still owns the shared streak counter and resets the paddles' hit-cooldown trackers.
-	_volley_count = 0
-	_soul_accumulator = 0.0
-	volley_count_changed.emit(_volley_count)
-
-	player_paddle.reset_streak()
-	if partner_paddle != null:
-		partner_paddle.reset_streak()
+	_volley_streak_tracker.record_miss(ball_system.has_ball_in_play())
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
@@ -217,7 +208,6 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 		partner_paddle.set_ball(incoming_ball)
 
 
-## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_soul() -> void:
 	var rate: float = _progression_config.autoplay_soul_rate
 	var base_points: float = GameRules.base.soul_per_hit
@@ -225,8 +215,4 @@ func _accumulate_soul() -> void:
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
 	)
-	_soul_accumulator += points_to_add
-	var whole_points: int = int(_soul_accumulator)
-	if whole_points > 0:
-		_ball_manager.add_soul(whole_points)
-		_soul_accumulator -= float(whole_points)
+	_ball_manager.add_soul_fractional(points_to_add)

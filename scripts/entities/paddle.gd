@@ -68,7 +68,6 @@ func on_ball_hit(ball: Ball = null) -> bool:
 	if not tracker.try_hit():
 		return false
 
-	hit_sound.pitch_scale = 1.0 + (tracker.streak * 0.05)
 	hit_sound.play()
 	paddle_hit.emit(ball)
 	return true
@@ -80,10 +79,6 @@ func _on_racket_body_entered(body: Node) -> void:
 		if _lane_x * ball.linear_velocity.x <= 0:
 			return
 		ball.hit_by_paddle(self)
-
-
-func reset_streak() -> void:
-	tracker.reset()
 
 
 func drive(velocity_y: float) -> void:
