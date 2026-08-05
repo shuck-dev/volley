@@ -11,9 +11,9 @@ var _ball: Ball
 var _config: PaddleAIConfig
 
 
-static func ball_below_paddle() -> float:
+func ball_below_paddle() -> float:
 	# Quarter of the paddle's travel range below paddle: always in-range, always saturates speed.
-	return -Paddle.PADDLE_TOP_Y * 0.25
+	return -_paddle.top_y * 0.25
 
 
 func before_each() -> void:

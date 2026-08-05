@@ -133,7 +133,7 @@ func _track() -> void:
 	var bound_y: float = ball.bound_y
 	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 	# Top-of-travel is negative (y-down); the court is vertically symmetric, so its magnitude is the bound.
-	var paddle_travel_bound: float = -Paddle.PADDLE_TOP_Y - paddle.get_half_height()
+	var paddle_travel_bound: float = -paddle.top_y - paddle.get_half_height()
 	var predicted_y: float = (
 		PaddleAIMath
 		. predict_intercept(

@@ -25,22 +25,21 @@ static func wire(gut_test: GutTest, paddle: Paddle, position: Vector2 = Vector2.
 	paddle.add_child(tracker)
 	paddle.tracker = tracker
 
-	var body_collision := CollisionShape2D.new()
-	body_collision.shape = RectangleShape2D.new()
-	paddle.add_child(body_collision)
-	paddle.collision = body_collision
-
-	var racket_hitbox := Area2D.new()
+	var racket_hitbox: RacketHitbox = load("res://scripts/entities/racket_hitbox.gd").new()
 	var racket_collision := CollisionShape2D.new()
 	racket_collision.shape = RectangleShape2D.new()
 	racket_hitbox.add_child(racket_collision)
+	racket_hitbox.collision = racket_collision
 	paddle.add_child(racket_hitbox)
 	paddle.racket_hitbox = racket_hitbox
-	paddle.racket_shape = racket_collision
 
 	var sprite := AnimatedSprite2D.new()
 	paddle.add_child(sprite)
 	paddle.sprite = sprite
+
+	var ground_ray := RayCast2D.new()
+	paddle.add_child(ground_ray)
+	paddle.ground_ray = ground_ray
 
 	gut_test.add_child_autofree(paddle)
 	return paddle

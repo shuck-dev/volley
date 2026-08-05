@@ -41,7 +41,6 @@ func _draw() -> void:
 
 func _build_ui() -> void:
 	alignment = BoxContainer.ALIGNMENT_CENTER
-	_add_checkbox("Show Body Collider", _apply_body_visible)
 	_add_checkbox("Show Racket Collider", _apply_racket_visible)
 	_add_checkbox("Show State Label", _apply_state_label_visible)
 	_add_checkbox("Show Ground Ray", _apply_ground_ray_visible)
@@ -109,10 +108,6 @@ func _find_overlay(paddle: Node) -> DevOverlay:
 		if child is DevOverlay:
 			return child
 	return null
-
-
-func _apply_body_visible(pressed: bool) -> void:
-	_for_each_overlay("set_body_collider_visible", pressed)
 
 
 func _apply_racket_visible(pressed: bool) -> void:

@@ -1,6 +1,7 @@
 class_name PlayerPaddle
 extends Paddle
 
+## Racket position while grounded-low; swapped in for crouch/low-hit animation states.
 @export var low_anchor: Marker2D
 
 var _default_racket_position: Vector2
@@ -20,17 +21,14 @@ func _physics_move(_delta: float) -> void:
 	if direction > 0.0 and is_grounded():
 		velocity = Vector2.ZERO
 		return
-	velocity = Vector2(0.0, direction * _movement.paddle_speed)
+	velocity = Vector2(0.0, direction * _paddle_speed)
 	move_and_slide()
-	position.x = _movement.lane_x
+	position.x = _lane_x
 	clamp_to_arena()
 
 
 func _on_animation_state_changed(state: StringName) -> void:
 	super(state)
-
-	if low_anchor == null:
-		return
 
 	if state in _low_states:
 		racket_hitbox.position = low_anchor.position
