@@ -10,14 +10,17 @@ signal rack_slots_changed
 ## Emitted after every rack-state mutation so consumers derive from one signal.
 signal ball_manager_state_changed
 
-var items: Array[BallDefinition] = [
-	preload("res://resources/items/old_ball.tres"),
-	preload("res://resources/items/standard_ball.tres"),
-	preload("res://resources/items/cadence_ball.tres"),
-	preload("res://resources/items/goop_ball.tres"),
-	preload("res://resources/items/cheater_ball.tres"),
-	preload("res://resources/items/comeback_ball.tres")
+const _ITEM_PATHS: Array[String] = [
+	"res://resources/items/old_ball.tres",
+	"res://resources/items/standard_ball.tres",
+	"res://resources/items/cadence_ball.tres",
+	"res://resources/items/goop_ball.tres",
+	"res://resources/items/cheater_ball.tres",
+	"res://resources/items/comeback_ball.tres",
 ]
+
+## Populated in _ready via load() rather than a preload initializer, avoiding a parse-time cycle the web export can't tolerate.
+var items: Array[BallDefinition] = []
 
 var state: BallState
 var economy: EconomyState
@@ -27,6 +30,9 @@ var _soul_fraction := 0.0
 
 
 func _ready() -> void:
+	for path in _ITEM_PATHS:
+		items.append(load(path))
+
 	if state == null:
 		state = SaveManager.items
 

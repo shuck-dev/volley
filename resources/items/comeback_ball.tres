@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BallDefinition" format=3]
+[gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://dhjqg6wrksome"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://cqh0hj8f44vbl" path="res://scenes/balls/comeback_ball.tscn" id="2_scene"]
