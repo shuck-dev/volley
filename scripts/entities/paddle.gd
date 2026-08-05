@@ -24,13 +24,11 @@ var _ball_manager: BallManager
 
 var _lane_x: float = 0.0
 var _paddle_speed: float = 0.0
+
 var _body_shape: RectangleShape2D
 var _racket_shape: RectangleShape2D
 
-var _last_y: float = 0.0
-var _vertical_motion: float = 0.0
-
-var _animation_state_machine: RefCounted
+var _animation_controller: PaddleAnimationController
 
 
 func _ready() -> void:
@@ -47,21 +45,76 @@ func _ready() -> void:
 	if racket_hitbox != null:
 		racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
-	if ground_ray == null:
-		ground_ray = get_node_or_null("GroundRay") as RayCast2D
-
 	if collision != null:
 		collision.disabled = true
 
-	_last_y = global_position.y
-
-	_ensure_animation_state_machine()
+	_ensure_animation_controller()
+	_animation_controller.start(global_position.y)
 
 	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
 	# from load rather than sitting on a default or the scene's authored animation.
 	_update_animation_state()
 
 	paddle_hit.connect(_on_paddle_hit_for_swing)
+
+
+func _physics_process(delta: float) -> void:
+	_physics_move(delta)
+	tick_animation_state()
+
+
+func _physics_move(_delta: float) -> void:
+	pass
+
+
+# --- movement and bounds ---
+
+
+func drive(velocity_y: float) -> void:
+	if velocity_y > 0.0 and is_grounded():
+		velocity = Vector2.ZERO
+		return
+
+	velocity = Vector2(0.0, velocity_y)
+	move_and_slide()
+	position.x = _lane_x
+	clamp_to_arena()
+
+
+func clamp_to_arena() -> void:
+	position.y = maxf(position.y, get_top_bound_y())
+
+
+func get_top_bound_y() -> float:
+	return PADDLE_TOP_Y + get_half_height()
+
+
+func is_grounded() -> bool:
+	if ground_ray == null:
+		return super.is_on_floor()
+	return ground_ray.is_colliding()
+
+
+func get_speed() -> float:
+	return _paddle_speed
+
+
+func _resolved_paddle_speed() -> float:
+	return GameRules.paddle.paddle_speed
+
+
+func _bind_stat_updates() -> void:
+	if _ball_manager == null:
+		_ball_manager = BallManager
+	_ball_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
+	_ball_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
+
+
+func _refresh_from_stats() -> void:
+	_paddle_speed = _resolved_paddle_speed()
+
+
+# --- shape and hitbox ---
 
 
 func on_ball_hit(ball: Ball = null) -> bool:
@@ -81,120 +134,12 @@ func _on_racket_body_entered(body: Node) -> void:
 		ball.hit_by_paddle(self)
 
 
-func drive(velocity_y: float) -> void:
-	if velocity_y > 0.0 and is_grounded():
-		velocity = Vector2.ZERO
-		return
-
-	velocity = Vector2(0.0, velocity_y)
-	move_and_slide()
-	position.x = _lane_x
-	clamp_to_arena()
-
-
-func clamp_to_arena() -> void:
-	position.y = maxf(position.y, PADDLE_TOP_Y + get_half_height())
-
-
-func _physics_process(delta: float) -> void:
-	_physics_move(delta)
-	tick_animation_state()
-
-
-func _physics_move(_delta: float) -> void:
-	pass
-
-
-func tick_animation_state() -> void:
-	_vertical_motion = global_position.y - _last_y
-	_last_y = global_position.y
-	_update_animation_state()
-
-
-func get_speed() -> float:
-	return _paddle_speed
-
-
 # Half of the racket zone's vertical extent; the normalised denominator for contact-offset return
 # angle. The racket, not the wall body, defines where on the paddle the ball is judged to strike.
 func get_half_height() -> float:
 	if _racket_shape != null:
 		return _racket_shape.size.y * 0.5
 	return 0.0
-
-
-func get_movement_state() -> StringName:
-	return _animation_state_machine.get_state()
-
-
-func is_grounded() -> bool:
-	if ground_ray == null:
-		return super.is_on_floor()
-	return ground_ray.is_colliding()
-
-
-func _ensure_animation_state_machine() -> void:
-	if _animation_state_machine == null:
-		_animation_state_machine = (
-			load("res://scripts/core/paddle_animation_state_machine.gd").new()
-		)
-		_animation_state_machine.state_changed.connect(_on_animation_state_changed)
-
-
-## Updates the animation state machine and plays any new state.
-func _update_animation_state() -> void:
-	_ensure_animation_state_machine()
-	var grounded: bool = is_grounded()
-	_animation_state_machine.update(grounded, _vertical_motion, _is_crouching())
-
-
-## Wired to the machine's state_changed signal; plays the animation when the state changes.
-func _on_animation_state_changed(state: StringName) -> void:
-	if (
-		sprite != null
-		and sprite.sprite_frames != null
-		and sprite.sprite_frames.has_animation(state)
-	):
-		sprite.play(state)
-
-
-## Handles the paddle_hit signal to initiate the swing animation.
-func _on_paddle_hit_for_swing(_ball: Ball) -> void:
-	_ensure_animation_state_machine()
-
-	var grounded: bool = is_grounded()
-	_animation_state_machine.on_hit(grounded, _vertical_motion, _is_crouching())
-
-	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
-		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
-
-
-## Clears the swing pending state when the animation finishes.
-func _on_swing_finished() -> void:
-	if _animation_state_machine == null:
-		return
-
-	var grounded: bool = is_grounded()
-	_animation_state_machine.on_swing_finished(grounded, _vertical_motion, _is_crouching())
-
-
-func _is_crouching() -> bool:
-	return false
-
-
-func _resolved_paddle_speed() -> float:
-	return GameRules.paddle.paddle_speed
-
-
-func _bind_stat_updates() -> void:
-	if _ball_manager == null:
-		_ball_manager = BallManager
-	_ball_manager.item_level_changed.connect(_refresh_from_stats.unbind(1))
-	_ball_manager.item_placement_changed.connect(_refresh_from_stats.unbind(2))
-
-
-func _refresh_from_stats() -> void:
-	_paddle_speed = _resolved_paddle_speed()
 
 
 func set_racket_width(width: float) -> void:
@@ -210,3 +155,57 @@ func set_racket_height(height: float) -> void:
 func set_body_collision_enabled(enabled: bool) -> void:
 	if collision != null:
 		collision.disabled = not enabled
+
+
+# --- animation ---
+
+
+func tick_animation_state() -> void:
+	_update_animation_state()
+
+
+func get_movement_state() -> StringName:
+	_ensure_animation_controller()
+	return _animation_controller.get_state()
+
+
+func _is_crouching() -> bool:
+	return false
+
+
+func _ensure_animation_controller() -> void:
+	if _animation_controller == null:
+		_animation_controller = load("res://scripts/core/paddle_animation_controller.gd").new()
+		_animation_controller.state_changed.connect(_on_animation_state_changed)
+
+
+func _update_animation_state() -> void:
+	_ensure_animation_controller()
+	_animation_controller.tick(global_position.y, is_grounded(), _is_crouching())
+
+
+## Wired to the animation controller's state_changed signal; plays the animation when it changes.
+func _on_animation_state_changed(state: StringName) -> void:
+	if (
+		sprite != null
+		and sprite.sprite_frames != null
+		and sprite.sprite_frames.has_animation(state)
+	):
+		sprite.play(state)
+
+
+## Handles the paddle_hit signal to initiate the swing animation.
+func _on_paddle_hit_for_swing(_ball: Ball) -> void:
+	_ensure_animation_controller()
+	_animation_controller.on_hit(is_grounded(), _is_crouching())
+
+	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
+		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
+
+
+## Clears the swing pending state when the animation finishes.
+func _on_swing_finished() -> void:
+	if _animation_controller == null:
+		return
+
+	_animation_controller.on_swing_finished(is_grounded(), _is_crouching())
