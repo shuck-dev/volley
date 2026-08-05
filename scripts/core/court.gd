@@ -138,9 +138,7 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 
 func _on_ball_missed(missed_ball: Ball) -> void:
 	_tier_reward_handler.reset_rally(missed_ball)
-
-	var has_ball_in_play: bool = ball_system.has_ball_in_play()
-	_volley_streak_tracker.record_miss(has_ball_in_play)
+	_volley_streak_tracker.record_miss(ball_system.has_ball_in_play())
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
