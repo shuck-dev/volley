@@ -232,11 +232,12 @@ func add_soul(points: int) -> void:
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Fractional earning path; banks the remainder so a reduced per-hit rate
-## (e.g. autoplay) doesn't lose value to truncation across hits.
+## Adds a fraction of a soul to the overall amount.
+## So that it is not truncated across hits.
 func add_soul_fractional(points: float) -> void:
 	_soul_fraction += points
 	var whole_points: int = int(_soul_fraction)
+
 	if whole_points > 0:
 		add_soul(whole_points)
 		_soul_fraction -= float(whole_points)
