@@ -140,8 +140,6 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 func _on_ball_missed(missed_ball: Ball) -> void:
 	_tier_reward_handler.reset_rally(missed_ball)
 
-	# Ball._on_missed (same signal, connected first) has already flipped the missed ball to
-	# OUT_REST by the time this fires, so has_ball_in_play() reads the other balls cleanly.
 	var has_ball_in_play: bool = ball_system.has_ball_in_play()
 	_volley_streak_tracker.record_miss(has_ball_in_play)
 
@@ -149,10 +147,6 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 		return
 
 	_soul_accumulator = 0.0
-
-	player_paddle.reset_streak()
-	if partner_paddle != null:
-		partner_paddle.reset_streak()
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
