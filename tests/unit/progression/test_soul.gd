@@ -98,7 +98,7 @@ func test_soul_accumulator_carries_over_when_autoplay_ends() -> void:
 	assert_eq(_last_soul_balance, 1)
 
 
-func test_soul_accumulator_resets_on_miss() -> void:
+func test_soul_accumulator_carries_over_a_miss() -> void:
 	_autoplay_controller_stub.autoplay_toggled.emit(true)
 	_hit()
 	_ball_stub.missed.emit(_ball_stub)

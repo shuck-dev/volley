@@ -22,6 +22,9 @@ var items: Array[BallDefinition] = [
 var state: BallState
 var economy: EconomyState
 
+## Fractional soul carried between hits
+var _soul_fraction := 0.0
+
 
 func _ready() -> void:
 	if state == null:
@@ -227,6 +230,16 @@ func add_soul(points: int) -> void:
 	economy.soul_balance += points
 	economy.total_soul_earned += points
 	soul_balance_changed.emit(economy.soul_balance)
+
+
+## Fractional earning path; banks the remainder so a reduced per-hit rate
+## (e.g. autoplay) doesn't lose value to truncation across hits.
+func add_soul_fractional(points: float) -> void:
+	_soul_fraction += points
+	var whole_points: int = int(_soul_fraction)
+	if whole_points > 0:
+		add_soul(whole_points)
+		_soul_fraction -= float(whole_points)
 
 
 ## Subtracts soul (clamped to zero) and emits balance changed signal.

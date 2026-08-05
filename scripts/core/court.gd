@@ -36,7 +36,6 @@ var _partners: PartnersState
 var _progression_config: ProgressionConfig
 var _ball_manager: BallManager
 var _is_autoplay_active := false
-var _soul_accumulator := 0.0
 var _tier_reward_handler: TierRewardHandler
 var _volley_streak_tracker: VolleyStreakTracker
 
@@ -146,8 +145,6 @@ func _on_ball_missed(missed_ball: Ball) -> void:
 	if has_ball_in_play:
 		return
 
-	_soul_accumulator = 0.0
-
 
 func _on_auto_play_changed(is_active: bool) -> void:
 	_is_autoplay_active = is_active
@@ -216,7 +213,6 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 		partner_paddle.set_ball(incoming_ball)
 
 
-## Fractional accumulation; remainder from a reduced autoplay rate carries between hits.
 func _accumulate_soul() -> void:
 	var rate: float = _progression_config.autoplay_soul_rate
 	var base_points: float = GameRules.base.soul_per_hit
@@ -224,8 +220,4 @@ func _accumulate_soul() -> void:
 	var points_to_add: float = (
 		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
 	)
-	_soul_accumulator += points_to_add
-	var whole_points: int = int(_soul_accumulator)
-	if whole_points > 0:
-		_ball_manager.add_soul(whole_points)
-		_soul_accumulator -= float(whole_points)
+	_ball_manager.add_soul_fractional(points_to_add)
