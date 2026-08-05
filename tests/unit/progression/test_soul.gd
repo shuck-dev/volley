@@ -35,7 +35,7 @@ func before_each() -> void:
 	_game._progression_config = progression_config
 	_game._ball_manager = _ball_manager
 	add_child_autofree(_ball_stub)
-	add_child_autofree(_paddle_stub)
+	load("res://tests/stubs/paddle_factory.gd").wire(self, _paddle_stub)
 	add_child_autofree(_game)
 	_ball_manager.soul_balance_changed.connect(func(total: int) -> void: _last_soul_balance = total)
 	_ball_stub.gravity_scale = 0.0

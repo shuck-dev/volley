@@ -6,6 +6,17 @@ signal paddle_hit(ball: Ball)
 
 const PADDLE_TOP_Y := -540.0
 
+
+class MovementState:
+	var lane_x: float = 0.0
+	var paddle_speed: float = 0.0
+
+
+class ShapeCache:
+	var body_shape: RectangleShape2D
+	var racket_shape: RectangleShape2D
+
+
 @export var hit_sound: AudioStreamPlayer
 @export var collision: CollisionShape2D
 @export var sprite: AnimatedSprite2D
@@ -22,31 +33,26 @@ var input_blocked: bool = false
 
 var _ball_manager: BallManager
 
-var _lane_x: float = 0.0
-var _paddle_speed: float = 0.0
-
-var _body_shape: RectangleShape2D
-var _racket_shape: RectangleShape2D
+var _movement := MovementState.new()
+var _shape := ShapeCache.new()
 
 var _animation_controller: PaddleAnimationController
 
 
 func _ready() -> void:
-	_lane_x = position.x
-	_paddle_speed = _resolved_paddle_speed()
+	_movement.lane_x = position.x
+	_movement.paddle_speed = _resolved_paddle_speed()
 	_bind_stat_updates()
 
-	if collision != null and collision.shape is RectangleShape2D:
-		_body_shape = collision.shape
+	if collision.shape is RectangleShape2D:
+		_shape.body_shape = collision.shape
 
-	if racket_shape != null and racket_shape.shape is RectangleShape2D:
-		_racket_shape = racket_shape.shape
+	if racket_shape.shape is RectangleShape2D:
+		_shape.racket_shape = racket_shape.shape
 
-	if racket_hitbox != null:
-		racket_hitbox.body_entered.connect(_on_racket_body_entered)
+	racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
-	if collision != null:
-		collision.disabled = true
+	collision.disabled = true
 
 	_ensure_animation_controller()
 	_animation_controller.start(global_position.y)
@@ -77,7 +83,7 @@ func drive(velocity_y: float) -> void:
 
 	velocity = Vector2(0.0, velocity_y)
 	move_and_slide()
-	position.x = _lane_x
+	position.x = _movement.lane_x
 	clamp_to_arena()
 
 
@@ -96,7 +102,7 @@ func is_grounded() -> bool:
 
 
 func get_speed() -> float:
-	return _paddle_speed
+	return _movement.paddle_speed
 
 
 func _resolved_paddle_speed() -> float:
@@ -111,7 +117,7 @@ func _bind_stat_updates() -> void:
 
 
 func _refresh_from_stats() -> void:
-	_paddle_speed = _resolved_paddle_speed()
+	_movement.paddle_speed = _resolved_paddle_speed()
 
 
 # --- shape and hitbox ---
@@ -129,7 +135,7 @@ func on_ball_hit(ball: Ball = null) -> bool:
 func _on_racket_body_entered(body: Node) -> void:
 	if body is Ball:
 		var ball := body as Ball
-		if _lane_x * ball.linear_velocity.x <= 0:
+		if _movement.lane_x * ball.linear_velocity.x <= 0:
 			return
 		ball.hit_by_paddle(self)
 
@@ -137,24 +143,23 @@ func _on_racket_body_entered(body: Node) -> void:
 # Half of the racket zone's vertical extent; the normalised denominator for contact-offset return
 # angle. The racket, not the wall body, defines where on the paddle the ball is judged to strike.
 func get_half_height() -> float:
-	if _racket_shape != null:
-		return _racket_shape.size.y * 0.5
+	if _shape.racket_shape != null:
+		return _shape.racket_shape.size.y * 0.5
 	return 0.0
 
 
 func set_racket_width(width: float) -> void:
-	if _racket_shape != null:
-		_racket_shape.size.x = width
+	if _shape.racket_shape != null:
+		_shape.racket_shape.size.x = width
 
 
 func set_racket_height(height: float) -> void:
-	if _racket_shape != null:
-		_racket_shape.size.y = height
+	if _shape.racket_shape != null:
+		_shape.racket_shape.size.y = height
 
 
 func set_body_collision_enabled(enabled: bool) -> void:
-	if collision != null:
-		collision.disabled = not enabled
+	collision.disabled = not enabled
 
 
 # --- animation ---
@@ -186,11 +191,7 @@ func _update_animation_state() -> void:
 
 ## Wired to the animation controller's state_changed signal; plays the animation when it changes.
 func _on_animation_state_changed(state: StringName) -> void:
-	if (
-		sprite != null
-		and sprite.sprite_frames != null
-		and sprite.sprite_frames.has_animation(state)
-	):
+	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(state):
 		sprite.play(state)
 
 
@@ -199,7 +200,7 @@ func _on_paddle_hit_for_swing(_ball: Ball) -> void:
 	_ensure_animation_controller()
 	_animation_controller.on_hit(is_grounded(), _is_crouching())
 
-	if sprite != null and not sprite.animation_finished.is_connected(_on_swing_finished):
+	if not sprite.animation_finished.is_connected(_on_swing_finished):
 		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
 
 

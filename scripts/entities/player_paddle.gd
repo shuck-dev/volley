@@ -8,8 +8,7 @@ var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 
 
 func _ready() -> void:
-	if racket_hitbox != null:
-		_default_racket_position = racket_hitbox.position
+	_default_racket_position = racket_hitbox.position
 
 	super()
 
@@ -21,16 +20,16 @@ func _physics_move(_delta: float) -> void:
 	if direction > 0.0 and is_grounded():
 		velocity = Vector2.ZERO
 		return
-	velocity = Vector2(0.0, direction * _paddle_speed)
+	velocity = Vector2(0.0, direction * _movement.paddle_speed)
 	move_and_slide()
-	position.x = _lane_x
+	position.x = _movement.lane_x
 	clamp_to_arena()
 
 
 func _on_animation_state_changed(state: StringName) -> void:
 	super(state)
 
-	if racket_hitbox == null or low_anchor == null:
+	if low_anchor == null:
 		return
 
 	if state in _low_states:

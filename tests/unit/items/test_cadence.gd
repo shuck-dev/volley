@@ -20,14 +20,7 @@ func before_each() -> void:
 	_reconciler.configure(_manager)
 	add_child_autofree(_reconciler)
 
-	_paddle = load("res://scripts/entities/paddle.gd").new()
-	var sound := AudioStreamPlayer.new()
-	_paddle.add_child(sound)
-	_paddle.hit_sound = sound
-	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
-	_paddle.tracker = tracker
-	_paddle.add_child(tracker)
-	add_child_autofree(_paddle)
+	_paddle = load("res://tests/stubs/paddle_factory.gd").create(self)
 
 
 func _spawn_ball(ball_key: String) -> Ball:

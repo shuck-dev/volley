@@ -18,15 +18,7 @@ func before_each() -> void:
 	_ball = BallStub.new()
 	add_child_autofree(_ball)
 
-	_paddle = load("res://scripts/entities/paddle.gd").new()
-	_paddle.position = Vector2(PADDLE_X, 0.0)
-	var sound := AudioStreamPlayer.new()
-	_paddle.add_child(sound)
-	_paddle.hit_sound = sound
-	var tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
-	_paddle.tracker = tracker
-	_paddle.add_child(tracker)
-	add_child_autofree(_paddle)
+	_paddle = load("res://tests/stubs/paddle_factory.gd").create(self, Vector2(PADDLE_X, 0.0))
 
 	_config = PaddleAIConfig.new()
 	_config.reaction_delay_frames = 1
