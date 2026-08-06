@@ -7,8 +7,6 @@
 builds/
 exports/
 
-# Import cache
-
 # Temp files
 *.tmp
 
@@ -66,12 +64,14 @@ CLAUDE.md
 *.blend1
 *.blend2
 *.blend@
+
 # Animation apps (Spine, DragonBones, After Effects, Moho)
 *.spine-backup
 *.dbbak
 *.aep~
 *.aep.lock
 *.moho~
+
 # Frame-by-frame apps (OpenToonz, TVPaint, Pencil2D) autosaves and backups
 *.tnz~
 *.tvpp~
@@ -84,10 +84,6 @@ backup/*.tnz
 # OS junk
 .DS_Store
 Thumbs.db
-
-# live-update smoke PR touch, safe to revert
-
-.godotiq/
 
 # OpenCode local config (personal memory pointer, machine-specific)
 .opencode/
