@@ -167,6 +167,21 @@ func get_stored_items() -> Array[String]:
 	return result
 
 
+## Returns owned items whose placement is IN_KIT (the Ball Kit staging area).
+func get_kit_items() -> Array[String]:
+	var result: Array[String] = []
+
+	for key in state.ball_levels:
+		if state.ball_levels[key] <= 0:
+			continue
+		if _get_placement(key) != Placement.IN_KIT:
+			continue
+		if _get_item(key) != null:
+			result.append(key)
+
+	return result
+
+
 ## Sets a ball to on court, starting its effects
 func activate(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
@@ -179,6 +194,26 @@ func activate(ball_key: String) -> bool:
 
 ## Moves an owned item back to the rack and unregisters its effects; false if unowned.
 func deactivate(ball_key: String) -> bool:
+	if get_level(ball_key) <= 0:
+		return false
+
+	_set_item_placement(ball_key, Placement.STORED)
+
+	return true
+
+
+## Moves an owned item into the Ball Kit staging area; false if unowned.
+func add_to_kit(ball_key: String) -> bool:
+	if get_level(ball_key) <= 0:
+		return false
+
+	_set_item_placement(ball_key, Placement.IN_KIT)
+
+	return true
+
+
+## Moves an owned item from the Ball Kit back to the rack; false if unowned.
+func remove_from_kit(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false
 

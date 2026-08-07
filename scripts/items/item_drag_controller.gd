@@ -21,6 +21,8 @@ static var _ball_collision_shape: CircleShape2D
 @export var rack_drop_target: Area2D
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
+## Screen-anchored; hit-tested separately from the world-space drop_targets group.
+@export var kit: BallKitDisplay
 
 var _ball_manager: BallManager
 ## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).
@@ -94,7 +96,7 @@ func _process(_delta: float) -> void:
 	_update_cursor_state(cursor_target)
 
 	if not _mouse_button_down:
-		if not attempt_release(cursor_target):
+		if not attempt_release(cursor_target, _screen_position()):
 			pass
 
 
@@ -111,7 +113,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	# Use event position so a Camera2D in the venue doesn't break rack hit-testing.
-	if not attempt_release(_event_world_position(mouse_button)):
+	if not attempt_release(_event_world_position(mouse_button), mouse_button.position):
 		# Gesture stays alive: keep following the cursor and retry release each frame.
 		_release_pending = true
 
@@ -259,7 +261,8 @@ func _adopt_purchased_into_rack(instance_key: String) -> void:
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
-func attempt_release(release_position: Vector2) -> bool:
+## `screen_position` defaults to a live viewport lookup; direct/test callers may pin it.
+func attempt_release(release_position: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
 	if _drag_target() == null:
 		return false
 
@@ -277,9 +280,12 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court:
-		if has_live_ball and not is_temporary:
-			_restore_held_ball_to_stored(ball_key)
-		_finalise_gesture(ball_key, release_position, false)
+		_cancel_rack_gesture(ball_key, release_position, has_live_ball, is_temporary)
+		return true
+
+	if _try_accept_into_kit(
+		ball_key, release_position, screen_position, has_live_ball, is_temporary
+	):
 		return true
 
 	var target: DropTarget = _find_accepting_target(ball_key, release_position)
@@ -296,14 +302,9 @@ func attempt_release(release_position: Vector2) -> bool:
 			_apply_preserved_speed_after_accept(ball_key)
 	elif is_temporary:
 		# A temporary ball never joins the rack/venue registry; anywhere but the court just frees it.
-		if reconciler != null:
-			reconciler.free_temporary(held_ball)
-		_finalise_gesture(ball_key, release_position, false)
-		return true
+		_free_temporary_ball(held_ball)
 	elif target is VenueDropTarget:
 		target.accept(ball_key, release_position, _compute_release_velocity())
-		_finalise_gesture(ball_key, release_position, false)
-		return true
 	else:
 		# Restore is the safety net when BallManager was already STORED so accept's deactivate was a no-op.
 		target.accept(ball_key, release_position, Vector2.ZERO)
@@ -374,6 +375,56 @@ func _restore_held_ball_to_stored(ball_key: String) -> void:
 	(_held as Ball).enter_stored()
 	if rack != null:
 		(_held as Ball).global_position = rack.get_slot_position_for(ball_key)
+
+
+func _free_temporary_ball(held_ball: Ball) -> void:
+	if reconciler != null:
+		reconciler.free_temporary(held_ball)
+
+
+## Cancels a rack-origin gesture back to its source; a click-without-movement is a no-op, not a drop.
+func _cancel_rack_gesture(
+	ball_key: String, release_position: Vector2, has_live_ball: bool, is_temporary: bool
+) -> void:
+	if has_live_ball and not is_temporary:
+		_restore_held_ball_to_stored(ball_key)
+	_finalise_gesture(ball_key, release_position, false)
+
+
+## Freezes the held Ball for its new IN_KIT placement; Kit renders a static icon, not the live body,
+## so the ball just goes inert at its release point instead of following a Kit-slot world position.
+func _park_held_ball_in_kit() -> void:
+	if not (_held is Ball):
+		return
+	_ball_manager.clear_loose_in_venue(_held_key)
+	(_held as Ball).enter_stored()
+
+
+## Screen-space Kit path, checked before the world-space drop_targets group. Returns true (and
+## finalises the gesture) only when a Kit slot under the cursor actually accepted the ball.
+func _try_accept_into_kit(
+	ball_key: String,
+	release_position: Vector2,
+	screen_position: Vector2,
+	has_live_ball: bool,
+	is_temporary: bool,
+) -> bool:
+	if is_temporary or ball_key.is_empty():
+		return false
+
+	var resolved_screen_position: Vector2 = (
+		screen_position if screen_position != Vector2.INF else _screen_position()
+	)
+	var kit_slot: KitSlot = _find_accepting_kit_slot(ball_key, resolved_screen_position)
+	if kit_slot == null:
+		return false
+
+	kit_slot.accept(ball_key)
+	if has_live_ball:
+		_park_held_ball_in_kit()
+	_finalise_gesture(ball_key, release_position, false)
+	rack.refresh()
+	return true
 
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
@@ -451,6 +502,15 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 	return canvas_transform.affine_inverse() * event.position
 
 
+## Raw viewport mouse position, unlike _cursor_position/_event_world_position which bake in the
+## VenueCamera's pan offset; Kit lives in a CanvasLayer and hit-tests in this space instead.
+func _screen_position() -> Vector2:
+	var viewport: Viewport = get_viewport()
+	if viewport == null:
+		return Vector2.ZERO
+	return viewport.get_mouse_position()
+
+
 func _update_cursor_state(world_position: Vector2) -> void:
 	var state: int = _derive_cursor_state(world_position)
 	_set_cursor_state(state, world_position)
@@ -459,6 +519,8 @@ func _update_cursor_state(world_position: Vector2) -> void:
 func _derive_cursor_state(world_position: Vector2) -> int:
 	if _drag_target() == null:
 		return CursorStateScript.State.DEFAULT
+	if _find_accepting_kit_slot(_held_key, _screen_position()) != null:
+		return CursorStateScript.State.CAN_DROP
 	if _position_accepted_by_any_target(_held_key, world_position):
 		return CursorStateScript.State.CAN_DROP
 	return CursorStateScript.State.FORBIDDEN
@@ -466,6 +528,19 @@ func _derive_cursor_state(world_position: Vector2) -> int:
 
 func _position_accepted_by_any_target(ball_key: String, world_position: Vector2) -> bool:
 	return _find_accepting_target(ball_key, world_position) != null
+
+
+## Screen-space Kit lookup; Kit sits in InterfaceLayer, visually above the world-space targets,
+## so a hit here takes priority and short-circuits before the Area2D-based drop_targets check.
+func _find_accepting_kit_slot(ball_key: String, screen_position: Vector2) -> KitSlot:
+	if kit == null:
+		return null
+	var slot: KitSlot = kit.get_slot_at(screen_position)
+	if slot == null:
+		return null
+	if not slot.can_accept(ball_key):
+		return null
+	return slot
 
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:

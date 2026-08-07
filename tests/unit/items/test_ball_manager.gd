@@ -271,6 +271,69 @@ class TestStoredItems:
 		assert_eq(stored[0], "stored_ball_1")
 
 
+class TestKitItems:
+	extends GutTest
+	var _manager: Node
+
+	func before_each() -> void:
+		_manager = BallFactory.create_manager(self)
+		var ball_item := BallDefinition.new()
+		ball_item.key = "kit_ball"
+		ball_item.base_cost = 100
+		ball_item.cost_scaling = 2.0
+		ball_item.max_level = 3
+		_manager.items.assign([ball_item])
+		_manager.economy.soul_balance = 10000
+
+	func test_get_kit_items_is_empty_when_nothing_owned() -> void:
+		assert_eq(_manager.get_kit_items().size(), 0)
+
+	func test_get_kit_items_excludes_stored_items() -> void:
+		_manager.take("kit_ball")
+		assert_eq(_manager.get_kit_items().size(), 0)
+
+	func test_add_to_kit_moves_a_stored_item_into_the_kit() -> void:
+		_manager.take("kit_ball")
+		assert_true(_manager.add_to_kit("kit_ball_1"))
+		var kit_items: Array[String] = _manager.get_kit_items()
+		assert_eq(kit_items.size(), 1)
+		assert_eq(kit_items[0], "kit_ball_1")
+
+	func test_add_to_kit_removes_the_item_from_stored() -> void:
+		_manager.take("kit_ball")
+		_manager.add_to_kit("kit_ball_1")
+		assert_eq(_manager.get_stored_items().size(), 0)
+
+	func test_add_to_kit_returns_false_for_an_unowned_item() -> void:
+		assert_false(_manager.add_to_kit("kit_ball_1"))
+
+	func test_remove_from_kit_returns_a_kit_item_to_stored() -> void:
+		_manager.take("kit_ball")
+		_manager.add_to_kit("kit_ball_1")
+		assert_true(_manager.remove_from_kit("kit_ball_1"))
+		assert_eq(_manager.get_kit_items().size(), 0)
+		var stored: Array[String] = _manager.get_stored_items()
+		assert_eq(stored.size(), 1)
+		assert_eq(stored[0], "kit_ball_1")
+
+	func test_get_placement_reports_in_kit_after_add_to_kit() -> void:
+		_manager.take("kit_ball")
+		_manager.add_to_kit("kit_ball_1")
+		assert_eq(_manager.get_placement("kit_ball_1"), Placement.IN_KIT)
+
+	func test_add_to_kit_releases_the_rack_slot() -> void:
+		_manager.take("kit_ball")
+		assert_eq(
+			_manager.get_rack_slot_index("kit_ball_1"), 0, "precondition: stored item has a slot"
+		)
+		_manager.add_to_kit("kit_ball_1")
+		assert_eq(
+			_manager.get_rack_slot_index("kit_ball_1"),
+			-1,
+			"a kitted item does not hold a rack slot",
+		)
+
+
 class TestRackSlotAssignment:
 	extends GutTest
 	var _manager: Node
