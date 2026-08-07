@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bjwppuc8grsq7" path="res://scenes/balls/goop_ball.tscn" id="1_aeehb"]
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="2_g4j3q"]
+[ext_resource type="Texture2D" uid="uid://bpd3df3kc3by6" path="res://assets/balls/goop_green.png" id="3_icon"]
 
 [resource]
 script = ExtResource("2_g4j3q")
@@ -9,3 +10,4 @@ key = "goop"
 display_name = "Goop"
 scene = ExtResource("1_aeehb")
 base_cost = 100
+icon = ExtResource("3_icon")

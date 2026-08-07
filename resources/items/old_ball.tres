@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://212nmv8i311x" path="res://scenes/balls/old_ball.tscn" id="3_scene"]
+[ext_resource type="Texture2D" uid="uid://xm8ltt8fkfk4" path="res://assets/balls/old.png" id="4_icon"]
 
 [resource]
 script = ExtResource("1_item")
@@ -9,3 +10,4 @@ key = "old_ball"
 display_name = "Old Ball"
 scene = ExtResource("3_scene")
 max_level = 10
+icon = ExtResource("4_icon")

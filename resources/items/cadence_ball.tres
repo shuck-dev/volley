@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://bflgu4aj5lkbj" path="res://scenes/balls/cadence_ball.tscn" id="2_scene"]
+[ext_resource type="Texture2D" uid="uid://bc3bof8fo47tr" path="res://assets/balls/cadence.png" id="3_icon"]
 
 [resource]
 script = ExtResource("1_item")
@@ -9,3 +10,4 @@ key = "cadence"
 display_name = "Cadence"
 scene = ExtResource("2_scene")
 base_cost = 100
+icon = ExtResource("3_icon")
