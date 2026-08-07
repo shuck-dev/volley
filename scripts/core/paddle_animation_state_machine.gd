@@ -9,8 +9,7 @@ var _current_state: StringName = &""
 var _swing_pending: bool = false
 
 
-## Updates the state based on grounded, vertical motion, crouching, and internal swing_pending.
-## Emits state_changed only if the state actually changed.
+## Updates the animation state.
 func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	var new_state: StringName = _resolve_state(grounded, vertical_motion, _swing_pending, crouching)
 

@@ -54,11 +54,9 @@ func _on_partner_changed() -> void:
 
 func _attach_overlay(paddle: Paddle) -> Node2D:
 	var overlay: DevOverlay = load(PADDLE_DEV_OVERLAY_SCENE).instantiate()
-	var body_collider: BodyColliderOverlay = overlay.get_node("BodyColliderOverlay")
 	var racket_collider: RacketColliderOverlay = overlay.get_node("RacketColliderOverlay")
 	var ray_overlay: GroundRayOverlay = overlay.get_node("GroundRayOverlay")
 	var state_label: AnimationStateLabel = overlay.get_node("AnimationStateLabel")
-	body_collider.collision = paddle.collision
 	racket_collider.racket_hitbox = paddle.racket_hitbox
 	ray_overlay.ground_ray = paddle.ground_ray
 	state_label.sprite = paddle.sprite

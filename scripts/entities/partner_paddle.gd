@@ -5,10 +5,6 @@ extends Paddle
 
 
 # Partners use unmodified base values; BallManager modifiers belong to the player paddle.
-func _resolve(base: float, _key: StringName) -> float:
-	return base
-
-
 func _bind_stat_updates() -> void:
 	pass
 

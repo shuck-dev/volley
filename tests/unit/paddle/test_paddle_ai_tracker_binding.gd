@@ -18,14 +18,7 @@ func before_each() -> void:
 	_tracker = BallReconcilerScript.new()
 	add_child_autofree(_tracker)
 
-	_paddle = load("res://scripts/entities/paddle.gd").new()
-	var sound := AudioStreamPlayer.new()
-	_paddle.add_child(sound)
-	_paddle.hit_sound = sound
-	var hit_tracker: HitTracker = load("res://scripts/core/hit_tracker.gd").new()
-	_paddle.tracker = hit_tracker
-	_paddle.add_child(hit_tracker)
-	add_child_autofree(_paddle)
+	_paddle = load("res://tests/stubs/paddle_factory.gd").create(self)
 
 	_config = PaddleAIConfig.new()
 	_config.reaction_delay_frames = 1

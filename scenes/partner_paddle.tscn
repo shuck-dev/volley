@@ -2,28 +2,24 @@
 
 [ext_resource type="Script" uid="uid://bqd7j26158kap" path="res://scripts/entities/partner_paddle.gd" id="1_unscj"]
 [ext_resource type="SpriteFrames" uid="uid://bmartha01anim" path="res://resources/animations/martha.tres" id="2_bmne2"]
-[ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
-[ext_resource type="Texture2D" uid="uid://c833m4yxk2atr" path="res://assets/art/martha_bow.svg" id="3_kpkwm"]
+[ext_resource type="AudioStream" uid="uid://6hn7v8onu1gj" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
+[ext_resource type="Texture2D" uid="uid://bcumy6bkhv4v8" path="res://assets/art/martha_bow.svg" id="3_kpkwm"]
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_tracker"]
 [ext_resource type="Script" uid="uid://deu5sl253eppb" path="res://scripts/core/partner_ai_controller.gd" id="4_ai"]
 [ext_resource type="Resource" uid="uid://81y01va0025a" path="res://resources/partner_ai_config.tres" id="5_config"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_martha"]
-size = Vector2(24, 60)
+[ext_resource type="Script" uid="uid://dfc28jj4bws1v" path="res://scripts/entities/racket_hitbox.gd" id="6_rckthbx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ts58t"]
 size = Vector2(24, 65)
 
-[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "collision", "sprite", "tracker", "racket_hitbox", "racket_shape", "ground_ray")]
+[node name="MarthaPaddle" type="CharacterBody2D" unique_id=1428462700 node_paths=PackedStringArray("controller", "hit_sound", "sprite", "tracker", "racket_hitbox", "ground_ray")]
 collision_layer = 16
 script = ExtResource("1_unscj")
 controller = NodePath("PartnerAIController")
 hit_sound = NodePath("HitSound")
-collision = NodePath("Collision")
 sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 racket_hitbox = NodePath("RacketHitbox")
-racket_shape = NodePath("RacketHitbox/Collision")
 ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
@@ -37,9 +33,6 @@ rotation = 0.436
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("3_kpkwm")
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=746316974]
-shape = SubResource("RectangleShape2D_martha")
-
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=658437194]
 stream = ExtResource("2_sfxr")
 bus = &"SFX"
@@ -52,10 +45,12 @@ script = ExtResource("4_ai")
 paddle = NodePath("..")
 config = ExtResource("5_config")
 
-[node name="RacketHitbox" type="Area2D" parent="." unique_id=1340017728]
+[node name="RacketHitbox" type="Area2D" parent="." unique_id=1340017728 node_paths=PackedStringArray("collision")]
 collision_layer = 8
 collision_mask = 2
 monitorable = false
+script = ExtResource("6_rckthbx")
+collision = NodePath("Collision")
 
 [node name="Collision" type="CollisionShape2D" parent="RacketHitbox" unique_id=994213533]
 shape = SubResource("RectangleShape2D_ts58t")
