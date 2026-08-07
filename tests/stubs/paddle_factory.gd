@@ -1,19 +1,14 @@
 class_name PaddleFactory
 extends RefCounted
 
-## Builds a bare Paddle wired with the same exports every shipped paddle scene wires, so tests
-## exercise the real _ready() contract instead of a guard-permissive shortcut.
 
-
-## position is applied before the paddle enters the tree so _ready() captures the intended lane.
+## Create new paddle in positional lane
 static func create(gut_test: GutTest, position: Vector2 = Vector2.ZERO) -> Paddle:
 	var paddle: Paddle = load("res://scripts/entities/paddle.gd").new()
 	return wire(gut_test, paddle, position)
 
 
-## Wires the exports a shipped paddle scene wires onto an already-constructed Paddle (or
-## subclass, e.g. a test stub), then adds it to the tree. Lets callers supply their own subclass
-## while still satisfying the real _ready() contract.
+## Wires the exports onto a paddle for testing
 static func wire(gut_test: GutTest, paddle: Paddle, position: Vector2 = Vector2.ZERO) -> Paddle:
 	paddle.position = position
 
