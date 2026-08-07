@@ -9,11 +9,14 @@ signal partner_recruited(partner_key: StringName)
 # preload workaround for autoload class_name ordering (godotengine/godot#75582)
 @warning_ignore("shadowed_global_identifier")
 const PartnerDefinition = preload("res://scripts/partners/partner_definition.gd")
-const DEFAULT_CONFIG: ProgressionConfig = preload("res://resources/progression_config.tres")
 
-var partners_roster: Array[PartnerDefinition] = [
-	preload("res://resources/partners/martha.tres"),
+const _CONFIG_PATH := "res://resources/progression_config.tres"
+const _PARTNER_PATHS: Array[String] = [
+	"res://resources/partners/martha.tres",
 ]
+
+## Populated in _ready via load() rather than a preload initializer, avoiding a parse-time cycle the web export can't tolerate.
+var partners_roster: Array[PartnerDefinition] = []
 
 var economy: EconomyState
 var records: RecordsState
@@ -26,6 +29,9 @@ var _save_manager: SaveManager
 
 
 func _ready() -> void:
+	for path in _PARTNER_PATHS:
+		partners_roster.append(load(path))
+
 	if _save_manager == null:
 		_save_manager = SaveManager
 
@@ -42,7 +48,7 @@ func _ready() -> void:
 		partners = _save_manager.partners
 
 	if _config == null:
-		_config = DEFAULT_CONFIG
+		_config = load(_CONFIG_PATH)
 
 	if _ball_manager == null:
 		_ball_manager = BallManager
