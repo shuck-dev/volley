@@ -4,15 +4,6 @@ extends CharacterBody2D
 ## Emits the ball that triggered the hit.
 signal paddle_hit(ball: Ball)
 
-const PaddleSwingMathScript: GDScript = preload("res://scripts/core/paddle_swing_math.gd")
-
-## Frame index of ball contact within the 5fps swing animations in resources/animations/sam.tres.
-const SWING_CONTACT_FRAME_INDEX: int = 3
-## Playback fps the swing animations are authored at; sam.tres' "speed" field.
-const SWING_ANIMATION_BASE_FPS: float = 5.0
-## Physical ceiling on swing playback speed; not a designer tunable.
-const MAX_SWING_SPEED_SCALE: float = 3.0
-
 ## Top of the paddle's vertical travel.
 @export var top_y: float = -540.0
 
@@ -178,26 +169,12 @@ func _on_swing_anticipation_zone_entered(body: Node) -> void:
 	if _lane_x * ball.linear_velocity.x <= 0:
 		return
 
-	var contact_time: float = PaddleSwingMathScript.time_to_contact(
-		racket_hitbox.global_position.x, ball.global_position.x, ball.linear_velocity.x
+	_animation_controller.on_zone_entered(
+		ball.global_position.x,
+		ball.linear_velocity.x,
+		racket_hitbox.global_position.x,
+		is_grounded()
 	)
-	if contact_time < 0.0:
-		return
-
-	if _animation_controller.is_swing_pending():
-		return
-
-	var speed_scale: float = (
-		PaddleSwingMathScript
-		. speed_scale_for_contact_time(
-			contact_time,
-			SWING_CONTACT_FRAME_INDEX,
-			SWING_ANIMATION_BASE_FPS,
-			MAX_SWING_SPEED_SCALE,
-		)
-	)
-
-	_animation_controller.on_anticipated_hit(is_grounded(), speed_scale)
 
 
 ## Handles the paddle_hit signal to initiate the swing animation.

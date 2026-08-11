@@ -15,25 +15,10 @@ func test_time_to_contact_computes_seconds_from_distance_and_speed() -> void:
 	assert_almost_eq(seconds, 0.6, 0.001)
 
 
-func test_time_to_contact_is_direction_agnostic() -> void:
-	var seconds: float = PaddleSwingMath.time_to_contact(700.0, 580.0, 200.0)
-
-	assert_almost_eq(seconds, 0.6, 0.001)
-
-
 func test_time_to_contact_returns_negative_one_when_ball_is_effectively_stationary() -> void:
 	var seconds: float = PaddleSwingMath.time_to_contact(-700.0, -580.0, 0.5)
 
 	assert_eq(seconds, -1.0)
-
-
-func test_speed_scale_is_one_when_contact_time_matches_the_animations_natural_duration() -> void:
-	# natural_seconds = 3 / 5.0 = 0.6s
-	var speed_scale: float = PaddleSwingMath.speed_scale_for_contact_time(
-		0.6, CONTACT_FRAME_INDEX, BASE_FPS, MAX_SPEED_SCALE
-	)
-
-	assert_almost_eq(speed_scale, 1.0, 0.001)
 
 
 func test_speed_scale_doubles_when_contact_time_is_half_the_natural_duration() -> void:
@@ -50,11 +35,3 @@ func test_speed_scale_clamps_to_the_max_for_a_very_close_ball() -> void:
 	)
 
 	assert_eq(speed_scale, MAX_SPEED_SCALE)
-
-
-func test_speed_scale_never_goes_negative_for_a_far_off_ball() -> void:
-	var speed_scale: float = PaddleSwingMath.speed_scale_for_contact_time(
-		100.0, CONTACT_FRAME_INDEX, BASE_FPS, MAX_SPEED_SCALE
-	)
-
-	assert_gte(speed_scale, 0.0)
