@@ -10,13 +10,14 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
 size = Vector2(21, 94.325)
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "hit_sound", "sprite", "tracker", "racket_hitbox", "ground_ray")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "hit_sound", "sprite", "tracker", "racket_hitbox", "swing_anticipation_zone", "ground_ray")]
 script = ExtResource("1_mo4dg")
 low_anchor = NodePath("LowRacketAnchor")
 hit_sound = NodePath("HitSound")
 sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
 racket_hitbox = NodePath("RacketHitbox")
+swing_anticipation_zone = NodePath("SwingAnticipationZone")
 ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
@@ -44,6 +45,15 @@ script = ExtResource("12_rckthbx")
 collision = NodePath("RacketCollision")
 
 [node name="RacketCollision" type="CollisionShape2D" parent="RacketHitbox" unique_id=1404787416]
+shape = SubResource("RectangleShape2D_k7j1o")
+
+[node name="SwingAnticipationZone" type="Area2D" parent="." unique_id=3217406825]
+position = Vector2(120, -39.04)
+collision_layer = 8
+collision_mask = 2
+monitorable = false
+
+[node name="SwingAnticipationCollision" type="CollisionShape2D" parent="SwingAnticipationZone" unique_id=2841937650]
 shape = SubResource("RectangleShape2D_k7j1o")
 
 [node name="GroundRay" type="RayCast2D" parent="." unique_id=394874363]

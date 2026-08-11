@@ -13,5 +13,3 @@ extends Resource
 @export_range(0.0, 30.0) var paddle_bounce_min_angle_degrees := 3.0
 ## Ceiling (degrees off horizontal); bounces never land closer than this to pure vertical.
 @export_range(0.0, 90.0) var paddle_bounce_max_angle_degrees := 87.0
-## Seconds before contact the swing animation must start for its contact frame to land on the hit.
-@export var swing_anticipation_lead_time_seconds := 0.6

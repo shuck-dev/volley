@@ -5,4 +5,3 @@
 [resource]
 script = ExtResource("1_paddlecfg")
 paddle_return_angle_max_degrees = 50.0
-swing_anticipation_lead_time_seconds = 0.6

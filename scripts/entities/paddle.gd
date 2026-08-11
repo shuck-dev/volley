@@ -4,6 +4,15 @@ extends CharacterBody2D
 ## Emits the ball that triggered the hit.
 signal paddle_hit(ball: Ball)
 
+const PaddleSwingMathScript: GDScript = preload("res://scripts/core/paddle_swing_math.gd")
+
+## Frame index of ball contact within the 5fps swing animations in resources/animations/sam.tres.
+const SWING_CONTACT_FRAME_INDEX: int = 3
+## Playback fps the swing animations are authored at; sam.tres' "speed" field.
+const SWING_ANIMATION_BASE_FPS: float = 5.0
+## Physical ceiling on swing playback speed; not a designer tunable.
+const MAX_SWING_SPEED_SCALE: float = 3.0
+
 ## Top of the paddle's vertical travel.
 @export var top_y: float = -540.0
 
@@ -15,6 +24,9 @@ signal paddle_hit(ball: Ball)
 
 ## Hitbox to trigger ball bounce.
 @export var racket_hitbox: RacketHitbox
+
+## Trigger zone ahead of the racket hitbox; starts the swing early so its contact frame lands on time.
+@export var swing_anticipation_zone: Area2D
 
 ## Detects the court floor; null falls back to CharacterBody2D.is_on_floor().
 @export var ground_ray: RayCast2D
@@ -29,9 +41,6 @@ var _paddle_speed: float = 0.0
 
 var _animation_controller: PaddleAnimationController
 
-## Bound so the animation layer can anticipate contact; unset means no anticipation (e.g. AI paddles today).
-var _ball_reconciler: BallReconciler
-
 
 func _ready() -> void:
 	_lane_x = position.x
@@ -39,6 +48,9 @@ func _ready() -> void:
 	_bind_stat_updates()
 
 	racket_hitbox.body_entered.connect(_on_racket_body_entered)
+
+	if swing_anticipation_zone != null:
+		swing_anticipation_zone.body_entered.connect(_on_swing_anticipation_zone_entered)
 
 	_animation_controller = (load("res://scripts/core/paddle_animation_controller.gd").new(
 		global_position.y
@@ -134,11 +146,6 @@ func get_half_height() -> float:
 # --- animation ---
 
 
-## Wires the ball tracker the animation layer polls to anticipate contact; null disables anticipation.
-func bind_ball_reconciler(reconciler: BallReconciler) -> void:
-	_ball_reconciler = reconciler
-
-
 func tick_animation_state() -> void:
 	_update_animation_state()
 
@@ -150,20 +157,47 @@ func get_movement_state() -> StringName:
 func _update_animation_state() -> void:
 	_animation_controller.tick(global_position.y, is_grounded(), _is_crouching())
 
-	if _ball_reconciler != null:
-		# A ball approaches this lane when its velocity opposes the lane's own side of the court.
-		var lane_sign: float = -signf(_lane_x)
-		_animation_controller.tick_anticipation(_ball_reconciler, _lane_x, lane_sign, is_grounded())
-
 
 func _is_crouching() -> bool:
 	return false
 
 
 ## Wired to the animation controller's state_changed signal; plays the animation when it changes.
-func _on_animation_state_changed(state: StringName) -> void:
+func _on_animation_state_changed(state: StringName, speed_scale: float) -> void:
 	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(state):
+		sprite.speed_scale = speed_scale
 		sprite.play(state)
+
+
+## Starts the swing early enough for its contact frame to land on the ball's actual arrival.
+func _on_swing_anticipation_zone_entered(body: Node) -> void:
+	if not (body is Ball):
+		return
+
+	var ball := body as Ball
+	if _lane_x * ball.linear_velocity.x <= 0:
+		return
+
+	var contact_time: float = PaddleSwingMathScript.time_to_contact(
+		racket_hitbox.global_position.x, ball.global_position.x, ball.linear_velocity.x
+	)
+	if contact_time < 0.0:
+		return
+
+	if _animation_controller.is_swing_pending():
+		return
+
+	var speed_scale: float = (
+		PaddleSwingMathScript
+		. speed_scale_for_contact_time(
+			contact_time,
+			SWING_CONTACT_FRAME_INDEX,
+			SWING_ANIMATION_BASE_FPS,
+			MAX_SWING_SPEED_SCALE,
+		)
+	)
+
+	_animation_controller.on_anticipated_hit(is_grounded(), speed_scale)
 
 
 ## Handles the paddle_hit signal to initiate the swing animation.
