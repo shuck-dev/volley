@@ -1,8 +1,6 @@
 class_name PaddleAnimationStateMachine
 extends RefCounted
 
-## Stateful machine for swing lifecycle and animation state transitions.
-
 signal state_changed(state: StringName)
 
 var _current_state: StringName = &""
@@ -11,6 +9,16 @@ var _swing_pending: bool = false
 
 ## Updates the animation state.
 func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+	if _swing_pending and _current_state == &"swing_flying":
+		return
+
+	if (
+		_swing_pending
+		and not grounded
+		and _current_state in [&"swing_grounded", &"swing_grounded_low"]
+	):
+		_swing_pending = false
+
 	var new_state: StringName = _resolve_state(grounded, vertical_motion, _swing_pending, crouching)
 
 	if new_state == _current_state:
@@ -20,22 +28,24 @@ func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> 
 	state_changed.emit(_current_state)
 
 
-## Sets swing pending true and recomputes the state.
-## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+## Starts the swing.
+func start_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = true
 	update(grounded, vertical_motion, crouching)
 
 
-## Clears swing pending and recomputes the state.
-## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_swing_finished(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+## Ends the swing.
+func finish_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = false
 	update(grounded, vertical_motion, crouching)
 
 
 func get_state() -> StringName:
 	return _current_state
+
+
+func is_swing_pending() -> bool:
+	return _swing_pending
 
 
 static func _resolve_state(

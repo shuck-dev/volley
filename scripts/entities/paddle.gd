@@ -16,6 +16,9 @@ signal paddle_hit(ball: Ball)
 ## Hitbox to trigger ball bounce.
 @export var racket_hitbox: RacketHitbox
 
+## Semicircular trigger around the racket hitbox; starts the swing early so its contact frame lands on time.
+@export var swing_zone: Area2D
+
 ## Detects the court floor; null falls back to CharacterBody2D.is_on_floor().
 @export var ground_ray: RayCast2D
 
@@ -37,10 +40,14 @@ func _ready() -> void:
 
 	racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
+	if swing_zone != null:
+		swing_zone.body_entered.connect(_on_swing_zone_entered)
+
 	_animation_controller = (load("res://scripts/core/paddle_animation_controller.gd").new(
 		global_position.y
 	))
 	_animation_controller.state_changed.connect(_on_animation_state_changed)
+	sprite.animation_finished.connect(_on_swing_finished)
 
 	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
 	# from load rather than sitting on a default or the scene's authored animation.
@@ -153,14 +160,34 @@ func _on_animation_state_changed(state: StringName) -> void:
 		sprite.play(state)
 
 
-## Handles the paddle_hit signal to initiate the swing animation.
+## Starts the swing early enough for its contact frame to land on the ball's actual arrival.
+func _on_swing_zone_entered(body: Node) -> void:
+	if not (body is Ball):
+		return
+
+	var ball := body as Ball
+	if _lane_x * ball.linear_velocity.x <= 0:
+		return
+
+	var speed_scale: float = _animation_controller.compute_zone_entry_speed_scale(
+		ball.global_position, ball.linear_velocity, racket_hitbox.global_position
+	)
+	if speed_scale < 0.0:
+		return
+
+	sprite.speed_scale = speed_scale
+	_animation_controller.start_swing(is_grounded(), _is_crouching())
+
+
+## Handles the paddle_hit signal to initiate the swing animation, unless anticipation already did.
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
-	_animation_controller.on_hit(is_grounded(), _is_crouching())
+	if _animation_controller.is_swing_pending():
+		return
 
-	if not sprite.animation_finished.is_connected(_on_swing_finished):
-		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
+	_animation_controller.start_swing(is_grounded(), _is_crouching())
 
 
-## Clears the swing pending state when the animation finishes.
+## Clears the swing pending state and resets playback speed when the animation finishes.
 func _on_swing_finished() -> void:
-	_animation_controller.on_swing_finished(is_grounded(), _is_crouching())
+	sprite.speed_scale = 1.0
+	_animation_controller.finish_swing(is_grounded(), _is_crouching())

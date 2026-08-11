@@ -209,6 +209,38 @@ func get_balls() -> Array[Ball]:
 	return _balls
 
 
+## Soonest-to-arrive in-play ball approaching a paddle at `paddle_x`. Null when none qualifies.
+func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
+	var best: Ball = null
+	var best_time: float = INF
+
+	for candidate in _balls:
+		if candidate == null or not is_instance_valid(candidate):
+			continue
+
+		var state: Ball.PlayState = candidate.play_state
+		if state != Ball.PlayState.PLAY_NORMAL and state != Ball.PlayState.PLAY_ARC:
+			continue
+
+		if lane_sign * candidate.linear_velocity.x >= 0:
+			continue
+
+		if lane_sign * candidate.position.x <= lane_sign * paddle_x:
+			continue
+
+		var speed_x: float = absf(candidate.linear_velocity.x)
+		if speed_x < 1.0:
+			continue
+
+		var arrival: float = absf(paddle_x - candidate.position.x) / speed_x
+
+		if arrival < best_time:
+			best_time = arrival
+			best = candidate
+
+	return best
+
+
 func get_current_ball() -> Ball:
 	return _current_ball
 
