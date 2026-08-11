@@ -73,7 +73,7 @@ func test_swing_pending_false_before_any_swing() -> void:
 	assert_false(_machine.is_swing_pending())
 
 
-func test_flying_swing_holds_through_landing_instead_of_switching_to_grounded() -> void:
+func test_flying_swing_completes_when_landing() -> void:
 	_machine.start_swing(false, 100.0)
 	assert_eq(_machine.get_state(), &"swing_flying")
 
