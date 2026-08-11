@@ -89,6 +89,33 @@ extends Resource
 
 The script holds the defaults; the `.tres` holds whatever values are in play. Designers and contributors can tune values without touching the source.
 
+## Method order: system, public, private
+
+Order a script's methods in three groups: Godot engine callbacks (`_ready`, `_physics_process`, `_init`, and the like), then public methods (no leading underscore), then private helpers (leading underscore). Within each group, order by call sequence where one exists, callers before callees.
+
+A reader opening the file meets the engine's entry points first, then the interface other scripts call, then the implementation only this script needs. That order matches how a reader actually approaches an unfamiliar class: what does Godot call, what can I call, how does it work.
+
+```gdscript
+func _ready() -> void:
+    ...
+
+
+func _physics_process(_delta: float) -> void:
+    ...
+
+
+func bind_tracker(tracker: BallReconciler) -> void:
+    ...
+
+
+func is_enabled() -> bool:
+    ...
+
+
+func _select_tracked_ball() -> Ball:
+    ...
+```
+
 ## `Resource` subclass when a cluster forms
 
 You will notice when you are reaching for the third related `@export` on a node that the values clearly belong together: a movement profile, a visual style block, an item definition. That is the moment to promote them to a `Resource` subclass and store the values in a `.tres`. Loose exports work for one or two values; once a cluster forms, they tend to scatter what should travel together.
