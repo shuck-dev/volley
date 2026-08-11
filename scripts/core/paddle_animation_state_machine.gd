@@ -1,8 +1,6 @@
 class_name PaddleAnimationStateMachine
 extends RefCounted
 
-## Stateful machine for swing lifecycle and animation state transitions.
-
 signal state_changed(state: StringName)
 
 var _current_state: StringName = &""
@@ -36,8 +34,7 @@ func start_swing(grounded: bool, vertical_motion: float, crouching: bool = false
 	update(grounded, vertical_motion, crouching)
 
 
-## Clears swing pending and recomputes the state.
-## Caller must supply grounded and vertical_motion to keep the state in sync.
+# Ends swing animation.
 func finish_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = false
 	update(grounded, vertical_motion, crouching)
