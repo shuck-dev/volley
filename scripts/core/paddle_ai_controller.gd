@@ -82,22 +82,7 @@ func _select_tracked_ball() -> Ball:
 	if _tracker == null:
 		return ball
 
-	var best: Ball = null
-	var best_time: float = INF
-
-	for candidate in _tracker.get_balls():
-		if candidate == null or not _ball_in_play(candidate) or not _ball_approaches(candidate):
-			continue
-
-		var speed_x: float = absf(candidate.linear_velocity.x)
-		if speed_x < 1.0:
-			continue
-
-		var arrival: float = absf(paddle.position.x - candidate.position.x) / speed_x
-
-		if arrival < best_time:
-			best_time = arrival
-			best = candidate
+	var best: Ball = _tracker.get_closest_approaching_ball(paddle.position.x, _lane_sign())
 	return best if best != null else ball
 
 
@@ -121,6 +106,12 @@ func is_enabled() -> bool:
 func _ball_approaches(_target: Ball) -> bool:
 	assert(false, "PaddleAIController._ball_approaches() is abstract")
 	return false
+
+
+## Override: sign such that `lane_sign * ball.linear_velocity.x < 0` means the ball approaches this paddle.
+func _lane_sign() -> float:
+	assert(false, "PaddleAIController._lane_sign() is abstract")
+	return 0.0
 
 
 ## Override: the paddle's movement speed ceiling.

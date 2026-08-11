@@ -62,3 +62,29 @@ func test_flying_down_animation_fires_when_swing_ends_while_moving_down() -> voi
 	assert_eq(
 		_machine.get_state(), &"flying_down", "the live flying animation resumes after the swing"
 	)
+
+
+func test_swing_grounded_animation_fires_on_anticipated_hit_while_grounded() -> void:
+	_machine.on_anticipated_hit(true, 0.0)
+	assert_eq(_machine.get_state(), &"swing_grounded")
+
+
+func test_swing_flying_animation_fires_on_anticipated_hit_while_airborne() -> void:
+	_machine.on_anticipated_hit(false, 100.0)
+	assert_eq(_machine.get_state(), &"swing_flying")
+
+
+func test_swing_pending_true_after_anticipated_hit() -> void:
+	_machine.on_anticipated_hit(true, 0.0)
+	assert_true(_machine.is_swing_pending())
+
+
+func test_swing_pending_false_before_any_hit() -> void:
+	assert_false(_machine.is_swing_pending())
+
+
+func test_ready_grounded_animation_fires_when_anticipated_swing_ends_while_grounded() -> void:
+	_machine.on_anticipated_hit(true, 0.0)
+	assert_eq(_machine.get_state(), &"swing_grounded")
+	_machine.on_swing_finished(true, 0.0)
+	assert_eq(_machine.get_state(), &"ready_grounded")

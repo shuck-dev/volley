@@ -15,3 +15,7 @@ func _ball_approaches(target: Ball) -> bool:
 
 func _get_paddle_speed() -> float:
 	return GameRules.paddle.paddle_speed
+
+
+func _lane_sign() -> float:
+	return -1.0

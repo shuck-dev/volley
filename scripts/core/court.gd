@@ -84,6 +84,7 @@ func _ready() -> void:
 	if soul_bound != null:
 		ball_system.bound_y = soul_bound.global_position.y
 	ball_system.player_paddle = player_paddle
+	player_paddle.bind_ball_reconciler(ball_system)
 	ball_system.current_ball_changed.connect(_on_current_ball_changed)
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)

@@ -29,6 +29,9 @@ var _paddle_speed: float = 0.0
 
 var _animation_controller: PaddleAnimationController
 
+## Bound so the animation layer can anticipate contact; unset means no anticipation (e.g. AI paddles today).
+var _ball_reconciler: BallReconciler
+
 
 func _ready() -> void:
 	_lane_x = position.x
@@ -131,6 +134,11 @@ func get_half_height() -> float:
 # --- animation ---
 
 
+## Wires the ball tracker the animation layer polls to anticipate contact; null disables anticipation.
+func bind_ball_reconciler(reconciler: BallReconciler) -> void:
+	_ball_reconciler = reconciler
+
+
 func tick_animation_state() -> void:
 	_update_animation_state()
 
@@ -141,6 +149,11 @@ func get_movement_state() -> StringName:
 
 func _update_animation_state() -> void:
 	_animation_controller.tick(global_position.y, is_grounded(), _is_crouching())
+
+	if _ball_reconciler != null:
+		# A ball approaches this lane when its velocity opposes the lane's own side of the court.
+		var lane_sign: float = -signf(_lane_x)
+		_animation_controller.tick_anticipation(_ball_reconciler, _lane_x, lane_sign, is_grounded())
 
 
 func _is_crouching() -> bool:

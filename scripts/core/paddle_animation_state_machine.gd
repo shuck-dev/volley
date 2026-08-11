@@ -27,6 +27,13 @@ func on_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> 
 	update(grounded, vertical_motion, crouching)
 
 
+## Starts the swing early so its contact frame lands on the ball's actual arrival.
+## Caller must supply grounded and vertical_motion to keep the state in sync.
+func on_anticipated_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+	_swing_pending = true
+	update(grounded, vertical_motion, crouching)
+
+
 ## Clears swing pending and recomputes the state.
 ## Caller must supply grounded and vertical_motion to keep the state in sync.
 func on_swing_finished(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
@@ -36,6 +43,10 @@ func on_swing_finished(grounded: bool, vertical_motion: float, crouching: bool =
 
 func get_state() -> StringName:
 	return _current_state
+
+
+func is_swing_pending() -> bool:
+	return _swing_pending
 
 
 static func _resolve_state(
