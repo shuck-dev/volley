@@ -1,11 +1,7 @@
 extends GutTest
 
-# Tests for BallReconciler.get_closest_approaching_ball: the multi-ball ranking
-# both PaddleAIController and PaddleAnimationController's anticipation trigger share.
-
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
 const PADDLE_X := -700.0
-# Player-side lane: a ball approaches when its velocity opposes the paddle's own-side sign.
 const LANE_SIGN := 1.0
 
 var _reconciler: BallReconciler
@@ -73,8 +69,6 @@ func test_ignores_ball_not_in_play() -> void:
 
 
 func test_flips_direction_filter_for_the_opposite_lane_sign() -> void:
-	# Same ball, opposite paddle side: velocity that approaches the right-side paddle
-	# moves away from the left-side one, so flipping lane_sign flips who sees it.
 	var ball: Ball = _spawn_ball(Vector2(0.0, 0.0), Vector2(100.0, 0.0))
 	_reconciler.attach(ball)
 
