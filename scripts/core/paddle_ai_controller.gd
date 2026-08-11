@@ -22,9 +22,25 @@ func _ready() -> void:
 	_init_position_buffer()
 
 
-func _init_position_buffer() -> void:
-	_position_buffer.resize(config.reaction_delay_frames)
-	_position_buffer.fill(0.0)
+func _physics_process(_delta: float) -> void:
+	if not _enabled:
+		return
+
+	ball = _select_tracked_ball()
+
+	if ball == null:
+		return
+
+	_maybe_offset_position()
+
+	if not _ball_in_play(ball):
+		_drift_to_center()
+		return
+
+	if _ball_approaches(ball):
+		_track()
+	else:
+		_drift_to_center()
 
 
 ## Replaces Court-mediated `controller.ball = ...` injection; the tracker drives enable/disable lifecycle.
@@ -52,16 +68,6 @@ func bind_tracker(tracker: BallReconciler) -> void:
 		_on_tracker_ball_added(existing)
 
 
-func _on_tracker_ball_added(new_ball: Ball) -> void:
-	ball = new_ball
-
-
-## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
-func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
-	ball = fallback
-
-
 ## Enable AI for the paddle.
 func set_enabled(value: bool) -> void:
 	if value and ball == null:
@@ -74,25 +80,19 @@ func is_enabled() -> bool:
 	return _enabled
 
 
-func _physics_process(_delta: float) -> void:
-	if not _enabled:
-		return
+func _init_position_buffer() -> void:
+	_position_buffer.resize(config.reaction_delay_frames)
+	_position_buffer.fill(0.0)
 
-	ball = _select_tracked_ball()
 
-	if ball == null:
-		return
+func _on_tracker_ball_added(new_ball: Ball) -> void:
+	ball = new_ball
 
-	_maybe_offset_position()
 
-	if not _ball_in_play(ball):
-		_drift_to_center()
-		return
-
-	if _ball_approaches(ball):
-		_track()
-	else:
-		_drift_to_center()
+## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
+func _on_tracker_ball_removed(_old_ball: Ball) -> void:
+	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
+	ball = fallback
 
 
 ## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
