@@ -35,9 +35,9 @@ func test_returns_null_when_no_ball_approaches() -> void:
 	assert_null(_reconciler.get_closest_approaching_ball(PADDLE_X, LANE_SIGN))
 
 
-func test_skips_ball_below_minimum_horizontal_speed() -> void:
-	var slow_ball: Ball = _spawn_ball(Vector2(-500.0, 0.0), Vector2(-0.5, 0.0))
-	_reconciler.attach(slow_ball)
+func test_skips_an_effectively_stationary_ball() -> void:
+	var stationary_ball: Ball = _spawn_ball(Vector2(-500.0, 0.0), Vector2(-0.5, 0.0))
+	_reconciler.attach(stationary_ball)
 
 	assert_null(_reconciler.get_closest_approaching_ball(PADDLE_X, LANE_SIGN))
 
