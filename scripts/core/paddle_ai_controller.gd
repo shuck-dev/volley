@@ -62,6 +62,18 @@ func _on_tracker_ball_removed(_old_ball: Ball) -> void:
 	ball = fallback
 
 
+## Enable AI for the paddle.
+func set_enabled(value: bool) -> void:
+	if value and ball == null:
+		return
+
+	_enabled = value
+
+
+func is_enabled() -> bool:
+	return _enabled
+
+
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return
@@ -97,30 +109,19 @@ func _ball_in_play(target: Ball) -> bool:
 	return state == Ball.PlayState.PLAY_NORMAL or state == Ball.PlayState.PLAY_ARC
 
 
-## Silent no-op when enabling with no live ball: toggle key presses must not crash or warn.
-func set_enabled(value: bool) -> void:
-	if value and ball == null:
-		return
-	_enabled = value
-
-
-func is_enabled() -> bool:
-	return _enabled
-
-
-## Sign of the court side this paddle occupies: negative x-side is -1.0, positive x-side is 1.0.
-func _court_side_sign() -> float:
-	assert(false, "PaddleAIController._court_side_sign() is abstract")
-	return 0.0
-
-
-## Whether the given ball is moving toward this paddle and hasn't passed it yet.
+## Whether the given ball is moving toward the paddle and hasn't passed it yet.
 func _ball_approaches(target: Ball) -> bool:
 	var direction: float = _court_side_sign()
 	return (
 		direction * target.linear_velocity.x > 0.0
 		and direction * target.position.x < direction * paddle.position.x
 	)
+
+
+## Sign of the court side the paddle occupies
+func _court_side_sign() -> float:
+	assert(false, "PaddleAIController._court_side_sign() is abstract")
+	return 0.0
 
 
 ## The paddle's base movement speed, before config.speed_scale is applied.
@@ -132,7 +133,7 @@ func _get_paddle_speed() -> float:
 func _track() -> void:
 	var bound_y: float = ball.bound_y
 	var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
-	# Top-of-travel is negative (y-down); the court is vertically symmetric, so its magnitude is the bound.
+
 	var paddle_travel_bound: float = -paddle.top_y - paddle.get_half_height()
 	var predicted_y: float = (
 		PaddleAIMath
