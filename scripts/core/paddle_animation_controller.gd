@@ -1,12 +1,10 @@
 class_name PaddleAnimationController
 extends RefCounted
 
-signal state_changed(state: StringName, speed_scale: float)
+signal state_changed(state: StringName)
 
 const PaddleSwingMathScript: GDScript = preload("res://scripts/core/paddle_swing_math.gd")
 
-## Playback speed used for every non-anticipated animation transition.
-const DEFAULT_SPEED_SCALE: float = 1.0
 ## Contact frame and fps of the 5fps swing animations in resources/animations/sam.tres.
 const SWING_CONTACT_FRAME_INDEX: int = 3
 const SWING_ANIMATION_BASE_FPS: float = 5.0
@@ -31,7 +29,7 @@ func tick(current_y: float, grounded: bool, crouching: bool) -> void:
 	var previous_state := _state_machine.get_state()
 	_state_machine.update(grounded, _vertical_motion, crouching)
 
-	_emit_if_changed(previous_state, DEFAULT_SPEED_SCALE)
+	_emit_if_changed(previous_state)
 
 
 ## Resolves the swing-start state on a successful hit.
@@ -39,35 +37,34 @@ func on_hit(grounded: bool, crouching: bool) -> void:
 	var previous_state := _state_machine.get_state()
 	_state_machine.on_hit(grounded, _vertical_motion, crouching)
 
-	_emit_if_changed(previous_state, DEFAULT_SPEED_SCALE)
+	_emit_if_changed(previous_state)
 
 
-## Resolves the swing-start state ahead of contact, played at `speed_scale`.
-func on_anticipated_hit(grounded: bool, speed_scale: float) -> void:
+## Resolves the swing-start state ahead of contact.
+func on_anticipated_hit(grounded: bool) -> void:
 	var previous_state := _state_machine.get_state()
 	_state_machine.on_anticipated_hit(grounded, _vertical_motion, false)
 
-	_emit_if_changed(previous_state, speed_scale)
+	_emit_if_changed(previous_state)
 
 
-## Starts the swing early enough for its contact frame to land when the ball reaches `racket_x`.
-func on_zone_entered(
-	ball_x: float, ball_velocity_x: float, racket_x: float, grounded: bool
-) -> void:
+## Playback speed so the swing's contact frame lands when the ball reaches `racket_x`, or -1.0
+## if a swing is already pending or the ball's contact time can't be determined.
+func compute_zone_entry_speed_scale(
+	ball_x: float, ball_velocity_x: float, racket_x: float
+) -> float:
 	if is_swing_pending():
-		return
+		return -1.0
 
 	var contact_time: float = PaddleSwingMathScript.time_to_contact(
 		racket_x, ball_x, ball_velocity_x
 	)
 	if contact_time < 0.0:
-		return
+		return -1.0
 
-	var speed_scale: float = PaddleSwingMathScript.speed_scale_for_contact_time(
+	return PaddleSwingMathScript.speed_scale_for_contact_time(
 		contact_time, SWING_CONTACT_FRAME_INDEX, SWING_ANIMATION_BASE_FPS, MAX_SWING_SPEED_SCALE
 	)
-
-	on_anticipated_hit(grounded, speed_scale)
 
 
 ## Resolves the post-swing state once the swing animation completes.
@@ -75,7 +72,7 @@ func on_swing_finished(grounded: bool, crouching: bool) -> void:
 	var previous_state := _state_machine.get_state()
 	_state_machine.on_swing_finished(grounded, _vertical_motion, crouching)
 
-	_emit_if_changed(previous_state, DEFAULT_SPEED_SCALE)
+	_emit_if_changed(previous_state)
 
 
 func get_state() -> StringName:
@@ -86,8 +83,8 @@ func is_swing_pending() -> bool:
 	return _state_machine.is_swing_pending()
 
 
-func _emit_if_changed(previous_state: StringName, speed_scale: float) -> void:
+func _emit_if_changed(previous_state: StringName) -> void:
 	var new_state := _state_machine.get_state()
 
 	if new_state != previous_state:
-		state_changed.emit(new_state, speed_scale)
+		state_changed.emit(new_state)

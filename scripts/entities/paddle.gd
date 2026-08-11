@@ -47,6 +47,7 @@ func _ready() -> void:
 		global_position.y
 	))
 	_animation_controller.state_changed.connect(_on_animation_state_changed)
+	sprite.animation_finished.connect(_on_swing_finished)
 
 	# Resolve and play the real state on the first frame, so the sprite matches grounded/flying
 	# from load rather than sitting on a default or the scene's authored animation.
@@ -154,9 +155,8 @@ func _is_crouching() -> bool:
 
 
 ## Wired to the animation controller's state_changed signal; plays the animation when it changes.
-func _on_animation_state_changed(state: StringName, speed_scale: float) -> void:
+func _on_animation_state_changed(state: StringName) -> void:
 	if sprite.sprite_frames != null and sprite.sprite_frames.has_animation(state):
-		sprite.speed_scale = speed_scale
 		sprite.play(state)
 
 
@@ -169,22 +169,25 @@ func _on_swing_anticipation_zone_entered(body: Node) -> void:
 	if _lane_x * ball.linear_velocity.x <= 0:
 		return
 
-	_animation_controller.on_zone_entered(
-		ball.global_position.x,
-		ball.linear_velocity.x,
-		racket_hitbox.global_position.x,
-		is_grounded()
+	var speed_scale: float = _animation_controller.compute_zone_entry_speed_scale(
+		ball.global_position.x, ball.linear_velocity.x, racket_hitbox.global_position.x
 	)
+	if speed_scale < 0.0:
+		return
+
+	sprite.speed_scale = speed_scale
+	_animation_controller.on_anticipated_hit(is_grounded())
 
 
-## Handles the paddle_hit signal to initiate the swing animation.
+## Handles the paddle_hit signal to initiate the swing animation, unless anticipation already did.
 func _on_paddle_hit_for_swing(_ball: Ball) -> void:
+	if _animation_controller.is_swing_pending():
+		return
+
 	_animation_controller.on_hit(is_grounded(), _is_crouching())
 
-	if not sprite.animation_finished.is_connected(_on_swing_finished):
-		sprite.animation_finished.connect(_on_swing_finished, CONNECT_ONE_SHOT)
 
-
-## Clears the swing pending state when the animation finishes.
+## Clears the swing pending state and resets playback speed when the animation finishes.
 func _on_swing_finished() -> void:
+	sprite.speed_scale = 1.0
 	_animation_controller.on_swing_finished(is_grounded(), _is_crouching())

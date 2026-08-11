@@ -27,8 +27,8 @@ func _physics_move(_delta: float) -> void:
 	clamp_to_arena()
 
 
-func _on_animation_state_changed(state: StringName, speed_scale: float) -> void:
-	super(state, speed_scale)
+func _on_animation_state_changed(state: StringName) -> void:
+	super(state)
 
 	if state in _low_states:
 		racket_hitbox.position = low_anchor.position
