@@ -71,3 +71,23 @@ func test_swing_pending_true_after_anticipated_hit() -> void:
 
 func test_swing_pending_false_before_any_hit() -> void:
 	assert_false(_machine.is_swing_pending())
+
+
+func test_flying_swing_holds_through_landing_instead_of_switching_to_grounded() -> void:
+	_machine.on_hit(false, 100.0)
+	assert_eq(_machine.get_state(), &"swing_flying")
+
+	_machine.update(true, 0.0)
+
+	assert_eq(_machine.get_state(), &"swing_flying")
+	assert_true(_machine.is_swing_pending())
+
+
+func test_grounded_swing_cancels_when_the_paddle_leaves_the_ground() -> void:
+	_machine.on_hit(true, 0.0)
+	assert_eq(_machine.get_state(), &"swing_grounded")
+
+	_machine.update(false, -100.0)
+
+	assert_eq(_machine.get_state(), &"flying_up")
+	assert_false(_machine.is_swing_pending())
