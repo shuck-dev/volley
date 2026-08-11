@@ -26,7 +26,7 @@ func test_zone_entry_speed_scale_is_negative_for_a_stationary_ball() -> void:
 
 
 func test_zone_entry_speed_scale_is_negative_while_a_swing_is_already_pending() -> void:
-	_controller.on_anticipated_hit(true)
+	_controller.start_swing(true)
 
 	var speed_scale: float = _controller.compute_zone_entry_speed_scale(
 		Vector2(-580.0, 0.0), Vector2(-200.0, 0.0), Vector2(-700.0, 0.0)

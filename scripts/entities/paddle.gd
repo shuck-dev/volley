@@ -176,7 +176,7 @@ func _on_swing_zone_entered(body: Node) -> void:
 		return
 
 	sprite.speed_scale = speed_scale
-	_animation_controller.on_anticipated_hit(is_grounded())
+	_animation_controller.start_swing(is_grounded())
 
 
 ## Handles the paddle_hit signal to initiate the swing animation, unless anticipation already did.
@@ -184,10 +184,10 @@ func _on_paddle_hit_for_swing(_ball: Ball) -> void:
 	if _animation_controller.is_swing_pending():
 		return
 
-	_animation_controller.on_hit(is_grounded(), _is_crouching())
+	_animation_controller.start_swing(is_grounded(), _is_crouching())
 
 
 ## Clears the swing pending state and resets playback speed when the animation finishes.
 func _on_swing_finished() -> void:
 	sprite.speed_scale = 1.0
-	_animation_controller.on_swing_finished(is_grounded(), _is_crouching())
+	_animation_controller.finish_swing(is_grounded(), _is_crouching())

@@ -32,18 +32,11 @@ func tick(current_y: float, grounded: bool, crouching: bool) -> void:
 	_emit_if_changed(previous_state)
 
 
-## Resolves the swing-start state on a successful hit.
-func on_hit(grounded: bool, crouching: bool) -> void:
+## Resolves the swing-start state, on contact or ahead of it; caller sets sprite.speed_scale first
+## for an anticipated swing.
+func start_swing(grounded: bool, crouching: bool = false) -> void:
 	var previous_state := _state_machine.get_state()
-	_state_machine.on_hit(grounded, _vertical_motion, crouching)
-
-	_emit_if_changed(previous_state)
-
-
-## Resolves the swing-start state ahead of contact.
-func on_anticipated_hit(grounded: bool) -> void:
-	var previous_state := _state_machine.get_state()
-	_state_machine.on_anticipated_hit(grounded, _vertical_motion, false)
+	_state_machine.start_swing(grounded, _vertical_motion, crouching)
 
 	_emit_if_changed(previous_state)
 
@@ -68,9 +61,9 @@ func compute_zone_entry_speed_scale(
 
 
 ## Resolves the post-swing state once the swing animation completes.
-func on_swing_finished(grounded: bool, crouching: bool) -> void:
+func finish_swing(grounded: bool, crouching: bool) -> void:
 	var previous_state := _state_machine.get_state()
-	_state_machine.on_swing_finished(grounded, _vertical_motion, crouching)
+	_state_machine.finish_swing(grounded, _vertical_motion, crouching)
 
 	_emit_if_changed(previous_state)
 

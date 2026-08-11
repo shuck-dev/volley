@@ -9,8 +9,7 @@ var _current_state: StringName = &""
 var _swing_pending: bool = false
 
 
-## Updates the animation state. A flying swing completes uninterrupted on landing; a grounded
-## swing cancels if the paddle leaves the ground mid-swing.
+## Updates the animation state.
 func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	if _swing_pending and _current_state == &"swing_flying":
 		return
@@ -31,23 +30,15 @@ func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> 
 	state_changed.emit(_current_state)
 
 
-## Sets swing pending true and recomputes the state.
-## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
-	_swing_pending = true
-	update(grounded, vertical_motion, crouching)
-
-
-## Starts the swing early so its contact frame lands on the ball's actual arrival.
-## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_anticipated_hit(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+## Starts the swing animation for the current state
+func start_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = true
 	update(grounded, vertical_motion, crouching)
 
 
 ## Clears swing pending and recomputes the state.
 ## Caller must supply grounded and vertical_motion to keep the state in sync.
-func on_swing_finished(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
+func finish_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = false
 	update(grounded, vertical_motion, crouching)
 
