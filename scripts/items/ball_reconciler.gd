@@ -209,8 +209,7 @@ func get_balls() -> Array[Ball]:
 	return _balls
 
 
-## Soonest-to-arrive in-play ball approaching a paddle at `paddle_x`. A ball approaches when
-## `lane_sign * ball.linear_velocity.x < 0`; null when none qualifies.
+## Soonest-to-arrive in-play ball approaching a paddle at `paddle_x`. Null when none qualifies.
 func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 	var best: Ball = null
 	var best_time: float = INF
@@ -224,6 +223,9 @@ func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 			continue
 
 		if lane_sign * candidate.linear_velocity.x >= 0:
+			continue
+
+		if lane_sign * candidate.position.x <= lane_sign * paddle_x:
 			continue
 
 		var speed_x: float = absf(candidate.linear_velocity.x)

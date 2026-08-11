@@ -28,13 +28,13 @@ func update(grounded: bool, vertical_motion: float, crouching: bool = false) -> 
 	state_changed.emit(_current_state)
 
 
-## Starts the swing animation for the current state
+## Starts the swing.
 func start_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = true
 	update(grounded, vertical_motion, crouching)
 
 
-# Ends swing animation.
+## Ends the swing.
 func finish_swing(grounded: bool, vertical_motion: float, crouching: bool = false) -> void:
 	_swing_pending = false
 	update(grounded, vertical_motion, crouching)

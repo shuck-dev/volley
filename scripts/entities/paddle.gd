@@ -176,7 +176,7 @@ func _on_swing_zone_entered(body: Node) -> void:
 		return
 
 	sprite.speed_scale = speed_scale
-	_animation_controller.start_swing(is_grounded())
+	_animation_controller.start_swing(is_grounded(), _is_crouching())
 
 
 ## Handles the paddle_hit signal to initiate the swing animation, unless anticipation already did.

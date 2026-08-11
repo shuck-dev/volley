@@ -68,7 +68,7 @@ func bind_tracker(tracker: BallReconciler) -> void:
 		_on_tracker_ball_added(existing)
 
 
-## Enable AI for the paddle.
+## Enables or disables AI for the paddle. Enabling with no live ball is a silent no-op.
 func set_enabled(value: bool) -> void:
 	if value and ball == null:
 		return

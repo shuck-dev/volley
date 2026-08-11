@@ -1,8 +1,6 @@
 class_name PaddleSwingMath
 extends RefCounted
 
-## Pure math for scaling the swing animation's playback speed to the incoming ball's speed.
-
 
 ## Seconds until the ball reaches the racket hitbox, or -1.0 if effectively stationary.
 static func time_to_contact(
@@ -10,6 +8,7 @@ static func time_to_contact(
 ) -> float:
 	if ball_velocity.length() < 1.0:
 		return -1.0
+
 	return hitbox_position.distance_to(ball_position) / ball_velocity.length()
 
 
