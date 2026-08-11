@@ -9,13 +9,9 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 		set_enabled(true)
 
 
-func _ball_approaches(target: Ball) -> bool:
-	return target.linear_velocity.x > 0.0 and target.position.x < paddle.position.x
+func _approach_velocity_sign() -> float:
+	return 1.0
 
 
 func _get_paddle_speed() -> float:
 	return GameRules.paddle.paddle_speed
-
-
-func _lane_sign() -> float:
-	return -1.0

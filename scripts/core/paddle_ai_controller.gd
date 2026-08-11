@@ -82,7 +82,9 @@ func _select_tracked_ball() -> Ball:
 	if _tracker == null:
 		return ball
 
-	var best: Ball = _tracker.get_closest_approaching_ball(paddle.position.x, _lane_sign())
+	var best: Ball = _tracker.get_closest_approaching_ball(
+		paddle.position.x, -_approach_velocity_sign()
+	)
 	return best if best != null else ball
 
 
@@ -102,19 +104,22 @@ func is_enabled() -> bool:
 	return _enabled
 
 
-## Override: whether the given ball's x-direction counts as "coming toward me."
-func _ball_approaches(_target: Ball) -> bool:
-	assert(false, "PaddleAIController._ball_approaches() is abstract")
-	return false
-
-
-## Override: sign such that `lane_sign * ball.linear_velocity.x < 0` means the ball approaches this paddle.
-func _lane_sign() -> float:
-	assert(false, "PaddleAIController._lane_sign() is abstract")
+## Sign that `ball.linear_velocity.x` must match for the ball to approach this paddle.
+func _approach_velocity_sign() -> float:
+	assert(false, "PaddleAIController._approach_velocity_sign() is abstract")
 	return 0.0
 
 
-## Override: the paddle's movement speed ceiling.
+## Whether the given ball is moving toward this paddle and hasn't passed it yet.
+func _ball_approaches(target: Ball) -> bool:
+	var direction: float = _approach_velocity_sign()
+	return (
+		direction * target.linear_velocity.x > 0.0
+		and direction * target.position.x < direction * paddle.position.x
+	)
+
+
+## The paddle's movement speed ceiling.
 func _get_paddle_speed() -> float:
 	assert(false, "PaddleAIController._get_paddle_speed() is abstract")
 	return 0.0
