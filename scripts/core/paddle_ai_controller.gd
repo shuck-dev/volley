@@ -119,7 +119,7 @@ func _ball_approaches(target: Ball) -> bool:
 	)
 
 
-## The paddle's movement speed ceiling.
+## The paddle's base movement speed, before config.speed_scale is applied.
 func _get_paddle_speed() -> float:
 	assert(false, "PaddleAIController._get_paddle_speed() is abstract")
 	return 0.0
