@@ -68,6 +68,13 @@ func test_ignores_ball_not_in_play() -> void:
 	assert_null(_reconciler.get_closest_approaching_ball(PADDLE_X, LANE_SIGN))
 
 
+func test_ignores_a_ball_that_already_passed_the_paddle_despite_approaching_velocity() -> void:
+	var passed_ball: Ball = _spawn_ball(Vector2(PADDLE_X - 100.0, 0.0), Vector2(-100.0, 0.0))
+	_reconciler.attach(passed_ball)
+
+	assert_null(_reconciler.get_closest_approaching_ball(PADDLE_X, LANE_SIGN))
+
+
 func test_flips_direction_filter_for_the_opposite_lane_sign() -> void:
 	var ball: Ball = _spawn_ball(Vector2(0.0, 0.0), Vector2(100.0, 0.0))
 	_reconciler.attach(ball)
