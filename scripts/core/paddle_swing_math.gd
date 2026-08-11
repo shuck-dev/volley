@@ -4,11 +4,13 @@ extends RefCounted
 ## Pure math for scaling the swing animation's playback speed to the incoming ball's speed.
 
 
-## Seconds until the ball reaches the racket hitbox's x position, or -1.0 if effectively stationary.
-static func time_to_contact(hitbox_x: float, ball_x: float, ball_velocity_x: float) -> float:
-	if absf(ball_velocity_x) < 1.0:
+## Seconds until the ball reaches the racket hitbox, or -1.0 if effectively stationary.
+static func time_to_contact(
+	hitbox_position: Vector2, ball_position: Vector2, ball_velocity: Vector2
+) -> float:
+	if ball_velocity.length() < 1.0:
 		return -1.0
-	return absf(hitbox_x - ball_x) / absf(ball_velocity_x)
+	return hitbox_position.distance_to(ball_position) / ball_velocity.length()
 
 
 ## Playback speed so the contact frame lands on `time_to_contact`, clamped to `max_speed_scale`.

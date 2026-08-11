@@ -48,16 +48,16 @@ func on_anticipated_hit(grounded: bool) -> void:
 	_emit_if_changed(previous_state)
 
 
-## Playback speed so the swing's contact frame lands when the ball reaches `racket_x`, or -1.0
-## if a swing is already pending or the ball's contact time can't be determined.
+## Playback speed so the swing's contact frame lands when the ball reaches `racket_position`, or
+## -1.0 if a swing is already pending or the ball's contact time can't be determined.
 func compute_zone_entry_speed_scale(
-	ball_x: float, ball_velocity_x: float, racket_x: float
+	ball_position: Vector2, ball_velocity: Vector2, racket_position: Vector2
 ) -> float:
 	if is_swing_pending():
 		return -1.0
 
 	var contact_time: float = PaddleSwingMathScript.time_to_contact(
-		racket_x, ball_x, ball_velocity_x
+		racket_position, ball_position, ball_velocity
 	)
 	if contact_time < 0.0:
 		return -1.0

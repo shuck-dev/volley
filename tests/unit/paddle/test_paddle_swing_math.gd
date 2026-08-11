@@ -10,13 +10,26 @@ const MAX_SPEED_SCALE := 3.0
 
 
 func test_time_to_contact_computes_seconds_from_distance_and_speed() -> void:
-	var seconds: float = PaddleSwingMath.time_to_contact(-700.0, -580.0, -200.0)
+	var seconds: float = PaddleSwingMath.time_to_contact(
+		Vector2(-700.0, 0.0), Vector2(-580.0, 0.0), Vector2(-200.0, 0.0)
+	)
 
 	assert_almost_eq(seconds, 0.6, 0.001)
 
 
+func test_time_to_contact_accounts_for_a_diagonal_approach() -> void:
+	# 60-80-100 triangle: straight-line distance 100 at speed 100 gives 1.0s.
+	var seconds: float = PaddleSwingMath.time_to_contact(
+		Vector2(-700.0, 0.0), Vector2(-640.0, -80.0), Vector2(-60.0, 80.0)
+	)
+
+	assert_almost_eq(seconds, 1.0, 0.001)
+
+
 func test_time_to_contact_returns_negative_one_when_ball_is_effectively_stationary() -> void:
-	var seconds: float = PaddleSwingMath.time_to_contact(-700.0, -580.0, 0.5)
+	var seconds: float = PaddleSwingMath.time_to_contact(
+		Vector2(-700.0, 0.0), Vector2(-580.0, 0.0), Vector2(0.5, 0.0)
+	)
 
 	assert_eq(seconds, -1.0)
 

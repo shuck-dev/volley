@@ -28,9 +28,9 @@ static func wire(gut_test: GutTest, paddle: Paddle, position: Vector2 = Vector2.
 	paddle.add_child(racket_hitbox)
 	paddle.racket_hitbox = racket_hitbox
 
-	var swing_anticipation_zone := Area2D.new()
-	paddle.add_child(swing_anticipation_zone)
-	paddle.swing_anticipation_zone = swing_anticipation_zone
+	var swing_zone := Area2D.new()
+	paddle.add_child(swing_zone)
+	paddle.swing_zone = swing_zone
 
 	var sprite := AnimatedSprite2D.new()
 	paddle.add_child(sprite)

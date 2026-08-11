@@ -16,8 +16,8 @@ signal paddle_hit(ball: Ball)
 ## Hitbox to trigger ball bounce.
 @export var racket_hitbox: RacketHitbox
 
-## Trigger zone ahead of the racket hitbox; starts the swing early so its contact frame lands on time.
-@export var swing_anticipation_zone: Area2D
+## Semicircular trigger around the racket hitbox; starts the swing early so its contact frame lands on time.
+@export var swing_zone: Area2D
 
 ## Detects the court floor; null falls back to CharacterBody2D.is_on_floor().
 @export var ground_ray: RayCast2D
@@ -40,8 +40,8 @@ func _ready() -> void:
 
 	racket_hitbox.body_entered.connect(_on_racket_body_entered)
 
-	if swing_anticipation_zone != null:
-		swing_anticipation_zone.body_entered.connect(_on_swing_anticipation_zone_entered)
+	if swing_zone != null:
+		swing_zone.body_entered.connect(_on_swing_zone_entered)
 
 	_animation_controller = (load("res://scripts/core/paddle_animation_controller.gd").new(
 		global_position.y
@@ -161,7 +161,7 @@ func _on_animation_state_changed(state: StringName) -> void:
 
 
 ## Starts the swing early enough for its contact frame to land on the ball's actual arrival.
-func _on_swing_anticipation_zone_entered(body: Node) -> void:
+func _on_swing_zone_entered(body: Node) -> void:
 	if not (body is Ball):
 		return
 
@@ -170,7 +170,7 @@ func _on_swing_anticipation_zone_entered(body: Node) -> void:
 		return
 
 	var speed_scale: float = _animation_controller.compute_zone_entry_speed_scale(
-		ball.global_position.x, ball.linear_velocity.x, racket_hitbox.global_position.x
+		ball.global_position, ball.linear_velocity, racket_hitbox.global_position
 	)
 	if speed_scale < 0.0:
 		return
