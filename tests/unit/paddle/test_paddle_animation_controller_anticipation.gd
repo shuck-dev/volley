@@ -33,3 +33,12 @@ func test_zone_entry_speed_scale_is_negative_while_a_swing_is_already_pending() 
 	)
 
 	assert_lt(speed_scale, 0.0)
+
+
+func test_state_changed_forwards_the_state_machines_signal() -> void:
+	var emitted_states: Array[StringName] = []
+	_controller.state_changed.connect(func(state: StringName) -> void: emitted_states.append(state))
+
+	_controller.start_swing(true)
+
+	assert_eq(emitted_states, [&"swing_grounded"])
