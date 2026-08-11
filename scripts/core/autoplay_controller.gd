@@ -12,7 +12,7 @@ func toggle() -> void:
 	autoplay_toggled.emit(_enabled)
 
 
-func _approach_velocity_sign() -> float:
+func _court_side_sign() -> float:
 	return -1.0
 
 

@@ -88,9 +88,7 @@ func _select_tracked_ball() -> Ball:
 	if _tracker == null:
 		return ball
 
-	var best: Ball = _tracker.get_closest_approaching_ball(
-		paddle.position.x, -_approach_velocity_sign()
-	)
+	var best: Ball = _tracker.get_closest_approaching_ball(paddle.position.x, -_court_side_sign())
 	return best if best != null else ball
 
 
@@ -110,15 +108,15 @@ func is_enabled() -> bool:
 	return _enabled
 
 
-## Sign that `ball.linear_velocity.x` must match for the ball to approach this paddle.
-func _approach_velocity_sign() -> float:
-	assert(false, "PaddleAIController._approach_velocity_sign() is abstract")
+## Sign of the court side this paddle occupies: negative x-side is -1.0, positive x-side is 1.0.
+func _court_side_sign() -> float:
+	assert(false, "PaddleAIController._court_side_sign() is abstract")
 	return 0.0
 
 
 ## Whether the given ball is moving toward this paddle and hasn't passed it yet.
 func _ball_approaches(target: Ball) -> bool:
-	var direction: float = _approach_velocity_sign()
+	var direction: float = _court_side_sign()
 	return (
 		direction * target.linear_velocity.x > 0.0
 		and direction * target.position.x < direction * paddle.position.x
