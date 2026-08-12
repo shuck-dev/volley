@@ -5,9 +5,16 @@ signal state_changed(state: StringName)
 
 const PaddleSwingMathScript: GDScript = preload("res://scripts/core/paddle_swing_math.gd")
 
-## Contact frame and fps of the 5fps swing animations in resources/animations/sam.tres.
-const SWING_CONTACT_FRAME_INDEX: int = 3
-const SWING_ANIMATION_BASE_FPS: float = 5.0
+## Per-swing-animation contact timing, from resources/animations/sam.tres. `contact_frames` is
+## how many frame-durations (at `base_fps`) elapse before the contact moment: for a multi-frame
+## swing that's its contact frame's index (time to reach it); for swing_grounded_low, whose single
+## frame IS the contact frame from the first tick, it's 1 (that frame's own duration), so the
+## frame stretches to hold until contact instead of computing a zero-length wait.
+const SWING_TIMING_BY_STATE: Dictionary[StringName, Dictionary] = {
+	&"swing_flying": {"contact_frames": 3, "base_fps": 5.0},
+	&"swing_grounded": {"contact_frames": 2, "base_fps": 5.0},
+	&"swing_grounded_low": {"contact_frames": 1, "base_fps": 2.0},
+}
 
 ## Physical ceiling on swing playback speed; not a designer tunable.
 const MAX_SWING_SPEED_SCALE: float = 3.0
@@ -40,7 +47,11 @@ func start_swing(grounded: bool, crouching: bool = false) -> void:
 ## Playback speed so the swing's contact frame lands when the ball reaches `racket_position`, or
 ## -1.0 if a swing is already pending or the ball's contact time can't be determined.
 func compute_zone_entry_speed_scale(
-	ball_position: Vector2, ball_velocity: Vector2, racket_position: Vector2
+	ball_position: Vector2,
+	ball_velocity: Vector2,
+	racket_position: Vector2,
+	grounded: bool,
+	crouching: bool = false,
 ) -> float:
 	if is_swing_pending():
 		return -1.0
@@ -51,8 +62,13 @@ func compute_zone_entry_speed_scale(
 	if contact_time < 0.0:
 		return -1.0
 
+	var swing_state: StringName = PaddleAnimationStateMachine.resolve_swing_state(
+		grounded, crouching
+	)
+	var timing: Dictionary = SWING_TIMING_BY_STATE[swing_state]
+
 	return PaddleSwingMathScript.speed_scale_for_contact_time(
-		contact_time, SWING_CONTACT_FRAME_INDEX, SWING_ANIMATION_BASE_FPS, MAX_SWING_SPEED_SCALE
+		contact_time, timing["contact_frames"], timing["base_fps"], MAX_SWING_SPEED_SCALE
 	)
 
 

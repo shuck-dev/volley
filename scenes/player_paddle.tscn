@@ -25,9 +25,10 @@ ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
+position = Vector2(0, -47)
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"swing_grounded_low"
+animation = &"swing_grounded"
 
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
