@@ -4,8 +4,12 @@ extends Paddle
 ## Racket position while grounded-low; swapped in for crouch/low-hit animation states.
 @export var low_anchor: Marker2D
 
+## Racket position while grounded, upright; swapped in for the standing ready/swing animations.
+@export var mid_anchor: Marker2D
+
 var _default_racket_position: Vector2
 var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
+var _mid_states := [&"ready_grounded", &"swing_grounded"]
 
 
 func _ready() -> void:
@@ -32,6 +36,8 @@ func _on_animation_state_changed(state: StringName) -> void:
 
 	if state in _low_states:
 		racket_hitbox.position = low_anchor.position
+	elif state in _mid_states:
+		racket_hitbox.position = mid_anchor.position
 	else:
 		racket_hitbox.position = _default_racket_position
 

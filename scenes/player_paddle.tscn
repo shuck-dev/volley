@@ -13,9 +13,10 @@ size = Vector2(21, 94.325)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qaqj4"]
 radius = 110.89
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "hit_sound", "sprite", "tracker", "racket_hitbox", "swing_zone", "ground_ray")]
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "mid_anchor", "hit_sound", "sprite", "tracker", "racket_hitbox", "swing_zone", "ground_ray")]
 script = ExtResource("1_mo4dg")
 low_anchor = NodePath("LowRacketAnchor")
+mid_anchor = NodePath("MidRacketAnchor")
 hit_sound = NodePath("HitSound")
 sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
@@ -25,13 +26,15 @@ ground_ray = NodePath("GroundRay")
 metadata/_edit_group_ = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
-position = Vector2(0, -47)
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"swing_grounded"
+animation = &"swing_grounded_low"
 
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
 position = Vector2(8, 59.29)
+
+[node name="MidRacketAnchor" type="Marker2D" parent="." unique_id=1540538403]
+position = Vector2(-20, 50.58)
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]
 stream = ExtResource("2_sfxr")
@@ -62,7 +65,7 @@ position = Vector2(-88, 0)
 shape = SubResource("CircleShape2D_qaqj4")
 
 [node name="GroundRay" type="RayCast2D" parent="." unique_id=394874363]
-position = Vector2(-48, 96)
+position = Vector2(-48, 115)
 target_position = Vector2(0, 10)
 
 [node name="HoverBob" type="Node" parent="." unique_id=519261022 node_paths=PackedStringArray("sprite")]
