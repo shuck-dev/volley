@@ -15,6 +15,7 @@ func _ready() -> void:
 
 	if court != null and court.drag_controller != null:
 		court.drag_controller.kit = ball_kit
+		court.drag_controller.connect_kit()
 
 	if OS.is_debug_build():
 		add_child(load(DEV_HUD_SCENE).instantiate())

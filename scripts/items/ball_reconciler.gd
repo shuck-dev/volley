@@ -49,6 +49,7 @@ func _ready() -> void:
 
 	_ball_manager.court_changed.connect(_on_court_changed)
 	_ball_manager.ball_manager_state_changed.connect(_reconcile)
+	_ball_manager.item_placement_changed.connect(_on_item_placement_changed)
 
 	# Position persistence
 	if _has_save_manager_autoload():
@@ -327,6 +328,18 @@ func _on_court_changed(ball_key: String, on_court: bool) -> void:
 	ball.enter_stored()
 	if ball_rack != null:
 		ball.global_position = ball_rack.get_slot_position_for(ball_key)
+
+
+## A Kit item has no live body; free the one that was tracking it before the placement changed.
+func _on_item_placement_changed(ball_key: String, placement: int) -> void:
+	if placement != Placement.IN_KIT:
+		return
+	var ball: Ball = get_ball_for_key(ball_key)
+	if ball == null:
+		return
+	_balls_by_key.erase(ball_key)
+	_detach(ball)
+	ball.queue_free()
 
 
 func _reconcile() -> void:

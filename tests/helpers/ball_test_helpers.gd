@@ -4,6 +4,7 @@ extends RefCounted
 ## Shared fixtures for ball-drag and reconciler test suites.
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
+const BallKitDisplayScript: GDScript = preload("res://scripts/items/ball_kit_display.gd")
 const RackDropTargetScript: GDScript = preload(
 	"res://scripts/items/drop_targets/rack_drop_target.gd"
 )
@@ -62,6 +63,18 @@ static func make_rack(manager: Node, test: Node) -> RackDisplay:
 	rack.configure(manager)
 	test.add_child_autofree(rack)
 	return rack
+
+
+static func make_kit(manager: Node, test: Node, capacity: int = 3) -> BallKitDisplay:
+	var kit: BallKitDisplay = BallKitDisplayScript.new()
+	var slot_container := HBoxContainer.new()
+	slot_container.name = "SlotContainer"
+	kit.add_child(slot_container)
+	kit.slot_container = slot_container
+	kit.capacity = capacity
+	kit.configure(manager)
+	test.add_child_autofree(kit)
+	return kit
 
 
 static func make_drop_area(position: Vector2, size: Vector2, test: Node) -> Area2D:

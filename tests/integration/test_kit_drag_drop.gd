@@ -4,7 +4,6 @@ extends GutTest
 
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
 const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
-const BallKitDisplayScript: GDScript = preload("res://scripts/items/ball_kit_display.gd")
 
 var _manager: Node
 var _rack: RackDisplay
@@ -27,19 +26,13 @@ func before_each() -> void:
 	_reconciler.ball_rack = _rack
 	add_child_autofree(_reconciler)
 
-	_kit = BallKitDisplayScript.new()
-	var slot_container := HBoxContainer.new()
-	slot_container.name = "SlotContainer"
-	_kit.add_child(slot_container)
-	_kit.slot_container = slot_container
-	_kit.capacity = 1
-	_kit.configure(_manager)
-	add_child_autofree(_kit)
+	_kit = BallTestHelpers.make_kit(_manager, self, 1)
 	await get_tree().process_frame
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _rack, _drop_target, _reconciler)
 	_drag.kit = _kit
+	_drag.connect_kit()
 	add_child_autofree(_drag)
 
 	BallTestHelpers.make_drop_targets(_manager, _reconciler, _drop_target.position, self)

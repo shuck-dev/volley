@@ -103,6 +103,7 @@ func _setup_item(definition: BallDefinition) -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, rack, rack_drop_area, _reconciler)
+	_drag.kit = BallTestHelpers.make_kit(_manager, self)
 	add_child_autofree(_drag)
 
 	BallTestHelpers.make_drop_targets(_manager, _reconciler, rack_drop_area.position, self)
