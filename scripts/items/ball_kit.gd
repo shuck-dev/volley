@@ -33,8 +33,7 @@ func refresh() -> void:
 	for index in _slots.size():
 		var slot: KitSlot = _slots[index]
 		var ball_key: String = _ball_manager.get_ball_in_kit_slot(index)
-		var definition: BallDefinition = _get_ball_definition(ball_key) if ball_key != "" else null
-		slot.set_displayed_key(ball_key, definition)
+		slot.set_displayed_key(ball_key)
 		slot.set_icon_hidden(ball_key == _hidden_key and ball_key != "")
 
 
@@ -86,11 +85,3 @@ func _build_slots() -> void:
 		slot.pressed.connect(slot_pressed.emit)
 		slot_container.add_child(slot)
 		_slots.append(slot)
-
-
-func _get_ball_definition(ball_key: String) -> BallDefinition:
-	for item: BallDefinition in _ball_manager.items:
-		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
-			return item
-
-	return null

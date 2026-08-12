@@ -6,6 +6,10 @@ extends Control
 
 signal pressed(ball_key: String)
 
+## Icon art is not part of BallDefinition (BallManager's boot path loads that eagerly for every
+## owned item); the Kit looks it up lazily by convention, only when a slot actually renders one.
+const ICON_DIR: String = "res://assets/balls/"
+
 @export var icon: TextureRect
 ## Set by BallKit when it instances this slot; this slot's own independent destination index.
 @export var slot_index: int = 0
@@ -45,9 +49,9 @@ func accept(ball_key: String) -> void:
 
 
 ## Displays `ball_key`'s icon, or clears the slot when `ball_key` is empty.
-func set_displayed_key(ball_key: String, definition: BallDefinition) -> void:
+func set_displayed_key(ball_key: String) -> void:
 	_ball_key = ball_key
-	_apply_icon(definition)
+	_apply_icon()
 
 
 func get_displayed_key() -> String:
@@ -57,8 +61,12 @@ func get_displayed_key() -> String:
 ## Hides the icon while the ball is held elsewhere; the slot still reports itself as the occupant.
 func set_icon_hidden(hidden: bool) -> void:
 	_icon_hidden = hidden
-	_apply_icon(_ball_manager.get_item(_ball_key) if _ball_key != "" else null)
+	_apply_icon()
 
 
-func _apply_icon(definition: BallDefinition) -> void:
-	icon.texture = definition.icon if definition != null and not _icon_hidden else null
+func _apply_icon() -> void:
+	if _ball_key == "" or _icon_hidden:
+		icon.texture = null
+		return
+	var path: String = ICON_DIR + BallKey.base_key(_ball_key) + ".png"
+	icon.texture = load(path) if ResourceLoader.exists(path) else null

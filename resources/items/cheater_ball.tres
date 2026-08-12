@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://66q03ryfdyv7" path="res://scenes/balls/cheater_ball.tscn" id="2_scene"]
-[ext_resource type="Texture2D" uid="uid://svkqt4dglwiu" path="res://assets/balls/cheater.png" id="3_icon"]
 
 [resource]
 script = ExtResource("1_item")
@@ -10,4 +9,3 @@ key = "cheater"
 display_name = "Cheater"
 scene = ExtResource("2_scene")
 base_cost = 120
-icon = ExtResource("3_icon")

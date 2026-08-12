@@ -7,5 +7,4 @@ extends Resource
 @export var base_cost: int
 @export var cost_scaling := 1.6
 @export var max_level := 3
-@export var icon: Texture2D
 @export var stats: BaseBallStats = load("res://resources/base_ball_stats.tres")

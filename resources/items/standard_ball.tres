@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
 [ext_resource type="PackedScene" uid="uid://df1tdndedcf2y" path="res://scenes/balls/standard_ball.tscn" id="3_scene"]
-[ext_resource type="Texture2D" uid="uid://bd7wwtwqp5lcu" path="res://assets/balls/baseball.png" id="4_icon"]
 
 [resource]
 script = ExtResource("1_item")
@@ -11,4 +10,3 @@ display_name = "Standard Ball"
 scene = ExtResource("3_scene")
 base_cost = 10
 max_level = 10
-icon = ExtResource("4_icon")
