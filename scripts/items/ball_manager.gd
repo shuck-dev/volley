@@ -30,8 +30,9 @@ var _soul_fraction := 0.0
 
 
 func _ready() -> void:
-	for path in _ITEM_PATHS:
-		items.append(load(path))
+	if items.is_empty():
+		for path in _ITEM_PATHS:
+			items.append(load(path))
 
 	if state == null:
 		state = SaveManager.items
