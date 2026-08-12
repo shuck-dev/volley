@@ -37,7 +37,7 @@ func _process(_delta: float) -> void:
 	_held_token.global_position = cursor
 
 	if not _mouse_button_down:
-		attempt_release(cursor)
+		attempt_release(cursor, _screen_position())
 
 
 func _input(event: InputEvent) -> void:
@@ -58,7 +58,7 @@ func _input(event: InputEvent) -> void:
 	var canvas_transform: Transform2D = get_canvas_transform()
 	var release_position: Vector2 = canvas_transform.affine_inverse() * mouse_button.position
 
-	attempt_release(release_position)
+	attempt_release(release_position, mouse_button.position)
 
 
 func configure(ball_manager: Node, definition: BallDefinition) -> void:
@@ -93,7 +93,8 @@ func start_drag() -> bool:
 
 
 ## Tries to release item to a drop target
-func attempt_release(release_position: Vector2) -> bool:
+## `screen_position` defaults to a live viewport lookup; direct/test callers may pin it.
+func attempt_release(release_position: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
 	if _held_token == null:
 		return false
 
@@ -108,8 +109,11 @@ func attempt_release(release_position: Vector2) -> bool:
 		if controller == null:
 			return false
 
-		var spawned: bool = controller.try_purchase_and_spawn(
-			ball_definition.key, release_position, _release_velocity()
+		var resolved_screen_position: Vector2 = (
+			screen_position if screen_position != Vector2.INF else _screen_position()
+		)
+		var spawned: bool = _purchase_and_spawn(
+			controller, release_position, resolved_screen_position
 		)
 		if not spawned:
 			return false
@@ -122,6 +126,32 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	_finalise_gesture(release_position, false)
 	visible = true
+	return true
+
+
+## Resolves the release against the Kit, then world drop_targets.
+func _purchase_and_spawn(
+	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
+) -> bool:
+	if controller.kit.can_accept(ball_definition.key, screen_position):
+		var kit_instance_key: String = _ball_manager.take(ball_definition.key)
+		if kit_instance_key.is_empty():
+			return false
+		return controller.kit.try_accept(kit_instance_key, screen_position)
+
+	var target: DropTarget = controller.find_accepting_target(ball_definition.key, world_position)
+	if target == null:
+		return false
+
+	var instance_key: String = _ball_manager.take(ball_definition.key)
+	if instance_key.is_empty():
+		return false
+
+	if target is RackDropTarget:
+		controller.adopt_purchased_into_rack(instance_key)
+	else:
+		target.accept(instance_key, world_position, _release_velocity())
+
 	return true
 
 
@@ -214,6 +244,14 @@ func _cursor_position() -> Vector2:
 	if viewport == null:
 		return global_position
 	return get_global_mouse_position()
+
+
+## Raw viewport mouse position; Kit hit-tests in this space, unlike the world-space release_position.
+func _screen_position() -> Vector2:
+	var viewport: Viewport = get_viewport()
+	if viewport == null:
+		return Vector2.ZERO
+	return viewport.get_mouse_position()
 
 
 func _on_balance_changed(_balance: int) -> void:

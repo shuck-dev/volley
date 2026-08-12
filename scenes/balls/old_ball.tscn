@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://212nmv8i311x"]
 
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_base"]
-[ext_resource type="Texture2D" uid="uid://xm8ltt8fkfk4" path="res://assets/balls/old.png" id="2_lgr3n"]
+[ext_resource type="Texture2D" uid="uid://xm8ltt8fkfk4" path="res://assets/balls/old_ball.png" id="2_lgr3n"]
 
 [node name="OldBall" unique_id=1485973691 instance=ExtResource("1_base")]
 

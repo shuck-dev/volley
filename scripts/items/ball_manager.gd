@@ -30,8 +30,9 @@ var _soul_fraction := 0.0
 
 
 func _ready() -> void:
-	for path in _ITEM_PATHS:
-		items.append(load(path))
+	if items.is_empty():
+		for path in _ITEM_PATHS:
+			items.append(load(path))
 
 	if state == null:
 		state = SaveManager.items
@@ -167,6 +168,34 @@ func get_stored_items() -> Array[String]:
 	return result
 
 
+## Returns owned items whose placement is IN_KIT (the Ball Kit staging area).
+func get_kit_items() -> Array[String]:
+	var result: Array[String] = []
+
+	for key in state.ball_levels:
+		if state.ball_levels[key] <= 0:
+			continue
+		if _get_placement(key) != Placement.IN_KIT:
+			continue
+		if _get_item(key) != null:
+			result.append(key)
+
+	return result
+
+
+## Kit slot index assigned to `ball_key` while IN_KIT; -1 when not kitted.
+func get_kit_slot_index(ball_key: String) -> int:
+	return state.kit_slot_index_by_key.get(ball_key, -1)
+
+
+## The owned item occupying `slot_index`, or "" when that Kit slot is empty.
+func get_ball_in_kit_slot(slot_index: int) -> String:
+	for key: String in state.kit_slot_index_by_key:
+		if state.kit_slot_index_by_key[key] == slot_index:
+			return key
+	return ""
+
+
 ## Sets a ball to on court, starting its effects
 func activate(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
@@ -182,6 +211,32 @@ func deactivate(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false
 
+	_set_item_placement(ball_key, Placement.STORED)
+
+	return true
+
+
+## Moves an owned item into a specific Kit slot; false if unowned or the slot holds a different item.
+func add_to_kit(ball_key: String, slot_index: int) -> bool:
+	if get_level(ball_key) <= 0:
+		return false
+	var occupant: String = get_ball_in_kit_slot(slot_index)
+	if occupant != "" and occupant != ball_key:
+		return false
+
+	state.kit_slot_index_by_key[ball_key] = slot_index
+	_set_item_placement(ball_key, Placement.IN_KIT)
+
+	return true
+
+
+## Moves an owned item from the Ball Kit back to the rack; false if unowned.
+func remove_from_kit(ball_key: String) -> bool:
+	if get_level(ball_key) <= 0:
+		return false
+
+	state.kit_slot_index_by_key.erase(ball_key)
+	reassign_rack_slot(ball_key)
 	_set_item_placement(ball_key, Placement.STORED)
 
 	return true
@@ -272,6 +327,7 @@ func remove_level(ball_key: String) -> void:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(ball_key, Placement.STORED)
 			state.rack_slot_index_by_key.erase(ball_key)
+			state.kit_slot_index_by_key.erase(ball_key)
 	ball_manager_state_changed.emit()
 
 

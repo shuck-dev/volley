@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpd3df3kc3by6"
-path="res://.godot/imported/goop_green.png-1e1cc5af0d2d38d0c533eb116c146a9c.ctex"
+path="res://.godot/imported/goop.png-6cfaaad829e5c60b396acf9e5184a6a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/balls/goop_green.png"
-dest_files=["res://.godot/imported/goop_green.png-1e1cc5af0d2d38d0c533eb116c146a9c.ctex"]
+source_file="res://assets/balls/goop.png"
+dest_files=["res://.godot/imported/goop.png-6cfaaad829e5c60b396acf9e5184a6a5.ctex"]
 
 [params]
 

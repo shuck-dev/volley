@@ -177,6 +177,7 @@ func test_grab_removes_item_from_the_rack() -> void:
 
 	var drag: ItemDragController = ItemDragControllerScript.new()
 	drag.configure(manager, rack, drop_target, reconciler)
+	drag.kit = BallTestHelpers.make_kit(manager, self)
 	add_child_autofree(drag)
 
 	drag.grab_from_rack(instance_key)

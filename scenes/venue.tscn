@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dnx2do12mtfyp" path="res://scenes/workshop.tscn" id="6_s1xkn"]
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="8_qo0oe"]
+[ext_resource type="PackedScene" uid="uid://dqk1c8m7lwrvj" path="res://scenes/ball_kit.tscn" id="9_ballkit"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s1xkn"]
 size = Vector2(4000, 40)
@@ -17,7 +18,7 @@ size = Vector2(40, 4000)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o1mbd"]
 size = Vector2(5840, 345)
 
-[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court")]
+[node name="Venue" type="Control" unique_id=160510095 node_paths=PackedStringArray("shop", "court", "ball_kit")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,6 +29,7 @@ mouse_filter = 2
 script = ExtResource("1_qaugd")
 shop = NodePath("Shop")
 court = NodePath("Court")
+ball_kit = NodePath("InterfaceLayer/BallKit")
 
 [node name="ParallaxDeepBack" type="Parallax2D" parent="." unique_id=1359575071]
 visible = false
@@ -79,11 +81,24 @@ script = ExtResource("5_wttuf")
 left_anchor = NodePath("../VenueLeftBound")
 right_anchor = NodePath("../VenueRightBound")
 
+[node name="InterfaceLayer" type="CanvasLayer" parent="." unique_id=2057578900]
+
+[node name="BallKit" parent="InterfaceLayer" unique_id=1543240164 instance=ExtResource("9_ballkit")]
+anchors_preset = 2
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 8.0
+offset_top = -72.0
+offset_right = 216.0
+offset_bottom = -8.0
+grow_horizontal = 1
+
 [node name="Shop" parent="." unique_id=1688593906 instance=ExtResource("3_shop")]
 z_index = -50
 position = Vector2(367, 3.13)
 
 [node name="Workshop" parent="." unique_id=1830461434 instance=ExtResource("6_s1xkn")]
+visible = false
 position = Vector2(-1500, 0)
 
 [node name="VenueCeiling" type="StaticBody2D" parent="." unique_id=1902326706]

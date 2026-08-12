@@ -26,6 +26,7 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, rack, drop_target, _reconciler)
+	_drag.kit = BallTestHelpers.make_kit(_manager, self)
 	add_child_autofree(_drag)
 
 	_goop = GoopBallScene.instantiate()

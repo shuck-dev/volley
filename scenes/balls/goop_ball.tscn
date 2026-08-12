@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://c4d57kq6juqi0" path="res://scenes/balls/ball.tscn" id="1_6d64h"]
 [ext_resource type="Script" uid="uid://ca2xj4gbv6bpm" path="res://scripts/entities/ball/goop_ball.gd" id="2_1rsci"]
-[ext_resource type="Texture2D" uid="uid://bpd3df3kc3by6" path="res://assets/balls/goop_green.png" id="2_u5sck"]
+[ext_resource type="Texture2D" uid="uid://bpd3df3kc3by6" path="res://assets/balls/goop.png" id="2_u5sck"]
 
 [node name="GoopBall" unique_id=1842167380 instance=ExtResource("1_6d64h")]
 script = ExtResource("2_1rsci")

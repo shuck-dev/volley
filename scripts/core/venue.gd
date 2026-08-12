@@ -5,12 +5,16 @@ const DEV_HUD_SCENE := "res://scenes/dev/dev_hud.tscn"
 
 @export var shop: Node2D
 @export var court: Court
+@export var ball_kit: BallKit
 
 
 func _ready() -> void:
 	get_viewport().physics_object_picking = true
 	shop.visible = ProgressionManager.is_shop_unlocked()
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
+
+	court.drag_controller.kit = ball_kit
+	court.drag_controller.connect_kit()
 
 	if OS.is_debug_build():
 		add_child(load(DEV_HUD_SCENE).instantiate())

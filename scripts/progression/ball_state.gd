@@ -13,6 +13,9 @@ var ball_play_states: Dictionary[String, int] = {}
 ## Rack slot index per STORED item; rack owns the slot→world mapping.
 var rack_slot_index_by_key: Dictionary[String, int] = {}
 
+## Kit slot index per IN_KIT item; each Kit slot is its own independent destination.
+var kit_slot_index_by_key: Dictionary[String, int] = {}
+
 ## Loose drag-token items keyed by item key, value is their drop position.
 var loose_in_venue: Dictionary[String, Vector2] = {}
 
@@ -23,6 +26,7 @@ func clear() -> void:
 	ball_positions = {}
 	ball_play_states = {}
 	rack_slot_index_by_key = {}
+	kit_slot_index_by_key = {}
 	loose_in_venue = {}
 
 
@@ -33,6 +37,7 @@ func to_save_dict() -> Dictionary:
 		"ball_positions": _serialize_positions(ball_positions),
 		"ball_play_states": ball_play_states,
 		"rack_slot_index_by_key": rack_slot_index_by_key,
+		"kit_slot_index_by_key": kit_slot_index_by_key,
 		"loose_in_venue": _serialize_positions(loose_in_venue),
 	}
 
@@ -43,6 +48,7 @@ func apply_save_dict(data: Dictionary) -> void:
 	ball_positions = _parse_positions(data.get("ball_positions", {}))
 	ball_play_states = _to_typed_int_dict(data.get("ball_play_states", {}))
 	rack_slot_index_by_key = _to_typed_int_dict(data.get("rack_slot_index_by_key", {}))
+	kit_slot_index_by_key = _to_typed_int_dict(data.get("kit_slot_index_by_key", {}))
 	loose_in_venue = _parse_positions(data.get("loose_in_venue", {}))
 
 

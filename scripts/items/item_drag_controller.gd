@@ -21,6 +21,8 @@ static var _ball_collision_shape: CircleShape2D
 @export var rack_drop_target: Area2D
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
+## Venue assigns this after _ready (Kit is a Court sibling, not reachable via a scene NodePath).
+@export var kit: BallKit
 
 var _ball_manager: BallManager
 ## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).
@@ -42,6 +44,12 @@ var _release_pending: bool = false
 static func _static_init() -> void:
 	_ball_collision_shape = CircleShape2D.new()
 	_ball_collision_shape.radius = BALL_COLLISION_RADIUS
+
+
+## Venue calls this after assigning kit (Kit is wired post-_ready; see the kit doc comment above).
+func connect_kit() -> void:
+	if not kit.slot_pressed.is_connected(_on_kit_slot_pressed):
+		kit.slot_pressed.connect(_on_kit_slot_pressed)
 
 
 func configure(
@@ -94,7 +102,7 @@ func _process(_delta: float) -> void:
 	_update_cursor_state(cursor_target)
 
 	if not _mouse_button_down:
-		if not attempt_release(cursor_target):
+		if not attempt_release(cursor_target, _screen_position()):
 			pass
 
 
@@ -111,7 +119,7 @@ func _input(event: InputEvent) -> void:
 		return
 
 	# Use event position so a Camera2D in the venue doesn't break rack hit-testing.
-	if not attempt_release(_event_world_position(mouse_button)):
+	if not attempt_release(_event_world_position(mouse_button), mouse_button.position):
 		# Gesture stays alive: keep following the cursor and retry release each frame.
 		_release_pending = true
 
@@ -161,7 +169,7 @@ func grab_from_rack(ball_key: String) -> bool:
 
 	# The STORED Ball IS the drag target; it stays in _balls_by_key, now OUT_HELD until release.
 	stored.enter_out_held()
-	_adopt_live_ball_as_held(stored, ball_key)
+	_adopt_held(stored, ball_key)
 
 	# Free the slot while held so a concurrent insert fills from slot 0; restore re-assigns it.
 	_ball_manager.release_rack_slot(ball_key)
@@ -169,6 +177,40 @@ func grab_from_rack(ball_key: String) -> bool:
 	_held_was_on_court = false
 	_held_origin = &"rack"
 	# A grab only happens on a press; assume mouse is down so polling waits for mouse-up.
+	_mouse_button_down = true
+	pickup_started.emit(ball_key)
+	return true
+
+
+## A Kit ball has no live body (Kit renders a static icon); grabbing spawns a frozen drag token,
+## the same shape ShopItem uses for an unpurchased ball.
+func grab_from_kit(ball_key: String) -> bool:
+	if _drag_target() != null:
+		return false
+	if _ball_manager.get_level(ball_key) <= 0:
+		return false
+
+	var definition: BallDefinition = _ball_manager.get_item(ball_key)
+	if definition == null or definition.scene == null:
+		return false
+
+	var token: Node2D = Node2D.new()
+	token.name = "HeldToken_%s" % ball_key
+	var ball_instance: Node = definition.scene.instantiate()
+	token.add_child(ball_instance)
+	(ball_instance as Ball).enter_stored()
+
+	var current_scene: Node = get_tree().current_scene
+	if current_scene != null:
+		current_scene.add_child(token)
+	else:
+		add_child(token)
+	token.global_position = _cursor_position()
+
+	_adopt_held(token, ball_key)
+
+	_held_was_on_court = false
+	_held_origin = &"kit"
 	_mouse_button_down = true
 	pickup_started.emit(ball_key)
 	return true
@@ -191,7 +233,7 @@ func grab_live_ball(ball_key: String) -> bool:
 	# (or any non-venue target) restores the slot exactly like a live-grab originating from the court.
 	_ball_manager.clear_loose_in_venue(ball_key)
 	existing.enter_out_held()
-	_adopt_live_ball_as_held(existing, ball_key)
+	_adopt_held(existing, ball_key)
 	_held_was_on_court = was_on_court
 	_held_origin = &"live"
 	_mouse_button_down = true
@@ -199,9 +241,9 @@ func grab_live_ball(ball_key: String) -> bool:
 	return true
 
 
-func _adopt_live_ball_as_held(ball: Ball, ball_key: String) -> void:
-	var spawn_position: Vector2 = ball.global_position
-	_held = ball
+func _adopt_held(node: Node2D, ball_key: String) -> void:
+	var spawn_position: Vector2 = node.global_position
+	_held = node
 	_held_key = ball_key
 	_press_position = spawn_position
 	_gesture_below_threshold = true
@@ -215,7 +257,7 @@ func grab_temporary(ball: Ball) -> bool:
 		return false
 
 	ball.enter_out_held()
-	_adopt_live_ball_as_held(ball, "")
+	_adopt_held(ball, "")
 	_held_was_on_court = false
 	_held_origin = &"live"
 	_mouse_button_down = true
@@ -223,43 +265,16 @@ func grab_temporary(ball: Ball) -> bool:
 	return true
 
 
-## Purchases and spawns an item based on the resolution of the prioritised drop target.
-func try_purchase_and_spawn(
-	ball_key: String, world_position: Vector2, gesture_velocity: Vector2
-) -> bool:
-	var target: DropTarget = _find_accepting_target(ball_key, world_position)
-	if target == null:
-		return false
-
-	var instance_key: String = _ball_manager.take(ball_key)
-	if instance_key.is_empty():
-		return false
-
-	if target is CourtDropTarget:
-		target.accept(instance_key, world_position, gesture_velocity)
-		return true
-
-	if target is VenueDropTarget:
-		target.accept(instance_key, world_position, gesture_velocity)
-		return true
-
-	if target is RackDropTarget:
-		_adopt_purchased_into_rack(instance_key)
-		return true
-
-	target.accept(instance_key, world_position, gesture_velocity)
-
-	return true
-
-
-func _adopt_purchased_into_rack(instance_key: String) -> void:
+## Adopts a freshly-purchased instance into the rack; ShopItem calls this after Shop.take().
+func adopt_purchased_into_rack(instance_key: String) -> void:
 	if reconciler == null:
 		return
 	reconciler.create_ball_from_key(instance_key)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
-func attempt_release(release_position: Vector2) -> bool:
+## `screen_position` defaults to a live viewport lookup; direct/test callers may pin it.
+func attempt_release(release_position: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
 	if _drag_target() == null:
 		return false
 
@@ -277,12 +292,19 @@ func attempt_release(release_position: Vector2) -> bool:
 
 	# Rack-origin press-and-release without movement cancels back to source instead of activating.
 	if below_threshold and _held_origin == &"rack" and not _held_was_on_court:
-		if has_live_ball and not is_temporary:
-			_restore_held_ball_to_stored(ball_key)
-		_finalise_gesture(ball_key, release_position, false)
+		_cancel_rack_gesture(ball_key, release_position, has_live_ball, is_temporary)
 		return true
 
-	var target: DropTarget = _find_accepting_target(ball_key, release_position)
+	if _try_accept_into_kit(
+		ball_key, release_position, screen_position, has_live_ball, is_temporary
+	):
+		return true
+
+	# Landing anywhere else drops the Kit placement; the target below handles the rest, same as rack-origin.
+	if _held_origin == &"kit":
+		_ball_manager.remove_from_kit(ball_key)
+
+	var target: DropTarget = find_accepting_target(ball_key, release_position)
 	if target == null:
 		return false
 
@@ -296,14 +318,9 @@ func attempt_release(release_position: Vector2) -> bool:
 			_apply_preserved_speed_after_accept(ball_key)
 	elif is_temporary:
 		# A temporary ball never joins the rack/venue registry; anywhere but the court just frees it.
-		if reconciler != null:
-			reconciler.free_temporary(held_ball)
-		_finalise_gesture(ball_key, release_position, false)
-		return true
+		_free_temporary_ball(held_ball)
 	elif target is VenueDropTarget:
 		target.accept(ball_key, release_position, _compute_release_velocity())
-		_finalise_gesture(ball_key, release_position, false)
-		return true
 	else:
 		# Restore is the safety net when BallManager was already STORED so accept's deactivate was a no-op.
 		target.accept(ball_key, release_position, Vector2.ZERO)
@@ -352,7 +369,7 @@ func _apply_preserved_speed_after_accept(ball_key: String) -> void:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 
 
-func _find_accepting_target(ball_key: String, world_position: Vector2) -> DropTarget:
+func find_accepting_target(ball_key: String, world_position: Vector2) -> DropTarget:
 	var winner: DropTarget = null
 	for node: Node in get_tree().get_nodes_in_group(&"drop_targets"):
 		var target: DropTarget = node as DropTarget
@@ -374,6 +391,53 @@ func _restore_held_ball_to_stored(ball_key: String) -> void:
 	(_held as Ball).enter_stored()
 	if rack != null:
 		(_held as Ball).global_position = rack.get_slot_position_for(ball_key)
+
+
+func _free_temporary_ball(held_ball: Ball) -> void:
+	if reconciler != null:
+		reconciler.free_temporary(held_ball)
+
+
+## Cancels a rack-origin gesture back to its source; a click-without-movement is a no-op, not a drop.
+func _cancel_rack_gesture(
+	ball_key: String, release_position: Vector2, has_live_ball: bool, is_temporary: bool
+) -> void:
+	if has_live_ball and not is_temporary:
+		_restore_held_ball_to_stored(ball_key)
+	_finalise_gesture(ball_key, release_position, false)
+
+
+## Freezes the held Ball for its new IN_KIT placement; Kit renders a static icon, not the live body,
+## so the ball just goes inert at its release point instead of following a Kit-slot world position.
+func _park_held_ball_in_kit() -> void:
+	if not (_held is Ball):
+		return
+	_ball_manager.clear_loose_in_venue(_held_key)
+	(_held as Ball).enter_stored()
+
+
+## Checked before the world-space drop_targets group so a Kit hit takes priority.
+func _try_accept_into_kit(
+	ball_key: String,
+	release_position: Vector2,
+	screen_position: Vector2,
+	has_live_ball: bool,
+	is_temporary: bool,
+) -> bool:
+	if is_temporary or ball_key.is_empty():
+		return false
+
+	var resolved_screen_position: Vector2 = (
+		screen_position if screen_position != Vector2.INF else _screen_position()
+	)
+	if not kit.try_accept(ball_key, resolved_screen_position):
+		return false
+
+	if has_live_ball:
+		_park_held_ball_in_kit()
+	_finalise_gesture(ball_key, release_position, false)
+	rack.refresh()
+	return true
 
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
@@ -451,6 +515,15 @@ func _event_world_position(event: InputEventMouseButton) -> Vector2:
 	return canvas_transform.affine_inverse() * event.position
 
 
+## Raw viewport mouse position, unlike _cursor_position/_event_world_position which bake in the
+## VenueCamera's pan offset; Kit lives in a CanvasLayer and hit-tests in this space instead.
+func _screen_position() -> Vector2:
+	var viewport: Viewport = get_viewport()
+	if viewport == null:
+		return Vector2.ZERO
+	return viewport.get_mouse_position()
+
+
 func _update_cursor_state(world_position: Vector2) -> void:
 	var state: int = _derive_cursor_state(world_position)
 	_set_cursor_state(state, world_position)
@@ -459,13 +532,15 @@ func _update_cursor_state(world_position: Vector2) -> void:
 func _derive_cursor_state(world_position: Vector2) -> int:
 	if _drag_target() == null:
 		return CursorStateScript.State.DEFAULT
+	if kit.can_accept(_held_key, _screen_position()):
+		return CursorStateScript.State.CAN_DROP
 	if _position_accepted_by_any_target(_held_key, world_position):
 		return CursorStateScript.State.CAN_DROP
 	return CursorStateScript.State.FORBIDDEN
 
 
 func _position_accepted_by_any_target(ball_key: String, world_position: Vector2) -> bool:
-	return _find_accepting_target(ball_key, world_position) != null
+	return find_accepting_target(ball_key, world_position) != null
 
 
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
@@ -476,6 +551,11 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 func _on_rack_slot_pressed(ball_key: String, _slot_press_position: Vector2) -> void:
 	grab_from_rack(ball_key)
 	rack.refresh.call_deferred()
+
+
+func _on_kit_slot_pressed(ball_key: String) -> void:
+	grab_from_kit(ball_key)
+	kit.refresh.call_deferred()
 
 
 func _on_reconciler_ball_spawned(ball_key: String, ball: Ball) -> void:
@@ -492,6 +572,7 @@ func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:
 func _on_pickup_started(ball_key: String) -> void:
 	if rack != null:
 		rack.hide_slot_for(ball_key)
+	kit.hide_slot_for(ball_key)
 
 
 func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_court: bool) -> void:
@@ -500,3 +581,4 @@ func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_cour
 		return
 	if rack != null:
 		rack.reveal_slot_for(ball_key)
+	kit.reveal_slot_for(ball_key)
