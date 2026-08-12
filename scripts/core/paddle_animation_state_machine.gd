@@ -52,9 +52,7 @@ static func _resolve_state(
 	grounded: bool, vertical_motion: float, swing_pending: bool, crouching: bool = false
 ) -> StringName:
 	if swing_pending:
-		if grounded:
-			return &"swing_grounded_low" if crouching else &"swing_grounded"
-		return &"swing_flying"
+		return resolve_swing_state(grounded, crouching)
 
 	if grounded:
 		return &"ready_grounded_low" if crouching else &"ready_grounded"
@@ -63,3 +61,12 @@ static func _resolve_state(
 		return &"flying_up" if vertical_motion < 0.0 else &"flying_down"
 
 	return &"ready_flying"
+
+
+## The swing state a pending swing resolves to for `grounded`/`crouching`, independent of whether
+## a swing is currently pending; lets a caller look up per-state config (e.g. anticipation timing)
+## before actually starting one.
+static func resolve_swing_state(grounded: bool, crouching: bool = false) -> StringName:
+	if grounded:
+		return &"swing_grounded_low" if crouching else &"swing_grounded"
+	return &"swing_flying"

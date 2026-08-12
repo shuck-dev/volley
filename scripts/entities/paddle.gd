@@ -169,8 +169,15 @@ func _on_swing_zone_entered(body: Node) -> void:
 	if _lane_x * ball.linear_velocity.x <= 0:
 		return
 
-	var speed_scale: float = _animation_controller.compute_zone_entry_speed_scale(
-		ball.global_position, ball.linear_velocity, racket_hitbox.global_position
+	var speed_scale: float = (
+		_animation_controller
+		. compute_zone_entry_speed_scale(
+			ball.global_position,
+			ball.linear_velocity,
+			racket_hitbox.global_position,
+			is_grounded(),
+			_is_crouching(),
+		)
 	)
 	if speed_scale < 0.0:
 		return

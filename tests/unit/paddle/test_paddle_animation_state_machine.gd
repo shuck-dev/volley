@@ -91,3 +91,19 @@ func test_grounded_swing_cancels_when_the_paddle_leaves_the_ground() -> void:
 
 	assert_eq(_machine.get_state(), &"flying_up")
 	assert_false(_machine.is_swing_pending())
+
+
+func test_swing_grounded_low_animation_fires_when_hit_while_crouching() -> void:
+	_machine.start_swing(true, 0.0, true)
+	assert_eq(_machine.get_state(), &"swing_grounded_low")
+
+
+func test_resolve_swing_state_matches_grounded_crouching_combinations() -> void:
+	assert_eq(PaddleAnimationStateMachine.resolve_swing_state(true, false), &"swing_grounded")
+	assert_eq(PaddleAnimationStateMachine.resolve_swing_state(true, true), &"swing_grounded_low")
+	assert_eq(PaddleAnimationStateMachine.resolve_swing_state(false, false), &"swing_flying")
+	assert_eq(
+		PaddleAnimationStateMachine.resolve_swing_state(false, true),
+		&"swing_flying",
+		"airborne always resolves to the flying swing regardless of crouch input",
+	)
