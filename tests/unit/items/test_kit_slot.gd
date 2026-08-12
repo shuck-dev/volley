@@ -17,38 +17,45 @@ func before_each() -> void:
 	_manager.economy.soul_balance = 10000
 
 	_slot = KitSlotScene.instantiate()
-	_slot.capacity = 1
+	_slot.slot_index = 0
 	_slot.configure(_manager)
 	add_child_autofree(_slot)
 
 
-func test_can_accept_true_when_kit_has_room() -> void:
+func test_can_accept_true_when_slot_is_empty() -> void:
 	assert_true(_slot.can_accept("kit_ball_1"))
 
 
-func test_can_accept_false_when_kit_is_full() -> void:
+func test_can_accept_false_when_slot_holds_a_different_ball() -> void:
 	_manager.take("kit_ball")
-	_manager.add_to_kit("kit_ball_1")
+	_manager.add_to_kit("kit_ball_1", 0)
 
 	assert_false(_slot.can_accept("other_ball_1"))
 
 
-func test_can_accept_true_for_the_slots_own_occupant_even_when_full() -> void:
+func test_can_accept_true_for_the_slots_own_occupant() -> void:
 	_manager.take("kit_ball")
-	_manager.add_to_kit("kit_ball_1")
-	_slot.set_displayed_key("kit_ball_1", null)
+	_manager.add_to_kit("kit_ball_1", 0)
 
 	assert_true(
 		_slot.can_accept("kit_ball_1"),
-		"re-dropping onto the slot's own occupant should not be blocked by its own fullness",
+		"re-dropping onto the slot's own occupant should not be blocked",
 	)
 
 
-func test_accept_moves_the_ball_into_the_kit() -> void:
+func test_accept_moves_the_ball_into_this_slot() -> void:
 	_manager.take("kit_ball")
 
 	_slot.accept("kit_ball_1")
 
-	var kit_items: Array[String] = _manager.get_kit_items()
-	assert_eq(kit_items.size(), 1)
-	assert_eq(kit_items[0], "kit_ball_1")
+	assert_eq(_manager.get_ball_in_kit_slot(0), "kit_ball_1")
+
+
+func test_can_accept_true_when_a_different_slot_is_occupied() -> void:
+	_manager.take("kit_ball")
+	_manager.add_to_kit("kit_ball_1", 1)
+
+	assert_true(
+		_slot.can_accept("kit_ball_1"),
+		"slot 0 must stay open regardless of what slot 1 holds",
+	)

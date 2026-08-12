@@ -7,8 +7,8 @@ extends Control
 signal pressed(ball_key: String)
 
 @export var icon: TextureRect
-## Set by BallKit when it instances this slot; mirrors the kit's overall capacity.
-@export var capacity: int = 3
+## Set by BallKit when it instances this slot; this slot's own independent destination index.
+@export var slot_index: int = 0
 
 var _ball_manager: BallManager
 var _ball_key: String = ""
@@ -34,15 +34,14 @@ func configure(ball_manager: Node) -> void:
 	_ball_manager = ball_manager
 
 
-## True when this slot can take `ball_key`: the kit has room, or the slot already holds it.
+## True when this slot can take `ball_key`: it is empty, or already holds that exact ball.
 func can_accept(ball_key: String) -> bool:
-	if _ball_key == ball_key:
-		return true
-	return _ball_manager.get_kit_items().size() < capacity
+	var occupant: String = _ball_manager.get_ball_in_kit_slot(slot_index)
+	return occupant == "" or occupant == ball_key
 
 
 func accept(ball_key: String) -> void:
-	_ball_manager.add_to_kit(ball_key)
+	_ball_manager.add_to_kit(ball_key, slot_index)
 
 
 ## Displays `ball_key`'s icon, or clears the slot when `ball_key` is empty.

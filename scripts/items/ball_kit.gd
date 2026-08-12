@@ -30,11 +30,9 @@ func configure(ball_manager: Node) -> void:
 
 
 func refresh() -> void:
-	var kit_keys: Array[String] = _ball_manager.get_kit_items()
-
 	for index in _slots.size():
 		var slot: KitSlot = _slots[index]
-		var ball_key: String = kit_keys[index] if index < kit_keys.size() else ""
+		var ball_key: String = _ball_manager.get_ball_in_kit_slot(index)
 		var definition: BallDefinition = _get_ball_definition(ball_key) if ball_key != "" else null
 		slot.set_displayed_key(ball_key, definition)
 		slot.set_icon_hidden(ball_key == _hidden_key and ball_key != "")
@@ -83,7 +81,7 @@ func _build_slots() -> void:
 
 	for index in capacity:
 		var slot: KitSlot = KitSlotScene.instantiate()
-		slot.capacity = capacity
+		slot.slot_index = index
 		slot.configure(_ball_manager)
 		slot.pressed.connect(slot_pressed.emit)
 		slot_container.add_child(slot)

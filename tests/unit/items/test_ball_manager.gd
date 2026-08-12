@@ -292,21 +292,29 @@ class TestKitItems:
 		_manager.take("kit_ball")
 		assert_eq(_manager.get_kit_items().size(), 0)
 
-	func test_add_to_kit_moves_a_stored_item_into_the_kit() -> void:
+	func test_add_to_kit_moves_a_stored_item_into_the_named_slot() -> void:
 		_manager.take("kit_ball")
-		assert_true(_manager.add_to_kit("kit_ball_1"))
-		var kit_items: Array[String] = _manager.get_kit_items()
-		assert_eq(kit_items.size(), 1)
-		assert_eq(kit_items[0], "kit_ball_1")
+		assert_true(_manager.add_to_kit("kit_ball_1", 0))
+		assert_eq(_manager.get_ball_in_kit_slot(0), "kit_ball_1")
 
 	func test_add_to_kit_returns_false_for_an_unowned_item() -> void:
-		assert_false(_manager.add_to_kit("kit_ball_1"))
+		assert_false(_manager.add_to_kit("kit_ball_1", 0))
+
+	func test_add_to_kit_returns_false_when_the_slot_holds_a_different_ball() -> void:
+		var second_item := BallDefinition.new()
+		second_item.key = "other_ball"
+		_manager.items.append(second_item)
+		_manager.take("kit_ball")
+		_manager.take("other_ball")
+		_manager.add_to_kit("kit_ball_1", 0)
+
+		assert_false(_manager.add_to_kit("other_ball_1", 0))
 
 	func test_remove_from_kit_returns_a_kit_item_to_stored() -> void:
 		_manager.take("kit_ball")
-		_manager.add_to_kit("kit_ball_1")
+		_manager.add_to_kit("kit_ball_1", 0)
 		assert_true(_manager.remove_from_kit("kit_ball_1"))
-		assert_eq(_manager.get_kit_items().size(), 0)
+		assert_eq(_manager.get_ball_in_kit_slot(0), "")
 		var stored: Array[String] = _manager.get_stored_items()
 		assert_eq(stored.size(), 1)
 		assert_eq(stored[0], "kit_ball_1")
@@ -316,7 +324,7 @@ class TestKitItems:
 		assert_eq(
 			_manager.get_rack_slot_index("kit_ball_1"), 0, "precondition: stored item has a slot"
 		)
-		_manager.add_to_kit("kit_ball_1")
+		_manager.add_to_kit("kit_ball_1", 0)
 		assert_eq(
 			_manager.get_rack_slot_index("kit_ball_1"),
 			-1,

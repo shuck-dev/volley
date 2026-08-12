@@ -87,7 +87,7 @@ func test_full_kit_rejects_a_different_ball_and_falls_through() -> void:
 	_manager.items.assign([alpha, beta] as Array[BallDefinition])
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
-	_manager.add_to_kit("ball_alpha_1")
+	_manager.add_to_kit("ball_alpha_1", 0)
 	assert_eq(_manager.get_kit_items().size(), 1, "precondition: the single Kit slot is full")
 
 	assert_true(_drag.grab_from_rack("ball_beta_1"))
