@@ -62,6 +62,4 @@ func set_icon_hidden(hidden: bool) -> void:
 
 
 func _apply_icon(definition: BallDefinition) -> void:
-	if icon == null:
-		return
 	icon.texture = definition.icon if definition != null and not _icon_hidden else null

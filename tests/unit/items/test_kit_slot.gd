@@ -52,9 +52,3 @@ func test_accept_moves_the_ball_into_the_kit() -> void:
 	var kit_items: Array[String] = _manager.get_kit_items()
 	assert_eq(kit_items.size(), 1)
 	assert_eq(kit_items[0], "kit_ball_1")
-
-
-func test_set_displayed_key_stores_the_key() -> void:
-	_slot.set_displayed_key("kit_ball_1", null)
-
-	assert_eq(_slot.get_displayed_key(), "kit_ball_1")

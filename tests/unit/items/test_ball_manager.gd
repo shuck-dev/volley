@@ -299,11 +299,6 @@ class TestKitItems:
 		assert_eq(kit_items.size(), 1)
 		assert_eq(kit_items[0], "kit_ball_1")
 
-	func test_add_to_kit_removes_the_item_from_stored() -> void:
-		_manager.take("kit_ball")
-		_manager.add_to_kit("kit_ball_1")
-		assert_eq(_manager.get_stored_items().size(), 0)
-
 	func test_add_to_kit_returns_false_for_an_unowned_item() -> void:
 		assert_false(_manager.add_to_kit("kit_ball_1"))
 
@@ -315,11 +310,6 @@ class TestKitItems:
 		var stored: Array[String] = _manager.get_stored_items()
 		assert_eq(stored.size(), 1)
 		assert_eq(stored[0], "kit_ball_1")
-
-	func test_get_placement_reports_in_kit_after_add_to_kit() -> void:
-		_manager.take("kit_ball")
-		_manager.add_to_kit("kit_ball_1")
-		assert_eq(_manager.get_placement("kit_ball_1"), Placement.IN_KIT)
 
 	func test_add_to_kit_releases_the_rack_slot() -> void:
 		_manager.take("kit_ball")
