@@ -48,7 +48,7 @@ static func _static_init() -> void:
 
 ## Venue calls this after assigning kit (Kit is wired post-_ready; see the kit doc comment above).
 func connect_kit() -> void:
-	if kit != null and not kit.slot_pressed.is_connected(_on_kit_slot_pressed):
+	if not kit.slot_pressed.is_connected(_on_kit_slot_pressed):
 		kit.slot_pressed.connect(_on_kit_slot_pressed)
 
 
@@ -572,8 +572,7 @@ func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:
 func _on_pickup_started(ball_key: String) -> void:
 	if rack != null:
 		rack.hide_slot_for(ball_key)
-	if kit != null:
-		kit.hide_slot_for(ball_key)
+	kit.hide_slot_for(ball_key)
 
 
 func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_court: bool) -> void:
@@ -582,5 +581,4 @@ func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_cour
 		return
 	if rack != null:
 		rack.reveal_slot_for(ball_key)
-	if kit != null:
-		kit.reveal_slot_for(ball_key)
+	kit.reveal_slot_for(ball_key)
