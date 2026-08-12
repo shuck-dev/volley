@@ -7,7 +7,7 @@ extends Control
 signal pressed(ball_key: String)
 
 @export var icon: TextureRect
-## Set by BallKitDisplay when it instances this slot; mirrors the kit's overall capacity.
+## Set by BallKit when it instances this slot; mirrors the kit's overall capacity.
 @export var capacity: int = 3
 
 var _ball_manager: BallManager

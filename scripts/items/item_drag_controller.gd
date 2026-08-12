@@ -22,7 +22,7 @@ static var _ball_collision_shape: CircleShape2D
 @export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 ## Venue assigns this after _ready (Kit is a Court sibling, not reachable via a scene NodePath).
-@export var kit: BallKitDisplay
+@export var kit: BallKit
 
 var _ball_manager: BallManager
 ## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).

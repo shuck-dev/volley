@@ -1,4 +1,4 @@
-class_name BallKitDisplay
+class_name BallKit
 extends Control
 
 signal slot_pressed(ball_key: String)

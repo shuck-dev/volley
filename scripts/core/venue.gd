@@ -5,7 +5,7 @@ const DEV_HUD_SCENE := "res://scenes/dev/dev_hud.tscn"
 
 @export var shop: Node2D
 @export var court: Court
-@export var ball_kit: BallKitDisplay
+@export var ball_kit: BallKit
 
 
 func _ready() -> void:

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dqk1c8m7lwrvj"]
 
-[ext_resource type="Script" uid="uid://c3k7hxvj5mfg4" path="res://scripts/items/ball_kit_display.gd" id="1_kit"]
+[ext_resource type="Script" uid="uid://c3k7hxvj5mfg4" path="res://scripts/items/ball_kit.gd" id="1_kit"]
 
 [node name="BallKit" type="Control" unique_id=1359231454 node_paths=PackedStringArray("slot_container")]
 layout_mode = 3

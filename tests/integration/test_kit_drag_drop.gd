@@ -10,7 +10,7 @@ var _rack: RackDisplay
 var _drop_target: Area2D
 var _reconciler: BallReconciler
 var _drag: ItemDragController
-var _kit: BallKitDisplay
+var _kit: BallKit
 
 
 func before_each() -> void:
