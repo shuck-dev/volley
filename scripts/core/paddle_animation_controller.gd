@@ -5,14 +5,10 @@ signal state_changed(state: StringName)
 
 const PaddleSwingMathScript: GDScript = preload("res://scripts/core/paddle_swing_math.gd")
 
-## Per-swing-animation contact timing, from resources/animations/sam.tres. `contact_frames` is
-## how many frame-durations (at `base_fps`) elapse before the contact moment: for a multi-frame
-## swing that's its contact frame's index (time to reach it); for swing_grounded_low, whose single
-## frame IS the contact frame from the first tick, it's 1 (that frame's own duration), so the
-## frame stretches to hold until contact instead of computing a zero-length wait.
+## Per-swing-animation contact frame count and fps, from resources/animations/sam.tres.
 const SWING_TIMING_BY_STATE: Dictionary[StringName, Dictionary] = {
 	&"swing_flying": {"contact_frames": 3, "base_fps": 5.0},
-	&"swing_grounded": {"contact_frames": 2, "base_fps": 5.0},
+	&"swing_grounded": {"contact_frames": 1, "base_fps": 5.0},
 	&"swing_grounded_low": {"contact_frames": 1, "base_fps": 2.0},
 }
 

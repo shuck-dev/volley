@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dfc28jj4bws1v" path="res://scripts/entities/racket_hitbox.gd" id="12_rckthbx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k7j1o"]
-size = Vector2(21, 94.325)
+size = Vector2(21, 128.1225)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qaqj4"]
 radius = 110.89
@@ -28,13 +28,13 @@ metadata/_edit_group_ = true
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=955212656]
 scale = Vector2(0.245, 0.245)
 sprite_frames = ExtResource("4_samframes")
-animation = &"swing_grounded_low"
+animation = &"swing_grounded"
 
 [node name="LowRacketAnchor" type="Marker2D" parent="." unique_id=2002814800]
-position = Vector2(8, 59.29)
+position = Vector2(-20, 59.29)
 
 [node name="MidRacketAnchor" type="Marker2D" parent="." unique_id=1540538403]
-position = Vector2(-20, 50.58)
+position = Vector2(-20, 8.580002)
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=804052244]
 stream = ExtResource("2_sfxr")
@@ -52,6 +52,7 @@ script = ExtResource("12_rckthbx")
 collision = NodePath("RacketCollision")
 
 [node name="RacketCollision" type="CollisionShape2D" parent="RacketHitbox" unique_id=1404787416]
+position = Vector2(0, 0.101249695)
 shape = SubResource("RectangleShape2D_k7j1o")
 
 [node name="SwingZone" type="Area2D" parent="." unique_id=-1077560471]
