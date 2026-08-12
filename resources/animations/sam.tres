@@ -17,6 +17,11 @@
 [ext_resource type="Texture2D" uid="uid://bg2bxd5mwir2" path="res://assets/sprites/sam/ready_grounded/sam_ready_grounded_03.png" id="11_xswg0"]
 [ext_resource type="Texture2D" uid="uid://cq1fjlx3ml0jc" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_05.png" id="11_ysull"]
 [ext_resource type="Texture2D" uid="uid://duyuxpjv5vfxg" path="res://assets/sprites/sam/ready_grounded/sam_ready_grounded_04.png" id="12_yc0uj"]
+[ext_resource type="Texture2D" uid="uid://bsanok6obm5a0" path="res://assets/sprites/sam/ready_grounded_low/sam_ready_grounded_low_01.png" id="13_pkbgn"]
+[ext_resource type="Texture2D" uid="uid://dmhdk8ocwr7a" path="res://assets/sprites/sam/swing_grounded/sam_swing_grounded_01.png" id="19_uspdf"]
+[ext_resource type="Texture2D" uid="uid://cdlj7psuc3u04" path="res://assets/sprites/sam/swing_grounded/sam_swing_grounded_02.png" id="20_xswg0"]
+[ext_resource type="Texture2D" uid="uid://cs823tt1at3hq" path="res://assets/sprites/sam/swing_grounded/sam_swing_grounded_03.png" id="21_yc0uj"]
+[ext_resource type="Texture2D" uid="uid://8wafqo70e4c6" path="res://assets/sprites/sam/swing_grounded_low/sam_swing_grounded_low_01.png" id="22_et4af"]
 
 [resource]
 animations = [{
@@ -78,16 +83,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_ot5un")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_uspdf")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_xswg0")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_yc0uj")
+"texture": ExtResource("13_pkbgn")
 }],
 "loop": true,
 "name": &"ready_grounded_low",
@@ -115,19 +111,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_64lvm")
+"texture": ExtResource("19_uspdf")
 }, {
 "duration": 1.0,
-"texture": ExtResource("8_ogmgp")
+"texture": ExtResource("20_xswg0")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_pkbgn")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_np2oc")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_ysull")
+"texture": ExtResource("21_yc0uj")
 }],
 "loop": false,
 "name": &"swing_grounded",
@@ -135,18 +125,9 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_ot5un")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_uspdf")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_xswg0")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_yc0uj")
+"texture": ExtResource("22_et4af")
 }],
 "loop": false,
 "name": &"swing_grounded_low",
-"speed": 5.0
+"speed": 2.0
 }]
