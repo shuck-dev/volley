@@ -289,6 +289,7 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
+	ball.speed_tiers = definition.speed_tiers
 	add_child(ball)
 	ball.enter_stored()
 	ball.global_position = spawn_position
@@ -308,6 +309,7 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	ball.bound_y = bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
+	ball.speed_tiers = definition.speed_tiers
 
 	add_child(ball)
 

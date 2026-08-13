@@ -344,21 +344,6 @@ func _register_existing_items() -> void:
 		SaveManager.save()
 
 
-## Bumps an owned ball item by one level (capped at max_level), refreshing its effects.
-## Returns true when the level increased. Intended for tier-completion ball upgrades.
-func upgrade_ball(ball_key: String) -> bool:
-	var item := _get_item(ball_key)
-	if item == null:
-		return false
-
-	var current_level := get_level(ball_key)
-	if current_level <= 0 or current_level >= item.max_level:
-		return false
-
-	_set_level(ball_key, current_level + 1)
-	return true
-
-
 ## Deducts soul for purchasing a ball. The reconciler owns instance key generation
 ## and state registration; this only handles economics.
 func take_ball(ball_key: String) -> bool:

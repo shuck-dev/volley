@@ -183,41 +183,6 @@ func test_attach_second_ball_mid_rally_does_not_change_current_ball() -> void:
 	)
 
 
-# Regression: first-reach tier upgrades must fire independently per ball, not once globally.
-# Ball A reaching tier 0 first should not consume the first-reach slot for ball B.
-func test_first_reach_upgrade_fires_independently_per_ball() -> void:
-	var first: Ball = _spawn_ball("ball_alpha")
-	var second: Ball = _spawn_ball("ball_beta")
-
-	var alpha_level_before: int = _manager.get_level("ball_alpha")
-	var beta_level_before: int = _manager.get_level("ball_beta")
-
-	assert_eq(alpha_level_before, 1, "precondition: ball_alpha starts at level 1")
-	assert_eq(beta_level_before, 1, "precondition: ball_beta starts at level 1")
-
-	first.current_tier = 0
-	first.advance_tier()
-
-	await get_tree().process_frame
-
-	assert_eq(
-		_manager.get_level("ball_alpha"),
-		alpha_level_before + 1,
-		"first ball reaching tier 0 for the first time must trigger its upgrade",
-	)
-
-	second.current_tier = 0
-	second.advance_tier()
-
-	await get_tree().process_frame
-
-	assert_eq(
-		_manager.get_level("ball_beta"),
-		beta_level_before + 1,
-		"second ball reaching tier 0 for the first time must also trigger its own upgrade, independent of ball_alpha",
-	)
-
-
 # Regression: the reward handler banks soul for ANY tracked ball, not only the current one.
 # A single-ball binding let a second ball's consolidation go unrewarded.
 func test_non_current_ball_consolidation_banks_soul() -> void:
@@ -268,6 +233,39 @@ func test_ball_stats_override_default_stats() -> void:
 		ball_stat.max_speed,
 		GameRules.base.ball_speed_max,
 		"a ball with defined stats should override the default"
+	)
+
+
+func test_ball_speed_tiers_override_default_speed_tiers() -> void:
+	var ball_tiers_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item("ball_tiers")
+	var ball_default_defintion: BallDefinition = ItemTestHelpersScript.make_ball_item(
+		"ball_default"
+	)
+
+	var tier: SpeedTier = SpeedTier.new()
+	tier.floor_fraction = 0.1
+	tier.ceiling_fraction = 0.2
+	var speed_tiers: SpeedTierTable = SpeedTierTable.new()
+	speed_tiers.tiers = [tier]
+	ball_tiers_defintion.speed_tiers = speed_tiers
+
+	var typed_items: Array[BallDefinition] = [ball_tiers_defintion, ball_default_defintion]
+
+	_manager.items.assign(typed_items)
+
+	var ball_tiers: Ball = _spawn_ball("ball_tiers")
+	var ball_default: Ball = _spawn_ball("ball_default")
+
+	assert_eq(
+		ball_default.tier_ceiling,
+		GameRules.speed_tiers.get_tier(0).ceiling_fraction * ball_default.ball_world_max_speed,
+		"a ball with no speed_tiers override should resolve today's shared-default ladder"
+	)
+
+	assert_ne(
+		ball_tiers.tier_ceiling,
+		ball_default.tier_ceiling,
+		"a ball with its own speed_tiers should resolve a different tier ceiling than the shared default"
 	)
 
 

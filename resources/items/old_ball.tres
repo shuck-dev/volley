@@ -1,7 +1,20 @@
 [gd_resource type="Resource" script_class="BallDefinition" format=3 uid="uid://cgigxt4euhw51"]
 
 [ext_resource type="Script" uid="uid://257uwvphb3uc" path="res://scripts/items/ball_definition.gd" id="1_item"]
+[ext_resource type="Script" uid="uid://bj6k0psydteb8" path="res://scripts/core/speed_tier_table.gd" id="3_05dw7"]
 [ext_resource type="PackedScene" uid="uid://212nmv8i311x" path="res://scenes/balls/old_ball.tscn" id="3_scene"]
+[ext_resource type="Script" uid="uid://biro0uh4dcwbj" path="res://scripts/core/speed_tier.gd" id="4_idlrb"]
+
+[sub_resource type="Resource" id="Resource_w0o1v"]
+script = ExtResource("4_idlrb")
+floor_fraction = 0.5
+ceiling_fraction = 0.8
+metadata/_custom_type_script = "uid://biro0uh4dcwbj"
+
+[sub_resource type="Resource" id="Resource_rjybp"]
+script = ExtResource("3_05dw7")
+tiers = Array[ExtResource("4_idlrb")]([SubResource("Resource_w0o1v")])
+metadata/_custom_type_script = "uid://bj6k0psydteb8"
 
 [resource]
 script = ExtResource("1_item")
@@ -9,3 +22,4 @@ key = "old_ball"
 display_name = "Old Ball"
 scene = ExtResource("3_scene")
 max_level = 10
+speed_tiers = SubResource("Resource_rjybp")

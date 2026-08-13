@@ -74,6 +74,9 @@ var play_state: PlayState = PlayState.PLAY_NORMAL
 ## Stats snapshot from the BallDefinition the reconciler spawned this ball from; unset for a keyless ball.
 var stats: BaseBallStats
 
+## Speed-tier ladder defining the ball's speed progression
+var speed_tiers: SpeedTierTable
+
 # Throttle state for speed_changed emission; inlined from the deleted BallSpeedEmitTracker.
 var _last_speed := 0.0
 var _last_min := 0.0
@@ -87,11 +90,11 @@ var _suppress_miss_detection: bool = false
 
 
 func _ready() -> void:
-	ball_world_max_speed = GameRules.BALL_WORLD_MAX_SPEED
 	var resolved_stats: BaseBallStats = get_stats()
 	min_speed = resolved_stats.ball_speed_min
 	max_speed = resolved_stats.ball_speed_max
 	speed_increment = resolved_stats.ball_speed_increment
+	ball_world_max_speed = minf(max_speed, GameRules.BALL_WORLD_MAX_SPEED)
 	speed = clampf(speed, tier_floor, tier_ceiling)
 	refresh_scaled_speed()
 
@@ -278,9 +281,9 @@ func increase_speed() -> void:
 	_apply_speed()
 
 
-# Crossing a tier ceiling steps up a rung; the top tier has no rung above it, so speed plateaus there.
+# Crossing a tier ceiling advances to the next, plateaus at max tier.
 func advance_tier() -> void:
-	var is_top_tier: bool = current_tier >= GameRules.speed_tiers.tier_count() - 1
+	var is_top_tier: bool = current_tier >= get_speed_tiers().tier_count() - 1
 
 	if is_top_tier:
 		speed = tier_ceiling
@@ -294,7 +297,7 @@ func advance_tier() -> void:
 
 
 func _tier_fraction(field: String) -> float:
-	var tier: SpeedTier = GameRules.speed_tiers.get_tier(current_tier)
+	var tier: SpeedTier = get_speed_tiers().get_tier(current_tier)
 	if tier == null:
 		return 0.0
 
@@ -387,8 +390,11 @@ func _on_grab_area_grabbed(_area: GrabArea) -> void:
 	grabbed.emit(self)
 
 
-## Ball-scoped stats when the spawner injected one via `stats`; the shared default otherwise
-## (unadopted balls, test stubs, and definitions whose .tres omits a `stats` line, where the
-## script's initialiser does not run).
+# Get stats or base stats if not defined.
 func get_stats() -> BaseBallStats:
 	return stats if stats != null else GameRules.base
+
+
+# Get speed tiers or base tiers if not defined.
+func get_speed_tiers() -> SpeedTierTable:
+	return speed_tiers if speed_tiers != null else GameRules.speed_tiers
