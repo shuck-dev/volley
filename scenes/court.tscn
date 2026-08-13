@@ -111,6 +111,7 @@ position = Vector2(700, 0)
 position = Vector2(-700, 0)
 
 [node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
+visible = false
 z_index = -50
 position = Vector2(-486, 179.79999)
 reconciler = NodePath("../BallReconciler")
@@ -201,7 +202,8 @@ reconciler = NodePath("../BallReconciler")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="VenueDropTarget" unique_id=509177813]
 shape = SubResource("RectangleShape2D_venue_drop")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1380904385]
+[node name="BallBoxExample" type="Sprite2D" parent="." unique_id=1380904385]
+visible = false
 position = Vector2(-220.91, 139.535)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("20_revm4")
