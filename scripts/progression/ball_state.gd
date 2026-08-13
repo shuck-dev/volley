@@ -9,8 +9,7 @@ var ball_placement: Dictionary[String, int] = {}
 ## Last in-play position for every non-STORED ball; STORED reconstructs from ball_slot.
 var ball_positions: Dictionary[String, Vector2] = {}
 
-## Slot index per ball, meaningful only while STORED (rack slot) or IN_KIT (kit slot); the two
-## spaces never overlap for one ball since STORED and IN_KIT are mutually exclusive placements.
+## Slot index per ball, meaningful only while STORED (rack slot) or IN_KIT (kit slot).
 var ball_slot: Dictionary[String, int] = {}
 
 ## World position per ball, meaningful only while LOOSE_IN_VENUE.

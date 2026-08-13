@@ -86,9 +86,7 @@ func get_placement(ball_key: String) -> int:
 	return _get_placement(ball_key)
 
 
-## True when the item's placement is LOOSE_IN_VENUE (a loose body sits on the venue floor).
-## Unlike get_placement, tolerates an unregistered ball (false) since mark_loose_in_venue is
-## itself how a ball's first placement gets recorded.
+## True when the item's placement is LOOSE_IN_VENUE; tolerates an unregistered ball (false).
 func is_loose_in_venue(ball_key: String) -> bool:
 	return state.ball_placement.get(ball_key, -1) == Placement.LOOSE_IN_VENUE
 
@@ -134,9 +132,7 @@ func reassign_rack_slot(ball_key: String) -> void:
 	_assign_rack_slot(ball_key)
 
 
-## Picks the lowest free slot index among STORED items and records it. Rack and Kit slots share
-## `ball_slot`, so only entries currently placed STORED count toward "used" here.
-## Idempotent: an item with an existing assignment keeps it. Survivors of a pop never reshuffle.
+## Picks the lowest free slot index among STORED items (ball_slot is shared with Kit) and records it.
 func _assign_rack_slot(ball_key: String) -> void:
 	if state.ball_slot.has(ball_key) and state.ball_placement.get(ball_key, -1) == Placement.STORED:
 		return
@@ -383,9 +379,7 @@ func _set_level(ball_key: String, level: int) -> void:
 	item_level_changed.emit(ball_key)
 
 
-## Sets `ball_key`'s placement and owns the one payload field that placement uses, clearing the
-## others so a ball never carries a stale slot/position from whatever it used to be.
-## `slot_index` targets a specific Kit slot; STORED always auto-assigns the lowest free rack slot.
+## Sets `ball_key`'s placement, owning and clearing whichever payload field (slot/position) applies.
 func _set_item_placement(
 	ball_key: String, placement: int, venue_position: Vector2 = Vector2.ZERO, slot_index: int = -1
 ) -> void:

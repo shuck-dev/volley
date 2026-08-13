@@ -24,8 +24,7 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
-## Callable invoked just before each disk write so live ball positions are
-## captured into the items slice. Empty when unset.
+## Callable invoked just before each disk write to capture live ball positions. Empty when unset.
 var _position_provider: Callable = Callable()
 
 
