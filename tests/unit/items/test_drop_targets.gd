@@ -16,7 +16,7 @@ func after_each() -> void:
 	await get_tree().process_frame
 
 
-func test_nested_target_accepts_at_its_on_screen_position() -> void:
+func test_rack_target_never_accepts_a_drop() -> void:
 	var manager: Node = BallFactory.create_manager(self)
 	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
 	manager.items.assign([ball] as Array[BallDefinition])
@@ -32,47 +32,10 @@ func test_nested_target_accepts_at_its_on_screen_position() -> void:
 	target.add_child(shape)
 	rack.add_child(target)
 
-	assert_true(
+	assert_false(
 		target.can_accept("ball_alpha", Vector2(-446, 180), BallTestHelpers.collision_shape),
-		"a release over the rack's own shape should land on it",
+		"a release over the rack's own shape is still rejected while the rack is disabled",
 	)
-	assert_false(
-		target.can_accept("ball_alpha", Vector2.ZERO, BallTestHelpers.collision_shape),
-		"the world origin is nowhere near the rack, so nothing should drop there",
-	)
-
-
-func test_rotated_target_accepts_along_its_turned_edge() -> void:
-	var manager: Node = BallFactory.create_manager(self)
-	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[BallDefinition])
-
-	var target: RackDropTarget = RackDropTargetScript.new()
-	target.ball_manager = manager
-	target.rotation = PI / 2
-	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(400, 100)))
-	add_child_autofree(target)
-
-	assert_true(
-		target.can_accept("ball_alpha", Vector2(0, 180), BallTestHelpers.collision_shape),
-		"the long edge turned upright, so a point far along Y is inside",
-	)
-	assert_false(
-		target.can_accept("ball_alpha", Vector2(180, 0), BallTestHelpers.collision_shape),
-		"the short edge now runs along X, so the same distance out is outside",
-	)
-
-
-func test_rack_target_accepts_known_item() -> void:
-	var manager: Node = BallFactory.create_manager(self)
-	var ball: BallDefinition = BallTestHelpers.make_ball_item("ball_alpha")
-	manager.items.assign([ball] as Array[BallDefinition])
-	var target: RackDropTarget = RackDropTargetScript.new()
-	target.ball_manager = manager
-	target.position = Vector2(-500, 0)
-	target.add_child(BallTestHelpers.attach_rect_shape(Vector2(200, 100)))
-	add_child_autofree(target)
-	assert_true(target.can_accept("ball_alpha", Vector2(-500, 0), BallTestHelpers.collision_shape))
 
 
 func test_venue_target_accepts_inside_venue_bounds() -> void:

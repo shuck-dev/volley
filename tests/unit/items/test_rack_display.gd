@@ -46,7 +46,7 @@ func _make_rack(manager: Node) -> Node2D:
 	return rack
 
 
-func test_rack_scene_drop_target_accepts_drop() -> void:
+func test_rack_scene_drop_target_never_accepts_a_drop() -> void:
 	var ball := _make_item("ball_alpha")
 	var manager: Node = _make_manager_with([ball])
 
@@ -60,11 +60,11 @@ func test_rack_scene_drop_target_accepts_drop() -> void:
 
 	add_child_autofree(ball_rack_instance)
 
-	assert_true(
+	assert_false(
 		rack_target.can_accept(
 			"ball_alpha", ball_rack_instance.global_position, BallTestHelpers.collision_shape
 		),
-		"ball rack drop target should accept a matching ball at the rack position",
+		"ball rack drop target is disabled and never accepts a drop",
 	)
 
 
@@ -79,20 +79,29 @@ func test_hide_slot_for_hides_only_the_matching_item() -> void:
 	manager.take(beta.key)
 	var alpha_key: String = "ball_alpha_1"
 	var beta_key: String = "ball_beta_1"
+	manager.deactivate(alpha_key)
+	manager.deactivate(beta_key)
 	await get_tree().process_frame
 
 	rack.refresh()
 	await get_tree().process_frame
 	rack.hide_slot_for(alpha_key)
 
+	var checked_alpha := false
+	var checked_beta := false
 	for child in rack.slot_container.get_children():
 		if not (child is Node2D) or not String(child.name).begins_with("Slot_"):
 			continue
 		var key: String = child.get_meta(&"ball_key", "")
 		if key == alpha_key:
 			assert_false(child.visible, "grabbed slot is hidden during the gesture")
+			checked_alpha = true
 		elif key == beta_key:
 			assert_true(child.visible, "non-grabbed slots stay visible")
+			checked_beta = true
+
+	assert_true(checked_alpha, "precondition: alpha's slot was found and checked")
+	assert_true(checked_beta, "precondition: beta's slot was found and checked")
 
 
 func test_get_slot_position_for_returns_world_position_for_known_key() -> void:
@@ -148,8 +157,9 @@ func test_owned_items_show_on_the_rack() -> void:
 	manager.economy.soul_balance = 1000
 	var rack: Node2D = _make_rack(manager)
 	manager.take(ball.key)
-	rack.refresh()
 	var instance_key: String = "ball_alpha_1"
+	manager.deactivate(instance_key)
+	rack.refresh()
 
 	var displayed: Array[String] = rack.get_displayed_keys()
 	assert_eq(displayed.size(), 1, "rack should show the owned item after take and refresh")
@@ -164,6 +174,7 @@ func test_grab_removes_item_from_the_rack() -> void:
 	var rack: Node2D = _make_rack_with_reconciler(manager, reconciler)
 	manager.take(ball.key)
 	var instance_key := "ball_alpha_1"
+	manager.deactivate(instance_key)
 	reconciler._create_stored(instance_key, Vector2.ZERO)
 	rack.refresh()
 

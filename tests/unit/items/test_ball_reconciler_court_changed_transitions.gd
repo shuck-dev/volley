@@ -63,6 +63,7 @@ func _ball_count() -> int:
 
 func test_flag_on_on_court_true_transitions_stored_ball_to_play() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha_1")
 	await get_tree().process_frame
 
 	var stored: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -110,6 +111,7 @@ func test_flag_on_on_court_false_transitions_play_ball_to_stored() -> void:
 
 func test_flag_on_round_trip_stored_play_stored_keeps_single_instance() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha_1")
 	await get_tree().process_frame
 	var instance_id := _reconciler.get_ball_for_key("ball_alpha").get_instance_id()
 	var removed_baseline: int = _ball_removed_count
@@ -130,6 +132,7 @@ func test_flag_on_round_trip_stored_play_stored_keeps_single_instance() -> void:
 
 func test_bring_into_play_reuses_out_rest_ball_via_enter_play() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha")
 	await get_tree().process_frame
 	# Start at rest so reuse must transition; release_into_rest lands an OUT_REST Ball under the same key.
 	var rested: Ball = _reconciler.release_into_rest("ball_alpha", Vector2(50, 50), Vector2.ZERO)

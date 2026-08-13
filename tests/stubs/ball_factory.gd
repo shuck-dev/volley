@@ -14,11 +14,11 @@ static func create_manager(gut_test: GutTest, ball_key: String = "test_speed") -
 	return manager
 
 
-## Gives the test manager an owned item at `level`; assigns the rack slot when STORED.
+## Gives the test manager an owned item at `level`, placed STORED with a rack slot assigned.
 ## Replaces the `state.ball_levels[key] = 1` poke that bypasses placement seams.
 static func give(manager: Node, ball_key: String, level: int = 1) -> void:
 	manager.state.ball_levels[ball_key] = level
-	manager._assign_rack_slot(ball_key)
+	manager._set_item_placement(ball_key, Placement.STORED)
 
 
 static func create(ball_key: String) -> BallDefinition:
