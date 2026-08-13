@@ -320,9 +320,9 @@ func remove_level(ball_key: String) -> void:
 		_set_level(ball_key, new_level)
 
 		if current_level - 1 == 0:
-			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
-			_set_item_placement(ball_key, Placement.STORED)
+			state.ball_placement.erase(ball_key)
 			state.ball_slot.erase(ball_key)
+			state.ball_venue_position.erase(ball_key)
 	ball_manager_state_changed.emit()
 
 
