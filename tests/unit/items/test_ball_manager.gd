@@ -320,6 +320,7 @@ class TestKitItems:
 
 	func test_add_to_kit_releases_the_rack_slot() -> void:
 		_manager.take("kit_ball")
+		_manager.deactivate("kit_ball_1")
 		assert_eq(
 			_manager.get_rack_slot_index("kit_ball_1"), 0, "precondition: stored item has a slot"
 		)

@@ -73,42 +73,39 @@ func get_level(ball_key: String) -> int:
 	return max(max_level, get_owned_count(ball_key))
 
 
-## Returns the current placement of an item.
+## Returns the current placement of an item. Every owned item has exactly one entry.
 func _get_placement(ball_key: String) -> int:
-	if state.loose_in_venue.has(ball_key):
-		return Placement.LOOSE_IN_VENUE
-
 	assert(
-		state.ball_placements.has(ball_key), "BallManager: no placement recorded for %s" % ball_key
+		state.ball_placement.has(ball_key), "BallManager: no placement recorded for %s" % ball_key
 	)
-	return state.ball_placements.get(ball_key, Placement.LOOSE_IN_VENUE)
+	return state.ball_placement.get(ball_key, Placement.LOOSE_IN_VENUE)
 
 
-## Returns the current placement; STORED, ON_COURT, or LOOSE_IN_VENUE.
+## Returns the current placement; STORED, ON_COURT, LOOSE_IN_VENUE, or IN_KIT.
 func get_placement(ball_key: String) -> int:
 	return _get_placement(ball_key)
 
 
-## True when a loose body for this item exists on the venue floor.
+## True when the item's placement is LOOSE_IN_VENUE (a loose body sits on the venue floor).
+## Unlike get_placement, tolerates an unregistered ball (false) since mark_loose_in_venue is
+## itself how a ball's first placement gets recorded.
 func is_loose_in_venue(ball_key: String) -> bool:
-	return state.loose_in_venue.has(ball_key)
+	return state.ball_placement.get(ball_key, -1) == Placement.LOOSE_IN_VENUE
 
 
 ## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.
 func mark_loose_in_venue(ball_key: String, position: Vector2 = Vector2.ZERO) -> void:
-	if state.loose_in_venue.has(ball_key):
-		state.loose_in_venue[ball_key] = position
+	if is_loose_in_venue(ball_key):
+		state.ball_venue_position[ball_key] = position
 		return
-	state.loose_in_venue[ball_key] = position
-	item_placement_changed.emit(ball_key, Placement.LOOSE_IN_VENUE)
+	_set_item_placement(ball_key, Placement.LOOSE_IN_VENUE, position)
 
 
-## Clears the loose-in-venue entry. Idempotent. Emits item_placement_changed with the underlying placement.
+## Restores a loose item to the rack. Idempotent. Emits item_placement_changed.
 func clear_loose_in_venue(ball_key: String) -> void:
-	if not state.loose_in_venue.has(ball_key):
+	if not is_loose_in_venue(ball_key):
 		return
-	state.loose_in_venue.erase(ball_key)
-	item_placement_changed.emit(ball_key, _get_placement(ball_key))
+	_set_item_placement(ball_key, Placement.STORED)
 
 
 ## True when an item is currently placed on the court, false on the rack or loose in venue.
@@ -116,17 +113,19 @@ func is_on_court(ball_key: String) -> bool:
 	return _get_placement(ball_key) == Placement.ON_COURT
 
 
-## Slot index assigned to `ball_key` while STORED; -1 when not stored.
+## Slot index assigned to `ball_key` while STORED; -1 when not stored (including unowned keys).
 func get_rack_slot_index(ball_key: String) -> int:
-	return state.rack_slot_index_by_key.get(ball_key, -1)
+	if state.ball_placement.get(ball_key, -1) != Placement.STORED:
+		return -1
+	return state.ball_slot.get(ball_key, -1)
 
 
 ## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
 ## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
 func release_rack_slot(ball_key: String) -> void:
-	if not state.rack_slot_index_by_key.has(ball_key):
+	if not state.ball_slot.has(ball_key):
 		return
-	state.rack_slot_index_by_key.erase(ball_key)
+	state.ball_slot.erase(ball_key)
 	rack_slots_changed.emit()
 
 
@@ -135,21 +134,23 @@ func reassign_rack_slot(ball_key: String) -> void:
 	_assign_rack_slot(ball_key)
 
 
-## Picks the lowest free slot index among STORED items and records it.
+## Picks the lowest free slot index among STORED items and records it. Rack and Kit slots share
+## `ball_slot`, so only entries currently placed STORED count toward "used" here.
 ## Idempotent: an item with an existing assignment keeps it. Survivors of a pop never reshuffle.
 func _assign_rack_slot(ball_key: String) -> void:
-	if state.rack_slot_index_by_key.has(ball_key):
+	if state.ball_slot.has(ball_key) and state.ball_placement.get(ball_key, -1) == Placement.STORED:
 		return
 
 	var used: Dictionary = {}
-	for key: String in state.rack_slot_index_by_key:
-		used[state.rack_slot_index_by_key[key]] = true
+	for key: String in state.ball_slot:
+		if state.ball_placement.get(key, -1) == Placement.STORED:
+			used[state.ball_slot[key]] = true
 
 	var candidate: int = 0
 	while used.has(candidate):
 		candidate += 1
 
-	state.rack_slot_index_by_key[ball_key] = candidate
+	state.ball_slot[ball_key] = candidate
 	rack_slots_changed.emit()
 
 
@@ -183,15 +184,17 @@ func get_kit_items() -> Array[String]:
 	return result
 
 
-## Kit slot index assigned to `ball_key` while IN_KIT; -1 when not kitted.
+## Kit slot index assigned to `ball_key` while IN_KIT; -1 when not kitted (including unowned keys).
 func get_kit_slot_index(ball_key: String) -> int:
-	return state.kit_slot_index_by_key.get(ball_key, -1)
+	if state.ball_placement.get(ball_key, -1) != Placement.IN_KIT:
+		return -1
+	return state.ball_slot.get(ball_key, -1)
 
 
 ## The owned item occupying `slot_index`, or "" when that Kit slot is empty.
 func get_ball_in_kit_slot(slot_index: int) -> String:
-	for key: String in state.kit_slot_index_by_key:
-		if state.kit_slot_index_by_key[key] == slot_index:
+	for key: String in get_kit_items():
+		if state.ball_slot.get(key, -1) == slot_index:
 			return key
 	return ""
 
@@ -224,8 +227,7 @@ func add_to_kit(ball_key: String, slot_index: int) -> bool:
 	if occupant != "" and occupant != ball_key:
 		return false
 
-	state.kit_slot_index_by_key[ball_key] = slot_index
-	_set_item_placement(ball_key, Placement.IN_KIT)
+	_set_item_placement(ball_key, Placement.IN_KIT, Vector2.ZERO, slot_index)
 
 	return true
 
@@ -235,8 +237,6 @@ func remove_from_kit(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false
 
-	state.kit_slot_index_by_key.erase(ball_key)
-	reassign_rack_slot(ball_key)
 	_set_item_placement(ball_key, Placement.STORED)
 
 	return true
@@ -326,8 +326,7 @@ func remove_level(ball_key: String) -> void:
 		if current_level - 1 == 0:
 			# Fully removed: clear placement so the freed slot is released and no live ball lingers.
 			_set_item_placement(ball_key, Placement.STORED)
-			state.rack_slot_index_by_key.erase(ball_key)
-			state.kit_slot_index_by_key.erase(ball_key)
+			state.ball_slot.erase(ball_key)
 	ball_manager_state_changed.emit()
 
 
@@ -338,9 +337,7 @@ func _register_existing_items() -> void:
 		var item := _get_item(key)
 		if item == null:
 			continue
-		if not state.rack_slot_index_by_key.has(key):
-			_assign_rack_slot(key)
-		if not state.ball_placements.has(key) and not state.loose_in_venue.has(key):
+		if not state.ball_placement.has(key):
 			mark_loose_in_venue(key)
 
 		SaveManager.save()
@@ -386,23 +383,28 @@ func _set_level(ball_key: String, level: int) -> void:
 	item_level_changed.emit(ball_key)
 
 
-func _set_item_placement(ball_key: String, placement: int) -> void:
-	var previous: int = state.ball_placements.get(ball_key, Placement.STORED)
+## Sets `ball_key`'s placement and owns the one payload field that placement uses, clearing the
+## others so a ball never carries a stale slot/position from whatever it used to be.
+## `slot_index` targets a specific Kit slot; STORED always auto-assigns the lowest free rack slot.
+func _set_item_placement(
+	ball_key: String, placement: int, venue_position: Vector2 = Vector2.ZERO, slot_index: int = -1
+) -> void:
+	var previous: int = state.ball_placement.get(ball_key, -1)
 
-	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
-	# and a placed item never leaks one, regardless of whether the placement value moved.
+	state.ball_placement[ball_key] = placement
+	state.ball_venue_position.erase(ball_key)
+	state.ball_slot.erase(ball_key)
+
 	if placement == Placement.STORED:
-		state.ball_placements[ball_key] = placement
-		state.loose_in_venue.erase(ball_key)
 		_assign_rack_slot(ball_key)
-	else:
-		state.ball_placements[ball_key] = placement
-		state.loose_in_venue.erase(ball_key)
-		state.rack_slot_index_by_key.erase(ball_key)
+	elif placement == Placement.IN_KIT:
+		state.ball_slot[ball_key] = slot_index
+	elif placement == Placement.LOOSE_IN_VENUE:
+		state.ball_venue_position[ball_key] = venue_position
 
 	ball_manager_state_changed.emit()
 
-	if previous == placement and not state.loose_in_venue.has(ball_key):
+	if previous == placement:
 		return
 
 	item_placement_changed.emit(ball_key, placement)
@@ -439,7 +441,6 @@ func generate_instance_key(base_key: String) -> String:
 
 func register_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
-	_assign_rack_slot(ball_key)
 	mark_loose_in_venue(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
@@ -447,6 +448,7 @@ func register_instance(ball_key: String) -> void:
 
 func adopt_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
+	mark_loose_in_venue(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
 

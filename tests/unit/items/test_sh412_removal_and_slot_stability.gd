@@ -64,11 +64,11 @@ func test_removing_one_ball_leaves_the_other_slot_untouched() -> void:
 	_manager.take("ball_beta")
 	var alpha_1 := "ball_alpha_1"
 	var beta_1 := "ball_beta_1"
-	var alpha_slot: int = _manager.get_rack_slot_index(alpha_1)
+	# Round-trip through ON_COURT so the reconciler spawns a live, tracked Ball for alpha.
 	_manager.activate(alpha_1)
-	_manager.activate(beta_1)
 	_manager.deactivate(alpha_1)
 	_manager.deactivate(beta_1)
+	var alpha_slot: int = _manager.get_rack_slot_index(alpha_1)
 
 	_manager.remove_level(beta_1)
 
@@ -88,6 +88,8 @@ func test_surviving_balls_keep_their_slot_indices_after_a_removal() -> void:
 	_manager.take("ball_beta")
 	var alpha_1 := "ball_alpha_1"
 	var beta_1 := "ball_beta_1"
+	_manager.deactivate(alpha_1)
+	_manager.deactivate(beta_1)
 	var alpha_slot: int = _manager.get_rack_slot_index(alpha_1)
 	var beta_slot: int = _manager.get_rack_slot_index(beta_1)
 
@@ -106,6 +108,8 @@ func test_returning_ball_fills_the_lowest_free_slot() -> void:
 	_manager.take("ball_beta")
 	var alpha_1 := "ball_alpha_1"
 	var beta_1 := "ball_beta_1"
+	_manager.deactivate(alpha_1)
+	_manager.deactivate(beta_1)
 	var beta_slot: int = _manager.get_rack_slot_index(beta_1)
 	assert_ne(beta_slot, 0, "precondition: beta's original slot was not the lowest")
 

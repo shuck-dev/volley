@@ -2,54 +2,51 @@ class_name BallState
 extends RefCounted
 
 var ball_levels: Dictionary[String, int] = {}
-var ball_placements: Dictionary[String, int] = {}
 
-## Last in-play position for every non-STORED ball; STORED reconstructs from rack_slot_index_by_key.
+## Placement enum per ball; every owned ball has exactly one entry, exactly one placement at a time.
+var ball_placement: Dictionary[String, int] = {}
+
+## Last in-play position for every non-STORED ball; STORED reconstructs from ball_slot.
 var ball_positions: Dictionary[String, Vector2] = {}
 
 ## PlayState enum per ball so OUT_REST does not re-enter court flow as PLAY_NORMAL on load.
 var ball_play_states: Dictionary[String, int] = {}
 
-## Rack slot index per STORED item; rack owns the slot→world mapping.
-var rack_slot_index_by_key: Dictionary[String, int] = {}
+## Slot index per ball, meaningful only while STORED (rack slot) or IN_KIT (kit slot); the two
+## spaces never overlap for one ball since STORED and IN_KIT are mutually exclusive placements.
+var ball_slot: Dictionary[String, int] = {}
 
-## Kit slot index per IN_KIT item; each Kit slot is its own independent destination.
-var kit_slot_index_by_key: Dictionary[String, int] = {}
-
-## Loose drag-token items keyed by item key, value is their drop position.
-var loose_in_venue: Dictionary[String, Vector2] = {}
+## World position per ball, meaningful only while LOOSE_IN_VENUE.
+var ball_venue_position: Dictionary[String, Vector2] = {}
 
 
 func clear() -> void:
 	ball_levels = {}
-	ball_placements = {}
+	ball_placement = {}
 	ball_positions = {}
 	ball_play_states = {}
-	rack_slot_index_by_key = {}
-	kit_slot_index_by_key = {}
-	loose_in_venue = {}
+	ball_slot = {}
+	ball_venue_position = {}
 
 
 func to_save_dict() -> Dictionary:
 	return {
 		"ball_levels": ball_levels,
-		"ball_placements": ball_placements,
+		"ball_placement": ball_placement,
 		"ball_positions": _serialize_positions(ball_positions),
 		"ball_play_states": ball_play_states,
-		"rack_slot_index_by_key": rack_slot_index_by_key,
-		"kit_slot_index_by_key": kit_slot_index_by_key,
-		"loose_in_venue": _serialize_positions(loose_in_venue),
+		"ball_slot": ball_slot,
+		"ball_venue_position": _serialize_positions(ball_venue_position),
 	}
 
 
 func apply_save_dict(data: Dictionary) -> void:
 	ball_levels = _to_typed_int_dict(data.get("ball_levels", {}))
-	ball_placements = _to_typed_int_dict(data.get("ball_placements", {}))
+	ball_placement = _to_typed_int_dict(data.get("ball_placement", {}))
 	ball_positions = _parse_positions(data.get("ball_positions", {}))
 	ball_play_states = _to_typed_int_dict(data.get("ball_play_states", {}))
-	rack_slot_index_by_key = _to_typed_int_dict(data.get("rack_slot_index_by_key", {}))
-	kit_slot_index_by_key = _to_typed_int_dict(data.get("kit_slot_index_by_key", {}))
-	loose_in_venue = _parse_positions(data.get("loose_in_venue", {}))
+	ball_slot = _to_typed_int_dict(data.get("ball_slot", {}))
+	ball_venue_position = _parse_positions(data.get("ball_venue_position", {}))
 
 
 static func _to_typed_int_dict(raw: Dictionary) -> Dictionary[String, int]:
