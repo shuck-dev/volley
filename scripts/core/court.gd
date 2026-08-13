@@ -88,7 +88,6 @@ func _ready() -> void:
 	ball_system.ball_missed.connect(_on_ball_missed)
 	autoplay_controller.bind_tracker(ball_system)
 	ball_system.ball_tier_advanced.connect(_on_ball_tier_advanced)
-	ball_system.ball_removed.connect(_tier_reward_handler.on_ball_removed)
 	ball_system.register_miss_zone_globally()
 	if ball != null:
 		var pre_set: Ball = ball
@@ -104,7 +103,6 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
-	_tier_reward_handler.bind(_ball_manager)
 	ball_system.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
 
@@ -136,8 +134,7 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(new_tier)
 
 
-func _on_ball_missed(missed_ball: Ball) -> void:
-	_tier_reward_handler.reset_rally(missed_ball)
+func _on_ball_missed(_missed_ball: Ball) -> void:
 	_volley_streak_tracker.record_miss(ball_system.has_ball_in_play())
 
 
