@@ -436,14 +436,12 @@ func generate_instance_key(base_key: String) -> String:
 func register_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
 	mark_loose_in_venue(ball_key)
-	ball_manager_state_changed.emit()
 	SaveManager.save()
 
 
 func adopt_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
 	mark_loose_in_venue(ball_key)
-	ball_manager_state_changed.emit()
 	SaveManager.save()
 
 
