@@ -247,11 +247,10 @@ class TestStoredItems:
 	func test_get_stored_items_is_empty_when_nothing_owned() -> void:
 		assert_eq(_manager.get_stored_items().size(), 0)
 
-	func test_get_stored_items_returns_owned_stored_items() -> void:
+	func test_get_stored_items_excludes_freshly_taken_items() -> void:
 		_manager.take("stored_ball")
-		var stored: Array[String] = _manager.get_stored_items()
-		assert_eq(stored.size(), 1)
-		assert_eq(stored[0], "stored_ball_1")
+		assert_eq(_manager.get_stored_items().size(), 0)
+		assert_true(_manager.is_loose_in_venue("stored_ball_1"))
 
 	func test_get_stored_items_excludes_unowned_items() -> void:
 		assert_eq(_manager.get_level("stored_ball"), 0)

@@ -18,6 +18,7 @@ static func create_manager(gut_test: GutTest, ball_key: String = "test_speed") -
 ## Replaces the `state.ball_levels[key] = 1` poke that bypasses placement seams.
 static func give(manager: Node, ball_key: String, level: int = 1) -> void:
 	manager.state.ball_levels[ball_key] = level
+	manager.state.ball_placements[ball_key] = Placement.STORED
 	manager._assign_rack_slot(ball_key)
 
 

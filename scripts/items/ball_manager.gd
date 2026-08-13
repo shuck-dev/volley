@@ -78,10 +78,10 @@ func _get_placement(ball_key: String) -> int:
 	if state.loose_in_venue.has(ball_key):
 		return Placement.LOOSE_IN_VENUE
 
-	if state.ball_placements.has(ball_key):
-		return state.ball_placements[ball_key]
-
-	return Placement.STORED
+	assert(
+		state.ball_placements.has(ball_key), "BallManager: no placement recorded for %s" % ball_key
+	)
+	return state.ball_placements.get(ball_key, Placement.LOOSE_IN_VENUE)
 
 
 ## Returns the current placement; STORED, ON_COURT, or LOOSE_IN_VENUE.
@@ -338,8 +338,10 @@ func _register_existing_items() -> void:
 		var item := _get_item(key)
 		if item == null:
 			continue
-		if not _is_placed(key) and not state.rack_slot_index_by_key.has(key):
+		if not state.rack_slot_index_by_key.has(key):
 			_assign_rack_slot(key)
+		if not state.ball_placements.has(key) and not state.loose_in_venue.has(key):
+			mark_loose_in_venue(key)
 
 		SaveManager.save()
 
@@ -390,7 +392,7 @@ func _set_item_placement(ball_key: String, placement: int) -> void:
 	# Slot bookkeeping runs even on an unchanged placement so a STORED item always owns a slot
 	# and a placed item never leaks one, regardless of whether the placement value moved.
 	if placement == Placement.STORED:
-		state.ball_placements.erase(ball_key)
+		state.ball_placements[ball_key] = placement
 		state.loose_in_venue.erase(ball_key)
 		_assign_rack_slot(ball_key)
 	else:
@@ -409,10 +411,6 @@ func _set_item_placement(ball_key: String, placement: int) -> void:
 
 	if was_on_court != now_on_court:
 		court_changed.emit(ball_key, now_on_court)
-
-
-func _is_placed(ball_key: String) -> bool:
-	return _get_placement(ball_key) != Placement.STORED
 
 
 func _base_key(ball_key: String) -> String:
@@ -442,6 +440,7 @@ func generate_instance_key(base_key: String) -> String:
 func register_instance(ball_key: String) -> void:
 	state.ball_levels[ball_key] = 1
 	_assign_rack_slot(ball_key)
+	mark_loose_in_venue(ball_key)
 	ball_manager_state_changed.emit()
 	SaveManager.save()
 

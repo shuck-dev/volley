@@ -57,6 +57,8 @@ func _ball_count() -> int:
 func test_populates_stored_balls_for_kit_ball_items() -> void:
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
+	_manager.deactivate("ball_alpha_1")
+	_manager.deactivate("ball_beta_1")
 	await get_tree().process_frame
 
 	var alpha: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -79,6 +81,7 @@ func test_mixed_kit_and_court_population_uses_both_branches() -> void:
 	_manager.take("ball_beta")
 	# Drive ball_alpha onto the court; the existing court branch handles it, kit branch handles ball_beta.
 	_manager.activate("ball_alpha")
+	_manager.deactivate("ball_beta_1")
 	await get_tree().process_frame
 
 	var alpha: Ball = _reconciler.get_ball_for_key("ball_alpha")
@@ -96,7 +99,8 @@ func test_mixed_kit_and_court_population_uses_both_branches() -> void:
 func test_collect_item_positions_skips_stored_balls() -> void:
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
-	_manager.activate("ball_alpha")
+	_manager.activate("ball_alpha_1")
+	_manager.deactivate("ball_beta_1")
 	await get_tree().process_frame
 
 	var positions: Dictionary[String, Vector2] = _reconciler.collect_item_positions()
