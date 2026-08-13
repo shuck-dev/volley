@@ -54,7 +54,6 @@ func _ready() -> void:
 	# Position persistence
 	if _has_save_manager_autoload():
 		SaveManager.set_position_provider(collect_item_positions)
-		SaveManager.set_play_state_provider(collect_ball_play_states)
 
 	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
@@ -76,20 +75,6 @@ func collect_item_positions() -> Dictionary[String, Vector2]:
 		positions[ball.ball_key] = ball.global_position
 
 	return positions
-
-
-## Snapshot of live ball PlayState enums keyed by ball_key.
-func collect_ball_play_states() -> Dictionary[String, int]:
-	var states: Dictionary[String, int] = {}
-	for ball in _balls:
-		if not is_instance_valid(ball):
-			continue
-		if ball.play_state == Ball.PlayState.STORED:
-			continue
-		if ball.ball_key.is_empty():
-			continue
-		states[ball.ball_key] = int(ball.play_state)
-	return states
 
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
