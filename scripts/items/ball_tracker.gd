@@ -219,6 +219,30 @@ func unregister_miss_zone(zone: MissZone) -> void:
 	_miss_zones.erase(zone)
 
 
+## Spawns an temporary Ball, not tracked or saved.
+func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vector2) -> Ball:
+	var ball: Ball = scene.instantiate()
+	ball.arc_height_max = _arc_height_max
+	ball.bound_y = _bound_y
+	ball.is_temporary = true
+
+	add_child(ball)
+
+	ball.global_position = spawn_position
+	ball.linear_velocity = velocity
+
+	_register_ball(ball)
+	return ball
+
+
+## Frees a temporary ball.
+func free_temporary(ball: Ball) -> void:
+	if ball == null or not is_instance_valid(ball) or not ball.is_temporary:
+		return
+	_detach(ball)
+	ball.queue_free()
+
+
 ## Internal: spawns a STORED ball; the rack repositions it to its slot on next refresh.
 func _create_stored(ball_key: String) -> Ball:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
@@ -353,27 +377,3 @@ func _on_ball_missed(ball: Ball) -> void:
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 	ball_tier_advanced.emit(ball, new_tier)
-
-
-## Spawns an temporary Ball, not tracked or saved.
-func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vector2) -> Ball:
-	var ball: Ball = scene.instantiate()
-	ball.arc_height_max = _arc_height_max
-	ball.bound_y = _bound_y
-	ball.is_temporary = true
-
-	add_child(ball)
-
-	ball.global_position = spawn_position
-	ball.linear_velocity = velocity
-
-	_register_ball(ball)
-	return ball
-
-
-## Frees a temporary ball.
-func free_temporary(ball: Ball) -> void:
-	if ball == null or not is_instance_valid(ball) or not ball.is_temporary:
-		return
-	_detach(ball)
-	ball.queue_free()
