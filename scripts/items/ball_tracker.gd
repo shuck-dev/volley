@@ -17,14 +17,10 @@ signal ball_tier_advanced(ball: Ball, new_tier: int)
 ## Vertical gap between stacked balls on spawn.
 const _COURT_BALL_SPAWN_STACK_OFFSET: float = 24.0
 
-## Where a ball mid-rally at last save reappears at boot, restored loose in the venue instead.
-@export var court_ball_spawn: Vector2
-@export var player_paddle: Node2D
+var _bound_y: float
 
-var bound_y: float = 0.0
-
-## Apex ceiling in pixels above the soul bound; Court sets this, then it is passed onto every ball this reconciler spawns.
-var arc_height_max: float = 0.0
+## Apex arc ceiling above the soul bound.
+var _arc_height_max: float
 
 var _ball_manager: BallManager
 var _balls_by_key: Dictionary = {}
@@ -32,6 +28,8 @@ var _initial_reconcile_pending: bool = true
 
 var _balls: Array[Ball] = []
 var _miss_zones: Array[MissZone] = []
+var _player_paddle: Node2D
+var _court_ball_spawn: Vector2
 
 
 func _ready() -> void:
@@ -52,10 +50,18 @@ func configure(ball_manager: Node) -> void:
 
 ## Pulls the scene-derived facts a Court owns: spawn position, apex height, bound, player paddle.
 func set_court(court: Court) -> void:
-	court_ball_spawn = court.court_ball_spawn.global_position
-	arc_height_max = court.arc_height_max
-	bound_y = court.soul_bound.global_position.y
-	player_paddle = court.player_paddle
+	_court_ball_spawn = court.court_ball_spawn.global_position
+	_arc_height_max = court.arc_height_max
+	_bound_y = court.soul_bound.global_position.y
+	_player_paddle = court.player_paddle
+
+
+## Live position of the player paddle, or null when none is set. Ball-domain callers query this
+## instead of holding a paddle reference.
+func get_player_paddle_position() -> Variant:
+	if _player_paddle == null:
+		return null
+	return _player_paddle.global_position
 
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
@@ -197,8 +203,8 @@ func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
 		return
-	new_ball.arc_height_max = arc_height_max
-	new_ball.bound_y = bound_y
+	new_ball.arc_height_max = _arc_height_max
+	new_ball.bound_y = _bound_y
 	_register_ball(new_ball)
 
 
@@ -219,8 +225,8 @@ func unregister_miss_zone(zone: MissZone) -> void:
 func _create_stored(ball_key: String) -> Ball:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	var ball: Ball = definition.scene.instantiate()
-	ball.arc_height_max = arc_height_max
-	ball.bound_y = bound_y
+	ball.arc_height_max = _arc_height_max
+	ball.bound_y = _bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
 	ball.speed_tiers = definition.speed_tiers
@@ -237,8 +243,8 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	var ball: Ball = definition.scene.instantiate()
 
-	ball.arc_height_max = arc_height_max
-	ball.bound_y = bound_y
+	ball.arc_height_max = _arc_height_max
+	ball.bound_y = _bound_y
 	ball.ball_key = ball_key
 	ball.stats = definition.stats
 	ball.speed_tiers = definition.speed_tiers
@@ -247,7 +253,7 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 
 	ball.global_position = spawn_position
 	ball.linear_velocity = initial_velocity
-	ball.bound_y = bound_y
+	ball.bound_y = _bound_y
 
 	_balls_by_key[ball_key] = ball
 
@@ -323,7 +329,7 @@ func _restore_on_court_balls_to_venue() -> void:
 	for stack_index in keys.size():
 		var key: String = keys[stack_index]
 		var position: Vector2 = (
-			court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
+			_court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
 		)
 		_ball_manager.mark_loose_in_venue(key, position)
 		release_into_rest(key, position, Vector2.ZERO)
@@ -401,8 +407,8 @@ func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:
 ## Spawns an temporary Ball, not tracked or saved.
 func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vector2) -> Ball:
 	var ball: Ball = scene.instantiate()
-	ball.arc_height_max = arc_height_max
-	ball.bound_y = bound_y
+	ball.arc_height_max = _arc_height_max
+	ball.bound_y = _bound_y
 	ball.is_temporary = true
 
 	add_child(ball)

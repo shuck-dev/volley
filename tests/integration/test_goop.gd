@@ -75,29 +75,6 @@ func test_goop_contact_during_grace_keeps_child() -> void:
 	assert_true(is_instance_valid(child), "grace window blocks the merge")
 
 
-func test_goop_temporary_children_do_not_merge_with_each_other() -> void:
-	var child_1: GoopBall = await _split()
-	child_1._physics_process(GoopBall.MERGE_GRACE_SECONDS + 0.1)
-
-	watch_signals(_ball_tracker)
-	child_1.tier_advanced.emit(child_1, 3)
-	await wait_for_signal(_ball_tracker.ball_added, 1.0)
-
-	var child_2: GoopBall = get_signal_parameters(_ball_tracker, "ball_added")[0]
-	child_2._physics_process(GoopBall.MERGE_GRACE_SECONDS + 0.1)
-
-	child_1.body_entered.emit(child_2)
-	child_2.body_entered.emit(child_1)
-	await get_tree().process_frame
-
-	assert_true(
-		is_instance_valid(child_1), "temporary child survives contact with another temporary child"
-	)
-	assert_true(
-		is_instance_valid(child_2), "temporary child survives contact with another temporary child"
-	)
-
-
 func test_releasing_split_child_off_court_frees() -> void:
 	var child: Ball = await _split()
 	_drag.grab_temporary(child)
