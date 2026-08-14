@@ -5,15 +5,13 @@ const MERGE_GRACE_SECONDS: float = 0.5
 
 var goop_ball_child: PackedScene = load("res://scenes/balls/goop_ball_child.tscn")
 
-var _reconciler: BallReconciler
+var _reconciler: Node
 var _merge_grace_seconds_left: float = 0.0
 
 
 func _ready() -> void:
 	super._ready()
-
-	# todo: 1200 will be refactored into autoload
-	_reconciler = get_parent() as BallReconciler
+	_reconciler = get_parent()
 
 
 func _physics_process(delta: float) -> void:

@@ -3,17 +3,18 @@ extends DropTarget
 
 ## Accepts releases inside the venue rect, placing the ball loose on the floor rather than in play.
 
-@export var reconciler: BallReconciler
+## Test seam: overrides the BallReconciler autoload with a standalone instance.
+var reconciler: Node
 
 var ball_manager: Node
 var _ball_manager: Node
-var _reconciler: BallReconciler
+var _reconciler: Node
 
 
 func _ready() -> void:
 	super._ready()
 	_ball_manager = ball_manager if ball_manager != null else BallManager
-	_reconciler = reconciler
+	_reconciler = reconciler if reconciler != null else BallReconciler
 
 	add_to_group(&"drop_targets")
 

@@ -6,8 +6,8 @@ signal slot_pressed(ball_key: String, press_position: Vector2)
 const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
 @export var slot_container: Node2D
-## Optional. When set, the rack can source slot art from STORED Balls in the registry (step 7.1+).
-@export var reconciler: BallReconciler
+## Test seam: overrides the BallReconciler autoload with a standalone instance.
+var reconciler: Node
 
 var _ball_manager: BallManager
 var _slots: Array[Node2D] = []
@@ -33,7 +33,7 @@ func configure(ball_manager: Node) -> void:
 
 
 ## Injects a reconciler so the rack can source STORED-ball art from the registry. Test seam.
-func configure_reconciler(p_reconciler: BallReconciler) -> void:
+func configure_reconciler(p_reconciler: Node) -> void:
 	reconciler = p_reconciler
 
 
@@ -112,11 +112,12 @@ func _populate_art_holder(art_holder: Node2D, ball_key: String, definition: Ball
 
 
 func _registered_ball_for(ball_key: String) -> Ball:
-	if reconciler == null:
+	var active_reconciler: Node = reconciler if reconciler != null else BallReconciler
+	if active_reconciler == null:
 		return null
 	# A second stored ball can be left untracked by the reconciler's one-shot reconcile;
 	# back-fill it here so every rendered stored slot is backed by a live, grabbable ball.
-	return reconciler.create_ball_from_key(ball_key)
+	return active_reconciler.create_ball_from_key(ball_key)
 
 
 ## World position of the slot for `ball_key` under the rack's current ordering. Returns Vector2.ZERO if unknown.

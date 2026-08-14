@@ -8,7 +8,7 @@ var _manager: Node
 var _host: Node2D
 var _rack: RackDisplay
 var _drop_target: Area2D
-var _reconciler: BallReconciler
+var _reconciler: Node
 var _drag: ItemDragController
 
 

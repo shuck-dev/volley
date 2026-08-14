@@ -1,4 +1,3 @@
-class_name BallReconciler
 extends Node
 
 ## Live-ball lifecycle owner.
@@ -42,8 +41,6 @@ func configure(ball_manager: Node) -> void:
 
 
 func _ready() -> void:
-	add_to_group(&"ball_trackers")
-
 	if _ball_manager == null:
 		_ball_manager = BallManager
 

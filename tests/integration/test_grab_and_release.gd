@@ -6,7 +6,7 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 var _manager: Node
 var _rack: RackDisplay
 var _drop_target: Area2D
-var _reconciler: BallReconciler
+var _reconciler: Node
 var _drag: ItemDragController
 
 

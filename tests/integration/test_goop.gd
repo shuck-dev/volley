@@ -6,7 +6,7 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const GoopBallScene: PackedScene = preload("res://scenes/balls/goop_ball.tscn")
 
 var _manager: Node
-var _reconciler: BallReconciler
+var _reconciler: Node
 var _goop: GoopBall
 var _drag: ItemDragController
 

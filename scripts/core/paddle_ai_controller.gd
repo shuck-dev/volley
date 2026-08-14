@@ -7,7 +7,6 @@ extends Node
 var ball: Ball
 
 var _enabled := false
-var _tracker: BallReconciler
 
 # --- reaction delay ---
 var _position_buffer: Array[float]
@@ -20,6 +19,14 @@ var _last_ball_direction_x := 0.0
 
 func _ready() -> void:
 	_init_position_buffer()
+
+	BallReconciler.ball_added.connect(_on_tracker_ball_added)
+	BallReconciler.ball_removed.connect(_on_tracker_ball_removed)
+
+	# Route already-tracked balls through the same handler so subclass overrides fire.
+	var existing: Ball = BallReconciler.get_current_ball()
+	if existing != null:
+		_on_tracker_ball_added(existing)
 
 
 func _physics_process(_delta: float) -> void:
@@ -41,31 +48,6 @@ func _physics_process(_delta: float) -> void:
 		_track()
 	else:
 		_drift_to_center()
-
-
-## Replaces Court-mediated `controller.ball = ...` injection; the tracker drives enable/disable lifecycle.
-func bind_tracker(tracker: BallReconciler) -> void:
-	if _tracker == tracker:
-		return
-
-	if _tracker != null:
-		if _tracker.ball_added.is_connected(_on_tracker_ball_added):
-			_tracker.ball_added.disconnect(_on_tracker_ball_added)
-		if _tracker.ball_removed.is_connected(_on_tracker_ball_removed):
-			_tracker.ball_removed.disconnect(_on_tracker_ball_removed)
-
-	_tracker = tracker
-
-	if _tracker == null:
-		return
-
-	_tracker.ball_added.connect(_on_tracker_ball_added)
-	_tracker.ball_removed.connect(_on_tracker_ball_removed)
-
-	# Route already-tracked balls through the same handler so subclass overrides fire.
-	var existing: Ball = _tracker.get_current_ball()
-	if existing != null:
-		_on_tracker_ball_added(existing)
 
 
 ## Enables or disables AI for the paddle. Enabling with no live ball is a silent no-op.
@@ -91,16 +73,14 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 
 ## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	var fallback: Ball = _tracker.get_current_ball() if _tracker != null else null
-	ball = fallback
+	ball = BallReconciler.get_current_ball()
 
 
 ## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
 func _select_tracked_ball() -> Ball:
-	if _tracker == null:
-		return ball
-
-	var best: Ball = _tracker.get_closest_approaching_ball(paddle.position.x, -_court_side_sign())
+	var best: Ball = BallReconciler.get_closest_approaching_ball(
+		paddle.position.x, -_court_side_sign()
+	)
 	return best if best != null else ball
 
 

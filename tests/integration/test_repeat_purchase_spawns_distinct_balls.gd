@@ -6,7 +6,7 @@ const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconci
 const StandardBall: BallDefinition = preload("res://resources/items/standard_ball.tres")
 
 var _manager: Node
-var _reconciler: BallReconciler
+var _reconciler: Node
 var _drag: ItemDragController
 var _item: ShopItem
 

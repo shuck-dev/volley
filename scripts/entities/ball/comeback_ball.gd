@@ -17,14 +17,14 @@ class RescueState:
 ## How fast a rescue turns the ball's heading around, in degrees per second.
 @export var rescue_degrees_per_second: float = 360.0
 
-var _ball_reconciler: BallReconciler
+var _ball_reconciler: Node
 var _rescue_available := true
 var _rescue := RescueState.new()
 
 
 func _ready() -> void:
 	super._ready()
-	_ball_reconciler = get_parent() as BallReconciler
+	_ball_reconciler = get_parent()
 	if not tier_advanced.is_connected(_on_tier_advanced):
 		tier_advanced.connect(_on_tier_advanced)
 

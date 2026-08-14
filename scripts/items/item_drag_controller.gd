@@ -19,11 +19,12 @@ static var _ball_collision_shape: CircleShape2D
 
 @export var rack: RackDisplay
 @export var rack_drop_target: Area2D
-@export var reconciler: BallReconciler
 @export var cursor_overlay: BallDropOverlay
 ## Venue assigns this after _ready (Kit is a Court sibling, not reachable via a scene NodePath).
 @export var kit: BallKit
 
+## Test seam: overrides the BallReconciler autoload with a standalone instance.
+var reconciler: Node
 var _ball_manager: BallManager
 ## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).
 var _held: Node2D = null
@@ -56,7 +57,7 @@ func configure(
 	ball_manager: Node,
 	rack_display: RackDisplay,
 	drop_area: Area2D,
-	ball_reconciler: BallReconciler,
+	ball_reconciler: Node,
 ) -> void:
 	_ball_manager = ball_manager
 	rack = rack_display
@@ -67,6 +68,9 @@ func configure(
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
+
+	if reconciler == null:
+		reconciler = BallReconciler
 
 	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")

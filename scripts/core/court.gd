@@ -11,9 +11,9 @@ signal partner_changed
 @export var arc_height_max: float = 220.0
 
 @export_group("Controllers")
-@export var ball_system: BallReconciler
 @export var autoplay_controller: AutoplayController
 @export var drag_controller: ItemDragController
+@export var ball_rack: RackDisplay
 
 @export_group("Bounds")
 @export var right_wall: StaticBody2D
@@ -26,7 +26,7 @@ signal partner_changed
 @export_group("Scenes")
 @export var player_paddle_scene: PackedScene
 
-## Back-compat handle for tests; standard live-ball set lives on `ball_system`.
+## Back-compat handle for tests; standard live-ball set lives on `BallReconciler`.
 var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
@@ -73,26 +73,20 @@ func _ready() -> void:
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	if ball_system != null:
-		ball_system.spawn_origin = global_position
-
-	if ball_system == null:
-		ball_system = BallReconciler.new()
-		add_child(ball_system)
-
-	ball_system.arc_height_max = arc_height_max
+	BallReconciler.spawn_origin = global_position
+	BallReconciler.arc_height_max = arc_height_max
+	BallReconciler.ball_rack = ball_rack
 	if soul_bound != null:
-		ball_system.bound_y = soul_bound.global_position.y
-	ball_system.player_paddle = player_paddle
-	ball_system.current_ball_changed.connect(_on_current_ball_changed)
-	ball_system.ball_missed.connect(_on_ball_missed)
-	autoplay_controller.bind_tracker(ball_system)
-	ball_system.ball_tier_advanced.connect(_on_ball_tier_advanced)
-	ball_system.register_miss_zone_globally()
+		BallReconciler.bound_y = soul_bound.global_position.y
+	BallReconciler.player_paddle = player_paddle
+	BallReconciler.current_ball_changed.connect(_on_current_ball_changed)
+	BallReconciler.ball_missed.connect(_on_ball_missed)
+	BallReconciler.ball_tier_advanced.connect(_on_ball_tier_advanced)
+	BallReconciler.register_miss_zone_globally()
 	if ball != null:
 		var pre_set: Ball = ball
 		ball = null
-		ball_system.attach(pre_set)
+		BallReconciler.attach(pre_set)
 
 	if ProgressionManager.is_partner_unlocked(_partners.active_partner):
 		_activate_partner()
@@ -103,7 +97,7 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
-	ball_system.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
+	BallReconciler.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
 
 func _on_current_ball_changed(new_ball: Ball) -> void:
@@ -135,7 +129,7 @@ func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:
 
 
 func _on_ball_missed(_missed_ball: Ball) -> void:
-	_volley_streak_tracker.record_miss(ball_system.has_ball_in_play())
+	_volley_streak_tracker.record_miss(BallReconciler.has_ball_in_play())
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
@@ -163,13 +157,11 @@ func _activate_partner() -> void:
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	var current: Ball = ball_system.get_current_ball()
+	var current: Ball = BallReconciler.get_current_ball()
 	if current != null and partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(current)
 
-	ball_system.ball_added.connect(_on_partner_ball_added)
-	if partner_paddle.controller != null:
-		partner_paddle.controller.bind_tracker(ball_system)
+	BallReconciler.ball_added.connect(_on_partner_ball_added)
 
 	if right_wall != null:
 		right_wall.process_mode = Node.PROCESS_MODE_DISABLED
@@ -183,9 +175,7 @@ func _deactivate_partner() -> void:
 		return
 
 	partner_paddle.paddle_hit.disconnect(_on_paddle_hit)
-	if partner_paddle.controller != null:
-		partner_paddle.controller.bind_tracker(null)
-	ball_system.ball_added.disconnect(_on_partner_ball_added)
+	BallReconciler.ball_added.disconnect(_on_partner_ball_added)
 
 	partner_paddle.queue_free()
 	partner_paddle = null

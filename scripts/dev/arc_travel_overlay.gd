@@ -11,7 +11,6 @@ const MAX_ARCS := 3
 
 var dev_visible: bool = false
 
-var _tracker: BallReconciler
 var _ball_arcs: Dictionary = {}  # instance_id keys
 
 
@@ -25,31 +24,6 @@ func _ready() -> void:
 	visible = false
 	add_to_group(&"dev_overlays")
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
-
-	if _tracker != null:
-		_attach_to_tracker()
-	else:
-		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
-
-
-func _exit_tree() -> void:
-	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
-		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-
-
-func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallReconciler
-	if tracker == null:
-		return
-	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-	_tracker = tracker
-	_attach_to_tracker()
-
-
-func _attach_to_tracker() -> void:
-	pass
-
 
 func set_dev_visible(value: bool) -> void:
 	dev_visible = value
@@ -59,11 +33,11 @@ func set_dev_visible(value: bool) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not dev_visible or _tracker == null:
+	if not dev_visible:
 		return
 
 	var live_ids: Array[int] = []
-	for ball: Ball in _tracker.get_balls():
+	for ball: Ball in BallReconciler.get_balls():
 		if not is_instance_valid(ball):
 			continue
 		var id := ball.get_instance_id()
@@ -135,7 +109,7 @@ func _draw() -> void:
 		return
 
 	var live_ball: Ball = null
-	for ball: Ball in _tracker.get_balls():
+	for ball: Ball in BallReconciler.get_balls():
 		if is_instance_valid(ball):
 			live_ball = ball
 			break
