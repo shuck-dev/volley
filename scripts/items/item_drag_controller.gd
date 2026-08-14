@@ -300,13 +300,13 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 	):
 		return true
 
-	# Landing anywhere else drops the Kit placement; the target below handles the rest, same as rack-origin.
-	if _held_origin == &"kit":
-		_ball_manager.remove_from_kit(ball_key)
-
 	var target: DropTarget = find_accepting_target(ball_key, release_position)
 	if target == null:
 		return false
+
+	# Landing anywhere else drops the Kit placement; the target below handles the rest, same as rack-origin.
+	if _held_origin == &"kit":
+		_ball_manager.remove_from_kit(ball_key)
 
 	if target is CourtDropTarget:
 		var velocity: Vector2 = _compute_release_velocity()
@@ -457,6 +457,8 @@ func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: 
 
 ## True when a finalised item sits STORED on the rack (not on court, not loose in the venue).
 func _ended_on_rack(ball_key: String) -> bool:
+	if ball_key.is_empty():
+		return false
 	if _ball_manager.get_placement(ball_key) != Placement.STORED:
 		return false
 	return not _ball_manager.is_loose_in_venue(ball_key)

@@ -49,6 +49,7 @@ func _kit_slot_screen_position() -> Vector2:
 
 func test_releasing_over_a_kit_slot_moves_the_ball_into_the_kit() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha_1")
 	assert_true(_drag.grab_from_rack("ball_alpha_1"))
 	_drag._gesture_below_threshold = false
 
@@ -60,6 +61,7 @@ func test_releasing_over_a_kit_slot_moves_the_ball_into_the_kit() -> void:
 
 func test_kit_slot_hit_takes_priority_over_an_overlapping_world_drop_target() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha_1")
 	assert_true(_drag.grab_from_rack("ball_alpha_1"))
 	_drag._gesture_below_threshold = false
 
@@ -70,15 +72,36 @@ func test_kit_slot_hit_takes_priority_over_an_overlapping_world_drop_target() ->
 	assert_eq(_manager.get_placement("ball_alpha_1"), Placement.IN_KIT)
 
 
-func test_release_falls_through_to_world_targets_when_no_kit_slot_is_hit() -> void:
+func test_release_falls_through_past_the_disabled_rack_to_the_venue() -> void:
 	_manager.take("ball_alpha")
+	_manager.deactivate("ball_alpha_1")
 	assert_true(_drag.grab_from_rack("ball_alpha_1"))
 	_drag._gesture_below_threshold = false
 
 	var accepted: bool = _drag.attempt_release(_drop_target.position, Vector2(-99999, -99999))
 
-	assert_true(accepted, "the world-space rack target should still accept when Kit is not hit")
-	assert_eq(_manager.get_placement("ball_alpha_1"), Placement.STORED)
+	assert_true(accepted, "the release falls through to the venue when Kit is not hit")
+	assert_true(_manager.is_loose_in_venue("ball_alpha_1"))
+
+
+func test_kit_release_denied_everywhere_keeps_the_ball_in_the_kit() -> void:
+	_manager.take("ball_alpha")
+	_manager.add_to_kit("ball_alpha_1", 0)
+	assert_true(_drag.grab_from_kit("ball_alpha_1"))
+	_drag._gesture_below_threshold = false
+
+	var accepted: bool = _drag.attempt_release(Vector2(-999999, -999999), Vector2(-999999, -999999))
+
+	assert_false(accepted, "no target anywhere accepts this release")
+	assert_eq(
+		_manager.get_placement("ball_alpha_1"),
+		Placement.IN_KIT,
+		"a denied release must not mutate placement away from the Kit",
+	)
+	assert_null(
+		_reconciler.get_ball_for_key("ball_alpha_1"),
+		"no ghost ball should be spawned for a still-kitted item",
+	)
 
 
 func test_full_kit_rejects_a_different_ball_and_falls_through() -> void:
@@ -87,6 +110,7 @@ func test_full_kit_rejects_a_different_ball_and_falls_through() -> void:
 	_manager.items.assign([alpha, beta] as Array[BallDefinition])
 	_manager.take("ball_alpha")
 	_manager.take("ball_beta")
+	_manager.deactivate("ball_beta_1")
 	_manager.add_to_kit("ball_alpha_1", 0)
 	assert_eq(_manager.get_kit_items().size(), 1, "precondition: the single Kit slot is full")
 
@@ -95,9 +119,11 @@ func test_full_kit_rejects_a_different_ball_and_falls_through() -> void:
 
 	var accepted: bool = _drag.attempt_release(_drop_target.position, _kit_slot_screen_position())
 
-	assert_true(accepted, "the gesture still resolves via the world-space rack target")
-	assert_eq(
-		_manager.get_placement("ball_beta_1"),
-		Placement.STORED,
+	assert_true(
+		accepted,
+		"the Kit rejects the swap and the release falls through to the venue behind the disabled rack",
+	)
+	assert_true(
+		_manager.is_loose_in_venue("ball_beta_1"),
 		"a full Kit slot must reject a different ball rather than swap it in",
 	)

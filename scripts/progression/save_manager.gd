@@ -24,10 +24,8 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
-## Callables invoked just before each disk write so live runtime state (ball
-## positions and play states) is captured into the items slice. Empty when unset.
+## Callable invoked just before each disk write to capture live ball positions. Empty when unset.
 var _position_provider: Callable = Callable()
-var _play_state_provider: Callable = Callable()
 
 
 func _init(autosave_interval: float = 10.0) -> void:
@@ -114,17 +112,7 @@ func set_position_provider(provider: Callable) -> void:
 	_position_provider = provider
 
 
-## Registers a callable that returns a Dictionary[String, int] of live ball PlayState enum ints.
-func set_play_state_provider(provider: Callable) -> void:
-	_play_state_provider = provider
-
-
 func _capture_live_positions() -> void:
-	_capture_positions()
-	_capture_play_states()
-
-
-func _capture_positions() -> void:
 	if not _position_provider.is_valid():
 		return
 	var live: Variant = _position_provider.call()
@@ -139,20 +127,6 @@ func _capture_positions() -> void:
 		if value is Vector2:
 			typed[str(key)] = value
 	items.ball_positions = typed
-
-
-func _capture_play_states() -> void:
-	if not _play_state_provider.is_valid():
-		return
-	var live: Variant = _play_state_provider.call()
-
-	if not (live is Dictionary):
-		return
-	var typed: Dictionary[String, int] = {}
-
-	for key: Variant in live:
-		typed[str(key)] = int(live[key])
-	items.ball_play_states = typed
 
 
 ## Clears progression and blocks writes until unblock_writes(); call_deferred after reload_current_scene.
