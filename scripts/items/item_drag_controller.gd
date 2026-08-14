@@ -411,13 +411,14 @@ func _cancel_rack_gesture(
 	_finalise_gesture(ball_key, release_position, false)
 
 
-## Freezes the held Ball for its new IN_KIT placement; Kit renders a static icon, not the live body,
-## so the ball just goes inert at its release point instead of following a Kit-slot world position.
+## Kit renders a static icon; releases the ball from tracking before the IN_KIT change reaches BallManager.
 func _park_held_ball_in_kit() -> void:
 	if not (_held is Ball):
 		return
 	_ball_manager.clear_loose_in_venue(_held_key)
 	(_held as Ball).enter_stored()
+	if ball_tracker != null:
+		ball_tracker.release_ball(_held_key)
 
 
 ## Checked before the world-space drop_targets group so a Kit hit takes priority.
@@ -434,18 +435,21 @@ func _try_accept_into_kit(
 	var resolved_screen_position: Vector2 = (
 		screen_position if screen_position != Vector2.INF else _screen_position()
 	)
-	if not kit.try_accept(ball_key, resolved_screen_position):
+	if not kit.can_accept(ball_key, resolved_screen_position):
 		return false
 
 	if has_live_ball:
 		_park_held_ball_in_kit()
+	if not kit.try_accept(ball_key, resolved_screen_position):
+		return false
+
 	_finalise_gesture(ball_key, release_position, false)
 	rack.refresh()
 	return true
 
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
-	# Live-grab path: the Ball survives or was queue_freed by the ball_tracker via court_changed; do not free here.
+	# Live-grab path: the Ball survives the gesture or was freed elsewhere; do not free here.
 	if _held != null and not (_held is Ball):
 		_held.queue_free()
 

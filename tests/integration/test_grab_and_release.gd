@@ -38,7 +38,7 @@ func after_each() -> void:
 func test_grab_live_ball_and_release_over_court_resumes_rally() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
-	var live: Ball = _ball_tracker.get_ball_for_key("ball_alpha")
+	var live: Ball = _ball_tracker.bring_into_play("ball_alpha", Vector2.ZERO, Vector2(200, 0))
 	assert_not_null(live)
 
 	assert_true(_drag.grab_live_ball("ball_alpha"))

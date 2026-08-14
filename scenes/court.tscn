@@ -30,7 +30,7 @@ size = Vector2(1600, 720)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
 size = Vector2(2400, 1440)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn", "court_ball_spawn")]
 script = ExtResource("1_tbgi4")
 arc_height_max = 120.0
 autoplay_controller = NodePath("AutoplayController")
@@ -39,6 +39,7 @@ right_wall = NodePath("Bounds/Right Wall")
 soul_bound = NodePath("Bounds/SoulBound")
 player_spawn = NodePath("PlayerSpawn")
 partner_spawn = NodePath("PartnerSpawn")
+court_ball_spawn = NodePath("CourtBallSpawn")
 player_paddle_scene = ExtResource("9_0tnpc")
 
 [node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]

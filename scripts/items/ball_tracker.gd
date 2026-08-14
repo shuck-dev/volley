@@ -36,9 +36,7 @@ func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
-	_ball_manager.court_changed.connect(_on_court_changed)
-	_ball_manager.ball_manager_state_changed.connect(_reconcile)
-	_ball_manager.item_placement_changed.connect(_on_item_placement_changed)
+	_ball_manager.state_changed.connect(_reconcile)
 
 	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
@@ -260,47 +258,6 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	_register_ball(ball)
 
 	return ball
-
-
-func _on_court_changed(ball_key: String, on_court: bool) -> void:
-	_initial_reconcile_pending = false
-	if on_court:
-		var existing: Ball = get_ball_for_key(ball_key)
-		if (
-			existing != null
-			and (
-				existing.play_state == Ball.PlayState.PLAY_NORMAL
-				or existing.play_state == Ball.PlayState.PLAY_ARC
-			)
-		):
-			return
-		var vel := _ball_manager.get_default_ball_launch_velocity()
-		if existing != null:
-			existing.linear_velocity = vel
-			existing.enter_play()
-		else:
-			# Position is a placeholder; activate()'s caller sets the real position right after.
-			_create_ball(ball_key, Vector2.ZERO, vel)
-		return
-
-	var ball: Ball = get_ball_for_key(ball_key)
-	if ball == null:
-		return
-
-	# The rack repositions this to its slot on next refresh.
-	ball.enter_stored()
-
-
-## A Kit item has no live body; free the one that was tracking it before the placement changed.
-func _on_item_placement_changed(ball_key: String, placement: int) -> void:
-	if placement != Placement.IN_KIT:
-		return
-	var ball: Ball = get_ball_for_key(ball_key)
-	if ball == null:
-		return
-	_balls_by_key.erase(ball_key)
-	_detach(ball)
-	ball.queue_free()
 
 
 func _reconcile() -> void:

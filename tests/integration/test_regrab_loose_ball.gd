@@ -43,7 +43,7 @@ func after_each() -> void:
 func test_regrab_preserves_instance_id() -> void:
 	_manager.take("ball_alpha")
 	_manager.activate("ball_alpha")
-	var live: Ball = _ball_tracker.get_ball_for_key("ball_alpha")
+	var live: Ball = _ball_tracker.bring_into_play("ball_alpha", Vector2.ZERO, Vector2(200, 0))
 	assert_not_null(live, "precondition: an in-play Ball exists")
 	var live_id: int = live.get_instance_id()
 

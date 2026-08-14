@@ -4,11 +4,10 @@ extends Node
 signal soul_balance_changed(balance: int)
 signal item_level_changed(ball_key: String)
 signal item_placement_changed(ball_key: String, placement: int)
-signal court_changed(ball_key: String, on_court: bool)
 ## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
 signal rack_slots_changed
-## Emitted after every rack-state mutation so consumers derive from one signal.
-signal ball_manager_state_changed
+## Emitted after any state mutation (level, placement, or initial load) so consumers derive from one signal.
+signal state_changed
 
 const _ITEM_PATHS: Array[String] = [
 	"res://resources/items/old_ball.tres",
@@ -41,7 +40,7 @@ func _ready() -> void:
 		economy = SaveManager.economy
 
 	_register_existing_items()
-	ball_manager_state_changed.emit()
+	state_changed.emit()
 
 
 ## Default launch velocity for a ball that lacks a player-supplied gesture.
@@ -270,7 +269,7 @@ func purchase(ball_key: String) -> bool:
 	state.ball_levels[ball_key] = new_level
 
 	item_level_changed.emit(ball_key)
-	ball_manager_state_changed.emit()
+	state_changed.emit()
 	SaveManager.save()
 
 	return true
@@ -323,7 +322,7 @@ func remove_level(ball_key: String) -> void:
 			state.ball_placement.erase(ball_key)
 			state.ball_slot.erase(ball_key)
 			state.ball_venue_position.erase(ball_key)
-	ball_manager_state_changed.emit()
+	state_changed.emit()
 
 
 func _register_existing_items() -> void:
@@ -396,17 +395,12 @@ func _set_item_placement(
 	elif placement == Placement.LOOSE_IN_VENUE:
 		state.ball_venue_position[ball_key] = venue_position
 
-	ball_manager_state_changed.emit()
+	state_changed.emit()
 
 	if previous == placement:
 		return
 
 	item_placement_changed.emit(ball_key, placement)
-	var was_on_court := previous == Placement.ON_COURT
-	var now_on_court := placement == Placement.ON_COURT
-
-	if was_on_court != now_on_court:
-		court_changed.emit(ball_key, now_on_court)
 
 
 func _base_key(ball_key: String) -> String:
