@@ -13,7 +13,6 @@ signal partner_changed
 @export_group("Controllers")
 @export var autoplay_controller: AutoplayController
 @export var drag_controller: ItemDragController
-@export var ball_rack: RackDisplay
 
 @export_group("Bounds")
 @export var right_wall: StaticBody2D
@@ -73,7 +72,6 @@ func _ready() -> void:
 
 	BallTracker.spawn_origin = global_position
 	BallTracker.arc_height_max = arc_height_max
-	BallTracker.ball_rack = ball_rack
 	if soul_bound != null:
 		BallTracker.bound_y = soul_bound.global_position.y
 	BallTracker.player_paddle = player_paddle

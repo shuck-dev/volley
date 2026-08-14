@@ -30,12 +30,11 @@ size = Vector2(1600, 720)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
 size = Vector2(2400, 1440)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "ball_rack", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
 arc_height_max = 120.0
 autoplay_controller = NodePath("AutoplayController")
 drag_controller = NodePath("ItemDragController")
-ball_rack = NodePath("BallRack")
 right_wall = NodePath("Bounds/Right Wall")
 soul_bound = NodePath("Bounds/SoulBound")
 player_spawn = NodePath("PlayerSpawn")

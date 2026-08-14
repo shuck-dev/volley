@@ -2,21 +2,17 @@ extends Node
 
 ## Live-ball lifecycle owner.
 
-signal ball_spawned(ball_key: String, ball: Ball)
-
-## Emitted whenever a ball is in play.
+## Ball was moved into play.
 signal ball_added(ball: Ball)
 
-## Emitted whenever a ball leaves play.
+## Ball was removed from play.
 signal ball_removed(ball: Ball)
+
+## Ball was removed from play by a miss.
 signal ball_missed(ball: Ball)
 
+## Ball enters a new speed range
 signal ball_tier_advanced(ball: Ball, new_tier: int)
-
-const PRESERVED_SPEED_NONE: float = -1.0
-
-## Ball-role rack for STORED slot positions.
-@export var ball_rack: RackDisplay
 
 @export var spawn_origin: Vector2 = Vector2.ZERO
 @export var player_paddle: Node2D
@@ -119,12 +115,7 @@ func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -
 
 
 ## Puts a ball into active play on the court.
-func bring_into_play(
-	ball_key: String,
-	spawn_position: Vector2,
-	initial_velocity: Vector2,
-	preserved_speed: float = PRESERVED_SPEED_NONE,
-) -> Ball:
+func bring_into_play(ball_key: String, spawn_position: Vector2, initial_velocity: Vector2) -> Ball:
 	if not _ball_manager.is_on_court(ball_key):
 		_ball_manager.activate(ball_key)
 	var ball: Ball = get_ball_for_key(ball_key)
@@ -132,11 +123,8 @@ func bring_into_play(
 		ball.enter_play()
 		ball.global_position = spawn_position
 		ball.linear_velocity = initial_velocity
-		_apply_preserved_speed(ball, preserved_speed)
 		return ball
-	ball = _create_ball(ball_key, spawn_position, initial_velocity)
-	_apply_preserved_speed(ball, preserved_speed)
-	return ball
+	return _create_ball(ball_key, spawn_position, initial_velocity)
 
 
 func release_ball(ball_key: String) -> Ball:
@@ -150,18 +138,19 @@ func release_ball(ball_key: String) -> Ball:
 	return ball
 
 
-## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist.
+## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist. The rack
+## repositions it to the correct slot on its next refresh.
 func create_ball_from_key(ball_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(ball_key)
 	if existing != null:
 		return existing
-	if ball_rack == null or _ball_manager == null:
+	if _ball_manager == null:
 		return null
 	if _ball_manager.get_level(ball_key) <= 0:
 		return null
 	if _ball_manager.get_rack_slot_index(ball_key) < 0:
 		return null
-	return _create_stored(ball_key, ball_rack.get_slot_position_for(ball_key))
+	return _create_stored(ball_key, _default_spawn_position())
 
 
 func get_balls() -> Array[Ball]:
@@ -245,7 +234,6 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	ball.global_position = spawn_position
 
 	_balls_by_key[ball_key] = ball
-	ball_spawned.emit(ball_key, ball)
 	_register_ball(ball)
 	return ball
 
@@ -268,19 +256,10 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	ball.bound_y = bound_y
 
 	_balls_by_key[ball_key] = ball
-	ball_spawned.emit(ball_key, ball)
 
 	_register_ball(ball)
 
 	return ball
-
-
-func _apply_preserved_speed(ball: Ball, preserved_speed: float) -> void:
-	if preserved_speed < 0.0:
-		return
-	ball.speed = preserved_speed
-	if ball.linear_velocity.length() > 0.0:
-		ball.linear_velocity = ball.linear_velocity.normalized() * preserved_speed
 
 
 func _on_court_changed(ball_key: String, on_court: bool) -> void:
@@ -309,9 +288,8 @@ func _on_court_changed(ball_key: String, on_court: bool) -> void:
 	if ball == null:
 		return
 
+	# The rack repositions this to its slot on next refresh.
 	ball.enter_stored()
-	if ball_rack != null:
-		ball.global_position = ball_rack.get_slot_position_for(ball_key)
 
 
 ## A Kit item has no live body; free the one that was tracking it before the placement changed.
@@ -350,8 +328,6 @@ func _reconcile() -> void:
 
 
 func _reconcile_stored_items() -> void:
-	if ball_rack == null:
-		return
 	for key in _ball_manager.get_stored_items():
 		create_ball_from_key(key)
 
@@ -436,7 +412,6 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 	ball.global_position = spawn_position
 	ball.linear_velocity = velocity
 
-	ball_spawned.emit("", ball)
 	_register_ball(ball)
 	return ball
 

@@ -23,8 +23,9 @@ func before_each() -> void:
 
 	_ball_tracker = BallTrackerScript.new()
 	_ball_tracker.configure(_manager)
-	_ball_tracker.ball_rack = _rack
 	add_child_autofree(_ball_tracker)
+
+	_rack.configure_ball_tracker(_ball_tracker)
 
 	_kit = BallTestHelpers.make_kit(_manager, self, 1)
 	await get_tree().process_frame

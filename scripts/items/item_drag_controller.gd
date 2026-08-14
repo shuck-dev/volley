@@ -85,8 +85,8 @@ func _ready() -> void:
 		drop_completed.connect(_on_drop_completed)
 
 	if ball_tracker != null:
-		if not ball_tracker.ball_spawned.is_connected(_on_tracker_ball_spawned):
-			ball_tracker.ball_spawned.connect(_on_tracker_ball_spawned)
+		if not ball_tracker.ball_added.is_connected(_on_tracker_ball_added):
+			ball_tracker.ball_added.connect(_on_tracker_ball_added)
 
 
 func _process(_delta: float) -> void:
@@ -564,8 +564,9 @@ func _on_kit_slot_pressed(ball_key: String) -> void:
 	kit.refresh.call_deferred()
 
 
-func _on_tracker_ball_spawned(ball_key: String, ball: Ball) -> void:
-	ball.grabbed.connect(_on_live_ball_grabbed.bind(ball_key))
+func _on_tracker_ball_added(ball: Ball) -> void:
+	if not ball.grabbed.is_connected(_on_live_ball_grabbed):
+		ball.grabbed.connect(_on_live_ball_grabbed.bind(ball.ball_key))
 
 
 func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:

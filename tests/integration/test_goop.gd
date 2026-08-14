@@ -41,8 +41,8 @@ func after_each() -> void:
 func _split() -> Ball:
 	watch_signals(_ball_tracker)
 	_goop.tier_advanced.emit(_goop, 2)
-	await wait_for_signal(_ball_tracker.ball_spawned, 1.0)
-	return get_signal_parameters(_ball_tracker, "ball_spawned")[1]
+	await wait_for_signal(_ball_tracker.ball_added, 1.0)
+	return get_signal_parameters(_ball_tracker, "ball_added")[0]
 
 
 func test_tier_advance_spawns_temporary_goop_child() -> void:
@@ -81,9 +81,9 @@ func test_goop_temporary_children_do_not_merge_with_each_other() -> void:
 
 	watch_signals(_ball_tracker)
 	child_1.tier_advanced.emit(child_1, 3)
-	await wait_for_signal(_ball_tracker.ball_spawned, 1.0)
+	await wait_for_signal(_ball_tracker.ball_added, 1.0)
 
-	var child_2: GoopBall = get_signal_parameters(_ball_tracker, "ball_spawned")[1]
+	var child_2: GoopBall = get_signal_parameters(_ball_tracker, "ball_added")[0]
 	child_2._physics_process(GoopBall.MERGE_GRACE_SECONDS + 0.1)
 
 	child_1.body_entered.emit(child_2)

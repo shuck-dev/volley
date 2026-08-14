@@ -102,8 +102,10 @@ func _build_slot(ball_key: String, definition: BallDefinition, slot_position: Ve
 
 ## Slot stays empty when the registry owns a Ball for this key; the Ball renders the art itself.
 func _populate_art_holder(art_holder: Node2D, ball_key: String, definition: BallDefinition) -> void:
-	if _registered_ball_for(ball_key) != null:
+	var registered: Ball = _registered_ball_for(ball_key)
+	if registered != null:
 		art_holder.set_meta(&"source", &"ball")
+		registered.global_position = get_slot_position_for(ball_key)
 		return
 	art_holder.set_meta(&"source", &"definition")
 	var art_instance: Node = definition.scene.instantiate()
