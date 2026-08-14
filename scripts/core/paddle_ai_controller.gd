@@ -23,11 +23,6 @@ func _ready() -> void:
 	BallReconciler.ball_added.connect(_on_tracker_ball_added)
 	BallReconciler.ball_removed.connect(_on_tracker_ball_removed)
 
-	# Route already-tracked balls through the same handler so subclass overrides fire.
-	var existing: Ball = BallReconciler.get_current_ball()
-	if existing != null:
-		_on_tracker_ball_added(existing)
-
 
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
@@ -50,11 +45,8 @@ func _physics_process(_delta: float) -> void:
 		_drift_to_center()
 
 
-## Enables or disables AI for the paddle. Enabling with no live ball is a silent no-op.
+## Enables or disables AI for the paddle. _physics_process no-ops safely with no live ball yet.
 func set_enabled(value: bool) -> void:
-	if value and ball == null:
-		return
-
 	_enabled = value
 
 
@@ -73,7 +65,8 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 
 ## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	ball = BallReconciler.get_current_ball()
+	var remaining: Array[Ball] = BallReconciler.get_balls()
+	ball = remaining.back() if not remaining.is_empty() else null
 
 
 ## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.

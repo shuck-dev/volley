@@ -6,9 +6,6 @@ var ball_levels: Dictionary[String, int] = {}
 ## Placement enum per ball; every owned ball has exactly one entry, exactly one placement at a time.
 var ball_placement: Dictionary[String, int] = {}
 
-## Last in-play position for every non-STORED ball; STORED reconstructs from ball_slot.
-var ball_positions: Dictionary[String, Vector2] = {}
-
 ## Slot index per ball, meaningful only while STORED (rack slot) or IN_KIT (kit slot).
 var ball_slot: Dictionary[String, int] = {}
 
@@ -19,7 +16,6 @@ var ball_venue_position: Dictionary[String, Vector2] = {}
 func clear() -> void:
 	ball_levels = {}
 	ball_placement = {}
-	ball_positions = {}
 	ball_slot = {}
 	ball_venue_position = {}
 
@@ -28,7 +24,6 @@ func to_save_dict() -> Dictionary:
 	return {
 		"ball_levels": ball_levels,
 		"ball_placement": ball_placement,
-		"ball_positions": _serialize_positions(ball_positions),
 		"ball_slot": ball_slot,
 		"ball_venue_position": _serialize_positions(ball_venue_position),
 	}
@@ -37,7 +32,6 @@ func to_save_dict() -> Dictionary:
 func apply_save_dict(data: Dictionary) -> void:
 	ball_levels = _to_typed_int_dict(data.get("ball_levels", {}))
 	ball_placement = _to_typed_int_dict(data.get("ball_placement", {}))
-	ball_positions = _parse_positions(data.get("ball_positions", {}))
 	ball_slot = _to_typed_int_dict(data.get("ball_slot", {}))
 	ball_venue_position = _parse_positions(data.get("ball_venue_position", {}))
 

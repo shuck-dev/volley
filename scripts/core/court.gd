@@ -26,8 +26,6 @@ signal partner_changed
 @export_group("Scenes")
 @export var player_paddle_scene: PackedScene
 
-## Back-compat handle for tests; standard live-ball set lives on `BallReconciler`.
-var ball: Ball
 var player_paddle: Paddle
 var partner_paddle: PartnerPaddle
 
@@ -79,14 +77,9 @@ func _ready() -> void:
 	if soul_bound != null:
 		BallReconciler.bound_y = soul_bound.global_position.y
 	BallReconciler.player_paddle = player_paddle
-	BallReconciler.current_ball_changed.connect(_on_current_ball_changed)
 	BallReconciler.ball_missed.connect(_on_ball_missed)
 	BallReconciler.ball_tier_advanced.connect(_on_ball_tier_advanced)
 	BallReconciler.register_miss_zone_globally()
-	if ball != null:
-		var pre_set: Ball = ball
-		ball = null
-		BallReconciler.attach(pre_set)
 
 	if ProgressionManager.is_partner_unlocked(_partners.active_partner):
 		_activate_partner()
@@ -98,13 +91,6 @@ func _ready() -> void:
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
 	BallReconciler.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
-
-
-func _on_current_ball_changed(new_ball: Ball) -> void:
-	ball = new_ball
-
-	if partner_paddle != null and new_ball != null and partner_paddle.has_method("set_ball"):
-		partner_paddle.set_ball(new_ball)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -156,10 +142,6 @@ func _activate_partner() -> void:
 	add_child(partner_paddle)
 
 	partner_paddle.paddle_hit.connect(_on_paddle_hit)
-
-	var current: Ball = BallReconciler.get_current_ball()
-	if current != null and partner_paddle.has_method("set_ball"):
-		partner_paddle.set_ball(current)
 
 	BallReconciler.ball_added.connect(_on_partner_ball_added)
 

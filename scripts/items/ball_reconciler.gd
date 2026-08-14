@@ -13,8 +13,6 @@ signal ball_missed(ball: Ball)
 
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 
-signal current_ball_changed(ball: Ball)
-
 const PRESERVED_SPEED_NONE: float = -1.0
 
 ## Ball-role rack for STORED slot positions.
@@ -24,6 +22,7 @@ const PRESERVED_SPEED_NONE: float = -1.0
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
+
 ## Apex ceiling in pixels above the soul bound; Court sets this, then it is passed onto every ball this reconciler spawns.
 var arc_height_max: float = 0.0
 
@@ -32,7 +31,6 @@ var _balls_by_key: Dictionary = {}
 var _initial_reconcile_pending: bool = true
 
 var _balls: Array[Ball] = []
-var _current_ball: Ball
 var _miss_zones: Array[MissZone] = []
 
 
@@ -48,30 +46,8 @@ func _ready() -> void:
 	_ball_manager.ball_manager_state_changed.connect(_reconcile)
 	_ball_manager.item_placement_changed.connect(_on_item_placement_changed)
 
-	# Position persistence
-	if _has_save_manager_autoload():
-		SaveManager.set_position_provider(collect_item_positions)
-
 	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
-
-
-## Snapshot of live ball positions keyed by ball_key.
-func collect_item_positions() -> Dictionary[String, Vector2]:
-	var positions: Dictionary[String, Vector2] = {}
-	for ball in _balls:
-		if not is_instance_valid(ball):
-			continue
-
-		if ball.play_state == Ball.PlayState.STORED:
-			continue
-
-		if ball.ball_key.is_empty():
-			continue
-
-		positions[ball.ball_key] = ball.global_position
-
-	return positions
 
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
@@ -224,10 +200,6 @@ func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 	return best
 
 
-func get_current_ball() -> Ball:
-	return _current_ball
-
-
 ## Adopts a ball already in the scene tree.
 func attach(new_ball: Ball) -> void:
 	if new_ball == null or _balls.has(new_ball):
@@ -257,10 +229,6 @@ func register_miss_zone(zone: MissZone) -> void:
 
 func unregister_miss_zone(zone: MissZone) -> void:
 	_miss_zones.erase(zone)
-
-
-func _has_save_manager_autoload() -> bool:
-	return get_tree() != null and get_tree().root.has_node("SaveManager")
 
 
 ## Internal: spawns a STORED ball at a slot position.
@@ -327,7 +295,7 @@ func _on_court_changed(ball_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		var pos := _spawn_position_for(ball_key)
+		var pos := _default_spawn_position()
 		var vel := _ball_manager.get_default_ball_launch_velocity()
 		if existing != null:
 			existing.global_position = pos
@@ -376,7 +344,7 @@ func _reconcile() -> void:
 		for key in _ball_keys():
 			if get_ball_for_key(key) == null:
 				_create_ball(
-					key, _spawn_position_for(key), _ball_manager.get_default_ball_launch_velocity()
+					key, _default_spawn_position(), _ball_manager.get_default_ball_launch_velocity()
 				)
 	_reconcile_stored_items()
 
@@ -404,16 +372,6 @@ func _ball_keys() -> Array[String]:
 	return result
 
 
-## Where a reloaded ball lands so it appears where the player left it.
-func _spawn_position_for(ball_key: String) -> Vector2:
-	if not _has_save_manager_autoload():
-		return _default_spawn_position()
-	var state: BallState = SaveManager.items
-	if state != null and state.ball_positions.has(ball_key):
-		return state.ball_positions[ball_key]
-	return _default_spawn_position()
-
-
 func _get_ball_definition(ball_key: String) -> BallDefinition:
 	for item: BallDefinition in _ball_manager.items:
 		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
@@ -435,19 +393,8 @@ func _detach(old_ball: Ball) -> void:
 		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
 			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
 
-	if _current_ball == old_ball:
-		var fallback: Ball = _balls.back() if not _balls.is_empty() else null
-		_set_current(fallback)
-
 	if was_tracked:
 		ball_removed.emit(old_ball)
-
-
-func _set_current(new_current: Ball) -> void:
-	if _current_ball == new_current:
-		return
-	_current_ball = new_current
-	current_ball_changed.emit(new_current)
 
 
 func _register_ball(ball: Ball) -> void:
@@ -455,9 +402,6 @@ func _register_ball(ball: Ball) -> void:
 		return
 
 	_balls.append(ball)
-
-	if _current_ball == null:
-		_set_current(ball)
 
 	if not ball.missed.is_connected(_on_ball_missed):
 		ball.missed.connect(_on_ball_missed)
