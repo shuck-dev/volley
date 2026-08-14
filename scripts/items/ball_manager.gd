@@ -339,7 +339,7 @@ func _register_existing_items() -> void:
 		SaveManager.save()
 
 
-## Deducts soul for purchasing a ball. The reconciler owns instance key generation
+## Deducts soul for purchasing a ball. The tracker owns instance key generation
 ## and state registration; this only handles economics.
 func take_ball(ball_key: String) -> bool:
 	var item := _get_item(ball_key)

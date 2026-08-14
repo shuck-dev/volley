@@ -37,7 +37,7 @@ func _process(_delta: float) -> void:
 		return
 
 	var live_ids: Array[int] = []
-	for ball: Ball in BallReconciler.get_balls():
+	for ball: Ball in BallTracker.get_balls():
 		if not is_instance_valid(ball):
 			continue
 		var id := ball.get_instance_id()
@@ -109,7 +109,7 @@ func _draw() -> void:
 		return
 
 	var live_ball: Ball = null
-	for ball: Ball in BallReconciler.get_balls():
+	for ball: Ball in BallTracker.get_balls():
 		if is_instance_valid(ball):
 			live_ball = ball
 			break

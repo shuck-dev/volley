@@ -32,7 +32,7 @@ const OUT_REST_CONFIG: BallStateConfig = preload("res://resources/ball/states/ou
 ## Apex ceiling in pixels above the soul bound; injected by Court at attach time.
 @export var arc_height_max: float = 220.0
 
-## Apex-arc threshold y; BallReconciler injects at attach time from the SoulBound marker.
+## Apex-arc threshold y; BallTracker injects at attach time from the SoulBound marker.
 var bound_y: float
 
 var speed := 0.0
@@ -71,7 +71,7 @@ var tier_ceiling: float:
 
 var play_state: PlayState = PlayState.PLAY_NORMAL
 
-## Stats snapshot from the BallDefinition the reconciler spawned this ball from; unset for a keyless ball.
+## Stats snapshot from the BallDefinition the tracker spawned this ball from; unset for a keyless ball.
 var stats: BaseBallStats
 
 ## Speed-tier ladder defining the ball's speed progression

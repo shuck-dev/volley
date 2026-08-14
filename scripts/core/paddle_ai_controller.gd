@@ -20,8 +20,8 @@ var _last_ball_direction_x := 0.0
 func _ready() -> void:
 	_init_position_buffer()
 
-	BallReconciler.ball_added.connect(_on_tracker_ball_added)
-	BallReconciler.ball_removed.connect(_on_tracker_ball_removed)
+	BallTracker.ball_added.connect(_on_tracker_ball_added)
+	BallTracker.ball_removed.connect(_on_tracker_ball_removed)
 
 
 func _physics_process(_delta: float) -> void:
@@ -65,13 +65,13 @@ func _on_tracker_ball_added(new_ball: Ball) -> void:
 
 ## Autoplay is a player intent toggle; transient ball-replacement (grab + drop) must not flip it off.
 func _on_tracker_ball_removed(_old_ball: Ball) -> void:
-	var remaining: Array[Ball] = BallReconciler.get_balls()
+	var remaining: Array[Ball] = BallTracker.get_balls()
 	ball = remaining.back() if not remaining.is_empty() else null
 
 
 ## Soonest-to-arrive in-play approaching ball; signal-bound `ball` when none qualifies.
 func _select_tracked_ball() -> Ball:
-	var best: Ball = BallReconciler.get_closest_approaching_ball(
+	var best: Ball = BallTracker.get_closest_approaching_ball(
 		paddle.position.x, -_court_side_sign()
 	)
 	return best if best != null else ball

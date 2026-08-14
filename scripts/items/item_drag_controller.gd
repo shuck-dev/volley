@@ -23,8 +23,8 @@ static var _ball_collision_shape: CircleShape2D
 ## Venue assigns this after _ready (Kit is a Court sibling, not reachable via a scene NodePath).
 @export var kit: BallKit
 
-## Test seam: overrides the BallReconciler autoload with a standalone instance.
-var reconciler: Node
+## Test seam: overrides the BallTracker autoload with a standalone instance.
+var ball_tracker: Node
 var _ball_manager: BallManager
 ## Held body during a drag gesture (a plain drag-proxy node for rack grabs, Ball for live grabs).
 var _held: Node2D = null
@@ -57,20 +57,20 @@ func configure(
 	ball_manager: Node,
 	rack_display: RackDisplay,
 	drop_area: Area2D,
-	ball_reconciler: Node,
+	tracker: Node,
 ) -> void:
 	_ball_manager = ball_manager
 	rack = rack_display
 	rack_drop_target = drop_area
-	reconciler = ball_reconciler
+	ball_tracker = tracker
 
 
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
-	if reconciler == null:
-		reconciler = BallReconciler
+	if ball_tracker == null:
+		ball_tracker = BallTracker
 
 	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")
@@ -84,9 +84,9 @@ func _ready() -> void:
 	if not drop_completed.is_connected(_on_drop_completed):
 		drop_completed.connect(_on_drop_completed)
 
-	if reconciler != null:
-		if not reconciler.ball_spawned.is_connected(_on_reconciler_ball_spawned):
-			reconciler.ball_spawned.connect(_on_reconciler_ball_spawned)
+	if ball_tracker != null:
+		if not ball_tracker.ball_spawned.is_connected(_on_tracker_ball_spawned):
+			ball_tracker.ball_spawned.connect(_on_tracker_ball_spawned)
 
 
 func _process(_delta: float) -> void:
@@ -165,8 +165,8 @@ func grab_from_rack(ball_key: String) -> bool:
 		return false
 
 	var stored: Ball = null
-	if reconciler != null:
-		stored = reconciler.get_ball_for_key(ball_key)
+	if ball_tracker != null:
+		stored = ball_tracker.get_ball_for_key(ball_key)
 
 	if stored == null:
 		return false
@@ -225,8 +225,8 @@ func grab_live_ball(ball_key: String) -> bool:
 		return false
 
 	var existing: Ball = null
-	if reconciler != null:
-		existing = reconciler.get_ball_for_key(ball_key)
+	if ball_tracker != null:
+		existing = ball_tracker.get_ball_for_key(ball_key)
 
 	if existing == null:
 		return false
@@ -255,7 +255,7 @@ func _adopt_held(node: Node2D, ball_key: String) -> void:
 	_track_cursor_motion(spawn_position)
 
 
-## Grabs a reconciler-temporary ball (e.g. a Goop split child); no BallManager ownership involved.
+## Grabs a ball_tracker-temporary ball (e.g. a Goop split child); no BallManager ownership involved.
 func grab_temporary(ball: Ball) -> bool:
 	if _drag_target() != null or ball == null or not is_instance_valid(ball):
 		return false
@@ -271,9 +271,9 @@ func grab_temporary(ball: Ball) -> bool:
 
 ## Adopts a freshly-purchased instance into the rack; ShopItem calls this after Shop.take().
 func adopt_purchased_into_rack(instance_key: String) -> void:
-	if reconciler == null:
+	if ball_tracker == null:
 		return
-	reconciler.create_ball_from_key(instance_key)
+	ball_tracker.create_ball_from_key(instance_key)
 
 
 ## Returns false on no valid target so the held body stays with the cursor.
@@ -363,9 +363,9 @@ func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -
 func _apply_preserved_speed_after_accept(ball_key: String) -> void:
 	if _held_preserved_speed < 0.0:
 		return
-	if reconciler == null:
+	if ball_tracker == null:
 		return
-	var ball: Ball = reconciler.get_ball_for_key(ball_key)
+	var ball: Ball = ball_tracker.get_ball_for_key(ball_key)
 	if ball == null:
 		return
 	ball.speed = _held_preserved_speed
@@ -398,8 +398,8 @@ func _restore_held_ball_to_stored(ball_key: String) -> void:
 
 
 func _free_temporary_ball(held_ball: Ball) -> void:
-	if reconciler != null:
-		reconciler.free_temporary(held_ball)
+	if ball_tracker != null:
+		ball_tracker.free_temporary(held_ball)
 
 
 ## Cancels a rack-origin gesture back to its source; a click-without-movement is a no-op, not a drop.
@@ -445,7 +445,7 @@ func _try_accept_into_kit(
 
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
-	# Live-grab path: the Ball survives or was queue_freed by the reconciler via court_changed; do not free here.
+	# Live-grab path: the Ball survives or was queue_freed by the ball_tracker via court_changed; do not free here.
 	if _held != null and not (_held is Ball):
 		_held.queue_free()
 
@@ -564,7 +564,7 @@ func _on_kit_slot_pressed(ball_key: String) -> void:
 	kit.refresh.call_deferred()
 
 
-func _on_reconciler_ball_spawned(ball_key: String, ball: Ball) -> void:
+func _on_tracker_ball_spawned(ball_key: String, ball: Ball) -> void:
 	ball.grabbed.connect(_on_live_ball_grabbed.bind(ball_key))
 
 

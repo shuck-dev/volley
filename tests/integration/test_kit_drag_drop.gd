@@ -3,12 +3,12 @@
 extends GutTest
 
 const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_drag_controller.gd")
-const BallReconcilerScript: GDScript = preload("res://scripts/items/ball_reconciler.gd")
+const BallTrackerScript: GDScript = preload("res://scripts/items/ball_tracker.gd")
 
 var _manager: Node
 var _rack: RackDisplay
 var _drop_target: Area2D
-var _reconciler: Node
+var _ball_tracker: Node
 var _drag: ItemDragController
 var _kit: BallKit
 
@@ -21,21 +21,21 @@ func before_each() -> void:
 	_rack = BallTestHelpers.make_rack(_manager, self)
 	_drop_target = BallTestHelpers.make_drop_area(Vector2(-1500, 0), Vector2(300, 200), self)
 
-	_reconciler = BallReconcilerScript.new()
-	_reconciler.configure(_manager)
-	_reconciler.ball_rack = _rack
-	add_child_autofree(_reconciler)
+	_ball_tracker = BallTrackerScript.new()
+	_ball_tracker.configure(_manager)
+	_ball_tracker.ball_rack = _rack
+	add_child_autofree(_ball_tracker)
 
 	_kit = BallTestHelpers.make_kit(_manager, self, 1)
 	await get_tree().process_frame
 
 	_drag = ItemDragControllerScript.new()
-	_drag.configure(_manager, _rack, _drop_target, _reconciler)
+	_drag.configure(_manager, _rack, _drop_target, _ball_tracker)
 	_drag.kit = _kit
 	_drag.connect_kit()
 	add_child_autofree(_drag)
 
-	BallTestHelpers.make_drop_targets(_manager, _reconciler, _drop_target.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, _drop_target.position, self)
 
 
 func after_each() -> void:
@@ -99,7 +99,7 @@ func test_kit_release_denied_everywhere_keeps_the_ball_in_the_kit() -> void:
 		"a denied release must not mutate placement away from the Kit",
 	)
 	assert_null(
-		_reconciler.get_ball_for_key("ball_alpha_1"),
+		_ball_tracker.get_ball_for_key("ball_alpha_1"),
 		"no ghost ball should be spawned for a still-kitted item",
 	)
 

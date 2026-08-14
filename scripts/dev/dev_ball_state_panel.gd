@@ -18,10 +18,10 @@ func _ready() -> void:
 	_add_header()
 	_add_overlay_toggle()
 
-	BallReconciler.ball_added.connect(_on_ball_added)
-	BallReconciler.ball_removed.connect(_on_ball_removed)
+	BallTracker.ball_added.connect(_on_ball_added)
+	BallTracker.ball_removed.connect(_on_ball_removed)
 
-	for ball in BallReconciler.get_balls():
+	for ball in BallTracker.get_balls():
 		_on_ball_added(ball)
 
 

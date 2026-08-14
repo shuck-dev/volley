@@ -17,14 +17,14 @@ class RescueState:
 ## How fast a rescue turns the ball's heading around, in degrees per second.
 @export var rescue_degrees_per_second: float = 360.0
 
-var _ball_reconciler: Node
+var _ball_tracker: Node
 var _rescue_available := true
 var _rescue := RescueState.new()
 
 
 func _ready() -> void:
 	super._ready()
-	_ball_reconciler = get_parent()
+	_ball_tracker = get_parent()
 	if not tier_advanced.is_connected(_on_tier_advanced):
 		tier_advanced.connect(_on_tier_advanced)
 
@@ -48,10 +48,10 @@ func _on_tier_advanced(_ball: Ball, _new_tier: int) -> void:
 
 
 func _attract(delta: float) -> void:
-	if _ball_reconciler == null or _ball_reconciler.player_paddle == null:
+	if _ball_tracker == null or _ball_tracker.player_paddle == null:
 		return
 
-	var to_paddle: Vector2 = _ball_reconciler.player_paddle.global_position - global_position
+	var to_paddle: Vector2 = _ball_tracker.player_paddle.global_position - global_position
 	if to_paddle.length() > attract_range:
 		return
 
@@ -94,10 +94,10 @@ func rescue() -> bool:
 
 ## Sweeping toward the paddle's side means curving down if it's below, up if it's above.
 func _rescue_sweep_sign() -> float:
-	if _ball_reconciler == null or _ball_reconciler.player_paddle == null:
+	if _ball_tracker == null or _ball_tracker.player_paddle == null:
 		return 1.0
 
-	var sign: float = signf(global_position.y - _ball_reconciler.player_paddle.global_position.y)
+	var sign: float = signf(global_position.y - _ball_tracker.player_paddle.global_position.y)
 	return sign if sign != 0.0 else 1.0
 
 

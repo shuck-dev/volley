@@ -6,7 +6,7 @@ extends PaddleAIController
 ## fire again for it, so check directly rather than wait on a signal that has already passed.
 func _ready() -> void:
 	super._ready()
-	if BallReconciler.has_ball_in_play():
+	if BallTracker.has_ball_in_play():
 		set_enabled(true)
 
 

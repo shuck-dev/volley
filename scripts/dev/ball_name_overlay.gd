@@ -17,10 +17,10 @@ func _ready() -> void:
 	visible = false
 	add_to_group(&"dev_overlays")
 
-	BallReconciler.ball_added.connect(_on_ball_added)
-	BallReconciler.ball_removed.connect(_on_ball_removed)
+	BallTracker.ball_added.connect(_on_ball_added)
+	BallTracker.ball_removed.connect(_on_ball_removed)
 
-	for ball in BallReconciler.get_balls():
+	for ball in BallTracker.get_balls():
 		_on_ball_added(ball)
 
 
