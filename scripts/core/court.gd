@@ -21,6 +21,7 @@ signal partner_changed
 @export_group("Spawns")
 @export var player_spawn: Marker2D
 @export var partner_spawn: Marker2D
+@export var court_ball_spawn: Marker2D
 
 @export_group("Scenes")
 @export var player_paddle_scene: PackedScene
@@ -41,8 +42,9 @@ var _hitting_ball: Ball
 
 
 func _ready() -> void:
-	add_to_group(&"courts")
 	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
+	assert(court_ball_spawn != null, "court.gd: court_ball_spawn export must be assigned")
+	assert(soul_bound != null, "court.gd: soul_bound export must be assigned")
 
 	_tier_reward_handler = TierRewardHandler.new()
 	add_child(_tier_reward_handler)
@@ -70,14 +72,9 @@ func _ready() -> void:
 	autoplay_controller.paddle = player_paddle
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 
-	BallTracker.spawn_origin = global_position
-	BallTracker.arc_height_max = arc_height_max
-	if soul_bound != null:
-		BallTracker.bound_y = soul_bound.global_position.y
-	BallTracker.player_paddle = player_paddle
+	BallTracker.set_court(self)
 	BallTracker.ball_missed.connect(_on_ball_missed)
 	BallTracker.ball_tier_advanced.connect(_on_ball_tier_advanced)
-	BallTracker.register_miss_zone_globally()
 
 	if ProgressionManager.is_partner_unlocked(_partners.active_partner):
 		_activate_partner()

@@ -14,7 +14,11 @@ signal ball_missed(ball: Ball)
 ## Ball enters a new speed range
 signal ball_tier_advanced(ball: Ball, new_tier: int)
 
-@export var spawn_origin: Vector2 = Vector2.ZERO
+## Vertical gap between stacked balls on spawn.
+const _COURT_BALL_SPAWN_STACK_OFFSET: float = 24.0
+
+## Where a ball mid-rally at last save reappears at boot, restored loose in the venue instead.
+@export var court_ball_spawn: Vector2
 @export var player_paddle: Node2D
 
 var bound_y: float = 0.0
@@ -30,10 +34,6 @@ var _balls: Array[Ball] = []
 var _miss_zones: Array[MissZone] = []
 
 
-func configure(ball_manager: Node) -> void:
-	_ball_manager = ball_manager
-
-
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
@@ -44,6 +44,18 @@ func _ready() -> void:
 
 	# Deferred so sibling listeners connect before we emit.
 	call_deferred(&"_reconcile")
+
+
+func configure(ball_manager: Node) -> void:
+	_ball_manager = ball_manager
+
+
+## Pulls the scene-derived facts a Court owns: spawn position, apex height, bound, player paddle.
+func set_court(court: Court) -> void:
+	court_ball_spawn = court.court_ball_spawn.global_position
+	arc_height_max = court.arc_height_max
+	bound_y = court.soul_bound.global_position.y
+	player_paddle = court.player_paddle
 
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
@@ -97,13 +109,6 @@ func release_into_rest(ball_key: String, position: Vector2, velocity: Vector2) -
 	return ball
 
 
-## Spawns a purchased ball on the rack.
-func spawn_stored(template_key: String, position: Vector2) -> Ball:
-	var key := _ball_manager.generate_instance_key(template_key)
-	_ball_manager.register_instance(key)
-	return _create_stored(key, position)
-
-
 ## Spawns a ball onto the venue floor.
 func spawn_at_rest(template_key: String, position: Vector2, velocity: Vector2) -> Ball:
 	var key := _ball_manager.generate_instance_key(template_key)
@@ -138,8 +143,7 @@ func release_ball(ball_key: String) -> Ball:
 	return ball
 
 
-## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist. The rack
-## repositions it to the correct slot on its next refresh.
+## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist.
 func create_ball_from_key(ball_key: String) -> Ball:
 	var existing: Ball = get_ball_for_key(ball_key)
 	if existing != null:
@@ -150,7 +154,7 @@ func create_ball_from_key(ball_key: String) -> Ball:
 		return null
 	if _ball_manager.get_rack_slot_index(ball_key) < 0:
 		return null
-	return _create_stored(ball_key, _default_spawn_position())
+	return _create_stored(ball_key)
 
 
 func get_balls() -> Array[Ball]:
@@ -198,15 +202,6 @@ func attach(new_ball: Ball) -> void:
 	_register_ball(new_ball)
 
 
-func register_miss_zone_globally() -> void:
-	for zone in get_tree().get_nodes_in_group(&"miss_zones"):
-		if zone is MissZone and not _miss_zones.has(zone):
-			_miss_zones.append(zone)
-			for tracked in _balls:
-				if is_instance_valid(tracked):
-					tracked.register_miss_zone(zone)
-
-
 func register_miss_zone(zone: MissZone) -> void:
 	if zone == null or _miss_zones.has(zone):
 		return
@@ -220,8 +215,8 @@ func unregister_miss_zone(zone: MissZone) -> void:
 	_miss_zones.erase(zone)
 
 
-## Internal: spawns a STORED ball at a slot position.
-func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
+## Internal: spawns a STORED ball; the rack repositions it to its slot on next refresh.
+func _create_stored(ball_key: String) -> Ball:
 	var definition: BallDefinition = _ball_manager.get_item(ball_key)
 	var ball: Ball = definition.scene.instantiate()
 	ball.arc_height_max = arc_height_max
@@ -231,7 +226,6 @@ func _create_stored(ball_key: String, spawn_position: Vector2) -> Ball:
 	ball.speed_tiers = definition.speed_tiers
 	add_child(ball)
 	ball.enter_stored()
-	ball.global_position = spawn_position
 
 	_balls_by_key[ball_key] = ball
 	_register_ball(ball)
@@ -274,14 +268,13 @@ func _on_court_changed(ball_key: String, on_court: bool) -> void:
 			)
 		):
 			return
-		var pos := _default_spawn_position()
 		var vel := _ball_manager.get_default_ball_launch_velocity()
 		if existing != null:
-			existing.global_position = pos
 			existing.linear_velocity = vel
 			existing.enter_play()
 		else:
-			_create_ball(ball_key, pos, vel)
+			# Position is a placeholder; activate()'s caller sets the real position right after.
+			_create_ball(ball_key, Vector2.ZERO, vel)
 		return
 
 	var ball: Ball = get_ball_for_key(ball_key)
@@ -319,21 +312,26 @@ func _reconcile() -> void:
 
 	if _initial_reconcile_pending:
 		_initial_reconcile_pending = false
-		for key in _ball_keys():
-			if get_ball_for_key(key) == null:
-				_create_ball(
-					key, _default_spawn_position(), _ball_manager.get_default_ball_launch_velocity()
-				)
+		_restore_on_court_balls_to_venue()
 	_reconcile_stored_items()
+
+
+## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
+func _restore_on_court_balls_to_venue() -> void:
+	var keys := _ball_keys().filter(func(key: String) -> bool: return get_ball_for_key(key) == null)
+
+	for stack_index in keys.size():
+		var key: String = keys[stack_index]
+		var position: Vector2 = (
+			court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
+		)
+		_ball_manager.mark_loose_in_venue(key, position)
+		release_into_rest(key, position, Vector2.ZERO)
 
 
 func _reconcile_stored_items() -> void:
 	for key in _ball_manager.get_stored_items():
 		create_ball_from_key(key)
-
-
-func _default_spawn_position() -> Vector2:
-	return spawn_origin
 
 
 func _ball_keys() -> Array[String]:
