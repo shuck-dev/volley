@@ -276,7 +276,6 @@ func _reconcile() -> void:
 	if _initial_reconcile_pending:
 		_initial_reconcile_pending = false
 		_restore_on_court_balls_to_venue()
-	_reconcile_stored_items()
 
 
 ## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
@@ -290,11 +289,6 @@ func _restore_on_court_balls_to_venue() -> void:
 		)
 		_ball_manager.mark_loose_in_venue(key, position)
 		release_into_rest(key, position, Vector2.ZERO)
-
-
-func _reconcile_stored_items() -> void:
-	for key in _ball_manager.get_stored_items():
-		create_ball_from_key(key)
 
 
 func _ball_keys() -> Array[String]:

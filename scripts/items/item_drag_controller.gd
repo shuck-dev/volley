@@ -166,7 +166,7 @@ func grab_from_rack(ball_key: String) -> bool:
 
 	var stored: Ball = null
 	if ball_tracker != null:
-		stored = ball_tracker.get_ball_for_key(ball_key)
+		stored = ball_tracker.create_ball_from_key(ball_key)
 
 	if stored == null:
 		return false
