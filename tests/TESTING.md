@@ -6,28 +6,28 @@ This project uses [GUT 9.x](https://github.com/bitwes/Gut) for testing, run via 
 
 ```
 tests/
-├── unit/           # Single-component tests
-├── integration/    # Multi-component signal chain tests
-└── stubs/          # Minimal fakes for untestable dependencies
+├── unit/           # Pure-logic tests: no Node, no scene tree, no stub
+└── integration/    # Core-loop tests driven through simulated user input
 ```
 
 ## Principles
 
-### Use real instances for game nodes
+### Unit tests are pure logic only
 
-Default to real instances with `add_child_autofree()`. A doubled node has no real behaviour, so a test that drives it through the accept-walk, a physics step, or a signal proves nothing; and a physics node (`Area2D`, `RigidBody2D`) doubled has no geometry, so collision-dependent logic reads empty. Test game logic through the real thing:
+A unit test exercises a function or a `RefCounted`/static class in isolation: math, save-dict round-trips, state-machine transition tables, parsing. No `Node`, no `add_child_autofree()`, no scene tree, no stub, no signal wiring. If the behaviour under test needs a node in the tree to mean anything, it isn't a unit test, it belongs in `tests/integration/` (see below) or it isn't worth automating.
+
+Node-based tests found few real regressions relative to their maintenance cost: they broke on refactors that didn't change behaviour, needed constant stub upkeep, and were slow enough to shape how the suite could grow. The trade favors fewer, sturdier tests over broad node-wiring coverage.
 
 ```gdscript
-var _ball: RigidBody2D
-
-func before_each() -> void:
-	_ball = load("res://scripts/ball.gd").new()
-	add_child_autofree(_ball)
+func test_apex_below_ceiling_returns_arc_bend() -> void:
+	assert_almost_eq(ArcMath.arc_acceleration(300.0, ARC_HEIGHT_MAX), ArcMath.ARC_BEND, 0.001)
 ```
 
-### Only stub what you can't instantiate
+### Integration tests drive core loops through simulated user input
 
-Reach for a stub in `tests/stubs/` only when the real dependency cannot be instantiated with minimal setup: a node that needs a wired-up scene, an autoload, or a partner that records calls. Current stubs are `paddle_stub`, `ball_stub`, `autoplay_controller_stub`, `recording_partner_paddle_stub`, plus the `item_factory` and `progression_manager_factory` builders. If a dependency instantiates cleanly, use the real thing.
+An integration test exercises a real player-facing loop (drag a ball, press a paddle key, load a save) by simulating the actual input the player produces, an `InputEventMouseButton`/`InputEventMouseMotion` pushed through `Input.parse_input_event` or the viewport, not a direct call to the controller method that would normally handle that input. Driving `_drag.attempt_release(...)` or `_manager.take(...)` directly tests the same code the real input handler would reach, but it stops proving the wiring between input and effect actually holds; that's the coverage integration tests exist for.
+
+Build these around a real scene (or the smallest slice of one that reproduces the loop), real nodes, `add_child_autofree()`. This is where node instantiation belongs.
 
 ### Test observable outcomes, not internal state
 
@@ -41,47 +41,16 @@ Don't access private variables (`_streak`, `_volley_count`). Test what the playe
 
 ### Name a test by what it tests
 
-The function name is the whole title GUT shows, so it carries the meaning. Name it the same way you decide system-story vs user-story for a ticket: who is the actor, what do they observe.
+The function name is the whole title GUT shows, so it carries the meaning.
 
 - **Tests an internal value or mechanism, no player in sight.** Name the input and the literal result: `condition_<verb>_value`. Right for a pure-logic unit where the thing under test is the internals: `test_apex_below_ceiling_returns_arc_bend`, `test_apex_above_ceiling_exceeds_arc_bend`, `test_zero_bend_returns_zero`.
-- **Tests a player-observable behaviour.** Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`. One fact can take either form depending on the layer: the arc's bend at the `CourtPhysics` return is the first kind, a dragged ball heading down in the game is the second.
+- **Tests a player-observable behaviour** (integration). Name the behaviour the player would see: `test_second_hit_does_not_change_pitch`, `test_streak_break_resets_the_counter`.
 
 Keep the name to the input and the outcome. `test_steep_entry_bends_harder` describes a feel; `test_apex_above_ceiling_exceeds_arc_bend` says the input and the result. And follow the names already in the file: a new test matches its siblings.
 
-### Test behaviour the game can actually reach
+### Only write tests when asked
 
-Before keeping a test, confirm the production code it drives is reachable: something in the game calls the method (directly, or via a signal, `Callable`, or resource-named dispatch). A test of a method with no production caller is testing dead code, and the honest finding is the dead code, not a passing test. When you hit one, cut the test and remove the unused method (and any stub override of it) in the same change; verify the behaviour you thought it covered is owned by the live path and tested there.
-
-Coverage tells the story: cutting a dead-method test drops coverage, and deleting the method brings it back, the net is the same reachable surface with less to maintain. (SH-430 found `Ball.reset_speed` and `set_speed_for_streak` this way; the real miss-reset runs through `enter_out_rest`, covered elsewhere.)
-
-### Drive time deterministically; route through public seams
-
-Advance a system under test by calling its `_physics_process(virtual_delta)` directly with a chosen delta rather than awaiting real frames. This is the project's standing practice for a fast suite (see Test budget below) and it is what unit tests here do. `_physics_process` is the engine's per-frame entry point, so driving it is simulating a frame, not poking private state.
-
-For routing and wiring, go through the public seam: emit the signal (`_paddle.paddle_hit.emit()`) rather than calling a private handler like `_on_paddle_hit()`. Assert on public state or emitted signals, never on private fields (see the table above).
-
-### Step tweens deterministically instead of awaiting real time
-
-When a system under test runs a `Tween` to drive state, awaiting the tween's real-time duration multiplies wall-clock cost across every test that touches it. Pause the tween and advance it manually with `custom_step`, then yield one frame so chained `finished` callbacks settle before assertions. The production code is unchanged; tests still verify final position, signal emission, and signal counts.
-
-```gdscript
-var tween: Tween = _controller._walk_tween
-if tween != null and tween.is_valid():
-	tween.pause()
-	tween.custom_step(_walk_duration + 0.001)
-await get_tree().process_frame
-```
-
-Pause the tween on the object under test, then step it manually rather than waiting real time.
-
-### Physics nodes need the scene tree
-
-`RigidBody2D.linear_velocity` doesn't work until the node is in the tree. Always `add_child_autofree()` before setting velocity. Set `gravity_scale = 0.0` to prevent drift during `await` pauses.
-
-### Unit vs integration
-
-- **Unit tests** test one component's public methods or verify signal routing by emitting signals directly (`_paddle.paddle_hit.emit()`).
-- **Integration tests** drive the system through its entry points (`_paddle.on_ball_hit()`) and verify the full chain.
+Don't add test coverage proactively as part of an unrelated change. Write tests when the user asks for them, or when they're the explicit deliverable of the task.
 
 ## GUT feature reference
 
@@ -112,17 +81,29 @@ func test_fill_ratio(p = use_parameters([
 
 This is the GUT-native answer to fragmented input-table suites; collapse those rather than copy a function per input.
 
-### Driving and waiting
+### Driving and waiting (integration)
 
-`simulate(obj, times, delta)` calls `_process`/`_physics_process` a number of times with a fixed delta. For real-frame waits there are `wait_frames`, `wait_physics_frames`, `wait_seconds`, `wait_for_signal`, `wait_until`/`wait_while`, but prefer deterministic stepping (see Test budget) over real-time waits.
+`simulate(obj, times, delta)` calls `_process`/`_physics_process` a number of times with a fixed delta. For real-frame waits there are `wait_frames`, `wait_physics_frames`, `wait_seconds`, `wait_for_signal`, `wait_until`/`wait_while`. Prefer deterministic stepping over real-time waits, see Test budget below.
 
-### Doubling and stubbing
+### Step tweens deterministically instead of awaiting real time
 
-`double()` / `partial_double()` / `stub()` exist, but this project avoids them: `double()` has a headless-CI cache bug ([#491](https://github.com/bitwes/Gut/issues/491)) and does not simulate physics nodes. Use real instances with `add_child_autofree()`; reach for a hand-written stub in `tests/stubs/` only when a dependency cannot be instantiated cheaply.
+When a system under test runs a `Tween` to drive state, awaiting the tween's real-time duration multiplies wall-clock cost across every test that touches it. Pause the tween and advance it manually with `custom_step`, then yield one frame so chained `finished` callbacks settle before assertions.
+
+```gdscript
+var tween: Tween = _controller._walk_tween
+if tween != null and tween.is_valid():
+	tween.pause()
+	tween.custom_step(_walk_duration + 0.001)
+await get_tree().process_frame
+```
+
+### Physics nodes need the scene tree
+
+`RigidBody2D.linear_velocity` doesn't work until the node is in the tree. Always `add_child_autofree()` before setting velocity. Set `gravity_scale = 0.0` to prevent drift during `await` pauses.
 
 ### How the suite runs
 
-`.gutconfig.json` drives it: all of `res://tests/`, subdirs included, exit on failure, with `tests/hooks/pre_run_hook.gd` and `post_run_hook.gd` around the run. Filter a run with `-gdir` plus `-gprefix`, e.g. `-gdir=res://tests/unit/ball -gprefix=test_ball_apex`.
+`.gutconfig.json` drives it: all of `res://tests/`, subdirs included, exit on failure. Filter a run with `-gdir` plus `-gprefix`, e.g. `-gdir=res://tests/unit/ball -gprefix=test_ball_apex`.
 
 ### A green GUT run is the authority for "does it compile", not `--check-only`
 
@@ -132,11 +113,11 @@ This is the GUT-native answer to fragmented input-table suites; collapse those r
 
 The physics dispatch path is not covered by automated tests. It requires real physics collisions and is intentionally left as a manual QA item.
 
-Visual rendering, sprites, and animations are not unit tested. Tests use bare class instances without scene children, so sprites and textures are never loaded. CI does not pull LFS assets for the test job.
+Visual rendering, sprites, and animations are not unit tested. CI does not pull LFS assets for the test job.
 
 ## Test budget
 
-The full GUT suite is fast, and we like it that way. The fast feedback loop is one of the reasons working on this codebase feels light, and it only stays fast if every new case respects that. The rule of thumb: a new case should not push the per-case average up. Run the suite, note the wall time, add your case, run it again; if the average per test got slower, the fixture is doing too much real-time work.
+The full GUT suite is fast, and we like it that way. The rule of thumb: a new case should not push the per-case average up. Run the suite, note the wall time, add your case, run it again; if the average per test got slower, the fixture is doing too much real-time work.
 
 The usual culprit is waiting for real frames. Swap `await get_tree().physics_frame` loops for deterministic stepping: call the controller's `_physics_process(virtual_delta)` directly with a chosen delta, advance tweens with `tween.custom_step(...)`, step the physics server with `PhysicsServer2D.step`. The production code is unchanged; the test just stops paying the wall-clock cost of waiting for real frames.
 

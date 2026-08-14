@@ -87,21 +87,6 @@ func test_read_fallbacks_returns_backups_newest_first() -> void:
 	assert_eq(_storage.read_fallbacks(), ["two", "one"] as Array[String])
 
 
-# --- fallback path via SaveManager ---
-func test_save_manager_loads_from_backup_when_primary_corrupt() -> void:
-	# Two writes so the valid JSON lands in backup slot 1; then trash primary
-	var blob := '{"economy":{"soul_balance":100}}'
-	_storage.write(blob)
-	_storage.write(blob)
-	_write_raw(TEST_PATH, "")
-
-	var save_manager: Node = load("res://scripts/progression/save_manager.gd").new(0.05)
-	save_manager.set_storage(_storage)
-	add_child_autofree(save_manager)
-	assert_true(save_manager.load_from_disk())
-	assert_eq(save_manager.economy.soul_balance, 100)
-
-
 # --- helpers ---
 func _remove_all() -> void:
 	for path in [TEST_PATH, BACKUP_1, BACKUP_2, BACKUP_3, TEST_PATH + ".tmp"]:
@@ -114,9 +99,3 @@ func _read_raw(path: String) -> String:
 	if file == null:
 		return ""
 	return file.get_as_text()
-
-
-func _write_raw(path: String, content: String) -> void:
-	var file := FileAccess.open(path, FileAccess.WRITE)
-	file.store_string(content)
-	file.close()

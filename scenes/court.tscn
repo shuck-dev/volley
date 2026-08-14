@@ -34,6 +34,7 @@ size = Vector2(2400, 1440)
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
 script = ExtResource("1_tbgi4")
 arc_height_max = 120.0
+player_paddle_scene = ExtResource("9_0tnpc")
 ball_system = NodePath("BallReconciler")
 autoplay_controller = NodePath("AutoplayController")
 drag_controller = NodePath("ItemDragController")
@@ -41,7 +42,6 @@ right_wall = NodePath("Bounds/Right Wall")
 soul_bound = NodePath("Bounds/SoulBound")
 player_spawn = NodePath("PlayerSpawn")
 partner_spawn = NodePath("PartnerSpawn")
-player_paddle_scene = ExtResource("9_0tnpc")
 
 [node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
 layer = -100

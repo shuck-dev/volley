@@ -74,5 +74,5 @@ if [ "$fail" -ne 0 ]; then
 fi
 
 printf '%s\n' "$output" | grep -E \
-	'Total Coverage|Run Summary|^Scripts|^Tests|Passing Tests|Failing Tests|^Asserts|^Time|All tests passed|failing tests' \
+	'Run Summary|^Scripts|^Tests|Passing Tests|Failing Tests|^Asserts|^Time|All tests passed|failing tests' \
 	|| true
