@@ -25,6 +25,13 @@ func _ready() -> void:
 		_on_ball_added(ball)
 
 
+func _exit_tree() -> void:
+	if BallTracker.ball_added.is_connected(_on_ball_added):
+		BallTracker.ball_added.disconnect(_on_ball_added)
+	if BallTracker.ball_removed.is_connected(_on_ball_removed):
+		BallTracker.ball_removed.disconnect(_on_ball_removed)
+
+
 func _gui_input(event: InputEvent) -> void:
 	if _drag.try_start(self, event):
 		accept_event()

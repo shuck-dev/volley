@@ -34,6 +34,8 @@ func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
+	SaveManager.save_cleared.connect(_on_save_cleared)
+
 	# Deferred so sibling listeners connect before emitting.
 	call_deferred(&"_load_court_balls")
 
@@ -297,6 +299,13 @@ func _register_ball(ball: Ball) -> void:
 func _on_ball_missed(ball: Ball) -> void:
 	ball_missed.emit(ball)
 	free_temporary.call_deferred(ball)
+
+
+## The scene reload after a save clear doesn't touch autoload children; free them here instead.
+func _on_save_cleared() -> void:
+	for ball in _balls:
+		ball.queue_free()
+	_balls.clear()
 
 
 func _on_ball_tier_advanced(ball: Ball, new_tier: int) -> void:

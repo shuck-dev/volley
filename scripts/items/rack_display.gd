@@ -7,7 +7,7 @@ const SLOT_HIT_SIZE: Vector2 = Vector2(36, 36)
 
 @export var slot_container: Node2D
 ## Test seam: overrides the BallTracker autoload with a standalone instance.
-var ball_tracker: BallTracker
+var ball_tracker: Node
 
 var _ball_manager: BallManager
 var _slots: Array[Node2D] = []

@@ -154,42 +154,26 @@ func _assign_rack_slot(ball_key: String) -> void:
 
 ## Returns owned items whose placement is ON_COURT.
 func get_on_court_items() -> Array[String]:
-	var result: Array[String] = []
-
-	for key in _state.ball_levels:
-		if _state.ball_levels[key] <= 0:
-			continue
-		if _get_placement(key) != Placement.ON_COURT:
-			continue
-		if _get_item(key) != null:
-			result.append(key)
-
-	return result
+	return _items_with_placement(Placement.ON_COURT)
 
 
 ## Returns owned items whose placement is STORED (on the rack).
 func get_stored_items() -> Array[String]:
-	var result: Array[String] = []
-
-	for key in _state.ball_levels:
-		if _state.ball_levels[key] <= 0:
-			continue
-		if _get_placement(key) != Placement.STORED:
-			continue
-		if _get_item(key) != null:
-			result.append(key)
-
-	return result
+	return _items_with_placement(Placement.STORED)
 
 
 ## Returns owned items whose placement is IN_KIT (the Ball Kit staging area).
 func get_kit_items() -> Array[String]:
+	return _items_with_placement(Placement.IN_KIT)
+
+
+func _items_with_placement(placement: int) -> Array[String]:
 	var result: Array[String] = []
 
 	for key in _state.ball_levels:
 		if _state.ball_levels[key] <= 0:
 			continue
-		if _get_placement(key) != Placement.IN_KIT:
+		if _get_placement(key) != placement:
 			continue
 		if _get_item(key) != null:
 			result.append(key)

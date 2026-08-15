@@ -24,6 +24,11 @@ func _ready() -> void:
 	BallTracker.ball_removed.connect(_on_tracker_ball_removed)
 
 
+func _exit_tree() -> void:
+	BallTracker.ball_added.disconnect(_on_tracker_ball_added)
+	BallTracker.ball_removed.disconnect(_on_tracker_ball_removed)
+
+
 func _physics_process(_delta: float) -> void:
 	if not _enabled:
 		return

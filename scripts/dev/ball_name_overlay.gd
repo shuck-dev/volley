@@ -24,6 +24,13 @@ func _ready() -> void:
 		_on_ball_added(ball)
 
 
+func _exit_tree() -> void:
+	if BallTracker.ball_added.is_connected(_on_ball_added):
+		BallTracker.ball_added.disconnect(_on_ball_added)
+	if BallTracker.ball_removed.is_connected(_on_ball_removed):
+		BallTracker.ball_removed.disconnect(_on_ball_removed)
+
+
 func set_dev_visible(value: bool) -> void:
 	dev_visible = value
 	visible = value

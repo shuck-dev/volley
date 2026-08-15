@@ -84,6 +84,12 @@ func _ready() -> void:
 	BallTracker.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
 
 
+func _exit_tree() -> void:
+	BallTracker.ball_missed.disconnect(_on_ball_missed)
+	BallTracker.ball_tier_advanced.disconnect(_on_ball_tier_advanced)
+	BallTracker.ball_tier_advanced.disconnect(_tier_reward_handler.on_tier_advanced)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("toggle_autoplay"):
 		autoplay_controller.toggle()
