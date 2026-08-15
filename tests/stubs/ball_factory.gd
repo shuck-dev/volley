@@ -7,7 +7,7 @@ const BallManagerScript := preload("res://scripts/items/ball_manager.gd")
 static func create_manager(gut_test: GutTest, ball_key: String = "test_speed") -> Node:
 	var item := create(ball_key)
 	var manager: Node = BallManagerScript.new()
-	manager.state = BallState.new()
+	manager._state = BallState.new()
 	manager.economy = EconomyState.new()
 	manager.items.assign([item])
 	gut_test.add_child_autofree(manager)
@@ -17,7 +17,7 @@ static func create_manager(gut_test: GutTest, ball_key: String = "test_speed") -
 ## Gives the test manager an owned item at `level`, placed STORED with a rack slot assigned.
 ## Replaces the `state.ball_levels[key] = 1` poke that bypasses placement seams.
 static func give(manager: Node, ball_key: String, level: int = 1) -> void:
-	manager.state.ball_levels[ball_key] = level
+	manager._state.ball_levels[ball_key] = level
 	manager._set_item_placement(ball_key, Placement.STORED)
 
 

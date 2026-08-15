@@ -45,8 +45,9 @@ func after_each() -> void:
 func test_second_purchase_released_on_court_spawns_a_second_distinct_ball() -> void:
 	_item.start_drag()
 	assert_true(_item.attempt_release(Vector2(100, 50)))
-	var first_ball: Ball = _ball_tracker.get_ball_for_key(StandardBall.key)
-	assert_not_null(first_ball)
+	var first_balls: Array[Ball] = _ball_tracker.get_balls()
+	assert_eq(first_balls.size(), 1)
+	var first_ball: Ball = first_balls[0]
 
 	_item.visible = true
 	_item.start_drag()

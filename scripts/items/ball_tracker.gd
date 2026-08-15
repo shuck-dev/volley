@@ -34,7 +34,7 @@ func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
-	# Deferred so sibling listeners connect before we emit.
+	# Deferred so sibling listeners connect before emitting.
 	call_deferred(&"_load_court_balls")
 
 
@@ -60,9 +60,6 @@ func get_player_paddle_position() -> Variant:
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
 func has_ball_in_play() -> bool:
 	for ball in _balls:
-		if not is_instance_valid(ball):
-			continue
-
 		if (
 			ball.play_state == Ball.PlayState.PLAY_NORMAL
 			or ball.play_state == Ball.PlayState.PLAY_ARC
@@ -72,14 +69,10 @@ func has_ball_in_play() -> bool:
 	return false
 
 
-## Returns the tracked Ball for `ball_key`, matching an exact key first, then an instance of it.
+## Returns the tracked Ball for the exact `ball_key`.
 func get_ball_for_key(ball_key: String) -> Ball:
 	for ball in _balls:
-		if is_instance_valid(ball) and ball.ball_key == ball_key:
-			return ball
-
-	for ball in _balls:
-		if is_instance_valid(ball) and BallKey.is_instance(ball_key, ball.ball_key):
+		if ball.ball_key == ball_key:
 			return ball
 
 	return null
@@ -153,9 +146,6 @@ func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 	var best_time: float = INF
 
 	for candidate in _balls:
-		if candidate == null or not is_instance_valid(candidate):
-			continue
-
 		var state: Ball.PlayState = candidate.play_state
 		if state != Ball.PlayState.PLAY_NORMAL and state != Ball.PlayState.PLAY_ARC:
 			continue
@@ -184,8 +174,7 @@ func register_miss_zone(zone: MissZone) -> void:
 		return
 	_miss_zones.append(zone)
 	for tracked in _balls:
-		if is_instance_valid(tracked):
-			tracked.register_miss_zone(zone)
+		tracked.register_miss_zone(zone)
 
 
 func unregister_miss_zone(zone: MissZone) -> void:
@@ -256,17 +245,9 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 
 ## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
 func _load_court_balls() -> void:
-	var keys: Array[String] = []
-	for key in _ball_manager.state.ball_levels:
-		if _ball_manager.state.ball_levels[key] <= 0:
-			continue
-		if _ball_manager.get_placement(key) != Placement.ON_COURT:
-			continue
-		if _get_ball_definition(key) == null:
-			continue
-		if get_ball_for_key(key) != null:
-			continue
-		keys.append(key)
+	var keys: Array[String] = _ball_manager.get_on_court_items().filter(
+		func(key: String) -> bool: return get_ball_for_key(key) == null
+	)
 
 	for stack_index in keys.size():
 		var key: String = keys[stack_index]
@@ -278,13 +259,6 @@ func _load_court_balls() -> void:
 		ball.enter_out_rest()
 
 
-func _get_ball_definition(ball_key: String) -> BallDefinition:
-	for item: BallDefinition in _ball_manager.items:
-		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
-			return item
-	return null
-
-
 ## Releases a ball from tracking.
 func _detach(old_ball: Ball) -> void:
 	if old_ball == null:
@@ -292,12 +266,11 @@ func _detach(old_ball: Ball) -> void:
 	var was_tracked: bool = _balls.has(old_ball)
 	_balls.erase(old_ball)
 
-	if is_instance_valid(old_ball):
-		if old_ball.missed.is_connected(_on_ball_missed):
-			old_ball.missed.disconnect(_on_ball_missed)
+	if old_ball.missed.is_connected(_on_ball_missed):
+		old_ball.missed.disconnect(_on_ball_missed)
 
-		if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
-			old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
+	if old_ball.tier_advanced.is_connected(_on_ball_tier_advanced):
+		old_ball.tier_advanced.disconnect(_on_ball_tier_advanced)
 
 	if was_tracked:
 		ball_removed.emit(old_ball)
@@ -316,8 +289,7 @@ func _register_ball(ball: Ball) -> void:
 		ball.tier_advanced.connect(_on_ball_tier_advanced)
 
 	for zone in _miss_zones:
-		if is_instance_valid(zone):
-			ball.register_miss_zone(zone)
+		ball.register_miss_zone(zone)
 	ball_added.emit(ball)
 
 
