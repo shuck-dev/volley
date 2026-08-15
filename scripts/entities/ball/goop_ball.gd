@@ -22,9 +22,6 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_tier_advanced(_ball: Ball, _tier: int) -> void:
-	if _ball_tracker == null:
-		return
-
 	_merge_grace_seconds_left = MERGE_GRACE_SECONDS
 
 	var spawn_velocity: Vector2 = linear_velocity.bounce(linear_velocity.orthogonal().normalized())
@@ -44,7 +41,7 @@ func _on_body_entered(body: Node) -> void:
 	if freeze:
 		return
 
-	if body is GoopBall and _ball_tracker != null:
+	if body is GoopBall:
 		_merge(body)
 
 

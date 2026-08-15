@@ -45,15 +45,6 @@ func _physics_process(_delta: float) -> void:
 		_drift_to_center()
 
 
-## Enables or disables AI for the paddle. _physics_process no-ops safely with no live ball yet.
-func set_enabled(value: bool) -> void:
-	_enabled = value
-
-
-func is_enabled() -> bool:
-	return _enabled
-
-
 func _init_position_buffer() -> void:
 	_position_buffer.resize(config.reaction_delay_frames)
 	_position_buffer.fill(0.0)

@@ -42,10 +42,6 @@ var _hitting_ball: Ball
 
 
 func _ready() -> void:
-	assert(autoplay_controller != null, "court.gd: autoplay_controller export must be assigned")
-	assert(court_ball_spawn != null, "court.gd: court_ball_spawn export must be assigned")
-	assert(soul_bound != null, "court.gd: soul_bound export must be assigned")
-
 	_tier_reward_handler = TierRewardHandler.new()
 	add_child(_tier_reward_handler)
 

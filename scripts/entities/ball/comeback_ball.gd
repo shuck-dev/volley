@@ -48,8 +48,6 @@ func _on_tier_advanced(_ball: Ball, _new_tier: int) -> void:
 
 
 func _attract(delta: float) -> void:
-	if _ball_tracker == null:
-		return
 	var paddle_position: Variant = _ball_tracker.get_player_paddle_position()
 	if paddle_position == null:
 		return
@@ -97,8 +95,6 @@ func rescue() -> bool:
 
 ## Sweeping toward the paddle's side means curving down if it's below, up if it's above.
 func _rescue_sweep_sign() -> float:
-	if _ball_tracker == null:
-		return 1.0
 	var paddle_position: Variant = _ball_tracker.get_player_paddle_position()
 	if paddle_position == null:
 		return 1.0

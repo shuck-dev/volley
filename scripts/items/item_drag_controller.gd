@@ -411,12 +411,12 @@ func _cancel_rack_gesture(
 	_finalise_gesture(ball_key, release_position, false)
 
 
-## Kit renders a static icon; releases the ball from tracking before the IN_KIT change reaches BallManager.
+## Kit renders a static icon, not a live Ball; discards the tracked ball before the IN_KIT change
+## reaches BallManager, so it doesn't linger on the floor untracked.
 func _park_held_ball_in_kit() -> void:
 	if not (_held is Ball):
 		return
 	_ball_manager.clear_loose_in_venue(_held_key)
-	(_held as Ball).enter_stored()
 	if ball_tracker != null:
 		ball_tracker.release_ball(_held_key)
 

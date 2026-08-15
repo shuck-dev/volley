@@ -113,13 +113,14 @@ func bring_into_play(ball_key: String, spawn_position: Vector2, initial_velocity
 	return _create_ball(ball_key, spawn_position, initial_velocity)
 
 
-func release_ball(ball_key: String) -> Ball:
+## Detaches and frees the tracked ball for `ball_key`, e.g. when it becomes a Kit's static icon.
+func release_ball(ball_key: String) -> void:
 	var ball: Ball = get_ball_for_key(ball_key)
 	if ball == null:
-		return null
+		return
 
 	_detach(ball)
-	return ball
+	ball.queue_free()
 
 
 ## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist.
