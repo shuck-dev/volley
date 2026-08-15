@@ -23,8 +23,6 @@ var _bound_y: float
 var _arc_height_max: float
 
 var _ball_manager: BallManager
-var _balls_by_key: Dictionary = {}
-var _initial_reconcile_pending: bool = true
 
 var _balls: Array[Ball] = []
 var _miss_zones: Array[MissZone] = []
@@ -36,10 +34,8 @@ func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
-	_ball_manager.state_changed.connect(_reconcile)
-
 	# Deferred so sibling listeners connect before we emit.
-	call_deferred(&"_reconcile")
+	call_deferred(&"_load_court_balls")
 
 
 func configure(ball_manager: Node) -> void:
@@ -54,8 +50,7 @@ func set_court(court: Court) -> void:
 	_player_paddle = court.player_paddle
 
 
-## Live position of the player paddle, or null when none is set. Ball-domain callers query this
-## instead of holding a paddle reference.
+## Live position of the player paddle
 func get_player_paddle_position() -> Variant:
 	if _player_paddle == null:
 		return null
@@ -64,11 +59,9 @@ func get_player_paddle_position() -> Variant:
 
 ## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
 func has_ball_in_play() -> bool:
-	for raw: Variant in _balls_by_key.values():
-		if not is_instance_valid(raw):
+	for ball in _balls:
+		if not is_instance_valid(ball):
 			continue
-
-		var ball: Ball = raw
 
 		if (
 			ball.play_state == Ball.PlayState.PLAY_NORMAL
@@ -79,24 +72,15 @@ func has_ball_in_play() -> bool:
 	return false
 
 
-## Returns the tracked Ball for `ball_key` and instances.
+## Returns the tracked Ball for `ball_key`, matching an exact key first, then an instance of it.
 func get_ball_for_key(ball_key: String) -> Ball:
-	if _balls_by_key.has(ball_key):
-		var raw: Variant = _balls_by_key[ball_key]
+	for ball in _balls:
+		if is_instance_valid(ball) and ball.ball_key == ball_key:
+			return ball
 
-		if is_instance_valid(raw):
-			return raw
-
-		_balls_by_key.erase(ball_key)
-
-		return null
-
-	for key in _balls_by_key:
-		if BallKey.is_instance(ball_key, key):
-			var raw: Variant = _balls_by_key[key]
-
-			if is_instance_valid(raw):
-				return raw
+	for ball in _balls:
+		if is_instance_valid(ball) and BallKey.is_instance(ball_key, ball.ball_key):
+			return ball
 
 	return null
 
@@ -141,8 +125,6 @@ func release_ball(ball_key: String) -> Ball:
 	if ball == null:
 		return null
 
-	_initial_reconcile_pending = false
-	_balls_by_key.erase(ball_key)
 	_detach(ball)
 	return ball
 
@@ -197,15 +179,6 @@ func get_closest_approaching_ball(paddle_x: float, lane_sign: float) -> Ball:
 	return best
 
 
-## Adopts a ball already in the scene tree.
-func attach(new_ball: Ball) -> void:
-	if new_ball == null or _balls.has(new_ball):
-		return
-	new_ball.arc_height_max = _arc_height_max
-	new_ball.bound_y = _bound_y
-	_register_ball(new_ball)
-
-
 func register_miss_zone(zone: MissZone) -> void:
 	if zone == null or _miss_zones.has(zone):
 		return
@@ -255,7 +228,6 @@ func _create_stored(ball_key: String) -> Ball:
 	add_child(ball)
 	ball.enter_stored()
 
-	_balls_by_key[ball_key] = ball
 	_register_ball(ball)
 	return ball
 
@@ -277,34 +249,24 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	ball.linear_velocity = initial_velocity
 	ball.bound_y = _bound_y
 
-	_balls_by_key[ball_key] = ball
-
 	_register_ball(ball)
 
 	return ball
 
 
-func _reconcile() -> void:
-	var keys_to_remove: Array[String] = []
-	for key: String in _balls_by_key:
-		if _ball_manager.get_level(key) <= 0:
-			keys_to_remove.append(key)
-
-	for key: String in keys_to_remove:
-		var ball: Ball = get_ball_for_key(key)
-		if ball != null:
-			_balls_by_key.erase(key)
-			_detach(ball)
-			ball.queue_free()
-
-	if _initial_reconcile_pending:
-		_initial_reconcile_pending = false
-		_restore_on_court_balls_to_venue()
-
-
 ## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
-func _restore_on_court_balls_to_venue() -> void:
-	var keys := _ball_keys().filter(func(key: String) -> bool: return get_ball_for_key(key) == null)
+func _load_court_balls() -> void:
+	var keys: Array[String] = []
+	for key in _ball_manager.state.ball_levels:
+		if _ball_manager.state.ball_levels[key] <= 0:
+			continue
+		if _ball_manager.get_placement(key) != Placement.ON_COURT:
+			continue
+		if _get_ball_definition(key) == null:
+			continue
+		if get_ball_for_key(key) != null:
+			continue
+		keys.append(key)
 
 	for stack_index in keys.size():
 		var key: String = keys[stack_index]
@@ -312,19 +274,8 @@ func _restore_on_court_balls_to_venue() -> void:
 			_court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
 		)
 		_ball_manager.mark_loose_in_venue(key, position)
-		release_into_rest(key, position, Vector2.ZERO)
-
-
-func _ball_keys() -> Array[String]:
-	var result: Array[String] = []
-	for key in _ball_manager.state.ball_levels:
-		if _ball_manager.state.ball_levels[key] <= 0:
-			continue
-		if _ball_manager.get_placement(key) != Placement.ON_COURT:
-			continue
-		if _get_ball_definition(key) != null:
-			result.append(key)
-	return result
+		var ball := _create_ball(key, position, Vector2.ZERO)
+		ball.enter_out_rest()
 
 
 func _get_ball_definition(ball_key: String) -> BallDefinition:

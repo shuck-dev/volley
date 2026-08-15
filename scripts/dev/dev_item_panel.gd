@@ -23,12 +23,6 @@ func _ready() -> void:
 		row.add_child(item_info)
 		_buttons[item.key] = item_info
 
-		var remove_button := Button.new()
-		remove_button.text = "-"
-		remove_button.pressed.connect(_on_remove_level_pressed.bind(item.key))
-		remove_button.focus_mode = Control.FOCUS_NONE
-		row.add_child(remove_button)
-
 	_refresh_buttons()
 	_setup_soul_controls()
 
@@ -44,10 +38,6 @@ func _gui_input(event: InputEvent) -> void:
 func _input(event: InputEvent) -> void:
 	if _drag.update(self, event):
 		get_viewport().set_input_as_handled()
-
-
-func _on_remove_level_pressed(ball_key: String) -> void:
-	BallManager.remove_level(ball_key)
 
 
 func _refresh_buttons() -> void:

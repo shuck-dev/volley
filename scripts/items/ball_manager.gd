@@ -280,8 +280,7 @@ func get_soul_balance() -> int:
 	return economy.soul_balance
 
 
-## Only earning path. Increments `total_soul_earned` so the shop
-## unlock check stays correct across spending. Refunds use `_refund_soul`.
+## Only earning path. Increments `total_soul_earned` so the shop unlock check stays correct across spending.
 func add_soul(points: int) -> void:
 	economy.soul_balance += points
 	economy.total_soul_earned += points
@@ -303,26 +302,6 @@ func add_soul_fractional(points: float) -> void:
 func subtract_soul(points: int) -> void:
 	economy.soul_balance = max(0, economy.soul_balance - points)
 	soul_balance_changed.emit(economy.soul_balance)
-
-
-## Removes one level from an item (dev/debug only)
-func remove_level(ball_key: String) -> void:
-	if not OS.is_debug_build():
-		return
-
-	var current_level := get_level(ball_key)
-	if current_level > 0:
-		var item := get_item(ball_key)
-		var new_level: int = current_level - 1
-		var refund := int(item.base_cost * pow(item.cost_scaling, new_level))
-		_refund_soul(refund)
-		_set_level(ball_key, new_level)
-
-		if current_level - 1 == 0:
-			state.ball_placement.erase(ball_key)
-			state.ball_slot.erase(ball_key)
-			state.ball_venue_position.erase(ball_key)
-	state_changed.emit()
 
 
 func _register_existing_items() -> void:
@@ -364,13 +343,6 @@ func take(ball_key: String) -> String:
 	register_instance(instance_key)
 
 	return instance_key
-
-
-## Returns points to the balance without counting them as newly earned.
-## Used for undo flows (dev level removal, future kit swaps); not a public API.
-func _refund_soul(points: int) -> void:
-	economy.soul_balance += points
-	soul_balance_changed.emit(economy.soul_balance)
 
 
 func _set_level(ball_key: String, level: int) -> void:

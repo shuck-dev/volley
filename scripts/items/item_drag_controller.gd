@@ -134,7 +134,7 @@ func is_dragging() -> bool:
 
 ## Returns the active drag-target node for cursor follow
 func _drag_target() -> Node2D:
-	# A dev-only remove_level can free the held ball mid-gesture; drop the dangling ref.
+	# The held ball can be freed out from under the gesture (e.g. a save reload); drop the dangling ref.
 	if _held is Ball and not is_instance_valid(_held):
 		_held = null
 	return _held
@@ -171,7 +171,7 @@ func grab_from_rack(ball_key: String) -> bool:
 	if stored == null:
 		return false
 
-	# The STORED Ball IS the drag target; it stays in _balls_by_key, now OUT_HELD until release.
+	# The STORED Ball IS the drag target; it stays tracked, now OUT_HELD until release.
 	stored.enter_out_held()
 	_adopt_held(stored, ball_key)
 
