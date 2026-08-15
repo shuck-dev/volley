@@ -13,7 +13,7 @@ output:
 commit-msg:
   commands:
     check-format:
-      run: ./ci/check_commit_msg.sh {1}
+      run: ./.ci/check_commit_msg.sh {1}
 
 pre-commit:
   piped: true
@@ -47,12 +47,12 @@ pre-commit:
       glob: "*.gd"
       exclude:
         - "addons/**"
-      run: ./ci/run_gut.sh
+      run: ./.ci/run_gut.sh
     check-asset-size:
       exclude:
         - "addons/**"
         - "*.import"
-      run: ./ci/check_asset_size.sh
+      run: ./.ci/check_asset_size.sh
     pip-audit:
       glob: "requirements-dev.txt"
       run: pip-audit --requirement requirements-dev.txt --strict

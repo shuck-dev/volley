@@ -26,6 +26,7 @@ logs/
 
 # Personal lefthook overrides
 lefthook-local.yml
+.ci/local/
 
 # Editor-only dev addons (per-dev preference, no runtime/CI impact)
 addons/signal_lens/
