@@ -24,9 +24,6 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
-## Callable invoked just before each disk write to capture live ball positions. Empty when unset.
-var _position_provider: Callable = Callable()
-
 
 func _init(autosave_interval: float = 10.0) -> void:
 	_autosave_interval = autosave_interval
@@ -57,7 +54,6 @@ func set_storage(storage: SaveStorage) -> void:
 func save() -> void:
 	if _write_blocked:
 		return
-	_capture_live_positions()
 	_write_to_disk()
 
 
@@ -105,28 +101,6 @@ func _dispatch_save_dict(data: Dictionary) -> void:
 			_slices[key].apply_save_dict(slice_data)
 		else:
 			_slices[key].apply_save_dict({})
-
-
-## Registers a callable that returns a Dictionary[String, Vector2] of live ball positions.
-func set_position_provider(provider: Callable) -> void:
-	_position_provider = provider
-
-
-func _capture_live_positions() -> void:
-	if not _position_provider.is_valid():
-		return
-	var live: Variant = _position_provider.call()
-
-	if not (live is Dictionary):
-		return
-	var typed: Dictionary[String, Vector2] = {}
-
-	for key: Variant in live:
-		var value: Variant = live[key]
-
-		if value is Vector2:
-			typed[str(key)] = value
-	items.ball_positions = typed
 
 
 ## Clears progression and blocks writes until unblock_writes(); call_deferred after reload_current_scene.

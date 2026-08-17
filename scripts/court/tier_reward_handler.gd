@@ -11,7 +11,7 @@ func _ready() -> void:
 	add_to_group(&"tier_reward_handlers")
 
 
-## Pays the consolidation reward for whichever ball crossed a tier; driven by BallReconciler.ball_tier_advanced.
+## Pays the consolidation reward for whichever ball crossed a tier; driven by BallTracker.ball_tier_advanced.
 func on_tier_advanced(ball: Ball, _new_tier: int) -> void:
 	if ball != null:
 		ball.increment_soul_multiplier(1.0)

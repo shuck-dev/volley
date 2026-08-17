@@ -1,7 +1,7 @@
 class_name BallTestHelpers
 extends RefCounted
 
-## Shared fixtures for ball-drag and reconciler test suites.
+## Shared fixtures for ball-drag and ball_tracker test suites.
 
 const RackDisplayScript: GDScript = preload("res://scripts/items/rack_display.gd")
 const BallKitScript: GDScript = preload("res://scripts/items/ball_kit.gd")
@@ -34,7 +34,7 @@ static func _static_init() -> void:
 	collision_shape.radius = 7.2
 
 
-## Real ball.tscn instance; every BallDefinition needs an instantiable scene for BallReconciler.
+## Real ball.tscn instance; every BallDefinition needs an instantiable scene for BallTracker.
 static func stub_ball_scene() -> PackedScene:
 	return load("res://scenes/balls/ball.tscn")
 
@@ -87,7 +87,7 @@ static func make_drop_area(position: Vector2, size: Vector2, test: Node) -> Area
 
 ## Priorities mirror the shipped scenes so precedence in a test resolves as it does in play.
 static func make_drop_targets(
-	manager: Node, reconciler: Node, rack_position: Vector2, test: Node
+	manager: Node, ball_tracker: Node, rack_position: Vector2, test: Node
 ) -> void:
 	var rack_target: RackDropTarget = RackDropTargetScript.new()
 	rack_target.ball_manager = manager
@@ -98,14 +98,14 @@ static func make_drop_targets(
 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.ball_manager = manager
-	court_target.reconciler = reconciler
+	court_target.ball_tracker = ball_tracker
 	court_target.priority = COURT_PRIORITY
 	court_target.add_child(attach_rect_shape(COURT_SIZE))
 	test.add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.ball_manager = manager
-	venue_target.reconciler = reconciler
+	venue_target.ball_tracker = ball_tracker
 	venue_target.priority = VENUE_PRIORITY
 	venue_target.add_child(attach_rect_shape(VENUE_SIZE))
 	test.add_child_autofree(venue_target)

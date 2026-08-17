@@ -16,7 +16,7 @@ var _hidden_key: String = ""
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager
-	_ball_manager.ball_manager_state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
+	_ball_manager.state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
 	_build_slots()
 	refresh()
 

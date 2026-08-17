@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/soul.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
 [ext_resource type="Texture2D" uid="uid://dv1gp0gevfo0a" path="res://assets/ball_box.png" id="20_revm4"]
-[ext_resource type="Script" uid="uid://dkqyrxx74rbvd" path="res://scripts/items/ball_reconciler.gd" id="21_reconciler"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/item_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://cbjvktojqsqqd" path="res://scripts/items/drop_targets/court_drop_target.gd" id="26_cdt"]
 [ext_resource type="Script" uid="uid://clyfa8heojc04" path="res://scripts/items/drop_targets/venue_drop_target.gd" id="27_vdt"]
@@ -31,17 +30,17 @@ size = Vector2(1600, 720)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
 size = Vector2(2400, 1440)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("ball_system", "autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn", "court_ball_spawn")]
 script = ExtResource("1_tbgi4")
 arc_height_max = 120.0
-player_paddle_scene = ExtResource("9_0tnpc")
-ball_system = NodePath("BallReconciler")
 autoplay_controller = NodePath("AutoplayController")
 drag_controller = NodePath("ItemDragController")
 right_wall = NodePath("Bounds/Right Wall")
 soul_bound = NodePath("Bounds/SoulBound")
 player_spawn = NodePath("PlayerSpawn")
 partner_spawn = NodePath("PartnerSpawn")
+court_ball_spawn = NodePath("CourtBallSpawn")
+player_paddle_scene = ExtResource("9_0tnpc")
 
 [node name="CourtBackground" type="CanvasLayer" parent="." unique_id=1053024008]
 layer = -100
@@ -110,11 +109,10 @@ position = Vector2(700, 0)
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-700, 0)
 
-[node name="BallRack" parent="." unique_id=949376876 node_paths=PackedStringArray("reconciler") instance=ExtResource("8_h0b8m")]
+[node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
 visible = false
 z_index = -50
 position = Vector2(-486, 179.79999)
-reconciler = NodePath("../BallReconciler")
 
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
 visible = false
@@ -168,36 +166,29 @@ offset_top = -240.0
 offset_right = -529.0
 offset_bottom = -172.0
 
-[node name="BallReconciler" type="Node" parent="." unique_id=1902001001 node_paths=PackedStringArray("ball_rack")]
-script = ExtResource("21_reconciler")
-ball_rack = NodePath("../BallRack")
-
-[node name="ItemDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target", "reconciler")]
+[node name="ItemDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target")]
 script = ExtResource("22_drag")
 rack = NodePath("../BallRack")
 rack_drop_target = NodePath("../BallRack/RackDropTarget")
-reconciler = NodePath("../BallReconciler")
 
-[node name="CourtDropTarget" type="Area2D" parent="." unique_id=1902001003 node_paths=PackedStringArray("reconciler")]
+[node name="CourtDropTarget" type="Area2D" parent="." unique_id=1902001003]
 collision_layer = 0
 collision_mask = 0
 input_pickable = false
 monitoring = false
 priority = 30
 script = ExtResource("26_cdt")
-reconciler = NodePath("../BallReconciler")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CourtDropTarget" unique_id=1418307811]
 shape = SubResource("RectangleShape2D_court_drop")
 
-[node name="VenueDropTarget" type="Area2D" parent="." unique_id=1902001004 node_paths=PackedStringArray("reconciler")]
+[node name="VenueDropTarget" type="Area2D" parent="." unique_id=1902001004]
 collision_layer = 0
 collision_mask = 0
 input_pickable = false
 monitoring = false
 priority = 50
 script = ExtResource("27_vdt")
-reconciler = NodePath("../BallReconciler")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="VenueDropTarget" unique_id=509177813]
 shape = SubResource("RectangleShape2D_venue_drop")
@@ -208,3 +199,6 @@ position = Vector2(-220.91, 139.535)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("20_revm4")
 flip_h = true
+
+[node name="CourtBallSpawn" type="Marker2D" parent="." unique_id=2000363944]
+position = Vector2(-780, 385)

@@ -3,7 +3,6 @@ extends VBoxContainer
 
 ## Live per-ball play_state readout. Debug builds only.
 
-var _tracker: BallReconciler
 var _rows: Dictionary = {}
 var _drag := DraggableBehavior.new()
 
@@ -19,35 +18,18 @@ func _ready() -> void:
 	_add_header()
 	_add_overlay_toggle()
 
-	_tracker = get_tree().get_first_node_in_group(&"ball_trackers") as BallReconciler
+	BallTracker.ball_added.connect(_on_ball_added)
+	BallTracker.ball_removed.connect(_on_ball_removed)
 
-	if _tracker != null:
-		_attach_to_tracker()
-	else:
-		get_tree().node_added.connect(_on_node_added_waiting_for_tracker)
+	for ball in BallTracker.get_balls():
+		_on_ball_added(ball)
 
 
 func _exit_tree() -> void:
-	if is_inside_tree() and get_tree().node_added.is_connected(_on_node_added_waiting_for_tracker):
-		get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-
-
-func _on_node_added_waiting_for_tracker(node: Node) -> void:
-	var tracker := node as BallReconciler
-
-	if tracker == null:
-		return
-	get_tree().node_added.disconnect(_on_node_added_waiting_for_tracker)
-	_tracker = tracker
-	_attach_to_tracker()
-
-
-func _attach_to_tracker() -> void:
-	_tracker.ball_added.connect(_on_ball_added)
-	_tracker.ball_removed.connect(_on_ball_removed)
-
-	for ball in _tracker.get_balls():
-		_on_ball_added(ball)
+	if BallTracker.ball_added.is_connected(_on_ball_added):
+		BallTracker.ball_added.disconnect(_on_ball_added)
+	if BallTracker.ball_removed.is_connected(_on_ball_removed):
+		BallTracker.ball_removed.disconnect(_on_ball_removed)
 
 
 func _gui_input(event: InputEvent) -> void:

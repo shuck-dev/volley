@@ -2,11 +2,17 @@ class_name PartnerAIController
 extends PaddleAIController
 
 
-## Auto-enables on the first tracker-visible ball; base class handles auto-disable on empty.
+func _ready() -> void:
+	super._ready()
+	if BallTracker.has_ball_in_play():
+		_enabled = true
+
+
+## Auto-enables on the first tracker-visible ball.
 func _on_tracker_ball_added(new_ball: Ball) -> void:
 	super(new_ball)
 	if not _enabled:
-		set_enabled(true)
+		_enabled = true
 
 
 func _court_side_sign() -> float:

@@ -21,6 +21,7 @@ Settings="*res://scripts/core/settings.gd"
 SaveManager="*res://scripts/progression/save_manager.gd"
 BallManager="*res://scripts/items/ball_manager.gd"
 ProgressionManager="*res://scripts/progression/progression_manager.gd"
+BallTracker="*res://scripts/items/ball_tracker.gd"
 
 [debug]
 
