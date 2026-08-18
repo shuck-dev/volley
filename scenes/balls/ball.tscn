@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://bsakcpqh60xqt" path="res://scripts/entities/ball/grab_area.gd" id="4_press"]
 [ext_resource type="Script" uid="uid://b5bk7tx57bqwp" path="res://scripts/entities/ball/consolidation_cue.gd" id="5_cue"]
 [ext_resource type="Texture2D" uid="uid://cv278vwyo0awu" path="res://assets/ui/tier_cue_star.svg" id="6_star"]
+[ext_resource type="Script" uid="uid://bftf50muvimm" path="res://scripts/entities/ball/ball_shake.gd" id="7_shake"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n1dj2"]
 radius = 15.34078
@@ -43,6 +44,11 @@ hitbox_inflation = 4.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GrabArea" unique_id=429755375]
 shape = SubResource("CircleShape2D_press")
 
+[node name="BallShake" type="Node" parent="." unique_id=1026727126 node_paths=PackedStringArray("sprite")]
+script = ExtResource("7_shake")
+sprite = NodePath("../Sprite")
+duration = 1.0
+
 [node name="ConsolidationCue" type="CPUParticles2D" parent="." unique_id=528947500]
 z_index = 1
 emitting = false
@@ -59,4 +65,5 @@ scale_amount_max = 0.25
 color_ramp = SubResource("Gradient_cuefade")
 script = ExtResource("5_cue")
 
+[connection signal="tier_advanced" from="." to="BallShake" method="_on_ball_tier_advanced"]
 [connection signal="tier_advanced" from="." to="ConsolidationCue" method="_on_ball_tier_advanced"]
