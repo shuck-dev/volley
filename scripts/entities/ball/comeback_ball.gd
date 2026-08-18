@@ -99,8 +99,8 @@ func _rescue_sweep_sign() -> float:
 	if paddle_position == null:
 		return 1.0
 
-	var sign: float = signf(global_position.y - paddle_position.y)
-	return sign if sign != 0.0 else 1.0
+	var sweep_sign: float = signf(global_position.y - paddle_position.y)
+	return sweep_sign if sweep_sign != 0.0 else 1.0
 
 
 func rescuing(delta: float) -> void:

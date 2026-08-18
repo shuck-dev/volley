@@ -59,8 +59,8 @@ func get_displayed_key() -> String:
 
 
 ## Hides the icon while the ball is held elsewhere; the slot still reports itself as the occupant.
-func set_icon_hidden(hidden: bool) -> void:
-	_icon_hidden = hidden
+func set_icon_hidden(hid: bool) -> void:
+	_icon_hidden = hid
 	_apply_icon()
 
 
