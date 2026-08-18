@@ -13,6 +13,8 @@ signal partner_changed
 @export_group("Controllers")
 @export var autoplay_controller: AutoplayController
 @export var drag_controller: ItemDragController
+@export var tier_reward_handler: TierRewardHandler
+@export var soul_burst_handler: SoulBurstHandler
 
 @export_group("Bounds")
 @export var right_wall: StaticBody2D
@@ -31,13 +33,11 @@ var partner_paddle: PartnerPaddle
 
 var _records: RecordsState
 var _partners: PartnersState
-var _tier_reward_handler: TierRewardHandler
 var _volley_streak_tracker: VolleyStreakTracker
 
 
 func _ready() -> void:
-	_tier_reward_handler = TierRewardHandler.new()
-	add_child(_tier_reward_handler)
+	tier_reward_handler.soul_burst_handler = soul_burst_handler
 
 	_volley_streak_tracker = VolleyStreakTracker.new()
 	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
@@ -69,13 +69,13 @@ func _ready() -> void:
 
 	personal_volley_best_changed.emit(_records.personal_volley_best)
 
-	BallTracker.ball_tier_advanced.connect(_tier_reward_handler.on_tier_advanced)
+	BallTracker.ball_tier_advanced.connect(tier_reward_handler.on_tier_advanced)
 
 
 func _exit_tree() -> void:
 	BallTracker.ball_missed.disconnect(_on_ball_missed)
 	BallTracker.ball_tier_advanced.disconnect(_on_ball_tier_advanced)
-	BallTracker.ball_tier_advanced.disconnect(_tier_reward_handler.on_tier_advanced)
+	BallTracker.ball_tier_advanced.disconnect(tier_reward_handler.on_tier_advanced)
 
 
 func _unhandled_input(event: InputEvent) -> void:
