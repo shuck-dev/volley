@@ -56,8 +56,8 @@ func _physics_process(delta: float) -> void:
 		_steer(delta)
 		_speed = move_toward(_speed, attract_speed, attract_speed * delta)
 	else:
-		var decel_fraction: float = _age / ATTRACT_DELAY
-		_speed = lerpf(BURST_SPEED, BURST_END_SPEED, decel_fraction)
+		var deceleration_fraction: float = _age / ATTRACT_DELAY
+		_speed = lerpf(BURST_SPEED, BURST_END_SPEED, deceleration_fraction)
 
 	global_position += _heading * _speed * delta
 	_update_trail()

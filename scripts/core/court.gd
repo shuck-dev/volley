@@ -37,8 +37,6 @@ var _volley_streak_tracker: VolleyStreakTracker
 
 
 func _ready() -> void:
-	tier_reward_handler.soul_burst_handler = soul_burst_handler
-
 	_volley_streak_tracker = VolleyStreakTracker.new()
 	_volley_streak_tracker.volley_count_changed.connect(volley_count_changed.emit)
 

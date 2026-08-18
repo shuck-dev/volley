@@ -21,7 +21,7 @@ func release_burst(ball: Ball, payout: int) -> void:
 	var angle_step := TAU / values.size()
 
 	for i in values.size():
-		if not is_instance_valid(ball):
+		if not is_inside_tree() or not is_instance_valid(ball):
 			return
 
 		var mote: SoulMote = MOTE_SCENE.instantiate()

@@ -110,8 +110,9 @@ config = ExtResource("8_85g3d")
 [node name="SoulBurstHandler" type="Node" parent="." unique_id=1313600645]
 script = ExtResource("19_sbh")
 
-[node name="TierRewardHandler" type="Node" parent="." unique_id=577807746]
+[node name="TierRewardHandler" type="Node" parent="." unique_id=577807746 node_paths=PackedStringArray("soul_burst_handler")]
 script = ExtResource("18_trh")
+soul_burst_handler = NodePath("../SoulBurstHandler")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
 position = Vector2(700, 0)
