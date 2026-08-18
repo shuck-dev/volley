@@ -2,7 +2,7 @@
 
 Welcome. Volley! is an idle pong game about a chase for the world volley record, built in the open so anyone who wants to can help shape it. If you are here to fix a bug, ship an animation, sketch a concept, write a piece of dialogue, or dig into a tricky system, thanks for stopping in.
 
-This guide covers the practical parts: picking up a ticket, running the project, submitting a PR, and signing off. For how tickets are shaped and what the labels mean, see [`designs/process/ticket-writing.md`](designs/process/ticket-writing.md) and [`designs/process/labels.md`](designs/process/labels.md).
+This guide covers the practical parts: picking up a ticket, running the project, submitting a PR, and signing off. For how tickets are shaped and what the labels mean, see [`docs/process/ticket-writing.md`](docs/process/ticket-writing.md) and [`docs/process/labels.md`](docs/process/labels.md).
 
 ## Picking up a ticket
 
@@ -93,17 +93,17 @@ A pre-commit hook also enforces a **500 KB size gate** on staged files. Any bina
 
 ## Submitting a PR
 
-Open the PR against `main`. Branch name format is `<intent>/<gh-issue>-<short-description>`, where `<intent>` matches the ticket's label and `<gh-issue>` is the GitHub issue number. See [`designs/process/labels.md`](designs/process/labels.md) for the full label set and examples.
+Open the PR against `main`. Branch name format is `<intent>/<gh-issue>-<short-description>`, where `<intent>` matches the ticket's label and `<gh-issue>` is the GitHub issue number. See [`docs/process/labels.md`](docs/process/labels.md) for the full label set and examples.
 
 Reference the issue in the PR body with a bare `#123` (the number on its own). GitHub backlinks the PR and the issue, and the branch name drives the issue's state on merge. Leave any GitHub action-verb off the number: a verb fires GitHub's auto-close, which moves the tracked issue further than the merge should.
 
 **Write the PR description as a short explanation of the change.** Cover what the change does, why it is being made, and any tradeoffs worth flagging. A reader should come away understanding the reasoning behind the change.
 
-**Keep the scope tight.** Stick to the ticket. If you spot something adjacent that needs fixing, open a new issue for it; tight PRs that do one thing land faster and read better in the commit history. When your change does sit on top of a rough shape, reshaping it in the same PR is welcome; see [`designs/process/refactoring.md`](designs/process/refactoring.md) for where that line sits.
+**Keep the scope tight.** Stick to the ticket. If you spot something adjacent that needs fixing, open a new issue for it; tight PRs that do one thing land faster and read better in the commit history. When your change does sit on top of a rough shape, reshaping it in the same PR is welcome; see [`docs/process/refactoring.md`](docs/process/refactoring.md) for where that line sits.
 
 **Tone.** Plain descriptive prose, positive framing. Lead with what a thing is and does. Applies to PR descriptions, commit messages, and code comments.
 
-**Code style.** Inline comments explain why; `##` doc-comments describe the public API. The conventions live in [`designs/process/code-style.md`](designs/process/code-style.md).
+**Code style.** Inline comments explain why; `##` doc-comments describe the public API. The conventions live in [`docs/process/code-style.md`](docs/process/code-style.md).
 
 **What a reviewer looks at:**
 
@@ -120,7 +120,7 @@ A set of AI reviewers read your PR first. Small fixes land as commits on your br
 
 A maintainer then reads the PR and adds `human-approved` to sign off. The PR merges on its own once it has `human-approved` and no open reviewer comments. If you push new commits, `human-approved` comes off so the next push gets a fresh look.
 
-Full list of labels in [`designs/process/labels.md`](designs/process/labels.md).
+Full list of labels in [`docs/process/labels.md`](docs/process/labels.md).
 
 ## Asking questions
 
@@ -175,7 +175,7 @@ By contributing:
 
 - **Code contributions** are licensed under the [MIT License](LICENSE), the same as the rest of the codebase.
 - **Asset contributions** (art, music, sound effects, narrative text) grant Josh Hartley a perpetual, worldwide, royalty-free license to use, modify, and distribute the asset as part of the commercial release and any derivative products. See [ASSETS-LICENSE.md](ASSETS-LICENSE.md).
-- **Design doc contributions** (in `designs/`) are licensed under CC-BY 4.0; see [`designs/LICENSE`](designs/LICENSE).
+- **Design doc contributions** (in `docs/`) are licensed under CC-BY 4.0; see [`docs/LICENSE`](docs/LICENSE).
 
 Everyone who lands a contribution is added to the game's credits.
 

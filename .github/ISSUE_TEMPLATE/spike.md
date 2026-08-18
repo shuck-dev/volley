@@ -4,7 +4,7 @@ about: Timeboxed investigation of a technical unknown
 labels: spike
 ---
 
-<!-- Guide: designs/process/ticket-writing.md -->
+<!-- Guide: docs/process/ticket-writing.md -->
 
 SPIKE: [question]
 So that [downstream decision that depends on the answer]
@@ -13,7 +13,7 @@ So that [downstream decision that depends on the answer]
 *
 *
 
-**Deliverable:** written recommendation covering the open questions, posted as a comment on this issue or as a markdown doc under `designs/` linked here.
+**Deliverable:** written recommendation covering the open questions, posted as a comment on this issue or as a markdown doc under `docs/` linked here.
 
 **Timebox:** 1 to 2 days.
 
