@@ -55,6 +55,9 @@ var current_tier := 0
 ## Accumulated soul multiplier for this ball; incremented by each consolidation event, reset on miss.
 var soul_multiplier: float = 1.0
 
+## Soul counter for this ball, released on consolidation, reset on miss.
+var accumulated_soul: float = 0.0
+
 ## Entry speed of the current tier, derived from the table fraction of the world max.
 var tier_floor: float:
 	get:
@@ -177,6 +180,7 @@ func hit_by_paddle(paddle: Paddle) -> void:
 	var hit_registered: bool = paddle.on_ball_hit(self)
 	if hit_registered:
 		increase_speed()
+		accumulated_soul += soul_multiplier
 	_process_hit(paddle)
 
 
@@ -194,6 +198,7 @@ func _on_miss_zone_body_entered(body: Node) -> void:
 
 func _on_missed(_ball: Ball) -> void:
 	reset_soul_multiplier()
+	reset_accumulated_soul()
 	enter_out_rest()
 
 
@@ -205,6 +210,11 @@ func reset_soul_multiplier() -> void:
 ## Adds amount to this ball's soul multiplier.
 func increment_soul_multiplier(amount: float) -> void:
 	soul_multiplier += amount
+
+
+## Resets accumulated soul count to zero.
+func reset_accumulated_soul() -> void:
+	accumulated_soul = 0.0
 
 
 # Single funnel for play_state writes. Idempotent: a same-state call is a no-op.

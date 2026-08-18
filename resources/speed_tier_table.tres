@@ -14,14 +14,12 @@ script = ExtResource("2_tier")
 key = &"tier_one"
 floor_fraction = 0.47
 ceiling_fraction = 0.72
-reward = "tier_one_final"
 
 [sub_resource type="Resource" id="Tier2"]
 script = ExtResource("2_tier")
 key = &"top_tier"
 floor_fraction = 0.65
 ceiling_fraction = 1.0
-reward = "top_tier_final"
 
 [resource]
 script = ExtResource("1_table")

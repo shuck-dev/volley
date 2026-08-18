@@ -4,7 +4,7 @@ extends Node2D
 signal volley_count_changed(count: int)
 signal personal_volley_best_changed(best: int)
 signal ball_tier_advanced(new_tier: int)
-signal auto_play_changed(is_active: bool, soul_rate: float)
+signal auto_play_changed(is_active: bool)
 signal partner_changed
 
 ## Apex ceiling in pixels above the soul bound; passed to every ball this court spawns.
@@ -31,9 +31,6 @@ var partner_paddle: PartnerPaddle
 
 var _records: RecordsState
 var _partners: PartnersState
-var _progression_config: ProgressionConfig
-var _ball_manager: BallManager
-var _is_autoplay_active := false
 var _tier_reward_handler: TierRewardHandler
 var _volley_streak_tracker: VolleyStreakTracker
 
@@ -53,12 +50,6 @@ func _ready() -> void:
 
 	if _partners == null:
 		_partners = SaveManager.partners
-
-	if _progression_config == null:
-		_progression_config = ProgressionManager.get_config()
-
-	if _ball_manager == null:
-		_ball_manager = BallManager
 
 	if player_paddle == null:
 		player_paddle = player_paddle_scene.instantiate()
@@ -98,7 +89,6 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_paddle_hit(hitting_ball: Ball) -> void:
 	_hitting_ball = hitting_ball
 	_volley_streak_tracker.record_hit()
-	_accumulate_soul()
 
 	if _volley_streak_tracker.count > _records.personal_volley_best:
 		_records.personal_volley_best = _volley_streak_tracker.count
@@ -116,8 +106,7 @@ func _on_ball_missed(_missed_ball: Ball) -> void:
 
 
 func _on_auto_play_changed(is_active: bool) -> void:
-	_is_autoplay_active = is_active
-	auto_play_changed.emit(is_active, _progression_config.autoplay_soul_rate)
+	auto_play_changed.emit(is_active)
 
 
 func _on_partner_recruited(_partner_key: StringName) -> void:
@@ -172,13 +161,3 @@ func _on_partner_ball_added(incoming_ball: Ball) -> void:
 
 	if partner_paddle.has_method("set_ball"):
 		partner_paddle.set_ball(incoming_ball)
-
-
-func _accumulate_soul() -> void:
-	var rate: float = _progression_config.autoplay_soul_rate
-	var base_points: float = GameRules.base.soul_per_hit
-	var multiplier: float = _hitting_ball.soul_multiplier if _hitting_ball != null else 1.0
-	var points_to_add: float = (
-		(base_points * multiplier * rate) if _is_autoplay_active else base_points * multiplier
-	)
-	_ball_manager.add_soul_fractional(points_to_add)
