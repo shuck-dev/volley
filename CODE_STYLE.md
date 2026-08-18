@@ -72,8 +72,10 @@ A quick test: if removing the comment would not confuse a future reader, you do 
 
 Numbers, thresholds, durations, speeds. If a value might want tuning without a code edit, promote it to an `@export var`. When three or more related tunables move together (a movement profile: acceleration, top speed, decel, for instance), cluster them into a `Resource` subclass with its own `.tres` file so they can be edited from the inspector, shared across instances, and saved separately.
 
+Use `:=` on an `@export` the same as any other var when the default value's type is unambiguous; Godot infers the export type from the literal.
+
 ```gdscript
-@export var walk_speed: float = 200.0
+@export var walk_speed := 200.0
 ```
 
 For clusters:
@@ -82,9 +84,9 @@ For clusters:
 class_name TimeoutConfig
 extends Resource
 
-@export var descent_speed: float = 1200.0
-@export var walk_duration_seconds: float = 0.6
-@export var equip_pose_offset_x: float = -192.0
+@export var descent_speed := 1200.0
+@export var walk_duration_seconds := 0.6
+@export var equip_pose_offset_x := -192.0
 ```
 
 The script holds the defaults; the `.tres` holds whatever values are in play. Designers and contributors can tune values without touching the source.

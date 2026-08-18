@@ -14,7 +14,7 @@ static func split(payout: int) -> Array[int]:
 		return []
 
 	var parts: Array[int] = []
-	var remaining: int = payout
+	var remaining := payout
 
 	for denomination in DENOMINATIONS:
 		while remaining >= denomination:

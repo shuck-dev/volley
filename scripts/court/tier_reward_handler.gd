@@ -6,7 +6,7 @@ extends Node
 @export var soul_burst_handler: SoulBurstHandler
 
 ## Delay between the shake cue and the motes actually spawning.
-@export var burst_delay: float = 1
+@export var burst_delay := 1.0
 
 
 ## Computes the consolidation reward for whichever ball crossed a tier and hands it to

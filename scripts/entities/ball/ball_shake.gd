@@ -4,10 +4,10 @@ extends Node
 ## Sprite jitter on consolidation.
 
 @export var sprite: Sprite2D
-@export var amplitude: float = 8.0
-@export var duration: float = 0.15
+@export var amplitude := 8.0
+@export var duration := 0.15
 
-var _elapsed: float = -1.0
+var _elapsed := -1.0
 
 
 func _on_ball_tier_advanced(_ball: Ball, _new_tier: int) -> void:
@@ -31,5 +31,5 @@ func _physics_process(delta: float) -> void:
 		sprite.position = Vector2.ZERO
 		return
 
-	var buildup: float = _elapsed / duration
+	var buildup := _elapsed / duration
 	sprite.position = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * amplitude * buildup
