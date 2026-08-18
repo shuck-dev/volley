@@ -7,11 +7,13 @@
 [ext_resource type="Texture2D" uid="uid://bbxakv66s8kdt" path="res://assets/sprites/sam/flying_down/sam_flying_down_03.png" id="3_np2oc"]
 [ext_resource type="Texture2D" uid="uid://cfssdfoph1qki" path="res://assets/sprites/sam/flying_up/sam_flying_up_03.png" id="4_64lvm"]
 [ext_resource type="Texture2D" uid="uid://c0gfsbvo1q2jn" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_01.png" id="7_64lvm"]
-[ext_resource type="Texture2D" uid="uid://b7upew45ysyow" path="res://assets/sprites/sam/ready_flying/flying_idle_01.png" id="8_gilbc"]
+[ext_resource type="Texture2D" uid="uid://qn24r2dkp4w0" path="res://assets/sprites/sam/ready_flying/sam_flying_ready_01.png" id="7_yc0uj"]
+[ext_resource type="Texture2D" uid="uid://m6hi5l8muxt8" path="res://assets/sprites/sam/ready_flying/sam_flying_ready_02.png" id="8_et4af"]
 [ext_resource type="Texture2D" uid="uid://d8erark3tqfa" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_02.png" id="8_ogmgp"]
-[ext_resource type="Texture2D" uid="uid://cxk8d6ouysm8o" path="res://assets/sprites/sam/ready_flying/flying_idle_02.png" id="9_0exrp"]
 [ext_resource type="Texture2D" uid="uid://jkrudj28po7a" path="res://assets/sprites/sam/ready_grounded/sam_ready_grounded_01.png" id="9_ot5un"]
 [ext_resource type="Texture2D" uid="uid://c4aqd702r8lpn" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_03.png" id="9_pkbgn"]
+[ext_resource type="Texture2D" uid="uid://dlvbb2pqrm8of" path="res://assets/sprites/sam/ready_flying/sam_flying_ready_03.png" id="9_yvpr5"]
+[ext_resource type="Texture2D" uid="uid://bh8vbicuq75lp" path="res://assets/sprites/sam/ready_flying/sam_flying_ready_04.png" id="10_gilbc"]
 [ext_resource type="Texture2D" uid="uid://cdhk2vd3o8tyn" path="res://assets/sprites/sam/swing_flying/sam_swing_flying_04.png" id="10_np2oc"]
 [ext_resource type="Texture2D" uid="uid://dlwtgfh4sywi4" path="res://assets/sprites/sam/ready_grounded/sam_ready_grounded_02.png" id="10_uspdf"]
 [ext_resource type="Texture2D" uid="uid://bg2bxd5mwir2" path="res://assets/sprites/sam/ready_grounded/sam_ready_grounded_03.png" id="11_xswg0"]
@@ -55,10 +57,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_gilbc")
+"texture": ExtResource("7_yc0uj")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_0exrp")
+"texture": ExtResource("8_et4af")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_yvpr5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_gilbc")
 }],
 "loop": true,
 "name": &"ready_flying",

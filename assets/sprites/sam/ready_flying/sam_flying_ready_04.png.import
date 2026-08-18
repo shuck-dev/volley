@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7upew45ysyow"
-path="res://.godot/imported/flying_idle_01.png-0aa6d14fa0d5e5474c23ceddffb4b3db.ctex"
+uid="uid://bh8vbicuq75lp"
+path="res://.godot/imported/sam_flying_ready_04.png-ecb36fc83a428003e34c85ea8aab3d8f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/sam/ready_flying/flying_idle_01.png"
-dest_files=["res://.godot/imported/flying_idle_01.png-0aa6d14fa0d5e5474c23ceddffb4b3db.ctex"]
+source_file="res://assets/sprites/sam/ready_flying/sam_flying_ready_04.png"
+dest_files=["res://.godot/imported/sam_flying_ready_04.png-ecb36fc83a428003e34c85ea8aab3d8f.ctex"]
 
 [params]
 
