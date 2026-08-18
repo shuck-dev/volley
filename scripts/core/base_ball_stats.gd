@@ -10,5 +10,5 @@ extends Resource
 ## Speed bump applied to the ball on each successful paddle hit.
 @export var ball_speed_increment := 17.0
 
-## Scales the consolidation reward
+## Scales the consolidation reward.
 @export var consolidation_multiplier := 1.0

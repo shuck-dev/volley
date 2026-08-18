@@ -34,9 +34,6 @@ var _partners: PartnersState
 var _tier_reward_handler: TierRewardHandler
 var _volley_streak_tracker: VolleyStreakTracker
 
-# Ball that triggered the current volley hit; available during the hit-processing window.
-var _hitting_ball: Ball
-
 
 func _ready() -> void:
 	_tier_reward_handler = TierRewardHandler.new()
@@ -86,15 +83,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		autoplay_controller.toggle()
 
 
-func _on_paddle_hit(hitting_ball: Ball) -> void:
-	_hitting_ball = hitting_ball
+func _on_paddle_hit(_hitting_ball: Ball) -> void:
 	_volley_streak_tracker.record_hit()
 
 	if _volley_streak_tracker.count > _records.personal_volley_best:
 		_records.personal_volley_best = _volley_streak_tracker.count
 		personal_volley_best_changed.emit(_records.personal_volley_best)
-
-	_hitting_ball = null
 
 
 func _on_ball_tier_advanced(_ball: Ball, new_tier: int) -> void:

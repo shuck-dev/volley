@@ -3,9 +3,6 @@ extends Node
 
 ## Handles the consolidation reward on every tier-up.
 
-## Soul payout
-signal consolidated(ball: Ball)
-
 
 ## Pays the consolidation reward for whichever ball crossed a tier.
 func on_tier_advanced(ball: Ball, _new_tier: int) -> void:
@@ -18,5 +15,3 @@ func on_tier_advanced(ball: Ball, _new_tier: int) -> void:
 
 	BallManager.add_soul(payout)
 	ball.reset_accumulated_soul()
-
-	consolidated.emit(ball)
