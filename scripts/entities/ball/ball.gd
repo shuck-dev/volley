@@ -291,16 +291,14 @@ func increase_speed() -> void:
 	_apply_speed()
 
 
-# Crossing a tier ceiling advances to the next, plateaus at max tier.
+# Crossing a tier ceiling advances to the next tier, or repeats the top tier's range.
 func advance_tier() -> void:
 	var is_top_tier: bool = current_tier >= get_speed_tiers().tier_count() - 1
 
-	if is_top_tier:
-		speed = tier_ceiling
-	else:
+	if not is_top_tier:
 		current_tier += 1
-		speed = tier_floor
 
+	speed = tier_floor
 	_apply_speed()
 
 	tier_advanced.emit(self, current_tier)
