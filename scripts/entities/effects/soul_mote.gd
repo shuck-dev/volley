@@ -14,6 +14,9 @@ const BURST_END_SPEED := 20.0
 ## How long the mote flies on its burst heading before attraction starts steering it.
 const ATTRACT_DELAY := 2.0
 
+## How many recent positions the trail keeps before the oldest point drops off.
+const TRAIL_LENGTH := 12
+
 ## How fast the mote's heading turns toward the player.
 @export var turn_degrees_per_second := 240.0
 
@@ -21,6 +24,8 @@ const ATTRACT_DELAY := 2.0
 @export var attract_speed := 500.0
 
 @export var sprite: Sprite2D
+@export var glow: Sprite2D
+@export var trail: Line2D
 
 ## Soul carried by this individual mote
 var soul_value := 0
@@ -37,8 +42,11 @@ var _age := 0.0
 func _ready() -> void:
 	_heading = initial_heading
 	body_entered.connect(_on_body_entered)
-	if sprite != null:
-		sprite.modulate = DENOMINATION_COLORS.get(soul_value, Color.WHITE)
+
+	var color: Color = DENOMINATION_COLORS.get(soul_value, Color.WHITE)
+	sprite.modulate = color
+	glow.modulate = color
+	trail.default_color = color
 
 
 func _physics_process(delta: float) -> void:
@@ -52,6 +60,13 @@ func _physics_process(delta: float) -> void:
 		_speed = lerpf(BURST_SPEED, BURST_END_SPEED, decel_fraction)
 
 	global_position += _heading * _speed * delta
+	_update_trail()
+
+
+func _update_trail() -> void:
+	trail.add_point(global_position)
+	while trail.get_point_count() > TRAIL_LENGTH:
+		trail.remove_point(0)
 
 
 func _steer(delta: float) -> void:
