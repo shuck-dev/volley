@@ -1,9 +1,7 @@
 **[Home](Home)**
 
-**Start here**
-- [North Star](North-Star)
-- [Roadmap](Roadmap)
-- [Story](Story)
+**Contributing**
+- [CONTRIBUTING.md](https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md)
 
 **The game**
 - [Ball](Ball)
@@ -16,8 +14,9 @@
 - [Partner](Partner)
 - [Save](Save)
 - [Idle](Idle)
+- [Story](Story)
 
-**The people**
+**The Cast**
 - [Characters](Characters)
 - [Protagonist](Characters-Protagonist)
 - [Shopkeeper](Characters-Shopkeeper)
@@ -26,20 +25,20 @@
 - [Fern](Characters-Fern)
 - [Partners](Characters-Partners)
 
-**Craft**
-- [Art](Art)
-- [Art Bible](Art-Bible)
-- [Artist Brief](Art-Brief)
-- [Audio](Audio)
-
-**Working**
+**Process**
 - [Process](Process)
 - [Ticket Writing](Process-Ticket-Writing)
 - [Labels](Process-Labels)
 - [Code Style](Process-Code-Style)
-- [CI](Ci)
+- [Art](Process-Art)
+- [Art Bible](Process-Art-Bible)
+- [Artist Brief](Process-Art-Brief)
+- [Audio](Process-Audio)
+- [Continuous integration](Ci)
 
 **Reference**
 - [Spikes](Spikes)
 - [Research](Research)
 - [The Case for Open Development](Research-the-Case-for-Open-Development)
+- [North Star](North-Star)
+- [Roadmap](Roadmap)

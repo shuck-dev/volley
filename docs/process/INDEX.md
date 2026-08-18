@@ -1,6 +1,12 @@
 # Process
 
-How the team writes, files, and runs the work.
+How the work gets made: writing it down, filing it, building it, and the craft disciplines that feed it.
+
+| Area | What lives there |
+|---|---|
+| [Art](art/INDEX.md) | The visual direction, the pipeline, the references. |
+| [Audio](audio/INDEX.md) | The score, the sound design, the engine seam. |
+| [Continuous integration](../ci/INDEX.md) | Assets, the LFS proxy, exports. |
 
 | Doc | Purpose |
 |---|---|
@@ -13,3 +19,6 @@ How the team writes, files, and runs the work.
 | [Project Management](project-management.md) | How projects get sized, split, and retired. |
 | [Rituals Calendar](rituals-calendar.md) | The recurring beats: cycles and their Mondays. |
 | [Shuck Month](shuck-month.md) | The cycle and month rhythm. |
+| [Secrets](secrets.md) | Keeping API keys out of world-readable files and out of the repo. |
+| [Make Fun](make-fun.md) | The playtest and tuning pass. |
+| [Itch Description](itch-description.md) | The store page copy. |

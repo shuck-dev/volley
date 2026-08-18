@@ -1,4 +1,4 @@
-# CI
+# Continuous integration
 
 The build and delivery pipeline. How assets get to the game, and how the game gets to a player.
 

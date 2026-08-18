@@ -4,6 +4,10 @@ Volley! is a desktop idle game shaped like a tennis rally. The ball goes back an
 
 Underneath the loop sits a story the player meets gradually. Cracks accumulate. The second layer earns its weight by the time the player can read it. What the rally already gave stays earned. The game holds for both readers: someone who only wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for.
 
+## Contributing
+
+[CONTRIBUTING.md](https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md) is the front door: picking up a ticket, running the project, opening a PR, signing off. Read that first, then come back here for the thing you are working on.
+
 ## How these docs work
 
 One page per thing. If you want to know how the ball works, read [Ball](ball/INDEX.md). If you want to know who Zach is, read [Shopkeeper](characters/shopkeeper.md).
@@ -11,16 +15,6 @@ One page per thing. If you want to know how the ball works, read [Ball](ball/IND
 Each page runs from the outside in: what the thing is in the fiction, then how it is designed to play, then how it is built. Read as far down as you need and stop.
 
 **These docs describe the game that exists.** Construction is what is built, so Construction is what is written down. Acts past it are not documented until they are real, and a feature nobody has built does not get a page. When something is cut from the game it is cut from here too.
-
-## Where to start
-
-An **engineer** new to the codebase: [North Star](north-star.md), then the entity page for whatever you are touching.
-
-An **artist** picking up a brief: [Artist Brief](art/brief.md), then the [Art Bible](art/bible.md).
-
-Someone working on the **fiction**: [Story](story/INDEX.md) and the [Characters](characters/INDEX.md).
-
-An **open-source visitor**: [The Case for Open Development](research/the-case-for-open-development.md) is the project's published essay on why the work is in the open. [CONTRIBUTING.md](https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md) is the practical entry point.
 
 ## The game
 
@@ -36,8 +30,9 @@ An **open-source visitor**: [The Case for Open Development](research/the-case-fo
 | [Partner](partner/INDEX.md) | The rally partner and the AI behind them. |
 | [Save](save/INDEX.md) | The save format and how it versions. |
 | [Idle](idle/INDEX.md) | Play that continues without the player. |
+| [Story](story/INDEX.md) | Construction, as it stands. |
 
-## The people
+## The Cast
 
 | Page | Who |
 |---|---|
@@ -49,26 +44,22 @@ An **open-source visitor**: [The Case for Open Development](research/the-case-fo
 | [Fern](characters/fern.md) | The champion. |
 | [Partners](characters/partners.md) | The lineage rule and the wider cast. |
 
-## Craft
+## Process
 
-| Page | What it covers |
-|---|---|
-| [Art](art/INDEX.md) | The visual design, the pipeline, the references. |
-| [Audio](audio/INDEX.md) | The score, the sound design, the engine seam. |
-| [Story](story/INDEX.md) | Construction, as it stands. |
-
-## Working
+How the work gets made, from the ticket through to the build.
 
 | Page | What it covers |
 |---|---|
 | [Process](process/INDEX.md) | How the team writes, files, and runs the work. |
-| [CI](ci/INDEX.md) | Assets, the LFS proxy, exports. |
+| [Art](process/art/INDEX.md) | The visual design, the pipeline, the references. |
+| [Audio](process/audio/INDEX.md) | The score, the sound design, the engine seam. |
+| [Continuous integration](ci/INDEX.md) | Assets, the LFS proxy, exports. |
+
+## Reference
+
+| Page | What it covers |
+|---|---|
 | [Spikes](spikes/INDEX.md) | Decision records. Why a thing is the way it is. |
 | [Research](research/INDEX.md) | The public essay, plans, references, studies. |
-
-## Top-level
-
-| Doc | Purpose |
-|---|---|
 | [North Star](north-star.md) | What the game is, who it is for, what it asks of the player. |
 | [Roadmap](roadmap.md) | The five phases at a glance. |

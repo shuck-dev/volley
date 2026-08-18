@@ -52,7 +52,7 @@ The size gate blocks large binaries from plain git history, regardless of backen
 
 Commit the per-asset `.import` sidecars, ignore `.godot/imported/` (the binary cache). The size gate
 excludes `.import` files from its threshold. Import-settings detail lives in
-[art/tech-pipeline.md](../art/tech-pipeline.md#import), the home for import behaviour.
+[art/tech-pipeline.md](../process/art/tech-pipeline.md#import), the home for import behaviour.
 
 ## Infra
 

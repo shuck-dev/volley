@@ -2,7 +2,7 @@
 
 A racquet, a ball, a counter that climbs. Late afternoon light, a friend at a small wooden stall watching the rally, glad to be there. The score sits inside that picture and inside the picture that pulls the protagonist out of it. Two halves, two voices, a long arc where one half learns the other is there.
 
-This document is the team's opening position on the score, written for the composer reading it for the first time. Nothing here is settled. The references and principles are starting positions to argue against. What survives the composer's first pass becomes the next version. The world this music renders sits in [Story](../story/INDEX.md) and [`../art/bible.md`](../art/bible.md); the setting it shares with both lives at [Story](../story/INDEX.md) and [`../art/bible.md` § 2](../art/bible.md#2-setting-and-period). Those bibles are further along; when this document and they disagree on what a moment is, they win and the audio bends to fit.
+This document is the team's opening position on the score, written for the composer reading it for the first time. Nothing here is settled. The references and principles are starting positions to argue against. What survives the composer's first pass becomes the next version. The world this music renders sits in [Story](../../story/INDEX.md) and [the art bible](../art/bible.md); the setting it shares with both lives at [Story](../../story/INDEX.md) and [the art bible, Setting](../art/bible.md#2-setting-and-period). Those bibles are further along; when this document and they disagree on what a moment is, they win and the audio bends to fit.
 
 ## Construction
 
@@ -12,7 +12,7 @@ This is also the multi-genre half of the game. The opening proposal: an under-ut
 
 ## Cracks
 
-Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [`../art/bible.md` § 6](../art/bible.md#6-cracks-during-construction) holds the visual design; audio carries its half of the same accumulation.
+Reality leaks into Construction in two flavours, both authored, both deniable. The art bible at [Cracks](../art/bible.md#6-cracks-during-construction) holds the visual design; audio carries its half of the same accumulation.
 
 The discipline is the same as the visual one. The leak is never literal. The Reality theme does not arrive in Construction during the cracks. What arrives is the Construction music starting to sound like it knows it is the Construction music.
 
@@ -20,7 +20,7 @@ The discipline is the same as the visual one. The leak is never literal. The Rea
 
 The protagonist beats the record and duels the champ. The win lands wrong. The construct breaks open.
 
-The Construction theme stops. The art bible at [`../art/bible.md` § 7](../art/bible.md#7-the-break) holds the visual design for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
+The Construction theme stops. The art bible at [The break](../art/bible.md#7-the-break) holds the visual design for the rupture; the audio version is the absence of music against the air the visual gives it. The acoustic palette enters as room before it enters as music.
 
 ## Reconstruction
 
@@ -38,7 +38,7 @@ This is where the two themes meet for real. Restraint is what carries it. The fu
 
 ## Credits and postgame
 
-Credits play over a rally. The art bible at [`../art/bible.md` § 10](../art/bible.md#10-credits-and-postgame) holds the picture. The audio sits in synthesis at exactly the visual moment of synthesis. The two themes that did not know each other in Part 1 share a single arrangement now.
+Credits play over a rally. The art bible at [Credits](../art/bible.md#10-credits-and-postgame) holds the picture. The audio sits in synthesis at exactly the visual moment of synthesis. The two themes that did not know each other in Part 1 share a single arrangement now.
 
 Postgame keeps both palettes available. Neither is the substitute any more.
 

@@ -2,7 +2,7 @@
 
 How the bible's two voices live in the music: the themes and how they meet across the arc.
 
-The arc itself sits in [Story](../story/INDEX.md) and [`../art/bible.md`](../art/bible.md). This document maps the score onto the same beats those bibles use, so the music tracks the picture and the prose without inventing its own structure. Like the [bible](bible.md), this is the team's opening position; the per-beat shapes are the composer's.
+The arc itself sits in [Story](../../story/INDEX.md) and [the art bible](../art/bible.md). This document maps the score onto the same beats those bibles use, so the music tracks the picture and the prose without inventing its own structure. Like the [bible](bible.md), this is the team's opening position; the per-beat shapes are the composer's.
 
 ## Two themes
 
