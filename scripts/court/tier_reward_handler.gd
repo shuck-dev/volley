@@ -5,6 +5,9 @@ extends Node
 
 @export var soul_burst_handler: SoulBurstHandler
 
+## Delay between the shake cue and the motes actually spawning.
+@export var burst_delay: float = 1
+
 
 ## Computes the consolidation reward for whichever ball crossed a tier and hands it to
 ## soul_burst_handler for delivery; the burst handler is what actually pays it out.
@@ -16,5 +19,9 @@ func on_tier_advanced(ball: Ball, _new_tier: int) -> void:
 
 	var payout := roundi(ball.accumulated_soul * ball.get_stats().consolidation_multiplier)
 	ball.reset_accumulated_soul()
+
+	await get_tree().create_timer(burst_delay).timeout
+	if not is_instance_valid(ball) or not is_instance_valid(soul_burst_handler):
+		return
 
 	soul_burst_handler.release_burst(ball, payout)
