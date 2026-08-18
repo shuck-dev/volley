@@ -8,7 +8,7 @@ The paddle is a tool the player aims with. Where the ball touches the paddle dec
 
 ## Genre convention
 
-Volley's bounce replaces the incoming angle rather than reflecting it. That's the natural shape for the genre; preserving the incoming angle is the unnatural one. See [`designs/research/paddle-bounce.md`](../research/paddle-bounce.md) for the survey and citations.
+Volley's bounce replaces the incoming angle rather than reflecting it. That's the natural shape for the genre; preserving the incoming angle is the unnatural one. See [the paddle bounce survey](../research/paddle-bounce.md) for the survey and citations.
 
 ## Geometry
 

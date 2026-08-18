@@ -2,7 +2,7 @@
 
 Decision records. Each one is a question that was open, the options weighed, and what was chosen.
 
-A spike is reference work: it stands on its own and is read on its own terms. The entity pages state their settled design without pointing here, so nothing in the wiki depends on reading a spike first. Come here when you want to know why a thing is the way it is.
+A spike is reference work: it stands on its own and is read on its own terms. Each page states its settled design without pointing here, so nothing in the wiki depends on reading a spike first. Come here when you want to know why a thing is the way it is.
 
 | Spike | The question it settled |
 |---|---|

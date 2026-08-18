@@ -24,7 +24,7 @@ A question that can't be answered without exploring code, prototyping, or resear
 
 **Entry.** The question, time-boxed. "Is the AI prediction good enough for two balls?" is a spike. "Can we use Godot 4.5's new audio bus features?" is a spike. "Walk the new contributor onboarding cold and see where it breaks" is a spike.
 
-**Shape.** A scratchpad writeup by default (promoted to [`designs/research/`](../research/) only when the work earns it) and often a throwaway prototype branch. The prototype is for evidence, not for merging.
+**Shape.** A scratchpad writeup by default (promoted to [the research folder](../research/) only when the work earns it) and often a throwaway prototype branch. The prototype is for evidence, not for merging.
 
 **Deliverable.** **Feature issues filed in Linear.** The writeup is a vehicle; the tickets are what carries the value forward. A spike that ends without feature issues is unfinished, the question got answered, but nothing acts on the answer.
 
@@ -41,7 +41,7 @@ A player-facing capability or a refactor whose blast radius crosses multiple fil
 **Shape.** Four phases:
 
 1. **Frame.** Name the player-visible outcome.
-2. **Design pass.** End-state architecture in a tech doc under [`designs/01-prototype/tech/`](../01-prototype/tech/); player-facing design (if separate) under [`designs/01-prototype/design/`](../01-prototype/design/). Decisions land in the doc, not in chat.
+2. **Design pass.** The end state goes on the page for the thing it changes, fiction first, then design, then how it is built. A decision with options worth recording gets a spike. Decisions land in the doc, not in chat.
 3. **Plan.** A sequenced plan with blast-radius analysis, scoped per PR. Open design calls surface for Josh to decide, then fold back into the plan.
 4. **Build.** Each plan step lands as its own challenge, stacked when steps depend on each other. Every challenge ships as a draft, runs static checks and GUT, and is reviewed before it merges. When the stack is ready, it folds into the parent feature branch; Josh validates player-feel at runtime.
 

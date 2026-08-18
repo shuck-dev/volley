@@ -1,8 +1,8 @@
-# Ball Lifecycle
+# Ball
 
-Implementation spec for the single-entity ball model. Court-bound mechanics live in [`01-court-control.md`](../court/INDEX.md).
+How a ball behaves from the moment it exists to the moment it rests. Court-bound mechanics live in [Court](../court/INDEX.md).
 
-## One entity, many states
+## One node, many states
 
 A ball is a single `Ball` node for its entire lifetime, across rack-stored, in-play, mid-arc, held, and resting phases. `Ball.play_state` drives physics and presentation. Transitions swap properties on the same body.
 
