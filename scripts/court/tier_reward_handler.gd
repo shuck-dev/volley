@@ -9,8 +9,7 @@ extends Node
 @export var burst_delay := 1.0
 
 
-## Computes the consolidation reward for whichever ball crossed a tier and hands it to
-## soul_burst_handler for delivery; the burst handler is what actually pays it out.
+## Computes the consolidation reward for whichever ball crossed a tier.
 func on_tier_advanced(ball: Ball, _new_tier: int) -> void:
 	if ball == null:
 		return

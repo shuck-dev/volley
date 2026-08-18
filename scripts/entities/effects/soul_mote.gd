@@ -7,14 +7,14 @@ const DENOMINATION_COLORS: Dictionary[int, Color] = {
 	1: Color(1.0, 1.0, 1.0),
 }
 
-## Initial speed the mote carries from its burst heading; decelerates toward BURST_END_SPEED.
+## Initial speed the mote carries from its burst heading, decelerates toward BURST_END_SPEED.
 const BURST_SPEED := 180.0
 const BURST_END_SPEED := 20.0
 
-## How long the mote flies on its burst heading before attraction starts steering it.
+## How long the mote flies on its burst heading before becoming attracted.
 const ATTRACT_DELAY := 2.0
 
-## How many recent positions the trail keeps before the oldest point drops off.
+## How many positions the trail keeps before destroying the oldest.
 const TRAIL_LENGTH := 12
 
 ## How fast the mote's heading turns toward the player.
@@ -27,11 +27,10 @@ const TRAIL_LENGTH := 12
 @export var glow: Sprite2D
 @export var trail: Line2D
 
-## Soul carried by this individual mote
+## Soul carried by the mote
 var soul_value := 0
 
-## Direction this mote starts with; set by SoulBurstHandler so a burst's motes fan out in
-## a star pattern instead of overlapping on one heading.
+## Direction the mote starts.
 var initial_heading := Vector2.RIGHT
 
 var _heading: Vector2
@@ -60,11 +59,13 @@ func _physics_process(delta: float) -> void:
 		_speed = lerpf(BURST_SPEED, BURST_END_SPEED, deceleration_fraction)
 
 	global_position += _heading * _speed * delta
+
 	_update_trail()
 
 
 func _update_trail() -> void:
 	trail.add_point(global_position)
+
 	while trail.get_point_count() > TRAIL_LENGTH:
 		trail.remove_point(0)
 
