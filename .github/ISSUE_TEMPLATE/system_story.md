@@ -3,7 +3,7 @@ name: System Story
 about: Internal capability or asset (use for feature, concept, asset, sfx, spec)
 ---
 
-<!-- Guide: designs/process/ticket-writing.md -->
+<!-- Guide: docs/process/ticket-writing.md -->
 
 [ACTION-VERB] [statement of what the system or asset does]
 So that [benefit or reason]

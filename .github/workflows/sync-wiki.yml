@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'designs/**/*.md'
+      - 'docs/**/*.md'
       - '.github/workflows/sync-wiki.yml'
       - '.github/scripts/title_case.py'
   workflow_dispatch:
@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   sync:
-    name: Mirror designs to wiki
+    name: Mirror docs to wiki
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # contents: write is what lets the github-actions bot push to the
@@ -31,7 +31,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Mirror designs/ into wiki/
+      - name: Mirror docs/ into wiki/
         run: |
           set -euo pipefail
           shopt -s globstar nullglob
@@ -74,11 +74,11 @@ jobs:
                 my @combined = (@dir, @parts);
                 my $target;
                 if (@combined > 1 && $combined[-1] eq "INDEX") {
-                  # designs/<sub>/INDEX.md publishes as <Sub>.md.
+                  # docs/<sub>/INDEX.md publishes as <Sub>.md.
                   pop @combined;
                   $target = title_case(join("-", @combined));
                 } elsif (@combined == 1 && $combined[0] eq "INDEX") {
-                  # designs/INDEX.md publishes as Home.
+                  # docs/INDEX.md publishes as Home.
                   $target = "Home";
                 } else {
                   $target = title_case(join("-", @combined));
@@ -101,13 +101,13 @@ jobs:
             python3 "${GITHUB_WORKSPACE}/.github/scripts/title_case.py" "$1"
           }
 
-          for src in designs/**/*.md; do
-            rel="${src#designs/}"
+          for src in docs/**/*.md; do
+            rel="${src#docs/}"
             [ "$rel" = "INDEX.md" ] && continue
             dir="$(dirname "$rel")"
             base="$(basename "$rel")"
             if [ "$base" = "INDEX.md" ] && [ "$dir" != "." ]; then
-              # designs/<sub>/INDEX.md becomes wiki/<Sub>.md so the wiki page
+              # docs/<sub>/INDEX.md becomes wiki/<Sub>.md so the wiki page
               # title is "Sub" instead of "sub-INDEX".
               flat="$(title_case "${dir//\//-}").md"
             else
@@ -118,8 +118,8 @@ jobs:
             copy_with_rewrite "$src" "wiki/$flat" "$dir"
           done
 
-          if [ -f designs/INDEX.md ]; then
-            copy_with_rewrite designs/INDEX.md wiki/Home.md ""
+          if [ -f docs/INDEX.md ]; then
+            copy_with_rewrite docs/INDEX.md wiki/Home.md ""
           fi
 
       - name: Publish wiki

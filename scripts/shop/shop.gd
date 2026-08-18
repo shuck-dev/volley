@@ -1,7 +1,7 @@
 class_name Shop
 extends Node2D
 
-## Diegetic shop in the venue; see designs/01-prototype/08-shop.md.
+## Diegetic shop in the venue; see docs/shop/INDEX.md.
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")

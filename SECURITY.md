@@ -12,7 +12,7 @@ In scope:
 
 Out of scope:
 
-- Design documents in [`designs/`](designs/) and other written content.
+- Design documents in [`docs/`](docs/) and other written content.
 - Third-party services the project links to (itch.io, GitHub, Linear). Report those to the vendors directly.
 - Bugs that are not security issues. File those as regular issues on GitHub.
 
