@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="8_qo0oe"]
 [ext_resource type="PackedScene" uid="uid://dqk1c8m7lwrvj" path="res://scenes/ball_kit.tscn" id="9_ballkit"]
-[ext_resource type="Texture2D" path="res://assets/garden/garden_sketch.png" id="9_o1mbd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s1xkn"]
 size = Vector2(4000, 40)
@@ -141,13 +140,3 @@ physics_material_override = ExtResource("8_qo0oe")
 [node name="CollisionShape" type="CollisionShape2D" parent="VenueFloor/FloorCollision" unique_id=1701255113]
 position = Vector2(0, 162.5)
 shape = SubResource("RectangleShape2D_o1mbd")
-
-[node name="TextureRect" type="TextureRect" parent="." unique_id=1245905831]
-z_index = -100
-layout_mode = 0
-offset_left = -881.0
-offset_top = -520.0
-offset_right = 1819.0
-offset_bottom = 1640.0
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("9_o1mbd")
