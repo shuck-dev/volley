@@ -4,6 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://c3n0vt2mith7b" path="res://assets/sfx/paddle_hit_3_clean_tick.sfxr" id="2_sfxr"]
 [ext_resource type="Script" uid="uid://c8iymx66khaof" path="res://scripts/core/hit_tracker.gd" id="3_mo4dg"]
 [ext_resource type="SpriteFrames" uid="uid://bsam001anim01" path="res://resources/animations/sam.tres" id="4_samframes"]
+[ext_resource type="Script" uid="uid://rjwckeufs7oj" path="res://scripts/entities/effects/soul_catcher.gd" id="7_8ruhj"]
 [ext_resource type="Script" uid="uid://bqb2k2jh41jwo" path="res://scripts/components/hover_bob.gd" id="11_lx3j3"]
 [ext_resource type="Script" uid="uid://dfc28jj4bws1v" path="res://scripts/entities/racket_hitbox.gd" id="12_rckthbx"]
 
@@ -16,12 +17,15 @@ size = Vector2(21, 128.1225)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qaqj4"]
 radius = 110.89
 
-[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "mid_anchor", "hit_sound", "sprite", "tracker", "racket_hitbox", "swing_zone", "ground_ray")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sm6h2"]
+
+[node name="PlayerPaddle" type="CharacterBody2D" unique_id=1437655624 node_paths=PackedStringArray("low_anchor", "mid_anchor", "soul_catcher", "hit_sound", "sprite", "tracker", "racket_hitbox", "swing_zone", "ground_ray")]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_mo4dg")
 low_anchor = NodePath("LowRacketAnchor")
 mid_anchor = NodePath("MidRacketAnchor")
+soul_catcher = NodePath("SoulCatcher")
 hit_sound = NodePath("HitSound")
 sprite = NodePath("Sprite")
 tracker = NodePath("HitTracker")
@@ -80,3 +84,11 @@ target_position = Vector2(0, 10)
 [node name="HoverBob" type="Node" parent="." unique_id=519261022 node_paths=PackedStringArray("sprite")]
 script = ExtResource("11_lx3j3")
 sprite = NodePath("../Sprite")
+
+[node name="SoulCatcher" type="StaticBody2D" parent="." unique_id=862465815]
+collision_layer = 32
+script = ExtResource("7_8ruhj")
+metadata/_custom_type_script = "uid://rjwckeufs7oj"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SoulCatcher" unique_id=1061200408]
+shape = SubResource("RectangleShape2D_sm6h2")

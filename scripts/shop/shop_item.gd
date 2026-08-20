@@ -4,12 +4,12 @@ extends Node2D
 signal pickup_started(ball_key: String)
 signal drop_completed(ball_key: String, position: Vector2, purchased: bool)
 
-## Raised when the player goes to buy an item.
+## Raised when the player goes to purchase an item.
 signal grabbed(item: ShopItem)
 signal dropped(item: ShopItem)
 
-## Raised when a bought ball never reached a target, so its soul is owed back.
-signal refund_owed(item: ShopItem, amount: int)
+## Raised when this item's soul is owed back, part-streamed or fully paid.
+signal refund_owed(item: ShopItem)
 
 @export var pickup_area: Area2D
 @export var case_overlay: Node2D
@@ -28,6 +28,9 @@ var _held: bool = false
 ## Set once the price has streamed in, until the ball is dropped or refunded.
 var _is_paid: bool = false
 
+## Set while this item's soul is streaming back to the counter.
+var _is_refunding: bool = false
+
 
 func _ready() -> void:
 	if _ball_manager == null:
@@ -44,7 +47,8 @@ func _ready() -> void:
 
 ## A restock can free the item mid-gesture; paid soul goes back rather than vanishing.
 func _exit_tree() -> void:
-	_refund_if_paid()
+	if _is_paid:
+		refund()
 
 
 func _process(_delta: float) -> void:
@@ -116,9 +120,11 @@ func accept_payment() -> void:
 	_start_drag()
 
 
-## The Shop calls this when the hold ended without buying anything.
-func abandon_payment() -> void:
-	_held = false
+## The Shop calls this once the refunded soul has finished streaming home.
+func settle_refund() -> void:
+	_is_refunding = false
+
+	_refresh_case_overlay()
 
 
 ## Test seam / production entry. Begins the held-token gesture from the item's current spot.
@@ -162,7 +168,9 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 
 		# Nothing accepted the ball, so the gesture is over and the soul goes back.
 		if not spawned:
-			_refund_if_paid()
+			if _is_paid:
+				refund()
+
 			_finalise_gesture(release_position, false)
 			visible = true
 
@@ -176,7 +184,9 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 
 		return true
 
-	_refund_if_paid()
+	if _is_paid:
+		refund()
+
 	_finalise_gesture(release_position, false)
 	visible = true
 	return true
@@ -254,15 +264,17 @@ func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 	drop_completed.emit(ball_definition.key, release_position, purchased)
 
 
-## A paid ball that never reached a target still belongs to the player. The soul
-## streams back out of the item unless it is leaving the tree, which cannot spawn.
-func _refund_if_paid() -> void:
-	if not _is_paid:
+## Sends this item's soul back, whether it was fully paid or still streaming in.
+## The amount is the handler's to know, since a part-streamed price took less.
+func refund() -> void:
+	if _is_refunding:
 		return
 
-	refund_owed.emit(self, purchase_price())
-
+	_held = false
 	_is_paid = false
+	_is_refunding = true
+
+	refund_owed.emit(self)
 
 
 func _start_drag() -> void:
@@ -333,4 +345,9 @@ func _on_item_level_changed(ball_key: String) -> void:
 func _refresh_case_overlay() -> void:
 	if case_overlay == null:
 		return
+
+	# Soul moving through this item is its own price, so it never cases itself.
+	if _held or _is_paid or _is_refunding:
+		return
+
 	case_overlay.visible = not can_be_owned()
