@@ -7,6 +7,9 @@ signal drop_completed(ball_key: String, position: Vector2, purchased: bool)
 @export var pickup_area: Area2D
 @export var case_overlay: Node2D
 
+## Catcher the purchase motes land on while the player holds the ball.
+@export var soul_catcher: SoulCatcher
+
 var ball_definition: BallDefinition
 
 var _ball_manager: BallManager
@@ -14,6 +17,10 @@ var _ball_instance: Node
 var _shop_area: Area2D
 var _held_token: Node2D = null
 var _mouse_button_down: bool = false
+var _buy_handler: SoulBuyHandler = null
+var _filling: bool = false
+var _paid: bool = false
+var _paid_price: int = 0
 
 
 func _ready() -> void:
@@ -27,6 +34,11 @@ func _ready() -> void:
 	_ball_manager.item_level_changed.connect(_on_item_level_changed)
 
 	_refresh_case_overlay()
+
+
+## A restock can free the item mid-gesture; paid soul goes back rather than vanishing.
+func _exit_tree() -> void:
+	_refund_if_paid()
 
 
 func _process(_delta: float) -> void:
@@ -50,6 +62,11 @@ func _input(event: InputEvent) -> void:
 		return
 
 	_mouse_button_down = mouse_button.pressed
+
+	if not mouse_button.pressed and _filling:
+		_cancel_fill()
+
+		return
 
 	if mouse_button.pressed or _held_token == null:
 		return
@@ -79,6 +96,11 @@ func can_be_owned() -> bool:
 	return _ball_manager.can_acquire(ball_definition.key)
 
 
+## The Shop scene injects its handler so every item drains into the same counter.
+func bind_buy_handler(handler: SoulBuyHandler) -> void:
+	_buy_handler = handler
+
+
 ## Test seam / production entry. Begins the held-token gesture from the item's current spot.
 func start_drag() -> bool:
 	if _held_token != null:
@@ -100,7 +122,9 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 
 	var inside_shop: bool = _is_position_inside_shop(release_position)
 	if not inside_shop:
-		if not can_be_owned():
+		# The fill already took the soul, so affordability is settled; re-checking it
+		# here would refuse the ball to a player who spent their last soul on it.
+		if not _paid and not can_be_owned():
 			_finalise_gesture(release_position, false)
 			visible = true
 			return true
@@ -115,8 +139,17 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 		var spawned: bool = _purchase_and_spawn(
 			controller, release_position, resolved_screen_position
 		)
+
+		# Nothing accepted the ball, so the gesture is over and the soul goes back.
 		if not spawned:
-			return false
+			_refund_if_paid()
+			_finalise_gesture(release_position, false)
+			visible = true
+
+			return true
+
+		_paid = false
+		_paid_price = 0
 
 		_finalise_gesture(release_position, true)
 
@@ -124,6 +157,7 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 
 		return true
 
+	_refund_if_paid()
 	_finalise_gesture(release_position, false)
 	visible = true
 	return true
@@ -134,7 +168,7 @@ func _purchase_and_spawn(
 	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
 ) -> bool:
 	if controller.kit.can_accept(ball_definition.key, screen_position):
-		var kit_instance_key: String = _ball_manager.take(ball_definition.key)
+		var kit_instance_key: String = _ball_manager.take_paid(ball_definition.key)
 		if kit_instance_key.is_empty():
 			return false
 		return controller.kit.try_accept(kit_instance_key, screen_position)
@@ -143,7 +177,7 @@ func _purchase_and_spawn(
 	if target == null:
 		return false
 
-	var instance_key: String = _ball_manager.take(ball_definition.key)
+	var instance_key: String = _ball_manager.take_paid(ball_definition.key)
 	if instance_key.is_empty():
 		return false
 
@@ -176,8 +210,8 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 
-	if mouse_button.pressed and can_be_owned() and _held_token == null:
-		_start_drag()
+	if mouse_button.pressed and can_be_owned() and _held_token == null and not _filling:
+		_start_fill()
 
 
 func _drag_controller() -> ItemDragController:
@@ -196,6 +230,56 @@ func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 		_held_token.queue_free()
 	_held_token = null
 	drop_completed.emit(ball_definition.key, release_position, purchased)
+
+
+## Holds the ball in its slot while the price streams into it; the drag only
+## begins once the last mote lands, so an early release costs the player nothing.
+func _start_fill() -> void:
+	_filling = true
+	_mouse_button_down = true
+	_paid_price = _ball_manager.calculate_for_purchase(ball_definition.key)
+
+	if not _buy_handler.fill_completed.is_connected(_on_fill_completed):
+		_buy_handler.fill_completed.connect(_on_fill_completed)
+
+	if not _buy_handler.fill_cancelled.is_connected(_on_fill_cancelled):
+		_buy_handler.fill_cancelled.connect(_on_fill_cancelled)
+
+	_buy_handler.begin_fill(soul_catcher, _paid_price)
+
+
+func _cancel_fill() -> void:
+	_buy_handler.cancel_fill()
+
+
+## A paid ball that never reached a target still belongs to the player. The soul
+## streams back out of the item unless it is leaving the tree, which cannot spawn.
+func _refund_if_paid() -> void:
+	if not _paid:
+		return
+
+	if _buy_handler != null and soul_catcher != null and is_inside_tree():
+		_buy_handler.refund_from(soul_catcher.global_position, _paid_price)
+	else:
+		_ball_manager.refund_soul(_paid_price)
+
+	_paid = false
+	_paid_price = 0
+
+
+func _on_fill_completed() -> void:
+	if not _filling:
+		return
+
+	_filling = false
+	_paid = true
+
+	_start_drag()
+
+
+func _on_fill_cancelled() -> void:
+	_filling = false
+	_paid_price = 0
 
 
 func _start_drag() -> void:

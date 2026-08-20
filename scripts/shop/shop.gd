@@ -12,6 +12,9 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 @export var items_anchor: Node2D
 @export var restock_button: Button
 
+## Drains a purchase price out of the counter; shared, since only one item is held at a time.
+@export var buy_handler: SoulBuyHandler
+
 var _ball_manager: BallManager
 var _refresh_count: int = 0
 
@@ -45,6 +48,7 @@ func _spawn_items() -> void:
 		items_anchor.add_child(shop_item)
 		shop_item.configure(_ball_manager, definition)
 		shop_item.bind_shop_area(shop_area)
+		shop_item.bind_buy_handler(buy_handler)
 
 
 func _get_item_pool() -> Array[BallDefinition]:
