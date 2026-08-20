@@ -5,8 +5,7 @@ extends Node
 ## The counter ticks down as each mote leaves and back up as a refunded one
 ## departs, so the number always tracks soul that is visibly in flight.
 
-signal fill_completed
-signal fill_cancelled
+signal buy_completed
 
 const MOTE_SCENE: PackedScene = preload("res://scenes/effects/soul_mote.tscn")
 
@@ -29,30 +28,30 @@ var _target_catcher: SoulCatcher = null
 var _outstanding_motes: int = 0
 var _refunding: bool = false
 var _spent: int = 0
-var _fill_generation: int = 0
+var _buy_generation: int = 0
 
 
 ## Begins draining `price` from the counter into `catcher`. One mote per denomination.
-func begin_fill(catcher: SoulCatcher, price: int) -> void:
+func begin_buy(catcher: SoulCatcher, price: int) -> void:
 	var values: Array[int] = SoulBurstMath.split(price)
 
-	# A free item has no soul to move, so the fill is already done.
+	# A free item has no soul to move, so the purchase is already done.
 	if values.is_empty():
-		fill_completed.emit()
+		buy_completed.emit()
 
 		return
 
-	_fill_generation += 1
+	_buy_generation += 1
 	_target_catcher = catcher
 	_refunding = false
 	_outstanding_motes = values.size()
 
-	var generation: int = _fill_generation
+	var generation: int = _buy_generation
 
 	for value in values:
 		# A cancel resets the shared flags, so the loop tracks its own generation to
 		# know it is stale; spawn against the parameter for the same reason.
-		if generation != _fill_generation or not is_inside_tree():
+		if generation != _buy_generation or not is_inside_tree():
 			return
 
 		if not is_instance_valid(catcher):
@@ -64,13 +63,13 @@ func begin_fill(catcher: SoulCatcher, price: int) -> void:
 
 
 ## Sends every soul taken so far back out, as motes that credit once they leave.
-func cancel_fill() -> void:
+func cancel_buy() -> void:
 	if _refunding or _outstanding_motes == 0:
 		return
 
 	_refunding = true
 	# Retires the in-flight spawn loop, which outlives the flags that _reset clears.
-	_fill_generation += 1
+	_buy_generation += 1
 
 	var owed: int = _spent
 
@@ -86,8 +85,6 @@ func cancel_fill() -> void:
 		refund_from(_target_catcher.global_position, owed)
 
 	_reset()
-
-	fill_cancelled.emit()
 
 
 ## Streams `amount` back out from `origin`, one mote per soul, each returning its
@@ -114,7 +111,7 @@ func refund_from(origin: Vector2, amount: int) -> void:
 		await get_tree().create_timer(SPAWN_INTERVAL).timeout
 
 
-func is_filling() -> bool:
+func is_buying() -> bool:
 	return _outstanding_motes > 0
 
 
@@ -158,7 +155,7 @@ func _on_mote_arrived(_soul_value: int) -> void:
 		_reset()
 		# Arrival runs inside the physics flush, where spawning the ball cannot
 		# touch collision state; hand completion to the next idle frame.
-		fill_completed.emit.call_deferred()
+		buy_completed.emit.call_deferred()
 
 
 ## Refunded soul lands back in the counter as the mote leaves the screen.

@@ -17,6 +17,7 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 
 var _ball_manager: BallManager
 var _refresh_count: int = 0
+var _buying_item: ShopItem = null
 
 
 func _ready() -> void:
@@ -26,6 +27,7 @@ func _ready() -> void:
 		_ball_manager = BallManager
 	_ball_manager.soul_balance_changed.connect(_on_soul_balance_changed)
 	_ball_manager.item_level_changed.connect(_on_item_level_changed)
+	buy_handler.buy_completed.connect(_on_buy_completed)
 	_update_soul_label(_ball_manager.get_soul_balance())
 	_spawn_items()
 	if restock_button != null:
@@ -48,7 +50,9 @@ func _spawn_items() -> void:
 		items_anchor.add_child(shop_item)
 		shop_item.configure(_ball_manager, definition)
 		shop_item.bind_shop_area(shop_area)
-		shop_item.bind_buy_handler(buy_handler)
+		shop_item.grabbed.connect(_on_item_grabbed)
+		shop_item.dropped.connect(_on_item_dropped)
+		shop_item.refund_owed.connect(_on_item_refund_owed)
 
 
 func _get_item_pool() -> Array[BallDefinition]:
@@ -58,6 +62,8 @@ func _get_item_pool() -> Array[BallDefinition]:
 
 
 func _clear_items() -> void:
+	_buying_item = null
+
 	for child: Node in items_anchor.get_children():
 		items_anchor.remove_child(child)
 		child.free()
@@ -84,6 +90,45 @@ func _calculate_restock_cost() -> int:
 		if shop_item != null and shop_item.ball_definition != null:
 			total += shop_item.ball_definition.base_cost
 	return max(1, ceili(total * config.restock_cost_multiplier))
+
+
+func _on_item_grabbed(item: ShopItem) -> void:
+	if _buying_item != null:
+		return
+
+	_buying_item = item
+
+	buy_handler.begin_buy(item.soul_catcher, item.purchase_price())
+
+
+func _on_item_dropped(item: ShopItem) -> void:
+	if _buying_item != item:
+		return
+
+	_buying_item = null
+
+	buy_handler.cancel_buy()
+
+	item.abandon_payment()
+
+
+func _on_buy_completed() -> void:
+	if _buying_item == null:
+		return
+
+	var item: ShopItem = _buying_item
+
+	_buying_item = null
+
+	item.accept_payment()
+
+
+## An item leaving the tree cannot spawn motes, so that soul goes straight back.
+func _on_item_refund_owed(item: ShopItem, amount: int) -> void:
+	if item.is_inside_tree():
+		buy_handler.refund_from(item.soul_catcher.global_position, amount)
+	else:
+		_ball_manager.refund_soul(amount)
 
 
 func _on_restock_pressed() -> void:
