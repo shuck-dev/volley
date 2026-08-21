@@ -52,14 +52,23 @@ func _update_trail() -> void:
 		trail.remove_point(0)
 
 
-## Turns the heading toward `destination`, capped by the mote's turn rate.
-func _steer_toward(destination: Vector2, delta: float) -> void:
-	var target_direction: Vector2 = (destination - global_position).normalized()
+## Turns the heading toward `destination`, capped by a turn rate that lifts up close.
+func _steer_toward(destination: Vector2, delta: float, speed: float) -> void:
+	var to_destination: Vector2 = destination - global_position
+	var target_direction: Vector2 = to_destination.normalized()
 
 	if target_direction == Vector2.ZERO:
 		return
 
-	var max_turn_radians := deg_to_rad(turn_degrees_per_second) * delta
+	var turn_degrees: float = turn_degrees_per_second
+	var turning_radius: float = speed / deg_to_rad(turn_degrees_per_second)
+	var distance: float = to_destination.length()
+
+	# A destination inside the turning circle cannot be reached, only orbited.
+	if distance < turning_radius:
+		turn_degrees *= turning_radius / maxf(distance, 1.0)
+
+	var max_turn_radians := deg_to_rad(turn_degrees) * delta
 	var turn_radians := clampf(
 		_heading.angle_to(target_direction), -max_turn_radians, max_turn_radians
 	)

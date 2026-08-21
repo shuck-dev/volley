@@ -111,7 +111,7 @@ func _on_item_grabbed(item: ShopItem) -> void:
 
 	_purchasing_item = item
 
-	purchase_handler.begin_purchase(item.soul_catcher, item.purchase_price())
+	purchase_handler.drain_soul_purchase(item.soul_catcher, item.purchase_price())
 
 	_update_restock_button()
 
@@ -133,7 +133,8 @@ func _on_purchase_completed() -> void:
 
 	_purchasing_item = null
 
-	item.accept_payment()
+	# The last mote lands mid physics flush, where the ball's body cannot be built.
+	item.accept_payment.call_deferred()
 
 
 ## The ball was dropped outside the shop, so the purchase can be completed.
@@ -146,10 +147,8 @@ func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: b
 
 ## An item leaving the tree cannot spawn motes, so that soul goes straight back.
 func _on_item_refund_owed(item: ShopItem) -> void:
+	# Returns once this item's soul has finished streaming home.
 	await purchase_handler.refund(item.soul_catcher.global_position)
-
-	# Spawning ends before the last motes land, so wait for the soul to arrive.
-	await purchase_handler.refunds_settled
 
 	item.settle_refund()
 

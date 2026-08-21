@@ -52,7 +52,7 @@ func _float() -> void:
 
 ## Turns onto `destination` and winds back up to full speed.
 func _home(destination: Vector2, delta: float) -> void:
-	_steer_toward(destination, delta)
+	_steer_toward(destination, delta, _speed)
 
 	_speed = move_toward(_speed, attract_speed, attract_speed * delta)
 

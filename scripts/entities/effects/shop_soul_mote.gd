@@ -28,7 +28,7 @@ func fly_to(destination: Vector2) -> void:
 func _fly(delta: float) -> void:
 	var step: float = speed * delta
 
-	_steer_toward(_destination, delta)
+	_steer_toward(_destination, delta, speed)
 
 	global_position += _heading * step
 
