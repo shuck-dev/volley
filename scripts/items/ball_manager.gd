@@ -287,14 +287,14 @@ func add_soul(points: int) -> void:
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Returns spent soul without crediting `total_soul_earned`, so a cancelled
-## purchase cannot farm the shop unlock by holding and releasing repeatedly.
+## Returns spent soul without crediting total soul earned.
+## So a cancelled purchase does not affect progression.
 func refund_soul(points: int) -> void:
 	economy.soul_balance += points
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Subtracts soul (clamped to zero) and emits balance changed signal.
+## Subtracts soul (clamped to zero).
 func subtract_soul(points: int) -> void:
 	economy.soul_balance = max(0, economy.soul_balance - points)
 	soul_balance_changed.emit(economy.soul_balance)
@@ -327,26 +327,11 @@ func take_ball(ball_key: String) -> bool:
 
 
 ## Mints an instance for a ball whose price has already been paid, mote by mote,
-## by the shop's hold-to-buy fill. Skips the debit `take` performs.
-func take_paid(ball_key: String) -> String:
-	var item := _get_item(ball_key)
-
-	if item == null:
-		return ""
-
-	var instance_key: String = generate_instance_key(ball_key)
-	register_instance(instance_key)
-
-	return instance_key
-
-
-## Acquires a ball item without registering its effects.
+## by the shop's hold-to-buy fill. Pay for it with `take_ball` first.
 func take(ball_key: String) -> String:
 	var item := _get_item(ball_key)
-	if item == null:
-		return ""
 
-	if not take_ball(ball_key):
+	if item == null:
 		return ""
 
 	var instance_key: String = generate_instance_key(ball_key)

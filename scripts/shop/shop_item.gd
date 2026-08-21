@@ -51,6 +51,11 @@ func _exit_tree() -> void:
 		refund()
 
 
+## Whether soul is tied up in this item, either held, paid for, or streaming back.
+func is_settling() -> bool:
+	return _held or _is_paid or _is_refunding
+
+
 func _process(_delta: float) -> void:
 	if _held_token == null:
 		return
@@ -197,7 +202,7 @@ func _purchase_and_spawn(
 	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
 ) -> bool:
 	if controller.kit.can_accept(ball_definition.key, screen_position):
-		var kit_instance_key: String = _ball_manager.take_paid(ball_definition.key)
+		var kit_instance_key: String = _ball_manager.take(ball_definition.key)
 		if kit_instance_key.is_empty():
 			return false
 
@@ -207,7 +212,7 @@ func _purchase_and_spawn(
 	if target == null:
 		return false
 
-	var instance_key: String = _ball_manager.take_paid(ball_definition.key)
+	var instance_key: String = _ball_manager.take(ball_definition.key)
 	if instance_key.is_empty():
 		return false
 

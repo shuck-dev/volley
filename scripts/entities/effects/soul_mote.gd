@@ -2,7 +2,7 @@ class_name SoulMote
 extends Area2D
 
 ## A single soul in flight. Subclasses own traveling behaviour.
-## Own appearance and turning radius.
+## Owns appearance and turning radius.
 
 ## Color per denomination.
 const DENOMINATION_COLORS: Dictionary[int, Color] = {

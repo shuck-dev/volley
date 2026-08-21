@@ -19,9 +19,6 @@ var _destination := Vector2.ZERO
 func fly_to(destination: Vector2) -> void:
 	var toward: Vector2 = (destination - global_position).normalized()
 
-	if toward == Vector2.ZERO:
-		toward = Vector2.UP
-
 	var spread := deg_to_rad(launch_spread_degrees)
 
 	_destination = destination

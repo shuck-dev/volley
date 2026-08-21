@@ -103,7 +103,7 @@ func spent() -> int:
 	return _spent
 
 
-## The ball reached a target, so the soul it cost is spent for good.
+## The ball reached a target, so the soul it cost is spent.
 func settle_purchase() -> void:
 	_spent = 0
 
