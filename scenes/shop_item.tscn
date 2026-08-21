@@ -1,22 +1,34 @@
-[gd_scene load_steps=4 format=3 uid="uid://pk4rev1g2m1n"]
+[gd_scene format=3 uid="uid://pk4rev1g2m1n"]
 
 [ext_resource type="Script" uid="uid://u11l4g640jwg" path="res://scripts/shop/shop_item.gd" id="1_lrx6i"]
 [ext_resource type="Texture2D" uid="uid://dy2f04wp6rqy8" path="res://assets/ui/glass_case.svg" id="2_case"]
+[ext_resource type="Script" uid="uid://rjwckeufs7oj" path="res://scripts/entities/effects/soul_catcher.gd" id="3_6gmg1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pickup"]
 size = Vector2(40, 40)
 
-[node name="ShopItem" type="Node2D" node_paths=PackedStringArray("pickup_area", "case_overlay")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xcw7k"]
+size = Vector2(40, 40)
+
+[node name="ShopItem" type="Node2D" unique_id=1227420234 node_paths=PackedStringArray("pickup_area", "case_overlay", "soul_catcher")]
 script = ExtResource("1_lrx6i")
 pickup_area = NodePath("PickupArea")
 case_overlay = NodePath("CaseOverlay")
+soul_catcher = NodePath("SoulCatcher")
 
-[node name="PickupArea" type="Area2D" parent="."]
-input_pickable = true
+[node name="PickupArea" type="Area2D" parent="." unique_id=1009491900]
 
-[node name="PickupShape" type="CollisionShape2D" parent="PickupArea"]
+[node name="PickupShape" type="CollisionShape2D" parent="PickupArea" unique_id=1093086944]
 shape = SubResource("RectangleShape2D_pickup")
 
-[node name="CaseOverlay" type="Sprite2D" parent="."]
+[node name="CaseOverlay" type="Sprite2D" parent="." unique_id=1159643173]
 visible = false
 texture = ExtResource("2_case")
+
+[node name="SoulCatcher" type="StaticBody2D" parent="." unique_id=1139093726]
+collision_layer = 32
+script = ExtResource("3_6gmg1")
+metadata/_custom_type_script = "uid://rjwckeufs7oj"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SoulCatcher" unique_id=1898007055]
+shape = SubResource("RectangleShape2D_xcw7k")

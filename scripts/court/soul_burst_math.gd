@@ -4,7 +4,7 @@ extends RefCounted
 ## Math for breaking a consolidation payout into motes.
 
 ## Mote denominations, largest first; greedy breakdown picks as many of the largest as fit.
-const DENOMINATIONS: Array[int] = [100, 1]
+const DENOMINATIONS: Array[int] = [1]
 
 
 ## Breaks payout into the fewest motes, largest-first.

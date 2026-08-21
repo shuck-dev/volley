@@ -28,7 +28,7 @@ signal partner_changed
 @export_group("Scenes")
 @export var player_paddle_scene: PackedScene
 
-var player_paddle: Paddle
+var player_paddle: PlayerPaddle
 var partner_paddle: PartnerPaddle
 
 var _records: RecordsState
@@ -52,6 +52,7 @@ func _ready() -> void:
 		add_child(player_paddle)
 
 	autoplay_controller.paddle = player_paddle
+	soul_burst_handler.player_catcher = player_paddle.soul_catcher
 	player_paddle.paddle_hit.connect(_on_paddle_hit)
 
 	BallTracker.set_court(self)

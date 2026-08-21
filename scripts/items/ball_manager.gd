@@ -287,7 +287,14 @@ func add_soul(points: int) -> void:
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Subtracts soul (clamped to zero) and emits balance changed signal.
+## Returns spent soul without crediting total soul earned.
+## So a cancelled purchase does not affect progression.
+func refund_soul(points: int) -> void:
+	economy.soul_balance += points
+	soul_balance_changed.emit(economy.soul_balance)
+
+
+## Subtracts soul (clamped to zero).
 func subtract_soul(points: int) -> void:
 	economy.soul_balance = max(0, economy.soul_balance - points)
 	soul_balance_changed.emit(economy.soul_balance)
@@ -306,26 +313,11 @@ func _register_existing_items() -> void:
 		SaveManager.save()
 
 
-## Deducts soul for purchasing a ball. The tracker owns instance key generation
-## and _state registration; this only handles economics.
-func take_ball(ball_key: String) -> bool:
-	var item := _get_item(ball_key)
-	if item == null:
-		return false
-	if economy.soul_balance < calculate_for_purchase(ball_key):
-		return false
-	subtract_soul(calculate_for_purchase(ball_key))
-	SaveManager.save()
-	return true
-
-
-## Acquires a ball item without registering its effects.
+## Purchases a ball.
 func take(ball_key: String) -> String:
 	var item := _get_item(ball_key)
-	if item == null:
-		return ""
 
-	if not take_ball(ball_key):
+	if item == null:
 		return ""
 
 	var instance_key: String = generate_instance_key(ball_key)
@@ -394,18 +386,12 @@ func register_instance(ball_key: String) -> void:
 	SaveManager.save()
 
 
-func adopt_instance(ball_key: String) -> void:
-	_state.ball_levels[ball_key] = 1
-	mark_loose_in_venue(ball_key)
-	SaveManager.save()
-
-
+## Looks up a definition, null if not found.
 func _get_item(ball_key: String) -> BallDefinition:
 	var base_key := _base_key(ball_key)
 	for item: BallDefinition in items:
 		if item.key == base_key:
 			return item
-	push_warning("BallManager: unknown item key: %s" % ball_key)
 	return null
 
 
