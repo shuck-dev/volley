@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://csxbetg6clp8p"]
+
+[ext_resource type="Script" uid="uid://bsvowl7ae2f86" path="res://scripts/entities/effects/soul_mote.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cwmjeugx3pay5" path="res://assets/sprites/ball.png" id="2_ball_sprite"]
+[ext_resource type="Texture2D" uid="uid://t2jmres1v5ti" path="res://assets/effects/glow.png" id="3_glow"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mote"]
+radius = 8.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_glow"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_trail_width"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_trail"]
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
+
+[node name="SoulMote" type="Area2D" unique_id=1861237060 node_paths=PackedStringArray("sprite", "glow", "trail")]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_script")
+sprite = NodePath("Sprite")
+glow = NodePath("Glow")
+trail = NodePath("Trail")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1650726092]
+shape = SubResource("CircleShape2D_mote")
+
+[node name="Trail" type="Line2D" parent="." unique_id=1009752118]
+top_level = true
+material = SubResource("CanvasItemMaterial_glow")
+width_curve = SubResource("Curve_trail_width")
+gradient = SubResource("Gradient_trail")
+
+[node name="Glow" type="Sprite2D" parent="." unique_id=1140296194]
+material = SubResource("CanvasItemMaterial_glow")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_glow")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=764035291]
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("2_ball_sprite")

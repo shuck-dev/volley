@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://cve6m1fmtpyg" path="res://scripts/court/personal_best.gd" id="15_pb"]
 [ext_resource type="Script" uid="uid://doc6now6a5i3e" path="res://scripts/court/soul.gd" id="16_fp"]
 [ext_resource type="Script" uid="uid://bbrvypfsmukn" path="res://scripts/court/auto_indicator.gd" id="17_auto"]
+[ext_resource type="Script" uid="uid://ulwn26l028yy" path="res://scripts/court/tier_reward_handler.gd" id="18_trh"]
+[ext_resource type="Script" uid="uid://hlcqu17hse14" path="res://scripts/court/soul_burst_handler.gd" id="19_sbh"]
 [ext_resource type="Texture2D" uid="uid://dv1gp0gevfo0a" path="res://assets/ball_box.png" id="20_revm4"]
 [ext_resource type="Script" uid="uid://ddo3h77danynw" path="res://scripts/items/item_drag_controller.gd" id="22_drag"]
 [ext_resource type="Script" uid="uid://cbjvktojqsqqd" path="res://scripts/items/drop_targets/court_drop_target.gd" id="26_cdt"]
@@ -30,11 +32,13 @@ size = Vector2(1600, 720)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
 size = Vector2(2400, 1440)
 
-[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "right_wall", "soul_bound", "player_spawn", "partner_spawn", "court_ball_spawn")]
+[node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "tier_reward_handler", "soul_burst_handler", "right_wall", "soul_bound", "player_spawn", "partner_spawn", "court_ball_spawn")]
 script = ExtResource("1_tbgi4")
 arc_height_max = 120.0
 autoplay_controller = NodePath("AutoplayController")
 drag_controller = NodePath("ItemDragController")
+tier_reward_handler = NodePath("TierRewardHandler")
+soul_burst_handler = NodePath("SoulBurstHandler")
 right_wall = NodePath("Bounds/Right Wall")
 soul_bound = NodePath("Bounds/SoulBound")
 player_spawn = NodePath("PlayerSpawn")
@@ -102,6 +106,13 @@ position = Vector2(0, -400)
 [node name="AutoplayController" type="Node" parent="." unique_id=280970194]
 script = ExtResource("7_tipki")
 config = ExtResource("8_85g3d")
+
+[node name="SoulBurstHandler" type="Node" parent="." unique_id=1313600645]
+script = ExtResource("19_sbh")
+
+[node name="TierRewardHandler" type="Node" parent="." unique_id=577807746 node_paths=PackedStringArray("soul_burst_handler")]
+script = ExtResource("18_trh")
+soul_burst_handler = NodePath("../SoulBurstHandler")
 
 [node name="PartnerSpawn" type="Marker2D" parent="." unique_id=618859562]
 position = Vector2(700, 0)
