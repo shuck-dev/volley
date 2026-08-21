@@ -22,6 +22,18 @@ var _in_flight: int = 0
 var _spawning: bool = false
 var _refunding: bool = false
 
+## Set once this flight has released its save lock, so it releases only once.
+var _save_unlocked: bool = false
+
+
+func _enter_tree() -> void:
+	# The balance moves mote by mote from here, so hold the save until it settles.
+	SaveManager.lock_save()
+
+
+func _exit_tree() -> void:
+	_release_save()
+
 
 ## Whether soul is still in transit both on purchase and refund.
 func is_active() -> bool:
@@ -129,5 +141,18 @@ func _settle_if_done() -> void:
 	if is_active():
 		return
 
+	_release_save()
+
 	# Deferred so a flight that finished spawning synchronously still gets awaited.
 	settled.emit.call_deferred(self)
+
+
+## Lets the save resume, then writes the balance this flight finished moving.
+func _release_save() -> void:
+	if _save_unlocked:
+		return
+
+	_save_unlocked = true
+
+	SaveManager.unlock_save()
+	SaveManager.save()

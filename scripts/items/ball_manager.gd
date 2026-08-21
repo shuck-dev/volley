@@ -313,21 +313,7 @@ func _register_existing_items() -> void:
 		SaveManager.save()
 
 
-## Deducts soul for purchasing a ball. The tracker owns instance key generation
-## and _state registration; this only handles economics.
-func take_ball(ball_key: String) -> bool:
-	var item := _get_item(ball_key)
-	if item == null:
-		return false
-	if economy.soul_balance < calculate_for_purchase(ball_key):
-		return false
-	subtract_soul(calculate_for_purchase(ball_key))
-	SaveManager.save()
-	return true
-
-
-## Mints an instance for a ball whose price has already been paid, mote by mote,
-## by the shop's hold-to-buy fill. Pay for it with `take_ball` first.
+## Purchases a ball.
 func take(ball_key: String) -> String:
 	var item := _get_item(ball_key)
 
@@ -400,18 +386,12 @@ func register_instance(ball_key: String) -> void:
 	SaveManager.save()
 
 
-func adopt_instance(ball_key: String) -> void:
-	_state.ball_levels[ball_key] = 1
-	mark_loose_in_venue(ball_key)
-	SaveManager.save()
-
-
+## Looks up a definition, null if not found.
 func _get_item(ball_key: String) -> BallDefinition:
 	var base_key := _base_key(ball_key)
 	for item: BallDefinition in items:
 		if item.key == base_key:
 			return item
-	push_warning("BallManager: unknown item key: %s" % ball_key)
 	return null
 
 
