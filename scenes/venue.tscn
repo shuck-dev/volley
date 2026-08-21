@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dqv0f22hkxsa2" path="res://scripts/core/venue_bound_debug_draw.gd" id="7_bound"]
 [ext_resource type="PhysicsMaterial" uid="uid://bldc0c7o5o2o4" path="res://resources/ball/play.tres" id="8_qo0oe"]
 [ext_resource type="PackedScene" uid="uid://dqk1c8m7lwrvj" path="res://scenes/ball_kit.tscn" id="9_ballkit"]
-[ext_resource type="Texture2D" uid="uid://0fk1c7txgyrr" path="res://assets/garden/garden_sketch.png" id="9_o1mbd"]
+[ext_resource type="Texture2D" uid="uid://b8pn6t0yj3ql7" path="res://assets/garden/garden-2.png" id="9_o1mbd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s1xkn"]
 size = Vector2(4000, 40)
@@ -145,9 +145,8 @@ shape = SubResource("RectangleShape2D_o1mbd")
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1245905831]
 z_index = -100
 layout_mode = 0
-offset_left = -881.0
-offset_top = -520.0
-offset_right = 1819.0
-offset_bottom = 1640.0
-scale = Vector2(0.5, 0.5)
+offset_left = -1731.0
+offset_top = -1144.0
+offset_right = 1887.0
+offset_bottom = 1016.0
 texture = ExtResource("9_o1mbd")
