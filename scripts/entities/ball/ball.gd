@@ -163,7 +163,7 @@ func _emit_speed_changed() -> void:
 	speed_changed.emit(speed, tier_floor, tier_ceiling)
 
 
-## Takes the reward for a registered hit; the paddle owns the return itself.
+## Bumps speed and accumulates soul.
 func hit() -> void:
 	increase_speed()
 	accumulated_soul += soul_multiplier
