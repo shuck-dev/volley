@@ -1,10 +1,8 @@
 class_name ShopShelf
 extends Node2D
 
-## The row of balls laid out on the stall. Owns what is on offer and where it sits;
-## the shop above it owns the soul and the purchase.
+## The row of balls laid out on the stall.
 
-## Re-raised from whichever item the player is acting on, so the shop wires once.
 signal item_grabbed(item: ShopItem)
 signal item_dropped(item: ShopItem)
 signal item_refund_owed(item: ShopItem)
@@ -12,17 +10,12 @@ signal item_drop_completed(ball_key: String, release_position: Vector2, purchase
 
 const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 
-var config: ShopConfig
-var _ball_manager: BallManager
-var _shop_area: Area2D
+@export var config: ShopConfig
+
+## Bound into each item so it can hit-test its release against the stall.
+@export var shop_area: Area2D
+
 var _items: Array[ShopItem] = []
-
-
-## The shop supplies what an item needs but the shelf has no business knowing.
-func configure(shop_config: ShopConfig, ball_manager: BallManager, shop_area: Area2D) -> void:
-	config = shop_config
-	_ball_manager = ball_manager
-	_shop_area = shop_area
 
 
 ## Clears the table and rolls a fresh offering onto it.
@@ -83,8 +76,8 @@ func _add_item(definition: BallDefinition, slot: Vector2) -> void:
 	add_child(item)
 	_items.append(item)
 
-	item.configure(_ball_manager, definition)
-	item.bind_shop_area(_shop_area)
+	item.configure(BallManager, definition)
+	item.bind_shop_area(shop_area)
 
 	item.grabbed.connect(item_grabbed.emit)
 	item.dropped.connect(item_dropped.emit)
@@ -93,7 +86,7 @@ func _add_item(definition: BallDefinition, slot: Vector2) -> void:
 
 
 func _roll_offering() -> Array[BallDefinition]:
-	var available: Array[BallDefinition] = _ball_manager.items.duplicate()
+	var available: Array[BallDefinition] = BallManager.items.duplicate()
 	available.shuffle()
 
 	return available.slice(0, config.display_slots)

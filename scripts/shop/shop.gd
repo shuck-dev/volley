@@ -8,7 +8,7 @@ const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
 @export var soul_label: Label
 @export var restock_button: Button
 
-## The row of balls on offer; owns what is laid out and where.
+## Ball row layout.
 @export var shelf: ShopShelf
 
 ## Handles prices tick down and soul mote spawning.
@@ -27,7 +27,6 @@ func _ready() -> void:
 	_ball_manager.item_level_changed.connect(_on_item_level_changed)
 	purchase_handler.purchase_completed.connect(_on_purchase_completed)
 
-	shelf.configure(config, _ball_manager, shop_area)
 	shelf.item_grabbed.connect(_on_item_grabbed)
 	shelf.item_dropped.connect(_on_item_dropped)
 	shelf.item_refund_owed.connect(_on_item_refund_owed)
