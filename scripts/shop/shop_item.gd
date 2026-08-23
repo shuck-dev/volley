@@ -51,11 +51,6 @@ func _exit_tree() -> void:
 		refund()
 
 
-## Whether soul is tied up in this item, either held, paid for, or streaming back.
-func is_settling() -> bool:
-	return _held or _is_paid or _is_refunding
-
-
 func _process(_delta: float) -> void:
 	if _held_token == null:
 		return

@@ -76,6 +76,10 @@ func _clear_items() -> void:
 
 
 func restock() -> void:
+	# Restocking mid-drain would free the item the soul is streaming into.
+	if _purchasing_item != null:
+		return
+
 	var cost: int = _calculate_restock_cost()
 	if cost > 0:
 		if _ball_manager.get_soul_balance() < cost:
@@ -139,7 +143,7 @@ func _on_purchase_completed() -> void:
 
 ## The ball was dropped outside the shop, so the purchase can be completed.
 func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: bool) -> void:
-	_update_restock_button.call_deferred()
+	_update_restock_button()
 
 	if purchased:
 		purchase_handler.settle_purchase()
@@ -170,24 +174,8 @@ func _update_restock_button() -> void:
 	else:
 		restock_button.text = "Restock (%d Soul)" % cost
 
-	# Restocking mid-purchase would free the item the soul is streaming into.
-	restock_button.disabled = (
-		_ball_manager.get_soul_balance() < cost or _is_purchase_in_progress()
-	)
-
-
-## Whether soul is tied up in an item, so the offering cannot change under it.
-func _is_purchase_in_progress() -> bool:
-	if _purchasing_item != null:
-		return true
-
-	for child: Node in items_anchor.get_children():
-		var shop_item: ShopItem = child as ShopItem
-
-		if shop_item != null and shop_item.is_settling():
-			return true
-
-	return false
+	# An item stops being the shop's once its drop completes, so only the drain blocks.
+	restock_button.disabled = _ball_manager.get_soul_balance() < cost or _purchasing_item != null
 
 
 func _update_soul_label(balance: int) -> void:
