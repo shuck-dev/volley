@@ -44,7 +44,6 @@ func _ready() -> void:
 
 
 func restock() -> void:
-	# Restocking mid-drain would free the item the soul is streaming into.
 	if _purchasing_item != null:
 		return
 
@@ -96,11 +95,9 @@ func _on_purchase_completed() -> void:
 
 	_purchasing_item = null
 
-	# The last mote lands mid physics flush, where the ball's body cannot be built.
-	item.accept_payment.call_deferred()
+	item.accept_payment()
 
 
-## The ball was dropped outside the shop, so the purchase can be completed.
 func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: bool) -> void:
 	_update_restock_button()
 
@@ -108,13 +105,10 @@ func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: b
 		purchase_handler.settle_purchase()
 
 
-## An item leaving the tree cannot spawn motes, so that soul goes straight back.
 func _on_item_refund_owed(item: ShopItem) -> void:
-	# Returns once this item's soul has finished streaming home.
 	await purchase_handler.refund(item.soul_catcher.global_position)
 
 	item.settle_refund()
-
 	_update_restock_button()
 
 
@@ -133,7 +127,6 @@ func _update_restock_button() -> void:
 	else:
 		restock_button.text = "Restock (%d Soul)" % cost
 
-	# An item stops being the shop's once its drop completes, so only the drain blocks.
 	restock_button.disabled = _ball_manager.get_soul_balance() < cost or _purchasing_item != null
 
 
@@ -146,8 +139,6 @@ func _on_soul_balance_changed(balance: int) -> void:
 	_update_restock_button()
 
 
-# Refresh the shop pool when an item is purchased so its tile leaves the table.
-# Activate/deactivate leaves level unchanged, so no item_placement_changed subscription.
 func _on_item_level_changed(ball_key: String) -> void:
 	if _ball_manager.get_level(ball_key) <= 0:
 		return
