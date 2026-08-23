@@ -4,9 +4,12 @@ extends Area2D
 ## A single soul in flight. Subclasses own traveling behaviour.
 ## Owns appearance and turning radius.
 
-## Color per denomination.
+## Color per denomination, so a mote's worth reads at a glance.
 const DENOMINATION_COLORS: Dictionary[int, Color] = {
 	1: Color(1.0, 1.0, 1.0),
+	10: Color(0.45, 0.75, 1.0),
+	100: Color(0.6, 0.2, 0.9),
+	1000: Color(1.0, 0.65, 0.15),
 }
 
 ## How many positions the trail keeps before destroying the oldest.
@@ -26,11 +29,24 @@ var _heading := Vector2.RIGHT
 
 
 func _ready() -> void:
-	var color: Color = DENOMINATION_COLORS.get(soul_value, Color.WHITE)
+	var color: Color = _denomination_color()
 
 	sprite.modulate = color
 	glow.modulate = color
-	trail.default_color = color
+
+	# The trail's gradient wins over default_color, so tint it rather than set it.
+	trail.modulate = color
+
+
+## The colour of the largest denomination this mote covers.
+func _denomination_color() -> Color:
+	var color: Color = DENOMINATION_COLORS[1]
+
+	for denomination: int in DENOMINATION_COLORS:
+		if soul_value >= denomination:
+			color = DENOMINATION_COLORS[denomination]
+
+	return color
 
 
 func _physics_process(delta: float) -> void:

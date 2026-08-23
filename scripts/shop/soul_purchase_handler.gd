@@ -20,6 +20,10 @@ var _purchase: SoulFlight = null
 
 ## Drains price from the counter into catcher. One mote per denomination.
 func drain_soul_purchase(catcher: SoulCatcher, price: int) -> void:
+	# One purchase at a time: a second drain would orphan the flight paying for the first.
+	if _purchase != null:
+		return
+
 	var values: Array[int] = SoulBurstMath.split(price)
 
 	# A free item has no soul to move, so the purchase is already done.

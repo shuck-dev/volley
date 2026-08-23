@@ -120,6 +120,11 @@ func accept_payment() -> void:
 	_start_drag()
 
 
+## Whether soul is tied up in this item, either held, paid for, or streaming back.
+func _is_settling() -> bool:
+	return _held or _is_paid or _is_refunding
+
+
 ## The Shop calls this once the refunded soul has finished streaming home.
 func settle_refund() -> void:
 	_is_refunding = false
@@ -227,7 +232,11 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 
-	if mouse_button.pressed and can_be_owned() and _held_token == null and not _held:
+	# Soul still moving through this item is the last gesture finishing; let it land first.
+	if _is_settling():
+		return
+
+	if mouse_button.pressed and can_be_owned() and _held_token == null:
 		_held = true
 
 		grabbed.emit(self)
