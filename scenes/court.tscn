@@ -30,7 +30,7 @@ size = Vector2(1600, 20)
 size = Vector2(1600, 720)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_venue_drop"]
-size = Vector2(2400, 1440)
+size = Vector2(3800, 1440)
 
 [node name="Court" type="Node2D" unique_id=75800363 node_paths=PackedStringArray("autoplay_controller", "drag_controller", "tier_reward_handler", "soul_burst_handler", "right_wall", "soul_bound", "player_spawn", "partner_spawn", "court_ball_spawn")]
 script = ExtResource("1_tbgi4")
