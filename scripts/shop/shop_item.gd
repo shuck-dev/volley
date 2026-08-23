@@ -127,19 +127,6 @@ func settle_refund() -> void:
 	_refresh_case_overlay()
 
 
-## Test seam / production entry. Begins the held-token gesture from the item's current spot.
-func start_drag() -> bool:
-	if _held_token != null:
-		return false
-
-	if not can_be_owned():
-		return false
-
-	_start_drag()
-
-	return true
-
-
 ## Tries to release item to a drop target
 ## `screen_position` defaults to a live viewport lookup; direct/test callers may pin it.
 func attempt_release(release_position: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
