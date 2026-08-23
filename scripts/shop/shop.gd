@@ -108,7 +108,10 @@ func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: b
 func _on_item_refund_owed(item: ShopItem) -> void:
 	await purchase_handler.refund(item.soul_catcher.global_position)
 
-	item.settle_refund()
+	# Levelling up frees the item mid-stream, so the soul outlives what it was buying.
+	if is_instance_valid(item):
+		item.settle_refund()
+
 	_update_restock_button()
 
 

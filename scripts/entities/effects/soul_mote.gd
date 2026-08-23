@@ -6,7 +6,6 @@ extends Area2D
 
 ## Color per denomination.
 const DENOMINATION_COLORS: Dictionary[int, Color] = {
-	100: Color(0.6, 0.2, 0.9),
 	1: Color(1.0, 1.0, 1.0),
 }
 
