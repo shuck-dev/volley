@@ -113,13 +113,18 @@ func _refresh_from_stats() -> void:
 # --- shape and hitbox ---
 
 
-func on_ball_hit(ball: Ball = null) -> bool:
-	if not tracker.try_hit():
-		return false
+## Returns the ball, taking the speed bump if the tracker registers the hit.
+func hit(ball: Ball) -> void:
+	if ball.freeze:
+		return
 
-	hit_sound.play()
-	paddle_hit.emit(ball)
-	return true
+	if tracker.try_hit():
+		hit_sound.play()
+		paddle_hit.emit(ball)
+
+		ball.hit()
+
+	_return_ball(ball)
 
 
 func _on_racket_body_entered(body: Node) -> void:
@@ -127,10 +132,30 @@ func _on_racket_body_entered(body: Node) -> void:
 		var ball := body as Ball
 		if _lane_x * ball.linear_velocity.x <= 0:
 			return
-		ball.hit_by_paddle(self)
+		hit(ball)
 
 
-# The normalised denominator for contact-offset return angle.
+func _return_ball(ball: Ball) -> void:
+	ball.refresh_scaled_speed()
+
+	var direction: Variant = (
+		PaddleBounceMath
+		. bounce_direction(
+			ball.linear_velocity,
+			ball.global_position,
+			global_position,
+			get_half_height(),
+			GameRules.paddle.paddle_return_angle_max_degrees,
+		)
+	)
+
+	if direction == null:
+		return
+
+	ball.linear_velocity = (direction as Vector2) * ball.scaled_speed
+
+
+## The normalised denominator for contact-offset return angle.
 func get_half_height() -> float:
 	return racket_hitbox.get_half_height()
 
