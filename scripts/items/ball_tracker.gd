@@ -37,7 +37,7 @@ func _ready() -> void:
 	SaveManager.save_cleared.connect(_on_save_cleared)
 
 	# Deferred so sibling listeners connect before emitting.
-	call_deferred(&"_load_court_balls")
+	call_deferred(&"_load_resting_balls")
 
 
 func configure(ball_manager: Node) -> void:
@@ -246,6 +246,13 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	return ball
 
 
+## Spawns every ball that is not on the rack or in the kit: those left lying in the venue,
+## plus any caught mid-rally at last save, which land loose rather than resuming play.
+func _load_resting_balls() -> void:
+	_load_court_balls()
+	_load_loose_balls()
+
+
 ## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
 func _load_court_balls() -> void:
 	var keys: Array[String] = _ball_manager.get_on_court_items().filter(
@@ -258,8 +265,21 @@ func _load_court_balls() -> void:
 			_court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
 		)
 		_ball_manager.mark_loose_in_venue(key, position)
-		var ball := _create_ball(key, position, Vector2.ZERO)
-		ball.enter_out_rest()
+		_spawn_resting_ball(key, position)
+
+
+func _load_loose_balls() -> void:
+	var keys: Array[String] = _ball_manager.get_loose_in_venue_items().filter(
+		func(key: String) -> bool: return get_ball_for_key(key) == null
+	)
+
+	for key in keys:
+		_spawn_resting_ball(key, _ball_manager.get_venue_position(key, _court_ball_spawn))
+
+
+func _spawn_resting_ball(ball_key: String, position: Vector2) -> void:
+	var ball := _create_ball(ball_key, position, Vector2.ZERO)
+	ball.enter_out_rest()
 
 
 ## Releases a ball from tracking.

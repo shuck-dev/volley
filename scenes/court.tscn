@@ -212,4 +212,4 @@ texture = ExtResource("20_revm4")
 flip_h = true
 
 [node name="CourtBallSpawn" type="Marker2D" parent="." unique_id=2000363944]
-position = Vector2(-780, 385)
+position = Vector2(-865, 385)

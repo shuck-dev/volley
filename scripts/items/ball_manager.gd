@@ -155,6 +155,16 @@ func get_on_court_items() -> Array[String]:
 	return _items_with_placement(Placement.ON_COURT)
 
 
+## Returns owned items whose placement is LOOSE_IN_VENUE (dropped on the venue floor).
+func get_loose_in_venue_items() -> Array[String]:
+	return _items_with_placement(Placement.LOOSE_IN_VENUE)
+
+
+## Where a loose ball was left, or `fallback` if it has no recorded spot.
+func get_venue_position(ball_key: String, fallback: Vector2 = Vector2.ZERO) -> Vector2:
+	return _state.ball_venue_position.get(ball_key, fallback)
+
+
 ## Returns owned items whose placement is STORED (on the rack).
 func get_stored_items() -> Array[String]:
 	return _items_with_placement(Placement.STORED)
