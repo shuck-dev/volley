@@ -24,7 +24,6 @@ func _ready() -> void:
 		_ball_manager = BallManager
 
 	_ball_manager.soul_balance_changed.connect(_on_soul_balance_changed)
-	_ball_manager.item_level_changed.connect(_on_item_level_changed)
 	purchase_handler.purchase_completed.connect(_on_purchase_completed)
 
 	shelf.item_grabbed.connect(_on_item_grabbed)
@@ -98,17 +97,21 @@ func _on_purchase_completed() -> void:
 	item.accept_payment()
 
 
-func _on_item_drop_completed(_ball_key: String, _position: Vector2, purchased: bool) -> void:
-	_update_restock_button()
-
+func _on_item_drop_completed(ball_key: String, _position: Vector2, purchased: bool) -> void:
 	if purchased:
 		purchase_handler.settle_purchase()
+
+		var item: ShopItem = shelf.find_item(ball_key)
+
+		if item != null:
+			shelf.remove_item(item)
+
+	_update_restock_button()
 
 
 func _on_item_refund_owed(item: ShopItem) -> void:
 	await purchase_handler.refund(item.soul_catcher.global_position)
 
-	# Levelling up frees the item mid-stream, so the soul outlives what it was buying.
 	if is_instance_valid(item):
 		item.settle_refund()
 
@@ -140,13 +143,3 @@ func _update_soul_label(balance: int) -> void:
 func _on_soul_balance_changed(balance: int) -> void:
 	_update_soul_label(balance)
 	_update_restock_button()
-
-
-func _on_item_level_changed(ball_key: String) -> void:
-	if _ball_manager.get_level(ball_key) <= 0:
-		return
-
-	var item: ShopItem = shelf.find_item(ball_key)
-
-	if item != null:
-		shelf.remove_item(item)

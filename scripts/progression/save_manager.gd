@@ -24,7 +24,7 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
-## Counts all threads currently locking save.
+## Counts the holders currently blocking save.
 var _save_locks: int = 0
 
 

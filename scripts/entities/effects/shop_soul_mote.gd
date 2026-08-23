@@ -3,9 +3,6 @@ extends SoulMote
 
 ## Souls motes for the shop purchase path.
 
-## Emitted on reaching its destination.
-signal landed(soul_value: int)
-
 ## Speed the mote travels at.
 @export var speed := 1200.0
 

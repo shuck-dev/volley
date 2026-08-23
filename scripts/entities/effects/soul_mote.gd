@@ -4,6 +4,9 @@ extends Area2D
 ## A single soul in flight. Subclasses own traveling behaviour.
 ## Owns appearance and turning radius.
 
+## Emitted on reaching its destination.
+signal landed(soul_value: int)
+
 ## Color per denomination.
 const DENOMINATION_COLORS: Dictionary[int, Color] = {
 	1: Color(1.0, 1.0, 1.0),

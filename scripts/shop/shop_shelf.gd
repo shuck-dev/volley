@@ -39,8 +39,7 @@ func clear() -> void:
 		remove_item(item)
 
 
-## Takes an item off the table. Unparenting is immediate, so the freeing can be
-## deferred: removal runs mid-signal, where the node is still being called into.
+## Takes an item off the table.
 func remove_item(item: ShopItem) -> void:
 	_items.erase(item)
 	remove_child(item)
