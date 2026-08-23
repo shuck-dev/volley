@@ -13,6 +13,9 @@ func _ready() -> void:
 	super._ready()
 	_ball_tracker = get_parent()
 
+	if not body_entered.is_connected(_on_body_entered):
+		body_entered.connect(_on_body_entered)
+
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
@@ -36,8 +39,6 @@ func _spawn_child(spawn_velocity: Vector2) -> void:
 
 
 func _on_body_entered(body: Node) -> void:
-	super._on_body_entered(body)
-
 	if freeze:
 		return
 

@@ -163,25 +163,10 @@ func _emit_speed_changed() -> void:
 	speed_changed.emit(speed, tier_floor, tier_ceiling)
 
 
-func _on_body_entered(body: Node) -> void:
-	if freeze:
-		return
-
-	if body is Paddle:
-		hit_by_paddle(body as Paddle)
-
-
-# Entry point for a paddle hit. Called by the paddle's racket hitbox Area2D on detection,
-# now that the ball passes through the character body instead of physically colliding with it.
-func hit_by_paddle(paddle: Paddle) -> void:
-	if freeze:
-		return
-
-	var hit_registered: bool = paddle.on_ball_hit(self)
-	if hit_registered:
-		increase_speed()
-		accumulated_soul += soul_multiplier
-	_process_hit(paddle)
+## Bumps speed and accumulates soul.
+func hit() -> void:
+	increase_speed()
+	accumulated_soul += soul_multiplier
 
 
 func register_miss_zone(zone: MissZone) -> void:
@@ -325,33 +310,6 @@ func refresh_scaled_speed() -> void:
 	scaled_speed = speed
 
 
-func _process_hit(struck_paddle: Paddle) -> void:
-	refresh_scaled_speed()
-	_apply_paddle_offset_return(struck_paddle)
-
-
-# Where on the paddle the ball struck drives the return angle.
-func _apply_paddle_offset_return(struck_paddle: Paddle) -> void:
-	if struck_paddle == null:
-		return
-
-	var direction: Variant = (
-		PaddleBounceMath
-		. bounce_direction(
-			linear_velocity,
-			global_position,
-			struck_paddle.global_position,
-			struck_paddle.get_half_height(),
-			GameRules.paddle.paddle_return_angle_max_degrees,
-		)
-	)
-
-	if direction == null:
-		return
-
-	linear_velocity = (direction as Vector2) * scaled_speed
-
-
 func _wire_grab_area() -> void:
 	if grab_area == null:
 		return
@@ -379,8 +337,6 @@ func _configure_physics_body() -> void:
 
 
 func _connect_ball_signals() -> void:
-	if not body_entered.is_connected(_on_body_entered):
-		body_entered.connect(_on_body_entered)
 	if not missed.is_connected(_on_missed):
 		missed.connect(_on_missed)
 
