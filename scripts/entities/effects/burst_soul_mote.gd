@@ -3,6 +3,9 @@ extends SoulMote
 
 ## Soul thrown out of a ball as a reward.
 
+## Emitted on reaching its destination.
+signal landed(soul_value: int)
+
 ## Speed the mote leaves at, bleeding off to BURST_END_SPEED before attraction.
 const BURST_SPEED := 180.0
 const BURST_END_SPEED := 20.0
