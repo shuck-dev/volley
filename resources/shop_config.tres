@@ -4,3 +4,7 @@
 
 [resource]
 script = ExtResource("1_6e5sw")
+display_slots = 5
+item_spacing = 80.0
+item_row_height = -30.0
+restock_cost_multiplier = 0.2

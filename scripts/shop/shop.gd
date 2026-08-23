@@ -2,13 +2,14 @@ class_name Shop
 extends Node2D
 
 const DEFAULT_CONFIG: ShopConfig = preload("res://resources/shop_config.tres")
-const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 
 @export var config: ShopConfig = DEFAULT_CONFIG
 @export var shop_area: Area2D
 @export var soul_label: Label
-@export var items_anchor: Node2D
 @export var restock_button: Button
+
+## The row of balls on offer; owns what is laid out and where.
+@export var shelf: ShopShelf
 
 ## Handles prices tick down and soul mote spawning.
 @export var purchase_handler: SoulPurchaseHandler
@@ -19,9 +20,6 @@ var _purchasing_item: ShopItem = null
 
 
 func _ready() -> void:
-	if config == null:
-		config = DEFAULT_CONFIG
-
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
@@ -29,8 +27,14 @@ func _ready() -> void:
 	_ball_manager.item_level_changed.connect(_on_item_level_changed)
 	purchase_handler.purchase_completed.connect(_on_purchase_completed)
 
+	shelf.configure(config, _ball_manager, shop_area)
+	shelf.item_grabbed.connect(_on_item_grabbed)
+	shelf.item_dropped.connect(_on_item_dropped)
+	shelf.item_refund_owed.connect(_on_item_refund_owed)
+	shelf.item_drop_completed.connect(_on_item_drop_completed)
+
 	_update_soul_label(_ball_manager.get_soul_balance())
-	_spawn_items()
+	shelf.restock()
 
 	if restock_button != null:
 		restock_button.focus_mode = Control.FOCUS_NONE
@@ -38,41 +42,6 @@ func _ready() -> void:
 			restock_button.pressed.connect(_on_restock_pressed)
 
 	_update_restock_button()
-
-
-func _spawn_items() -> void:
-	var visible_items: Array[BallDefinition] = _get_item_pool()
-	var count: int = visible_items.size()
-	var spacing: float = config.item_spacing
-	var start_x: float = -(count - 1) * spacing / 2.0
-
-	for index in count:
-		var definition: BallDefinition = visible_items[index]
-		var shop_item: ShopItem = ShopItemScene.instantiate()
-		shop_item.name = "ShopItem_%s" % definition.key
-		shop_item.position = Vector2(start_x + index * spacing, 0.0)
-		items_anchor.add_child(shop_item)
-
-		shop_item.configure(_ball_manager, definition)
-		shop_item.bind_shop_area(shop_area)
-		shop_item.grabbed.connect(_on_item_grabbed)
-		shop_item.dropped.connect(_on_item_dropped)
-		shop_item.refund_owed.connect(_on_item_refund_owed)
-		shop_item.drop_completed.connect(_on_item_drop_completed)
-
-
-func _get_item_pool() -> Array[BallDefinition]:
-	var available: Array[BallDefinition] = _ball_manager.items.duplicate()
-	available.shuffle()
-	return available.slice(0, config.display_slots)
-
-
-func _clear_items() -> void:
-	_purchasing_item = null
-
-	for child: Node in items_anchor.get_children():
-		items_anchor.remove_child(child)
-		child.free()
 
 
 func restock() -> void:
@@ -86,8 +55,7 @@ func restock() -> void:
 			return
 		_ball_manager.subtract_soul(cost)
 
-	_clear_items()
-	_spawn_items()
+	shelf.restock()
 
 	_refresh_count += 1
 
@@ -98,15 +66,7 @@ func _calculate_restock_cost() -> int:
 	if _refresh_count == 0:
 		return 0
 
-	var total: int = 0
-
-	for child: Node in items_anchor.get_children():
-		var shop_item: ShopItem = child as ShopItem
-
-		if shop_item != null and shop_item.ball_definition != null:
-			total += shop_item.ball_definition.base_cost
-
-	return max(1, ceili(total * config.restock_cost_multiplier))
+	return max(1, ceili(shelf.total_base_cost() * config.restock_cost_multiplier))
 
 
 func _on_item_grabbed(item: ShopItem) -> void:
@@ -193,7 +153,7 @@ func _on_item_level_changed(ball_key: String) -> void:
 	if _ball_manager.get_level(ball_key) <= 0:
 		return
 
-	var node: Node = items_anchor.get_node_or_null("ShopItem_%s" % ball_key)
+	var item: ShopItem = shelf.find_item(ball_key)
 
-	if node != null:
-		node.queue_free()
+	if item != null:
+		shelf.remove_item(item)
