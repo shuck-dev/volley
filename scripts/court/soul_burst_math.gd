@@ -3,8 +3,8 @@ extends RefCounted
 
 ## Math for breaking a consolidation payout into motes.
 
-## Mote denominations, largest first; greedy breakdown picks as many of the largest as fit.
-const DENOMINATIONS: Array[int] = [100, 1]
+## Mote denominations. One soul each, so a payout reads as a countable stream.
+const DENOMINATIONS: Array[int] = [1]
 
 
 ## Breaks payout into the fewest motes, largest-first.

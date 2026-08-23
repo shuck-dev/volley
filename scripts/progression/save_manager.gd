@@ -24,6 +24,9 @@ var _autosave_interval: float
 var _autosave_timer: Timer
 var _write_blocked: bool = false
 
+## Counts the holders currently blocking save.
+var _save_locks: int = 0
+
 
 func _init(autosave_interval: float = 10.0) -> void:
 	_autosave_interval = autosave_interval
@@ -54,7 +57,23 @@ func set_storage(storage: SaveStorage) -> void:
 func save() -> void:
 	if _write_blocked:
 		return
+
+	if _save_locks > 0:
+		return
+
 	_write_to_disk()
+
+
+## Lock save processing, make sure to call [method unlock_save] after.
+func lock_save() -> void:
+	_save_locks += 1
+
+
+## Unlock save processing, make sure to call [method lock_save] before.
+func unlock_save() -> void:
+	assert(_save_locks > 0, "SaveManager: released a save lock that was never taken")
+
+	_save_locks = max(0, _save_locks - 1)
 
 
 ## Loads from storage, falling back to rolling backups if primary fails to parse.
@@ -121,8 +140,7 @@ func unblock_writes() -> void:
 		_autosave_timer.start()
 
 
-# save() honours the write-block here: a quit mid-clear would otherwise overwrite
-# the freshly cleared save with stale in-memory state.
+# Save on quit, unless mid-block.
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save()

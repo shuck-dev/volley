@@ -7,6 +7,9 @@ extends Paddle
 ## Racket position while grounded, upright; swapped in for the standing ready/swing animations.
 @export var mid_anchor: Marker2D
 
+## What soul motes land on to be collected by the player.
+@export var soul_catcher: SoulCatcher
+
 var _default_racket_position: Vector2
 var _low_states := [&"ready_grounded_low", &"swing_grounded_low"]
 var _mid_states := [&"ready_grounded", &"swing_grounded"]

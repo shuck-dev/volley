@@ -16,28 +16,23 @@ tests/
 
 A unit test exercises a function or a `RefCounted`/static class in isolation: math, save-dict round-trips, state-machine transition tables, parsing. No `Node`, no `add_child_autofree()`, no scene tree, no stub, no signal wiring. If the behaviour under test needs a node in the tree to mean anything, it isn't a unit test, it belongs in `tests/integration/` (see below) or it isn't worth automating.
 
-Node-based tests found few real regressions relative to their maintenance cost: they broke on refactors that didn't change behaviour, needed constant stub upkeep, and were slow enough to shape how the suite could grow. The trade favors fewer, sturdier tests over broad node-wiring coverage.
+Node-based tests found few real regressions relative to their maintenance cost: they broke on refactors that didn't change behaviour, and needed constant stub upkeep. The trade favors fewer, sturdier tests over broad node-wiring coverage.
 
-```gdscript
-func test_apex_below_ceiling_returns_arc_bend() -> void:
-	assert_almost_eq(ArcMath.arc_acceleration(300.0, ARC_HEIGHT_MAX), ArcMath.ARC_BEND, 0.001)
-```
 
 ### Integration tests drive core loops through simulated user input
 
-An integration test exercises a real player-facing loop (drag a ball, press a paddle key, load a save) by simulating the actual input the player produces, an `InputEventMouseButton`/`InputEventMouseMotion` pushed through `Input.parse_input_event` or the viewport, not a direct call to the controller method that would normally handle that input. Driving `_drag.attempt_release(...)` or `_manager.take(...)` directly tests the same code the real input handler would reach, but it stops proving the wiring between input and effect actually holds; that's the coverage integration tests exist for.
+An integration test exercises a real player-facing loop (drag a ball, press a paddle key, load a save) by simulating the actual input the player produces, an `InputEventMouseButton`/`InputEventMouseMotion` pushed through `Input.parse_input_event` or the viewport.
 
-Build these around a real scene (or the smallest slice of one that reproduces the loop), real nodes, `add_child_autofree()`. This is where node instantiation belongs.
+Build these around a real scene (or the smallest slice of one that reproduces the loop).
 
 ### Test observable outcomes, not internal state
 
 Don't access private variables (`_streak`, `_volley_count`). Test what the player or other systems can observe:
 
-| Instead of | Test |
-|---|---|
-| `_paddle._streak == 3` | `hit_sound.pitch_scale == 1.15` |
-| `_game._volley_count == 0` | `hud.last_count == 0` |
-| `_ball._hit_cooldown > 0` | Second hit doesn't change pitch |
+
+### New code reads autoloads directly
+
+Older nodes take `BallManager` through a `configure()` seam, falling back to the autoload when nothing injected one; these can be removed when encountered. This allows nodes to call autoloads directly without having to use a wiring abstraction.
 
 ### Name a test by what it tests
 
@@ -100,6 +95,10 @@ await get_tree().process_frame
 ### Physics nodes need the scene tree
 
 `RigidBody2D.linear_velocity` doesn't work until the node is in the tree. Always `add_child_autofree()` before setting velocity. Set `gravity_scale = 0.0` to prevent drift during `await` pauses.
+
+### Clear autoloads before instantiating a node under test
+
+Nodes read autoloads directly, meaning they are carried between tests. Clear the autoload's state in a `before_each` to make sure state is not leaked. `_ready` fires on `add_child()`, so anything the node reads or connects binds whatever was live at that moment; state assigned afterwards still lands, but too late for the signals `_ready` already wired.
 
 ### How the suite runs
 

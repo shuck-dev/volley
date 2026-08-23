@@ -84,6 +84,7 @@ common/physics_ticks_per_second=120
 2d/layer_names/layer_1="world"
 2d/layer_names/layer_2="items"
 2d/layer_names/layer_3="player"
+2d/layer_names/layer_6="soul_catcher"
 
 [rendering]
 

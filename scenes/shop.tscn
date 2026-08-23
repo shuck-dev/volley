@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://hvh6q02lrntj"]
 
 [ext_resource type="Script" uid="uid://dectdw7uu2fm0" path="res://scripts/shop/shop.gd" id="1_shop"]
+[ext_resource type="Script" uid="uid://c2a0087qtv261" path="res://scripts/shop/soul_purchase_handler.gd" id="2_xfvoa"]
+[ext_resource type="Script" uid="uid://cmae2lmbcea60" path="res://scripts/shop/shop_shelf.gd" id="3_shelf"]
+[ext_resource type="Resource" uid="uid://chvlknec42lek" path="res://resources/shop_config.tres" id="4_config"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
 size = Vector2(500, 287)
@@ -8,12 +11,13 @@ size = Vector2(500, 287)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
 size = Vector2(400, 20)
 
-[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "items_anchor", "restock_button")]
+[node name="Shop" type="Node2D" unique_id=177934000 node_paths=PackedStringArray("shop_area", "soul_label", "restock_button", "shelf", "purchase_handler")]
 script = ExtResource("1_shop")
 shop_area = NodePath("ShopArea")
 soul_label = NodePath("SoulLabel")
-items_anchor = NodePath("ItemsAnchor")
 restock_button = NodePath("RefreshButton")
+shelf = NodePath("Shelf")
+purchase_handler = NodePath("SoulPurchaseHandler")
 
 [node name="SoulLabel" type="Label" parent="." unique_id=1271857459]
 offset_left = -100.0
@@ -63,8 +67,10 @@ offset_bottom = 144.0
 mouse_filter = 2
 color = Color(0.35, 0.2, 0.1, 1)
 
-[node name="ItemsAnchor" type="Node2D" parent="." unique_id=681031275]
-position = Vector2(0, -30)
+[node name="Shelf" type="Node2D" parent="." unique_id=681031275 node_paths=PackedStringArray("shop_area")]
+script = ExtResource("3_shelf")
+config = ExtResource("4_config")
+shop_area = NodePath("../ShopArea")
 
 [node name="RefreshButton" type="Button" parent="." unique_id=823133525]
 anchors_preset = 10
@@ -76,3 +82,11 @@ offset_bottom = -91.0
 grow_horizontal = 2
 size_flags_vertical = 0
 text = "Restock (Free)"
+
+[node name="SoulPurchaseHandler" type="Node" parent="." unique_id=1882445051 node_paths=PackedStringArray("spawn_point")]
+script = ExtResource("2_xfvoa")
+spawn_point = NodePath("../MoteSpawn")
+metadata/_custom_type_script = "uid://c2a0087qtv261"
+
+[node name="MoteSpawn" type="Marker2D" parent="." unique_id=2027646376]
+position = Vector2(0, -600)
