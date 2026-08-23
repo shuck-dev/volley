@@ -113,7 +113,7 @@ func _refresh_from_stats() -> void:
 # --- shape and hitbox ---
 
 
-## Returns the ball, taking the speed bump if the tracker registers the hit.
+## Hits the ball.
 func hit(ball: Ball) -> void:
 	if ball.freeze:
 		return
@@ -124,7 +124,7 @@ func hit(ball: Ball) -> void:
 
 		ball.hit()
 
-	_return_ball(ball)
+	_hit_ball(ball)
 
 
 func _on_racket_body_entered(body: Node) -> void:
@@ -135,7 +135,7 @@ func _on_racket_body_entered(body: Node) -> void:
 		hit(ball)
 
 
-func _return_ball(ball: Ball) -> void:
+func _hit_ball(ball: Ball) -> void:
 	ball.refresh_scaled_speed()
 
 	var direction: Variant = (
