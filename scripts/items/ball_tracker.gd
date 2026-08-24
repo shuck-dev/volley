@@ -36,9 +36,6 @@ func _ready() -> void:
 
 	SaveManager.save_cleared.connect(_on_save_cleared)
 
-	# Deferred so sibling listeners connect before emitting.
-	call_deferred(&"_load_resting_balls")
-
 
 func configure(ball_manager: Node) -> void:
 	_ball_manager = ball_manager
@@ -50,6 +47,9 @@ func set_court(court: Court) -> void:
 	_arc_height_max = court.arc_height_max
 	_bound_y = court.soul_bound.global_position.y
 	_player_paddle = court.player_paddle
+
+	# Saved balls need the court's spawn point to load first.
+	_load_resting_balls.call_deferred()
 
 
 ## Live position of the player paddle
@@ -246,14 +246,13 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	return ball
 
 
-## Spawns every ball that is not on the rack or in the kit: those left lying in the venue,
-## plus any caught mid-rally at last save, which land loose rather than resuming play.
+## Spawns every live ball.
 func _load_resting_balls() -> void:
 	_load_court_balls()
 	_load_loose_balls()
 
 
-## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
+## Transitions on court balls to a resting position.
 func _load_court_balls() -> void:
 	var keys: Array[String] = _ball_manager.get_on_court_items().filter(
 		func(key: String) -> bool: return get_ball_for_key(key) == null
@@ -282,7 +281,6 @@ func _spawn_resting_ball(ball_key: String, position: Vector2) -> void:
 	ball.enter_out_rest()
 
 
-## Releases a ball from tracking.
 func _detach(old_ball: Ball) -> void:
 	if old_ball == null:
 		return
