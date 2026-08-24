@@ -1,20 +1,23 @@
-class_name SoulBurstMath
+class_name SoulMath
 extends RefCounted
 
-## Math for breaking a consolidation payout into motes.
+## Math for breaking soul into motes.
 
-## About as many motes as a payout is worth spawning; a leftover soul can add one more.
+## The maximum number of motes soul can be split into.
 const MOTE_CAP := 250
+
+## What a mote can be worth.
+const DENOMINATIONS: Array[int] = [1, 10, 100, 1000]
 
 
 ## Breaks payout into motes of two neighbouring denominations, the bigger carrying only
-## what the smaller cannot fit inside the cap, plus one odd mote for any leftover soul.
+## Plus one odd mote for any leftover.
 static func split(payout: int) -> Array[int]:
 	if payout <= 0:
 		return []
 
 	var small: int = _small_denomination(payout)
-	var large: int = small * 10
+	var large: int = _large_denomination(small)
 
 	var excess: int = payout - small * MOTE_CAP
 	var large_count: int = 0
@@ -43,11 +46,20 @@ static func split(payout: int) -> Array[int]:
 	return parts
 
 
-## The finer of the two denominations a payout streams in.
-static func _small_denomination(payout: int) -> int:
-	var small := 1
+static func _large_denomination(denomination: int) -> int:
+	var index: int = DENOMINATIONS.find(denomination)
 
-	while payout > small * 10 * MOTE_CAP:
-		small *= 10
+	if index >= 0 and index + 1 < DENOMINATIONS.size():
+		return DENOMINATIONS[index + 1]
+
+	return denomination * 10
+
+
+static func _small_denomination(payout: int) -> int:
+	var small: int = DENOMINATIONS[0]
+
+	for denomination in DENOMINATIONS:
+		if payout > denomination * MOTE_CAP:
+			small = denomination
 
 	return small

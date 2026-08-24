@@ -18,7 +18,7 @@ func release_burst(ball: Ball, payout: int) -> void:
 	if ball == null:
 		return
 
-	var values: Array[int] = SoulBurstMath.split(payout)
+	var values: Array[int] = SoulMath.split(payout)
 	if values.is_empty():
 		return
 

@@ -24,7 +24,7 @@ func drain_soul_purchase(catcher: SoulCatcher, price: int) -> void:
 	if _purchase != null:
 		return
 
-	var values: Array[int] = SoulBurstMath.split(price)
+	var values: Array[int] = SoulMath.split(price)
 
 	# A free item has no soul to move, so the purchase is already done.
 	if values.is_empty():

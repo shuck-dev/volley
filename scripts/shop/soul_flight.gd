@@ -68,7 +68,7 @@ func refund(item: Vector2, spawn_position: Callable) -> void:
 	_spawn_position = spawn_position
 	_item_position = item
 
-	_queue_release(SoulBurstMath.split(owed))
+	_queue_release(SoulMath.split(owed))
 
 
 func _process(delta: float) -> void:
