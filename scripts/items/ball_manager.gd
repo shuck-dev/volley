@@ -150,13 +150,13 @@ func _assign_rack_slot(ball_key: String) -> void:
 	rack_slots_changed.emit()
 
 
-## Returns owned items whose placement is ON_COURT.
-func get_on_court_items() -> Array[String]:
+## Returns ON_COURT balls.
+func get_court_balls() -> Array[String]:
 	return _items_with_placement(Placement.ON_COURT)
 
 
-## Returns owned items whose placement is LOOSE_IN_VENUE (dropped on the venue floor).
-func get_loose_in_venue_items() -> Array[String]:
+## Returns LOOSE_IN_VENUE balls.
+func get_loose_balls() -> Array[String]:
 	return _items_with_placement(Placement.LOOSE_IN_VENUE)
 
 

@@ -246,18 +246,18 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	return ball
 
 
-## Spawns every live ball.
+## Spawns every live ball. Both lists are read before either spawns, since landing a
+## court ball marks it loose and would otherwise put it in the second list too.
 func _load_resting_balls() -> void:
-	_load_court_balls()
-	_load_loose_balls()
+	var court_keys: Array[String] = _ball_manager.get_court_balls()
+	var loose_keys: Array[String] = _ball_manager.get_loose_balls()
+
+	_load_court_balls(court_keys)
+	_load_loose_balls(loose_keys)
 
 
 ## Transitions on court balls to a resting position.
-func _load_court_balls() -> void:
-	var keys: Array[String] = _ball_manager.get_on_court_items().filter(
-		func(key: String) -> bool: return get_ball_for_key(key) == null
-	)
-
+func _load_court_balls(keys: Array[String]) -> void:
 	for stack_index in keys.size():
 		var key: String = keys[stack_index]
 		var position: Vector2 = (
@@ -267,11 +267,7 @@ func _load_court_balls() -> void:
 		_spawn_resting_ball(key, position)
 
 
-func _load_loose_balls() -> void:
-	var keys: Array[String] = _ball_manager.get_loose_in_venue_items().filter(
-		func(key: String) -> bool: return get_ball_for_key(key) == null
-	)
-
+func _load_loose_balls(keys: Array[String]) -> void:
 	for key in keys:
 		_spawn_resting_ball(key, _ball_manager.get_venue_position(key, _court_ball_spawn))
 
