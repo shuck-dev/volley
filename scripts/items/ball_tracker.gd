@@ -246,8 +246,7 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	return ball
 
 
-## Spawns every live ball. Both lists are read before either spawns, since landing a
-## court ball marks it loose and would otherwise put it in the second list too.
+## Spawns every live ball.
 func _load_resting_balls() -> void:
 	var court_keys: Array[String] = _ball_manager.get_court_balls()
 	var loose_keys: Array[String] = _ball_manager.get_loose_balls()
