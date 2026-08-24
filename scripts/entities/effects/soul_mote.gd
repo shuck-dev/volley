@@ -38,13 +38,14 @@ func _ready() -> void:
 
 ## The colour of the largest denomination this mote covers.
 func _denomination_color() -> Color:
-	var color: Color = DENOMINATION_COLORS[0]
+	var rung := 0
+	var denomination := 1
 
-	for index in SoulMath.DENOMINATIONS.size():
-		if soul_value >= SoulMath.DENOMINATIONS[index] and index < DENOMINATION_COLORS.size():
-			color = DENOMINATION_COLORS[index]
+	while denomination * SoulMath.DENOMINATION_STEP <= soul_value:
+		denomination *= SoulMath.DENOMINATION_STEP
+		rung += 1
 
-	return color
+	return DENOMINATION_COLORS[mini(rung, DENOMINATION_COLORS.size() - 1)]
 
 
 func _physics_process(delta: float) -> void:

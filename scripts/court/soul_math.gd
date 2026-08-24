@@ -6,11 +6,11 @@ extends RefCounted
 ## The maximum number of motes soul can be split into.
 const MOTE_CAP := 250
 
-## What a mote can be worth.
-const DENOMINATIONS: Array[int] = [1, 10, 100, 1000]
+## The multiplication between each mote value.
+const DENOMINATION_STEP := 10
 
 
-## Breaks payout into motes of two neighbouring denominations, the bigger carrying only
+## Breaks payout into motes of two neighbouring denominations.
 ## Plus one odd mote for any leftover.
 static func split(payout: int) -> Array[int]:
 	if payout <= 0:
@@ -47,19 +47,13 @@ static func split(payout: int) -> Array[int]:
 
 
 static func _large_denomination(denomination: int) -> int:
-	var index: int = DENOMINATIONS.find(denomination)
-
-	if index >= 0 and index + 1 < DENOMINATIONS.size():
-		return DENOMINATIONS[index + 1]
-
-	return denomination * 10
+	return denomination * DENOMINATION_STEP
 
 
 static func _small_denomination(payout: int) -> int:
-	var small: int = DENOMINATIONS[0]
+	var small := 1
 
-	for denomination in DENOMINATIONS:
-		if payout > denomination * MOTE_CAP:
-			small = denomination
+	while payout > small * MOTE_CAP * DENOMINATION_STEP:
+		small *= DENOMINATION_STEP
 
 	return small

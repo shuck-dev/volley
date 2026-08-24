@@ -56,6 +56,19 @@ func test_split_sum_survives_an_uneven_trade_up() -> void:
 	assert_eq(total, 2429, "a payout that trades up unevenly must not gain or lose soul")
 
 
+func test_split_holds_past_the_largest_listed_denomination(
+	p = use_parameters([2510000, 2600000, 30000000])
+) -> void:
+	var parts: Array[int] = SoulMath.split(p)
+	var total := 0
+
+	for value in parts:
+		total += value
+
+	assert_eq(total, p, "a payout above the listed denominations must still balance")
+	assert_lte(parts.size(), SoulMath.MOTE_CAP + 1, "and must still respect the cap")
+
+
 func test_split_sum_always_equals_payout(
 	p = use_parameters([1, 99, 100, 101, 234, 999, 2429, 2510, 2517, 25100, 250001])
 ) -> void:
