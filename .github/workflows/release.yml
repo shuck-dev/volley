@@ -86,6 +86,11 @@ jobs:
           unzip butler.zip
           chmod +x butler
 
+      - name: Push Web to Itch.io
+        run: ./butler push "${{ steps.export.outputs.build_directory }}/WebThreaded" ${{ env.ITCH_PROJECT }}:web --userversion ${{ github.event.release.tag_name }}
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
       - name: Push Linux to Itch.io
         run: ./butler push "${{ steps.export.outputs.build_directory }}/Linux" ${{ env.ITCH_PROJECT }}:linux --userversion ${{ github.event.release.tag_name }}
         env:
