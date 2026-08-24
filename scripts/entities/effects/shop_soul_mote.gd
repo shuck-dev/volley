@@ -14,22 +14,10 @@ signal landed(soul_value: int)
 
 var _destination := Vector2.ZERO
 
-## Followed live when set, so a mote still lands on an item the player is dragging.
-var _target: Node2D = null
-
 
 ## Sends the mote to a vector.
 func fly_to(destination: Vector2) -> void:
-	_target = null
 	_destination = destination
-
-	_launch()
-
-
-## Sends the mote after a node, tracking it as it moves.
-func chase(target: Node2D) -> void:
-	_target = target
-	_destination = target.global_position
 
 	_launch()
 

@@ -21,31 +21,43 @@ func test_payout_over_the_cap_keeps_most_motes_single() -> void:
 	assert_gt(parts.count(1), parts.count(10), "the overflow should be the smaller share")
 
 
-func test_split_never_exceeds_the_cap(
-	p = use_parameters([251, 300, 500, 999, 2510, 25100, 250001])
+func test_split_stays_within_a_mote_of_the_cap(
+	p = use_parameters([251, 300, 500, 999, 2429, 2510, 25100, 250001])
 ) -> void:
-	assert_lte(SoulBurstMath.split(p).size(), SoulBurstMath.MOTE_CAP)
+	assert_lte(SoulBurstMath.split(p).size(), SoulBurstMath.MOTE_CAP + 1)
 
 
 func test_split_only_mixes_neighbouring_denominations(
 	p = use_parameters([251, 300, 999, 2510, 5000, 6000, 25100])
 ) -> void:
-	var denominations: Array[int] = []
+	var counts := {}
 
 	for value in SoulBurstMath.split(p):
-		if not denominations.has(value):
-			denominations.append(value)
+		counts[value] = counts.get(value, 0) + 1
 
-	denominations.sort()
+	# One mote may carry an odd remainder; the rest are the two neighbouring sizes.
+	var sizes: Array = counts.keys().filter(func(value: int) -> bool: return counts[value] > 1)
 
-	assert_lte(denominations.size(), 2, "a payout should read as one mote size and its overflow")
+	sizes.sort()
 
-	if denominations.size() == 2:
-		assert_eq(denominations[1], denominations[0] * 10, "the two sizes should be one step apart")
+	assert_lte(sizes.size(), 2, "a payout should read as one mote size and its overflow")
+
+	if sizes.size() == 2:
+		assert_eq(sizes[1], sizes[0] * 10, "the two sizes should be one step apart")
+
+
+func test_split_sum_survives_an_uneven_trade_up() -> void:
+	var parts: Array[int] = SoulBurstMath.split(2429)
+	var total := 0
+
+	for value in parts:
+		total += value
+
+	assert_eq(total, 2429, "a payout that trades up unevenly must not gain or lose soul")
 
 
 func test_split_sum_always_equals_payout(
-	p = use_parameters([1, 99, 100, 101, 234, 999, 2510, 2517, 25100, 250001])
+	p = use_parameters([1, 99, 100, 101, 234, 999, 2429, 2510, 2517, 25100, 250001])
 ) -> void:
 	var parts: Array[int] = SoulBurstMath.split(p)
 	var total := 0

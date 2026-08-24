@@ -343,7 +343,7 @@ func _refresh_case_overlay() -> void:
 		return
 
 	# Soul moving through this item is its own price, so it never cases itself.
-	if _held or _is_paid or _is_refunding:
+	if _is_settling():
 		return
 
 	case_overlay.visible = not can_be_owned()

@@ -3,40 +3,51 @@ extends RefCounted
 
 ## Math for breaking a consolidation payout into motes.
 
-## Most motes a payout is worth spawning; past this the stream stops being countable
-## and starts being a node count.
+## About as many motes as a payout is worth spawning; a leftover soul can add one more.
 const MOTE_CAP := 250
 
 
-## Breaks payout into motes, trading up to bigger motes if the cap is exceeded.
+## Breaks payout into motes of two neighbouring denominations, the bigger carrying only
+## what the smaller cannot fit inside the cap, plus one odd mote for any leftover soul.
 static func split(payout: int) -> Array[int]:
 	if payout <= 0:
 		return []
 
+	var small: int = _small_denomination(payout)
+	var large: int = small * 10
+
+	var excess: int = payout - small * MOTE_CAP
+	var large_count: int = 0
+
+	if excess > 0:
+		large_count = ceili(float(excess) / float(large - small))
+		large_count = mini(large_count, floori(float(payout) / float(large)))
+
+	var remainder: int = payout - large_count * large
+	var whole_smalls: int = floori(float(remainder) / float(small))
+	var small_count: int = mini(whole_smalls, MOTE_CAP - large_count)
+
 	var parts: Array[int] = []
-	var remaining := payout
 
-	for smaller in _tiers_below_largest(payout):
-		var denomination: int = smaller * 10
+	for _index in large_count:
+		parts.append(large)
 
-		while remaining > smaller * (MOTE_CAP - parts.size()):
-			parts.append(denomination)
-			remaining -= denomination
+	for _index in small_count:
+		parts.append(small)
 
-	for _index in remaining:
-		parts.append(1)
+	var shortfall: int = remainder - small_count * small
+
+	if shortfall > 0:
+		parts.append(shortfall)
 
 	return parts
 
 
-## Every tier under the biggest this payout needs, largest first, so each pass can
-## leave what the tier below it still has room to carry.
-static func _tiers_below_largest(payout: int) -> Array[int]:
-	var tiers: Array[int] = []
-	var tier := 1
+## The finer of the two denominations a payout streams in.
+static func _small_denomination(payout: int) -> int:
+	var small := 1
 
-	while payout > tier * MOTE_CAP:
-		tiers.push_front(tier)
-		tier *= 10
+	while payout > small * 10 * MOTE_CAP:
+		small *= 10
 
-	return tiers
+	return small

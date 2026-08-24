@@ -97,9 +97,6 @@ func _owed() -> int:
 func _release_next() -> void:
 	var value: int = _queue.pop_front()
 
-	if not is_inside_tree():
-		return
-
 	if _state == State.REFUNDING:
 		var returning: ShopSoulMote = _add_mote(value, _item_position)
 		returning.z_index = -1
