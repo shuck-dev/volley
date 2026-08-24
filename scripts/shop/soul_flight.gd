@@ -1,102 +1,124 @@
 class_name SoulFlight
 extends Node2D
 
-## One stream of soul between the counter and a catcher.
-## Owns its motes and its own share of the ledger, so flights in opposite directions never touch.
+## One stream of soul between the spawn point and a catcher.
+## Owns its motes and the state of a purchase.
 
 ## Raised once every mote of this flight has landed.
 signal settled(flight: SoulFlight)
 
+## The state of a soul flight depending on if player is still purchasing.
+enum State { DRAINING, REFUNDING, SETTLED }
+
 const MOTE_SCENE: PackedScene = preload("res://scenes/effects/shop_soul_mote.tscn")
 
-## Delay between each mote's spawn, so the price streams rather than leaving at once.
-const SPAWN_INTERVAL := 0.04
+const SPAWN_WINDOW := 0.5
 
-## Speed the flight's motes travel at.
-var mote_speed := 1200.0
-
-## Soul taken from the soul balance
+var mote_speed := 1800.0
+var _state: State = State.DRAINING
 var _spent: int = 0
-
 var _in_flight: int = 0
-var _spawning: bool = false
-var _refunding: bool = false
 
-## Set once this flight has released its save lock, so it releases only once.
-var _save_unlocked: bool = false
+## Motes still waiting to be released, and the schedule releasing them.
+var _queue: Array[int] = []
+var _queue_size: int = 0
+var _elapsed: float = 0.0
+
+var _spawn_position: Callable
+var _item_position: Vector2
 
 
 func _enter_tree() -> void:
-	# The balance moves mote by mote from here, so hold the save until it settles.
 	SaveManager.lock_save()
 
 
 func _exit_tree() -> void:
-	_release_save()
+	_settle()
 
 
 ## Whether soul is still in transit both on purchase and refund.
 func is_active() -> bool:
-	return _spawning or _in_flight > 0
+	return not _queue.is_empty() or _in_flight > 0
 
 
 ## Streams `values` out to `catcher`, debiting each mote's soul as it leaves.
-func drain(catcher: SoulCatcher, values: Array[int], origin: Callable) -> void:
-	_spawning = true
+func drain(catcher: SoulCatcher, values: Array[int], spawn_position: Callable) -> void:
+	_spawn_position = spawn_position
+	_item_position = catcher.global_position
 
-	for value in values:
-		if _refunding or not is_inside_tree() or not is_instance_valid(catcher):
-			break
-
-		var mote: ShopSoulMote = _add_mote(value, origin.call())
-
-		mote.fly_to(catcher.global_position)
-
-		BallManager.subtract_soul(value)
-		_spent += value
-
-		await get_tree().create_timer(SPAWN_INTERVAL).timeout
-
-	# A refund took over the spawning, so leave the flag to it.
-	if _refunding:
-		return
-
-	_spawning = false
-
-	_settle_if_done()
+	_queue_release(values)
 
 
-## If purchase is canceled, refund the soul
-func refund(origin: Vector2, home: Callable) -> void:
-	_refunding = true
+## Sends back every soul this flight has taken.
+func refund(item: Vector2, spawn_position: Callable) -> void:
+	if _state == State.SETTLED:
+		SaveManager.lock_save()
+
+	_state = State.REFUNDING
 
 	var owed: int = _spent
 
-	# Motes still outbound turn where they are, so only the landed soul needs new ones.
 	for mote: ShopSoulMote in _motes():
 		owed -= mote.soul_value
 
-		mote.fly_to(home.call())
+		mote.fly_to(spawn_position.call())
 
 	_spent = 0
 
-	_spawning = true
+	_spawn_position = spawn_position
+	_item_position = item
 
-	for value in SoulBurstMath.split(owed):
-		if not is_inside_tree():
-			break
+	_queue_release(SoulMath.split(owed))
 
-		var mote: ShopSoulMote = _add_mote(value, origin)
 
-		# Drawn under the ball, so the soul reads as coming out from behind it.
-		mote.z_index = -1
-		mote.fly_to(home.call())
+func _process(delta: float) -> void:
+	if _queue.is_empty():
+		return
 
-		await get_tree().create_timer(SPAWN_INTERVAL).timeout
+	_elapsed += delta
 
-	_spawning = false
+	while _queue.size() > _owed():
+		_release_next()
 
-	_settle_if_done()
+	if _queue.is_empty():
+		_settle_if_done()
+
+
+## Motes the schedule says should be released.
+func _owed() -> int:
+	if SPAWN_WINDOW <= 0.0:
+		return 0
+
+	var elapsed_fraction: float = minf(_elapsed / SPAWN_WINDOW, 1.0)
+
+	return _queue_size - ceili(elapsed_fraction * _queue_size)
+
+
+func _release_next() -> void:
+	var value: int = _queue.pop_front()
+
+	if _state == State.REFUNDING:
+		var returning: ShopSoulMote = _add_mote(value, _item_position)
+		returning.z_index = -1
+		returning.fly_to(_spawn_position.call())
+
+		return
+
+	var leaving: ShopSoulMote = _add_mote(value, _spawn_position.call())
+
+	leaving.fly_to(_item_position)
+
+	BallManager.subtract_soul(value)
+	_spent += value
+
+
+func _queue_release(values: Array[int]) -> void:
+	_queue = values.duplicate()
+	_queue_size = _queue.size()
+	_elapsed = 0.0
+
+	if _queue.is_empty():
+		_settle_if_done()
 
 
 ## Motes of this flight still carrying soul.
@@ -106,7 +128,6 @@ func _motes() -> Array[ShopSoulMote]:
 	for child: Node in get_children():
 		var mote: ShopSoulMote = child as ShopSoulMote
 
-		# A landed mote is freed at end of frame, so it is still a child here.
 		if mote != null and not mote.is_queued_for_deletion():
 			motes.append(mote)
 
@@ -128,8 +149,7 @@ func _add_mote(soul_value: int, mote_position: Vector2) -> ShopSoulMote:
 
 
 func _on_mote_landed(soul_value: int) -> void:
-	# A refunding flight is paying soul back; an outbound one already spent it.
-	if _refunding:
+	if _state == State.REFUNDING:
 		BallManager.refund_soul(soul_value)
 
 	_in_flight -= 1
@@ -141,18 +161,18 @@ func _settle_if_done() -> void:
 	if is_active():
 		return
 
-	_release_save()
+	_settle()
 
 	# Deferred so a flight that finished spawning synchronously still gets awaited.
 	settled.emit.call_deferred(self)
 
 
-## Lets the save resume, then writes the balance this flight finished moving.
-func _release_save() -> void:
-	if _save_unlocked:
+## Balances the books: lets the save resume, then writes what this flight moved.
+func _settle() -> void:
+	if _state == State.SETTLED:
 		return
 
-	_save_unlocked = true
+	_state = State.SETTLED
 
 	SaveManager.unlock_save()
 	SaveManager.save()

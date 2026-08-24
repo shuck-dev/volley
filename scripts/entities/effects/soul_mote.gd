@@ -4,10 +4,13 @@ extends Area2D
 ## A single soul in flight. Subclasses own traveling behaviour.
 ## Owns appearance and turning radius.
 
-## Color per denomination.
-const DENOMINATION_COLORS: Dictionary[int, Color] = {
-	1: Color(1.0, 1.0, 1.0),
-}
+## Color per SoulMath denomination, smallest first.
+const DENOMINATION_COLORS: Array[Color] = [
+	Color(1.0, 1.0, 1.0),
+	Color(0.45, 0.75, 1.0),
+	Color(0.6, 0.2, 0.9),
+	Color(1.0, 0.65, 0.15),
+]
 
 ## How many positions the trail keeps before destroying the oldest.
 const TRAIL_LENGTH := 12
@@ -26,11 +29,23 @@ var _heading := Vector2.RIGHT
 
 
 func _ready() -> void:
-	var color: Color = DENOMINATION_COLORS.get(soul_value, Color.WHITE)
+	var color: Color = _denomination_color()
 
 	sprite.modulate = color
 	glow.modulate = color
-	trail.default_color = color
+	trail.modulate = color
+
+
+## The colour of the largest denomination this mote covers.
+func _denomination_color() -> Color:
+	var rung := 0
+	var denomination := 1
+
+	while denomination * SoulMath.DENOMINATION_STEP <= soul_value:
+		denomination *= SoulMath.DENOMINATION_STEP
+		rung += 1
+
+	return DENOMINATION_COLORS[mini(rung, DENOMINATION_COLORS.size() - 1)]
 
 
 func _physics_process(delta: float) -> void:
@@ -63,7 +78,7 @@ func _steer_toward(destination: Vector2, delta: float, speed: float) -> void:
 	var turning_radius: float = speed / deg_to_rad(turn_degrees_per_second)
 	var distance: float = to_destination.length()
 
-	# A destination inside the turning circle cannot be reached, only orbited.
+	# Increase turn until target is hit, in case of orbiting.
 	if distance < turning_radius:
 		turn_degrees *= turning_radius / maxf(distance, 1.0)
 

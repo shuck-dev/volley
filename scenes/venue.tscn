@@ -134,6 +134,7 @@ shape = SubResource("RectangleShape2D_o1mbd")
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1245905831]
 z_index = -100
 layout_mode = 0
+mouse_filter = 2
 offset_left = -1731.0
 offset_top = -1144.0
 offset_right = 1887.0

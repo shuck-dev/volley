@@ -120,6 +120,11 @@ func accept_payment() -> void:
 	_start_drag()
 
 
+## Whether soul is tied up in this item, either held, paid for, or streaming back.
+func _is_settling() -> bool:
+	return _held or _is_paid or _is_refunding
+
+
 ## The Shop calls this once the refunded soul has finished streaming home.
 func settle_refund() -> void:
 	_is_refunding = false
@@ -227,7 +232,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if mouse_button.button_index != MOUSE_BUTTON_LEFT:
 		return
 
-	if mouse_button.pressed and can_be_owned() and _held_token == null and not _held:
+	if _is_settling():
+		return
+
+	if mouse_button.pressed and can_be_owned() and _held_token == null:
 		_held = true
 
 		grabbed.emit(self)
@@ -248,6 +256,7 @@ func _finalise_gesture(release_position: Vector2, purchased: bool) -> void:
 	if _held_token != null:
 		_held_token.queue_free()
 	_held_token = null
+
 	drop_completed.emit(ball_definition.key, release_position, purchased)
 
 
@@ -267,10 +276,12 @@ func refund() -> void:
 func _start_drag() -> void:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % ball_definition.key
+
 	if ball_definition != null and ball_definition.scene != null:
 		var ball_instance: Node = ball_definition.scene.instantiate()
 		token.add_child(ball_instance)
 		(ball_instance as Ball).enter_stored()
+
 	# Parent at scene root so the held visual follows the cursor without being
 	# tied to the shop item's transform.
 	var current_scene: Node = get_tree().current_scene
@@ -278,9 +289,11 @@ func _start_drag() -> void:
 		current_scene.add_child(token)
 	else:
 		add_child(token)
+
 	var cursor: Vector2 = _cursor_position()
 	token.global_position = cursor
 	_held_token = token
+
 	# Hide the source slot during the drag so the player sees one item, not two (SH-251).
 	visible = false
 	pickup_started.emit(ball_definition.key)
@@ -289,25 +302,34 @@ func _start_drag() -> void:
 func _is_position_inside_shop(world_position: Vector2) -> bool:
 	if _shop_area == null:
 		return false
+
 	var shape_node: CollisionShape2D = null
+
 	for child in _shop_area.get_children():
 		if child is CollisionShape2D:
 			shape_node = child
 			break
+
 	if shape_node == null:
 		return false
+
 	var rectangle: RectangleShape2D = shape_node.shape as RectangleShape2D
+
 	if rectangle == null:
 		return false
+
 	var half: Vector2 = rectangle.size * 0.5
 	var center: Vector2 = _shop_area.global_position + shape_node.position
+
 	return Rect2(center - half, rectangle.size).has_point(world_position)
 
 
 func _cursor_position() -> Vector2:
 	var viewport: Viewport = get_viewport()
+
 	if viewport == null:
 		return global_position
+
 	return get_global_mouse_position()
 
 
@@ -316,6 +338,7 @@ func _screen_position() -> Vector2:
 	var viewport: Viewport = get_viewport()
 	if viewport == null:
 		return Vector2.ZERO
+
 	return viewport.get_mouse_position()
 
 
@@ -333,8 +356,7 @@ func _refresh_case_overlay() -> void:
 	if case_overlay == null:
 		return
 
-	# Soul moving through this item is its own price, so it never cases itself.
-	if _held or _is_paid or _is_refunding:
+	if _is_settling():
 		return
 
 	case_overlay.visible = not can_be_owned()

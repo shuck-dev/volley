@@ -12,7 +12,7 @@ signal purchase_completed
 @export var spawn_spread := 600.0
 
 ## Speed purchase motes fly at; faster than a burst, since they are not showing off.
-@export var mote_speed := 1200.0
+@export var mote_speed := 1800.0
 
 ## The flight carrying soul out to a catcher; refunding ones live on as children.
 var _purchase: SoulFlight = null
@@ -20,7 +20,11 @@ var _purchase: SoulFlight = null
 
 ## Drains price from the counter into catcher. One mote per denomination.
 func drain_soul_purchase(catcher: SoulCatcher, price: int) -> void:
-	var values: Array[int] = SoulBurstMath.split(price)
+	# One purchase at a time: a second drain would orphan the flight paying for the first.
+	if _purchase != null:
+		return
+
+	var values: Array[int] = SoulMath.split(price)
 
 	# A free item has no soul to move, so the purchase is already done.
 	if values.is_empty():
@@ -30,7 +34,7 @@ func drain_soul_purchase(catcher: SoulCatcher, price: int) -> void:
 
 	_purchase = _add_flight()
 
-	await _purchase.drain(catcher, values, _spawn_position)
+	_purchase.drain(catcher, values, _spawn_position)
 
 
 ## Sends back every soul taken before a complete purchase.

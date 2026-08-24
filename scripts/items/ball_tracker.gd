@@ -36,9 +36,6 @@ func _ready() -> void:
 
 	SaveManager.save_cleared.connect(_on_save_cleared)
 
-	# Deferred so sibling listeners connect before emitting.
-	call_deferred(&"_load_court_balls")
-
 
 func configure(ball_manager: Node) -> void:
 	_ball_manager = ball_manager
@@ -50,6 +47,9 @@ func set_court(court: Court) -> void:
 	_arc_height_max = court.arc_height_max
 	_bound_y = court.soul_bound.global_position.y
 	_player_paddle = court.player_paddle
+
+	# Saved balls need the court's spawn point to load first.
+	_load_resting_balls.call_deferred()
 
 
 ## Live position of the player paddle
@@ -246,23 +246,36 @@ func _create_ball(ball_key: String, spawn_position: Vector2, initial_velocity: V
 	return ball
 
 
-## A ball ON_COURT at last save was mid-rally; land it loose in the venue at boot instead.
-func _load_court_balls() -> void:
-	var keys: Array[String] = _ball_manager.get_on_court_items().filter(
-		func(key: String) -> bool: return get_ball_for_key(key) == null
-	)
+## Spawns every live ball.
+func _load_resting_balls() -> void:
+	var court_keys: Array[String] = _ball_manager.get_court_balls()
+	var loose_keys: Array[String] = _ball_manager.get_loose_balls()
 
+	_load_court_balls(court_keys)
+	_load_loose_balls(loose_keys)
+
+
+## Transitions on court balls to a resting position.
+func _load_court_balls(keys: Array[String]) -> void:
 	for stack_index in keys.size():
 		var key: String = keys[stack_index]
 		var position: Vector2 = (
 			_court_ball_spawn + Vector2(0.0, -_COURT_BALL_SPAWN_STACK_OFFSET * stack_index)
 		)
 		_ball_manager.mark_loose_in_venue(key, position)
-		var ball := _create_ball(key, position, Vector2.ZERO)
-		ball.enter_out_rest()
+		_spawn_resting_ball(key, position)
 
 
-## Releases a ball from tracking.
+func _load_loose_balls(keys: Array[String]) -> void:
+	for key in keys:
+		_spawn_resting_ball(key, _ball_manager.get_venue_position(key, _court_ball_spawn))
+
+
+func _spawn_resting_ball(ball_key: String, position: Vector2) -> void:
+	var ball := _create_ball(ball_key, position, Vector2.ZERO)
+	ball.enter_out_rest()
+
+
 func _detach(old_ball: Ball) -> void:
 	if old_ball == null:
 		return

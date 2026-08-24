@@ -150,9 +150,19 @@ func _assign_rack_slot(ball_key: String) -> void:
 	rack_slots_changed.emit()
 
 
-## Returns owned items whose placement is ON_COURT.
-func get_on_court_items() -> Array[String]:
+## Returns ON_COURT balls.
+func get_court_balls() -> Array[String]:
 	return _items_with_placement(Placement.ON_COURT)
+
+
+## Returns LOOSE_IN_VENUE balls.
+func get_loose_balls() -> Array[String]:
+	return _items_with_placement(Placement.LOOSE_IN_VENUE)
+
+
+## Where a loose ball was left, or `fallback` if it has no recorded spot.
+func get_venue_position(ball_key: String, fallback: Vector2 = Vector2.ZERO) -> Vector2:
+	return _state.ball_venue_position.get(ball_key, fallback)
 
 
 ## Returns owned items whose placement is STORED (on the rack).

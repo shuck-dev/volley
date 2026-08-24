@@ -17,11 +17,15 @@ var _destination := Vector2.ZERO
 
 ## Sends the mote to a vector.
 func fly_to(destination: Vector2) -> void:
-	var toward: Vector2 = (destination - global_position).normalized()
+	_destination = destination
 
+	_launch()
+
+
+func _launch() -> void:
+	var toward: Vector2 = (_destination - global_position).normalized()
 	var spread := deg_to_rad(launch_spread_degrees)
 
-	_destination = destination
 	_heading = toward.rotated(randf_range(-spread, spread))
 
 
