@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://glw3v53y7eyu" path="res://scripts/core/court.gd" id="1_tbgi4"]
 [ext_resource type="Script" uid="uid://dpq2mxc834vw4" path="res://scripts/core/autoplay_controller.gd" id="7_tipki"]
 [ext_resource type="Resource" uid="uid://bgop07op1bnc7" path="res://resources/autoplay_config.tres" id="8_85g3d"]
-[ext_resource type="PackedScene" uid="uid://bxyckxy4cf7r0" path="res://scenes/ball_rack.tscn" id="8_h0b8m"]
 [ext_resource type="PackedScene" uid="uid://pglvgky7ryvi" path="res://scenes/player_paddle.tscn" id="9_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://3l88siilc0hu" path="res://scenes/shipment_mat.tscn" id="10_5mv5b"]
 [ext_resource type="PackedScene" path="res://scenes/miss_zone.tscn" id="10_miss_zone"]
@@ -120,11 +119,6 @@ position = Vector2(700, 0)
 [node name="PlayerSpawn" type="Marker2D" parent="." unique_id=1995993314]
 position = Vector2(-700, 0)
 
-[node name="BallRack" parent="." unique_id=949376876 instance=ExtResource("8_h0b8m")]
-visible = false
-z_index = -50
-position = Vector2(-486, 179.79999)
-
 [node name="ShipmentMat" parent="." unique_id=530264883 instance=ExtResource("10_5mv5b")]
 visible = false
 z_index = -50
@@ -177,10 +171,8 @@ offset_top = -240.0
 offset_right = -529.0
 offset_bottom = -172.0
 
-[node name="ItemDragController" type="Node2D" parent="." unique_id=1902001002 node_paths=PackedStringArray("rack", "rack_drop_target")]
+[node name="ItemDragController" type="Node2D" parent="." unique_id=1902001002]
 script = ExtResource("22_drag")
-rack = NodePath("../BallRack")
-rack_drop_target = NodePath("../BallRack/RackDropTarget")
 
 [node name="CourtDropTarget" type="Area2D" parent="." unique_id=1902001003]
 collision_layer = 0

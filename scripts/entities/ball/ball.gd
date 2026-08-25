@@ -212,7 +212,7 @@ func set_play_state(new_state: PlayState) -> void:
 	play_state_changed.emit(new_state)
 
 
-# Grab area swallows clicks even while frozen; disable it when the ball isn't grabbable so the rack slot below stays reachable.
+# Grab area swallows clicks even while frozen; disable it when the ball isn't grabbable so the slot below stays reachable.
 func _apply_grab_area_pickable() -> void:
 	if grab_area == null:
 		return
@@ -224,7 +224,7 @@ func _apply_grab_area_pickable() -> void:
 	)
 
 
-# STORED: body frozen, collision off. Position handled by the caller (rack slot).
+# STORED: body frozen, collision off. Position handled by the caller.
 func enter_stored() -> void:
 	_suppress_miss_detection = false
 	STORED_CONFIG.apply(self)

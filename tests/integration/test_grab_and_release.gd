@@ -4,8 +4,6 @@ const ItemDragControllerScript: GDScript = preload("res://scripts/items/item_dra
 const BallTrackerScript: GDScript = preload("res://scripts/items/ball_tracker.gd")
 
 var _manager: Node
-var _rack: RackDisplay
-var _drop_target: Area2D
 var _ball_tracker: Node
 var _drag: ItemDragController
 
@@ -16,19 +14,16 @@ func before_each() -> void:
 	_manager.items.assign([ball_alpha] as Array[BallDefinition])
 	_manager.economy.soul_balance = 10000
 
-	_rack = BallTestHelpers.make_rack(_manager, self)
-	_drop_target = BallTestHelpers.make_drop_area(Vector2(-1000, 0), Vector2(300, 200), self)
-
 	_ball_tracker = BallTrackerScript.new()
 	_ball_tracker.configure(_manager)
 	add_child_autofree(_ball_tracker)
 
 	_drag = ItemDragControllerScript.new()
-	_drag.configure(_manager, _rack, _drop_target, _ball_tracker)
+	_drag.configure(_manager, _ball_tracker)
 	_drag.kit = BallTestHelpers.make_kit(_manager, self)
 	add_child_autofree(_drag)
 
-	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, _drop_target.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, self)
 
 
 func after_each() -> void:

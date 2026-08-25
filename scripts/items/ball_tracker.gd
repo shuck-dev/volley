@@ -59,7 +59,7 @@ func get_player_paddle_position() -> Variant:
 	return _player_paddle.global_position
 
 
-## True when any tracked ball is in PLAY_NORMAL or PLAY_ARC; drives the rally-in-progress gate.
+## True when any tracked ball is in play, driving the rally-in-progress gate.
 func has_ball_in_play() -> bool:
 	for ball in _balls:
 		if (
@@ -123,20 +123,6 @@ func release_ball(ball_key: String) -> void:
 
 	_detach(ball)
 	ball.queue_free()
-
-
-## Creates a tracked STORED Ball for a stored item key, if one doesn't already exist.
-func create_ball_from_key(ball_key: String) -> Ball:
-	var existing: Ball = get_ball_for_key(ball_key)
-	if existing != null:
-		return existing
-	if _ball_manager == null:
-		return null
-	if _ball_manager.get_level(ball_key) <= 0:
-		return null
-	if _ball_manager.get_rack_slot_index(ball_key) < 0:
-		return null
-	return _create_stored(ball_key)
 
 
 func get_balls() -> Array[Ball]:
@@ -206,22 +192,6 @@ func free_temporary(ball: Ball) -> void:
 		return
 	_detach(ball)
 	ball.queue_free()
-
-
-## Internal: spawns a STORED ball; the rack repositions it to its slot on next refresh.
-func _create_stored(ball_key: String) -> Ball:
-	var definition: BallDefinition = _ball_manager.get_item(ball_key)
-	var ball: Ball = definition.scene.instantiate()
-	ball.arc_height_max = _arc_height_max
-	ball.bound_y = _bound_y
-	ball.ball_key = ball_key
-	ball.stats = definition.stats
-	ball.speed_tiers = definition.speed_tiers
-	add_child(ball)
-	ball.enter_stored()
-
-	_register_ball(ball)
-	return ball
 
 
 ## Internal: spawns a Ball node without key generation.
@@ -314,7 +284,7 @@ func _on_ball_missed(ball: Ball) -> void:
 	free_temporary.call_deferred(ball)
 
 
-## The scene reload after a save clear doesn't touch autoload children; free them here instead.
+## Free autoload children on save clear, since the reload doesn't touch them.
 func _on_save_cleared() -> void:
 	for ball in _balls:
 		ball.queue_free()

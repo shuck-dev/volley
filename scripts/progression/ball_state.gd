@@ -3,10 +3,10 @@ extends RefCounted
 
 var ball_levels: Dictionary[String, int] = {}
 
-## Placement enum per ball; every owned ball has exactly one entry, exactly one placement at a time.
+## Placement enum per owned ball.
 var ball_placement: Dictionary[String, int] = {}
 
-## Slot index per ball, meaningful only while STORED (rack slot) or IN_KIT (kit slot).
+## Slot index per ball, meaningful only while IN_KIT (kit slot).
 var ball_slot: Dictionary[String, int] = {}
 
 ## World position per ball, meaningful only while LOOSE_IN_VENUE.

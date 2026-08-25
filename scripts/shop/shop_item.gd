@@ -203,10 +203,7 @@ func _purchase_and_spawn(
 	if instance_key.is_empty():
 		return false
 
-	if target is RackDropTarget:
-		controller.adopt_purchased_into_rack(instance_key)
-	else:
-		target.accept(instance_key, world_position, _release_velocity())
+	target.accept(instance_key, world_position, _release_velocity())
 
 	return true
 
