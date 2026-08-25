@@ -18,14 +18,10 @@ func before_each() -> void:
 	_ball_tracker.configure(_manager)
 	add_child_autofree(_ball_tracker)
 
-	var rack: RackDisplay = BallTestHelpers.make_rack(_manager, self)
-	var drop_target: Area2D = BallTestHelpers.make_drop_area(
-		Vector2(-1000, 0), Vector2(300, 200), self
-	)
-	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, drop_target.position, self)
+	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, self)
 
 	_drag = ItemDragControllerScript.new()
-	_drag.configure(_manager, rack, drop_target, _ball_tracker)
+	_drag.configure(_manager, _ball_tracker)
 	_drag.kit = BallTestHelpers.make_kit(_manager, self)
 	add_child_autofree(_drag)
 

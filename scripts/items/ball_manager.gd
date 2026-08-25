@@ -4,8 +4,6 @@ extends Node
 signal soul_balance_changed(balance: int)
 signal item_level_changed(ball_key: String)
 signal item_placement_changed(ball_key: String, placement: int)
-## Emitted when the rack slot map mutates so a stale RackDisplay re-renders the changed slot.
-signal rack_slots_changed
 ## Emitted after any state mutation (level, placement, or initial load) so consumers derive from one signal.
 signal state_changed
 
@@ -70,7 +68,7 @@ func get_level(ball_key: String) -> int:
 	return max(max_level, get_owned_count(ball_key))
 
 
-## Returns the current placement of an item. Every owned item has exactly one entry.
+## Returns the current placement of an owned item.
 func _get_placement(ball_key: String) -> int:
 	assert(
 		_state.ball_placement.has(ball_key), "BallManager: no placement recorded for %s" % ball_key
@@ -83,12 +81,12 @@ func get_placement(ball_key: String) -> int:
 	return _get_placement(ball_key)
 
 
-## True when the item's placement is LOOSE_IN_VENUE; tolerates an unregistered ball (false).
+## True when the item's placement is LOOSE_IN_VENUE.
 func is_loose_in_venue(ball_key: String) -> bool:
 	return _state.ball_placement.get(ball_key, -1) == Placement.LOOSE_IN_VENUE
 
 
-## Marks an owned item as loose-in-venue at `position`. Idempotent. Emits item_placement_changed.
+## Marks an owned item as loose-in-venue at `position`, idempotently.
 func mark_loose_in_venue(ball_key: String, position: Vector2 = Vector2.ZERO) -> void:
 	if is_loose_in_venue(ball_key):
 		_state.ball_venue_position[ball_key] = position
@@ -96,58 +94,16 @@ func mark_loose_in_venue(ball_key: String, position: Vector2 = Vector2.ZERO) -> 
 	_set_item_placement(ball_key, Placement.LOOSE_IN_VENUE, position)
 
 
-## Restores a loose item to the rack. Idempotent. Emits item_placement_changed.
+## Clears the loose-in-venue state, returning the item to STORED idempotently.
 func clear_loose_in_venue(ball_key: String) -> void:
 	if not is_loose_in_venue(ball_key):
 		return
 	_set_item_placement(ball_key, Placement.STORED)
 
 
-## True when an item is currently placed on the court, false on the rack or loose in venue.
+## True when an item is currently placed on the court, false when stored or loose in venue.
 func is_on_court(ball_key: String) -> bool:
 	return _get_placement(ball_key) == Placement.ON_COURT
-
-
-## Slot index assigned to `ball_key` while STORED; -1 when not stored (including unowned keys).
-func get_rack_slot_index(ball_key: String) -> int:
-	if _state.ball_placement.get(ball_key, -1) != Placement.STORED:
-		return -1
-	return _state.ball_slot.get(ball_key, -1)
-
-
-## Frees the rack slot a held item occupied so concurrent inserts fill from the lowest free slot.
-## Held balls stay STORED with no held-ness signal here, so the drag path releases the slot.
-func release_rack_slot(ball_key: String) -> void:
-	if not _state.ball_slot.has(ball_key):
-		return
-	_state.ball_slot.erase(ball_key)
-	rack_slots_changed.emit()
-
-
-## Re-assigns the lowest free rack slot when a held item returns to the rack.
-func reassign_rack_slot(ball_key: String) -> void:
-	_assign_rack_slot(ball_key)
-
-
-## Picks the lowest free slot index among STORED items (ball_slot is shared with Kit) and records it.
-func _assign_rack_slot(ball_key: String) -> void:
-	if (
-		_state.ball_slot.has(ball_key)
-		and _state.ball_placement.get(ball_key, -1) == Placement.STORED
-	):
-		return
-
-	var used: Dictionary = {}
-	for key: String in _state.ball_slot:
-		if _state.ball_placement.get(key, -1) == Placement.STORED:
-			used[_state.ball_slot[key]] = true
-
-	var candidate: int = 0
-	while used.has(candidate):
-		candidate += 1
-
-	_state.ball_slot[ball_key] = candidate
-	rack_slots_changed.emit()
 
 
 ## Returns ON_COURT balls.
@@ -163,11 +119,6 @@ func get_loose_balls() -> Array[String]:
 ## Where a loose ball was left, or `fallback` if it has no recorded spot.
 func get_venue_position(ball_key: String, fallback: Vector2 = Vector2.ZERO) -> Vector2:
 	return _state.ball_venue_position.get(ball_key, fallback)
-
-
-## Returns owned items whose placement is STORED (on the rack).
-func get_stored_items() -> Array[String]:
-	return _items_with_placement(Placement.STORED)
 
 
 ## Returns owned items whose placement is IN_KIT (the Ball Kit staging area).
@@ -189,13 +140,6 @@ func _items_with_placement(placement: int) -> Array[String]:
 	return result
 
 
-## Kit slot index assigned to `ball_key` while IN_KIT; -1 when not kitted (including unowned keys).
-func get_kit_slot_index(ball_key: String) -> int:
-	if _state.ball_placement.get(ball_key, -1) != Placement.IN_KIT:
-		return -1
-	return _state.ball_slot.get(ball_key, -1)
-
-
 ## The owned item occupying `slot_index`, or "" when that Kit slot is empty.
 func get_ball_in_kit_slot(slot_index: int) -> String:
 	for key: String in get_kit_items():
@@ -214,16 +158,6 @@ func activate(ball_key: String) -> bool:
 	return true
 
 
-## Moves an owned item back to the rack and unregisters its effects; false if unowned.
-func deactivate(ball_key: String) -> bool:
-	if get_level(ball_key) <= 0:
-		return false
-
-	_set_item_placement(ball_key, Placement.STORED)
-
-	return true
-
-
 ## Moves an owned item into a specific Kit slot; false if unowned or the slot holds a different item.
 func add_to_kit(ball_key: String, slot_index: int) -> bool:
 	if get_level(ball_key) <= 0:
@@ -237,7 +171,7 @@ func add_to_kit(ball_key: String, slot_index: int) -> bool:
 	return true
 
 
-## Moves an owned item from the Ball Kit back to the rack; false if unowned.
+## Moves an owned item from the Ball Kit back to STORED; false if unowned.
 func remove_from_kit(ball_key: String) -> bool:
 	if get_level(ball_key) <= 0:
 		return false
@@ -290,15 +224,14 @@ func get_soul_balance() -> int:
 	return economy.soul_balance
 
 
-## Only earning path. Increments `total_soul_earned` so the shop unlock check stays correct across spending.
+## Only earning path, incrementing total_soul_earned so the shop unlock check stays correct.
 func add_soul(points: int) -> void:
 	economy.soul_balance += points
 	economy.total_soul_earned += points
 	soul_balance_changed.emit(economy.soul_balance)
 
 
-## Returns spent soul without crediting total soul earned.
-## So a cancelled purchase does not affect progression.
+## Returns spent soul without crediting total soul earned, so a refund doesn't affect progression.
 func refund_soul(points: int) -> void:
 	economy.soul_balance += points
 	soul_balance_changed.emit(economy.soul_balance)
@@ -351,9 +284,7 @@ func _set_item_placement(
 	_state.ball_venue_position.erase(ball_key)
 	_state.ball_slot.erase(ball_key)
 
-	if placement == Placement.STORED:
-		_assign_rack_slot(ball_key)
-	elif placement == Placement.IN_KIT:
+	if placement == Placement.IN_KIT:
 		_state.ball_slot[ball_key] = slot_index
 	elif placement == Placement.LOOSE_IN_VENUE:
 		_state.ball_venue_position[ball_key] = venue_position
@@ -405,7 +336,7 @@ func _get_item(ball_key: String) -> BallDefinition:
 	return null
 
 
-## Same as `_get_item`, but asserts non-null; a miss here is a real bug, not an unowned item.
+## Same as `_get_item` but asserts non-null.
 func get_item(ball_key: String) -> BallDefinition:
 	var item := _get_item(ball_key)
 	assert(item != null, "BallManager: expected a known item for key: %s" % ball_key)

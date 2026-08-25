@@ -17,7 +17,7 @@ func accept(_ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -
 
 
 ## A physical placement check: true when `collision_shape` at `world_position` overlaps nothing.
-## Targets that accept anywhere inside their rect without a real placement (e.g. the rack) don't call this.
+## Targets that accept anywhere inside their rect without a real placement don't call this.
 func _projection_clear(world_position: Vector2, collision_shape: Shape2D) -> bool:
 	if _world == null:
 		return true
