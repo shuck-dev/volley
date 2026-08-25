@@ -86,8 +86,7 @@ func _process(_delta: float) -> void:
 	_update_cursor_state(cursor_target)
 
 	if not _mouse_button_down:
-		if not attempt_release(cursor_target, _screen_position()):
-			pass
+		attempt_release(cursor_target, _screen_position())
 
 
 func _input(event: InputEvent) -> void:
