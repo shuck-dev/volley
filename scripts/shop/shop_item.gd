@@ -184,18 +184,12 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 	return true
 
 
-## Resolves the release against the Kit, then world drop_targets.
 func _purchase_and_spawn(
 	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
 ) -> bool:
-	if controller.kit.can_accept(ball_definition.key, screen_position):
-		var kit_instance_key: String = _ball_manager.take(ball_definition.key)
-		if kit_instance_key.is_empty():
-			return false
-
-		return controller.kit.try_accept(kit_instance_key, screen_position)
-
-	var target: DropTarget = controller.find_accepting_target(ball_definition.key, world_position)
+	var target: Node = controller.find_accepting_target(
+		ball_definition.key, world_position, screen_position
+	)
 	if target == null:
 		return false
 
@@ -203,9 +197,7 @@ func _purchase_and_spawn(
 	if instance_key.is_empty():
 		return false
 
-	target.accept(instance_key, world_position, _release_velocity())
-
-	return true
+	return target.accept(instance_key, world_position, screen_position, _release_velocity())
 
 
 func _build_ball() -> void:

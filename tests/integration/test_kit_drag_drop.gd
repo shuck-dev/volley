@@ -25,9 +25,8 @@ func before_each() -> void:
 
 	_drag = ItemDragControllerScript.new()
 	_drag.configure(_manager, _ball_tracker)
-	_drag.kit = _kit
-	_drag.connect_kit()
 	add_child_autofree(_drag)
+	_kit.connect_drag_controller(_drag)
 
 	BallTestHelpers.make_drop_targets(_manager, _ball_tracker, self)
 
@@ -80,7 +79,7 @@ func test_release_over_venue_leaves_the_ball_loose() -> void:
 func test_kit_release_denied_everywhere_keeps_the_ball_in_the_kit() -> void:
 	var key: String = _manager.take("ball_alpha")
 	_manager.add_to_kit(key, 0)
-	assert_true(_drag.grab_from_kit(key))
+	assert_true(_drag.grab_token(key))
 
 	var accepted: bool = _drag.attempt_release(Vector2(-999999, -999999), Vector2(-999999, -999999))
 

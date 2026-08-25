@@ -15,8 +15,6 @@ const BALL_COLLISION_RADIUS: float = 7.2
 static var _ball_collision_shape: CircleShape2D
 
 @export var cursor_overlay: BallDropOverlay
-## Venue assigns this after _ready (Kit is a Court sibling, not reachable via a scene NodePath).
-@export var kit: BallKit
 
 ## Test seam: overrides the BallTracker autoload with a standalone instance.
 var ball_tracker: Node
@@ -38,12 +36,6 @@ static func _static_init() -> void:
 	_ball_collision_shape.radius = BALL_COLLISION_RADIUS
 
 
-## Venue calls this after assigning kit, which is wired post-_ready.
-func connect_kit() -> void:
-	if not kit.slot_pressed.is_connected(_on_kit_slot_pressed):
-		kit.slot_pressed.connect(_on_kit_slot_pressed)
-
-
 func configure(
 	ball_manager: Node,
 	tracker: Node,
@@ -61,12 +53,6 @@ func _ready() -> void:
 
 	# Group lookup so Shop can hand presses to the controller without a NodePath.
 	add_to_group(&"drag_controller")
-
-	# Hide the held item's home slot while it is held so the player sees one body, not two.
-	if not pickup_started.is_connected(_on_pickup_started):
-		pickup_started.connect(_on_pickup_started)
-	if not drop_completed.is_connected(_on_drop_completed):
-		drop_completed.connect(_on_drop_completed)
 
 	if ball_tracker != null:
 		if not ball_tracker.ball_added.is_connected(_on_tracker_ball_added):
@@ -132,8 +118,8 @@ func get_cursor_state() -> int:
 	return _cursor_state
 
 
-## Grabs a Kit ball as a frozen drag token, since a Kit ball has no live body.
-func grab_from_kit(ball_key: String) -> bool:
+## Grabs an owned ball as a frozen drag token, for a stored ball that has no live body.
+func grab_token(ball_key: String) -> bool:
 	if _drag_target() != null:
 		return false
 	if _ball_manager.get_level(ball_key) <= 0:
@@ -143,6 +129,15 @@ func grab_from_kit(ball_key: String) -> bool:
 	if definition == null or definition.scene == null:
 		return false
 
+	_adopt_held(_create_token(definition, ball_key), ball_key)
+
+	_held_origin = &"kit"
+	_mouse_button_down = true
+	pickup_started.emit(ball_key)
+	return true
+
+
+func _create_token(definition: BallDefinition, ball_key: String) -> Node2D:
 	var token: Node2D = Node2D.new()
 	token.name = "HeldToken_%s" % ball_key
 	var ball_instance: Node = definition.scene.instantiate()
@@ -155,13 +150,7 @@ func grab_from_kit(ball_key: String) -> bool:
 	else:
 		add_child(token)
 	token.global_position = _cursor_position()
-
-	_adopt_held(token, ball_key)
-
-	_held_origin = &"kit"
-	_mouse_button_down = true
-	pickup_started.emit(ball_key)
-	return true
+	return token
 
 
 func grab_live_ball(ball_key: String) -> bool:
@@ -212,39 +201,60 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 		return false
 
 	var ball_key: String = _held_key
-	var has_live_ball: bool = _held is Ball
 	var held_ball: Ball = _held as Ball
-	var is_temporary: bool = has_live_ball and held_ball.is_temporary
+	var is_temporary: bool = held_ball != null and held_ball.is_temporary
+	var resolved_screen_position: Vector2 = (
+		screen_position if screen_position != Vector2.INF else _screen_position()
+	)
 
-	if _try_accept_into_kit(
-		ball_key, release_position, screen_position, has_live_ball, is_temporary
-	):
-		return true
-
-	var target: DropTarget = find_accepting_target(ball_key, release_position)
+	var target: Node = find_accepting_target(ball_key, release_position, resolved_screen_position)
 	if target == null:
 		return false
 
-	# Drop the Kit placement before a non-Kit target takes over.
-	if _held_origin == &"kit":
+	# A Kit slot holds the item itself, so a live body must stop existing before it becomes an icon.
+	if target is KitSlot:
+		if is_temporary:
+			return false
+		if held_ball != null:
+			_park_held_ball_in_kit()
+	elif _held_origin == &"kit":
+		# Drop the Kit placement before another target takes over.
 		_ball_manager.remove_from_kit(ball_key)
 
-	if target is CourtDropTarget:
-		var velocity: Vector2 = _compute_release_velocity()
-		if has_live_ball:
-			# The same Ball survives the gesture, transitioning OUT_HELD to PLAY in place.
-			_release_live_ball_to_court(release_position, velocity)
-		else:
-			target.accept(ball_key, release_position, velocity)
-			_apply_preserved_speed_after_accept(ball_key)
-	elif is_temporary:
+	if not _commit_to_target(
+		target, ball_key, release_position, resolved_screen_position, held_ball
+	):
+		return false
+
+	_finalise_gesture(ball_key, release_position, target is CourtDropTarget)
+	return true
+
+
+## Hands the held item to `target`, keeping a live Ball's body rather than respawning it.
+func _commit_to_target(
+	target: Node,
+	ball_key: String,
+	release_position: Vector2,
+	screen_position: Vector2,
+	held_ball: Ball,
+) -> bool:
+	var velocity: Vector2 = _compute_release_velocity()
+
+	if held_ball != null and held_ball.is_temporary and not (target is CourtDropTarget):
 		# A temporary ball is freed anywhere but the court.
 		_free_temporary_ball(held_ball)
-	elif target is VenueDropTarget:
-		target.accept(ball_key, release_position, _compute_release_velocity())
+		return true
 
-	var over_court: bool = target is CourtDropTarget
-	_finalise_gesture(ball_key, release_position, over_court)
+	if target is CourtDropTarget and held_ball != null:
+		# The same Ball survives the gesture, transitioning OUT_HELD to PLAY in place.
+		_release_live_ball_to_court(release_position, velocity)
+		return true
+
+	if not target.accept(ball_key, release_position, screen_position, velocity):
+		return false
+
+	if target is CourtDropTarget:
+		_apply_preserved_speed_after_accept(ball_key)
 	return true
 
 
@@ -282,13 +292,19 @@ func _apply_preserved_speed_after_accept(ball_key: String) -> void:
 		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
 
 
-func find_accepting_target(ball_key: String, world_position: Vector2) -> DropTarget:
-	var winner: DropTarget = null
-	for node: Node in get_tree().get_nodes_in_group(&"drop_targets"):
-		var target: DropTarget = node as DropTarget
-		if not target.can_accept(ball_key, world_position, _ball_collision_shape):
+func find_accepting_target(
+	ball_key: String, world_position: Vector2, screen_position: Vector2 = Vector2.INF
+) -> Node:
+	var resolved_screen_position: Vector2 = (
+		screen_position if screen_position != Vector2.INF else _screen_position()
+	)
+	var winner: Node = null
+	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
+		if not target.can_accept(
+			ball_key, world_position, resolved_screen_position, _ball_collision_shape
+		):
 			continue
-		if winner == null or target.priority < winner.priority:
+		if winner == null or target.drop_priority < winner.drop_priority:
 			winner = target
 	return winner
 
@@ -305,32 +321,6 @@ func _park_held_ball_in_kit() -> void:
 	_ball_manager.clear_loose_in_venue(_held_key)
 	if ball_tracker != null:
 		ball_tracker.release_ball(_held_key)
-
-
-## Checked before the world-space drop_targets group so a Kit hit takes priority.
-func _try_accept_into_kit(
-	ball_key: String,
-	release_position: Vector2,
-	screen_position: Vector2,
-	has_live_ball: bool,
-	is_temporary: bool,
-) -> bool:
-	if is_temporary or ball_key.is_empty():
-		return false
-
-	var resolved_screen_position: Vector2 = (
-		screen_position if screen_position != Vector2.INF else _screen_position()
-	)
-	if not kit.can_accept(ball_key, resolved_screen_position):
-		return false
-
-	if has_live_ball:
-		_park_held_ball_in_kit()
-	if not kit.try_accept(ball_key, resolved_screen_position):
-		return false
-
-	_finalise_gesture(ball_key, release_position, false)
-	return true
 
 
 func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
@@ -408,8 +398,6 @@ func _update_cursor_state(world_position: Vector2) -> void:
 func _derive_cursor_state(world_position: Vector2) -> int:
 	if _drag_target() == null:
 		return CursorStateScript.State.DEFAULT
-	if kit.can_accept(_held_key, _screen_position()):
-		return CursorStateScript.State.CAN_DROP
 	if _position_accepted_by_any_target(_held_key, world_position):
 		return CursorStateScript.State.CAN_DROP
 	return CursorStateScript.State.FORBIDDEN
@@ -424,11 +412,6 @@ func _set_cursor_state(state: int, world_position: Vector2) -> void:
 	BallDropOverlay.update_state(state, world_position)
 
 
-func _on_kit_slot_pressed(ball_key: String) -> void:
-	grab_from_kit(ball_key)
-	kit.refresh.call_deferred()
-
-
 func _on_tracker_ball_added(ball: Ball) -> void:
 	if not ball.grabbed.is_connected(_on_live_ball_grabbed):
 		ball.grabbed.connect(_on_live_ball_grabbed.bind(ball.ball_key))
@@ -439,14 +422,3 @@ func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:
 		grab_temporary(ball)
 	else:
 		grab_live_ball(ball_key)
-
-
-func _on_pickup_started(ball_key: String) -> void:
-	kit.hide_slot_for(ball_key)
-
-
-func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_court: bool) -> void:
-	# Loose-in-venue items have no home slot to reveal.
-	if _ball_manager.is_loose_in_venue(ball_key):
-		return
-	kit.reveal_slot_for(ball_key)

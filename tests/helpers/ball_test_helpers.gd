@@ -60,14 +60,14 @@ static func make_drop_targets(manager: Node, ball_tracker: Node, test: Node) -> 
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
 	court_target.ball_manager = manager
 	court_target.ball_tracker = ball_tracker
-	court_target.priority = COURT_PRIORITY
+	court_target.drop_priority = COURT_PRIORITY
 	court_target.add_child(attach_rect_shape(COURT_SIZE))
 	test.add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
 	venue_target.ball_manager = manager
 	venue_target.ball_tracker = ball_tracker
-	venue_target.priority = VENUE_PRIORITY
+	venue_target.drop_priority = VENUE_PRIORITY
 	venue_target.add_child(attach_rect_shape(VENUE_SIZE))
 	test.add_child_autofree(venue_target)
 

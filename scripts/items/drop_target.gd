@@ -1,19 +1,36 @@
 class_name DropTarget
 extends Area2D
 
+## Lower wins when several targets accept the same release; see ItemDragController.find_accepting_target.
+@export var drop_priority: int = 0
+
 var _world: World2D
 
 
 func _ready() -> void:
 	_world = get_viewport().find_world_2d()
+	add_to_group(&"drop_targets")
 
 
-func can_accept(_ball_key: String, _position: Vector2, _collision_shape: Shape2D) -> bool:
+func can_accept(
+	_ball_key: String,
+	_world_position: Vector2,
+	_screen_position: Vector2,
+	_collision_shape: Shape2D
+) -> bool:
+	assert(false, "DropTarget.can_accept() must be overridden by subclass")
 	return false
 
 
-func accept(_ball_key: String, _position: Vector2, _gesture_velocity: Vector2) -> void:
-	pass
+## Returns true when the target actually took the item, so a refusal leaves it on the cursor.
+func accept(
+	_ball_key: String,
+	_world_position: Vector2,
+	_screen_position: Vector2,
+	_gesture_velocity: Vector2
+) -> bool:
+	assert(false, "DropTarget.accept() must be overridden by subclass")
+	return false
 
 
 ## A physical placement check: true when `collision_shape` at `world_position` overlaps nothing.

@@ -13,8 +13,7 @@ func _ready() -> void:
 	shop.visible = ProgressionManager.is_shop_unlocked()
 	ProgressionManager.shop_unlocked_changed.connect(_on_shop_unlocked_changed)
 
-	court.drag_controller.kit = ball_kit
-	court.drag_controller.connect_kit()
+	ball_kit.connect_drag_controller(court.drag_controller)
 
 	if OS.is_debug_build():
 		add_child(load(DEV_HUD_SCENE).instantiate())
