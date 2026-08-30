@@ -41,10 +41,11 @@ func _on_animation_state_changed(state: StringName) -> void:
 	else:
 		racket_hitbox.position = _default_racket_position
 
+
 ## Manual play uses down key; autoplay usus AI's predicted low-stance decision
 func _is_crouching() -> bool:
 	if not is_grounded():
-			return false
+		return false
 	if input_blocked:
 		return wants_low_stance
 	return Input.is_action_pressed("paddle_down")

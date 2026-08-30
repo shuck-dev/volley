@@ -15,7 +15,7 @@ func set_enabled(value: bool) -> void:
 	if value and ball == null:
 		return
 	_enabled = value
-	
+
 	if not _enabled:
 		paddle.wants_low_stance = false
 
