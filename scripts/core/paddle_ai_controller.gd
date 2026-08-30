@@ -115,6 +115,8 @@ func _track() -> void:
 			paddle_travel_bound,
 		)
 	)
+	# Update the player's low stance from the predicted ball position
+	_update_low_stance(predicted_y, bound_y)
 	var noisy_target: float = predicted_y + _noise_offset
 
 	var delayed_target: float = _apply_reaction_delay(noisy_target)
@@ -134,6 +136,17 @@ func _track() -> void:
 
 	paddle.drive(smoothed_velocity)
 
+## Uses the predicted ball height to switch between grounded stance and
+## low stance when the incoming ball reaches the low-stance threshold.
+func _update_low_stance(predicted_y: float, ball_bounce_y: float) -> void:
+	if not paddle.is_grounded():
+		paddle.wants_low_stance = false
+		return
+		
+	var grounded_y: float = paddle.global_position.y
+	var low_stance_threshold_y: float = (grounded_y + ball_bounce_y) * 0.25
+	
+	paddle.wants_low_stance = predicted_y >= low_stance_threshold_y
 
 func _drift_to_center() -> void:
 	var center_difference: float = -paddle.position.y
