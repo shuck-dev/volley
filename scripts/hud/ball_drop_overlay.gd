@@ -11,7 +11,7 @@ static var instance: BallDropOverlay
 ## Colour-per-state plus ring metrics; tunable per-scene by swapping the style resource.
 @export var style: CursorStyle = DEFAULT_STYLE
 
-var dev_visible: bool = true
+var dev_visible: bool = false
 var _state: int = CursorStateScript.State.DEFAULT
 
 
