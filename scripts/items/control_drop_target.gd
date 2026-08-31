@@ -11,23 +11,13 @@ func _ready() -> void:
 	add_to_group(&"drop_targets")
 
 
-func can_accept(
-	_ball_key: String,
-	_world_position: Vector2,
-	_screen_position: Vector2,
-	_collision_shape: Shape2D
-) -> bool:
+func can_accept(_item: HeldBall, _world_position: Vector2, _screen_position: Vector2) -> bool:
 	assert(false, "ControlDropTarget.can_accept() must be overridden by subclass")
 	return false
 
 
 ## Returns true when the target actually took the item, so a refusal leaves it on the cursor.
-func accept(
-	_ball_key: String,
-	_world_position: Vector2,
-	_screen_position: Vector2,
-	_gesture_velocity: Vector2
-) -> bool:
+func accept(_item: HeldBall, _world_position: Vector2, _gesture_velocity: Vector2) -> bool:
 	assert(false, "ControlDropTarget.accept() must be overridden by subclass")
 	return false
 

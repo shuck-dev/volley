@@ -12,25 +12,30 @@ func _ready() -> void:
 	add_to_group(&"drop_targets")
 
 
-func can_accept(
-	_ball_key: String,
-	_world_position: Vector2,
-	_screen_position: Vector2,
-	_collision_shape: Shape2D
-) -> bool:
+func can_accept(_item: HeldBall, _world_position: Vector2, _screen_position: Vector2) -> bool:
 	assert(false, "DropTarget.can_accept() must be overridden by subclass")
 	return false
 
 
 ## Returns true when the target actually took the item, so a refusal leaves it on the cursor.
-func accept(
-	_ball_key: String,
-	_world_position: Vector2,
-	_screen_position: Vector2,
-	_gesture_velocity: Vector2
-) -> bool:
+func accept(_item: HeldBall, _world_position: Vector2, _gesture_velocity: Vector2) -> bool:
 	assert(false, "DropTarget.accept() must be overridden by subclass")
 	return false
+
+
+## A target with no rectangular collider contains nothing, so it accepts nothing.
+func contains_point(world_position: Vector2) -> bool:
+	var collision_shape: CollisionShape2D = _get_collision_shape()
+
+	if collision_shape == null:
+		return false
+
+	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
+
+	if rectangle == null:
+		return false
+
+	return rectangle.get_rect().has_point(collision_shape.to_local(world_position))
 
 
 ## A physical placement check: true when `collision_shape` at `world_position` overlaps nothing.
@@ -48,31 +53,13 @@ func _projection_clear(world_position: Vector2, collision_shape: Shape2D) -> boo
 	params.transform = Transform2D(0.0, world_position)
 	params.collide_with_bodies = true
 	params.collide_with_areas = false
-	return space.intersect_shape(params, 1).is_empty()
 
-
-static func get_definition(ball_manager: Node, ball_key: String) -> BallDefinition:
-	if ball_manager == null:
-		return null
-	for item: BallDefinition in ball_manager.items:
-		if item.key == ball_key or BallKey.is_instance(item.key, ball_key):
-			return item
-	return null
-
-
-## A target with no rectangular collider contains nothing, so it accepts nothing.
-func contains_point(world_position: Vector2) -> bool:
-	var collision_shape: CollisionShape2D = _get_collision_shape()
-
-	if collision_shape == null:
-		return false
-
-	var rectangle: RectangleShape2D = collision_shape.shape as RectangleShape2D
-
-	if rectangle == null:
-		return false
-
-	return rectangle.get_rect().has_point(collision_shape.to_local(world_position))
+	# A body freed earlier this frame is still in the space, so a drop must not collide with it.
+	for hit: Dictionary in space.intersect_shape(params, 8):
+		var collider: Node = hit.get("collider") as Node
+		if collider != null and not collider.is_queued_for_deletion():
+			return false
+	return true
 
 
 func _get_collision_shape() -> CollisionShape2D:

@@ -19,6 +19,11 @@ var _refresh_count: int = 0
 var _purchasing_item: ShopItem = null
 
 
+## Venue wires this: the controller lives on the Court, which no NodePath from here can reach.
+func connect_drag_controller(controller: ItemDragController) -> void:
+	shelf.set_drag_controller(controller)
+
+
 func _ready() -> void:
 	if _ball_manager == null:
 		_ball_manager = BallManager

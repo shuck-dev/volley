@@ -42,25 +42,16 @@ func configure(ball_manager: Node) -> void:
 
 
 ## True when the cursor is over this slot and it is empty, or already holds that exact ball.
-func can_accept(
-	ball_key: String,
-	_world_position: Vector2,
-	screen_position: Vector2,
-	_collision_shape: Shape2D,
-) -> bool:
-	if ball_key.is_empty() or not contains_screen_point(screen_position):
+func can_accept(item: HeldBall, _world_position: Vector2, screen_position: Vector2) -> bool:
+	if item.is_temporary() or not contains_screen_point(screen_position):
 		return false
 	var occupant: String = _ball_manager.get_ball_in_kit_slot(slot_index)
-	return occupant == "" or occupant == ball_key
+	return occupant == "" or occupant == item.key
 
 
-func accept(
-	ball_key: String,
-	_world_position: Vector2,
-	_screen_position: Vector2,
-	_gesture_velocity: Vector2,
-) -> bool:
-	_ball_manager.add_to_kit(ball_key, slot_index)
+func accept(item: HeldBall, _world_position: Vector2, _gesture_velocity: Vector2) -> bool:
+	item.store()
+	_ball_manager.add_to_kit(item.key, slot_index)
 	return true
 
 
@@ -68,10 +59,6 @@ func accept(
 func set_displayed_key(ball_key: String) -> void:
 	_ball_key = ball_key
 	_apply_icon()
-
-
-func get_displayed_key() -> String:
-	return _ball_key
 
 
 ## Hides the icon while the ball is held elsewhere; the slot still reports itself as the occupant.

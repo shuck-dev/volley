@@ -19,6 +19,9 @@ signal refund_owed(item: ShopItem)
 
 var ball_definition: BallDefinition
 
+## Set by ShopShelf; a purchase is released through the same controller as any other drag.
+var drag_controller: ItemDragController
+
 var _ball_manager: BallManager
 var _ball_instance: Node
 var _shop_area: Area2D
@@ -147,16 +150,10 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 			visible = true
 			return true
 
-		var controller: ItemDragController = _drag_controller()
-		if controller == null:
-			return false
-
 		var resolved_screen_position: Vector2 = (
 			screen_position if screen_position != Vector2.INF else _screen_position()
 		)
-		var spawned: bool = _purchase_and_spawn(
-			controller, release_position, resolved_screen_position
-		)
+		var spawned: bool = _purchase_and_spawn(release_position, resolved_screen_position)
 
 		# Nothing accepted the ball, so the gesture is over and the soul goes back.
 		if not spawned:
@@ -184,20 +181,16 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 	return true
 
 
-func _purchase_and_spawn(
-	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
-) -> bool:
-	var target: Node = controller.find_accepting_target(
-		ball_definition.key, world_position, screen_position
-	)
-	if target == null:
-		return false
-
+## Buys the item, then releases it through the drag controller like any other held ball.
+func _purchase_and_spawn(world_position: Vector2, screen_position: Vector2) -> bool:
 	var instance_key: String = _ball_manager.take(ball_definition.key)
 	if instance_key.is_empty():
 		return false
 
-	return target.accept(instance_key, world_position, screen_position, _release_velocity())
+	if not drag_controller.grab(instance_key):
+		return false
+
+	return drag_controller.attempt_release(world_position, screen_position)
 
 
 func _build_ball() -> void:
@@ -228,13 +221,6 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		_held = true
 
 		grabbed.emit(self)
-
-
-func _drag_controller() -> ItemDragController:
-	var tree: SceneTree = get_tree()
-	if tree == null:
-		return null
-	return tree.get_first_node_in_group(&"drag_controller") as ItemDragController
 
 
 func _release_velocity() -> Vector2:

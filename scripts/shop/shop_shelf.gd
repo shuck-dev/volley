@@ -16,6 +16,14 @@ const ShopItemScene: PackedScene = preload("res://scenes/shop_item.tscn")
 @export var shop_area: Area2D
 
 var _items: Array[ShopItem] = []
+var _drag_controller: ItemDragController
+
+
+## Held for items built by a later restock, and applied to those already on the shelf.
+func set_drag_controller(controller: ItemDragController) -> void:
+	_drag_controller = controller
+	for item: ShopItem in _items:
+		item.drag_controller = controller
 
 
 ## Clears the table and rolls a fresh offering onto it.
@@ -77,6 +85,7 @@ func _add_item(definition: BallDefinition, slot: Vector2) -> void:
 
 	item.configure(BallManager, definition)
 	item.bind_shop_area(shop_area)
+	item.drag_controller = _drag_controller
 
 	item.grabbed.connect(item_grabbed.emit)
 	item.dropped.connect(item_dropped.emit)

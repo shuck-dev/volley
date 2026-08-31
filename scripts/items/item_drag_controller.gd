@@ -1,73 +1,33 @@
 class_name ItemDragController
 extends Node2D
 
-## Owns the held-body during a drag gesture and polls every registered DropTarget for a valid commit.
+## Carries a HeldBall on the cursor for the length of a gesture, then offers it to the drop targets.
 
 signal pickup_started(ball_key: String)
-signal drop_completed(ball_key: String, release_position: Vector2, over_court: bool)
+signal drop_completed(ball_key: String, release_position: Vector2)
 const CursorStateScript: GDScript = preload("res://scripts/items/cursor_state.gd")
 
 const CURSOR_SAMPLE_WINDOW: float = 0.08
-const PRESERVED_SPEED_NONE: float = -1.0
-const BALL_COLLISION_RADIUS: float = 7.2
-
-## Shared collision footprint for placement queries; a static var stands in because consts cannot hold a Resource.
-static var _ball_collision_shape: CircleShape2D
 
 @export var cursor_overlay: BallDropOverlay
 
-## Test seam: overrides the BallTracker autoload with a standalone instance.
-var ball_tracker: Node
-var _ball_manager: BallManager
-## Held body during a drag gesture (a plain drag-proxy node for kit grabs, Ball for live grabs).
-var _held: Node2D = null
-var _held_key: String = ""
-## A kit origin drops the Kit placement when the release lands elsewhere.
-var _held_origin: StringName = &"live"
+var _held: HeldBall = null
 var _cursor_samples: Array = []
 var _mouse_button_down: bool = false
-## Rally speed preserved across a grab-and-release.
-var _held_preserved_speed: float = PRESERVED_SPEED_NONE
-var _cursor_state: int = CursorStateScript.State.DEFAULT
-
-
-static func _static_init() -> void:
-	_ball_collision_shape = CircleShape2D.new()
-	_ball_collision_shape.radius = BALL_COLLISION_RADIUS
-
-
-func configure(
-	ball_manager: Node,
-	tracker: Node,
-) -> void:
-	_ball_manager = ball_manager
-	ball_tracker = tracker
 
 
 func _ready() -> void:
-	if _ball_manager == null:
-		_ball_manager = BallManager
-
-	if ball_tracker == null:
-		ball_tracker = BallTracker
-
-	# Group lookup so Shop can hand presses to the controller without a NodePath.
-	add_to_group(&"drag_controller")
-
-	if ball_tracker != null:
-		if not ball_tracker.ball_added.is_connected(_on_tracker_ball_added):
-			ball_tracker.ball_added.connect(_on_tracker_ball_added)
+	if not BallTracker.ball_added.is_connected(_on_tracker_ball_added):
+		BallTracker.ball_added.connect(_on_tracker_ball_added)
 
 
 func _process(_delta: float) -> void:
-	var drag_target: Node2D = _drag_target()
-
-	if drag_target == null:
+	if _held == null:
 		_set_cursor_state(CursorStateScript.State.DEFAULT, _cursor_position())
 		return
 
 	var cursor_target: Vector2 = _cursor_position()
-	drag_target.global_position = cursor_target
+	_held.follow(cursor_target)
 	_track_cursor_motion(cursor_target)
 	_update_cursor_state(cursor_target)
 
@@ -84,261 +44,110 @@ func _input(event: InputEvent) -> void:
 		return
 
 	_mouse_button_down = mouse_button.pressed
-	if mouse_button.pressed or _drag_target() == null:
+	if mouse_button.pressed or _held == null:
 		return
 
 	# Use the event position so a Camera2D in the venue doesn't break hit-testing.
 	attempt_release(_event_world_position(mouse_button), mouse_button.position)
 
 
-func is_dragging() -> bool:
-	return _drag_target() != null
-
-
-## Returns the active drag-target node for cursor follow
-func _drag_target() -> Node2D:
-	# Drop a dangling held ball freed out from under the gesture (e.g. a save reload).
-	if _held is Ball and not is_instance_valid(_held):
-		_held = null
-	return _held
-
-
-func get_held_key() -> String:
-	return _held_key
-
-
-## The temporary drag-proxy node, when the held item isn't a live Ball.
-func get_held_body() -> Node2D:
-	if _held is Ball:
-		return null
-	return _held
-
-
-func get_cursor_state() -> int:
-	return _cursor_state
-
-
-## Grabs an owned ball as a frozen drag token, for a stored ball that has no live body.
-func grab_token(ball_key: String) -> bool:
-	if _drag_target() != null:
+## Grabs an owned ball, freeing any live body so only the key is carried.
+func grab(ball_key: String) -> bool:
+	if _held != null:
 		return false
-	if _ball_manager.get_level(ball_key) <= 0:
+	if BallManager.get_level(ball_key) <= 0:
 		return false
 
-	var definition: BallDefinition = _ball_manager.get_item(ball_key)
+	var definition: BallDefinition = BallManager.get_item(ball_key)
 	if definition == null or definition.scene == null:
 		return false
 
-	_adopt_held(_create_token(definition, ball_key), ball_key)
+	BallTracker.release_ball(ball_key)
+	BallManager.clear_loose_in_venue(ball_key)
 
-	_held_origin = &"kit"
-	_mouse_button_down = true
-	pickup_started.emit(ball_key)
+	_adopt(HeldBall.new(ball_key, _build_proxy(definition, ball_key), false))
 	return true
 
 
-func _create_token(definition: BallDefinition, ball_key: String) -> Node2D:
-	var token: Node2D = Node2D.new()
-	token.name = "HeldToken_%s" % ball_key
-	var ball_instance: Node = definition.scene.instantiate()
-	token.add_child(ball_instance)
-	(ball_instance as Ball).enter_stored()
-
-	var current_scene: Node = get_tree().current_scene
-	if current_scene != null:
-		current_scene.add_child(token)
-	else:
-		add_child(token)
-	token.global_position = _cursor_position()
-	return token
-
-
-func grab_live_ball(ball_key: String) -> bool:
-	if _drag_target() != null:
-		return false
-
-	var existing: Ball = null
-	if ball_tracker != null:
-		existing = ball_tracker.get_ball_for_key(ball_key)
-
-	if existing == null:
-		return false
-
-	# Clear the loose-in-venue overlay so an OUT_REST pickup releases like a court grab.
-	_ball_manager.clear_loose_in_venue(ball_key)
-	existing.enter_out_held()
-	_adopt_held(existing, ball_key)
-	_held_origin = &"live"
-	_mouse_button_down = true
-	pickup_started.emit(ball_key)
-	return true
-
-
-func _adopt_held(node: Node2D, ball_key: String) -> void:
-	var spawn_position: Vector2 = node.global_position
-	_held = node
-	_held_key = ball_key
-	_cursor_samples.clear()
-	_track_cursor_motion(spawn_position)
-
-
-## Grabs a ball_tracker-temporary ball (e.g. a Goop split) with no BallManager ownership.
+## Grabs a tracker-temporary ball (e.g. a Goop split), which is carried rather than respawned.
 func grab_temporary(ball: Ball) -> bool:
-	if _drag_target() != null or ball == null or not is_instance_valid(ball):
+	if _held != null or ball == null or not is_instance_valid(ball):
 		return false
 
 	ball.enter_out_held()
-	_adopt_held(ball, "")
-	_held_origin = &"live"
-	_mouse_button_down = true
-	pickup_started.emit("")
+	_adopt(HeldBall.new(ball.ball_key, ball, true))
 	return true
 
 
-## Returns false when no target accepts, so the held body keeps following the cursor.
+## Returns false when no target accepts, so the held item keeps following the cursor.
 func attempt_release(release_position: Vector2, screen_position: Vector2 = Vector2.INF) -> bool:
-	if _drag_target() == null:
+	if _held == null:
 		return false
 
-	var ball_key: String = _held_key
-	var held_ball: Ball = _held as Ball
-	var is_temporary: bool = held_ball != null and held_ball.is_temporary
 	var resolved_screen_position: Vector2 = (
 		screen_position if screen_position != Vector2.INF else _screen_position()
 	)
 
-	var target: Node = find_accepting_target(ball_key, release_position, resolved_screen_position)
+	var target: Node = find_accepting_target(release_position, resolved_screen_position)
 	if target == null:
 		return false
 
-	# A Kit slot holds the item itself, so a live body must stop existing before it becomes an icon.
-	if target is KitSlot:
-		if is_temporary:
-			return false
-		if held_ball != null:
-			_park_held_ball_in_kit()
-	elif _held_origin == &"kit":
-		# Drop the Kit placement before another target takes over.
-		_ball_manager.remove_from_kit(ball_key)
-
-	if not _commit_to_target(
-		target, ball_key, release_position, resolved_screen_position, held_ball
-	):
+	var ball_key: String = _held.key
+	if not target.accept(_held, release_position, _compute_release_velocity()):
 		return false
 
-	_finalise_gesture(ball_key, release_position, target is CourtDropTarget)
+	_finalise_gesture(ball_key, release_position)
 	return true
 
 
-## Hands the held item to `target`, keeping a live Ball's body rather than respawning it.
-func _commit_to_target(
-	target: Node,
-	ball_key: String,
-	release_position: Vector2,
-	screen_position: Vector2,
-	held_ball: Ball,
-) -> bool:
-	var velocity: Vector2 = _compute_release_velocity()
+func find_accepting_target(world_position: Vector2, screen_position: Vector2 = Vector2.INF) -> Node:
+	if _held == null:
+		return null
 
-	if held_ball != null and held_ball.is_temporary and not (target is CourtDropTarget):
-		# A temporary ball is freed anywhere but the court.
-		_free_temporary_ball(held_ball)
-		return true
-
-	if target is CourtDropTarget and held_ball != null:
-		# The same Ball survives the gesture, transitioning OUT_HELD to PLAY in place.
-		_release_live_ball_to_court(release_position, velocity)
-		return true
-
-	if not target.accept(ball_key, release_position, screen_position, velocity):
-		return false
-
-	if target is CourtDropTarget:
-		_apply_preserved_speed_after_accept(ball_key)
-	return true
-
-
-# Transitions the held Ball from OUT_HELD → PLAY_NORMAL/PLAY_ARC at the release point with gesture velocity.
-func _release_live_ball_to_court(release_position: Vector2, velocity: Vector2) -> void:
-	var ball: Ball = _held as Ball
-	if ball == null:
-		return
-	# Capture rally tempo before the transition, since OUT_HELD froze _physics_process.
-	var preserved_speed: float = ball.speed
-	ball.global_position = release_position
-	# Apply velocity after enter_play unfreezes the body, so the next physics tick integrates it.
-	ball.enter_play()
-	# Re-normalise the gesture velocity onto the preserved rally tempo so the released ball matches.
-	if preserved_speed > 0.0 and velocity.length() > 0.0:
-		ball.linear_velocity = velocity.normalized() * preserved_speed
-	else:
-		ball.linear_velocity = velocity
-	ball.speed = preserved_speed
-	# Re-activate after a live grab cleared loose-in-venue to STORED.
-	if not _ball_manager.is_on_court(_held_key):
-		_ball_manager.activate(_held_key)
-
-
-func _apply_preserved_speed_after_accept(ball_key: String) -> void:
-	if _held_preserved_speed < 0.0:
-		return
-	if ball_tracker == null:
-		return
-	var ball: Ball = ball_tracker.get_ball_for_key(ball_key)
-	if ball == null:
-		return
-	ball.speed = _held_preserved_speed
-	if ball.linear_velocity.length() > 0.0:
-		ball.linear_velocity = ball.linear_velocity.normalized() * _held_preserved_speed
-
-
-func find_accepting_target(
-	ball_key: String, world_position: Vector2, screen_position: Vector2 = Vector2.INF
-) -> Node:
 	var resolved_screen_position: Vector2 = (
 		screen_position if screen_position != Vector2.INF else _screen_position()
 	)
 	var winner: Node = null
 	for target: Node in get_tree().get_nodes_in_group(&"drop_targets"):
-		if not target.can_accept(
-			ball_key, world_position, resolved_screen_position, _ball_collision_shape
-		):
+		if not target.can_accept(_held, world_position, resolved_screen_position):
 			continue
 		if winner == null or target.drop_priority < winner.drop_priority:
 			winner = target
 	return winner
 
 
-func _free_temporary_ball(held_ball: Ball) -> void:
-	if ball_tracker != null:
-		ball_tracker.free_temporary(held_ball)
+## A frozen stand-in that follows the cursor while the real ball does not exist.
+func _build_proxy(definition: BallDefinition, ball_key: String) -> Node2D:
+	var proxy := Node2D.new()
+	proxy.name = "HeldToken_%s" % ball_key
+
+	var ball_instance: Node = definition.scene.instantiate()
+	proxy.add_child(ball_instance)
+
+	(ball_instance as Ball).enter_stored()
+
+	var current_scene: Node = get_tree().current_scene
+	if current_scene != null:
+		current_scene.add_child(proxy)
+	else:
+		add_child(proxy)
+	proxy.global_position = _cursor_position()
+	return proxy
 
 
-## Frees the tracked ball before it becomes a static Kit icon, so it doesn't linger on the floor.
-func _park_held_ball_in_kit() -> void:
-	if not (_held is Ball):
-		return
-	_ball_manager.clear_loose_in_venue(_held_key)
-	if ball_tracker != null:
-		ball_tracker.release_ball(_held_key)
-
-
-func _finalise_gesture(ball_key: String, release_position: Vector2, over_court: bool) -> void:
-	# The Ball survives a live grab (or was freed elsewhere), so do not free here.
-	if _held != null and not (_held is Ball):
-		_held.queue_free()
-
-	_reset_gesture_state()
-	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
-	drop_completed.emit(ball_key, release_position, over_court)
-
-
-func _reset_gesture_state() -> void:
-	_held = null
-	_held_key = ""
-	_held_origin = &"live"
-	_held_preserved_speed = PRESERVED_SPEED_NONE
+func _adopt(item: HeldBall) -> void:
+	_held = item
 	_cursor_samples.clear()
+	_track_cursor_motion(_cursor_position())
+	_mouse_button_down = true
+	pickup_started.emit(item.key)
+
+
+func _finalise_gesture(ball_key: String, release_position: Vector2) -> void:
+	_held = null
+	_cursor_samples.clear()
+	_set_cursor_state(CursorStateScript.State.DEFAULT, release_position)
+	drop_completed.emit(ball_key, release_position)
 
 
 func _track_cursor_motion(sample_position: Vector2) -> void:
@@ -355,18 +164,18 @@ func _track_cursor_motion(sample_position: Vector2) -> void:
 
 func _compute_release_velocity() -> Vector2:
 	if _cursor_samples.size() < 2:
-		return _ball_manager.get_default_ball_launch_velocity()
+		return BallManager.get_default_ball_launch_velocity()
 
 	var first: Dictionary = _cursor_samples[0]
 	var last: Dictionary = _cursor_samples[_cursor_samples.size() - 1]
 	var time_delta: float = float(last["time"]) - float(first["time"])
 	if time_delta <= 0.0:
-		return _ball_manager.get_default_ball_launch_velocity()
+		return BallManager.get_default_ball_launch_velocity()
 
 	var pos_delta: Vector2 = Vector2(last["position"]) - Vector2(first["position"])
 	var velocity: Vector2 = pos_delta / time_delta
 	if velocity.length() < 1.0:
-		return _ball_manager.get_default_ball_launch_velocity()
+		return BallManager.get_default_ball_launch_velocity()
 	return velocity
 
 
@@ -396,19 +205,14 @@ func _update_cursor_state(world_position: Vector2) -> void:
 
 
 func _derive_cursor_state(world_position: Vector2) -> int:
-	if _drag_target() == null:
+	if _held == null:
 		return CursorStateScript.State.DEFAULT
-	if _position_accepted_by_any_target(_held_key, world_position):
+	if find_accepting_target(world_position) != null:
 		return CursorStateScript.State.CAN_DROP
 	return CursorStateScript.State.FORBIDDEN
 
 
-func _position_accepted_by_any_target(ball_key: String, world_position: Vector2) -> bool:
-	return find_accepting_target(ball_key, world_position) != null
-
-
 func _set_cursor_state(state: int, world_position: Vector2) -> void:
-	_cursor_state = state
 	BallDropOverlay.update_state(state, world_position)
 
 
@@ -417,8 +221,8 @@ func _on_tracker_ball_added(ball: Ball) -> void:
 		ball.grabbed.connect(_on_live_ball_grabbed.bind(ball.ball_key))
 
 
-func _on_live_ball_grabbed(ball: Ball, ball_key: String) -> void:
-	if ball_key.is_empty():
+func _on_live_ball_grabbed(ball: Ball, _ball_key: String) -> void:
+	if ball.is_temporary:
 		grab_temporary(ball)
 	else:
-		grab_live_ball(ball_key)
+		grab(ball.ball_key)

@@ -24,7 +24,7 @@ func connect_drag_controller(controller: ItemDragController) -> void:
 	controller.pickup_started.connect(_on_pickup_started)
 	controller.drop_completed.connect(_on_drop_completed)
 	for slot: KitSlot in _slots:
-		slot.pressed.connect(controller.grab_token)
+		slot.pressed.connect(controller.grab)
 
 
 func configure(ball_manager: Node) -> void:
@@ -35,7 +35,7 @@ func _on_pickup_started(ball_key: String) -> void:
 	_hide_slot_ball(ball_key)
 
 
-func _on_drop_completed(ball_key: String, _release_position: Vector2, _over_court: bool) -> void:
+func _on_drop_completed(ball_key: String, _release_position: Vector2) -> void:
 	# Loose-in-venue items have no home slot to show again.
 	if _ball_manager.is_loose_in_venue(ball_key):
 		return
