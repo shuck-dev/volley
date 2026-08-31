@@ -23,7 +23,7 @@ var ball_definition: BallDefinition
 var drag_controller: ItemDragController
 
 var _ball_manager: BallManager
-var _ball_instance: Node
+var _ball_instance: Ball
 var _shop_area: Area2D
 var _held_token: Node2D = null
 var _held: bool = false
@@ -202,8 +202,7 @@ func _build_ball() -> void:
 
 	_ball_instance = ball_definition.scene.instantiate()
 	add_child(_ball_instance)
-
-	(_ball_instance as Ball).enter_stored()
+	_ball_instance.enter_stored()
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -253,9 +252,9 @@ func _start_drag() -> void:
 	token.name = "HeldToken_%s" % ball_definition.key
 
 	if ball_definition != null and ball_definition.scene != null:
-		var ball_instance: Node = ball_definition.scene.instantiate()
+		var ball_instance: Ball = ball_definition.scene.instantiate()
 		token.add_child(ball_instance)
-		(ball_instance as Ball).enter_stored()
+		ball_instance.enter_stored()
 
 	# Parent at scene root so the held visual follows the cursor without being
 	# tied to the shop item's transform.

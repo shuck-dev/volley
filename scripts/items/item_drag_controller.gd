@@ -121,10 +121,9 @@ func _build_proxy(definition: BallDefinition, ball_key: String) -> Node2D:
 	var proxy := Node2D.new()
 	proxy.name = "HeldToken_%s" % ball_key
 
-	var ball_instance: Node = definition.scene.instantiate()
+	var ball_instance: Ball = definition.scene.instantiate()
 	proxy.add_child(ball_instance)
-
-	(ball_instance as Ball).enter_stored()
+	ball_instance.enter_stored()
 
 	var current_scene: Node = get_tree().current_scene
 	if current_scene != null:
