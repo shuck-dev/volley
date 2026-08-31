@@ -1,12 +1,10 @@
 # Volley!
 
-Volley! is a desktop idle game shaped like a tennis rally. The ball goes back and forth between the protagonist and a coach who arrives one round at a time. A counter on the wall climbs. A friend leans on the counter of a small wooden stall on the far side of the play, watching the protagonist play, glad to be there. In another corner, the friend's younger sister works at a bench, fixing what the protagonist brings her.
-
-Underneath the loop sits a story the player meets gradually. Cracks accumulate. The second layer earns its weight by the time the player can read it. What the rally already gave stays earned. The game holds for both readers: someone who only wants the rally running while they work, and someone who notices the names, the digits in the count, the weight a pong-shaped game has not asked for.
+Volley! is a desktop idle game about getting the highest number of volleys possible using as many balls as you can handle. Your aim is to help Sam climb the ranks and beat the World Volley Record and the champion Fern, pathing the way for world domination.
 
 ## Contributing
 
-[CONTRIBUTING.md](https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md) is the front door: picking up a ticket, running the project, opening a PR, signing off. Read that first, then come back here for the thing you are working on.
+If you are interested in contributing to Volley!, read [CONTRIBUTING.md](https://github.com/shuck-dev/volley/blob/main/CONTRIBUTING.md) for how we structure submissions.
 
 ## How these docs work
 
