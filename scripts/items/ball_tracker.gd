@@ -25,6 +25,10 @@ var _arc_height_max: float
 var _ball_manager: BallManager
 
 var _balls: Array[Ball] = []
+
+## Temporary keys for this session; held outside BallManager's state so they never reach the save.
+var _temporary_keys: Dictionary = {}
+
 var _miss_zones: Array[MissZone] = []
 var _player_paddle: Node2D
 var _court_ball_spawn: Vector2
@@ -177,6 +181,12 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 	ball.bound_y = _bound_y
 	ball.is_temporary = true
 
+	# Addressable like any other ball, but never registered, so never saved.
+	ball.ball_key = _ball_manager.generate_instance_key(
+		scene.resource_path.get_file().get_basename(), _temporary_keys
+	)
+	_temporary_keys[ball.ball_key] = true
+
 	add_child(ball)
 
 	ball.global_position = spawn_position
@@ -190,6 +200,7 @@ func spawn_temporary(scene: PackedScene, spawn_position: Vector2, velocity: Vect
 func free_temporary(ball: Ball) -> void:
 	if ball == null or not is_instance_valid(ball) or not ball.is_temporary:
 		return
+	_temporary_keys.erase(ball.ball_key)
 	_detach(ball)
 	ball.queue_free()
 

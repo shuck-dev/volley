@@ -19,8 +19,11 @@ signal refund_owed(item: ShopItem)
 
 var ball_definition: BallDefinition
 
+## Set by ShopShelf; a purchase is released through the same controller as any other drag.
+var drag_controller: ItemDragController
+
 var _ball_manager: BallManager
-var _ball_instance: Node
+var _ball_instance: Ball
 var _shop_area: Area2D
 var _held_token: Node2D = null
 var _held: bool = false
@@ -147,16 +150,10 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 			visible = true
 			return true
 
-		var controller: ItemDragController = _drag_controller()
-		if controller == null:
-			return false
-
 		var resolved_screen_position: Vector2 = (
 			screen_position if screen_position != Vector2.INF else _screen_position()
 		)
-		var spawned: bool = _purchase_and_spawn(
-			controller, release_position, resolved_screen_position
-		)
+		var spawned: bool = _purchase_and_spawn(release_position, resolved_screen_position)
 
 		# Nothing accepted the ball, so the gesture is over and the soul goes back.
 		if not spawned:
@@ -184,28 +181,16 @@ func attempt_release(release_position: Vector2, screen_position: Vector2 = Vecto
 	return true
 
 
-## Resolves the release against the Kit, then world drop_targets.
-func _purchase_and_spawn(
-	controller: ItemDragController, world_position: Vector2, screen_position: Vector2
-) -> bool:
-	if controller.kit.can_accept(ball_definition.key, screen_position):
-		var kit_instance_key: String = _ball_manager.take(ball_definition.key)
-		if kit_instance_key.is_empty():
-			return false
-
-		return controller.kit.try_accept(kit_instance_key, screen_position)
-
-	var target: DropTarget = controller.find_accepting_target(ball_definition.key, world_position)
-	if target == null:
-		return false
-
+## Buys the item, then releases it through the drag controller like any other held ball.
+func _purchase_and_spawn(world_position: Vector2, screen_position: Vector2) -> bool:
 	var instance_key: String = _ball_manager.take(ball_definition.key)
 	if instance_key.is_empty():
 		return false
 
-	target.accept(instance_key, world_position, _release_velocity())
+	if not drag_controller.grab(instance_key):
+		return false
 
-	return true
+	return drag_controller.attempt_release(world_position, screen_position)
 
 
 func _build_ball() -> void:
@@ -217,8 +202,7 @@ func _build_ball() -> void:
 
 	_ball_instance = ball_definition.scene.instantiate()
 	add_child(_ball_instance)
-
-	(_ball_instance as Ball).enter_stored()
+	_ball_instance.enter_stored()
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -236,13 +220,6 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		_held = true
 
 		grabbed.emit(self)
-
-
-func _drag_controller() -> ItemDragController:
-	var tree: SceneTree = get_tree()
-	if tree == null:
-		return null
-	return tree.get_first_node_in_group(&"drag_controller") as ItemDragController
 
 
 func _release_velocity() -> Vector2:
@@ -275,9 +252,9 @@ func _start_drag() -> void:
 	token.name = "HeldToken_%s" % ball_definition.key
 
 	if ball_definition != null and ball_definition.scene != null:
-		var ball_instance: Node = ball_definition.scene.instantiate()
+		var ball_instance: Ball = ball_definition.scene.instantiate()
 		token.add_child(ball_instance)
-		(ball_instance as Ball).enter_stored()
+		ball_instance.enter_stored()
 
 	# Parent at scene root so the held visual follows the cursor without being
 	# tied to the shop item's transform.

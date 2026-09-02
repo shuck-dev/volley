@@ -1,18 +1,18 @@
 class_name KitSlot
-extends Control
+extends ControlDropTarget
 
-## A single Ball Kit staging slot. Control-based, not a DropTarget/Area2D: ItemDragController
-## hit-tests it in screen space via get_global_rect(), not the world-space drop_targets group.
+## A single Ball Kit staging slot, and the drop target for the one destination index it owns.
 
 signal pressed(ball_key: String)
 
 ## Icon art is not part of BallDefinition (BallManager's boot path loads that eagerly for every
 ## owned item); the Kit looks it up lazily by convention, only when a slot actually renders one.
 const ICON_DIR: String = "res://assets/balls/"
+const KIT_DROP_PRIORITY: int = 10
 
 @export var icon: TextureRect
 ## Set by BallKit when it instances this slot; this slot's own independent destination index.
-@export var slot_index: int = 0
+var slot_index: int = 0
 
 var _ball_manager: BallManager
 var _ball_key: String = ""
@@ -20,6 +20,9 @@ var _icon_hidden: bool = false
 
 
 func _ready() -> void:
+	super._ready()
+	# Below the world targets, so a release over the Kit lands here, not on the court behind it.
+	drop_priority = KIT_DROP_PRIORITY
 	if _ball_manager == null:
 		_ball_manager = BallManager
 
@@ -38,24 +41,24 @@ func configure(ball_manager: Node) -> void:
 	_ball_manager = ball_manager
 
 
-## True when this slot can take `ball_key`: it is empty, or already holds that exact ball.
-func can_accept(ball_key: String) -> bool:
+## True when the cursor is over this slot and it is empty, or already holds that exact ball.
+func can_accept(item: HeldBall, _world_position: Vector2, screen_position: Vector2) -> bool:
+	if item.is_temporary() or not contains_screen_point(screen_position):
+		return false
 	var occupant: String = _ball_manager.get_ball_in_kit_slot(slot_index)
-	return occupant == "" or occupant == ball_key
+	return occupant == "" or occupant == item.key
 
 
-func accept(ball_key: String) -> void:
-	_ball_manager.add_to_kit(ball_key, slot_index)
+func accept(item: HeldBall, _world_position: Vector2, _gesture_velocity: Vector2) -> bool:
+	item.store()
+	_ball_manager.add_to_kit(item.key, slot_index)
+	return true
 
 
 ## Displays `ball_key`'s icon, or clears the slot when `ball_key` is empty.
 func set_displayed_key(ball_key: String) -> void:
 	_ball_key = ball_key
 	_apply_icon()
-
-
-func get_displayed_key() -> String:
-	return _ball_key
 
 
 ## Hides the icon while the ball is held elsewhere; the slot still reports itself as the occupant.

@@ -317,8 +317,14 @@ func get_owned_count(base_key: String) -> int:
 	return count
 
 
-func generate_instance_key(base_key: String) -> String:
-	return BallKey.generate(base_key, _state.ball_levels)
+## Mints a key without recording it; `reserved` holds issued-but-unregistered keys to avoid.
+func generate_instance_key(base_key: String, reserved: Dictionary = {}) -> String:
+	if reserved.is_empty():
+		return BallKey.generate(base_key, _state.ball_levels)
+
+	var issued: Dictionary = _state.ball_levels.duplicate()
+	issued.merge(reserved)
+	return BallKey.generate(base_key, issued)
 
 
 func register_instance(ball_key: String) -> void:

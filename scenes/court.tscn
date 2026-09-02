@@ -179,8 +179,8 @@ collision_layer = 0
 collision_mask = 0
 input_pickable = false
 monitoring = false
-priority = 30
 script = ExtResource("26_cdt")
+drop_priority = 30
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CourtDropTarget" unique_id=1418307811]
 shape = SubResource("RectangleShape2D_court_drop")
@@ -190,8 +190,8 @@ collision_layer = 0
 collision_mask = 0
 input_pickable = false
 monitoring = false
-priority = 50
 script = ExtResource("27_vdt")
+drop_priority = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="VenueDropTarget" unique_id=509177813]
 shape = SubResource("RectangleShape2D_venue_drop")

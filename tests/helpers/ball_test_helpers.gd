@@ -28,6 +28,45 @@ static func _static_init() -> void:
 	collision_shape.radius = 7.2
 
 
+## Points the BallManager and BallTracker autoloads at empty state for one test, restoring both
+## afterwards. The drag code reads the autoloads directly, so a test must drive those, not a double.
+static func use_autoloads(test: GutTest, items: Array[BallDefinition]) -> void:
+	var previous_state: BallState = BallManager._state
+	var previous_economy: EconomyState = BallManager.economy
+	var previous_items: Array[BallDefinition] = BallManager.items.duplicate()
+
+	BallManager._state = BallState.new()
+	BallManager.economy = EconomyState.new()
+	BallManager.economy.soul_balance = 10000
+	BallManager.items.assign(items)
+
+	var restore: Callable = func() -> void:
+		# Every ball, not just the tracked ones: a test can parent an untracked body here.
+		for child in BallTracker.get_children():
+			BallTracker.remove_child(child)
+			child.free()
+		BallTracker._balls.clear()
+		BallTracker._temporary_keys.clear()
+		BallManager._state = previous_state
+		BallManager.economy = previous_economy
+		BallManager.items.assign(previous_items)
+
+	test.add_child_autofree(_RestoreOnFree.new(restore))
+
+
+## Runs a callable when GUT frees it at the end of a test.
+class _RestoreOnFree:
+	extends Node
+
+	var _on_free: Callable
+
+	func _init(on_free: Callable) -> void:
+		_on_free = on_free
+
+	func _exit_tree() -> void:
+		_on_free.call()
+
+
 ## Real ball.tscn instance so every BallDefinition has an instantiable scene.
 static func stub_ball_scene() -> PackedScene:
 	return load("res://scenes/balls/ball.tscn")
@@ -56,18 +95,14 @@ static func make_kit(manager: Node, test: Node, capacity: int = 3) -> BallKit:
 
 
 ## Priorities mirror the shipped scenes so precedence in a test resolves as it does in play.
-static func make_drop_targets(manager: Node, ball_tracker: Node, test: Node) -> void:
+static func make_drop_targets(test: Node) -> void:
 	var court_target: CourtDropTarget = CourtDropTargetScript.new()
-	court_target.ball_manager = manager
-	court_target.ball_tracker = ball_tracker
-	court_target.priority = COURT_PRIORITY
+	court_target.drop_priority = COURT_PRIORITY
 	court_target.add_child(attach_rect_shape(COURT_SIZE))
 	test.add_child_autofree(court_target)
 
 	var venue_target: VenueDropTarget = VenueDropTargetScript.new()
-	venue_target.ball_manager = manager
-	venue_target.ball_tracker = ball_tracker
-	venue_target.priority = VENUE_PRIORITY
+	venue_target.drop_priority = VENUE_PRIORITY
 	venue_target.add_child(attach_rect_shape(VENUE_SIZE))
 	test.add_child_autofree(venue_target)
 

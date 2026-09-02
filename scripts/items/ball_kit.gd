@@ -1,8 +1,6 @@
 class_name BallKit
 extends Control
 
-signal slot_pressed(ball_key: String)
-
 const KitSlotScene: PackedScene = preload("res://scenes/kit_slot.tscn")
 
 @export var slot_container: HBoxContainer
@@ -18,18 +16,37 @@ func _ready() -> void:
 		_ball_manager = BallManager
 	_ball_manager.state_changed.connect(_on_state_changed, CONNECT_DEFERRED)
 	_build_slots()
-	refresh()
+	_refresh()
 
 
-func _on_state_changed() -> void:
-	refresh()
+## Venue wires this: the controller is in another scene, so no editor connection can reach it.
+func connect_drag_controller(controller: ItemDragController) -> void:
+	controller.pickup_started.connect(_on_pickup_started)
+	controller.drop_completed.connect(_on_drop_completed)
+	for slot: KitSlot in _slots:
+		slot.pressed.connect(controller.grab)
 
 
 func configure(ball_manager: Node) -> void:
 	_ball_manager = ball_manager
 
 
-func refresh() -> void:
+func _on_pickup_started(ball_key: String) -> void:
+	_hide_slot_ball(ball_key)
+
+
+func _on_drop_completed(ball_key: String, _release_position: Vector2) -> void:
+	# Loose-in-venue items have no home slot to show again.
+	if _ball_manager.is_loose_in_venue(ball_key):
+		return
+	_show_slot_ball(ball_key)
+
+
+func _on_state_changed() -> void:
+	_refresh()
+
+
+func _refresh() -> void:
 	for index in _slots.size():
 		var slot: KitSlot = _slots[index]
 		var ball_key: String = _ball_manager.get_ball_in_kit_slot(index)
@@ -38,40 +55,16 @@ func refresh() -> void:
 
 
 ## Hides the held ball's icon so the player sees one item (the held body), not two.
-func hide_slot_for(ball_key: String) -> void:
+func _hide_slot_ball(ball_key: String) -> void:
 	_hidden_key = ball_key
-	refresh()
+	_refresh()
 
 
-func reveal_slot_for(ball_key: String) -> void:
+func _show_slot_ball(ball_key: String) -> void:
 	if _hidden_key != ball_key:
 		return
 	_hidden_key = ""
-	refresh()
-
-
-## Returns the slot at a screen space position.
-func get_slot_at(screen_position: Vector2) -> KitSlot:
-	for slot in _slots:
-		if slot.get_global_rect().has_point(screen_position):
-			return slot
-
-	return null
-
-
-## True when a Kit slot at `screen_position` would accept `ball_key`.
-func can_accept(ball_key: String, screen_position: Vector2) -> bool:
-	var slot: KitSlot = get_slot_at(screen_position)
-	return slot != null and slot.can_accept(ball_key)
-
-
-## Hit-tests `screen_position` and moves `ball_key` into an accepting slot there, if any.
-func try_accept(ball_key: String, screen_position: Vector2) -> bool:
-	var slot: KitSlot = get_slot_at(screen_position)
-	if slot == null or not slot.can_accept(ball_key):
-		return false
-	slot.accept(ball_key)
-	return true
+	_refresh()
 
 
 func _build_slots() -> void:
@@ -82,6 +75,5 @@ func _build_slots() -> void:
 		var slot: KitSlot = KitSlotScene.instantiate()
 		slot.slot_index = index
 		slot.configure(_ball_manager)
-		slot.pressed.connect(slot_pressed.emit)
 		slot_container.add_child(slot)
 		_slots.append(slot)
