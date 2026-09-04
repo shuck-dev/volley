@@ -16,6 +16,9 @@ func set_enabled(value: bool) -> void:
 		return
 	_enabled = value
 
+	if not _enabled:
+		paddle.wants_low_stance = false
+
 
 func _court_side_sign() -> float:
 	return -1.0
