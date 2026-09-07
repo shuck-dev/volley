@@ -25,6 +25,9 @@ signal paddle_hit(ball: Ball)
 ## Suppresses input for auto-play.
 var input_blocked: bool = false
 
+## Whether autoplay wants the paddle to use the low stance
+var wants_low_stance: bool = false
+
 var _ball_manager: BallManager
 
 var _lane_x: float = 0.0
